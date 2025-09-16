@@ -1,10 +1,10 @@
 import { glql } from '@gitlab/query-language-rust';
 import { glqlAggregationEnabled } from '../utils/feature_flags';
 
-export const transform = async (data, config) => {
+export const transform = async (data, { groupBy, aggregate, ...config }) => {
   const result = await glql.transform(data, {
     fields: config.fields,
-    aggregate: glqlAggregationEnabled() ? config.aggregate : undefined,
+    ...(glqlAggregationEnabled() ? { groupBy, aggregate } : {}),
   });
 
   if (!result.success) throw new Error(result.error);

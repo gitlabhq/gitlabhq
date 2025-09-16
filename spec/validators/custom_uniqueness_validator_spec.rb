@@ -31,7 +31,7 @@ RSpec.describe CustomUniquenessValidator, feature_category: :shared do
       expect do
         new_record.valid?
       end.to make_queries_matching(
-        /TRIM\(BOTH FROM lower\(_test_custom_uniqueness.name\)\) = TRIM\(BOTH FROM lower\('/
+        /TRIM\(BOTH FROM lower\("_test_custom_uniqueness"."name"\)\) = TRIM\(BOTH FROM lower\('/
       )
     end
 

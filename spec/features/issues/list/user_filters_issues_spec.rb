@@ -3,9 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'User filters issues', :js, feature_category: :team_planning do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project_empty_repo, :public) }
-
   before do
     # TODO: When removing the feature flag,
     # we won't need these tests for issues, since we'll be using
@@ -28,6 +25,8 @@ RSpec.describe 'User filters issues', :js, feature_category: :team_planning do
     @issue.save!
   end
 
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project_empty_repo, :public) }
   let(:issue) { @issue }
 
   it 'allows filtering by issues with no specified assignee' do

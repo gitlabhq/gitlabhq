@@ -86,12 +86,12 @@ RSpec.describe Ci::AppendBuildTraceService, feature_category: :continuous_integr
     context 'when sending the first trace' do
       let(:body_start) { 0 }
 
-      it 'updates build metadata debug_trace_enabled' do
+      it 'updates build debug_trace_enabled' do
         described_class
           .new(build, content_range: content_range, debug_trace: true)
           .execute(body_data)
 
-        expect(metadata.debug_trace_enabled).to be(true)
+        expect(build.debug_trace_enabled?).to be(true)
       end
     end
 
@@ -103,7 +103,7 @@ RSpec.describe Ci::AppendBuildTraceService, feature_category: :continuous_integr
           described_class.new(build, content_range: content_range, debug_trace: true).execute(body_data)
         end
 
-        expect(metadata.debug_trace_enabled).to be(false)
+        expect(build.debug_trace_enabled?).to be(false)
         expect(query_recorder.log).not_to include(/p_ci_builds_metadata/)
       end
     end

@@ -33,7 +33,14 @@ export default {
     WorkItemGroupsListbox,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['hasIterationsFeature'],
+  inject: {
+    hasIterationsFeature: {
+      default: false,
+    },
+    projectNamespaceFullPath: {
+      default: '',
+    },
+  },
   props: {
     fullPath: {
       type: String,
@@ -451,6 +458,7 @@ export default {
             :full-path="fullPath"
             :current-project-name="fullName"
             :is-group="isGroup"
+            :project-namespace-full-path="projectNamespaceFullPath"
           />
         </gl-form-group>
         <gl-form-group
@@ -472,7 +480,7 @@ export default {
         ref="confidentialityCheckbox"
         v-model="confidential"
         name="isConfidential"
-        class="gl-mb-5 md:!gl-mb-3"
+        class="gl-mb-5 @md/panel:!gl-mb-3"
         :disabled="parentConfidential"
         >{{ confidentialityCheckboxLabel }}</gl-form-checkbox
       >

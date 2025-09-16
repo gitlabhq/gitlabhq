@@ -45,7 +45,7 @@ variables:
   SECURE_LOG_LEVEL: "debug"
 ```
 
-This indicates to all GitLab analyzers that they are to output **all** messages. For more details,
+This indicates to all GitLab analyzers that they are to output all messages. For more details,
 see [logging level](#logging-level).
 
 <!-- NOTE: The below subsection(`### Secure job failing with exit code 1`) documentation URL is referred in the [/gitlab-org/security-products/analyzers/command](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/command.go#L19) repository. If this section/subsection changes, ensure to update the corresponding URL in the mentioned repository.
@@ -77,15 +77,11 @@ target branch and the source branch is not the most recent commit on the target 
 
 To fix this issue, rebase or merge to incorporate the changes from the target branch.
 
-![Incorporate target branch changes](img/outdated_report_branch_v12_9.png)
-
 ### Target branch security report is out of date
 
 This can happen for many reasons, including failed jobs or new advisories. When the merge request
 shows that a security report is out of date, you must run a new pipeline on the target branch.
 Select **new pipeline** to run a new pipeline.
-
-![Run a new pipeline](img/outdated_report_pipeline_v12_9.png)
 
 ## Getting warning messages `… report.json: no matching files`
 
@@ -188,9 +184,9 @@ For more information, see [`rules`](../../ci/yaml/_index.md#rules).
 
 ### Pin your templates to the deprecated versions
 
-To ensure the latest support, we **strongly** recommend that you migrate to [`rules`](../../ci/yaml/_index.md#rules).
+To ensure the latest support, migrate to [`rules`](../../ci/yaml/_index.md#rules).
 
-If you're unable to immediately update your CI configuration, there are several workarounds that
+If you're unable to immediately update your CI/CD configuration, there are several workarounds that
 involve pinning to the previous template versions, for example:
 
   ```yaml
@@ -225,11 +221,11 @@ There [is an issue open to improve extendability](https://gitlab.com/gitlab-org/
 You can upvote the issue to help with prioritization, and
 [contributions are welcomed](https://about.gitlab.com/community/contribute/).
 
-## Empty vulnerability report, Dependency List pages
+## Empty vulnerability report, dependency list pages
 
 If the pipeline has manual steps with a job that has the `allow_failure: false` option, and this job is not finished,
 GitLab can't populate listed pages with the data from security reports.
-In this case, [the vulnerability report](vulnerability_report/_index.md) and [the Dependency List](dependency_list/_index.md)
+In this case, [the vulnerability report](vulnerability_report/_index.md) and [the dependency list](dependency_list/_index.md)
 pages are empty.
 These security pages can be populated by running the jobs from the manual step of the pipeline.
 

@@ -1,0 +1,12 @@
+---
+api_type:
+attr: workspaces_oauth_application_id
+clusterwide: false
+column: workspaces_oauth_application_id
+db_type: bigint
+default:
+description:
+encrypted: false
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

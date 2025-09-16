@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::JobDefinitionInstance, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
-  let_it_be(:job) { create(:ci_build, project: project) }
+  let_it_be(:job) { create(:ci_build, :without_job_definition, project: project) }
   let_it_be(:job_definition) { create(:ci_job_definition, project: project) }
 
   let_it_be(:definition_instance) do
@@ -17,7 +17,7 @@ RSpec.describe Ci::JobDefinitionInstance, feature_category: :continuous_integrat
   it_behaves_like 'cleanup by a loose foreign key' do
     let!(:model) do
       create(:ci_job_definition_instance,
-        job: create(:ci_build, project: project),
+        job: create(:ci_build, :without_job_definition, project: project),
         job_definition: job_definition,
         project: project
       )

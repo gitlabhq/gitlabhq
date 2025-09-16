@@ -29,11 +29,11 @@ export function createForm(type = 'text') {
   const form = document.createElement('form');
   form.innerHTML = `
     <input type="${type}" name="${type}" class="js-input"/>
-    <button type="submit" class="js-dirty-submit"></button>
+    <button type="submit" id="dirty-submit"></button>
   `;
 
   const input = form.querySelector('.js-input');
-  const submit = form.querySelector('.js-dirty-submit');
+  const submit = form.querySelector('#dirty-submit');
 
   return {
     form,

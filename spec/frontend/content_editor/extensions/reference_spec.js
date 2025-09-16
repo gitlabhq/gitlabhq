@@ -11,6 +11,7 @@ import {
   RESOLVED_MILESTONE_HTML,
   RESOLVED_USER_HTML,
   RESOLVED_VULNERABILITY_HTML,
+  RESOLVED_USER_WITH_DOTS_HTML,
 } from '../test_constants';
 import { createTestEditor, triggerNodeInputRule, waitUntilTransaction } from '../test_utils';
 
@@ -141,6 +142,37 @@ describe('content_editor/extensions/reference', () => {
               href: '/root',
             }),
             ') for help here',
+          ),
+        ).toJSON(),
+      );
+    });
+
+    it('correctly resolves references with dots in them', async () => {
+      await waitUntilTransaction({
+        number: 2,
+        tiptapEditor,
+        action() {
+          renderMarkdown.mockResolvedValueOnce({ body: RESOLVED_USER_WITH_DOTS_HTML });
+
+          tiptapEditor.commands.insertContent({
+            type: 'text',
+            text: 'Lets ask @root.with.dots for help here',
+          });
+          triggerNodeInputRule({ tiptapEditor, inputRuleText: '@root.with.dots' });
+        },
+      });
+
+      expect(tiptapEditor.getJSON()).toEqual(
+        doc(
+          p(
+            'Lets ask ',
+            reference({
+              referenceType: 'user',
+              originalText: '@root.with.dots',
+              text: '@root.with.dots',
+              href: '/root.with.dots',
+            }),
+            ' for help here',
           ),
         ).toJSON(),
       );

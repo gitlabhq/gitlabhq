@@ -29,11 +29,7 @@ RSpec.describe Ci::BuildTraceChunkFlushWorker, feature_category: :continuous_int
     end
 
     # rubocop: disable RSpec/AnyInstanceOf -- next_instance_of will not work here
-    context 'when save operation fails and self-healing is enabled' do
-      before do
-        stub_feature_flags(self_heal_build_trace_chunk_flushing: true)
-      end
-
+    context 'when save operation fails' do
       it 'preserves Redis data on first failure and completes migration on retry' do
         expect(chunk).to be_live
 

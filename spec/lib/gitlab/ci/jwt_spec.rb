@@ -56,6 +56,13 @@ RSpec.describe Gitlab::Ci::Jwt, feature_category: :secrets_management do
       end
     end
 
+    it 'sets the job project related claims same as the source project claims' do
+      expect(payload[:job_project_id]).to eq(payload[:project_id])
+      expect(payload[:job_project_path]).to eq(payload[:project_path])
+      expect(payload[:job_namespace_id]).to eq(payload[:namespace_id])
+      expect(payload[:job_namespace_path]).to eq(payload[:namespace_path])
+    end
+
     it_behaves_like 'setting the user_access_level claim' do
       let_it_be(:project) { create(:project) }
       let_it_be(:user) { create(:user) }
@@ -263,6 +270,20 @@ RSpec.describe Gitlab::Ci::Jwt, feature_category: :secrets_management do
         expect(payload[:project_path]).to eq(forked_project.full_path)
         expect(payload[:namespace_id]).to eq(forked_project_namespace.id.to_s)
         expect(payload[:namespace_path]).to eq(forked_project_namespace.full_path)
+      end
+
+      it 'sets the job project related claims of the merge request' do
+        expect(payload[:job_project_id]).to eq(target_project.id.to_s)
+        expect(payload[:job_project_path]).to eq(target_project.full_path)
+        expect(payload[:job_namespace_id]).to eq(target_project_namespace.id.to_s)
+        expect(payload[:job_namespace_path]).to eq(target_project_namespace.full_path)
+      end
+
+      it 'sets the job project related claims different to the source project claims' do
+        expect(payload[:job_project_id]).not_to eq(payload[:project_id])
+        expect(payload[:job_project_path]).not_to eq(payload[:project_path])
+        expect(payload[:job_namespace_id]).not_to eq(payload[:namespace_id])
+        expect(payload[:job_namespace_path]).not_to eq(payload[:namespace_path])
       end
     end
   end

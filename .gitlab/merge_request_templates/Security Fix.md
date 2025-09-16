@@ -36,15 +36,19 @@ See [the general developer security guidelines](https://gitlab.com/gitlab-org/re
 
 ## AppSec checklist
 
+This checklist is to be completed by the [Application Security & Response Team](https://handbook.gitlab.com/handbook/security/product-security/application-security/), **applicable on MR fixes targeting master branch only**:
+
 - [ ] Assign the right [AppSecWeight](https://handbook.gitlab.com/handbook/security/product-security/application-security/milestone-planning/#weight-labels) label
-- [ ] Update the `~AppSecWorkflow::in-progress` to `~AppSecWorkflow::complete` 
+- [ ] Update the `~AppSecWorkflow::new` to `~AppSecWorkflow::in-progress` when you have started to review the MR
+- [ ] Update the `~AppSecWorkflow::in-progress` to `~AppSecWorkflow::complete` when the MR has been reviewed
 
 /label ~security
 
 <!-- AppSec specific labels -->
 
 /label ~"Division::Security" ~"Department::Product Security" ~"Application Security Team"
-/label ~"AppSecWorkflow::in-progress" ~"AppSecWorkType::VulnFixVerification"
+/label ~"AppSecWorkType::VulnFixVerification"
+/label ~"AppSecWorkflow::new"
 /label ~"AppSecPriority::1" <!-- This is always a priority to review for us to ensure the fix is good and the release is done on time -->
 
 [CHANGELOG entry]: https://docs.gitlab.com/development/changelog/#overview

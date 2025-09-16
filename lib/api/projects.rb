@@ -86,7 +86,10 @@ module API
       end
 
       def immediately_delete_project_error(project)
-        if !project.marked_for_deletion_at?
+        # Admin frontend uses this endpoint to force-delete projects
+        if Feature.enabled?(:disallow_immediate_deletion, current_user) && !current_user.can_admin_all_resources?
+          '`permanently_remove` option is not available anymore (behind the :disallow_immediate_deletion feature flag).'
+        elsif !project.self_deletion_scheduled?
           'Project must be marked for deletion first.'
         elsif project.full_path != params[:full_path]
           '`full_path` is incorrect. You must enter the complete path for the project.'

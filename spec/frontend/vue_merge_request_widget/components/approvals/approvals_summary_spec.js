@@ -19,15 +19,34 @@ Vue.use(VueApollo);
 describe('MRWidget approvals summary', () => {
   let wrapper;
 
-  const createComponent = (data = approvedByCurrentUser) => {
+  const createComponent = ({
+    data = approvedByCurrentUser,
+    optional = false,
+    disableCommittersApproval = false,
+  } = {}) => {
     wrapper = mount(ApprovalsSummary, {
       propsData: {
+        optional,
+        canApprove: true,
         approvalState: data.data.project.mergeRequest,
+        disableCommittersApproval,
       },
     });
   };
 
   const findAvatars = () => wrapper.findComponent(UserAvatarList);
+
+  afterEach(() => {
+    window.gon.current_user_id = null;
+  });
+
+  describe('when approval is optional', () => {
+    it('renders approval optional text', () => {
+      createComponent({ optional: true });
+
+      expect(wrapper.text()).toContain('Approval is optional');
+    });
+  });
 
   describe('when approved', () => {
     beforeEach(async () => {
@@ -71,7 +90,7 @@ describe('MRWidget approvals summary', () => {
         gon.current_user_id = getIdFromGraphQLId(
           approvedByMultipleUsers.data.project.mergeRequest.approvedBy.nodes[0].id,
         );
-        createComponent(approvedByMultipleUsers);
+        createComponent({ data: approvedByMultipleUsers });
 
         await waitForPromises();
       });
@@ -83,7 +102,7 @@ describe('MRWidget approvals summary', () => {
 
     describe('by other users than the current user', () => {
       beforeEach(async () => {
-        createComponent(approvedByMultipleUsers);
+        createComponent({ data: approvedByMultipleUsers });
 
         await waitForPromises();
       });
@@ -96,7 +115,7 @@ describe('MRWidget approvals summary', () => {
 
   describe('when no approvers', () => {
     beforeEach(async () => {
-      createComponent(noApprovalsResponse);
+      createComponent({ data: noApprovalsResponse });
 
       await waitForPromises();
     });

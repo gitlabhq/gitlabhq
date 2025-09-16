@@ -41,8 +41,6 @@ RSpec.describe Gitlab::QuickActions::Dsl do
         args.split
       end
 
-      command :cc
-
       explanation do |arg|
         "Action does something with #{arg}"
       end
@@ -76,7 +74,7 @@ RSpec.describe Gitlab::QuickActions::Dsl do
 
   describe '.command_definitions' do
     it 'returns an array with commands definitions' do
-      no_args_def, explanation_with_aliases_def, conditional_aliases_autocompletion, dynamic_description_def, cc_def,
+      no_args_def, explanation_with_aliases_def, conditional_aliases_autocompletion, dynamic_description_def,
         cond_action_def, with_params_parsing_def, substitution_def, has_types =
         DummyClass.command_definitions
 
@@ -129,18 +127,6 @@ RSpec.describe Gitlab::QuickActions::Dsl do
       expect(dynamic_description_def.action_block).to be_a_kind_of(Proc)
       expect(dynamic_description_def.parse_params_block).to be_nil
       expect(dynamic_description_def.warning).to eq('')
-
-      expect(cc_def.name).to eq(:cc)
-      expect(cc_def.aliases).to eq([])
-      expect(cc_def.description).to eq('')
-      expect(cc_def.explanation).to eq('')
-      expect(cc_def.execution_message).to eq('')
-      expect(cc_def.params).to eq([])
-      expect(cc_def.condition_block).to be_nil
-      expect(cc_def.types).to eq([])
-      expect(cc_def.action_block).to be_nil
-      expect(cc_def.parse_params_block).to be_nil
-      expect(cc_def.warning).to eq('')
 
       expect(cond_action_def.name).to eq(:cond_action)
       expect(cond_action_def.aliases).to eq([])

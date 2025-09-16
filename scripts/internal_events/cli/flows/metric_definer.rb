@@ -189,6 +189,8 @@ module InternalEventsCli
         format_prefix "  ", <<~TEXT.chomp
           - Visit #{format_info('https://metrics.gitlab.com')} to find dashboard links for this metric
           #{metric_dashboard_links(attributes)}
+          - Set up Tableau Alerts via the Metric Trend Dashboards to receive notifications when your metrics cross specified thresholds.
+            See the Tableau Documentation for details: #{format_info('https://help.tableau.com/current/pro/desktop/en-us/data_alerts.htm')}
         TEXT
       end
 

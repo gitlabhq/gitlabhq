@@ -1,6 +1,6 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_security_dast_on_demand_api_scan
-description: Count of pipelines using the latest DAST API template
+description: Count of distinct projects that included the Security/DAST-On-Demand-API-Scan.gitlab-ci.yml template in a pipeline
 product_group: "dynamic_analysis"
 value_type: number
 status: active

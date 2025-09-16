@@ -88,7 +88,8 @@ class EventFilter
     when TEAM
       in_operator_params(
         array_data: array_data,
-        scope: Event.where(target_type: nil),
+        # TODO: Remove nil filter once backfill is complete https://gitlab.com/gitlab-org/gitlab/-/issues/565789
+        scope: Event.where(target_type: [nil, Event::TARGET_TYPES[:project].name]),
         order_hint_column: :target_type,
         in_column: :action,
         in_values: Event.actions.values_at(*Event::TEAM_ACTIONS)

@@ -1,0 +1,13 @@
+---
+table_name: work_item_custom_status_mappings
+classes:
+- WorkItems::Statuses::Custom::Mapping
+feature_categories:
+- team_planning
+description: Persists mappings from one custom status to another
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203127
+milestone: '18.4'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  namespace_id: namespaces
+table_size: small

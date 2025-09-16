@@ -3,7 +3,7 @@
 RSpec.shared_examples 'setting project protected branches' do
   describe "explicit protected branches" do
     it "allows creating explicit protected branches" do
-      visit project_protected_branches_path(project)
+      visit project_settings_repository_path(project, anchor: 'js-protected-branches-settings')
 
       show_add_form
       set_defaults
@@ -16,7 +16,7 @@ RSpec.shared_examples 'setting project protected branches' do
     end
 
     it "shows success alert once protected branch is created" do
-      visit project_protected_branches_path(project)
+      visit project_settings_repository_path(project, anchor: 'js-protected-branches-settings')
 
       show_add_form
       set_defaults
@@ -30,7 +30,7 @@ RSpec.shared_examples 'setting project protected branches' do
       commit = create(:commit, project: project)
       project.repository.add_branch(admin, 'some-branch', commit.id)
 
-      visit project_protected_branches_path(project)
+      visit project_settings_repository_path(project, anchor: 'js-protected-branches-settings')
 
       show_add_form
       set_defaults
@@ -44,7 +44,7 @@ RSpec.shared_examples 'setting project protected branches' do
     end
 
     it "displays an error message if the named branch does not exist" do
-      visit project_protected_branches_path(project)
+      visit project_settings_repository_path(project, anchor: 'js-protected-branches-settings')
 
       show_add_form
       set_defaults
@@ -57,7 +57,7 @@ RSpec.shared_examples 'setting project protected branches' do
 
   describe "wildcard protected branches" do
     it "allows creating protected branches with a wildcard" do
-      visit project_protected_branches_path(project)
+      visit project_settings_repository_path(project, anchor: 'js-protected-branches-settings')
 
       show_add_form
       set_defaults
@@ -74,7 +74,7 @@ RSpec.shared_examples 'setting project protected branches' do
       project.repository.add_branch(admin, 'production-stable', 'master')
       project.repository.add_branch(admin, 'staging-stable', 'master')
 
-      visit project_protected_branches_path(project)
+      visit project_settings_repository_path(project, anchor: 'js-protected-branches-settings')
 
       show_add_form
       set_defaults
@@ -91,14 +91,14 @@ RSpec.shared_examples 'setting project protected branches' do
       project.repository.add_branch(admin, 'staging-stable', 'master')
       project.repository.add_branch(admin, 'development', 'master')
 
-      visit project_protected_branches_path(project)
+      visit project_settings_repository_path(project, anchor: 'js-protected-branches-settings')
 
       show_add_form
       set_protected_branch_name('*-stable')
       set_defaults
       click_on "Protect"
 
-      visit project_protected_branches_path(project)
+      visit project_settings_repository_path(project, anchor: 'js-protected-branches-settings')
       click_on "2 matching branches"
 
       within(".protected-branches-list") do

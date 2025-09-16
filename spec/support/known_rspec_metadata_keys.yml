@@ -101,7 +101,6 @@
 - :prometheus
 - :quarantine
 - :query_analyzers
-- :rd_fast
 - :redis
 - :reestablished_active_record_base
 - :request_store
@@ -147,6 +146,7 @@
 - :timecop
 - :travel_to
 - :type
+- :ui_for_organizations_disabled
 - :unless
 - :unlimited_max_formatted_output_length
 - :unlock_pipelines
@@ -164,6 +164,7 @@
 - :with_license
 - :with_organization_url_helpers
 - :with_sidekiq_context
+- :with_trial_types
 - :without_license
 - :yaml_processor_feature_flag_corectness
 - :zoekt

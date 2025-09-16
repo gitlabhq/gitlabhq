@@ -44,6 +44,7 @@ import {
   TOKEN_TYPE_STATE,
   TOKEN_TYPE_SUBSCRIBED,
   TOKEN_TYPE_STATUS,
+  TOKEN_TYPE_PARENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export const ISSUE_REFERENCE = /^#\d+$/;
@@ -440,6 +441,21 @@ export const filtersMap = {
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[epic_id]',
+      },
+    },
+  },
+  [TOKEN_TYPE_PARENT]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'parentIds',
+      [WILDCARD_FILTER]: 'parentWildcardId',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'parent_id',
+        [WILDCARD_FILTER]: 'parent_id',
+      },
+      [OPERATOR_NOT]: {
+        [NORMAL_FILTER]: 'not[parent_id]',
       },
     },
   },

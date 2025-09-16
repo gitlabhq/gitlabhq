@@ -156,6 +156,32 @@ RSpec.describe Ci::Components::FetchService, feature_category: :pipeline_composi
         end
       end
 
+      context 'when version is a partial semantic version' do
+        let(:version) { '1.0' }
+        let_it_be(:project) { create(:project) }
+
+        context 'and the project is not a catalog resource' do
+          it 'returns an error' do
+            expect(result).to be_error
+            expect(result.message).to eq(
+              "Component '#{current_host}/#{component_path}@1.0' - " \
+              'The partial semantic version reference is not supported for non-catalog resources. ' \
+              'Use a tag, branch, or commit SHA instead.'
+            )
+            expect(result.reason).to eq(:invalid_usage)
+          end
+        end
+
+        context 'and the project does not exist' do
+          let(:component_path) { 'unknown' }
+
+          it 'returns an error' do
+            expect(result).to be_error
+            expect(result.reason).to eq(:content_not_found)
+          end
+        end
+      end
+
       context 'when project does not exist' do
         let(:component_path) { 'unknown/component' }
         let(:version) { '1.0' }

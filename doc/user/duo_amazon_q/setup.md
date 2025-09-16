@@ -50,12 +50,12 @@ To set up GitLab Duo with Amazon Q, you must:
 
 - You must have GitLab Self-Managed:
   - On GitLab 17.11 or later.
-  - On an instance in AWS. The instance must allow incoming network access to Amazon Q services originating from these IP addresses:
+  - Amazon Q uses the GitLab instance's REST APIs to read and write data when performing requested actions and must be able to access your HTTPS URL ([the SSL certificate must not be self-signed](https://docs.gitlab.com/omnibus/settings/ssl/)).
+  - The instance must allow inbound network access from Amazon Q services that originate from the following IP addresses, by using TCP/TLS on
+    the port your instance is configured to use. This is [port 443 by default](../../administration/package_information/defaults.md#ports).
     - `34.228.181.128`
     - `44.219.176.187`
     - `54.226.244.221`
-  - With an HTTPS URL that can be accessed by Amazon Q (the SSL certificate must not be self-signed).
-    For more details about SSL, see [Configure SSL for a Linux package installation](https://docs.gitlab.com/omnibus/settings/ssl/).
   - With an Ultimate subscription that is synchronized with GitLab, and
     the GitLab Duo with Amazon Q add-on.
 
@@ -82,7 +82,7 @@ Prerequisites:
 
 1. Sign in to GitLab.
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **GitLab Duo with Amazon Q**.
 1. Select **View configuration setup**.
 1. Under step 1, copy the provider URL and audience. You will need them in the next step.
@@ -108,7 +108,7 @@ After you set up the IAM role, you cannot change the AWS account that's associat
 
 {{< /alert >}}
 
-1. In the AWS IAM console, select **Access Management > Roles > Create role**.
+1. In the AWS IAM console, select **Access Management** > **Roles** > **Create role**.
 1. Select **Web identity**.
 1. For **Web identity**, select the provider URL you entered earlier.
 1. For **Audience**, select the audience value you entered earlier.
@@ -149,7 +149,7 @@ After you set up the IAM role, you cannot change the AWS account that's associat
 
 To create an inline policy, rather than using a managed policy:
 
-1. Select **Permissions > Add permissions > Create inline policy**.
+1. Select **Permissions** > **Add permissions** > **Create inline policy**.
 1. Select **JSON** and paste the following in the editor:
 
    ```json
@@ -193,7 +193,7 @@ To create an inline policy, rather than using a managed policy:
    }
    ```
 
-1. Select **Actions > Optimize for readability** to make AWS format and parse the JSON.
+1. Select **Actions** > **Optimize for readability** to make AWS format and parse the JSON.
 1. Select **Next**.
 1. Name the policy `gitlab-duo-amazon-q-policy` and select **Create policy**.
 
@@ -228,7 +228,7 @@ To finish setting up GitLab Duo with Amazon Q:
 
 1. Sign in to GitLab.
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **GitLab Duo with Amazon Q**.
 1. Select **View configuration setup**.
 1. Under **IAM role's ARN**, paste the ARN.
@@ -309,7 +309,7 @@ To turn off GitLab Duo with Amazon Q for the instance:
 
 1. Sign in to GitLab.
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **GitLab Duo with Amazon Q**.
 1. Select **View configuration setup**.
 1. Select **Always off**.
@@ -324,7 +324,7 @@ Prerequisites:
 To turn off GitLab Duo with Amazon Q for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Amazon Q**.
 1. Choose an option:
    - To turn it off for the group, but let other groups or projects turn it on, select **Off by default**.
@@ -340,7 +340,7 @@ Prerequisites:
 To turn off GitLab Duo with Amazon Q for a project:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Under **Amazon Q**, turn the toggle off.
 1. Select **Save changes**.
@@ -349,3 +349,58 @@ To turn off GitLab Duo with Amazon Q for a project:
 
 If you experience issues connecting GitLab to Amazon Q,
 ensure your GitLab installation meets [all the prerequisites](#prerequisites).
+
+You might also encounter the following issue.
+
+### GitLab instance UUID mismatch
+
+You might encounter a `GitLab instance UUID mismatch` error when disconnecting Amazon Q. This issue typically occurs when:
+
+- The GitLab instance has been restored from a backup.
+- The GitLab instance has been migrated to new infrastructure.
+- The GitLab instance UUID has changed for any other reason.
+
+To confirm that a mismatched UUID is the root cause, proceed with the following validation steps.
+
+#### Validate
+
+1. Sign in to the EC2 instance where GitLab is hosted.
+1. Access the Rails console.
+1. Get the current UUID: `Gitlab::CurrentSettings.current_application_settings.uuid`
+1. Get the JWT token:
+
+   ```ruby
+   token = CloudConnector::AvailableServices.find_by_name(:agent_quick_actions).access_token
+   JWT.decode(token, false, nil)
+   ```
+
+The issue is apparent when a mismatch in the UUID exists between the `sub` field in step 3 and the `gitlab_instance_uuid` from step 4.
+
+To resolve this issue, complete the following steps.
+
+1. Remove all active licenses.
+1. Delete all subscription add-on purchases:
+
+   Open the Rails console and execute:
+
+   ```ruby
+   GitlabSubscriptions::AddOnPurchase.all.destroy_all
+   ```
+
+1. Execute instance UUID reset.
+   In the Rails console, execute:
+
+   ```ruby
+   ApplicationSetting.update!(uuid: SecureRandom.uuid)
+   ```
+
+1. Apply the active license.
+1. Wait a minute or so and synchronize the license. This action forces the cloud connector token to regenerate. (Without this step, a header mismatch occurs.)
+1. Update the IdP and IAM role with the new UUID.
+1. Choose a next step:
+   - Continue using the existing setup by updating the existing IdP and IAM role with the new UUID and continue using GitLab Duo with Amazon Q.
+   - Off-board:
+     1. Off-board from GitLab Duo with Amazon Q.
+     1. Set up a new connection if desired.
+
+When you are done, the UUID mismatch issue should be resolved and GitLab Duo with Amazon Q should function properly with the new configuration.

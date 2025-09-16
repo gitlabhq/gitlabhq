@@ -1837,6 +1837,13 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
         it_behaves_like 'returns statistics'
       end
+
+      it 'is idempotent' do
+        sql_with_one_invocation = described_class.with_statistics.to_sql
+        sql_with_two_invocations = described_class.with_statistics.with_statistics.to_sql
+
+        expect(sql_with_one_invocation).to eq(sql_with_two_invocations)
+      end
     end
 
     context 'without projects' do

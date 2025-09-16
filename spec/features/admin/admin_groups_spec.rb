@@ -11,12 +11,24 @@ RSpec.describe 'Admin Groups', :with_current_organization, feature_category: :gr
 
   let_it_be(:user) { create :user }
   let_it_be(:group) { create :group }
+  let_it_be(:project) do
+    create(:project, namespace: group, statistics: create(:project_statistics, storage_size: 10.megabytes))
+  end
+
   let_it_be_with_reload(:current_user) { create(:admin) }
 
   before do
     sign_in(current_user)
     enable_admin_mode!(current_user)
     stub_application_setting(default_group_visibility: internal)
+  end
+
+  it 'pushes `archive_group` feature flag' do
+    stub_feature_flags(archive_group: true)
+
+    visit admin_groups_path
+
+    expect(page).to have_pushed_frontend_feature_flags(archiveGroup: true)
   end
 
   describe 'list' do
@@ -36,6 +48,7 @@ RSpec.describe 'Admin Groups', :with_current_organization, feature_category: :gr
       visit admin_groups_path
 
       expect(page).to have_content(group.name)
+      expect(page).to have_content('10.00 MiB')
     end
   end
 

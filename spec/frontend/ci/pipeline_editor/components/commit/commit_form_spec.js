@@ -117,7 +117,7 @@ describe('Pipeline Editor | Commit Form', () => {
     });
 
     it('emits an event with values', async () => {
-      await findNewMrCheckbox().setChecked();
+      await findNewMrCheckbox().setChecked(true);
       await findSubmitBtn().trigger('click');
 
       expect(wrapper.emitted('submit')[0]).toEqual([
@@ -149,6 +149,65 @@ describe('Pipeline Editor | Commit Form', () => {
 
     it('emits "scrolled-to-commit-form"', () => {
       expect(wrapper.emitted()['scrolled-to-commit-form']).toHaveLength(1);
+    });
+  });
+
+  describe('commit message reset functionality', () => {
+    beforeEach(() => {
+      createComponent({}, mount);
+    });
+
+    it('resets the commit message to default when resetCommitMessage method is called', async () => {
+      const customMessage = 'Custom commit message';
+
+      // Set a custom commit message
+      await findCommitTextarea().setValue(customMessage);
+      expect(findCommitTextarea().element.value).toBe(customMessage);
+
+      // Call the reset method directly
+      wrapper.vm.resetCommitMessage();
+      await nextTick();
+
+      // Verify message is reset to default
+      expect(findCommitTextarea().element.value).toBe(mockCommitMessage);
+    });
+
+    it('only resets the commit message field to default, preserving other form fields', async () => {
+      const customMessage = 'Custom commit message';
+      const customBranch = 'feature-branch';
+
+      // Set custom values for all fields
+      await findCommitTextarea().setValue(customMessage);
+      await findBranchInput().setValue(customBranch);
+
+      // Verify initial state
+      expect(findCommitTextarea().element.value).toBe(customMessage);
+      expect(findBranchInput().element.value).toBe(customBranch);
+
+      // Call the reset method directly
+      wrapper.vm.resetCommitMessage();
+      await nextTick();
+
+      // Verify only commit message is reset to default, branch is preserved
+      expect(findCommitTextarea().element.value).toBe(mockCommitMessage);
+      expect(findBranchInput().element.value).toBe(customBranch);
+    });
+
+    it('does not interfere with the existing reset button functionality', async () => {
+      const customMessage = 'Custom commit message';
+
+      // Set a custom commit message
+      await findCommitTextarea().setValue(customMessage);
+      expect(findCommitTextarea().element.value).toBe(customMessage);
+
+      // Click the existing reset button
+      await findCancelBtn().trigger('click');
+
+      // Verify the resetContent event is still emitted (existing functionality)
+      expect(wrapper.emitted('resetContent')).toHaveLength(1);
+
+      // The commit message should still be there (reset button doesn't clear it)
+      expect(findCommitTextarea().element.value).toBe(customMessage);
     });
   });
 });

@@ -168,6 +168,7 @@ module API
           use :pagination
         end
 
+        route_setting :mcp, tool_name: :get_pipeline_jobs, params: [:id, :pipeline_id, :per_page, :page]
         route_setting :authentication, job_token_allowed: true
         route_setting :authorization, job_token_policies: :read_jobs,
           allow_public_access_for_enabled_project_features: [:repository, :builds]
@@ -231,7 +232,7 @@ module API
         params do
           requires :pipeline_id, type: Integer, desc: 'The pipeline ID', documentation: { example: 18 }
         end
-        get ':id/pipelines/:pipeline_id/variables', feature_category: :ci_variables, urgency: :low do
+        get ':id/pipelines/:pipeline_id/variables', feature_category: :pipeline_composition, urgency: :low do
           authorize! :read_pipeline_variable, pipeline
 
           present pipeline.variables, with: Entities::Ci::Variable

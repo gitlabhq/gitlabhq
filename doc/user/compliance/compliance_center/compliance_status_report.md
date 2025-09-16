@@ -20,7 +20,7 @@ title: Compliance status report
 {{< /history >}}
 
 The compliance status report displays the most recent instances where projects do not adhere to [compliance framework requirements](../compliance_frameworks/_index.md#requirements). It is part of the
-Compliance Center, and helps you quickly identify and remediate gaps in control implementation across your projects.
+compliance center, and helps you quickly identify and remediate gaps in control implementation across your projects.
 
 ## Scan timing and triggers
 
@@ -30,7 +30,7 @@ Compliance scans that update the status report are automatically triggered in th
 - The requirements of an associated framework are modified.
 - A scheduled scan runs (every 12 hours).
 
-After a scan is triggered, results can take 5 to 10 minutes to appear in the compliance status report.
+After a scan is triggered, results can take five to ten minutes to appear in the compliance status report.
 
 To learn more about how requirements and controls are defined in a compliance framework, see [Create and manage compliance framework requirements](../compliance_frameworks/_index.md#add-requirements).
 
@@ -43,17 +43,17 @@ Prerequisites:
 To view the compliance status report:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 1. In the **Compliance reports** section, select **Compliance status report**.
 
 ## Report details
 
-The compliance status report shows the latest instance where a project is **adhering or not adhering** to a framework control. Each row provides details
+The compliance status report shows the latest instance where a project is adhering or not adhering to a framework control. Each row provides details
 about the current status of a control in a specific project, helping you monitor compliance across your group.
 
 You can:
 
-- Filter the report by **project**, **framework**, or **control**.
+- Filter the report by project, framework, or control.
 - Navigate directly to a project's compliance detail view.
 - Review when the non-adherence was first detected.
 
@@ -76,7 +76,7 @@ Prerequisites:
 To export the compliance status report for projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 1. In the top-right corner, select **Export**.
 1. Select **Export compliance status report**.
 

@@ -22,7 +22,7 @@ GET /projects/:id/resource_groups
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer/string     | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string     | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/resource_groups"
@@ -50,7 +50,7 @@ GET /projects/:id/resource_groups/:key
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer/string     | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string     | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `key`     | string  | yes      | The URL-encoded key of the resource group. For example, use `resource%5Fa` instead of `resource_a`. |
 
 ```shell
@@ -77,7 +77,7 @@ GET /projects/:id/resource_groups/:key/upcoming_jobs
 
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
-| `id`      | integer/string     | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string     | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `key`     | string  | yes      | The URL-encoded key of the resource group. For example, use `resource%5Fa` instead of `resource_a`. |
 
 ```shell
@@ -175,7 +175,7 @@ PUT /projects/:id/resource_groups/:key
 
 | Attribute       | Type    | Required                          | Description                      |
 | --------------- | ------- | --------------------------------- | -------------------------------  |
-| `id`            | integer/string | yes                        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)            |
+| `id`            | integer or string | yes                        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)            |
 | `key`           | string  | yes                               |The URL-encoded key of the resource group. For example, use `resource%5Fa` instead of `resource_a`. |
 | `process_mode`  | string  | no                                | The process mode of the resource group. One of `unordered`, `oldest_first`, `newest_first`, or `newest_ready_first`. Read [process modes](../ci/resource_groups/_index.md#process-modes) for more information. |
 

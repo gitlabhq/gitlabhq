@@ -34,6 +34,7 @@ RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_inte
       expect(attributes[:iid]).to eq(pipeline.iid)
       expect(attributes[:source]).to eq(pipeline.source)
       expect(attributes[:status]).to eq(pipeline.status)
+      expect(attributes[:protected_ref]).to eq(pipeline.protected_ref?)
       expect(attributes[:url]).to eq(Gitlab::Routing.url_helpers.project_pipeline_url(pipeline.project, pipeline))
       expect(attributes[:detailed_status]).to eq('passed')
       expect(build_data).to be_a(Hash)
@@ -53,6 +54,62 @@ RSpec.describe Gitlab::DataBuilder::Pipeline, feature_category: :continuous_inte
         email: user.public_email
       })
       expect(data[:source_pipeline]).to be_nil
+    end
+
+    context 'when pipeline is on a protected branch' do
+      let_it_be(:protected_branch_name) { 'protected-feature' }
+      let_it_be(:protected_pipeline) do
+        create(:ci_pipeline, project: project, ref: protected_branch_name, user: user)
+      end
+
+      let(:data) { described_class.build(protected_pipeline) }
+      let(:attributes) { data[:object_attributes] }
+
+      before do
+        create(:protected_branch, project: project, name: protected_branch_name)
+      end
+
+      it 'returns protected_ref as true' do
+        expect(attributes[:protected_ref]).to be_truthy
+      end
+    end
+
+    context 'when pipeline is on an unprotected branch' do
+      it 'returns protected_ref as false' do
+        expect(attributes[:protected_ref]).to be_falsy
+      end
+    end
+
+    context 'when pipeline is on a protected tag' do
+      let_it_be(:protected_tag_name) { 'v1.0.0' }
+      let_it_be(:protected_tag_pipeline) do
+        create(:ci_pipeline, project: project, ref: protected_tag_name, tag: true, user: user)
+      end
+
+      let(:data) { described_class.build(protected_tag_pipeline) }
+      let(:attributes) { data[:object_attributes] }
+
+      before do
+        create(:protected_tag, project: project, name: protected_tag_name)
+      end
+
+      it 'returns protected_ref as true' do
+        expect(attributes[:protected_ref]).to be_truthy
+      end
+    end
+
+    context 'when pipeline is on an unprotected tag' do
+      let_it_be(:unprotected_tag_name) { 'v2.0.0' }
+      let_it_be(:unprotected_tag_pipeline) do
+        create(:ci_pipeline, project: project, ref: unprotected_tag_name, tag: true, user: user)
+      end
+
+      let(:data) { described_class.build(unprotected_tag_pipeline) }
+      let(:attributes) { data[:object_attributes] }
+
+      it 'returns protected_ref as false' do
+        expect(attributes[:protected_ref]).to be_falsy
+      end
     end
 
     context 'pipeline with metadata' do

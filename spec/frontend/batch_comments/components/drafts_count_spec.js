@@ -29,7 +29,7 @@ describe('Batch comments drafts count component', () => {
   });
 
   it('renders screen reader text', async () => {
-    const el = wrapper.find('.sr-only');
+    const el = wrapper.find('.gl-sr-only');
 
     expect(el.text()).toContain('draft');
 

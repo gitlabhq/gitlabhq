@@ -1,5 +1,5 @@
 <script>
-import { colorFromDefaultPalette, colorFromDarkPalette } from '@gitlab/ui/dist/utils/charts/theme';
+import { colorFromDefaultPalette, colorFromDarkPalette } from '@gitlab/ui/src/utils/charts/theme';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import { roundOffFloat } from '~/lib/utils/common_utils';
 import { formatNumber } from '~/locale';

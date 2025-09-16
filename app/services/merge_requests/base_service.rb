@@ -186,7 +186,6 @@ module MergeRequests
       end
 
       filter_reviewer(merge_request)
-      filter_suggested_reviewers
     end
 
     def filter_reviewer(merge_request)
@@ -213,10 +212,6 @@ module MergeRequests
       else
         params.delete(:reviewer_ids)
       end
-    end
-
-    def filter_suggested_reviewers
-      # Implemented in EE
     end
 
     def set_reviewers_approved(merge_request, new_reviewers)

@@ -27,6 +27,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
           @shared = @project.import_export_shared
 
           stub_all_feature_flags
+          stub_feature_flags(ci_validate_config_options: false)
 
           setup_import_export_config('complex')
           setup_reader

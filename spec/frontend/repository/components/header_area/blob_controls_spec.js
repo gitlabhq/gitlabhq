@@ -21,7 +21,7 @@ import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql'
 import userGitpodInfo from '~/repository/queries/user_gitpod_info.query.graphql';
 import applicationInfoQuery from '~/repository/queries/application_info.query.graphql';
 import createRouter from '~/repository/router';
-import OpenMrBadge from '~/repository/components/header_area/open_mr_badge.vue';
+import OpenMrBadge from '~/badges/components/open_mr_badge/open_mr_badge.vue';
 import ForkSuggestionModal from '~/repository/components/header_area/fork_suggestion_modal.vue';
 import {
   blobControlsDataMock,

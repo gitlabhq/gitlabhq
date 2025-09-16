@@ -96,6 +96,7 @@ export function initMergeRequestDashboard(el) {
         id: convertToGraphQLId(TYPENAME_USER, gon.current_user_id),
         userPreferences: {
           listType: el.dataset.listType,
+          showDrafts: el.dataset.showDrafts === 'true',
           __typename: 'UserPreferences',
         },
         __typename: 'CurrentUser',

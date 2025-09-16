@@ -28,7 +28,7 @@ describe('ActiveCheckbox', () => {
         createComponent({ isInheriting: true });
 
         expect(findGlFormCheckbox().exists()).toBe(true);
-        expect(findGlFormCheckbox().attributes().disabled).toBe('true');
+        expect(findGlFormCheckbox().props('disabled')).toBe(true);
       });
     });
 
@@ -37,7 +37,7 @@ describe('ActiveCheckbox', () => {
         createComponent({ customStateProps: { activateDisabled: true } });
 
         expect(findGlFormCheckbox().exists()).toBe(true);
-        expect(findGlFormCheckbox().attributes().disabled).toBe('true');
+        expect(findGlFormCheckbox().props('disabled')).toBe(true);
       });
     });
 
@@ -72,7 +72,7 @@ describe('ActiveCheckbox', () => {
 
       it('renders GlFormCheckbox as checked', () => {
         expect(findGlFormCheckbox().exists()).toBe(true);
-        expect(findGlFormCheckbox().attributes().checked).toBeDefined();
+        expect(findGlFormCheckbox().props('checked')).toBe(true);
       });
 
       it('emits `toggle-integration-active` event with `true` on mount', () => {

@@ -2,14 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::UpdateBuildStateService, feature_category: :continuous_integration do
+RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
 
   let(:build) { create(:ci_build, :running, pipeline: pipeline) }
   let(:metrics) { spy('metrics') }
+  let(:service) { described_class.new(build, params) }
 
-  subject { described_class.new(build, params) }
+  subject(:execute) { service.execute }
 
   before do
     stub_application_setting(ci_job_live_trace_enabled: true)
@@ -26,7 +27,7 @@ RSpec.describe Ci::UpdateBuildStateService, feature_category: :continuous_integr
     end
 
     it 'updates a build status' do
-      result = subject.execute
+      result = execute
 
       expect(build).to be_failed
       expect(result.status).to eq 200
@@ -47,7 +48,7 @@ RSpec.describe Ci::UpdateBuildStateService, feature_category: :continuous_integr
       expect(::Ci::TrackFailedBuildWorker)
         .to receive(:perform_async).with(build.id, params[:exit_code], params[:failure_reason])
 
-      subject.execute
+      execute
     end
   end
 
@@ -56,15 +57,13 @@ RSpec.describe Ci::UpdateBuildStateService, feature_category: :continuous_integr
       let(:params) { { state: 'success' } }
 
       it 'updates a state of a running build' do
-        subject.execute
+        execute
 
         expect(build).to be_success
       end
 
       it 'returns 200 OK status' do
-        result = subject.execute
-
-        expect(result.status).to eq 200
+        expect(execute.status).to eq 200
       end
 
       it 'does not increment finalized trace metric' do
@@ -80,7 +79,7 @@ RSpec.describe Ci::UpdateBuildStateService, feature_category: :continuous_integr
       let(:params) { { state: 'success' } }
 
       it 'updates a build timestamp' do
-        expect { subject.execute }.to change { build.updated_at }
+        expect { execute }.to change { build.updated_at }
       end
     end
 
@@ -88,9 +87,7 @@ RSpec.describe Ci::UpdateBuildStateService, feature_category: :continuous_integr
       let(:params) { { state: 'unknown' } }
 
       it 'responds with 400 bad request' do
-        result = subject.execute
-
-        expect(result.status).to eq 400
+        expect(execute.status).to eq 400
         expect(build).to be_running
       end
     end
@@ -108,7 +105,7 @@ RSpec.describe Ci::UpdateBuildStateService, feature_category: :continuous_integr
 
     context 'when build does not have associated trace chunks' do
       it 'updates a build status' do
-        result = subject.execute
+        result = execute
 
         expect(build).to be_failed
         expect(result.status).to eq 200
@@ -120,7 +117,7 @@ RSpec.describe Ci::UpdateBuildStateService, feature_category: :continuous_integr
           .with('script_failure', 42)
           .and_call_original
 
-        subject.execute
+        execute
       end
 
       it 'does not increment invalid trace metric' do
@@ -146,7 +143,7 @@ RSpec.describe Ci::UpdateBuildStateService, feature_category: :continuous_integr
       end
 
       it 'updates a build state' do
-        subject.execute
+        execute
 
         expect(build).to be_failed
       end
@@ -157,19 +154,15 @@ RSpec.describe Ci::UpdateBuildStateService, feature_category: :continuous_integr
           .with('script_failure', 42)
           .and_call_original
 
-        subject.execute
+        execute
       end
 
       it 'responds with 200 OK status' do
-        result = subject.execute
-
-        expect(result.status).to eq 200
+        expect(execute.status).to eq 200
       end
 
       it 'does not set a backoff value' do
-        result = subject.execute
-
-        expect(result.backoff).to be_nil
+        expect(execute.backoff).to be_nil
       end
 
       it 'increments trace finalized operation metric' do
@@ -317,9 +310,7 @@ RSpec.describe Ci::UpdateBuildStateService, feature_category: :continuous_integr
       context 'when failed to acquire a build trace lock' do
         it 'accepts a state update request' do
           build.trace.lock do
-            result = subject.execute
-
-            expect(result.status).to eq 202
+            expect(execute.status).to eq 202
           end
         end
 
@@ -341,21 +332,17 @@ RSpec.describe Ci::UpdateBuildStateService, feature_category: :continuous_integr
       end
 
       it 'does not update a build state' do
-        subject.execute
+        execute
 
         expect(build).to be_running
       end
 
       it 'responds with 202 accepted' do
-        result = subject.execute
-
-        expect(result.status).to eq 202
+        expect(execute.status).to eq 202
       end
 
       it 'sets a request backoff value' do
-        result = subject.execute
-
-        expect(result.backoff.to_i).to be > 0
+        expect(execute.backoff.to_i).to be > 0
       end
 
       it 'schedules live chunks for migration' do
@@ -363,11 +350,11 @@ RSpec.describe Ci::UpdateBuildStateService, feature_category: :continuous_integr
           .to receive(:perform_async)
           .with(build.trace_chunks.first.id)
 
-        subject.execute
+        execute
       end
 
       it 'creates a pending state record' do
-        subject.execute
+        execute
 
         build.pending_state.then do |status|
           expect(status).to be_present
@@ -408,13 +395,11 @@ RSpec.describe Ci::UpdateBuildStateService, feature_category: :continuous_integr
         end
 
         it 'responds with 200 OK' do
-          result = subject.execute
-
-          expect(result.status).to eq 200
+          expect(execute.status).to eq 200
         end
 
         it 'updates build state' do
-          subject.execute
+          execute
 
           expect(build.reload).to be_failed
           expect(build.failure_reason).to eq 'script_failure'
@@ -446,9 +431,7 @@ RSpec.describe Ci::UpdateBuildStateService, feature_category: :continuous_integr
         end
 
         it 'uses stored state and responds with 200 OK' do
-          result = subject.execute
-
-          expect(result.status).to eq 200
+          expect(execute.status).to eq 200
         end
 
         it 'increments conflict trace metric' do
@@ -466,13 +449,13 @@ RSpec.describe Ci::UpdateBuildStateService, feature_category: :continuous_integr
         end
 
         it 'responds with 200 OK' do
-          result = subject.execute
-
-          expect(result.status).to eq 200
+          expect(execute.status).to eq 200
         end
       end
     end
   end
+
+  private
 
   def execute_with_stubbed_metrics!
     described_class

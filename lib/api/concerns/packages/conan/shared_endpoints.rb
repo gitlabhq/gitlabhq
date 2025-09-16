@@ -107,13 +107,21 @@ module API
 
               params do
                 requires :q, type: String, desc: 'Search query', documentation: { example: 'Hello*' }
+                optional :ignorecase, type: ::Grape::API::Boolean,
+                  desc: 'Ignore case when searching (case-insensitive search)',
+                  documentation: { example: 'False' }
               end
 
               route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true
               route_setting :authorization, skip_job_token_policies: true
 
               get 'search', urgency: :low do
-                response = ::Packages::Conan::SearchService.new(search_project, current_user, query: params[:q]).execute
+                response = ::Packages::Conan::SearchService.new(
+                  search_project,
+                  current_user,
+                  query: params[:q],
+                  ignorecase: params[:ignorecase]
+                ).execute
                 bad_request!(response.message) if response.error?
 
                 response.payload

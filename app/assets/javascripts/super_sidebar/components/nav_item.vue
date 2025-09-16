@@ -34,6 +34,7 @@ export default {
     pinnedItemIds: { default: { ids: [] } },
     panelSupportsPins: { default: false },
     panelType: { default: '' },
+    isIconOnly: { default: false },
   },
   props: {
     isInPinnedSection: {
@@ -147,7 +148,7 @@ export default {
     computedLinkClasses() {
       return {
         'gl-px-2 gl-mx-2 gl-leading-normal': this.isSubitem,
-        'gl-px-3': !this.isSubitem,
+        'gl-px-2': !this.isSubitem,
         '!gl-pl-5 gl-rounded-small': this.isFlyout,
         'gl-rounded-base': !this.isFlyout,
         [this.item.link_classes]: this.item.link_classes,
@@ -175,22 +176,6 @@ export default {
       return sprintf(this.$options.i18n.unpin, {
         title: this.item.title,
       });
-    },
-    activeIndicatorStyle() {
-      const style = {
-        width: '3px',
-        borderRadius: '3px',
-        marginRight: '1px',
-      };
-
-      // The active indicator is too close to the avatar for items with one, so shift
-      // it left by 1px.
-      //
-      // The indicator is absolutely positioned using rem units. This tweak for this
-      // edge case is in pixel units, so that it does not scale with root font size.
-      if (this.hasAvatar) style.transform = 'translateX(-1px)';
-
-      return style;
     },
   },
   mounted() {
@@ -228,6 +213,7 @@ export default {
 
 <template>
   <li
+    v-gl-tooltip.right.viewport="isIconOnly && !isFlyout ? item.title : ''"
     class="show-on-focus-or-hover--context hide-on-focus-or-hover--context transition-opacity-on-hover--context gl-relative"
     data-testid="nav-item"
     @mouseenter="isMouseIn = true"
@@ -235,7 +221,6 @@ export default {
   >
     <component
       :is="navItemLinkComponent"
-      #default="{ isActive }"
       v-bind="linkProps"
       class="super-sidebar-nav-item show-on-focus-or-hover--control hide-on-focus-or-hover--control gl-relative gl-mb-1 gl-flex gl-items-center gl-gap-3 gl-py-2 gl-font-semibold gl-text-default !gl-no-underline focus:gl-focus"
       :class="computedLinkClasses"
@@ -245,16 +230,8 @@ export default {
     >
       <div
         v-if="!isFlyout"
-        :class="[isActive ? 'gl-opacity-10' : 'gl-opacity-0']"
-        class="active-indicator gl-absolute gl-bottom-2 gl-left-2 gl-top-2 gl-transition-all gl-duration-slow"
-        aria-hidden="true"
-        :style="activeIndicatorStyle"
-        data-testid="active-indicator"
-      ></div>
-      <div
-        v-if="!isFlyout"
-        class="gl-flex gl-w-6 gl-shrink-0"
-        :class="{ 'gl-self-start': hasAvatar }"
+        class="gl-flex gl-h-6 gl-w-6 gl-shrink-0"
+        :class="{ 'gl-w-6 gl-self-start': hasAvatar, '-gl-mr-2': hasAvatar && isIconOnly }"
       >
         <slot name="icon">
           <gl-icon
@@ -279,6 +256,7 @@ export default {
         </slot>
       </div>
       <div
+        v-show="!isIconOnly"
         class="gl-grow gl-text-default gl-break-anywhere"
         :class="{ 'gl-w-max': isFlyout }"
         data-testid="nav-item-link-label"
@@ -289,10 +267,14 @@ export default {
         </div>
       </div>
       <slot name="actions"></slot>
-      <span v-if="hasEndSpace" class="gl-flex gl-min-w-6 gl-items-start gl-justify-end">
+      <span
+        v-if="hasEndSpace && !isIconOnly"
+        class="gl-flex gl-min-w-6 gl-items-start gl-justify-end"
+      >
         <gl-badge
           v-if="hasPill"
           variant="neutral"
+          class="gl-mr-1"
           :class="{
             'hide-on-focus-or-hover--target transition-opacity-on-hover--target': isPinnable,
           }"

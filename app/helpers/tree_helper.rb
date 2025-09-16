@@ -177,7 +177,8 @@ module TreeHelper
       ref: ref,
       escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
       full_name: project.name_with_namespace,
-      ref_type: @ref_type
+      ref_type: @ref_type,
+      has_revs_file: (!project.repository.ignore_revs_file_blob.nil?).to_s
     }
   end
 

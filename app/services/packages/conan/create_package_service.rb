@@ -8,7 +8,8 @@ module Packages
           return ERROR_RESPONSE_PACKAGE_PROTECTED
         end
 
-        created_package = create_package!(:conan,
+        created_package = create_package!(
+          ::Packages::Conan::Package,
           name: params[:package_name],
           version: params[:package_version],
           conan_metadatum_attributes: {

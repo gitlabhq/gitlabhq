@@ -29,6 +29,21 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
       editable: 20
     }.freeze
 
+    CATEGORIES_TEMPLATE_TYPES = {
+      business_impact: 0,
+      business_unit: 1,
+      application: 2,
+      exposure: 3
+    }.freeze
+
+    BUSINESS_IMPACT_ATTRIBUTES_TYPES = [
+      :mission_critical,
+      :business_critical,
+      :business_operational,
+      :business_administrative,
+      :non_essential
+    ].freeze
+
     DEFAULT_CONFIGURATION_SOURCE = :sbom
 
     CONFIGURATION_SOURCE_TYPES = {
@@ -55,6 +70,14 @@ module Enums # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
     def self.editable_states
       EDITABLE_STATES
+    end
+
+    def self.categories_template_types
+      CATEGORIES_TEMPLATE_TYPES
+    end
+
+    def self.attributes_template_types
+      BUSINESS_IMPACT_ATTRIBUTES_TYPES
     end
 
     def self.configuration_source_types

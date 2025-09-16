@@ -1292,6 +1292,50 @@ to use advanced search.
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="18.4">
+
+## GitLab 18.4
+
+<div class="deprecation breaking-change" data-milestone="18.4">
+
+### Bitnami PostgreSQL and Redis images in GitLab chart
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.4</span>
+- Removal in GitLab <span class="milestone">18.4</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6089).
+
+</div>
+
+The GitLab Helm chart default configuration relies on Bitnami charts and container images
+for PostgreSQL and Redis. Bitnami will discontinue these images from their free catalogs
+on September 29th, 2025. Brownouts taking down images temporarily started on August 28th, 2025.
+
+GitLab chart bundles Bitnami's PostgreSQL and Redis for demo and testing purposes only.
+They are not part of any [supported GitLab reference architecture](https://docs.gitlab.com/administration/reference_architectures/).
+If you are on a reference architecture or deployed an external PostgreSQL and Redis with
+another vendor's packages or images, you are **not impacted** by this change.
+
+As a temporary solution, GitLab has migrated the chart configuration to the Bitnami legacy
+repository. However, unpatched GitLab chart environments (GitLab 17.11, GitLab 18.0.5. GitLab 18.1.4, and GitLab
+18.2.1 or earlier) will continue to pull images from the deprecated Bitnami repository,
+which will cause deployment failures after September 29th and may cause deployment failures during the brownout phase.
+
+If you're running an affected GitLab chart configuration, you must do one of the following:
+
+- Migrate to a supported GitLab reference architecture.
+- Upgrade to a patched chart version.
+- Configure the legacy repository in your chart values. For an example, see
+  [merge request 4421][https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/4421].
+
+Looking ahead, [we will assess alternatives](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6089) to replace
+or potentially remove Bitnami components from the GitLab chart entirely. For more information, see the
+[official Bitnami announcement](https://github.com/bitnami/charts/issues/35164).
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="18.3">
 
 ## GitLab 18.3
@@ -1387,7 +1431,7 @@ Specifically, the following analyzers will no longer be updated after the GitLab
 - DAST: version 5
 - DAST API: version 4
 - Fuzz API: version 4
-- IaC Scanning: version 5
+- IaC scanning: version 5
 - Pipeline Secret Detection: version 6
 - Static Application Security Testing (SAST): version 5 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/)
   - `kics`
@@ -1462,7 +1506,7 @@ To help identify projects that need access to your project by authenticating wit
 
 In GitLab 17.10, we introduced [migration tooling](https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#auto-populate-a-projects-allowlist) to automatically populate the CI/CD job token allowlist from the job token authentication log. We encourage you to use this migration tool to populate and use the allowlist before [general enforcement of allowlists in GitLab 18.0](https://docs.gitlab.com/ee/update/deprecations.html#cicd-job-token---authorized-groups-and-projects-allowlist-enforcement). In GitLab 18.0, automatic population and enforcement of the allowlist will occur on GitLab.com as previously announced.
 
-This migration tool will be removed in GitLab 18.3.
+This migration tool will be removed in GitLab 18.6.
 
 </div>
 
@@ -1597,7 +1641,7 @@ but [Issue #415638](https://gitlab.com/gitlab-org/gitlab/-/issues/415638)
 proposes to add this feature. If CI/CD components become available on GitLab Self-Managed,
 the OpenTofu CI/CD template will be removed.
 
-You can read more about the new OpenTofu CI/CD component [here](https://gitlab.com/components/opentofu).
+See more about the [new OpenTofu CI/CD component](https://gitlab.com/components/opentofu).
 
 </div>
 
@@ -3293,11 +3337,9 @@ The table below lists the deprecated metrics and their respective replacements. 
 </div>
 
 Today in GitLab you can see a list of all of the licenses your project and the components that
-use that license on the License List. As of 16.8, the License List
-is deprecated and scheduled to be removed in 17.0 as a breaking change.
-With the release of the [Group Dependency List](https://docs.gitlab.com/user/application_security/dependency_list/)
-and the ability to filter by license on the project and group Dependency List, you can now
-access all of the licenses your project or group is using on the Dependency List.
+use that license on the License List. As of 16.8, the License List is deprecated and scheduled
+to be removed in 17.0 as a breaking change. You can now access all of the licenses your project
+or group is using on the dependency list, including the ability to filter by license.
 
 </div>
 
@@ -3720,7 +3762,7 @@ the GitLab 17.0 release:
 - DAST: version 4
 - DAST API: version 3
 - Fuzz API: version 3
-- IaC Scanning: version 4
+- IaC scanning: version 4
 - Secret Detection: version 5
 - Static Application Security Testing (SAST): version 4 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/)
   - `brakeman`
@@ -5560,7 +5602,7 @@ Specifically, the following are being deprecated and will no longer be updated a
 - Dependency Scanning: version 3
 - Dynamic Application Security Testing (DAST): version 3
 - DAST API: version 2
-- IaC Scanning: version 3
+- IaC scanning: version 3
 - License Scanning: version 4
 - Secret Detection: version 4
 - Static Application Security Testing (SAST): version 3 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/#supported-languages-and-frameworks)
@@ -5604,7 +5646,7 @@ The following templates will be updated:
 - DAST: [`DAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml)
 - DAST API: [`DAST-API.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml)
 - Dependency Scanning: [`Dependency-Scanning.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml)
-- IaC Scanning: [`SAST-IaC.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.gitlab-ci.yml)
+- IaC scanning: [`SAST-IaC.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST-IaC.gitlab-ci.yml)
 - SAST: [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
 - Secret Detection: [`Secret-Detection.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml)
 
@@ -8249,12 +8291,12 @@ This change has been cancelled.
 
 {{< /alert >}}
 
-In GitLab 18.0, we will update SAST and IaC Scanning to explicitly [disable the use of the CI/CD job cache](https://docs.gitlab.com/ci/caching/#disable-cache-for-specific-jobs) by default.
+In GitLab 18.0, we will update SAST and IaC scanning to explicitly [disable the use of the CI/CD job cache](https://docs.gitlab.com/ci/caching/#disable-cache-for-specific-jobs) by default.
 
 This change affects the CI/CD templates for:
 
 - SAST: `SAST.gitlab-ci.yml`.
-- IaC Scanning: `SAST-IaC.gitlab-ci.yml`.
+- IaC scanning: `SAST-IaC.gitlab-ci.yml`.
 
 We already updated the `latest` templates `SAST.latest.gitlab-ci.yml` and `SAST-IaC.latest.gitlab-ci.yml`. See [stable and latest templates](https://docs.gitlab.com/user/application_security/sast/#stable-vs-latest-sast-templates) for more details on these template versions.
 

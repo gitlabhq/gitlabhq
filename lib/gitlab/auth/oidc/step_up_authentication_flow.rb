@@ -59,6 +59,15 @@ module Gitlab
           update_session_state(STATE_FAILED)
         end
 
+        # Returns the documentation link for this provider's step-up authentication configuration
+        #
+        # @return [String, nil] the documentation link URL or nil if not configured
+        def documentation_link
+          ::Gitlab::Auth::OAuth::Provider
+            .config_for(provider.to_s)
+            &.dig('step_up_auth', scope.to_s, 'documentation_link')
+        end
+
         private
 
         def state

@@ -27,10 +27,11 @@ data for features.
 | Code Suggestion data in ClickHouse                                                                                | `FILTER=ai_usage_stats bundle exec rake db:seed_fu`                                                           | [94_ai_usage_stats](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/fixtures/development/94_ai_usage_stats.rb)                             |
 | GitLab Duo                                                                                                        | `SEED_GITLAB_DUO=1 FILTER=gitlab_duo bundle exec rake db:seed_fu`                                                               | [95_gitlab_duo](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/fixtures/development/95_gitlab_duo.rb)                             |
 | GitLab Duo: Seed failed CI jobs for Root Cause Analysis (`/troubleshoot`) evaluation                                                                                                  | `LANGCHAIN_API_KEY=$Key bundle exec rake gitlab:duo_chat:seed:failed_ci_jobs`                                                          | [seed_failed_ci_jobs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/duo_chat/seed_failed_ci_jobs.rake)                        |
+| Pipeline metrics                                                                                                  | `FILTER=pipeline_metrics SEED_PIPELINE_METRICS=1 bundle exec rake db:seed_fu`                                 | [98_pipeline_metrics.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/db/fixtures/development/98_pipeline_metrics.rb)                      |
 
 ### Seed project and group resources for GitLab Duo
 
-The [`gitlab:duo:setup` setup script](ai_features/_index.md#required-run-gitlabduosetup-script) will execute
+The [`gitlab:duo:setup` setup script](ai_features/_index.md#run-gitlabduosetup-script) will execute
 the development seed file for GitLab Duo project and group resources.
 However, if you would like to re-create the resources, you can re-run the seed task using the command:
 

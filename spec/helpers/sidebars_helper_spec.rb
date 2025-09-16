@@ -5,66 +5,10 @@ require 'spec_helper'
 RSpec.describe SidebarsHelper, feature_category: :navigation do
   include Devise::Test::ControllerHelpers
 
-  let_it_be(:current_organization) { build_stubbed(:organization, name: "Current Organization") }
+  let_it_be(:current_organization) { build_stubbed(:common_organization) }
 
   before do
     Current.organization = current_organization
-  end
-
-  describe '#sidebar_tracking_attributes_by_object' do
-    subject(:tracking_attrs) { helper.sidebar_tracking_attributes_by_object(object) }
-
-    before do
-      stub_application_setting(snowplow_enabled: true)
-    end
-
-    context 'when object is a project' do
-      let(:object) { build(:project) }
-
-      it 'returns tracking attrs for project' do
-        attrs = {
-          track_label: 'projects_side_navigation',
-          track_property: 'projects_side_navigation',
-          track_action: 'render'
-        }
-
-        expect(tracking_attrs[:data]).to eq(attrs)
-      end
-    end
-
-    context 'when object is a group' do
-      let(:object) { build(:group) }
-
-      it 'returns tracking attrs for group' do
-        attrs = {
-          track_label: 'groups_side_navigation',
-          track_property: 'groups_side_navigation',
-          track_action: 'render'
-        }
-
-        expect(tracking_attrs[:data]).to eq(attrs)
-      end
-    end
-
-    context 'when object is a user' do
-      let(:object) { build(:user) }
-
-      it 'returns tracking attrs for user' do
-        attrs = {
-          track_label: 'user_side_navigation',
-          track_property: 'user_side_navigation',
-          track_action: 'render'
-        }
-
-        expect(tracking_attrs[:data]).to eq(attrs)
-      end
-    end
-
-    context 'when object is something else' do
-      let(:object) { build(:ci_pipeline) }
-
-      it { is_expected.to eq({}) }
-    end
   end
 
   describe '#super_sidebar_context' do
@@ -240,7 +184,9 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         it do
           is_expected.to include({
             whats_new_most_recent_release_items_count: helper.whats_new_most_recent_release_items_count,
-            whats_new_version_digest: helper.whats_new_version_digest
+            whats_new_version_digest: helper.whats_new_version_digest,
+            whats_new_read_articles: helper.whats_new_read_articles,
+            whats_new_mark_as_read_path: whats_new_mark_as_read_path
           })
         end
       end

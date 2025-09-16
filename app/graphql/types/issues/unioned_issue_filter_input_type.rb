@@ -17,3 +17,5 @@ module Types
     end
   end
 end
+
+Types::Issues::UnionedIssueFilterInputType.prepend_mod_with('Types::Issues::UnionedIssueFilterInputType')

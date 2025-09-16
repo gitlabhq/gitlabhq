@@ -3,11 +3,11 @@
 module Admin
   module UsersHelper
     def show_admin_new_user_organization_field?
-      Feature.enabled?(:ui_for_organizations, current_user) && ::Organizations::Organization.exists?
+      ui_for_organizations_enabled? && ::Organizations::Organization.exists?
     end
 
     def show_admin_edit_user_organization_field?(user)
-      Feature.enabled?(:ui_for_organizations, current_user) && user.organizations.exists?
+      ui_for_organizations_enabled? && user.organizations.exists?
     end
 
     def admin_new_user_organization_field_app_data
@@ -19,7 +19,7 @@ module Admin
     end
 
     def admin_edit_user_organization_field_app_data(user)
-      initial_organization = user.organizations.first
+      initial_organization = user.organization
       organization_user = initial_organization.organization_users.by_user(user).first
 
       {

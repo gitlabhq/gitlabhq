@@ -30,13 +30,8 @@ If the issue is occurring with versions v1.6.196 or greater, contact Support and
 
 1. Reference this troubleshooting section and ask for the issue to be escalated to the Dynamic Analysis Team.
 1. The full console output of the job.
-1. The `gl-api-security-scanner.log` file available as a job artifact. In the right-hand panel of the job details page, select the **Browse** button.
+1. The `gl-api-security-scanner.log` file available as a job artifact. In the right-hand panel of the job details page, select **Browse**.
 1. The `dast_api` job definition from your `.gitlab-ci.yml` file.
-
-**Error message**
-
-- In [GitLab 15.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/376078), `Error waiting for DAST API 'http://127.0.0.1:5000' to become available`
-- In GitLab 15.5 and earlier, `Error waiting for API Security 'http://127.0.0.1:5000' to become available`.
 
 ## `Failed to start scanner session (version header not found)`
 
@@ -65,28 +60,23 @@ Before proceeding with a solution, it is important to confirm that the error mes
 
 1. If the error message was produced because the port was already taken, you should see in the file a message like the following:
 
-   - In [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367734):
-
-     ```log
-     Failed to bind to address http://127.0.0.1:5500: address already in use.
-     ```
-
-   - In GitLab 15.4 and earlier:
-
-     ```log
-     Failed to bind to address http://[::]:5000: address already in use.
-     ```
+   ```log
+   Failed to bind to address http://127.0.0.1:5500: address already in use.
+   ```
 
 The text `http://[::]:5000` in the previous message could be different in your case, for instance it could be `http://[::]:5500` or `http://127.0.0.1:5500`. As long as the remaining parts of the error message are the same, it is safe to assume the port was already taken.
 
 If you did not find evidence that the port was already taken, check other troubleshooting sections which also address the same error message shown in the job console output. If there are no more options, feel free to [get support or request an improvement](_index.md#get-support-or-request-an-improvement) through the proper channels.
 
-Once you have confirmed the issue was produced because the port was already taken. Then, [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367734) introduced the configuration variable `APISEC_API_PORT`. This configuration variable allows setting a fixed port number for the scanner background component.
+If you can confirm that the issue occurred because the port was already taken, use the CI/CD
+variable `APISEC_API_PORT` to specify a different port for the scanner background component.
 
 **Solution**
 
 1. Ensure your `.gitlab-ci.yml` file defines the configuration variable `APISEC_API_PORT`.
-1. Update the value of `APISEC_API_PORT` to any available port number greater than 1024. We recommend checking that the new value is not in used by GitLab. See the full list of ports used by GitLab in [Package defaults](../../../administration/package_information/defaults.md#ports)
+1. Update the value of `APISEC_API_PORT` to any available port number greater than 1024. You should
+   check that the proposed port number is not used by GitLab. See the full list of ports used by GitLab
+   in [Package defaults](../../../administration/package_information/defaults.md#ports).
 
 ## `Application cannot determine the base URL for the target API`
 
@@ -383,7 +373,7 @@ This issue can be worked around in the following ways:
      USER gitlab
      ```
 
-  1. Build the new image and push it to your local container registry before the API Security Testing job starts. The image should be removed after the `api_security` job has been completed.
+  1. Build the new image and push it to your local container registry before the API security testing job starts. The image should be removed after the `api_security` job has been completed.
 
      ```shell
      TARGET_NAME=apisec-$CI_COMMIT_SHA

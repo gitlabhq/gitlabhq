@@ -92,7 +92,7 @@ export default {
           {{ title }}
         </h4>
 
-        <ul class="mb-0">
+        <ul class="gl-mb-0">
           <li v-for="(item, index) in $options.i18n.warningListItems" :key="index">
             {{ item }}
           </li>

@@ -1,14 +1,20 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { mapActions, mapState } from 'pinia';
 import { __ } from '~/locale';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
-import { keysFor, START_SEARCH_PROJECT_FILE } from '~/behaviors/shortcuts/keybindings';
+import {
+  keysFor,
+  TOGGLE_FILE_TREE_BROWSER_VISIBILITY,
+  START_SEARCH_PROJECT_FILE,
+} from '~/behaviors/shortcuts/keybindings';
 import { sanitize } from '~/lib/dompurify';
 import { InternalEvents } from '~/tracking';
 import { FIND_FILE_BUTTON_CLICK, REF_SELECTOR_CLICK } from '~/tracking/constants';
 import { visitUrl, joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
 import RefSelector from '~/ref/components/ref_selector.vue';
@@ -20,6 +26,13 @@ import SourceCodeDownloadDropdown from '~/vue_shared/components/download_dropdow
 import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_dropdown.vue';
 import AddToTree from '~/repository/components/header_area/add_to_tree.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
+import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
+import { useViewport } from '~/pinia/global_stores/viewport';
+import { Mousetrap } from '~/lib/mousetrap';
+import {
+  EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
+  EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
+} from '~/repository/constants';
 
 export default {
   name: 'HeaderArea',
@@ -45,11 +58,12 @@ export default {
       import('ee_component/repository/components/lock_directory_button.vue'),
     HeaderLockIcon: () =>
       import('ee_component/repository/components/header_area/header_lock_icon.vue'),
+    FileTreeBrowserToggle,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), InternalEvents.mixin()],
   inject: [
     'canCollaborate',
     'canEditTree',
@@ -124,6 +138,8 @@ export default {
     };
   },
   computed: {
+    ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserVisible']),
+    ...mapState(useViewport, ['isCompactViewport']),
     isTreeView() {
       return this.$route.name !== 'blobPathDecoded';
     },
@@ -192,14 +208,63 @@ export default {
     showBlobControls() {
       return this.$route.params.path && this.$route.name === 'blobPathDecoded';
     },
+    showFileTreeBrowserToggle() {
+      return (
+        this.glFeatures.repositoryFileTreeBrowser &&
+        !this.isProjectOverview &&
+        !this.fileTreeBrowserVisible &&
+        !this.isCompactViewport
+      );
+    },
+    toggleFileBrowserShortcutKey() {
+      return this.shortcutsEnabled ? keysFor(TOGGLE_FILE_TREE_BROWSER_VISIBILITY)[0] : null;
+    },
+    shortcutsEnabled() {
+      return !shouldDisableShortcuts();
+    },
+  },
+  mounted() {
+    if (this.glFeatures.repositoryFileTreeBrowser) {
+      this.initFileTreeVisibility();
+      this.bindShortcuts();
+    }
+  },
+  beforeDestroy() {
+    this.unbindShortcuts();
   },
   methods: {
+    ...mapActions(useFileTreeBrowserVisibility, [
+      'initFileTreeVisibility',
+      'toggleFileTreeVisibility',
+    ]),
+    onShortcutToggle() {
+      this.toggleFileTreeVisibility();
+
+      this.trackEvent(
+        this.fileTreeBrowserVisible
+          ? EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE
+          : EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
+        {
+          label: 'shortcut',
+        },
+      );
+    },
+    bindShortcuts() {
+      if (this.shortcutsEnabled) {
+        Mousetrap.bind(keysFor(TOGGLE_FILE_TREE_BROWSER_VISIBILITY), this.onShortcutToggle);
+      }
+    },
+    unbindShortcuts() {
+      if (this.shortcutsEnabled) {
+        Mousetrap.unbind(keysFor(TOGGLE_FILE_TREE_BROWSER_VISIBILITY));
+      }
+    },
     onInput(selectedRef) {
-      InternalEvents.trackEvent(REF_SELECTOR_CLICK);
+      this.trackEvent(REF_SELECTOR_CLICK);
       visitUrl(generateRefDestinationPath(this.projectRootPath, this.originalBranch, selectedRef));
     },
     handleFindFile() {
-      InternalEvents.trackEvent(FIND_FILE_BUTTON_CLICK);
+      this.trackEvent(FIND_FILE_BUTTON_CLICK);
       Shortcuts.focusSearchFile();
     },
     onLockedDirectory({ isLocked, lockAuthor }) {
@@ -218,10 +283,17 @@ export default {
   <section
     class="gl-items-center gl-justify-between"
     :class="{
-      [glFeatures.repositoryFileTreeBrowser ? 'md:gl-flex' : 'sm:gl-flex']: isProjectOverview,
+      [glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-flex' : '@sm/panel:gl-flex']:
+        isProjectOverview,
     }"
   >
-    <div class="tree-ref-container mb-2 mb-md-0 gl-flex gl-flex-wrap gl-gap-5">
+    <div class="tree-ref-container !gl-mb-3 gl-flex gl-flex-wrap gl-gap-3 @md/panel:!gl-mb-0">
+      <file-tree-browser-toggle
+        v-if="showFileTreeBrowserToggle"
+        ref="toggle"
+        :aria-keyshortcuts="toggleFileBrowserShortcutKey"
+        :aria-label="__('Toggle file tree browser visibility')"
+      />
       <ref-selector
         v-if="!isReadmeView"
         class="tree-ref-holder gl-max-w-26"
@@ -259,8 +331,8 @@ export default {
       :class="[
         'gl-flex gl-flex-col gl-items-stretch gl-justify-end',
         glFeatures.repositoryFileTreeBrowser
-          ? 'md:gl-flex-row md:gl-items-center md:gl-gap-5'
-          : 'sm:gl-flex-row sm:gl-items-center sm:gl-gap-5',
+          ? '@md/panel:gl-flex-row @md/panel:gl-items-center @md/panel:gl-gap-5'
+          : '@sm/panel:gl-flex-row @sm/panel:gl-items-center @sm/panel:gl-gap-5',
         { 'gl-my-5': !isProjectOverview },
       ]"
     >
@@ -268,7 +340,7 @@ export default {
         v-if="!isReadmeView && !isProjectOverview"
         :class="[
           'gl-mt-0 gl-inline-flex gl-flex-1 gl-items-center gl-gap-3 gl-break-words gl-text-size-h1',
-          glFeatures.repositoryFileTreeBrowser ? 'md:gl-my-0' : 'sm:gl-my-0',
+          glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-my-0' : '@sm/panel:gl-my-0',
         ]"
         data-testid="repository-heading"
       >
@@ -293,7 +365,7 @@ export default {
         v-if="!showBlobControls"
         :class="[
           'tree-controls gl-mb-3 gl-flex gl-flex-wrap gl-gap-3',
-          glFeatures.repositoryFileTreeBrowser ? 'md:gl-mb-0' : 'sm:gl-mb-0',
+          glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-mb-0' : '@sm/panel:gl-mb-0',
         ]"
         data-testid="tree-controls-container"
       >
@@ -301,7 +373,7 @@ export default {
           v-if="!isReadmeView && showCompactCodeDropdown"
           :class="[
             'gl-hidden',
-            glFeatures.repositoryFileTreeBrowser ? 'md:gl-block' : 'sm:gl-block',
+            glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-block' : '@sm/panel:gl-block',
           ]"
           :current-path="currentPath"
           :can-collaborate="canCollaborate"
@@ -332,7 +404,7 @@ export default {
           data-testid="tree-find-file-control"
           :class="[
             'gl-w-full',
-            glFeatures.repositoryFileTreeBrowser ? 'md:gl-w-auto' : 'sm:gl-w-auto',
+            glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-w-auto' : '@sm/panel:gl-w-auto',
           ]"
           @click="handleFindFile"
         >
@@ -341,8 +413,8 @@ export default {
         <!-- web ide -->
         <web-ide-link
           :class="[
-            'gl-w-full sm:!gl-ml-0',
-            glFeatures.repositoryFileTreeBrowser ? 'md:gl-w-auto' : 'sm:gl-w-auto',
+            'gl-w-full @sm/panel:!gl-ml-0',
+            glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-w-auto' : '@sm/panel:gl-w-auto',
           ]"
           data-testid="js-tree-web-ide-link"
           :project-id="projectIdAsNumber"
@@ -369,13 +441,15 @@ export default {
         <div
           :class="[
             'project-code-holder gl-w-full',
-            glFeatures.repositoryFileTreeBrowser ? 'md:gl-w-auto' : 'sm:gl-w-auto',
+            glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-w-auto' : '@sm/panel:gl-w-auto',
           ]"
         >
           <div v-if="showCompactCodeDropdown" class="gl-flex gl-justify-end gl-gap-3">
             <add-to-tree
               v-if="!isReadmeView"
-              :class="glFeatures.repositoryFileTreeBrowser ? 'md:gl-hidden' : 'sm:gl-hidden'"
+              :class="
+                glFeatures.repositoryFileTreeBrowser ? '@md/panel:gl-hidden' : '@sm/panel:gl-hidden'
+              "
               :current-path="currentPath"
               :can-collaborate="canCollaborate"
               :can-edit-tree="canEditTree"
@@ -419,7 +493,9 @@ export default {
             <code-dropdown
               :class="[
                 'git-clone-holder js-git-clone-holder gl-hidden',
-                glFeatures.repositoryFileTreeBrowser ? 'md:gl-inline-block' : 'sm:gl-inline-block',
+                glFeatures.repositoryFileTreeBrowser
+                  ? '@md/panel:gl-inline-block'
+                  : '@sm/panel:gl-inline-block',
               ]"
               :ssh-url="sshUrl"
               :http-url="httpUrl"
@@ -432,14 +508,16 @@ export default {
               :class="[
                 'gl-flex gl-w-full gl-gap-3',
                 glFeatures.repositoryFileTreeBrowser
-                  ? 'md:gl-inline-block md:gl-w-auto'
-                  : 'sm:gl-inline-block sm:gl-w-auto',
+                  ? '@md/panel:gl-inline-block @md/panel:gl-w-auto'
+                  : '@sm/panel:gl-inline-block @sm/panel:gl-w-auto',
               ]"
             >
               <div
                 :class="[
                   'gl-flex gl-w-full gl-items-stretch gl-gap-3',
-                  glFeatures.repositoryFileTreeBrowser ? 'md:gl-hidden' : 'sm:gl-hidden',
+                  glFeatures.repositoryFileTreeBrowser
+                    ? '@md/panel:gl-hidden'
+                    : '@sm/panel:gl-hidden',
                 ]"
               >
                 <source-code-download-dropdown

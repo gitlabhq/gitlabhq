@@ -35,6 +35,10 @@ module Mutations
         required: false,
         description: copy_field_description(Types::MergeRequestType, :merge_after)
 
+      argument :remove_source_branch, GraphQL::Types::Boolean,
+        required: false,
+        description: copy_field_description(Types::MergeRequestType, :should_remove_source_branch)
+
       def resolve(project_path:, iid:, **args)
         merge_request = authorized_find!(project_path: project_path, iid: iid)
         args = parse_arguments(args)
@@ -64,6 +68,8 @@ module Mutations
           args[:time_estimate] =
             args[:time_estimate].nil? ? 0 : Gitlab::TimeTrackingFormatter.parse(args[:time_estimate], keep_zero: true)
         end
+
+        args[:force_remove_source_branch] = args.delete(:remove_source_branch) if args.key?(:remove_source_branch)
 
         args.compact
       end

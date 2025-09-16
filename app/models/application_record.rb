@@ -155,11 +155,25 @@ class ApplicationRecord < ActiveRecord::Base
       !not_null_check?(column_name)
   end
 
+  def self.delete_all_returning(*columns)
+    relation = current_scope || all
+
+    Gitlab::Database::DeleteRelationWithReturning.execute(relation, columns.flatten)
+  end
+
+  def self.sharding_keys
+    @sharding_keys ||= Gitlab::Database::Dictionary.entry(table_name).sharding_key || {}
+  end
+
   def readable_by?(user)
     Ability.allowed?(user, :"read_#{to_ability_name}", self)
   end
 
   def to_ability_name
     model_name.element
+  end
+
+  def deleted_from_database?
+    !self.class.exists?(id)
   end
 end

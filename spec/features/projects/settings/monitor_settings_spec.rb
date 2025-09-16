@@ -175,6 +175,10 @@ RSpec.describe 'Projects > Settings > For a forked project', :js, feature_catego
       end
 
       context 'with integrated error tracking backend' do
+        before do
+          stub_feature_flags(hide_error_tracking_features: false)
+        end
+
         it 'successfully fills and submits the form' do
           visit project_settings_operations_path(project)
 

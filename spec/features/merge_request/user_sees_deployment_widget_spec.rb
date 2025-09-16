@@ -39,7 +39,8 @@ RSpec.describe 'Merge request > User sees deployment widget', :js, feature_categ
         wait_for_requests
 
         assert_env_widget("Deployed to", environment.name)
-        expect(find('.js-deploy-time')['title']).to eq(deployment.created_at.to_time.in_time_zone.to_fs(:medium))
+        displayed_time = find_by_testid('deployment-time')['title']
+        expect(Time.zone.parse(displayed_time)).to be_within(1.second).of(deployment.deployed_at)
       end
 
       context 'when a user created a new merge request with the same SHA' do
@@ -68,7 +69,7 @@ RSpec.describe 'Merge request > User sees deployment widget', :js, feature_categ
         wait_for_requests
 
         assert_env_widget("Failed to deploy to", environment.name)
-        expect(page).not_to have_css('.js-deploy-time')
+        expect(page).not_to have_css('[data-testid="deployment-time"]')
       end
     end
 
@@ -82,7 +83,7 @@ RSpec.describe 'Merge request > User sees deployment widget', :js, feature_categ
         wait_for_requests
 
         assert_env_widget("Deploying to", environment.name)
-        expect(page).not_to have_css('.js-deploy-time')
+        expect(page).not_to have_css('[data-testid="deployment-time"]')
       end
     end
 
@@ -95,7 +96,7 @@ RSpec.describe 'Merge request > User sees deployment widget', :js, feature_categ
         wait_for_requests
 
         assert_env_widget("Will deploy to", environment.name)
-        expect(page).not_to have_css('.js-deploy-time')
+        expect(page).not_to have_css('[data-testid="deployment-time"]')
       end
     end
 
@@ -109,7 +110,7 @@ RSpec.describe 'Merge request > User sees deployment widget', :js, feature_categ
         wait_for_requests
 
         assert_env_widget("Canceled deployment to", environment.name)
-        expect(page).not_to have_css('.js-deploy-time')
+        expect(page).not_to have_css('[data-testid="deployment-time"]')
       end
     end
 

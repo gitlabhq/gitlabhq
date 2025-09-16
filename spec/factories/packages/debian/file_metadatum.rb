@@ -138,5 +138,27 @@ FactoryBot.define do
       architecture { nil }
       fields { { 'Architecture' => 'source amd64' } }
     end
+
+    trait(:deb_dbgsym) do
+      file_type { 'deb' }
+      component { 'main' }
+      architecture { 'amd64' }
+      fields do
+        {
+          'Source' => 'sample',
+          'Depends' => 'sample (= 1.2.3~alpha2)',
+          'Package' => 'sample-dbgsym',
+          'Section' => 'debug',
+          'Version' => '1.2.3~alpha2',
+          'Priority' => 'optional',
+          'Build-Ids' => '8c1ce64bc8520e5beb5c11f36feafb90db9b79ad',
+          'Maintainer' => "#{FFaker::Name.name} <#{FFaker::Internet.email}>",
+          'Description' => 'debug symbols for sample',
+          'Architecture' => 'amd64',
+          'Installed-Size' => '19',
+          'Auto-Built-Package' => 'debug-symbols'
+        }
+      end
+    end
   end
 end

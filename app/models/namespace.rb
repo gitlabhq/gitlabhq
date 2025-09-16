@@ -25,9 +25,6 @@ class Namespace < ApplicationRecord
   extend Gitlab::Utils::Override
 
   ignore_columns :description, :description_html, :cached_markdown_version, remove_with: '18.3', remove_after: '2025-07-17'
-  ignore_column :unlock_membership_to_ldap, remove_with: '18.1', remove_after: '2025-05-20'
-
-  ignore_column :emails_disabled, remove_with: '18.1', remove_after: '2025-05-20'
 
   columns_changing_default :organization_id
 
@@ -181,7 +178,6 @@ class Namespace < ApplicationRecord
     to: :namespace_details, allow_nil: true
 
   with_options to: :namespace_settings do
-    delegate :show_diff_preview_in_email, :show_diff_preview_in_email?, :show_diff_preview_in_email=
     delegate :runner_registration_enabled, :runner_registration_enabled?, :runner_registration_enabled=
     delegate :allow_runner_registration_token, :allow_runner_registration_token=
     delegate :math_rendering_limits_enabled?, :lock_math_rendering_limits_enabled?
@@ -196,6 +192,7 @@ class Namespace < ApplicationRecord
     delegate :jwt_ci_cd_job_token_enabled?
 
     with_options allow_nil: true do
+      delegate :show_diff_preview_in_email, :show_diff_preview_in_email?, :show_diff_preview_in_email=
       delegate :prevent_sharing_groups_outside_hierarchy, :prevent_sharing_groups_outside_hierarchy=
       delegate :default_branch_protection_defaults
       delegate :archived, :archived=
@@ -256,8 +253,8 @@ class Namespace < ApplicationRecord
       .where(project_statistics[:namespace_id].eq(arel_table[:id]))
       .lateral(subquery.name)
 
-    model.select(arel_table[Arel.star], subquery[Arel.star])
-         .from([arel.as(arel_table.name), statistics])
+    select(arel_table[Arel.star], subquery[Arel.star])
+      .joins(", #{statistics.to_sql}")
   end
 
   scope :with_jira_installation, ->(installation_id) do

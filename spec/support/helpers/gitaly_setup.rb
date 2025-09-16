@@ -245,6 +245,8 @@ module GitalySetup
       build_gitaly
     end
 
+    gitaly_logging_level = ENV['GITALY_TESTING_LOG_LEVEL'] || 'warn'
+
     [
       {
         storages: { 'default' => storage_path },
@@ -265,6 +267,7 @@ module GitalySetup
         }
       }
     ].each do |params|
+      params[:options][:logging_level] = gitaly_logging_level
       Gitlab::SetupHelper::Gitaly.create_configuration(
         gitaly_dir,
         params[:storages],
@@ -298,7 +301,10 @@ module GitalySetup
       Gitlab::SetupHelper::Praefect.create_configuration(
         gitaly_dir,
         nil,
-        force: true
+        force: true,
+        options: {
+          logging_level: gitaly_logging_level
+        }
       )
     end
 
@@ -312,7 +318,8 @@ module GitalySetup
           config_filename: 'praefect-db.config.toml',
           pghost: ENV['CI'] ? 'postgres' : ENV.fetch('PGHOST'),
           pgport: ENV['CI'] ? 5432 : ENV.fetch('PGPORT').to_i,
-          pguser: ENV['CI'] ? 'postgres' : ENV.fetch('USER')
+          pguser: ENV['CI'] ? 'postgres' : ENV.fetch('USER'),
+          logging_level: gitaly_logging_level
         }
       )
     end
@@ -428,5 +435,8 @@ module GitalySetup
   def process_details(pid)
     output = `ps -p #{pid} -o pid,ppid,state,%cpu,%mem,etime,args`
     LOGGER.debug output
+
+    stack_output = `cat /proc/#{pid}/stack 2>/dev/null || echo "Could not read process stack"`
+    LOGGER.debug stack_output
   end
 end

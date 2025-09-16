@@ -18,9 +18,9 @@ RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :
       it 'creates and returns an OAuth application' do
         expect do
           post api(path, admin, admin_mode: true), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: scopes }
-        end.to change { Doorkeeper::Application.count }.by 1
+        end.to change { Authn::OauthApplication.count }.by 1
 
-        application = Doorkeeper::Application.find_by(name: 'application_name', redirect_uri: 'http://application.url')
+        application = Authn::OauthApplication.find_by(name: 'application_name', redirect_uri: 'http://application.url')
 
         expect(json_response).to be_a Hash
         expect(json_response['application_id']).to eq application.uid
@@ -33,7 +33,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :
       it 'does not allow creating an application with the wrong redirect_uri format' do
         expect do
           post api(path, admin, admin_mode: true), params: { name: 'application_name', redirect_uri: 'http://', scopes: scopes }
-        end.not_to change { Doorkeeper::Application.count }
+        end.not_to change { Authn::OauthApplication.count }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response).to be_a Hash
@@ -43,7 +43,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :
       it 'does not allow creating an application with a forbidden URI format' do
         expect do
           post api(path, admin, admin_mode: true), params: { name: 'application_name', redirect_uri: 'javascript://alert()', scopes: scopes }
-        end.not_to change { Doorkeeper::Application.count }
+        end.not_to change { Authn::OauthApplication.count }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response).to be_a Hash
@@ -53,7 +53,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :
       it 'does not allow creating an application without a name' do
         expect do
           post api(path, admin, admin_mode: true), params: { redirect_uri: 'http://application.url', scopes: scopes }
-        end.not_to change { Doorkeeper::Application.count }
+        end.not_to change { Authn::OauthApplication.count }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response).to be_a Hash
@@ -63,7 +63,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :
       it 'does not allow creating an application without a redirect_uri' do
         expect do
           post api(path, admin, admin_mode: true), params: { name: 'application_name', scopes: scopes }
-        end.not_to change { Doorkeeper::Application.count }
+        end.not_to change { Authn::OauthApplication.count }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response).to be_a Hash
@@ -73,7 +73,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :
       it 'does not allow creating an application without specifying `scopes`' do
         expect do
           post api(path, admin, admin_mode: true), params: { name: 'application_name', redirect_uri: 'http://application.url' }
-        end.not_to change { Doorkeeper::Application.count }
+        end.not_to change { Authn::OauthApplication.count }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response).to be_a Hash
@@ -83,7 +83,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :
       it 'does not allow creating an application with blank `scopes`' do
         expect do
           post api(path, admin, admin_mode: true), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: '' }
-        end.not_to change { Doorkeeper::Application.count }
+        end.not_to change { Authn::OauthApplication.count }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('scopes is empty')
@@ -92,7 +92,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :
       it 'does not allow creating an application with invalid `scopes`' do
         expect do
           post api(path, admin, admin_mode: true), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: 'non_existent_scope' }
-        end.not_to change { Doorkeeper::Application.count }
+        end.not_to change { Authn::OauthApplication.count }
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']['scopes'][0]).to eq('doesn\'t match configured on the server.')
@@ -102,9 +102,9 @@ RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :
         it 'creates an application with multiple `scopes` when each scope specified is seperated by a space' do
           expect do
             post api(path, admin, admin_mode: true), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: 'api read_user' }
-          end.to change { Doorkeeper::Application.count }.by 1
+          end.to change { Authn::OauthApplication.count }.by 1
 
-          application = Doorkeeper::Application.last
+          application = Authn::OauthApplication.last
 
           expect(response).to have_gitlab_http_status(:created)
           expect(application.scopes.to_s).to eq('api read_user')
@@ -113,7 +113,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :
         it 'does not allow creating an application with multiple `scopes` when one of the scopes is invalid' do
           expect do
             post api(path, admin, admin_mode: true), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: 'api non_existent_scope' }
-          end.not_to change { Doorkeeper::Application.count }
+          end.not_to change { Authn::OauthApplication.count }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']['scopes'][0]).to eq('doesn\'t match configured on the server.')
@@ -123,7 +123,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :
       it 'defaults to creating an application with confidential' do
         expect do
           post api(path, admin, admin_mode: true), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: scopes, confidential: nil }
-        end.to change { Doorkeeper::Application.count }.by(1)
+        end.to change { Authn::OauthApplication.count }.by(1)
 
         expect(response).to have_gitlab_http_status(:created)
         expect(json_response).to be_a Hash
@@ -136,7 +136,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :
       it 'does not create application' do
         expect do
           post api(path, user), params: { name: 'application_name', redirect_uri: 'http://application.url', scopes: scopes }
-        end.not_to change { Doorkeeper::Application.count }
+        end.not_to change { Authn::OauthApplication.count }
       end
     end
 
@@ -144,7 +144,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :
       it 'does not create application' do
         expect do
           post api(path), params: { name: 'application_name', redirect_uri: 'http://application.url' }
-        end.not_to change { Doorkeeper::Application.count }
+        end.not_to change { Authn::OauthApplication.count }
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -180,7 +180,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :
       it 'can delete an application' do
         expect do
           delete api("#{path}/#{application.id}", admin, admin_mode: true)
-        end.to change { Doorkeeper::Application.count }.by(-1)
+        end.to change { Authn::OauthApplication.count }.by(-1)
       end
 
       it 'cannot delete non-existing application' do
@@ -210,7 +210,7 @@ RSpec.describe API::Applications, :aggregate_failures, :api, feature_category: :
 
     context 'authenticated and authorized user' do
       it 'can renew a secret token' do
-        application = Doorkeeper::Application.last
+        application = Authn::OauthApplication.last
         post api(path, admin, admin_mode: true), params: {}
 
         expect(response).to have_gitlab_http_status(:created)

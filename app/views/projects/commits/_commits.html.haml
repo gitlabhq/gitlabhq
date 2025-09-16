@@ -11,7 +11,7 @@
 
 - commits.chunk { |commit| local_committed_date(commit, current_user) }.each do |day, daily_commits|
   %li.js-commit-header.gl-mt-3.gl-py-2{ data: { day: day } }
-    %span.day.font-weight-bold= l(day, format: '%b %d, %Y')
+    %span.day{ class: "!gl-font-bold" }= l(day, format: '%b %d, %Y')
 
   %li.gl-border-t{ data: { day: day } }
     %ul.content-list.commit-list.flex-list
@@ -19,7 +19,7 @@
 
 - if context_commits.present?
   %li.js-commit-header.gl-mt-3.gl-py-2
-    %span.font-weight-bold= n_("%d previously merged commit", "%d previously merged commits", context_commits.count) % context_commits.count
+    %span{ class: "!gl-font-bold" }= n_("%d previously merged commit", "%d previously merged commits", context_commits.count) % context_commits.count
     - if can_update_merge_request
       = render Pajamas::ButtonComponent.new(button_options: { class: 'gl-ml-3 add-review-item-modal-trigger', data: { context_commits_empty: 'false' } }) do
         = _('Add/remove')

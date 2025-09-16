@@ -12,7 +12,7 @@ export const FEATURE_CATEGORY_HEADER = 'x-gitlab-feature-category';
 export const getInstrumentationLink = memoize(() => {
   return new ApolloLink((operation, forward) => {
     operation.setContext((currentContext) => {
-      const { feature_category: featureCategory } = gon;
+      const featureCategory = currentContext.featureCategory || gon.feature_category;
 
       if (!featureCategory) return currentContext;
 

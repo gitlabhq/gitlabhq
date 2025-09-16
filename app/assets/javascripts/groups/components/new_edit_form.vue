@@ -1,6 +1,6 @@
 <script>
 import { GlForm, GlFormFields, GlButton, GlLink, GlAlert, GlSprintf } from '@gitlab/ui';
-import { formValidators } from '@gitlab/ui/dist/utils';
+import { formValidators } from '@gitlab/ui/src/utils';
 import { __, s__, sprintf } from '~/locale';
 import { slugify } from '~/lib/utils/text_utility';
 import VisibilityLevelRadioButtons from '~/visibility_level/components/visibility_level_radio_buttons.vue';

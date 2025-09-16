@@ -14,6 +14,10 @@ import { currentAssignees, linkedItems } from '~/graphql_shared/issuable_client'
 import { state } from '~/sidebar/components/reviewers/sidebar_reviewers.vue';
 import { ISSUABLE_EPIC, NAME_TO_ICON_MAP, WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
 import { InternalEvents } from '~/tracking';
+import {
+  prioritizeCommandsWithFrequent,
+  recordFrequentCommandUsage,
+} from '~/editor/quick_action_suggestions';
 import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
 import { newDate } from './lib/utils/datetime_utility';
@@ -53,6 +57,10 @@ const busyBadge = memoize(
       s__('UserProfile|Busy'),
     ).outerHTML,
 );
+
+// Re-export for existing imports elsewhere
+export { sortCommandsAlphaSafe } from '~/editor/quick_action_suggestions';
+// Frequent quick actions prioritization is imported from shared module
 
 /**
  * Escapes user input before we pass it to at.js, which
@@ -173,6 +181,7 @@ export const defaultAutocompleteConfig = {
   workItems: true,
   mergeRequests: true,
   epics: true,
+  epicsAlternative: true,
   iterations: true,
   milestones: true,
   labels: true,
@@ -289,6 +298,10 @@ class GfmAutoComplete {
         // eslint-disable-next-line no-template-curly-in-string
         let tpl = '/${name} ';
         let referencePrefix = null;
+        // Record usage from actual selected item
+        if (typeof value?.name === 'string' && value.name.length > 0) {
+          recordFrequentCommandUsage(value.name);
+        }
         if (value.params.length > 0) {
           const regexp = /^\[[a-z]+:/;
           const match = regexp.exec(value.params);
@@ -322,6 +335,14 @@ class GfmAutoComplete {
       suffix: '',
       callbacks: {
         ...this.getDefaultCallbacks(),
+        sorter(query, items, searchKey) {
+          if (!query) {
+            const prioritized = prioritizeCommandsWithFrequent(items);
+            return $.fn.atwho.default.callbacks.sorter(query, prioritized, searchKey);
+          }
+
+          return $.fn.atwho.default.callbacks.sorter(query, items, searchKey);
+        },
         beforeSave(commands) {
           if (GfmAutoComplete.isLoading(commands)) return commands;
           return $.map(commands, (c) => {
@@ -350,6 +371,34 @@ class GfmAutoComplete {
         },
       },
     });
+
+    // Also record manual typing of quick actions (e.g., user types '/cc ' without selecting)
+    // Detect at end of current line when a command token is completed with a space
+    const frequentCommandsHandler = (e) => {
+      const el = e.currentTarget;
+      if (!el || typeof el.selectionStart !== 'number') return;
+
+      // Only act on space key to avoid multiple increments while typing
+      const isSpaceKey = e.key === ' ' || e.key === ' ' || e.keyCode === 32;
+      if (!isSpaceKey) return;
+      try {
+        const uptoCursor = el.value.slice(0, el.selectionStart);
+        const currentLine = uptoCursor.split('\n').pop();
+        // Only record immediately after completing a command token followed by a space at end of line
+        const match = currentLine.match(/^\/([A-Za-z_]+)\s$/);
+        if (match) {
+          const name = match[1];
+          const commands = this.cachedData['/'];
+          if (Array.isArray(commands) && commands.some((c) => c?.name === name)) {
+            recordFrequentCommandUsage(name);
+          }
+        }
+      } catch {
+        // noop
+      }
+    };
+    $input.off('keyup.frequentCommands', frequentCommandsHandler);
+    $input.on('keyup.frequentCommands', frequentCommandsHandler);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -431,7 +480,6 @@ class GfmAutoComplete {
       ASSIGN_REVIEWER: '/assign_reviewer',
       UNASSIGN_REVIEWER: '/unassign_reviewer',
       REASSIGN: '/reassign',
-      CC: '/cc',
       REQUEST_REVIEW: '/request_review',
     };
     let assignees = [];
@@ -471,7 +519,7 @@ class GfmAutoComplete {
         matcher(flag, subtext) {
           const subtextNodes = subtext.split(/\n+/g).pop().split(GfmAutoComplete.regexSubtext);
 
-          // Check if @ is followed by '/assign', '/reassign', '/unassign' or '/cc' commands.
+          // Check if @ is followed by '/assign', '/reassign' or '/unassign' commands.
           command = subtextNodes.find((node) => {
             if (Object.values(MEMBER_COMMAND).includes(node)) {
               return node;
@@ -1110,6 +1158,14 @@ class GfmAutoComplete {
             .replace(/(_+)(\b)/g, '\\$1$2'); // or end of words
         }
 
+        // Record frequent quick action usage
+        if (at === '/' && typeof value === 'string') {
+          const match = value.match(/^\/([A-Za-z_]+)/);
+          if (match) {
+            recordFrequentCommandUsage(match[1]);
+          }
+        }
+
         return `${at}${withoutAt}`;
       },
       matcher(flag, subtext) {
@@ -1276,6 +1332,7 @@ GfmAutoComplete.atTypeMap = {
   '[work_item:': 'issues',
   '!': 'mergeRequests',
   '&': 'epics',
+  '[epic:': 'epics',
   '*iteration:': 'iterations',
   '~': 'labels',
   '%': 'milestones',

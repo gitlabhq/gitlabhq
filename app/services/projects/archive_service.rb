@@ -35,6 +35,8 @@ module Projects
       system_hook_service.execute_hooks_for(project, :update)
       publish_events
 
+      return unless Feature.enabled?(:destroy_fork_network_on_archive, project)
+
       UnlinkForkService.new(project, current_user).execute
     end
   end

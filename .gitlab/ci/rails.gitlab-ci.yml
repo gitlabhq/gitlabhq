@@ -69,7 +69,6 @@ setup-test-env-fips:
     - .with-ruby-slim-image
   variables:
     BUNDLE_WITHOUT: ""  # This is to override the variable defined in .gitlab-ci.yml
-    BUNDLE_ONLY: "coverage"
   before_script:
     - source scripts/utils.sh
     - bundle_install_script
@@ -219,6 +218,22 @@ rspec system pg16:
     - .rails:rules:ee-and-foss-system
   variables:
     DEBUG_GITLAB_TRANSACTION_STACK: "true"
+
+rspec system pg16 vue3:
+  extends:
+    - rspec system pg16
+    - .rails:rules:ee-and-foss-system-vue3
+  needs:
+    # Same as needs of "rspec system pg16" with
+    # "compile-test-assets vue3" instead of "compile-test-assets"
+    - !reference [.repo-from-artifacts, needs]
+    - job: "setup-test-env"
+    - job: "retrieve-tests-metadata"
+    - job: "compile-test-assets vue3"
+    - job: "detect-tests"
+      optional: true
+    - job: "db:setup pg16"
+      optional: true
 
 rspec system pg16 single-redis:
   extends:
@@ -542,11 +557,11 @@ rspec:artifact-collector ee remainder:
     - job: rspec-ee fail-fast # 1 job
       optional: true
   rules:
+    - !reference ['.rails:rules:rspec fail-fast', rules]
     - !reference ['.rails:rules:ee-only-migration', rules]
     - !reference ['.rails:rules:ee-only-background-migration', rules]
     - !reference ['.rails:rules:ee-only-integration', rules]
     - !reference ['.rails:rules:ee-only-system', rules]
-    - !reference ['.rails:rules:rspec fail-fast', rules]
 
 rspec:coverage:
   extends:
@@ -582,10 +597,18 @@ rspec:coverage:
     - job: rspec:artifact-collector ee remainder
       optional: true
   script:
-    - run_with_custom_exit_code bundle exec scripts/merge-simplecov
-    - 'echo "coverage.xml size before stripping whitespace: $(cat coverage/coverage.xml | wc -c | numfmt --to=si --padding=1)"'
-    - sed -i -E 's/^ +//' coverage/coverage.xml
-    - 'echo "coverage.xml size after stripping whitespace: $(cat coverage/coverage.xml | wc -c | numfmt --to=si --padding=1)"'
+    - bundle exec scripts/merge-simplecov
+    - |
+      if [ -e coverage/coverage.xml ]; then
+        echo "coverage.xml size before stripping whitespace: $(cat coverage/coverage.xml | wc -c | numfmt --to=si --padding=1)"
+        sed -i -E 's/^ +//' coverage/coverage.xml
+        echo "coverage.xml size after stripping whitespace: $(cat coverage/coverage.xml | wc -c | numfmt --to=si --padding=1)"
+
+        # Split into many coverage files, or copy the main coverage file as a fallback.
+        bundle exec ruby scripts/cobertura_splitter.rb coverage/coverage.xml || cp coverage/coverage.xml coverage/coverage-0.xml
+      else
+        echo "Warning: coverage/coverage.xml not found, skipping whitespace stripping"
+      fi
   coverage: '/LOC \((\d+\.\d+%)\) covered.$/'
   artifacts:
     name: coverage
@@ -597,7 +620,7 @@ rspec:coverage:
     reports:
       coverage_report:
         coverage_format: cobertura
-        path: coverage/coverage.xml
+        path: coverage/coverage-*.xml
 
 rspec:undercoverage:
   extends:

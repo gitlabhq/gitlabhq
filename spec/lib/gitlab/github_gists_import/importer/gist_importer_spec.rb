@@ -53,7 +53,7 @@ RSpec.describe Gitlab::GithubGistsImport::Importer::GistImporter, feature_catego
 
         expect { subject.execute }.to change { user.snippets.count }.by(1)
         expect(user.snippets[0].attributes).to include expected_snippet_attrs
-        expect(user.snippets[0].organization_id).to eq(user.organizations.first.id)
+        expect(user.snippets[0].organization_id).to eq(user.organization.id)
       end
     end
 

@@ -8,9 +8,9 @@
         = milestone_issues_count_message(@milestone)
 
 .row.gl-mt-3
-  .col-md-4
+  .gl-col-md-4
     = render 'shared/milestones/issuables', args.merge(title: s_('Milestones|Unstarted'), subtitle: _('(open and unassigned)'), issuables: issues.opened.unassigned, id: 'unassigned', show_counter: true)
-  .col-md-4
+  .gl-col-md-4
     = render 'shared/milestones/issuables', args.merge(title: s_('Milestones|Ongoing'), subtitle: _('(open and assigned)'), issuables: issues.opened.assigned, id: 'ongoing', show_counter: true)
-  .col-md-4
+  .gl-col-md-4
     = render 'shared/milestones/issuables', args.merge(title: s_('Milestones|Completed'), subtitle: _('(closed)'), issuables: issues.closed, id: 'closed', show_counter: true)

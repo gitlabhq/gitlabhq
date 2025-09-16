@@ -257,7 +257,7 @@ that you are using.
    ```
 
    The previous command creates a `config.toml` entry similar to the following example:
-   
+
    ```toml
    [[runners]]
      url = "https://gitlab.com/"
@@ -283,7 +283,7 @@ that you are using.
        - docker:24.0.5-dind
      before_script:
        - docker info
-   
+
    variables:
      # When using dind service, you must instruct docker to talk with the
      # daemon started inside of the service. The daemon is available with
@@ -296,7 +296,7 @@ that you are using.
      #
      # This instructs Docker not to start over TLS.
      DOCKER_TLS_CERTDIR: ""
-   
+
    build:
      stage: build
      tags:
@@ -492,9 +492,9 @@ To mount the Docker socket with the Docker executor, add `"/var/run/docker.sock:
      --docker-image "docker:24.0.5" \
      --docker-volumes "/var/run/docker.sock:/var/run/docker.sock"
    ```
-   
+
    The previous command creates a `config.toml` entry similar to the following example:
-   
+
    ```toml
    [[runners]]
      url = "https://gitlab.com/"
@@ -517,7 +517,7 @@ To mount the Docker socket with the Docker executor, add `"/var/run/docker.sock:
      image: docker:24.0.5
      before_script:
        - docker info
-   
+
    build:
      stage: build
      tags:
@@ -651,9 +651,9 @@ To mount the Docker pipe with the Docker executor, add `"\\.\pipe\docker_engine:
      --docker-image "docker:25-windowsservercore-ltsc2022" \
      --docker-volumes "\\.\pipe\docker_engine:\\.\pipe\docker_engine"
    ```
-   
+
    The previous command creates a `config.toml` entry similar to the following example:
-   
+
    ```toml
    [[runners]]
      url = "https://gitlab.com/"
@@ -677,7 +677,7 @@ To mount the Docker pipe with the Docker executor, add `"\\.\pipe\docker_engine:
      before_script:
        - docker version
        - docker info
-   
+
    build:
      stage: build
      tags:
@@ -709,20 +709,20 @@ To mount the Docker pipe with the Kubernetes executor, add `"\\.\pipe\docker_eng
      config: |
        [[runners]]
          executor = "kubernetes"
-   
+
          # The FF_USE_POWERSHELL_PATH_RESOLVER feature flag has to be enabled for PowerShell
          # to resolve paths for Windows correctly when Runner is operating in a Linux environment
          # but targeting Windows nodes.
          [runners.feature_flags]
-           FF_USE_POWERSHELL_PATH_RESOLVER = true 
-   
+           FF_USE_POWERSHELL_PATH_RESOLVER = true
+
          [runners.kubernetes]
            [[runners.kubernetes.volumes.host_path]]
              host_path = '\\.\pipe\docker_engine'
              mount_path = '\\.\pipe\docker_engine'
              name = 'docker-pipe'
              read_only = true
-   
+
            [runners.kubernetes.node_selector]
              "kubernetes.io/arch" = "amd64"
              "kubernetes.io/os" = "windows"
@@ -737,7 +737,7 @@ To mount the Docker pipe with the Kubernetes executor, add `"\\.\pipe\docker_eng
      before_script:
        - docker version
        - docker info
-   
+
    build:
      stage: build
      tags:

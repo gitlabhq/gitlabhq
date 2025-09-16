@@ -20,6 +20,7 @@ title: Grant users Kubernetes access
 - Feature flags `kas_user_access`, `kas_user_access_project`, and `expose_authorized_cluster_agents` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125835) in GitLab 16.2.
 - The [limit of agent connection sharing was raised](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149844) from 100 to 500 in GitLab 17.0
 - The `user_access` parameter `access_as` [was made optional](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/merge_requests/2749) in GitLab 18.3. Defaults to agent impersonation.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/557818) to allow the authorization of projects and groups that belong to different top-level groups in GitLab 18.4.
 
 {{< /history >}}
 
@@ -50,6 +51,9 @@ To configure access:
   - `projects`: A list of projects whose members should have access. You can authorize up to 500 projects.
   - `groups`: A list of groups whose members should have access. You can authorize up to 500 groups. It grants access to the group and all its descendants.
   - `access_as`: For access with agent identity, the value is `{ agent: {...} }`.
+
+Authorized projects and groups must have the same top-level group or user namespace as the agent's configuration project, unless the
+[instance level authorization](ci_cd_workflow.md#authorize-all-projects-in-your-gitlab-instance-to-access-the-agent) application setting is enabled.
 
 After you configure access, requests are forwarded to the API server using
 the agent service account.

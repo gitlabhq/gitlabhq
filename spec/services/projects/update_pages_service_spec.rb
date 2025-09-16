@@ -181,13 +181,13 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
         end
 
         context 'when the directory specified with `publish` is included in the artifacts' do
-          let(:options) { { publish: 'foo' } }
+          let(:options) { { pages: { publish: 'foo' } } }
 
           it 'creates pages_deployment and saves it in the metadata' do
             expect(service.execute[:status]).to eq(:success)
 
             deployment = project.pages_deployments.last
-            expect(deployment.root_directory).to eq(options[:publish])
+            expect(deployment.root_directory).to eq(options[:pages][:publish])
           end
         end
 
@@ -211,6 +211,19 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
           end
         end
 
+        context 'when the directory specified with `publish` is not included in the artifacts' do
+          let(:options) { { pages: { publish: 'bar' } } }
+
+          it 'returns an error' do
+            expect(service.execute[:status]).not_to eq(:success)
+
+            expect(GenericCommitStatus.last.description)
+              .to eq(
+                "Error: You need to either include a `public/` folder in your artifacts, " \
+                "or specify which one to use for Pages using `publish` in `.gitlab-ci.yml`")
+          end
+        end
+
         context 'when `publish` and `pages.publish` both are specified' do
           let(:options) { { pages: { publish: 'foo' }, publish: 'bar' } }
 
@@ -223,21 +236,8 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
           end
         end
 
-        context 'when the directory specified with `publish` is not included in the artifacts' do
-          let(:options) { { publish: 'bar' } }
-
-          it 'returns an error' do
-            expect(service.execute[:status]).not_to eq(:success)
-
-            expect(GenericCommitStatus.last.description)
-              .to eq(
-                "Error: You need to either include a `public/` folder in your artifacts, " \
-                "or specify which one to use for Pages using `publish` in `.gitlab-ci.yml`")
-          end
-        end
-
         context 'when there is a folder named `public`, but `publish` specifies a different one' do
-          let(:options) { { publish: 'foo' } }
+          let(:options) { { pages: { publish: 'foo' } } }
           let(:file) { fixture_file_upload("spec/fixtures/pages.zip") }
           let(:metadata_filename) { "spec/fixtures/pages.zip.meta" }
 

@@ -153,6 +153,26 @@ RSpec.describe EventFilter do
         )
       end
     end
+
+    context 'with the "team" filter' do
+      let_it_be(:event_target_project) { create(:event, project: public_project, target: public_project) }
+      let_it_be(:event_target_nil) { create(:event, project: public_project, target: nil) }
+      let_it_be(:event_target_other) { create(:wiki_page_event) }
+
+      let(:filter) { described_class::TEAM }
+
+      it 'scope by events with `nil` or `Project` target type' do
+        expect(filtered_events[:scope]).to include(event_target_project, event_target_nil)
+        expect(filtered_events[:scope]).not_to include(event_target_other)
+      end
+
+      it 'returns array_scope with team actions' do
+        array_scope_actions = filtered_events[:array_scope].pluck(:action)
+        team_actions = Event.actions.values_at(*Event::TEAM_ACTIONS)
+
+        expect(array_scope_actions).to match_array(team_actions)
+      end
+    end
   end
 
   describe '#active?' do

@@ -3,11 +3,11 @@ table_name: p_duo_workflows_checkpoints
 classes:
 - Ai::DuoWorkflows::Checkpoint
 feature_categories:
-- duo_workflow
+- agent_foundations
 description: Duo workflows langraph checkpoints
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193398
 milestone: '18.2'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
   project_id: projects

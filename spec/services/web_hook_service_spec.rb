@@ -425,6 +425,104 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
         stub_full_request(project_hook.url, method: :post)
       end
 
+      context 'when description contains a backslash' do
+        let(:data) do
+          { changes: { description: "\\This has a backslash" } }
+        end
+
+        before do
+          project_hook.custom_webhook_template = '{"description":"{{changes.description}}"}'
+        end
+
+        it 'escapes the backslash properly and delivers the webhook' do
+          service_instance.execute
+
+          expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+            .with(body: '{"description":"\\\\This has a backslash"}')
+            .once
+        end
+      end
+
+      context 'when description contains a double quote' do
+        let(:data) do
+          { changes: { description: '"This has a double quote' } }
+        end
+
+        before do
+          project_hook.custom_webhook_template = '{"description":"{{changes.description}}"}'
+        end
+
+        it 'escapes the double quote properly and delivers the webhook' do
+          service_instance.execute
+
+          expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+            .with(body: '{"description":"\"This has a double quote"}')
+            .once
+        end
+      end
+
+      context 'when template renders a non-primitive value (object)' do
+        let(:data) do
+          { complex: { string: 'value', boolean: true, number: 1, nil: nil, object: {}, array: [] } }
+        end
+
+        before do
+          project_hook.custom_webhook_template = '{"complex":{{complex}}}'
+        end
+
+        it 'serializes the object and delivers the webhook' do
+          service_instance.execute
+
+          expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+            .with(body: '{"complex":{"string":"value","boolean":true,"number":1,"nil":null,"object":{},"array":[]}}')
+            .once
+        end
+      end
+
+      context 'when template renders a non-primitive value (array)' do
+        let(:data) do
+          { complex: ['value', true, 1, nil, {}, []] }
+        end
+
+        before do
+          project_hook.custom_webhook_template = '{"complex":{{complex}}}'
+        end
+
+        it 'serializes the array and delivers the webhook' do
+          service_instance.execute
+
+          expect(WebMock).to have_requested(:post, stubbed_hostname(project_hook.url))
+            .with(body: '{"complex":["value",true,1,null,{},[]]}')
+            .once
+        end
+      end
+
+      context 'when serialization feature flag is disabled' do
+        before do
+          stub_feature_flags(custom_webhook_template_serialization: false)
+        end
+
+        context 'when description contains a backslash' do
+          let(:data) do
+            { changes: { description: "\\This has a backslash" } }
+          end
+
+          before do
+            project_hook.custom_webhook_template = '{"description":"{{changes.description}}"}'
+          end
+
+          it 'handles the error', :aggregate_failures do
+            expect(service_instance.execute).to have_attributes(
+              status: :error,
+              message: 'Error while parsing rendered custom webhook template: invalid escaped character ' \
+                       '(after description) at line 1, column 17 [parse.c:315] in ' \
+                       '\'{"description":"\\This has a backslash"}'
+            )
+            expect { service_instance.execute }.not_to raise_error
+          end
+        end
+      end
+
       context 'when template is valid' do
         before do
           project_hook.custom_webhook_template = '{"before":"{{before}}"}'

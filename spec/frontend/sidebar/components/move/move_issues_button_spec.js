@@ -77,6 +77,7 @@ if (IS_EE) {
     id: 'gid://gitlab/Epic/1',
   };
   getIssuesQueryCompleteResponse.data.project.issues.nodes[0].status = {
+    category: 'canceled',
     color: '#DD2B0E',
     iconName: 'status-cancelled',
     id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/4',

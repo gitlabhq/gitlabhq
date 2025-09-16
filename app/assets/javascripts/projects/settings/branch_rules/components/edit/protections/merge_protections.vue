@@ -18,10 +18,6 @@ export default {
     GlFormCheckbox,
   },
   props: {
-    membersAllowedToMerge: {
-      type: Array,
-      required: true,
-    },
     requireCodeOwnersApproval: {
       type: Boolean,
       required: true,

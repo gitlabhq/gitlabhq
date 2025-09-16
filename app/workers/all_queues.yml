@@ -1068,7 +1068,7 @@
   :queue_namespace: :cronjob
 - :name: cronjob:remove_expired_group_links
   :worker_name: RemoveExpiredGroupLinksWorker
-  :feature_category: :system_access
+  :feature_category: :user_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3006,26 +3006,6 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
-- :name: background_migration
-  :worker_name: BackgroundMigrationWorker
-  :feature_category: :database
-  :has_external_dependencies: false
-  :urgency: :throttled
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace:
-- :name: background_migration_ci_database
-  :worker_name: BackgroundMigration::CiDatabaseWorker
-  :feature_category: :database
-  :has_external_dependencies: false
-  :urgency: :throttled
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
-  :queue_namespace:
 - :name: batched_git_ref_updates_project_cleanup
   :worker_name: BatchedGitRefUpdates::ProjectCleanupWorker
   :feature_category: :gitaly
@@ -3538,19 +3518,9 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
-- :name: ci_runners_update_project_runners_owner
-  :worker_name: Ci::Runners::UpdateProjectRunnersOwnerWorker
-  :feature_category: :runner
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace:
 - :name: ci_safe_disable_pipeline_variables
   :worker_name: Ci::SafeDisablePipelineVariablesWorker
-  :feature_category: :ci_variables
+  :feature_category: :pipeline_composition
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3561,7 +3531,7 @@
 - :name: ci_slsa_publish_provenance
   :worker_name: Ci::Slsa::PublishProvenanceWorker
   :feature_category: :artifact_security
-  :has_external_dependencies: false
+  :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1
@@ -4392,6 +4362,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: merge_requests_refresh_web_hooks
+  :worker_name: MergeRequests::Refresh::WebHooksWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+  :queue_namespace:
 - :name: merge_requests_resolve_todos
   :worker_name: MergeRequests::ResolveTodosWorker
   :feature_category: :code_review_workflow
@@ -5133,6 +5113,36 @@
 - :name: work_items_import_work_items_csv
   :worker_name: WorkItems::ImportWorkItemsCsvWorker
   :feature_category: :team_planning
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: work_items_process_group_transfer_events
+  :worker_name: WorkItems::ProcessGroupTransferEventsWorker
+  :feature_category: :portfolio_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: work_items_process_project_transfer_events
+  :worker_name: WorkItems::ProcessProjectTransferEventsWorker
+  :feature_category: :portfolio_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
+- :name: work_items_update_namespace_traversal_ids
+  :worker_name: WorkItems::UpdateNamespaceTraversalIdsWorker
+  :feature_category: :portfolio_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

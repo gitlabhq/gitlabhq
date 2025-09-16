@@ -149,7 +149,7 @@ export default {
       required: false,
       default: false,
     },
-    canManageSecretManager: {
+    canManageSecretsManager: {
       type: Boolean,
       required: false,
       default: false,
@@ -578,8 +578,9 @@ export default {
               type="hidden"
               name="project[request_access_enabled]"
             />
-            <input v-model="requestAccessEnabled" type="checkbox" />
-            {{ s__('ProjectSettings|Users can request access') }}
+            <gl-form-checkbox v-model="requestAccessEnabled">
+              {{ s__('ProjectSettings|Users can request access') }}
+            </gl-form-checkbox>
           </label>
           <label
             v-if="visibilityLevel !== $options.VISIBILITY_LEVEL_PUBLIC_INTEGER"
@@ -1113,7 +1114,7 @@ export default {
       <ci-catalog-settings v-if="canAddCatalogResource" :full-path="confirmationPhrase" />
       <secret-manager-settings
         v-if="isSecretsManagerAvailable"
-        :can-manage-secrets-manager="canManageSecretManager"
+        :can-manage-secrets-manager="canManageSecretsManager"
         :project-id="projectId"
         :full-path="confirmationPhrase"
       />

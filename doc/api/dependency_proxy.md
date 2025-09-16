@@ -3,6 +3,7 @@ stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Dependency Proxy API
+description: Documentation for the REST API for the GitLab dependency proxy.
 ---
 
 {{< details >}}
@@ -23,7 +24,7 @@ DELETE /groups/:id/dependency_proxy/cache
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 
 Example request:
 

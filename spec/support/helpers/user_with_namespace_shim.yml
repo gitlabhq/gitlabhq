@@ -244,7 +244,6 @@
 - ee/spec/services/ee/projects/remove_paid_features_service_spec.rb
 - ee/spec/services/ee/users/destroy_service_spec.rb
 - ee/spec/services/ee/users/migrate_records_to_ghost_user_service_spec.rb
-- ee/spec/services/epics/issue_promote_service_spec.rb
 - ee/spec/services/epics/transfer_service_spec.rb
 - ee/spec/services/namespaces/service_accounts/create_service_spec.rb
 - ee/spec/services/projects/create_from_template_service_spec.rb
@@ -563,7 +562,6 @@
 - spec/features/search/user_searches_for_merge_requests_spec.rb
 - spec/features/search/user_searches_for_milestones_spec.rb
 - spec/features/search/user_searches_for_wiki_pages_spec.rb
-- spec/features/search/user_uses_header_search_field_spec.rb
 - spec/features/search/user_uses_search_filters_spec.rb
 - spec/features/security/dashboard_access_spec.rb
 - spec/features/security/profile_access_spec.rb
@@ -642,7 +640,6 @@
 - spec/lib/generators/gitlab/partitioning/foreign_keys_generator_spec.rb
 - spec/lib/gitlab/analytics/usage_trends/workers_argument_builder_spec.rb
 - spec/lib/gitlab/background_migration/backfill_user_details_fields_spec.rb
-- spec/lib/gitlab/background_migration/job_coordinator_spec.rb
 - spec/lib/gitlab/checks/container_moved_spec.rb
 - spec/lib/gitlab/checks/project_created_spec.rb
 - spec/lib/gitlab/ci/trace/archive_spec.rb
@@ -659,7 +656,6 @@
 - spec/lib/gitlab/database/partitioning/list/convert_table_spec.rb
 - spec/lib/gitlab/database/partitioning/monthly_strategy_spec.rb
 - spec/lib/gitlab/database/partitioning/sliding_list_strategy_spec.rb
-- spec/lib/gitlab/database/partitioning_migration_helpers/backfill_partitioned_table_spec.rb
 - spec/lib/gitlab/database/partitioning_migration_helpers/table_management_helpers_spec.rb
 - spec/lib/gitlab/database/reflection_spec.rb
 - spec/lib/gitlab/database/transaction/observer_spec.rb

@@ -41,7 +41,7 @@ As such DDL migrations **CANNOT**:
 
 1. Read or modify data in any form, via SQL statements or ActiveRecord models.
 1. Update column values (for example, `update_column_in_batches`).
-1. Schedule background migrations (for example, `queue_background_migration_jobs_by_range_at_intervals`).
+1. Schedule background migrations (for example, `queue_batched_background_migration`).
 1. Read the state of feature flags since they are stored in `main:` (a `features` and `feature_gates`).
 1. Read application settings (as settings are stored in `main:`).
 
@@ -83,7 +83,7 @@ end
    - Feature category example
    classes:
    - Class example
-   gitlab_schema: gitlab_main
+   gitlab_schema: gitlab_main_org
    ```
 
 1. Create the table in a schema migration:
@@ -111,7 +111,7 @@ The DML migrations are all migrations that:
 1. Create, update or delete data via ActiveRecord models (for example, `User.create!(...)`).
 1. Create, update or delete data via SQL statements (for example, `DELETE FROM projects WHERE id=1`).
 1. Update columns in batches (for example, `update_column_in_batches(:projects, :archived, true)`).
-1. Schedule background migrations (for example, `queue_background_migration_jobs_by_range_at_intervals`).
+1. Schedule background migrations (for example, `queue_batched_background_migration`).
 1. Access application settings (for example, `ApplicationSetting.last` if run for `main:` database).
 1. Read and modify feature flags if run for the `main:` database.
 
@@ -133,7 +133,7 @@ only for the database containing `gitlab_main` schema.
 class UpdateProjectsArchivedState < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   def up
     update_column_in_batches(:projects, :archived, true) do |table, query|
@@ -165,7 +165,7 @@ from `main:`, as no established connection to another database is present.
 class UpdateProjectsArchivedState < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   class Project < MigrationRecord
   end
@@ -288,7 +288,7 @@ class UpdateProjectsArchivedState < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   # Missing:
-  # restrict_gitlab_migration gitlab_schema: :gitlab_main
+  # restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   def up
     update_column_in_batches(:projects, :archived, true) do |table, query|
@@ -310,7 +310,7 @@ Modifying of 'projects' (gitlab_main) with 'SELECT * FROM projects...
 The current migration do not use `restrict_gitlab_migration`. The lack indicates a migration
 running in **DDL** mode, but the executed payload appears to be reading data from `projects`.
 
-**The solution** is to add `restrict_gitlab_migration gitlab_schema: :gitlab_main`.
+**The solution** is to add `restrict_gitlab_migration gitlab_schema: :gitlab_main_org`.
 
 ### Exception 2: migration running in DML mode changes the structure
 
@@ -319,7 +319,7 @@ class AddUserIdAndStateIndexToMergeRequestReviewers < Gitlab::Database::Migratio
   disable_ddl_transaction!
 
   # restrict_gitlab_migration if defined indicates DML, it should be removed
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   INDEX_NAME = 'index_on_merge_request_reviewers_user_id_and_state'
 
@@ -341,7 +341,7 @@ Modifying of 'merge_request_reviewers' with 'CREATE INDEX...
 The current migration do use `restrict_gitlab_migration`. The presence indicates **DML** mode,
 but the executed payload appears to be doing structure changes (DDL).
 
-**The solution** is to remove `restrict_gitlab_migration gitlab_schema: :gitlab_main`.
+**The solution** is to remove `restrict_gitlab_migration gitlab_schema: :gitlab_main_org`.
 
 ### Exception 3: migration running in DML mode accesses data from a table in another schema
 
@@ -410,7 +410,7 @@ to stay as-is until further notice) to restrict when they run.
 A Potential extension is to limit running DML migration only to specific environments:
 
 ```ruby
-restrict_gitlab_migration gitlab_schema: :gitlab_main, gitlab_env: :gitlab_com
+restrict_gitlab_migration gitlab_schema: :gitlab_main_org, gitlab_env: :gitlab_com
 ```
 
 ## Background migrations
@@ -426,7 +426,7 @@ You can use these migrations when migrating tables in any database.
 
 However, when queuing the batches, you must set `restrict_gitlab_migration` based on the
 table you are iterating over. If you are updating all `projects`, for example, then you would set
-`restrict_gitlab_migration gitlab_schema: :gitlab_main`. If, however, you are
+`restrict_gitlab_migration gitlab_schema: :gitlab_main_org`. If, however, you are
 updating all `ci_pipelines`, you would set
 `restrict_gitlab_migration gitlab_schema: :gitlab_ci`.
 

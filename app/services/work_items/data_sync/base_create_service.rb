@@ -2,6 +2,8 @@
 
 module WorkItems
   module DataSync
+    Error = Class.new(StandardError)
+
     # This is a altered version of the WorkItem::CreateService. This overwrites the `initialize_callbacks!`
     # and replaces the callbacks called by `WorkItem::CreateService` to setup data sync related callbacks which
     # are used to copy data from the original work item to the target work item.
@@ -13,6 +15,12 @@ module WorkItems
 
         @original_work_item = original_work_item
         @operation = operation
+      end
+
+      def execute(...)
+        super
+      rescue ::WorkItems::DataSync::Error => e
+        error(e.message, :unprocessable_entity)
       end
 
       def initialize_callbacks!(work_item)

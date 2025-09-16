@@ -46,7 +46,8 @@ GET projects/:id/packages/nuget/download/:package_name/index
 | `package_name` | string | yes      | The name of the package. |
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/MyNuGetPkg/index"
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/MyNuGetPkg/index"
 ```
 
 Example response:
@@ -75,20 +76,23 @@ GET projects/:id/packages/nuget/download/:package_name/:package_version/:package
 | `package_filename`| string | yes      | The name of the file. |
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/MyNuGetPkg/1.3.0.17/mynugetpkg.1.3.0.17.nupkg"
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/MyNuGetPkg/1.3.0.17/mynugetpkg.1.3.0.17.nupkg"
 ```
 
 Write the output to a file:
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/MyNuGetPkg/1.3.0.17/mynugetpkg.1.3.0.17.nupkg" > MyNuGetPkg.1.3.0.17.nupkg
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/download/MyNuGetPkg/1.3.0.17/mynugetpkg.1.3.0.17.nupkg" > MyNuGetPkg.1.3.0.17.nupkg
 ```
 
 This writes the downloaded file to `MyNuGetPkg.1.3.0.17.nupkg` in the current directory.
 
 {{< alert type="note" >}}
 
-This API returns a `404` status when you use [group endpoints](#group-level). Use the NuGet package manager CLI to [install packages](../../user/packages/nuget_repository#install-a-package) with group endpoints to avoid this error.
+This API returns a `404` status when you use [group endpoints](#group-level). Use the NuGet package manager CLI to
+[install packages](../../user/packages/nuget_repository/_index.md#install-a-package) with group endpoints to avoid this error.
 
 {{< /alert >}}
 
@@ -127,7 +131,7 @@ Upload a NuGet package file:
   curl --request PUT \
       --form 'package=@path/to/mynugetpkg.1.3.0.17.nupkg' \
       --user <username>:<personal_access_token> \
-      "https://gitlab.example.com/api/v4/projects/1/packages/nuget/"
+      --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/"
   ```
 
 - For NuGet v2 feed:
@@ -136,7 +140,7 @@ Upload a NuGet package file:
   curl --request PUT \
       --form 'package=@path/to/mynugetpkg.1.3.0.17.nupkg' \
       --user <username>:<personal_access_token> \
-      "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2"
+      --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2"
   ```
 
 ## Upload a symbol package file
@@ -158,7 +162,7 @@ PUT projects/:id/packages/nuget/symbolpackage
 curl --request PUT \
      --form 'package=@path/to/mynugetpkg.1.3.0.17.snupkg' \
      --user <username>:<personal_access_token> \
-     "https://gitlab.example.com/api/v4/projects/1/packages/nuget/symbolpackage"
+     --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/symbolpackage"
 ```
 
 ## Route prefix
@@ -240,7 +244,7 @@ GET <route-prefix>/index
 Example Request:
 
 ```shell
-curl "https://gitlab.example.com/api/v4/projects/1/packages/nuget/index"
+curl --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/index"
 ```
 
 Example response:
@@ -314,7 +318,8 @@ GET <route-prefix>/metadata/:package_name/index
 | `package_name` | string | yes      | The name of the package. |
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/nuget/metadata/MyNuGetPkg/index"
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/metadata/MyNuGetPkg/index"
 ```
 
 Example response:
@@ -365,7 +370,8 @@ GET <route-prefix>/metadata/:package_name/:package_version
 | `package_version` | string | yes      | The version of the package. |
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/nuget/metadata/MyNuGetPkg/1.3.0.17"
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/metadata/MyNuGetPkg/1.3.0.17"
 ```
 
 Example response:
@@ -405,7 +411,8 @@ GET <route-prefix>/query
 | `prerelease` | boolean | no       | Include prerelease versions. Defaults to `true` if no value is supplied. |
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/nuget/query?q=MyNuGet"
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/query?q=MyNuGet"
 ```
 
 Example response:
@@ -460,7 +467,7 @@ DELETE projects/:id/packages/nuget/:package_name/:package_version
 ```shell
 curl --request DELETE \
      --user <username>:<personal_access_token> \
-     "https://gitlab.example.com/api/v4/projects/1/packages/nuget/MyNuGetPkg/1.3.0.17"
+     --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/MyNuGetPkg/1.3.0.17"
 ```
 
 Possible request responses:
@@ -493,13 +500,15 @@ GET <route-prefix>/symbolfiles/:file_name/:signature/:file_name
 | `Symbolchecksum` | string | yes      | Required header. The checksum of the file. |
 
 ```shell
-curl --header "Symbolchecksum: SHA256:<file_checksum>" "https://gitlab.example.com/api/v4/projects/1/packages/nuget/symbolfiles/:file_name/:signature/:file_name"
+curl --header "Symbolchecksum: SHA256:<file_checksum>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/symbolfiles/:file_name/:signature/:file_name"
 ```
 
 Write the output to a file:
 
 ```shell
-curl --header "Symbolchecksum: SHA256:<file_checksum>" "https://gitlab.example.com/api/v4/projects/1/packages/nuget/symbolfiles/mynugetpkg.pdb/k813f89485474661234z7109cve5709eFFFFFFFF/mynugetpkg.pdb" > mynugetpkg.pdb
+curl --header "Symbolchecksum: SHA256:<file_checksum>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/symbolfiles/mynugetpkg.pdb/k813f89485474661234z7109cve5709eFFFFFFFF/mynugetpkg.pdb" > mynugetpkg.pdb
 ```
 
 Possible request responses:
@@ -528,7 +537,7 @@ GET <route-prefix>/v2/$metadata
 ```
 
 ```shell
-curl "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/$metadata"
+curl --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/$metadata"
 ```
 
 Example response:
@@ -583,7 +592,7 @@ Example response:
 | `GET projects/:id/packages/nuget/v2/Packages(Id='<package_name>',Version='<package_version>')` | Returns an OData XML document containing information about the package with the given name and version. |
 
 ```shell
-curl "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/Packages(Id='mynugetpkg',Version='1.0.0')"
+curl --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/Packages(Id='mynugetpkg',Version='1.0.0')"
 ```
 
 Example response:
@@ -610,7 +619,7 @@ or upgrade a package with the NuGet v2 feed.
 {{< /alert >}}
 
 ```shell
-curl "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/Packages()?$filter=(tolower(Id) eq 'mynugetpkg')"
+curl --url "https://gitlab.example.com/api/v4/projects/1/packages/nuget/v2/Packages()?$filter=(tolower(Id) eq 'mynugetpkg')"
 ```
 
 Example response:

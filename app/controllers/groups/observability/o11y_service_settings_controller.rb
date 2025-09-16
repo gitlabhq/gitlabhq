@@ -2,11 +2,12 @@
 
 module Groups
   module Observability
-    class O11yServiceSettingsController < ApplicationController
+    class O11yServiceSettingsController < Groups::ApplicationController
       include Gitlab::Utils::StrongMemoize
 
       before_action :authenticate_user!
       before_action :authorize_o11y_settings_access!
+      before_action :authorize_o11y_destroy_access!, only: :destroy
 
       feature_category :observability
       urgency :low
@@ -45,7 +46,13 @@ module Groups
       private
 
       def authorize_o11y_settings_access!
-        render_404 unless ::Feature.enabled?(:o11y_settings_access, current_user)
+        return render_404 unless ::Feature.enabled?(:o11y_settings_access, current_user)
+
+        render_404 unless Ability.allowed?(current_user, :update_o11y_settings, group)
+      end
+
+      def authorize_o11y_destroy_access!
+        render_404 unless Ability.allowed?(current_user, :delete_o11y_settings, group)
       end
 
       def settings_params

@@ -9,7 +9,7 @@ import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_ima
 import defaultAvatarUrl from 'images/no_avatar.png';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import ExpandCollapseButton from './expand_collapse_button.vue';
+import ExpandCollapseButton from '~/vue_shared/components/expand_collapse_button/expand_collapse_button.vue';
 import CommitListItemActionButtons from './commit_list_item_action_buttons.vue';
 import CommitListItemDescription from './commit_list_item_description.vue';
 import CommitListItemOverflowMenu from './commit_list_item_overflow_menu.vue';
@@ -71,7 +71,7 @@ export default {
 </script>
 
 <template>
-  <li class="commit-list-item sm:gl-ml-7">
+  <li class="commit-list-item @sm/panel:gl-ml-7">
     <gl-card
       :id="anchorId"
       :body-class="isCollapsed ? 'gl-hidden' : ''"
@@ -79,31 +79,33 @@ export default {
       class="commit-card"
     >
       <template #header>
-        <div class="gl-flex gl-w-full sm:gl-items-center">
+        <div class="gl-flex gl-w-full @sm/panel:gl-items-center">
           <user-avatar-link
             v-if="commit.author"
             :link-href="commit.author.webPath"
             :img-src="commit.author.avatarUrl"
             :img-alt="avatarLinkAltText"
             :img-size="32"
-            class="gl-my-2 gl-mr-5 gl-hidden sm:gl-block"
+            class="gl-my-2 gl-mr-5 gl-hidden @sm/panel:gl-block"
           />
           <user-avatar-image
             v-else
-            class="gl-my-2 gl-mr-5 gl-hidden sm:gl-block"
+            class="gl-my-2 gl-mr-5 gl-hidden @sm/panel:gl-block"
             :img-src="commit.authorGravatar || $options.defaultAvatarUrl"
             :size="32"
           />
-          <div class="gl-inline-block gl-w-full gl-min-w-0 gl-items-center sm:gl-flex">
+          <div class="gl-inline-block gl-w-full gl-min-w-0 gl-items-center @sm/panel:gl-flex">
             <div class="gl-min-w-0 gl-grow">
               <gl-link
                 v-safe-html:[$options.safeHtmlConfig]="commit.titleHtml"
                 :href="commit.webPath"
                 :class="{ 'gl-italic': !commit.message }"
-                class="gl-whitespace-normal !gl-break-all gl-font-bold gl-text-default hover:gl-text-default sm:gl-line-clamp-1"
+                class="gl-whitespace-normal !gl-break-all gl-font-bold gl-text-default hover:gl-text-default @sm/panel:gl-line-clamp-1"
                 data-testid="commit-title-link"
               />
-              <div class="gl-basis-full gl-text-wrap gl-text-sm gl-text-subtle sm:gl-truncate">
+              <div
+                class="gl-basis-full gl-text-wrap gl-text-sm gl-text-subtle @sm/panel:gl-truncate"
+              >
                 <div
                   v-if="commit.author"
                   :data-user-id="userId"
@@ -129,13 +131,15 @@ export default {
             <div class="gl-flex gl-items-center gl-gap-4">
               <div class="gl-my-2 gl-flex gl-items-center gl-gap-3">
                 <span
-                  class="gl-block gl-font-monospace sm:gl-hidden"
+                  class="gl-block gl-font-monospace @sm/panel:gl-hidden"
                   data-testid="commit-sha-mobile"
                 >
                   {{ commit.shortId }}
                 </span>
-                <div class="gl-flex gl-flex-row-reverse gl-items-center gl-gap-3 sm:gl-flex-row">
-                  <gl-badge v-if="commit.tag" icon="tag" variant="muted" class="gl-h-6">{{
+                <div
+                  class="gl-flex gl-flex-row-reverse gl-items-center gl-gap-3 @sm/panel:gl-flex-row"
+                >
+                  <gl-badge v-if="commit.tag" icon="tag" variant="neutral" class="gl-h-6">{{
                     commit.tag.name
                   }}</gl-badge>
                   <signature-badge
@@ -158,11 +162,11 @@ export default {
           </div>
           <overflow-menu
             :commit="commit"
-            class="gl-mr-3 gl-block sm:gl-hidden"
+            class="gl-mr-3 gl-block @sm/panel:gl-hidden"
             data-testid="mobile-overflow-menu"
           />
           <div
-            class="gl-border-l gl-block gl-h-7 gl-border-l-section sm:gl-hidden"
+            class="gl-border-l gl-block gl-h-7 gl-border-l-section @sm/panel:gl-hidden"
             data-testid="mobile-expand-collapse-button-container"
           >
             <expand-collapse-button

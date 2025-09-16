@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::GroupVariablesFinder, feature_category: :ci_variables do
+RSpec.describe Ci::GroupVariablesFinder, feature_category: :pipeline_composition do
   subject(:finder) { described_class.new(project, sort_key).execute }
 
   let_it_be(:user) { create(:user) }

@@ -1,9 +1,8 @@
 ---
 stage: GitLab Delivery
-group: Self Managed
+group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab 18 upgrade notes
-description: Upgrade notes for GitLab 18 versions.
 ---
 
 {{< details >}}
@@ -28,7 +27,11 @@ For additional information for Helm chart installations, see
 
 ## Issues to be aware of when upgrading from 17.11
 
-- **Known issue:** The feature flag `ci_only_one_persistent_ref_creation` causes pipeline failures during zero-downtime upgrades when Rails is upgraded but Sidekiq remains on version 17.11 (see details at [here](https://gitlab.com/gitlab-org/gitlab/-/issues/558808)).
+- From September 29th, 2025 Bitnami will stop providing tagged PostgreSQL and Redis images. If you deploy GitLab 17.11 or earlier using the
+  GitLab chart with bundled Redis or Postgres, you must manually update your values to use the legacy repository to prevent unexpected
+  downtime. For more information, see [issue 6089](https://gitlab.com/gitlab-org/charts/gitlab/-/issues/6089).
+
+- **Known issue:** The feature flag `ci_only_one_persistent_ref_creation` causes pipeline failures during zero-downtime upgrades when Rails is upgraded but Sidekiq remains on version 17.11 (see details in [issue 558808](https://gitlab.com/gitlab-org/gitlab/-/issues/558808)).
 
   **Prevention:** Open the Rails console and enable the feature flag before upgrading:
 
@@ -46,15 +49,39 @@ For additional information for Helm chart installations, see
 
 ## 18.3.0
 
+### GitLab Duo
+
+A new worker `LdapAddOnSeatSyncWorker` was introduced, which could unintentionally remove all users from
+GitLab Duo seats nightly when LDAP is enabled. This was fixed in GitLab 18.4.0 and 18.3.2. See 
+[issue 565064](https://gitlab.com/gitlab-org/gitlab/-/issues/565064) for details.
+
 ### Geo installations 18.3.0
 
 - The [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/545533) that caused `rake gitlab:geo:check` to incorrectly report a failure when installing a Geo secondary site has been fixed in 18.3.0.
+- GitLab 18.3.0 includes a fix for [issue 559196](https://gitlab.com/gitlab-org/gitlab/-/issues/559196) where Geo verification could fail for Pages deployments with long filenames. The fix prevents filename trimming on Geo secondary sites to maintain consistency during replication and verification.
+
+## 18.2.0
+
+### Zero-downtime upgrades
+
+- Upgrades between 18.1.x and 18.2.x are affected by [known issue 567543](https://gitlab.com/gitlab-org/gitlab/-/issues/567543),
+  which causes errors with pushing code to existing projects during an upgrade. To ensure no downtime during the
+  upgrade between versions 18.1.x and 18.2.x, upgrade directly to version 18.2.6, which includes a fix.
+
+### Geo installations 18.2.0
+
+- This version has a known issue that happens when `VerificationStateBackfillService` runs due to changes in the primary key of `ci_job_artifact_states`. To resolve, upgrade to GitLab 18.2.2 or later.
+- GitLab 18.2.0 includes a fix for [issue 559196](https://gitlab.com/gitlab-org/gitlab/-/issues/559196) where Geo verification could fail for Pages deployments with long filenames. The fix prevents filename trimming on Geo secondary sites to maintain consistency during replication and verification.
 
 ## 18.1.0
+
+- Elasticsearch indexing might fail with `strict_dynamic_mapping_exception` errors for Elasticsearch version 7. To resolve, see the "Possible fixes" section in [issue 566413](https://gitlab.com/gitlab-org/gitlab/-/issues/566413).
 
 ### Geo installations 18.1.0
 
 - GitLab version 18.1.0 has a known issue where Git operations that are proxied from a secondary Geo site fail with HTTP 500 errors. To resolve, upgrade to GitLab 18.1.1 or later.
+- This version has a known issue that happens when `VerificationStateBackfillService` runs due to changes in the primary key of `ci_job_artifact_states`. To resolve, upgrade to GitLab 18.1.4.
+- GitLab 18.1.0 includes a fix for [issue 559196](https://gitlab.com/gitlab-org/gitlab/-/issues/559196) where Geo verification could fail for Pages deployments with long filenames. The fix prevents filename trimming on Geo secondary sites to maintain consistency during replication and verification.
 
 ## 18.0.0
 
@@ -82,6 +109,7 @@ For additional information for Helm chart installations, see
   | 18.0                    |  18.0.0 - 18.0.1        | 18.0.2   |
 
 - GitLab versions 18.0 through 18.0.2 have a known issue where Git operations that are proxied from a secondary Geo site fail with HTTP 500 errors. To resolve, upgrade to GitLab 18.0.3 or later.
+- This version has a known issue that happens when `VerificationStateBackfillService` runs due to changes in the primary key of `ci_job_artifact_states`. To resolve, upgrade to GitLab 18.0.6.
 
 ### PRNG is not seeded error on Docker installations
 

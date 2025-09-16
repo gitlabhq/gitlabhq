@@ -7,7 +7,7 @@ feature_categories:
 description: The relative priority assigned to a label within a project, if any
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/297892011330ecdd2fa7cbe47fbc6fd4f3b62171
 milestone: '8.14'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

@@ -46,25 +46,16 @@ class MergeRequestDiffCommit < ApplicationRecord
   # cf. https://gitlab.com/gitlab-org/gitlab/issues/207989 for progress
   def self.create_bulk(merge_request_diff_id, commits, project, skip_commit_data: false)
     organization_id = project.organization_id
-    with_organization = Feature.enabled?(:add_organization_to_diff_commit_users, project)
     dedup_enabled = Feature.enabled?(:merge_request_diff_commits_dedup, project)
-    commit_hashes, user_triples = prepare_commits_for_bulk_insert(commits, organization_id, with_organization)
-    users = MergeRequest::DiffCommitUser.bulk_find_or_create(
-      user_triples,
-      with_organization: with_organization
-    )
+    commit_hashes, user_triples = prepare_commits_for_bulk_insert(commits, organization_id)
+    users = MergeRequest::DiffCommitUser.bulk_find_or_create(user_triples)
 
     rows = commit_hashes.map.with_index do |commit_hash, index|
       raw_sha = commit_hash.delete(:id)
       trailers = commit_hash.fetch(:trailers, {})
 
-      if with_organization
-        author = users[[commit_hash[:author_name], commit_hash[:author_email], organization_id]]
-        committer = users[[commit_hash[:committer_name], commit_hash[:committer_email], organization_id]]
-      else
-        author = users[[commit_hash[:author_name], commit_hash[:author_email]]]
-        committer = users[[commit_hash[:committer_name], commit_hash[:committer_email]]]
-      end
+      author = users[[commit_hash[:author_name], commit_hash[:author_email], organization_id]]
+      committer = users[[commit_hash[:committer_name], commit_hash[:committer_email], organization_id]]
 
       # These fields are only used to determine the author/committer IDs, we
       # don't store them in the DB.
@@ -119,7 +110,7 @@ class MergeRequestDiffCommit < ApplicationRecord
     ApplicationRecord.legacy_bulk_insert(self.table_name, rows) # rubocop:disable Gitlab/BulkInsert
   end
 
-  def self.prepare_commits_for_bulk_insert(commits, organization_id, with_organization)
+  def self.prepare_commits_for_bulk_insert(commits, organization_id)
     user_triples = Set.new
     hashes = commits.map do |commit|
       hash = commit.to_hash.except(:parent_ids, :referenced_by)
@@ -128,13 +119,8 @@ class MergeRequestDiffCommit < ApplicationRecord
         hash[key] = MergeRequest::DiffCommitUser.prepare(hash[key])
       end
 
-      if with_organization
-        user_triples << [hash[:author_name], hash[:author_email], organization_id]
-        user_triples << [hash[:committer_name], hash[:committer_email], organization_id]
-      else
-        user_triples << [hash[:author_name], hash[:author_email]]
-        user_triples << [hash[:committer_name], hash[:committer_email]]
-      end
+      user_triples << [hash[:author_name], hash[:author_email], organization_id]
+      user_triples << [hash[:committer_name], hash[:committer_email], organization_id]
 
       hash
     end

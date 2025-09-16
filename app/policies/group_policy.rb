@@ -132,38 +132,134 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     Feature.enabled?(:archive_group, @subject.root_ancestor)
   end
 
-  rule { (admin | owner) & archive_group_enabled }.enable :archive_group
+  condition(:archived, scope: :subject) { @subject.self_or_ancestors_archived? }
+  condition(:group_scheduled_for_deletion, scope: :subject) { @subject.scheduled_for_deletion_in_hierarchy_chain? }
+  condition(:ancestor_scheduled_for_deletion, scope: :subject) do
+    !@subject.self_deletion_scheduled? && @subject.scheduled_for_deletion_in_hierarchy_chain?
+  end
+  condition(:parent_deletion_in_progress, scope: :subject) { @subject.parent&.self_deletion_in_progress? }
 
-  condition(:archived?, scope: :subject) { @subject.self_or_ancestors_archived? }
-  condition(:group_deleted?, scope: :subject) { @subject.scheduled_for_deletion_in_hierarchy_chain? }
-
-  rule { archived? & archive_group_enabled }.policy do
+  rule { archived & archive_group_enabled }.policy do
+    prevent :activate_group_member
+    prevent :add_cluster
+    prevent :admin_achievement
     prevent :admin_build
+    prevent :admin_cluster
     prevent :admin_group_member
     prevent :admin_issue
     prevent :admin_issue_board
     prevent :admin_issue_board_list
     prevent :admin_label
+    prevent :admin_member_access_request
     prevent :admin_milestone
+    prevent :admin_note
+    prevent :admin_package
     prevent :admin_pipeline
+    prevent :admin_push_rules
+    prevent :admin_runners
     prevent :admin_work_item
+    prevent :award_achievement
+    prevent :award_emoji
+    prevent :change_group
+    prevent :change_new_user_signups_cap
+    prevent :change_prevent_sharing_groups_outside_hierarchy
+    prevent :change_seat_control
+    prevent :change_share_with_group_lock
+    prevent :change_visibility_level
+    prevent :create_cluster
+    prevent :create_custom_emoji
+    prevent :create_deploy_token
+    prevent :create_jira_connect_subscription
+    prevent :create_note
+    prevent :create_observability_access_request
     prevent :create_package
     prevent :create_projects
+    prevent :create_resource_access_tokens
     prevent :create_runners
     prevent :create_subgroup
-    prevent :edit_billing
     prevent :import_projects
+    prevent :invite_group_members
+    prevent :register_group_runners
     prevent :reopen_issue
+    prevent :request_access
+    prevent :resolve_note
+    prevent :set_new_issue_metadata
+    prevent :set_new_work_item_metadata
+    prevent :set_show_diff_preview_in_email
     prevent :transfer_projects
+    prevent :update_cluster
+    prevent :update_default_branch_protection
+    prevent :update_git_access_protocol
     prevent :update_issue
+    prevent :update_max_artifacts_size
+    prevent :update_o11y_settings
+    prevent :update_runners_registration_token
+    prevent :upload_file
+    prevent :admin_tag
+    prevent :push_code
+    prevent :push_to_delete_protected_branch
+    prevent :request_access
+    prevent :upload_file
+    prevent :resolve_note
+    prevent :create_merge_request_from
+    prevent :create_merge_request_in
+    prevent :award_emoji
+    prevent :create_incident
+    prevent :admin_software_license_policy
+    prevent :create_test_case
+    prevent :admin_ai_catalog_item
+    prevent :set_issue_created_at
+    prevent :set_issue_updated_at
+    prevent :set_epic_created_at
+    prevent :set_epic_updated_at
+    prevent :set_note_created_at
+    prevent :admin_namespace
+    prevent :change_visibility_level
+    prevent :admin_integrations
+    prevent :admin_cicd_variables
+    prevent :admin_protected_environments
+    prevent :manage_merge_request_settings
+    prevent :create_deploy_token
+    prevent :destroy_deploy_token
+    prevent :register_group_runners
+    prevent :update_runners_registration_token
+    prevent :admin_runners
+    prevent :admin_package
+    prevent :admin_push_rules
+    prevent :admin_cluster
+    prevent :add_cluster
+    prevent :create_cluster
+    prevent :update_cluster
+    prevent :create_jira_connect_subscription
+    prevent :create_epic
+    prevent :update_epic
+    prevent :admin_epic
+    prevent :destroy_epic
+    prevent :create_iteration
+    prevent :admin_iteration
+    prevent :create_iteration_cadence
+    prevent :admin_iteration_cadence
+    prevent :rollover_issues
+    prevent :admin_custom_field
+    prevent :create_wiki
+    prevent :admin_wiki
+    prevent :admin_merge_request
+    prevent :admin_vulnerability
+    prevent :modify_security_policy
+    prevent :admin_compliance_framework
+    prevent :admin_compliance_pipeline_configuration
   end
 
-  rule { archived? & archive_group_enabled & ~group_deleted? }.policy do
+  rule { archived & archive_group_enabled & ~group_scheduled_for_deletion }.policy do
+    prevent :delete_custom_emoji
+    prevent :delete_o11y_settings
     prevent :destroy_issue
-    prevent :destroy_user_achievement
     prevent :destroy_package
     prevent :destroy_upload
+    prevent :destroy_user_achievement
   end
+
+  rule { ancestor_scheduled_for_deletion & ~parent_deletion_in_progress }.prevent :remove_group
 
   rule { can?(:read_group) & design_management_enabled }.policy do
     enable :read_design_activity
@@ -271,6 +367,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   rule { developer }.policy do
     enable :create_custom_emoji
     enable :create_observability_access_request
+    enable :update_o11y_settings
+    enable :delete_o11y_settings
     enable :create_package
     enable :developer_access
     enable :admin_crm_organization
@@ -279,7 +377,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :read_cluster_agent
     enable :read_group_all_available_runners
     enable :read_observability_portal
-    enable :use_k8s_proxies
   end
 
   rule { reporter }.policy do
@@ -318,8 +415,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :destroy_upload
     enable :import_projects
     enable :read_deploy_token
-    enable :read_runners
     enable :update_cluster
+
+    # doc/ci/runners/runners_scope.md#group-runners
+    # doc/user/permissions.md#cicd-group-permissions
+    enable :read_runners
   end
 
   rule { owner }.policy do
@@ -331,29 +431,34 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_namespace
     enable :admin_package
     enable :admin_protected_environments
-    enable :admin_runners
+    enable :archive_group
+    enable :change_group
     enable :change_new_user_signups_cap
     enable :change_prevent_sharing_groups_outside_hierarchy
     enable :change_seat_control
     enable :change_visibility_level
     enable :create_deploy_token
-    enable :create_runners
     enable :create_subgroup
     enable :destroy_deploy_token
     enable :destroy_issue
     enable :edit_billing
     enable :manage_merge_request_settings
     enable :read_billing
-    enable :read_runners
-    enable :read_runners_registration_token
     enable :read_usage_quotas
-    enable :register_group_runners
     enable :remove_group
     enable :set_emails_disabled
     enable :set_note_created_at
     enable :set_show_diff_preview_in_email
     enable :update_default_branch_protection
     enable :update_git_access_protocol
+
+    # doc/ci/runners/runners_scope.md#group-runners
+    # doc/user/permissions.md#cicd-group-permissions
+    enable :admin_runners
+    enable :create_runners
+    enable :read_runners
+    enable :read_runners_registration_token
+    enable :register_group_runners
     enable :update_runners_registration_token
   end
 

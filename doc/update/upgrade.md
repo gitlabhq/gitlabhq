@@ -1,8 +1,8 @@
 ---
 stage: GitLab Delivery
-group: Self Managed
+group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Upgrade a GitLab installation
+title: Upgrade a GitLab instance
 description: Upgrade steps for all installation methods.
 ---
 
@@ -13,47 +13,19 @@ description: Upgrade steps for all installation methods.
 
 {{< /details >}}
 
-Upgrading GitLab is a relatively straightforward process, but the complexity can increase based on:
+Upgrade a GitLab instance to take advantage of new features and bug fixes.
 
-- The installation method you have used.
-- How old your GitLab version is.
-- If you're upgrading to a major version.
-
-If possible, you should test out the upgrade in a test environment before updating your production instance. Your test
-environment should mimic your production environment as closely as possible.
-
-Make sure to read the whole page as it contains information related to every upgrade method.
+Before you upgrade, consult [information you need before you upgrade](plan_your_upgrade.md).
 
 ## Upgrade GitLab
 
 To upgrade GitLab:
 
-1. Create an [upgrade plan](plan_your_upgrade.md) to document your upgrade steps.
-1. Familiarize yourself with the [maintenance policy documentation](../policy/maintenance.md) and the [currently maintained versions](../policy/maintenance.md#maintained-versions).
-1. Read the [release posts](https://about.gitlab.com/releases/categories/releases/) for versions you're passing over.
-   In particular, deprecations, removals, and important notes on upgrading.
-1. Using the [upgrade path tool](upgrade_paths.md#upgrade-path-tool), determine what [upgrade path](upgrade_paths.md) you should take.
-   If your upgrade path includes required upgrade stops, you might have to perform multiple
-   upgrades to move from your current version to your target version. If
-   relevant, check [OS compatibility with the target GitLab version](../administration/package_information/supported_os.md).
-1. Check for [background migrations](background_migrations.md). All migrations must finish running before each upgrade.
-   You must spread out upgrades between major and minor releases to allow time for background migrations to finish.
-1. Test your upgrade in a test environment first, and have a [rollback plan](plan_your_upgrade.md#rollback-plan)
-   to reduce the risk of unplanned outages and extended downtime.
 1. If available in your starting version, consider [turning on maintenance mode](../administration/maintenance_mode/_index.md)
    during the upgrade.
-1. Consult changes for different versions of GitLab to ensure compatibility before upgrading:
-   - [GitLab 18 changes](versions/gitlab_18_changes.md)
-   - [GitLab 17 changes](versions/gitlab_17_changes.md)
-   - [GitLab 16 changes](versions/gitlab_16_changes.md)
-   - [GitLab 15 changes](versions/gitlab_15_changes.md)
 1. Perform [pre-upgrade checks](#pre-upgrade-and-post-upgrade-checks).
 1. Pause [running CI/CD pipelines and jobs](#cicd-pipelines-and-jobs-during-upgrades).
-1. If relevant, follow [upgrade steps for additional features](#upgrade-steps-for-additional-features):
-   - [Advanced search (Elasticsearch)](#elasticsearch).
-   - [Geo](#geo).
-   - [Gitaly running on its own server](#external-gitaly).
-   - [GitLab agent for Kubernetes](#gitlab-agent-for-kubernetes).
+1. If relevant, follow [upgrade steps for additional features](#upgrade-steps-for-additional-features).
 1. Follow the [upgrade steps based on your installation method](#upgrade-based-on-installation-method).
 1. If your GitLab instance has any runners associated with it, upgrade them to match the current GitLab version.
    This step ensures [compatibility with GitLab versions](https://docs.gitlab.com/runner/#gitlab-runner-versions).
@@ -212,11 +184,7 @@ on the application server from sending RPCs that the old Gitaly version does not
 If you're using Geo:
 
 - Review [Geo upgrade documentation](../administration/geo/replication/upgrading_the_geo_sites.md).
-- Read about the Geo version-specific update instructions:
-  - [GitLab 18](versions/gitlab_18_changes.md)
-  - [GitLab 17](versions/gitlab_17_changes.md)
-  - [GitLab 16](versions/gitlab_16_changes.md)
-  - [GitLab 15](versions/gitlab_15_changes.md)
+- Review Geo-specific information in the [GitLab upgrade notes](versions/_index.md).
 - Review Geo-specific steps when [upgrading the database](https://docs.gitlab.com/omnibus/settings/database.html#upgrading-a-geo-instance).
 - Create an upgrade and rollback plan for each Geo site (primary and each secondary).
 
@@ -224,7 +192,7 @@ If you're using Geo:
 
 If you have Kubernetes clusters connected with GitLab, [upgrade your GitLab agents for Kubernetes](../user/clusters/agent/install/_index.md#update-the-agent-version) to match your new GitLab version.
 
-### Elasticsearch
+### Advanced search (Elasticsearch)
 
 Before updating GitLab, confirm advanced search migrations are complete by
 [checking for pending migrations](background_migrations.md#check-for-pending-advanced-search-migrations).

@@ -395,6 +395,17 @@ export const POLICIES_BY_RESOURCE = [
     ],
   },
   {
+    resource: { value: 'MERGE_REQUESTS', text: 'Merge requests' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_MERGE_REQUESTS',
+        text: 'Read',
+        resource: { value: 'MERGE_REQUESTS', text: 'Merge requests' },
+      },
+    ],
+  },
+  {
     resource: { value: 'PACKAGES', text: 'Packages' },
     policies: [
       { value: '', text: 'None' },
@@ -443,6 +454,17 @@ export const POLICIES_BY_RESOURCE = [
     ],
   },
   {
+    resource: { value: 'REPOSITORIES', text: 'Repositories' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_REPOSITORIES',
+        text: 'Read',
+        resource: { value: 'REPOSITORIES', text: 'Repositories' },
+      },
+    ],
+  },
+  {
     resource: { value: 'SECURE_FILES', text: 'Secure files' },
     policies: [
       { value: '', text: 'None' },
@@ -471,6 +493,17 @@ export const POLICIES_BY_RESOURCE = [
         value: 'ADMIN_TERRAFORM_STATE',
         text: 'Read and write',
         resource: { value: 'TERRAFORM_STATE', text: 'Terraform state' },
+      },
+    ],
+  },
+  {
+    resource: { value: 'WORK_ITEMS', text: 'Work items' },
+    policies: [
+      { value: '', text: 'None' },
+      {
+        value: 'READ_WORK_ITEMS',
+        text: 'Read',
+        resource: { value: 'WORK_ITEMS', text: 'Work items' },
       },
     ],
   },

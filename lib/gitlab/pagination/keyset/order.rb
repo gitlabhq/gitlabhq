@@ -239,7 +239,14 @@ module Gitlab
         def build_or_query(expressions)
           return [] if expressions.blank?
 
-          or_expression = expressions.reduce { |or_expression, expression| Arel::Nodes::Or.new(or_expression, expression) }
+          or_expression = expressions.reduce do |or_expression, expression|
+            if Gitlab.next_rails?
+              Arel::Nodes::Or.new([or_expression, expression])
+            else
+              Arel::Nodes::Or.new(or_expression, expression)
+            end
+          end
+
           Arel::Nodes::Grouping.new(or_expression)
         end
 

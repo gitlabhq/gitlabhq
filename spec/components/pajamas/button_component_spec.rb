@@ -163,7 +163,7 @@ RSpec.describe Pajamas::ButtonComponent, type: :component, feature_category: :de
       end
 
       context 'with non-category variants' do
-        where(:variant) { [:dashed, :link, :reset] }
+        where(:variant) { [:link, :reset] }
 
         let(:options) { { variant: variant, category: :tertiary } }
 

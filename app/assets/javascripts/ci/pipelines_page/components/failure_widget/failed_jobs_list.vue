@@ -109,9 +109,9 @@ export default {
     },
   },
   columns: [
-    { text: JOB_NAME_HEADER, class: 'col-4' },
-    { text: STAGE_HEADER, class: 'col-2' },
-    { text: JOB_ID_HEADER, class: 'col-2' },
+    { text: JOB_NAME_HEADER, class: 'gl-col-4' },
+    { text: STAGE_HEADER, class: 'gl-col-2' },
+    { text: JOB_ID_HEADER, class: 'gl-col-2' },
   ],
   i18n: {
     maximumJobLimitAlert: {

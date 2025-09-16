@@ -4,7 +4,10 @@ module Authn
   module Tokens
     class ClusterAgentToken
       def self.prefix?(plaintext)
-        plaintext.start_with?(::Clusters::AgentToken::TOKEN_PREFIX)
+        prefixes = [::Clusters::AgentToken.glagent_prefix,
+          ::Clusters::AgentToken::TOKEN_PREFIX].uniq
+
+        plaintext.start_with?(*prefixes)
       end
 
       attr_reader :revocable, :source

@@ -177,10 +177,7 @@
 
         .btn {
           justify-content: flex-start;
-
-          &:not(.btn-dashed) {
-            box-shadow: none;
-          }
+          box-shadow: none;
         }
       }
 

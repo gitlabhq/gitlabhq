@@ -27,7 +27,7 @@ GitLab Duo with Amazon Q cannot be combined with other GitLab Duo add-ons.
 
 {{< /alert >}}
 
-At Re:Invent 2024, Amazon announced the GitLab Duo with Amazon Q integration.
+At re:Invent 2024, Amazon announced the GitLab Duo with Amazon Q integration.
 With this integration, you can automate tasks and increase productivity.
 
 GitLab Duo with Amazon Q:

@@ -8,6 +8,7 @@ RSpec.shared_examples 'a degenerable job' do
     context 'when job is degenerated' do
       before do
         job.degenerate!
+        job.reload
       end
 
       it { is_expected.to be_degenerated }
@@ -20,6 +21,7 @@ RSpec.shared_examples 'a degenerable job' do
       before do
         job.try(:execution_config)&.delete
         job.metadata.delete
+        job.job_definition_instance.delete
         job.reload
       end
 

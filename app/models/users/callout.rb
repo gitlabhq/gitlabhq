@@ -82,7 +82,7 @@ module Users
       # 79 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143862
       duo_chat_callout: 80, # EE-only
       # 81 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146322
-      product_analytics_dashboard_feedback: 82, # EE-only
+      # 82 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203697
       joining_a_project_alert: 83, # EE-only
       transition_to_jihu_callout: 84,
       # 85 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169248
@@ -107,12 +107,14 @@ module Users
       product_usage_data_collection_changes: 103,
       dora_dashboard_migration_group: 104,
       dora_dashboard_migration_project: 105,
-      enable_duo_banner_admin_duo_settings_page: 106, # EE-only
-      enable_duo_banner_admin_dashboard: 107, # EE-only
+      # 106 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202983
+      # 107 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202983
       explore_duo_core_banner: 108, # EE-only
       merge_request_dashboard_display_preferences_popover: 109,
-      vulnerability_archival: 110 # EE-only
-
+      vulnerability_archival: 110, # EE-only
+      duo_amazon_q_alert: 111, # EE-only
+      personal_homepage_preferences_banner: 112,
+      duo_agent_platform_requested: 113 # EE-only
     }
 
     validates :feature_name,

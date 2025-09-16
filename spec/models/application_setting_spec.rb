@@ -274,6 +274,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         unique_ips_limit_per_user: 10,
         unique_ips_limit_time_window: 3600,
         usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
+        usage_ping_generation_enabled: true,
         usage_ping_features_enabled: false,
         use_clickhouse_for_analytics: false,
         user_contributed_projects_api_limit: 100,
@@ -1066,6 +1067,66 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         end
 
         it_behaves_like 'usage ping enabled'
+      end
+    end
+
+    describe 'usage_ping_generation_enabled setting' do
+      shared_examples 'usage ping generation enabled' do
+        it 'properly reflects generation enabled status' do
+          expect(setting.usage_ping_generation_enabled).to be(true)
+          expect(setting.usage_ping_generation_enabled?).to be(true)
+        end
+      end
+
+      shared_examples 'usage ping generation disabled' do
+        it 'properly reflects generation disabled status' do
+          expect(setting.usage_ping_generation_enabled).to be(false)
+          expect(setting.usage_ping_generation_enabled?).to be(false)
+        end
+      end
+
+      context 'when usage_ping_enabled is true' do
+        before do
+          allow(setting).to receive(:usage_ping_enabled?).and_return(true)
+        end
+
+        context 'with usage_ping_generation_enabled disabled in database' do
+          before do
+            setting.update!(usage_ping_generation_enabled: false)
+          end
+
+          it_behaves_like 'usage ping generation enabled'
+        end
+
+        context 'with usage_ping_generation_enabled enabled in database' do
+          before do
+            setting.update!(usage_ping_generation_enabled: true)
+          end
+
+          it_behaves_like 'usage ping generation enabled'
+        end
+      end
+
+      context 'when usage_ping_enabled is false' do
+        before do
+          allow(setting).to receive(:usage_ping_enabled?).and_return(false)
+        end
+
+        context 'with usage_ping_generation_enabled disabled in database' do
+          before do
+            setting.update!(usage_ping_generation_enabled: false)
+          end
+
+          it_behaves_like 'usage ping generation disabled'
+        end
+
+        context 'with usage_ping_generation_enabled enabled in database' do
+          before do
+            setting.update!(usage_ping_generation_enabled: true)
+          end
+
+          it_behaves_like 'usage ping generation enabled'
+        end
       end
     end
 

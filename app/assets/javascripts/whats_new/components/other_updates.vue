@@ -1,5 +1,10 @@
 <script>
 import { GlInfiniteScroll } from '@gitlab/ui';
+// eslint-disable-next-line no-restricted-imports
+import { mapActions } from 'vuex';
+import axios from '~/lib/utils/axios_utils';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import Feature from './feature.vue';
 import SkeletonLoader from './skeleton_loader.vue';
 
@@ -18,6 +23,20 @@ export default {
     fetching: {
       type: Boolean,
       required: true,
+    },
+    readArticles: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    totalArticlesToRead: {
+      type: Number,
+      required: true,
+    },
+    markAsReadPath: {
+      type: String,
+      required: false,
+      default: null,
     },
     drawerBodyHeight: {
       type: Number,
@@ -49,8 +68,22 @@ export default {
     },
   },
   methods: {
+    ...mapActions(['setReadArticles']),
     bottomReached() {
       this.$emit('bottomReached');
+    },
+    showUnread(index) {
+      return index <= this.totalArticlesToRead && !this.readArticles.includes(index);
+    },
+    markAsRead(index) {
+      if (isLoggedIn() && this.markAsReadPath) {
+        axios
+          .post(this.markAsReadPath, { article_id: index })
+          .then(() => {
+            this.setReadArticles([...this.readArticles, index]);
+          })
+          .catch((error) => Sentry.captureException(error));
+      }
     },
   },
 };
@@ -67,7 +100,13 @@ export default {
         @bottomReached="bottomReached"
       >
         <template #items>
-          <feature v-for="feature in features" :key="feature.name" :feature="feature" />
+          <feature
+            v-for="(feature, index) in features"
+            :key="feature.name"
+            :feature="feature"
+            :show-unread="showUnread(index)"
+            @mark-article-as-read="markAsRead(index)"
+          />
         </template>
       </gl-infinite-scroll>
     </template>

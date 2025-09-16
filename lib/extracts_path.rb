@@ -2,6 +2,7 @@
 
 # Module providing methods for dealing with separating a tree-ish string and a
 # file path string when combined in a request parameter
+# rubocop:disable Gitlab/ModuleWithInstanceVariables -- will be fixed in https://gitlab.com/gitlab-org/gitlab/-/issues/425379
 module ExtractsPath
   InvalidPathError = ExtractsRef::RefExtractor::InvalidPathError
   BRANCH_REF_TYPE = ExtractsRef::RefExtractor::BRANCH_REF_TYPE
@@ -27,7 +28,6 @@ module ExtractsPath
   #
   # If the :id parameter appears to be requesting a specific response format,
   # that will be handled as well.
-  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def assign_ref_vars
     ref_extractor = ExtractsRef::RefExtractor.new(repository_container, params.permit(:id, :ref, :path, :ref_type))
     ref_extractor.extract!
@@ -42,7 +42,7 @@ module ExtractsPath
       @fully_qualified_ref = ref_extractor.fully_qualified_ref
     end
 
-    rectify_atom!
+    rectify_format!
 
     rectify_renamed_default_branch! && return
 
@@ -53,7 +53,6 @@ module ExtractsPath
   rescue RuntimeError, NoMethodError, InvalidPathError
     render_404
   end
-  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def ref_type
     ExtractsRef::RefExtractor.ref_type(params[:ref_type])
@@ -66,38 +65,42 @@ module ExtractsPath
     false
   end
 
-  # If we have an ID of 'foo.atom', and the controller provides Atom and HTML
-  # formats, then we have to check if the request was for the Atom version of
-  # the ID without the '.atom' suffix, or the HTML version of the ID including
+  def rectify_format!
+    return if @commit || @path.present?
+
+    bare_ref, format = extract_ref_and_format(@id)
+    return unless format
+
+    @id = @ref = bare_ref
+    @fully_qualified_ref = ExtractsRef::RefExtractor.qualify_ref(@ref, ref_type)
+    @commit = @repo.commit(@fully_qualified_ref)
+
+    return unless @commit
+
+    request.format = format
+  end
+
+  # If we have an ID of 'foo.atom' or 'foo.json', and the controller provides
+  # Atom, JSON, and HTML formats, then we have to check if the request was for
+  # the Atom version of the ID without the '.atom' suffix, the JSON version of
+  # the ID without the '.json' suffix, or the HTML version of the ID including
   # the suffix. We only check this if the version including the suffix doesn't
   # match, so it is possible to create a branch which has an unroutable Atom
-  # feed.
-  def extract_ref_without_atom(id)
-    id_without_atom = id.sub(/\.atom$/, '')
-    valid_refs = ref_names.select { |v| "#{id_without_atom}/".start_with?("#{v}/") }
+  # feed or JSON view.
+  def extract_ref_and_format(id)
+    return [id, nil] unless id.match?(/\.(?:atom|json)$/)
 
-    raise InvalidPathError if valid_refs.blank?
+    id, _dot, format = id.rpartition('.')
+    ref = ref_names.find { |ref_name| id == ref_name }
 
-    valid_refs.max_by(&:length)
+    raise InvalidPathError if ref.blank?
+
+    [ref, format.to_sym]
   end
-
-  # rubocop:disable Gitlab/ModuleWithInstanceVariables
-  def rectify_atom!
-    return if @commit
-    return unless @id.ends_with?('.atom')
-    return unless @path.empty?
-
-    @id = @ref = extract_ref_without_atom(@id)
-    @commit = @repo.commit(@ref)
-
-    request.format = :atom if @commit
-  end
-  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   # For GET/HEAD requests, if the ref doesn't exist in the repository, check
   # whether we're trying to access a renamed default branch. If we are, we can
   # redirect to the current default branch instead of rendering a 404.
-  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def rectify_renamed_default_branch!
     return unless redirect_renamed_default_branch?
     return if @commit
@@ -110,15 +113,15 @@ module ExtractsPath
 
     true
   end
-  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def ref_names
     return [] unless repository_container
 
-    @ref_names ||= repository_container.repository.ref_names # rubocop:disable Gitlab/ModuleWithInstanceVariables -- will be fixed in https://gitlab.com/gitlab-org/gitlab/-/issues/425379
+    @ref_names ||= repository_container.repository.ref_names
   end
 
   def repository_container
     @project
   end
 end
+# rubocop:enable Gitlab/ModuleWithInstanceVariables

@@ -30,7 +30,6 @@ describe('Registry List', () => {
   };
 
   const findSelectAll = () => wrapper.findComponent(GlFormCheckbox);
-  const findSelectedCount = () => wrapper.findByTestId('selected-count');
   const findDeleteSelected = () => wrapper.findComponent(GlButton);
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findScopedSlots = () => wrapper.findAllByTestId('scoped-slot');
@@ -47,8 +46,8 @@ describe('Registry List', () => {
       it('exists', () => {
         expect(findSelectAll().exists()).toBe(true);
         expect(findSelectAll().text()).toBe('Select all');
-        expect(findSelectAll().attributes('disabled')).toBeUndefined();
-        expect(findSelectAll().attributes('indeterminate')).toBeUndefined();
+        expect(findSelectAll().props('disabled')).toBe(false);
+        expect(findSelectAll().props('indeterminate')).toBe(false);
       });
 
       it('sets disabled prop to true when items length is 0', () => {
@@ -67,17 +66,6 @@ describe('Registry List', () => {
         await findSelectAll().vm.$emit('change', true);
 
         expect(findSelectAll().text()).toBe('Clear all');
-        expect(findSelectedCount().text()).toBe('2 selected');
-      });
-
-      it('when some items are marked as not selectable', async () => {
-        mountComponent({
-          propsData: { ...defaultPropsData, unSelectableItemIds: ['b'] },
-        });
-
-        await findSelectAll().vm.$emit('change', true);
-
-        expect(findSelectedCount().text()).toBe('1 selected');
       });
 
       it('select and unselect all', async () => {

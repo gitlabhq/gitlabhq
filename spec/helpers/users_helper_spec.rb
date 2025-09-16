@@ -316,7 +316,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     context 'with a bot' do
       let(:user) { create(:user, :bot) }
 
-      it { is_expected.to match_array([{ text: s_('AdminUsers|Bot'), variant: "muted" }]) }
+      it { is_expected.to match_array([{ text: s_('AdminUsers|Bot'), variant: "neutral" }]) }
     end
 
     context 'with a deactivated user' do
@@ -328,7 +328,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     context 'with an external user' do
       let(:user) { create(:user, external: true) }
 
-      it { is_expected.to match_array([{ text: s_("AdminUsers|External"), variant: "muted" }]) }
+      it { is_expected.to match_array([{ text: s_("AdminUsers|External"), variant: "neutral" }]) }
     end
 
     context 'with the current user' do
@@ -338,7 +338,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
         is_expected.to match_array(
           [
             { text: s_("AdminUsers|Admin"), variant: "success" },
-            { text: s_("AdminUsers|It's you!"), variant: "muted" }
+            { text: s_("AdminUsers|It's you!"), variant: "neutral" }
           ])
       end
     end
@@ -351,7 +351,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
           [
             { text: s_("AdminUsers|Blocked"), variant: "danger" },
             { text: s_("AdminUsers|Admin"), variant: "success" },
-            { text: s_("AdminUsers|External"), variant: "muted" }
+            { text: s_("AdminUsers|External"), variant: "neutral" }
           ])
       end
     end
@@ -365,7 +365,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     context 'with a placeholder user' do
       let(:user) { create(:user, :placeholder) }
 
-      it { is_expected.to match_array([{ text: s_("UserMapping|Placeholder"), variant: "muted" }]) }
+      it { is_expected.to match_array([{ text: s_("UserMapping|Placeholder"), variant: "neutral" }]) }
     end
 
     context 'with an LDAP user' do

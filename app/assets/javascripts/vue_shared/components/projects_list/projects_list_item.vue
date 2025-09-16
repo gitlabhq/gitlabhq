@@ -148,10 +148,13 @@ export default {
       );
     },
     hasTopics() {
-      return this.project.topics.length;
+      return Boolean(this.project.topics?.length);
+    },
+    hasStarData() {
+      return Number.isInteger(this.project.starCount);
     },
     starCount() {
-      return numberToMetricPrefix(this.project.starCount);
+      return this.hasStarData ? numberToMetricPrefix(this.project.starCount) : undefined;
     },
     openMergeRequestsCount() {
       if (!this.isMergeRequestsEnabled) {
@@ -301,6 +304,7 @@ export default {
       <list-item-inactive-badge :resource="project" />
       <gl-badge v-if="hasStatistics" data-testid="storage-size">{{ storageSize }}</gl-badge>
       <list-item-stat
+        v-if="hasStarData"
         :href="starsHref"
         :tooltip-text="$options.i18n.stars"
         :a11y-text="starA11yText"

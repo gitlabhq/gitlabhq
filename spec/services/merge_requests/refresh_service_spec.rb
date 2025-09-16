@@ -10,8 +10,14 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
   let(:user) { create(:user) }
   let(:service) { described_class }
 
+  let(:webhook_ff) { false }
+
   describe '#execute' do
     before do
+      stub_feature_flags(
+        split_refresh_worker_web_hooks: webhook_ff
+      )
+
       @user = create(:user)
       group = create(:group)
       group.add_owner(@user)
@@ -117,6 +123,29 @@ RSpec.describe MergeRequests::RefreshService, feature_category: :code_review_wor
         expect(@fork_merge_request.notes).to be_empty
         expect(@build_failed_todo).to be_done
         expect(@fork_build_failed_todo).to be_done
+      end
+
+      context 'when split_refresh_worker_web_hooks is on' do
+        let(:webhook_ff) { true }
+
+        it 'calls the web hooks worker async' do
+          expect(MergeRequests::Refresh::WebHooksWorker).to receive(:perform_async)
+            .with(
+              @project.id,
+              @user.id,
+              @oldrev,
+              @newrev,
+              'refs/heads/master'
+            )
+
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+        end
+
+        it 'does not execute the web hooks' do
+          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+
+          expect(refresh_service).not_to have_received(:execute_hooks)
+        end
       end
 
       it 'triggers mergeRequestMergeStatusUpdated GraphQL subscription conditionally' do

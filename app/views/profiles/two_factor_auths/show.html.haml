@@ -13,17 +13,20 @@
         - c.with_body do
           = troubleshooting_link
 
-= render ::Layouts::PageHeadingComponent.new(title, options: { class: 'gl-mb-3' })
-
-= render ::Layouts::SettingsSectionComponent.new(_('Register a one-time password authenticator')) do |c|
+= render ::Layouts::SettingsSectionComponent.new(title) do |c|
+  - c.with_description do
+    .gl-flex.gl-flex-wrap.gl-gap-3.gl-justify-between.gl-mt-2
+      %div
+        = _("Increase your account's security by enabling two-factor authentication (2FA).")
+      - if current_user.two_factor_enabled?
+        .gl-w-full.sm:gl-w-auto
+          .js-two-factor-action-confirm{ data: disable_two_factor_authentication_data(current_password_required?) }
   - c.with_body do
+    %p
+      %span.gl-font-bold
+        = _('Status:')
+      #{current_user.two_factor_enabled? ? _('Enabled') : _('Disabled')}
     = render 'otp_registration', {troubleshooting_link: troubleshooting_link}
-
-= render ::Layouts::SettingsSectionComponent.new(_('Register a WebAuthn device')) do |s|
-  - s.with_body do
     = render 'webauthn_registration'
-
-
-= render ::Layouts::SettingsSectionComponent.new(_('Disable two-factor authentication')) do |s|
-  - s.with_body do
-    = render 'recovery_codes'
+    - if current_user.two_factor_enabled?
+      = render 'recovery_codes'

@@ -19,11 +19,11 @@ exports[`Code navigation popover component renders popover 1`] = `
       titlelinkclass=""
     >
       <div
-        class="code-navigation-popover-container overflow-auto"
+        class="!gl-overflow-auto code-navigation-popover-container"
       >
         <div>
           <pre
-            class="bg-transparent border-0 code code-syntax-highlight-theme highlight m-0 text-wrap"
+            class="!gl-bg-transparent !gl-border-0 !gl-m-0 !gl-whitespace-normal code code-syntax-highlight-theme highlight"
           >
             <span
               class="line"
@@ -52,7 +52,7 @@ exports[`Code navigation popover component renders popover 1`] = `
         </div>
       </div>
       <div
-        class="border-top popover-body"
+        class="!gl-border-t !gl-border-t-gray-300 popover-body"
       >
         <gl-button-stub
           buttontextclasses=""
@@ -72,7 +72,7 @@ exports[`Code navigation popover component renders popover 1`] = `
       </div>
     </gl-tab-stub>
     <gl-tab-stub
-      class="py-2"
+      class="!gl-py-3"
       data-testid="references-tab"
       titlelinkclass=""
     >

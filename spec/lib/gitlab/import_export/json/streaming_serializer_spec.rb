@@ -515,7 +515,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
       end
 
       context 'when batch ids are provided' do
-        it 'uses the default batching behaviour rather than switching to keyset pagination' do
+        it 'uses the default batching behaviour rather than switching to keyset pagination', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/554610' do
           expect(json_writer).to receive(:write_relation_array).with(
             exportable_path,
             :merge_requests,

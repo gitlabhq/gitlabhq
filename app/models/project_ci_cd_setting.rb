@@ -4,8 +4,6 @@ class ProjectCiCdSetting < ApplicationRecord
   include ChronicDurationAttribute
   include EachBatch
 
-  ignore_column :restrict_user_defined_variables, remove_with: '18.3', remove_after: '2025-08-14'
-
   belongs_to :project, inverse_of: :ci_cd_settings
 
   DEFAULT_GIT_DEPTH = 20
@@ -23,6 +21,8 @@ class ProjectCiCdSetting < ApplicationRecord
   ALLOWED_SUB_CLAIM_COMPONENTS = %w[project_path ref_type ref].freeze
 
   enum :pipeline_variables_minimum_override_role, PIPELINE_VARIABLES_OVERRIDE_ROLES, prefix: true
+
+  enum :resource_group_default_process_mode, ::Ci::ResourceGroup::RESOURCE_GROUP_PROCESS_MODES, prefix: true
 
   before_validation :set_pipeline_variables_secure_defaults, on: :create
   before_create :set_default_git_depth

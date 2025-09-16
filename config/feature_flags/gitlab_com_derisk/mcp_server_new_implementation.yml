@@ -1,0 +1,10 @@
+---
+name: mcp_server_new_implementation
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/554939
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204566
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/569912
+milestone: '18.4'
+group: group::ai framework
+type: gitlab_com_derisk
+default_enabled: false

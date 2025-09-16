@@ -6,11 +6,12 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
   include ExternalAuthorizationServiceHelpers
 
   let_it_be(:user) { create(:user) }
+  let_it_be(:namespace) { user.namespace }
   let(:project_name) { 'GitLab' }
   let(:opts) do
     {
       name: project_name,
-      namespace_id: user.namespace.id
+      namespace_id: namespace.id
     }
   end
 
@@ -18,14 +19,17 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     subject(:project) { create_project(user, opts) }
 
     before_all do
-      create(:admin_label, title: 'bug', template: true)
+      create(:admin_label, title: 'bug', organization: namespace.organization)
+      create(:admin_label)
     end
 
-    it 'creates labels on project creation' do
-      expect(project.reload.labels).to include have_attributes(
-        type: eq('ProjectLabel'),
-        project_id: eq(project.id),
-        title: eq('bug')
+    it 'creates labels on project creation. Only those that belong to the project organization' do
+      expect(project.reload.labels).to contain_exactly(
+        have_attributes(
+          type: 'ProjectLabel',
+          project_id: project.id,
+          title: 'bug'
+        )
       )
     end
 
@@ -541,7 +545,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     it 'stores import data and URL' do
       expect(imported_project.import_data).to be_persisted
       expect(imported_project.import_data.data).to eq(import_data[:data])
-      expect(imported_project.import_url).to eq('http://import-url')
+      expect(imported_project.unsafe_import_url).to eq('http://import-url')
     end
 
     it 'tracks for imported project' do
@@ -936,7 +940,7 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
     subject(:project) { create_project(user, opts) }
 
     context 'when an instance-level instance specific integration' do
-      let!(:instance_specific_integration) { create(:beyond_identity_integration) }
+      let!(:instance_specific_integration) { create(:beyond_identity_integration, :instance) }
 
       it 'creates integration inheriting from the instance level integration' do
         expect(project.integrations.count).to eq(1)

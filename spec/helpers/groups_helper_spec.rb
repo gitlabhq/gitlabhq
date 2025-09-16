@@ -525,9 +525,9 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
         {
           group_id: group.id,
           subgroups_and_projects_endpoint:
-            including("/groups/#{group.path}/-/children.json?archived=false&not_aimed_for_deletion=true"),
+            including("/groups/#{group.path}/-/children.json?active=true"),
           shared_projects_endpoint: including("/groups/#{group.path}/-/shared_projects.json"),
-          inactive_projects_endpoint: including("/groups/#{group.path}/-/children.json?active=false"),
+          inactive_subgroups_and_projects_endpoint: including("/groups/#{group.path}/-/children.json?active=false"),
           current_group_visibility: group.visibility,
           initial_sort: initial_sort,
           show_schema_markup: 'true',
@@ -538,6 +538,24 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
           render_empty_state: 'true',
           can_create_subgroups: 'true',
           can_create_projects: 'true'
+        }
+      )
+    end
+  end
+
+  describe '#groups_show_app_data' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:initial_sort) { 'created_asc' }
+
+    before do
+      allow(helper).to receive(:project_list_sort_by).and_return(initial_sort)
+    end
+
+    it 'returns expected json' do
+      expect(Gitlab::Json.parse(helper.groups_show_app_data(group))).to eq(
+        {
+          'subgroups_and_projects_endpoint' => group_children_path(group, format: :json),
+          'initial_sort' => initial_sort
         }
       )
     end
@@ -827,6 +845,65 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
     it 'returns group merge requests' do
       expect(helper.group_merge_requests(group)).to contain_exactly(merge_request)
+    end
+  end
+
+  describe '#step_up_auth_provider_options_for_select' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:group) { create(:group) }
+    let_it_be(:current_user) { create(:user, owner_of: group) }
+
+    let(:omniauth_provider_oidc) do
+      GitlabSettings::Options.new(
+        name: "openid_connect",
+        step_up_auth: {
+          namespace: {
+            id_token: {
+              required: {
+                acr: 'gold'
+              }
+            }
+          }
+        }
+      )
+    end
+
+    let(:omniauth_provider_oidc_only_namespace) do
+      GitlabSettings::Options.new(
+        name: "openid_connect_only_namespace",
+        label: "OpenID Connect (Only namespace)",
+        args: {
+          strategy_class: 'OmniAuth::Strategies::OpenIDConnect'
+        },
+        step_up_auth: {
+          namespace: {
+            id_token: {
+              required: {
+                acr: 'gold'
+              }
+            }
+          }
+        }
+      )
+    end
+
+    subject { helper.step_up_auth_provider_options_for_select }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+
+      stub_omniauth_setting(enabled: true, providers: providers)
+      allow(Devise).to receive(:omniauth_providers).and_return(providers.map(&:name))
+    end
+
+    where(:providers, :expected_options) do
+      [ref(:omniauth_provider_oidc), ref(:omniauth_provider_oidc_only_namespace)] | [['Openid connect', 'openid_connect'], ['OpenID Connect (Only namespace)', 'openid_connect_only_namespace']]
+      [ref(:omniauth_provider_oidc)] | [['Openid connect', 'openid_connect']]
+      [] | []
+    end
+    with_them do
+      it { is_expected.to match_array(expected_options) }
     end
   end
 end

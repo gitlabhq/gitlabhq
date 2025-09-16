@@ -154,8 +154,10 @@ export default {
       this.isSubmitting = true;
 
       if (this.$refs.markdownEditor) {
-        // eslint-disable-next-line @gitlab/require-i18n-strings
-        trackSavedUsingEditor(this.$refs.markdownEditor.isContentEditorActive, 'Design');
+        trackSavedUsingEditor(
+          this.$refs.markdownEditor.isContentEditorActive,
+          'WorkItem_DesignDescription',
+        );
       }
 
       try {

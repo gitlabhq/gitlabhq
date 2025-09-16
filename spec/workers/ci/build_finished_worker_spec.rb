@@ -78,15 +78,8 @@ RSpec.describe Ci::BuildFinishedWorker, feature_category: :continuous_integratio
         end
       end
 
-      it 'does not call PublishProvenanceWorker when build does not have artifacts' do
-        expect(Ci::Slsa::PublishProvenanceWorker).not_to receive(:perform_async).with(build.id)
-
-        subject
-      end
-
-      context 'when artifacts exist' do
-        let_it_be(:status) { :success }
-        let_it_be(:build) { create(:ci_build, :artifacts, :finished) }
+      context 'and all conditions are correct for publishing provenance' do
+        include_context 'with build, pipeline and artifacts'
 
         it 'calls PublishProvenanceWorker when build is successful' do
           expect(Ci::Slsa::PublishProvenanceWorker).to receive(:perform_async).with(build.id)
@@ -94,7 +87,7 @@ RSpec.describe Ci::BuildFinishedWorker, feature_category: :continuous_integratio
           subject
         end
 
-        context 'when the build fails' do
+        context 'and the build fails' do
           let_it_be(:status) { :failed }
 
           it 'still calls PublishProvenanceWorker' do
@@ -104,13 +97,48 @@ RSpec.describe Ci::BuildFinishedWorker, feature_category: :continuous_integratio
           end
         end
 
-        context 'and flag is disabled' do
+        context 'without build artifacts' do
+          let(:build) do
+            create(:ci_build, :finished, project: project)
+          end
+
+          it 'does not call PublishProvenanceWorker' do
+            expect(Ci::Slsa::PublishProvenanceWorker).not_to receive(:perform_async)
+
+            subject
+          end
+        end
+
+        context 'without slsa_provenance_statement feature flag' do
           before do
             stub_feature_flags(slsa_provenance_statement: false)
           end
 
           it 'does not call PublishProvenanceWorker' do
             expect(Ci::Slsa::PublishProvenanceWorker).not_to receive(:perform_async).with(build.id)
+
+            subject
+          end
+        end
+
+        context 'without the GENERATE_PROVENANCE yaml variable' do
+          let(:yaml_variables) { [] }
+
+          it 'does not call PublishProvenanceWorker' do
+            expect(Ci::Slsa::PublishProvenanceWorker).not_to receive(:perform_async)
+
+            subject
+          end
+        end
+
+        context 'without a public project' do
+          let(:project) { create_default(:project, :private, :repository, group: group) }
+          let(:build) do
+            create(:ci_build, project: project)
+          end
+
+          it 'does not call PublishProvenanceWorker' do
+            expect(Ci::Slsa::PublishProvenanceWorker).not_to receive(:perform_async)
 
             subject
           end

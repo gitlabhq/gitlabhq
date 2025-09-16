@@ -668,6 +668,30 @@ describe('URL utility', () => {
     });
   });
 
+  describe('refreshCurrentPage', () => {
+    let originalLocation;
+
+    beforeEach(() => {
+      originalLocation = window.location;
+
+      Object.defineProperty(window, 'location', {
+        value: {
+          reload: jest.fn(),
+        },
+      });
+    });
+
+    afterEach(() => {
+      window.location = originalLocation;
+    });
+
+    it('reloads the current page', () => {
+      urlUtils.refreshCurrentPage();
+
+      expect(window.location.reload).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('updateHistory', () => {
     const state = { key: 'prop' };
     const title = 'TITLE';

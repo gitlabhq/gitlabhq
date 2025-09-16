@@ -8,8 +8,6 @@ module Types
 
     implements ::Types::Namespaces::GroupInterface
 
-    connection_type_class Types::CountableConnectionType
-
     authorize :read_group
 
     expose_permissions Types::PermissionTypes::Group
@@ -19,10 +17,19 @@ module Types
       null: false,
       description: 'Web URL of the group.'
 
+    field :web_path,
+      GraphQL::Types::String,
+      null: false,
+      description: 'Web path of the group.'
+
     field :organization_edit_path, GraphQL::Types::String,
       null: true,
       description: 'Path for editing group at the organization level.',
       experiment: { milestone: '17.1' }
+
+    field :edit_path, GraphQL::Types::String,
+      null: false,
+      description: 'Path for editing group.'
 
     field :avatar_url,
       type: GraphQL::Types::String,
@@ -241,10 +248,20 @@ module Types
       complexity: 5,
       resolver: Resolvers::NestedGroupsResolver
 
+    field :shared_groups, Types::GroupType.connection_type,
+      null: true,
+      description: 'List of shared groups this group was invited to.',
+      resolver: Resolvers::Namespaces::SharedGroupsResolver
+
     field :descendant_groups_count,
       GraphQL::Types::Int,
       null: false,
       description: 'Count of direct descendant groups of the group.'
+
+    field :shared_projects, Types::ProjectType.connection_type,
+      null: true,
+      description: 'List of shared projects this group was invited to.',
+      resolver: Resolvers::Projects::SharedProjectsResolver
 
     field :group_members_count,
       GraphQL::Types::Int,
@@ -500,6 +517,14 @@ module Types
 
     def permanent_deletion_date
       permanent_deletion_date_formatted(group) || permanent_deletion_date_formatted
+    end
+
+    def web_path
+      group.web_url(only_path: true)
+    end
+
+    def edit_path
+      ::Gitlab::Routing.url_helpers.edit_group_path(group)
     end
 
     private

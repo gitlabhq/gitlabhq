@@ -7,7 +7,7 @@ feature_categories:
 description: This is the main table that stores information about project merge requests.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/6d460aa2d6b3959593c168eed181516036525393
 milestone: "<6.0"
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   target_project_id: projects
 table_size: over_limit

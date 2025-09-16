@@ -208,6 +208,13 @@ GitLab supports [Libravatar](https://www.libravatar.org) is for avatar images, b
 
 {{< /details >}}
 
+{{< history >}}
+
+- Introduced in GitLab 17.8: `gitlab_default_theme` can specify a value from 1 to 10 to set the default theme.
+- Themes: Light Indigo, Light Blue, Light Green, and Light Red [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200475) in GitLab 18.4.
+
+{{< /history >}}
+
 To [change the default navigation theme](../user/profile/preferences.md#change-the-navigation-theme) for all new users:
 
 1. Add `gitlab_rails['gitlab_default_theme']` to your GitLab configuration file at `/etc/gitlab/gitlab.rb`:
@@ -216,19 +223,16 @@ To [change the default navigation theme](../user/profile/preferences.md#change-t
    gitlab_rails['gitlab_default_theme'] = 2
    ```
 
+   These colors are available:
+   <!-- The themes are defined in lib/gitlab/themes.rb -->
+
+   | Value | Color  |
+   | ----- | -----  |
+   | 1     | Indigo |
+   | 2     | Dark   |
+   | 3     | Light  |
+   | 4     | Blue   |
+   | 5     | Green  |
+   | 9     | Red    |
+
 1. [Reconfigure and restart GitLab](restart_gitlab.md#reconfigure-a-linux-package-installation).
-
-As of GitLab 17.8, `gitlab_default_theme` can specify [a value from 1 to 10](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/17.8.0+ee.0/files/gitlab-config-template/gitlab.rb.template?ref_type=tags#L137) to set the default theme.
-
-| Value | Color |
-| ------ | ------  |
-| 1       | Indigo |
-| 2       | Dark |
-| 3       | Light |
-| 4       | Blue |
-| 5       |Green|
-| 6       |Light Indigo|
-| 7       |Light Blue|
-| 8       |Light Green|
-| 9       |Red|
-| 10       |Light Red|

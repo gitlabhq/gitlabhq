@@ -24,54 +24,6 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
     expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
   end
 
-  context 'with stop signal from database health check' do
-    let(:setter) { instance_double(Sidekiq::Job::Setter) }
-
-    around do |example|
-      with_sidekiq_server_middleware do |chain|
-        chain.add Gitlab::SidekiqMiddleware::SkipJobs
-        Sidekiq::Testing.inline! { example.run }
-      end
-    end
-
-    before do
-      stub_feature_flags("drop_sidekiq_jobs_#{described_class.name}": false)
-
-      stop_signal = instance_double(Gitlab::Database::HealthStatus::Signals::Stop, stop?: true)
-      allow(Gitlab::Database::HealthStatus).to receive(:evaluate).and_return([stop_signal])
-    end
-
-    context 'when the process_commit_worker_deferred feature flag only enabled for some projects' do
-      let_it_be(:enabled_project) { create(:project) }
-
-      before do
-        stub_feature_flags(process_commit_worker_deferred: [enabled_project])
-      end
-
-      it 'defers the job by set time' do
-        expect_next_instance_of(described_class) do |worker|
-          expect(worker).not_to receive(:perform).with(enabled_project.id, user.id, commit.to_hash, false)
-        end
-
-        expect(described_class).to receive(:deferred).and_return(setter)
-        expect(setter).to receive(:perform_in).with(described_class::DEFER_ON_HEALTH_DELAY, enabled_project.id, user.id,
-          a_kind_of(Hash), false)
-
-        described_class.perform_async(enabled_project.id, user.id, commit.to_hash, false)
-      end
-
-      it 'does not defer job execution for other projects' do
-        expect_next_instance_of(described_class) do |worker|
-          expect(worker).to receive(:perform).with(project.id, user.id, a_kind_of(Hash), false)
-        end
-
-        expect(described_class).not_to receive(:perform_in)
-
-        described_class.perform_async(project.id, user.id, commit.to_hash, false)
-      end
-    end
-  end
-
   describe '#track_time_from_commit_message' do
     let(:issue) { create(:issue, project: project) }
     let(:commit) { project.repository.commit('master') }
@@ -766,7 +718,7 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
   end
 
   it 'has a concurrency limit' do
-    expect(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: described_class)).to eq(1000)
+    expect(described_class.get_concurrency_limit).to eq(1000)
   end
 
   describe '#perform' do
@@ -861,26 +813,8 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
               project.id,
               issue.id,
               issue.class.to_s,
-              hash_including('closed_by' => user.id, 'user_id' => user.id)
+              hash_including('user_id' => user.id)
             )
-          end
-
-          context 'when auto_close_issues_stop_using_commit_author FF is disabled' do
-            before do
-              stub_feature_flags(auto_close_issues_stop_using_commit_author: false)
-            end
-
-            it 'passes both author and user_id to CloseWorker' do
-              expect { perform }.to change { Issues::CloseWorker.jobs.size }.by(1)
-
-              last_job = Issues::CloseWorker.jobs.last
-              expect(last_job['args']).to include(
-                project.id,
-                issue.id,
-                issue.class.to_s,
-                hash_including('closed_by' => commit.author.id, 'user_id' => user.id)
-              )
-            end
           end
 
           it 'creates cross references' do

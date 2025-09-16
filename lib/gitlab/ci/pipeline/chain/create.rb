@@ -10,11 +10,15 @@ module Gitlab
 
           def perform!
             logger.instrument_once_with_sql(:pipeline_save) do
+              # It is still fine to save `::Ci::JobDefinition` objects even if the pipeline is not created due to some
+              # reason because they can be used in the next pipeline creations.
+              ::Gitlab::Ci::Pipeline::Create::JobDefinitionBuilder.new(pipeline, statuses).run
+
               BulkInsertableAssociations.with_bulk_insert do
                 ::Ci::BulkInsertableTags.with_bulk_insert_tags do
                   pipeline.transaction do
                     pipeline.save!
-                    Gitlab::Ci::Tags::BulkInsert.bulk_insert_tags!(statuses)
+                    Gitlab::Ci::Tags::BulkInsert.bulk_insert_tags!(taggable_statuses)
                   end
                 end
               end
@@ -35,12 +39,14 @@ module Gitlab
           private
 
           def statuses
-            strong_memoize(:statuses) do
-              pipeline
-                .stages
-                .flat_map(&:statuses)
-                .select { |status| status.respond_to?(:tag_list=) }
-            end
+            pipeline
+              .stages
+              .flat_map(&:statuses)
+          end
+          strong_memoize_attr :statuses
+
+          def taggable_statuses
+            statuses.select { |status| status.respond_to?(:tag_list=) }
           end
         end
       end

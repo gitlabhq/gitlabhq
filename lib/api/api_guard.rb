@@ -125,8 +125,8 @@ module API
       end
 
       def check_dpop!(user)
-        return unless Feature.enabled?(:dpop_authentication, user)
         return unless api_request? && user.is_a?(User)
+        return unless Feature.enabled?(:dpop_authentication, user)
 
         token = extract_personal_access_token
         return unless PersonalAccessToken.find_by_token(token.to_s) # The token is not PAT, exit early

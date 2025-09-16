@@ -7,7 +7,7 @@ feature_categories:
 description: Blocker for changes requested on a merge request
 introduced_by_url:
 milestone: '17.0'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

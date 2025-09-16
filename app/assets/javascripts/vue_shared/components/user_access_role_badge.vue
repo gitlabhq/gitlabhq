@@ -16,7 +16,7 @@ export default {
 </script>
 
 <template>
-  <gl-badge variant="muted">
+  <gl-badge variant="neutral">
     <slot></slot>
   </gl-badge>
 </template>

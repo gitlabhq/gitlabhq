@@ -10,6 +10,7 @@ module WorkItems
           true
         end
 
+        # overriden in EE
         def after_save_commit
           return unless target_work_item.get_widget(:hierarchy)
 
@@ -44,7 +45,10 @@ module WorkItems
             attributes["work_item_parent_id"] = params[:parent_work_item_id] if params[:parent_work_item_id].present?
           end
 
-          WorkItems::ParentLink.create!(parent_link_attributes)
+          parent_link = WorkItems::ParentLink.create(parent_link_attributes)
+          return if parent_link.valid?
+
+          raise_error!(parent_link.errors.full_messages.to_sentence)
         end
 
         def handle_children

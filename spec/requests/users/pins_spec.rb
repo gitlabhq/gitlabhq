@@ -63,6 +63,20 @@ RSpec.describe 'Pinning navigation menu items', feature_category: :navigation do
             }
           )
       end
+
+      it 'strips empty string params' do
+        expect do
+          put pins_path, params: { panel: panel, menu_item_ids: [""] }, headers: { 'ACCEPT' => 'application/json' }
+        end
+          .to trigger_internal_events('unpin_nav_item_from_sidebar').with(
+            user: user,
+            category: 'Users::PinsController',
+            additional_properties: {
+              label: panel,
+              property: 'item4'
+            }
+          )
+      end
     end
 
     context 'with invalid params' do

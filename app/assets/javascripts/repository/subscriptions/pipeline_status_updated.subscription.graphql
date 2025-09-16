@@ -1,0 +1,10 @@
+#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+
+subscription pipelineStatusUpdatedSubscription($pipelineId: CiPipelineID!) {
+  ciPipelineStatusUpdated(pipelineId: $pipelineId) {
+    id
+    detailedStatus {
+      ...CiIcon
+    }
+  }
+}

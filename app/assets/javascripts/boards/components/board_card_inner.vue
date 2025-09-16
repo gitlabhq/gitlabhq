@@ -200,7 +200,7 @@ export default {
       return this.item?.status?.id !== this.list?.status?.id;
     },
     showStatus() {
-      return this.hasStatus && this.glFeatures.workItemStatusFeatureFlag && this.isNotListStatus;
+      return this.hasStatus && this.isNotListStatus;
     },
     hasStatus() {
       return Boolean(this.item.status);
@@ -309,7 +309,7 @@ export default {
       class="board-card-footer gl-mt-3 gl-flex gl-flex-wrap gl-items-end gl-justify-between gl-gap-y-3"
     >
       <div
-        class="align-items-start board-card-number-container gl-flex gl-flex-wrap-reverse gl-overflow-hidden"
+        class="board-card-number-container gl-flex gl-flex-wrap-reverse gl-items-start gl-overflow-hidden"
       >
         <span class="board-info-items gl-inline-block gl-leading-20">
           <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-5" />

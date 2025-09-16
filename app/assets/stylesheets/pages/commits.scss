@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .branch-info .commit-icon {
   svg {
     top: 3px;
@@ -20,7 +22,7 @@
     font-family: inherit;
     left: $left;
     height: 100%;
-    border-right: 1px solid mix($input-border, $white);
+    border-right: 1px solid color.mix($input-border, $white);
     position: absolute;
     z-index: 1;
   }

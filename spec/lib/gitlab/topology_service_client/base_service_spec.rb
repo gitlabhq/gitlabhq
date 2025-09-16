@@ -170,4 +170,25 @@ RSpec.describe Gitlab::TopologyServiceClient::BaseService, feature_category: :ce
       it { expect(service_credentials).to eq(:this_channel_is_insecure) }
     end
   end
+
+  describe '#client' do
+    before do
+      stub_config(cell: {
+        enabled: true,
+        topology_service_client: {
+          address: 'test:50051',
+          tls: { enabled: false }
+        }
+      })
+    end
+
+    it 'includes MetadataInterceptor in client initialization' do
+      expect(Gitlab::TopologyServiceClient::MetadataInterceptor).to receive(:new)
+
+      mock_service = instance_double(Class, new: instance_double(Object))
+      allow(base_service).to receive(:service_class).and_return(mock_service)
+
+      base_service.send(:client)
+    end
+  end
 end

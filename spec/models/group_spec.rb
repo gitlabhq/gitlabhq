@@ -45,7 +45,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { is_expected.to have_many(:clusters).class_name('Clusters::Cluster') }
     it { is_expected.to have_many(:container_repositories) }
     it { is_expected.to have_many(:milestones) }
-    it { is_expected.to have_many(:group_deploy_keys) }
     it { is_expected.to have_many(:integrations) }
     it { is_expected.to have_one(:dependency_proxy_setting) }
     it { is_expected.to have_one(:dependency_proxy_image_ttl_policy) }
@@ -260,6 +259,11 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     subject { described_class }
 
     it { is_expected.to include_module(Referable) }
+  end
+
+  describe 'delegations' do
+    it { is_expected.to delegate_method(:step_up_auth_required_oauth_provider).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:step_up_auth_required_oauth_provider=).to(:namespace_settings).with_arguments(:args) }
   end
 
   describe 'validations' do
@@ -1075,16 +1079,32 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   describe '.sort_by_attribute' do
+    let_it_be(:group_1) { create(:group, id: 10, name: 'Y group') }
+    let_it_be(:group_2) { create(:group, id: 11, name: 'J group', created_at: 2.days.ago, updated_at: 1.day.ago) }
+    let_it_be(:group_3) { create(:group, id: 12, name: 'A group') }
+    let_it_be(:group_4) { create(:group, id: 13, name: 'F group', created_at: 1.day.ago, updated_at: 1.day.ago) }
+
+    let_it_be(:project_1) do
+      create(:project, namespace: group_1, statistics: create(:project_statistics, storage_size: 1278370))
+    end
+
+    let_it_be(:project_2) do
+      create(:project, namespace: group_2, statistics: create(:project_statistics, storage_size: 3178370))
+    end
+
+    let_it_be(:project_3) do
+      create(:project, namespace: group_3, statistics: create(:project_statistics, storage_size: 1178370))
+    end
+
+    let_it_be(:project_4) do
+      create(:project, namespace: group_4, statistics: create(:project_statistics, storage_size: 2278370))
+    end
+
+    subject { described_class.with_statistics.with_route.sort_by_attribute(sort) }
+
     before do
       group.destroy!
     end
-
-    let!(:group_1) { create(:group, id: 10, name: 'Y group') }
-    let!(:group_2) { create(:group, id: 11, name: 'J group', created_at: 2.days.ago, updated_at: 1.day.ago) }
-    let!(:group_3) { create(:group, id: 12, name: 'A group') }
-    let!(:group_4) { create(:group, id: 13, name: 'F group', created_at: 1.day.ago, updated_at: 1.day.ago) }
-
-    subject { described_class.with_statistics.with_route.sort_by_attribute(sort) }
 
     context 'when sort by is not provided' do
       let(:sort) { nil }
@@ -1130,83 +1150,19 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it { is_expected.to eq([group_2, group_4, group_1, group_3]) }
     end
 
+    context 'when sort by storage_size_keyset_asc' do
+      let(:sort) { 'storage_size_keyset_asc' }
+
+      it { is_expected.to match_array([group_3, group_1, group_4, group_2]) }
+    end
+
+    context 'when sort by storage_size_keyset_desc' do
+      let(:sort) { 'storage_size_keyset_desc' }
+
+      it { is_expected.to match_array([group_2, group_4, group_1, group_3]) }
+    end
+
     context 'when sort by storage_size_desc' do
-      let!(:project_1) do
-        create(:project,
-          namespace: group_1,
-          statistics: build(
-            :project_statistics,
-            namespace: group_1,
-            repository_size: 2178370,
-            storage_size: 1278370,
-            wiki_size: 505,
-            lfs_objects_size: 202,
-            build_artifacts_size: 303,
-            pipeline_artifacts_size: 707,
-            packages_size: 404,
-            snippets_size: 605,
-            uploads_size: 808
-          )
-        )
-      end
-
-      let!(:project_2) do
-        create(:project,
-          namespace: group_2,
-          statistics: build(
-            :project_statistics,
-            namespace: group_2,
-            repository_size: 3178370,
-            storage_size: 3178370,
-            wiki_size: 505,
-            lfs_objects_size: 202,
-            build_artifacts_size: 303,
-            pipeline_artifacts_size: 707,
-            packages_size: 404,
-            snippets_size: 605,
-            uploads_size: 808
-          )
-        )
-      end
-
-      let!(:project_3) do
-        create(:project,
-          namespace: group_3,
-          statistics: build(
-            :project_statistics,
-            namespace: group_3,
-            repository_size: 1278370,
-            storage_size: 1178370,
-            wiki_size: 505,
-            lfs_objects_size: 202,
-            build_artifacts_size: 303,
-            pipeline_artifacts_size: 707,
-            packages_size: 404,
-            snippets_size: 605,
-            uploads_size: 808
-          )
-        )
-      end
-
-      let!(:project_4) do
-        create(:project,
-          namespace: group_4,
-          statistics: build(
-            :project_statistics,
-            namespace: group_4,
-            repository_size: 2178370,
-            storage_size: 2278370,
-            wiki_size: 505,
-            lfs_objects_size: 202,
-            build_artifacts_size: 303,
-            pipeline_artifacts_size: 707,
-            packages_size: 404,
-            snippets_size: 605,
-            uploads_size: 808
-          )
-        )
-      end
-
       let(:sort) { 'storage_size_desc' }
 
       it { is_expected.to eq([group_2, group_4, group_1, group_3]) }
@@ -4360,12 +4316,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#work_item_status_feature_available?' do
-    subject { group.work_item_status_feature_available? }
-
-    it { is_expected.to be false }
-  end
-
   describe '#supports_group_work_items?' do
     let(:group) { build(:group) }
 
@@ -4430,15 +4380,35 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     describe '#shared_with_groups_of_ancestors_and_self' do
-      where(:subject_group, :result) do
-        ref(:group)         | lazy { [shared_group_1].map(&:id) }
-        ref(:sub_group)     | lazy { [shared_group_1, shared_group_2].map(&:id) }
-        ref(:sub_sub_group) | lazy { [shared_group_1, shared_group_2, shared_group_3].map(&:id) }
+      let!(:shared_reporter_group_1) {  create(:group_group_link, :reporter, shared_group: group).shared_with_group }
+      let!(:shared_reporter_group_2) {  create(:group_group_link, :reporter, shared_group: sub_group).shared_with_group }
+      let!(:shared_reporter_group_3) {  create(:group_group_link, :reporter, shared_group: sub_sub_group).shared_with_group }
+
+      let(:shared_with_group) { [shared_group_1, shared_reporter_group_1] }
+      let(:shared_with_sub_group) { shared_with_group + [shared_group_2, shared_reporter_group_2] }
+      let(:shared_with_sub_sub_group) { shared_with_sub_group + [shared_group_3, shared_reporter_group_3] }
+
+      where(:shared_group, :shared_with_groups) do
+        ref(:group)         | ref(:shared_with_group)
+        ref(:sub_group)     | ref(:shared_with_sub_group)
+        ref(:sub_sub_group) | ref(:shared_with_sub_sub_group)
       end
 
       with_them do
-        it 'returns correct group shares' do
-          expect(subject_group.shared_with_groups_of_ancestors_and_self.ids).to match_array(result)
+        subject { shared_group.shared_with_groups_of_ancestors_and_self }
+
+        it { is_expected.to match_array(shared_with_groups) }
+      end
+
+      describe '#with_developer_maintainer_owner_access' do
+        let(:shared_with_group) { [shared_group_1] }
+        let(:shared_with_sub_group) { shared_with_group + [shared_group_2] }
+        let(:shared_with_sub_sub_group) { shared_with_sub_group + [shared_group_3] }
+
+        with_them do
+          subject { shared_group.shared_with_groups_of_ancestors_and_self.with_developer_maintainer_owner_access }
+
+          it { is_expected.to match_array(shared_with_groups) }
         end
       end
     end

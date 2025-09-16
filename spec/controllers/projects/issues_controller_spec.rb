@@ -1192,13 +1192,13 @@ RSpec.describe Projects::IssuesController, :request_store, feature_category: :te
       let(:merge_request) { discussion.noteable }
       let(:project) { merge_request.source_project }
 
+      let(:merge_request_params) do
+        { merge_request_to_resolve_discussions_of: merge_request.iid }
+      end
+
       before do
         project.add_maintainer(user)
         sign_in user
-      end
-
-      let(:merge_request_params) do
-        { merge_request_to_resolve_discussions_of: merge_request.iid }
       end
 
       def post_issue(other_params: {}, **issue_params)

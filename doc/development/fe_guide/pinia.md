@@ -245,7 +245,8 @@ describe('MyComponent', () => {
 
 ## Migrating from Vuex
 
-GitLab is actively migrating from Vuex, you can contribute and follow this progress [here](https://gitlab.com/groups/gitlab-org/-/epics/18476).
+GitLab is actively migrating from Vuex, you can contribute and follow this progress
+[in epic 18476](https://gitlab.com/groups/gitlab-org/-/epics/18476).
 
 Before migrating decide what your primary [state manager](state_management.md) should be first.
 Proceed with this guide if Pinia was your choice.

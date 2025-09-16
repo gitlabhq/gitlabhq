@@ -45,7 +45,7 @@ export default {
 </script>
 <template>
   <div class="mr-widget-extension">
-    <div class="pl-3 gl-flex gl-items-center gl-py-3">
+    <div class="gl-flex gl-items-center gl-py-3 !gl-pl-5">
       <div v-if="hasError" class="ci-widget media">
         <div class="media-body">
           <span class="js-error-state gl-ml-7 gl-text-sm gl-leading-24">
@@ -72,7 +72,7 @@ export default {
             size="small"
             data-testid="mr-collapsible-title"
             :disabled="isLoading"
-            :class="{ 'border-0': isLoading }"
+            :class="{ '!gl-border-0': isLoading }"
             @click="toggleCollapsed"
           >
             {{ title }}
@@ -85,14 +85,14 @@ export default {
           size="small"
           data-testid="mr-collapsible-title"
           :disabled="isLoading"
-          :class="{ 'border-0': isLoading }"
+          :class="{ '!gl-border-0': isLoading }"
           @click="toggleCollapsed"
           >{{ __('Collapse') }}</gl-button
         >
       </template>
     </div>
 
-    <div v-if="!isCollapsed" class="border-top js-slot-container">
+    <div v-if="!isCollapsed" class="js-slot-container !gl-border-t !gl-border-t-gray-300">
       <slot></slot>
     </div>
   </div>

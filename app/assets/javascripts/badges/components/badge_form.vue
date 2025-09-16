@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlForm, GlFormFields, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
-import { formValidators } from '@gitlab/ui/dist/utils';
+import { formValidators } from '@gitlab/ui/src/utils';
 import { debounce } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapState } from 'vuex';

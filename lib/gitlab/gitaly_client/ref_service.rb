@@ -240,7 +240,7 @@ module Gitlab
       def list_refs(patterns = [Gitlab::Git::BRANCH_REF_PREFIX], pointing_at_oids: [], peel_tags: false, dynamic_timeout: nil, sort_by: nil, pagination_params: nil)
         request = Gitaly::ListRefsRequest.new(
           repository: @gitaly_repo,
-          patterns: patterns,
+          patterns: patterns.map { |p| encode_binary(p) },
           pointing_at_oids: pointing_at_oids,
           peel_tags: peel_tags,
           pagination_params: pagination_params

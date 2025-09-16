@@ -1,5 +1,5 @@
 ---
-stage: Monitor
+stage: Analytics
 group: Analytics Instrumentation
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Metrics definitions
@@ -45,7 +45,7 @@ We can track multiple events within one metric via [aggregated metrics](#aggrega
 
 ### All time total counters
 
-Example: Total visits to /groups/:group/-/analytics/productivity_analytics all time
+Example: Total visits to `/groups/:group/-/analytics/productivity_analytics` all time
 
 ```yaml
 data_category: optional

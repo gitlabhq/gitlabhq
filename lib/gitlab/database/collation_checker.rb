@@ -27,7 +27,6 @@ module Gitlab
       INDEXES_TO_SPOT_CHECK = {
         'main' => {
           'merge_request_diff_commit_users' => %w[
-            index_merge_request_diff_commit_users_on_name_and_email
             index_merge_request_diff_commit_users_on_org_id_name_email
           ],
           'topics' => ['index_topics_on_organization_id_and_name'],
@@ -35,7 +34,10 @@ module Gitlab
           'ci_resource_groups' => ['index_ci_resource_groups_on_project_id_and_key'],
           'environments' => ['index_environments_on_project_id_and_name'],
           'sbom_components' => ['idx_sbom_components_on_name_purl_type_component_type_and_org_id'],
-          'tags' => ['index_tags_on_name']
+          'tags' => ['index_tags_on_name'],
+          'pm_packages' => ['i_pm_packages_purl_type_and_name'],
+          'pm_affected_packages' => ['i_affected_packages_unique_for_upsert'],
+          'container_repositories' => ['index_container_repositories_on_project_id_and_name']
         }
       }.freeze
 

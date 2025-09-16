@@ -418,6 +418,12 @@ export const FOCUS_FILE_TREE_BROWSER_FILTER_BAR = {
   overrideGlobalHotkey: true,
 };
 
+export const TOGGLE_FILE_TREE_BROWSER_VISIBILITY = {
+  id: 'projectFiles.toggleFTBVisibility',
+  description: __('Toggle file tree browser visibility'),
+  defaultKeys: ['shift+f'],
+};
+
 export const ISSUABLE_COMMENT_OR_REPLY = {
   id: 'issuables.commentReply',
   description: __('Comment/Reply (quoting selected text)'),

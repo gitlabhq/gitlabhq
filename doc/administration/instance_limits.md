@@ -1,6 +1,6 @@
 ---
 stage: GitLab Delivery
-group: Self Managed
+group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab application limits
 description: Configure limits on an instance.
@@ -672,7 +672,7 @@ Plan.default.actual_limits.update!(ci_pipeline_schedules: 100)
 
 ### Limit the number of pipelines created by a pipeline schedule each day
 
-You can limit the number of pipelines that pipeline schedules can trigger per day.
+You can limit the number of pipelines that each individual pipeline schedule can trigger per day.
 
 Schedules that try to run pipelines more frequently than the limit are slowed to a maximum frequency.
 The frequency is calculated by dividing 1440 (the number minutes in a day) by the
@@ -1369,7 +1369,7 @@ The [secure files API](../api/secure_files.md) enforces the following limits:
 
 {{< /history >}}
 
-The [changelog API](../api/repositories.md#add-changelog-data-to-a-changelog-file) enforces the following limits:
+The [changelog API](../api/repositories.md#add-changelog-data-to-file) enforces the following limits:
 
 - The commit range between `from` and `to` cannot exceed 15000 commits.
 

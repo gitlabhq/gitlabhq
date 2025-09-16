@@ -96,7 +96,7 @@ RSpec.describe ApplicationCable::Connection, :clean_gitlab_redis_sessions do
         let(:user) { create(:user) }
 
         let(:application) do
-          Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user)
+          Authn::OauthApplication.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user)
         end
 
         let(:oauth_token) do

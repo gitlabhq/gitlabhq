@@ -123,6 +123,7 @@ InitializerConnections.raise_if_new_database_connection do
         as: 'banzai_upload'
 
       get '/whats_new' => 'whats_new#index'
+      post '/whats_new/mark_as_read' => 'whats_new#mark_as_read'
 
       get 'offline' => "pwa#offline"
       get 'manifest' => "pwa#manifest", constraints: ->(req) { req.format == :json }
@@ -215,7 +216,7 @@ InitializerConnections.raise_if_new_database_connection do
         end
       end
 
-      resources :sent_notifications, only: [], constraints: { id: /[A-Za-z0-9\-_]{32,78}/ } do
+      resources :sent_notifications, only: [], constraints: { id: /[A-Za-z0-9\-_]{1,32}/ } do
         member do
           match :unsubscribe, via: [:get, :post]
         end
@@ -252,6 +253,10 @@ InitializerConnections.raise_if_new_database_connection do
 
       if Gitlab::Utils.to_boolean(ENV['COVERBAND_ENABLED'], default: false)
         mount Coverband::Reporters::Web.new, at: '/coverage'
+      end
+
+      namespace :experimental do
+        resources :o11y_service_settings, only: [:new, :create]
       end
     end
     # End of the /-/ scope.

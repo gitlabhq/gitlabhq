@@ -71,6 +71,7 @@ module Types
     mount_mutation Mutations::Import::SourceUsers::CancelReassignment, experiment: { milestone: '17.2' }
     mount_mutation Mutations::Import::SourceUsers::KeepAllAsPlaceholder, experiment: { milestone: '17.6' }
     mount_mutation Mutations::Import::SourceUsers::KeepAsPlaceholder, experiment: { milestone: '17.2' }
+    mount_mutation Mutations::Import::SourceUsers::UndoKeepAsPlaceholder, experiment: { milestone: '18.4' }
     mount_mutation Mutations::Import::SourceUsers::Reassign, experiment: { milestone: '17.2' }
     mount_mutation Mutations::Import::SourceUsers::ResendNotification, experiment: { milestone: '17.2' }
     mount_mutation Mutations::IncidentManagement::TimelineEvent::Create, experiment: { milestone: '15.6' }
@@ -94,6 +95,7 @@ module Types
     mount_mutation Mutations::Issues::LinkAlerts
     mount_mutation Mutations::Issues::UnlinkAlert
     mount_mutation Mutations::Labels::Create
+    mount_mutation Mutations::Labels::Update
     mount_mutation Mutations::Members::Groups::BulkUpdate
     mount_mutation Mutations::Members::Projects::BulkUpdate
     mount_mutation Mutations::MergeRequests::Accept

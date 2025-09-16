@@ -52,6 +52,59 @@ module Gitlab
       write(key, yield)
     end
 
+    # Atomically updates a Redis set cache by adding or removing a single value.
+    # This method uses Redis WATCH/MULTI to ensure thread-safe operations and only
+    # operates on existing cache keys to avoid creating stale cache entries.
+    #
+    # @param key [String] The cache key to update
+    # @param value [String] The value to add or remove from the set
+    # @param operation [Symbol] Either :add to add the value or :remove to remove it
+    #
+    # Example:
+    #   cache.granular_update('branch_names', 'feature-branch', :add)
+    #   cache.granular_update('tag_names', 'v1.0.0', :remove)
+    def granular_update(key, value, operation)
+      full_key = cache_key(key)
+
+      log_records = ["granular_update", "Key: #{key}", "Value: #{value}", "Operation: #{operation}"]
+
+      with do |redis|
+        # Watch Redis key to track changes during the update operation.
+        # If watch fails, it means that cache being modified by another process.
+        # Granular update should be cancelled because it might create inconsistencies
+        result = redis.watch(full_key) do |wredis|
+          if redis.exists?(full_key) # rubocop:disable CodeReuse/ActiveRecord -- it's a valid method
+            log_records << "Key exists!"
+            wredis.multi do |multi|
+              case operation
+              when :add
+                multi.sadd(full_key, value)
+              when :remove
+                multi.srem(full_key, value)
+              end
+            end
+          else
+            wredis.unwatch
+            :key_not_found
+          end
+        end
+
+        case result
+        when Array
+          operation_result = result&.first
+          log_records << "Operation: #{operation_result}"
+        when :key_not_found
+          log_records << "Cache key doesn't exist"
+        when nil
+          log_records << "Key was modified by another process"
+        end
+      end
+
+      Gitlab::AppLogger.info(message: log_records.join(", "), class: self.class.name)
+
+      nil
+    end
+
     # Searches the cache set using SSCAN with the MATCH option. The MATCH
     # parameter is the pattern argument.
     # See https://redis.io/commands/scan#the-match-option for more information.

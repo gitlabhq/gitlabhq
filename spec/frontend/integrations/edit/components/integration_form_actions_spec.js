@@ -19,9 +19,6 @@ describe('IntegrationFormActions', () => {
 
     wrapper = shallowMountExtended(IntegrationFormActions, {
       store,
-      propsData: {
-        hasSections: false,
-      },
     });
   };
 

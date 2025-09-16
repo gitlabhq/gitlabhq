@@ -5,6 +5,11 @@ export default {
   name: 'BubbleMenu',
   inject: ['tiptapEditor'],
   props: {
+    ariaLabel: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
     pluginKey: {
       type: String,
       required: true,
@@ -58,7 +63,7 @@ export default {
 };
 </script>
 <template>
-  <div>
+  <div :aria-label="ariaLabel">
     <slot v-if="menuVisible"></slot>
   </div>
 </template>

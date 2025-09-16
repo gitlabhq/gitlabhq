@@ -158,7 +158,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       context 'authentication via primary', :skip_before_request do
         it 'targets the primary' do
           expect(Gitlab::Database::LoadBalancing::SessionMap)
-            .to receive(:with_sessions).with([::ApplicationRecord, ::Ci::ApplicationRecord]).and_call_original
+            .to receive(:with_sessions).and_call_original
 
           expect_next_instance_of(Gitlab::Database::LoadBalancing::ScopedSessions) do |session|
             expect(session).to receive(:use_primary).and_call_original
@@ -350,7 +350,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       context 'authentication via primary', :skip_before_request do
         it 'targets the primary' do
           expect(Gitlab::Database::LoadBalancing::SessionMap)
-            .to receive(:with_sessions).with([::ApplicationRecord, ::Ci::ApplicationRecord]).and_call_original
+            .to receive(:with_sessions).and_call_original
 
           expect_next_instance_of(Gitlab::Database::LoadBalancing::ScopedSessions) do |session|
             expect(session).to receive(:use_primary).and_call_original
@@ -827,9 +827,9 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       end
     end
 
-    describe 'when metadata debug_trace_enabled is set to true' do
+    describe 'when debug_trace_enabled is true' do
       before do
-        job.metadata.update!(debug_trace_enabled: true)
+        job.enable_debug_trace!
       end
 
       it_behaves_like "additional access criteria"
@@ -925,7 +925,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     end
 
     shared_examples 'job retry API call handler' do
-      context 'authorized user with :update_build permission' do
+      context 'authorized user with :retry_job permission' do
         context 'when the job is a build' do
           it 'retries non-running job' do
             expect(response).to have_gitlab_http_status(:created)
@@ -1018,7 +1018,7 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
       context "when credit card validation is needed" do
         let_it_be(:subscription) { create(:gitlab_subscription, namespace: namespace, hosted_plan: free_plan) }
 
-        context 'user with :update_build permission' do
+        context 'user with :retry_job permission' do
           it "can't retry non-running job" do
             call_retry_job
 

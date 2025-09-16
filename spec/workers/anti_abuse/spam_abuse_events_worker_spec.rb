@@ -35,6 +35,20 @@ RSpec.describe AntiAbuse::SpamAbuseEventsWorker, :clean_gitlab_redis_shared_stat
     let(:job_args) { [params] }
   end
 
+  context 'when the creation of abuse report fails' do
+    before do
+      service_double = instance_double(AntiAbuse::AbuseReport::CreateService)
+
+      allow(AntiAbuse::AbuseReport::CreateService).to receive(:new).and_return(service_double)
+      allow(service_double).to receive(:execute)
+        .and_return(ServiceResponse.error(message: 'AbuseReport record was not created'))
+    end
+
+    it 'raises an error' do
+      expect { worker.perform(params) }.to raise_error(ActiveRecord::RecordInvalid)
+    end
+  end
+
   context "when the user does not exist" do
     let(:log_payload) { { 'message' => 'User not found.', 'user_id' => user.id } }
 
@@ -71,6 +85,7 @@ RSpec.describe AntiAbuse::SpamAbuseEventsWorker, :clean_gitlab_redis_shared_stat
         expect { worker.perform(params) }.to change { AbuseReport.count }.from(0).to(1)
         expect(AbuseReport.last.attributes).to include({
           reporter_id: Users::Internal.security_bot.id,
+          organization_id: Users::Internal.security_bot.organization_id,
           user_id: user.id,
           category: "spam",
           message: "User reported for abuse based on spam verdict"

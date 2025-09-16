@@ -23,13 +23,11 @@ module IssuableCollections
   end
 
   def set_pagination
-    row_count = request.format.atom? ? -1 : finder.row_count
+    pagination_result = paginate_for_collection(@issuables, row_count: finder.row_count)
 
-    @issuables          = @issuables.page(params[:page])
-    @issuables          = per_page_for_relative_position if params[:sort] == 'relative_position'
-    @issuables          = @issuables.without_count if row_count == -1
+    @issuables = pagination_result[:collection]
+    @total_pages = pagination_result[:total_pages]
     @issuable_meta_data = Gitlab::IssuableMetadata.new(current_user, @issuables).data
-    @total_pages        = page_count_for_relation(@issuables, row_count)
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
@@ -38,20 +36,6 @@ module IssuableCollections
     finder.execute.preload(preload_for_collection)
   end
   # rubocop: enable CodeReuse/ActiveRecord
-
-  def page_count_for_relation(relation, row_count)
-    limit = relation.limit_value.to_f
-
-    return 1 if limit == 0
-    return (params[:page] || 1).to_i + 1 if row_count == -1
-
-    (row_count.to_f / limit).ceil
-  end
-
-  # manual / relative_position sorting allows for 100 items on the page
-  def per_page_for_relative_position
-    @issuables.per(100) # rubocop:disable Gitlab/ModuleWithInstanceVariables
-  end
 
   def issuable_finder_for(finder_class)
     finder_class.new(current_user, finder_options)

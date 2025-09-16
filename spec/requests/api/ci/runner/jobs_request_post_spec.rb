@@ -9,6 +9,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
   before do
     stub_application_setting(ci_job_live_trace_enabled: true)
+    stub_feature_flags(ci_validate_config_options: false)
     stub_gitlab_calls
     allow_any_instance_of(::Ci::Runner).to receive(:cache_attributes)
     allow(Ci::Build).to receive(:find_by!).and_call_original
@@ -150,6 +151,18 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               expect(runner_manager.runner).to eq runner
               expect(runner_manager.contacted_at).to eq Time.current
             end
+
+            context 'with labels in info parameter' do
+              let(:args) { { system_id: 's_some_system_id', info: { labels: { 'environment' => 'test' } } } }
+
+              it 'creates runner manager with labels', :freeze_time do
+                expect { request }.to change { runner.runner_managers.reload.count }.from(0).to(1)
+
+                runner_manager = runner.runner_managers.last
+                expect(runner_manager.system_xid).to eq args[:system_id]
+                expect(runner_manager.labels).to eq({ 'environment' => 'test' })
+              end
+            end
           end
 
           context 'when ci_runner_machines with same system_xid already exists', :freeze_time do
@@ -166,6 +179,16 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
               request
 
               expect(runner_manager.reload.contacted_at).to eq Time.current
+            end
+
+            context 'with labels in info parameter' do
+              let(:args) { { system_id: 's_existing_system_id', info: { labels: { 'environment' => 'staging' } } } }
+
+              it 'updates the runner manager labels' do
+                expect do
+                  request
+                end.to change { runner_manager.reload.labels }.from({}).to('environment' => 'staging')
+              end
             end
           end
         end
@@ -452,36 +475,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                     }
                   ])
               end
-
-              context 'when the FF ci_glab_for_release is disabled' do
-                before do
-                  stub_feature_flags(ci_glab_for_release: false)
-                end
-
-                it 'exposes release info' do
-                  request_job info: { features: { multi_build_steps: true } }
-
-                  expect(response).to have_gitlab_http_status(:created)
-                  expect(response.headers).not_to have_key('X-GitLab-Last-Update')
-                  expect(json_response['steps']).to match_array(
-                    [
-                      {
-                        "name" => "script",
-                        "script" => ["make changelog | tee release_changelog.txt"],
-                        "timeout" => 3600,
-                        "when" => "on_success",
-                        "allow_failure" => false
-                      },
-                      {
-                        "name" => "release",
-                        "script" => [a_string_including("release-cli create --name ")],
-                        "timeout" => 3600,
-                        "when" => "on_success",
-                        "allow_failure" => false
-                      }
-                    ])
-                end
-              end
             end
 
             context 'when `multi_build_steps` is not passed by the runner' do
@@ -626,6 +619,43 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
                   expect(response).to have_gitlab_http_status(:created)
                   expect(job.runner_manager.reload.read_attribute(param.to_sym)).to eq(value)
+                end
+              end
+            end
+
+            describe "when info parameter 'labels' is present" do
+              let(:labels) { { 'environment' => 'production', 'team' => 'backend' } }
+
+              subject(:perform_request) do
+                request_job info: { labels: labels }
+              end
+
+              it "updates the runner manager's labels" do
+                perform_request
+
+                expect(response).to have_gitlab_http_status(:created)
+                expect(job.runner_manager.reload.labels).to eq(labels)
+              end
+
+              context 'with empty labels' do
+                let(:labels) { {} }
+
+                it "updates the runner manager's labels to empty hash" do
+                  perform_request
+
+                  expect(response).to have_gitlab_http_status(:created)
+                  expect(job.runner_manager.reload.labels).to eq({})
+                end
+              end
+
+              context 'with complex label values' do
+                let(:labels) { { 'environment' => 'production', 'version' => '1.2.3', 'features' => 'gpu,ssd' } }
+
+                it "updates the runner manager's labels with complex values" do
+                  perform_request
+
+                  expect(response).to have_gitlab_http_status(:created)
+                  expect(job.runner_manager.reload.labels).to eq(labels)
                 end
               end
             end
@@ -1363,6 +1393,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end
 
         before do
+          # WebIde Terminal features to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/568849.
+          # We stub this FF for now to pass the test.
+          stub_feature_flags(stop_writing_builds_metadata: false)
+
           stub_webide_config_file(config_content)
           project.add_maintainer(user)
 

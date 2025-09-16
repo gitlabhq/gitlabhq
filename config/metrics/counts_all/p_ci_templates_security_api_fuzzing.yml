@@ -1,6 +1,6 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_security_api_fuzzing
-description: ''
+description: Count of distinct projects that included the Security/API-Fuzzing.gitlab-ci.yml template in a pipeline
 product_group: dynamic_analysis
 value_type: number
 status: active

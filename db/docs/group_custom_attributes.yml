@@ -7,7 +7,7 @@ feature_categories:
 description: Stores custom attributes per group
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14593
 milestone: '10.2'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   group_id: namespaces
 table_size: small

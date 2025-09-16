@@ -13,43 +13,26 @@ description: Scanning, vulnerabilities, compliance, customization, and reporting
 
 {{< /details >}}
 
-Build security into your development process with GitLab application security testing capabilities.
-These features help you identify and address vulnerabilities early in your development lifecycle,
-before they reach production environments.
+GitLab application security testing provides continuous detection of vulnerabilities, during
+development and after changes are deployed.
 
-GitLab application security testing provides comprehensive coverage of both repository content and
-deployed applications, enabling you to detect potential security issues throughout your software
-development lifecycle.
+Application security testing scans your project's source code, dependencies, libraries, and
+container images. Runtime vulnerabilities are detected through simulated attacks and fuzz testing
+against your deployed application in a test environment.
 
-GitLab also helps reduce the risk of vulnerabilities being introduced through several protective
-mechanisms:
+During development, scans run automatically as part of CI/CD pipelines when code is committed or
+merge requests are created. Security findings appear directly in merge requests and IDEs, notifying
+developers before code is merged. This proactive approach reduces the cost and effort of fixing
+issues later in development.
 
-Secret push protection
-: Blocks secrets such as keys and API tokens from being pushed to GitLab.
-
-Merge request approval policies
-: Enforce an additional approval on merge requests that would introduce vulnerabilities.
+Outside the development cycle, you can run security scans on demand, or schedule them to run at
+regular intervals. As vulnerability databases are updated with newly discovered threats and zero-day
+exploits, new risks to your project's software libraries and container images are identified.
+Together, these methods identify risks that weren't previously known during the original development
+cycle.
 
 For a click-through demo, see [Integrating security to the pipeline](https://gitlab.navattic.com/gitlab-scans).
 <!-- Demo published on 2024-01-15 -->
-
-## How application security testing works
-
-GitLab detects security vulnerabilities throughout your code, dependencies, containers, and
-deployed applications. Your project's repository and your application's behavior are scanned for
-vulnerabilities.
-
-Security findings appear directly in merge requests, providing actionable information before code is
-merged. This proactive approach reduces the cost and effort of fixing issues later in development.
-
-Application security testing can run in several contexts:
-
-During development
-: Automated scans run as part of CI/CD pipelines when code is committed or merge requests are
-  created.
-
-Outside development
-: Security testing can be run manually on demand or scheduled to run at regular intervals.
 
 ## Vulnerability management lifecycle
 
@@ -71,7 +54,3 @@ GitLab assists in the complete vulnerability management lifecycle through key ph
 
 Vulnerabilities are centralized in the vulnerability report and security dashboard, making
 prioritization and remediation tracking more straightforward for security teams.
-
-## Get started
-
-To get started, see [Get started securing your application](get-started-security.md).

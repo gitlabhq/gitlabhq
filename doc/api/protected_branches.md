@@ -36,7 +36,7 @@ The `ProtectedRefAccess.allowed_access_levels` method defines the following acce
 
 {{< /history >}}
 
-Gets a list of [protected branches](../user/project/repository/branches/protected.md) from a project
+Get a list of [protected branches](../user/project/repository/branches/protected.md) from a project
 as they are defined in the UI. If a wildcard is set, it is returned instead of the exact name
 of the branches that match that wildcard.
 
@@ -44,12 +44,38 @@ of the branches that match that wildcard.
 GET /projects/:id/protected_branches
 ```
 
-| Attribute | Type              | Required | Description                                                                  |
-|-----------|-------------------|----------|------------------------------------------------------------------------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `search`  | string            | no       | Name or part of the name of protected branches to be searched for            |
+Supported attributes:
 
-In the following example, the project ID is `5`.
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `search`  | string            | No       | Name or part of the name of protected branches to search for. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
+
+| Attribute                                        | Type    | Description |
+|--------------------------------------------------|---------|-------------|
+| `allow_force_push`                               | boolean | If `true`, force push is allowed on this branch. |
+| `code_owner_approval_required`                   | boolean | If `true`, code owner approval is required for pushes to this branch. |
+| `id`                                             | integer | ID of the protected branch. |
+| `inherited`                                      | boolean | If `true`, protection settings are inherited from parent group. Premium and Ultimate only. |
+| `merge_access_levels`                            | array   | Array of merge access level configurations. |
+| `merge_access_levels[].access_level`             | integer | Access level for merging. |
+| `merge_access_levels[].access_level_description` | string  | Human-readable description of the access level. |
+| `merge_access_levels[].group_id`                 | integer | ID of the group with merge access. Premium and Ultimate only. |
+| `merge_access_levels[].id`                       | integer | ID of the merge access level configuration. |
+| `merge_access_levels[].user_id`                  | integer | ID of the user with merge access. Premium and Ultimate only. |
+| `name`                                           | string  | Name of the protected branch. |
+| `push_access_levels`                             | array   | Array of push access level configurations. |
+| `push_access_levels[].access_level`              | integer | Access level for pushing. |
+| `push_access_levels[].access_level_description`  | string  | Human-readable description of the access level. |
+| `push_access_levels[].deploy_key_id`             | integer | ID of the deploy key with push access. |
+| `push_access_levels[].group_id`                  | integer | ID of the group with push access. Premium and Ultimate only. |
+| `push_access_levels[].id`                        | integer | ID of the push access level configuration. |
+| `push_access_levels[].user_id`                   | integer | ID of the user with push access. Premium and Ultimate only. |
+
+In the following example request, the project ID is `5`.
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -109,14 +135,13 @@ The following example response includes:
     ],
     "allow_force_push":false,
     "code_owner_approval_required": false
-  },
-  ...
+  }
 ]
 ```
 
 Users on GitLab Premium or Ultimate also see
-the `user_id`, `group_id` and `inherited` parameters. If the `inherited` parameter
-exists, means the setting was inherited from the project's group.
+the `user_id`, `group_id`, and `inherited` parameters. If the `inherited` parameter
+exists, the setting was inherited from the project's group.
 
 The following example response includes:
 
@@ -158,25 +183,48 @@ The following example response includes:
     "allow_force_push":false,
     "code_owner_approval_required": false,
     "inherited": true
-  },
-  ...
+  }
 ]
 ```
 
 ## Get a single protected branch or wildcard protected branch
 
-Gets a single protected branch or wildcard protected branch.
+Get a single protected branch or wildcard protected branch.
 
 ```plaintext
 GET /projects/:id/protected_branches/:name
 ```
 
-| Attribute | Type              | Required | Description                                                                  |
-|-----------|-------------------|----------|------------------------------------------------------------------------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `name`    | string            | yes      | The name of the branch or wildcard                                           |
+Supported attributes:
 
-In the following example, the project ID is `5` and branch name is `main`:
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `name`    | string            | Yes      | Name of the branch or wildcard. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
+
+| Attribute                                        | Type    | Description |
+|--------------------------------------------------|---------|-------------|
+| `allow_force_push`                               | boolean | If `true`, force push is allowed on this branch. |
+| `code_owner_approval_required`                   | boolean | If `true`, code owner approval is required for pushes to this branch. |
+| `id`                                             | integer | ID of the protected branch. |
+| `merge_access_levels`                            | array   | Array of merge access level configurations. |
+| `merge_access_levels[].access_level`             | integer | Access level for merging. |
+| `merge_access_levels[].access_level_description` | string  | Human-readable description of the access level. |
+| `merge_access_levels[].group_id`                 | integer | ID of the group with merge access. Premium and Ultimate only. |
+| `merge_access_levels[].id`                       | integer | ID of the merge access level configuration. |
+| `merge_access_levels[].user_id`                  | integer | ID of the user with merge access. Premium and Ultimate only. |
+| `name`                                           | string  | Name of the protected branch. |
+| `push_access_levels`                             | array   | Array of push access level configurations. |
+| `push_access_levels[].access_level`              | integer | Access level for pushing. |
+| `push_access_levels[].access_level_description`  | string  | Human-readable description of the access level. |
+| `push_access_levels[].group_id`                  | integer | ID of the group with push access. Premium and Ultimate only. |
+| `push_access_levels[].id`                        | integer | ID of the push access level configuration. |
+| `push_access_levels[].user_id`                   | integer | ID of the user with push access. Premium and Ultimate only. |
+
+In the following example request, the project ID is `5` and branch name is `main`:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -209,7 +257,7 @@ Example response:
 ```
 
 Users on GitLab Premium or Ultimate also see
-the `user_id` and `group_id` parameters:
+the `user_id` and `group_id` parameters.
 
 Example response:
 
@@ -248,27 +296,58 @@ Example response:
 
 {{< /history >}}
 
-Protects a single repository branch or several project repository
+Protect a single repository branch or several project repository
 branches using a wildcard protected branch.
 
 ```plaintext
 POST /projects/:id/protected_branches
 ```
 
-| Attribute                      | Type              | Required | Description                                                                                                                                                                                                                                     |
-|--------------------------------|-------------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`                           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).                                                                                                                                                                   |
-| `name`                         | string            | yes      | The name of the branch or wildcard.                                                                                                                                                                                                             |
-| `allow_force_push`             | boolean           | no       | When enabled, members who can push to this branch can also force push. (default: `false`)                                                                                                                                                       |
-| `allowed_to_merge`             | array             | no       | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only.                                                                   |
-| `allowed_to_push`              | array             | no       | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only.                                        |
-| `allowed_to_unprotect`         | array             | no       | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. The access level `No access` is not available for this field. Premium and Ultimate only. |
-| `code_owner_approval_required` | boolean           | no       | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/_index.md). (defaults: false) Premium and Ultimate only.                                                                              |
-| `merge_access_level`           | integer           | no       | Access levels allowed to merge. (defaults: `40`, Maintainer role).                                                                                                                                                                              |
-| `push_access_level`            | integer           | no       | Access levels allowed to push. (defaults: `40`, Maintainer role)                                                                                                                                                                                |
-| `unprotect_access_level`       | integer           | no       | Access levels allowed to unprotect. (defaults: `40`, Maintainer role)                                                                                                                                                                           |
+Supported attributes:
 
-In the following example, the project ID is `5` and branch name is `*-stable`.
+| Attribute                      | Type              | Required | Description |
+|--------------------------------|-------------------|----------|-------------|
+| `id`                           | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `name`                         | string            | Yes      | Name of the branch or wildcard. |
+| `allow_force_push`             | boolean           | No       | If `true`, members who can push to this branch can also force push. Default is `false`. |
+| `allowed_to_merge`             | array             | No       | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
+| `allowed_to_push`              | array             | No       | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
+| `allowed_to_unprotect`         | array             | No       | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Access level `No access` is not available for this field. Premium and Ultimate only. |
+| `code_owner_approval_required` | boolean           | No       | If `true`, prevents pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/_index.md). Default is `false`. Premium and Ultimate only. |
+| `merge_access_level`           | integer           | No       | Access levels allowed to merge. Default is `40` (Maintainer role). |
+| `push_access_level`            | integer           | No       | Access levels allowed to push. Default is `40` (Maintainer role). |
+| `unprotect_access_level`       | integer           | No       | Access levels allowed to unprotect. Default is `40` (Maintainer role). |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
+
+| Attribute                                            | Type    | Description |
+|------------------------------------------------------|---------|-------------|
+| `allow_force_push`                                   | boolean | If `true`, force push is allowed on this branch. |
+| `code_owner_approval_required`                       | boolean | If `true`, code owner approval is required for pushes to this branch. |
+| `id`                                                 | integer | ID of the protected branch. |
+| `merge_access_levels`                                | array   | Array of merge access level configurations. |
+| `merge_access_levels[].access_level`                 | integer | Access level for merging. |
+| `merge_access_levels[].access_level_description`     | string  | Human-readable description of the access level. |
+| `merge_access_levels[].group_id`                     | integer | ID of the group with merge access. Premium and Ultimate only. |
+| `merge_access_levels[].id`                           | integer | ID of the merge access level configuration. |
+| `merge_access_levels[].user_id`                      | integer | ID of the user with merge access. Premium and Ultimate only. |
+| `name`                                               | string  | Name of the protected branch. |
+| `push_access_levels`                                 | array   | Array of push access level configurations. |
+| `push_access_levels[].access_level`                  | integer | Access level for pushing. |
+| `push_access_levels[].access_level_description`      | string  | Human-readable description of the access level. |
+| `push_access_levels[].deploy_key_id`                 | integer | ID of the deploy key with push access. |
+| `push_access_levels[].group_id`                      | integer | ID of the group with push access. Premium and Ultimate only. |
+| `push_access_levels[].id`                            | integer | ID of the push access level configuration. |
+| `push_access_levels[].user_id`                       | integer | ID of the user with push access. Premium and Ultimate only. |
+| `unprotect_access_levels`                            | array   | Array of unprotect access level configurations. |
+| `unprotect_access_levels[].access_level`             | integer | Access level for unprotecting. |
+| `unprotect_access_levels[].access_level_description` | string  | Human-readable description of the access level. |
+| `unprotect_access_levels[].group_id`                 | integer | ID of the group with unprotect access. Premium and Ultimate only. |
+| `unprotect_access_levels[].id`                       | integer | ID of the unprotect access level configuration. |
+| `unprotect_access_levels[].user_id`                  | integer | ID of the user with unprotect access. Premium and Ultimate only. |
+
+In the following example request, the project ID is `5` and branch name is `*-stable`.
 
 ```shell
 curl --request POST \
@@ -406,7 +485,7 @@ The following example response includes:
   "merge_access_levels": [
     {
       "id":  2001,
-      "access_level": null
+      "access_level": null,
       "user_id": null,
       "group_id": 3,
       "access_level_description": "Example Merge Group"
@@ -446,6 +525,8 @@ Elements in the `allowed_to_push` array should take the form `{user_id: integer}
 The deploy key must be enabled for your project and it must have write access to your project repository.
 For other requirements, see [Allow deploy keys to push to a protected branch](../user/project/repository/branches/protected.md#enable-deploy-key-access).
 
+Example request:
+
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -454,7 +535,7 @@ curl --request POST \
 
 The following example response includes:
 
-- An protected branch with ID `101`.
+- A protected branch with ID `101`.
 - `push_access_levels` with ID `1001`.
 - `merge_access_levels` with ID `2001`.
 - `unprotect_access_levels` with ID `3001`.
@@ -526,7 +607,7 @@ curl --request POST \
       {"access_level": 30},
       {"access_level": 40}
     ]
-  }'
+  }' \
   --url "https://gitlab.example.com/api/v4/projects/5/protected_branches"
 ```
 
@@ -589,7 +670,7 @@ The following example response includes:
 
 {{< /details >}}
 
-To create a protected branch where only a specific group can remove the protection:
+To create a protected branch where only a specific group can unprotect the branch:
 
 ```shell
 curl --request POST \
@@ -629,18 +710,22 @@ This configuration allows these users to unprotect the branch:
 
 ## Unprotect repository branches
 
-Unprotects the given protected branch or wildcard protected branch.
+Unprotect the given protected branch or wildcard protected branch.
 
 ```plaintext
 DELETE /projects/:id/protected_branches/:name
 ```
 
-| Attribute | Type              | Required | Description                                                                  |
-|-----------|-------------------|----------|------------------------------------------------------------------------------|
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
-| `name`    | string            | yes      | The name of the branch                                                       |
+Supported attributes:
 
-In the following example, the project ID is `5` and branch name is `*-stable`.
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `name`    | string            | Yes      | Name of the branch. |
+
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
+
+In the following example request, the project ID is `5` and branch name is `*-stable`:
 
 ```shell
 curl --request DELETE \
@@ -656,23 +741,54 @@ curl --request DELETE \
 
 {{< /history >}}
 
-Updates a protected branch.
+Update a protected branch.
 
 ```plaintext
 PATCH /projects/:id/protected_branches/:name
 ```
 
-| Attribute                      | Type              | Required | Description                                                                                                                                                                                                                                                                                                          |
-|--------------------------------|-------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`                           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).                                                                                                                                                                                                                                        |
-| `name`                         | string            | yes      | The name of the branch or wildcard.                                                                                                                                                                                                                                                                                  |
-| `allow_force_push`             | boolean           | no       | When enabled, members who can push to this branch can also force push.                                                                                                                                                                                                                                               |
-| `allowed_to_merge`             | array             | no       | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only.                                                                                                                                        |
-| `allowed_to_push`              | array             | no       | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only.                                                                                                             |
-| `allowed_to_unprotect`         | array             | no       | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{access_level: integer}`, or `{id: integer, _destroy: true}` to destroy an existing access level. The access level `No access` is not available for this field. Premium and Ultimate only. |
-| `code_owner_approval_required` | boolean           | no       | Prevent pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/_index.md). Premium and Ultimate only.                                                                                                                                                                     |
+Supported attributes:
 
-In the following example, the project ID is `5` and branch name is `feature-branch`.
+| Attribute                      | Type              | Required | Description |
+|--------------------------------|-------------------|----------|-------------|
+| `id`                           | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `name`                         | string            | Yes      | Name of the branch or wildcard. |
+| `allow_force_push`             | boolean           | No       | If `true`, members who can push to this branch can also force push. |
+| `allowed_to_merge`             | array             | No       | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
+| `allowed_to_push`              | array             | No       | Array of push access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{deploy_key_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
+| `allowed_to_unprotect`         | array             | No       | Array of unprotect access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, `{access_level: integer}`, or `{id: integer, _destroy: true}` to destroy an existing access level. Access level `No access` is not available for this field. Premium and Ultimate only. |
+| `code_owner_approval_required` | boolean           | No       | If `true`, prevents pushes to this branch if it matches an item in the [`CODEOWNERS` file](../user/project/codeowners/_index.md). Premium and Ultimate only. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
+
+| Attribute                                            | Type    | Description |
+|------------------------------------------------------|---------|-------------|
+| `allow_force_push`                                   | boolean | If `true`, force push is allowed on this branch. |
+| `code_owner_approval_required`                       | boolean | If `true`, code owner approval is required for pushes to this branch. |
+| `id`                                                 | integer | ID of the protected branch. |
+| `merge_access_levels`                                | array   | Array of merge access level configurations. |
+| `merge_access_levels[].access_level`                 | integer | Access level for merging. |
+| `merge_access_levels[].access_level_description`     | string  | Human-readable description of the access level. |
+| `merge_access_levels[].group_id`                     | integer | ID of the group with merge access. Premium and Ultimate only. |
+| `merge_access_levels[].id`                           | integer | ID of the merge access level configuration. |
+| `merge_access_levels[].user_id`                      | integer | ID of the user with merge access. Premium and Ultimate only. |
+| `name`                                               | string  | Name of the protected branch. |
+| `push_access_levels`                                 | array   | Array of push access level configurations. |
+| `push_access_levels[].access_level`                  | integer | Access level for pushing. |
+| `push_access_levels[].access_level_description`      | string  | Human-readable description of the access level. |
+| `push_access_levels[].deploy_key_id`                 | integer | ID of the deploy key with push access. |
+| `push_access_levels[].group_id`                      | integer | ID of the group with push access. Premium and Ultimate only. |
+| `push_access_levels[].id`                            | integer | ID of the push access level configuration. |
+| `push_access_levels[].user_id`                       | integer | ID of the user with push access. Premium and Ultimate only. |
+| `unprotect_access_levels`                            | array   | Array of unprotect access level configurations. |
+| `unprotect_access_levels[].access_level`             | integer | Access level for unprotecting. |
+| `unprotect_access_levels[].access_level_description` | string  | Human-readable description of the access level. |
+| `unprotect_access_levels[].group_id`                 | integer | ID of the group with unprotect access. Premium and Ultimate only. |
+| `unprotect_access_levels[].id`                       | integer | ID of the unprotect access level configuration. |
+| `unprotect_access_levels[].user_id`                  | integer | ID of the user with unprotect access. Premium and Ultimate only. |
+
+Example request:
 
 ```shell
 curl --request PATCH \
@@ -680,8 +796,8 @@ curl --request PATCH \
   --url "https://gitlab.example.com/api/v4/projects/5/protected_branches/feature-branch?allow_force_push=true&code_owner_approval_required=true"
 ```
 
-Elements in the `allowed_to_push`, `allowed_to_merge` and `allowed_to_unprotect` arrays should be one of `user_id`, `group_id` or
-`access_level`, and take the form `{user_id: integer}`, `{group_id: integer}` or
+Elements in the `allowed_to_push`, `allowed_to_merge`, and `allowed_to_unprotect` arrays should
+be one of `user_id`, `group_id`, or `access_level`, and take the form `{user_id: integer}`, `{group_id: integer}` or
 `{access_level: integer}`.
 
 `allowed_to_push` includes an extra element, `deploy_key_id`, that takes the form `{deploy_key_id: integer}`.
@@ -694,9 +810,7 @@ To update:
   You must also pass the `id` of the `access_level` in the respective hash.
 - `deploy_key_id`: Ensure the deploy key is enabled for your project and it must have write access to your project repository.
 
-To delete:
-
-- You must pass `_destroy` set to `true`. See the following examples.
+To delete, you must pass `_destroy` set to `true`. See the following examples.
 
 ### Example: create a `push_access_level` record
 
@@ -770,7 +884,14 @@ Example response:
 
 ### Example: update an `unprotect_access_level` record
 
-To modify who can unprotect an existing protected branch:
+Prerequisites:
+
+- Users calling this API must be included in the `allowed_to_unprotect` configuration.
+- The user specified by `user_id` must be a project member.
+- Groups specified by `group_id` must have access to the project.
+
+To modify who can unprotect an existing protected branch, include the `id` of the existing access
+level record. For example:
 
 ```shell
 curl --request PATCH \
@@ -784,13 +905,7 @@ curl --request PATCH \
   --url "https://gitlab.example.com/api/v4/projects/5/protected_branches/main"
 ```
 
-When updating unprotect permissions:
-
-- Users calling this API must be included in the `allowed_to_unprotect` configuration
-- Include the `id` of the existing access level record.
-- The user specified by `user_id` must be a project member.
-- Groups specified by `group_id` must have access to the project.
-- Use `_destroy: true` to remove specific access levels
+To remove specific access levels, use `_destroy: true`.
 
 ## Related topics
 

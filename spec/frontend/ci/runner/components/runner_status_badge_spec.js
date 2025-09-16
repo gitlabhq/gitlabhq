@@ -59,7 +59,7 @@ describe('RunnerTypeBadge', () => {
     });
 
     expect(wrapper.text()).toBe(I18N_STATUS_NEVER_CONTACTED);
-    expect(findBadge().props('variant')).toBe('muted');
+    expect(findBadge().props('variant')).toBe('neutral');
     expect(getTooltip().value).toBe('Runner has never contacted this instance');
   });
 
@@ -72,7 +72,7 @@ describe('RunnerTypeBadge', () => {
     });
 
     expect(wrapper.text()).toBe(I18N_STATUS_OFFLINE);
-    expect(findBadge().props('variant')).toBe('muted');
+    expect(findBadge().props('variant')).toBe('neutral');
     expect(getTooltip().value).toBe(
       "Runner hasn't contacted GitLab in more than 2 hours and last contact was 1 day ago",
     );

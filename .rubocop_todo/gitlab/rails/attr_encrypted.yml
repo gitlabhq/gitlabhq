@@ -3,12 +3,10 @@
 Gitlab/Rails/AttrEncrypted:
   Exclude:
     - 'app/models/alert_management/http_integration.rb'
-    - 'app/models/alerting/project_alerting_setting.rb'
     - 'app/models/application_setting.rb'
     - 'app/models/atlassian/identity.rb'
     - 'app/models/bulk_imports/configuration.rb'
     - 'app/models/chat_name.rb'
-    - 'app/models/ci/trigger.rb'
     - 'app/models/cloud_connector/service_access_token.rb'
     - 'app/models/clusters/integrations/prometheus.rb'
     - 'app/models/clusters/kubernetes_namespace.rb'
@@ -49,7 +47,6 @@ Gitlab/Rails/AttrEncrypted:
     - 'ee/app/models/concerns/audit_events/gcp_externally_destinationable.rb'
     - 'ee/app/models/dast/site_profile_secret_variable.rb'
     - 'ee/app/models/dependency_proxy/packages/setting.rb'
-    - 'ee/app/models/geo_node.rb'
     - 'ee/app/models/merge_requests/external_status_check.rb'
     - 'ee/app/models/status_page/project_setting.rb'
     - 'ee/app/models/system_access/group_microsoft_application.rb'

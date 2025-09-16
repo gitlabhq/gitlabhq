@@ -118,7 +118,7 @@ RSpec.describe Ability, feature_category: :system_access do
         user = build(:user, admin: true)
 
         expect(described_class.users_that_can_read_project([user], project))
-            .to eq([])
+          .to eq([])
       end
 
       it 'returns external users if they are the project owner' do
@@ -234,7 +234,7 @@ RSpec.describe Ability, feature_category: :system_access do
         visible_merge_request = build(:merge_request, source_project: build(:project, :public))
 
         merge_requests = described_class
-            .merge_requests_readable_by_user([hidden_merge_request, visible_merge_request], user)
+                           .merge_requests_readable_by_user([hidden_merge_request, visible_merge_request], user)
 
         expect(merge_requests).to eq([visible_merge_request])
       end
@@ -339,7 +339,7 @@ RSpec.describe Ability, feature_category: :system_access do
         feature_flag_2 = build(:operations_feature_flag, project: build(:project, :public))
 
         feature_flags = described_class
-            .feature_flags_readable_by_user([feature_flag_1, feature_flag_2])
+                          .feature_flags_readable_by_user([feature_flag_1, feature_flag_2])
 
         expect(feature_flags).to eq([])
       end
@@ -412,83 +412,137 @@ RSpec.describe Ability, feature_category: :system_access do
 
   describe '.allowed?' do
     let_it_be(:group) { create(:group, :private) }
-    let_it_be_with_reload(:user) { create(:user, :service_account) }
-    let_it_be(:delegated_user) { create(:user) }
+    let_it_be_with_reload(:primary_user) { create(:user, :service_account) }
+    let_it_be(:scoped_user) { create(:user) }
 
-    let(:request_store_key) { format(::Gitlab::Auth::Identity::COMPOSITE_IDENTITY_KEY_FORMAT, user.id) }
-
-    subject { described_class.allowed?(user, :read_group, group) }
+    let(:request_store_key) { format(::Gitlab::Auth::Identity::COMPOSITE_IDENTITY_KEY_FORMAT, primary_user.id) }
 
     context 'with composite identity', :request_store do
       before do
-        ::Gitlab::SafeRequestStore[request_store_key] = delegated_user
-        user.update!(composite_identity_enforced: true)
+        primary_user.update!(composite_identity_enforced: true)
+        ::Gitlab::Auth::Identity.new(primary_user).link!(scoped_user)
       end
 
-      context 'when both users are members' do
-        before_all do
-          group.add_developer(delegated_user)
-          group.add_developer(user)
+      context 'when called with primary user' do
+        subject { described_class.allowed?(primary_user, :read_group, group) }
+
+        context 'when both users are members' do
+          before_all do
+            group.add_developer(scoped_user)
+            group.add_developer(primary_user)
+          end
+
+          it 'returns true' do
+            expect(subject).to be_truthy
+          end
+
+          context 'when primary user is not set in RequestStore' do
+            before do
+              ::Gitlab::SafeRequestStore.delete(request_store_key)
+            end
+
+            it 'returns false' do
+              expect(subject).to be_falsey
+            end
+          end
         end
 
-        it 'returns true' do
-          expect(subject).to be_truthy
+        context 'when only primary user is a member' do
+          before_all do
+            group.add_developer(primary_user)
+          end
+
+          it 'returns false' do
+            expect(subject).to be_falsey
+          end
+
+          context 'with unenforced composite identity' do
+            before do
+              primary_user.update!(composite_identity_enforced: false)
+            end
+
+            it 'returns true' do
+              expect(subject).to be_truthy
+            end
+          end
         end
 
-        context 'when delegating user is not set in RequestStore' do
-          before do
-            ::Gitlab::SafeRequestStore.delete(request_store_key)
+        context 'when only scoped user is a member' do
+          before_all do
+            group.add_developer(scoped_user)
           end
 
           it 'returns false' do
             expect(subject).to be_falsey
           end
         end
+
+        context 'when neither user is a member' do
+          it 'returns false' do
+            expect(subject).to be_falsey
+          end
+        end
+
+        context 'when scoped user is a composite identity' do
+          let_it_be(:scoped_user) { primary_user }
+
+          it 'returns false' do
+            group.add_developer(primary_user)
+
+            expect(subject).to be_falsey
+          end
+        end
       end
 
-      context 'when only delegating user is a member' do
-        before_all do
-          group.add_developer(user)
-        end
+      context 'when called with scoped user' do
+        subject { described_class.allowed?(scoped_user, :read_group, group) }
 
-        it 'returns false' do
-          expect(subject).to be_falsey
-        end
-
-        context 'with unenforced composite identity' do
-          before do
-            user.update!(composite_identity_enforced: false)
+        context 'when both users are members' do
+          before_all do
+            group.add_developer(scoped_user)
+            group.add_developer(primary_user)
+            scoped_user.composite_identity_enforced!
           end
 
           it 'returns true' do
             expect(subject).to be_truthy
           end
+
+          context 'when primary user is not set in RequestStore' do
+            before do
+              ::Gitlab::SafeRequestStore.delete(request_store_key)
+            end
+
+            it 'returns false' do
+              expect(subject).to be_falsey
+            end
+          end
         end
-      end
 
-      context 'when only delegated user is a member' do
-        before_all do
-          group.add_developer(delegated_user)
+        context 'when only primary user is a member' do
+          before_all do
+            group.add_developer(primary_user)
+          end
+
+          it 'returns false' do
+            expect(subject).to be_falsey
+          end
         end
 
-        it 'returns false' do
-          expect(subject).to be_falsey
+        context 'when only scoped user is a member' do
+          before_all do
+            group.add_developer(scoped_user)
+          end
+
+          it 'returns false' do
+            expect(subject).to be_falsey
+          end
         end
-      end
 
-      context 'when neither user is a member' do
-        it 'returns false' do
-          expect(subject).to be_falsey
-        end
-      end
-
-      context 'when delegated user is a composite identity' do
-        let_it_be(:delegated_user) { user }
-
-        it 'returns false' do
-          group.add_developer(user)
-
-          expect(subject).to be_falsey
+        context 'when neither user is a member' do
+          it 'returns false' do
+            expect(subject).to be_falsey
+          end
         end
       end
     end

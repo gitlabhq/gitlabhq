@@ -6,7 +6,7 @@ import {
   GlTooltipDirective,
   GlResizeObserverDirective,
 } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import JobDropdownItem from '~/ci/common/private/job_dropdown_item.vue';
 import { FAILED_STATUS } from '~/ci/constants';
 import { JOB_DROPDOWN } from '../constants';
@@ -127,7 +127,7 @@ export default {
             :stage-name="stageName"
             hide-tooltip
           />
-          <gl-badge variant="muted">
+          <gl-badge variant="neutral">
             {{ group.size }}
           </gl-badge>
         </div>

@@ -167,10 +167,8 @@ module API
           requires :job_id, type: Integer, desc: 'The ID of a job'
         end
         post ':id/jobs/:job_id/artifacts/keep' do
-          authorize_update_builds!
-
           build = find_build!(params[:job_id])
-          authorize!(:update_build, build)
+          authorize!(:keep_job_artifacts, build)
           break not_found!(build) unless build.artifacts?
 
           build.keep_artifacts!

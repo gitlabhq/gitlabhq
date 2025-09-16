@@ -189,7 +189,8 @@ token family are revoked. For more information, see [Automatic reuse detection](
 
 Prerequisites:
 
-- A personal access token with the [`api` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes) or a project access token with the [`api` or `self_rotate` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes). See [Self-rotate](#self-rotate).
+- To rotate another project access token, you must have a personal access token with the [`api` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes).
+- To [self-rotate](#self-rotate) a project access token, the token must have the [`api` or `self_rotate` scope](../user/profile/personal_access_tokens.md#personal-access-token-scopes).
 
 ```plaintext
 POST /projects/:id/access_tokens/:token_id/rotate

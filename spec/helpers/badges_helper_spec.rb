@@ -29,7 +29,7 @@ RSpec.describe BadgesHelper do
     end
 
     it 'adds style classes' do
-      expect(helper.gl_badge_tag(label)).to match(%r{class="gl-badge badge badge-pill badge-muted"})
+      expect(helper.gl_badge_tag(label)).to match(%r{class="gl-badge badge badge-pill badge-neutral"})
     end
 
     it 'adds custom classes' do
@@ -39,7 +39,6 @@ RSpec.describe BadgesHelper do
     describe 'variants' do
       where(:variant) do
         [
-          [:muted],
           [:neutral],
           [:info],
           [:success],
@@ -55,12 +54,12 @@ RSpec.describe BadgesHelper do
         end
       end
 
-      it 'defaults to muted' do
-        expect(helper.gl_badge_tag(label)).to match(%r{class=".*badge-muted.*"})
+      it 'defaults to neutral' do
+        expect(helper.gl_badge_tag(label)).to match(%r{class=".*badge-neutral.*"})
       end
 
       it 'falls back to default given an unknown variant' do
-        expect(helper.gl_badge_tag(label, variant: :foo)).to match(%r{class=".*badge-muted.*"})
+        expect(helper.gl_badge_tag(label, variant: :foo)).to match(%r{class=".*badge-neutral.*"})
       end
     end
 

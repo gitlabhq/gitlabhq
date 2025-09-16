@@ -367,7 +367,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     subject { work_item.supported_quick_action_commands }
 
     it 'returns quick action commands supported for all work items' do
-      is_expected.to include(:title, :reopen, :close, :cc, :tableflip, :shrug, :type, :promote_to, :checkin_reminder,
+      is_expected.to include(:title, :reopen, :close, :tableflip, :shrug, :type, :promote_to, :checkin_reminder,
         :subscribe, :unsubscribe, :confidential, :award, :move, :clone, :copy_metadata, :duplicate,
         :promote_to_incident, :board_move, :convert_to_ticket, :zoom, :remove_zoom)
     end
@@ -670,62 +670,61 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
   end
 
   context 'with hierarchy' do
-    let_it_be(:type1) { create(:work_item_type, :non_default) }
-    let_it_be(:type2) { create(:work_item_type, :non_default) }
-    let_it_be(:type3) { create(:work_item_type, :non_default) }
-    let_it_be(:type4) { create(:work_item_type, :non_default) }
-    let_it_be(:hierarchy_restriction1) { create(:hierarchy_restriction, parent_type: type1, child_type: type2) }
-    let_it_be(:hierarchy_restriction2) { create(:hierarchy_restriction, parent_type: type2, child_type: type2) }
-    let_it_be(:hierarchy_restriction3) { create(:hierarchy_restriction, parent_type: type2, child_type: type3) }
-    let_it_be(:hierarchy_restriction4) { create(:hierarchy_restriction, parent_type: type3, child_type: type3) }
-    let_it_be(:hierarchy_restriction5) { create(:hierarchy_restriction, parent_type: type3, child_type: type4) }
-    let_it_be(:item1) { create(:work_item, work_item_type: type1, project: reusable_project) }
-    let_it_be(:item2_1) { create(:work_item, work_item_type: type2, project: reusable_project) }
-    let_it_be(:item2_2) { create(:work_item, work_item_type: type2, project: reusable_project) }
-    let_it_be(:item3_1) { create(:work_item, work_item_type: type3, project: reusable_project) }
-    let_it_be(:item3_2) { create(:work_item, work_item_type: type3, project: reusable_project) }
-    let_it_be(:item4) { create(:work_item, work_item_type: type4, project: reusable_project) }
-    let_it_be(:ignored_ancestor) { create(:work_item, work_item_type: type1, project: reusable_project) }
-    let_it_be(:ignored_descendant) { create(:work_item, work_item_type: type4, project: reusable_project) }
-    let_it_be(:link1) { create(:parent_link, work_item_parent: item1, work_item: item2_1) }
-    let_it_be(:link2) { create(:parent_link, work_item_parent: item2_1, work_item: item2_2) }
-    let_it_be(:link3) { create(:parent_link, work_item_parent: item2_2, work_item: item3_1) }
-    let_it_be(:link4) { create(:parent_link, work_item_parent: item3_1, work_item: item3_2) }
-    let_it_be(:link5) { create(:parent_link, work_item_parent: item3_2, work_item: item4) }
+    let_it_be(:epic1) { create(:work_item, :epic, project: reusable_project) }
+    let_it_be(:epic2) { create(:work_item, :epic, project: reusable_project) }
+    let_it_be(:epic3) { create(:work_item, :epic, project: reusable_project) }
+    let_it_be(:issue1) { create(:work_item, :issue, project: reusable_project) }
+    let_it_be(:issue2) { create(:work_item, :issue, project: reusable_project) }
+    let_it_be(:task1) { create(:work_item, :task, project: reusable_project) }
+    let_it_be(:task2) { create(:work_item, :task, project: reusable_project) }
+
+    let_it_be(:ignored_ancestor) { create(:work_item, :epic, project: reusable_project) }
+    let_it_be(:ignored_descendant) { create(:work_item, :task, project: reusable_project) }
+
+    # Create the hierarchy:
+    # epic1 -> epic2 -> epic3 -> issue1 -> task1
+    #                         \-> issue2 -> task2
+    let_it_be(:link1) { create(:parent_link, work_item_parent: epic1, work_item: epic2) }
+    let_it_be(:link2) { create(:parent_link, work_item_parent: epic2, work_item: epic3) }
+    let_it_be(:link3) { create(:parent_link, work_item_parent: epic3, work_item: issue1) }
+    let_it_be(:link4) { create(:parent_link, work_item_parent: epic3, work_item: issue2) }
+    let_it_be(:link5) { create(:parent_link, work_item_parent: issue1, work_item: task1) }
+    let_it_be(:link6) { create(:parent_link, work_item_parent: issue2, work_item: task2) }
 
     describe '#ancestors' do
       it 'returns all ancestors in ascending order' do
-        expect(item3_1.ancestors).to eq([item2_2, item2_1, item1])
+        expect(task1.ancestors).to eq([issue1, epic3, epic2, epic1])
       end
 
       it 'returns an empty array if there are no ancestors' do
-        expect(item1.ancestors).to be_empty
+        expect(epic1.ancestors).to be_empty
       end
     end
 
     describe '#descendants' do
       it 'returns all descendants' do
-        expect(item1.descendants).to match_array([item2_1, item2_2, item3_1, item3_2, item4])
+        expect(epic1.descendants).to match_array([epic2, epic3, issue1, issue2, task1, task2])
       end
     end
 
     describe '#same_type_base_and_ancestors' do
       it 'returns self and all ancestors of the same type in ascending order' do
-        expect(item3_2.same_type_base_and_ancestors).to eq([item3_2, item3_1])
+        expect(epic3.same_type_base_and_ancestors).to eq([epic3, epic2, epic1])
       end
 
       it 'returns self if there are no ancestors of the same type' do
-        expect(item3_1.same_type_base_and_ancestors).to match_array([item3_1])
+        expect(issue1.same_type_base_and_ancestors).to match_array([issue1])
       end
     end
 
     describe '#same_type_descendants_depth' do
       it 'returns max descendants depth including self' do
-        expect(item3_1.same_type_descendants_depth).to eq(2)
+        # epic1 has epic2 and epic3 as same-type descendants, so depth is 3
+        expect(epic1.same_type_descendants_depth).to eq(3)
       end
 
       it 'returns 1 if there are no descendants' do
-        expect(item1.same_type_descendants_depth).to eq(1)
+        expect(task1.same_type_descendants_depth).to eq(1)
       end
     end
   end
@@ -746,165 +745,74 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
 
     context 'with ParentLink relation' do
-      let_it_be(:old_type) { create(:work_item_type, :non_default) }
-      let_it_be(:new_type) { create(:work_item_type, :non_default) }
+      describe 'type conversion validations' do
+        let_it_be_with_reload(:issue_without_children) { create(:work_item, :issue, project: reusable_project) }
+        let_it_be_with_reload(:issue_with_task) { create(:work_item, :issue, project: reusable_project) }
+        let_it_be_with_reload(:task_child) { create(:work_item, :task, project: reusable_project) }
 
-      context 'with hierarchy restrictions' do
-        let_it_be(:child_type) { create(:work_item_type, :non_default) }
-
-        let_it_be_with_reload(:parent) { create(:work_item, work_item_type: old_type, project: reusable_project) }
-        let_it_be_with_reload(:child) { create(:work_item, work_item_type: child_type, project: reusable_project) }
-
-        let_it_be(:hierarchy_restriction) do
-          create(:hierarchy_restriction, parent_type: old_type, child_type: child_type)
+        before do
+          create(:parent_link, work_item_parent: issue_with_task, work_item: task_child)
         end
 
-        let_it_be(:link) { create(:parent_link, work_item_parent: parent, work_item: child) }
+        it 'allows type conversion when no children exist' do
+          supported = issue_without_children.work_item_type.supported_conversion_types(
+            reusable_project,
+            issue_without_children.author
+          )
 
-        context 'when child items restrict the type change' do
-          before do
-            parent.work_item_type = new_type
-          end
-
-          context 'when child items are compatible with the new type' do
-            let_it_be(:hierarchy_restriction_new_type) do
-              create(:hierarchy_restriction, parent_type: new_type, child_type: child_type)
-            end
-
-            it 'allows to change types' do
-              expect(parent).to be_valid
-              expect(parent.errors).to be_empty
-            end
-          end
-
-          context 'when child items are not compatible with the new type' do
-            it 'does not allow to change types' do
-              expect(parent).not_to be_valid
-              expect(parent.errors[:work_item_type_id])
-                .to include("cannot be changed to #{new_type.name} with these child item types.")
-            end
-          end
+          issue_without_children.work_item_type = supported.first
+          expect(issue_without_children).to be_valid
         end
 
-        context 'when the parent restricts the type change' do
-          before do
-            child.work_item_type = new_type
-          end
+        it 'prevents type conversion when it would break hierarchy rules' do
+          # Task with a parent shouldn't be able to convert
+          task_child.reload # Make sure it knows about its parent
 
-          it 'does not allow to change types' do
-            expect(child.valid?).to eq(false)
-            expect(child.errors[:work_item_type_id]).to include(
-              format(
-                "cannot be changed to %{type_name} when linked to a parent %{parent_name}.",
-                type_name: new_type.name.downcase,
-                parent_name: parent.work_item_type.name.downcase
-              )
-            )
-          end
+          # Try to change task to issue (which would create Issue->Issue, not allowed)
+          issue_type = WorkItems::Type.find_by(base_type: :issue)
+          task_child.work_item_type = issue_type
+
+          expect(task_child).not_to be_valid
+          expect(task_child.errors[:work_item_type_id]).to contain_exactly(
+            "cannot be changed to issue when linked to a parent issue.")
+        end
+      end
+    end
+  end
+
+  describe '#validate_child_restrictions' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:parent_work_item) { create(:work_item, :issue, project: project) }
+    let_it_be(:task_child) { create(:work_item, :task, project: project) }
+
+    context 'when there are no child links' do
+      it 'does not add any errors' do
+        parent_work_item.send(:validate_child_restrictions, parent_work_item.child_links)
+        expect(parent_work_item.errors[:work_item_type_id]).to be_empty
+      end
+    end
+
+    context 'when there are child links' do
+      let_it_be(:parent_link) { create(:parent_link, work_item_parent: parent_work_item, work_item: task_child) }
+
+      context 'when restriction exists for the parent-child combination' do
+        it 'does not add errors' do
+          parent_work_item.send(:validate_child_restrictions, parent_work_item.child_links)
+
+          expect(parent_work_item.errors[:work_item_type_id]).to be_empty
         end
       end
 
-      context 'with hierarchy depth restriction' do
-        let_it_be_with_reload(:item1) { create(:work_item, work_item_type: new_type, project: reusable_project) }
-        let_it_be_with_reload(:item2) { create(:work_item, work_item_type: new_type, project: reusable_project) }
-        let_it_be_with_reload(:item3) { create(:work_item, work_item_type: new_type, project: reusable_project) }
-        let_it_be_with_reload(:item4) { create(:work_item, work_item_type: new_type, project: reusable_project) }
-
-        let_it_be(:hierarchy_restriction1) do
-          create(:hierarchy_restriction, parent_type: old_type, child_type: new_type)
-        end
-
-        let_it_be(:hierarchy_restriction2) do
-          create(:hierarchy_restriction, parent_type: new_type, child_type: old_type)
-        end
-
-        let_it_be_with_reload(:hierarchy_restriction3) do
-          create(:hierarchy_restriction, parent_type: new_type, child_type: new_type, maximum_depth: 4)
-        end
-
-        let_it_be(:link1) { create(:parent_link, work_item_parent: item1, work_item: item2) }
-        let_it_be(:link2) { create(:parent_link, work_item_parent: item2, work_item: item3) }
-        let_it_be(:link3) { create(:parent_link, work_item_parent: item3, work_item: item4) }
-
+      context 'when restriction does not exist for the parent-child combination' do
         before do
-          hierarchy_restriction3.update!(maximum_depth: maximum_depth)
+          parent_work_item.work_item_type_id = WorkItems::Type.find_by(base_type: :epic).id
         end
 
-        shared_examples 'validates the depth correctly' do
-          before do
-            work_item.update!(work_item_type: old_type)
-          end
+        it 'adds an error' do
+          parent_work_item.send(:validate_child_restrictions, parent_work_item.child_links)
 
-          context 'when it is valid' do
-            let(:maximum_depth) { 4 }
-
-            it 'allows to change types' do
-              work_item.work_item_type = new_type
-
-              expect(work_item).to be_valid
-            end
-          end
-
-          context 'when it is not valid' do
-            let(:maximum_depth) { 3 }
-
-            it 'does not allow to change types' do
-              work_item.work_item_type = new_type
-
-              expect(work_item).not_to be_valid
-              expect(work_item.errors[:work_item_type_id]).to include("reached maximum depth")
-            end
-          end
-        end
-
-        context 'with the highest ancestor' do
-          let_it_be_with_reload(:work_item) { item1 }
-
-          it_behaves_like 'validates the depth correctly'
-        end
-
-        context 'with a child item' do
-          let_it_be_with_reload(:work_item) { item2 }
-
-          it_behaves_like 'validates the depth correctly'
-        end
-
-        context 'with the last child item' do
-          let_it_be_with_reload(:work_item) { item4 }
-
-          it_behaves_like 'validates the depth correctly'
-        end
-
-        context 'when ancestor is still the old type' do
-          let_it_be(:hierarchy_restriction4) do
-            create(:hierarchy_restriction, parent_type: old_type, child_type: old_type)
-          end
-
-          before do
-            item1.update!(work_item_type: old_type)
-            item2.update!(work_item_type: old_type)
-          end
-
-          context 'when it exceeds maximum depth' do
-            let(:maximum_depth) { 2 }
-
-            it 'does not allow to change types' do
-              item2.work_item_type = new_type
-
-              expect(item2).not_to be_valid
-              expect(item2.errors[:work_item_type_id]).to include("reached maximum depth")
-            end
-          end
-
-          context 'when it does not exceed maximum depth' do
-            let(:maximum_depth) { 3 }
-
-            it 'does allow to change types' do
-              item2.work_item_type = new_type
-
-              expect(item2).to be_valid
-            end
-          end
+          expect(parent_work_item.errors[:work_item_type_id])
+            .to include("cannot be changed to Epic with these child item types.")
         end
       end
     end
@@ -1080,31 +988,12 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       end
     end
 
-    context 'when there is a hierarchy restriction without maximum depth' do
-      before do
-        create(:hierarchy_restriction,
-          parent_type_id: work_item.work_item_type_id,
-          child_type_id: child_type.id,
-          maximum_depth: nil)
-      end
-
-      it 'returns false' do
-        expect(work_item.max_depth_reached?(child_type)).to be false
-      end
-    end
-
     context 'when there is a hierarchy restriction with maximum depth' do
-      let(:max_depth) { 3 }
-
-      before do
-        create(:hierarchy_restriction,
-          parent_type_id: work_item.work_item_type_id,
-          child_type_id: child_type.id,
-          maximum_depth: max_depth)
-      end
-
       context 'when work item type is the same as child type' do
+        # Epic can have Epic children with max depth 7
+        let(:work_item) { create(:work_item, :epic, project: reusable_project) }
         let(:child_type) { work_item.work_item_type }
+        let(:max_depth) { 7 } # Epic->Epic has max depth 7
 
         it 'returns true when depth is reached' do
           allow(work_item).to receive_message_chain(:same_type_base_and_ancestors, :count).and_return(max_depth)
@@ -1118,6 +1007,11 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       end
 
       context 'when work item type is different from child type' do
+        # Epic can have Issue children with max depth 1
+        let(:work_item) { create(:work_item, :epic, project: reusable_project) }
+        let(:child_type) { WorkItems::Type.find_by(base_type: :issue) }
+        let(:max_depth) { 1 } # Epic->Issue has max depth 1
+
         it 'returns true when depth is reached' do
           allow(work_item).to receive_message_chain(:hierarchy, :base_and_ancestors, :count).and_return(max_depth)
           expect(work_item.max_depth_reached?(child_type)).to be true

@@ -27,6 +27,21 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
     end
   end
 
+  context 'when project group is archived' do
+    before do
+      group.update!(archived: true)
+      post_graphql(query, current_user: current_user)
+    end
+
+    it 'returns the correct value in the archived field' do
+      expect(work_item_data).to include(
+        'id' => work_item.to_gid.to_s,
+        'iid' => work_item.iid.to_s,
+        'archived' => true
+      )
+    end
+  end
+
   context "for showPlanUpgradePromotion field" do
     context "when the namespace is in a free plan" do
       before do
@@ -1058,6 +1073,46 @@ RSpec.describe 'Query.work_item(id)', :with_current_organization, feature_catego
 
           expect { post_graphql(query, current_user: developer) }.not_to exceed_query_limit(control)
           expect_graphql_errors_to_be_empty
+        end
+      end
+
+      context 'when fetching latest discussions first' do
+        let_it_be(:notes) do
+          create_list(:note, 3, project: work_item.project, noteable: work_item)
+        end
+
+        let(:work_item_fields) do
+          <<~GRAPHQL
+            id
+            widgets(onlyTypes: [NOTES]) {
+              type
+              ... on WorkItemWidgetNotes {
+                discussions(filter: ALL_NOTES, first: 3, sort: CREATED_DESC) {
+                  nodes {
+                    id
+                  }
+                }
+              }
+            }
+          GRAPHQL
+        end
+
+        it 'returns latest discussions' do
+          all_widgets = graphql_dig_at(work_item_data, :widgets)
+          notes_widget = all_widgets.find { |x| x['type'] == 'NOTES' }
+          discussions = graphql_dig_at(notes_widget['discussions'], :nodes)
+
+          expect(discussions).to include(
+            hash_including(
+              'id' => notes[2].discussion.to_global_id.to_s
+            ),
+            hash_including(
+              'id' => notes[1].discussion.to_global_id.to_s
+            ),
+            hash_including(
+              'id' => notes[0].discussion.to_global_id.to_s
+            )
+          )
         end
       end
     end

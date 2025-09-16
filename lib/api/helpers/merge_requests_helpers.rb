@@ -79,8 +79,8 @@ module API
           values: %w[simple],
           desc: 'If simple, returns the `iid`, URL, title, description, and basic state of merge request'
         optional :scope, type: String,
-          values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all],
-          desc: 'Returns merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`'
+          values: %w[created-by-me assigned-to-me created_by_me assigned_to_me reviews_for_me all],
+          desc: 'Returns merge requests for the given scope: `created_by_me`, `assigned_to_me`, `reviews_for_me` or `all`'
         optional :source_branch, type: String, desc: 'Returns merge requests with the given source branch'
         optional :source_project_id, type: Integer, desc: 'Returns merge requests with the given source project id'
         optional :target_branch, type: String, desc: 'Returns merge requests with the given target branch'
@@ -117,9 +117,9 @@ module API
 
       params :optional_scope_param do
         optional :scope, type: String,
-          values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all],
+          values: %w[created-by-me assigned-to-me created_by_me assigned_to_me reviews_for_me all],
           default: 'created_by_me',
-          desc: 'Returns merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`'
+          desc: 'Returns merge requests for the given scope: `created_by_me`, `assigned_to_me`, `reviews_for_me` or `all`'
       end
 
       def handle_merge_request_errors!(merge_request)

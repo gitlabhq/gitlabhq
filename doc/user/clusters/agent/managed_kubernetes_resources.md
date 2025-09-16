@@ -218,6 +218,29 @@ The value of the annotation is a JSON object with the following keys:
 | `project_url` | The link to the GitLab project.                  |
 | `template_name` | The name of the template used.                   |
 
+### Disable GitLab-managed Kubernetes resources
+
+You can disable GitLab-managed Kubernetes resources for specific environments while still
+using other Kubernetes features like the dashboard. Disabling managed resources helps when
+working with global agents that have managed resources enabled by default, but you need to
+opt out specific projects or environments.
+
+To disable managed resources for an environment, add the `managed_resources.enabled: false`
+configuration:
+
+```yaml
+deploy_review:
+  stage: deploy
+  script:
+    - echo "Deploy a review app"
+  environment:
+    name: review/$CI_COMMIT_REF_SLUG
+    kubernetes:
+      agent: path/to/agent/project:agent-name
+      managed_resources:
+        enabled: false
+```
+
 ## Troubleshooting
 
 Any errors related to managed Kubernetes resources can be found on:

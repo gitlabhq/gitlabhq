@@ -23,28 +23,12 @@ func Handler(rails *api.API) http.Handler {
 		}
 		defer func() { _ = conn.Close() }()
 
-		dw := a.DuoWorkflow
-		client, err := NewClient(dw.ServiceURI, dw.Headers, dw.Secure)
+		runner, err := newRunner(conn, rails, r, a.DuoWorkflow)
 		if err != nil {
-			fail.Request(w, r, fmt.Errorf("failed to create a Duo Workflow client: %v", err))
+			fail.Request(w, r, fmt.Errorf("failed to initialize agent platform client: %v", err))
 			return
 		}
-		defer func() { _ = client.Close() }()
-
-		wf, err := client.ExecuteWorkflow(r.Context())
-		if err != nil {
-			fail.Request(w, r, fmt.Errorf("failed to execute a Duo Workflow: %v", err))
-			return
-		}
-
-		runner := &runner{
-			rails:       rails,
-			token:       dw.Headers["x-gitlab-oauth-token"],
-			originalReq: r,
-			conn:        conn,
-			wf:          wf,
-		}
-		defer func() { _ = runner.threadSafeCloseSend() }()
+		defer func() { _ = runner.Close() }()
 
 		if err := runner.Execute(r.Context()); err != nil {
 			log.WithRequest(r).WithError(err).Error()

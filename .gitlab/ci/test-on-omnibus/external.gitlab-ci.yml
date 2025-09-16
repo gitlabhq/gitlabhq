@@ -36,6 +36,7 @@ cache-gitlab-qa:
     - e2e
   variables:
     GIT_STRATEGY: none
+    RUNNER_SCRIPT_TIMEOUT: ""  # This is to override the variable defined in qa-common/main.gitlab-ci.yml
   allow_failure: true
 
 # only run full "instance" suite when pipeline is added in external project

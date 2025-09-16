@@ -9,7 +9,7 @@ module Mutations
 
       MAX_WORK_ITEMS = 100
 
-      description 'Allows updating several properties for a set of work items. '
+      description 'Allows updating several properties for a set of work items.'
 
       argument :assignees_widget,
         ::Types::WorkItems::Widgets::AssigneesInputType,
@@ -39,18 +39,10 @@ module Mutations
         description: 'Subscribe or unsubscribe from the work items.',
         experiment: { milestone: '18.2' }
 
-      argument :parent_id, ::Types::GlobalIDType[::WorkItems::Parent],
-        required: false,
-        description: 'Global ID of the parent to which the bulk update will be scoped. ' \
-          'The parent can be a project. The parent can also be a group (Premium and Ultimate only). ' \
-          'Example `WorkItemsParentID` are `"gid://gitlab/Project/1"` and `"gid://gitlab/Group/1"`.',
-        deprecated: { milestone: '18.2', reason: 'Use full_path instead' }
-
       argument :full_path, GraphQL::Types::ID,
-        required: false,
+        required: true,
         description: 'Full path of the project or group (Premium and Ultimate only) containing the work items that ' \
-          'will be updated. User paths are not supported.',
-        experiment: { milestone: '18.2' }
+          'will be updated. User paths are not supported.'
 
       argument :labels_widget,
         ::Types::WorkItems::Widgets::LabelsUpdateInputType,
@@ -66,8 +58,6 @@ module Mutations
         null: true,
         description: 'Number of work items that were successfully updated.'
 
-      validates exactly_one_of: [:full_path, :parent_id]
-
       def ready?(**args)
         if args[:ids].size > MAX_WORK_ITEMS
           raise Gitlab::Graphql::Errors::ArgumentError,
@@ -80,8 +70,8 @@ module Mutations
         super
       end
 
-      def resolve(ids:, parent_id: nil, full_path: nil, **attributes)
-        parent = resource_parent!(parent_id, full_path)
+      def resolve(ids:, full_path:, **attributes)
+        parent = resource_parent!(full_path)
 
         result = ::WorkItems::BulkUpdateService.new(
           parent: parent,
@@ -99,9 +89,9 @@ module Mutations
 
       private
 
-      def resource_parent!(parent_id, full_path)
-        strong_memoize_with(:resource_parent, parent_id, full_path) do
-          parent = parent_id ? GitlabSchema.find_by_gid(parent_id).sync : find_parent_by_full_path(full_path)
+      def resource_parent!(full_path)
+        strong_memoize_with(:resource_parent, full_path) do
+          parent = find_parent_by_full_path(full_path)
 
           unless parent && current_user.can?("read_#{parent.to_ability_name}", parent)
             raise_resource_not_available_error!

@@ -39,7 +39,7 @@ module Gitlab
         # app/services/snippets/create_service.rb
         # Remove as part of refactor in: https://gitlab.com/gitlab-org/gitlab/-/issues/469564
         def organization_id
-          user.organizations.first.id
+          user.organization.id
         end
 
         def build_snippet

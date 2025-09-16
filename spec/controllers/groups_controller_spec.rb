@@ -633,7 +633,19 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
         context 'when permanently_remove param is set' do
           let(:params) { { permanently_remove: true } }
 
-          context 'for a html request' do
+          describe 'forbidden by the :disallow_immediate_deletion feature flag' do
+            it 'returns error' do
+              Sidekiq::Testing.fake! do
+                expect { subject }.not_to change { GroupDestroyWorker.jobs.size }
+              end
+
+              expect(response).to have_gitlab_http_status(:not_found)
+            end
+          end
+
+          context 'when current user is an admin' do
+            let_it_be(:user) { admin_with_admin_mode }
+
             it 'deletes the group immediately and redirects to root path' do
               expect(GroupDestroyWorker).to receive(:perform_async)
 
@@ -644,38 +656,50 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
             end
           end
 
-          context 'for a json request' do
-            let(:format) { :json }
+          context 'when the :disallow_immediate_deletion feature flag is disabled' do
+            before do
+              stub_feature_flags(disallow_immediate_deletion: false)
+            end
 
-            it 'deletes the group immediately and returns json with message' do
-              expect(GroupDestroyWorker).to receive(:perform_async)
+            context 'for a html request' do
+              it 'deletes the group immediately and redirects to root path' do
+                expect(GroupDestroyWorker).to receive(:perform_async)
 
-              subject
+                subject
 
-              expect(json_response['message']).to eq("Group '#{group.name}' is being deleted.")
+                expect(response).to redirect_to(root_path)
+                expect(flash[:toast]).to include "Group '#{group.name}' is being deleted."
+              end
+            end
+
+            context 'for a json request' do
+              let(:format) { :json }
+
+              it 'deletes the group immediately and returns json with message' do
+                expect(GroupDestroyWorker).to receive(:perform_async)
+
+                subject
+
+                expect(json_response['message']).to eq("Group '#{group.name}' is being deleted.")
+              end
             end
           end
         end
+      end
 
-        context 'when permanently_remove param is not set' do
-          context 'for a html request' do
-            it 'redirects to edit path with error' do
-              subject
+      context 'when group ancestor is marked for deletion' do
+        let(:nested_group) { create(:group, :nested, parent: group) }
 
-              expect(response).to redirect_to(edit_group_path(group))
-              expect(flash[:alert]).to include "Group has been already marked for deletion"
-            end
-          end
+        before do
+          create(:group_deletion_schedule, group: group, marked_for_deletion_on: Date.current)
+        end
 
-          context 'for a json request' do
-            let(:format) { :json }
+        subject { delete :destroy, format: format, params: { id: nested_group.to_param, **params } }
 
-            it 'returns json with message' do
-              subject
+        it 'returns 404' do
+          subject
 
-              expect(json_response['message']).to eq("Group has been already marked for deletion")
-            end
-          end
+          expect(response).to have_gitlab_http_status(:not_found)
         end
       end
     end
@@ -1201,6 +1225,28 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
       it 'returns an alert and redirects to the current path' do
         expect(flash[:alert]).to eq "Transfer failed: namespace directory cannot be moved"
         expect(response).to redirect_to(edit_group_path(group))
+      end
+    end
+
+    context 'when transferring an archived group' do
+      let(:group) { create(:group, :public) }
+      let(:new_parent_group) { create(:group, :public) }
+
+      before do
+        group.update!(archived: true)
+        group.add_owner(user)
+        new_parent_group.add_owner(user)
+
+        put :transfer,
+          params: {
+            id: group.to_param,
+            new_parent_group_id: new_parent_group.id
+          }
+      end
+
+      it 'returns not found' do
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(group.reload.parent).to be_nil
       end
     end
 

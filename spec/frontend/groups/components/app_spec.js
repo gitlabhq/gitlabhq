@@ -8,6 +8,7 @@ import appComponent from '~/groups/components/app.vue';
 import eventHub from '~/groups/event_hub';
 import GroupsService from '~/groups/service/groups_service';
 import GroupsStore from '~/groups/store/groups_store';
+import { ACTIVE_TAB_INACTIVE } from '~/groups/constants';
 import axios from '~/lib/utils/axios_utils';
 import {
   HTTP_STATUS_BAD_REQUEST,
@@ -194,15 +195,15 @@ describe('AppComponent', () => {
             expect.any(String),
           );
 
-          expect(vm.store.setGroups).toHaveBeenCalledWith(mockGroups);
+          expect(vm.store.setGroups).toHaveBeenCalledWith(mockGroups, undefined);
         });
       });
 
-      it('with filter should fetch groups for provided page details, update window state, and call setSearchedGroups', () => {
+      it('with filter should fetch groups for provided page details, update window state, and call setGroups', () => {
         jest.spyOn(urlUtilities, 'mergeUrlParams');
         jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
         jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
-        jest.spyOn(vm.store, 'setSearchedGroups').mockImplementation(() => {});
+        jest.spyOn(vm.store, 'setGroups').mockImplementation(() => {});
 
         const fetchPagePromise = vm.fetchPage({
           page: 2,
@@ -230,7 +231,7 @@ describe('AppComponent', () => {
             expect.any(String),
           );
 
-          expect(vm.store.setSearchedGroups).toHaveBeenCalledWith(mockGroups);
+          expect(vm.store.setGroups).toHaveBeenCalledWith(mockGroups, undefined);
         });
       });
     });
@@ -397,15 +398,15 @@ describe('AppComponent', () => {
 
         vm.updateGroups(mockGroups);
 
-        expect(vm.store.setGroups).toHaveBeenCalledWith(mockGroups);
+        expect(vm.store.setGroups).toHaveBeenCalledWith(mockGroups, undefined);
       });
 
-      it('should call setSearchedGroups on store if method was called with fromSearch param', () => {
-        jest.spyOn(vm.store, 'setSearchedGroups').mockImplementation(() => {});
+      it('should call setGroups on store if method was called with fromSearch param', () => {
+        jest.spyOn(vm.store, 'setGroups').mockImplementation(() => {});
 
         vm.updateGroups(mockGroups, true);
 
-        expect(vm.store.setSearchedGroups).toHaveBeenCalledWith(mockGroups);
+        expect(vm.store.setGroups).toHaveBeenCalledWith(mockGroups, undefined);
       });
 
       describe.each`
@@ -496,6 +497,17 @@ describe('AppComponent', () => {
       emitFetchFilteredAndSortedGroups();
 
       expect(setPaginationInfoSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('when on the inactive tab', () => {
+    it('renders as collapsed', async () => {
+      const setGroupsSpy = jest.spyOn(store, 'setGroups');
+      createShallowComponent({ propsData: { action: ACTIVE_TAB_INACTIVE } });
+
+      await waitForPromises();
+
+      expect(setGroupsSpy).toHaveBeenCalledWith(mockGroups, false);
     });
   });
 

@@ -14,7 +14,10 @@ module ProjectAccessTokens
       token_access_level = project.team.max_member_access(token.user.id).to_i
       current_user_access_level = project.team.max_member_access(current_user.id).to_i
 
-      token_access_level <= current_user_access_level
+      Authz::Role.access_level_encompasses?(
+        current_access_level: current_user_access_level,
+        level_to_assign: token_access_level
+      )
     end
 
     private

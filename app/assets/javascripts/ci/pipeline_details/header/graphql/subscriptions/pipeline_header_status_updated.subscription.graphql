@@ -1,0 +1,27 @@
+#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+
+subscription pipelineHeaderStatusUpdatedSubscription($pipelineId: CiPipelineID!) {
+  ciPipelineStatusUpdated(pipelineId: $pipelineId) {
+    id
+    retryable
+    cancelable
+    status
+    userPermissions {
+      destroyPipeline
+      updatePipeline
+      cancelPipeline
+    }
+    detailedStatus {
+      ...CiIcon
+    }
+    errorMessages {
+      nodes {
+        id
+        content
+      }
+    }
+    finishedAt
+    queuedDuration
+    duration
+  }
+}

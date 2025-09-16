@@ -83,8 +83,8 @@ RSpec.describe WorkItems::ExportCsvService, :with_license, feature_category: :te
   end
 
   specify 'assignees data' do
-    expect(csv[1]['Assignee(s)']).to eq("")
-    expect(csv[1]['Assignee(s) Username(s)']).to eq("")
+    expect(csv[1]['Assignee']).to eq("")
+    expect(csv[1]['Assignee Username']).to eq("")
   end
 
   specify 'labels' do
@@ -92,8 +92,8 @@ RSpec.describe WorkItems::ExportCsvService, :with_license, feature_category: :te
   end
 
   specify 'created_at and updated_at' do
-    expect(csv[1]['Created At']).to eq(task.created_at.to_fs(:csv))
-    expect(csv[1]['Updated At']).to eq(task.updated_at.to_fs(:csv))
+    expect(csv[1]['Created At (UTC)']).to eq(task.created_at.to_fs(:csv))
+    expect(csv[1]['Updated At (UTC)']).to eq(task.updated_at.to_fs(:csv))
   end
 
   specify 'description' do

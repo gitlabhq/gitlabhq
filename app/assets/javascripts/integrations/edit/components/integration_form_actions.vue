@@ -17,10 +17,6 @@ export default {
     GlModal: GlModalDirective,
   },
   props: {
-    hasSections: {
-      type: Boolean,
-      required: true,
-    },
     isSaving: {
       type: Boolean,
       required: false,

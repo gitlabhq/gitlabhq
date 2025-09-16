@@ -74,34 +74,6 @@ RSpec.describe Ci::RunnerTagging, feature_category: :runner do
       end
     end
 
-    context 'with loose foreign key on namespaces.id' do
-      it_behaves_like 'cleanup by a loose foreign key' do
-        let(:model_table_name) { 'ci_runner_taggings_group_type' }
-        let(:lfk_column) { :sharding_key_id }
-        let_it_be(:parent) { create(:group) }
-        let_it_be(:runner) { create(:ci_runner, :group, groups: [parent]) }
-        let_it_be(:tag) { create(:ci_tag, name: 'ruby') }
-        let_it_be(:model) do
-          create(:ci_runner_tagging, runner: runner, runner_type: runner.runner_type, sharding_key_id: parent.id,
-            tag_id: tag.id)
-        end
-      end
-    end
-
-    context 'with loose foreign key on projects.id' do
-      it_behaves_like 'cleanup by a loose foreign key' do
-        let(:model_table_name) { 'ci_runner_taggings_project_type' }
-        let(:lfk_column) { :sharding_key_id }
-        let_it_be(:parent) { create(:project, group: group) }
-        let_it_be(:runner) { create(:ci_runner, :project, projects: [parent]) }
-        let_it_be(:tag) { create(:ci_tag, name: 'ruby') }
-        let_it_be(:model) do
-          create(:ci_runner_tagging, runner: runner, runner_type: runner.runner_type, sharding_key_id: parent.id,
-            tag_id: tag.id)
-        end
-      end
-    end
-
     context 'with loose foreign key on organizations.id' do
       context 'with group runner type' do
         it_behaves_like 'cleanup by a loose foreign key' do

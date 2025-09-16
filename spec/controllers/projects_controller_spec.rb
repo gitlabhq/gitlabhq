@@ -316,12 +316,12 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         expect(response).to render_template('_readme')
       end
 
-      it 'does not make Gitaly requests', :request_store, :clean_gitlab_redis_cache do
+      it 'makes a single Gitaly request to fetch .git-blame-ignore-revs', :request_store, :clean_gitlab_redis_cache do
         # Warm up to populate repository cache
         get_show
         RequestStore.clear!
 
-        expect { get_show }.not_to change { Gitlab::GitalyClient.get_request_count }
+        expect { get_show }.to change { Gitlab::GitalyClient.get_request_count }.by(1)
       end
 
       it "renders files even with invalid license" do
@@ -1209,6 +1209,30 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       it_behaves_like 'project namespace is not changed', s_('TransferProject|Please select a new namespace for your project.')
     end
 
+    context 'when the project is archived' do
+      let(:new_namespace) { create(:group) }
+
+      before do
+        project.update!(archived: true)
+      end
+
+      it 'does not change the project namespace' do
+        controller.instance_variable_set(:@project, project)
+        sign_in(admin)
+
+        old_namespace = project.namespace
+
+        put :transfer, params: {
+          namespace_id: old_namespace.path, new_namespace_id: new_namespace.id, id: project.path
+        }, format: :js
+
+        project.reload
+
+        expect(project.namespace).to eq(old_namespace)
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
     context 'when new namespace is the same as the current namespace' do
       let(:new_namespace_id) { project.namespace.id }
 
@@ -1224,16 +1248,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
     before do
       sign_in(user)
-    end
-
-    shared_examples 'deletes project right away' do
-      specify :aggregate_failures do
-        delete :destroy, params: { namespace_id: project.namespace, id: project }
-
-        expect(project.self_deletion_scheduled?).to be_falsey
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(dashboard_projects_path)
-      end
     end
 
     shared_examples 'marks project for deletion' do
@@ -1265,15 +1279,33 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     context 'when project is already marked for deletion' do
       let_it_be(:project) { create(:project, group: group, marked_for_deletion_at: Date.current) }
 
-      context 'when permanently_delete param is set' do
-        it 'deletes project right away' do
-          expect(ProjectDestroyWorker).to receive(:perform_async)
+      describe 'forbidden by the :disallow_immediate_deletion feature flag' do
+        subject(:request) { delete :destroy, params: { namespace_id: project.namespace, id: project, permanently_delete: true } }
 
-          delete :destroy, params: { namespace_id: project.namespace, id: project, permanently_delete: true }
+        it 'returns error' do
+          Sidekiq::Testing.fake! do
+            expect { request }.not_to change { ProjectDestroyWorker.jobs.size }
+          end
 
-          expect(project.reload.pending_delete).to eq(true)
-          expect(response).to have_gitlab_http_status(:found)
-          expect(response).to redirect_to(dashboard_projects_path)
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when the :disallow_immediate_deletion feature flag is disabled' do
+        before do
+          stub_feature_flags(disallow_immediate_deletion: false)
+        end
+
+        context 'when permanently_delete param is set' do
+          it 'deletes project right away' do
+            expect(ProjectDestroyWorker).to receive(:perform_async)
+
+            delete :destroy, params: { namespace_id: project.namespace, id: project, permanently_delete: true }
+
+            expect(project.reload.pending_delete).to eq(true)
+            expect(response).to have_gitlab_http_status(:found)
+            expect(response).to redirect_to(dashboard_projects_path)
+          end
         end
       end
 
@@ -1288,85 +1320,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           expect(response).to render_template(:edit)
           expect(flash[:alert]).to include('Project has been already marked for deletion')
         end
-      end
-    end
-
-    context 'for projects in user namespace' do
-      let_it_be_with_reload(:project) { create(:project, namespace: user.namespace) }
-
-      before do
-        sign_in(user)
-      end
-
-      shared_examples 'deletes project right away' do
-        specify :aggregate_failures do
-          delete :destroy, params: { namespace_id: project.namespace, id: project }
-
-          expect(project.self_deletion_scheduled?).to be_falsey
-          expect(response).to have_gitlab_http_status(:found)
-          expect(response).to redirect_to(dashboard_projects_path)
-        end
-      end
-
-      shared_examples 'marks project for deletion' do
-        specify :aggregate_failures do
-          delete :destroy, params: { namespace_id: project.namespace, id: project }
-
-          expect(project.reload.self_deletion_scheduled?).to be_truthy
-          expect(project.reload.hidden?).to be_falsey
-          expect(response).to have_gitlab_http_status(:found)
-          expect(response).to redirect_to(project_path(project))
-          expect(flash[:toast]).to be_nil
-        end
-      end
-
-      it_behaves_like 'marks project for deletion'
-
-      it 'does not mark project for deletion because of error' do
-        message = 'Error'
-
-        expect(::Projects::MarkForDeletionService).to receive_message_chain(:new, :execute).and_return(ServiceResponse.error(message: message))
-
-        delete :destroy, params: { namespace_id: project.namespace, id: project }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template(:edit)
-        expect(flash[:alert]).to include(message)
-      end
-
-      context 'when project is already marked for deletion' do
-        let_it_be(:project) { create(:project, group: group, marked_for_deletion_at: Date.current) }
-
-        context 'when permanently_delete param is set' do
-          it 'deletes project right away' do
-            expect(ProjectDestroyWorker).to receive(:perform_async)
-
-            delete :destroy, params: { namespace_id: project.namespace, id: project, permanently_delete: true }
-
-            expect(project.reload.pending_delete).to eq(true)
-            expect(response).to have_gitlab_http_status(:found)
-            expect(response).to redirect_to(dashboard_projects_path)
-          end
-        end
-
-        context 'when permanently_delete param is not set' do
-          it 'redirects to edit page' do
-            expect(ProjectDestroyWorker).not_to receive(:perform_async)
-
-            delete :destroy, params: { namespace_id: project.namespace, id: project }
-
-            expect(project.reload.pending_delete).to eq(false)
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to render_template(:edit)
-            expect(flash[:alert]).to include('Project has been already marked for deletion')
-          end
-        end
-      end
-
-      context 'for projects in user namespace' do
-        let(:project) { create(:project, namespace: user.namespace) }
-
-        it_behaves_like 'marks project for deletion'
       end
     end
   end
@@ -1543,17 +1496,38 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     end
 
     it 'uses gitaly pagination' do
-      expected_params = ActionController::Parameters.new(ref: '123456', per_page: 100).permit!
+      branch_params = ActionController::Parameters.new(ref: '123456', per_page: 100, sort: 'updated_desc').permit!
+      tag_params = ActionController::Parameters.new(ref: '123456', per_page: 100).permit!
 
-      expect_next_instance_of(BranchesFinder, project.repository, expected_params) do |finder|
+      expect_next_instance_of(BranchesFinder, project.repository, branch_params) do |finder|
         expect(finder).to receive(:execute).with(gitaly_pagination: true).and_call_original
       end
 
-      expect_next_instance_of(TagsFinder, project.repository, expected_params) do |finder|
+      expect_next_instance_of(TagsFinder, project.repository, tag_params) do |finder|
         expect(finder).to receive(:execute).with(gitaly_pagination: true).and_call_original
       end
 
       get :refs, params: { namespace_id: project.namespace, id: project, ref: "123456" }
+    end
+
+    it 'defaults to updated_desc sorting for branches when no sort parameter provided' do
+      branch_params = ActionController::Parameters.new(per_page: 100, sort: 'updated_desc').permit!
+
+      expect_next_instance_of(BranchesFinder, project.repository, branch_params) do |finder|
+        expect(finder).to receive(:execute).with(gitaly_pagination: true).and_call_original
+      end
+
+      get :refs, params: { namespace_id: project.namespace, id: project }
+    end
+
+    it 'honors explicit sort parameter for branches' do
+      explicit_params = ActionController::Parameters.new(per_page: 100, sort: 'name').permit!
+
+      expect_next_instance_of(BranchesFinder, project.repository, explicit_params) do |finder|
+        expect(finder).to receive(:execute).with(gitaly_pagination: true).and_call_original
+      end
+
+      get :refs, params: { namespace_id: project.namespace, id: project, sort: 'name' }
     end
 
     context 'when gitaly is unavailable' do

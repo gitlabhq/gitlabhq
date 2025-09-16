@@ -8,7 +8,7 @@ description: Package identifier tags for supported package types. See https://do
   for an example.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20636
 milestone: '12.7'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

@@ -48,7 +48,7 @@ module Ci
     end
 
     def can_be_retried?(job)
-      can?(current_user, :update_build, job) && job.retryable?
+      can?(current_user, :retry_job, job) && job.retryable?
     end
 
     def start_pipeline(pipeline)

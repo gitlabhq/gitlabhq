@@ -63,16 +63,6 @@ RSpec.describe Import::PendingReassignmentAlertPresenter, :aggregate_failures, f
       expect(presenter.source_hostname).to eq('gitlab.example')
     end
 
-    context 'when bulk_import_importer_user_mapping feature flag is disabled' do
-      before do
-        stub_feature_flags(bulk_import_importer_user_mapping: false)
-      end
-
-      it 'does not present the import values' do
-        expect(presenter.show_alert?).to eq(false)
-      end
-    end
-
     context 'when import has not finished' do
       before do
         bulk_import.status = 1

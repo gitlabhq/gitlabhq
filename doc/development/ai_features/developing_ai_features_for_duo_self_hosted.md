@@ -73,7 +73,7 @@ Alternatively, to generate access keys on AWS, you can follow this [video on how
 
 GitLab Duo Self-Hosted requires that your GDK environment runs on Self-Managed mode. It does not work in Multi-Tenant/SaaS mode.
 
-To set up your GDK environment to run the GitLab Duo Self-Hosted, follow the steps in this [AI development documentation](_index.md#required-run-gitlabduosetup-script), under **GitLab Self-Managed / Dedicated mode**.
+To set up your GDK environment to run the GitLab Duo Self-Hosted, follow the steps in this [AI development documentation](_index.md#run-gitlabduosetup-script), under **GitLab Self-Managed / Dedicated mode**.
 
 ### Setting up Environment Variables
 
@@ -129,6 +129,10 @@ To use the created self-hosted model to power AI-native features:
 ![GitLab Duo Self-Hosted Features Configuration](img/ai_features_page_v18_1.png)
 
 With this, you have successfully configured the self-hosted model to power AI-native features in your GitLab instance. To test the feature using, for example, Chat, open Chat and say `Hello`. You should see the response powered by your self-hosted model in the chat.
+
+### Cleaning up Duo Self-hosted
+
+To revert to using .com configuration and remove any duo self-hosted related data, use `bundle exec rake gitlab:duo:clean_up_duo_self_hosted`.
 
 ## Moving a feature available in GitLab.com or GitLab Self-Managed to GitLab Duo Self-Hosted
 

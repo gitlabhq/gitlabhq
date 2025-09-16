@@ -43,6 +43,11 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
     allow(keep).to receive(:milestones_helper).and_return(milestones_helper)
     allow(keep).to receive(:can_remove_ff?).and_return(true)
 
+    reviewer_roulette = instance_double(Keeps::Helpers::ReviewerRoulette, reviewer_available?: true)
+    allow_next_instance_of(Keeps::Helpers::Groups) do |keeps_groups_helper|
+      allow(keeps_groups_helper).to receive(:roulette).and_return(reviewer_roulette)
+    end
+
     allow(milestones_helper)
       .to receive(:before_cuttoff?).with(milestone: feature_flag_milestone,
         milestones_ago: described_class::CUTOFF_MILESTONE_FOR_ENABLED_FLAG)
@@ -418,7 +423,7 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
         expect(actual_change.changelog_type).to eq('removed')
         expect(actual_change.title).to eq("Delete the `#{feature_flag_name}` feature flag")
         expect(actual_change.identifiers).to match_array([described_class.name.demodulize, feature_flag_name])
-        expect(actual_change.reviewers).to match_array(['@john_doe'])
+        expect(actual_change.assignees).to match_array(['@john_doe'])
         expect(actual_change.labels).to match_array(['automation:feature-flag-removal', 'maintenance::removal',
           'feature flag', groups.dig(:foo, :label)])
         expect(actual_change.changed_files).to include(feature_flag_file)
@@ -462,7 +467,7 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
         expect(actual_change.title).to eq("Delete the `#{feature_flag_name}` feature flag")
         expect(actual_change.identifiers).to match_array([described_class.name.demodulize, feature_flag_name])
         expect(actual_change.changed_files).to match_array([feature_flag_file, feature_flag_patch_path, 'foobar.txt'])
-        expect(actual_change.reviewers).to match_array(['@john_doe'])
+        expect(actual_change.assignees).to match_array(['@john_doe'])
         expect(actual_change.labels).to match_array(['automation:feature-flag-removal', 'maintenance::removal',
           'feature flag', groups.dig(:foo, :label)])
       end

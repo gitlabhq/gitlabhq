@@ -191,14 +191,14 @@ approval rule for certain branches:
 1. To enable this configuration, follow
    [Require Code Owner approval on a protected branch](../../repository/branches/protected.md#require-code-owner-approval).
 
-## Enable approval permissions for users with the Reporter role
+## Enable approval permissions for additional users
 
-Before users with the Reporter role can merge to a protected branch, you might have to grant them
+Before users with the Planner or Reporter role can merge to a protected branch, you might have to grant them
 permission to approve merge requests.
 Some users (like managers) might not need permission to push or merge code, but still need
 oversight on proposed work.
 
-Users with the Reporter role can approve merge requests only through regular approval rules.
+Users with the Planner or Reporter role can approve merge requests only through regular approval rules.
 Code owner approval rules require users to have at least the Developer role. For more information,
 see [Eligible approvers](#eligible-approvers).
 
@@ -212,9 +212,7 @@ To enable approval permissions for these users without granting them push access
 1. [Create a protected branch](../../repository/branches/protected.md)
 1. [Create a new group](../../../group/_index.md#create-a-group).
 1. [Add the user to the group](../../../group/_index.md#add-users-to-a-group),
-   and select the Reporter role for the user. Do not assign roles with higher permissions than
-   Reporter due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/492467).
-   Assigning higher roles may result in unexpected behavior.
+   The user must have at least the Planner role.
 1. [Share the project with your group](../../members/sharing_projects_groups.md#invite-a-group-to-a-project),
    with at least the Reporter role.
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -271,12 +269,12 @@ Users with the Developer role can approve merge requests if one of the following
 - Users who are [Code owners](#code-owners-as-approvers) of the files
   changed in the merge request.
 
-Users with the Reporter role can approve only if all of the following are true:
+Users with the Planner or Reporter role can approve only if all of the following are true:
 
 - The users are part of a group that has been [shared](../../members/sharing_projects_groups.md) with the project.
   The group must have at least the Reporter role.
 - The group has been added as merge request approvers.
-- Approval permissions for users with the reporter role [are enabled](#enable-approval-permissions-for-users-with-the-reporter-role).
+- Approval permissions for users with the Planner and Reporter role [are enabled](#enable-approval-permissions-for-additional-users).
 
 To show who has participated in the merge request review, the Approvals widget in
 a merge request displays a **Commented by** column. This column lists eligible approvers
@@ -312,30 +310,30 @@ Code Owners.
 When you assign individual users as approvers for approval rules or reference users in `CODEOWNERS`
 files, like `@username`:
 
-| Membership type                                                                                                    | Approval rules                              | Code Owners |
-|--------------------------------------------------------------------------------------------------------------------|---------------------------------------------|-------------|
+| Membership type                                                                                                    | Approval rules                              | Code Owners                                 |
+|--------------------------------------------------------------------------------------------------------------------|---------------------------------------------|---------------------------------------------|
 | Direct member of the project                                                                                       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | Direct member of the project's group                                                                               | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | Inherited member of the project's group                                                                            | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | Direct member of a [group invited to the project](../../members/sharing_projects_groups.md#sharing-projects)       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Inherited member of a group invited to the project                                                                 | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No |
+| Inherited member of a group invited to the project                                                                 | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          |
 | Direct member of a [group invited to the project's group](../../members/sharing_projects_groups.md#sharing-groups) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Inherited member of a group invited to the project's group                                                         | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No |
+| Inherited member of a group invited to the project's group                                                         | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          |
 | Direct member of a group invited to the project's group's parent groups                                            | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| Inherited member of a group invited to the project's group's parent groups                                         | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No |
+| Inherited member of a group invited to the project's group's parent groups                                         | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No          |
 
 #### Group eligibility
 
 When you assign groups as approvers for approval rules or reference groups in `CODEOWNERS` files,
 like `@group-name`, only direct members of eligible groups can provide approvals:
 
-| Group type | Approval rules | Code Owners |
-|------------|----------------|-------------|
-| [Groups invited to the project](../../members/sharing_projects_groups.md#sharing-projects) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| [Groups invited to the project's group](../../members/sharing_projects_groups.md#sharing-groups) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
-| Groups invited to a parent of the project's group | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
-| The project's group | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| A parent of the project's group | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Group type                                                                                       | Approval rules                              | Code Owners                                 |
+|--------------------------------------------------------------------------------------------------|---------------------------------------------|---------------------------------------------|
+| [Groups invited to the project](../../members/sharing_projects_groups.md#sharing-projects)       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| [Groups invited to the project's group](../../members/sharing_projects_groups.md#sharing-groups) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No          |
+| Groups invited to a parent of the project's group                                                | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No          |
+| The project's group                                                                              | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| A parent of the project's group                                                                  | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 
 {{< alert type="note" >}}
 
@@ -365,7 +363,7 @@ in the following ways:
   counts as one approver, not two.
 - Merge request authors do not count as eligible approvers on their own merge requests by default.
   To change this behavior, disable the
-  [**Prevent author approval**](settings.md#prevent-approval-by-author)
+  [**Prevent merge request creator approval**](settings.md#prevent-approval-by-merge-request-creator)
   project setting.
 - By default, committers to merge requests can approve a merge request. To change this behavior, enable
   the [**Prevent committers approval**](settings.md#prevent-approvals-by-users-who-add-commits)

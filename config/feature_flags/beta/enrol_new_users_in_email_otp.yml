@@ -1,0 +1,9 @@
+---
+name: enrol_new_users_in_email_otp
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/554382
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201833
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/561975
+milestone: '18.4'
+group: group::authentication
+type: beta
+default_enabled: false

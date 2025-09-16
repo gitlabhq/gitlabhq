@@ -43,7 +43,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="shouldDisplay" data-testid="root" class="col-12">
+  <div v-if="shouldDisplay" data-testid="root" class="gl-col-12">
     <gl-alert
       :dismissible="true"
       :title="__('Some changes are not shown')"

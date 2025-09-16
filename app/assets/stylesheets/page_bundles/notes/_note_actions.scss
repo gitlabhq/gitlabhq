@@ -1,3 +1,4 @@
+@use "sass:map";
 /**
  * Actions for Discussions/Notes
  */
@@ -31,7 +32,7 @@
   margin-left: $gl-padding-8;
   @apply gl-text-subtle;
 
-  @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
+  @include notes-media('max', map.get($grid-breakpoints, sm) - 1) {
     justify-content: flex-start;
     float: none;
 

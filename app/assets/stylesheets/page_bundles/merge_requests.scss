@@ -1,3 +1,4 @@
+@use "sass:map";
 @import 'mixins_and_variables_and_functions';
 
 .diff-comment-avatar-holders {
@@ -329,7 +330,7 @@ $diff-file-header-top: 11px;
   height: var(--file-row-height);
 }
 
-@media (max-width: map-get($grid-breakpoints, lg)-1) {
+@media (max-width: map.get($grid-breakpoints, lg)-1) {
   .diffs .files {
     .diff-tree-list {
       --tree-list-max-height: calc(var(--file-row-height) * 8);

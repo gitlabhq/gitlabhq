@@ -194,7 +194,7 @@ export default {
 </script>
 <template>
   <div class="top-bar gl-flex gl-flex-wrap gl-items-center gl-justify-between gl-gap-3">
-    <div class="gl-hidden gl-truncate sm:gl-block">
+    <div class="gl-hidden gl-truncate @sm/panel:gl-block">
       <!-- truncated log information -->
       <span data-testid="showing-last">
         <template v-if="isJobLogSizeVisible">

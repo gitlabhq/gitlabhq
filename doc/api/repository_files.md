@@ -39,16 +39,35 @@ For blobs larger than 10 MB, this endpoint has a rate limit of 5 requests per mi
 GET /projects/:id/repository/files/:file_path
 ```
 
+Supported attributes:
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `file_path` | string            | Yes      | URL-encoded full path to the file, such as `lib%2Fclass%2Erb`. |
+| `id`        | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
+| `ref`       | string            | Yes      | Name of branch, tag, or commit. Use `HEAD` to automatically use the default branch. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute          | Type    | Description |
+|--------------------|---------|-------------|
+| `blob_id`          | string  | Blob SHA.   |
+| `commit_id`        | string  | Commit SHA for the file. |
+| `content`          | string  | Base64 encoded file content. |
+| `content_sha256`   | string  | SHA256 hash of the file content. |
+| `encoding`         | string  | Encoding used for the file content. |
+| `execute_filemode` | boolean | If `true`, the execute flag is set on the file. |
+| `file_name`        | string  | Name of the file. |
+| `file_path`        | string  | Full path to the file. |
+| `last_commit_id`   | string  | SHA of the last commit that modified this file. |
+| `ref`              | string  | Name of the branch, tag, or commit used. |
+| `size`             | integer | Size of the file in bytes. |
+
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=main"
 ```
-
-| Attribute   | Type           | Required | Description |
-|-------------|----------------|----------|-------------|
-| `id`        | integer or string | yes   | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `file_path` | string         | yes      | URL encoded full path to new file, such as `lib%2Fclass%2Erb`. |
-| `ref`       | string         | yes      | The name of branch, tag or commit. Use `HEAD` to automatically use the default branch. |
 
 If you don't know the branch name or want to use the default branch, you can use `HEAD` as the
 `ref` value. For example:
@@ -57,11 +76,6 @@ If you don't know the branch name or want to use the default branch, you can use
 curl --header "PRIVATE-TOKEN: " \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=HEAD"
 ```
-
-### Response
-
-In the response, `blob_id` is the blob SHA. See
-[Get a blob from repository](repositories.md#get-a-blob-from-repository) in the Repositories API.
 
 Example response:
 
@@ -120,14 +134,24 @@ Retrieve blame information. Each blame range contains lines and their correspond
 GET /projects/:id/repository/files/:file_path/blame
 ```
 
-| Attribute       | Type              | Required | Description |
-|-----------------|-------------------|----------|-------------|
-| `file_path`     | string            | yes   | URL-encoded full path to new file, such as`lib%2Fclass%2Erb`. |
-| `id`            | integer or string | yes   | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `range[end]`    | integer           | yes   | The last line of the range to blame. |
-| `range[start]`  | integer           | yes   | The first line of the range to blame. |
-| `ref`           | string            | yes   | The name of branch, tag or commit. Use `HEAD` to automatically use the default branch. |
-| `range`         | hash              | no    | Blame range. |
+Supported attributes:
+
+| Attribute      | Type              | Required | Description |
+|----------------|-------------------|----------|-------------|
+| `file_path`    | string            | Yes      | URL-encoded full path to the file, such as `lib%2Fclass%2Erb`. |
+| `id`           | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `ref`          | string            | Yes      | Name of branch, tag, or commit. Use `HEAD` to automatically use the default branch. |
+| `range`        | hash              | No       | Blame range. |
+| `range[end]`   | integer           | No       | Last line of the range to blame. |
+| `range[start]` | integer           | No       | First line of the range to blame. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute | Type   | Description |
+|-----------|--------|-------------|
+| `commit`  | object | Commit information for the blame range. |
+| `lines`   | array  | Array of lines for this blame range. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -157,8 +181,7 @@ Example response:
       "require 'open3'",
       ""
     ]
-  },
-  ...
+  }
 ]
 ```
 
@@ -171,8 +194,6 @@ Use the `HEAD` method to return just file metadata, as in
 curl --head --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=main"
 ```
-
-#### Response
 
 Example response:
 
@@ -224,8 +245,7 @@ Example response:
       "require 'fileutils'",
       "require 'open3'"
     ]
-  },
-  ...
+  }
 ]
 ```
 
@@ -235,12 +255,14 @@ Example response:
 GET /projects/:id/repository/files/:file_path/raw
 ```
 
-| Attribute   | Type           | Required | Description |
-|-------------|----------------|----------|------------|
-| `file_path` | string         | yes      | URL-encoded full path to new file, such as `lib%2Fclass%2Erb`. |
-| `id`        | integer or string | yes   | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `lfs`       | boolean        | no       | Determines if the response should be Git LFS file contents, rather than the pointer. Ignored if the file is not tracked by Git LFS. Defaults to `false`. |
-| `ref`       | string         | no       | The name of branch, tag or commit. Default is the `HEAD` of the project. |
+Supported attributes:
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `file_path` | string            | Yes      | URL-encoded full path to the file, such as `lib%2Fclass%2Erb`. |
+| `id`        | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `lfs`       | boolean           | No       | If `true`, determines if the response should be Git LFS file contents, rather than the pointer. Ignored if the file is not tracked by Git LFS. Defaults to `false`. |
+| `ref`       | string            | No       | Name of branch, tag, or commit. Default is the `HEAD` of the project. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -262,18 +284,28 @@ see the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions
 POST /projects/:id/repository/files/:file_path
 ```
 
-| Attribute          | Type           | Required | Description |
-| ------------------ | -------------- | -------- | ----------- |
-| `branch`           | string         | yes      | Name of the new branch to create. The commit is added to this branch. |
-| `commit_message`   | string         | yes      | The commit message. |
-| `content`          | string         | yes      | The file's content. |
-| `file_path`        | string         | yes      | URL-encoded full path to new file. For example: `lib%2Fclass%2Erb`. |
-| `id`               | integer or string | yes   | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `author_email`     | string         | no       | The commit author's email address. |
-| `author_name`      | string         | no       | The commit author's name. |
-| `encoding`         | string         | no       | Change encoding to `base64`. Default is `text`. |
-| `execute_filemode` | boolean        | no       | Enables or disables the `execute` flag on the file. Can be `true` or `false`. |
-| `start_branch`     | string         | no       | Name of the base branch to create the new branch from. |
+Supported attributes:
+
+| Attribute          | Type              | Required | Description |
+|--------------------|-------------------|----------|-------------|
+| `branch`           | string            | Yes      | Name of the branch to create. The commit is added to this branch. |
+| `commit_message`   | string            | Yes      | Commit message. |
+| `content`          | string            | Yes      | The file's content. |
+| `file_path`        | string            | Yes      | URL-encoded full path to the file. For example: `lib%2Fclass%2Erb`. |
+| `id`               | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `author_email`     | string            | No       | Commit author's email address. |
+| `author_name`      | string            | No       | Commit author's name. |
+| `encoding`         | string            | No       | Change encoding to `base64`. Default is `text`. |
+| `execute_filemode` | boolean           | No       | If `true`, enables the `execute` flag on the file. If `false`, disables the `execute` flag on the file. |
+| `start_branch`     | string            | No       | Name of the base branch to create the branch from. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute   | Type   | Description |
+|-------------|--------|-------------|
+| `branch`    | string | Name of the branch the file was created in. |
+| `file_path` | string | Path to the created file. |
 
 ```shell
 curl --request POST \
@@ -302,19 +334,29 @@ refer to the [commits API](commits.md#create-a-commit-with-multiple-files-and-ac
 PUT /projects/:id/repository/files/:file_path
 ```
 
-| Attribute        | Type           | Required | Description |
-| ---------------- | -------------- | -------- | ----------- |
-| `branch`         | string         | yes      | Name of the new branch to create. The commit is added to this branch. |
-| `commit_message` | string         | yes      | The commit message. |
-| `content`        | string         | yes      | The file's content. |
-| `file_path`      | string         | yes      | URL-encoded full path to new file. For example: `lib%2Fclass%2Erb`. |
-| `id`             | integer or string | yes   | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)  |
-| `author_email`   | string         | no       | The commit author's email address. |
-| `author_name`    | string         | no       | The commit author's name. |
-| `encoding`       | string         | no       | Change encoding to `base64`. Default is `text`. |
-| `execute_filemode` | boolean      | no       | Enables or disables the `execute` flag on the file. Can be `true` or `false`. |
-| `last_commit_id` | string         | no       | Last known file commit ID. |
-| `start_branch`   | string         | no       | Name of the base branch to create the new branch from. |
+Supported attributes:
+
+| Attribute        | Type              | Required | Description |
+| ---------------- | ----------------- | -------- | ----------- |
+| `branch`         | string            | Yes      | Name of the branch to create. The commit is added to this branch. |
+| `commit_message` | string            | Yes      | Commit message. |
+| `content`        | string            | Yes      | File's content. |
+| `file_path`      | string            | Yes      | URL-encoded full path to the file. For example: `lib%2Fclass%2Erb`. |
+| `id`             | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)  |
+| `author_email`   | string            | No       | Commit author's email address. |
+| `author_name`    | string            | No       | Commit author's name. |
+| `encoding`       | string            | No       | Change encoding to `base64`. Default is `text`. |
+| `execute_filemode` | boolean         | No       | If `true`, enables the `execute` flag on the file. If `false`, disables the `execute` flag on the file. |
+| `last_commit_id` | string            | No       | Last known file commit ID. |
+| `start_branch`   | string            | No       | Name of the base branch to create the branch from. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute   | Type   | Description |
+|-------------|--------|-------------|
+| `branch`    | string | Name of the branch the file was updated in. |
+| `file_path` | string | Path to the updated file. |
 
 ```shell
 curl --request PUT \
@@ -352,16 +394,20 @@ see the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions
 DELETE /projects/:id/repository/files/:file_path
 ```
 
-| Attribute        | Type           | Required | Description |
-| ---------------- | -------------- | -------- | ----------- |
-| `branch`         | string         | yes      | Name of the new branch to create. The commit is added to this branch. |
-| `commit_message` | string         | yes      | The commit message. |
-| `file_path`      | string         | yes      | URL-encoded full path to new file. For example: `lib%2Fclass%2Erb`. |
-| `id`             | integer or string | yes   | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `author_email`   | string         | no       | The commit author's email address. |
-| `author_name`    | string         | no       | The commit author's name. |
-| `last_commit_id` | string         | no       | Last known file commit ID. |
-| `start_branch`   | string         | no       | Name of the base branch to create the new branch from. |
+Supported attributes:
+
+| Attribute        | Type              | Required | Description |
+|------------------|-------------------|----------|-------------|
+| `branch`         | string            | Yes      | Name of the branch to create. The commit is added to this branch. |
+| `commit_message` | string            | Yes      | Commit message. |
+| `file_path`      | string            | Yes      | URL-encoded full path to the file. For example: `lib%2Fclass%2Erb`. |
+| `id`             | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `author_email`   | string            | No       | Commit author's email address. |
+| `author_name`    | string            | No       | Commit author's name. |
+| `last_commit_id` | string            | No       | Last known file commit ID. |
+| `start_branch`   | string            | No       | Name of the base branch to create the branch from. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes).
 
 ```shell
 curl --request DELETE \

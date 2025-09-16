@@ -199,6 +199,21 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
       expect(described_class.new.pending_reassignment?).to eq(true)
     end
 
+    context 'when switching to pending_reassignment' do
+      subject(:source_user) { create(:import_source_user, :keep_as_placeholder) }
+
+      it 'removes the reassign_to_user and reassigned_by_user' do
+        source_user.reassign_to_user = build(:user)
+        source_user.reassigned_by_user = build(:user)
+
+        source_user.undo_keep_as_placeholder
+
+        expect(source_user.pending_reassignment?).to eq(true)
+        expect(source_user.reassign_to_user).to be_nil
+        expect(source_user.reassigned_by_user).to be_nil
+      end
+    end
+
     context 'when switching to awaiting_approval' do
       subject(:source_user) { create(:import_source_user, :pending_reassignment) }
 
@@ -236,6 +251,10 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
         it 'allows the transition' do
           expect(source_user.reassign_without_confirmation).to be(true)
         end
+
+        it 'changes to reassignment_in_progress' do
+          expect { source_user.reassign_without_confirmation }.to change { source_user.status }.from(0).to(2)
+        end
       end
 
       context 'and admins bypass placeholder user confirmation is not allowed' do
@@ -247,6 +266,10 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
 
         it 'does not allow the transition' do
           expect(source_user.reassign_without_confirmation).to be(false)
+        end
+
+        it 'does not change to reassignment_in_progress' do
+          expect { source_user.reassign_without_confirmation }.not_to change { source_user.status }.from(0)
         end
       end
     end

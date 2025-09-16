@@ -293,6 +293,13 @@ After the above steps have been completed, the automatic release process execute
 | Scope of the associated `GITLAB_TOKEN` | `api`                                                                                                                             |
 | Expiry date of `GITLAB_TOKEN`          | `December 3, 2025`                                                                                                              |
 
+{{< alert type="warning" >}}
+
+Any changes to the service account's access token scopes or the `GITLAB_TOKEN`
+variable permissions should be announced in the section's Slack channel.
+
+{{< /alert>}}
+
 ### Token rotation for service account
 
 The `GITLAB_TOKEN` for the [@gl-service-dev-secure-analyzers-automation](https://gitlab.com/gl-service-dev-secure-analyzers-automation) service account **must** be rotated before the `Expiry Date` listed [above](#service-account-used-in-the-automatic-release-process) by doing the following:
@@ -327,6 +334,10 @@ The `GITLAB_TOKEN` for the [@gl-service-dev-secure-analyzers-automation](https:/
    1. `GITLAB_TOKEN` CI/CD variable for the [`gitlab-org/secure/tools/security-triage-automation`](https://gitlab.com/gitlab-org/secure/tools/security-triage-automation) project.
 
       This must be explicitly configured because the `security-triage-automation` project is not nested under the `gitlab-org/security-products/analyzers` namespace, and therefore _does not inherit_ the `GITLAB_TOKEN` value.
+
+   1. `GITLAB_TOKEN` CI/CD variable for [`gitlab-org/security-products/license-db`](https://gitlab.com/groups/gitlab-org/security-products/license-db/-/settings/ci_cd#ci-variables) group.
+
+      This must be explicitly configured because the `license-db` project is not nested under the `gitlab-org/security-products/analyzers` namespace, and therefore _does not inherit_ the `GITLAB_TOKEN` value.
 
    1. `SEC_REGISTRY_PASSWORD` CI/CD variable for [`gitlab-advanced-sast`](https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-advanced-sast/-/settings/ci_cd#js-cicd-variables-settings).
 

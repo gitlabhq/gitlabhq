@@ -10,6 +10,20 @@ module Types
         'Most similar to the search query.',
         value: :similarity
 
+      value 'CREATED_AT_ASC',
+        'Sort by created at, ascending order.',
+        value: :created_at_asc
+      value 'CREATED_AT_DESC',
+        'Sort by created at, descending order.',
+        value: :created_at_desc
+
+      value 'UPDATED_AT_ASC',
+        'Sort by updated at, ascending order.',
+        value: :updated_at_asc
+      value 'UPDATED_AT_DESC',
+        'Sort by updated at, descending order.',
+        value: :updated_at_desc
+
       value 'NAME_ASC',
         'Sort by name, ascending order.',
         value: :name_asc

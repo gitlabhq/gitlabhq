@@ -46,7 +46,7 @@ Prerequisites:
    1. Select **Tag**.
    1. Enter the string to use for tag matching. Wildcards (`*`) are supported.
    1. Select **Create wildcard**.
-1. In **Allowed to create** , select roles that may create protected tags.
+1. In **Allowed to create**, select roles that may create protected tags.
 
    {{< alert type="note" >}}
 

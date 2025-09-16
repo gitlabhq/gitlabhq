@@ -14,7 +14,7 @@ Below are available schemas related to Cells and Organizations:
 | Schema | Description |
 | ------ | ----------- |
 | `gitlab_main` (deprecated) | This is being replaced with `gitlab_main_org`, for the purpose of building the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. |
-| `gitlab_main_cell` (deprecated) | This is being replaced with `gitlab_main_org` |
+| `gitlab_main_cell` (deprecated) | All `gitlab_main_cell` tables are being moved to `gitlab_main_org`. `gitlab_main_org` is a better name for `gitlab_main_cell` - there is no functional difference between the two. |
 | `gitlab_main_org`| Use for all tables in the `main:` database that are for an Organization. For example, `projects` and `groups` |
 | `gitlab_main_cell_setting` | All tables in the `main:` database related to cell settings. For example, `application_settings`. These cell-local tables should not have any foreign key references from/to organization tables. |
 | `gitlab_main_clusterwide` (deprecated) | All tables in the `main:` database where all rows, or a subset of rows needs to be present across the cluster, in the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. For example, `plans`. For the [Cells 1.0 architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.0/), there are no real clusterwide tables as each cell will have its own database. In effect, these tables will still be stored locally in each cell. |
@@ -79,6 +79,31 @@ sharding_root_tables:
 Setting `require_sharding_key` to `true` means that tables assigned to that
 schema will require a `sharding_key` to be set.
 You will also need to configure the list of allowed `sharding_root_tables` that can be used as sharding keys for tables in this schema.
+
+## Database sequences
+
+We ensure uniqueness of database sequences, across all cells.
+This means the `id` columns of most tables will be unique.
+
+For technical implementation and architecture decisions, refer to:
+
+- [Cells: Cluster wide unique database sequences](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/decisions/008_database_sequences)
+- [Topology Service: Sequence Service](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/topology_service/#sequence-service)
+
+## Unique constraints
+
+If you require data to be unique, it should be scoped to be unique per
+Organization, Group, Project, or User.
+With the existence of multiple cells which each has its own independent
+database, you can no longer rely on `UNIQUE` constraints.
+
+You have two options:
+
+1. Ensure the index is scoped to include their `sharding_key` as one of
+   the columns present in the index.
+1. For the rare case where an attribute must be unique globally, across all
+   organizations, use the upcoming
+   [Claim service](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/topology_service/#claim-service).
 
 ## Static data
 

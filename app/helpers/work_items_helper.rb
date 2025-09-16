@@ -11,6 +11,8 @@ module WorkItemsHelper
       if resource_parent.is_a?(Project)
         data[:releases_path] = project_releases_path(resource_parent, format: :json)
         data[:project_import_jira_path] = project_import_jira_path(resource_parent)
+        data[:can_import_work_items] = can?(current_user, :import_work_items, resource_parent).to_s
+        data[:export_csv_path] = export_csv_project_issues_path(resource_parent)
       end
     end
   end
@@ -38,6 +40,7 @@ module WorkItemsHelper
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
       can_admin_label: can?(current_user, :admin_label, resource_parent).to_s,
       can_bulk_update: can?(current_user, :admin_issue, resource_parent).to_s,
+      can_edit: can?(current_user, :admin_project, resource_parent).to_s,
       full_path: resource_parent.full_path,
       group_path: group&.full_path,
       issues_list_path: issues_path_for(resource_parent),
@@ -58,7 +61,10 @@ module WorkItemsHelper
       group_id: group&.id,
       time_tracking_limit_to_hours: Gitlab::CurrentSettings.time_tracking_limit_to_hours.to_s,
       can_read_crm_contact: can?(current_user, :read_crm_contact, resource_parent.crm_group).to_s,
-      can_read_crm_organization: can?(current_user, :read_crm_organization, resource_parent.crm_group).to_s
+      max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
+      can_read_crm_organization: can?(current_user, :read_crm_organization, resource_parent.crm_group).to_s,
+      rss_path: rss_path_for(resource_parent),
+      calendar_path: calendar_path_for(resource_parent)
     }
   end
 
@@ -68,5 +74,21 @@ module WorkItemsHelper
 
   def labels_path_for(resource_parent)
     resource_parent.is_a?(Group) ? group_labels_path(resource_parent) : project_labels_path(resource_parent)
+  end
+
+  def rss_path_for(resource_parent)
+    if resource_parent.is_a?(Group)
+      group_work_items_path(resource_parent, format: :atom)
+    else
+      project_work_items_path(resource_parent, format: :atom)
+    end
+  end
+
+  def calendar_path_for(resource_parent)
+    if resource_parent.is_a?(Group)
+      group_work_items_path(resource_parent, format: :ics)
+    else
+      project_work_items_path(resource_parent, format: :ics)
+    end
   end
 end

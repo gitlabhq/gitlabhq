@@ -89,6 +89,7 @@ module Ci
       preload(
         :metadata,
         :job_definition,
+        :error_job_messages,
         user: [:followers, :followees],
         downstream_pipeline: [project: [:route, { namespace: :route }]],
         project: [:namespace]
@@ -99,7 +100,7 @@ module Ci
       %i[pipeline project ref tag options name
         allow_failure stage_idx
         yaml_variables when environment description needs_attributes
-        scheduling_type ci_stage partition_id].freeze
+        scheduling_type ci_stage partition_id resource_group].freeze
     end
 
     def retryable?
@@ -310,7 +311,7 @@ module Ci
     end
 
     def inherit_status_from_downstream(pipeline)
-      if pipeline.source_bridge.mirrored?
+      if mirrored?
         inherit_mirrored_status_from_downstream!(pipeline)
       else
         inherit_dependent_status_from_downstream!(pipeline)

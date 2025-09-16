@@ -8,7 +8,11 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
   let(:repository) { project.repository }
   let(:sha) { 'c1c67abbaf91f624347bb3ae96eabe3a1b742478' }
 
-  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
+
+  before do
+    allow(Current).to receive(:organization).and_return(project.organization)
+  end
 
   describe '#tree_edit_branch' do
     let(:ref) { 'main' }
@@ -96,11 +100,9 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
   end
 
   describe '#vue_tree_header_app_data' do
-    let(:organization) { build_stubbed(:organization) }
     let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }
 
     before do
-      Current.organization = organization
       helper.instance_variable_set(:@project, project)
       helper.instance_variable_set(:@ref, sha)
       allow(helper).to receive(:can?).and_return(false)
@@ -175,10 +177,43 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
   end
 
   describe '#vue_file_list_data' do
-    it 'returns a list of attributes related to the project' do
+    let(:ref) { sha }
+
+    before do
       helper.instance_variable_set(:@ref_type, 'heads')
       allow(helper).to receive(:selected_branch).and_return(sha)
+    end
 
+    context 'when there is no ignore revs file' do
+      let(:repo_double) { instance_double(Repository, ignore_revs_file_blob: nil) }
+
+      before do
+        allow(project).to receive(:repository).and_return(repo_double)
+      end
+
+      it 'includes has_revs_file as false' do
+        expect(helper.vue_file_list_data(project, ref)).to include(
+          has_revs_file: 'false'
+        )
+      end
+    end
+
+    context 'when there is an ignore revs file' do
+      let(:ignore_revs_blob) { instance_double(Gitlab::Git::Blob) }
+      let(:repo_double) { instance_double(Repository, ignore_revs_file_blob: ignore_revs_blob) }
+
+      before do
+        allow(project).to receive(:repository).and_return(repo_double)
+      end
+
+      it 'includes has_revs_file as true' do
+        expect(helper.vue_file_list_data(project, ref)).to include(
+          has_revs_file: 'true'
+        )
+      end
+    end
+
+    it 'returns a list of attributes related to the project' do
       expect(helper.vue_file_list_data(project, sha)).to include(
         project_path: project.full_path,
         project_short_path: project.path,
@@ -193,13 +228,11 @@ RSpec.describe TreeHelper, feature_category: :source_code_management do
 
   describe '#web_ide_button_data' do
     let(:blob) { project.repository.blob_at('refs/heads/master', @path) }
-    let(:organization) { build_stubbed(:organization) }
 
     let_it_be(:user_preferences_gitpod_path) { '/-/profile/preferences#user_gitpod_enabled' }
     let_it_be(:user_profile_enable_gitpod_path) { '/-/user_settings/profile?user%5Bgitpod_enabled%5D=true' }
 
     before do
-      Current.organization = organization
       @path = ''
       @project = project
       @ref = sha

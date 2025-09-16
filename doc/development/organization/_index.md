@@ -84,7 +84,7 @@ For the [Cells](../cells) project, GitLab will rely on organizations. A cell wil
 
 All tables with the following [`gitlab_schema`](../cells/_index.md#available-cells--organization-schemas) are considered organization level:
 
-- `gitlab_main_cell`
+- `gitlab_main_org`
 - `gitlab_ci`
 - `gitlab_sec`
 - `gitlab_main_user`
@@ -170,7 +170,7 @@ The following are examples of valid sharding keys:
 
   ```yaml
   sharding_key:
-    user_id: user
+    user_id: users
   ```
 
 #### The sharding key must be immutable
@@ -322,15 +322,14 @@ exempt_from_sharding: true
 
 to the table's database dictionary file. This can be used for:
 
-- JiHu specific tables, since they do not have any data on the .com database. [!145905](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145905)
 - tables that are marked to be dropped soon, like `operations_feature_flag_scopes`. [!147541](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147541).
-  These tables should be dropped as soon as practical.
+
+**Note on JiHu tables:** JiHu-specific tables are **not** a valid reason to use `exempt_from_sharding`. These tables are currently placed under the temporary `gitlab_main_jh` schema. Do **not** add `exempt_from_sharding: true` to JiHu tables.
 
 Do not use `exempt_from_sharding` for any other purposes.
 Tables which are exempt breaks our efforts at isolation and will introduce issues later in the Organizations and Cells projects.
 
-When tables are exempted from sharding key requirements, they also do not show up in our
-[progress dashboard](https://cells-progress-tracker-gitlab-org-tenant-scale-g-f4ad96bf01d25f.gitlab.io/sharding_keys).
+When tables are exempted from sharding key requirements, they also do not show up in our [progress dashboard](https://cells-progress-tracker-gitlab-org-tenant-scale-g-f4ad96bf01d25f.gitlab.io/sharding_keys).
 
 Exempted tables must not have foreign key, or loose foreign key references, as
 this may cause the target cell's database to have foreign key violations when data is

@@ -45,7 +45,8 @@ export default {
   props: {
     namespace: {
       type: Object,
-      required: true,
+      required: false,
+      default: () => ({}),
     },
   },
   data() {
@@ -147,9 +148,9 @@ export default {
       />
     </gl-form-group>
 
-    <div class="gl-flex gl-flex-col gl-gap-4 sm:gl-flex-row">
+    <div class="gl-flex gl-flex-col gl-gap-4 @sm/panel:gl-flex-row">
       <gl-form-group
-        class="sm:gl-w-1/2"
+        class="@sm/panel:gl-w-1/2"
         :invalid-feedback="
           s__('ProjectsNew|Pick a group or namespace where you want to create this project.')
         "
@@ -170,12 +171,12 @@ export default {
         />
       </gl-form-group>
 
-      <div class="gl-mt-2 gl-hidden gl-pt-6 sm:gl-block">/</div>
+      <div class="gl-mt-2 gl-hidden gl-pt-6 @sm/panel:gl-block">/</div>
 
       <gl-form-group
         :label="s__('ProjectsNew|Project slug')"
         label-for="project[path]"
-        class="sm:gl-w-1/2"
+        class="@sm/panel:gl-w-1/2"
         :invalid-feedback="form.fields['project[path]'].feedback"
         data-testid="project-slug-group"
       >

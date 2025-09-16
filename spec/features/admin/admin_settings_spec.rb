@@ -875,65 +875,43 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         )
       end
 
-      context 'when git_authenticated_http_limit feature flag is enabled' do
-        before do
-          stub_feature_flags(git_authenticated_http_limit: true)
+      it 'changes authenticated Git HTTP rate limits settings' do
+        visit network_admin_application_settings_path
+
+        # Default settings
+        expect(current_settings.throttle_authenticated_git_http_enabled)
+          .to eq(false)
+        expect(current_settings.throttle_authenticated_git_http_requests_per_period)
+          .to eq(ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD)
+        expect(current_settings.throttle_authenticated_git_http_period_in_seconds)
+          .to eq(ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT)
+
+        within_testid('git-http-limits-settings') do
+          check 'Enable authenticated Git HTTP request rate limit'
+
+          fill_in(
+            'Maximum authenticated Git HTTP requests per period per user',
+            with: ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT + 1
+          )
+
+          fill_in(
+            'Authenticated Git HTTP rate limit period in seconds',
+            with: ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD + 2
+          )
+
+          click_button 'Save changes'
         end
 
-        it 'changes authenticated Git HTTP rate limits settings' do
-          visit network_admin_application_settings_path
+        expect(page).to have_content 'Application settings saved successfully'
 
-          # Default settings
-          expect(current_settings.throttle_authenticated_git_http_enabled)
-            .to eq(false)
-          expect(current_settings.throttle_authenticated_git_http_requests_per_period)
-            .to eq(ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD)
-          expect(current_settings.throttle_authenticated_git_http_period_in_seconds)
-            .to eq(ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT)
+        expect(current_settings.throttle_authenticated_git_http_enabled)
+          .to eq(true)
 
-          within_testid('git-http-limits-settings') do
-            check 'Enable unauthenticated Git HTTP request rate limit'
+        expect(current_settings.throttle_authenticated_git_http_requests_per_period)
+          .to eq(ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD + 1)
 
-            fill_in(
-              'Maximum authenticated Git HTTP requests per period per user',
-              with: ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT + 1
-            )
-
-            fill_in(
-              'Authenticated Git HTTP rate limit period in seconds',
-              with: ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD + 2
-            )
-
-            click_button 'Save changes'
-          end
-
-          expect(page).to have_content 'Application settings saved successfully'
-
-          expect(current_settings.throttle_authenticated_git_http_enabled)
-            .to eq(false)
-
-          expect(current_settings.throttle_authenticated_git_http_requests_per_period)
-            .to eq(ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD + 1)
-
-          expect(current_settings.throttle_authenticated_git_http_period_in_seconds)
-            .to eq(ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT + 2)
-        end
-      end
-
-      context 'when git_authenticated_http_limit feature flag is disabled' do
-        before do
-          stub_feature_flags(git_authenticated_http_limit: false)
-        end
-
-        it 'does not show authenticated Git HTTP rate limit settings' do
-          stub_feature_flags(git_authenticated_http_limit: false)
-          visit network_admin_application_settings_path
-
-          within_testid('git-http-limits-settings') do
-            expect(page).not_to have_content('Authenticated Git HTTP request rate limit')
-            expect(page).not_to have_field('Enable authenticated Git HTTP request rate limit')
-          end
-        end
+        expect(current_settings.throttle_authenticated_git_http_period_in_seconds)
+          .to eq(ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT + 2)
       end
 
       it 'changes Issues rate limits settings' do

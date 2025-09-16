@@ -3,6 +3,7 @@ stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab container registry administration
+description: Manage your GitLab container registry, which enables each project to store its own Docker images in your preferred backend storage.
 ---
 
 {{< details >}}
@@ -1340,7 +1341,7 @@ delete unreferenced layers and (optionally) untagged manifests.
 To start the garbage collector, run the following `gitlab-ctl` command:
 
 ```shell
-`registry-garbage-collect`
+sudo gitlab-ctl registry-garbage-collect
 ```
 
 The time required to perform garbage collection is proportional to the container registry data size.

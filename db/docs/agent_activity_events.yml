@@ -7,7 +7,7 @@ feature_categories:
 description: Historical timeline events belonging to a cluster agent
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74577
 milestone: '14.6'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   agent_project_id: projects
 table_size: small

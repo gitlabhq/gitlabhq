@@ -9,7 +9,7 @@ PATH
 PATH
   remote: .
   specs:
-    gitlab-utils (0.1.0)
+    gitlab-utils (0.2.0)
       actionview (>= 6.1.7.2)
       activesupport (>= 6.1.7.2)
       addressable (~> 2.8)
@@ -44,9 +44,12 @@ GEM
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
     ast (2.4.2)
+    base64 (0.2.0)
+    benchmark (0.4.1)
     benchmark-malloc (0.2.0)
     benchmark-perf (0.6.0)
     benchmark-trend (0.4.0)
+    bigdecimal (3.2.2)
     binding_of_caller (1.0.0)
       debug_inspector (>= 0.0.1)
     builder (3.2.4)
@@ -74,22 +77,21 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     method_source (1.0.0)
-    mini_portile2 (2.8.7)
+    mini_portile2 (2.8.9)
     minitest (5.18.1)
-    nokogiri (1.16.8)
+    mutex_m (0.3.0)
+    nokogiri (1.18.9)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
-    nokogiri (1.16.8-aarch64-linux)
+    nokogiri (1.18.9-aarch64-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.16.8-arm-linux)
+    nokogiri (1.18.9-arm-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.16.8-arm64-darwin)
+    nokogiri (1.18.9-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.16.8-x86-linux)
+    nokogiri (1.18.9-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.16.8-x86_64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.16.8-x86_64-linux)
+    nokogiri (1.18.9-x86_64-linux-gnu)
       racc (~> 1.4)
     parallel (1.23.0)
     parser (3.2.2.3)
@@ -207,10 +209,14 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  base64 (~> 0.2.0)
+  benchmark (~> 0.4.0)
+  bigdecimal (~> 3.2.2)
   factory_bot_rails (~> 6.2.0)
   gitlab-rspec!
   gitlab-styles (~> 10.1.0)
   gitlab-utils!
+  mutex_m (~> 0.3)
   rspec (~> 3.12)
   rspec-benchmark (~> 0.6.0)
   rspec-parameterized (~> 1.0)
@@ -226,9 +232,12 @@ CHECKSUMS
   activesupport (7.0.8.7) sha256=df4702375de924aae81709c831605317c5417f0bd9e502a0373ff84a067204ff
   addressable (2.8.1) sha256=bc724a176ef02118c8a3ed6b5c04c39cf59209607ffcce77b91d0261dbadedfa
   ast (2.4.2) sha256=1e280232e6a33754cde542bc5ef85520b74db2aac73ec14acef453784447cc12
+  base64 (0.2.0) sha256=0f25e9b21a02a0cc0cea8ef92b2041035d39350946e8789c562b2d1a3da01507
+  benchmark (0.4.1) sha256=d4ef40037bba27f03b28013e219b950b82bace296549ec15a78016552f8d2cce
   benchmark-malloc (0.2.0) sha256=37c68f0435261634026f584d79956a35325a3027e3e6b4cc8d7575aa10537e6b
   benchmark-perf (0.6.0) sha256=fe2b01959f3de0f9dd34820d54ef881eb4f3589fccb7d17b63068ac92d7f9621
   benchmark-trend (0.4.0) sha256=de5a02a9f443babefbbd97784759820decee8554a0c273d859c02a0990845d81
+  bigdecimal (3.2.2) sha256=39085f76b495eb39a79ce07af716f3a6829bc35eb44f2195e2753749f2fa5adc
   binding_of_caller (1.0.0) sha256=3aad25d1d538fc6e7972978f9bf512ccd992784009947c81633bea776713161d
   builder (3.2.4) sha256=99caf08af60c8d7f3a6b004029c4c3c0bdaebced6c949165fe98f1db27fbbc10
   coderay (1.1.3) sha256=dc530018a4684512f8f38143cd2a096c9f02a1fc2459edcfe534787a7fc77d4b
@@ -241,20 +250,20 @@ CHECKSUMS
   factory_bot_rails (6.2.0) sha256=278b969666b078e76e1c972c501da9b1fac15e5b0ff328cc7ce400366164d0a1
   gitlab-rspec (0.1.0)
   gitlab-styles (10.1.0) sha256=f42745f5397d042fe24cf2d0eb56c995b37f9f43d8fb79b834d197a1cafdc84a
-  gitlab-utils (0.1.0)
+  gitlab-utils (0.2.0)
   i18n (1.14.1) sha256=9d03698903547c060928e70a9bc8b6b87fda674453cda918fc7ab80235ae4a61
   json (2.6.3) sha256=86aaea16adf346a2b22743d88f8dcceeb1038843989ab93cda44b5176c845459
   loofah (2.21.3) sha256=43d21a8bb96c380199a8f66e0298649eaa7362fcd32f3a6114f39775e524e4dc
   method_source (1.0.0) sha256=d779455a2b5666a079ce58577bfad8534f571af7cec8107f4dce328f0981dede
-  mini_portile2 (2.8.7) sha256=13eef5ab459bbfd33d61e539564ec25a9c2cf593b0a5ea6d4d7ef8c19b162ee0
+  mini_portile2 (2.8.9) sha256=0cd7c7f824e010c072e33f68bc02d85a00aeb6fce05bb4819c03dfd3c140c289
   minitest (5.18.1) sha256=ab5ee381871aaddc3a6aa2a6abcab5c4590fec9affc20947d63f312a0fe4e9cd
-  nokogiri (1.16.8) sha256=dece4bf9a663b2d6b6e874716297ad414c95be694656972d54049bd088f752a1
-  nokogiri (1.16.8-aarch64-linux) sha256=b1d41cd9abf4180adef496cc8c9fcb5b2e38d39f5e23c8a2445362226a5df6b8
-  nokogiri (1.16.8-arm-linux) sha256=8cbd2971624fc073b9430d86475da031903494dcb83c2339e13f7f22a4de6fad
-  nokogiri (1.16.8-arm64-darwin) sha256=b7aa4e8533a720e432d09b52a2ec089b55cf3ee66c916b44a0d9b6608df7bf8c
-  nokogiri (1.16.8-x86-linux) sha256=f97760e6320166d48234029bed9e999521a888376bd2b7e04f4c054537154f16
-  nokogiri (1.16.8-x86_64-darwin) sha256=6c40d7dc444f752634bf6ee8b53a55c3cfca3f9df52be46b8abcc559ccd49e47
-  nokogiri (1.16.8-x86_64-linux) sha256=ed7b1f80713ac968dd93fe2b96fc3df6e448b73bd02dd77d5fc89ba92a1ed6d9
+  mutex_m (0.3.0) sha256=cfcb04ac16b69c4813777022fdceda24e9f798e48092a2b817eb4c0a782b0751
+  nokogiri (1.18.9) sha256=ac5a7d93fd0e3cef388800b037407890882413feccca79eb0272a2715a82fa33
+  nokogiri (1.18.9-aarch64-linux-gnu) sha256=5bcfdf7aa8d1056a7ad5e52e1adffc64ef53d12d0724fbc6f458a3af1a4b9e32
+  nokogiri (1.18.9-arm-linux-gnu) sha256=fe611ae65880e445a9c0f650d52327db239f3488626df4173c05beafd161d46e
+  nokogiri (1.18.9-arm64-darwin) sha256=eea3f1f06463ff6309d3ff5b88033c4948d0da1ab3cc0a3a24f63c4d4a763979
+  nokogiri (1.18.9-x86_64-darwin) sha256=e0d2deb03d3d7af8016e8c9df5ff4a7d692159cefb135cbb6a4109f265652348
+  nokogiri (1.18.9-x86_64-linux-gnu) sha256=b52f5defedc53d14f71eeaaf990da66b077e1918a2e13088b6a96d0230f44360
   parallel (1.23.0) sha256=27154713ad6ef32fa3dcb7788a721d6c07bca77e72443b4c6080a14145288c49
   parser (3.2.2.3) sha256=10685f358ab36ffea2252dc4952e5b8fad3a297a8152a85f59adc982747b91eb
   proc_to_ast (0.1.0) sha256=92a73fa66e2250a83f8589f818b0751bcf227c68f85916202df7af85082f8691

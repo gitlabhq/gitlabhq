@@ -20,7 +20,12 @@ class Projects::LabelsController < Projects::ApplicationController
   def index
     respond_to do |format|
       format.html do
-        @prioritized_labels = @available_labels.prioritized(@project)
+        @prioritized_labels = if Feature.enabled?(:labels_archive, :instance) && params[:archived] == 'true'
+                                Label.none
+                              else
+                                @available_labels.prioritized(@project)
+                              end
+
         @labels = @available_labels.unprioritized(@project).page(params[:page])
         # preload group, project, and subscription data
         Preloaders::LabelsPreloader.new(@prioritized_labels, current_user, @project).preload_all
@@ -171,13 +176,17 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def find_labels
+    archived_param = if Feature.enabled?(:labels_archive, :instance)
+                       params[:archived].nil? ? false : params[:archived]
+                     end
+
     @available_labels ||= LabelsFinder.new(
       current_user,
       project_id: @project.id,
       include_ancestor_groups: true,
       search: params[:search],
       subscribed: params[:subscribed],
-      archived: params[:archived],
+      archived: archived_param,
       sort: sort
     ).execute
   end

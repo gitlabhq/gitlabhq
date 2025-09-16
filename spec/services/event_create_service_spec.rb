@@ -389,36 +389,50 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
   end
 
   describe '#join_source' do
-    let(:source) { project }
-
-    subject(:join_source) { service.join_source(source, user) }
+    subject(:event) { service.join_source(source, user) }
 
     context 'when source is a group' do
       let_it_be(:source) { create(:group) }
 
-      it { is_expected.to be_falsey }
-
-      specify do
-        expect { join_source }.not_to change { Event.count }
+      it 'creates new event' do
+        expect(event).to be_nil
       end
     end
 
     context 'when source is a project' do
-      it { is_expected.to be_truthy }
+      let_it_be(:source) { project }
 
-      specify do
-        expect { join_source }.to change { Event.count }.from(0).to(1)
+      it 'creates new event', :aggregate_failures do
+        expect(event).to be_persisted
+        expect(event.target_type).to eq('Project')
       end
     end
   end
 
+  describe '#leave_project' do
+    subject(:event) { service.leave_project(project, user) }
+
+    it 'creates new event', :aggregate_failures do
+      expect(event).to be_persisted
+      expect(event.target_type).to eq('Project')
+    end
+  end
+
   describe '#expired_leave_project' do
-    subject(:expired_leave_project) { service.expired_leave_project(project, user) }
+    subject(:event) { service.expired_leave_project(project, user) }
 
-    it { is_expected.to be_truthy }
+    it 'creates new event', :aggregate_failures do
+      expect(event).to be_persisted
+      expect(event.target_type).to eq('Project')
+    end
+  end
 
-    specify do
-      expect { expired_leave_project }.to change { Event.count }.from(0).to(1)
+  describe '#create_project' do
+    subject(:event) { service.create_project(project, user) }
+
+    it 'creates new event', :aggregate_failures do
+      expect(event).to be_persisted
+      expect(event.target_type).to eq('Project')
     end
   end
 

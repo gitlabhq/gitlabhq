@@ -249,4 +249,136 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_repository_cache,
       expect(cache.try_include?(:foo, 'bar')).to eq([false, true])
     end
   end
+
+  describe '#granular_update' do
+    let(:key) { 'branch_names' }
+    let(:value) { 'feature-branch' }
+
+    context 'when cache key exists' do
+      before do
+        cache.write(key, %w[main develop])
+      end
+
+      context 'with :add operation' do
+        it 'adds the value to the existing set' do
+          cache.granular_update(key, value, :add)
+
+          expect(cache.read(key)).to contain_exactly('main', 'develop', 'feature-branch')
+        end
+
+        it 'does not add duplicate values' do
+          cache.granular_update(key, 'main', :add)
+
+          expect(cache.read(key)).to contain_exactly('main', 'develop')
+        end
+
+        it 'preserves cache expiry' do
+          original_ttl = cache.ttl(key)
+
+          cache.granular_update(key, value, :add)
+
+          expect(cache.ttl(key)).to be_within(2).of(original_ttl)
+        end
+      end
+
+      context 'with :remove operation' do
+        it 'removes the value from the existing set' do
+          cache.granular_update(key, 'main', :remove)
+
+          expect(cache.read(key)).to contain_exactly('develop')
+        end
+
+        it 'does nothing when removing non-existent value' do
+          cache.granular_update(key, 'non-existent', :remove)
+
+          expect(cache.read(key)).to contain_exactly('main', 'develop')
+        end
+
+        it 'preserves cache expiry' do
+          original_ttl = cache.ttl(key)
+
+          cache.granular_update(key, 'main', :remove)
+
+          expect(cache.ttl(key)).to be_within(2).of(original_ttl)
+        end
+      end
+
+      context 'with invalid operation' do
+        it 'does not modify the cache' do
+          cache.granular_update(key, value, :invalid)
+
+          expect(cache.read(key)).to contain_exactly('main', 'develop')
+        end
+      end
+    end
+
+    context 'when cache key does not exist' do
+      before do
+        cache.expire(key)
+      end
+
+      it 'does not create the key with :add operation' do
+        result = cache.granular_update(key, value, :add)
+
+        expect(result).to be_nil
+        expect(cache.exist?(key)).to be(false)
+      end
+
+      it 'does not create the key with :remove operation' do
+        result = cache.granular_update(key, value, :remove)
+
+        expect(result).to be_nil
+        expect(cache.exist?(key)).to be(false)
+      end
+    end
+
+    context 'with multiple sequential updates' do
+      it 'handles multiple additions correctly' do
+        cache.write(key, ['main'])
+
+        values_to_add = %w[branch1 branch2 branch3 branch4 branch5]
+
+        values_to_add.each do |branch_name|
+          cache.granular_update(key, branch_name, :add)
+        end
+
+        final_values = cache.read(key)
+        expect(final_values).to include('main')
+        values_to_add.each do |branch_name|
+          expect(final_values).to include(branch_name)
+        end
+        expect(final_values.size).to eq(6)
+      end
+
+      it 'handles mixed add and remove operations' do
+        cache.write(key, %w[main develop feature])
+
+        cache.granular_update(key, 'new-branch', :add)
+        cache.granular_update(key, 'develop', :remove)
+        cache.granular_update(key, 'another-branch', :add)
+
+        expect(cache.read(key)).to contain_exactly('main', 'feature', 'new-branch', 'another-branch')
+      end
+    end
+
+    context 'when key is modified by another process during watch' do
+      it 'handles concurrent modification gracefully' do
+        cache.write(key, %w[main develop])
+
+        redis = cache.send(:with) { |r| r }
+        expect(redis).to receive(:watch).and_return(nil)
+
+        allow(Gitlab::AppLogger).to receive(:info).and_call_original
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          message: include('Key was modified by another process'),
+          class: 'Gitlab::RepositorySetCache'
+        )
+
+        result = cache.granular_update(key, value, :add)
+
+        expect(result).to be_nil
+        expect(cache.read(key)).to contain_exactly('main', 'develop')
+      end
+    end
+  end
 end

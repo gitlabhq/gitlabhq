@@ -57,6 +57,10 @@ module ShardingKeySpecHelpers
               '\\ACHECK \\(\\(\\(project_id IS NULL\\) <> \\(group_id IS NULL\\)\\)\\)\\Z'
             when %w[security_orchestration_policy_configurations namespace_id project_id]
               '\\ACHECK \\(\\(\\(project_id IS NULL\\) <> \\(namespace_id IS NULL\\)\\)\\)\\Z'
+            # TODO: Remove when we validate constraint
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/558353
+            when %w[labels group_id organization_id project_id]
+              "\\ACHECK \\(\\(num_nonnulls\\(#{column_names.sort.join(', ')}\\) = 1\\)\\) NOT VALID\\Z"
             end
 
     regex ||= "\\ACHECK \\(\\(num_nonnulls\\(#{column_names.sort.join(', ')}\\) (> [0-9]{1,}|>?= [1-9]{1,})\\)\\)\\Z"

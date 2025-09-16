@@ -11,7 +11,6 @@ class ProcessCommitWorker
   include ApplicationWorker
 
   MAX_TIME_TRACKING_REFERENCES = 5
-  DEFER_ON_HEALTH_DELAY = 5.seconds
 
   data_consistency :sticky
 
@@ -25,14 +24,6 @@ class ProcessCommitWorker
   deduplicate :until_executed
 
   concurrency_limit -> { 1000 }
-
-  defer_on_database_health_signal :gitlab_main, [:notes], DEFER_ON_HEALTH_DELAY
-
-  def self.defer_on_database_health_signal?(job_args: [])
-    return false if job_args.empty?
-
-    Feature.enabled?(:process_commit_worker_deferred, Project.actor_from_id(job_args[0]))
-  end
 
   # project_id - The ID of the project this commit belongs to.
   # user_id - The ID of the user that pushed the commit.
@@ -49,46 +40,39 @@ class ProcessCommitWorker
     return unless user
 
     commit = Commit.build_from_sidekiq_hash(project, commit_hash)
-    author = commit.author || user
 
-    closing_user = if Feature.enabled?(:auto_close_issues_stop_using_commit_author, project)
-                     user
-                   else
-                     author
-                   end
-
-    process_commit_message(project, commit, user, closing_user, default)
-    update_issue_metrics(commit, closing_user)
+    process_commit_message(project, commit, user, default)
+    update_issue_metrics(commit, user)
   end
 
   private
 
-  def process_commit_message(project, commit, user, author, default = false)
+  def process_commit_message(project, commit, user, default = false)
     # Ignore closing references from GitLab-generated commit messages.
     find_closing_issues = default && !commit.merged_merge_request?(user)
     closed_issues = find_closing_issues ? issues_to_close(project, commit, user) : []
 
-    close_issues(project, user, author, commit, closed_issues) if closed_issues.any?
-    commit.create_cross_references!(author, closed_issues)
+    close_issues(project, user, commit, closed_issues) if closed_issues.any?
+    commit.create_cross_references!(user, closed_issues)
 
     return unless Feature.enabled?(:commit_time_tracking, project)
 
-    track_time_from_commit_message(project, commit, author)
+    track_time_from_commit_message(project, commit, user)
   end
 
-  def track_time_from_commit_message(project, commit, author)
+  def track_time_from_commit_message(project, commit, user)
     # Pre-validate commit message to prevent abuse
-    validated_message = validate_and_limit_time_tracking_references(commit.safe_message, commit, project, author)
+    validated_message = validate_and_limit_time_tracking_references(commit.safe_message, commit, project, user)
     return unless validated_message
 
-    time_tracking_extractor = Gitlab::WorkItems::TimeTrackingExtractor.new(project, author)
+    time_tracking_extractor = Gitlab::WorkItems::TimeTrackingExtractor.new(project, user)
     time_spent_entries = time_tracking_extractor.extract_time_spent(validated_message)
 
     time_spent_entries.each do |issue, time_spent|
       next if project.forked_from?(issue.project)
       next unless issue.supports_time_tracking?
       # Only log time if the user has permission to do so
-      next unless Ability.allowed?(author, :create_timelog, issue)
+      next unless Ability.allowed?(user, :create_timelog, issue)
 
       # Add commit information to the time tracking description
       description = "#{commit.title} (Commit #{commit.short_id})"
@@ -103,7 +87,7 @@ class ProcessCommitWorker
         time_spent,
         commit.committed_date,
         description,
-        author
+        user
       ).execute
 
       next if result.success?
@@ -124,7 +108,7 @@ class ProcessCommitWorker
     end
   end
 
-  def close_issues(project, user, author, commit, issues)
+  def close_issues(project, user, commit, issues)
     Issues::CloseWorker.bulk_perform_async_with_contexts(
       issues,
       arguments_proc: ->(issue) {
@@ -132,7 +116,7 @@ class ProcessCommitWorker
           project.id,
           issue.id,
           issue.class.to_s,
-          { closed_by: author.id, user_id: user.id, commit_hash: commit.to_hash }
+          { user_id: user.id, commit_hash: commit.to_hash }
         ]
       },
       context_proc: ->(issue) { { project: project } }
@@ -146,8 +130,8 @@ class ProcessCommitWorker
       .reject { |issue| issue.is_a?(Issue) && !issue.autoclose_by_merged_closing_merge_request? }
   end
 
-  def update_issue_metrics(commit, author)
-    mentioned_issues = commit.all_references(author).issues
+  def update_issue_metrics(commit, user)
+    mentioned_issues = commit.all_references(user).issues
 
     return if mentioned_issues.empty?
 

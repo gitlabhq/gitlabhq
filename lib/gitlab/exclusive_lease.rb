@@ -134,7 +134,9 @@ module Gitlab
     end
 
     def report_lock_attempt_inside_transaction
-      return unless ::ApplicationRecord.inside_transaction? || ::Ci::ApplicationRecord.inside_transaction?
+      return unless ::ApplicationRecord.inside_transaction? ||
+        Gitlab::Database.database_base_models.values
+          .reject { |c| c == ActiveRecord::Base }.any?(&:inside_transaction?)
 
       raise LeaseWithinTransactionError,
         "Exclusive lease cannot be obtained within a transaction as it could lead to idle transactions."

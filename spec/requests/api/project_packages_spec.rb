@@ -861,6 +861,8 @@ RSpec.describe API::ProjectPackages, feature_category: :package_registry do
 
         it_behaves_like 'enqueue a worker to sync a helm metadata cache' do
           subject(:execute) { delete api(package_url, user) }
+
+          let(:metadata) { package1.package_files.map(&:helm_file_metadatum) }
         end
       end
     end

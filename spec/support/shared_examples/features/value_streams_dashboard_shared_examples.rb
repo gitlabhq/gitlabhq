@@ -204,7 +204,7 @@ RSpec.shared_examples 'renders unlicensed security metrics visualization' do
   end
 end
 
-RSpec.shared_examples 'renders licensed project VSD for a reporter' do
+RSpec.shared_examples 'renders licensed VSD for a reporter' do
   let(:lifecycle_metrics_table) { find_by_testid('panel-vsd-lifecycle-metrics-table') }
   let(:security_metrics_table) { find_by_testid('panel-vsd-security-metrics-table') }
   let(:dora_metrics_table) { find_by_testid('panel-vsd-dora-metrics-table') }
@@ -216,6 +216,6 @@ RSpec.shared_examples 'renders licensed project VSD for a reporter' do
     end
 
     expect(security_metrics_table).to be_visible
-    expect(security_metrics_table).to have_text "This feature requires an Ultimate plan Learn more."
+    expect(security_metrics_table).to have_text "You have insufficient permissions to view this panel."
   end
 end

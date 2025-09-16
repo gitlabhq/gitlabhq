@@ -7,7 +7,7 @@ feature_categories:
 description: Webhooks logs data.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/330789c23c777d8ca646eba7c25f39cb7342cdee
 milestone: '9.3'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463856
 table_size: small
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189420

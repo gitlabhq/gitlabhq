@@ -79,20 +79,23 @@ export default {
       />
     </div>
     <div class="gl-flex">
-      <gl-form-group class="gl-mb-0">
+      <gl-form-group class="-gl-mr-1 gl-mb-0 gl-w-8 gl-shrink-0">
         <gl-form-input
           v-model.trim="selectedColor"
-          class="-gl-mr-1 gl-w-8 gl-rounded-e-none"
+          class="!gl-rounded-e-none"
           type="color"
           :value="selectedColor"
-          :placeholder="__('Select color')"
           data-testid="selected-color"
         />
       </gl-form-group>
-      <gl-form-group :invalid-feedback="errorMessage" :state="validColor" class="gl-mb-0 gl-grow">
+      <gl-form-group
+        :invalid-feedback="errorMessage"
+        :state="validColor"
+        class="gl-mb-0 gl-shrink gl-grow"
+      >
         <gl-form-input
           v-model.trim="selectedColor"
-          class="gl-mb-2 gl-rounded-s-none"
+          class="gl-mb-2 !gl-h-7 !gl-rounded-s-none"
           :placeholder="__('Use custom color #FF0000')"
           :autofocus="autofocus"
           :state="validColor"

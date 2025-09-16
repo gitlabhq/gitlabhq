@@ -10,13 +10,12 @@ import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import pipelineCiStatusUpdatedSubscription from '~/graphql_shared/subscriptions/pipeline_ci_status_updated.subscription.graphql';
 import { LOAD_FAILURE, POST_FAILURE, DELETE_FAILURE, DEFAULT } from '../constants';
 import cancelPipelineMutation from '../graphql/mutations/cancel_pipeline.mutation.graphql';
 import deletePipelineMutation from '../graphql/mutations/delete_pipeline.mutation.graphql';
 import retryPipelineMutation from '../graphql/mutations/retry_pipeline.mutation.graphql';
 import { getQueryHeaders } from '../graph/utils';
-import { POLL_INTERVAL } from '../graph/constants';
+import pipelineHeaderStatusUpdatedSubscription from './graphql/subscriptions/pipeline_header_status_updated.subscription.graphql';
 import { MERGE_TRAIN_EVENT_TYPE } from './constants';
 import HeaderActions from './components/header_actions.vue';
 import HeaderBadges from './components/header_badges.vue';
@@ -84,9 +83,11 @@ export default {
       result({ data }) {
         // we use a manual subscribeToMore call due to issues with
         // the skip hook not working correctly for the subscription
-        if (data?.project?.pipeline?.id) {
+        if (data?.project?.pipeline?.id && !this.isSubscribed) {
+          this.isSubscribed = true;
+
           this.$apollo.queries.pipeline.subscribeToMore({
-            document: pipelineCiStatusUpdatedSubscription,
+            document: pipelineHeaderStatusUpdatedSubscription,
             variables: {
               pipelineId: data.project.pipeline.id,
             },
@@ -104,7 +105,7 @@ export default {
                     ...previousData.project,
                     pipeline: {
                       ...previousData.project.pipeline,
-                      detailedStatus: ciPipelineStatusUpdated.detailedStatus,
+                      ...ciPipelineStatusUpdated,
                     },
                   },
                 };
@@ -119,7 +120,6 @@ export default {
         this.reportFailure(LOAD_FAILURE);
         reportToSentry(this.$options.name, error);
       },
-      pollInterval: POLL_INTERVAL,
       watchLoading(isLoading) {
         if (!isLoading) {
           // To ensure apollo has updated the cache,
@@ -138,6 +138,7 @@ export default {
       isCanceling: false,
       isRetrying: false,
       isDeleting: false,
+      isSubscribed: false,
     };
   },
   computed: {
@@ -274,9 +275,6 @@ export default {
           this.reportFailure(POST_FAILURE, errors);
         } else {
           await this.$apollo.queries.pipeline.refetch();
-          if (!this.isFinished) {
-            this.$apollo.queries.pipeline.startPolling(POLL_INTERVAL);
-          }
         }
       } catch (error) {
         this.isRetrying = false;
@@ -295,7 +293,6 @@ export default {
     },
     async deletePipeline(id) {
       this.isDeleting = true;
-      this.$apollo.queries.pipeline.stopPolling();
 
       try {
         const {
@@ -316,8 +313,6 @@ export default {
           visitUrl(setUrlFragment(this.paths.pipelinesPath, 'delete_success'));
         }
       } catch (error) {
-        this.$apollo.queries.pipeline.startPolling(POLL_INTERVAL);
-
         this.isDeleting = false;
 
         this.reportFailure(DELETE_FAILURE);
@@ -344,7 +339,7 @@ export default {
 
     <gl-loading-icon v-if="loading" class="gl-mt-5 gl-text-center" size="md" />
 
-    <page-heading v-else inline-actions class="gl-mb-0 gl-gap-y-5 sm:gl-gap-y-3">
+    <page-heading v-else inline-actions class="gl-mb-0">
       <template #heading>
         <span v-if="pipelineName" data-testid="pipeline-name">
           {{ pipelineName }}
@@ -404,7 +399,11 @@ export default {
           </template>
         </div>
 
-        <div v-safe-html="refText" class="gl-my-3 sm:gl-mt-0" data-testid="pipeline-ref-text"></div>
+        <div
+          v-safe-html="refText"
+          class="gl-my-3 @sm/panel:gl-mt-0"
+          data-testid="pipeline-ref-text"
+        ></div>
         <div>
           <header-badges :pipeline="pipeline" />
 

@@ -8,12 +8,12 @@ import {
   EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
   TRACKING_LABEL_RECENTLY_VIEWED,
 } from '../tracking_constants';
-import VisibilityChangeDetector from './visibility_change_detector.vue';
+import BaseWidget from './base_widget.vue';
 
 const MAX_ITEMS = 10;
 
 export default {
-  components: { GlIcon, GlSkeletonLoader, VisibilityChangeDetector, TooltipOnTruncate },
+  components: { GlIcon, GlSkeletonLoader, BaseWidget, TooltipOnTruncate },
   mixins: [InternalEvents.mixin()],
   data() {
     return {
@@ -72,10 +72,10 @@ export default {
 </script>
 
 <template>
-  <visibility-change-detector @visible="reload">
-    <h2 class="gl-heading-4 gl-mb-4 gl-mt-0">{{ __('Recently viewed') }}</h2>
+  <base-widget @visible="reload">
+    <h2 class="gl-heading-4 gl-mb-3">{{ __('Recently viewed') }}</h2>
 
-    <p v-if="error">
+    <p v-if="error" class="gl-mb-0">
       {{
         s__(
           'HomePageRecentlyViewedWidget|Your recently viewed items are not available. Please refresh the page to try again.',
@@ -89,14 +89,14 @@ export default {
       </gl-skeleton-loader>
     </template>
 
-    <p v-else-if="!items.length">
+    <p v-else-if="!items.length" class="gl-my-0 gl-mb-3">
       {{ __('Issues and merge requests you visit will appear here.') }}
     </p>
-    <ul v-else class="gl-m-0 gl-flex gl-list-none gl-flex-col gl-gap-1 gl-p-0">
+    <ul v-else class="gl-m-0 gl-list-none gl-p-0">
       <li v-for="item in items" :key="item.id">
         <a
           :href="item.webUrl"
-          class="gl-flex gl-items-center gl-gap-2 gl-rounded-small gl-p-1 gl-text-default hover:gl-bg-subtle hover:gl-text-default hover:gl-no-underline"
+          class="-gl-mx-3 gl-flex gl-items-center gl-gap-2 gl-rounded-base gl-p-3 gl-text-default hover:gl-bg-subtle hover:gl-text-default hover:gl-no-underline"
           @click="handleItemClick(item)"
         >
           <gl-icon :name="item.icon" class="gl-shrink-0" />
@@ -109,5 +109,5 @@ export default {
         </a>
       </li>
     </ul>
-  </visibility-change-detector>
+  </base-widget>
 </template>

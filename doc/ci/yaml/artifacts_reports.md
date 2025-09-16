@@ -294,7 +294,7 @@ If duplicate environment variables are present in a `dotenv` report, the last on
 
 You should avoid storing sensitive data like credentials in dotenv reports, as the
 reports can be downloaded from the pipeline details page. If necessary, you can use
-[artifacts:access](_index.md#artifactsaccess) to restrict the users that can download
+[`artifacts:access`](_index.md#artifactsaccess) to restrict the users that can download
 the report artifacts in a job.
 
 GitLab uses the [`dotenv` gem](https://github.com/bkeepers/dotenv) for handling dotenv files,

@@ -8,7 +8,7 @@ description: A queue of catalog resources that need to be synchronized with data
   their associated `projects` records.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137238
 milestone: '16.7'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

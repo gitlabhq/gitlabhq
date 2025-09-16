@@ -1,4 +1,4 @@
-import applyGitLabUIConfig from '@gitlab/ui/dist/config';
+import applyGitLabUIConfig from '@gitlab/ui/src/config';
 import { __, s__, n__ } from '~/locale';
 import {
   PREV,

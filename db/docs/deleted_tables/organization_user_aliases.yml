@@ -8,7 +8,7 @@ description: |
   Store aliases so that internally-managed bot users can be referenced inside an organization by a convenient alias rather than unique username
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189052
 milestone: '18.0'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   organization_id: organizations
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194942

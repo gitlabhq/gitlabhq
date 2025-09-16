@@ -12,10 +12,6 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
   describe 'validations' do
     subject(:group_o11y_setting) { build(:observability_group_o11y_setting, group: group) }
 
-    it { is_expected.to validate_presence_of(:o11y_service_user_email) }
-    it { is_expected.to validate_presence_of(:o11y_service_password) }
-    it { is_expected.to validate_presence_of(:o11y_service_post_message_encryption_key) }
-    it { is_expected.to validate_presence_of(:o11y_service_url) }
     it { is_expected.to validate_length_of(:o11y_service_url).is_at_most(255) }
     it { is_expected.to validate_length_of(:o11y_service_password).is_at_most(510) }
     it { is_expected.to validate_length_of(:o11y_service_post_message_encryption_key).is_at_most(510) }
@@ -31,7 +27,8 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
       it 'is invalid with empty email' do
         group_o11y_setting.o11y_service_user_email = ''
         expect(group_o11y_setting).to be_invalid
-        expect(group_o11y_setting.errors[:o11y_service_user_email]).to include("can't be blank")
+        expect(group_o11y_setting.errors[:o11y_service_user_email]).to include(I18n.t(:invalid,
+          scope: 'activerecord.errors.messages'))
       end
     end
 
@@ -40,14 +37,16 @@ RSpec.describe Observability::GroupO11ySetting, feature_category: :observability
         it "is invalid with #{invalid_url}" do
           group_o11y_setting.o11y_service_url = invalid_url
           expect(group_o11y_setting).to be_invalid
-          expect(group_o11y_setting.errors[:o11y_service_url]).to include("can't be blank")
+          expect(group_o11y_setting.errors[:o11y_service_url]).to include("is invalid")
         end
       end
 
       it 'is invalid with malformed url' do
         group_o11y_setting.o11y_service_url = 'not-a-valid-url'
         expect(group_o11y_setting).to be_invalid
-        expect(group_o11y_setting.errors[:o11y_service_url]).to be_present
+        expect(group_o11y_setting.errors[:o11y_service_url]).to include(
+          "is blocked: Only allowed schemes are http, https"
+        )
       end
 
       it 'is invalid with url exceeding maximum length' do

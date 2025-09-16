@@ -103,7 +103,7 @@ export default {
   <li>
     <div class="gl-border-b gl-flex gl-items-start gl-py-4" :class="listItemClass">
       <slot name="children-toggle"></slot>
-      <div class="gl-grow gl-items-start md:gl-flex">
+      <div class="gl-grow gl-items-start @md/panel:gl-flex">
         <div class="gl-flex gl-grow" :data-testid="contentTestid">
           <div v-if="showIcon" class="gl-mr-3 gl-flex gl-h-7 gl-shrink-0 gl-items-center">
             <gl-icon variant="subtle" :name="iconName" />
@@ -132,10 +132,10 @@ export default {
           </gl-avatar-labeled>
         </div>
         <div
-          class="gl-mt-3 gl-shrink-0 gl-flex-col gl-items-end md:gl-mt-0 md:gl-flex md:gl-pl-3"
+          class="gl-mt-3 gl-shrink-0 gl-flex-col gl-items-end @md/panel:gl-mt-0 @md/panel:gl-flex @md/panel:gl-pl-3"
           :class="statsPadding"
         >
-          <div class="gl-flex gl-items-center gl-gap-x-3 md:gl-h-5">
+          <div class="gl-flex gl-items-center gl-gap-x-3 @md/panel:gl-h-5">
             <slot name="stats"></slot>
           </div>
           <div

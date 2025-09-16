@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::VariablesHelper, feature_category: :ci_variables do
+RSpec.describe Ci::VariablesHelper, feature_category: :pipeline_composition do
   describe '#create_deploy_token_path' do
     let_it_be(:group) { build_stubbed(:group) }
     let_it_be(:project) { build_stubbed(:project) }

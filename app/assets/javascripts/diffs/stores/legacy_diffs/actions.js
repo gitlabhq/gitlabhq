@@ -1167,7 +1167,8 @@ export function fetchLinkedFile(linkedFileUrl) {
 
 export function fetchLinkedExpandedLine({ fileHash, oldLine, newLine }) {
   const file = this.linkedFile;
-  if (!file || file.file_hash !== fileHash) return Promise.resolve();
+  if (!file || file.file_hash !== fileHash || oldLine === 0 || newLine === 0)
+    return Promise.resolve();
 
   const lines = file[INLINE_DIFF_LINES_KEY];
   if (lineExists(lines, oldLine, newLine)) return Promise.resolve();

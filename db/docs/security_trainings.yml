@@ -8,7 +8,7 @@ description: Stores information about the primary security training provider for
   given project
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78195
 milestone: '14.7'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

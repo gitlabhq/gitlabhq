@@ -121,7 +121,13 @@ module Banzai
 
           return unless label_url_method
 
-          Gitlab::Routing.url_helpers.public_send(label_url_method, parent, label_name: label.name, only_path: context[:only_path]) # rubocop:disable GitlabSecurity/PublicSend
+          begin
+            Gitlab::Routing.url_helpers.public_send(label_url_method, parent, label_name: label.name, only_path: context[:only_path]) # rubocop:disable GitlabSecurity/PublicSend
+          rescue NoMethodError
+            # This can happen when a parent object does not have the right access for the url method.
+            # Since any `label_url_method` can be passed into the context, we can't check
+            # every combination. So let's just catch and return nil
+          end
         end
 
         def object_link_text(object, matches)

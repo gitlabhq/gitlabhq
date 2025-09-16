@@ -24,12 +24,8 @@ module PartitionedTable
     # However, a column is identified as auto-populated if it contains default value with nextval function.
     # The id column of partitioned tables is auto-populated via a trigger
     # and it's not identified as an auto-populated column by Rails.
-    # Let's explicitly return [primary_key] in a function that expects a list of auto-populated columns
-    #
-    # Can be removed in Rails 7.2 because it's handled there:
-    #
-    # https://github.com/rails/rails/blob/v7.2.0.rc1/activerecord/lib/active_record/model_schema.rb#L444
-    def _returning_columns_for_insert
+    # Let's explicitly include [primary_key] in a function that expects a list of auto-populated columns
+    def _returning_columns_for_insert(...)
       (super + Array(primary_key)).uniq
     end
   end

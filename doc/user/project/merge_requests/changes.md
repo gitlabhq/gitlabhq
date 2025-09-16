@@ -452,7 +452,7 @@ To add a comment to a merge request file:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find your merge request.
 1. Select **Changes**.
-1. In the header for the file you want to comment on, select **Comment** ({{< icon name="comment" >}}).
+1. In the header for the file you want to comment on, select **Comment on this file** ({{< icon name="comment" >}}).
 
 ## Add a comment to an image
 

@@ -11,7 +11,7 @@ import {
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
 import { setError } from '../graphql/cache_updates';
 
 export default {
@@ -35,7 +35,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
-  mixins: [glFeatureFlagMixin(), Tracking.mixin()],
+  mixins: [glLicensedFeaturesMixin(), Tracking.mixin()],
   inject: ['boardType', 'canAdminList', 'issuableType', 'scopedLabelsAvailable', 'isIssueBoard'],
   inheritAttrs: false,
   props: {
@@ -61,7 +61,7 @@ export default {
   modalId: 'board-settings-sidebar-modal',
   computed: {
     isWipLimitsOn() {
-      return this.glFeatures.wipLimits && this.isIssueBoard;
+      return this.glLicensedFeatures.wipLimits && this.isIssueBoard;
     },
     activeListId() {
       return this.listId;

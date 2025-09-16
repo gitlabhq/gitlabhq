@@ -15,6 +15,10 @@ module Keeps
         random_reviewer.dig(:user, :username).delete("@")
       end
 
+      def reviewer_available?(username)
+        available_reviewers.any? { |person| person.dig(:user, :username).delete("@") == username }
+      end
+
       private
 
       def available_reviewers_for_role(role)

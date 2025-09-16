@@ -156,6 +156,7 @@ renewing for the correct number of active billable users. Inactive user accounts
 For more information, see the documentation on:
 
 - [User statistics](../administration/admin_area.md#users-statistics).
+- [License usage](../administration/license_usage.md).
 - [Managing users and subscription seats](manage_users_and_seats.md#manage-users-and-subscription-seats).
 
 ## Upgrade subscription tier

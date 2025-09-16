@@ -8,7 +8,7 @@ module Packages
           return ERROR_RESPONSE_PACKAGE_PROTECTED
         end
 
-        package = find_or_create_package!(:generic)
+        package = find_or_create_package!(::Packages::Generic::Package)
 
         ServiceResponse.success(payload: { package: package })
       end

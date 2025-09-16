@@ -53,4 +53,4 @@ Meet regulatory requirements and generate compliance documentation.
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
 | [Generate a software bill of materials with GitLab package registry](../user/packages/package_registry/tutorial_generate_sbom.md) | Learn how to generate an SBOM across all projects in a group. | {{< icon name="star" >}} |
-| [Export Dependency List in SBOM format](export_sbom.md) | Learn how to export an application's dependencies to the CycloneDX SBOM format. | {{< icon name="star" >}} |
+| [Export dependency list in SBOM format](export_sbom.md) | Learn how to export an application's dependencies to the CycloneDX SBOM format. | {{< icon name="star" >}} |

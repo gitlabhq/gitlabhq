@@ -48,6 +48,7 @@ module Organizations
       length: { minimum: 2, maximum: 255 }
 
     validate :check_visibility_level, if: -> { new_record? || visibility_level_changed? }
+    validate :check_organization_reserved_name, if: -> { new_record? }
 
     delegate :description, :description_html, :avatar, :avatar_url, :remove_avatar!, to: :organization_detail
 
@@ -133,6 +134,19 @@ module Organizations
       return if visibility_level >= max_group_level
 
       errors.add(:visibility_level, _("can not be more restrictive than group visibility levels"))
+    end
+
+    # The 'o' path is reserved as it's used for routing organization resources
+    # Example: /o/:organization_path
+    def check_organization_reserved_name
+      return if default?
+      return unless Namespace.filter_by_path('o').top_level.exists?
+
+      errors.add(
+        :base,
+        _('Cannot create organization. The `o` namespace is a reserved path. ' \
+          'Please rename the group or user before creating an organization.')
+      )
     end
 
     def check_if_default_organization

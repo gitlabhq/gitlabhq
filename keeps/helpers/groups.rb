@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'reviewer_roulette'
+
 module Keeps
   module Helpers
     class Groups
@@ -22,13 +24,15 @@ module Keeps
 
       def pick_reviewer(group, identifiers)
         return unless group
-        return if group['backend_engineers'].empty?
+
+        available_reviewers = available_reviewers_for_group(group)
+        return if available_reviewers.empty?
 
         # Use the change identifiers as a stable way to pick the same reviewer. Otherwise we'd assign a new reviewer
         # every time we re-ran housekeeper.
-        random_engineer = Digest::SHA256.hexdigest(identifiers.join).to_i(16) % group['backend_engineers'].size
+        random_engineer = Digest::SHA256.hexdigest(identifiers.join).to_i(16) % available_reviewers.size
 
-        group['backend_engineers'][random_engineer]
+        available_reviewers[random_engineer]
       end
 
       def pick_reviewer_for_feature_category(category, identifiers, fallback_feature_category: nil)
@@ -48,6 +52,16 @@ module Keeps
       end
 
       private
+
+      def available_reviewers_for_group(group)
+        group['backend_engineers'].select do |username|
+          roulette.reviewer_available?(username)
+        end
+      end
+
+      def roulette
+        @roulette ||= Keeps::Helpers::ReviewerRoulette.new
+      end
 
       def groups
         @groups ||= fetch_groups

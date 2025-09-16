@@ -1,4 +1,4 @@
-import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/src/utils';
 import { debounce } from 'lodash';
 import { setCookie, getCookie } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
@@ -30,6 +30,7 @@ export const toggleSuperSidebarCollapsed = (collapsed, saveCookie) => {
   sidebarState.isHoverPeek = false;
   sidebarState.wasHoverPeek = false;
   sidebarState.isCollapsed = collapsed;
+  sidebarState.isMobile = !isDesktopBreakpoint();
 
   if (saveCookie && isDesktopBreakpoint()) {
     setCookie(SIDEBAR_COLLAPSED_COOKIE, collapsed, {
@@ -41,7 +42,12 @@ export const toggleSuperSidebarCollapsed = (collapsed, saveCookie) => {
 export const initSuperSidebarCollapsedState = (forceDesktopExpandedSidebar = false) => {
   let collapsed = true;
   if (isDesktopBreakpoint()) {
-    collapsed = forceDesktopExpandedSidebar ? false : getCollapsedCookie();
+    if (gon?.features?.projectStudioEnabled) {
+      // In the "Project Studio" layout, the left sidebar can never be fully collapsed on desktop.
+      collapsed = false;
+    } else {
+      collapsed = forceDesktopExpandedSidebar ? false : getCollapsedCookie();
+    }
   }
   toggleSuperSidebarCollapsed(collapsed, false);
 };

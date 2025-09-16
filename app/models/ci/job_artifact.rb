@@ -28,7 +28,7 @@ module Ci
     partitionable scope: :job, partitioned: true
     query_constraints :id, :partition_id
 
-    enum :accessibility, { public: 0, private: 1, none: 2 }, suffix: true
+    enum :accessibility, { public: 0, private: 1, none: 2, maintainer: 3 }, suffix: true
 
     belongs_to :project
     belongs_to :job,
@@ -243,6 +243,10 @@ module Ci
 
     def none_access?
       none_accessibility?
+    end
+
+    def maintainer_access?
+      maintainer_accessibility?
     end
 
     def each_blob(&blk)

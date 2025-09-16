@@ -10,6 +10,10 @@ RSpec.describe RequireEmailVerification, feature_category: :insider_threat do
       devise :lockable
 
       include RequireEmailVerification
+
+      def flipper_id
+        "User:#{id}"
+      end
     end
   end
 
@@ -29,6 +33,8 @@ RSpec.describe RequireEmailVerification, feature_category: :insider_threat do
       stub_application_setting(require_email_verification_on_account_locked: feature_enabled)
       allow(instance).to receive(:two_factor_enabled?).and_return(two_factor_enabled)
       allow(instance).to receive(:identities).and_return(oauth_user ? [:google] : [])
+      allow(instance).to receive(:is_a?).and_call_original
+      allow(instance).to receive(:is_a?).with(User).and_return(true)
       stub_feature_flags(skip_require_email_verification: skipped ? instance : another_instance)
     end
 

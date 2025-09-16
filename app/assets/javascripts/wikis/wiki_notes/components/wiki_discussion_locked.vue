@@ -1,25 +1,19 @@
 <script>
-import { GlLink, GlIcon } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
+import { GlIcon } from '@gitlab/ui';
+import { __ } from '~/locale';
 
 export default {
   name: 'WikiDiscussionLocked',
   components: {
     GlIcon,
-    GlLink,
   },
-  inject: ['containerType', 'isContainerArchived', 'archivedProjectDocsPath', 'lockedWikiDocsPath'],
+  inject: ['containerType', 'isContainerArchived'],
   computed: {
     archivedContainerWarning() {
       if (this.containerType === 'group') {
-        return __('This group has been scheduled for deletion and cannot be commented on.');
+        return __('This group is archived and cannot be commented on.');
       }
       return __('This project is archived and cannot be commented on.');
-    },
-    lockedDiscussionWarning() {
-      return sprintf(
-        __('The discussion in this Wiki is locked. Only project members can comment.'),
-      );
     },
   },
 };
@@ -31,16 +25,10 @@ export default {
       <gl-icon :size="16" name="lock" class="icon" />
       <span v-if="isContainerArchived">
         {{ archivedContainerWarning }}
-        <gl-link :href="archivedProjectDocsPath" target="_blank" class="learn-more">
-          {{ __('Learn more') }}
-        </gl-link>
       </span>
 
       <span v-else>
-        {{ lockedDiscussionWarning }}
-        <gl-link :href="lockedWikiDocsPath" target="_blank" class="learn-more">
-          {{ __('Learn more') }}
-        </gl-link>
+        {{ __('The discussion in this Wiki is locked. Only project members can comment.') }}
       </span>
     </span>
   </div>

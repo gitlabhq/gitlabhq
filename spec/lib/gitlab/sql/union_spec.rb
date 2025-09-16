@@ -2,6 +2,6 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SQL::Union do
+RSpec.describe Gitlab::SQL::Union, feature_category: :shared do
   it_behaves_like 'SQL set operator', 'UNION'
 end

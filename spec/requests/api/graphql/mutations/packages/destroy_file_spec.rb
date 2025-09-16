@@ -39,6 +39,12 @@ RSpec.describe 'Destroying a package file', feature_category: :package_registry 
     end
 
     it_behaves_like 'returning response status', :success
+
+    it 'does not sync helm metadata cache' do
+      expect(::Packages::Helm::CreateMetadataCacheWorker).not_to receive(:perform_async)
+
+      mutation_request
+    end
   end
 
   describe 'post graphql mutation' do
@@ -60,6 +66,25 @@ RSpec.describe 'Destroying a package file', feature_category: :package_registry 
 
         it_behaves_like params[:shared_examples_name]
       end
+
+      context 'when package file is helm package type' do
+        let_it_be(:helm_package) { create(:helm_package, project: package.project) }
+
+        let(:package_file) { helm_package.package_files.first }
+        let(:id) { package_file.to_global_id.to_s }
+
+        before do
+          project.add_maintainer(user)
+        end
+
+        it 'enqueue worker to sync helm metadata cache' do
+          expect(::Packages::Helm::CreateMetadataCacheWorker)
+            .to receive(:perform_async)
+            .with(package_file.project_id, package_file.helm_channel)
+
+          mutation_request
+        end
+      end
     end
 
     context 'with invalid id' do
@@ -77,7 +102,7 @@ RSpec.describe 'Destroying a package file', feature_category: :package_registry 
 
       it 'returns the errors in the response' do
         allow_next_found_instance_of(::Packages::PackageFile) do |package_file|
-          allow(package_file).to receive(:update).with(status: :pending_destruction).and_return(false)
+          allow(package_file).to receive(:pending_destruction!)
           allow(package_file).to receive_message_chain(:errors, :full_messages).and_return(error_messages)
         end
 

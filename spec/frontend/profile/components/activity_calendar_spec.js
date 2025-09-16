@@ -8,7 +8,7 @@ import { useFakeDate } from 'helpers/fake_date';
 import { userCalendarResponse } from '../mock_data';
 
 jest.mock('~/lib/utils/ajax_cache');
-jest.mock('@gitlab/ui/dist/utils');
+jest.mock('@gitlab/ui/src/utils');
 
 describe('ActivityCalendar', () => {
   // Feb 21st, 2023

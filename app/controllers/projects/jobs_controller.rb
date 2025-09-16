@@ -15,7 +15,7 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :authorize_read_build!, except: [:test_report_summary]
   before_action :authorize_read_build_report_results!, only: [:test_report_summary]
   before_action :authorize_update_build!,
-    except: [:index, :show, :viewer, :raw, :trace, :erase, :cancel, :unschedule, :test_report_summary]
+    except: [:index, :show, :viewer, :raw, :trace, :play, :erase, :cancel, :unschedule, :test_report_summary]
   before_action :authorize_cancel_build!, only: [:cancel]
   before_action :authorize_erase_build!, only: [:erase]
   before_action :authorize_use_build_terminal!, only: [:terminal, :terminal_websocket_authorize]
@@ -86,6 +86,8 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def retry
+    return access_denied! unless can?(current_user, :retry_job, @build)
+
     Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/424184')
 
     response = Ci::RetryJobService.new(project, current_user).execute(@build)
@@ -102,6 +104,7 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def play
+    return access_denied! unless can?(current_user, :play_job, @build)
     return respond_422 unless @build.playable?
 
     job = @build.play(current_user, play_params[:job_variables_attributes])
@@ -127,6 +130,8 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def unschedule
+    return access_denied! unless can?(current_user, :unschedule_job, @build)
+
     service_response = Ci::BuildUnscheduleService.new(@build, current_user).execute
 
     if service_response.success?

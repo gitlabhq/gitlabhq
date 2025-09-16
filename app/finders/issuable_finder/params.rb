@@ -165,7 +165,7 @@ class IssuableFinder
 
     def current_user_related?
       scope = params[:scope]
-      scope == 'created_by_me' || scope == 'authored' || scope == 'assigned_to_me'
+      %w[created_by_me authored assigned_to_me reviews_for_me].include?(scope)
     end
 
     def find_group_projects

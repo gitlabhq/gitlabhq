@@ -8,7 +8,7 @@ description: Tracks when a project includes a CI component in a pipeline with re
   table schema.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168512
 milestone: '17.6'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   component_project_id: projects
 table_size: small

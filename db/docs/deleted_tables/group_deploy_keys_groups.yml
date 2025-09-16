@@ -1,0 +1,13 @@
+---
+table_name: group_deploy_keys_groups
+classes:
+- GroupDeployKeysGroup
+feature_categories:
+- continuous_delivery
+description: https://docs.gitlab.com/ee/user/project/deploy_keys/
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32901
+milestone: '13.2'
+gitlab_schema: gitlab_main
+table_size: small
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203576
+removed_in_milestone: '18.4'

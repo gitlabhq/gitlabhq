@@ -148,7 +148,7 @@ these steps to create a branch from a different base:
    press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
 1. Select the ellipsis menu ({{< icon name="ellipsis_h" >}}) on the top-right side of the
    Source Control panel.
-1. From the dropdown list, select **Branch** -> **Create branch from...**. 
+1. From the dropdown list, select **Branch** -> **Create branch from...**.
 1. From the dropdown list, select the branch that you want to use as base.
 
 If you do not have write access to the repository, **Create new branch** is not visible.
@@ -159,7 +159,7 @@ If you do not have write access to the repository, **Create new branch** is not 
    press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd>.
 1. Select the ellipsis menu ({{< icon name="ellipsis_h" >}}) on the top-right side of the
    Source Control panel.
-1. From the dropdown list, select **Branch** -> **Delete branch**. 
+1. From the dropdown list, select **Branch** -> **Delete branch**.
 1. From the dropdown list, select the branch that you want to delete.
 
 You can't delete protected branches from the Web IDE.
@@ -291,7 +291,7 @@ To view any notification you might have missed:
 
 {{< details >}}
 
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -307,25 +307,22 @@ To view any notification you might have missed:
 
 {{< /history >}}
 
-The VS Code Extension Marketplace provides you with access to extensions that enhance the
-functionality of the Web IDE. By default, the GitLab Web IDE instance is configured to use the
-[Open VSX Registry](https://open-vsx.org/).
+The VS Code Extension Marketplace provides access to extensions that enhance the functionality of the
+Web IDE. By default, the GitLab Web IDE connects to the [Open VSX Registry](https://open-vsx.org/).
 
 {{< alert type="note" >}}
 
-To access the VS Code Extension Marketplace, your web browser must have access to the `.cdn.web-ide.gitlab-static.net` assets host. This security requirement ensures that third-party extensions run in isolation, and cannot access your account.
+To access the VS Code Extension Marketplace, your browser must be able to access the `.cdn.web-ide.gitlab-static.net` assets host.
+This security requirement ensures that third-party extensions run in isolation and cannot access your account.
+This applies to both GitLab.com and GitLab Self-Managed.
 
 {{< /alert >}}
 
-Before you can manage and use extensions in the Web IDE:
+Prerequisites:
 
-- A GitLab administrator must [enable the extension marketplace](../../../administration/settings/vscode_extension_marketplace.md)
-  in the **Admin** area.
-- You must [enable the extension marketplace](../../profile/preferences.md#integrate-with-the-extension-marketplace)
-  in your user preferences.
-- For enterprise users, a person with the Owner role must
-  [enable the extension marketplace](../../enterprise_user/_index.md#enable-the-extension-marketplace-for-the-web-ide-and-workspaces)
-  in group settings.
+- You must [integrate the extension marketplace](../../profile/preferences.md#integrate-with-the-extension-marketplace) in your user preferences.
+- For GitLab Self-Managed and GitLab Dedicated, a GitLab administrator must [enable the extension registry](../../../administration/settings/vscode_extension_marketplace.md).
+- For enterprise users, a group Owner must [enable the Extension Marketplace for enterprise users](../../enterprise_user/_index.md#enable-the-extension-marketplace-for-enterprise-users).
 
 ### Install an extension
 
@@ -451,7 +448,7 @@ on Rails for this effort.
 ### CORS issues
 
 The Web IDE requires specific Cross-Origin Resource Sharing (CORS) configuration to function properly on GitLab Self-Managed instances.
-GitLab API endpoints (`/api/*`) must include the following HTTP response headers to support the Web IDE: 
+GitLab API endpoints (`/api/*`) must include the following HTTP response headers to support the Web IDE:
 
 | Header | Value | Description |
 |--------|-------|-------------|
@@ -473,7 +470,7 @@ instance is behind an HTTP reverse proxy server or it uses a custom CORS policy 
 
 {{< alert type="note" >}}
 
-If these headers are not provided, the Web IDE will still work on GitLab Self-Managed although 
+If these headers are not provided, the Web IDE will still work on GitLab Self-Managed although
 features such as Extension Marketplace will be disabled for security reasons. The Web IDE uses
 the `https://*.cdn.web-ide.gitlab-static.net` origin to run third-party extensions in a sandboxed
 environment.
@@ -483,11 +480,11 @@ environment.
 ### Air-gapped or offline environments
 
 The Web IDE disables the Extension Marketplace and Web Views in air-gapped or offline environments where a
-user's web browser can't connect to the `https://*.cdn.web-ide.gitlab-static.net` external assets host. 
+user's web browser can't connect to the `https://*.cdn.web-ide.gitlab-static.net` external assets host.
 The Web IDE uses the external assets host to run third-party code coming from VSCode Extensions and Web Views
 in a sandboxed environment to secure user data.
 
-The Web IDE engineering team will provide better support for air-gapped environments in the future. 
+The Web IDE engineering team will provide better support for air-gapped environments in the future.
 You can keep track of the latest developments in this [epic](https://gitlab.com/groups/gitlab-org/-/epics/15146).
 
 ### Report a problem

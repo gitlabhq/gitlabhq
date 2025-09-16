@@ -644,7 +644,7 @@ describe('ReadyToMerge', () => {
       });
 
       it('isRemoveSourceBranchButtonDisabled should be false', () => {
-        expect(findDeleteSourceBranchCheckbox().props('disabled')).toBe(undefined);
+        expect(findDeleteSourceBranchCheckbox().props('disabled')).toBe(false);
       });
     });
   });

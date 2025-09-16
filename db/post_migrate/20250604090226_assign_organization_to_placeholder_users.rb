@@ -4,7 +4,7 @@
 # for more information on how to write migrations for GitLab.
 
 class AssignOrganizationToPlaceholderUsers < Gitlab::Database::Migration[2.3]
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   disable_ddl_transaction!
 

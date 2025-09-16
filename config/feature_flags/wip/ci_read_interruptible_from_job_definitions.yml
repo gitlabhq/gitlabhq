@@ -1,0 +1,10 @@
+---
+name: ci_read_interruptible_from_job_definitions
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/552060
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203541
+rollout_issue_url:
+milestone: '18.4'
+group: group::ci platform
+type: wip
+default_enabled: false

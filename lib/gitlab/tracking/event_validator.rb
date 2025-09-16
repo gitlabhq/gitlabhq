@@ -55,7 +55,7 @@ module Gitlab
         event_definition = Gitlab::Tracking::EventDefinition.find(event_name)
         extra_tracking_properties = event_definition.extra_trackers.flat_map do |_, properties|
           properties[:protected_properties]
-        end
+        end.compact
         declared_properties = event_definition.additional_properties.keys.concat(extra_tracking_properties)
 
         additional_properties.each_key do |property|

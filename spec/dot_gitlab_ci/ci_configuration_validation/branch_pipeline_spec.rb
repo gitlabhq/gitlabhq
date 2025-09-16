@@ -19,6 +19,10 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
     pipeline_project.repository.blob_at(ci_commit_branch, '.gitlab-ci.yml').data
   end
 
+  before do
+    stub_feature_flags(ci_validate_config_options: false)
+  end
+
   subject(:pipeline) do
     trigger_source = ci_pipeline_source.to_sym
     create_pipeline_service
@@ -45,6 +49,15 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
         end
 
         it_behaves_like 'default branch pipeline'
+
+        it 'runs dependency cache update jobs' do
+          expect(jobs).to include(
+            'cache:ruby-gems',
+            'cache:ruby-gems-ubi',
+            'cache:node-modules',
+            'cache:node-modules-production'
+          )
+        end
       end
 
       context 'with scheduled maintenance' do

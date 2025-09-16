@@ -7,7 +7,7 @@ feature_categories:
 description: https://docs.gitlab.com/ee/ci/environments/deployments.html#track-newly-included-merge-requests-per-deployment
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18755
 milestone: '12.5'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 desired_sharding_key:
   project_id:
     references: projects
@@ -17,5 +17,5 @@ desired_sharding_key:
         table: deployments
         sharding_key: project_id
         belongs_to: deployment
-table_size: medium
+table_size: large
 desired_sharding_key_migration_job_name: BackfillDeploymentMergeRequestsProjectId

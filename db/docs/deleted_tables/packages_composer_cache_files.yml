@@ -6,6 +6,6 @@ feature_categories:
 description: Composer packages cached SHA files (deprecated)
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51509
 milestone: '13.9'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159904
 removed_in_milestone: '17.6'

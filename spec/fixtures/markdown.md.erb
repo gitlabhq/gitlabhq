@@ -282,6 +282,16 @@ Note: work item references use `#`, which get built as an issue link.
 - Group milestone by name in quotes: <%= group_milestone.to_reference(format: :name) %>
 - Group milestone by URL is ignore: <%= urls.milestone_url(group_milestone) %>
 
+#### WikiPageReferenceFilter
+- Wiki page: <%= wiki_page.to_reference %>
+- Wiki page in another project: <%= xwiki_page.to_reference(project) %>
+- Ignored in code: `<%= wiki_page.to_reference %>`
+- Ignored in links: [Link to <%= wiki_page.to_reference %>](#wiki-page-link)
+- Ignored when backslash escaped: \<%= wiki_page.to_reference %>
+- Wiki page by URL: <%= urls.project_wiki_url(project, wiki_page) %>
+- Link to wiki page by reference: [Wiki page](<%= wiki_page.to_reference %>)
+- Link to wiki page by URL: [Wiki page](<%= urls.project_wiki_url(project, wiki_page) %>)
+
 ##### AlertReferenceFilter
 - Alert: <%= alert.to_reference %>
 - Alert in another project: <%= xalert.to_reference(project) %>

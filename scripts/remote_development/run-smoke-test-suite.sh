@@ -40,7 +40,7 @@ function run_rubocop {
 
   while IFS='' read -r file; do
     files_for_rubocop+=("$file")
-  done < <(git ls-files -- '**/remote_development/*.rb' '**/gitlab/fp/*.rb' '*_rop_*.rb' '*railway_oriented_programming*.rb' '*_result_matchers*.rb')
+  done < <(git ls-files -- '**/remote_development/*.rb' '**/remote_development/**/*.rb' '**/gitlab/fp/*.rb' '**/gitlab/fp/**/*.rb' '*_rop_*.rb' '*railway_oriented_programming*.rb' '*_result_matchers*.rb')
 
   REVEAL_RUBOCOP_TODO=${REVEAL_RUBOCOP_TODO:-1} bundle exec rubocop --parallel --force-exclusion --no-server "${files_for_rubocop[@]}"
 }
@@ -54,7 +54,7 @@ function run_fp {
 
   while IFS='' read -r file; do
       files_for_fp+=("$file")
-  done < <(git ls-files -- '**/gitlab/fp/*_spec.rb')
+  done < <(git ls-files -- '**/gitlab/fp/*_spec.rb' '**/gitlab/fp/**/*_spec.rb')
 
 
   bin/rspec "${files_for_fp[@]}"
@@ -69,7 +69,7 @@ function run_rspec_fast {
 
   while IFS='' read -r file; do
       files_for_fast+=("$file")
-  done < <(git grep -l -E '^require .fast_spec_helper' -- '**/remote_development/*_spec.rb')
+  done < <(git grep -l -E '^require .fast_spec_helper' -- '**/remote_development/*_spec.rb' '**/remote_development/**/*_spec.rb')
 
   printf "Running rspec command:\n\n"
   printf "bin/rspec "
@@ -102,7 +102,7 @@ function run_rspec_non_fast {
   # Running all fast and slow specs here ensures that we catch those cases.
   while IFS='' read -r file; do
       files_for_non_fast+=("$file")
-  done < <(git ls-files -- '**/remote_development/*_spec.rb' | grep -v 'qa/qa' | grep -v '/features/')
+  done < <(git ls-files -- '**/remote_development/*_spec.rb' '**/remote_development/**/*_spec.rb' | grep -v 'qa/qa' | grep -v '/features/')
 
   files_for_non_fast+=(
       "ee/spec/graphql/resolvers/clusters/agents_resolver_spec.rb"
@@ -129,9 +129,9 @@ function run_rspec_feature {
   files_for_feature=()
   while IFS='' read -r file; do
       files_for_feature+=("$file")
-  done < <(git ls-files -- '**/remote_development/*_spec.rb' | grep -v 'qa/qa' | grep '/features/')
+  done < <(git ls-files -- '**/remote_development/*_spec.rb' '**/remote_development/**/*_spec.rb' | grep -v 'qa/qa' | grep '/features/')
 
-  bin/rspec -r spec_helper "${files_for_feature[@]}"
+  bin/rspec --format documentation -r spec_helper "${files_for_feature[@]}"
 }
 
 function print_success_message {
@@ -141,8 +141,15 @@ function print_success_message {
 function main {
   trap onexit_err ERR
 
+  # Ensure we were not invoked via a non-bash shell which overrode the /bin/bash shebang
+  [ -n "${BASH_VERSION:-}" ] || { printf "\n❌❌❌ ${BRed}Please run with bash${Color_Off} ❌❌❌\n" >&2; exit 1; }
+
   # cd to gitlab root directory
   cd "$(dirname "${BASH_SOURCE[0]}")"/../..
+
+  # ensure mise is activated for gitlab directory (if we were invoked from a different directory)
+  command -v mise >/dev/null 2>&1 || { printf "\n❌❌❌ ${BRed}mise is required, please install it${Color_Off} ❌❌❌\n" >&2; exit 1; }
+  eval "$(mise activate bash)"
 
   print_start_message
 

@@ -154,7 +154,7 @@ RSpec.describe IdeController, feature_category: :web_ide do
       end
 
       it 'ensures web_ide_oauth_application' do
-        expect(Doorkeeper::Application).to receive(:new).and_call_original
+        expect(Authn::OauthApplication).to receive(:new).and_call_original
 
         subject
 
@@ -166,11 +166,25 @@ RSpec.describe IdeController, feature_category: :web_ide do
         existing_app = create(:oauth_application, owner_id: nil, owner_type: nil)
 
         stub_application_setting({ web_ide_oauth_application: existing_app })
-        expect(Doorkeeper::Application).not_to receive(:new)
+        expect(Authn::OauthApplication).not_to receive(:new)
 
         subject
 
         expect(web_ide_oauth_application).to eq(existing_app)
+      end
+
+      it 'includes the Web IDE favicon link tag with correct attributes' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        doc = Nokogiri::HTML(response.body)
+        favicon_link = doc.at_css('link#favicon')
+
+        expect(favicon_link).to be_present
+        expect(favicon_link['rel']).to eq('icon')
+        expect(favicon_link['type']).to eq('image/png')
+        expect(favicon_link['href']).to match_asset_path '/assets/web_ide_favicons/favicon.png'
       end
     end
 

@@ -1,4 +1,4 @@
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import { nextTick } from 'vue';
 import mockDeploymentFixture from 'test_fixtures/graphql/deployments/graphql/queries/deployment.query.graphql.json';
 import mockEnvironmentFixture from 'test_fixtures/graphql/deployments/graphql/queries/environment.query.graphql.json';

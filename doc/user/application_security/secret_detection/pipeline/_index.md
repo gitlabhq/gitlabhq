@@ -133,6 +133,28 @@ By default, when you run a pipeline:
 
 To override the default behavior, use the [available CI/CD variables](configure.md#available-cicd-variables).
 
+### How the analyzer fetches commits
+
+When additional commits are needed beyond the initial clone, the analyzer automatically fetches them using optimized strategies:
+
+- For merge requests, the analyzer retrieves only changes committed after the merge base, which minimizes data transfer.
+- If log options are specified, like `--since` or `--max-count`, the analyzer fetches only the required commits.
+- During a historic scan, the analyzer fetches the complete repository history. If the repository was shallowly cloned, the analyzer uses the `--unshallow` option.
+
+If the analyzer cannot fetch the required commits, it falls back to scanning available data:
+
+- After a force push, the analyzer scans only the current state of the repository.
+- If there are network failures, the analyzer scans commits available after the initial clone.
+- If there are timeouts, the analyzer continues the scan with a partial commit history.
+
+These fallbacks ensure your pipeline completes successfully, even in restricted environments.
+
+### Initial repository clone depth
+
+The runner's [`GIT_DEPTH`](../../../../ci/runners/configure_runners.md#shallow-cloning) controls how many commits are initially cloned. Pipeline secret detection automatically fetches additional commits when needed, so you typically don't need to adjust this setting.
+
+If you experience persistent issues with missing commits in restricted network environments, see the troubleshooting for workarounds.
+
 ### Run a historic scan
 
 By default, pipeline secret detection scans only the current state of the Git repository. Any secrets
@@ -158,7 +180,7 @@ To run a historic scan:
    1. In the **Input variable value** box, enter `true`.
 1. Select **New pipeline**.
 
-### Advanced vulnerability tracking
+### Duplicate vulnerability tracking
 
 {{< details >}}
 
@@ -173,17 +195,30 @@ To run a historic scan:
 
 {{< /history >}}
 
-When developers make changes to a file with identified secrets, it's likely that the positions of these secrets will also change. Pipeline secret detection may have already flagged these secrets as vulnerabilities, tracked in the [vulnerability report](../../vulnerability_report/_index.md). These vulnerabilities are associated with specific secrets for easy identification and action. However, if the detected secrets aren't accurately tracked as they shift, managing vulnerabilities becomes challenging, potentially resulting in duplicate vulnerability reports.
+Secret detection uses an advanced vulnerability tracking algorithm to prevent
+duplicate findings and vulnerabilities from being created when a file is
+refactored or moved.
 
-Pipeline secret detection uses an advanced vulnerability tracking algorithm to more accurately identify when the same secret has moved within a file due to refactoring or unrelated changes.
+A new finding is not created when:
 
-For more information, see the confidential project `https://gitlab.com/gitlab-org/security-products/post-analyzers/tracking-calculator`. The content of this project is available only to GitLab team members.
+- A secret is moved within a file.
+- A duplicate secret appears within a file.
+
+Duplicate vulnerability tracking works on a per-file basis.
+If the same secret appears in two different files, two findings are created.
+
+For more information, see the confidential project `https://gitlab.com/gitlab-org/security-products/post-analyzers/tracking-calculator`.
+This project is available only to GitLab team members.
 
 #### Unsupported workflows
 
-- The algorithm does not support the workflow where the existing finding lacks a tracking signature and does not share the same location as the newly detected finding.
-- For some rule types, such as cryptographic keys, pipeline secret detection identifies leaks by matching prefix of the secret rather than the entire secret value. In this scenario, the algorithm consolidates different secrets of the same rule type in a file into a single finding, rather than treating each distinct secret as a separate finding. For example, the [SSH Private Key rule type](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/d2919f65f1d8001755015b5d790af620676b97ea/gitleaks.toml#L138) matches only the `-----BEGIN OPENSSH PRIVATE KEY-----` prefix of a value to confirm the presence of a SSH private key. If there are two distinct SSH Private Keys within the same file, the algorithm considers both values as identical and reports only one finding instead of two.
-- The algorithm's scope is limited to a per-file basis, meaning that the same secret appearing in two different files is treated as two distinct findings.
+Duplicate vulnerability tracking doesn't support workflows where:
+
+- The existing finding lacks a tracking signature and doesn't share the same location as the new finding.
+- Secrets are detected by searching for their prefixes instead of the entire secret value. For these secret types, all the detections of the same type and in the same file are reported as a single finding.
+
+  For example, an SSH private key is detected by its prefix `-----BEGIN OPENSSH PRIVATE KEY-----`. If there are multiple SSH private keys in the same file,
+  pipeline secret detection creates only one finding.
 
 ### Detected secrets
 
@@ -204,6 +239,37 @@ detected" even if the secret is removed from the scanned file and pipeline secre
 run again. This is because the leaked secret continues to be a security risk until it has been revoked.
 Removed secrets also persist in the Git history. To remove a secret from the Git repository's history, see
 [Redact text from repository](../../../project/merge_requests/revert_changes.md#redact-text-from-repository).
+
+### Excluded items
+
+To improve performance, pipeline secret detection automatically excludes certain file types and directories with a low likelihood of containing secrets.
+
+The following items are excluded:
+
+| Category                            | Excluded items                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+|-------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Configuration files             | Files: `gitleaks.toml`, `verification-metadata.xml`, `Database.refactorlog`, `.editorconfig`, `.gitattributes`                                                                                                                                                                                                                                                                                                                                             |
+| Media and binary files           | Extensions: `.bmp`, `.gif`, `.svg`, `.jpg/.jpeg`, `.png`, `.tiff/.tif`, `.webp`, `.ico`, `.heic`<br/>Fonts: `.eot`, `.otf`, `.ttf`, `.woff`, `.woff2`<br/>Documents: `.doc/.docx`, `.xls/.xlsx`, `.ppt/.pptx`, `.pdf`<br/>Audio/video: `.mp3`, `.mp4`, `.wav`, `.flac`, `.aac`, `.ogg`, `.avi`, `.mkv`, `.mov`, `.wmv`, `.flv`, `.webm`<br/>Archives: `.zip`, `.rar`, `.7z`, `.tar`, `.gz`, `.bz2`, `.xz`, `.dmg`, `.iso`<br/>Executables: `.exe`, `.gltf` |
+| Visual Studio files             | Extensions: `.socket`, `.vsidx`, `.suo`, `.wsuo`, `.dll`, `.pdb`                                                                                                                                                                                                                                                                                                                                                                                           |
+| Package lock files              | Files: `deno.lock`, `npm-shrinkwrap.json`, `package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`, `Pipfile.lock`, `poetry.lock`, `gradle.lockfile`, `Cargo.lock`, `composer.lock`                                                                                                                                                                                                                                                                             |
+| Go language files               | Extensions: `go.mod`, `go.sum`, `go.work`, `go.work.sum`<br/>Directories: `vendor/` (only for Go modules from `github.com`, `golang.org`, `google.golang.org`, `gopkg.in`, `istio.io`, `k8s.io`, `sigs.k8s.io`)<br/>Files: `vendor/modules.txt`                                                                                                                                                                                                            |
+| Ruby files                      | Directories: `.bundle/`, `gems/`, `specifications/`<br/>Extensions: `.gem` files in `gems/` directory, `.gemspec` files in `specifications/` directory                                                                                                                                                                                                                                                                                                     |
+| Build tool wrappers             | Files: `gradlew`, `gradlew.bat`, `mvnw`, `mvnw.cmd`<br/>Directories: `.mvn/wrapper/`<br/>Specific: `MavenWrapperDownloader.java` in Maven wrapper directory                                                                                                                                                                                                                                                                                                |
+| Dependency directories          | Directories: `node_modules/`, `bower_components/`, `packages/`                                                                                                                                                                                                                                                                                                                                                                                             |
+| Build output directories        | Directories: `target/`, `build/`, `bin/`, `obj/`                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Vendor directories             | Directories: `vendor/bundle/`, `vendor/ruby/`, `vendor/composer/`                                                                                                                                                                                                                                                                                                                                                                                          |
+| Python cache files              | Extensions: `.pyc`, `.pyo`<br/>Directories: `__pycache__/`                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Python tool caches              | Directories: `.pytest_cache/`, `.mypy_cache/`, `.tox/`                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Python virtual environments     | Directories: `venv/`, `virtualenv/`, `.venv/`, `env/`                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Python installation directories | Directories: `lib/python[version]/`, `lib64/python[version]/`, `python[version]/lib/`, `python[version]/Lib/`                                                                                                                                                                                                                                                                                                                                              |
+| Python package metadata        | Package names ending with version and `.dist-info`                                                                                                                                                                                                                                                                                                                                                                                                         |
+| JavaScript libraries            | Files: `angular*.js`, `bootstrap*.js`, `jquery*.js`, `jquery-ui*.js`, `plotly*.js`, `swagger-ui*.js` <br/>Source Maps: Corresponding `.js.map` files                                                                                                                                                                                                                                                                                                       |
+| Minified/bundled assets         | Extensions: `.min.js`, `.min.css`, `.bundle.js`, `.bundle.css`, `.map` (source map files)                                                                                                                                                                                                                                                                                                                                                                  |
+| Compiled files                  | Extensions: `.class`, `.o`, `.obj`, `.jar`, `.war` (Web archive), `.ear`                                                                                                                                                                                                                                                                                                                                                                                   |
+| Cache directories             | Directories: `.cache/`, `.coverage/`, `.pytest_cache/`, `.mypy_cache/`, `.tox/`                                                                                                                                                                                                                                                                                                                                                                            |
+| Generated documentation         | Directories: `htmlcov/`, `coverage/`, `_build/`, `_site/`, `docs/_build/`                                                                                                                                                                                                                                                                                                                                                                                  |
+| Version control and IDEs           | Directories: `.git/`, `.svn/`, `.hg/`, `.bzr/` (version control), `.vscode/`, `.idea/`, `.eclipse/`, `.vs/` (IDEs)                                                                                                                                                                                                                                                                                                                                         |
+| Operating system files          | Files: `.DS_Store`, `Thumbs.db`                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
 ## Secret detection results
 
@@ -351,19 +417,9 @@ For information on this, see the [general Application Security troubleshooting s
 
 #### Error: `Couldn't run the gitleaks command: exit status 2`
 
-The pipeline secret detection analyzer relies on generating patches between commits to scan content for
-secrets. If the number of commits in a merge request is greater than the value of the
-[`GIT_DEPTH` CI/CD variable](../../../../ci/runners/configure_runners.md#shallow-cloning), Secret
-Detection [fails to detect secrets](#error-couldnt-run-the-gitleaks-command-exit-status-2).
+This error indicates the analyzer cannot access required commits. While the analyzer automatically fetches missing commits in most cases, issues can occur in restricted environments.
 
-For example, you could have a pipeline triggered from a merge request containing 60 commits and the
-`GIT_DEPTH` variable set to less than 60. In that case the pipeline secret detection job fails because the
-clone is not deep enough to contain all of the relevant commits. To verify the current value, see
-[pipeline configuration](../../../../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone).
-
-To confirm this as the cause of the error, enable [debug-level logging](../../troubleshooting_application_security.md#debug-level-logging),
-then rerun the pipeline. The logs should look similar to the following example. The text
-"object not found" is a symptom of this error.
+To diagnose the issue, enable [debug-level logging](../../troubleshooting_application_security.md#debug-level-logging) and look for:
 
 ```plaintext
 ERRO[2020-11-18T18:05:52Z] object not found
@@ -380,6 +436,25 @@ secret_detection:
   variables:
     GIT_DEPTH: 100
 ```
+
+To resolve this issue:
+
+- For most cases, no action is required. Let the analyzer handle fetching automatically.
+- For restricted networks, increase the initial clone depth:
+
+  ```yaml
+  secret_detection:
+    variables:
+      GIT_DEPTH: 100  # or 0 to clone everything
+  ```
+
+- For large repositories, limit the scan scope:
+
+  ```yaml
+  secret_detection:
+    variables:
+      SECRET_DETECTION_LOG_OPTIONS: "--max-count=50"
+  ```
 
 #### Error: `ERR fatal: ambiguous argument`
 
@@ -421,5 +496,46 @@ before_script:
 ```
 
 For more information about this issue, see [issue 465974](https://gitlab.com/gitlab-org/gitlab/-/issues/465974).
+
+#### Adjusting `GIT_DEPTH` doesn't change what gets scanned
+
+This is expected behavior. `GIT_DEPTH` is a runner variable for the initial clone. It doesn't change analyzer behavior.
+
+The secret detection analyzer decides what to scan based on:
+
+- Pipeline type (push, merge request, scheduled)
+- Branch context (default, new, existing)
+- Your configuration (`SECRET_DETECTION_LOG_OPTIONS`, `SECRET_DETECTION_HISTORIC_SCAN`)
+
+For example, to scan only 30 commits, use analyzer variables:
+
+```yaml
+secret_detection:
+  variables:
+    # Scan only the last 30 commits
+    SECRET_DETECTION_LOG_OPTIONS: "--max-count=30"
+    SECRET_DETECTION_LOG_OPTIONS: "--since=2.weeks"
+    SECRET_DETECTION_LOG_OPTIONS: "HEAD~10..HEAD"
+```
+
+#### Force push detection
+
+After a force push, you might see:
+
+```plaintext
+Failed to retrieve all the commits from the last Git push event due to a force push
+```
+
+This is expected behavior. The scan continues using the current repository state.
+
+#### Repository trust configuration
+
+You might see the message:
+
+```plaintext
+Added project directory to Git safe.directory configuration
+```
+
+This indicates typical security configuration in containerized environments. No action is required.
 
 <!-- markdownlint-enable MD025 -->

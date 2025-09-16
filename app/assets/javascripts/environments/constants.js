@@ -109,7 +109,7 @@ export const HEALTH_BADGES = {
     icon: 'status-alert',
   },
   [CLUSTER_HEALTH_UNKNOWN]: {
-    variant: 'muted',
+    variant: 'neutral',
     text: s__('Environment|Unknown'),
     icon: 'status-waiting',
   },
@@ -157,7 +157,7 @@ export const SYNC_STATUS_BADGES = {
     popoverLink: 'https://gitlab.com/gitlab-org/gitlab/-/issues/419666#results',
   },
   unavailable: {
-    variant: 'muted',
+    variant: 'neutral',
     icon: 'status-waiting',
     text: s__('Deployment|Unavailable'),
     popoverTitle: s__('Deployment|Flux sync status is unavailable'),

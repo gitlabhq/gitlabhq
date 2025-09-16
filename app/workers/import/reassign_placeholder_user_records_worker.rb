@@ -29,10 +29,7 @@ module Import
         return self.class.perform_in(BACKOFF_PERIOD, import_source_user.id, params)
       end
 
-      Import::DeletePlaceholderUserWorker.perform_async(
-        import_source_user.placeholder_user_id,
-        { 'type' => 'placeholder_user' }
-      )
+      Import::DeletePlaceholderUserWorker.perform_async(import_source_user.placeholder_user_id)
 
       send_reassign_complete_email if params['confirmation_skipped'] && import_source_user.reassign_to_user.active?
     end

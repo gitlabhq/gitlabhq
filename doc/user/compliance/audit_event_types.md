@@ -50,6 +50,12 @@ An audit event type's scope limits the availability of the audit event type to e
 
 Audit event types belong to the following product categories.
 
+### Agent foundations
+
+| Type name | Event triggered when | Saved to database | Introduced in | Scope |
+|:----------|:---------------------|:------------------|:--------------|:------|
+| [`api_request_access_with_scope`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172548) | A subset of API requests authenticated by a token with an audited scope | {{< icon name="check-circle" >}} Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/499461) | User |
+
 ### Ai framework
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
@@ -118,6 +124,8 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`variable_viewed_api`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197385) | A CI/CD variable is accessed with the API | {{< icon name="dotted-circle" >}} No | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/555960) | Project, Group |
+| [`group_ci_cd_settings_accessed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203540) | Log an audit event when a user loads the CI/CD Settings page of a group. | {{< icon name="dotted-circle" >}} No | GitLab [18.4](https://gitlab.com/gitlab-org/gitlab/-/issues/555959) | Group |
+| [`project_ci_cd_settings_accessed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203540) | Log an audit event when a user loads the CI/CD Settings page of a project. | {{< icon name="dotted-circle" >}} No | GitLab [18.4](https://gitlab.com/gitlab-org/gitlab/-/issues/555959) | Project |
 
 ### Code review
 
@@ -160,7 +168,7 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`add_gpg_key`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111744) | A GPG key is added | {{< icon name="check-circle" >}} Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/373961) | User |
-| [`allow_author_approval_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102256) | Prevent approval by author setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/373949) | Group |
+| [`allow_author_approval_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102256) | Prevent approval by merge request creator setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/373949) | Group |
 | [`allow_committer_approval_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102256) | Prevent approvals by users who add commits setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/373949) | Group |
 | [`allow_overrides_to_approver_list_per_merge_request_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102256) | Prevent editing approval rules in projects and merge requests setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/373949) | Group |
 | [`audit_events_streaming_headers_update`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92068) | A streaming header for audit events is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/366350) | Group |
@@ -180,6 +188,7 @@ Audit event types belong to the following product categories.
 | [`destroyed_compliance_requirement_control`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177878) | A compliance requirement control is destroyed. | {{< icon name="check-circle" >}} Yes | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/512381) | Group |
 | [`external_status_check_name_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106095) | The name of an external status check is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369333) | Project |
 | [`external_status_check_url_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84624) | The URL that is used for external status checks for a pipeline is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) | Project |
+| [`group_saml_member_added`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202160) | A user was added as a SAML group member | {{< icon name="check-circle" >}} Yes | GitLab [18.4](https://gitlab.com/gitlab-org/gitlab/-/issues/560237) | Group |
 | [`group_saml_provider_create`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111227) | A group SAML provider is created | {{< icon name="check-circle" >}} Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/373964) | Group |
 | [`group_saml_provider_update`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111227) | A group SAML provider is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/373964) | Group |
 | [`inactive_project_scheduled_for_deletion`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130699) | An inactive project is scheduled for deletion | {{< icon name="check-circle" >}} Yes | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/423263) | Project |
@@ -194,8 +203,8 @@ Audit event types belong to the following product categories.
 | [`personal_access_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108952) | A user creates a personal access token | {{< icon name="check-circle" >}} Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/374113) | User |
 | [`personal_access_token_revoked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108952) | A personal access token is revoked | {{< icon name="check-circle" >}} Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/374113) | User |
 | [`project_archived`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117528) | A project is archived | {{< icon name="check-circle" >}} Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374105) | Project |
-| [`project_deletion_marked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117546) | A project is marked for deletion | {{< icon name="check-circle" >}} Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374105) | Project |
-| [`project_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117546) | A project is destroyed | {{< icon name="check-circle" >}} Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374105) | Group |
+| [`project_deletion_marked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117546) | A project is marked for deletion | {{< icon name="check-circle" >}} Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374105) | Group, Instance |
+| [`project_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117546) | A project is destroyed | {{< icon name="check-circle" >}} Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374105) | Group, Instance |
 | [`project_export_file_download_started`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117528) | A download of a project export file is started | {{< icon name="check-circle" >}} Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374105) | Project |
 | [`project_feature_security_and_compliance_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's security and compliance access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369302) | Project |
 | [`project_group_link_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108918) | A group is invited to a project | {{< icon name="check-circle" >}} Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/374114) | Group |
@@ -294,12 +303,6 @@ Audit event types belong to the following product categories.
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`project_feature_metrics_dashboard_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's metrics dashboard access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369289) | Project |
-
-### GitLab Duo Agent Platform
-
-| Type name | Event triggered when | Saved to database | Introduced in | Scope |
-|:----------|:---------------------|:------------------|:--------------|:------|
-| [`api_request_access_with_scope`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172548) | A subset of API requests authenticated by a token with an audited scope | {{< icon name="check-circle" >}} Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/499461) | User |
 
 ### Dynamic application security testing
 
@@ -545,8 +548,10 @@ Audit event types belong to the following product categories.
 | [`security_policy_merge_request_merged_with_policy_violations`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195775) | A merge request merged with security policy violations | {{< icon name="check-circle" >}} Yes | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/549813) | Project |
 | [`security_policy_pipeline_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196628) | A pipeline with security policy jobs failed | {{< icon name="dotted-circle" >}} No | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/539232) | Project |
 | [`security_policy_pipeline_skipped`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195325) | A security policy pipeline is skipped | {{< icon name="dotted-circle" >}} No | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/issues/539232) | Project |
+| [`security_policy_scheduled_scans_not_enforced`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201822) | A scheduled pipeline with security policy could not be created | {{< icon name="dotted-circle" >}} No | GitLab [18.4](https://gitlab.com/gitlab-org/gitlab/-/issues/561047) | Project |
 | [`security_policy_service_account_push_bypass`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196249) | Branch push that is blocked by a security policy is bypassed for configured service account | {{< icon name="check-circle" >}} Yes | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/issues/549644) | Project |
 | [`security_policy_update`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192797) | A security policy is updated | {{< icon name="check-circle" >}} Yes | GitLab [18.1](https://gitlab.com/gitlab-org/gitlab/-/issues/539230) | Project |
+| [`security_policy_user_push_bypass`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201001) | Branch push that is blocked by a security policy is bypassed for configured users | {{< icon name="check-circle" >}} Yes | GitLab [18.4](https://gitlab.com/gitlab-org/gitlab/-/issues/549797) | Project |
 | [`security_policy_violations_detected`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193482) | Security policy violation is detected in the merge request | {{< icon name="dotted-circle" >}} No | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/549811) | Project |
 | [`security_policy_violations_resolved`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193482) | Security policy violations are resolved in the merge request | {{< icon name="dotted-circle" >}} No | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/issues/549812) | Project |
 | [`security_policy_yaml_invalidated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196721) | The policy YAML is invalidated in security policy project | {{< icon name="check-circle" >}} Yes | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/550892) | Project |
@@ -655,6 +660,7 @@ Audit event types belong to the following product categories.
 | [`authenticated_with_password`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198216) | User successfully signed in with password | {{< icon name="check-circle" >}} Yes | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/555101) | User |
 | [`authenticated_with_two_factor`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198216) | User successfully signed in with two-factor authentication | {{< icon name="check-circle" >}} Yes | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/555101) | User |
 | [`authenticated_with_webauthn`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198216) | User successfully signed in with WebAuthn device | {{< icon name="check-circle" >}} Yes | GitLab [18.3](https://gitlab.com/gitlab-org/gitlab/-/issues/555101) | User |
+| [`step_up_auth_required_oauth_provider_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199423) | Step-up authentication OAuth provider requirement is updated | {{< icon name="check-circle" >}} Yes | GitLab [18.4](https://gitlab.com/gitlab-org/gitlab/-/issues/556943) | Group |
 
 ### Team planning
 
@@ -692,6 +698,7 @@ Audit event types belong to the following product categories.
 | [`user_impersonation`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79340) | An instance administrator starts or stops impersonating a user | {{< icon name="check-circle" >}} Yes | GitLab [14.8](https://gitlab.com/gitlab-org/gitlab/-/issues/300961) | User, Group |
 | [`user_password_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106086) | A user password is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369330) | User |
 | [`user_provisioned_by_scim`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174040) | A user is provisioned by SCIM | {{< icon name="check-circle" >}} Yes | GitLab [17.8](https://gitlab.com/gitlab-org/gitlab/-/issues/423322) | Group |
+| [`user_records_migrated_to_ghost`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203756) | Event triggered when user records are migrated to ghost user during batch processing | {{< icon name="check-circle" >}} Yes | GitLab [18.4](https://gitlab.com/gitlab-org/gitlab/-/issues/567635) | User |
 | [`user_rejected`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113784) | A user registration is rejected | {{< icon name="check-circle" >}} Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374107) | User |
 
 ### User profile

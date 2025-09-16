@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Fog::Storage::GoogleXML::File', :fog_requests do
+RSpec.describe 'Fog::Google::StorageXML::File', :fog_requests, feature_category: :shared do
   let(:storage) do
     Fog.mock!
     Fog::Storage.new(

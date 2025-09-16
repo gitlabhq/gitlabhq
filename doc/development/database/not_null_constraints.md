@@ -245,7 +245,7 @@ scheduled after the background migration has completed, which could be several r
      # db/post_migrate/
      class QueueBackfillMergeRequestDiffsProjectId < Gitlab::Database::Migration[2.2]
        milestone '16.7'
-       restrict_gitlab_migration gitlab_schema: :gitlab_main
+       restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
        MIGRATION = 'BackfillMergeRequestDiffsProjectId'
        DELAY_INTERVAL = 2.minutes
@@ -274,7 +274,7 @@ scheduled after the background migration has completed, which could be several r
      class FinalizeMergeRequestDiffsProjectIdBackfill < Gitlab::Database::Migration[2.2]
        disable_ddl_transaction!
        milestone '16.10'
-       restrict_gitlab_migration gitlab_schema: :gitlab_main
+       restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
        MIGRATION = 'BackfillMergeRequestDiffsProjectId'
 

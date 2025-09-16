@@ -7,7 +7,10 @@ title: Install the GitLab AI gateway
 ---
 
 The [AI gateway](../user/gitlab_duo/gateway.md)
-is a standalone service that gives access to AI-native GitLab Duo features.
+is a combination of two services that give access to AI-native GitLab Duo features:
+
+- AI Gateway service
+- [GitLab Duo Agent Platform service](../user/duo_agent_platform/_index.md)
 
 ## Install by using Docker
 
@@ -59,7 +62,7 @@ Using the nightly version is **not recommended** because it can cause incompatib
 1. Run the following command, replacing `<your_gitlab_instance>` and `<your_gitlab_domain>` with your GitLab instance's URL and domain:
 
    ```shell
-   docker run -d -p 5052:5052 \
+   docker run -d -p 5052:5052 -p 50052:50052 \
     -e AIGW_GITLAB_URL=<your_gitlab_instance> \
     -e AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/ \
     registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:<ai-gateway-tag> \
@@ -68,13 +71,12 @@ Using the nightly version is **not recommended** because it can cause incompatib
    Replace `<ai-gateway-tag>` with the version that matches your GitLab instance. For example, if your GitLab version is `vX.Y.0`, use `self-hosted-vX.Y.0-ee`.
    From the container host, accessing `http://localhost:5052` should return `{"error":"No authorization header presented"}`.
 
-1. Ensure that port `5052` is forwarded to the container from the host and configure the AI gateway URL through the [Rails console](../administration/operations/rails_console.md):
+1. Ensure that ports `5052` and `50052` are forwarded to the container from the host.
+1. Configure the [AI gateway URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-your-gitlab-instance-to-access-the-ai-gateway) and the [GitLab Duo Agent Platform service URL](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform).
 
-   ```ruby
-   Ai::Setting.instance.update!(ai_gateway_url: 'http://ai-gateway-host.example.com:5052')
-   ```
-
-   You should configure the URL this way because the URL is stored in the database, and you can then manage it through the Admin area. Although the `AI_GATEWAY_URL` environment variable is still supported for legacy reasons, using the database setting is preferred for better configuration management.
+1. If your Duo Agent Platform URL is not set up with TLS, you must set the `DUO_AGENT_PLATFORM_SERVICE_SECURE` environment variable in your GitLab instance:
+   - For Linux package installations, in `gitlab_rails['env']`, set `'DUO_AGENT_PLATFORM_SERVICE_SECURE' => false`
+   - For self-compiled installations, in `/etc/default/gitlab`, set `export DUO_AGENT_PLATFORM_SERVICE_SECURE=false`
 
 If you encounter issues loading the PEM file, resulting in errors like `JWKError`, you may need to resolve an SSL certificate error.
 
@@ -236,7 +238,7 @@ networks:
 
 ### Deploy and validate
 
-Noe deploy and validate the solution.
+To deploy and validate the solution:
 
 1. Start the `nginx` and `AIGW` containers and verify that they're running:
 
@@ -247,7 +249,9 @@ Noe deploy and validate the solution.
 
 1. Configure your [GitLab instance to access the AI gateway](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-your-gitlab-instance-to-access-the-ai-gateway).
 
-1. Perform the health check and confirm that the AI gateway is accessible.
+1. Configure your GitLab instance to access the URL for the [GitLab Duo Agent Platform service](../administration/gitlab_duo_self_hosted/configure_duo_features.md#configure-access-to-the-gitlab-duo-agent-platform).
+
+1. Perform the health check and confirm that the AI gateway and Agent Platform are both accessible.
 
 ## Install by using Helm chart
 
@@ -331,6 +335,96 @@ kubectl wait pod \
 ```
 
 When your pods are up and running, you can set up your IP ingresses and DNS records.
+
+## Connect to a GitLab instance or model endpoint with a self-signed SSL certificate
+
+If your GitLab instance or model endpoint is configured with a self-signed certificate, you must add your root certificate authority (CA) certificate to the AI gateway's certificate bundle.
+
+To do this, you can either:
+
+- Pass the root CA certificate to the AI gateway, so authentication succeeds.
+- Add the root CA certificate to the AI gateway container's CA bundle.
+
+### Pass the root CA certificate to the AI gateway
+
+To pass the root CA certificate to the AI gateway and make sure that authentication succeeds, set the `REQUESTS_CA_BUNDLE` environment variable. Because GitLab uses [Certifi](https://pypi.org/project/certifi/) for the base trusted CA list, you configure a custom CA bundle as follows:
+
+1. Download the Certifi `cacert.pem` file:
+
+   ```shell
+   curl "https://raw.githubusercontent.com/certifi/python-certifi/2024.07.04/certifi/cacert.pem" --output cacert.pem
+   ```
+
+1. Append your self-signed root CA certificate to the file. For example, if you used `mkcert` to create your certificate:
+
+   ```shell
+   cat "$(mkcert -CAROOT)/rootCA.pem" >> path/to/your/cacert.pem
+   ```
+
+1. Set `REQUESTS_CA_BUNDLE` to the path of your `cacert.pem` file. For example, in GDK, add the following to your `$GDK_ROOT/env.runit`:
+
+   ```shell
+   export REQUESTS_CA_BUNDLE=/path/to/your/cacert.pem
+   ```
+
+### Add the root CA certificate to the AI gateway container’s CA bundle
+
+To allow the AI Gateway to trust a GitLab Self-Managed instance's certificate that is signed by a custom CA, add the root CA certificate to the AI gateway container’s CA bundle.
+
+This method does not allow for changes made to the root CA bundle in later versions of the chart.
+
+To do this for a Helm chart deployment of the AI gateway:
+
+1. Append the custom root CA certificate to a local file:
+
+   ```shell
+   cat customCA-root.crt >> ca-certificates.crt
+   ```
+
+1. Copy the `/etc/ssl/certs/ca-certificates.crt` bundle file from the AI gateway container to the local file:
+
+   ```shell
+   kubectl cp -n gitlab ai-gateway-55d697ff9d-j9pc6:/etc/ssl/certs/ca-certificates.crt ca-certificates.crt.
+   ```
+
+1. Create a new secret from the local file:
+
+   ```shell
+   kubectl create secret generic ca-certificates -n gitlab --from-file=cacertificates.crt=ca-certificates.crt
+   ```
+
+1. Use the secret in the chat `values.yml` to define a `volume` and `volumeMount`. This creates the `/tmp/ca-certificates.crt` file in the container:
+
+   ```shell
+   volumes:
+     - name: cacerts
+       secret:
+         secretName: ca-certificates
+         optional: false
+
+   volumeMounts:
+     - name: cacerts
+       mountPath: "/tmp"
+       readOnly: true
+   ```
+
+1. Set the `REQUESTS_CA_BUNDLE` and `SSL_CERT_FILE` environment variables to point to the mounted file:
+
+   ```shell
+   extraEnvironmentVariables:
+     - name: REQUESTS_CA_BUNDLE
+       value: /tmp/ca-certificates.crt
+     - name: SSL_CERT_FILE
+       value: /tmp/ca-certificates.crt
+   ```
+
+1. Redeploy the chart.
+
+[Issue 3](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/issues/3) exists to support this natively in the Helm chart.
+
+#### For a Docker deployment
+
+For a Docker deployment, use the same method. The only difference is that, to mount the local file in the container, use `--volume /root/ca-certificates.crt:/tmp/ca-certificates.crt`.
 
 ## Upgrade the AI gateway Docker image
 
@@ -535,8 +629,6 @@ This configuration ensures the AI gateway can properly cache HuggingFace models 
 ### Self-signed certificate error
 
 A `[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate in certificate chain` error is logged by the AI gateway
-when the gateway tries to connect to a GitLab instance using either a certificate signed by a custom certificate authority (CA), or a self-signed certificate:
+when the AI gateway tries to connect to a GitLab instance or model endpoint using either a certificate signed by a custom certificate authority (CA), or a self-signed certificate.
 
-- The use of custom CA certificates in the Helm chart configuration when deploying the AI gateway is not supported. For more information, see [issue 3](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/issues/3). Use the [workaround](https://gitlab.com/gitlab-org/charts/ai-gateway-helm-chart/-/issues/3#workaround) detailed in this issue.
-
-- The use of a self-signed certificate by the GitLab instance is not supported. For more information, see [issue 799](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/799).
+To resolve this, see [Connect to a GitLab instance or model endpoint with a self-signed SSL certificate](#connect-to-a-gitlab-instance-or-model-endpoint-with-a-self-signed-ssl-certificate).

@@ -11,7 +11,7 @@ export default {
     GlLoadingIcon,
     VariableTable,
   },
-  inject: ['manualVariablesCount', 'projectPath', 'pipelineIid', 'displayPipelineVariables'],
+  inject: ['manualVariablesCount', 'projectPath', 'pipelineIid'],
   apollo: {
     variables: {
       query: getManualVariablesQuery,
@@ -42,7 +42,7 @@ export default {
       return Boolean(this.manualVariablesCount > 0);
     },
     shouldShowManualVariables() {
-      return this.hasManualVariables && this.displayPipelineVariables;
+      return this.hasManualVariables;
     },
   },
 };

@@ -5,9 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Editor Extensions GraphQL integration', :clean_gitlab_redis_cache, feature_category: :editor_extensions do
   include GraphqlHelpers
 
-  let_it_be(:organization) { create(:organization) }
   let_it_be(:project) { create(:project) }
-  let_it_be(:user) { create(:user, organizations: [organization], developer_of: project) }
+  let_it_be(:user) { create(:user, developer_of: project) }
   let(:query) { graphql_query_for('project', { fullPath: project.full_path }, 'id') }
 
   describe 'language server client restrictions' do

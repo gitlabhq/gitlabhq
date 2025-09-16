@@ -3,10 +3,10 @@
   <thead>
     <tr>
       <th id="name" scope="col">{{ s__('ProjectFileTree|Name') }}</th>
-      <th id="last-commit" scope="col" class="gl-hidden sm:gl-table-cell">
+      <th id="last-commit" scope="col" class="gl-hidden @sm/panel:gl-table-cell">
         {{ __('Last commit') }}
       </th>
-      <th id="last-update" scope="col" class="text-right">{{ __('Last update') }}</th>
+      <th id="last-update" scope="col" class="!gl-text-right">{{ __('Last update') }}</th>
     </tr>
   </thead>
 </template>

@@ -181,7 +181,7 @@ export default {
     <template v-if="isDetailPage" #toggle>
       <div class="gl-min-h-7">
         <gl-button
-          class="gl-new-dropdown-toggle gl-absolute gl-left-0 gl-top-0 gl-w-full sm:gl-w-auto md:!gl-hidden"
+          class="gl-new-dropdown-toggle gl-w-full sm:gl-w-auto md:!gl-hidden"
           button-text-classes="gl-w-full"
           category="secondary"
           :aria-label="$options.i18n.actionsLabel"

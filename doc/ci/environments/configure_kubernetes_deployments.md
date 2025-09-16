@@ -45,7 +45,9 @@ deploy:
     name: production
     url: https://example.com
     kubernetes:
-      namespace: production
+      agent: path/to/agent/project:agent-name
+      dashboard:
+        namespace: production
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```

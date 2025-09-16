@@ -223,24 +223,18 @@ these parameters:
 
 - `always_perform_delayed_deletion` feature flag [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113332) in GitLab 15.11.
 - `delayed_project_deletion` and `delayed_group_deletion` attributes removed in GitLab 16.0.
+- `always_perform_delayed_deletion` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120476) in GitLab 16.1.
 - `user_email_lookup_limit` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136886) in GitLab 16.7.
 - `default_branch_protection` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead.
 - `throttle_unauthenticated_git_http_enabled`, `throttle_unauthenticated_git_http_period_in_seconds`, and `throttle_unauthenticated_git_http_requests_per_period` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147112) in GitLab 17.0.
 - `allow_all_integrations` and `allowed_integrations` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.6.
 - `throttle_authenticated_git_http_enabled`, `throttle_authenticated_git_http_period_in_seconds`, and `throttle_authenticated_git_http_requests_per_period` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191552) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `git_authenticated_http_limit`. Disabled by default.
 - `git_authenticated_http_limit` feature flag [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/543768) in GitLab 18.3.
+- `git_authenticated_http_limit` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/561577) in GitLab 18.4.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of authenticated Git HTTP rate limits is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
-
-Updates the current [application settings](#available-settings) for this GitLab instance. You must include all keys and values from the `GET /application/settings` API request or you will overwrite your existing settings.
+Updates the current [application settings](#available-settings) for this GitLab instance. 
 
 ```plaintext
 PUT /application/settings
@@ -532,6 +526,7 @@ to configure other related settings. These requirements are
 | `disable_feed_token`                     | boolean          | no                                   | Disable display of RSS/Atom and calendar feed tokens. |
 | `disable_personal_access_tokens`         | boolean          | no                                   | Disable personal access tokens. GitLab Self-Managed, Premium and Ultimate only. There is no method available to enable a personal access token that's been disabled through the API. This is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/399233). For more information about available workarounds, see [Workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/399233#workaround).      |
 | `disabled_oauth_sign_in_sources`         | array of strings | no                                   | Disabled OAuth sign-in sources. |
+| `disable_password_authentication_for_users_with_sso_identities` | boolean | no                     | Disable password authentication in the web interface for users with an SSO identity. This does not affect Git operations over HTTP(S). Default is `false`. |
 | `dns_rebinding_protection_enabled`       | boolean          | no                                   | Enforce DNS-rebinding attack protection. |
 | `domain_denylist_enabled`                | boolean          | no                                   | (**If enabled, requires**: `domain_denylist`) Allows blocking sign-ups from emails from specific domains. |
 | `domain_denylist`                        | array of strings | no                                   | Users with email addresses that match these domains **cannot** sign up. Wildcards allowed. Enter multiple entries on separate lines. For example: `domain.com`, `*.domain.com`. |
@@ -606,6 +601,7 @@ to configure other related settings. These requirements are
 | `hashed_storage_enabled`                 | boolean          | no                                   | Create new projects using hashed storage paths: Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance. (Always enabled in GitLab versions 13.0 and later, configuration is scheduled for removal in 14.0) |
 | `help_page_hide_commercial_content`      | boolean          | no                                   | Hide marketing-related entries from help. |
 | `help_page_support_url`                  | string           | no                                   | Alternate support URL for help page and help dropdown list. |
+| `help_page_documentation_base_url`       | string           | no                                   | Alternate documentation pages URL. |
 | `help_page_text`                         | string           | no                                   | Custom text displayed on the help page. |
 | `hide_third_party_offers`                | boolean          | no                                   | Do not display offers from third parties in GitLab. |
 | `home_page_url`                          | string           | no                                   | Redirect to this URL when not logged in. |
@@ -659,7 +655,7 @@ to configure other related settings. These requirements are
 | `maven_package_requests_forwarding`      | boolean          | no                                   | Use repo.maven.apache.org as a default remote repository when the package is not found in the GitLab package registry for Maven. Premium and Ultimate only. |
 | `npm_package_requests_forwarding`        | boolean          | no                                   | Use npmjs.org as a default remote repository when the package is not found in the GitLab package registry for npm. Premium and Ultimate only. |
 | `pypi_package_requests_forwarding`       | boolean          | no                                   | Use pypi.org as a default remote repository when the package is not found in the GitLab package registry for PyPI. Premium and Ultimate only. |
-| `outbound_local_requests_whitelist`      | array of strings | no                                   | Define a list of trusted domains or IP addresses to which local requests are allowed when local requests for webhooks and integrations are disabled. |
+| `outbound_local_requests_whitelist`      | array of strings | no                                   | Define a list of trusted domains or IP addresses to which local requests are allowed when local requests for webhooks and integrations are disabled. Currently, this attribute can not be updated. For details, see [issue 569729](https://gitlab.com/gitlab-org/gitlab/-/issues/569729). |
 | `package_registry_allow_anyone_to_pull_option` | boolean    | no                                   | Enable to [allow anyone to pull from package registry](../user/packages/package_registry/_index.md#allow-anyone-to-pull-from-package-registry) visible and changeable. |
 | `package_metadata_purl_types`            | array of integers | no                                  | List of [package registry metadata to sync](../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync). See [the list](https://gitlab.com/gitlab-org/gitlab/-/blob/ace16c20d5da7c4928dd03fb139692638b557fe3/app/models/concerns/enums/package_metadata.rb#L5) of the available values. GitLab Self-Managed, Ultimate only. |
 | `pages_domain_verification_enabled`       | boolean         | no                                   | Require users to prove ownership of custom domains. Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. |
@@ -699,10 +695,10 @@ to configure other related settings. These requirements are
 | `prometheus_metrics_enabled`             | boolean          | no                                   | Enable Prometheus metrics. |
 | `protected_ci_variables`                 | boolean          | no                                   | CI/CD variables are protected by default. |
 | `disable_overriding_approvers_per_merge_request` | boolean  | no                                   | Prevent editing approval rules in projects and merge requests |
-| `prevent_merge_requests_author_approval`         | boolean  | no                                   | Prevent approval by author |
+| `prevent_merge_requests_author_approval`         | boolean  | no                                   | Prevent approval by merge request creator (author) |
 | `prevent_merge_requests_committers_approval`     | boolean  | no                                   | Prevent approval by committers to merge requests |
 | `push_event_activities_limit`            | integer          | no                                   | Maximum number of changes (branches or tags) in a single push above which a [bulk push event is created](../administration/settings/push_event_activities_limit.md). Setting to `0` does not disable throttling. |
-| `push_event_hooks_limit`                 | integer          | no                                   | Maximum number of changes (branches or tags) in a single push above which webhooks and integrations are not triggered. Setting to `0` does not disable throttling. |
+| `push_event_hooks_limit`                 | integer          | no                                   | Maximum number of changes (branches or tags) in a single push above which webhooks and integrations are not triggered. Setting to `0` does not disable throttling. Default: `3`. |
 | `rate_limiting_response_text`            | string           | no                                   | When rate limiting is enabled via the `throttle_*` settings, send this plain text response when a rate limit is exceeded. 'Retry later' is sent if this is blank. |
 | `raw_blob_request_limit`                 | integer          | no                                   | Maximum number of requests per minute for each raw path (default is `300`). Set to `0` to disable throttling.|
 | `search_rate_limit`                      | integer          | no                                   | Max number of requests per minute for performing a search while authenticated. Default: 30. To disable throttling set to 0.|
@@ -714,7 +710,7 @@ to configure other related settings. These requirements are
 | `receptive_cluster_agents_enabled`       | boolean          | no                                   | Enable receptive mode for GitLab agents for Kubernetes. |
 | `receive_max_input_size`                 | integer          | no                                   | Maximum push size (MB). |
 | `relation_export_batch_size`             | integer          | no                                   | The size of each batch when exporting batched relations. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194607) in GitLab 18.2. |
-| `remember_me_enabled`                    | boolean          | no                                   | Enable [**Remember me** setting](../administration/settings/account_and_limit_settings.md#configure-the-remember-me-option). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369133) in GitLab 16.0. |
+| `remember_me_enabled`                    | boolean          | no                                   | Enable [**Remember me** setting](../administration/settings/account_and_limit_settings.md#configure-the-remember-me-option). Introduced in GitLab 16.0. |
 | `repository_checks_enabled`              | boolean          | no                                   | GitLab periodically runs `git fsck` in all project and wiki repositories to look for silent disk corruption issues. |
 | `repository_size_limit`                  | integer          | no                                   | Size limit per repository (MB). Premium and Ultimate only. |
 | `repository_storages_weighted`           | hash of strings to integers | no                        | Hash of names of taken from `gitlab.yml` to [weights](../administration/repository_storage_paths.md#configure-where-new-repositories-are-stored). New projects are created in one of these stores, chosen by a weighted random selection. |

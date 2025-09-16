@@ -3,7 +3,7 @@
   stage: sync
   extends:
     - .default-retry
-    - .caching:rules:update-cache
+    - .caching:rules:update-cache-on-code-changes
   variables:
     GIT_DEPTH: 1
     GIT_STRATEGY: fetch
@@ -94,6 +94,7 @@ cache:workhorse-hash:
   extends:
     - .cache-pull-push-base
     - .with-alpine-image
+    - .rails:rules:setup-test-env
   script:
     - echo "GLCI_WORKHORSE_HASH=$(git rev-parse HEAD:workhorse)" > build.env
     - echo "Calculated workhorse checksum - $(cat build.env)"
@@ -102,42 +103,16 @@ cache:workhorse-hash:
       dotenv: build.env
 
 #=================================
-# Frontend assets
+# Frontend
 #=================================
-# calculate asset hash so it can be used in cache key name
 cache:assets-hash:
   extends:
     - .cache-pull-push-base
-    - .with-ci-node-image
-    - .ruby-node-cache
-  needs:
-    - job: cache:ruby-gems
-      optional: true
-    - job: cache:node-modules
-      optional: true
-  before_script:
-    - source scripts/utils.sh
-    - bundle_install_script
-    - yarn_install_script
+    - .with-alpine-ruby-image
+    - .caching:rules:frontend-asset-hash
   script:
-    - echo "GLCI_GITLAB_ASSETS_HASH=$(bundle exec rake gitlab:assets:hash_sum)" > build.env
+    - echo "GLCI_GITLAB_ASSETS_HASH=$(ruby scripts/lib/assets_sha.rb)" > build.env
     - echo "Calculated assets checksum - $(cat build.env)"
   artifacts:
     reports:
       dotenv: build.env
-
-#=================================
-# Cleanup
-#=================================
-# cleanup job which is responsible for custom caching implementation that is still used by workhorse and fixtures
-packages-cleanup:
-  extends:
-    - .default-retry
-    - .caching:rules:packages-cleanup
-    - .with-ruby-slim-image
-  stage: prepare
-  before_script:
-    - source scripts/utils.sh
-    - install_gitlab_gem
-  script:
-    - scripts/packages/automated_cleanup.rb

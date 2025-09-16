@@ -323,4 +323,95 @@ describe('Pipeline Editor | Commit section', () => {
       });
     });
   });
+
+  describe('commit message reset functionality', () => {
+    beforeEach(() => {
+      mockMutateCommitData.mockResolvedValue(mockCommitCreateResponse);
+      createComponentWithApollo();
+    });
+
+    it('triggers commit message reset after successful commit', async () => {
+      await submitCommit();
+
+      // Verify commit was successful
+      expect(wrapper.emitted('commit')).toHaveLength(1);
+    });
+
+    it('does not trigger commit message reset when commit fails', async () => {
+      const errorMessage = 'Commit failed';
+      mockMutateCommitData.mockResolvedValue({
+        data: {
+          commitCreate: {
+            __typename: 'CommitCreatePayload',
+            errors: [errorMessage],
+            commit: null,
+            commitPipelinePath: null,
+          },
+        },
+      });
+
+      await submitCommit();
+
+      // Verify error event is emitted instead of commit success
+      expect(wrapper.emitted('showError')).toHaveLength(1);
+      expect(wrapper.emitted('showError')[0]).toEqual([
+        { type: 'COMMIT_FAILURE', reasons: [errorMessage] },
+      ]);
+
+      // Verify no commit event was emitted
+      expect(wrapper.emitted('commit')).toBeUndefined();
+    });
+
+    it('triggers reset for both new file creation and existing file updates', async () => {
+      // Test new file creation
+      createComponentWithApollo({ provide: { isNewCiConfigFile: true } });
+      await submitCommit();
+
+      expect(wrapper.emitted('commit')).toHaveLength(1);
+
+      // Reset mock and test existing file update
+      jest.clearAllMocks();
+      wrapper.setProps({ isNewCiConfigFile: false });
+      await submitCommit();
+
+      expect(wrapper.emitted('commit')).toHaveLength(2);
+    });
+
+    it('triggers reset regardless of merge request creation option', async () => {
+      // Test without merge request
+      await submitCommit({ openMergeRequest: false });
+
+      expect(wrapper.emitted('commit')).toHaveLength(1);
+      expect(wrapper.emitted('commit')[0]).toEqual([{ type: COMMIT_SUCCESS }]);
+
+      // Test with merge request - get initial emission count
+      const initialCommitCount = wrapper.emitted('commit')?.length || 0;
+      await submitCommit({ branch: 'new-branch', openMergeRequest: true });
+
+      // Check that a new commit event was emitted
+      expect(wrapper.emitted('commit')).toHaveLength(initialCommitCount + 1);
+      expect(wrapper.emitted('commit')[initialCommitCount]).toMatchObject([
+        {
+          type: COMMIT_SUCCESS_WITH_REDIRECT,
+          params: { sourceBranch: 'new-branch', targetBranch: mockDefaultBranch },
+        },
+      ]);
+    });
+
+    it('does not trigger reset when GraphQL mutation throws an error', async () => {
+      const networkError = new Error('Network error');
+      mockMutateCommitData.mockRejectedValue(networkError);
+
+      await submitCommit();
+
+      // Verify error event is emitted
+      expect(wrapper.emitted('showError')).toHaveLength(1);
+      expect(wrapper.emitted('showError')[0]).toEqual([
+        { type: 'COMMIT_FAILURE', reasons: ['Network error'] },
+      ]);
+
+      // Verify no commit event was emitted
+      expect(wrapper.emitted('commit')).toBeUndefined();
+    });
+  });
 });

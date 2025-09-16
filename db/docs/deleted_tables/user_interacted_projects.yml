@@ -7,7 +7,7 @@ feature_categories:
 description: Tracks which projects a given user has actively interacted with
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17327
 milestone: '10.6'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 allow_cross_joins:
 - gitlab_main_clusterwide
 allow_cross_transactions:

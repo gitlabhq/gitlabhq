@@ -74,12 +74,22 @@ class MergeRequest < ApplicationRecord
     -> { regular }, inverse_of: :merge_request
   has_many :merge_request_context_commits, inverse_of: :merge_request
   has_many :merge_request_context_commit_diff_files, through: :merge_request_context_commits, source: :diff_files
-  has_many :generated_ref_commits,
-    primary_key: [:iid, :target_project_id],
-    class_name: 'MergeRequests::GeneratedRefCommit',
-    foreign_key: :merge_request_iid,
-    inverse_of: :merge_request,
-    query_constraints: [:merge_request_iid, :project_id]
+
+  if Gitlab.next_rails?
+    has_many :generated_ref_commits,
+      primary_key: [:iid, :target_project_id],
+      class_name: 'MergeRequests::GeneratedRefCommit',
+      foreign_key: [:merge_request_iid, :project_id],
+      inverse_of: :merge_request
+  else
+    has_many :generated_ref_commits,
+      primary_key: [:iid, :target_project_id],
+      class_name: 'MergeRequests::GeneratedRefCommit',
+      foreign_key: :merge_request_iid,
+      inverse_of: :merge_request,
+      query_constraints: [:merge_request_iid, :project_id]
+  end
+
   has_one :merge_request_diff,
     -> { regular.order('merge_request_diffs.id DESC') }, inverse_of: :merge_request
   has_one :merge_head_diff,
@@ -90,6 +100,7 @@ class MergeRequest < ApplicationRecord
 
   has_one :merge_schedule, class_name: 'MergeRequests::MergeSchedule', inverse_of: :merge_request
   has_one :metrics, inverse_of: :merge_request, autosave: true
+  has_one :merge_data, class_name: 'MergeRequests::MergeData', inverse_of: :merge_request, foreign_key: :merge_request_id
 
   belongs_to :latest_merge_request_diff, class_name: 'MergeRequestDiff'
   manual_inverse_association :latest_merge_request_diff, :merge_request
@@ -172,6 +183,8 @@ class MergeRequest < ApplicationRecord
   after_save :keep_around_commit, unless: :importing?
   after_commit :ensure_metrics!, on: [:create, :update], unless: :importing?
   after_commit :expire_etag_cache, unless: :importing?
+
+  after_find :preload_branches
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -601,13 +614,9 @@ class MergeRequest < ApplicationRecord
   end
 
   scope :without_hidden, -> {
-    if Feature.enabled?(:optimize_merge_requests_banned_users_query, :instance)
-      # We add `+ 0` to the author_id to make the query planner use a nested loop and prevent
-      # loading of all banned user IDs for certain queries
-      where_not_exists(Users::BannedUser.where('banned_users.user_id = (merge_requests.author_id + 0)'))
-    else
-      where_not_exists(Users::BannedUser.where('merge_requests.author_id = banned_users.user_id'))
-    end
+    # We add `+ 0` to the author_id to make the query planner use a nested loop and prevent
+    # loading of all banned user IDs for certain queries
+    where_not_exists(Users::BannedUser.where('banned_users.user_id = (merge_requests.author_id + 0)'))
   }
 
   scope :merged_without_state_event_source, -> {
@@ -739,16 +748,12 @@ class MergeRequest < ApplicationRecord
 
   def merge_pipeline
     if sha = merged_commit_sha
-      target_project.latest_pipeline(target_branch, sha, :push)
+      target_project.latest_unscheduled_pipeline(target_branch, sha)
     end
   end
 
   def head_pipeline_active?
     !!head_pipeline&.active?
-  end
-
-  def diff_head_pipeline_active?
-    !!diff_head_pipeline&.active?
   end
 
   def diff_head_pipeline_success?
@@ -1761,6 +1766,17 @@ class MergeRequest < ApplicationRecord
     end
   end
 
+  def preload_branches
+    # There are cases when MergeRequest object is only partially loaded
+    # Skip preloading if required fields are missing
+    return unless has_attribute?(:source_project_id) && has_attribute?(:target_project_id)
+
+    Gitlab::Git::RefPreloader.collect_ref(source_project_id, Gitlab::Git::BRANCH_REF_PREFIX + self.source_branch)
+    Gitlab::Git::RefPreloader.collect_ref(target_project_id, Gitlab::Git::BRANCH_REF_PREFIX + self.target_branch)
+
+    nil
+  end
+
   def source_branch_exists?
     return false unless self.source_project
 
@@ -2636,6 +2652,13 @@ class MergeRequest < ApplicationRecord
       .to_i
 
     total_commits_count >= DIFF_COMMITS_LIMIT
+  end
+
+  def diffs_batch_cache_key
+    return unless diffs_batch_cache_with_max_age?
+    return latest_merge_request_diff&.patch_id_sha if cannot_be_merged?
+
+    merge_head_diff&.patch_id_sha
   end
 
   private

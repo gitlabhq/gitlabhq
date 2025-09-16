@@ -23,7 +23,7 @@
   - c.with_body do
     .table-holder{ data: { testid: 'wiki-history-table' } }
       %table.table.b-table.gl-table.b-table-stacked-sm.-gl-mt-1.-gl-mb-2.wiki-history
-        %thead.gl-hidden.md:gl-table-header-group
+        %thead.gl-hidden{ class: '@md/panel:gl-table-header-group' }
           %tr
             %th= _('Version')
             %th= _('Author')

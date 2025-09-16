@@ -28,13 +28,6 @@ module Integrations
 
       attr_reader :integration, :batch, :association
 
-      def bulk_insert_new(model, items_to_insert)
-        model.insert_all(
-          items_to_insert,
-          returning: [:id]
-        ).rows.flatten
-      end
-
       def bulk_insert_integrations
         attributes = integration_hash(:create)
 

@@ -34,9 +34,7 @@ class User < ApplicationRecord
   include UseSqlFunctionForPrimaryKeyLookups
   include Todoable
   include Gitlab::InternalEventsTracking
-  include SafelyChangeColumnDefault
-
-  columns_changing_default :organization_id
+  include Ci::PipelineScheduleOwnershipValidator
 
   ignore_column %i[role skype], remove_after: '2025-09-18', remove_with: '18.4'
 
@@ -166,7 +164,6 @@ class User < ApplicationRecord
   has_many :expired_today_and_unnotified_keys, -> { expired_today_and_not_notified }, class_name: 'Key'
   has_many :expiring_soon_and_unnotified_keys, -> { expiring_soon_and_not_notified }, class_name: 'Key'
   has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
-  has_many :group_deploy_keys
   has_many :gpg_keys
 
   has_many :emails
@@ -243,7 +240,7 @@ class User < ApplicationRecord
   has_many :events,                   dependent: :delete_all, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :releases,                 dependent: :nullify, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :subscriptions,            dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :oauth_applications, class_name: 'Authn::OauthApplication', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent -- This association is from a third party gem
   has_many :abuse_reports, dependent: :nullify, foreign_key: :user_id, inverse_of: :user # rubocop:disable Cop/ActiveRecordDependent
   has_many :admin_abuse_report_assignees, class_name: "Admin::AbuseReportAssignee"
   has_many :assigned_abuse_reports, class_name: "AbuseReport", through: :admin_abuse_report_assignees, source: :abuse_report
@@ -254,6 +251,7 @@ class User < ApplicationRecord
   has_many :abuse_trust_scores,       class_name: 'AntiAbuse::TrustScore', foreign_key: :user_id
   has_many :builds,                   class_name: 'Ci::Build'
   has_many :pipelines,                class_name: 'Ci::Pipeline'
+  has_many :pipeline_schedules,       foreign_key: :owner_id, class_name: 'Ci::PipelineSchedule'
   has_many :todos,                    dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent -- legacy behavior
   has_many :authored_todos, class_name: 'Todo', dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :notification_settings
@@ -400,7 +398,7 @@ class User < ApplicationRecord
   after_commit(on: :update) do
     update_invalid_gpg_signatures if previous_changes.key?('email')
   end
-  after_update_commit :update_default_organization_user, if: -> { saved_change_to_admin }
+  after_update_commit :update_home_organization_user, if: -> { saved_change_to_admin }
 
   # User's Layout preference
   enum :layout, { fixed: 0, fluid: 1 }
@@ -422,11 +420,47 @@ class User < ApplicationRecord
     homepage: 12
   }
 
+  # Override enum setter for `dashboard` to support flipped mapping for rollout
+  def dashboard=(value)
+    if should_use_flipped_dashboard_mapping_for_rollout?
+      numeric_value = dashboard_enum_mapping[value.to_s]
+      super(numeric_value)
+    else
+      super(value)
+    end
+  end
+
+  # Returns the effective dashboard value for routing purposes
+  # For GitLab team members with feature flag enabled, flips homepage/projects values
+  def effective_dashboard_for_routing
+    return dashboard unless should_use_flipped_dashboard_mapping_for_rollout?
+
+    case dashboard
+    when 'projects'
+      'homepage'
+    when 'homepage'
+      'projects'
+    else
+      dashboard
+    end
+  end
+
+  def dashboard_enum_mapping
+    return self.class.dashboards unless should_use_flipped_dashboard_mapping_for_rollout?
+
+    self.class.dashboards.dup.merge(
+      projects: self.class.dashboards[:homepage],
+      homepage: self.class.dashboards[:projects]
+    ).with_indifferent_access
+  end
+
+  # Determines if this user should use flipped dashboard enum mapping
+  def should_use_flipped_dashboard_mapping_for_rollout?
+    Feature.enabled?(:personal_homepage, self)
+  end
+
   # User's Project preference
   enum :project_view, { readme: 0, activity: 1, files: 2, wiki: 3 }
-
-  # User's role
-  enum :role, { software_developer: 0, development_team_lead: 1, devops_engineer: 2, systems_administrator: 3, security_analyst: 4, data_analyst: 5, product_manager: 6, product_designer: 7, other: 8 }, suffix: true
 
   delegate :notes_filter_for,
     :set_notes_filter,
@@ -459,9 +493,11 @@ class User < ApplicationRecord
     :enabled_following, :enabled_following=,
     :dpop_enabled, :dpop_enabled=,
     :use_work_items_view, :use_work_items_view=,
+    :project_studio_enabled, :project_studio_enabled=,
     :text_editor, :text_editor=,
     :default_text_editor_enabled, :default_text_editor_enabled=,
     :merge_request_dashboard_list_type, :merge_request_dashboard_list_type=,
+    :merge_request_dashboard_show_drafts, :merge_request_dashboard_show_drafts=,
     to: :user_preference
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
@@ -570,9 +606,13 @@ class User < ApplicationRecord
     end
 
     after_transition any => :deactivated do |user|
-      next unless Gitlab::CurrentSettings.user_deactivation_emails_enabled
-
       user.run_after_commit do
+        if Feature.enabled?(:notify_pipeline_schedule_owner_unavailable, user)
+          notify_and_disable_all_pipeline_schedules_for_user(user.id)
+        end
+
+        next unless Gitlab::CurrentSettings.user_deactivation_emails_enabled
+
         NotificationService.new.user_deactivated(user.name, user.notification_email_or_default)
       end
     end
@@ -1120,8 +1160,6 @@ class User < ApplicationRecord
     end
 
     def prefix_for_incoming_mail_token
-      return INCOMING_MAIL_TOKEN_PREFIX unless Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
-
       ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(INCOMING_MAIL_TOKEN_PREFIX)
     end
 
@@ -2101,16 +2139,25 @@ class User < ApplicationRecord
   # (group runners assigned to groups where the user has owner access to
   # and project runners assigned to projects the user has maintainer access to)
   def ci_available_runners
-    @ci_available_runners ||=
-      if Feature.enabled?(:optimize_ci_owned_project_runners_query, self)
-        Ci::Runner.from_union([ci_available_project_runners, ci_available_group_runners])
-      else
-        Ci::Runner.from_union([
-          ci_available_project_runners_from_project_members,
-          ci_available_project_runners_from_group_members,
-          ci_available_group_runners
-        ])
-      end
+    Ci::Runner.from_union([ci_available_project_runners, ci_available_group_runners])
+  end
+  strong_memoize_attr :ci_available_runners
+
+  def ci_available_project_runners
+    project_ids = project_authorizations.where(access_level: Gitlab::Access::MAINTAINER..).pluck(:project_id)
+
+    # track the size of project_ids to optimise this query further in future
+    track_ci_available_project_runners_query(project_ids.size)
+
+    return Ci::Runner.belonging_to_project(project_ids) if project_ids.size <= CI_RUNNERS_PROJECT_COUNT_LIMIT
+
+    projects_with_runners = Set.new
+
+    project_ids.each_slice(CI_PROJECT_RUNNERS_BATCH_SIZE) do |ids|
+      projects_with_runners.merge(Ci::RunnerProject.existing_project_ids(ids))
+    end
+
+    Ci::Runner.belonging_to_project(projects_with_runners)
   end
 
   def notification_email_for(notification_group)
@@ -2640,6 +2687,20 @@ class User < ApplicationRecord
     admin?
   end
 
+  def free_or_trial_owned_group_ids
+    @free_or_trial_owned_group_ids ||= owned_groups.free_or_trial.ids
+  end
+
+  def composite_identity_enforced?
+    return !!@composite_identity_enforced_override if defined?(@composite_identity_enforced_override)
+
+    !!self[:composite_identity_enforced]
+  end
+
+  def composite_identity_enforced!
+    @composite_identity_enforced_override = true
+  end
+
   protected
 
   # override, from Devise::Validatable
@@ -2737,7 +2798,10 @@ class User < ApplicationRecord
     abuse_report = AbuseReport.find_by(attrs)
 
     if abuse_report.nil?
-      abuse_report = AbuseReport.create!(attrs.merge(message: msg))
+      # rubocop: disable CodeReuse/ServiceClass -- TODO: this is legacy code
+      response = AntiAbuse::AbuseReport::CreateService.new(attrs.merge(message: msg)).execute
+      # rubocop: enable CodeReuse/ServiceClass
+      abuse_report = response.payload
     else
       abuse_report.update(message: "#{abuse_report.message}\n\n#{msg}")
     end
@@ -2786,8 +2850,8 @@ class User < ApplicationRecord
     errors.add(:notification_email, _("must be an email you have verified")) unless verified_emails.include?(notification_email_or_default)
   end
 
-  def update_default_organization_user
-    Organizations::OrganizationUser.update_default_organization_record_for(id, user_is_admin: admin?)
+  def update_home_organization_user
+    Organizations::OrganizationUser.update_home_organization_record_for(self, user_is_admin: admin?)
   end
 
   def public_email_verified
@@ -2902,49 +2966,6 @@ class User < ApplicationRecord
     ::Gitlab::Auth::Ldap::Access.allowed?(self)
   end
 
-  def ci_available_project_runners_from_project_members
-    project_ids = ci_project_ids_for_project_members(Gitlab::Access::MAINTAINER)
-
-    Ci::Runner.belonging_to_project(project_ids)
-  end
-
-  def ci_available_project_runners_from_group_members
-    cte_namespace_ids = Gitlab::SQL::CTE.new(
-      :cte_namespace_ids,
-      ci_namespace_mirrors_for_group_members(Gitlab::Access::MAINTAINER).select(:namespace_id)
-    )
-
-    cte_project_ids = Gitlab::SQL::CTE.new(
-      :cte_project_ids,
-      Ci::ProjectMirror
-        .select(:project_id)
-        .where('ci_project_mirrors.namespace_id IN (SELECT namespace_id FROM cte_namespace_ids)')
-    )
-
-    Ci::Runner
-      .with(cte_namespace_ids.to_arel)
-      .with(cte_project_ids.to_arel)
-      .joins(:runner_projects)
-      .where('ci_runner_projects.project_id IN (SELECT project_id FROM cte_project_ids)')
-  end
-
-  def ci_available_project_runners
-    project_ids = project_authorizations.where(access_level: Gitlab::Access::MAINTAINER..).pluck(:project_id)
-
-    # track the size of project_ids to optimise this query further in future
-    track_ci_available_project_runners_query(project_ids.size)
-
-    return Ci::Runner.belonging_to_project(project_ids) if project_ids.size <= CI_RUNNERS_PROJECT_COUNT_LIMIT
-
-    projects_with_runners = Set.new
-
-    project_ids.each_slice(CI_PROJECT_RUNNERS_BATCH_SIZE) do |ids|
-      projects_with_runners.merge(Ci::RunnerProject.existing_project_ids(ids))
-    end
-
-    Ci::Runner.belonging_to_project(projects_with_runners)
-  end
-
   def track_ci_available_project_runners_query(size_of_project_ids)
     track_internal_event(
       'query_ci_available_project_runners_with_project_ids',
@@ -2990,8 +3011,6 @@ class User < ApplicationRecord
   end
 
   def self.prefix_for_feed_token
-    return FEED_TOKEN_PREFIX unless Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
-
     ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(FEED_TOKEN_PREFIX)
   end
 

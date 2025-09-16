@@ -49,8 +49,6 @@ export default {
   i18n: {
     enableConfidentiality: s__('WorkItem|Turn on confidentiality'),
     disableConfidentiality: s__('WorkItem|Turn off confidentiality'),
-    confidentialityEnabled: s__('WorkItem|Confidentiality turned on.'),
-    confidentialityDisabled: s__('WorkItem|Confidentiality turned off.'),
     confidentialParentTooltip: s__(
       'WorkItem|Child items of a confidential parent must be confidential. Turn off confidentiality on the parent item first.',
     ),
@@ -383,11 +381,6 @@ export default {
     isEpic() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
-    confidentialityToggledText() {
-      return this.isConfidential
-        ? this.$options.i18n.confidentialityDisabled
-        : this.$options.i18n.confidentialityEnabled;
-    },
     showChangeType() {
       return !this.isEpic && this.canUpdateMetadata;
     },
@@ -437,7 +430,6 @@ export default {
     },
     async handleToggleWorkItemConfidentiality() {
       this.track('click_toggle_work_item_confidentiality');
-      const message = this.confidentialityToggledText;
       this.$emit('toggleWorkItemConfidentiality', !this.isConfidential);
 
       await nextTick();
@@ -449,7 +441,6 @@ export default {
       }
 
       this.closeDropdown();
-      toast(message);
     },
     handleDelete() {
       this.$refs.modal.show();
@@ -822,7 +813,7 @@ export default {
         </gl-disclosure-dropdown-item>
         <gl-disclosure-dropdown-item
           data-testid="sidebar-toggle-action"
-          class="work-item-container-xs-hidden js-sidebar-toggle-action gl-hidden md:gl-block"
+          class="work-item-container-xs-hidden js-sidebar-toggle-action gl-hidden @md/panel:gl-block"
           @action="$emit('toggleSidebar')"
         >
           <template #list-item>
@@ -842,6 +833,7 @@ export default {
       ref="modal"
       modal-id="work-item-confirm-delete"
       data-testid="work-item-confirm-delete"
+      modal-class="gl-@container"
       :title="i18n.deleteWorkItem"
       :ok-title="i18n.deleteWorkItem"
       ok-variant="danger"

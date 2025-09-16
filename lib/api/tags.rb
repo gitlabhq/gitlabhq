@@ -41,9 +41,12 @@ module API
         optional :order_by, type: String, values: %w[name updated version], default: 'updated',
           desc: 'Return tags ordered by `name`, `updated`, `version` fields.'
         optional :search, type: String, desc: 'Return list of tags matching the search criteria'
-        optional :page_token, type: String, desc: 'Name of tag to start the paginaition from'
+        optional :page_token, type: String, desc: 'Name of tag to start the pagination from'
         use :pagination
       end
+      route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: :read_repositories,
+        allow_public_access_for_enabled_project_features: :repository
       get ':id/repository/tags', feature_category: :source_code_management, urgency: :low do
         tags_finder = ::TagsFinder.new(user_project.repository,
           sort: "#{params[:order_by]}_#{params[:sort]}",

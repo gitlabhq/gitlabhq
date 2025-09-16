@@ -1,6 +1,6 @@
 ---
-stage: Create
-group: Import
+stage: Plan
+group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab for Slack app
 description: "Configure the GitLab for Slack app to use slash commands and receive notifications from GitLab in your Slack workspace."

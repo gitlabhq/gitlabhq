@@ -116,7 +116,7 @@ export default {
     :id="noteAnchorId"
     :class="{
       target: isTargetNote,
-      'pr-0': shouldShowDescriptionVersion,
+      '!gl-pr-0': shouldShowDescriptionVersion,
     }"
     class="system-note"
   >

@@ -2,7 +2,6 @@
 
 module UserSettings
   class PersonalAccessTokensController < ApplicationController
-    include RenderAccessTokens
     include FeedTokenHelper
 
     feature_category :system_access
@@ -11,10 +10,8 @@ module UserSettings
     prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:ics) }
 
     def index
-      set_index_vars
-
+      scopes = []
       unless params[:scopes].nil?
-        scopes = []
         # An over engineered solution to generate scopes array without extra object allocations
         params[:scopes].split(",", Gitlab::Auth.all_available_scopes.count + 1) do |scope|
           scope = scope.squish
@@ -27,21 +24,18 @@ module UserSettings
         end
       end
 
-      @personal_access_token = finder.build(
+      @access_token_params = {
         name: params[:name],
         description: params[:description],
         scopes: scopes
-      )
+      }
 
       respond_to do |format|
         format.html
-        format.json do
-          render json: @active_access_tokens
-        end
         format.ics do
           if params[:feed_token]
             response.headers['Content-Type'] = 'text/plain'
-            render plain: expiry_ics(@active_access_tokens)
+            render plain: expiry_ics
           else
             redirect_to "#{request.path}?feed_token=#{generate_feed_token_with_path(:ics, request.path)}"
           end
@@ -58,38 +52,10 @@ module UserSettings
         concatenate_errors: false
       ).execute
 
-      @personal_access_token = result.payload[:personal_access_token]
-
       if result.success?
-        tokens, size = active_access_tokens
-        render json: { token: @personal_access_token.token,
-                       # Delete when `migrate_user_access_tokens_ui` feature flag is removed
-                       new_token: @personal_access_token.token,
-                       active_access_tokens: tokens, total: size }, status: :ok
+        render json: { token: result.payload[:personal_access_token].token }, status: :ok
       else
         render json: { errors: result.errors }, status: :unprocessable_entity
-      end
-    end
-
-    def revoke
-      @personal_access_token = finder.find(params[:id])
-      service = PersonalAccessTokens::RevokeService.new(current_user, token: @personal_access_token).execute
-      service.success? ? flash[:notice] = service.message : flash[:alert] = service.message
-
-      redirect_to user_settings_personal_access_tokens_path
-    end
-
-    def rotate
-      token = finder.find(params[:id])
-      result = PersonalAccessTokens::RotateService.new(current_user, token, nil, keep_token_lifetime: true).execute
-
-      @personal_access_token = result.payload[:personal_access_token]
-      if result.success?
-        tokens, size = active_access_tokens
-        render json: { new_token: @personal_access_token.token,
-                       active_access_tokens: tokens, total: size }, status: :ok
-      else
-        render json: { message: result.message }, status: :unprocessable_entity
       end
     end
 
@@ -112,8 +78,21 @@ module UserSettings
 
     private
 
-    def finder(options = {})
-      PersonalAccessTokensFinder.new({ user: current_user, impersonation: false }.merge(options))
+    def expiry_ics
+      tokens =
+        PersonalAccessTokensFinder.new({ user: current_user, impersonation: false, state: 'active',
+                                         sort: 'expires_asc' }).execute.preload_users
+      cal = Icalendar::Calendar.new
+      tokens.each do |token|
+        next unless token.expires_at
+
+        cal.event do |event|
+          event.dtstart = Icalendar::Values::Date.new(token.expires_at)
+          event.dtend = Icalendar::Values::Date.new(token.expires_at)
+          event.summary = format(_("Token '%{name}' expires today"), name: token.name)
+        end
+      end
+      cal.to_ical
     end
 
     def personal_access_token_params
@@ -122,16 +101,6 @@ module UserSettings
 
     def dpop_params
       params.require(:user).permit(:dpop_enabled)
-    end
-
-    def set_index_vars
-      @scopes = Gitlab::Auth.available_scopes_for(current_user)
-
-      @active_access_tokens, @active_access_tokens_size = active_access_tokens
-    end
-
-    def represent(tokens)
-      ::PersonalAccessTokenSerializer.new.represent(tokens)
     end
 
     def check_personal_access_tokens_enabled

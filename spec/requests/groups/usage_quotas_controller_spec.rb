@@ -14,7 +14,7 @@ RSpec.describe Groups::UsageQuotasController, :with_license, feature_category: :
   end
 
   describe 'GET /groups/*group_id/-/usage_quotas' do
-    context 'when user has read_usage_quotas permission' do
+    context 'when user has read_usage_quotas permission', :with_trial_types do
       before do
         group.add_owner(user)
       end

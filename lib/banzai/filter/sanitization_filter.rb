@@ -13,43 +13,62 @@ module Banzai
       def customize_allowlist(allowlist)
         allowlist[:allow_comments] = context[:allow_comments]
 
-        # Allow table alignment; we allow specific text-align values in a
-        # transformer below
+        allow_table_alignment(allowlist)
+        allow_json_table_attributes(allowlist)
+        allow_sourcepos_and_escaped_char(allowlist)
+        allow_id_attributes(allowlist)
+        allow_class_attributes(allowlist)
+        allow_section_footnotes(allowlist)
+
+        allowlist
+      end
+
+      private
+
+      def allow_table_alignment(allowlist)
+        # Allow table alignment; we allow specific text-align values in a transformer below
         allowlist[:attributes]['th'] = %w[style]
         allowlist[:attributes]['td'] = %w[style]
         allowlist[:css] = { properties: ['text-align'] }
 
+        # Remove any `style` properties not required for table alignment
+        allowlist[:transformers].push(self.class.remove_unsafe_table_style)
+      end
+
+      def allow_json_table_attributes(allowlist)
         # Allow json table attributes
         allowlist[:attributes]['table'] = %w[data-table-fields data-table-filter data-table-markdown]
+      end
 
+      def allow_sourcepos_and_escaped_char(allowlist)
         # Allow the 'data-sourcepos' from CommonMark on all elements
         allowlist[:attributes][:all].push('data-sourcepos')
         allowlist[:attributes][:all].push('data-escaped-char')
+      end
 
-        # Remove any `style` properties not required for table alignment
-        allowlist[:transformers].push(self.class.remove_unsafe_table_style)
-
-        # Allow `id` in `a` and `li` elements for footnotes
-        # and `a` elements for header anchors.
-        # Remove any `id` properties not matching
+      def allow_id_attributes(allowlist)
+        # Allow `id` in `a` and `li` elements for footnotes and `a` elements for header anchors.
+        # Remove any `id` properties not matching these patterns via transformer
         allowlist[:attributes]['a'].push('id')
         allowlist[:attributes]['li'] = %w[id]
         allowlist[:transformers].push(self.class.remove_id_attributes)
+      end
 
-        # Remove any `class` property not required for these elements
+      def allow_class_attributes(allowlist)
+        # Remove any `class` property not required for these elements via transformer
         allowlist[:attributes]['a'].push('class')
         allowlist[:attributes]['div'] = %w[class]
         allowlist[:attributes]['p'] = %w[class]
         allowlist[:attributes]['span'].push('class')
         allowlist[:attributes]['code'].push('class')
         allowlist[:transformers].push(self.class.remove_unsafe_classes)
+      end
 
-        # Allow section elements with data-footnotes attribute
+      def allow_section_footnotes(allowlist)
+        # Allow section elements with data-footnotes attribute and footnote-related anchors
         allowlist[:elements].push('section')
         allowlist[:attributes]['section'] = %w[data-footnotes]
         allowlist[:attributes]['a'].push('data-footnote-ref', 'data-footnote-backref', 'data-footnote-backref-idx')
-
-        allowlist
       end
 
       class << self

@@ -29,6 +29,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    canResolveDiscussion: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -91,7 +95,7 @@ export default {
         },
       ];
 
-      if (this.resolveAllDiscussionsIssuePath && !this.allResolved) {
+      if (this.canResolveDiscussion && this.resolveAllDiscussionsIssuePath && !this.allResolved) {
         options.push({
           text: __('Resolve all with new issue'),
           href: this.resolveAllDiscussionsIssuePath,
@@ -135,7 +139,8 @@ export default {
           placement="bottom-end"
           no-caret
           :title="__('Thread options')"
-          :aria-label="__('Thread options')"
+          :toggle-text="__('Thread options')"
+          text-sr-only
           toggle-class="btn-icon"
           class="gl-ml-3 gl-h-full !gl-rounded-base !gl-pt-0"
           :items="threadOptions"
@@ -176,7 +181,8 @@ export default {
             placement="bottom-end"
             no-caret
             :title="__('Thread options')"
-            :aria-label="__('Thread options')"
+            :toggle-text="__('Thread options')"
+            text-sr-only
             toggle-class="btn-icon"
             class="!gl-rounded-base !gl-pt-0"
             :items="threadOptions"

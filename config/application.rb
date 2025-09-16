@@ -215,7 +215,8 @@ module Gitlab
       /^note$/,
       /^text$/,
       /^title$/,
-      /^hook$/
+      /^hook$/,
+      /^message$/
     ]
     config.filter_parameters += %i[
       certificate
@@ -272,6 +273,7 @@ module Gitlab
     config.assets.precompile << "application_utilities_dark.css"
     config.assets.precompile << "application_dark.css"
     config.assets.precompile << "tailwind.css"
+    config.assets.precompile << "tailwind_cqs.css"
 
     config.assets.precompile << "print.css"
     config.assets.precompile << "mailers/highlighted_diff_email.css"
@@ -523,6 +525,15 @@ module Gitlab
       allow do
         origins 'https://*.web-ide.gitlab-static.net'
         resource '/assets/webpack/*',
+          credentials: false,
+          methods: %i[get head]
+      end
+
+      # Allow assets to be loaded to web-ide
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/421177
+      allow do
+        origins 'https://*.web-ide.gitlab-static.net'
+        resource '/assets/vite/*',
           credentials: false,
           methods: %i[get head]
       end

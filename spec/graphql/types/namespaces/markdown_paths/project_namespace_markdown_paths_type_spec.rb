@@ -41,7 +41,7 @@ RSpec.describe Types::Namespaces::MarkdownPaths::ProjectNamespaceMarkdownPathsTy
         expect(result).to include(
           members: "/#{project.full_path}/-/autocomplete_sources/members?type=WorkItem",
           issues: "/#{project.full_path}/-/autocomplete_sources/issues?type=WorkItem",
-          merge_requests: "/#{project.full_path}/-/autocomplete_sources/merge_requests?type=WorkItem",
+          mergeRequests: "/#{project.full_path}/-/autocomplete_sources/merge_requests?type=WorkItem",
           labels: "/#{project.full_path}/-/autocomplete_sources/labels?type=WorkItem",
           milestones: "/#{project.full_path}/-/autocomplete_sources/milestones?type=WorkItem",
           commands: "/#{project.full_path}/-/autocomplete_sources/commands?type=WorkItem",
@@ -60,7 +60,7 @@ RSpec.describe Types::Namespaces::MarkdownPaths::ProjectNamespaceMarkdownPathsTy
         expect(result).to include(
           members: "/#{project.full_path}/-/autocomplete_sources/members?type=WorkItem&type_id=456",
           issues: "/#{project.full_path}/-/autocomplete_sources/issues?type=WorkItem&type_id=456",
-          merge_requests: "/#{project.full_path}/-/autocomplete_sources/merge_requests?type=WorkItem&type_id=456",
+          mergeRequests: "/#{project.full_path}/-/autocomplete_sources/merge_requests?type=WorkItem&type_id=456",
           labels: "/#{project.full_path}/-/autocomplete_sources/labels?type=WorkItem&type_id=456",
           milestones: "/#{project.full_path}/-/autocomplete_sources/milestones?type=WorkItem&type_id=456",
           commands: "/#{project.full_path}/-/autocomplete_sources/commands?type=WorkItem&type_id=456",
@@ -81,7 +81,7 @@ RSpec.describe Types::Namespaces::MarkdownPaths::ProjectNamespaceMarkdownPathsTy
         expect(result).to include(
           members: "/#{project.full_path}/-/autocomplete_sources/members?type=WorkItem&work_item_type_id=789",
           issues: "/#{project.full_path}/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=789",
-          merge_requests: "/#{project.full_path}/-/autocomplete_sources/merge_requests" \
+          mergeRequests: "/#{project.full_path}/-/autocomplete_sources/merge_requests" \
             "?type=WorkItem&work_item_type_id=789",
           labels: "/#{project.full_path}/-/autocomplete_sources/labels?type=WorkItem&work_item_type_id=789",
           milestones: "/#{project.full_path}/-/autocomplete_sources/milestones?type=WorkItem&work_item_type_id=789",

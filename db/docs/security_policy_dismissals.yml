@@ -1,0 +1,13 @@
+---
+table_name: security_policy_dismissals
+classes:
+  - Security::PolicyDismissal
+feature_categories:
+  - security_policy_management
+description: Stores the relation between security policies and dismissed findings
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202431
+milestone: '18.4'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+table_size: small

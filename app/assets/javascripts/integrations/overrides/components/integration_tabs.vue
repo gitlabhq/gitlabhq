@@ -42,7 +42,7 @@ export default {
         {{ $options.i18n.overridesTabTitle }}
         <gl-badge
           v-if="projectOverridesCount !== null"
-          variant="muted"
+          variant="neutral"
           class="gl-tab-counter-badge"
           >{{ projectOverridesCount }}</gl-badge
         >

@@ -80,6 +80,7 @@ eslint-report.html
 /.gitlab_suggested_reviewers_secret
 /.gitlab_zoekt_username
 /.gitlab_zoekt_password
+/.gitlab/duo/chat-rules.md
 /webpack-report/
 /crystalball/
 /test_results/

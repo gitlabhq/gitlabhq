@@ -117,7 +117,7 @@ Commit messages should follow the guidelines below, for reasons explained by Chr
 #### Why these standards matter
 
 1. Consistent commit messages that follow these guidelines make the history more readable.
-1. Concise standard commit messages helps to identify [breaking changes](../deprecation_guidelines/_index.md) for a deployment or ~"master:broken" quicker when
+1. Concise standard commit messages helps to identify [breaking changes](../deprecation_guidelines/_index.md) for a deployment or `~"master:broken"` quicker when
    reviewing commits between two points in time.
 
 #### Commit message template

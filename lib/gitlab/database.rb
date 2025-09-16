@@ -227,6 +227,24 @@ module Gitlab
       MAX_TIMESTAMP_VALUE > timestamp ? timestamp : MAX_TIMESTAMP_VALUE.dup
     end
 
+    # We use ApplicationRecord here but these quoting helpers can be used on any query fragment
+    # since all our databases use the same PostgreSQL adapter
+    def self.quote_table_name(table_name)
+      if ::Gitlab.next_rails?
+        ApplicationRecord.adapter_class.quote_table_name(table_name)
+      else
+        ApplicationRecord.connection.quote_table_name(table_name)
+      end
+    end
+
+    def self.quote_column_name(column_name)
+      if ::Gitlab.next_rails?
+        ApplicationRecord.adapter_class.quote_column_name(column_name)
+      else
+        ApplicationRecord.connection.quote_column_name(column_name)
+      end
+    end
+
     def self.all_uncached(&block)
       # Calls to #uncached only disable caching for the current connection. Since the load balancer
       # can potentially upgrade from read to read-write mode (using a different connection), we specify

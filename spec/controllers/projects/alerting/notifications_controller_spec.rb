@@ -72,31 +72,6 @@ RSpec.describe Projects::Alerting::NotificationsController, feature_category: :i
           make_request
         end
 
-        context 'with a corresponding project_alerting_setting' do
-          let_it_be_with_reload(:setting) { create(:project_alerting_setting, :with_http_integration, project: project) }
-          let_it_be_with_reload(:integration) { project.alert_management_http_integrations.last! }
-
-          context 'and a migrated or synced HTTP integration' do
-            it 'extracts and finds the integration' do
-              expect(notify_service).to receive(:execute).with('some token', integration)
-
-              make_request
-            end
-          end
-
-          context 'and no migrated or synced HTTP integration' do
-            before do
-              integration.destroy!
-            end
-
-            it 'does not find an integration' do
-              expect(notify_service).to receive(:execute).with('some token', nil)
-
-              make_request
-            end
-          end
-        end
-
         context 'with a corresponding integration' do
           context 'with integration parameters specified' do
             let_it_be_with_reload(:integration) { create(:alert_management_http_integration, project: project) }

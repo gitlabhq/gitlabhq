@@ -8,7 +8,7 @@ import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_ima
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import CommitListItemActionButtons from '~/projects/commits/components/commit_list_item_action_buttons.vue';
 import CommitListItemDescription from '~/projects/commits/components/commit_list_item_description.vue';
-import ExpandCollapseButton from '~/projects/commits/components/expand_collapse_button.vue';
+import ExpandCollapseButton from '~/vue_shared/components/expand_collapse_button/expand_collapse_button.vue';
 import { mockCommit } from './mock_data';
 
 describe('CommitListItem', () => {
@@ -149,7 +149,7 @@ describe('CommitListItem', () => {
         const tagBadge = findTagBadge();
         expect(tagBadge.props()).toMatchObject({
           icon: 'tag',
-          variant: 'muted',
+          variant: 'neutral',
         });
         expect(tagBadge.text()).toBe(mockCommit.tag.name);
       });
@@ -202,21 +202,21 @@ describe('CommitListItem', () => {
       it('renders short commit ID with mobile-only classes', () => {
         const shortIdElement = findMobileCommitShortId();
         expect(shortIdElement.text()).toBe(mockCommit.shortId);
-        expect(shortIdElement.classes()).toContain('sm:gl-hidden');
+        expect(shortIdElement.classes()).toContain('@sm/panel:gl-hidden');
       });
     });
 
     describe('overflow menu', () => {
       it('renders overflow menu with mobile-only classes', () => {
         const overflowMenu = findMobileOverflowMenu();
-        expect(overflowMenu.classes()).toContain('sm:gl-hidden');
+        expect(overflowMenu.classes()).toContain('@sm/panel:gl-hidden');
       });
     });
 
     describe('expand/collapse button container', () => {
       it('renders expand/collapse button container with mobile-only classes', () => {
         const container = findMobileExpandCollapseContainer();
-        expect(container.classes()).toContain('sm:gl-hidden');
+        expect(container.classes()).toContain('@sm/panel:gl-hidden');
       });
 
       it('renders expand/collapse button inside container', () => {

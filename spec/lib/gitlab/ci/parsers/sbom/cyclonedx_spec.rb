@@ -184,7 +184,8 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependen
       end
 
       it 'adds an error to the report' do
-        expect(report).to receive(:add_error).with("/components/#{components.size - 1}/purl is invalid")
+        expect(report).to receive(:add_error)
+          .with("/components/4/purl: 'pkg:nil' is not a valid PURL, reason: Type is required")
 
         parse!
       end

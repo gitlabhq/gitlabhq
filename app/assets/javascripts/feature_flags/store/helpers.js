@@ -52,7 +52,7 @@ const mapStrategyToRails = (strategy) => {
   };
 
   if (strategy.name === ROLLOUT_STRATEGY_GITLAB_USER_LIST) {
-    mappedStrategy.user_list_id = strategy.userList.id;
+    mappedStrategy.user_list_id = strategy.userList?.id;
   }
   return mappedStrategy;
 };

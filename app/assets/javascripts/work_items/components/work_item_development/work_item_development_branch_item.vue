@@ -86,7 +86,7 @@ export default {
 
 <template>
   <div class="gl-flex gl-w-full gl-justify-between gl-gap-3">
-    <div class="flex-xl-nowrap gl-flex gl-w-19/20 gl-flex-wrap gl-items-center gl-gap-3">
+    <div class="gl-flex gl-w-19/20 gl-flex-wrap gl-items-center gl-gap-3 @xl/panel:!gl-flex-nowrap">
       <gl-icon
         v-gl-tooltip
         :title="iconTooltip"

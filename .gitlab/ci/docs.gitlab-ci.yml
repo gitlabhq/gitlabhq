@@ -53,13 +53,8 @@ docs-lint markdown:
           - severity: 'blocker'
       EOF
     - source ./scripts/utils.sh
-    - |
-      function docs_lint_markdown() {
-        install_gitlab_gem
-        scripts/lint-doc.sh
-      }
-
-      run_with_custom_exit_code docs_lint_markdown
+    - install_gitlab_gem
+    - scripts/lint-doc.sh
   artifacts:
     when: always
     expire_in: 2 weeks
@@ -78,13 +73,8 @@ docs-lint mermaid:
   needs: []
   script:
     - source ./scripts/utils.sh
-    - |
-      function docs_lint_markdown() {
-        yarn_install_script
-        scripts/lint/check_mermaid.mjs
-      }
-
-      run_with_custom_exit_code docs_lint_markdown
+    - yarn_install_script
+    - scripts/lint/check_mermaid.mjs
 
 docs code_quality:
   extends:
@@ -105,10 +95,10 @@ docs code_quality:
     when: always
 
 docs hugo_build:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/technical-writing/docs-gitlab-com/docs-gitlab-com-builder:hugo-0.145.0
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/technical-writing/docs-gitlab-com/docs-gitlab-com-builder:hugo-0.148.2
   extends:
     - .default-retry
-    - .docs:rules:docs-lint
+    - .docs:rules:docs-all-lint
   stage: lint
   needs: []
   dependencies: []
@@ -133,21 +123,28 @@ docs hugo_build:
         MAJOR=$(echo $BRANCH_NAME | cut -d '-' -f 1)
         MINOR=$(echo $BRANCH_NAME | cut -d '-' -f 2)
         # Convert GitLab style (17-9-stable-ee) to Docs style (17.9)
-        DOCS_BRANCH="$MAJOR.$MINOR"
-        echo "Using docs-gitlab-com branch $DOCS_BRANCH for release branch"
+        DOCS_BRANCH_CANDIDATE="$MAJOR.$MINOR"
+
+        # Check if the branch exists in the Docs website repo, fallback to main if not
+        if git ls-remote --heads --exit-code https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com.git "refs/heads/$DOCS_BRANCH_CANDIDATE" >/dev/null 2>&1; then
+          DOCS_BRANCH="$DOCS_BRANCH_CANDIDATE"
+          echo "Using docs-gitlab-com branch $DOCS_BRANCH for release branch"
+        else
+          DOCS_BRANCH="main"
+          echo "Branch $DOCS_BRANCH_CANDIDATE does not exist, falling back to main"
+        fi
       fi
     # Clone the Docs website project
     - git clone --depth 1 --filter=tree:0 --branch $DOCS_BRANCH https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com.git
     - cd docs-gitlab-com
     - make add-latest-icons
-    # Copy the current project's docs to the appropriate location in the docs website
-    - cp -r ../doc/* content/
   script:
     # Test that Hugo will build
-    - hugo --gc --printPathWarnings --panicOnWarning
+    - hugo --gc --printPathWarnings --panicOnWarning  --environment test
     # Test for invalid index pages
     # See https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/scripts/check-index-filenames.sh
     - make check-index-pages SEARCH_DIR="../doc"
+    - make check-index-pages SEARCH_DIR="../doc-locale"
 
 docs-lint links:
   extends:
@@ -158,7 +155,7 @@ docs-lint links:
   before_script:
     - source scripts/utils.sh
   script:
-    - run_with_custom_exit_code lychee --offline --no-progress --include-fragments doc
+    - lychee --offline --no-progress --include-fragments doc
 
 docs-lint deprecations-and-removals:
   variables:
@@ -173,13 +170,8 @@ docs-lint deprecations-and-removals:
     - job: cache:ruby-gems
       optional: true
   script:
-    - |
-      function docs_lint_deprecations_and_removals() {
-        bundle exec rake gitlab:docs:check_deprecations
-        bundle exec rake gitlab:docs:check_windows
-      }
-
-      run_with_custom_exit_code docs_lint_deprecations_and_removals
+    - bundle exec rake gitlab:docs:check_deprecations
+    - bundle exec rake gitlab:docs:check_windows
 
 docs-lint redirects:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
@@ -190,8 +182,7 @@ docs-lint redirects:
   needs: []
   before_script:
     - source scripts/utils.sh
-  script:
-    - run_with_custom_exit_code ./scripts/lint-docs-redirects.rb
+  script: ./scripts/lint-docs-redirects.rb
 
 docs-i18n-lint markdown:
   extends:
@@ -202,13 +193,8 @@ docs-i18n-lint markdown:
   needs: []
   script:
     - source ./scripts/utils.sh
-    - |
-      function docs_i18n_lint_markdown() {
-        install_gitlab_gem
-        scripts/i18n_lint_doc.sh
-      }
-
-      run_with_custom_exit_code docs_i18n_lint_markdown
+    - install_gitlab_gem
+    - scripts/i18n_lint_doc.sh
 
 # Verify localized documentation files have corresponding English versions
 docs-i18n-lint paths:
@@ -220,10 +206,5 @@ docs-i18n-lint paths:
   needs: []
   script:
     - source ./scripts/utils.sh
-    - |
-      function docs_i18n_verify_paths() {
-        install_gitlab_gem
-        scripts/i18n_verify_paths.sh
-      }
-
-      run_with_custom_exit_code docs_i18n_verify_paths
+    - install_gitlab_gem
+    - scripts/i18n_verify_paths.sh

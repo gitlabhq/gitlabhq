@@ -139,7 +139,7 @@ GET /namespaces/:id
 
 | Attribute | Type           | Required | Description |
 | --------- | -------------- | -------- | ----------- |
-| `id`      | integer/string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the namespace. |
+| `id`      | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the namespace. |
 
 Example request:
 

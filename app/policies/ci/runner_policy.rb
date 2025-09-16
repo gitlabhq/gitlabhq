@@ -16,11 +16,7 @@ module Ci
     condition(:runner_available) do
       runner = @subject.is_a?(Ci::RunnerPresenter) ? @subject.__getobj__ : @subject
 
-      # TODO: use User#ci_available_project_runners once the optimize_ci_owned_project_runners_query FF is removed
-      # (https://gitlab.com/gitlab-org/gitlab/-/issues/551320)
-      # force load this so it doesn't load with runner.id for every
-      # runner to check if a user can access them, causing N+1
-      @user.ci_available_runners.load.include?(runner)
+      available_project_runners.include?(runner)
     end
 
     condition(:creator) do
@@ -77,6 +73,7 @@ module Ci
 
     condition(:maintainer_in_owner_scope) do
       # Check if user is a maintainer+ in the scope owning the runner
+      # doc/ci/runners/runners_scope.md#project-runner-ownership
       can?(:maintainer_access, @subject.owner)
     end
 
@@ -93,6 +90,41 @@ module Ci
     end
 
     rule { anonymous }.prevent_all
+
+    rule { admin | can_admin_runner }.policy do
+      enable :read_builds
+      enable :read_runner
+
+      enable :assign_runner # doc/ci/runners/runners_scope.md#project-runner-ownership
+      enable :update_runner
+      enable :delete_runner
+    end
+
+    rule { is_instance_runner }.policy do
+      # Any authenticated user can read instance runner information
+      enable :read_runner
+    end
+
+    # doc/ci/runners/runners_scope.md#view-group-runners
+    # doc/user/permissions.md#cicd-group-permissions
+    rule { is_group_runner & maintainer_in_any_associated_groups }.policy do
+      enable :read_builds
+      enable :read_runner
+    end
+
+    rule { is_group_runner & any_associated_projects_in_group_runner_inheriting_group_runners }.policy do
+      enable :read_runner
+    end
+
+    # doc/ci/runners/runners_scope.md#project-runners
+    # doc/user/permissions.md#cicd
+    rule { is_project_runner & maintainer_in_any_associated_projects }.policy do
+      enable :read_runner
+    end
+
+    rule { is_project_runner & maintainer_in_owner_scope }.policy do
+      enable :update_runner
+    end
 
     # NOTE: The `is_project_runner & belongs_to_multiple_projects & ` part is an optimization to avoid the
     # `runner_available` condition, which is much more expensive than the `can_admin_runner` one.
@@ -111,36 +143,6 @@ module Ci
       enable :update_runner
     end
 
-    rule { admin | can_admin_runner }.policy do
-      enable :read_builds
-      enable :read_runner
-
-      enable :assign_runner
-      enable :update_runner
-      enable :delete_runner
-    end
-
-    rule { is_instance_runner }.policy do
-      # Any authenticated user can read instance runner information
-      enable :read_runner
-    end
-
-    rule { is_group_runner & maintainer_in_any_associated_groups }.policy do
-      enable :read_runner
-    end
-
-    rule { is_group_runner & any_associated_projects_in_group_runner_inheriting_group_runners }.policy do
-      enable :read_runner
-    end
-
-    rule { is_project_runner & maintainer_in_any_associated_projects }.policy do
-      enable :read_runner
-    end
-
-    rule { is_project_runner & maintainer_in_owner_scope }.policy do
-      enable :update_runner
-    end
-
     rule { can?(:read_runner) }.policy do
       enable :read_runner_sensitive_data
     end
@@ -152,6 +154,12 @@ module Ci
     rule { ~admin & locked }.prevent :assign_runner
 
     rule { is_instance_runner & ~can_admin_runner }.prevent :read_runner_sensitive_data
+
+    private
+
+    def available_project_runners
+      @available_project_runners ||= @user.ci_available_project_runners.load
+    end
   end
 end
 

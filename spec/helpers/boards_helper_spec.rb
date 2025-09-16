@@ -112,6 +112,8 @@ RSpec.describe BoardsHelper do
         allow(helper).to receive(:can?).with(user, :create_projects, project.group).and_return(false)
         allow(helper).to receive(:can?).with(user, :read_crm_organization, project.crm_group).and_return(false)
         allow(helper).to receive(:can?).with(user, :read_crm_contact, project.crm_group).and_return(false)
+        allow(helper).to receive(:can?).with(user, :import_work_items, project).and_return(false)
+        allow(helper).to receive(:can?).with(user, :admin_project, project).and_return(false)
       end
 
       it 'returns board type as parent' do
@@ -174,6 +176,7 @@ RSpec.describe BoardsHelper do
         allow(helper).to receive(:can?).with(user, :create_projects, base_group).and_return(false)
         allow(helper).to receive(:can?).with(user, :read_crm_organization, project.crm_group).and_return(false)
         allow(helper).to receive(:can?).with(user, :read_crm_contact, base_group).and_return(false)
+        allow(helper).to receive(:can?).with(user, :admin_project, base_group).and_return(false)
       end
 
       it 'returns correct path for base group' do

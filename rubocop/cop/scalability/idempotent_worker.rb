@@ -5,13 +5,16 @@ require_relative '../../code_reuse_helpers'
 module RuboCop
   module Cop
     module Scalability
-      # This cop checks for the `idempotent!` call in the worker scope.
+      # Ensures that Sidekiq workers are marked as `idempotent!` when appropriate.
+      # Idempotent workers can be retried without side effects, improving reliability and
+      # resilience. If a worker is intentionally not idempotent, this cop should be disabled
+      # with a comment explaining why.
       #
       # @example
-      #
       #   # bad
       #   class TroubleMakerWorker
       #     def perform
+      #       # no idempotent! declared
       #     end
       #   end
       #
@@ -20,9 +23,9 @@ module RuboCop
       #     idempotent!
       #
       #     def perform
+      #       # safe to run multiple times
       #     end
       #   end
-      #
       class IdempotentWorker < RuboCop::Cop::Base
         include CodeReuseHelpers
 

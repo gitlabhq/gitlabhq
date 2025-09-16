@@ -82,7 +82,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
 response attributes:
@@ -148,7 +148,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `domain`  | string         | yes      | The custom domain indicated by the user  |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
@@ -205,7 +205,7 @@ Supported attributes:
 
 | Attribute          | Type           | Required | Description                              |
 | -------------------| -------------- | -------- | ---------------------------------------- |
-| `id`               | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`               | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `domain`           | string         | yes      | The custom domain indicated by the user  |
 | `auto_ssl_enabled` | boolean        | no       | Enables [automatic generation](../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md) of SSL certificates issued by Let's Encrypt for custom domains. |
 | `certificate`      | file/string    | no       | The certificate in PEM format with intermediates following in most specific to least specific order.|
@@ -281,7 +281,7 @@ Supported attributes:
 
 | Attribute          | Type           | Required | Description                              |
 | ------------------ | -------------- | -------- | ---------------------------------------- |
-| `id`               | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`               | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `domain`           | string         | yes      | The custom domain indicated by the user  |
 | `auto_ssl_enabled` | boolean        | no       | Enables [automatic generation](../user/project/pages/custom_domains_ssl_tls_certification/lets_encrypt_integration.md) of SSL certificates issued by Let's Encrypt for custom domains. |
 | `certificate`      | file/string    | no       | The certificate in PEM format with intermediates following in most specific to least specific order.|
@@ -391,7 +391,7 @@ Supported attributes:
 
 | Attribute          | Type           | Required | Description                              |
 | ------------------ | -------------- | -------- | ---------------------------------------- |
-| `id` | integer/string | yes | The ID or URL-encoded path of the project |
+| `id` | integer or string | yes | The ID or URL-encoded path of the project |
 | `domain` | string | yes | The custom domain to verify |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
@@ -443,7 +443,7 @@ Supported attributes:
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `domain`  | string         | yes      | The custom domain indicated by the user  |
 
 If successful, a `204 No Content` HTTP response with an empty body is expected.

@@ -7,7 +7,7 @@ import {
   GlFormTextarea,
   GlIcon,
 } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { __ } from '~/locale';
 import InputsAdoptionBanner from '~/ci/common/pipeline_inputs/inputs_adoption_banner.vue';
 import { VARIABLE_TYPE, FILE_TYPE } from '../constants';

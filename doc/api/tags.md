@@ -38,21 +38,49 @@ If the repository is publicly accessible, authentication
 GET /projects/:id/repository/tags
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute  | Type              | Required | Description |
 |------------|-------------------|----------|-------------|
-| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `order_by` | string            | no       | Return tags ordered by `name`, `updated`, or `version`. Default is `updated`. |
-| `sort`     | string            | no       | Return tags sorted in `asc` or `desc` order. Default is `desc`. |
-| `search`   | string            | no       | Return a list of tags matching the search criteria. You can use `^term` and `term$` to find tags that begin and end with `term`. No other regular expressions are supported. |
+| `id`       | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `order_by` | string            | No       | Return tags ordered by `name`, `updated`, or `version`. Default is `updated`. |
+| `search`   | string            | No       | Return a list of tags matching the search criteria. You can use `^term` and `term$` to find tags that begin and end with `term`. No other regular expressions are supported. |
+| `sort`     | string            | No       | Return tags sorted in `asc` or `desc` order. Default is `desc`. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute                | Type    | Description |
+|--------------------------|---------|-------------|
+| `commit`                 | object  | Commit information associated with the tag. |
+| `commit.author_email`    | string  | Email address of the commit author. |
+| `commit.author_name`     | string  | Name of the commit author. |
+| `commit.authored_date`   | string  | Date when the commit was authored in ISO 8601 format. |
+| `commit.committed_date`  | string  | Date when the commit was committed in ISO 8601 format. |
+| `commit.committer_email` | string  | Email address of the committer. |
+| `commit.committer_name`  | string  | Name of the committer. |
+| `commit.created_at`      | string  | Date when the commit was created in ISO 8601 format. |
+| `commit.id`              | string  | Full SHA of the commit. |
+| `commit.message`         | string  | Commit message. |
+| `commit.parent_ids`      | array   | Array of parent commit SHAs. |
+| `commit.short_id`        | string  | Short SHA of the commit. |
+| `commit.title`           | string  | Title of the commit. |
+| `created_at`             | string  | Date when the tag was created in ISO 8601 format. |
+| `message`                | string  | Tag message. |
+| `name`                   | string  | Name of the tag. |
+| `protected`              | boolean | If `true`, the tag is protected. |
+| `release`                | object  | Release information associated with the tag. |
+| `release.description`    | string  | Description of the release. |
+| `release.tag_name`       | string  | Tag name of the release. |
+| `target`                 | string  | SHA that the tag points to. |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
     --url "https://gitlab.example.com/api/v4/projects/5/repository/tags"
 ```
 
-Example Response:
+Example response:
 
 ```json
 [
@@ -101,19 +129,45 @@ accessed without authentication if the repository is publicly accessible.
 GET /projects/:id/repository/tags/:tag_name
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute  | Type              | Required | Description |
 |------------|-------------------|----------|-------------|
-| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `tag_name` | string            | yes      | The name of a tag. |
+| `id`       | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `tag_name` | string            | Yes      | Name of a tag. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute                | Type    | Description |
+|--------------------------|---------|-------------|
+| `commit`                 | object  | Commit information associated with the tag. |
+| `commit.author_email`    | string  | Email address of the commit author. |
+| `commit.author_name`     | string  | Name of the commit author. |
+| `commit.authored_date`   | string  | Date when the commit was authored in ISO 8601 format. |
+| `commit.committed_date`  | string  | Date when the commit was committed in ISO 8601 format. |
+| `commit.committer_email` | string  | Email address of the committer. |
+| `commit.committer_name`  | string  | Name of the committer. |
+| `commit.created_at`      | string  | Date when the commit was created in ISO 8601 format. |
+| `commit.id`              | string  | Full SHA of the commit. |
+| `commit.message`         | string  | Commit message. |
+| `commit.parent_ids`      | array   | Array of parent commit SHAs. |
+| `commit.short_id`        | string  | Short SHA of the commit. |
+| `commit.title`           | string  | Title of the commit. |
+| `created_at`             | string  | Date when the tag was created in ISO 8601 format. |
+| `message`                | string  | Tag message. |
+| `name`                   | string  | Name of the tag. |
+| `protected`              | boolean | If `true`, the tag is protected. |
+| `release`                | object  | Release information associated with the tag. |
+| `target`                 | string  | SHA that the tag points to. |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/tags/v1.0.0"
 ```
 
-Example Response:
+Example response:
 
 ```json
 {
@@ -150,20 +204,46 @@ Example Response:
 
 {{< /history >}}
 
-Creates a new tag in the repository that points to the supplied ref.
+Creates a new tag in the repository that points to the supplied reference.
 
 ```plaintext
 POST /projects/:id/repository/tags
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute  | Type              | Required | Description |
 |------------|-------------------|----------|-------------|
-| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `tag_name` | string            | yes      | The name of a tag. |
-| `ref`      | string            | yes      | Create a tag from a commit SHA, another tag name, or branch name. |
-| `message`  | string            | no       | Create an annotated tag. |
+| `id`       | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `ref`      | string            | Yes      | Create a tag from a commit SHA, another tag name, or branch name. |
+| `tag_name` | string            | Yes      | Name of a tag. |
+| `message`  | string            | No       | Create an annotated tag. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute                | Type    | Description |
+|--------------------------|---------|-------------|
+| `commit`                 | object  | Commit information associated with the tag. |
+| `commit.author_email`    | string  | Email address of the commit author. |
+| `commit.author_name`     | string  | Name of the commit author. |
+| `commit.authored_date`   | string  | Date when the commit was authored in ISO 8601 format. |
+| `commit.committed_date`  | string  | Date when the commit was committed in ISO 8601 format. |
+| `commit.committer_email` | string  | Email address of the committer. |
+| `commit.committer_name`  | string  | Name of the committer. |
+| `commit.created_at`      | string  | Date when the commit was created in ISO 8601 format. |
+| `commit.id`              | string  | Full SHA of the commit. |
+| `commit.message`         | string  | Commit message. |
+| `commit.parent_ids`      | array   | Array of parent commit SHAs. |
+| `commit.short_id`        | string  | Short SHA of the commit. |
+| `commit.title`           | string  | Title of the commit. |
+| `created_at`             | string  | Date when the tag was created in ISO 8601 format. |
+| `message`                | string  | Tag message. |
+| `name`                   | string  | Name of the tag. |
+| `protected`              | boolean | If `true`, the tag is protected. |
+| `release`                | object  | Release information associated with the tag. |
+| `target`                 | string  | SHA that the tag points to. |
+
+Example request:
 
 ```shell
 curl --request POST \
@@ -221,12 +301,12 @@ Deletes a tag of a repository with given name.
 DELETE /projects/:id/repository/tags/:tag_name
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute  | Type              | Required | Description |
 |------------|-------------------|----------|-------------|
-| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `tag_name` | string            | yes      | The name of a tag. |
+| `id`       | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `tag_name` | string            | Yes      | Name of a tag. |
 
 ## Get X.509 signature of a tag
 
@@ -237,12 +317,33 @@ if it is signed. Unsigned tags return a `404 Not Found` response.
 GET /projects/:id/repository/tags/:tag_name/signature
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute  | Type              | Required | Description |
 |------------|-------------------|----------|-------------|
-| `id`       | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `tag_name` | string            | yes      | The name of a tag. |
+| `id`       | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `tag_name` | string            | Yes      | Name of a tag. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute                                             | Type    | Description |
+|-------------------------------------------------------|---------|-------------|
+| `signature_type`                                      | string  | Type of signature (`X509`). |
+| `verification_status`                                 | string  | Verification status of the signature. |
+| `x509_certificate`                                    | object  | X.509 certificate information. |
+| `x509_certificate.certificate_status`                 | string  | Status of the certificate. |
+| `x509_certificate.email`                              | string  | Email address from the certificate. |
+| `x509_certificate.id`                                 | integer | ID of the certificate. |
+| `x509_certificate.serial_number`                      | integer | Serial number of the certificate. |
+| `x509_certificate.subject`                            | string  | Subject of the certificate. |
+| `x509_certificate.subject_key_identifier`             | string  | Subject key identifier of the certificate. |
+| `x509_certificate.x509_issuer`                        | object  | Issuer information of the certificate. |
+| `x509_certificate.x509_issuer.crl_url`                | string  | Certificate revocation list URL. |
+| `x509_certificate.x509_issuer.id`                     | integer | ID of the issuer. |
+| `x509_certificate.x509_issuer.subject`                | string  | Subject of the issuer. |
+| `x509_certificate.x509_issuer.subject_key_identifier` | string  | Subject key identifier of the issuer. |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \

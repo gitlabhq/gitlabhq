@@ -106,11 +106,14 @@ export default {
 </script>
 
 <template>
-  <div class="gl-items-center" :class="hideOnNarrowScreen ? 'gl-hidden md:gl-flex' : 'gl-flex'">
+  <div
+    class="gl-items-center"
+    :class="hideOnNarrowScreen ? 'gl-hidden @md/panel:gl-flex' : 'gl-flex'"
+  >
     <template v-if="hasChanges">
       <diff-stats
         v-if="diffsCount !== ''"
-        class="inline-parallel-buttons ml-auto"
+        class="inline-parallel-buttons !gl-ml-auto"
         :diffs-count="diffsCount"
         :added-lines="addedLines"
         :removed-lines="removedLines"

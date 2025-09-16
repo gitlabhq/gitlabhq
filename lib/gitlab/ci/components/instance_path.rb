@@ -50,6 +50,10 @@ module Gitlab
           @version == LATEST && project && project.catalog_resource.nil?
         end
 
+        def invalid_usage_for_partial_semver?
+          @version.match?(SHORTHAND_SEMVER_PATTERN) && project && project.catalog_resource.nil?
+        end
+
         private
 
         attr_reader :version

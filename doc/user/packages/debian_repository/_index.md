@@ -39,6 +39,10 @@ Prerequisites:
 - The `dpkg-deb` binary must be installed on the GitLab instance.
   This binary is usually provided by the [`dpkg` package](https://wiki.debian.org/Teams/Dpkg/Downstream),
   installed by default on Debian and derivatives.
+- Recommended. Use `dpkg-deb` 1.22.21 or later. In `dpkg-deb` 1.22.20 and earlier,
+  the binary cannot delete temporary files from archives that
+  contain non-writable directories. These files consume disk space
+  and can cause a denial of service attack.
 - Support for compression algorithm ZStandard requires version `dpkg >= 1.21.18`
   from Debian 12 Bookworm or `dpkg >= 1.19.0.5ubuntu2` from Ubuntu
   18.04 Bionic Beaver.
@@ -226,21 +230,17 @@ To install a package:
    Download your distribution key using your [credentials](#authenticate-to-the-debian-distributions-apis):
 
    ```shell
-   sudo mkdir -p /usr/local/share/keyrings
-   curl --fail-with-body --header "PRIVATE-TOKEN: <your_access_token>" \
-        "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions/<codename>/key.asc" \
-        | \
-        gpg --dearmor \
-        | \
-        sudo tee /usr/local/share/keyrings/<codename>-archive-keyring.gpg \
-        > /dev/null
+   sudo mkdir -p /etc/apt/keyrings
+   sudo curl --fail --silent --show-error --header "PRIVATE-TOKEN: <your_access_token>" \
+        --output /etc/apt/keyrings/<codename>-archive-keyring.asc \
+        --url "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions/<codename>/key.asc"
    ```
 
    Add your project as a source:
 
    ```shell
-   echo 'deb [ signed-by=/usr/local/share/keyrings/<codename>-archive-keyring.gpg ] https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian <codename> <component1> <component2>' \
-     | sudo tee /etc/apt/sources.list.d/gitlab_project.list
+   echo 'deb [ signed-by=/etc/apt/keyrings/<codename>-archive-keyring.asc ] https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian <codename> <component1> <component2>' |
+       sudo tee /etc/apt/sources.list.d/gitlab_project.list
    sudo apt-get update
    ```
 
@@ -266,21 +266,17 @@ To download a source package:
    Download your distribution key using your [credentials](#authenticate-to-the-debian-distributions-apis):
 
    ```shell
-   sudo mkdir -p /usr/local/share/keyrings
-   curl --fail-with-body --header "PRIVATE-TOKEN: <your_access_token>" \
-        "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions/<codename>/key.asc" \
-        | \
-        gpg --dearmor \
-        | \
-        sudo tee /usr/local/share/keyrings/<codename>-archive-keyring.gpg \
-        > /dev/null
+   sudo mkdir -p /etc/apt/keyrings
+   sudo curl --fail --silent --show-error --header "PRIVATE-TOKEN: <your_access_token>" \
+        --output /etc/apt/keyrings/<codename>-archive-keyring.asc \
+        --url "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions/<codename>/key.asc"
    ```
 
    Add your project as a source:
 
    ```shell
-   echo 'deb-src [ signed-by=/usr/local/share/keyrings/<codename>-archive-keyring.gpg ] https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian <codename> <component1> <component2>' \
-     | sudo tee /etc/apt/sources.list.d/gitlab_project-sources.list
+   echo 'deb-src [ signed-by=/etc/apt/keyrings/<codename>-archive-keyring.asc ] https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian <codename> <component1> <component2>' |
+       sudo tee /etc/apt/sources.list.d/gitlab_project-sources.list
    sudo apt-get update
    ```
 

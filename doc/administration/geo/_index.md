@@ -371,7 +371,7 @@ of the backfill.
 ### Runners
 
 - In addition to our standard best practices for deploying a [fleet of runners](https://docs.gitlab.com/runner/fleet_scaling/), runners can also be configured to connect to Geo secondaries to spread out job load. See how to [register runners against secondaries](secondary_proxy/runners.md).
-- See also how to handle [Disaster Recovery with runners](disaster_recovery/planned_failover.md#runner-failover).
+- See also how to handle [Runner connectivity during failover](disaster_recovery/planned_failover.md#runner-connectivity-during-failover).
 
 ### Upgrading Geo
 

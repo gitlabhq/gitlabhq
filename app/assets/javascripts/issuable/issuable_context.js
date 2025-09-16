@@ -1,4 +1,4 @@
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import $ from 'jquery';
 import { setCookie } from '~/lib/utils/common_utils';
 import UsersSelect from '~/users_select';

@@ -21,6 +21,47 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, featur
     allow(subject).to receive(:sleep)
   end
 
+  describe 'usage ping configuration' do
+    context 'when usage_ping_generation_enabled is false' do
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:usage_ping_generation_enabled?).and_return(false)
+      end
+
+      it 'does not execute any service ping operations' do
+        expect(ServicePing::SubmitService).not_to receive(:new)
+        expect(Gitlab::Usage::ServicePingReport).not_to receive(:for)
+
+        subject.perform
+      end
+
+      it 'does not create any RawUsageData records' do
+        expect { subject.perform }.not_to change { RawUsageData.count }
+      end
+
+      it 'does not create any NonSqlServicePing records' do
+        expect { subject.perform }.not_to change { ServicePing::NonSqlServicePing.count }
+      end
+
+      it 'does not create any QueriesServicePing records' do
+        expect { subject.perform }.not_to change { ServicePing::QueriesServicePing.count }
+      end
+    end
+
+    context 'when usage_ping_generation_enabled is true' do
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:usage_ping_generation_enabled?).and_return(true)
+      end
+
+      it 'executes service ping operations normally' do
+        expect(ServicePing::SubmitService).to receive(:new)
+        expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(output: :non_sql_metrics_values)
+        expect(Gitlab::Usage::ServicePingReport).to receive(:for).with(output: :metrics_queries)
+
+        subject.perform
+      end
+    end
+  end
+
   it 'does not run for SaaS when triggered from cron', :saas do
     expect(ServicePing::SubmitService).not_to receive(:new)
 

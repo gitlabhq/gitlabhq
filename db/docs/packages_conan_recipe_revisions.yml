@@ -7,7 +7,7 @@ feature_categories:
 description: Conan package recipe revisions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164844
 milestone: '17.5'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

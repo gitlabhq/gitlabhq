@@ -22,7 +22,7 @@ Use the pull mirroring API to manage a project's [pull mirroring](../user/projec
 
 {{< /history >}}
 
-Return the details of a project's [pull mirror](../user/project/repository/mirror/_index.md).
+Return the details of a project's pull mirror.
 
 ```plaintext
 GET /projects/:id/mirror/pull
@@ -32,33 +32,32 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-
-Example request:
-
-```shell
-curl --request GET \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
-```
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
 following response attributes:
 
-| Attribute                             | Type            | Description                                                                 |
-|---------------------------------------|-----------------|-----------------------------------------------------------------------------|
-| `id`                                  | integer         | The unique identifier of the mirror configuration.                          |
-| `last_error`                          | string or null  | The most recent error message, if any. `null` if no errors occurred.        |
-| `last_successful_update_at`           | string          | Timestamp of the last successful mirror update.                             |
-| `last_update_at`                      | string          | Timestamp of the most recent mirror update attempt.                         |
-| `last_update_started_at`              | string          | Timestamp when the last mirror update process started.                      |
-| `update_status`                       | string          | The status of the mirror update process.                                    |
-| `url`                                 | string          | URL of the mirrored repository.                                             |
-| `enabled`                             | boolean         | Indicates whether the mirror is active or inactive.                         |
-| `mirror_trigger_builds`               | boolean         | Determines if builds should be triggered for mirror updates.                |
-| `only_mirror_protected_branches`      | boolean or null | Specifies if only protected branches should be mirrored. `null` if not set. |
-| `mirror_overwrites_diverged_branches` | boolean         | Indicates if diverged branches should be overwritten during mirroring.      |
-| `mirror_branch_regex`                 | string or null  | Regex pattern for filtering which branches to mirror. `null` if not set.    |
+| Attribute                             | Type            | Description |
+|---------------------------------------|-----------------|-------------|
+| `enabled`                             | boolean         | If `true`, the mirror is active. |
+| `id`                                  | integer         | Unique identifier of the mirror configuration. |
+| `last_error`                          | string or null  | Most recent error message, if any. `null` if no errors occurred. |
+| `last_successful_update_at`           | string          | Timestamp of the last successful mirror update. |
+| `last_update_at`                      | string          | Timestamp of the most recent mirror update attempt. |
+| `last_update_started_at`              | string          | Timestamp when the last mirror update process started. |
+| `mirror_branch_regex`                 | string or null  | Regex pattern for filtering which branches to mirror. `null` if not set. |
+| `mirror_overwrites_diverged_branches` | boolean         | If `true`, overwrites diverged branches during mirroring. |
+| `mirror_trigger_builds`               | boolean         | If `true`, triggers builds for mirror updates. |
+| `only_mirror_protected_branches`      | boolean or null | If `true`, only protected branches are mirrored. If not set, the value is `null`. |
+| `update_status`                       | string          | Status of the mirror update process. |
+| `url`                                 | string          | URL of the mirrored repository. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
+```
 
 Example response:
 
@@ -87,43 +86,70 @@ Example response:
 
 {{< /history >}}
 
-Configure pull mirroring settings.
+Configure pull mirroring settings for a project.
+
+```plaintext
+PUT /projects/:id/mirror/pull
+```
 
 Supported attributes:
 
-| Attribute | Type | Required | Description |
-|:----------|:-----|:---------|:------------|
-| `enabled` | boolean | No | Enables pull mirroring on project when set to `true`. |
-| `url` | string | No | URL of remote repository being mirrored. |
-| `auth_user` | string | No | Username used for authentication of a project to pull mirror. |
-| `auth_password` | string | No | Password used for authentication of a project to pull mirror. |
-| `mirror_trigger_builds` | boolean | No | Trigger pipelines for mirror updates when set to `true`. |
-| `only_mirror_protected_branches` | boolean | No | Limits mirroring to only protected branches when set to `true`. |
-| `mirror_overwrites_diverged_branches` | boolean | No | Overwrite diverged branches. |
-| `mirror_branch_regex` | String | No | Contains a regular expression. Only branches with names matching the regex are mirrored. Requires `only_mirror_protected_branches` to be disabled. |
+| Attribute                             | Type              | Required | Description |
+|:--------------------------------------|:------------------|:---------|:------------|
+| `id`                                  | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `auth_password`                       | string            | No       | Password used for authentication of a project to pull mirror. |
+| `auth_user`                           | string            | No       | Username used for authentication of a project to pull mirror. |
+| `enabled`                             | boolean           | No       | If `true`, enables pull mirroring on project when set to `true`. |
+| `mirror_branch_regex`                 | string            | No       | Contains a regular expression. Only branches with names matching the regex are mirrored. Requires `only_mirror_protected_branches` to be disabled. |
+| `mirror_overwrites_diverged_branches` | boolean           | No       | If `true`, overwrites diverged branches. |
+| `mirror_trigger_builds`               | boolean           | No       | If `true`, triggers pipelines for mirror updates. |
+| `only_mirror_protected_branches`      | boolean           | No       | If `true`, limits mirroring to only protected branches. |
+| `url`                                 | string            | No       | URL of remote repository being mirrored. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+updated pull mirror configuration.
 
 Example request to add pull mirroring:
 
 ```shell
 curl --request PUT \
- --header "PRIVATE-TOKEN: <your_access_token>" \
- --header "Content-Type: application/json" \
- --data '{
-  "enabled": true,
-  "url": "https://gitlab.example.com/group/project.git",
-  "auth_user": "user",
-  "auth_password": "password"
- }' \
- --url "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "enabled": true,
+    "url": "https://gitlab.example.com/group/project.git",
+    "auth_user": "user",
+    "auth_password": "password"
+  }' \
+  --url "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
 ```
 
 Example request to remove pull mirroring:
 
 ```shell
 curl --request PUT \
- --header "PRIVATE-TOKEN: <your_access_token>" \
- --url "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"  \
- --data "enabled=false"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "enabled=false" \
+  --url "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
+```
+
+Example response:
+
+```json
+{
+  "id": 101486,
+  "last_error": null,
+  "last_successful_update_at": "2020-01-06T17:32:02.823Z",
+  "last_update_at": "2020-01-06T17:32:02.823Z",
+  "last_update_started_at": "2020-01-06T17:31:55.864Z",
+  "update_status": "finished",
+  "url": "https://gitlab.example.com/group/project.git",
+  "enabled": true,
+  "mirror_trigger_builds": false,
+  "only_mirror_protected_branches": null,
+  "mirror_overwrites_diverged_branches": false,
+  "mirror_branch_regex": null
+}
 ```
 
 ## Configure pull mirroring for a project (deprecated)
@@ -157,42 +183,42 @@ Supported attributes:
 | Attribute                        | Type    | Required | Description |
 |:---------------------------------|:--------|:---------|:------------|
 | `import_url`                     | string  | Yes      | URL of remote repository being mirrored (with `user:token` if needed). |
-| `mirror`                         | boolean | Yes      | Enables pull mirroring on project when set to `true`. |
-| `mirror_trigger_builds`          | boolean | No       | Trigger pipelines for mirror updates when set to `true`. |
-| `only_mirror_protected_branches` | boolean | No       | Limits mirroring to only protected branches when set to `true`. |
-| `mirror_branch_regex`            | String  | No       | Contains a regular expression. Only branches with names matching the regex are mirrored. Requires `only_mirror_protected_branches` to be disabled. |
+| `mirror`                         | boolean | Yes      | If `true`, enables pull mirroring. |
+| `mirror_branch_regex`            | string  | No       | Contains a regular expression. Only branches with names matching the regex are mirrored. Requires `only_mirror_protected_branches` to be disabled. |
+| `mirror_trigger_builds`          | boolean | No       | If `true`, triggers pipelines for mirror updates. |
+| `only_mirror_protected_branches` | boolean | No       | If `true`, limits mirroring to only protected branches. |
 
 Example creating a project with pull mirroring:
 
 ```shell
 curl --request POST \
- --header "PRIVATE-TOKEN: <your_access_token>" \
- --header "Content-Type: application/json" \
- --data '{
-  "name": "new_project",
-  "namespace_id": "1",
-  "mirror": true,
-  "import_url": "https://username:token@gitlab.example.com/group/project.git"
- }' \
- --url "https://gitlab.example.com/api/v4/projects/"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{
+    "name": "new_project",
+    "namespace_id": "1",
+    "mirror": true,
+    "import_url": "https://username:token@gitlab.example.com/group/project.git"
+  }' \
+  --url "https://gitlab.example.com/api/v4/projects/"
 ```
 
 Example adding pull mirroring:
 
 ```shell
 curl --request PUT \
- --header "PRIVATE-TOKEN: <your_access_token>" \
- --url "https://gitlab.example.com/api/v4/projects/:id" \
- --data "mirror=true&import_url=https://username:token@gitlab.example.com/group/project.git"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "mirror=true&import_url=https://username:token@gitlab.example.com/group/project.git" \
+  --url "https://gitlab.example.com/api/v4/projects/:id"
 ```
 
 Example removing pull mirroring:
 
 ```shell
 curl --request PUT \
- --header "PRIVATE-TOKEN: <your_access_token>" \
- --url "https://gitlab.example.com/api/v4/projects/:id"  \
- --data "mirror=false"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --data "mirror=false" \
+  --url "https://gitlab.example.com/api/v4/projects/:id"
 ```
 
 ## Start the pull mirroring process for a project
@@ -207,7 +233,9 @@ Supported attributes:
 
 | Attribute | Type              | Required | Description |
 |:----------|:------------------|:---------|:------------|
-| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+
+If successful, returns [`202 Accepted`](rest/troubleshooting.md#status-codes).
 
 Example request:
 

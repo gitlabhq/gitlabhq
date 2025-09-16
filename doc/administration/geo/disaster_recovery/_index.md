@@ -219,12 +219,12 @@ with the **secondary** site:
 
      # The path to your pg_ctl binary. You may need to adjust this path to match
      # your PostgreSQL installation
-     PG_CTL_BINARY=/usr/lib/postgresql/10/bin/pg_ctl
+     PG_CTL_BINARY=/usr/lib/postgresql/16/bin/pg_ctl
 
      # The path to your PostgreSQL data directory. You may need to adjust this
      # path to match your PostgreSQL installation. You can also run
      # `SHOW data_directory;` from PostgreSQL to find your data directory
-     PG_DATA_DIRECTORY=/etc/postgresql/10/main
+     PG_DATA_DIRECTORY=/etc/postgresql/16/main
 
      # Promote the PostgreSQL database and allow read/write operations
      sudo -u $PG_SUPERUSER $PG_CTL_BINARY -D $PG_DATA_DIRECTORY promote

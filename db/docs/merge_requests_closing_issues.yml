@@ -7,7 +7,7 @@ feature_categories:
 description: Store the events of merge request closing any issues
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/5986
 milestone: '8.12'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 table_size: small
 sharding_key:
   project_id: projects

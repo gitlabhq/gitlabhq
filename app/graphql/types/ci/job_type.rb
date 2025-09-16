@@ -215,7 +215,7 @@ module Types
           plucked_build_to_runner_manager_ids =
             ::Ci::RunnerManagerBuild.for_build(build_ids).pluck_build_id_and_runner_manager_id
           runner_managers = ::Ci::RunnerManager.id_in(plucked_build_to_runner_manager_ids.values.uniq)
-          Preloaders::RunnerManagerPolicyPreloader.new(runner_managers, current_user).execute
+          ::Ci::Preloaders::RunnerManagerPolicyPreloader.new(runner_managers, current_user).execute
           runner_managers_by_id = runner_managers.index_by(&:id)
 
           build_ids.each do |build_id|

@@ -78,8 +78,6 @@ Database/JsonbSizeLimit:
     - 'ee/app/models/security/vulnerability_management_policy_rule.rb'
     - 'ee/app/models/vulnerabilities/archived_record.rb'
     - 'ee/app/models/vulnerabilities/finding.rb'
-    - 'lib/gitlab/background_migration/backfill_draft_status_on_merge_requests_with_corrected_regex.rb'
     - 'lib/gitlab/background_migration/migrate_links_for_vulnerability_findings.rb'
-    - 'lib/gitlab/background_migration/purge_stale_security_scans.rb'
     - 'lib/gitlab/ci/config/entry/imageable.rb'
     - 'lib/gitlab/ci/config/entry/job.rb'

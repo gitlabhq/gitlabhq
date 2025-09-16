@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::ListConfigVariablesService,
-  :use_clean_rails_memory_store_caching, feature_category: :ci_variables do
+  :use_clean_rails_memory_store_caching, feature_category: :pipeline_composition do
   include ReactiveCachingHelpers
 
   let(:ci_config) { {} }

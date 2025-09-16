@@ -105,7 +105,7 @@ export default {
       class="row gl-my-3 gl-flex gl-flex-wrap gl-items-center gl-gap-y-4"
       data-testid="widget-row"
     >
-      <div class="align-items-center col-4 gl-flex gl-text-default">
+      <div class="gl-col-4 gl-flex gl-items-center gl-text-default">
         <ci-icon :status="job.detailedStatus" />
         <gl-link
           class="gl-ml-2 !gl-text-default !gl-no-underline"
@@ -114,16 +114,16 @@ export default {
           >{{ job.name }}</gl-link
         >
       </div>
-      <div class="col-2 gl-flex gl-items-center" data-testid="job-stage-name">
+      <div class="gl-col-2 gl-flex gl-items-center" data-testid="job-stage-name">
         {{ job.stage.name }}
       </div>
-      <div class="col-2 gl-flex gl-items-center">
+      <div class="gl-col-2 gl-flex gl-items-center">
         <gl-link :href="detailsPath" data-testid="job-id-link">#{{ parsedJobId }}</gl-link>
       </div>
       <gl-tooltip v-if="!canRetryJob" :target="() => $refs.retryBtn" placement="top">
         {{ tooltipErrorText }}
       </gl-tooltip>
-      <div class="col-4 gl-flex gl-max-w-full gl-flex-grow gl-justify-end gl-gap-3">
+      <div class="gl-col-4 gl-flex gl-max-w-full gl-flex-grow gl-justify-end gl-gap-3">
         <root-cause-analysis-button
           :job-gid="job.id"
           :job-status-group="statusGroup"

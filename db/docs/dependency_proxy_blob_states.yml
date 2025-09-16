@@ -8,5 +8,4 @@ description: Separate table for dependency proxy blob verification states
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101429
 milestone: '15.6'
 gitlab_schema: gitlab_main_cell_local
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/550700
 table_size: small

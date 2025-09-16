@@ -7,6 +7,7 @@ export default {
   components: {
     GlIcon,
   },
+  inject: ['projectStudioEnabled'],
   props: {
     count: {
       type: [Number, String],
@@ -48,9 +49,18 @@ export default {
     :is="component"
     :aria-label="ariaLabel"
     :href="href"
-    class="gl-flex gl-items-center gl-justify-center"
+    class="dashboard-shortcuts-button gl-relative gl-flex gl-items-center gl-justify-center"
   >
-    <gl-icon aria-hidden="true" :name="icon" class="gl-shrink-0" />
-    <span v-if="count" aria-hidden="true" class="gl-font-semibold">{{ formattedCount }}</span>
+    <gl-icon
+      aria-hidden="true"
+      :name="icon"
+      class="gl-shrink-0"
+      :class="{
+        '!gl-mr-0': projectStudioEnabled,
+        'notification-dot-mask': count && projectStudioEnabled,
+      }"
+    />
+    <span v-if="count && projectStudioEnabled" class="notification-dot"></span>
+    <span v-else-if="count" aria-hidden="true" class="gl-font-semibold">{{ formattedCount }}</span>
   </component>
 </template>

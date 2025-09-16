@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
         arel = double(:arel)
 
         expect(proxy).to receive(:read_using_load_balancer)
-          .with(:select_all, arel, 'foo', [])
+          .with(:select_all, arel, 'foo')
 
         proxy.select_all(arel, 'foo')
       end
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::ConnectionProxy do
         expect(session).to receive(:write!)
 
         expect(proxy).to receive(:write_using_load_balancer)
-          .with(:select_all, arel, 'foo', [])
+          .with(:select_all, arel, 'foo')
 
         proxy.select_all(arel, 'foo')
       end

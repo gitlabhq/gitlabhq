@@ -160,14 +160,9 @@ export default {
         @delete="deleteBlob(blobId)"
       />
     </gl-form-group>
-    <gl-button
-      :disabled="!canAdd"
-      data-testid="add-button"
-      class="gl-my-3"
-      variant="dashed"
-      @click="addBlob"
-      >{{ addLabel }}</gl-button
-    >
+    <gl-button :disabled="!canAdd" data-testid="add-button" class="gl-my-3" @click="addBlob">{{
+      addLabel
+    }}</gl-button>
     <p v-if="!canAdd" data-testid="limitations_text" class="gl-text-subtle">
       {{ limitationText }}
     </p>

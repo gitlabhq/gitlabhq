@@ -6,7 +6,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
   include Devise::Test::ControllerHelpers
 
   let_it_be(:user) { build_stubbed(:user, organization_groups_projects_sort: 'name_asc') }
-  let_it_be(:organization) { build_stubbed(:organization, :default) }
+  let_it_be(:organization) { build_stubbed(:organization) }
   let_it_be(:organization_detail) do
     build_stubbed(:organization_detail, organization: organization, description_html: '<em>description</em>')
   end
@@ -70,9 +70,9 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
       end
     end
 
-    context 'when allow_organization_creation feature flag is disabled' do
+    context 'when organization_switching feature flag is disabled' do
       before do
-        stub_feature_flags(allow_organization_creation: false)
+        stub_feature_flags(organization_switching: false)
       end
 
       it 'returns false for can_create_organization' do
@@ -113,6 +113,33 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
     end
   end
 
+  describe '#ui_for_organizations_enabled?' do
+    where(:opt_out_organizations_enabled, :ui_for_organizations_enabled, :current_user_present, :expected_result) do
+      [
+        [true,  true,  true,  false],
+        [true,  true,  false, false],
+        [true,  false, true,  false],
+        [true,  false, false, false],
+        [false, true,  true,  true],
+        [false, true,  false, true],
+        [false, false, true,  false],
+        [false, false, false, false]
+      ]
+    end
+
+    with_them do
+      before do
+        stub_feature_flags(opt_out_organizations: opt_out_organizations_enabled)
+        stub_feature_flags(ui_for_organizations: ui_for_organizations_enabled)
+        allow(helper).to receive(:current_user).and_return(current_user_present ? user : nil)
+      end
+
+      it 'returns the expected result' do
+        expect(helper.ui_for_organizations_enabled?).to be(expected_result)
+      end
+    end
+  end
+
   describe '#organization_show_app_data' do
     context 'when the user can create a group' do
       before do
@@ -147,7 +174,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
         )
       ).to include(
         {
-          'organization_gid' => 'gid://gitlab/Organizations::Organization/1',
+          'organization_gid' => "gid://gitlab/Organizations::Organization/#{organization.id}",
           'organization' => {
             'id' => organization.id,
             'name' => organization.name,
@@ -155,9 +182,9 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
             'avatar_url' => 'avatar.jpg',
             'visibility' => organization.visibility
           },
-          'groups_and_projects_organization_path' => '/-/organizations/default/groups_and_projects',
-          'users_organization_path' => '/-/organizations/default/users',
-          'new_group_path' => '/-/organizations/default/groups/new',
+          'groups_and_projects_organization_path' => "/-/organizations/#{organization.path}/groups_and_projects",
+          'users_organization_path' => "/-/organizations/#{organization.path}/users",
+          'new_group_path' => "/-/organizations/#{organization.path}/groups/new",
           'new_project_path' => '/projects/new',
           'association_counts' => stubbed_results,
           'organization_groups_projects_sort' => 'name_asc',
@@ -199,8 +226,8 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
         )
       ).to include(
         {
-          'organization_gid' => 'gid://gitlab/Organizations::Organization/1',
-          'new_group_path' => '/-/organizations/default/groups/new',
+          'organization_gid' => "gid://gitlab/Organizations::Organization/#{organization.id}",
+          'new_group_path' => "/-/organizations/#{organization.path}/groups/new",
           'new_project_path' => '/projects/new',
           'organization_groups_projects_sort' => 'name_asc',
           'organization_groups_projects_display' => 'groups',
@@ -254,7 +281,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
     it 'returns expected json' do
       expect(Gitlab::Json.parse(helper.organization_user_app_data(organization))).to eq(
         {
-          'organization_gid' => 'gid://gitlab/Organizations::Organization/1',
+          'organization_gid' => "gid://gitlab/Organizations::Organization/#{organization.id}",
           'paths' => {
             'admin_user' => admin_user_path(:id)
           }
@@ -272,8 +299,9 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
       expect(Gitlab::Json.parse(helper.organization_groups_new_app_data(organization))).to eq(
         {
           'base_path' => 'http://test.host/',
-          'groups_and_projects_organization_path' => '/-/organizations/default/groups_and_projects?display=groups',
-          'groups_organization_path' => '/-/organizations/default/groups',
+          'groups_and_projects_organization_path' =>
+            "/-/organizations/#{organization.path}/groups_and_projects?display=groups",
+          'groups_organization_path' => "/-/organizations/#{organization.path}/groups",
           'available_visibility_levels' => [
             Gitlab::VisibilityLevel::PRIVATE,
             Gitlab::VisibilityLevel::INTERNAL,
@@ -314,8 +342,9 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
             "visibility_level" => group.visibility_level
           },
           'base_path' => 'http://test.host/',
-          'groups_and_projects_organization_path' => '/-/organizations/default/groups_and_projects?display=groups',
-          'groups_organization_path' => '/-/organizations/default/groups',
+          'groups_and_projects_organization_path' =>
+            "/-/organizations/#{organization.path}/groups_and_projects?display=groups",
+          'groups_organization_path' => "/-/organizations/#{organization.path}/groups",
           'available_visibility_levels' => [
             Gitlab::VisibilityLevel::PRIVATE,
             Gitlab::VisibilityLevel::INTERNAL,
@@ -353,7 +382,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
     it 'returns expected json' do
       expect(Gitlab::Json.parse(helper.organization_projects_edit_app_data(organization, project))).to eq(
         {
-          'projects_organization_path' => '/-/organizations/default/groups_and_projects?display=projects',
+          'projects_organization_path' => "/-/organizations/#{organization.path}/groups_and_projects?display=projects",
           'preview_markdown_path' => '/-/organizations/preview_markdown',
           'project' => {
             'id' => project.id,
@@ -370,7 +399,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :organizatio
     it 'returns expected data object' do
       expect(Gitlab::Json.parse(helper.organization_activity_app_data(organization))).to match(
         {
-          'organization_activity_path' => '/-/organizations/default/activity.json',
+          'organization_activity_path' => "/-/organizations/#{organization.path}/activity.json",
           'organization_activity_event_types' => array_including(
             {
               'title' => 'Comment',

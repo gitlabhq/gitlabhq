@@ -3,7 +3,7 @@
 exports[`Repository last commit component renders commit widget 1`] = `
 <div>
   <commit-info-stub
-    class="gl-hidden sm:gl-flex"
+    class="@sm/panel:gl-flex gl-hidden"
     commit="[object Object]"
   >
     <div
@@ -63,7 +63,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
     </div>
   </commit-info-stub>
   <collapsible-commit-info-stub
-    class="!gl-border-t-0 gl-block sm:gl-hidden"
+    class="!gl-border-t-0 @sm/panel:gl-hidden gl-block"
     commit="[object Object]"
     historyurl="/history"
   />

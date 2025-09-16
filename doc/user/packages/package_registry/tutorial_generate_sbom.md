@@ -442,6 +442,7 @@ When working with CycloneDX files, consider using the following tools:
 
 - [OWASP Dependency-Track](https://dependencytrack.org/)
 - [CycloneDX CLI](https://github.com/CycloneDX/cyclonedx-cli)
+- [OWASP CycloneDX Sunshine](https://cyclonedx.github.io/Sunshine/)
 - [SBOM analysis tools](https://cyclonedx.org/tool-center/)
 
 ### Using the statistics file

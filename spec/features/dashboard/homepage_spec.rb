@@ -18,17 +18,17 @@ RSpec.describe 'Dashboard - Home', :js, feature_category: :notifications do
   end
 
   describe 'visiting the root route' do
-    context 'when using the default homepage ("Projects")' do
-      it 'shows the "Projects" menu item as active' do
+    context 'when using the default homepage (with flipped mapping)' do
+      it 'shows the "Home" menu item as active' do
         visit root_path
-        expect(page).to have_css("a[data-track-label='projects_menu'][aria-current='page']")
+        expect(page).to have_css("a[data-track-label='homepage_menu'][aria-current='page']")
       end
     end
 
-    context 'when using "Personal homepage" as homepage' do
+    context 'when explicitly setting dashboard to homepage (with flipped mapping)' do
       let_it_be(:user) { create(:user, dashboard: :homepage) }
 
-      it 'shows the "Home" menu item as active' do
+      it 'shows the "Home" menu item as active (homepage stays homepage)' do
         visit root_path
         expect(page).to have_css("a[data-track-label='homepage_menu'][aria-current='page']")
       end

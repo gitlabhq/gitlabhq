@@ -1,7 +1,7 @@
 <script>
 import { GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
 import { computed } from 'vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import glLicensedFeaturesMixin from '~/vue_shared/mixins/gl_licensed_features_mixin';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -32,7 +32,7 @@ export default {
   directives: {
     GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
+  mixins: [glLicensedFeaturesMixin()],
   inject: ['blobInfo', 'currentRef'],
   provide() {
     return {
@@ -122,10 +122,10 @@ export default {
       return Boolean(this.viewer.renderError);
     },
     canModifyFile() {
-      return this.glFeatures.fileLocks ? this.eeCanModifyFile : true;
+      return this.glLicensedFeatures.fileLocks ? this.eeCanModifyFile : true;
     },
     isLocked() {
-      return this.glFeatures.fileLocks ? this.eeIsLocked : false;
+      return this.glLicensedFeatures.fileLocks ? this.eeIsLocked : false;
     },
   },
   watch: {

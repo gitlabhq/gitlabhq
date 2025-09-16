@@ -11,11 +11,11 @@ module Gitlab
         delegate :start_cursor, :end_cursor, to: :items
 
         def next_page?
-          end_cursor.present?
+          items.try(:has_next_page).nil? ? end_cursor.present? : items.has_next_page
         end
 
         def previous_page?
-          start_cursor.present?
+          items.try(:has_previous_page).nil? ? start_cursor.present? : items.has_previous_page
         end
 
         alias_method :has_next_page, :next_page?

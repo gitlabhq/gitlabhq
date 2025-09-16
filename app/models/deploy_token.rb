@@ -67,8 +67,6 @@ class DeployToken < ApplicationRecord
   end
 
   def self.prefix_for_deploy_token
-    return DEPLOY_TOKEN_PREFIX unless Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
-
     ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(DEPLOY_TOKEN_PREFIX)
   end
 

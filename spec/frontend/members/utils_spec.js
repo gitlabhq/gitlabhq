@@ -59,7 +59,7 @@ describe('Members Utils', () => {
           expect.objectContaining({
             show: expect.any(Boolean),
             text: expect.any(String),
-            variant: expect.stringMatching(/muted|neutral|info|success|danger|warning/),
+            variant: expect.stringMatching(/neutral|info|success|danger|warning/),
           }),
         );
       });
@@ -69,7 +69,7 @@ describe('Members Utils', () => {
       member                                                            | expected
       ${memberMock}                                                     | ${{ show: true, text: I18N_USER_YOU, variant: 'success' }}
       ${{ ...memberMock, user: { ...memberMock.user, blocked: true } }} | ${{ show: true, text: I18N_USER_BLOCKED, variant: 'danger' }}
-      ${{ ...memberMock, user: { ...memberMock.user, isBot: true } }}   | ${{ show: true, text: I18N_USER_BOT, variant: 'muted' }}
+      ${{ ...memberMock, user: { ...memberMock.user, isBot: true } }}   | ${{ show: true, text: I18N_USER_BOT, variant: 'neutral' }}
       ${member2faEnabled}                                               | ${{ show: true, text: I188N_USER_2FA, variant: 'info' }}
     `('returns expected output for "$expected.text" badge', ({ member, expected }) => {
       expect(

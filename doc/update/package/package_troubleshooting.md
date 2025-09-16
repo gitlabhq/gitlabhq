@@ -1,6 +1,6 @@
 ---
 stage: GitLab Delivery
-group: Self Managed
+group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Troubleshooting a Linux package instance upgrade
 description: Solutions for problems when upgrading a Linux package instance.
@@ -51,7 +51,12 @@ An error occurred during the signature verification
 Update the GPG key of the GitLab packages server with this command:
 
 ```shell
-curl --silent "https://packages.gitlab.com/gpg.key" | apt-key add -
+[ -x /usr/bin/apt-key ] &&
+    [ -s /etc/apt/trusted.gpg ] &&
+    apt-key --keyring /etc/apt/trusted.gpg del packages@gitlab.com
+curl --fail --silent --show-error \
+     --output /etc/apt/trusted.gpg.d/gitlab.asc \
+     --url "https://packages.gitlab.com/gpg.key"
 apt-get update
 ```
 

@@ -507,9 +507,6 @@ Settings.cron_jobs['adjourned_projects_deletion_cron_worker'] ||= {}
 Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['cron'] ||= '0 7 * * *'
 Settings.cron_jobs['adjourned_projects_deletion_cron_worker']['job_class'] = 'AdjournedProjectsDeletionCronWorker'
 Settings.cron_jobs['poll_interval'] ||= ENV["GITLAB_CRON_JOBS_POLL_INTERVAL"] ? ENV["GITLAB_CRON_JOBS_POLL_INTERVAL"].to_i : nil
-Settings.cron_jobs['flush_stale_counter_increments_cron_worker'] ||= {}
-Settings.cron_jobs['flush_stale_counter_increments_cron_worker']['cron'] ||= '0 */1 * * *'
-Settings.cron_jobs['flush_stale_counter_increments_cron_worker']['job_class'] = 'Gitlab::Counters::FlushStaleCounterIncrementsCronWorker'
 Settings.cron_jobs['stuck_ci_jobs_worker'] ||= {}
 Settings.cron_jobs['stuck_ci_jobs_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['stuck_ci_jobs_worker']['job_class'] = 'StuckCiJobsWorker'
@@ -754,7 +751,7 @@ Settings.cron_jobs['performance_bar_stats'] ||= {}
 Settings.cron_jobs['performance_bar_stats']['cron'] ||= '*/2 * * * *'
 Settings.cron_jobs['performance_bar_stats']['job_class'] = 'GitlabPerformanceBarStatsWorker'
 Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker'] ||= {}
-Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker']['cron'] ||= '0 * * * *'
+Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker']['cron'] ||= '0 0 * * *'
 Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker']['job_class'] = 'Ci::Catalog::Resources::AggregateLast30DayUsageWorker'
 Settings.cron_jobs['ci_catalog_resources_cleanup_last_usages_worker'] ||= {}
 Settings.cron_jobs['ci_catalog_resources_cleanup_last_usages_worker']['cron'] ||= '0 0 * * *'
@@ -845,9 +842,6 @@ Gitlab.ee do
   Settings.cron_jobs['incident_management_schedule_escalation_check_worker'] ||= {}
   Settings.cron_jobs['incident_management_schedule_escalation_check_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['incident_management_schedule_escalation_check_worker']['job_class'] = 'IncidentManagement::PendingEscalations::ScheduleCheckCronWorker'
-  Settings.cron_jobs['import_software_licenses_worker'] ||= {}
-  Settings.cron_jobs['import_software_licenses_worker']['cron'] ||= '0 3 * * 0'
-  Settings.cron_jobs['import_software_licenses_worker']['job_class'] = 'ImportSoftwareLicensesWorker'
   Settings.cron_jobs['ldap_group_sync_worker'] ||= {}
   Settings.cron_jobs['ldap_group_sync_worker']['cron'] ||= '0 * * * *'
   Settings.cron_jobs['ldap_group_sync_worker']['job_class'] = 'LdapAllGroupsSyncWorker'
@@ -947,6 +941,9 @@ Gitlab.ee do
   Settings.cron_jobs['security_scans_purge_worker'] ||= {}
   Settings.cron_jobs['security_scans_purge_worker']['cron'] ||= '0 */4 * * 6,0'
   Settings.cron_jobs['security_scans_purge_worker']['job_class'] = 'Security::Scans::PurgeWorker'
+  Settings.cron_jobs['security_destroy_expired_sbom_scans_worker'] ||= {}
+  Settings.cron_jobs['security_destroy_expired_sbom_scans_worker']['cron'] ||= '0 2 * * *'
+  Settings.cron_jobs['security_destroy_expired_sbom_scans_worker']['job_class'] = 'Security::VulnerabilityScanning::DestroyExpiredSbomScansWorker'
   Settings.cron_jobs['app_sec_dast_profile_schedule_worker'] ||= {}
   Settings.cron_jobs['app_sec_dast_profile_schedule_worker']['cron'] ||= '7-59/15 * * * *'
   Settings.cron_jobs['app_sec_dast_profile_schedule_worker']['job_class'] = 'AppSec::Dast::ProfileScheduleWorker'
@@ -1139,6 +1136,15 @@ Settings['workhorse'] ||= {}
 Settings.workhorse['secret_file'] ||= Rails.root.join('.gitlab_workhorse_secret')
 
 #
+# Database Traffic Capture Settings
+#
+
+Settings['database_traffic_capture'] ||= {}
+Settings.database_traffic_capture['config'] ||= {}
+Settings.database_traffic_capture.config['storage'] ||= {}
+Settings.database_traffic_capture.config.storage['connector'] ||= {}
+
+#
 # Cells
 #
 Settings['cell'] ||= {}
@@ -1155,6 +1161,7 @@ Settings.cell.topology_service_client['certificate_file'] ||= nil
 Settings.cell.topology_service_client['private_key_file'] ||= nil
 Settings.cell.topology_service_client['tls'] ||= {}
 Settings.cell.topology_service_client['tls']['enabled'] = true if Settings.cell.topology_service_client['tls']['enabled'].nil?
+Settings.cell.topology_service_client['metadata'] ||= {}
 
 #
 # GitLab KAS
@@ -1197,8 +1204,10 @@ Gitlab.ee do
     "https://gitlab.com/api/v4/projects/58711783/packages/generic/duo-workflow-executor/#{executor_version}/#{os_info.sub('/', '-')}-duo-workflow-executor.tar.gz"
   end
 
+  secure = Gitlab::Utils.to_boolean(ENV['DUO_AGENT_PLATFORM_SERVICE_SECURE'], default: true)
+
   Settings.duo_workflow.reverse_merge!(
-    secure: true,
+    secure: secure,
     service_url: nil, # service_url is constructued in Gitlab::DuoWorkflow::Client
     debug: false,
     executor_binary_url: "https://gitlab.com/api/v4/projects/58711783/packages/generic/duo-workflow-executor/#{executor_version}/duo-workflow-executor.tar.gz",

@@ -86,15 +86,15 @@ export default {
     @hidden="$emit('hidden')"
   >
     <div class="-gl-mx-4 gl-my-3 gl-flex gl-flex-wrap">
-      <strong class="col-sm-3">{{ $options.text.name }}</strong>
-      <div class="col-sm-9" data-testid="test-case-name">
+      <strong class="gl-col-sm-3">{{ $options.text.name }}</strong>
+      <div class="gl-col-sm-9" data-testid="test-case-name">
         {{ testCase.name }}
       </div>
     </div>
 
     <div v-if="testCase.file" class="-gl-mx-4 gl-my-3 gl-flex gl-flex-wrap">
-      <strong class="col-sm-3">{{ $options.text.file }}</strong>
-      <div class="col-sm-9" data-testid="test-case-file">
+      <strong class="gl-col-sm-3">{{ $options.text.file }}</strong>
+      <div class="gl-col-sm-9" data-testid="test-case-file">
         <gl-link v-if="testCase.filePath" class="gl-break-words" :href="testCase.filePath">
           {{ testCase.file }}
         </gl-link>
@@ -110,26 +110,26 @@ export default {
     </div>
 
     <div class="-gl-mx-4 gl-my-3 gl-flex gl-flex-wrap">
-      <strong class="col-sm-3">{{ $options.text.duration }}</strong>
-      <div v-if="testCase.formattedTime" class="col-sm-9" data-testid="test-case-duration">
+      <strong class="gl-col-sm-3">{{ $options.text.duration }}</strong>
+      <div v-if="testCase.formattedTime" class="gl-col-sm-9" data-testid="test-case-duration">
         {{ testCase.formattedTime }}
       </div>
-      <div v-else-if="testCase.execution_time" class="col-sm-9" data-testid="test-case-duration">
+      <div v-else-if="testCase.execution_time" class="gl-col-sm-9" data-testid="test-case-duration">
         {{ sprintf('%{value} s', { value: testCase.execution_time }) }}
       </div>
     </div>
 
     <div v-if="testCase.recent_failures" class="-gl-mx-4 gl-my-3 gl-flex gl-flex-wrap">
-      <strong class="col-sm-3">{{ $options.text.history }}</strong>
-      <div class="col-sm-9" data-testid="test-case-recent-failures">
+      <strong class="gl-col-sm-3">{{ $options.text.history }}</strong>
+      <div class="gl-col-sm-9" data-testid="test-case-recent-failures">
         <gl-badge variant="warning">{{ failureHistoryMessage }}</gl-badge>
       </div>
     </div>
 
     <div v-if="testCase.attachment_url" class="-gl-mx-4 gl-my-3 gl-flex gl-flex-wrap">
-      <strong class="col-sm-3">{{ $options.text.attachment }}</strong>
+      <strong class="gl-col-sm-3">{{ $options.text.attachment }}</strong>
       <gl-link
-        class="col-sm-9"
+        class="gl-col-sm-9"
         :href="testCase.attachment_url"
         target="_blank"
         data-testid="test-case-attachment-url"
@@ -143,7 +143,7 @@ export default {
       class="-gl-mx-4 gl-my-3 gl-flex gl-flex-wrap"
       data-testid="test-case-trace"
     >
-      <strong class="col-sm-3 gl-mb-2">{{ $options.text.trace }}</strong>
+      <strong class="gl-col-sm-3 gl-mb-2">{{ $options.text.trace }}</strong>
       <code-block class="gl-p-4" :code="testCase.system_output" />
     </div>
   </gl-modal>

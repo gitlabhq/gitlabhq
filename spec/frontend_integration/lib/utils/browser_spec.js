@@ -1,4 +1,4 @@
-import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/src/utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import * as commonUtils from '~/lib/utils/common_utils';
 

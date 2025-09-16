@@ -2,19 +2,7 @@
 
 class ProjectPolicy < BasePolicy
   include ArchivedAbilities
-
-  UPDATE_JOB_PERMISSIONS = [
-    :update_build, # TODO: remove usages of this permission
-    :play_job
-    # :retry_job,
-    # :unschedule_job,
-    # :manage_job_artifacts
-  ].freeze
-
-  CLEANUP_JOB_PERMISSIONS = [
-    :cancel_build,
-    :erase_build
-  ].freeze
+  include ::Ci::JobAbilities
 
   # https://docs.gitlab.com/18.2/ci/pipelines/settings/#change-which-users-can-view-your-pipelines
   desc "Project-based pipeline visibility enabled"
@@ -166,6 +154,9 @@ class ProjectPolicy < BasePolicy
     public_project? || internal_access? || project_allowed_for_job_token_by_scope?
   end
 
+  desc "If the user is via CI job token and project visibility allows access"
+  condition(:job_token_repository) { job_token_access_allowed_to?(:repository) }
+
   desc "If the user is via CI job token and project container registry visibility allows access"
   condition(:job_token_container_registry) { job_token_access_allowed_to?(:container_registry) }
 
@@ -267,11 +258,7 @@ class ProjectPolicy < BasePolicy
   end
 
   condition(:push_repository_for_job_token_allowed) do
-    if ::Feature.enabled?(:allow_push_repository_for_job_token, @subject)
-      @user&.from_ci_job_token? && project.ci_push_repository_for_job_token_allowed? && @user.ci_job_token_scope.self_referential?(project)
-    else
-      false
-    end
+    @user&.from_ci_job_token? && project.ci_push_repository_for_job_token_allowed? && @user.ci_job_token_scope.self_referential?(project)
   end
 
   condition(:packages_disabled, scope: :subject) { !@subject.packages_enabled }
@@ -330,6 +317,11 @@ class ProjectPolicy < BasePolicy
   condition(:allow_guest_plus_roles_to_pull_packages_enabled, scope: :subject) do
     Feature.enabled?(:allow_guest_plus_roles_to_pull_packages, @subject.root_ancestor)
   end
+
+  condition(:ancestor_scheduled_for_deletion, scope: :subject) do
+    !@subject.self_deletion_scheduled? && @subject.scheduled_for_deletion_in_hierarchy_chain?
+  end
+  condition(:parent_deletion_in_progress, scope: :subject) { @subject.parent.self_deletion_in_progress? }
 
   # `:read_project` may be prevented in EE, but `:read_project_for_iids` should
   # not.
@@ -450,6 +442,8 @@ class ProjectPolicy < BasePolicy
   rule { guest & can?(:read_container_image) }.enable :build_read_container_image
 
   rule { guest & ~public_project }.enable :read_grafana
+
+  rule { ancestor_scheduled_for_deletion & ~parent_deletion_in_progress }.prevent :remove_project
 
   rule { can?(:reporter_access) }.policy do
     enable :admin_issue_board
@@ -634,7 +628,6 @@ class ProjectPolicy < BasePolicy
     enable :update_deployment
     enable :read_cluster # Deprecated as certificate-based cluster integration (`Clusters::Cluster`).
     enable :read_cluster_agent
-    enable :use_k8s_proxies
     enable :create_release
     enable :update_release
     enable :destroy_release
@@ -653,7 +646,7 @@ class ProjectPolicy < BasePolicy
     enable :read_secure_files
     enable :update_sentry_issue
 
-    UPDATE_JOB_PERMISSIONS.each { |perm| enable(perm) }
+    enable(*all_job_update_abilities)
   end
 
   rule { can?(:developer_access) & user_confirmed? }.policy do
@@ -705,12 +698,6 @@ class ProjectPolicy < BasePolicy
     enable :update_freeze_period
     enable :destroy_freeze_period
     enable :admin_feature_flags_client
-    enable :register_project_runners
-    enable :create_runners
-    enable :admin_runners
-    enable :read_runners
-    enable :read_runners_registration_token
-    enable :update_runners_registration_token
     enable :admin_project_google_cloud
     enable :admin_project_aws
     enable :admin_secure_files
@@ -729,6 +716,15 @@ class ProjectPolicy < BasePolicy
     enable :create_branch_rule
     enable :admin_protected_branch
     enable :admin_protected_environments
+
+    # doc/ci/runners/runners_scope.md#project-runners
+    # doc/user/permissions.md#cicd
+    enable :create_runners
+    enable :admin_runners
+    enable :read_runners
+    enable :read_runners_registration_token
+    enable :register_project_runners
+    enable :update_runners_registration_token
   end
 
   rule { can?(:manage_protected_tags) }.policy do
@@ -856,8 +852,7 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { builds_disabled | repository_disabled }.policy do
-    UPDATE_JOB_PERMISSIONS.each { |perm| prevent(perm) }
-    CLEANUP_JOB_PERMISSIONS.each { |perm| prevent(perm) }
+    prevent(*all_job_write_abilities)
 
     prevent :read_build
     prevent :create_build
@@ -974,6 +969,10 @@ class ProjectPolicy < BasePolicy
 
   rule { public_or_internal & job_token_package_registry }.policy do
     enable :read_package
+    enable :read_project
+  end
+
+  rule { public_or_internal & job_token_repository }.policy do
     enable :read_project
   end
 

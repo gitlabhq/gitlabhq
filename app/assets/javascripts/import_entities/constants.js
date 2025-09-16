@@ -24,14 +24,14 @@ export const BITBUCKET_SERVER_PAGE_LENGTH = 25;
 const SCHEDULED_STATUS_ICON = {
   icon: 'status-scheduled',
   text: __('Pending'),
-  variant: 'muted',
+  variant: 'neutral',
 };
 
 export const STATUS_ICON_MAP = {
   [STATUSES.NONE]: {
     icon: 'status-waiting',
     text: __('Not started'),
-    variant: 'muted',
+    variant: 'neutral',
   },
   [STATUSES.SCHEDULING]: SCHEDULED_STATUS_ICON,
   [STATUSES.SCHEDULED]: SCHEDULED_STATUS_ICON,

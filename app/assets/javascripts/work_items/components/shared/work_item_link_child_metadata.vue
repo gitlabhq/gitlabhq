@@ -43,9 +43,9 @@ export default {
 </script>
 
 <template>
-  <div class="gl-justify-between sm:gl-flex">
+  <div class="gl-justify-between @sm/panel:gl-flex">
     <div
-      class="gl-mb-2 gl-flex gl-flex-wrap gl-items-center gl-gap-x-3 gl-gap-y-2 gl-text-sm gl-text-subtle sm:gl-mb-0"
+      class="gl-mb-2 gl-flex gl-flex-wrap gl-items-center gl-gap-x-3 gl-gap-y-2 gl-text-sm gl-text-subtle @sm/panel:gl-mb-0"
     >
       <span>{{ reference }}</span>
       <work-item-rolled-up-count

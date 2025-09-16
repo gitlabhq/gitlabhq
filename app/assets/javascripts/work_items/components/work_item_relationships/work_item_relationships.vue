@@ -354,7 +354,7 @@ export default {
       <gl-badge
         :aria-label="countBadgeAriaLabel"
         data-testid="linked-items-count-bage"
-        variant="muted"
+        variant="neutral"
       >
         {{ linkedWorkItemsCount }}
       </gl-badge>

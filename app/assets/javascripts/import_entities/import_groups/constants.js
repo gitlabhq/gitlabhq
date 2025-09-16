@@ -94,7 +94,7 @@ export const PLACEHOLDER_USER_REASSIGNED_STATUS_OPTIONS = [
 export const placeholderUserBadges = {
   [PLACEHOLDER_STATUS_PENDING_REASSIGNMENT]: {
     text: __('Not started'),
-    variant: 'muted',
+    variant: 'neutral',
     tooltip: s__('UserMapping|Reassignment not started.'),
   },
   [PLACEHOLDER_STATUS_AWAITING_APPROVAL]: {

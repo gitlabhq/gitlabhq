@@ -13,6 +13,7 @@ module Gitlab
 
           def unmet?
             return false unless valid_for_managed_resources?(environment:, build:)
+            return false unless managed_resources_enabled_in_environment_options?(build:)
             return false unless resource_management_enabled?
 
             !managed_resource&.completed?
@@ -84,6 +85,13 @@ module Gitlab
 
           def valid_for_managed_resources?(environment:, build:)
             environment&.cluster_agent && build.user
+          end
+
+          def managed_resources_enabled_in_environment_options?(build:)
+            environment_options = build.options&.dig(:environment) || {}
+
+            is_enabled = environment_options.dig(:kubernetes, :managed_resources, :enabled)
+            is_enabled.nil? || is_enabled
           end
 
           def kas_client

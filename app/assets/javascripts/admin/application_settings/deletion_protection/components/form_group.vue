@@ -31,7 +31,7 @@ export default {
   },
   i18n: I18N_DELETION_PROTECTION,
   helpPath: helpPagePath('administration/settings/visibility_and_access_controls', {
-    anchor: 'delayed-project-deletion',
+    anchor: 'deletion-protection',
   }),
   inputId: 'application_setting_deletion_adjourned_period',
   computed: {

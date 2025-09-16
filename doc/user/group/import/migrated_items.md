@@ -40,6 +40,8 @@ Group items that are migrated to the destination GitLab instance include:
 - Boards
 - Board lists
 - Epics
+- Epic boards
+- Epic board lists
 - Group labels
 
   {{< alert type="note" >}}
@@ -52,7 +54,7 @@ Group items that are migrated to the destination GitLab instance include:
 - Group milestones
 - Iterations
 - Iteration cadences
-- [Members](direct_transfer_migrations.md#user-contribution-and-membership-mapping)
+- [Members](direct_transfer_migrations.md#user-membership-mapping)
 - Namespace settings
 - Release milestones
 - Subgroups
@@ -128,7 +130,7 @@ Project items that are migrated to the destination GitLab instance include:
 - Issue boards
 - Labels
 - LFS objects
-- [Members](direct_transfer_migrations.md#user-contribution-and-membership-mapping)
+- [Members](direct_transfer_migrations.md#user-membership-mapping)
 - Merge requests
 - Milestones
 - Pipeline history

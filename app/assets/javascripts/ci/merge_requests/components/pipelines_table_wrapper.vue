@@ -333,7 +333,7 @@ export default {
       <gl-button
         v-if="canRenderPipelineButton"
         block
-        class="gl-mb-3 gl-mt-3 lg:gl-hidden"
+        class="gl-mb-3 gl-mt-3 @lg/panel:gl-hidden"
         variant="confirm"
         data-testid="run_pipeline_button_mobile"
         :loading="isRunningMergeRequestPipeline"

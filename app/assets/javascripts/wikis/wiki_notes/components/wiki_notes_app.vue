@@ -238,7 +238,7 @@ export default {
               v-else
               :key="getDiscussionKey(discussion.id, 'discussion')"
               :noteable-id="noteableId"
-              :discussion="discussion.notes.nodes"
+              :discussion="discussion"
               @note-deleted="(noteId) => handleDeleteNote(noteId, discussion.id)"
             />
           </template>

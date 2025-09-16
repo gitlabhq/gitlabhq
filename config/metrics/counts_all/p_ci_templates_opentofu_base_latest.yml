@@ -1,6 +1,6 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_opentofu_base_latest
-description: Count of pipelines that include the OpenTofu job template from GitLab
+description: Count of distinct projects that included the OpenTofu/Base.latest.gitlab-ci.yml template in a pipeline
 product_group: environments
 value_type: number
 status: active

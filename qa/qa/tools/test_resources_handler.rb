@@ -57,6 +57,8 @@ module QA
 
       def initialize(file_pattern = nil)
         @file_pattern = file_pattern
+        # Default to true to keep the existing behavior when $PERMANENTLY_DELETE isn't set
+        @permanently_delete = Gitlab::Utils.to_boolean(ENV['PERMANENTLY_DELETE'], default: true)
       end
 
       def run_delete
@@ -167,7 +169,11 @@ module QA
       # @param [Boolean] permanent Permanently delete resources instead of marking for deletion. Defaults to true
       # @param [Boolean] skip_verification Skip verification of deletion for time constraint purposes. Defaults to false
       # @return [Array<Array<String, Hash>>] Array of deletion results
-      def delete_resources(resources_hash, delayed_verification = false, permanent = true, skip_verification = false)
+      def delete_resources(
+        resources_hash,
+        delayed_verification = false,
+        permanent = @permanently_delete,
+        skip_verification = false)
         unverified_deletions = []
         results = []
 
@@ -185,6 +191,9 @@ module QA
 
             resource[:api_path] = resource_hash['api_path']
             resource[:type] = type
+
+            # When deleting immediately, don't skip resources already marked for deletion
+            next if !permanent && group_or_project?(resource) && already_marked_for_deletion?(resource)
 
             result = if personal_resource?(key)
                        delete_personal_resource(resource, delayed_verification, permanent, skip_verification)
@@ -248,10 +257,15 @@ module QA
 
         transformed_values = resources.transform_values! do |v|
           v.reject do |attributes|
+            # We don't want to delete sandbox groups
             attributes['info']&.match(/with full_path 'gitlab-e2e-sandbox-group(-\d)?'/) ||
               (attributes['http_method'] == 'get' && !attributes['info']&.include?("with username 'qa-")) ||
               attributes['api_path'] == 'Cannot find resource API path' ||
-              attributes['api_path'] == '/graphql'
+              attributes['api_path'] == '/graphql' ||
+              # Group resources are deleted when their group is deleted, so we don't need to delete them manually
+              attributes['api_path'].match?(%r{\A/groups/\d+/.+\z}) ||
+              # Project resources are deleted when their project is deleted, so we don't need to delete them manually
+              attributes['api_path'].match?(%r{\A/projects/\d+/.+\z})
           end
         end
 
@@ -355,6 +369,10 @@ module QA
       rescue JSON::ParserError
         logger.error("Failed to read #{file} - Invalid format")
         nil
+      end
+
+      def already_marked_for_deletion?(resource)
+        resource_path(resource).include?('-deletion_scheduled-')
       end
 
       # Generates a descriptive string for a resource

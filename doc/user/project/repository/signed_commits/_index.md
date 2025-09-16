@@ -64,7 +64,7 @@ To review commits for a merge request, or for an entire project, and verify they
 
    ![Unverified signature details for a commit.](img/project_signed_commit_unverified_signature_v17_4.png)
 
-You can also [use the Commits API](../../../../api/commits.md#get-signature-of-a-commit)
+You can also [use the Commits API](../../../../api/commits.md#get-commit-signature)
 to check a commit's signature.
 
 ### Verify web UI commits

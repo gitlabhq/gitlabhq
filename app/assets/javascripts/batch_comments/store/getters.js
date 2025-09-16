@@ -100,10 +100,6 @@ export function draftsForFile() {
   return (diffFileSha) => this.drafts.filter((draft) => draft.file_hash === diffFileSha);
 }
 
-export function isPublishingDraft() {
-  return (draftId) => this.currentlyPublishingDrafts.indexOf(draftId) !== -1;
-}
-
 export function sortedDrafts() {
   return [...this.drafts].sort((a, b) => a.id > b.id);
 }

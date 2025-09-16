@@ -1,3 +1,4 @@
+import Vue, { computed, nextTick } from 'vue';
 import { GlCollapse, GlAnimatedChevronRightDownIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import MenuSection from '~/super_sidebar/components/menu_section.vue';
@@ -7,18 +8,25 @@ import { stubComponent } from 'helpers/stub_component';
 
 describe('MenuSection component', () => {
   let wrapper;
+  const provideState = Vue.observable({ isIconOnly: false });
 
   const findButton = () => wrapper.find('button');
-  const findCollapse = () => wrapper.getComponent(GlCollapse);
+  const findCollapse = () => wrapper.findComponent(GlCollapse);
   const findFlyout = () => wrapper.findComponent(FlyoutMenu);
   const findNavItems = () => wrapper.findAllComponents(NavItem);
-  // In Vue3 this is kebabbed, in Vue2 it is not :(
+  const findChevron = () => wrapper.findComponent(GlAnimatedChevronRightDownIcon);
   const findChevronRightDownIsOn = () =>
-    wrapper.findComponent(GlAnimatedChevronRightDownIcon).attributes('is-on') ||
-    wrapper.findComponent(GlAnimatedChevronRightDownIcon).attributes('ison');
-  const createWrapper = (item, otherProps) => {
+    // In Vue3 this is kebabbed, in Vue2 it is not :(
+    findChevron().attributes('is-on') || findChevron().attributes('ison');
+
+  const createWrapper = (item, otherProps, provide = {}) => {
+    provideState.isIconOnly = provide.isIconOnly ?? false;
+
     wrapper = shallowMountExtended(MenuSection, {
       propsData: { item: { items: [], ...item }, ...otherProps },
+      provide: {
+        isIconOnly: computed(() => provideState.isIconOnly),
+      },
       stubs: {
         GlCollapse: stubComponent(GlCollapse, {
           props: ['visible'],
@@ -75,6 +83,26 @@ describe('MenuSection component', () => {
         expect(findChevronRightDownIsOn()).toBeUndefined();
       });
     });
+
+    describe('when in icon-only mode', () => {
+      it('does not show as expanded nor is expandable', () => {
+        createWrapper({ title: 'Asdf' }, { expanded: true }, { isIconOnly: true });
+        expect(findChevron().exists()).toBe(false);
+        expect(findCollapse().exists()).toBe(false);
+      });
+    });
+
+    describe('when coming out of icon-only mode', () => {
+      it('shows expanded as expanded again', async () => {
+        createWrapper({ title: 'Asdf' }, { expanded: true }, { isIconOnly: true });
+        expect(findCollapse().exists()).toBe(false);
+
+        provideState.isIconOnly = false;
+        await nextTick();
+
+        expect(findCollapse().exists()).toBe(true);
+      });
+    });
   });
 
   describe('flyout behavior', () => {
@@ -129,6 +157,30 @@ describe('MenuSection component', () => {
               expect(findButton().classes()).toContain('with-mouse-over-flyout');
             });
           });
+        });
+      });
+
+      describe('on mouse click (or mobile touch) while in icon-only mode', () => {
+        beforeEach(() => {
+          createWrapper(
+            { title: 'Asdf', items: [{ title: 'Item1', href: '/item1' }] },
+            { 'has-flyout': true, expanded: false },
+            { isIconOnly: true },
+          );
+        });
+
+        it('opens the flyout menu', async () => {
+          expect(findFlyout().exists()).toBe(false);
+          await findButton().trigger('click');
+          expect(findFlyout().exists()).toBe(true);
+        });
+
+        it('closes the flyout menu on outside click', async () => {
+          await findButton().trigger('click');
+          expect(findFlyout().exists()).toBe(true);
+
+          await document.body.click();
+          expect(findFlyout().exists()).toBe(false);
         });
       });
 

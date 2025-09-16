@@ -24,12 +24,8 @@ RSpec.shared_examples 'organization - redirects to sign in page' do
   end
 end
 
-RSpec.shared_examples 'organization - action disabled by `ui_for_organizations` feature flag' do
-  context 'when `ui_for_organizations` feature flag is disabled' do
-    before do
-      stub_feature_flags(ui_for_organizations: false)
-    end
-
+RSpec.shared_examples 'organization - action disabled by ui_for_organizations_enabled?' do
+  context 'when ui_for_organizations_enabled? returns false', :ui_for_organizations_disabled do
     it_behaves_like 'organization - not found response'
   end
 end

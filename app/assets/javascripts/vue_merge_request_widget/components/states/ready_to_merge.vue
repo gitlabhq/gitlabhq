@@ -628,7 +628,7 @@ export default {
           <div class="mr-widget-body-controls gl-flex gl-flex-wrap gl-items-center">
             <template v-if="shouldShowMergeControls">
               <div
-                class="gl-flex gl-w-full gl-flex-col gl-flex-wrap md:gl-flex-row md:gl-items-center"
+                class="gl-flex gl-w-full gl-flex-col gl-flex-wrap @md/panel:gl-flex-row @md/panel:gl-items-center"
               >
                 <gl-form-checkbox
                   v-if="canRemoveSourceBranch"
@@ -660,7 +660,9 @@ export default {
                 </gl-form-checkbox>
               </div>
               <div v-if="editCommitMessage" class="gl-w-full" data-testid="edit_commit_message">
-                <ul class="border-top commits-list flex-list gl-list-none gl-p-0 gl-pt-4">
+                <ul
+                  class="commits-list flex-list !gl-border-t gl-list-none !gl-border-t-gray-300 gl-p-0 gl-pt-4"
+                >
                   <commit-edit
                     v-if="shouldShowSquashEdit"
                     :label="__('Squash commit message')"
@@ -715,7 +717,7 @@ export default {
               <ul class="mr-widget-merge-details gl-mb-3 gl-w-full gl-pl-6 gl-text-subtle">
                 <template v-if="sourceHasDivergedFromTarget">
                   <li>
-                    <div class="gl-gap-2 md:gl-flex">
+                    <div class="gl-gap-2 @md/panel:gl-flex">
                       <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
                         <template #link>
                           <gl-link :href="mr.targetBranchPath">{{
@@ -848,7 +850,7 @@ export default {
               </p>
               <ul class="gl-mb-0 gl-ml-3 gl-pl-4 gl-text-subtle">
                 <li v-if="sourceHasDivergedFromTarget">
-                  <div class="gl-gap-2 md:gl-flex">
+                  <div class="gl-gap-2 @md/panel:gl-flex">
                     <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
                       <template #link>
                         <gl-link :href="mr.targetBranchPath">{{

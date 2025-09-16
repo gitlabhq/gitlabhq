@@ -1,0 +1,48 @@
+# frozen_string_literal: true
+
+CONFIG_FILES = ['app/validators/json_schemas/build_metadata_config_options.json'].freeze
+
+def format_file_path(path)
+  "`#{path}`"
+end
+
+# Check if config options schema has changed
+config_changes = helper.all_changed_files & CONFIG_FILES
+
+if config_changes.any?
+  config_message = <<~MSG
+    ## 🚨 Critical: CI Build Metadata Config Options Modified
+
+    ### ⚠️ **IMPORTANT NOTICE**
+
+    We are actively working on [reducing the growth rate of ci_builds_metadata partitions](https://gitlab.com/groups/gitlab-org/-/epics/13886).
+
+    Our goal is to reduce the high growth rate of `ci_builds_metadata` by:
+    - Deduplicating data
+    - Splitting between processing data and intrinsic data
+
+    This merge request modifies **config_options** validations which directly impacts this table's growth.
+
+    ### 🔴 What NOT to do:
+    - Do not add new fields to config_options
+    - Do not add complex nested structures
+    - Do not store data that could be normalized elsewhere
+
+    ### ✅ What's acceptable:
+    - Bug fixes that don't add new fields
+    - Removing unused fields
+
+    ### 💡 Recommendations:
+    - Consider if this data truly needs to be in `ci_builds_metadata`
+    - Explore alternative storage solutions for non-critical config data
+
+    ### 💬 Questions?
+    If you have any questions, please ask in `#g_ci-platform`.
+
+    ---
+
+    **CI Platform Team Review Required**: Please tag `@gitlab-com/ci-platform-group` for review of these changes.
+  MSG
+
+  warn(config_message)
+end

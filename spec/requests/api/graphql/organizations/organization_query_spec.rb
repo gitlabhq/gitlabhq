@@ -22,7 +22,6 @@ RSpec.describe 'getting organization information', feature_category: :organizati
 
   let_it_be(:organization_owner) { create(:organization_owner) }
   let_it_be(:organization) { organization_owner.organization }
-  let_it_be(:default_organization) { create(:organization, :default) }
   let_it_be(:user) { organization_owner.user }
   let_it_be(:project) { create(:project, organization: organization) { |p| p.add_developer(user) } }
   let_it_be(:other_group) do
@@ -91,7 +90,7 @@ RSpec.describe 'getting organization information', feature_category: :organizati
         organization_user_nodes = graphql_data_at(:organization, :organizationUsers, :nodes)
         expected_attributes = {
           "accessLevel" => { "integerValue" => 50, "stringValue" => "OWNER" },
-          "badges" => [{ "text" => "It's you!", "variant" => 'muted' }],
+          "badges" => [{ "text" => "It's you!", "variant" => 'neutral' }],
           "id" => organization_owner.to_global_id.to_s,
           "isLastOwner" => true,
           "user" => { "id" => user.to_global_id.to_s }

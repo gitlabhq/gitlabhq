@@ -156,7 +156,6 @@ RSpec/AnyInstanceOf:
     - 'spec/lib/gitlab/gitaly_client/repository_service_spec.rb'
     - 'spec/lib/gitlab/gpg/invalid_gpg_signature_updater_spec.rb'
     - 'spec/lib/gitlab/import_export/config_spec.rb'
-    - 'spec/lib/gitlab/import_export/fast_hash_serializer_spec.rb'
     - 'spec/lib/gitlab/import_export/importer_spec.rb'
     - 'spec/lib/gitlab/import_export/lfs_restorer_spec.rb'
     - 'spec/lib/gitlab/import_export/project/tree_restorer_spec.rb'

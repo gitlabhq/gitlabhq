@@ -14,12 +14,14 @@ module Ci
 
     before_create :ensure_resource
 
-    enum :process_mode, {
+    RESOURCE_GROUP_PROCESS_MODES = {
       unordered: 0,
       oldest_first: 1,
       newest_first: 2,
       newest_ready_first: 3
-    }
+    }.freeze
+
+    enum :process_mode, RESOURCE_GROUP_PROCESS_MODES
 
     ##
     # NOTE: This is concurrency-safe method that the subquery in the `UPDATE`

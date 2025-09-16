@@ -103,7 +103,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-grid gl-gap-5 md:gl-grid-cols-2 lg:gl-grid-cols-4">
+  <div class="gl-grid gl-gap-5 @md/panel:gl-grid-cols-2 @lg/panel:gl-grid-cols-4">
     <template v-for="card in cards">
       <gl-card
         v-if="card.isVisible"

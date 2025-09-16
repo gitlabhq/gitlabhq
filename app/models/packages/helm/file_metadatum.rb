@@ -18,6 +18,9 @@ module Packages
       validates :metadata,
         json_schema: { filename: "helm_metadata" }
 
+      scope :select_distinct_channel, -> { select(:channel).distinct }
+      scope :for_package_files, ->(package_files) { where(package_file: package_files) }
+
       private
 
       def valid_helm_package_type

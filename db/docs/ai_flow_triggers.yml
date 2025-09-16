@@ -3,11 +3,11 @@ table_name: ai_flow_triggers
 classes:
 - Ai::FlowTrigger
 feature_categories:
-- duo_workflow
+- agent_foundations
 description: Stores configurations to trigger an AI flow on event.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200396
 milestone: '18.3'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

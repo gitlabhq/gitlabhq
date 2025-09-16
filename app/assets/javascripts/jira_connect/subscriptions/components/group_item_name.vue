@@ -20,7 +20,7 @@ export default {
 <template>
   <div class="gl-flex gl-items-center">
     <gl-icon name="folder" class="gl-mr-3" />
-    <div class="gl-mr-3 gl-hidden gl-shrink-0 sm:gl-flex">
+    <div class="gl-mr-3 gl-hidden gl-shrink-0 @sm/panel:gl-flex">
       <gl-avatar
         :size="32"
         :shape="$options.AVATAR_SHAPE_OPTION_RECT"

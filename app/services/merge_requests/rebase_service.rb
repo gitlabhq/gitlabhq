@@ -36,7 +36,12 @@ module MergeRequests
       true
     rescue StandardError => e
       set_rebase_error(e)
-      log_error(exception: e, message: rebase_error, save_message_on_model: true)
+      log_error(
+        exception: e,
+        message: rebase_error,
+        save_message_on_model: true,
+        track_exception: !e.is_a?(Gitlab::Git::Repository::GitError)
+      )
 
       false
     ensure

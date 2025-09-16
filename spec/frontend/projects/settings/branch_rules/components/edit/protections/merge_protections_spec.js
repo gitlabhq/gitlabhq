@@ -30,7 +30,7 @@ describe('Merge Protections', () => {
 
   describe('Require code owners approval checkbox', () => {
     it('renders a checkbox with the correct props', () => {
-      expect(findCodeOwnersApprovalCheckbox().vm.$attrs.checked).toBe(
+      expect(findCodeOwnersApprovalCheckbox().props('checked')).toBe(
         propsData.requireCodeOwnersApproval,
       );
     });

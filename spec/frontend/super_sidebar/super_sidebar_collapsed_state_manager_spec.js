@@ -1,4 +1,4 @@
-import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/src/utils';
 import { getCookie, setCookie } from '~/lib/utils/common_utils';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { sidebarState } from '~/super_sidebar/constants';
@@ -55,18 +55,18 @@ describe('Super Sidebar Collapsed State Manager', () => {
 
   describe('toggleSuperSidebarCollapsed', () => {
     it.each`
-      collapsed | saveCookie | windowWidth | hasClass | isPeekable
-      ${true}   | ${true}    | ${xl}       | ${true}  | ${true}
-      ${true}   | ${false}   | ${xl}       | ${true}  | ${true}
-      ${true}   | ${true}    | ${sm}       | ${true}  | ${true}
-      ${true}   | ${false}   | ${sm}       | ${true}  | ${true}
-      ${false}  | ${true}    | ${xl}       | ${false} | ${false}
-      ${false}  | ${false}   | ${xl}       | ${false} | ${false}
-      ${false}  | ${true}    | ${sm}       | ${false} | ${false}
-      ${false}  | ${false}   | ${sm}       | ${false} | ${false}
+      collapsed | saveCookie | windowWidth | hasClass | isPeekable | isMobile
+      ${true}   | ${true}    | ${xl}       | ${true}  | ${true}    | ${false}
+      ${true}   | ${false}   | ${xl}       | ${true}  | ${true}    | ${false}
+      ${true}   | ${true}    | ${sm}       | ${true}  | ${true}    | ${true}
+      ${true}   | ${false}   | ${sm}       | ${true}  | ${true}    | ${true}
+      ${false}  | ${true}    | ${xl}       | ${false} | ${false}   | ${false}
+      ${false}  | ${false}   | ${xl}       | ${false} | ${false}   | ${false}
+      ${false}  | ${true}    | ${sm}       | ${false} | ${false}   | ${true}
+      ${false}  | ${false}   | ${sm}       | ${false} | ${false}   | ${true}
     `(
       'when collapsed is $collapsed, saveCookie is $saveCookie, and windowWidth is $windowWidth then page class contains `page-with-super-sidebar-collapsed` is $hasClass',
-      ({ collapsed, saveCookie, windowWidth, hasClass, isPeekable }) => {
+      ({ collapsed, saveCookie, windowWidth, hasClass, isPeekable, isMobile }) => {
         jest.spyOn(bp, 'windowWidth').mockReturnValue(windowWidth);
 
         toggleSuperSidebarCollapsed(collapsed, saveCookie);
@@ -82,6 +82,8 @@ describe('Super Sidebar Collapsed State Manager', () => {
         } else {
           expect(setCookie).not.toHaveBeenCalled();
         }
+
+        expect(sidebarState.isMobile).toBe(isMobile);
       },
     );
   });

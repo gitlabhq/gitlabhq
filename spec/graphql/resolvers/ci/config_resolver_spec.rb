@@ -14,6 +14,10 @@ RSpec.describe Resolvers::Ci::ConfigResolver, feature_category: :continuous_inte
       File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci_includes.yml'))
     end
 
+    before do
+      allow(::Current).to receive(:token_info).and_return({ token_type: 'PersonalAccessToken' })
+    end
+
     subject(:response) do
       resolve(
         described_class,

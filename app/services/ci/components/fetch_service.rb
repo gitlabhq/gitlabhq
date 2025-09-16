@@ -38,6 +38,11 @@ module Ci
             message: "#{error_prefix} The ~latest version reference is not supported for non-catalog resources. " \
                      'Use a tag, branch, or commit SHA instead.',
             reason: :invalid_usage)
+        elsif component_path.invalid_usage_for_partial_semver?
+          ServiceResponse.error(
+            message: "#{error_prefix} The partial semantic version reference is not supported for " \
+                     'non-catalog resources. Use a tag, branch, or commit SHA instead.',
+            reason: :invalid_usage)
         else
           ServiceResponse.error(message: "#{error_prefix} content not found", reason: :content_not_found)
         end

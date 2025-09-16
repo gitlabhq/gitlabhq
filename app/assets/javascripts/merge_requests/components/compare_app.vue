@@ -102,7 +102,7 @@ export default {
 
 <template>
   <div>
-    <div class="clearfix">
+    <div class="gl-clearfix">
       <div class="merge-request-select gl-pl-0">
         <compare-dropdown
           :static-data="staticProjectData"

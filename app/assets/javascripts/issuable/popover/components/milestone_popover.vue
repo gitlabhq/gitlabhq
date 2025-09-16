@@ -88,7 +88,7 @@ export default {
       }
       if (upcoming) {
         return {
-          variant: 'muted',
+          variant: 'neutral',
           text: issuableStatusText[STATUS_UPCOMING],
         };
       }

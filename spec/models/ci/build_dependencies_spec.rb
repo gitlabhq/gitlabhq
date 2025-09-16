@@ -29,6 +29,10 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
   context 'for local dependencies' do
     subject { described_class.new(job).all }
 
+    before do
+      stub_feature_flags(ci_validate_config_options: false)
+    end
+
     describe 'jobs from previous stages' do
       context 'when job is in the first stage' do
         let(:job) { build }
@@ -205,9 +209,11 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
             end
 
             before do
-              job.yaml_variables.push(key: 'parent_pipeline_ID', value: parent_pipeline.id.to_s, public: true)
-              job.yaml_variables.push(key: 'UPSTREAM_JOB', value: upstream_job.name, public: true)
-              job.save!
+              allow(job).to receive(:yaml_variables).and_return(
+                job.yaml_variables +
+                [{ key: 'parent_pipeline_ID', value: parent_pipeline.id.to_s, public: true }] +
+                [{ key: 'UPSTREAM_JOB', value: upstream_job.name, public: true }]
+              )
             end
 
             it { expect(cross_pipeline_deps).to contain_exactly(upstream_job) }

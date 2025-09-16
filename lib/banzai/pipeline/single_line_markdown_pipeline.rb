@@ -32,7 +32,8 @@ module Banzai
           Filter::References::CommitRangeReferenceFilter,
           Filter::References::CommitReferenceFilter,
           Filter::References::AlertReferenceFilter,
-          Filter::References::FeatureFlagReferenceFilter
+          Filter::References::FeatureFlagReferenceFilter,
+          Filter::References::WikiPageReferenceFilter
         ]
       end
 

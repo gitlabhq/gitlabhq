@@ -85,6 +85,12 @@ On the **Work items** page, you can use filters to narrow down the list:
 
 #### Available filters
 
+{{< history >}}
+
+- Filtering by description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536876) in GitLab 18.3.
+
+{{< /history >}}
+
 <!-- When the feature flag work_item_planning_view is removed, move more information from
 managing_issues.md#filter-the-list-of-issues here -->
 
@@ -96,11 +102,26 @@ These filters are available for work items:
   - Operators: `is`, `is not one of`, `is one of`
 - Confidential
   - Values: `Yes`, `No`
+- Contact
+  - Operators: `is`
+- Custom status
+  - Operators: `is`
+- Health status
+  - Operators: `is`, `is not`
+- Iteration
+  - Operators: `is`, `is not`
 - Label
   - Operators: `is`, `is not one of`, `is one of`
 - Milestone
   - Operators: `is`, `is not`
 - My reaction
+  - Operators: `is`, `is not`
+- Organisation
+  - Operators: `is`
+- Parent
+  - Operators: `is`, `is not`
+  - Values: Any `Issue`, `Epic`, `Objective`
+- Release
   - Operators: `is`, `is not`
 - Search within
   - Operators: `Titles`, `Descriptions`
@@ -108,6 +129,8 @@ These filters are available for work items:
   - Values: `Any`, `Open`, `Closed`
 - Type
   - Values: `Issue`, `Incident`, `Task`, `Epic`, `Objective`, `Key Result`, `Test case`
+- Weight
+  - Operators: `is`, `is not`
 
 To access filters you've used recently, on the left side of the filter bar, select the
 **Recent searches** ({{< icon name="history" >}}) dropdown list.

@@ -63,6 +63,32 @@ RSpec.shared_examples 'common user build items' do
       it { expect(user).to be_human }
     end
   end
+
+  context 'for email-based OTP enrollment', :freeze_time do
+    it 'enrolls new users in email-based OTP' do
+      expect(user.email_otp_required_after).to be <= Time.current
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(enrol_new_users_in_email_otp: false)
+      end
+
+      it 'does not enroll new users in email-based OTP' do
+        expect(user.email_otp_required_after).to be_nil
+      end
+    end
+
+    context 'when an explicit date is passed' do
+      before do
+        params.merge!({ email_otp_required_after: 3.days.from_now })
+      end
+
+      it 'ignores it' do
+        expect(user.email_otp_required_after).to be <= Time.current
+      end
+    end
+  end
 end
 
 RSpec.shared_examples_for 'current user not admin build items' do

@@ -92,6 +92,8 @@ module Gitlab
         note = add_approval_system_note!(project_id, merge_request_id, user_id, submitted_at)
 
         [approval, note]
+      rescue ActiveRecord::RecordNotUnique, PG::UniqueViolation
+        # Multiple approvals mapped to the same user (e.g. personal namespace owner) can cause validation race condition
       end
 
       def add_approval_system_note!(project_id, merge_request_id, user_id, submitted_at)

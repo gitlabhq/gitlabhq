@@ -8,6 +8,10 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
   let(:merge_request) { create(:merge_request, source_project: project) }
   let!(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
 
+  before do
+    stub_feature_flags(work_item_view_for_issues: true)
+  end
+
   def resolve_all_discussions_link_selector(title: "")
     url = new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid, merge_request_id: merge_request.id)
 
@@ -26,30 +30,46 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
     end
 
     it 'shows a button to resolve all threads by creating a new issue' do
-      find('.discussions-counter .gl-new-dropdown-toggle').click
+      within_testid('discussions-counter-text') do
+        click_button 'Thread options'
 
-      within('.discussions-counter') do
         expect(page).to have_link(_("Resolve all with new issue"), href: new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid, merge_request_id: merge_request.id))
       end
     end
 
     context 'resolving the thread' do
-      before do
-        find('button[data-testid="resolve-discussion-button"]').click
-      end
-
       it 'hides the link for creating a new issue' do
+        within_testid('reply-wrapper') do
+          click_button 'Resolve thread'
+        end
+
         expect(page).not_to have_selector resolve_all_discussions_link_selector
       end
     end
 
-    context 'creating an issue for threads', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/420845' do
+    context 'creating an issue for threads' do
       before do
-        find('.discussions-counter .gl-new-dropdown-toggle').click
-        find(resolve_all_discussions_link_selector).click
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(200)
       end
 
-      it_behaves_like 'creating an issue for a thread'
+      it 'creates an issue' do
+        click_button 'Thread options'
+        send_keys :down, :down, :enter # Select "Resolve all with new issue". For some reason, there's a glitch on CI which prevents us from clicking it normally
+
+        expect(find_field('Title').value).to include(merge_request.title)
+        expect(find_field('Description').value).to include(discussion.first_note.note)
+        expect(page).to have_text("Creating this issue will resolve all threads in !#{merge_request.iid}")
+
+        # Actually creates an issue for the project
+        expect { click_button 'Create issue' }.to change { project.issues.reload.size }.by(1)
+
+        # Resolves the discussion in the merge request
+        discussion.first_note.reload
+        expect(discussion.resolved?).to be(true)
+
+        # Issue title includes MR title
+        expect(page).to have_content(%(Follow-up from "#{merge_request.title}"))
+      end
     end
 
     context 'for a project where all threads need to be resolved before merging' do
@@ -61,10 +81,11 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
         before do
           project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
           visit project_merge_request_path(project, merge_request)
-          find('.discussions-counter .gl-new-dropdown-toggle').click
         end
 
         it 'does not show a link to create a new issue' do
+          click_button 'Thread options'
+
           expect(page).not_to have_link 'Resolve all with new issue'
         end
       end
@@ -87,11 +108,14 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
     before do
       project.add_reporter(user)
       sign_in user
-      visit new_project_issue_path(project, merge_request_to_resolve_discussions_of: merge_request.iid)
+      visit project_merge_request_path(project, merge_request)
     end
 
-    it 'shows a notice to ask someone else to resolve the threads' do
-      expect(page).to have_content("The threads at #{merge_request.to_reference} will stay open. Ask someone with permission to resolve them.")
+    it 'does not allow reporter to resolve threads' do
+      click_button 'Thread options'
+
+      expect(page).not_to have_link 'Resolve all with new issue'
+      expect(page).not_to have_button 'Resolve thread'
     end
   end
 end

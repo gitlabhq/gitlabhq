@@ -59,6 +59,13 @@ RSpec.describe EventPresenter do
     it 'returns the issue_type for work item events' do
       expect(build(:event, :for_work_item, :created).present).to have_attributes(target_type_name: 'task')
     end
+
+    context 'when project event has nil target_type' do
+      it 'returns project for a project event' do
+        expect(build(:event, project: create(:project), action: :created).present)
+          .to have_attributes(target_type_name: 'project')
+      end
+    end
   end
 
   describe '#note_target_type_name' do

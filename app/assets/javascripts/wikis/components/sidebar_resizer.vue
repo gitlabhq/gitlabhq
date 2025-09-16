@@ -1,4 +1,5 @@
 <script>
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
@@ -26,6 +27,16 @@ export default {
   mounted() {
     window.addEventListener('resize', this.updateWidths);
 
+    // We're manually calling this on mount for Desktop
+    // screens to  ensure that element gets `padding-right`
+    // set on it for form elements to align properly
+    // when inside paneled container.
+    if (bp.isDesktop()) {
+      this.$nextTick(() => {
+        this.updateWidths();
+      });
+    }
+
     this.$options.sidebar.classList.remove('gl-hidden');
   },
   beforeDestroy() {
@@ -33,7 +44,7 @@ export default {
   },
   methods: {
     removeTransitions() {
-      const { sidebar, contentWrapper } = this.$options;
+      const { sidebar, contentWrapper, contentPanelWrapper } = this.$options;
 
       this.prevTransitions = {
         sidebar: sidebar.style.transition,
@@ -42,24 +53,40 @@ export default {
 
       sidebar.style.transition = '0s';
       contentWrapper.style.transition = '0s';
+
+      if (contentPanelWrapper) {
+        contentPanelWrapper.style.transition = '0s';
+      }
     },
     restoreTransitions() {
-      const { sidebar, contentWrapper } = this.$options;
+      const { sidebar, contentWrapper, contentPanelWrapper } = this.$options;
 
       sidebar.style.transition = this.prevTransitions.sidebar;
       contentWrapper.style.transition = this.prevTransitions.contentWrapper;
+
+      if (contentPanelWrapper) {
+        contentPanelWrapper.style.transition = this.prevTransitions.contentWrapper;
+      }
     },
     updateWidths(width) {
       if (typeof width === 'number') this.sidebarWidth = width;
 
-      const { sidebar, contentWrapper } = this.$options;
+      const { sidebar, contentWrapper, contentPanelWrapper } = this.$options;
 
       if (this.resizeEnabled) {
-        contentWrapper.style.paddingRight = `${this.sidebarWidth}px`;
         sidebar.style.width = `${this.sidebarWidth}px`;
+        contentWrapper.style.paddingRight = `${this.sidebarWidth}px`;
+
+        if (contentPanelWrapper) {
+          contentPanelWrapper.style.paddingRight = `${this.sidebarWidth}px`;
+        }
       } else {
-        contentWrapper.style.paddingRight = '';
         sidebar.style.width = '';
+        contentWrapper.style.paddingRight = '';
+
+        if (contentPanelWrapper) {
+          contentPanelWrapper.style.paddingRight = '';
+        }
       }
 
       this.resizeEnabled = isScreenMd();
@@ -71,6 +98,7 @@ export default {
   },
   sidebar: document.querySelector('.js-wiki-sidebar'),
   contentWrapper: document.querySelector('.content-wrapper'),
+  contentPanelWrapper: document.querySelector('.js-static-panel-inner'),
 };
 </script>
 <template>

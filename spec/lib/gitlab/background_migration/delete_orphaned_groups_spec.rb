@@ -12,7 +12,7 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedGroups, feature_catego
   let(:organization) { organizations.create!(name: 'Foobar', path: 'path1') }
   let!(:parent) { namespaces.create!(name: 'Group', type: 'Group', path: 'space1', organization_id: organization.id) }
   let!(:group) { namespaces.create!(name: 'GitLab', type: 'Group', path: 'group1', organization_id: organization.id) }
-  let!(:admin_bot) { ::Users::Internal.admin_bot }
+  let!(:admin_bot) { ::Users::Internal.for_organization(organization).admin_bot }
   let!(:orphaned_groups) do
     (1..4).map do |i|
       namespaces.create!(

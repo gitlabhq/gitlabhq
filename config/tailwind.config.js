@@ -1,5 +1,4 @@
 const tailwindDefaults = require('@gitlab/ui/tailwind.defaults');
-const tailwindContainerQueriesPlugin = require('@tailwindcss/container-queries');
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -11,7 +10,7 @@ module.exports = {
     './{ee,jh,}/app/helpers/**/*.rb',
     './{ee,jh,}/app/components/**/*.{haml,rb}',
     './{ee,jh,}/app/views/**/*.haml',
-    './node_modules/@gitlab/ui/dist/**/*.{vue,js}',
+    './node_modules/@gitlab/ui/src/**/*.{vue,js}',
     './node_modules/@gitlab/duo-ui/dist/**/*.{vue,js}',
   ],
   blocklist: [
@@ -23,7 +22,6 @@ module.exports = {
   corePlugins: {
     container: false,
   },
-  plugins: [tailwindContainerQueriesPlugin],
   theme: {
     extend: {
       containers: {

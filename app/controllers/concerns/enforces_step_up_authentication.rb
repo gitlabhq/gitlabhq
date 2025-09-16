@@ -43,10 +43,36 @@ module EnforcesStepUpAuthentication
     # will fail again and redirect the user to the login page which will end up in a loop.
     disable_admin_mode
 
-    redirect_to(new_admin_session_path, notice: _('Step-up auth not successful'))
+    redirect_to(new_admin_session_path, notice: build_step_up_auth_notice)
   end
 
   def disable_admin_mode
     current_user_mode.disable_admin_mode! if current_user_mode.admin_mode?
+  end
+
+  def build_step_up_auth_notice
+    notice_message = s_('AdminMode|Step-up authentication failed.')
+
+    documentation_links = documentation_links_for_failed_step_up_auth_providers
+    return notice_message if documentation_links.blank?
+
+    links_sentence = helpers.to_sentence(documentation_links)
+
+    helpers.safe_join([
+      notice_message,
+      ' ',
+      s_('AdminMode|Learn more about authentication requirements: '),
+      links_sentence,
+      '.'
+    ])
+  end
+
+  def documentation_links_for_failed_step_up_auth_providers(scope = 'admin_mode')
+    # Get the list of failed step-up auth flows from the session
+    ::Gitlab::Auth::Oidc::StepUpAuthentication
+      .failed_step_up_auth_flows(session, scope: scope)
+      .filter_map do |flow|
+        helpers.step_up_auth_documentation_link(flow)
+      end
   end
 end

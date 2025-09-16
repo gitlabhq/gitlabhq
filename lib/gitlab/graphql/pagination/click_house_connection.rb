@@ -162,7 +162,8 @@ module Gitlab
         end
 
         def execute_query(query)
-          context[:connection].select(query)
+          clickhouse_connection = context[:connection] || ::ClickHouse::Connection.new(:main)
+          clickhouse_connection.select(query)
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord

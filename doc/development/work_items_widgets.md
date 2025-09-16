@@ -379,7 +379,7 @@ Refer to [merge request #158688](https://gitlab.com/gitlab-org/gitlab/-/merge_re
        # Include this helper module as it's not included in Gitlab::Database::migration by default
        include Gitlab::Database::MigrationHelpers::WorkItems::Widgets
 
-       restrict_gitlab_migration gitlab_schema: :gitlab_main
+       restrict_gitlab_migration gitlab_schema: :gitlab_main_org
        milestone '17.9'
 
        WORK_ITEM_TYPE_ENUM_VALUES = 8 # ticket, use [8,9] for multiple types

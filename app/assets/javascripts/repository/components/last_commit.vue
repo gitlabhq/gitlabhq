@@ -10,7 +10,7 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import SignatureBadge from '~/commit/components/signature_badge.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import pipelineCiStatusUpdatedSubscription from '~/graphql_shared/subscriptions/pipeline_ci_status_updated.subscription.graphql';
+import pipelineStatusUpdatedSubscription from '../subscriptions/pipeline_status_updated.subscription.graphql';
 import getRefMixin from '../mixins/get_ref';
 import { getRefType } from '../utils/ref_type';
 import projectPathQuery from '../queries/project_path.query.graphql';
@@ -62,13 +62,24 @@ export default {
         };
       },
       result() {
+        // Pipeline ID has possiblity of changing every 30 seconds
+        const currentPipelineId = this.commit?.pipeline?.id;
+
+        // if current pipeline ID has changed due to polling we need to resubscribe
+        if (this.subscribedPipelineId && this.subscribedPipelineId !== currentPipelineId) {
+          this.isSubscribed = false;
+        }
+
         // we use a manual subscribeToMore call due to issues with
         // the skip hook not working correctly for the subscription
-        if (this.commit?.pipeline?.id) {
+        if (currentPipelineId && !this.isSubscribed) {
+          this.isSubscribed = true;
+          this.subscribedPipelineId = currentPipelineId;
+
           this.$apollo.queries.commit.subscribeToMore({
-            document: pipelineCiStatusUpdatedSubscription,
+            document: pipelineStatusUpdatedSubscription,
             variables: {
-              pipelineId: this.commit.pipeline.id,
+              pipelineId: currentPipelineId,
             },
             updateQuery(
               previousData,
@@ -124,6 +135,8 @@ export default {
     return {
       projectPath: '',
       commit: null,
+      isSubscribed: false,
+      subscribedPipelineId: null,
     };
   },
   computed: {
@@ -160,7 +173,7 @@ export default {
   <gl-loading-icon v-if="isLoading" size="md" color="dark" class="gl-m-auto gl-py-6" />
 
   <div v-else-if="commit">
-    <commit-info :commit="commit" class="gl-hidden sm:gl-flex">
+    <commit-info :commit="commit" class="gl-hidden @sm/panel:gl-flex">
       <div class="commit-actions gl-my-2 gl-flex gl-items-start gl-gap-3">
         <signature-badge v-if="commit.signature" :signature="commit.signature" class="gl-h-7" />
         <div v-if="commit.pipeline.id" class="gl-flex gl-h-7 gl-items-center">
@@ -193,7 +206,7 @@ export default {
     <collapsible-commit-info
       :commit="commit"
       :history-url="historyUrl"
-      class="gl-block !gl-border-t-0 sm:gl-hidden"
+      class="gl-block !gl-border-t-0 @sm/panel:gl-hidden"
     />
   </div>
 </template>

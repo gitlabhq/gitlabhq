@@ -36,7 +36,7 @@ module Ci
         "project-path" => project.path,
         "project-full-path" => project.full_path,
         "project-namespace" => project.namespace.full_path,
-        "simulate-pipeline-help-page-path" => help_page_path('ci/pipeline_editor/_index.md', anchor: 'simulate-a-cicd-pipeline'),
+        "simulate-pipeline-help-page-path" => help_page_path('ci/pipeline_editor/_index.md', anchor: 'validate-cicd-configuration'),
         "total-branches" => total_branches,
         "uses-external-config" => uses_external_config?(project) ? 'true' : 'false',
         "validate-tab-illustration-path" => image_path('illustrations/empty-state/empty-devops-md.svg'),

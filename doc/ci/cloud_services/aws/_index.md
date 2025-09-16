@@ -15,7 +15,7 @@ title: Configure OpenID Connect in AWS to retrieve temporary credentials
 {{< alert type="warning" >}}
 
 `CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../yaml/_index.md#id_tokens) instead.
+and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../secrets/id_token_authentication.md) instead.
 
 {{< /alert >}}
 
@@ -43,7 +43,7 @@ Include the following information:
 
 ## Configure a role and trust
 
-After you create the identity provider, configure a [web identity role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html) with conditions for limiting access to GitLab resources. Temporary credentials are obtained using [AWS Security Token Service](https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html), so set the `Action` to [sts:AssumeRoleWithWebIdentity](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html).
+After you create the identity provider, configure a [web identity role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html) with conditions for limiting access to GitLab resources. Temporary credentials are obtained using [AWS Security Token Service](https://docs.aws.amazon.com/STS/latest/APIReference/welcome.html), so set the `Action` to [`sts:AssumeRoleWithWebIdentity`](https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html).
 
 You can create a [custom trust policy](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-custom.html)
 for the role to limit authorization to a specific group, project, branch, or tag.
@@ -95,7 +95,7 @@ assume role:
 ```
 
 - `ROLE_ARN`: The role ARN defined in this [step](#configure-a-role-and-trust).
-- `GITLAB_OIDC_TOKEN`: An OIDC [ID token](../../yaml/_index.md#id_tokens).
+- `GITLAB_OIDC_TOKEN`: An OIDC [ID token](../../secrets/id_token_authentication.md).
 
 ## Working examples
 

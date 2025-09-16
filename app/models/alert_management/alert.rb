@@ -17,7 +17,7 @@ module AlertManagement
     include Referable
     include ::IncidentManagement::Escalatable
 
-    ignore_column :prometheus_alert_id, remove_with: '17.6', remove_after: '2024-10-12'
+    ignore_column :prometheus_alert_id, remove_with: '18.5', remove_after: '2025-10-05'
 
     belongs_to :project
     belongs_to :issue, optional: true
@@ -27,7 +27,7 @@ module AlertManagement
     has_many :assignees, through: :alert_assignees
 
     has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
-    has_many :ordered_notes, -> { fresh }, as: :noteable, class_name: 'Note', inverse_of: :noteable
+    has_many :ordered_notes, -> { order_created_at_id_asc }, as: :noteable, class_name: 'Note', inverse_of: :noteable
     has_many :user_mentions, class_name: 'AlertManagement::AlertUserMention', foreign_key: :alert_management_alert_id,
       inverse_of: :alert
     has_many :metric_images, class_name: '::AlertManagement::MetricImage'

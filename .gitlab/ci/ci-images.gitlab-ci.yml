@@ -14,3 +14,6 @@
   image:
     name: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine/git
     entrypoint: [""]
+
+.with-alpine-ruby-image:
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.22

@@ -3,6 +3,6 @@ migration_job_name: BackfillPushEventPayloadsProjectId
 description: Backfills sharding key `push_event_payloads.project_id` from `events`.
 feature_category: source_code_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183123
-milestone: '18.3'
-queued_migration_version: 20250721081758
+milestone: '18.4'
+queued_migration_version: 20250820190521
 finalized_by: # version of the migration that finalized this BBM

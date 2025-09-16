@@ -20,6 +20,10 @@ module API
       def snippets_for_current_user
         find_snippets(params: { author: current_user })
       end
+
+      def find_snippet(id)
+        find_snippets(user: current_user, params: { ids: id }).first
+      end
     end
 
     resource :snippets do
@@ -112,7 +116,7 @@ module API
         requires :id, type: Integer, desc: 'The ID of a snippet'
       end
       get ':id' do
-        snippet = find_snippets.find_by_id(params[:id])
+        snippet = find_snippet(params[:id])
 
         break not_found!('Snippet') unless snippet
 
@@ -257,7 +261,7 @@ module API
         requires :id, type: Integer, desc: 'The ID of a snippet'
       end
       get ":id/raw" do
-        snippet = find_snippets.find_by_id(params.delete(:id))
+        snippet = find_snippet(params.delete(:id))
         not_found!('Snippet') unless snippet
 
         present content_for(snippet)
@@ -273,7 +277,7 @@ module API
         use :raw_file_params
       end
       get ":id/files/:ref/:file_path/raw", requirements: { file_path: API::NO_SLASH_URL_PART_REGEX } do
-        snippet = find_snippets.find_by_id(params.delete(:id))
+        snippet = find_snippet(params.delete(:id))
         not_found!('Snippet') unless snippet&.repo_exists?
 
         present file_content_for(snippet)

@@ -3,6 +3,7 @@ export const REFERENCE_TYPES = {
   ISSUE_ALTERNATIVE: 'issue_alternative',
   MERGE_REQUEST: 'merge_request',
   EPIC: 'epic',
+  EPIC_ALTERNATIVE: 'epic_alternative',
   WORK_ITEM: 'work_item',
   COMMAND: 'command',
   USER: 'user',

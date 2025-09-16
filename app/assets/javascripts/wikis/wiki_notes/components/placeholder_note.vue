@@ -73,7 +73,7 @@ export default {
       <div data-testid="wiki-placeholder-note-header" class="note-header">
         <div class="note-header-info">
           <a :href="userUrl">
-            <span class="gl-hidden gl-font-bold sm:gl-inline-block">{{
+            <span class="gl-hidden gl-font-bold @sm/panel:gl-inline-block">{{
               currentUserData.name
             }}</span>
             <span class="note-headline-light">@{{ currentUserData.username }}</span>

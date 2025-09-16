@@ -42,8 +42,14 @@ module Clusters
       :cluster
     end
 
+    # Instance method required by TokenAuthenticatable for token generation
     def glagent_prefix
-      TOKEN_PREFIX
+      self.class.glagent_prefix
+    end
+
+    # Class method used for token validation and as single source of truth for prefix
+    def self.glagent_prefix
+      ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(TOKEN_PREFIX)
     end
   end
 end

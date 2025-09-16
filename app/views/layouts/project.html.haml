@@ -10,6 +10,7 @@
   = dispensable_render_if_exists "projects/storage_enforcement_alert", context: @project
   = dispensable_render_if_exists "shared/namespace_storage_limit_alert", context: @project
   = dispensable_render_if_exists "shared/namespace_combined_storage_users_alert", context: @project
+  = dispensable_render_if_exists "layouts/header/seat_count_alert", context: @project
 
 - content_for :project_javascripts do
   - project = @target_project || @project

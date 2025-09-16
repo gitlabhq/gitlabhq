@@ -1,0 +1,5 @@
+- return unless show_archived_banner?(context)
+
+= render Pajamas::AlertComponent.new(variant: :info, dismissible: false) do |c|
+  = c.with_body do
+    = archived_banner_message(context)

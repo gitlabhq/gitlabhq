@@ -219,7 +219,7 @@ export default {
           </gl-form-group>
 
           <gl-form-group
-            class="link-type-field col-auto"
+            class="link-type-field col"
             :label="__('Type')"
             :label-for="`asset-type-${index}`"
           >
@@ -227,17 +227,13 @@ export default {
               :id="`asset-type-${index}`"
               ref="typeSelect"
               :value="link.linkType || $options.defaultTypeOptionValue"
-              class="pr-4"
               name="asset-type"
               :options="$options.typeOptions"
               @change="updateAssetLinkType({ linkIdToUpdate: link.id, newType: $event })"
             />
           </gl-form-group>
 
-          <div
-            v-if="release.assets.links.length !== 1"
-            class="mb-5 mb-sm-3 mt-sm-4 col col-sm-auto"
-          >
+          <div v-if="release.assets.links.length !== 1" class="gl-w-auto sm:gl-pt-6">
             <gl-button
               class="remove-button form-control gl-w-full"
               :aria-label="__('Remove asset link')"

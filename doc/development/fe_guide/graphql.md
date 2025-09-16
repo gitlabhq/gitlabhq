@@ -248,7 +248,7 @@ Splitting queries in Apollo is often done to optimize data fetching by breaking 
 
 ### Why split queries in GraphQL
 
-1. **Increased query complexity** We have [limits](../../api/graphql#limits) for GraphQL queries which should be adhered to.
+1. **Increased query complexity** We have [limits](../../api/graphql/_index.md#limits) for GraphQL queries which should be adhered to.
 1. **Performance** Smaller, targeted queries often result in faster response times from the server, which directly benefits the frontend by getting data to the client sooner.
 1. **Better Component Decoupling and Maintainability** Each component can handle its own data needs, making it easier to reuse components across your app without requiring access to a large, shared query.
 

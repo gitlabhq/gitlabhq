@@ -6,7 +6,7 @@ title: FIPS 140-2 and 140-3
 ---
 
 FIPS is short for "Federal Information Processing Standard", which defines certain security practices for a "cryptographic module" (CM). A cryptographic
-module is set of hardware, software, and/or firmware that implements approved security functions (including cryptographic algorithms and key generation)
+module is set of hardware, software, or firmware that implements approved security functions (including cryptographic algorithms and key generation)
 and is contained within a cryptographic boundary.
 
 At GitLab, a cryptographic module almost always refers to an embedded software component of another product or package release and is specific to a particular
@@ -118,6 +118,22 @@ listed here that also do not work properly in FIPS mode:
   supports a reduced set of [analyzers](../user/application_security/sast/_index.md#fips-enabled-images)
   when operating in FIPS-compliant mode.
 - [Operational Container Scanning](../user/clusters/agent/vulnerabilities.md).
+- GitLab and FIPS do not support [DSA certificate files](../security/ssh_keys_restrictions.md#default-settings).
+  If you encounter DSA certificate errors in logs, configure the [`sshHostKeys.types`](https://docs.gitlab.com/charts/charts/gitlab/webservice/#installation-command-line-options) setting to exclude DSA:
+
+     ```yaml
+     gitlab:
+       webservice:
+         sshHostKeys:
+           types: [rsa,ecdsa,ed25519]
+     ```
+
+  {{< alert type="note" >}}
+
+  ED25519 keys might not be fully supported by all FIPS systems.
+  For more information, see [issue 367429](https://gitlab.com/gitlab-org/gitlab/-/issues/367429).
+
+  {{< /alert >}}
 
 Additionally, these package repositories are disabled in FIPS mode:
 

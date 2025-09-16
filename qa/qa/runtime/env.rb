@@ -123,7 +123,7 @@ module QA
       end
 
       def default_branch
-        ENV['QA_DEFAULT_BRANCH'] || 'main'
+        'main'
       end
 
       def colorized_logs?

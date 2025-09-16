@@ -8,7 +8,7 @@ description: The epic board most recently visited by users, used to determine wh
   to redirect them by default
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60720
 milestone: '13.12'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   group_id: namespaces
 table_size: small

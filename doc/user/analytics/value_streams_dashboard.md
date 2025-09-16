@@ -22,16 +22,13 @@ title: Value Streams Dashboard
 
 {{< /history >}}
 
-To help us improve the Value Streams Dashboard, share feedback about your experience in this [survey](https://gitlab.fra1.qualtrics.com/jfe/form/SV_50guMGNU2HhLeT4).
-For more information, see the [Value Stream Management category direction page](https://about.gitlab.com/direction/plan/value_stream_management/).
-
 The Value Streams Dashboard is a customizable dashboard you can use to identify trends, patterns, and opportunities for digital transformation improvements.
 The centralized UI in the Value Streams Dashboard acts as the single source of truth (SSOT), where all stakeholders can access and view the same set of metrics that are relevant to the organization.
 The Value Streams Dashboard includes panels that visualize the following metrics:
 
 - [DORA metrics](dora_metrics.md)
 - [Value Stream Analytics (VSA) - flow metrics](../group/value_stream_analytics/_index.md)
-- [Vulnerabilities](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) metrics
+- [Vulnerabilities](../application_security/vulnerability_report/_index.md)
 - [GitLab Duo Code Suggestions](../project/repository/code_suggestions/_index.md)
 
 With the Value Streams Dashboard, you can:
@@ -59,7 +56,7 @@ If you upgrade to the Ultimate tier, you get access to historical data, and can 
 
 ## Panels
 
-The Value Streams Dashboard panels have a default configuration, but you can also [customize the dashboard panels](#customize-dashboard-panels).
+The Value Streams Dashboard panels have a default configuration, but you can also customize the dashboard panels.
 
 ### Overview
 
@@ -86,12 +83,6 @@ Data is aggregated monthly, around the end of the month, on a best-effort basis 
 
 For more information, see [epic 10417](https://gitlab.com/groups/gitlab-org/-/epics/10417#iterations-path).
 
-{{< alert type="note" >}}
-
-To view metrics on the Overview panel, the [background aggregation](#enable-or-disable-overview-background-aggregation) must be enabled.
-
-{{< /alert >}}
-
 ### DevSecOps metrics comparison
 
 {{< history >}}
@@ -107,7 +98,7 @@ These visualizations help you understand whether the key DevSecOps metrics impro
 
 - Lifecycle metrics
 - DORA metrics (Ultimate only)
-- Security metrics (Ultimate only)
+- Security metrics (Ultimate only, at least the **Developer** role)
 
 In each comparison panel, you can:
 
@@ -162,7 +153,7 @@ Only labels that exactly match the specified filters are applied.
 
 {{< /history >}}
 
-The [DORA](dora_metrics.md) Performers score panel is a group-level bar chart that visualizes the status of the organization's DevOps performance levels across different projects for the last full calendar month.
+The DORA Performers score panel is a group-level bar chart that visualizes the status of the organization's DevOps performance levels across different projects for the last full calendar month.
 
 ![A bar chart with DORA metrics for a group](img/vsd_dora_performers_score_v17_7.png)
 
@@ -217,7 +208,7 @@ If multiple topics are provided, all topics must match for the project to be inc
 
 {{< /history >}}
 
-The **Projects by [DORA](dora_metrics.md) metric** panel is a group-level table that lists the status of the organization's DevOps performance levels across projects.
+The **Projects by DORA metric** panel is a group-level table that lists the status of the organization's DevOps performance levels across projects.
 
 The table lists all projects with their DORA metrics, aggregating data from child projects in groups and subgroups.
 The metrics are aggregated for the last full calendar month.
@@ -258,7 +249,7 @@ To retrieve aggregated usage counts in the group, use the [GraphQL API](../../ap
 Prerequisites:
 
 - You must have at least the Reporter role for the group or project.
-- [Overview background aggregation](#enable-or-disable-overview-background-aggregation) must be enabled.
+- Overview background aggregation must be enabled.
 - To view the contributor count metric in the comparison panel, you must [set up ClickHouse](../../integration/clickhouse.md).
 - To track deployment to production, the group or project must have an environment in the [production deployment tier](../../ci/environments/_index.md#deployment-tier-of-environments).
 - To measure the cycle time, [issues must be crosslinked from commit messages](../../user/project/issues/crosslinking_issues.md#from-commit-messages).
@@ -302,11 +293,12 @@ This tool saves time and effort by eliminating the need to manually search for t
 By scheduling reports, you can ensure that the decision-makers in your organization receive proactive, timely, and relevant information.
 
 The Scheduled Reports tool collects metrics from projects or groups through the public GitLab GraphQL API,
-then builds a report using [GitLab Flavored Markdown](../markdown.md),
+then builds a report using GitLab Flavored Markdown,
 and opens an issue in a specified project.
 The issue includes a comparison metrics table in Markdown format.
 
-See an [example scheduled report](https://gitlab.com/components/vsd-reports-generator#example-for-monthly-executive-value-streams-report). To learn more, see the blog post [New Scheduled Reports Generation tool simplifies value stream management](https://about.gitlab.com/blog/2024/06/20/new-scheduled-reports-generation-tool-simplifies-value-stream-management/).
+See an [example scheduled report](https://gitlab.com/components/vsd-reports-generator#example-for-monthly-executive-value-streams-report).
+To learn more, see the blog post [New Scheduled Reports Generation tool simplifies value stream management](https://about.gitlab.com/blog/2024/06/20/new-scheduled-reports-generation-tool-simplifies-value-stream-management/).
 
 ## Customize dashboard panels
 
@@ -340,7 +332,7 @@ After you have set up the project, set up the configuration file:
 | `title`                                    | Custom name for the panel |
 | `queryOverrides` (formerly `data`)         | Overrides data query parameters specific to each visualization. |
 | `namespace` (subfield of `queryOverrides`) | Group or project path to use for the panel |
-| `filters` (subfield of `queryOverrides`)   | Filters the query for each visualization type. See [supported visualizations](#supported-visualization-filters). |
+| `filters` (subfield of `queryOverrides`)   | Filters the query for each supported visualization type. |
 | `visualization`                            | The type of visualization to be rendered. Supported options are `dora_chart`, `dora_performers_score`, and `usage_overview`. |
 | `gridAttributes`                           | The size and positioning of the panel |
 | `xPos` (subfield of `gridAttributes`)      | Horizontal position of the panel |
@@ -410,7 +402,7 @@ panels:
       filters:
         projectTopics:
           - ruby
-          - javasript
+          - javascript
     gridAttributes:
       yPos: 26
       xPos: 1
@@ -437,7 +429,7 @@ Filters for the `dora_performers_score` visualization.
 
 | Filter          | Description                                                                               | Supported values |
 |-----------------|-------------------------------------------------------------------------------------------|------------------|
-| `projectTopics` | Filters the projects shown based on their assigned [topics](../project/project_topics.md) | Any available group topic |
+| `projectTopics` | Filters the projects shown based on their assigned topics | Any available group topic |
 
 #### Usage overview panel filters
 
@@ -457,22 +449,25 @@ Filters for the `usage_overview` visualization.
 
 ## Dashboard metrics and drill-down reports
 
-| Metric                             | ID                         | Description | Drill-down report | Documentation page |
-|------------------------------------|----------------------------|-------------|-------------------|--------------------|
-| Deployment frequency               | `deployment_frequency`     | Average number of deployments to production per day. This metric measures how often value is delivered to end users. | [Deployment frequency tab](https://gitlab.com/groups/gitlab-org/-/analytics/ci_cd?tab=deployment-frequency) | [Deployment frequency](dora_metrics.md#deployment-frequency) |
-| Lead time for changes              | `lead_time_for_changes`    | The time to successfully deliver a commit into production. This metric reflects the efficiency of CI/CD pipelines. | [Lead time tab](https://gitlab.com/groups/gitlab-org/-/analytics/ci_cd?tab=lead-time) | [Lead time for changes](dora_metrics.md#lead-time-for-changes) |
-| Time to restore service            | `time_to_restore_service`  | The time it takes an organization to recover from a failure in production. | [Time to restore service tab](https://gitlab.com/groups/gitlab-org/-/analytics/ci_cd?tab=time-to-restore-service) | [Time to restore service](dora_metrics.md#time-to-restore-service) |
-| Change failure rate                | `change_failure_rate`      | Percentage of deployments that cause an incident in production. | [Change failure rate tab](https://gitlab.com/groups/gitlab-org/-/analytics/ci_cd?tab=change-failure-rate) | [Change failure rate](dora_metrics.md#change-failure-rate) |
-| Lead time                          | `lead_time`                | Median time from issue created to issue closed. | [Value Stream Analytics](https://gitlab.com/groups/gitlab-org/-/analytics/value_stream_analytics) | [View the lead time and cycle time for issues](../group/value_stream_analytics/_index.md#lifecycle-metrics) |
-| Cycle time                         | `cycle_time`               | Median time from the earliest commit of a linked issue's merge request to when that issue is closed. | [VSA overview](https://gitlab.com/groups/gitlab-org/-/analytics/value_stream_analytics) | [View the lead time and cycle time for issues](../group/value_stream_analytics/_index.md#lifecycle-metrics) |
-| Issues created                     | `issues`                   | Number of new issues created. | [Issue Analytics](https://gitlab.com/groups/gitlab-org/-/issues_analytics) | [Issue Analytics](../group/issues_analytics/_index.md) |
-| Issues closed                      | `issues_completed`         | Number of issues closed by month. | [Issue Analytics](https://gitlab.com/groups/gitlab-org/-/issues_analytics) | [Issue Analytics](../group/issues_analytics/_index.md) |
-| Number of deploys                  | `deploys`                  | Total number of deploys to production. | [Merge Request Analytics](https://gitlab.com/gitlab-org/gitlab/-/analytics/merge_request_analytics) | [Merge request analytics](merge_request_analytics.md) |
-| Merge request throughput           | `merge_request_throughput` | The number of merge requests merged by month. | [Groups Productivity analytics](productivity_analytics.md), [Projects Merge Request Analytics](https://gitlab.com/gitlab-org/gitlab/-/analytics/merge_request_analytics) | [Groups Productivity analytics](productivity_analytics.md) [Projects Merge request analytics](merge_request_analytics.md) |
-| Median time to merge               | `median_time_to_merge`     | Median time between merge request created and merge request merged. | [Groups Productivity analytics](productivity_analytics.md), [Projects Merge Request Analytics](https://gitlab.com/gitlab-org/gitlab/-/analytics/merge_request_analytics) | [Groups Productivity analytics](productivity_analytics.md) [Projects Merge request analytics](merge_request_analytics.md) |
-| Contributor count                  | `contributor_count`        | Number of monthly unique users with contributions in the group. | [Contribution Analytics](https://gitlab.com/groups/gitlab-org/-/contribution_analytics) | [User contribution events](../profile/contributions_calendar.md#user-contribution-events) |
-| Critical vulnerabilities over time | `vulnerability_critical`   | Critical vulnerabilities over time in project or group | [Vulnerability report](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) | [Vulnerability report](../application_security/vulnerability_report/_index.md) |
-| High vulnerabilities over time     | `vulnerability_high`       | High vulnerabilities over time in project or group | [Vulnerability report](https://gitlab.com/gitlab-org/gitlab/-/security/vulnerability_report) | [Vulnerability report](../application_security/vulnerability_report/_index.md) |
+The following table provides an overview of the metrics available in the Value Streams Dashboard,
+along with their descriptions and the name of the drill-down report where they are displayed.
+
+| Metric | Description | Drill-down report | ID |
+| ------ | ----------- | ----------------- | -- |
+| Deployment frequency | Average number of deployments to production per day. This metric measures how often value is delivered to end users. | **Deployment frequency** tab | `deployment_frequency` |
+| Lead time for changes | The time to successfully deliver a commit into production. This metric reflects the efficiency of CI/CD pipelines. | **Lead time** tab | `lead_time_for_changes` |
+| Time to restore service | The time it takes an organization to recover from a failure in production. | **Time to restore service** tab | `time_to_restore_service` |
+| Change failure rate | Percentage of deployments that cause an incident in production. | **Change failure rate** tab | `change_failure_rate` |
+| Lead time | Median time from issue created to issue closed. | Value Stream Analytics | `lead_time` |
+| Cycle time | Median time from the earliest commit of a linked issue's merge request to when that issue is closed. | **Lifecycle metrics** section in Value Stream Analytics | `cycle_time` |
+| Issues created | Number of new issues created. | Issue analytics | `issues` |
+| Issues closed | Number of issues closed by month. | Issue analytics | `issues_completed` |
+| Number of deploys | Total number of deploys to production. | Merge request analytics | `deploys` |
+| Merge request throughput | The number of merge requests merged by month. | Productivity analytics | `merge_request_throughput` |
+| Median time to merge | Median time between merge request created and merge request merged. | Productivity analytics | `median_time_to_merge` |
+| Contributor count | Number of monthly unique users with contributions in the group. | Contribution analytics | `contributor_count` |
+| Critical vulnerabilities over time | Critical vulnerabilities over time in project or group | Vulnerability report | `vulnerability_critical` |
+| High vulnerabilities over time | High vulnerabilities over time in project or group | Vulnerability report | `vulnerability_high` |
 
 ## Metrics with Jira
 

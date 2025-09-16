@@ -8,7 +8,7 @@ description: GitLab.com for Jira Cloud app subscriptions data, formerly Jira Con
   App.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/10453
 milestone: '11.11'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

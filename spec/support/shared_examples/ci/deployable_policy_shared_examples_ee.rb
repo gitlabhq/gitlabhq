@@ -20,6 +20,30 @@ RSpec.shared_examples 'a deployable job policy in EE' do |factory_type|
     it_behaves_like 'protected environments access', direct_access: true
   end
 
+  describe '#retry_job' do
+    subject { user.can?(:retry_job, job) }
+
+    it_behaves_like 'protected environments access', direct_access: true
+  end
+
+  describe '#play_job' do
+    subject { user.can?(:play_job, job) }
+
+    it_behaves_like 'protected environments access', direct_access: true
+  end
+
+  describe '#unschedule_job' do
+    subject { user.can?(:unschedule_job, job) }
+
+    it_behaves_like 'protected environments access', direct_access: true
+  end
+
+  describe '#keep_job_artifacts' do
+    subject { user.can?(:keep_job_artifacts, job) }
+
+    it_behaves_like 'protected environments access', direct_access: true
+  end
+
   describe '#cancel_build?' do
     subject { user.can?(:cancel_build, job) }
 

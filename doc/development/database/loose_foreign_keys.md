@@ -199,8 +199,8 @@ ci_pipelines:
 
 ### Assign specific tables to custom workers
 
-By default, all loose foreign key cleanup is handled by the `LooseForeignKeys::CleanupWorker`. However, 
-you can specify a custom worker class to handle cleanup for specific tables. This allows for better 
+By default, all loose foreign key cleanup is handled by the `LooseForeignKeys::CleanupWorker`. However,
+you can specify a custom worker class to handle cleanup for specific tables. This allows for better
 load distribution and specialized handling of different table types.
 
 To assign a table to a custom worker, add the `worker_class` attribute to the configuration:
@@ -213,7 +213,7 @@ ci_pipelines:
     worker_class: 'CustomLooseForeignKeysWorker'
 ```
 
-If the `worker_class` attribute is not specified, the table will default to using 
+If the `worker_class` attribute is not specified, the table will default to using
 `::LooseForeignKeys::CleanupWorker`.
 
 **Important considerations:**
@@ -230,7 +230,7 @@ Example with mixed worker assignments:
 ```yaml
 ci_pipelines:
   - table: projects
-    column: project_id  
+    column: project_id
     on_delete: async_delete
     worker_class: 'CustomCiCleanupWorker'  # Processed by CustomCiCleanupWorker
   - table: users

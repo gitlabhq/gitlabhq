@@ -54,6 +54,18 @@ The agent configuration file manages the various agent features:
 - For configuring [operational container scanning](vulnerabilities.md).
 - For configuring [remote workspaces](../../workspace/gitlab_agent_configuration.md).
 
+### Available configuration file fields
+
+The configuration file format for the agent is defined as a
+[protocol buffer message](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/pkg/agentcfg/agentcfg.proto) in the source repository.
+
+To view all the available configuration file fields:
+
+1. Go to [`ConfigurationFile`](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/pkg/agentcfg/agentcfg_proto_docs.md#configurationfile) in the
+   [generated documentation](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/pkg/agentcfg/agentcfg_proto_docs.md) to view the fields for the whole
+   agent configuration file.
+1. Select any field types for more information on the structure of the field.
+
 ## View shared agents
 
 {{< history >}}

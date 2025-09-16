@@ -57,10 +57,8 @@ export default {
           />
         </template>
         <template #tokenName>{{ eventDetails.agentToken.name }}</template></gl-sprintf
-      >
-    </strong>
-
-    <template #body>
+      ></strong
+    ><template #body>
       <p class="gl-mb-0 gl-ml-3 gl-mt-2 gl-pb-3 gl-text-subtle" :class="bodyClass">
         <gl-sprintf :message="eventDetails.body">
           <template #userName>

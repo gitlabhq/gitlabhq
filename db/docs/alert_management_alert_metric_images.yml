@@ -7,7 +7,7 @@ feature_categories:
 description: Persists metadata for uploads related to alerts
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80339
 milestone: '14.8'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 table_size: small
 sharding_key:
   project_id: projects

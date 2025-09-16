@@ -1,3 +1,4 @@
+@use "sass:map";
 @import 'mixins_and_variables_and_functions';
 
 .build-page {
@@ -41,42 +42,13 @@
       @include build-controllers(15px, center, false, 0, inline, 0);
     }
   }
-
-  .build-loader-animation {
-    @include build-loader-animation;
-    float: left;
-    padding-left: $gl-padding-8;
-  }
-}
-
-.build-header {
-  .page-content-header {
-    padding: 10px 0 9px;
-  }
-
-  .header-content {
-    a {
-      color: var(--gl-text-color-default);
-
-      &:hover {
-        color: var(--blue-600, $blue-600);
-        text-decoration: none;
-      }
-    }
-  }
-
-  .avatar {
-    float: none;
-    margin-right: 2px;
-    margin-left: 2px;
-  }
 }
 
 .right-sidebar.build-sidebar {
   padding: 0;
   top: $calc-application-header-height;
 
-  @include media-breakpoint-up(lg) {
+  @include gl-container-width-up(lg, panel) {
     border-left-width: 0;
   }
 
@@ -98,10 +70,6 @@
 
   .blocks-container {
     width: 289px;
-  }
-
-  .block {
-    width: 262px;
   }
 
   .builds-container {
@@ -144,6 +112,21 @@
 
   &:last-of-type {
     margin-bottom: 0;
+  }
+}
+
+// Project studio overrides, should become the default.
+.page-with-panels  {
+  .with-job-sidebar-expanded {
+    padding-right: 0;
+  }
+}
+
+@include gl-container-width-up(lg, panel) {
+  &.page-with-panels {
+    .with-job-sidebar-expanded {
+      padding-right: $right-sidebar-width;
+    }
   }
 }
 
@@ -216,7 +199,7 @@
   flex-shrink: 0;
 
   display: none;
-  @include media-breakpoint-up(sm) {
+  @include gl-container-width-up(sm, panel){
     display: block;
   }
 }
@@ -270,9 +253,7 @@
 }
 
 .rca-bar-component {
-  left: var(--application-bar-left);
   bottom: $calc-application-footer-height;
-  width: calc(100% - var(--application-bar-left));
   z-index: $zindex-dropdown-menu;
   background: var(--gl-background-color-default);
   border-top: 1px solid var(--gl-border-color-default);
@@ -280,10 +261,6 @@
 
   @media (prefers-reduced-motion: no-preference) {
     @apply gl-transition-[width,left,right];
-  }
-
-  @media (max-width: map-get($grid-breakpoints, lg)) {
-    padding-left: 1rem;
   }
 }
 

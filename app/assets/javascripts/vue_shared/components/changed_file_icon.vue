@@ -51,7 +51,7 @@ export default {
       return `${getCommitIconMap(this.file).icon}${suffix}`;
     },
     changedIconClass() {
-      return `${this.changedIcon} float-left gl-block`;
+      return `${this.changedIcon} !gl-float-left gl-block`;
     },
     tooltipTitle() {
       if (!this.showTooltip) {
@@ -89,7 +89,7 @@ export default {
     category="tertiary"
     size="small"
     :title="tooltipTitle"
-    :class="{ 'ml-auto': isCentered }"
+    :class="{ '!gl-ml-auto': isCentered }"
     :aria-label="tooltipTitle"
     class="file-changed-icon !gl-min-h-0 !gl-min-w-0 !gl-bg-transparent !gl-p-0"
   >
@@ -98,7 +98,7 @@ export default {
   <span
     v-else-if="showIcon"
     v-gl-tooltip.right="tooltipTitle"
-    :class="{ 'ml-auto': isCentered }"
+    :class="{ '!gl-ml-auto': isCentered }"
     :aria-label="tooltipTitle"
     class="file-changed-icon"
   >

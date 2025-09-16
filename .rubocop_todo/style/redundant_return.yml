@@ -17,7 +17,6 @@ Style/RedundantReturn:
     - 'ee/app/controllers/projects/vulnerability_feedback_controller.rb'
     - 'ee/app/helpers/ee/application_helper.rb'
     - 'ee/app/helpers/ee/boards_helper.rb'
-    - 'ee/app/models/geo/upload_registry.rb'
     - 'ee/app/serializers/vulnerabilities/feedback_entity.rb'
     - 'ee/app/serializers/vulnerabilities/finding_entity.rb'
     - 'ee/app/serializers/vulnerabilities/issue_link_entity.rb'

@@ -14,8 +14,7 @@ description: "Use system hooks to trigger HTTP POST requests from GitLab events.
 
 {{< /details >}}
 
-System hooks (not to be confused with [server hooks](server_hooks.md) or [file hooks](file_hooks.md)) perform HTTP POST
-requests and are triggered on the following events:
+System hooks perform HTTP POST requests and are triggered on the following events:
 
 - `group_create`
 - `group_destroy`
@@ -100,6 +99,14 @@ To create a system hook:
 1. Optional. Clear the **Enable SSL verification** checkbox
    to disable [SSL verification](../user/project/integrations/_index.md#ssl-verification).
 1. Select **Add system hook**.
+
+## System hook limits
+
+System hooks are subject to the same push event limits as project webhooks. By default, system hooks are not triggered when a single push includes more than 3 branches or tags.
+
+This limit is controlled by the `push_event_hooks_limit` setting
+(default: `3`). For GitLab Self-Managed instances, administrators can modify this limit using the
+[Application Settings API](../api/settings.md#available-settings).
 
 ## Hooks request example
 
@@ -936,3 +943,8 @@ X-Gitlab-Event: System Hook
 
 [Requests to local network by system hooks](../security/webhooks.md) can be allowed
 or blocked by an administrator.
+
+## Related topics
+
+- [Server hooks](server_hooks.md)
+- [File hooks](file_hooks.md)

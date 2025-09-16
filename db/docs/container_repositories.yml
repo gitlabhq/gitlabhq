@@ -8,7 +8,7 @@ description: Container registry repositories (images), originally named containe
   renamed in https://gitlab.com/gitlab-org/gitlab/-/commit/01d159b409d8b24d36204979a73de249843d71bf
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10109
 milestone: '9.1'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

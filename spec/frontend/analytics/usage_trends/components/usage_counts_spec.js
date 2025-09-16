@@ -1,5 +1,5 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { shallowMount } from '@vue/test-utils';
 import UsageCounts from '~/analytics/usage_trends/components/usage_counts.vue';
 import { mockUsageCounts } from '../mock_data';

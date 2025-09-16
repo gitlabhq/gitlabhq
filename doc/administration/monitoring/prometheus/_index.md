@@ -1,6 +1,6 @@
 ---
 stage: GitLab Delivery
-group: Self Managed
+group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Monitoring GitLab with Prometheus
 ---
@@ -264,7 +264,7 @@ To use an external Prometheus server:
    ```
 
 1. As we are setting each bundled service's [exporter](#bundled-software-metrics) to listen on a network address,
-   update the firewall on the instance to only allow traffic from your Prometheus IP for the exporters enabled. A full reference list of exporter services and their respective ports can be found [here](../../package_information/defaults.md#ports).
+   update the firewall on the instance to only allow traffic from your Prometheus IP for the exporters enabled. A full reference list of exporter services and [their respective ports](../../package_information/defaults.md#ports) is available.
 1. [Reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) to apply the changes.
 1. Edit the Prometheus server's configuration file.
 1. Add each node's exporters to the Prometheus server's

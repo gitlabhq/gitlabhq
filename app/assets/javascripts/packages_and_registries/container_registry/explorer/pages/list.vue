@@ -249,7 +249,14 @@ export default {
     },
     handleDeleteImageError(errors = []) {
       this.setDeleteAlert('danger', DELETE_IMAGE_ERROR_MESSAGE);
-      this.setDeleteErrorMessages(errors?.map(({ message }) => message));
+      const errorMessages =
+        (errors || [])
+          .map((error) => {
+            return error?.message || String(error);
+          })
+          .filter(Boolean) || [];
+
+      this.setDeleteErrorMessages(errorMessages);
     },
   },
   containerRegistryHelpUrl: helpPagePath('user/packages/container_registry/_index'),
@@ -279,7 +286,7 @@ export default {
       </gl-sprintf>
 
       <div v-if="deleteImageErrorMessages.length">
-        <ul>
+        <ul class="gl-mb-0">
           <li v-for="(deleteImageErrorMessage, index) in deleteImageErrorMessages" :key="index">
             {{ deleteImageErrorMessage }}
           </li>

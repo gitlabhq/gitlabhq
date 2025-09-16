@@ -25,11 +25,11 @@ exports[`packages_list_app renders 1`] = `
         class="gl-empty-state-content gl-m-auto gl-mx-auto gl-my-0 gl-p-5"
         data-testid="gl-empty-state-content"
       >
-        <h1
+        <h2
           class="gl-leading-36 gl-mb-0 gl-mt-0 gl-text-size-h-display h4"
         >
           You have no Terraform modules in your project
-        </h1>
+        </h2>
         <p
           class="gl-mb-0 gl-mt-4 gl-text-subtle"
         >

@@ -49,4 +49,4 @@ build-gdk-image:
     - job: retag-gdk-image
       optional: true
   script:
-    - run_with_custom_exit_code scripts/build_gdk_image
+    - scripts/build_gdk_image

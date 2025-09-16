@@ -310,14 +310,45 @@ class Repository
     branch_names + tag_names
   end
 
+  def lazy_ref_exists?(ref_name)
+    BatchLoader.for(ref_name).batch(key: self) do |ref_names, loader, _args|
+      # Make a single Gitaly call to check all refs at once
+      existing_refs = list_refs(ref_names).to_h { |r| [r.name, true] }
+
+      # Load results for each requested ref
+      ref_names.each do |ref|
+        loader.call(ref, existing_refs.key?(ref))
+      end
+    end
+  end
+
   def branch_exists?(branch_name)
     return false unless raw_repository
+
+    if Feature.enabled?(:ref_existence_check_gitaly, project)
+      return false unless exists?
+      return false if branch_name.blank?
+
+      # Optimization: Use a root_ref cache to check the presence of the default branch
+      return true if branch_name == root_ref
+
+      Gitlab::Git::RefPreloader.preload_refs_for_project(project)
+
+      return lazy_ref_exists?(Gitlab::Git::BRANCH_REF_PREFIX + branch_name).itself
+    end
 
     branch_names_include?(branch_name)
   end
 
   def tag_exists?(tag_name)
     return false unless raw_repository
+
+    if Feature.enabled?(:ref_existence_check_gitaly, project)
+      return false unless exists?
+      return false if tag_name.blank?
+
+      return lazy_ref_exists?(Gitlab::Git::TAG_REF_PREFIX + tag_name).itself
+    end
 
     tag_names_include?(tag_name)
   end
@@ -367,12 +398,14 @@ class Repository
 
   def expire_tags_cache
     expire_method_caches(%i[tag_names tag_count has_ambiguous_refs?])
+    BatchLoader::Executor.clear_current if Feature.enabled?(:ref_existence_check_gitaly, project)
     @tags = nil
     @tag_names_include = nil
   end
 
   def expire_branches_cache
     expire_method_caches(%i[branch_names merged_branch_names branch_count has_visible_content? has_ambiguous_refs?])
+    BatchLoader::Executor.clear_current if Feature.enabled?(:ref_existence_check_gitaly, project)
     expire_protected_branches_cache
 
     @local_branches = nil
@@ -547,7 +580,10 @@ class Repository
 
   # Runs code after an existing branch has been removed.
   def after_remove_branch(expire_cache: true)
-    expire_branches_cache if expire_cache
+    if expire_cache
+      expire_branches_cache
+      expire_root_ref_cache
+    end
   end
 
   def lookup(sha)
@@ -754,6 +790,14 @@ class Repository
 
     cache.fetch(key) do
       last_commit_for_path(sha, path, literal_pathspec: literal_pathspec)&.id
+    end
+  end
+
+  def git_content_hash_for_path(sha, path)
+    key = "git_content_hash_for_path:#{sha}:#{Digest::SHA1.hexdigest(path)}"
+
+    cache.fetch(key) do
+      blob_at(sha, path)&.id
     end
   end
 
@@ -1368,6 +1412,24 @@ class Repository
       .diffs_by_changed_paths(diff_refs, offset, batch_size) do |diff_files|
         yield diff_files
       end
+  end
+
+  def granular_ref_name_update(ref)
+    if Gitlab::Git.tag_ref?(ref)
+      cache_key = 'tag_names'
+    elsif Gitlab::Git.branch_ref?(ref)
+      cache_key = 'branch_names'
+    else
+      return
+    end
+
+    cache_value = Gitlab::Git.ref_name(ref)
+
+    exists = ref_exists?(ref)
+    operation = exists ? :add : :remove
+
+    redis_set_cache.granular_update(cache_key, cache_value, operation)
+    clear_memoization(memoizable_name(cache_key))
   end
 
   private

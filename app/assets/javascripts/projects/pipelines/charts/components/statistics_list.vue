@@ -1,6 +1,6 @@
 <script>
 import { GlLink, GlSkeletonLoader } from '@gitlab/ui';
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
 import { formatTimeSpent } from '~/lib/utils/datetime_utility';
 import { s__, formatNumber } from '~/locale';
@@ -87,6 +87,7 @@ export default {
           :unit="statistic.unit || ''"
           :should-animate="true"
           use-delimiters
+          variant="neutral"
         />
         <gl-link
           v-if="shouldDisplayLink(statistic)"

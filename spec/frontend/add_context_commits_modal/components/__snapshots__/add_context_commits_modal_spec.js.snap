@@ -3,7 +3,7 @@
 exports[`AddContextCommitsModal renders modal with 2 tabs 1`] = `
 <gl-modal-stub
   arialabel=""
-  body-class="add-review-item pt-0"
+  body-class="add-review-item !gl-pt-0"
   cancel-variant="light"
   dismisslabel="Close"
   modalclass="add-review-item-modal"
@@ -17,7 +17,7 @@ exports[`AddContextCommitsModal renders modal with 2 tabs 1`] = `
   titletag="h4"
 >
   <gl-tabs-stub
-    contentclass="pt-0"
+    contentclass="!gl-pt-0"
     queryparamname="tab"
     value="0"
   >
@@ -29,7 +29,7 @@ exports[`AddContextCommitsModal renders modal with 2 tabs 1`] = `
       >
         <gl-filtered-search-stub
           availabletokens="[object Object],[object Object],[object Object]"
-          class="flex-grow-1"
+          class="!gl-grow"
           clearbuttontitle="Clear"
           placeholder="Search or filter commits"
           searchbuttonattributes="[object Object]"

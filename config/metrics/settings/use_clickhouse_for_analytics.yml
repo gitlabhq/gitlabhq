@@ -1,0 +1,18 @@
+---
+data_category: optional
+key_path: settings.use_clickhouse_for_analytics
+description: Whether ClickHouse is enabled for analytics
+product_group: platform_insights
+value_type: boolean
+status: active
+time_frame: none
+data_source: system
+instrumentation_class: GitlabSettingsMetric
+milestone: "18.4"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187908
+options:
+  setting_method: use_clickhouse_for_analytics?
+tiers:
+- free
+- premium
+- ultimate

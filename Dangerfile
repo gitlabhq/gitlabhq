@@ -7,21 +7,21 @@ begin
   gem_version = Gem::Specification.find_by_name('gitlab-dangerfiles').version
 
   unless Gem::Requirement.new('>= 4.0.0').satisfied_by?(gem_version)
-    puts "\n❌ ERROR: Incompatible gitlab-dangerfiles version detected!"
-    puts "Found version: #{gem_version}"
-    puts 'Required version: >= 4.0.0 (preferably ~> 4.9.0)'
-    puts "\n🔧 To fix this issue:"
-    puts '1. Run: bundle install'
-    puts '2. Or run: gem update gitlab-dangerfiles'
-    puts '3. Or clear gem cache: gem cleanup gitlab-dangerfiles'
-    puts "\n💡 This prevents the cryptic 'doesn't contain valid danger plugins' error."
-    puts '   when old gitlab-dangerfiles versions are cached.'
+    message "\n❌ ERROR: Incompatible gitlab-dangerfiles version detected!"
+    message "Found version: #{gem_version}"
+    message 'Required version: >= 4.0.0 (preferably ~> 4.9.0)'
+    message "\n🔧 To fix this issue:"
+    message '1. Run: bundle install'
+    message '2. Or run: gem update gitlab-dangerfiles'
+    message '3. Or clear gem cache: gem cleanup gitlab-dangerfiles'
+    message "\n💡 This prevents the cryptic 'doesn't contain valid danger plugins' error."
+    message '   when old gitlab-dangerfiles versions are cached.'
     exit 1
   end
 rescue StandardError => e
-  puts "\n⚠️  Warning: Could not verify gitlab-dangerfiles version: #{e.message}"
-  puts 'Proceeding anyway, but if you see "doesn\'t contain valid danger plugins",'
-  puts 'try: bundle install or gem update gitlab-dangerfiles'
+  message "\n⚠️  Warning: Could not verify gitlab-dangerfiles version: #{e.message}"
+  message 'Proceeding anyway, but if you see "doesn\'t contain valid danger plugins",'
+  message 'try: bundle install or gem update gitlab-dangerfiles'
 end
 
 def ee?

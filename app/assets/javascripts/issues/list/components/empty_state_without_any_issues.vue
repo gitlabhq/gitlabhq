@@ -64,6 +64,9 @@ export default {
         ? __('Issues exist in projects. Select a project to create an issue, or create a project.')
         : __('Issues exist in projects. To create an issue, first create a project.');
     },
+    showNewProjectButton() {
+      return this.canCreateProjects && !this.isProject;
+    },
   },
 };
 </script>
@@ -120,7 +123,7 @@ export default {
             </gl-button>
           </slot>
           <gl-button
-            v-if="canCreateProjects"
+            v-if="showNewProjectButton"
             :href="newProjectPath"
             :variant="showNewIssueDropdown ? 'default' : 'confirm'"
             class="gl-mx-2 gl-mb-3"

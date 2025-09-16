@@ -80,7 +80,7 @@
     }
   }
 
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     td:empty {
       display: none;
     }
@@ -141,7 +141,7 @@
   .pipeline-graph-container & {
     width: 100%;
 
-    @media (min-width: $breakpoint-sm) {
+    @include gl-container-width-up(sm, panel) {
       width: 8rem;
     }
   }
@@ -220,10 +220,6 @@
     padding: $gl-padding;
   }
 
-  .media-body {
-    flex-direction: row;
-  }
-
   .report-block-container {
     height: auto !important;
   }
@@ -253,7 +249,7 @@
     height: $gl-spacing-scale-5 * 2;
     background-color: $gray-200;
 
-    @media (min-width: $breakpoint-sm) {
+    @include gl-container-width-up(sm, panel) {
       top: 1.25rem;
       left: 100%;
       width: $gl-spacing-scale-5 * 2;
@@ -265,7 +261,7 @@
   .stage-column.is-stage-view {
     min-width: 1px;
 
-    @media (min-width: $breakpoint-sm) {
+    @include gl-container-width-up(sm, panel) {
       min-width: inherit;
       max-width: $gl-spacing-scale-48;
 
@@ -275,30 +271,16 @@
     }
   }
 
-  .linked-pipeline-container[aria-expanded=true] {
-    @media (max-width: $breakpoint-sm) {
-      width: 100%;
-
-      > div {
-        border-bottom-left-radius: 0;
-      }
-
-      > div > button {
-        border-bottom-right-radius: 0 !important;
-      }
-    }
-  }
-
   .linked-pipelines-column,
   .pipeline-show-container,
   .pipeline-links-container {
-    @media (max-width: $breakpoint-sm) {
+    @include gl-container-width-down(sm, panel) {
       flex-basis: 100%;
     }
   }
 
   .pipeline-graph {
-    @media (max-width: $breakpoint-sm) {
+    @include gl-container-width-down(sm, panel) {
       border-top-left-radius: 0;
       border-top-right-radius: 0;
     }
@@ -338,7 +320,7 @@
   grid-template-columns: 1fr 1fr max-content;
 }
 
-@media (max-width: $breakpoint-sm) {
+@include gl-container-width-down(sm, panel) {
   .scan-reports-summary-grid :nth-child(3n+1) {
     grid-column: 1 / -1;
   }

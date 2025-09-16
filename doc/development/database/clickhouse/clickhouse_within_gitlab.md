@@ -336,6 +336,144 @@ module ClickHouse
 end
 ```
 
+## GraphQL usage
+
+Use GraphQL to paginate ClickHouse queries with the same external interface as
+`ActiveRecord` queries (keyset pagination).
+
+The pagination interface includes:
+
+- `PageInfo` for pagination-specific data (`endCursor` and `startCursor`).
+- `after`, `before`, `first`, `last` arguments for loading next or previous pages.
+
+To use GraphQL pagination with ClickHouse, ensure your queries meet these
+requirements:
+
+- `ORDER BY` columns must be `NOT NULL`.
+- `ORDER BY` direction must be the same for all columns.
+- `ORDER BY` column values must identify exactly one row (requirement for
+  keyset pagination).
+
+### Resolver implementation example
+
+The GraphQL resolver must return a `ClickHouse::Client::QueryBuilder` object:
+
+```ruby
+def resolve
+  ClickHouse::Client::QueryBuilder
+    .new('events')
+    .order(:created_at, :asc)
+    .order(:id, :asc)
+end
+```
+
+The pagination library handles cursor encoding and decoding. The returned data
+matches the format you get from a direct ClickHouse query: an array of hashes.
+To format the data for GraphQL responses, implement formatting logic in your
+GraphQL types.
+
+### Resolver implementation with a deduplicating query
+
+When you query a `ReplacingMergeTree` engine with `version` and `deleted` columns,
+you must deduplicate rows by the primary keys. Use a nested `SELECT` with
+`GROUP BY` and [`argMax`](https://clickhouse.com/docs/sql-reference/aggregate-functions/reference/argmax)
+for deduplication logic.
+
+The following example lists issues filtered by `gitlab-org` group from the
+`hierarchy_work_items` materialized view table:
+
+```ruby
+def resolve
+  builder = ClickHouse::Client::QueryBuilder.new('hierarchy_work_items')
+
+  columns = %i[id title traversal_path work_item_type_id created_at]
+  deleted_column = :deleted
+  version_column = :version
+  group_by_columns = %i[traversal_path work_item_type_id id]
+
+  # Use argMax to determine the latest column value based on the version column.
+  inner_projections = columns.map do |column|
+    if group_by_columns.include?(column)
+      builder.table[column]
+    else
+      Arel::Nodes::NamedFunction.new('argMax', [
+        builder.table[column],
+        builder.table[version_column]
+      ]).as(column.to_s)
+    end
+  end
+
+  # Add the deleted column to filter deleted rows later.
+  inner_projections << Arel::Nodes::NamedFunction.new('argMax', [
+    builder.table[deleted_column],
+    builder.table[version_column]
+  ]).as(deleted_column.to_s)
+
+  # Select all issues within the gitlab-org group (9970).
+  inner_query = builder
+    .select(*inner_projections)
+    .where(Arel::Nodes::NamedFunction.new('startsWith', [builder.table[:traversal_path], Arel.sql("'1/9970/'")]))
+    .where(work_item_type_id: 1)
+    .group(*group_by_columns)
+
+  builder
+    .select(*columns)
+    .from(inner_query, 'hierarchy_work_items')
+    .where(deleted: false)
+    .order(:created_at, :desc)
+    .order(:id, :desc)
+end
+```
+
+This code generates the following SQL query:
+
+```sql
+SELECT
+    `hierarchy_work_items`.`id`,
+    `hierarchy_work_items`.`title`,
+    `hierarchy_work_items`.`traversal_path`,
+    `hierarchy_work_items`.`work_item_type_id`,
+    `hierarchy_work_items`.`created_at`
+FROM
+    (
+        SELECT
+            `hierarchy_work_items`.`id`,
+            argMax(
+                `hierarchy_work_items`.`title`,
+                `hierarchy_work_items`.`version`
+            ) AS title,
+            `hierarchy_work_items`.`traversal_path`,
+            `hierarchy_work_items`.`work_item_type_id`,
+            argMax(
+                `hierarchy_work_items`.`created_at`,
+                `hierarchy_work_items`.`version`
+            ) AS created_at,
+            argMax(
+                `hierarchy_work_items`.`deleted`,
+                `hierarchy_work_items`.`version`
+            ) AS deleted
+        FROM
+            `hierarchy_work_items`
+        WHERE
+            startsWith(
+                `hierarchy_work_items`.`traversal_path`,
+                '1/9970/'
+            )
+            AND `hierarchy_work_items`.`work_item_type_id` = 1
+        GROUP BY
+            traversal_path,
+            work_item_type_id,
+            id
+    ) hierarchy_work_items
+WHERE
+    `hierarchy_work_items`.`deleted` = 'false'
+ORDER BY
+    `hierarchy_work_items`.`created_at` DESC,
+    `hierarchy_work_items`.`id` DESC
+LIMIT
+    21
+```
+
 ## Best practices
 
 When building features that require data from ClickHouse, you should first replicate raw data from PostgreSQL tables (such as events or issues) using [Sidekiq workers](#implementing-sidekiq-workers) or another strategy. Then, build separate aggregations on top of that data. By avoiding direct aggregation from PostgreSQL, you can improve maintainability and enable data reprocessing.

@@ -23,7 +23,7 @@ RSpec.describe 'Environments page', :js, feature_category: :continuous_delivery 
   end
 
   def stop_button_selector
-    'button[aria-label="Stop environment"]'
+    '[data-testid="stop-environment-button"]'
   end
 
   def upcoming_deployment_content_selector

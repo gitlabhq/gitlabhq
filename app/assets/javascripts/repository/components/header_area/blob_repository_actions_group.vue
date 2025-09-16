@@ -56,7 +56,7 @@ export default {
     <gl-disclosure-dropdown-item
       :aria-keyshortcuts="findFileShortcutKey"
       data-testid="find"
-      class="sm:gl-hidden"
+      class="@sm/panel:gl-hidden"
       @action="handleFindFile"
     >
       <template #list-item>
@@ -71,7 +71,7 @@ export default {
     <gl-disclosure-dropdown-item
       v-if="showBlameButton"
       :item="blameItem"
-      class="js-blob-blame-link sm:gl-hidden"
+      class="js-blob-blame-link @sm/panel:gl-hidden"
       data-testid="blame-dropdown-item"
     />
     <permalink-dropdown-item :permalink-path="permalinkPath" source="blob" />

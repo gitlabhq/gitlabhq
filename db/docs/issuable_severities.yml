@@ -7,7 +7,7 @@ feature_categories:
 description: Integer representing severity applied to issues, currently used for incidents
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40272
 milestone: '13.4'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

@@ -35,7 +35,7 @@ GET /projects/:id/packages
 
 | Attribute             | Type           | Required | Description |
 |:----------------------|:---------------|:---------|:------------|
-| `id`                  | integer/string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                  | integer or string | yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `order_by`            | string         | no       | The field to use as order. One of `created_at` (default), `name`, `version`, or `type`. |
 | `sort`                | string         | no       | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
 | `package_type`        | string         | no       | Filter the returned packages by type. One of `composer`, `conan`, `generic`, `golang`, `helm`, `maven`, `npm`, `nuget`, `pypi`, or `terraform_module`. |
@@ -106,7 +106,7 @@ GET /groups/:id/packages
 
 | Attribute             | Type           | Required | Description |
 |:----------------------|:---------------|:---------|:------------|
-| `id`                  | integer/string | yes      | ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`                  | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `exclude_subgroups`   | boolean        | no       | If the parameter is included as true, packages from projects from subgroups are not listed. Default is `false`. |
 | `order_by`            | string         | no       | The field to use as order. One of `created_at` (default), `name`, `version`, `type`, or `project_path`. |
 | `sort`                | string         | no       | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
@@ -205,7 +205,7 @@ GET /projects/:id/packages/:package_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `package_id`      | integer | yes | ID of a package. |
 
 ```shell
@@ -287,7 +287,7 @@ GET /projects/:id/packages/:package_id/package_files
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `package_id`      | integer | yes | ID of a package. |
 | `order_by`            | string         | no       | The field to use as order. One of `id` (default), `file_name`, `created_at`. |
 | `sort`                | string         | no       | The direction of the order, either `asc` (default) for ascending order or `desc` for descending order. |
@@ -369,7 +369,7 @@ GET /projects/:id/packages/:package_id/pipelines
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `package_id`      | integer | yes | ID of a package. |
 
 ```shell
@@ -434,7 +434,7 @@ DELETE /projects/:id/packages/:package_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `package_id`      | integer | yes | ID of a package. |
 
 ```shell
@@ -471,7 +471,7 @@ DELETE /projects/:id/packages/:package_id/package_files/:package_file_id
 
 | Attribute         | Type           | Required | Description |
 | ----------------- | -------------- | -------- | ----------- |
-| `id`              | integer/string | yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`              | integer or string | yes | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `package_id`      | integer        | yes | ID of a package. |
 | `package_file_id` | integer        | yes | ID of a package file. |
 

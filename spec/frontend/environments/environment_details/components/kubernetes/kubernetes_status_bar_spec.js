@@ -154,7 +154,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
       [CLUSTER_HEALTH_SUCCESS, 'success', 'status-success', 'Healthy'],
       [CLUSTER_HEALTH_ERROR, 'danger', 'status-alert', 'Unhealthy'],
       [CLUSTER_HEALTH_NEEDS_ATTENTION, 'warning', 'status-alert', 'Needs attention'],
-      [CLUSTER_HEALTH_UNKNOWN, 'muted', 'status-waiting', 'Unknown'],
+      [CLUSTER_HEALTH_UNKNOWN, 'neutral', 'status-waiting', 'Unknown'],
     ])(
       'when clusterHealthStatus is %s shows health badge with variant %s, icon %s and text %s',
       // eslint-disable-next-line max-params

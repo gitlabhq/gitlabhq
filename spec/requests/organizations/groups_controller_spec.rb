@@ -29,21 +29,21 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
 
       context 'with no association to an organization' do
         it_behaves_like 'organization - not found response'
-        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
 
       context 'as as admin', :enable_admin_mode do
         let_it_be(:user) { create(:admin) }
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
 
       context 'as an organization user' do
         let_it_be(:organization_user) { create(:organization_user, organization: organization, user: user) }
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
     end
   end
@@ -60,7 +60,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
         sign_in(user)
       end
 
-      it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+      it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
 
       context 'when current user can create group inside the organization' do
         let_it_be(:organization_user) { create(:organization_user, organization: organization, user: user) }
@@ -125,7 +125,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
           let_it_be(:user) { create(:admin) }
 
           it_behaves_like 'organization - successful response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
         end
 
         context 'as a group owner' do
@@ -134,12 +134,12 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
           end
 
           it_behaves_like 'organization - successful response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
         end
 
         context 'as a user that is not an owner' do
           it_behaves_like 'organization - not found response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
         end
 
         context 'as an organization owner' do
@@ -149,7 +149,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
           end
 
           it_behaves_like 'organization - successful response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
         end
       end
     end
@@ -171,7 +171,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
       end
 
       it_behaves_like 'organization - not found response'
-      it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+      it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
     end
 
     context 'when group does not exist' do
@@ -243,7 +243,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
           let_it_be(:user) { create(:admin) }
 
           it_behaves_like 'organization - successful response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
           it_behaves_like 'marks the group for deletion'
         end
 
@@ -253,7 +253,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
           end
 
           it_behaves_like 'organization - successful response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
 
           context 'when mark for deletion succeeds' do
             it 'marks the group for delayed deletion' do
@@ -298,17 +298,39 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
 
           context 'when group is already marked for deletion' do
             before do
-              create(:group_deletion_schedule, group: group, marked_for_deletion_on: Date.current)
+              create(:group_deletion_schedule, group: group)
             end
 
             context 'when permanently_remove param is set' do
-              it 'deletes the group immediately' do
-                expect(GroupDestroyWorker).to receive(:perform_async)
+              let(:params) { { permanently_remove: true } }
 
-                delete groups_organization_path(organization, id: group.to_param, permanently_remove: true)
+              subject(:gitlab_request) do
+                delete groups_organization_path(organization, id: group.to_param), params: params, as: :json
+              end
 
-                expect(response).to have_gitlab_http_status(:ok)
-                expect(json_response['message']).to include "Group '#{group.name}' is being deleted."
+              describe 'forbidden by the :disallow_immediate_deletion feature flag' do
+                it 'returns error' do
+                  Sidekiq::Testing.fake! do
+                    expect { gitlab_request }.not_to change { GroupDestroyWorker.jobs.size }
+                  end
+
+                  expect(response).to have_gitlab_http_status(:not_found)
+                end
+              end
+
+              context 'when the :disallow_immediate_deletion feature flag is disabled' do
+                before do
+                  stub_feature_flags(disallow_immediate_deletion: false)
+                end
+
+                it 'deletes the group immediately' do
+                  expect(GroupDestroyWorker).to receive(:perform_async)
+
+                  gitlab_request
+
+                  expect(response).to have_gitlab_http_status(:ok)
+                  expect(json_response['message']).to include "Group '#{group.name}' is being deleted."
+                end
               end
             end
 
@@ -325,7 +347,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
 
         context 'as a user that is not an owner' do
           it_behaves_like 'organization - not found response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
           it_behaves_like 'does not mark the group for deletion'
         end
 
@@ -336,7 +358,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
           end
 
           it_behaves_like 'organization - successful response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
           it_behaves_like 'marks the group for deletion'
         end
       end
@@ -359,7 +381,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
       end
 
       it_behaves_like 'organization - not found response'
-      it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+      it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       it_behaves_like 'does not mark the group for deletion'
     end
 

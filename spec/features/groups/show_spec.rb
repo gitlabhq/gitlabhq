@@ -10,6 +10,12 @@ RSpec.describe 'Group show page', :with_current_organization, feature_category: 
 
   let(:path) { group_path(group) }
 
+  before do
+    # Disable feature flag while it is a WIP.
+    # Feature specs for enabled feature flag will be added in https://gitlab.com/gitlab-org/gitlab/-/issues/519658
+    stub_feature_flags(groups_overview_shared_vue_components: false)
+  end
+
   context 'when signed in' do
     context 'with non-admin group concerns' do
       before do

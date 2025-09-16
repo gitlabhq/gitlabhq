@@ -52,8 +52,10 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
       end
 
       it 'preloads the job definition instances' do
+        expected_count = 3 # 1 select + 2 inserts
+
         expect { service.execute(pipeline) }
-          .to match_query_count(1).for_model(Ci::JobDefinitionInstance)
+          .to match_query_count(expected_count).for_model(Ci::JobDefinitionInstance)
       end
     end
 
@@ -395,7 +397,7 @@ RSpec.describe Ci::RetryPipelineService, '#execute', feature_category: :continuo
       before do
         build = create(:ci_build, pipeline: pipeline, status: :failed)
         allow_next_instance_of(Ci::RetryJobService) do |service|
-          allow(service).to receive(:can?).with(user, :update_build, build).and_return(false)
+          allow(service).to receive(:can?).with(user, :retry_job, build).and_return(false)
         end
       end
 

@@ -519,7 +519,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
           "\e[B", # Arrow down to: internal_events_cli_used
           ' ', # Multi-select: internal_events_cli_used
           "\n", # Submit selections
-          "\n", # Select: Weekly/Monthly count
+          "\n", # Select: Monthly/Weekly/Total count
           "where a definition file was created with the CLI\n", # Input description
           "1\n", # Select: Copy & continue
           "\e[B \n", # Skip product categories
@@ -530,6 +530,9 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
       - Metric trend dashboards:
         - https://10az.online.tableau.com/#/site/gitlab/views/PDServicePingExplorationDashboard/MetricTrend?Metrics%20Path=counts.count_total_internal_events_cli_closed_and_internal_events_cli_used_monthly
         - https://10az.online.tableau.com/#/site/gitlab/views/PDServicePingExplorationDashboard/MetricTrend?Metrics%20Path=counts.count_total_internal_events_cli_closed_and_internal_events_cli_used_weekly
+        - https://10az.online.tableau.com/#/site/gitlab/views/PDServicePingExplorationDashboard/MetricTrend?Metrics%20Path=counts.count_total_internal_events_cli_closed_and_internal_events_cli_used
+      - Set up Tableau Alerts via the Metric Trend Dashboards to receive notifications when your metrics cross specified thresholds.
+        See the Tableau Documentation for details: https://help.tableau.com/current/pro/desktop/en-us/data_alerts.htm
         TEXT
 
         with_cli_thread do

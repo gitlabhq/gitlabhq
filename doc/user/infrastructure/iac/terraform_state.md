@@ -112,6 +112,24 @@ When you use `-backend-config`, the configuration is:
 
 This configuration can lead to problems like [being unable to lock the state files in CI jobs](troubleshooting.md#cant-lock-terraform-state-files-in-ci-jobs-for-terraform-apply-with-a-previous-jobs-plan).
 
+#### Customize the plan filename
+
+By default, the `gitlab-tofu plan` (or `gitlab-terraform plan`) command always writes the plan output to a file named `plan.cache`.
+
+To change the filename, set the `TF_PLAN_CACHE` environment variable in your CI/CD pipeline configuration. For example, to
+set the filename to `my-plan.tfplan`:
+
+```yaml
+variables:
+  TF_PLAN_CACHE: "my-plan.tfplan"
+```
+
+{{< alert type="note" >}}
+
+Do not set the output filename by passing the `-out=<filename>` option. GitLab commands override this option.
+
+{{< /alert >}}
+
 ## Access the state from your local machine
 
 You can access the GitLab-managed OpenTofu state from your local machine.
@@ -524,8 +542,8 @@ curl --header "Private-Token: <your_access_token>" \
      --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>"
 
 # Download a specific version (serial) of a state
-curl --request DELETE --header "Private-Token: <your_access_token>" \
-     --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/versions/<your_serial>"
+curl --header "Private-Token: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/<your_project_id>/terraform/state/<your_state_name>/versions/<version_serial_number>"
 ```
 
 {{< /tab >}}

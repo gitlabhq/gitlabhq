@@ -9,6 +9,7 @@ query requestingReviewAuthorOrAssignee(
   $mergedAfter: Time
   $not: MergeRequestsResolverNegatedParams
   $ignoredReviewerUsername: String
+  $draft: Boolean
   $perPage: Int!
   $afterCursor: String
   $sort: MergeRequestSort = UPDATED_DESC
@@ -25,6 +26,7 @@ query requestingReviewAuthorOrAssignee(
       mergedAfter: $mergedAfter
       not: $not
       ignoredReviewerUsername: $ignoredReviewerUsername
+      draft: $draft
       or: $or
       first: $perPage
       after: $afterCursor

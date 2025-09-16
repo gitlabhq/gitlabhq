@@ -11,14 +11,12 @@ import approvalsMixin from '../../mixins/approvals';
 import StateContainer from '../state_container.vue';
 import { INVALID_RULES_DOCS_PATH } from '../../constants';
 import ApprovalsSummary from './approvals_summary.vue';
-import ApprovalsSummaryOptional from './approvals_summary_optional.vue';
 import { FETCH_LOADING, APPROVE_ERROR, UNAPPROVE_ERROR } from './messages';
 
 export default {
   name: 'MRWidgetApprovals',
   components: {
     ApprovalsSummary,
-    ApprovalsSummaryOptional,
     StateContainer,
     GlButton,
     GlSprintf,
@@ -272,7 +270,7 @@ export default {
       <template v-else>
         <div class="gl-flex gl-flex-col">
           <div
-            class="gl-flex gl-flex-col gl-flex-wrap gl-items-baseline gl-gap-3 sm:gl-flex-row sm:gl-items-center"
+            class="gl-flex gl-flex-col gl-flex-wrap gl-items-baseline gl-gap-3 @sm/panel:gl-flex-row @sm/panel:gl-items-center"
           >
             <div v-if="requireSamlAuthToApprove && showApprove">
               <gl-form
@@ -306,16 +304,13 @@ export default {
             >
               {{ action.text }}
             </gl-button>
-            <approvals-summary-optional
-              v-if="isOptional"
-              :can-approve="hasAction"
-              :help-path="mr.approvalsHelpPath"
-            />
             <approvals-summary
-              v-else
+              :optional="isOptional"
               :approval-state="approvals"
               :disable-committers-approval="disableCommittersApproval"
               :multiple-approval-rules-available="mr.multipleApprovalRulesAvailable"
+              :can-approve="hasAction"
+              :help-path="mr.approvalsHelpPath"
             />
           </div>
           <div v-if="hasInvalidRules" class="gl-mt-2 gl-text-subtle" data-testid="invalid-rules">

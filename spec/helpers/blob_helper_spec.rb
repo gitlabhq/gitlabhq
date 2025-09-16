@@ -405,6 +405,39 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
       allow(helper).to receive_messages(selected_branch: ref, current_user: user)
     end
 
+    context 'when there is no ignore revs file' do
+      let(:repo_double) { instance_double(Repository, ignore_revs_file_blob: nil) }
+
+      before do
+        allow(project).to receive(:repository).and_return(repo_double)
+      end
+
+      it 'includes has_revs_file as false' do
+        assign(:ref, ref)
+
+        expect(helper.vue_blob_app_data(project, blob, ref)).to include(
+          has_revs_file: 'false'
+        )
+      end
+    end
+
+    context 'when there is an ignore revs file' do
+      let(:ignore_revs_blob) { fake_blob(path: '.git-blame-ignore-revs') }
+      let(:repo_double) { instance_double(Repository, ignore_revs_file_blob: ignore_revs_blob) }
+
+      before do
+        allow(project).to receive(:repository).and_return(repo_double)
+      end
+
+      it 'includes has_revs_file as true' do
+        assign(:ref, ref)
+
+        expect(helper.vue_blob_app_data(project, blob, ref)).to include(
+          has_revs_file: 'true'
+        )
+      end
+    end
+
     it 'returns data related to blob app' do
       assign(:ref, ref)
 

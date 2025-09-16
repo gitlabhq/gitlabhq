@@ -1,35 +1,19 @@
-#import "ee_else_ce/vue_merge_request_widget/queries/states/merge_train_car_index.fragment.graphql"
-#import "ee_else_ce/vue_merge_request_widget/queries/states/merge_train_car_count.fragment.graphql"
-
-query getState($projectPath: ID!, $iid: String!) {
+query getState($projectPath: ID!, $iid: String!, $initialRequest: Boolean = true) {
   project(fullPath: $projectPath) {
     id
     archived
     onlyAllowMergeIfPipelineSucceeds
-    allowMergeOnSkippedPipeline
-    ...MergeTrainCarCount
     mergeRequest(iid: $iid) {
       id
       autoMergeEnabled
-      availableAutoMergeStrategies
-      commitCount
-      conflicts
-      detailedMergeStatus
-      diffHeadSha
-      mergeAfter
+      commitCount @include(if: $initialRequest)
+      detailedMergeStatus @include(if: $initialRequest)
       mergeError
-      mergeStatus
-      mergeable
-      mergeableDiscussionsState
-      shouldBeRebased
-      sourceBranchExists
       state
-      targetBranchExists
       userPermissions {
         canMerge
       }
       draft
-      ...MergeTrainCarIndex
     }
   }
 }

@@ -16,7 +16,7 @@ Discussions are attached to:
 
 - Snippets
 - Issues
-- [Epics](../user/group/epics/_index.md)
+- Epics
 - Merge requests
 - Commits
 
@@ -54,10 +54,40 @@ Gets a list of all discussion items for a single issue.
 GET /projects/:id/issues/:issue_iid/discussions
 ```
 
-| Attribute           | Type             | Required   | Description  |
-| ------------------- | ---------------- | ---------- | ------------ |
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `issue_iid`         | integer          | yes        | The IID of an issue. |
+Supported attributes:
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `issue_iid` | integer           | Yes      | The IID of an issue. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute               | Type    | Description |
+|-------------------------|---------|-------------|
+| `id`                    | string  | The ID of the discussion. |
+| `individual_note`       | boolean | If `true`, an individual note or part of a discussion. |
+| `notes`                 | array   | Array of note objects in the discussion. |
+| `notes[].id`            | integer | The ID of the note. |
+| `notes[].type`          | string  | The type of note (`DiscussionNote` or `null`). |
+| `notes[].body`          | string  | The content of the note. |
+| `notes[].author`        | object  | The author of the note. |
+| `notes[].created_at`    | string  | When the note was created (ISO 8601 format). |
+| `notes[].updated_at`    | string  | When the note was last updated (ISO 8601 format). |
+| `notes[].system`        | boolean | If `true`, a system note. |
+| `notes[].noteable_id`   | integer | The ID of the noteable object. |
+| `notes[].noteable_type` | string  | The type of the noteable object. |
+| `notes[].project_id`    | integer | The ID of the project. |
+| `notes[].resolvable`    | boolean | If `true`, the note can be resolved. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions"
+```
+
+Example response:
 
 ```json
 [
@@ -141,11 +171,6 @@ GET /projects/:id/issues/:issue_iid/discussions
 ]
 ```
 
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/issues/11/discussions"
-```
-
 ### Get single issue discussion item
 
 Returns a single discussion item for a specific project issue.
@@ -154,13 +179,17 @@ Returns a single discussion item for a specific project issue.
 GET /projects/:id/issues/:issue_iid/discussions/:discussion_id
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute       | Type           | Required | Description |
-| --------------- | -------------- | -------- | ----------- |
-| `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `issue_iid`     | integer        | yes      | The IID of an issue. |
-| `discussion_id` | integer        | yes      | The ID of a discussion item. |
+| Attribute       | Type              | Required | Description |
+|-----------------|-------------------|----------|-------------|
+| `discussion_id` | integer            | Yes      | The ID of a discussion item. |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `issue_iid`     | integer           | Yes      | The IID of an issue. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List project issue discussion items](#list-project-issue-discussion-items).
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -175,14 +204,18 @@ Creates a new thread to a single project issue. Similar to creating a note, but 
 POST /projects/:id/issues/:issue_iid/discussions
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute       | Type           | Required | Description |
-| --------------- | -------------- | -------- | ----------- |
-| `body`          | string         | yes      | The content of the thread. |
-| `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `issue_iid`     | integer        | yes      | The IID of an issue. |
-| `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+| Attribute    | Type              | Required | Description |
+|--------------|-------------------|----------|-------------|
+| `body`       | string            | Yes      | The content of the thread. |
+| `id`         | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `issue_iid`  | integer           | Yes      | The IID of an issue. |
+| `created_at` | string            | No       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the same response attributes as [List project issue discussion items](#list-project-issue-discussion-items).
+
+Example request:
 
 ```shell
 curl --request POST \
@@ -204,16 +237,19 @@ Notes can be added to other items than comments, such as system notes, making th
 POST /projects/:id/issues/:issue_iid/discussions/:discussion_id/notes
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute       | Type           | Required | Description |
-| --------------- | -------------- | -------- | ----------- |
-| `body`          | string         | yes      | The content of the note or reply. |
-| `discussion_id` | integer        | yes      | The ID of a thread. |
-| `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `issue_iid`     | integer        | yes      | The IID of an issue. |
-| `note_id`       | integer        | yes      | The ID of a thread note. |
-| `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+| Attribute       | Type              | Required | Description |
+|-----------------|-------------------|----------|-------------|
+| `body`          | string            | Yes      | The content of the note or reply. |
+| `discussion_id` | integer            | Yes      | The ID of a thread. |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `issue_iid`     | integer           | Yes      | The IID of an issue. |
+| `created_at`    | string            | No       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the created note object.
+
+Example request:
 
 ```shell
 curl --request POST \
@@ -229,15 +265,19 @@ Modify existing thread note of an issue.
 PUT /projects/:id/issues/:issue_iid/discussions/:discussion_id/notes/:note_id
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute       | Type           | Required | Description |
-| --------------- | -------------- | -------- | ----------- |
-| `body`          | string         | yes      | The content of the note or reply. |
-| `discussion_id` | integer        | yes      | The ID of a thread. |
-| `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `issue_iid`     | integer        | yes      | The IID of an issue. |
-| `note_id`       | integer        | yes      | The ID of a thread note. |
+| Attribute       | Type              | Required | Description |
+|-----------------|-------------------|----------|-------------|
+| `body`          | string            | Yes      | The content of the note or reply. |
+| `discussion_id` | integer            | Yes      | The ID of a thread. |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `issue_iid`     | integer           | Yes      | The IID of an issue. |
+| `note_id`       | integer           | Yes      | The ID of a thread note. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the updated note object.
+
+Example request:
 
 ```shell
 curl --request PUT \
@@ -253,14 +293,18 @@ Deletes an existing thread note of an issue.
 DELETE /projects/:id/issues/:issue_iid/discussions/:discussion_id/notes/:note_id
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute       | Type           | Required | Description |
-| --------------- | -------------- | -------- | ----------- |
-| `discussion_id` | integer        | yes      | The ID of a discussion. |
-| `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `issue_iid`     | integer        | yes      | The IID of an issue. |
-| `note_id`       | integer        | yes      | The ID of a discussion note. |
+| Attribute       | Type              | Required | Description |
+|-----------------|-------------------|----------|-------------|
+| `discussion_id` | integer            | Yes      | The ID of a discussion. |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `issue_iid`     | integer           | Yes      | The IID of an issue. |
+| `note_id`       | integer           | Yes      | The ID of a discussion note. |
+
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
+
+Example request:
 
 ```shell
 curl --request DELETE \
@@ -278,10 +322,23 @@ Gets a list of all discussion items for a single snippet.
 GET /projects/:id/snippets/:snippet_id/discussions
 ```
 
-| Attribute           | Type             | Required   | Description |
-| ------------------- | ---------------- | ---------- | ------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `snippet_id`        | integer          | yes        | The ID of a snippet. |
+Supported attributes:
+
+| Attribute    | Type              | Required | Description |
+|--------------|-------------------|----------|-------------|
+| `id`         | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `snippet_id` | integer           | Yes      | The ID of a snippet. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List project issue discussion items](#list-project-issue-discussion-items), with `noteable_type` set to `Snippet`.
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions"
+```
+
+Example response:
 
 ```json
 [
@@ -365,11 +422,6 @@ GET /projects/:id/snippets/:snippet_id/discussions
 ]
 ```
 
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions"
-```
-
 ### Get single snippet discussion item
 
 Returns a single discussion item for a specific project snippet.
@@ -378,17 +430,20 @@ Returns a single discussion item for a specific project snippet.
 GET /projects/:id/snippets/:snippet_id/discussions/:discussion_id
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `discussion_id` | integer        | yes      | The ID of a discussion item. |
-| `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `snippet_id`    | integer        | yes      | The ID of a snippet. |
+| `discussion_id` | integer         | Yes      | The ID of a discussion item. |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `snippet_id`    | integer        | Yes      | The ID of a snippet. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List project snippet discussion items](#list-project-snippet-discussion-items).
+
+Example request:
 
 ```shell
-curl --request POST \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/snippets/11/discussions/<discussion_id>"
 ```
 
@@ -401,14 +456,18 @@ a note, but other comments (replies) can be added to it later.
 POST /projects/:id/snippets/:snippet_id/discussions
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute       | Type           | Required | Description |
-| --------------- | -------------- | -------- | ----------- |
-| `body`          | string         | yes      | The content of a discussion. |
-| `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `snippet_id`    | integer        | yes      | The ID of a snippet. |
-| `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+| Attribute    | Type              | Required | Description |
+|--------------|-------------------|----------|-------------|
+| `body`       | string            | Yes      | The content of a discussion. |
+| `id`         | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `snippet_id` | integer           | Yes      | The ID of a snippet. |
+| `created_at` | string            | No       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the created discussion object.
+
+Example request:
 
 ```shell
 curl --request POST \
@@ -424,16 +483,19 @@ Adds a new note to the thread.
 POST /projects/:id/snippets/:snippet_id/discussions/:discussion_id/notes
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute       | Type           | Required | Description |
-| --------------- | -------------- | -------- | ----------- |
-| `body`          | string         | yes      | The content of the note or reply. |
-| `discussion_id` | integer        | yes      | The ID of a thread. |
-| `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `note_id`       | integer        | yes      | The ID of a thread note. |
-| `snippet_id`    | integer        | yes      | The ID of a snippet. |
-| `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+| Attribute       | Type              | Required | Description |
+|-----------------|-------------------|----------|-------------|
+| `body`          | string            | Yes      | The content of the note or reply. |
+| `discussion_id` | integer            | Yes      | The ID of a thread. |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `snippet_id`    | integer           | Yes      | The ID of a snippet. |
+| `created_at`    | string            | No       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the created note object.
+
+Example request:
 
 ```shell
 curl --request POST \
@@ -449,15 +511,19 @@ Modify existing thread note of a snippet.
 PUT /projects/:id/snippets/:snippet_id/discussions/:discussion_id/notes/:note_id
 ```
 
-Parameters:
+Supported attributes:
 
 | Attribute       | Type           | Required | Description |
 | --------------- | -------------- | -------- | ----------- |
-| `body`          | string         | yes      | The content of the note or reply. |
-| `discussion_id` | integer        | yes      | The ID of a thread. |
-| `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `note_id`       | integer        | yes      | The ID of a thread note. |
-| `snippet_id`    | integer        | yes      | The ID of a snippet. |
+| `body`          | string         | Yes      | The content of the note or reply. |
+| `discussion_id` | integer         | Yes      | The ID of a thread. |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `note_id`       | integer        | Yes      | The ID of a thread note. |
+| `snippet_id`    | integer        | Yes      | The ID of a snippet. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the updated note object.
+
+Example request:
 
 ```shell
 curl --request PUT \
@@ -473,14 +539,18 @@ Deletes an existing thread note of a snippet.
 DELETE /projects/:id/snippets/:snippet_id/discussions/:discussion_id/notes/:note_id
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute       | Type           | Required | Description |
-| --------------- | -------------- | -------- | ----------- |
-| `discussion_id` | integer        | yes      | The ID of a discussion. |
-| `id`            | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `note_id`       | integer        | yes      | The ID of a discussion note. |
-| `snippet_id`    | integer        | yes      | The ID of a snippet. |
+| Attribute       | Type              | Required | Description |
+|-----------------|-------------------|----------|-------------|
+| `discussion_id` | integer            | Yes      | The ID of a discussion. |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `note_id`       | integer           | Yes      | The ID of a discussion note. |
+| `snippet_id`    | integer           | Yes      | The ID of a snippet. |
+
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
+
+Example request:
 
 ```shell
 curl --request DELETE \
@@ -520,10 +590,23 @@ Gets a list of all discussion items for a single epic.
 GET /groups/:id/epics/:epic_id/discussions
 ```
 
-| Attribute           | Type             | Required   | Description  |
-| ------------------- | ---------------- | ---------- | ------------ |
-| `epic_id`           | integer          | yes        | The ID of an epic. |
-| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+Supported attributes:
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `epic_id` | integer           | Yes      | The ID of an epic. |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List project issue discussion items](#list-project-issue-discussion-items), with `noteable_type` set to `Epic`.
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions"
+```
+
+Example response:
 
 ```json
 [
@@ -608,11 +691,6 @@ GET /groups/:id/epics/:epic_id/discussions
 ]
 ```
 
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>"\
-  --url "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions"
-```
-
 ### Get single epic discussion item
 
 Returns a single discussion item for a specific group epic.
@@ -621,17 +699,20 @@ Returns a single discussion item for a specific group epic.
 GET /groups/:id/epics/:epic_id/discussions/:discussion_id
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute       | Type           | Required | Description |
-| --------------- | -------------- | -------- | ----------- |
-| `discussion_id` | integer        | yes      | The ID of a discussion item. |
-| `epic_id`       | integer        | yes      | The ID of an epic. |
-| `id`            | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| Attribute       | Type              | Required | Description |
+|-----------------|-------------------|----------|-------------|
+| `discussion_id` | integer            | Yes      | The ID of a discussion item. |
+| `epic_id`       | integer           | Yes      | The ID of an epic. |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List group epic discussion items](#list-group-epic-discussion-items).
+
+Example request:
 
 ```shell
-curl --request POST \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/groups/5/epics/11/discussions/<discussion_id>"
 ```
 
@@ -644,14 +725,18 @@ a note, but other comments (replies) can be added to it later.
 POST /groups/:id/epics/:epic_id/discussions
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute       | Type           | Required | Description |
-| --------------- | -------------- | -------- | ----------- |
-| `body`          | string         | yes      | The content of the thread. |
-| `epic_id`       | integer        | yes      | The ID of an epic. |
-| `id`            | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
-| `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+| Attribute    | Type              | Required | Description |
+|--------------|-------------------|----------|-------------|
+| `body`       | string            | Yes      | The content of the thread. |
+| `epic_id`    | integer           | Yes      | The ID of an epic. |
+| `id`         | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `created_at` | string            | No       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the created discussion object.
+
+Example request:
 
 ```shell
 curl --request POST \
@@ -668,16 +753,19 @@ Adds a new note to the thread. This can also
 POST /groups/:id/epics/:epic_id/discussions/:discussion_id/notes
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute       | Type           | Required | Description |
-| --------------- | -------------- | -------- | ----------- |
-| `body`          | string         | yes      | The content of the note or reply. |
-| `discussion_id` | integer        | yes      | The ID of a thread. |
-| `epic_id`       | integer        | yes      | The ID of an epic. |
-| `id`            | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
-| `note_id`       | integer        | yes      | The ID of a thread note. |
-| `created_at`    | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+| Attribute       | Type              | Required | Description |
+|-----------------|-------------------|----------|-------------|
+| `body`          | string            | Yes      | The content of the note or reply. |
+| `discussion_id` | integer            | Yes      | The ID of a thread. |
+| `epic_id`       | integer           | Yes      | The ID of an epic. |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `created_at`    | string            | No       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the created note object.
+
+Example request:
 
 ```shell
 curl --request POST \
@@ -693,15 +781,19 @@ Modify existing thread note of an epic.
 PUT /groups/:id/epics/:epic_id/discussions/:discussion_id/notes/:note_id
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute       | Type           | Required | Description |
-| --------------- | -------------- | -------- | ----------- |
-| `body`          | string         | yes      | The content of note or reply. |
-| `discussion_id` | integer        | yes      | The ID of a thread. |
-| `epic_id`       | integer        | yes      | The ID of an epic. |
-| `id`            | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
-| `note_id`       | integer        | yes      | The ID of a thread note. |
+| Attribute       | Type              | Required | Description |
+|-----------------|-------------------|----------|-------------|
+| `body`          | string            | Yes      | The content of a note or reply. |
+| `discussion_id` | integer            | Yes      | The ID of a thread. |
+| `epic_id`       | integer           | Yes      | The ID of an epic. |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `note_id`       | integer           | Yes      | The ID of a thread note. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the updated note object.
+
+Example request:
 
 ```shell
 curl --request PUT \
@@ -717,14 +809,18 @@ Deletes an existing thread note of an epic.
 DELETE /groups/:id/epics/:epic_id/discussions/:discussion_id/notes/:note_id
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute       | Type           | Required | Description |
-| --------------- | -------------- | -------- | ----------- |
-| `discussion_id` | integer        | yes      | The ID of a thread. |
-| `epic_id`       | integer        | yes      | The ID of an epic. |
-| `id`            | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
-| `note_id`       | integer        | yes      | The ID of a thread note. |
+| Attribute       | Type              | Required | Description |
+|-----------------|-------------------|----------|-------------|
+| `discussion_id` | integer            | Yes      | The ID of a thread. |
+| `epic_id`       | integer           | Yes      | The ID of an epic. |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
+| `note_id`       | integer           | Yes      | The ID of a thread note. |
+
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
+
+Example request:
 
 ```shell
 curl --request DELETE \
@@ -742,10 +838,47 @@ Gets a list of all discussion items for a single merge request.
 GET /projects/:id/merge_requests/:merge_request_iid/discussions
 ```
 
-| Attribute           | Type             | Required   | Description  |
-| ------------------- | ---------------- | ---------- | ------------ |
-| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `merge_request_iid` | integer          | yes        | The IID of a merge request. |
+Supported attributes:
+
+| Attribute           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `merge_request_iid` | integer           | Yes      | The IID of a merge request. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
+
+| Attribute               | Type    | Description |
+|-------------------------|---------|-------------|
+| `id`                    | string  | The ID of the discussion. |
+| `individual_note`       | boolean | If `true`, an individual note or part of a discussion. |
+| `notes`                 | array   | Array of note objects in the discussion. |
+| `notes[].id`            | integer | The ID of the note. |
+| `notes[].type`          | string  | The type of note (`DiscussionNote`, `DiffNote`, or `null`). |
+| `notes[].body`          | string  | The content of the note. |
+| `notes[].author`        | object  | The author of the note. |
+| `notes[].created_at`    | string  | When the note was created (ISO 8601 format). |
+| `notes[].updated_at`    | string  | When the note was last updated (ISO 8601 format). |
+| `notes[].system`        | boolean | If `true`, a system note. |
+| `notes[].noteable_id`   | integer | The ID of the noteable object. |
+| `notes[].noteable_type` | string  | The type of the noteable object. |
+| `notes[].project_id`    | integer | The ID of the project. |
+| `notes[].resolved`      | boolean | If `true`, the note is resolved (merge requests only). |
+| `notes[].resolvable`    | boolean | If `true`, the note can be resolved. |
+| `notes[].resolved_by`   | object  | The user who resolved the note. |
+| `notes[].resolved_at`   | string  | When the note was resolved (ISO 8601 format). |
+| `notes[].position`      | object  | Position information for diff notes. |
+| `notes[].suggestions`   | array   | Array of suggestion objects for the note. |
+
+Diff comments also contain position information:
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions"
+```
+
+Example response:
 
 ```json
 [
@@ -910,11 +1043,6 @@ Diff comments also contain position:
 ]
 ```
 
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions"
-```
-
 ### Get single merge request discussion item
 
 Returns a single discussion item for a specific project merge request.
@@ -923,13 +1051,17 @@ Returns a single discussion item for a specific project merge request.
 GET /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute           | Type           | Required | Description |
-| ------------------- | -------------- | -------- | ----------- |
-| `discussion_id`     | string        | yes      | The ID of a discussion item. |
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `merge_request_iid` | integer        | yes      | The IID of a merge request. |
+| Attribute           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `discussion_id`     | string            | Yes      | The ID of a discussion item. |
+| `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `merge_request_iid` | integer           | Yes      | The IID of a merge request. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List project merge request discussion items](#list-project-merge-request-discussion-items).
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -947,29 +1079,31 @@ and [Create new merge request note](notes.md#create-new-merge-request-note) in t
 POST /projects/:id/merge_requests/:merge_request_iid/discussions
 ```
 
-Parameters for all comments:
+Supported attributes for all comments:
 
-| Attribute                                | Type           | Required                             | Description |
-| ---------------------------------------- | -------------- |--------------------------------------| ----------- |
-| `body`                                   | string         | yes                                  | The content of the thread. |
-| `id`                                     | integer/string | yes                                  | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `merge_request_iid`                      | integer        | yes                                  | The IID of a merge request. |
-| `position[base_sha]`                     | string         | yes (if `position*` is supplied)     | Base commit SHA in the source branch. |
-| `position[head_sha]`                     | string         | yes (if `position*` is supplied)     | SHA referencing HEAD of this merge request. |
-| `position[start_sha]`                    | string         | yes (if `position*` is supplied)     | SHA referencing commit in target branch. |
-| `position[new_path]`                     | string         | yes (if the position type is `text`) | File path after change. |
-| `position[old_path]`                     | string         | yes (if the position type is `text`) | File path before change. |
-| `position[position_type]`                | string         | yes (if position* is supplied)       | Type of the position reference. Allowed values: `text`, `image`, or `file`. `file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046) in GitLab 16.4. |
-| `commit_id`                              | string         | no                                   | SHA referencing commit to start this thread on. |
-| `created_at`                             | string         | no                                   | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
-| `position`                               | hash           | no                                   | Position when creating a diff note. |
-| `position[new_line]`                     | integer        | no                                   | For `text` diff notes, the line number after change. |
-| `position[old_line]`                     | integer        | no                                   | For `text` diff notes, the line number before change. |
-| `position[line_range]`                   | hash           | no                                   | Line range for a multi-line diff note. |
-| `position[width]`                        | integer        | no                                   | For `image` diff notes, width of the image. |
-| `position[height]`                       | integer        | no                                   | For `image` diff notes, height of the image. |
-| `position[x]`                            | float          | no                                   | For `image` diff notes, X coordinate. |
-| `position[y]`                            | float          | no                                   | For `image` diff notes, Y coordinate. |
+| Attribute                 | Type              | Required                             | Description |
+|---------------------------|-------------------|--------------------------------------|-------------|
+| `body`                    | string            | Yes                                  | The content of the thread. |
+| `id`                      | integer or string | Yes                                  | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `merge_request_iid`       | integer           | Yes                                  | The IID of a merge request. |
+| `commit_id`               | string            | No                                   | SHA referencing commit to start this discussion on. |
+| `created_at`              | string            | No                                   | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+| `position`                | hash              | No                                   | Position when creating a diff note. |
+| `position[base_sha]`      | string            | Yes (if `position*` is supplied)     | Base commit SHA in the source branch. |
+| `position[head_sha]`      | string            | Yes (if `position*` is supplied)     | SHA referencing HEAD of this merge request. |
+| `position[start_sha]`     | string            | Yes (if `position*` is supplied)     | SHA referencing commit in target branch. |
+| `position[position_type]` | string            | Yes (if position* is supplied)       | Type of the position reference. Allowed values: `text`, `image`, or `file`. `file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046) in GitLab 16.4. |
+| `position[new_path]`      | string            | Yes (if the position type is `text`) | File path after change. |
+| `position[old_path]`      | string            | Yes (if the position type is `text`) | File path before change. |
+| `position[new_line]`      | integer           | No                                   | For `text` diff notes, the line number after change. |
+| `position[old_line]`      | integer           | No                                   | For `text` diff notes, the line number before change. |
+| `position[line_range]`    | hash              | No                                   | Line range for a multi-line diff note. |
+| `position[width]`         | integer           | No                                   | For `image` diff notes, width of the image. |
+| `position[height]`        | integer           | No                                   | For `image` diff notes, height of the image. |
+| `position[x]`             | float             | No                                   | For `image` diff notes, X coordinate. |
+| `position[y]`             | float             | No                                   | For `image` diff notes, Y coordinate. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the created discussion object.
 
 #### Create a new thread on the overview page
 
@@ -1025,34 +1159,34 @@ To create a new thread:
 
    ```shell
    curl --request POST \
-     --header "PRIVATE-TOKEN: <your_access_token>"\
-     --form 'position[position_type]=text'\
-     --form 'position[base_sha]=<use base_commit_sha from the versions response>'\
-     --form 'position[head_sha]=<use head_commit_sha from the versions response>'\
-     --form 'position[start_sha]=<use start_commit_sha from the versions response>'\
-     --form 'position[new_path]=file.js'\
-     --form 'position[old_path]=file.js'\
-     --form 'position[new_line]=18'\
-     --form 'body=test comment body'\
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --form 'position[position_type]=text' \
+     --form 'position[base_sha]=<use base_commit_sha from the versions response>' \
+     --form 'position[head_sha]=<use head_commit_sha from the versions response>' \
+     --form 'position[start_sha]=<use start_commit_sha from the versions response>' \
+     --form 'position[new_path]=file.js' \
+     --form 'position[old_path]=file.js' \
+     --form 'position[new_line]=18' \
+     --form 'body=test comment body' \
      --url "https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions"
    ```
 
 #### Parameters for multiline comments
 
-Parameters for multiline comments only:
+Supported attributes for multiline comments only:
 
-| Attribute                                | Type           | Required | Description |
-| ---------------------------------------- | -------------- | -------- | ----------- |
-| `position[line_range][end][line_code]`   | string         | yes      | [Line code](#line-code) for the end line. |
-| `position[line_range][end][type]`        | string         | yes      | Use `new` for lines added by this commit, otherwise `old`. |
-| `position[line_range][end][old_line]`    | integer        | no       | Old line number of the end line. |
-| `position[line_range][end][new_line]`    | integer        | no       | New line number of the end line. |
-| `position[line_range][start][line_code]` | string         | yes      | [Line code](#line-code) for the start line. |
-| `position[line_range][start][type]`      | string         | yes      | Use `new` for lines added by this commit, otherwise `old`. |
-| `position[line_range][start][old_line]`  | integer        | no       | Old line number of the start line. |
-| `position[line_range][start][new_line]`  | integer        | no       | New line number of the start line. |
-| `position[line_range][end]`              | hash           | no       | Multiline note ending line. |
-| `position[line_range][start]`            | hash           | no       | Multiline note starting line. |
+| Attribute                                | Type    | Required | Description |
+|------------------------------------------|---------|----------|-------------|
+| `position[line_range][end][line_code]`   | string  | Yes      | [Line code](#line-code) for the end line. |
+| `position[line_range][end][type]`        | string  | Yes      | Use `new` for lines added by this commit, otherwise `old`. |
+| `position[line_range][end][old_line]`    | integer | No       | Old line number of the end line. |
+| `position[line_range][end][new_line]`    | integer | No       | New line number of the end line. |
+| `position[line_range][start][line_code]` | string  | Yes      | [Line code](#line-code) for the start line. |
+| `position[line_range][start][type]`      | string  | Yes      | Use `new` for lines added by this commit, otherwise `old`. |
+| `position[line_range][start][old_line]`  | integer | No       | Old line number of the start line. |
+| `position[line_range][start][new_line]`  | integer | No       | New line number of the start line. |
+| `position[line_range][end]`              | hash    | No       | Multiline note ending line. |
+| `position[line_range][start]`            | hash    | No       | Multiline note starting line. |
 
 The `old_line` and `new_line` parameters inside the `line_range` attribute display the range for
 multi-line comments. For example, "Comment on lines +296 to +297".
@@ -1103,14 +1237,18 @@ Prerequisites:
 PUT /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute           | Type           | Required | Description |
-| ------------------- | -------------- | -------- | ----------- |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `discussion_id`     | string        | yes      | The ID of a thread. |
-| `merge_request_iid` | integer        | yes      | The IID of a merge request. |
-| `resolved`          | boolean        | yes      | Resolve or reopen the discussion. |
+| Attribute           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `discussion_id`     | string            | Yes      | The ID of a thread. |
+| `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `merge_request_iid` | integer           | Yes      | The IID of a merge request. |
+| `resolved`          | boolean           | Yes      | If `true`, resolve or reopen the discussion. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the updated discussion object.
+
+Example request:
 
 ```shell
 curl --request PUT \
@@ -1127,16 +1265,19 @@ Adds a new note to the thread. This can also
 POST /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id/notes
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute           | Type           | Required | Description |
-| ------------------- | -------------- | -------- | ----------- |
-| `body`              | string         | yes      | The content of the note or reply. |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `discussion_id`     | string        | yes      | The ID of a thread. |
-| `merge_request_iid` | integer        | yes      | The IID of a merge request. |
-| `note_id`           | integer        | yes      | The ID of a thread note. |
-| `created_at`        | string         | no       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+| Attribute           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `body`              | string            | Yes      | The content of the note or reply. |
+| `discussion_id`     | string            | Yes      | The ID of a thread. |
+| `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `merge_request_iid` | integer           | Yes      | The IID of a merge request. |
+| `created_at`        | string            | No       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the created note object.
+
+Example request:
 
 ```shell
 curl --request POST \
@@ -1152,16 +1293,20 @@ Modify or resolve an existing thread note of a merge request.
 PUT /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id/notes/:note_id
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute           | Type           | Required | Description |
-| ------------------- | -------------- | -------- | ----------- |
-| `discussion_id`     | string        | yes      | The ID of a thread. |
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `merge_request_iid` | integer        | yes      | The IID of a merge request. |
-| `note_id`           | integer        | yes      | The ID of a thread note. |
-| `body`              | string         | no       | The content of the note or reply. Exactly one of `body` or `resolved` must be set. |
-| `resolved`          | boolean        | no       | Resolve or reopen the note. Exactly one of `body` or `resolved` must be set. |
+| Attribute           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `discussion_id`     | string            | Yes      | The ID of a thread. |
+| `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `merge_request_iid` | integer           | Yes      | The IID of a merge request. |
+| `note_id`           | integer           | Yes      | The ID of a thread note. |
+| `body`              | string            | No       | The content of the note or reply. Exactly one of `body` or `resolved` must be set. |
+| `resolved`          | boolean           | No       | Resolve or reopen the note. Exactly one of `body` or `resolved` must be set. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the updated note object.
+
+Example request:
 
 ```shell
 curl --request PUT \
@@ -1185,14 +1330,18 @@ Deletes an existing thread note of a merge request.
 DELETE /projects/:id/merge_requests/:merge_request_iid/discussions/:discussion_id/notes/:note_id
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute           | Type           | Required | Description |
-| ------------------- | -------------- | -------- | ----------- |
-| `discussion_id`     | string        | yes      | The ID of a thread. |
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `merge_request_iid` | integer        | yes      | The IID of a merge request. |
-| `note_id`           | integer        | yes      | The ID of a thread note. |
+| Attribute           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `discussion_id`     | string            | Yes      | The ID of a thread. |
+| `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `merge_request_iid` | integer           | Yes      | The IID of a merge request. |
+| `note_id`           | integer           | Yes      | The ID of a thread note. |
+
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
+
+Example request:
 
 ```shell
 curl --request DELETE \
@@ -1210,10 +1359,23 @@ Gets a list of all discussion items for a single commit.
 GET /projects/:id/repository/commits/:commit_id/discussions
 ```
 
-| Attribute           | Type             | Required   | Description  |
-| ------------------- | ---------------- | ---------- | ------------ |
-| `commit_id`         | string           | yes        | The SHA of a commit. |
-| `id`                | integer or string   | yes        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+Supported attributes:
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `commit_id` | string            | Yes      | The SHA of a commit. |
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List project issue discussion items](#list-project-issue-discussion-items), with `noteable_type` set to `Commit`.
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/<commit_id>/discussions"
+```
+
+Example response:
 
 ```json
 [
@@ -1343,11 +1505,6 @@ Diff comments contain also position:
 ]
 ```
 
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/<commit_id>/discussions"
-```
-
 ### Get single commit discussion item
 
 Returns a single discussion item for a specific project commit
@@ -1356,13 +1513,17 @@ Returns a single discussion item for a specific project commit
 GET /projects/:id/repository/commits/:commit_id/discussions/:discussion_id
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute           | Type           | Required | Description |
-| ------------------- | -------------- | -------- | ----------- |
-| `commit_id`         | string         | yes      | The SHA of a commit. |
-| `discussion_id`     | string         | yes      | The ID of a discussion item. |
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| Attribute       | Type              | Required | Description |
+|-----------------|-------------------|----------|-------------|
+| `commit_id`     | string            | Yes      | The SHA of a commit. |
+| `discussion_id` | string            | Yes      | The ID of a discussion item. |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the same response attributes as [List project commit discussion items](#list-project-commit-discussion-items).
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -1378,27 +1539,31 @@ a note but other comments (replies) can be added to it later.
 POST /projects/:id/repository/commits/:commit_id/discussions
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute                 | Type           | Required                         | Description |
-| ------------------------- | -------------- |----------------------------------| ----------- |
-| `body`                    | string         | yes                              | The content of the thread. |
-| `commit_id`               | string         | yes                              | The SHA of a commit. |
-| `id`                      | integer/string | yes                              | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `position[base_sha]`      | string         | yes (if `position*` is supplied) | SHA of the parent commit. |
-| `position[head_sha]`      | string         | yes (if `position*` is supplied) | The SHA of this commit. Same as `commit_id`. |
-| `position[start_sha]`     | string         | yes (if `position*` is supplied) | SHA of the parent commit. |
-| `position[position_type]` | string         | yes (if `position*` is supplied) | Type of the position reference. Allowed values: `text`, `image`, or `file`. `file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046) in GitLab 16.4. |
-| `created_at`              | string         | no                               | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
-| `position`                | hash           | no                               | Position when creating a diff note. |
-| `position[new_path]`      | string         | no                               | File path after change. |
-| `position[new_line]`      | integer        | no                               | Line number after change. |
-| `position[old_path]`      | string         | no                               | File path before change. |
-| `position[old_line]`      | integer        | no                               | Line number before change. |
-| `position[height]`        | integer        | no                               | For `image` diff notes, image height. |
-| `position[width]`         | integer        | no                               | For `image` diff notes, image width. |
-| `position[x]`             | integer        | no                               | For `image` diff notes, X coordinate. |
-| `position[y]`             | integer        | no                               | For `image` diff notes, Y coordinate. |
+| Attribute                 | Type              | Required                         | Description |
+|---------------------------|-------------------|----------------------------------|-------------|
+| `body`                    | string            | Yes                              | The content of the thread. |
+| `commit_id`               | string            | Yes                              | The SHA of a commit. |
+| `id`                      | integer or string | Yes                              | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `created_at`              | string            | No                               | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+| `position`                | hash              | No                               | Position when creating a diff note. |
+| `position[base_sha]`      | string            | Yes (if `position*` is supplied) | SHA of the parent commit. |
+| `position[head_sha]`      | string            | Yes (if `position*` is supplied) | The SHA of this commit. Same as `commit_id`. |
+| `position[start_sha]`     | string            | Yes (if `position*` is supplied) | SHA of the parent commit. |
+| `position[position_type]` | string            | Yes (if `position*` is supplied) | Type of the position reference. Allowed values: `text`, `image`, or `file`. `file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046) in GitLab 16.4. |
+| `position[new_path]`      | string            | No                               | File path after change. |
+| `position[new_line]`      | integer           | No                               | Line number after change. |
+| `position[old_path]`      | string            | No                               | File path before change. |
+| `position[old_line]`      | integer           | No                               | Line number before change. |
+| `position[height]`        | integer           | No                               | For `image` diff notes, image height. |
+| `position[width]`         | integer           | No                               | For `image` diff notes, image width. |
+| `position[x]`             | integer           | No                               | For `image` diff notes, X coordinate. |
+| `position[y]`             | integer           | No                               | For `image` diff notes, Y coordinate. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the created discussion object.
+
+Example request:
 
 ```shell
 curl --request POST \
@@ -1422,21 +1587,24 @@ Adds a new note to the thread.
 POST /projects/:id/repository/commits/:commit_id/discussions/:discussion_id/notes
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute           | Type           | Required | Description |
-| ------------------- | -------------- | -------- | ----------- |
-| `body`              | string         | yes      | The content of the note or reply. |
-| `commit_id`         | string         | yes      | The SHA of a commit. |
-| `discussion_id`     | string         | yes      | The ID of a thread. |
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `note_id`           | integer        | yes      | The ID of a thread note. |
-| `created_at`        | string         | no       | Date time string, ISO 8601 formatted, such `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+| Attribute       | Type              | Required | Description |
+|-----------------|-------------------|----------|-------------|
+| `body`          | string            | Yes      | The content of the note or reply. |
+| `commit_id`     | string            | Yes      | The SHA of a commit. |
+| `discussion_id` | string            | Yes      | The ID of a thread. |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `created_at`    | string            | No       | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the created note object.
+
+Example request:
 
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/<commit_id>/discussions/<discussion_id>/notes?body=comment
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/<commit_id>/discussions/<discussion_id>/notes?body=comment"
 ```
 
 ### Modify an existing commit thread note
@@ -1447,15 +1615,19 @@ Modify or resolve an existing thread note of a commit.
 PUT /projects/:id/repository/commits/:commit_id/discussions/:discussion_id/notes/:note_id
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute           | Type           | Required | Description |
-| ------------------- | -------------- | -------- | ----------- |
-| `commit_id`         | string         | yes      | The SHA of a commit. |
-| `discussion_id`     | string         | yes      | The ID of a thread. |
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `note_id`           | integer        | yes      | The ID of a thread note. |
-| `body`              | string         | no       | The content of a note. |
+| Attribute       | Type              | Required | Description |
+|-----------------|-------------------|----------|-------------|
+| `body`          | string            | No       | The content of a note. |
+| `commit_id`     | string            | Yes      | The SHA of a commit. |
+| `discussion_id` | string            | Yes      | The ID of a thread. |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `note_id`       | integer           | Yes      | The ID of a thread note. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the updated note object.
+
+Example request:
 
 ```shell
 curl --request PUT \
@@ -1471,22 +1643,26 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/commits/<commit_id>/discussions/<discussion_id>/notes/1108?resolved=true"
 ```
 
-### Delete a commit thread note
+### Delete a commit discussion note
 
-Deletes an existing thread note of a commit.
+Deletes an existing discussion note of a commit.
 
 ```plaintext
 DELETE /projects/:id/repository/commits/:commit_id/discussions/:discussion_id/notes/:note_id
 ```
 
-Parameters:
+Supported attributes:
 
-| Attribute           | Type           | Required | Description |
-| ------------------- | -------------- | -------- | ----------- |
-| `id`                | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `commit_id`         | string         | yes      | The SHA of a commit. |
-| `discussion_id`     | string         | yes      | The ID of a thread. |
-| `note_id`           | integer        | yes      | The ID of a thread note. |
+| Attribute       | Type              | Required | Description |
+|-----------------|-------------------|----------|-------------|
+| `commit_id`     | string            | Yes      | The SHA of a commit. |
+| `discussion_id` | string            | Yes      | The ID of a thread. |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `note_id`       | integer           | Yes      | The ID of a thread note. |
+
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
+
+Example request:
 
 ```shell
 curl --request DELETE \

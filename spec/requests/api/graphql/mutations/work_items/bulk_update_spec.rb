@@ -17,7 +17,7 @@ RSpec.describe 'Bulk update work items', feature_category: :team_planning do
   let(:mutation_response) { graphql_mutation_response(:work_item_bulk_update) }
   let(:current_user) { developer }
   let(:updatable_work_item_ids) { updatable_work_items.map { |i| i.to_gid.to_s } }
-  let(:base_arguments) { { parent_id: parent.to_gid.to_s, ids: updatable_work_item_ids } }
+  let(:base_arguments) { { full_path: parent.full_path.to_s, ids: updatable_work_item_ids } }
 
   let(:additional_arguments) do
     {
@@ -37,16 +37,6 @@ RSpec.describe 'Bulk update work items', feature_category: :team_planning do
 
   context 'when Gitlab is FOSS only' do
     unless Gitlab.ee?
-      context 'when parent_id is a group' do
-        let(:parent) { group }
-
-        it 'does not allow bulk updating work items at the group level' do
-          post_graphql_mutation(mutation, current_user: current_user)
-
-          expect_graphql_errors_to_include(/does not represent an instance of WorkItems::Parent/)
-        end
-      end
-
       context 'when full_path is a group' do
         let(:base_arguments) { { full_path: group.full_path, ids: updatable_work_item_ids } }
 
@@ -385,57 +375,33 @@ RSpec.describe 'Bulk update work items', feature_category: :team_planning do
     end
   end
 
-  context 'when neither parent_id or full_path are passed' do
-    let(:base_arguments) { { ids: updatable_work_item_ids } }
+  context 'when full_path is the path of a user namespace' do
+    let(:user_namespace) { create(:user_namespace) }
+
+    let(:base_arguments) do
+      { full_path: user_namespace.full_path, ids: updatable_work_item_ids }
+    end
 
     it 'raises an error' do
       post_graphql_mutation(mutation, current_user: current_user)
 
-      expect_graphql_errors_to_include('One and only one of [fullPath, parentId] arguments is required.')
+      expect_graphql_errors_to_include("The resource that you are attempting to access does not exist or you don't " \
+        "have permission to perform this action")
     end
   end
 
-  context 'when full_path is passed' do
-    context 'when parent_id is also passed' do
-      let(:base_arguments) do
-        { parent_id: parent.to_gid.to_s, full_path: parent.full_path, ids: updatable_work_item_ids }
-      end
-
-      it 'raises an error' do
-        post_graphql_mutation(mutation, current_user: current_user)
-
-        expect_graphql_errors_to_include('One and only one of [fullPath, parentId] arguments is required.')
-      end
+  context 'when full_path is the path of a valid project' do
+    let(:base_arguments) do
+      { full_path: project.full_path, ids: updatable_work_item_ids }
     end
 
-    context 'when full_path is the path of a user namespace' do
-      let(:user_namespace) { create(:user_namespace) }
-
-      let(:base_arguments) do
-        { full_path: user_namespace.full_path, ids: updatable_work_item_ids }
-      end
-
-      it 'raises an error' do
+    it 'updates work items' do
+      expect do
         post_graphql_mutation(mutation, current_user: current_user)
+        updatable_work_items.each(&:reload)
+      end.to change { updatable_work_items.flat_map(&:label_ids) }.from([label1.id] * 2).to([label2.id] * 2)
 
-        expect_graphql_errors_to_include("The resource that you are attempting to access does not exist or you don't " \
-          "have permission to perform this action")
-      end
-    end
-
-    context 'when full_path is the path of a valid project' do
-      let(:base_arguments) do
-        { full_path: project.full_path, ids: updatable_work_item_ids }
-      end
-
-      it 'updates work items' do
-        expect do
-          post_graphql_mutation(mutation, current_user: current_user)
-          updatable_work_items.each(&:reload)
-        end.to change { updatable_work_items.flat_map(&:label_ids) }.from([label1.id] * 2).to([label2.id] * 2)
-
-        expect(mutation_response).to include('updatedWorkItemCount' => updatable_work_items.count)
-      end
+      expect(mutation_response).to include('updatedWorkItemCount' => updatable_work_items.count)
     end
   end
 end

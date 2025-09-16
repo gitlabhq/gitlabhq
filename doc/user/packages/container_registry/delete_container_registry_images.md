@@ -3,6 +3,7 @@ stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Delete container images from the container registry
+description: Automated and manual methods for deleting container images in GitLab.
 ---
 
 {{< details >}}

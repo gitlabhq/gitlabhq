@@ -8,7 +8,7 @@ RSpec.describe Ci::JobToken::AllowlistMigrationTask, :silence_stdout, feature_ca
   let(:preview) { nil }
   let(:output_stream) { StringIO.new }
   let(:path) { Rails.root.join('tmp/tests/doc/ci/jobs') }
-  let(:user) { ::Users::Internal.admin_bot }
+  let(:user) { create(:user, :admin_bot) }
   let(:concurrency) { 4 }
 
   let(:task) do

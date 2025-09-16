@@ -72,16 +72,24 @@ module Tooling
 
       def construct_message(job_statuses_to_warn)
         job_list = job_statuses_to_warn.map do |job|
-          "* [#{job['name']}](#{job.dig('last_failed', 'web_url')})"
+          "* [#{job['name']}](#{job.dig('last_failed', 'web_url')})" # failed will always have web_url
         end.join("\n")
 
         <<~MSG
-          The [master pipeline status page](#{status_file_url}) reported failures in
+        <details>
+        <summary>
+        Pipelines failing on master.
+        </summary>
 
-          #{job_list}
+        The [master pipeline status page](#{status_file_url}) reported failures.
 
-          If these jobs fail in your merge request with the same errors, then they are not caused by your changes.
-          Please check for any on-going incidents in the [incident issue tracker](#{STATUS_FILE_PROJECT}/-/issues) or in the `#master-broken` Slack channel.
+        If these jobs fail in your merge request with the same errors, the failures are not caused by your changes.
+        Check for ongoing incidents in the [incident issue tracker](#{STATUS_FILE_PROJECT}/-/issues)
+        or in the `#master-broken` Slack channel.
+
+        #{job_list}
+
+        </details>
         MSG
       end
     end

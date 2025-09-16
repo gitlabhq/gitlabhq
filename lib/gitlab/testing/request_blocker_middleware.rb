@@ -43,7 +43,7 @@ module Gitlab
         if block_requests?
           block_request(env)
         else
-          sleep 0.2 if slow_requests?
+          sleep 1 if slow_requests?
           @app.call(env)
         end
 

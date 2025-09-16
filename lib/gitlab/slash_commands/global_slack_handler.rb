@@ -51,7 +51,7 @@ module Gitlab
         return unless slack_app
 
         integration = slack_app.integration
-        integration if integration.project_level?
+        integration if integration.active? && integration.project_level?
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

@@ -84,7 +84,7 @@ function section_end () {
 
 function rspec_section() {
   section_start "rspec" "RSpec" "false"
-  run_with_custom_exit_code "$@"
+  "$@"
   section_end "rspec"
 }
 
@@ -363,6 +363,10 @@ function assets_image_tag() {
   else
     echo -n "${CI_COMMIT_SHA}"
   fi
+
+  if [[ "$VUE_VERSION" = "3" ]]; then
+    echo -n '-vue3'
+  fi
 }
 
 function setup_gcloud() {
@@ -525,127 +529,7 @@ function log_disk_usage() {
       echo "NOTE: This job will be retried automatically."
       echo "********************************************************************"
 
-      exit_code=111
-
-      exit $exit_code
+      exit 201
     fi
   fi
-}
-
-# all functions below are for customizing CI job exit code
-function run_with_custom_exit_code() {
-  "$@"
-
-  # set -o pipefail # Take the exit status of the rightmost command that failed
-  # set +e          # temporarily disable exit on error to prevent premature exit
-
-  # local trace_file="/tmp/stdout_stderr_log.out"
-
-  # # Run the command and tee output to both the terminal and the file
-  # "$@" 2>&1 | tee "$trace_file"
-  # initial_exit_code=$?
-
-  # echo "initial_exit_code: $initial_exit_code"
-
-  # find_custom_exit_code "$initial_exit_code" "$trace_file"
-  # new_exit_code=$?
-
-  # echo "new_exit_code=$new_exit_code"
-
-  # # Restore shell default behavior
-  # set -e
-  # set +o pipefail
-
-  # exit "$new_exit_code"
-}
-
-function find_custom_exit_code() {
-  local exit_code="$1"
-  local trace_file="$2"
-
-  # Early return if exit code is 0
-  [ "$exit_code" -eq 0 ] && return 0
-
-  # Check if trace_file is set
-  if [ -z "$trace_file" ] || [ ! -f "$trace_file" ]; then
-      echoerr "$trace_file is not set or file does not exist"
-      exit "$exit_code"
-  fi
-
-  if grep -i -q \
-    -e "Failed to connect to 127.0.0.1" \
-    -e "Failed to open TCP connection to" \
-    -e "connection reset by peer" \
-    -e "OpenSSL::SSL::SSLError" "$trace_file"; then
-    echoerr "Detected network connection error. Changing exit code to 110."
-    exit_code=110
-
-  elif grep -i -q -e "no space left on device" "$trace_file"; then
-    echoerr "Detected no space left on device. Changing exit code to 111."
-    exit_code=111
-
-  elif grep -i -q \
-    -e "error: downloading artifacts from coordinator" \
-    -e "error: uploading artifacts as \"archive\" to coordinator" "$trace_file"; then
-    echoerr "Detected artifact transit error. Changing exit code to 160."
-    exit_code=160
-
-  elif grep -i -q \
-    -e "500 Internal Server Error" \
-    -e "Internal Server Error 500" \
-    -e "502 Bad Gateway" \
-    -e "502 Server Error" \
-    -e "502 \"Bad Gateway\"" \
-    -e "status code: 502" \
-    -e "503 Service Unavailable" "$trace_file"; then
-    echoerr "Detected 5XX error. Changing exit code to 161."
-    exit_code=161
-
-  elif grep -i -q -e "gitaly spawn failed" "$trace_file"; then
-    echoerr "Detected gitaly spawn failure error. Changing exit code to 162."
-    exit_code=162
-
-  elif grep -i -q -e \
-    "Rspec suite is exceeding the 80 minute limit and is forced to exit with error" "$trace_file"; then
-    echoerr "Detected rspec timeout risk. Changing exit code to 163."
-    exit_code=163
-
-  elif grep -i -q \
-    -e "Redis client could not fetch cluster information: Connection refused" \
-    -e "Redis::Cluster::CommandErrorCollection" \
-    -e "CLUSTERDOWN The cluster is down" "$trace_file"; then
-    echoerr "Detected Redis cluster error. Changing exit code to 164."
-    exit_code=164
-
-  elif grep -i -q -e "segmentation fault" "$trace_file"; then
-    echoerr "Detected segmentation fault. Changing exit code to 165."
-    exit_code=165
-
-  elif grep -i -q -e "Error: EEXIST: file already exists" "$trace_file"; then
-    echoerr "Detected EEXIST error. Changing exit code to 166."
-    exit_code=166
-
-  elif grep -i -q -e \
-    "fatal: remote error: GitLab is currently unable to handle this request due to load" "$trace_file"; then
-    echoerr "Detected GitLab overload error in job trace. Changing exit code to 167."
-    exit_code=167
-
-  elif grep -i -q -e "GRPC::ResourceExhausted" "$trace_file"; then
-    echoerr "Detected GRPC::ResourceExhausted. Changing exit code to 168."
-    exit_code=168
-
-  elif grep -i -q -e "Gitlab::QueryLimiting::Transaction::ThresholdExceededError" "$trace_file"; then
-    echoerr "Detected Gitlab::QueryLimiting::Transaction::ThresholdExceededError. Changing exit code to 169."
-    exit_code=169
-
-  elif grep -i -q -e \
-    "is write protected within this Gitlab database" "$trace_file"; then
-    echoerr "Detected SQL table is write-protected error in job trace. Changing exit code to 170."
-    exit_code=170
-  else
-    echoinfo "not changing exit code"
-  fi
-
-  echoinfo "will exit with $exit_code"
-  return "$exit_code"
 }

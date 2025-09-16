@@ -20,6 +20,11 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::AfterConfig, feature_categ
   describe '#perform!' do
     context 'when the `allow_composite_identities_to_run_pipelines` setting is disabled' do
       context 'when the user has a composite identity' do
+        before do
+          # This is a temporary FF which is disabled in spec_helper that's why enabling here exclusively
+          stub_feature_flags(forbid_composite_identities_to_run_pipelines: true)
+        end
+
         it 'breaks the pipeline chain with an error' do
           step.perform!
 

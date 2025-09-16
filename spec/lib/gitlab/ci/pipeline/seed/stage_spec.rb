@@ -11,9 +11,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Stage, feature_category: :pipeline_co
   let(:attributes) do
     { name: 'test',
       index: 0,
-      builds: [{ name: 'rspec', scheduling_type: :stage },
-               { name: 'spinach', scheduling_type: :stage },
-               { name: 'deploy', only: { refs: ['feature'] } }], scheduling_type: :stage }
+      builds: [{ name: 'rspec', scheduling_type: :stage, options: { script: ['test'] } },
+               { name: 'spinach', scheduling_type: :stage, options: { script: ['test'] } },
+               { name: 'deploy', only: { refs: ['feature'] }, options: { script: ['test'] } }],
+      scheduling_type: :stage }
   end
 
   subject do

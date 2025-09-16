@@ -44,6 +44,9 @@ The following diagram illustrates the process:
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+    accTitle: Git repository backup workflow
+    accDescr: Sequence diagram showing the repositories sub-task calling gitaly-backup with a list of repositories. For each repository, gitaly-backup uses RPCs to collect refs, create a bundle, and retrieve custom hooks. It then returns success or failure.
+
     box Backup host
         participant Repositories sub-task
         participant gitaly-backup
@@ -91,6 +94,9 @@ The following diagram illustrates the process:
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+    accTitle: Server-side repository backup workflow
+    accDescr: Sequence diagram showing server-side backups where the repositories sub-task calls gitaly-backup, which issues a BackupRepository request for each repository. Gitaly uploads files directly to object storage, then reports success or failure for that repository.
+
     box Backup host
         participant Repositories sub-task
         participant gitaly-backup

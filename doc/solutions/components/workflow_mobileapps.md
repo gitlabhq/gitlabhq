@@ -42,7 +42,7 @@ Follow the steps below on how to use this React Native Mobile App sample project
 
   {{< /alert >}}
 
-- Use the Change Control Workflow with ServiceNow solution pack to configure the DevOps Change Velocity integration with GitLab to automate change request creation in ServiceNow for deployments require change controls. [Here](../../solutions/components/integrated_servicenow.md) is the documentation link to the change control workflow with ServiceNow solution component, and work with your account team to get an access code to download the Change Control Workflow with ServiceNow solution package.
+- Use the Change Control Workflow with ServiceNow solution pack to configure the DevOps Change Velocity integration with GitLab to automate change request creation in ServiceNow for deployments require change controls. See the documentation for the [change control workflow with ServiceNow solution component](../../solutions/components/integrated_servicenow.md), and work with your account team to get an access code to download the Change Control Workflow with ServiceNow solution package.
 - Copy the CI YAML files into your project:
   - `.gitlab-ci.yml`
   - `build-android.yml` in the pipelines directory. You will need to update the file path in `.gitlab-ci.yml` if the `build-android.yml` file is put in a different location other than /pipeline because the main `.gitlab-ci.yml` file references the `build-android.yml` file for the build job.
@@ -127,7 +127,7 @@ Update the component path in the `.gitlab-ci.yml` file so that the pipeline can 
       token: $SNYK_TOKEN
 ```
 
-### Sauce Labs Intergration
+### Sauce Labs Integration
 
 This mobile app demo project CI/CD is integrated with Sauce Labs for automated functional testing. In order to run the automated test in Sauce Labs, the application needs to be uploaded into Sauce Labs app storage. You will need to set the required variables for the project in GitLab to access Sauce Labs and upload the artifacts.
 

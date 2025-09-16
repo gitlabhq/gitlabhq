@@ -61,7 +61,7 @@ module Gitlab
         private
 
         def note_body(author_found)
-          MarkdownText.format(note.note, note.author, author_found, project: project)
+          MarkdownText.format(note.note, note.author, author_found, project: project, client: client)
         end
       end
     end

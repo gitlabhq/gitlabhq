@@ -337,6 +337,7 @@ You can require all commits to your project to comply with the DCO. This push ru
 
 ## Related topics
 
+- [Protect your repository](protect.md)
 - [Git server hooks](../../../administration/server_hooks.md) (previously called server hooks), to create complex custom push rules
 - [Signed commits](signed_commits/_index.md)
 - [Protected branches](branches/protected.md)

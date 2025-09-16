@@ -6,7 +6,7 @@ description: Cached response from a Maven upstream. Contains references to an ob
   storage file.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157055
 milestone: '17.3'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   group_id: namespaces
 table_size: small

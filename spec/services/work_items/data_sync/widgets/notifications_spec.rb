@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe WorkItems::DataSync::Widgets::Notifications, feature_category: :team_planning do
+  include SentNotificationHelpers
+
   let_it_be(:current_user) { create(:user) }
   let_it_be_with_reload(:work_item) { create(:work_item) }
   let_it_be_with_reload(:subscription1) do
@@ -14,11 +16,11 @@ RSpec.describe WorkItems::DataSync::Widgets::Notifications, feature_category: :t
   end
 
   let_it_be_with_reload(:sent_notification1) do
-    create(:sent_notification, project: work_item.project, noteable: work_item, recipient: create(:user))
+    create_sent_notification(project: work_item.project, noteable: work_item, recipient: create(:user))
   end
 
   let_it_be_with_reload(:sent_notification2) do
-    create(:sent_notification, project: work_item.project, noteable: work_item, recipient: create(:user))
+    create_sent_notification(project: work_item.project, noteable: work_item, recipient: create(:user))
   end
 
   let_it_be(:target_work_item) { create(:work_item) }
@@ -160,8 +162,8 @@ RSpec.describe WorkItems::DataSync::Widgets::Notifications, feature_category: :t
       it 'removes original work item notifications' do
         create(:subscription, subscribable: work_item, user: create(:user), subscribed: true)
         create(:subscription, subscribable: work_item, user: create(:user), subscribed: false)
-        create(:sent_notification, project: work_item.project, noteable: work_item, recipient: create(:user))
-        create(:sent_notification, project: work_item.project, noteable: work_item, recipient: create(:user))
+        create_sent_notification(project: work_item.project, noteable: work_item, recipient: create(:user))
+        create_sent_notification(project: work_item.project, noteable: work_item, recipient: create(:user))
 
         expect(work_item.subscriptions.count).to eq(4)
         expect(work_item.sent_notifications.count).to eq(4)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project variables', :js, feature_category: :ci_variables do
+RSpec.describe 'Project variables', :js, feature_category: :pipeline_composition do
   let(:user)     { create(:user) }
   let(:project)  { create(:project) }
   let(:variable) { create(:ci_variable, key: 'test_key', value: 'test_value', masked: true) }

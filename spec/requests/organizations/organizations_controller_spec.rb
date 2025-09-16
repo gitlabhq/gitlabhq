@@ -15,7 +15,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
         let_it_be(:user) { create(:admin) }
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
 
       context 'as an organization owner' do
@@ -26,7 +26,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
         end
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
     end
   end
@@ -59,7 +59,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
         let_it_be(:user) { create(:user) }
 
         it_behaves_like 'organization - not found response'
-        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
     end
   end
@@ -76,7 +76,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
         let_it_be(:user) { create(:user) }
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
     end
   end
@@ -84,16 +84,30 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
   shared_examples 'controller action that does not require authentication' do
     context 'when the user is not logged in' do
       it_behaves_like 'organization - not found response'
-      it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+      it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
     end
 
     it_behaves_like 'when the user is signed in'
+  end
+
+  shared_examples 'controller that uses `archive_group` feature flag' do
+    let_it_be(:user) { create(:user, organizations: [organization]) }
+
+    it 'pushes `archive_group` feature flag' do
+      stub_feature_flags(archive_group: true)
+
+      sign_in(user)
+      gitlab_request
+
+      expect(response.body).to have_pushed_frontend_feature_flags(archiveGroup: true), response.body
+    end
   end
 
   describe 'GET #show' do
     subject(:gitlab_request) { get organization_path(organization) }
 
     it_behaves_like 'controller action that does not require authentication'
+    it_behaves_like 'controller that uses `archive_group` feature flag'
   end
 
   describe 'GET #activity' do
@@ -270,6 +284,7 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
     subject(:gitlab_request) { get groups_and_projects_organization_path(organization) }
 
     it_behaves_like 'controller action that does not require authentication'
+    it_behaves_like 'controller that uses `archive_group` feature flag'
   end
 
   describe 'GET #users' do
@@ -283,11 +298,11 @@ RSpec.describe Organizations::OrganizationsController, feature_category: :organi
 
     it_behaves_like 'controller action that requires authentication by any user'
 
-    context 'when user is signed in and `allow_organization_creation` feature flag is disabled' do
+    context 'when user is signed in and `organization_switching` feature flag is disabled' do
       let_it_be(:user) { create(:user) }
 
       before do
-        stub_feature_flags(allow_organization_creation: false)
+        stub_feature_flags(organization_switching: false)
         sign_in(user)
       end
 

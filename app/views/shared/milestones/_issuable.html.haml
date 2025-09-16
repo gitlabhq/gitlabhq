@@ -11,7 +11,6 @@
 - issuable_type_args = base_url_args + [issuable_type]
 - issuable_icon = is_epic ? 'epic' : "issue-type-#{issuable.respond_to?(:work_item_type) ? issuable.work_item_type.name.downcase : 'issue'}"
 
-
 %li{ class: '!gl-border-b-section' }
   %span
     = sprite_icon(issuable_icon)
@@ -22,6 +21,7 @@
     - if issuable.is_a?(Issue)
       = confidential_icon(issuable)
     = link_to issuable.title, ::Gitlab::UrlBuilder.build(issuable), title: issuable.title, class: "gl-text-default gl-break-words"
+
   .issuable-detail
     = link_to ::Gitlab::UrlBuilder.build(issuable), class: 'issue-link' do
       %span.issuable-number= issuable.to_reference
@@ -35,3 +35,5 @@
           = image_tag(avatar_icon_for_user(assignee, 16), class: "avatar s16", title: _("Assigned to %{assignee_name}") % { assignee_name: assignee.name }, data: { container: 'body', toggle: 'tooltip', placement: 'top' })
 
     = render_if_exists "shared/milestones/issuable_weight", issuable: issuable
+    = render_if_exists "shared/milestones/issuable_status", issuable: issuable
+

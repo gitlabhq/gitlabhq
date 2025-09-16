@@ -11,6 +11,7 @@ import EmojiPicker from '~/emoji/components/picker.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import { WIKI_CONTAINER_TYPE } from '~/wikis/constants';
+import discussionToggleResolveMutation from '../graphql/discussion_toggle_resolve.mutation.graphql';
 
 export default {
   i18n: {
@@ -74,10 +75,31 @@ export default {
       required: false,
       default: false,
     },
+    canResolve: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isResolved: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    discussionId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    resolvedBy: {
+      type: Object,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
       isReportAbuseDrawerOpen: false,
+      loading: false,
     };
   },
   computed: {
@@ -101,6 +123,21 @@ export default {
         },
       );
     },
+    resolveIcon() {
+      if (!this.loading) {
+        return this.isResolved ? 'check-circle-filled' : 'check-circle';
+      }
+      return null;
+    },
+    resolveButtonTitle() {
+      let title = __('Resolve thread');
+
+      if (this.resolvedBy) {
+        title = sprintf(__('Resolved by %{name}'), { name: this.resolvedBy.name });
+      }
+
+      return title;
+    },
   },
   methods: {
     toggleAbuseDrawer(val) {
@@ -109,16 +146,30 @@ export default {
     handleCopyLink() {
       this.$toast?.show(__('Link copied to clipboard.'));
     },
+    async onResolve() {
+      this.loading = true;
+      try {
+        await this.$apollo.mutate({
+          mutation: discussionToggleResolveMutation,
+          variables: {
+            id: this.discussionId,
+            resolve: !this.isResolved,
+          },
+        });
+      } finally {
+        this.loading = false;
+      }
+    },
   },
 };
 </script>
 <template>
-  <div class="note-actions gl-justify-end">
+  <div class="note-actions">
     <user-access-role-badge
       v-if="showAuthorBadge"
       v-gl-tooltip
       data-testid="wiki-note-user-author-badge"
-      class="gl-mr-3 gl-hidden sm:gl-block"
+      class="gl-mr-3 gl-hidden @sm/panel:gl-block"
       :title="__('This user is the author of this page.')"
     >
       {{ __('Author') }}
@@ -127,12 +178,26 @@ export default {
       v-if="showMemberBadge"
       v-gl-tooltip
       data-testid="wiki-note-user-access-role-badge"
-      class="gl-mr-3 gl-hidden sm:gl-block"
+      class="gl-mr-3 gl-hidden @sm/panel:gl-block"
       :title="displayMemberBadgeText"
     >
       {{ accessLevel }}
     </user-access-role-badge>
     <span class="note-actions__mobile-spacer"></span>
+    <gl-button
+      v-if="canResolve"
+      ref="resolveButton"
+      v-gl-tooltip
+      data-testid="wiki-note-resolve-button"
+      category="tertiary"
+      class="note-action-button"
+      :class="{ '!gl-text-success': isResolved }"
+      :title="resolveButtonTitle"
+      :aria-label="resolveButtonTitle"
+      :icon="resolveIcon"
+      :loading="loading"
+      @click="onResolve"
+    />
     <emoji-picker
       v-if="canAwardEmoji"
       data-testid="note-emoji-button"

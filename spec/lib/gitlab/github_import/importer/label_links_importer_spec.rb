@@ -3,13 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::LabelLinksImporter, feature_category: :importers do
-  let(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:persisted_issue) { create(:issue, project: project) }
+  let_it_be(:persisted_label) { create(:label, project: project) }
+  let(:deleted_label) { create(:label, project: project) }
   let(:client) { double(:client) }
   let(:issue) do
     double(
       :issue,
       iid: 4,
-      label_names: %w[bug],
+      label_names: %w[bug non_existent_label],
       issuable_type: Issue,
       pull_request?: false
     )
@@ -28,19 +31,73 @@ RSpec.describe Gitlab::GithubImport::Importer::LabelLinksImporter, feature_categ
   end
 
   describe '#create_labels' do
-    it 'inserts the label links in bulk' do
-      expect(importer.label_finder)
-        .to receive(:id_for)
-        .with('bug')
-        .and_return(2)
+    context 'when items are valid' do
+      before do
+        allow(importer.label_finder)
+          .to receive(:id_for)
+          .with('bug')
+          .and_return(persisted_label.id)
+        allow(importer.label_finder)
+          .to receive(:id_for)
+          .with('non_existent_label')
+          .and_return(deleted_label.id)
+        allow(importer)
+          .to receive(:find_target_id)
+          .and_return(persisted_issue.id)
+        deleted_label.destroy!
+      end
 
-      expect(importer)
-        .to receive(:find_target_id)
-        .and_return(4)
+      it 'inserts the label links in bulk, but only the valid ones', :aggregate_failures do
+        expect(LabelLink).to receive(:bulk_insert!) do |*args, **kwargs|
+          bulk_items = args.first
+          expect(bulk_items).to contain_exactly(
+            have_attributes(
+              label_id: persisted_label.id,
+              target_id: persisted_issue.id,
+              namespace_id: persisted_issue.namespace_id
+            )
+          )
+          expect(kwargs[:validate]).to be(false)
+        end
 
-      expect(LabelLink).to receive(:bulk_insert!)
+        importer.create_labels
+      end
 
-      importer.create_labels
+      it 'tracks invalid label links' do
+        expect(Gitlab::Import::ImportFailureService).to receive(:track).with(
+          project_id: project.id,
+          error_source: described_class.name,
+          exception: instance_of(ActiveRecord::RecordInvalid),
+          fail_import: false,
+          external_identifiers: hash_including(
+            label_id: deleted_label.id,
+            target_id: persisted_issue.id,
+            target_type: 'Issue',
+            namespace_id: persisted_issue.namespace_id
+          )
+        )
+
+        importer.create_labels
+      end
+
+      context 'when the validate_label_link_parent_presence_on_import feature flag is disabled' do
+        before do
+          stub_feature_flags(validate_label_link_parent_presence_on_import: false)
+        end
+
+        it 'inserts the label links in bulk, even the ones with missing parents as we skip validation' do
+          expect(LabelLink).to receive(:bulk_insert!) do |*args, **kwargs|
+            bulk_items = args.first
+            expect(bulk_items).to contain_exactly(
+              have_attributes(label_id: persisted_label.id, target_id: persisted_issue.id),
+              have_attributes(label_id: deleted_label.id, target_id: persisted_issue.id)
+            )
+            expect(kwargs[:validate]).to be(true)
+          end
+
+          importer.create_labels
+        end
+      end
     end
 
     it 'does not insert label links for non-existing labels' do
@@ -48,6 +105,7 @@ RSpec.describe Gitlab::GithubImport::Importer::LabelLinksImporter, feature_categ
         .to receive(:find_target_id)
         .and_return(4)
 
+      allow(importer.label_finder).to receive(:id_for)
       expect(importer.label_finder)
         .to receive(:id_for)
         .with('bug')
@@ -55,7 +113,7 @@ RSpec.describe Gitlab::GithubImport::Importer::LabelLinksImporter, feature_categ
 
       expect(LabelLink)
         .to receive(:bulk_insert!)
-        .with([])
+        .with([], validate: false)
 
       importer.create_labels
     end

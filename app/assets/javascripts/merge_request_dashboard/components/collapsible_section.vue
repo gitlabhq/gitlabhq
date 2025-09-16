@@ -135,7 +135,7 @@ export default {
       <template #actions>
         <gl-badge
           v-if="!open && newMergeRequests.length"
-          :variant="activeList ? 'success' : 'muted'"
+          :variant="activeList ? 'success' : 'neutral'"
           class="gl-font-bold"
         >
           {{ newMergeRequestsBadgeText }}
@@ -154,10 +154,12 @@ export default {
         <p class="gl-pt-1 gl-text-center gl-text-subtle">
           {{ __('No merge requests match this list.') }}
         </p>
+        <slot name="drafts"></slot>
       </template>
 
       <template #default>
         <slot></slot>
+        <slot name="drafts"></slot>
       </template>
 
       <template v-if="open" #pagination>

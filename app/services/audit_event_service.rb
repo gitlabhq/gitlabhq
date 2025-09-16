@@ -31,6 +31,8 @@ class AuditEventService
     @created_at = created_at
 
     validate_scope!(@entity)
+
+    log_initialization
   end
 
   # Builds the @details attribute for authentication
@@ -157,6 +159,18 @@ class AuditEventService
     Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e, audit_event_type: event.class.to_s)
 
     nil
+  end
+
+  def log_initialization
+    Gitlab::AppLogger.info(
+      message: "AuditEventService initialized",
+      author_class: @author.class.name,
+      author_id: @author.try(:id),
+      entity_class: @entity.class.name,
+      entity_id: @entity.id,
+      save_type: @save_type,
+      details: @details
+    )
   end
 end
 

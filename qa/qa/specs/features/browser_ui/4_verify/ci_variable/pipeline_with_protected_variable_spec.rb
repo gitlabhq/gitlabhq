@@ -81,7 +81,7 @@ module QA
           sleep_interval: 2,
           message: "Waiting for protected branch #{branch_name} to be effective"
         ) do
-          project.protected_branches.find { |pb| pb[:name] == branch_name }.present?
+          project.branch_is_protected?(branch_name)
         end
 
         protected_branch

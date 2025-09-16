@@ -7,4 +7,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/556695
 milestone: '18.3'
 group: group::product planning
 type: beta
-default_enabled: false
+default_enabled: true

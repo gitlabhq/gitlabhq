@@ -196,8 +196,8 @@ module QA
       # Approve merge request
       #
       # Due to internal implementation of api client, project needs to have
-      # setting 'Prevent approval by author' set to false since we use same user that created merge request which
-      # is set through approval configuration
+      # setting 'Prevent approval by merge request creator' set to false since we use same user that
+      # created merge request which is set through approval configuration
       #
       # @return [void]
       def approve

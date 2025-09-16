@@ -1008,6 +1008,54 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'remove_project' do
+    context 'anonymous user' do
+      let(:current_user) { anonymous }
+
+      it { is_expected.to be_disallowed(:remove_project) }
+    end
+
+    context 'project member' do
+      %w[guest planner reporter developer maintainer].each do |role|
+        context role do
+          let(:current_user) { send(role) }
+
+          it { is_expected.to be_disallowed(:remove_project) }
+        end
+      end
+
+      context 'owner' do
+        let(:current_user) { owner }
+
+        before do
+          project.add_owner(owner)
+        end
+
+        it { is_expected.to be_allowed(:remove_project) }
+
+        context 'when project is marked for deletion' do
+          let_it_be(:project) { create(:project, :aimed_for_deletion, namespace: owner.namespace) }
+
+          it { is_expected.to be_allowed(:remove_project) }
+        end
+
+        context 'when project ancestor is marked for deletion' do
+          let_it_be(:ancestor) { create(:group_with_deletion_schedule) }
+          let_it_be(:project) { create(:project, group: ancestor) }
+
+          it { is_expected.to be_disallowed(:remove_project) }
+        end
+
+        context 'when project ancestor is marked for deletion and being deleted' do
+          let_it_be(:ancestor) { create(:group_with_deletion_schedule, deleted_at: Time.current) }
+          let_it_be(:project) { create(:project, group: ancestor) }
+
+          it { is_expected.to be_allowed(:remove_project) }
+        end
+      end
+    end
+  end
+
   describe 'create_task' do
     context 'when user is member of the project' do
       let(:current_user) { developer }
@@ -2992,6 +3040,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         :builds             | [:read_commit_status]
         :releases           | [:read_release]
         :environments       | [:read_environment]
+        :repository         | [:read_project]
       end
 
       with_them do
@@ -3004,24 +3053,40 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           current_user.set_ci_job_token_scope!(job)
 
           scope_project.update!(ci_inbound_job_token_scope_enabled: true)
+
+          # disable all features so that they don't interfere with each other:
+          ProjectFeature::FEATURES.each do |feature|
+            project.project_feature.update!("#{feature}_access_level": ProjectFeature::DISABLED)
+          end
         end
 
         it 'allows the permissions based on the feature access level' do
-          project.project_feature.update!("#{feature}_access_level": ProjectFeature::ENABLED)
-
+          update_access_level(project, feature, ProjectFeature::ENABLED)
           permissions.each { |p| expect_allowed(p) }
         end
 
         it 'disallows the permissions if feature access level is restricted' do
-          project.project_feature.update!("#{feature}_access_level": ProjectFeature::PRIVATE)
-
+          update_access_level(project, feature, ProjectFeature::PRIVATE)
           permissions.each { |p| expect_disallowed(p) }
         end
 
         it 'disallows the permissions if feature access level is disabled' do
-          project.project_feature.update!("#{feature}_access_level": ProjectFeature::DISABLED)
+          update_access_level(project, feature, ProjectFeature::DISABLED)
 
           permissions.each { |p| expect_disallowed(p) }
+        end
+
+        def update_access_level(project, feature, state)
+          # builds require repository access level to the same level:
+          project.project_feature.update!('repository_access_level': state) if feature == :builds
+
+          # environments require repository and builds to be set to the same state if enabled:
+          if feature == :environments
+            project.project_feature.update!('repository_access_level': state)
+            project.project_feature.update!('builds_access_level': state)
+          end
+
+          project.project_feature.update!("#{feature}_access_level": state)
         end
       end
     end
@@ -4171,27 +4236,22 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     let(:policy) { :build_push_code }
 
-    where(:user_role, :project_visibility, :push_repository_for_job_token_allowed, :self_referential_project, :allowed, :ff_disabled) do
-      :maintainer | :public   | true  | true  | true  | false
-      :owner      | :public   | true  | true  | true  | false
-      :maintainer | :private  | true  | true  | true  | false
-      :developer  | :public   | true  | true  | true  | false
-      :reporter   | :public   | true  | true  | false | false
-      :planner    | :public   | true  | true  | false | false
-      :planner    | :private  | true  | true  | false | false
-      :planner    | :internal | true  | true  | false | false
-      :guest      | :public   | true  | true  | false | false
-      :guest      | :private  | true  | true  | false | false
-      :guest      | :internal | true  | true  | false | false
-      :anonymous  | :public   | true  | true  | false | false
-      :maintainer | :public   | false | true  | false | false
-      :maintainer | :public   | true  | false | false | false
-      :maintainer | :public   | false | false | false | false
-      :maintainer | :public   | true  | true  | false | true
-      :owner      | :public   | true  | true  | false | true
-      :maintainer | :private  | true  | true  | false | true
-      :developer  | :public   | true  | true  | false | true
-      :reporter   | :public   | true  | true  | false | true
+    where(:user_role, :project_visibility, :push_repository_for_job_token_allowed, :self_referential_project, :allowed) do
+      :maintainer | :public   | true  | true  | true
+      :owner      | :public   | true  | true  | true
+      :maintainer | :private  | true  | true  | true
+      :developer  | :public   | true  | true  | true
+      :reporter   | :public   | true  | true  | false
+      :planner    | :public   | true  | true  | false
+      :planner    | :private  | true  | true  | false
+      :planner    | :internal | true  | true  | false
+      :guest      | :public   | true  | true  | false
+      :guest      | :private  | true  | true  | false
+      :guest      | :internal | true  | true  | false
+      :anonymous  | :public   | true  | true  | false
+      :maintainer | :public   | false | true  | false
+      :maintainer | :public   | true  | false | false
+      :maintainer | :public   | false | false | false
     end
 
     with_them do
@@ -4205,8 +4265,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       let(:scope_project) { private_project }
 
       before do
-        stub_feature_flags(allow_push_repository_for_job_token: false) if ff_disabled
-
         project.add_guest(guest)
         project.add_planner(planner)
         project.add_reporter(reporter)

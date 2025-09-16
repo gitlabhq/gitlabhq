@@ -363,7 +363,7 @@ export default {
                 <li
                   v-else-if="canShowReplyActions && showReplies"
                   data-testid="reply-wrapper"
-                  class="discussion-reply-holder clearfix gl-bg-subtle"
+                  class="discussion-reply-holder gl-bg-subtle gl-clearfix"
                   :class="discussionHolderClass"
                 >
                   <div class="flash-container !gl-mt-0 gl-mb-2"></div>

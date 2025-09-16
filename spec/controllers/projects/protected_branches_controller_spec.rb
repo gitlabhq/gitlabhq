@@ -2,7 +2,7 @@
 
 require('spec_helper')
 
-RSpec.describe Projects::ProtectedBranchesController do
+RSpec.describe Projects::ProtectedBranchesController, feature_category: :source_code_management do
   let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be_with_reload(:empty_project) { create(:project, :empty_repo) }
   let_it_be(:maintainer) { create(:user, maintainer_of: [project, empty_project]) }
@@ -14,6 +14,25 @@ RSpec.describe Projects::ProtectedBranchesController do
 
   before do
     sign_in(user)
+  end
+
+  describe "GET #show" do
+    it 'returns a list of matching branches' do
+      get(:show, params: base_params)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    context 'when page_token is incorrect' do
+      it 'displays a alert' do
+        get(:show, params: base_params.merge(page_token: 'wrong'))
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(flash[:alert]).to include(
+          "Invalid page token"
+        )
+      end
+    end
   end
 
   describe "GET #index" do

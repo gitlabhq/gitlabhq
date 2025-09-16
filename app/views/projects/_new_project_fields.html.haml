@@ -7,7 +7,7 @@
 
 .row{ id: project_name_id }
   = f.hidden_field :ci_cd_only, value: ci_cd_only
-  .form-group.gl-form-group.project-name.col-sm-12
+  .form-group.gl-form-group.project-name.gl-col-sm-12
     = f.label :name, class: 'label-bold' do
       %span= _("Project name")
     = f.text_field :name, placeholder: s_('ProjectsNew|My project'), class: "form-control gl-form-input input-lg", data: { testid: 'project-name', track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_name" }, required: true, aria: { required: true, describedby: 'js-project-name-description' }
@@ -15,7 +15,7 @@
       = s_("ProjectsNew|Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces.")
     #js-project-name-error.gl-field-error.gl-mt-2.gl-hidden
   .form-group.gl-form-group.gl-w-full.gl-flex.gl-flex-wrap
-    .form-group.project-path.col-sm-6.gl-pr-0
+    .form-group.project-path.gl-col-sm-6.gl-pr-0
       = f.label :namespace_id, class: 'label-bold' do
         %span= _('Project URL')
       .input-group.gl-flex-nowrap
@@ -29,13 +29,13 @@
           user_namespace_id: current_user.namespace_id } }
           = f.hidden_field :namespace_id, value: current_user.namespace_id
         .gl-self-center.gl-pl-5 /
-    .form-group.project-path.col-sm-6
+    .form-group.project-path.gl-col-sm-6
       = f.label :path, class: 'label-bold' do
         %span= _("Project slug")
       = f.text_field :path, placeholder: "my-awesome-project", class: "form-control gl-form-input", required: true, aria: { required: true }, data: { testid: 'project-path', username: current_user.username }
-    .js-group-namespace-error.gl-my-3.gl-text-danger.gl-hidden.col-12
+    .js-group-namespace-error.gl-my-3.gl-text-danger.gl-hidden.gl-col-12
       = s_('ProjectsNew|Pick a group or namespace where you want to create this project.')
-    .js-user-readme-repo.gl-my-3.gl-hidden.col-12
+    .js-user-readme-repo.gl-my-3.gl-hidden.gl-col-12
       = render Pajamas::AlertComponent.new(dismissible: false,
         variant: :success) do |c|
         - c.with_body do

@@ -19,8 +19,8 @@ module Gitlab
           log_info(import_stage: 'import_repository', message: 'starting import')
 
           if project.empty_repo?
-            project.repository.import_repository(project.import_url)
-            project.repository.fetch_as_mirror(project.import_url, refmap: refmap)
+            project.repository.import_repository(project.unsafe_import_url)
+            project.repository.fetch_as_mirror(project.unsafe_import_url, refmap: refmap)
 
             validate_repository_size!
 

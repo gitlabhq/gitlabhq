@@ -1,0 +1,10 @@
+---
+name: step_up_auth_required_oauth_provider_updated
+description: Step-up authentication OAuth provider requirement is updated
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/556943
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199423
+feature_category: system_access
+milestone: '18.4'
+saved_to_database: true
+streamed: true
+scope: [Group]

@@ -34,9 +34,15 @@ module AntiAbuse
                         category: category,
                         message: 'User reported for abuse based on spam verdict' }
 
-      abuse_report = AbuseReport.by_category(category).by_reporter_id(reporter.id).by_user_id(params[:user_id]).first
+      abuse_report = ::AbuseReport.by_category(category).by_reporter_id(reporter.id).by_user_id(params[:user_id]).first
 
-      abuse_report = AbuseReport.create!(report_params) if abuse_report.nil?
+      if abuse_report.nil?
+        response = AntiAbuse::AbuseReport::CreateService.new(report_params).execute
+
+        raise ActiveRecord::RecordInvalid unless response.success?
+
+        abuse_report = response.payload
+      end
 
       create_abuse_event(abuse_report.id, params)
     end

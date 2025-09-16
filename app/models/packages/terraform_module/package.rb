@@ -11,6 +11,11 @@ module Packages
 
       validates :name, format: { with: Gitlab::Regex.terraform_module_package_name_regex }
       validates :version, format: { with: Gitlab::Regex.semver_regex, message: Gitlab::Regex.semver_regex_message }
+
+      scope :unscope_order, -> { unscope(:order) }
+      scope :order_metadatum_semver_desc, -> {
+        joins(:terraform_module_metadatum).merge(::Packages::TerraformModule::Metadatum.order_by_semantic_version_desc)
+      }
     end
   end
 end

@@ -311,7 +311,15 @@ class WebHookService
   strong_memoize_attr :request_payload
 
   def render_custom_template(template, params)
-    template.gsub(CUSTOM_TEMPLATE_INTERPOLATION_REGEX) { params.dig(*Regexp.last_match(1).split('.')) }
+    if Feature.enabled?(:custom_webhook_template_serialization, hook.parent, type: :beta)
+      template.gsub(CUSTOM_TEMPLATE_INTERPOLATION_REGEX) do
+        value = params.dig(*Regexp.last_match(1).split('.'))
+        value_json = value.to_json
+        value.is_a?(String) ? value_json[1..-2] : value_json
+      end
+    else
+      template.gsub(CUSTOM_TEMPLATE_INTERPOLATION_REGEX) { params.dig(*Regexp.last_match(1).split('.')) }
+    end
   end
 
   def raise_custom_webhook_template_error!(message)

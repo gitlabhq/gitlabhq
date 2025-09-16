@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Variable, feature_category: :ci_variables do
+RSpec.describe Ci::Variable, feature_category: :pipeline_composition do
   let_it_be_with_reload(:project) { create(:project) }
 
   subject { build(:ci_variable, project: project) }

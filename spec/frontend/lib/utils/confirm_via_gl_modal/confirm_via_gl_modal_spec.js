@@ -33,20 +33,15 @@ describe('confirmViaGlModal', () => {
     expect(confirmAction).toHaveBeenCalledWith('message', {});
   });
 
-  it.each(['gl-sr-only', 'sr-only'])(
-    `uses slot.%s contentText as primaryBtnText`,
-    (srOnlyClass) => {
-      el = createElement(
-        `<a href="#"><span class="${srOnlyClass}">Delete merge request</span></a>`,
-      );
+  it(`uses slot.gl-sr-only contentText as primaryBtnText`, () => {
+    el = createElement(`<a href="#"><span class="gl-sr-only">Delete merge request</span></a>`);
 
-      confirmViaGlModal('', el);
+    confirmViaGlModal('', el);
 
-      expect(confirmAction).toHaveBeenCalledWith('', {
-        primaryBtnText: 'Delete merge request',
-      });
-    },
-  );
+    expect(confirmAction).toHaveBeenCalledWith('', {
+      primaryBtnText: 'Delete merge request',
+    });
+  });
 
   it('uses `aria-label` value as `primaryBtnText`', () => {
     el = createElement(`<a aria-label="Delete merge request" href="#"></a>`);

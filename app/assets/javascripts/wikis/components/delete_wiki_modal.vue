@@ -12,7 +12,7 @@ export default {
     GlDisclosureDropdownItem,
   },
   directives: {
-    'gl-modal': GlModalDirective,
+    GlModal: GlModalDirective,
   },
   inject: ['wikiUrl', 'pageHeading', 'csrfToken', 'pagePersisted'],
   props: {

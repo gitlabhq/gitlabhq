@@ -190,7 +190,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-w-full sm:gl-w-auto">
+  <div class="gl-flex gl-w-full @sm/panel:gl-w-auto">
     <div :class="columnClass" class="linked-pipelines-column">
       <div data-testid="linked-column-title" :class="computedTitleClasses">
         {{ columnTitle }}
@@ -199,10 +199,9 @@ export default {
         <li
           v-for="pipeline in linkedPipelines"
           :key="pipeline.id"
-          class="gl-mb-6 gl-flex gl-flex-wrap sm:gl-flex-nowrap"
+          class="gl-mb-6 gl-flex gl-flex-wrap @sm/panel:gl-flex-nowrap"
         >
           <linked-pipeline
-            class="gl-inline-block"
             :is-loading="isLoadingPipeline(pipeline.id)"
             :pipeline="pipeline"
             :column-title="columnTitle"

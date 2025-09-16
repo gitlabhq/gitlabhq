@@ -9,7 +9,7 @@ class <%= migration_class_name %> < Gitlab::Database::Migration[<%= Gitlab::Data
   milestone '<%= Gitlab.current_milestone %>'
 
   # Select the applicable gitlab schema for your batched background migration
-  restrict_gitlab_migration # gitlab_schema: :gitlab_main / :gitlab_ci / :gitlab_main_clusterwide / ...
+  restrict_gitlab_migration # gitlab_schema: :gitlab_main_org / :gitlab_ci / ...
 
   MIGRATION = "<%= class_name %>"
   # BATCH_SIZE = <%= Gitlab::Database::Migrations::BatchedBackgroundMigrationHelpers::BATCH_SIZE %>

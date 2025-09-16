@@ -18,7 +18,7 @@ RSpec.describe Projects::ArtifactsController, feature_category: :job_artifacts d
     )
   end
 
-  let!(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+  let!(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline, artifacts_expire_at: 10.days.from_now) }
 
   before do
     sign_in(user)
@@ -544,6 +544,30 @@ RSpec.describe Projects::ArtifactsController, feature_category: :job_artifacts d
 
           expect(response).to be_not_found
         end
+      end
+    end
+  end
+
+  describe 'POST keep' do
+    let(:query_params) { { namespace_id: project.namespace, project_id: project, job_id: job } }
+
+    subject { post(:keep, params: query_params) }
+
+    context 'when user has permissions' do
+      it 'keeps artifacts and redirects to job page' do
+        expect { subject }.to change { job.reload.artifacts_expire_at }.to(nil)
+
+        expect(response).to redirect_to(project_job_path(project, job))
+      end
+    end
+
+    context 'when user does not have permissions' do
+      let(:user) { create(:user) }
+
+      it 'renders 404' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

@@ -7,7 +7,7 @@ feature_categories:
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45061
 milestone: '13.5'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   group_id: namespaces
 table_size: small

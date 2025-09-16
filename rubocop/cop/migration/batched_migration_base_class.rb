@@ -12,6 +12,7 @@ module RuboCop
           BatchedMigrationJob
           BackfillDesiredShardingKeyJob
           BackfillDesiredShardingKeyPartitionJob
+          CopyColumnUsingBackgroundMigrationJob
         ].to_set.freeze
 
         # @!method top_level_module?(node)

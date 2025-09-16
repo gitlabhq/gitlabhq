@@ -166,7 +166,7 @@ password or personal access token containing special characters. For more inform
 
 ### Import fails due to invalid/unresolved host address, or the import URL is blocked
 
-If a project import fails with an error message such as `Importing the project failed: Import url is blocked`, even though the initial connection to the Bitbucket
+If a project import fails with an error message such as `Importing the project failed: Import URL is blocked`, even though the initial connection to the Bitbucket
 server succeeded, the Bitbucket server or a reverse proxy might not be configured correctly.
 
 To troubleshoot this problem, use the [Projects API](../../../api/projects.md) to check for the newly-created project and locate the `import_url` value of the project.

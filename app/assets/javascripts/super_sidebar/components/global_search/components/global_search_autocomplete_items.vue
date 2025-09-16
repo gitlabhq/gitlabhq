@@ -226,7 +226,7 @@ export default {
                   class="gl-truncate gl-text-strong"
                   data-testid="autocomplete-item-name"
                 ></span>
-                <span v-if="item.avatar_url !== undefined" class="gl-text-subtle" aria-hidden="true"
+                <span v-if="item.value && item.namespace" class="gl-text-subtle" aria-hidden="true"
                   >·</span
                 >
                 <span

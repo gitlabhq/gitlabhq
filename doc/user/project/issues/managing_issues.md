@@ -707,6 +707,7 @@ Or:
 
 - To use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd> + <kbd>i</kbd>.
 - On the left sidebar, at the top, select **Assigned issues** ({{< icon name="issues" >}}).
+<!-- When the feature flag paneled_view is removed, refer only to the button icon -->
 
 ## Issue list
 
@@ -736,6 +737,7 @@ The following sections describe how to work with the issue list.
 - Filtering by type was [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/322755) in GitLab 14.10.
 - Filtering by type is generally available in GitLab 15.1. [Feature flag `vue_issues_list`](https://gitlab.com/gitlab-org/gitlab/-/issues/359966) removed.
 - Filtering by health status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218711) in GitLab 15.5.
+- In GitLab 18.4 and later, if [the new look for issues](issue_work_items.md) is enabled, you can filter the list of issues by custom status or the parent item.
 
 {{< /history >}}
 
@@ -975,15 +977,9 @@ You can also set and clear health statuses using the `/health_status` and `/clea
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/543862) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `work_item_status_feature_flag`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/521286) in GitLab 18.4. Feature flag `work_item_status_feature_flag` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 <!-- Turn off the future tense test because of "won't do". -->
 <!-- vale gitlab_base.FutureTense = NO -->

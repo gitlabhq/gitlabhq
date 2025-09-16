@@ -1,6 +1,6 @@
 <script>
 import { GlAlert, GlButton, GlFormCheckbox, GlTooltipDirective } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import VueDraggable from 'vuedraggable';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Variables::Downstream::Generator, feature_category: :ci_variables do
+RSpec.describe Gitlab::Ci::Variables::Downstream::Generator, feature_category: :pipeline_composition do
   let(:bridge_variables) do
     Gitlab::Ci::Variables::Collection.fabricate(
       [

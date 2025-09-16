@@ -1,0 +1,15 @@
+---
+table_name: security_project_tracked_contexts
+classes:
+- Security::ProjectTrackedContext
+feature_categories:
+- vulnerability_management
+description: |
+  This table stores information about Git refs (branches, tags, or more later.) that are tracked
+  for security purposes within a project. It enables tracking vulnerabilities and SBOM
+  dependencies across multiple refs, not just the default branch.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201150
+milestone: '18.4'
+gitlab_schema: gitlab_sec
+sharding_key: 
+  project_id: projects

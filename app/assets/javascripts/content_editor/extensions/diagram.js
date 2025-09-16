@@ -8,6 +8,10 @@ import CodeBlockHighlight from './code_block_highlight';
 
 const backtickInputRegex = /^```(mermaid|plantuml)[\s\n]$/;
 
+export const DEFAULT_MERMAID_CONTENT = 'graph TD;\n    A-->B;\n    A-->C;\n    B-->D;\n    C-->D;';
+export const DEFAULT_PLANTUML_CONTENT =
+  '@startuml\nAlice -> Bob: Authentication Request\nBob --> Alice: Authentication Response\n@enduml';
+
 export default CodeBlockHighlight.extend({
   name: 'diagram',
 
@@ -72,7 +76,40 @@ export default CodeBlockHighlight.extend({
   },
 
   addCommands() {
-    return {};
+    return {
+      insertMermaid:
+        () =>
+        ({ commands }) => {
+          return commands.insertContent({
+            type: this.type.name,
+            attrs: {
+              language: 'mermaid',
+            },
+            content: [
+              {
+                type: 'text',
+                text: DEFAULT_MERMAID_CONTENT,
+              },
+            ],
+          });
+        },
+      insertPlantUML:
+        () =>
+        ({ commands }) => {
+          return commands.insertContent({
+            type: this.type.name,
+            attrs: {
+              language: 'plantuml',
+            },
+            content: [
+              {
+                type: 'text',
+                text: DEFAULT_PLANTUML_CONTENT,
+              },
+            ],
+          });
+        },
+    };
   },
 
   addInputRules() {

@@ -49,7 +49,7 @@ module Gitlab
 
           next public_key.public_key.fingerprint if public_key.is_a?(SSHData::Certificate)
 
-          public_key.fingerprint
+          public_key&.fingerprint
         end
       end
       # The fingerprint returned in key_fingerprint is a SHA256 given the lookup in signed_by_key
@@ -107,6 +107,8 @@ module Gitlab
       end
 
       def signature
+        return unless @signature_text.present?
+
         strong_memoize(:signature) do
           ::SSHData::Signature.parse_pem(@signature_text)
         rescue SSHData::DecodeError

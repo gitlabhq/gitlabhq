@@ -16,8 +16,10 @@ module Gitlab
         no_action: 'a'
       }.freeze
 
+      attribute :on_delete_action, :string, limit: 1
       enum :on_delete_action, ACTION_TYPES, prefix: :on_delete
 
+      attribute :on_update_action, :string, limit: 1
       enum :on_update_action, ACTION_TYPES, prefix: :on_update
 
       scope :by_referenced_table_identifier, ->(identifier) do

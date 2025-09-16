@@ -32,7 +32,7 @@ control the pagination of results.
 
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
-| `id`      | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `scope`   | string         | No       | Return Merge Trains filtered by the given scope. Available scopes are `active` (to be merged) and `complete` (have been merged). |
 | `sort`    | string         | No       | Return Merge Trains sorted in `asc` or `desc` order. Default: `desc`. |
 
@@ -104,7 +104,7 @@ Supported attributes:
 
 | Attribute       | Type           | Required | Description |
 |-----------------|----------------|----------|-------------|
-| `id`            | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `target_branch` | string         | Yes      | The target branch of the merge train. |
 | `scope`         | string         | No       | Return Merge Trains filtered by the given scope. Available scopes are `active` (to be merged) and `complete` (have been merged). |
 | `sort`          | string         | No       | Return Merge Trains sorted in `asc` or `desc` order. Default: `desc`. |
@@ -182,7 +182,7 @@ Supported attributes:
 
 | Attribute           | Type           | Required | Description |
 |---------------------|----------------|----------|-------------|
-| `id`                | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `merge_request_iid` | integer        | Yes      | The internal ID of the merge request. |
 
 Example request:
@@ -253,7 +253,7 @@ Supported attributes:
 
 | Attribute                | Type           | Required | Description |
 |--------------------------|----------------|----------|-------------|
-| `id`                     | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                     | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `merge_request_iid`      | integer        | Yes      | The internal ID of the merge request. |
 | `auto_merge`             | boolean        | No       | If true, the merge request is added to the merge train when the checks pass. When false or unspecified, the merge request is added directly to the merge train. |
 | `sha`                    | string         | No       | If present, the SHA must match the `HEAD` of the source branch, otherwise the merge fails. |

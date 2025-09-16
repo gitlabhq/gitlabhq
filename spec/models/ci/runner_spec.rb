@@ -1918,30 +1918,6 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
           .to change { runner.runner_managers.with_system_xid(system_xid).pluck(:organization_id) }
             .from([]).to([runner.organization_id])
       end
-
-      context 'when runner sharding_key_id is not NULL' do
-        before do
-          runner.update!(sharding_key_id: runner.owner.id)
-        end
-
-        it "populates with runner's sharding_key_id" do
-          expect { ensure_manager }
-            .to change { runner.runner_managers.with_system_xid(system_xid).pluck(:sharding_key_id) }
-              .from([]).to([runner.sharding_key_id])
-        end
-      end
-
-      context 'when runner sharding_key_id is NULL' do
-        before do
-          runner.update!(sharding_key_id: nil)
-        end
-
-        it 'populates a bogus sharding_key_id' do
-          expect { ensure_manager }
-            .to change { runner.runner_managers.with_system_xid(system_xid).pluck(:sharding_key_id) }
-              .from([]).to([-1])
-        end
-      end
     end
 
     context 'with group runner' do
@@ -2466,6 +2442,18 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         it { is_expected.not_to include(locked_project_runner) }
         it { is_expected.not_to include(instance_runner) }
       end
+
+      context 'with different organization' do
+        let_it_be(:other_org) { create(:organization) }
+        let_it_be(:other_org_group) { create(:group, organization: other_org) }
+        let_it_be(:other_org_project) { create(:project, organization: other_org, group: other_org_group) }
+        let_it_be(:other_org_runner) { create(:ci_runner, :project, projects: [other_org_project]) }
+
+        subject { described_class.assignable_for(other_project) }
+
+        it { is_expected.to include(unlocked_project_runner) }
+        it { is_expected.not_to include(other_org_runner) }
+      end
     end
 
     describe '.order_by' do
@@ -2648,45 +2636,6 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         let(:runner_type) { 'invalid runner type' }
 
         it { is_expected.to contain_exactly(instance_runner, group_runner, project_runner) }
-      end
-    end
-
-    describe '.with_sharding_key' do
-      subject(:scope) { described_class.with_runner_type(runner_type).with_sharding_key(sharding_key_id) }
-
-      let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
-      let_it_be(:project_runner) { create(:ci_runner, :project, projects: [project, other_project]) }
-
-      context 'with group_type' do
-        let(:runner_type) { 'group_type' }
-
-        context 'when sharding_key_id exists' do
-          let(:sharding_key_id) { group.id }
-
-          it { is_expected.to contain_exactly(group_runner) }
-        end
-
-        context 'when sharding_key_id does not exist' do
-          let(:sharding_key_id) { non_existing_record_id }
-
-          it { is_expected.to eq [] }
-        end
-      end
-
-      context 'with project_type' do
-        let(:runner_type) { 'project_type' }
-
-        context 'when sharding_key_id exists' do
-          let(:sharding_key_id) { project.id }
-
-          it { is_expected.to contain_exactly(project_runner) }
-        end
-
-        context 'when sharding_key_id does not exist' do
-          let(:sharding_key_id) { non_existing_record_id }
-
-          it { is_expected.to eq [] }
-        end
       end
     end
   end

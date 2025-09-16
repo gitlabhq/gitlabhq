@@ -7,4 +7,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/551171
 milestone: '18.2'
 group: group::code review
 type: beta
-default_enabled: false
+default_enabled: true

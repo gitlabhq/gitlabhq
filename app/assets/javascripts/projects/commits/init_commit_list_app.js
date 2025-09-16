@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import CommitListApp from './components/commit_list_app.vue';
 import apolloProvider from './graphql';
+import { createRouter } from './router';
 
 export default function initCommitListApp() {
   const commitListEl = document.getElementById('js-commit-list');
@@ -15,14 +16,15 @@ export default function initCommitListApp() {
     escapedRef,
     refType,
     rootRef,
-    path,
     browseFilesPath,
     commitsFeedPath,
+    basePath,
   } = commitListEl.dataset;
 
   // eslint-disable-next-line no-new
   new Vue({
     el: commitListEl,
+    router: createRouter(basePath, escapedRef),
     provide: {
       projectFullPath,
       projectRootPath,
@@ -31,7 +33,6 @@ export default function initCommitListApp() {
       escapedRef,
       refType,
       rootRef,
-      path,
       browseFilesPath,
       commitsFeedPath,
     },

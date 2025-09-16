@@ -92,8 +92,8 @@ export default {
         >
           <div class="issue-sticky-header-text gl-mx-auto gl-flex gl-items-baseline gl-gap-3">
             <gl-badge class="gl-self-center gl-whitespace-nowrap" :variant="badgeVariant">
-              <gl-icon v-if="statusIcon" class="sm:gl-hidden" :name="statusIcon" />
-              <span class="gl-sr-only sm:gl-not-sr-only">
+              <gl-icon v-if="statusIcon" class="@sm/panel:gl-hidden" :name="statusIcon" />
+              <span class="gl-sr-only @sm/panel:gl-not-sr-only">
                 <slot name="status-badge"></slot>
               </span>
             </gl-badge>

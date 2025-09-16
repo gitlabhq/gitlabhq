@@ -130,6 +130,8 @@ export default {
   },
   inject: {
     autocompleteAwardEmojisPath: { default: '' },
+    mergeRequestTargetBranchesPath: { default: '' },
+    mergeRequestSourceBranchesPath: { default: '' },
     fullPath: { default: '' },
     hasAnyMergeRequests: { default: false },
     hasScopedLabelsFeature: { default: false },
@@ -290,6 +292,7 @@ export default {
           recentSuggestionsStorageKey: `${this.fullPath}-merge-requests-recent-tokens-author`,
           preloadedUsers,
           multiselect: false,
+          unique: true,
         },
         {
           type: TOKEN_TYPE_ASSIGNEE,
@@ -573,8 +576,8 @@ export default {
   methods: {
     getBranchPath(branchType = 'other') {
       const typeUrls = {
-        source: '/-/autocomplete/merge_request_source_branches.json',
-        target: '/-/autocomplete/merge_request_target_branches.json',
+        source: this.mergeRequestSourceBranchesPath,
+        target: this.mergeRequestTargetBranchesPath,
         other: Api.buildUrl(Api.createBranchPath).replace(':id', encodeURIComponent(this.fullPath)),
       };
       const url = typeUrls[branchType];
@@ -897,7 +900,10 @@ export default {
       </template>
 
       <template #discussions="{ issuable = {} }">
-        <li v-if="issuable.resolvableDiscussionsCount" class="!gl-mr-0 gl-hidden sm:gl-inline-flex">
+        <li
+          v-if="issuable.resolvableDiscussionsCount"
+          class="!gl-mr-0 gl-hidden @sm/panel:gl-inline-flex"
+        >
           <discussions-badge :merge-request="issuable" />
         </li>
       </template>
@@ -905,7 +911,7 @@ export default {
       <template #statistics="{ issuable = {} }">
         <li
           v-if="issuable.upvotes || issuable.downvotes"
-          class="!gl-mr-0 gl-hidden sm:gl-inline-flex"
+          class="!gl-mr-0 gl-hidden @sm/panel:gl-inline-flex"
         >
           <merge-request-statistics :merge-request="issuable" class="gl-flex" />
         </li>
@@ -925,7 +931,7 @@ export default {
       <template #pipeline-status="{ issuable = {} }">
         <li
           v-if="issuable.headPipeline && issuable.headPipeline.detailedStatus"
-          class="issuable-pipeline-status !gl-mr-0 gl-hidden sm:gl-flex"
+          class="issuable-pipeline-status !gl-mr-0 gl-hidden @sm/panel:gl-flex"
         >
           <ci-icon :status="issuable.headPipeline.detailedStatus" use-link show-tooltip />
         </li>

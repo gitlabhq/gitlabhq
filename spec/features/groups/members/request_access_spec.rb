@@ -96,6 +96,10 @@ RSpec.describe 'Groups > Members > Request access', feature_category: :groups_an
   end
 
   it 'member does not see the request access button', :js do
+    # Disable feature flag while it is a WIP.
+    # Feature specs for enabled feature flag will be added in https://gitlab.com/gitlab-org/gitlab/-/issues/519658
+    stub_feature_flags(groups_overview_shared_vue_components: false)
+
     group.add_owner(user)
     visit group_path(group)
     more_actions_dropdown.click

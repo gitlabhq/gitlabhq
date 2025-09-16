@@ -411,7 +411,7 @@ In `include` sections in your `.gitlab-ci.yml` file, you can use:
 - [Instance variables](../variables/_index.md#for-an-instance).
 - Project [predefined variables](../variables/predefined_variables.md) (`CI_PROJECT_*`).
 - [Trigger variables](../triggers/_index.md#pass-cicd-variables-in-the-api-call).
-- [Scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule).
+- [Scheduled pipeline variables](../pipelines/schedules.md#create-a-pipeline-schedule).
 - [Manual pipeline run variables](../pipelines/_index.md#run-a-pipeline-manually).
 - The `CI_PIPELINE_SOURCE` and `CI_PIPELINE_TRIGGERED` [predefined variables](../variables/predefined_variables.md).
 - The `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md).

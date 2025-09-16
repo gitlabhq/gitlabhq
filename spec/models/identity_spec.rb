@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Identity do
   describe 'relations' do
-    it { is_expected.to belong_to(:user) }
+    it { is_expected.to belong_to(:user).required }
   end
 
   describe 'fields' do
@@ -34,10 +34,6 @@ RSpec.describe Identity do
     end
 
     context 'with newly-created user' do
-      before do
-        create(:identity, provider: 'ldapmain', user_id: nil)
-      end
-
       it 'successfully validates even with a nil user_id' do
         identity = user.identities.build(provider: 'ldapmain')
 

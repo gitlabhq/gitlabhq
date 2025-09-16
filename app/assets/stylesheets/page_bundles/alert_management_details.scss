@@ -1,12 +1,6 @@
 @import 'mixins_and_variables_and_functions';
 
 .alert-management-details {
-  @include media-breakpoint-down(xs) {
-    .alert-details-incident-button {
-      width: 100%;
-    }
-  }
-
   .toggle-sidebar-mobile-button {
     right: 0;
   }

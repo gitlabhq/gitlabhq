@@ -4,7 +4,7 @@ classes:
 - Ml::ModelMetadata
 feature_categories:
 - mlops
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 description: A Model Metadata record holds extra information about the model
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134443
 milestone: 16.6

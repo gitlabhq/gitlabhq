@@ -10,7 +10,7 @@ module AntiAbuse
     validates :metadata, json_schema: { filename: 'abuse_event_metadata' }, allow_blank: true
 
     belongs_to :user, inverse_of: :abuse_events
-    belongs_to :abuse_report, inverse_of: :abuse_events
+    belongs_to :abuse_report, class_name: '::AbuseReport', inverse_of: :abuse_events
 
     enum :category, Enums::Abuse::Category.categories
     enum :source, Enums::Abuse::Source.sources

@@ -30,7 +30,7 @@ export default {
 </script>
 
 <template>
-  <div class="item-count text-nowrap">
+  <div class="item-count gl-whitespace-nowrap">
     <span :class="{ 'gl-text-red-700': exceedsMax }" data-testid="board-items-count">
       {{ currentCount }}
     </span>

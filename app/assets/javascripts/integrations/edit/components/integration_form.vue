@@ -272,7 +272,6 @@ export default {
 
     <integration-form-actions
       v-if="isEditable"
-      :has-sections="hasSections"
       :is-saving="isSaving"
       :is-testing="isTesting"
       :is-resetting="isResetting"

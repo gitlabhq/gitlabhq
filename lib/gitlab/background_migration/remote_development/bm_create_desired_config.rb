@@ -28,12 +28,13 @@ module Gitlab
           )
         end
 
+        # rubocop:disable Metrics/MethodLength -- need it big
         # @param [BackgroundMigration::RemoteDevelopment::Models::BMWorkspace] workspace
         # @param [BackgroundMigration::RemoteDevelopment::WorkspaceOperations::BMDesiredConfig] desired_config
         # @param [Gitlab::BackgroundMigration::Logger] logger
         # @param [Boolean] dry_run
         # @return [Void]
-        def self.validate_and_create_workspace_agentk_state(workspace:, desired_config:, logger:, dry_run:) # rubocop:disable Metrics/MethodLength -- need it big
+        def self.validate_and_create_workspace_agentk_state(workspace:, desired_config:, logger:, dry_run:)
           if dry_run
             puts "For workspace_id #{workspace.id}"
             puts "Valid desired_config? #{desired_config.valid?}"
@@ -54,6 +55,7 @@ module Gitlab
           end
 
           if dry_run
+            # noinspection RubyArgCount -- RubyMine does not recognize the fields
             workspace_agentk_state = RemoteDevelopment::Models::BmWorkspaceAgentkState.new(
               workspace_id: workspace.id,
               project_id: workspace.project_id,
@@ -65,17 +67,21 @@ module Gitlab
               puts message
             end
           else
-            RemoteDevelopment::Models::BmWorkspaceAgentkState.create!(
-              workspace_id: workspace.id,
-              project_id: workspace.project_id,
-              desired_config: desired_config
+            RemoteDevelopment::Models::BmWorkspaceAgentkState.upsert(
+              {
+                workspace_id: workspace.id,
+                project_id: workspace.project_id,
+                desired_config: desired_config
+              },
+              unique_by: :workspace_id
             )
           end
         end
+        # rubocop:enable Metrics/MethodLength
 
         # @return [Gitlab::BackgroundMigration::Logger]
         def self.logger
-          @logger ||= Gitlab::BackgroundMigration::Logger.build
+          @logger ||= ::Gitlab::BackgroundMigration::Logger.build
         end
       end
     end

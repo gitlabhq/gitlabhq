@@ -297,7 +297,8 @@ module BlobHelper
       original_branch: ref,
       escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
       can_download_code: can?(current_user, :download_code, project).to_s,
-      full_name: project.name_with_namespace
+      full_name: project.name_with_namespace,
+      has_revs_file: (!project.repository.ignore_revs_file_blob.nil?).to_s
     }
   end
 

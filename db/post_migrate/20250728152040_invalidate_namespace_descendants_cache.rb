@@ -3,7 +3,7 @@
 class InvalidateNamespaceDescendantsCache < Gitlab::Database::Migration[2.3]
   disable_ddl_transaction!
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
   milestone '18.3'
 
   class NamespaceDescendant < MigrationRecord

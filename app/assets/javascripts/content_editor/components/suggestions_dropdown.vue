@@ -96,7 +96,11 @@ export default {
     },
 
     isEpic() {
-      return this.isReference && this.nodeProps.referenceType === REFERENCE_TYPES.EPIC;
+      return (
+        this.isReference &&
+        (this.nodeProps.referenceType === REFERENCE_TYPES.EPIC ||
+          this.nodeProps.referenceType === REFERENCE_TYPES.EPIC_ALTERNATIVE)
+      );
     },
 
     isSnippet() {
@@ -181,6 +185,7 @@ export default {
         case REFERENCE_TYPES.COMMAND:
           return `${this.char}${item.name}`;
         case REFERENCE_TYPES.EPIC:
+        case REFERENCE_TYPES.EPIC_ALTERNATIVE:
           return item.reference;
         case REFERENCE_TYPES.VULNERABILITY:
           return `[vulnerability:${item.id}]`;

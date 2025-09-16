@@ -14,14 +14,14 @@ RSpec.describe Admin::OrganizationsController, type: :request, feature_category:
       let_it_be(:user) { create(:admin) }
 
       it_behaves_like 'organization - successful response'
-      it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+      it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
     end
 
     context 'as a regular user' do
       let_it_be(:user) { create(:user) }
 
       it_behaves_like 'organization - not found response'
-      it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+      it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
     end
   end
 end

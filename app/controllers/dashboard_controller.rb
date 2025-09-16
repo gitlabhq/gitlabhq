@@ -9,6 +9,10 @@ class DashboardController < Dashboard::ApplicationController
   prepend_before_action(only: [:issues]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:issues_calendar]) { authenticate_sessionless_user!(:ics) }
 
+  before_action only: :merge_requests do
+    push_frontend_feature_flag(:mr_dashboard_drafts_toggle, current_user, type: :beta)
+  end
+
   before_action :event_filter, only: :activity
   before_action :projects, only: [:issues, :merge_requests, :search_merge_requests]
   before_action :set_show_full_reference, only: [:issues, :merge_requests, :search_merge_requests]
@@ -18,6 +22,10 @@ class DashboardController < Dashboard::ApplicationController
     if request.query_string.present? && current_user.merge_request_dashboard_enabled?
       redirect_to merge_requests_search_dashboard_path(params: request.query_parameters), status: :moved_permanently
     end
+  end
+
+  before_action only: [:activity] do
+    push_frontend_feature_flag(:global_time_tracking_report)
   end
 
   respond_to :html

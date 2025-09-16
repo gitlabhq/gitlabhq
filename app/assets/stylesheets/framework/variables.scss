@@ -19,6 +19,7 @@ $settings-sticky-header-height: 3rem;
 $settings-sticky-header-z-index: 98;
 $settings-sticky-footer-height: 3rem;
 $settings-sticky-footer-z-index: #{$settings-sticky-header-z-index + 1};
+$paneled-layout-ultra-wide-breakpoint: 2560px;
 
 /**
   🚨 Do not use this spacing scale — it is deprecated and being removed. 🚨
@@ -135,10 +136,10 @@ $limited-layout-width: 1006px;
 $fixed-layout-width: 1296px;
 $container-margin: $gl-padding;
 $container-margin-xl: $gl-padding-24;
-$gl-border-radius-base: 4px;
-$gl-border-radius-base-inner: $gl-border-radius-base - 1px;
-$gl-border-radius-lg: 8px;
-$gl-border-radius-lg-inner: $gl-border-radius-lg - 1px;
+$gl-border-radius-base: 0.25rem;
+$gl-border-radius-base-inner: calc(#{$gl-border-radius-base} - 1px);
+$gl-border-radius-lg: 0.5rem;
+$gl-border-radius-lg-inner: calc(#{$gl-border-radius-lg} - 1px);
 $border-radius-small: 2px;
 $border-radius-large: 8px;
 $default-icon-size: 16px;
@@ -151,6 +152,7 @@ $system-footer-height: $system-header-height;
 $mr-sticky-header-height: 4.5rem;
 $mr-review-bar-height: calc(2rem + 16px);
 $top-bar-height: 48px;
+$work-item-sticky-header-height: 52px;
 $home-panel-title-row-height: 48px;
 $home-panel-avatar-mobile-size: 24px;
 $issuable-title-max-width: 350px;
@@ -419,9 +421,3 @@ $source-editor-hover-dark-text-color: $gl-color-neutral-900;
  - Issue: https://gitlab.com/gitlab-org/design.gitlab.com/issues/242
  */
 $enable-validation-icons: false;
-
-/*
-Enable GitLab UI CSS Feature Flag
-for GlButton migration from box-shadow to border.
-*/
-$feature-button-border: true;

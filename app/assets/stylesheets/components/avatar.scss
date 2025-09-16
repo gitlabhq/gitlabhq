@@ -1,3 +1,5 @@
+@use "sass:list";
+@use "sass:map";
 $avatar-sizes: (
   16: (
     font-size: 10px,
@@ -118,23 +120,23 @@ $avatar-sizes: (
 
   // Sizes
   @each $size, $size-config in $avatar-sizes {
-    $keys: map-keys($size-config);
+    $keys: map.keys($size-config);
 
     &.s#{$size} {
       @each $key in $keys {
         // We don't want `border-radius` to be included here.
         @if ($key != 'border-radius') {
-          #{$key}: map-get($size-config, #{$key});
+          #{$key}: map.get($size-config, #{$key});
         }
       }
     }
   }
 
   // Background colors
-  @for $i from 1 through length($gl-avatar-identicon-bgs) {
+  @for $i from 1 through list.length($gl-avatar-identicon-bgs) {
     &.bg#{$i} {
-      color: nth($gl-avatar-identicon-texts, $i);
-      background-color: nth($gl-avatar-identicon-bgs, $i);
+      color: list.nth($gl-avatar-identicon-texts, $i);
+      background-color: list.nth($gl-avatar-identicon-bgs, $i);
     }
   }
 }
@@ -175,10 +177,10 @@ $avatar-sizes: (
 
   @each $size, $size-config in $avatar-sizes {
     &.s#{$size} {
-      border-radius: map-get($size-config, 'border-radius');
+      border-radius: map.get($size-config, 'border-radius');
 
       .avatar {
-        border-radius: map-get($size-config, 'border-radius');
+        border-radius: map.get($size-config, 'border-radius');
       }
     }
   }

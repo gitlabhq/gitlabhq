@@ -1,11 +1,10 @@
 <script>
-import { GlButton, GlLink } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 
 export default {
   name: 'PipelineNavControls',
   components: {
     GlButton,
-    GlLink,
   },
   inject: ['pipelinesAnalyticsPath'],
   props: {
@@ -34,14 +33,14 @@ export default {
 </script>
 <template>
   <div class="nav-controls">
-    <gl-link
+    <gl-button
       v-if="pipelinesAnalyticsPath"
-      class="gl-mb-3 gl-block gl-whitespace-nowrap gl-text-center md:gl-mb-0 md:gl-mr-3"
       :href="pipelinesAnalyticsPath"
       data-testid="view-analytics-link"
+      variant="link"
     >
       {{ s__('Pipelines|View analytics') }}
-    </gl-link>
+    </gl-button>
 
     <gl-button
       v-if="resetCachePath"

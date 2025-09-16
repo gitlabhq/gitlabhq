@@ -322,7 +322,7 @@ To run these tests on your computer against the GDK:
 1. Run a group SAML test from [`gitlab/qa`](https://gitlab.com/gitlab-org/gitlab/-/tree/d5447ebb5f99d4c72780681ddf4dc25b0738acba/qa) directory:
 
    ```shell
-   QA_DEBUG=true CHROME_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost:3000 qa/specs/features/ee/browser_ui/1_manage/group/group_saml_enforced_sso_spec.rb -- --tag orchestrated
+   QA_LOG_LEVEL=debug CHROME_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost:3000 qa/specs/features/ee/browser_ui/1_manage/group/group_saml_enforced_sso_spec.rb -- --tag orchestrated
    ```
 
 For instructions on how to run these tests using the `gitlab-qa` gem, refer to [the GitLab QA documentation](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#testintegrationgroupsaml-eefull-image-address).
@@ -366,7 +366,7 @@ To run these tests on your computer against the GDK:
 1. Run the test from [`gitlab/qa`](https://gitlab.com/gitlab-org/gitlab/-/tree/d5447ebb5f99d4c72780681ddf4dc25b0738acba/qa) directory:
 
    ```shell
-   QA_DEBUG=true CHROME_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost:3000 qa/specs/features/browser_ui/1_manage/login/login_via_instance_wide_saml_sso_spec.rb -- --tag orchestrated
+   QA_LOG_LEVEL=debug CHROME_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost:3000 qa/specs/features/browser_ui/1_manage/login/login_via_instance_wide_saml_sso_spec.rb -- --tag orchestrated
    ```
 
 For instructions on how to run these tests using the `gitlab-qa` gem, refer to [the GitLab QA documentation](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#testintegrationinstancesaml-ceeefull-image-address).
@@ -560,7 +560,7 @@ To run the [`login_via_oauth_and_oidc_with_gitlab_as_idp_spec`](https://gitlab.c
    ```shell
    bundle install
 
-   RELEASE_REGISTRY_URL='registry.gitlab.com' RELEASE_REGISTRY_USERNAME='<your_gitlab_username>' RELEASE_REGISTRY_PASSWORD='<your_gitlab_personal_access_token>' RELEASE='registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:c0ae46db6b31ea231b2de88961cd687acf634179' GITLAB_QA_ADMIN_ACCESS_TOKEN="<your_gdk_admin_personal_access_token>" QA_DEBUG=true CHROME_HEADLESS=false bundle exec bin/qa Test::Instance::All http://gdk.test:3000 qa/specs/features/browser_ui/1_manage/login/login_via_oauth_and_oidc_with_gitlab_as_idp_spec.rb
+   RELEASE_REGISTRY_URL='registry.gitlab.com' RELEASE_REGISTRY_USERNAME='<your_gitlab_username>' RELEASE_REGISTRY_PASSWORD='<your_gitlab_personal_access_token>' RELEASE='registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:c0ae46db6b31ea231b2de88961cd687acf634179' GITLAB_QA_ADMIN_ACCESS_TOKEN="<your_gdk_admin_personal_access_token>" QA_LOG_LEVEL=debug CHROME_HEADLESS=false bundle exec bin/qa Test::Instance::All http://gdk.test:3000 qa/specs/features/browser_ui/1_manage/login/login_via_oauth_and_oidc_with_gitlab_as_idp_spec.rb
    ```
 
 ## Product Analytics tests

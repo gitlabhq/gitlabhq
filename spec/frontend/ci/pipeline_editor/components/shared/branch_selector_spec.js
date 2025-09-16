@@ -1,0 +1,265 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import BranchSelector from '~/ci/pipeline_editor/components/shared/branch_selector.vue';
+import getAvailableBranchesQuery from '~/ci/pipeline_editor/graphql/queries/available_branches.query.graphql';
+import getLastCommitBranch from '~/ci/pipeline_editor/graphql/queries/client/last_commit_branch.query.graphql';
+import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
+
+import {
+  generateMockProjectBranches,
+  mockBranchPaginationLimit,
+  mockDefaultBranch,
+  mockEmptySearchBranches,
+  mockProjectFullPath,
+  mockSearchBranches,
+  mockTotalBranches,
+  mockTotalBranchResults,
+  mockTotalSearchResults,
+} from '../../mock_data';
+
+describe('Pipeline editor branch switcher', () => {
+  let wrapper;
+  let mockApollo;
+  let mockAvailableBranchQuery;
+
+  Vue.use(VueApollo);
+
+  const defaultProps = {
+    dropdownHeader: 'Select branch',
+    currentBranchName: mockDefaultBranch,
+    paginationLimit: mockBranchPaginationLimit,
+  };
+
+  const createComponent = ({ props = {} } = {}) => {
+    const handlers = [[getAvailableBranchesQuery, mockAvailableBranchQuery]];
+    mockApollo = createMockApollo(handlers, resolvers);
+
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: getLastCommitBranch,
+      data: {
+        workBranches: {
+          __typename: 'BranchList',
+          lastCommit: {
+            __typename: 'WorkBranch',
+            name: '',
+          },
+        },
+      },
+    });
+
+    wrapper = shallowMount(BranchSelector, {
+      propsData: {
+        ...defaultProps,
+        ...props,
+      },
+      provide: {
+        projectFullPath: mockProjectFullPath,
+        totalBranches: mockTotalBranches,
+      },
+      apolloProvider: mockApollo,
+      stubs: { GlCollapsibleListbox },
+    });
+
+    return waitForPromises();
+  };
+
+  const findGlCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findGlListboxItems = () => wrapper.findAllComponents(GlListboxItem);
+  const defaultBranchInDropdown = () => findGlListboxItems().at(0);
+
+  const setAvailableBranchesMock = (availableBranches) => {
+    mockAvailableBranchQuery.mockResolvedValue(availableBranches);
+  };
+
+  beforeEach(() => {
+    mockAvailableBranchQuery = jest.fn();
+  });
+
+  describe('when querying for the first time', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('disables the dropdown', () => {
+      expect(findGlCollapsibleListbox().props('disabled')).toBe(true);
+    });
+  });
+
+  describe('after querying', () => {
+    beforeEach(async () => {
+      setAvailableBranchesMock(generateMockProjectBranches());
+      await createComponent();
+    });
+
+    it('renders dropdown header provided', () => {
+      expect(findGlCollapsibleListbox().props('headerText')).toBe('Select branch');
+    });
+
+    it('renders search box', () => {
+      expect(findGlCollapsibleListbox().props().searchable).toBe(true);
+    });
+
+    it('renders list of branches', () => {
+      expect(findGlCollapsibleListbox().exists()).toBe(true);
+      expect(findGlListboxItems()).toHaveLength(mockTotalBranchResults);
+    });
+
+    it('renders current branch with a check mark', () => {
+      expect(defaultBranchInDropdown().text()).toBe(mockDefaultBranch);
+      expect(defaultBranchInDropdown().props('isSelected')).toBe(true);
+    });
+
+    it('does not render check mark for other branches', () => {
+      const nonDefaultBranch = findGlListboxItems().at(1);
+
+      expect(nonDefaultBranch.text()).not.toBe(mockDefaultBranch);
+      expect(nonDefaultBranch.props('isSelected')).toBe(false);
+    });
+  });
+
+  describe('on fetch error', () => {
+    beforeEach(async () => {
+      setAvailableBranchesMock(new Error());
+      await createComponent();
+    });
+
+    it('does not render dropdown', () => {
+      expect(findGlCollapsibleListbox().props('disabled')).toBe(true);
+    });
+
+    it('emits an error event', () => {
+      expect(wrapper.emitted('fetch-error')).toBeDefined();
+    });
+  });
+
+  describe('when switching branches', () => {
+    beforeEach(async () => {
+      setAvailableBranchesMock(generateMockProjectBranches());
+      await createComponent();
+    });
+
+    it('emits `select-branch` event', () => {
+      expect(wrapper.emitted('select-branch')).toBeUndefined();
+
+      const branch = findGlListboxItems().at(1);
+      findGlCollapsibleListbox().vm.$emit('select', branch.text());
+
+      expect(wrapper.emitted('select-branch')).toEqual([[branch.text()]]);
+    });
+  });
+
+  describe('when searching', () => {
+    beforeEach(async () => {
+      setAvailableBranchesMock(generateMockProjectBranches());
+      await createComponent();
+    });
+
+    afterEach(() => {
+      mockAvailableBranchQuery.mockClear();
+    });
+
+    it('emits error event on fetch error', async () => {
+      mockAvailableBranchQuery.mockResolvedValue(new Error());
+
+      findGlCollapsibleListbox().vm.$emit('search', 'te');
+      await waitForPromises();
+
+      expect(wrapper.emitted('fetch-error')).toBeDefined();
+    });
+
+    describe('with a search term', () => {
+      beforeEach(() => {
+        mockAvailableBranchQuery.mockResolvedValue(mockSearchBranches);
+      });
+
+      it('calls query with correct variables', async () => {
+        findGlCollapsibleListbox().vm.$emit('search', 'te');
+
+        await waitForPromises();
+
+        expect(mockAvailableBranchQuery).toHaveBeenCalledWith({
+          limit: mockTotalBranches, // fetch all branches
+          offset: 0,
+          projectFullPath: mockProjectFullPath,
+          searchPattern: '*te*',
+        });
+      });
+
+      it('fetches new list of branches', async () => {
+        expect(findGlListboxItems()).toHaveLength(mockTotalBranchResults);
+
+        findGlCollapsibleListbox().vm.$emit('search', 'te');
+        await waitForPromises();
+
+        expect(findGlListboxItems()).toHaveLength(mockTotalSearchResults);
+      });
+
+      it('does not hide dropdown when search result is empty', async () => {
+        mockAvailableBranchQuery.mockResolvedValue(mockEmptySearchBranches);
+        findGlCollapsibleListbox().vm.$emit('search', 'aaaa');
+        await waitForPromises();
+
+        expect(findGlCollapsibleListbox().exists()).toBe(true);
+        expect(findGlListboxItems()).toHaveLength(0);
+      });
+    });
+
+    describe('without a search term', () => {
+      beforeEach(async () => {
+        mockAvailableBranchQuery.mockResolvedValue(mockSearchBranches);
+        findGlCollapsibleListbox().vm.$emit('search', 'te');
+        await waitForPromises();
+
+        mockAvailableBranchQuery.mockResolvedValue(generateMockProjectBranches());
+      });
+
+      it('calls query with correct variables', async () => {
+        findGlCollapsibleListbox().vm.$emit('search', '');
+        await waitForPromises();
+
+        expect(mockAvailableBranchQuery).toHaveBeenCalledWith({
+          limit: mockBranchPaginationLimit, // only fetch first n branches first
+          offset: 0,
+          projectFullPath: mockProjectFullPath,
+          searchPattern: '*',
+        });
+      });
+
+      it('fetches new list of branches', async () => {
+        expect(findGlListboxItems()).toHaveLength(mockTotalSearchResults);
+
+        findGlCollapsibleListbox().vm.$emit('search', '');
+        await waitForPromises();
+
+        expect(findGlListboxItems()).toHaveLength(mockTotalBranchResults);
+      });
+    });
+  });
+
+  describe('when scrolling to the bottom of the list', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    afterEach(() => {
+      mockAvailableBranchQuery.mockClear();
+    });
+
+    describe('when search term exists', () => {
+      it('does not fetch more branches', async () => {
+        findGlCollapsibleListbox().vm.$emit('search', 'new');
+        await waitForPromises();
+
+        expect(mockAvailableBranchQuery).toHaveBeenCalledTimes(2);
+        mockAvailableBranchQuery.mockClear();
+
+        expect(mockAvailableBranchQuery).not.toHaveBeenCalled();
+      });
+    });
+  });
+});

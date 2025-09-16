@@ -34,6 +34,8 @@ module Repositories
     def execute(new_version)
       tags = {}
 
+      raise Gitlab::Changelog::Error, _("The `version` attribute is required.") if new_version.blank?
+
       # Custom regex matcher extracts versions from repository tags
       # This format is defined by the user and applied to repository tags only
       # https://docs.gitlab.com/ee/user/project/changelogs.html#customize-the-tag-format-when-extracting-versions

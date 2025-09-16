@@ -18,6 +18,8 @@ class GitlabServicePingWorker # rubocop:disable Scalability/IdempotentWorker
   sidekiq_retry_in { |count| (count + 1) * 8.hours.to_i }
 
   def perform(options = {})
+    return unless ::Gitlab::CurrentSettings.usage_ping_generation_enabled?
+
     organization = Organizations::Organization.first
 
     day_lock(NON_SQL_LEASE_KEY) do

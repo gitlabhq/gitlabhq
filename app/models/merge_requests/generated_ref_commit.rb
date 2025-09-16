@@ -13,11 +13,19 @@ module MergeRequests
 
     sha_attribute :commit_sha
 
-    belongs_to :merge_request,
-      primary_key: [:iid, :target_project_id],
-      foreign_key: :merge_request_iid,
-      inverse_of: :generated_ref_commits,
-      query_constraints: [:merge_request_iid, :project_id]
+    if Gitlab.next_rails?
+      belongs_to :merge_request,
+        primary_key: [:iid, :target_project_id],
+        foreign_key: [:merge_request_iid, :project_id],
+        inverse_of: :generated_ref_commits
+    else
+      belongs_to :merge_request,
+        primary_key: [:iid, :target_project_id],
+        foreign_key: :merge_request_iid,
+        inverse_of: :generated_ref_commits,
+        query_constraints: [:merge_request_iid, :project_id]
+    end
+
     belongs_to :project
     validates :commit_sha, :project, :merge_request, presence: true
 

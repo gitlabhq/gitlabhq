@@ -4,6 +4,7 @@ import { s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import ProtectionRow from './protection_row.vue';
+import GroupInheritancePopover from './group_inheritance_popover.vue';
 
 export const i18n = {
   rolesTitle: s__('BranchRules|Roles'),
@@ -15,7 +16,7 @@ export const i18n = {
 export default {
   name: 'ProtectionDetail',
   i18n,
-  components: { GlLink, GlButton, ProtectionRow, CrudComponent },
+  components: { GlLink, GlButton, ProtectionRow, CrudComponent, GroupInheritancePopover },
   mixins: [glFeatureFlagsMixin()],
   props: {
     header: {
@@ -72,6 +73,11 @@ export default {
       required: false,
       default: false,
     },
+    isGroupLevel: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     emptyStateCopy: {
       type: String,
       required: true,
@@ -124,13 +130,16 @@ export default {
       <template v-else>{{ helpText }}</template>
     </template>
     <template #actions>
-      <gl-button
-        v-if="glFeatures.editBranchRules && isEditAvailable"
-        size="small"
-        data-testid="edit-rule-button"
-        @click="$emit('edit')"
-        >{{ __('Edit') }}
-      </gl-button>
+      <div v-if="glFeatures.editBranchRules && isEditAvailable" class="gl-flex">
+        <gl-button
+          :disabled="isGroupLevel"
+          size="small"
+          data-testid="edit-rule-button"
+          @click="$emit('edit')"
+          >{{ __('Edit') }}
+        </gl-button>
+        <group-inheritance-popover v-if="isGroupLevel" />
+      </div>
       <gl-link v-else-if="headerLinkHref && headerLinkTitle" :href="headerLinkHref">{{
         headerLinkTitle
       }}</gl-link>

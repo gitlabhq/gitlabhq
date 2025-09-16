@@ -65,7 +65,6 @@
 #
 # rubocop:disable CodeReuse/ActiveRecord -- Validator used in models
 class CustomUniquenessValidator < ActiveModel::EachValidator # rubocop:disable Gitlab/BoundedContexts,Gitlab/NamespacedClass -- Validators can belong to multiple bounded contexts
-  include ActiveRecord::ConnectionAdapters::Quoting
   include Gitlab::Utils::StrongMemoize
 
   def initialize(options)
@@ -99,7 +98,10 @@ class CustomUniquenessValidator < ActiveModel::EachValidator # rubocop:disable G
   end
 
   def column_sql(attribute)
-    unique_sql.gsub('?', "#{quote_table_name(table_name)}.#{quote_column_name(attribute)}")
+    unique_sql.gsub(
+      '?',
+      "#{Gitlab::Database.quote_table_name(table_name)}.#{Gitlab::Database.quote_column_name(attribute)}"
+    )
   end
 
   def record_exists?(record, attribute, value)

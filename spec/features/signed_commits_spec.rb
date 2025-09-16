@@ -243,9 +243,9 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
 
       context 'on x509 on signed commits' do
         let_it_be(:commit_sha) { '189a6c924013fc3fe40d6f1ec1dc20214183bc97' }
-        let_it_be(:commit) { create(:commit, project: project, sha: commit_sha) }
+        let_it_be(:commit) { create(:commit, project: project, sha: commit_sha, committer_email: 'r.meier@siemens.com') }
         let_it_be(:x509_certificate) { create(:x509_certificate, email: 'r.meier@siemens.com') }
-        let_it_be(:user) { create(:user, email: 'gitlab@example.org') }
+        let_it_be(:user) { create(:user, email: 'r.meier@siemens.com') }
         let(:message) { 'This commit was signed with a verified signature and the committer email is verified to belong to the same user.' }
         let(:mapped_message) { 'This commit was previously signed with a verified signature and verified committer email address. However the committer email address is no longer verified to the same user.' }
         let(:fingerprint) { x509_certificate.subject_key_identifier.tr(':', ' ') }
@@ -259,7 +259,7 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
           }
         end
 
-        let(:signature) { create(:x509_commit_signature, commit_sha: commit_sha, x509_certificate: x509_certificate, project: project) }
+        let(:signature) { create(:x509_commit_signature, commit_sha: commit_sha, x509_certificate: x509_certificate, project: project, committer_email: 'r.meier@siemens.com') }
 
         before do
           signature

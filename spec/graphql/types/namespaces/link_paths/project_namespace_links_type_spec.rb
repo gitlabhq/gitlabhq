@@ -11,7 +11,7 @@ RSpec.describe Types::Namespaces::LinkPaths::ProjectNamespaceLinksType, feature_
   subject(:type) { described_class.resolve_type(namespace, {}) }
 
   it_behaves_like "expose all link paths fields for the namespace" do
-    let(:type_specific_fields) { %i[newWorkItemEmailAddress] }
+    let(:type_specific_fields) { %i[newWorkItemEmailAddress releasesPath projectImportJiraPath] }
   end
 
   shared_examples "project namespace link paths values" do
@@ -32,6 +32,8 @@ RSpec.describe Types::Namespaces::LinkPaths::ProjectNamespaceLinksType, feature_
           "#{user.incoming_email_token}-issue@localhost.com"
       end
       :user_export_email | lazy { user.notification_email_or_default }
+      :releases_path | lazy { "/#{namespace.full_path}/-/releases" }
+      :project_import_jira_path | lazy { "/#{namespace.full_path}/-/import/jira" }
     end
 
     with_them do

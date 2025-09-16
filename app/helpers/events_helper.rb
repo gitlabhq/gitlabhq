@@ -161,7 +161,7 @@ module EventsHelper
     elsif event.wiki_page?
       words << event.target_title
       words << "in"
-    elsif event.target
+    elsif event.target && !event.project?
       prefix =
         if event.merge_request?
           MergeRequest.reference_prefix
@@ -190,6 +190,8 @@ module EventsHelper
       event_wiki_page_target_url(event)
     elsif event.design?
       design_url(event.design)
+    elsif event.project?
+      project_url(event.project)
     else
       polymorphic_url(event.target_link_options)
     end

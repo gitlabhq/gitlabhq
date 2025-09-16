@@ -49,7 +49,6 @@ Migration/BatchedMigrationBaseClass:
   Enabled: true
   Exclude:
     - 'batching_strategies/**/*.rb'
-    - 'job_coordinator.rb'
     - 'base_job.rb'
     - 'batched_migration_job.rb'
     - 'logger.rb'

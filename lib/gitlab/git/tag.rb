@@ -4,6 +4,7 @@ module Gitlab
   module Git
     class Tag < Ref
       extend Gitlab::EncodingHelper
+      include Gitlab::Utils::StrongMemoize
 
       delegate :id, to: :@raw_tag
 
@@ -28,10 +29,13 @@ module Gitlab
         end
 
         def extract_signature_lazily(repository, tag_id)
-          BatchLoader.for(tag_id).batch(key: repository) do |tag_ids, loader, args|
+          # Return the default empty signature data in case of timeouts
+          BatchLoader.for(tag_id).batch(key: repository, default_value: [+''.b, +''.b]) do |tag_ids, loader, args|
             batch_signature_extraction(args[:key], tag_ids).each do |tag_id, signature_data|
               loader.call(tag_id, signature_data)
             end
+          rescue GRPC::DeadlineExceeded => e
+            Gitlab::ErrorTracking.log_exception(e)
           end
         end
 
@@ -97,21 +101,26 @@ module Gitlab
       end
 
       def signature
+        signed_tag&.signature
+      end
+
+      def signed_tag
         return unless has_signature?
 
         case signature_type
         when :PGP
           return unless Feature.enabled?(:render_gpg_signed_tags_verification_status, @repository.container)
 
-          Gpg::Tag.new(@repository, self).signature
+          Gpg::Tag.new(@repository, self)
         when :X509
-          X509::Tag.new(@repository, self).signature
+          X509::Tag.new(@repository, self)
         when :SSH
           return unless Feature.enabled?(:render_ssh_signed_tags_verification_status, @repository.container)
 
-          Ssh::Tag.new(@repository, self).signature
+          Ssh::Tag.new(@repository, self)
         end
       end
+      strong_memoize_attr :signed_tag
 
       def cache_key
         "tag:" + Digest::SHA1.hexdigest([name, message, target, target_commit&.sha].join)

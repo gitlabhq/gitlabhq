@@ -550,6 +550,25 @@ To define the context of use, always add a namespace to UI text in English.
 
 Namespaces should be PascalCase.
 
+When choosing namespaces, prefer granular subcategories over broad categories to provide
+better context.
+Instead of using generic namespaces like `Feature|`, consider more specific subcategories that
+describe the feature area or action context.
+This is especially important for generic-looking strings that could be ambiguous without
+proper context.
+
+For example:
+
+- Use `WorkItemsStatusConfigure|Add to` instead of `WorkItems|Add to`.
+- Use `MergeRequestReviewActions|Approve` instead of `MergeRequest|Approve`.
+- Use `ProjectSettingsGeneral|Delete` instead of `Project|Delete`.
+
+This approach helps translators understand:
+
+- The specific UI context where the string appears.
+- The intended action or purpose.
+- How the string relates to other similar strings in the same feature area.
+
 - In Ruby/HAML:
 
   ```ruby

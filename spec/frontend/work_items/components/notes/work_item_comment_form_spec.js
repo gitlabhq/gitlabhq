@@ -5,6 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
+import { mockTracking } from 'helpers/tracking_helper';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import * as autosave from '~/lib/utils/autosave';
 import { ESC_KEY, ENTER_KEY } from '~/lib/utils/keys';
@@ -367,6 +368,17 @@ describe('Work item comment form component', () => {
     expect(wrapper.emitted('submitForm')).toEqual([
       [{ commentText: draftComment, isNoteInternal: false }],
     ]);
+  });
+
+  it('tracks saved using editor event on submit', async () => {
+    const trackingSpy = mockTracking(undefined, null, jest.spyOn);
+    createComponent();
+    findConfirmButton().vm.$emit('click');
+    await waitForPromises();
+    expect(trackingSpy).toHaveBeenCalledWith(undefined, 'save_markdown', {
+      label: 'markdown_editor',
+      property: 'WorkItem_Comment',
+    });
   });
 
   it('emits `submitForm` event on pressing enter with meta key on markdown editor', async () => {

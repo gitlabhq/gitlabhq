@@ -246,6 +246,91 @@ export const mockGroupCrmOrganizationsQueryResponse = {
   },
 };
 
+export const mockGroupParentWorkItemsQueryResponse = {
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/142',
+      workItems: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/1424',
+            iid: '1',
+            title: 'Hire trainers for mammal animals',
+            __typename: 'WorkItem',
+          },
+          {
+            id: 'gid://gitlab/WorkItem/1423',
+            iid: '1',
+            title: 'Hire trainers for avian animals',
+            __typename: 'WorkItem',
+          },
+          {
+            id: 'gid://gitlab/WorkItem/1421',
+            iid: '2',
+            title: 'Hire trainer for land animals',
+            __typename: 'WorkItem',
+          },
+          {
+            id: 'gid://gitlab/WorkItem/1420',
+            iid: '2',
+            title: 'Hire trainers for animals',
+            __typename: 'WorkItem',
+          },
+        ],
+        __typename: 'WorkItemConnection',
+      },
+      __typename: 'Group',
+    },
+  },
+};
+
+export const mockProjectParentWorkItemsQueryResponse = {
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/143',
+      workItems: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/2881',
+            iid: '5',
+            title: 'Create a grassland for land animals',
+            __typename: 'WorkItem',
+          },
+          {
+            id: 'gid://gitlab/WorkItem/1564',
+            iid: '4',
+            title: 'Research land types',
+            __typename: 'WorkItem',
+          },
+          {
+            id: 'gid://gitlab/WorkItem/1525',
+            iid: '8',
+            title: 'Dummy epic work item 1',
+            __typename: 'WorkItem',
+          },
+        ],
+        __typename: 'WorkItemConnection',
+      },
+      __typename: 'Group',
+    },
+    project: {
+      id: 'gid://gitlab/Project/41',
+      workItems: {
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/2883',
+            iid: '1',
+            title: 'Order different types of grass',
+            __typename: 'WorkItem',
+          },
+        ],
+        __typename: 'WorkItemConnection',
+      },
+      __typename: 'Project',
+    },
+  },
+};
+
 export const mockEmoji1 = {
   name: EMOJI_THUMBS_UP,
 };

@@ -77,7 +77,7 @@ export default {
       "
     >
       <template #select>
-        <label for="comment-line-start" class="sr-only">{{
+        <label for="comment-line-start" class="gl-sr-only">{{
           s__('MergeRequestDiffs|Select comment starting line')
         }}</label>
         <gl-form-select

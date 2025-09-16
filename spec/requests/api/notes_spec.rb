@@ -324,6 +324,20 @@ RSpec.describe API::Notes, feature_category: :team_planning do
       let(:note) { merge_request_note }
     end
 
+    it_behaves_like 'enforcing job token policies', :read_merge_requests,
+      allow_public_access_for_enabled_project_features: [:repository, :merge_requests] do
+      let(:request) do
+        get api(request_path), params: { job_token: target_job.token }
+      end
+    end
+
+    it_behaves_like 'enforcing job token policies', :read_merge_requests,
+      allow_public_access_for_enabled_project_features: [:repository, :merge_requests] do
+      let(:request) do
+        get api("#{request_path}/#{merge_request_note.id}"), params: { job_token: target_job.token }
+      end
+    end
+
     subject { post api(request_path, user), params: params }
 
     context 'a note with both text and invalid command' do

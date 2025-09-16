@@ -3,7 +3,7 @@
 module Pajamas
   class ButtonComponent < Pajamas::Component
     CATEGORY_OPTIONS = [:primary, :secondary, :tertiary].freeze
-    VARIANT_OPTIONS = [:default, :confirm, :danger, :dashed, :link, :reset].freeze
+    VARIANT_OPTIONS = [:default, :confirm, :danger, :link, :reset].freeze
     SIZE_OPTIONS = [:small, :medium].freeze
     TYPE_OPTIONS = [:button, :reset, :submit].freeze
     TARGET_OPTIONS = %w[_self _blank _parent _top].freeze
@@ -19,12 +19,11 @@ module Pajamas
       default: 'btn-default',
       confirm: 'btn-confirm',
       danger: 'btn-danger',
-      dashed: 'btn-dashed',
       link: 'btn-link',
       reset: 'btn-gl-reset'
     }.freeze
 
-    NON_CATEGORY_VARIANTS = [:dashed, :link, :reset].freeze
+    NON_CATEGORY_VARIANTS = [:link, :reset].freeze
 
     SIZE_CLASSES = {
       small: 'btn-sm',

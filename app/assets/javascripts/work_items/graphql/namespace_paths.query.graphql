@@ -1,8 +1,14 @@
-query namespacePaths($fullPath: ID!) {
+query namespacePaths(
+  $fullPath: ID!
+  $iidForAutocompleteSources: String
+  $iidForMarkdownPreview: String
+  $workItemTypeId: String
+) {
   namespace(fullPath: $fullPath) {
     id
     markdownPaths {
-      markdownPreviewPath
+      autocompleteSourcesPath(iid: $iidForAutocompleteSources, workItemTypeId: $workItemTypeId)
+      markdownPreviewPath(iid: $iidForMarkdownPreview)
       uploadsPath
     }
   }

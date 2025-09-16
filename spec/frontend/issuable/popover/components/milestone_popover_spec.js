@@ -113,7 +113,7 @@ describe('Milestone Popover', () => {
       expired  | upcoming | state       | expectedVariant | expectedText
       ${false} | ${false} | ${'closed'} | ${'danger'}     | ${'Closed'}
       ${true}  | ${false} | ${'active'} | ${'warning'}    | ${'Expired'}
-      ${false} | ${true}  | ${'active'} | ${'muted'}      | ${'Upcoming'}
+      ${false} | ${true}  | ${'active'} | ${'neutral'}    | ${'Upcoming'}
       ${false} | ${false} | ${'active'} | ${'success'}    | ${'Active'}
     `(
       'shows state badge with variant $expectedVariant and text $expectedText',

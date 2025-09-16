@@ -7,7 +7,7 @@ module Ci
     end
 
     def execute
-      raise Gitlab::Access::AccessDeniedError unless Ability.allowed?(build.user, :update_build, build)
+      raise Gitlab::Access::AccessDeniedError unless Ability.allowed?(build.user, :play_job, build)
 
       build.enqueue_scheduled!
     end

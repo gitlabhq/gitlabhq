@@ -92,11 +92,7 @@ module WebHooks
     def permanently_disabled?
       return false unless auto_disabling_enabled?
 
-      recent_failures > PERMANENTLY_DISABLED_FAILURE_THRESHOLD ||
-        # Keep the old definition of permanently disabled just until we have migrated all records to the new definition
-        # with `MigrateOldDisabledWebHookToNewState`
-        # TODO Remove the next line as part of https://gitlab.com/gitlab-org/gitlab/-/issues/525446
-        (recent_failures > TEMPORARILY_DISABLED_FAILURE_THRESHOLD && disabled_until.blank?)
+      recent_failures > PERMANENTLY_DISABLED_FAILURE_THRESHOLD
     end
 
     def enable!

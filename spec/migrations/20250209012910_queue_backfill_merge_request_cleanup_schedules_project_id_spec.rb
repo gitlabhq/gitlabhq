@@ -13,20 +13,7 @@ RSpec.describe QueueBackfillMergeRequestCleanupSchedulesProjectId, feature_categ
       }
 
       migration.after -> {
-        expect(batched_migration).to have_scheduled_batched_migration(
-          table_name: :merge_request_cleanup_schedules,
-          column_name: :merge_request_id,
-          interval: described_class::DELAY_INTERVAL,
-          batch_size: described_class::BATCH_SIZE,
-          sub_batch_size: described_class::SUB_BATCH_SIZE,
-          gitlab_schema: :gitlab_main_cell,
-          job_arguments: [
-            :project_id,
-            :merge_requests,
-            :target_project_id,
-            :merge_request_id
-          ]
-        )
+        expect(batched_migration).not_to have_scheduled_batched_migration
       }
     end
   end

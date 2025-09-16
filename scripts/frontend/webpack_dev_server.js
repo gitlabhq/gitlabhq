@@ -47,7 +47,22 @@ else {
   });
 }
 
-let plugin = false;
+class Plugins {
+  #plugins = [];
+
+  addAndStart(plugin) {
+    if (!plugin) return;
+
+    this.#plugins.push(plugin);
+    plugin.start();
+  }
+
+  call(method) {
+    return Promise.all(this.#plugins.map((plugin) => plugin[method]?.()));
+  }
+}
+
+const plugins = new Plugins();
 
 // print useful messages for nodemon events
 nodemon
@@ -60,22 +75,24 @@ nodemon
     }
     /* eslint-disable promise/catch-or-return */
     import('./lib/compile_css.mjs').then(({ simplePluginForNodemon }) => {
-      plugin = simplePluginForNodemon({ shouldWatch: !STATIC_MODE });
-      return plugin?.start();
+      plugins.addAndStart(simplePluginForNodemon({ shouldWatch: !STATIC_MODE }));
     });
-    import('./tailwindcss.mjs').then(({ webpackTailwindCompilerPlugin }) => {
-      plugin = webpackTailwindCompilerPlugin({ shouldWatch: !STATIC_MODE });
-      return plugin?.start();
+    import('./tailwindcss.cjs').then((mod) => {
+      const { webpackTailwindCompilerPlugin } = mod.default;
+      plugins.addAndStart(webpackTailwindCompilerPlugin({ shouldWatch: !STATIC_MODE }));
+      plugins.addAndStart(
+        webpackTailwindCompilerPlugin({ shouldWatch: !STATIC_MODE, buildCQs: true }),
+      );
     });
     /* eslint-enable promise/catch-or-return */
   })
   .on('quit', () => {
     console.log('Shutting down CSS compilation process');
-    plugin?.stop();
+    plugins.call('stop');
     console.log('Shutting down webpack process');
     process.exit();
   })
   .on('restart', (files) => {
     console.log('Restarting webpack process due to: ', files);
-    plugin?.start();
+    plugins.call('start');
   });

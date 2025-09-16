@@ -1,3 +1,4 @@
+@use "sass:map";
 @import 'page_bundles/mixins_and_variables_and_functions';
 
 .file-editor {
@@ -36,7 +37,7 @@
     max-width: 250px;
     float: left;
 
-    @media(max-width: map-get($grid-breakpoints, lg)-1) {
+    @media(max-width: map.get($grid-breakpoints, lg)-1) {
       width: 180px;
     }
 
@@ -107,7 +108,7 @@
         margin-left: 0;
       }
 
-      @media(max-width: map-get($grid-breakpoints, md)-1) {
+      @media(max-width: map.get($grid-breakpoints, md)-1) {
         clear: both;
       }
     }
@@ -131,7 +132,7 @@
   vertical-align: top;
   display: inline-block;
 
-  @media(max-width: map-get($grid-breakpoints, lg)-1) {
+  @media(max-width: map.get($grid-breakpoints, lg)-1) {
     display: block;
     margin: 19px 0 12px;
   }
@@ -141,7 +142,7 @@
   display: flex;
   vertical-align: top;
 
-  @media(max-width: map-get($grid-breakpoints, lg)-1) {
+  @media(max-width: map.get($grid-breakpoints, lg)-1) {
     display: inline-block;
     width: 100%;
     padding: 0;
@@ -153,7 +154,7 @@
   display: flex;
   vertical-align: top;
 
-  @media(max-width: map-get($grid-breakpoints, lg)-1) {
+  @media(max-width: map.get($grid-breakpoints, lg)-1) {
     display: block;
     width: 100%;
     margin: 0 0 16px;

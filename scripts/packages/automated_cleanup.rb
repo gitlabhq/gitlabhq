@@ -119,15 +119,6 @@ if $PROGRAM_NAME == __FILE__
 
   automated_cleanup = Packages::AutomatedCleanup.new(options: options)
 
-  timed('"gitlab-workhorse" packages cleanup') do
-    automated_cleanup.perform_gitlab_package_cleanup!(package_name: 'gitlab-workhorse', days_for_delete: 30)
-  end
-
-  # todo: remove once there are no more `assets` packages in package registry
-  timed('"assets" packages cleanup') do
-    automated_cleanup.perform_gitlab_package_cleanup!(package_name: 'assets', days_for_delete: 7)
-  end
-
   timed('"fixtures" packages cleanup') do
     automated_cleanup.perform_gitlab_package_cleanup!(package_name: 'fixtures', days_for_delete: 14)
   end

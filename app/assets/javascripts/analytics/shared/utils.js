@@ -2,6 +2,7 @@ import dateFormat from '~/lib/dateformat';
 import { SECONDS_IN_DAY } from '~/lib/utils/datetime_utility';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { formatNumber } from '~/locale';
 import { urlQueryToFilter } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
 import {
   dateFormats,
@@ -243,4 +244,13 @@ export const overviewMetricsRequestParams = (params = {}) => {
     assigneeUsernames,
     ...rest,
   };
+};
+
+export const formatBigInt = (value) => {
+  try {
+    const n = BigInt(value);
+    return formatNumber(n);
+  } catch {
+    return '-';
+  }
 };

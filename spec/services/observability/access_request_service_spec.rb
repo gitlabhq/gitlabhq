@@ -51,6 +51,7 @@ RSpec.describe Observability::AccessRequestService, feature_category: :observabi
           description = issue.description
           expect(description).to include(user.name)
           expect(description).to include("@#{user.username}")
+          expect(description).to include(user.email)
           expect(description).to include(group.name)
           expect(description).to include("Group ID:** #{group.id}")
           expect(description).to include("Member Count:** #{group.members.count}")

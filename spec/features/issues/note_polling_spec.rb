@@ -8,6 +8,10 @@ RSpec.describe 'Issue notes polling', :js, feature_category: :team_planning do
   let(:project) { create(:project, :public) }
   let(:issue) { create(:issue, project: project) }
 
+  before do
+    stub_feature_flags(work_item_view_for_issues: true)
+  end
+
   describe 'creates' do
     it 'displays the new comment' do
       visit project_issue_path(project, issue)
@@ -35,32 +39,6 @@ RSpec.describe 'Issue notes polling', :js, feature_category: :team_planning do
         expect(page).to have_selector("#note_#{existing_note.id}", text: note_text)
 
         update_note(existing_note, updated_text)
-
-        expect(page).to have_selector("#note_#{existing_note.id}", text: updated_text)
-      end
-
-      it 'when editing but have not changed anything, and an update comes in, show warning and does not update the note' do
-        click_edit_action(existing_note)
-
-        expect(page).to have_field("note[note]", with: note_text)
-
-        update_note(existing_note, updated_text)
-
-        expect(page).not_to have_field("note[note]", with: updated_text)
-        expect(page).to have_selector(".alert")
-      end
-
-      it 'when editing but you changed some things, an update comes in, and you press cancel, show the updated content' do
-        click_edit_action(existing_note)
-
-        expect(page).to have_field("note[note]", with: note_text)
-
-        update_note(existing_note, updated_text)
-
-        expect(page).to have_selector(".alert")
-
-        find("#note_#{existing_note.id} .note-edit-cancel").click
-        click_button('Cancel editing')
 
         expect(page).to have_selector("#note_#{existing_note.id}", text: updated_text)
       end
@@ -106,11 +84,5 @@ RSpec.describe 'Issue notes polling', :js, feature_category: :team_planning do
   def update_note(note, new_text)
     note.update!(note: new_text)
     wait_for_requests
-  end
-
-  def click_edit_action(note)
-    note_element = find("#note_#{note.id}")
-
-    note_element.find('.js-note-edit').click
   end
 end

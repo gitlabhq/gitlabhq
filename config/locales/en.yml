@@ -25,6 +25,8 @@ en:
         invite_email: "The member's email address"
       personal_access_token:
         expires_at: "Expiration date"
+      project:
+        unsafe_import_url: "Import URL"
       project/error_tracking_setting:
         token: "Auth Token"
         project: "Project"

@@ -5,7 +5,7 @@ class MigrateAiTroubleshootJobEventsToAiUsageEvents < Gitlab::Database::Migratio
 
   milestone '18.3'
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   BATCH_SIZE = 500
   NEW_EVENT_TYPE = 7

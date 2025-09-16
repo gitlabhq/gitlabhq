@@ -34,11 +34,6 @@ export default {
       treeWidth: TREE_WIDTH,
     };
   },
-  computed: {
-    isProjectOverview() {
-      return this.$route.name === 'projectRoot';
-    },
-  },
   created() {
     this.restoreTreeWidthUserPreference();
   },
@@ -64,12 +59,11 @@ export default {
 
 <template>
   <file-browser-height
-    v-if="!isProjectOverview"
     :style="{ '--tree-width': `${treeWidth}px` }"
-    class="repository-tree-list repository-tree-list-responsive gl-mt-5 gl-px-5"
+    class="repository-tree-list repository-tree-list-responsive gl-mt-4 gl-px-4"
   >
     <panel-resizer
-      class="max-lg:gl-hidden"
+      class="max-@lg/panel:gl-hidden"
       :start-size="treeWidth"
       :min-size="$options.minTreeWidth"
       :max-size="$options.maxTreeWidth"

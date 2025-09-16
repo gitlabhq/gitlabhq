@@ -51,5 +51,14 @@ RSpec.describe Snippets::BlobsController, feature_category: :source_code_managem
 
       it_behaves_like 'raw snippet without repository', :redirect
     end
+
+    context 'when ref is invalid' do
+      let(:ref) { 'ref with space' }
+
+      it 'returns 404 error' do
+        subject
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 end

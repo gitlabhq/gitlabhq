@@ -71,7 +71,7 @@ RSpec.describe ::Projects::ImportExport::RelationImportService, :aggregate_failu
       end
 
       context 'and the user is an admin bot' do
-        let_it_be(:user) { Users::Internal.admin_bot }
+        let_it_be(:user) { create(:user, :admin_bot) }
 
         include_examples 'returns success response'
       end

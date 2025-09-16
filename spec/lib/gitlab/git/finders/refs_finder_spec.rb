@@ -25,8 +25,8 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
 
         ref = subject.first
 
-        expect(ref).to be_a(Gitaly::ListRefsResponse::Reference)
-        expect(ref.name).to eq("refs/heads/master")
+        expect(ref).to be_a(Gitlab::Git::Ref)
+        expect(ref.name).to eq("master")
         expect(ref.target).to be_a(String)
       end
     end
@@ -43,8 +43,8 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
 
         ref = subject.first
 
-        expect(ref).to be_a(Gitaly::ListRefsResponse::Reference)
-        expect(ref.name).to eq("refs/tags/v1.0.0")
+        expect(ref).to be_a(Gitlab::Git::Ref)
+        expect(ref.name).to eq("v1.0.0")
         expect(ref.target).to be_a(String)
       end
     end
@@ -68,7 +68,7 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
         it "returns matching ref object" do
           expect(subject.length).to eq(1)
 
-          expect(subject.first.name).to eq("refs/heads/master")
+          expect(subject.first.name).to eq("master")
         end
       end
 
@@ -80,7 +80,7 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
         it "returns matching ref object" do
           expect(subject.length).to eq(1)
 
-          expect(subject.first.name).to eq("refs/heads/improve/awesome")
+          expect(subject.first.name).to eq("improve/awesome")
         end
 
         context 'when mixed part is provided' do
@@ -91,7 +91,7 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
           it "returns matching ref object" do
             expect(subject.length).to eq(1)
 
-            expect(subject.first.name).to eq("refs/heads/improve/awesome")
+            expect(subject.first.name).to eq("improve/awesome")
           end
         end
 
@@ -111,7 +111,7 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
           it "returns matching ref object" do
             expect(subject.length).to eq(1)
 
-            expect(subject.first.name).to eq("refs/heads/some/branch/deep")
+            expect(subject.first.name).to eq("some/branch/deep")
           end
         end
       end
@@ -126,7 +126,7 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
         it "returns refs sorted by name in ascending order" do
           refs = subject
 
-          expect(refs.map(&:name)).to eq(['refs/tags/v1.0.0', 'refs/tags/v1.1.0', 'refs/tags/v1.1.1'])
+          expect(refs.map(&:name)).to eq(['v1.0.0', 'v1.1.0', 'v1.1.1'])
         end
       end
 
@@ -138,7 +138,7 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
         it "returns refs sorted by name in descending order" do
           refs = subject
 
-          expect(refs.map(&:name)).to eq(['refs/tags/v1.1.1', 'refs/tags/v1.1.0', 'refs/tags/v1.0.0'])
+          expect(refs.map(&:name)).to eq(['v1.1.1', 'v1.1.0', 'v1.0.0'])
         end
       end
 
@@ -150,7 +150,7 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
         it "returns refs sorted by created timestamp in descending order" do
           refs = subject
 
-          expect(refs.map(&:name)).to eq(['refs/tags/v1.1.1', 'refs/tags/v1.1.0', 'refs/tags/v1.0.0'])
+          expect(refs.map(&:name)).to eq(['v1.1.1', 'v1.1.0', 'v1.0.0'])
         end
       end
     end
@@ -165,7 +165,7 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
           refs = subject
 
           expect(refs.length).to eq(2)
-          expect(refs.map(&:name)).to match_array(["refs/tags/v1.0.0", "refs/tags/v1.1.0"])
+          expect(refs.map(&:name)).to match_array(["v1.0.0", "v1.1.0"])
         end
       end
 
@@ -178,7 +178,7 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
           refs = subject
 
           expect(refs.length).to eq(1)
-          expect(refs.map(&:name)).to match_array(["refs/tags/v1.1.1"])
+          expect(refs.map(&:name)).to match_array(["v1.1.1"])
         end
       end
 
@@ -191,7 +191,7 @@ RSpec.describe Gitlab::Git::Finders::RefsFinder, feature_category: :source_code_
           refs = subject
 
           expect(refs.length).to eq(3)
-          expect(refs.map(&:name)).to match_array(['refs/tags/v1.0.0', 'refs/tags/v1.1.0', 'refs/tags/v1.1.1'])
+          expect(refs.map(&:name)).to match_array(['v1.0.0', 'v1.1.0', 'v1.1.1'])
         end
       end
 

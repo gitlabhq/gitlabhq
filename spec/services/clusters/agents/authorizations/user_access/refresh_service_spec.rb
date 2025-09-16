@@ -11,6 +11,9 @@ RSpec.describe Clusters::Agents::Authorizations::UserAccess::RefreshService, fea
     let_it_be(:project_1) { create(:project, path: 'project-path-with-UPPERCASE', namespace: root_ancestor) }
     let_it_be(:project_2) { create(:project, namespace: root_ancestor) }
 
+    let_it_be(:user_project_outside_of_hierarchy) { create(:project) }
+    let_it_be(:group_project_outside_of_hierarchy) { create(:project, :in_group) }
+
     let(:agent) { create(:cluster_agent, project: agent_management_project) }
 
     let(:config) do
@@ -46,7 +49,7 @@ RSpec.describe Clusters::Agents::Authorizations::UserAccess::RefreshService, fea
       end
 
       context 'when config contains groups or projects outside of the configuration project hierarchy' do
-        let_it_be(:agent_management_project) { create(:project, namespace: create(:group)) }
+        let_it_be(:agent_management_project) { group_project_outside_of_hierarchy }
 
         it 'removes all authorizations' do
           expect(subject).to be_truthy
@@ -55,7 +58,7 @@ RSpec.describe Clusters::Agents::Authorizations::UserAccess::RefreshService, fea
       end
 
       context 'when configuration project does not belong to a group' do
-        let_it_be(:agent_management_project) { create(:project) }
+        let_it_be(:agent_management_project) { user_project_outside_of_hierarchy }
 
         it 'removes all authorizations' do
           expect(subject).to be_truthy
@@ -71,6 +74,19 @@ RSpec.describe Clusters::Agents::Authorizations::UserAccess::RefreshService, fea
 
         added_authorization = agent.user_access_group_authorizations.find_by(group: group_2)
         expect(added_authorization.config).to eq({})
+      end
+
+      context 'when the organization authorization application setting is enabled' do
+        let(:agent_management_project) { group_project_outside_of_hierarchy }
+
+        before do
+          stub_application_setting(organization_cluster_agent_authorization_enabled: true)
+        end
+
+        it 'allows authorizing groups outside of the configuration project hierarchy' do
+          expect(subject).to be_truthy
+          expect(agent.user_access_authorized_groups).to contain_exactly(group_2)
+        end
       end
 
       context 'when config contains "access_as" keyword' do
@@ -116,6 +132,19 @@ RSpec.describe Clusters::Agents::Authorizations::UserAccess::RefreshService, fea
 
         added_authorization = agent.user_access_project_authorizations.find_by(project: project_2)
         expect(added_authorization.config).to eq({})
+      end
+
+      context 'when the organization authorization application setting is enabled' do
+        let(:agent_management_project) { group_project_outside_of_hierarchy }
+
+        before do
+          stub_application_setting(organization_cluster_agent_authorization_enabled: true)
+        end
+
+        it 'allows authorizing projects outside of the configuration project hierarchy' do
+          expect(subject).to be_truthy
+          expect(agent.user_access_authorized_projects).to contain_exactly(project_2)
+        end
       end
 
       context 'when config contains "access_as" keyword' do

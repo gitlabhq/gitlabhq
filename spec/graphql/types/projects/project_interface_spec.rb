@@ -8,7 +8,16 @@ RSpec.describe Types::Projects::ProjectInterface, feature_category: :groups_and_
   end
 
   it 'has the expected fields' do
-    expected_fields = %w[id name name_with_namespace description web_url avatar_url full_path]
+    expected_fields = %w[
+      avatar_url
+      description
+      full_path
+      id
+      name
+      name_with_namespace
+      user_permissions
+      web_url
+    ]
 
     expect(described_class.own_fields.size).to eq(expected_fields.size)
     expect(described_class).to include_graphql_fields(*expected_fields)

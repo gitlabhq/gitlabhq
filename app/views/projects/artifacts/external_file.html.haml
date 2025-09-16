@@ -1,10 +1,13 @@
+- breadcrumb_title _('Artifacts')
 - external_url = @blob.external_url(@build)
 - external_url_text = external_url
 - if Gitlab.config.pages.namespace_in_path
   - external_url_text = "#{external_url} (Experimental)"
 - page_title @path, _('Artifacts'), "#{@build.name} (##{@build.id})", _('Jobs')
+- add_to_breadcrumbs(s_('CICD|Jobs'), project_jobs_path(@project))
+- add_to_breadcrumbs("##{@build.id}", project_job_path(@project, @build))
 
-= render "projects/jobs/header"
+= render "header"
 
 .tree-holder
   = render 'projects/artifacts/file_navigation', project: @project, build: @build, path: @path

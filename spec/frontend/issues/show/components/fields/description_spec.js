@@ -4,6 +4,7 @@ import eventHub from '~/issues/show/event_hub';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { mockTracking } from 'helpers/tracking_helper';
+import { ENTER_KEY } from '~/lib/utils/keys';
 
 describe('Description field component', () => {
   let wrapper;
@@ -48,12 +49,10 @@ describe('Description field component', () => {
     ${'when ctrl+enter is pressed'} | ${false} | ${true}
   `('$testDescription', ({ metaKey, ctrlKey }) => {
     beforeEach(() => {
-      findMarkdownEditor().vm.$emit('keydown', {
-        type: 'keydown',
-        keyCode: 13,
-        metaKey,
-        ctrlKey,
-      });
+      findMarkdownEditor().vm.$emit(
+        'keydown',
+        new KeyboardEvent('keydown', { key: ENTER_KEY, metaKey, ctrlKey }),
+      );
     });
 
     it('triggers update', () => {

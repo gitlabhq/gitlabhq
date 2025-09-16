@@ -20,11 +20,12 @@ title: GitLab Duo Chat (Classic)
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) as an [experiment](../../policy/development_stages_support.md#experiment) for SaaS in GitLab 16.0.
 - Changed to [beta](../../policy/development_stages_support.md#beta) for SaaS in GitLab 16.6.
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11251) as a [beta](../../policy/development_stages_support.md#beta) for GitLab Self-Managed in GitLab 16.8.
-- Changed from Ultimate to [Premium](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) tier in GitLab 16.9 while in [beta](../../policy/development_stages_support.md#beta).
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11251) as a beta for GitLab Self-Managed in GitLab 16.8.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) from Ultimate to Premium tier in GitLab 16.9 while in beta.
 - [Generally available](../../policy/development_stages_support.md#generally-available) in GitLab 16.11.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
-- Updated naming to GitLab Duo Chat (Classic) in 18.3.
+- Updated naming to GitLab Duo Chat (Classic) in GitLab 18.3.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) to GitLab Duo Core in GitLab 18.3.
 
 {{< /history >}}
 
@@ -139,7 +140,7 @@ To use GitLab Duo Chat in the Web IDE on GitLab:
 
 1. Open the Web IDE:
    1. In the GitLab UI, on the left sidebar, select **Search or go to** and find your project.
-   1. Select a file. Then in the upper right, select **Edit > Open in Web IDE**.
+   1. Select a file. Then in the upper right, select **Edit** > **Open in Web IDE**.
 1. Open Chat by using one of the following methods:
    - On the left sidebar, select **GitLab Duo Chat**.
    - In the file that you have open in the editor, select some code.
@@ -152,6 +153,13 @@ To use GitLab Duo Chat in the Web IDE on GitLab:
 
 If you have selected code in the editor, this selection is included with your question to GitLab Duo Chat.
 For example, you can select code and ask Chat, `Can you simplify this?`.
+
+### Check configuration diagnostics
+
+To check your GitLab Duo configuration diagnostics and system settings, including
+system versioning, feature state management, and feature flags:
+
+- In the Chat pane, in the upper-right corner, select **Status**.
 
 ## Use GitLab Duo Chat in VS Code
 
@@ -190,7 +198,7 @@ To open GitLab Duo Chat in the editor window, use any of these methods:
 - From a keyboard shortcut:
   - On Windows and Linux: <kbd>ALT</kbd>+<kbd>c</kbd>
   - On macOS: <kbd>Option</kbd>+<kbd>c</kbd>
-- In the currently open file in your IDE, right-click and select **GitLab Duo Chat > Open Quick Chat**.
+- In the currently open file in your IDE, right-click and select **GitLab Duo Chat** > **Open Quick Chat**.
   Select some code to provide additional context.
 - Open the Command Palette, then select **GitLab Duo Chat: Open Quick Chat**.
 
@@ -270,7 +278,7 @@ To open GitLab Duo Chat in a chat window, use any of these methods:
 - From a highlighted code issue:
   1. Right-click and select **Show Context Actions**.
   1. Select **Fix with Duo**.
-- With a keyboard or mouse shortcut for a GitLab Duo action, which you can set in **Settings > Keymap**.
+- With a keyboard or mouse shortcut for a GitLab Duo action, which you can set in **Settings** > **Keymap**.
 
 After GitLab Duo Chat opens:
 
@@ -295,7 +303,7 @@ To open GitLab Duo Chat in the editor window, use any of these methods:
   - On macOS: <kbd>Option</kbd>+<kbd>c</kbd>
 - In an open file in your IDE, select some code,
   then, in the floating toolbar, select **GitLab Duo Quick Chat** ({{< icon name="tanuki-ai" >}}).
-- Right-click and select **GitLab Duo Chat > Open Quick Chat**.
+- Right-click and select **GitLab Duo Chat** > **Open Quick Chat**.
 
 After Quick Chat opens:
 

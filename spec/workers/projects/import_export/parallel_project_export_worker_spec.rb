@@ -20,7 +20,7 @@ RSpec.describe Projects::ImportExport::ParallelProjectExportWorker, feature_cate
       it 'sets the export job status to finished' do
         subject
 
-        expect(export_job.reload.finished?).to eq(true)
+        expect(export_job.reload.finished?).to be true
       end
     end
 
@@ -30,7 +30,7 @@ RSpec.describe Projects::ImportExport::ParallelProjectExportWorker, feature_cate
       it 'sets the export job status to failed' do
         described_class.new.perform(*job_args)
 
-        expect(export_job.reload.failed?).to eq(true)
+        expect(export_job.reload.failed?).to be true
       end
     end
   end
@@ -41,7 +41,7 @@ RSpec.describe Projects::ImportExport::ParallelProjectExportWorker, feature_cate
     it 'sets export_job status to failed' do
       described_class.sidekiq_retries_exhausted_block.call(job)
 
-      expect(export_job.reload.failed?).to eq(true)
+      expect(export_job.reload.failed?).to be true
     end
 
     it 'logs an error message' do
@@ -55,6 +55,29 @@ RSpec.describe Projects::ImportExport::ParallelProjectExportWorker, feature_cate
       end
 
       described_class.sidekiq_retries_exhausted_block.call(job)
+    end
+  end
+
+  describe '.sidekiq_interruptions_exhausted' do
+    let(:job) { { 'args' => job_args, 'error_message' => 'Error message' } }
+
+    it 'sets export_job status to failed' do
+      described_class.interruptions_exhausted_block.call(job)
+
+      expect(export_job.reload.failed?).to be true
+    end
+
+    it 'logs an error message' do
+      expect_next_instance_of(Gitlab::Export::Logger) do |logger|
+        expect(logger).to receive(:error).with(
+          hash_including(
+            message: 'Parallel project export error',
+            export_error: 'Export process reached the maximum number of interruptions'
+          )
+        )
+      end
+
+      described_class.interruptions_exhausted_block.call(job)
     end
   end
 end

@@ -10,8 +10,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   let(:allowed_to_be_missing_sharding_key) do
     [
       'web_hook_logs_daily', # temporary copy of web_hook_logs
-      'ci_gitlab_hosted_runner_monthly_usages', # Dedicated only table, to be sharded
-      'uploads_9ba88c4165' # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
+      'ci_gitlab_hosted_runner_monthly_usages', # https://gitlab.com/gitlab-org/gitlab/-/issues/553104
+      'uploads_9ba88c4165', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
+      'merge_request_diff_files_99208b8fac' # has a desired sharding key instead
     ]
   end
 
@@ -19,11 +20,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
   # the table name to remove this once a decision has been made.
   let(:allowed_to_be_missing_not_null) do
     [
-      'analytics_devops_adoption_segments.namespace_id',
-      *['badges.project_id', 'badges.group_id'],
-      'ci_sources_pipelines.project_id',
+      *['badges.project_id', 'badges.group_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/562439
       'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
-      *['todos.project_id', 'todos.group_id'],
+      *['todos.project_id', 'todos.group_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/562437
       *uploads_and_partitions
     ]
   end
@@ -89,6 +88,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'value_stream_dashboard_counts.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/439555
       'project_audit_events.project_id',
       'group_audit_events.group_id',
+      'user_audit_events.user_id',
       # aggregated table, a worker ensures eventual consistency
       'analytics_cycle_analytics_issue_stage_events.group_id',
       # aggregated table, a worker ensures eventual consistency
@@ -104,7 +104,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       # nor being NULL by the definition of a sharding key.
       'packages_nuget_symbols.project_id',
       'packages_package_files.project_id',
-      'merge_request_commits_metadata.project_id'
+      'merge_request_commits_metadata.project_id',
+      'sbom_vulnerability_scans.project_id',
+      'merge_requests_merge_data.project_id' # This is temporary to fix production incident
     ]
   end
 
@@ -251,9 +253,9 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "bulk_import_trackers" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517823",
       "ai_duo_chat_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/516140",
       "fork_networks" => "https://gitlab.com/gitlab-org/gitlab/-/issues/522958",
-      "merge_request_diff_commit_users" => "https://gitlab.com/gitlab-org/gitlab/-/issues/526725",
       "bulk_import_configurations" => "https://gitlab.com/gitlab-org/gitlab/-/issues/536521",
       "integrations" => "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186439",
+      'todos' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/562437',
       # All the tables below related to uploads are part of the same work to
       # add sharding key to the table
       "uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
@@ -297,10 +299,13 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "ci_runner_taggings_group_type" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549027",
       "ci_runner_taggings_project_type" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549028",
       "customer_relations_contacts" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549029",
-      "issue_tracker_data" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549030",
       "jira_tracker_data" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549032",
-      "zentao_tracker_data" => "https://gitlab.com/gitlab-org/gitlab/-/issues/549043",
-      "abuse_reports" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553435"
+      "abuse_reports" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553435",
+      "abuse_report_labels" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553427",
+      "abuse_report_user_mentions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553434",
+      "abuse_report_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553429",
+      "abuse_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553427",
+      "notes" => "https://gitlab.com/gitlab-org/gitlab/-/issues/569521"
     }
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }
 
@@ -431,7 +436,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       Tables: #{tables_with_sharding_keys_not_in_sharding_key_required_schema.join(',')}
       have a sharding key defined, but does not have a sharding-key-required schema assigned.
       Tables with sharding keys should have a schema where `require_sharding_key` is enabled
-      like `gitlab_main_cell` or `gitlab_ci`.
+      like `gitlab_main_org` or `gitlab_ci`.
       Please change the `gitlab_schema` of these tables accordingly.
     ERROR
   end

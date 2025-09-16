@@ -71,7 +71,8 @@ Supported attributes:
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
         "web_url": "http://localhost:3000/root"
-      }
+      },
+      "approved_at": "2016-06-10T04:21:41.050Z"
     },
     {
       "user": {
@@ -81,7 +82,8 @@ Supported attributes:
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/cf7ad14b34162a76d593e3affca2adca?s=80\u0026d=identicon",
         "web_url": "http://localhost:3000/ryley"
-      }
+      },
+      "approved_at": "2016-06-10T09:17:13.520Z"
     }
   ]
 }
@@ -755,9 +757,12 @@ These endpoints apply to individual merge requests. All endpoints require authen
 
 ### Retrieve approval state for a merge request
 
-Retrieves the approval state for a specified merge request. For detailed information
-about the users who have already approved, and whether an approval rule is satisfied, see
-[retrieve approval details for a merge request](#retrieve-approval-details-for-a-merge-request).
+Retrieves the approval state for a specified merge request.
+
+In the response, `approved_by` contains information about all approvers of the merge request,
+regardless of whether those approvals satisfy any approval rule. For more detailed information about
+the approval rules in a merge request, and whether the approvals received satisfy those rules, see
+the [`/approval_state` endpoint](#retrieve-approval-details-for-a-merge-request).
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/approvals
@@ -792,7 +797,8 @@ Supported attributes:
         "state": "active",
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
         "web_url": "http://localhost:3000/root"
-      }
+      },
+      "approved_by": "2016-06-09T01:45:21.720Z"
     }
   ]
 }
@@ -807,6 +813,8 @@ If a user has modified the approval rules for the merge request, the response in
 - `approval_rules_overwritten`: If `true`, indicates the default approval rules were modified.
 - `approved`: If `true`, indicates that the associated approval rule was approved.
 - `approved_by`: If defined, indicates the details of the user that approved the associated approval rule.
+  Users not matching an approval rule are not returned. To return all approving users, see the
+  [`/approvals` endpoint](#retrieve-approval-state-for-a-merge-request).
 
 ```plaintext
 GET /projects/:id/merge_requests/:merge_request_iid/approval_state

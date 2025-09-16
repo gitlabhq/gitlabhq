@@ -34,6 +34,8 @@ class Projects::ProtectedRefsController < Projects::ApplicationController
       @project,
       service_params
     ).execute
+  rescue Gitlab::Git::InvalidPageToken
+    flash[:alert] = 'Invalid page token'
   end
 
   def update

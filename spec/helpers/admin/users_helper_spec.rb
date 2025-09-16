@@ -17,11 +17,7 @@ RSpec.describe Admin::UsersHelper, feature_category: :user_management do
 
       it { is_expected.to be(true) }
 
-      context 'when ui_for_organizations feature flag is disabled' do
-        before do
-          stub_feature_flags(ui_for_organizations: false)
-        end
-
+      context 'when ui_for_organizations_enabled? is false', :ui_for_organizations_disabled do
         it { is_expected.to be(false) }
       end
     end
@@ -45,11 +41,7 @@ RSpec.describe Admin::UsersHelper, feature_category: :user_management do
 
       it { is_expected.to be(true) }
 
-      context 'when ui_for_organizations feature flag is disabled' do
-        before do
-          stub_feature_flags(ui_for_organizations: false)
-        end
-
+      context 'when ui_for_organizations_enabled? is false', :ui_for_organizations_disabled do
         it { is_expected.to be(false) }
       end
     end

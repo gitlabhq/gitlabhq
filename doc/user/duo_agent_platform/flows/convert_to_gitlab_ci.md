@@ -9,14 +9,15 @@ title: Convert to GitLab CI/CD flow
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab.com, GitLab Self-Managed
 - Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
-- Introduced as [a beta](../../../policy/development_stages_support.md) in GitLab 18.3 [with a flag](../../../administration/feature_flags/_index.md) named `duo_workflow_in_ci`. Disabled by default. The `duo_workflow` flag must also be enabled.
+- Introduced as [a beta](../../../policy/development_stages_support.md) in GitLab 18.3 [with a flag](../../../administration/feature_flags/_index.md) named `duo_workflow_in_ci`. Disabled by default, but can be enabled for the instance or a user.
+- The `duo_workflow` flag must also be enabled, but it is enabled by default.
 
 {{< /history >}}
 
@@ -43,7 +44,7 @@ Before you can convert a Jenkinsfile, you must have:
 
 - Access to your Jenkins pipeline configuration.
 - At least Developer role in the target GitLab project.
-- GitLab Duo [turned on for your group or project](../../gitlab_duo/turn_on_off.md).
+- GitLab Duo [turned on and flows allowed to execute](../../gitlab_duo/turn_on_off.md).
 - Feature flags [`duo_workflow` and `duo_workflow_in_ci` enabled](../../../administration/feature_flags/_index.md).
 
 ## Use the flow

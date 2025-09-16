@@ -1,0 +1,11 @@
+---
+table_name: personal_access_token_granular_scopes
+feature_categories:
+  - permissions
+description: Joins personal access tokens with granular scopes
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201810
+milestone: "18.4"
+gitlab_schema: gitlab_main_org
+sharding_key:
+  organization_id: organizations
+table_size: small

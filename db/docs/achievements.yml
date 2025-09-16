@@ -7,7 +7,7 @@ feature_categories:
 description: Achievements which can be created by namespaces to award them to users
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105871
 milestone: '15.7'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

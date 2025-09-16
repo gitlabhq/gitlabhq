@@ -7,12 +7,12 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
   include UploadHelpers
   include WorkhorseHelpers
 
-  let_it_be(:user1) { create(:user, can_create_group: false, organizations: [current_organization]) }
-  let_it_be(:user2) { create(:user, organizations: [current_organization]) }
-  let_it_be(:user3) { create(:user, organizations: [current_organization]) }
-  let_it_be(:admin) { create(:admin, organizations: [current_organization]) }
+  let_it_be(:user1) { create(:user, can_create_group: false) }
+  let_it_be(:user2) { create(:user) }
+  let_it_be(:user3) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
   let_it_be(:group1) { create(:group, path: 'some_path', avatar: File.open(uploaded_image_temp_path), owners: user1, organization: current_organization) }
-  let_it_be(:group2) { create(:group, :private, owners: user2, organization: current_organization) }
+  let_it_be(:group2) { create(:group, :private, owners: user2) }
   let_it_be(:project1) { create(:project, namespace: group1) }
   let_it_be(:project2) { create(:project, namespace: group2, name: 'testing') }
   let_it_be(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
@@ -125,9 +125,11 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
         create(:group, :public)
 
+        # Note: We allow 1 additional query for checking duo_enterprise add-on purchases
+        # This is needed for the auto_duo_code_review_enabled field
         expect do
           get api("/groups", user)
-        end.not_to exceed_all_query_limit(control)
+        end.not_to exceed_all_query_limit(control).with_threshold(1)
       end
     end
 
@@ -713,6 +715,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response['auto_devops_enabled']).to eq(group1.auto_devops_enabled)
         expect(json_response['emails_disabled']).to eq(group1.emails_disabled?)
         expect(json_response['emails_enabled']).to eq(group1.emails_enabled?)
+        expect(json_response['show_diff_preview_in_email']).to eq(group1.show_diff_preview_in_email?)
         expect(json_response['mentions_disabled']).to eq(group1.mentions_disabled)
         expect(json_response['project_creation_level']).to eq('maintainer')
         expect(json_response['subgroup_creation_level']).to eq('maintainer')
@@ -1134,6 +1137,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response['auto_devops_enabled']).to eq(nil)
         expect(json_response['emails_disabled']).to eq(false)
         expect(json_response['emails_enabled']).to eq(true)
+        expect(json_response['show_diff_preview_in_email']).to eq(true)
         expect(json_response['mentions_disabled']).to eq(nil)
         expect(json_response['project_creation_level']).to eq("noone")
         expect(json_response['subgroup_creation_level']).to eq("maintainer")
@@ -1178,6 +1182,14 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
             expect(json_response['emails_enabled']).to eq(false)
           end
         end
+      end
+
+      it 'updates show_diff_preview_in_email?' do
+        put api("/groups/#{group1.id}", user1), params: { show_diff_preview_in_email: false }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['show_diff_preview_in_email']).to eq(false)
+        expect(group1.reload.show_diff_preview_in_email).to eq(false)
       end
 
       context 'when default_branch_protection_defaults set to No one' do
@@ -2495,7 +2507,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
       it 'returns 403' do
         post api("/groups/#{group.id}/archive", user1)
-        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
       end
     end
   end
@@ -2552,17 +2564,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     context 'when authenticated as non-owner' do
       it 'returns 403' do
         post api("/groups/#{group.id}/unarchive", user2)
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(archive_group: false)
-      end
-
-      it 'returns 403' do
-        post api("/groups/#{group.id}/unarchive", user1)
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
@@ -2891,6 +2892,13 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
     end
 
+    it_behaves_like 'restricted visibility level for API', 'group' do
+      let(:endpoint) { '/groups' }
+      let(:params_with_public_visibility) do
+        { name: 'test-group', path: 'test-group', visibility: 'public' }
+      end
+    end
+
     context "when authenticated as user without group permissions" do
       it "does not create group" do
         group = attributes_for_group_api
@@ -2945,8 +2953,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         end
 
         context 'and organization_id is passed' do
+          let!(:organization_owner) { create(:organization_owner, user: admin, organization: organization) }
+
           it 'creates group within organization' do
-            post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)
+            post api('/groups', admin), params: attributes_for_group_api(organization_id: organization.id)
 
             expect(response).to have_gitlab_http_status(:created)
             expect(json_response['organization_id']).to eq(organization.id)
@@ -2976,6 +2986,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       context 'when user is not an organization user' do
         context 'when organization is public' do
           let_it_be(:organization) { create(:organization, :public) }
+
+          before do
+            stub_current_organization(organization)
+          end
 
           it 'does not create the group' do
             post api('/groups', user3), params: attributes_for_group_api(organization_id: organization.id)
@@ -3218,39 +3232,61 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
           subject { delete api("/groups/#{subgroup.id}", user), params: params }
 
-          context 'when group is already marked for deletion' do
-            before do
-              create(:group_deletion_schedule, group: subgroup, marked_for_deletion_on: Date.current)
-            end
-
-            context 'when full_path param is not passed' do
-              it_behaves_like 'does not immediately enqueues the job to delete the group',
-                '`full_path` is incorrect. You must enter the complete path for the subgroup.'
-            end
-
-            context 'when full_path param is not equal to full_path' do
-              let(:params) { { permanently_remove: true, full_path: subgroup.path } }
-
-              it_behaves_like 'does not immediately enqueues the job to delete the group',
-                '`full_path` is incorrect. You must enter the complete path for the subgroup.'
-            end
-
-            context 'when the full_path param is passed and it matches the full path of subgroup' do
-              let(:params) { { permanently_remove: true, full_path: subgroup.full_path } }
-
-              it_behaves_like 'immediately enqueues the job to delete the group'
-            end
+          context 'forbidden by the :disallow_immediate_deletion feature flag' do
+            it_behaves_like 'does not immediately enqueues the job to delete the group',
+              '`permanently_remove` option is not available anymore (behind the :disallow_immediate_deletion feature flag).'
           end
 
-          context 'when group is not marked for deletion' do
-            it_behaves_like 'does not immediately enqueues the job to delete the group', 'Group must be marked for deletion first.'
+          context 'when the :disallow_immediate_deletion feature flag is disabled' do
+            before do
+              stub_feature_flags(disallow_immediate_deletion: false)
+            end
+
+            context 'when group is not marked for deletion' do
+              it_behaves_like 'does not immediately enqueues the job to delete the group', 'Group must be marked for deletion first.'
+            end
+
+            context 'when group is already marked for deletion' do
+              before do
+                create(:group_deletion_schedule, group: subgroup, marked_for_deletion_on: Date.current)
+              end
+
+              context 'when full_path param is not passed' do
+                it_behaves_like 'does not immediately enqueues the job to delete the group',
+                  '`full_path` is incorrect. You must enter the complete path for the subgroup.'
+              end
+
+              context 'when full_path param is not equal to full_path' do
+                let(:params) { { permanently_remove: true, full_path: subgroup.path } }
+
+                it_behaves_like 'does not immediately enqueues the job to delete the group',
+                  '`full_path` is incorrect. You must enter the complete path for the subgroup.'
+              end
+
+              context 'when the full_path param is passed and it matches the full path of subgroup' do
+                let(:params) { { permanently_remove: true, full_path: subgroup.full_path } }
+
+                it_behaves_like 'immediately enqueues the job to delete the group'
+              end
+            end
           end
         end
 
         context 'if group is not a subgroup' do
           subject { delete api("/groups/#{group.id}", user), params: params }
 
-          it_behaves_like 'does not immediately enqueues the job to delete the group', '`permanently_remove` option is only available for subgroups.'
+          context 'forbidden by the :disallow_immediate_deletion feature flag' do
+            it_behaves_like 'does not immediately enqueues the job to delete the group',
+              '`permanently_remove` option is not available anymore (behind the :disallow_immediate_deletion feature flag).'
+          end
+
+          context 'when the :disallow_immediate_deletion feature flag is disabled' do
+            before do
+              stub_feature_flags(disallow_immediate_deletion: false)
+            end
+
+            it_behaves_like 'does not immediately enqueues the job to delete the group', '`permanently_remove` option is only available for subgroups.'
+          end
         end
       end
 
@@ -3556,6 +3592,18 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
           make_request(user_without_access_to_new_parent_group)
 
           expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when the group is archived' do
+        before do
+          group.update!(archived: true)
+        end
+
+        it 'fails with forbidden' do
+          make_request(user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
 

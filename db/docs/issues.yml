@@ -8,7 +8,7 @@ feature_categories:
 description: Information describing issues, which is also used by the WorkItem class
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9ba1224867665844b117fa037e1465bb706b3685
 milestone: "<6.0"
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: over_limit

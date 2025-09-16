@@ -78,7 +78,7 @@ you find a solution.
 | Problem                                                               | Solution                                                                                                                                                                                                                                                                              |
 |-----------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | There is no Chat button in the GitLab UI.                             | Make sure your user is a part of a group with Premium or Ultimate license and enabled Chat.                                                                                                                                                                                              |
-| Chat replies with "Forbidden by auth provider" error.                 | Backend can't access LLMs. Make sure your [AI gateway](_index.md#required-install-ai-gateway) is set up correctly.                                                                                                                                                                                      |
+| Chat replies with "Forbidden by auth provider" error.                 | Backend can't access LLMs. Make sure your [AI gateway](_index.md#install-ai-gateway) is set up correctly.                                                                                                                                                                                      |
 | Requests take too long to appear in UI                               | Consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`. Alternatively, you can bypass Sidekiq entirely. To do that temporary alter `Llm::CompletionWorker.perform_async` statements with `Llm::CompletionWorker.perform_inline` |
 | There is no Chat button in GitLab UI when GDK is running on non-SaaS mode | You do not have cloud connector access token record or seat assigned. To create cloud connector access record, in rails console put following code: `CloudConnector::Access.new(data: { available_services: [{ name: "duo_chat", serviceStartTime: ":date_in_the_future" }] }).save`. |
 
@@ -599,7 +599,7 @@ This section is deprecated in favor of the [development seed file](../developmen
 
 {{< /alert >}}
 
-If you would like to use the evaluation framework (as described [here](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/how-to/run_duo_chat_eval.md?ref_type=heads#evaluation-on-issueepic))
+If you would like to use the evaluation framework (as described [in the evaluation documentation](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/eval_scenarios/duo_chat/docs.md))
 you can import the required groups and projects using this Rake task:
 
 ```shell

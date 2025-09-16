@@ -23,6 +23,13 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
   describe "GET /projects/:id/repository/branches", :use_clean_rails_redis_caching, :clean_gitlab_redis_shared_state do
     let(:route) { "/projects/#{project_id}/repository/branches" }
 
+    it_behaves_like 'enforcing job token policies', :read_repositories,
+      allow_public_access_for_enabled_project_features: :repository do
+      let(:request) do
+        get api(route), params: { job_token: target_job.token }
+      end
+    end
+
     shared_examples_for 'repository branches' do
       RSpec::Matchers.define :has_up_to_merged_branch_names_count do |expected|
         match do |actual|
@@ -1004,6 +1011,18 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
       delete api("/projects/#{project.id}/repository/merged_branches", guest)
 
       expect(response).to have_gitlab_http_status(:forbidden)
+    end
+
+    context 'when user is not authorized and project is public' do
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+      end
+
+      it 'returns a 403 error' do
+        delete api("/projects/#{project.id}/repository/merged_branches")
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
     end
   end
 end

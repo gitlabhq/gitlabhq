@@ -47,35 +47,65 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
       end
     end
 
-    context 'when runner has config' do
-      it 'is valid' do
-        runner_manager = build(:ci_runner_machine, config: { gpus: "all" })
+    describe 'config' do
+      context 'when runner has config' do
+        it 'is valid' do
+          runner_manager = build(:ci_runner_machine, config: { gpus: "all" })
 
-        expect(runner_manager).to be_valid
+          expect(runner_manager).to be_valid
+        end
+      end
+
+      context 'when runner has an invalid config' do
+        it 'is invalid' do
+          runner_manager = build(:ci_runner_machine, config: { test: 1 })
+
+          expect(runner_manager).not_to be_valid
+        end
       end
     end
 
-    context 'when runner has an invalid config' do
-      it 'is invalid' do
-        runner_manager = build(:ci_runner_machine, config: { test: 1 })
+    describe 'runtime features' do
+      context 'when runner has runtime features' do
+        it 'is valid' do
+          runner_manager = build(:ci_runner_machine, runtime_features: { cancelable: true })
 
-        expect(runner_manager).not_to be_valid
+          expect(runner_manager).to be_valid
+        end
+      end
+
+      context 'when runner has an runtime features' do
+        it 'is invalid' do
+          runner_manager = build(:ci_runner_machine, runtime_features: { cancelable: 1 })
+
+          expect(runner_manager).not_to be_valid
+        end
       end
     end
 
-    context 'when runner has runtime features' do
-      it 'is valid' do
-        runner_manager = build(:ci_runner_machine, runtime_features: { cancelable: true })
+    describe 'labels' do
+      context 'when runner has labels' do
+        let(:runner_manager) { build(:ci_runner_machine, labels: labels) }
 
-        expect(runner_manager).to be_valid
-      end
-    end
+        context 'with valid labels' do
+          let(:labels) { { 'environment' => 'production', 'team' => 'backend' } }
 
-    context 'when runner has an runtime features' do
-      it 'is invalid' do
-        runner_manager = build(:ci_runner_machine, runtime_features: { cancelable: 1 })
+          it { expect(runner_manager).to be_valid }
+        end
 
-        expect(runner_manager).not_to be_valid
+        context 'with empty labels' do
+          let(:labels) { {} }
+
+          it { expect(runner_manager).to be_valid }
+        end
+
+        context 'when no labels are specified' do
+          let(:runner_manager) { build(:ci_runner_machine) }
+
+          it 'defaults to empty hash' do
+            expect(runner_manager.labels).to eq({})
+          end
+        end
       end
     end
   end
@@ -563,6 +593,18 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
           end
         end
       end
+
+      context 'with labels specified' do
+        let(:values) do
+          { labels: { 'environment' => 'production', 'team' => 'backend' } }
+        end
+
+        it 'updates labels' do
+          expect_redis_update(values.merge(contacted_at: Time.current, creation_state: :finished))
+
+          heartbeat
+        end
+      end
     end
 
     context 'when database was not updated recently' do
@@ -597,6 +639,26 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
 
           expect(Ci::Runners::ProcessRunnerVersionUpdateWorker).to have_received(:perform_async)
             .with(version).once
+        end
+
+        context 'when labels are provided' do
+          let(:values) do
+            {
+              ip_address: '8.8.8.8',
+              architecture: '18-bit',
+              config: { gpus: "all" },
+              runtime_features: { cancelable: true },
+              executor: executor,
+              version: version,
+              labels: { 'environment' => 'production', 'team' => 'backend' }
+            }
+          end
+
+          it 'updates labels in database' do
+            expect_redis_update
+            expect { heartbeat }.to change { runner_manager.reload.read_attribute(:labels) }
+              .from({}).to({ 'environment' => 'production', 'team' => 'backend' })
+          end
         end
       end
 
@@ -636,6 +698,20 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
             heartbeat
 
             expect(runner_manager.reload.read_attribute(:executor_type)).to eq('unknown')
+          end
+        end
+
+        context 'with labels specified' do
+          let(:values) do
+            { labels: { 'environment' => 'production', 'team' => 'backend' } }
+          end
+
+          it 'updates labels' do
+            expect_redis_update
+
+            heartbeat
+
+            expect(runner_manager.reload.read_attribute(:labels)).to eq(values[:labels])
           end
         end
       end

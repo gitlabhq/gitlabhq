@@ -217,6 +217,21 @@ Example error message in Patroni logs (located at `/var/log/gitlab/patroni/curre
 
 The workaround is to increase the memory available to the secondary site's PostgreSQL nodes to match the memory requirements of the primary site's PostgreSQL nodes.
 
+## Message: `could not open certificate file "/root/.postgresql/postgresql.crt"`
+
+If you see this error:
+
+```plaintext
+sql: error: connection to server at "x.x.x.x", port 5432 failed:
+could not open certificate file "/root/.postgresql/postgresql.crt": Permission denied...
+```
+
+This error happens because PostgreSQL clients, such as `psql` or applications using `libpq`,
+look for client SSL certificates in specific default locations like `/root/.postgresql/postgresql.crt`.
+However, this error message can be misleading. It often appears when authentication fails for other
+reasons, such as using an incorrect password for the GitLab replicator user. Before you troubleshoot
+SSL certificate issues, first confirm your authentication credentials are correct.
+
 ## Investigate causes of database replication lag
 
 If the output of `sudo gitlab-rake geo:status` shows that `Database replication lag` remains significantly high over time, the primary node in database replication can be checked to determine the status of lag for

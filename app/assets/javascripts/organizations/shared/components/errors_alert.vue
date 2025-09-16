@@ -36,9 +36,13 @@ export default {
     },
   },
   methods: {
-    async scrollToAlert() {
-      await this.$nextTick();
-      this.$refs.alertRef?.$el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    scrollToAlert() {
+      this.$nextTick(() => {
+        this.$refs.alertRef?.$el?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+      });
     },
   },
 };

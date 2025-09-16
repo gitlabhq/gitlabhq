@@ -179,6 +179,14 @@ func validateIPAddress(allowLocalhost bool, allowedEndpoints []string) func(netw
 				continue // Skip DNS lookup for IP addresses
 			}
 
+			// Check if it's an IP range
+			if _, network, err := net.ParseCIDR(hostname); err == nil {
+				if network.Contains(ipAddress) {
+					return nil
+				}
+				continue // Skip DNS lookup for IP addresses
+			}
+
 			// Perform DNS lookup
 			ips, err := lookupIPFunc(hostname)
 			if err != nil {

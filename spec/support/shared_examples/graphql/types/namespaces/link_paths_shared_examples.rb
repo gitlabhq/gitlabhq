@@ -21,6 +21,8 @@ RSpec.shared_examples "expose all link paths fields for the namespace" do
       emailsHelpPagePath
       markdownHelpPath
       quickActionsHelpPath
+      rssPath
+      calendarPath
     ]
 
     expected_fields.push(*type_specific_fields)

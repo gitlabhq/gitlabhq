@@ -470,10 +470,10 @@ To configure for GitLab Self-Managed:
 
 You can enforce a global lock on SAML group memberships. This lock limits who can invite new members to subgroups where membership is synchronized with SAML Group Links.
 
-When you lock group memberships:
+When global group memberships lock is enabled:
 
 - You cannot set a group or subgroup as a [Code Owner](../../project/codeowners/_index.md).
-  For more information, see [Incompatibility with Global SAML group memberships lock](../../project/codeowners/troubleshooting.md#incompatibility-with-global-saml-group-memberships-lock).
+  For more information, see [Incompatibility with Global group memberships locks](../../project/codeowners/troubleshooting.md#incompatibility-with-global-group-memberships-locks).
 - Only administrators can manage group members and change their access levels.
 - Group members cannot:
   - Share a project with other groups.

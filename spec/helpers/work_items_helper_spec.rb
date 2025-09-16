@@ -46,7 +46,12 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             can_read_crm_organization: 'true',
             releases_path: project_releases_path(project, format: :json),
             project_import_jira_path: project_import_jira_path(project),
-            can_read_crm_contact: 'true'
+            can_read_crm_contact: 'true',
+            rss_path: project_work_items_path(project, format: :atom),
+            calendar_path: project_work_items_path(project, format: :ics),
+            can_import_work_items: "true",
+            can_edit: "true",
+            export_csv_path: export_csv_project_issues_path(project)
           }
         )
       end
@@ -84,13 +89,16 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             issues_list_path: issues_group_path(group),
             labels_manage_path: group_labels_path(group),
             project_namespace_full_path: group.full_path,
-            default_branch: nil
+            default_branch: nil,
+            rss_path: group_work_items_path(group, format: :atom),
+            calendar_path: group_work_items_path(group, format: :ics)
           }
         )
       end
 
       it 'does not include project-specific data' do
         expect(helper.work_items_data(group, current_user)).not_to have_key(:releases_path)
+        expect(helper.work_items_data(group, current_user)).not_to have_key(:export_csv_path)
       end
     end
   end

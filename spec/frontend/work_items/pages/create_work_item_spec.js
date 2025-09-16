@@ -29,6 +29,8 @@ jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
   updateHistory: jest.fn(),
   removeParams: jest.fn(),
+  getBaseURL: jest.fn().mockReturnValue('http://127.0.0.0:3000'),
+  relativePathToAbsolute: jest.fn().mockImplementation((path) => path),
 }));
 
 jest.mock('~/work_items/graphql/cache_utils', () => ({

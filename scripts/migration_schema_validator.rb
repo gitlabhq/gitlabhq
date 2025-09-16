@@ -144,6 +144,8 @@ class MigrationSchemaValidator
   end
 
   def validate_schema_on_rollback!
+    return unless committed_migrations.any?
+
     committed_migrations.reverse_each do |filename|
       version = find_migration_version(filename)
 

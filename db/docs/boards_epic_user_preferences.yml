@@ -8,7 +8,7 @@ description: The epic_ids used to create swimlanes on issue boards; stored per u
   per board
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40360
 milestone: '13.4'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   group_id: namespaces
 table_size: small

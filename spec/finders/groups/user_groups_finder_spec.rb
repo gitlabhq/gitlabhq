@@ -12,13 +12,12 @@ RSpec.describe Groups::UserGroupsFinder, feature_category: :groups_and_projects 
     let_it_be(:public_developer_group) { create(:group, project_creation_level: nil, name: 'c public developer', path: 'c-public-developer', parent: root_group) }
     let_it_be(:public_maintainer_group) { create(:group, name: 'a public maintainer', path: 'a-public-maintainer', parent: root_group) }
     let_it_be(:public_owner_group) { create(:group, name: 'a public owner', path: 'a-public-owner') }
-
-    subject(:result) { described_class.new(current_user, target_user, arguments.merge(search_arguments)).execute }
-
     let(:arguments) { {} }
     let(:current_user) { user }
     let(:target_user) { user }
     let(:search_arguments) { {} }
+
+    subject(:result) { described_class.new(current_user, target_user, arguments.merge(search_arguments)).execute }
 
     before_all do
       guest_group.add_guest(user)

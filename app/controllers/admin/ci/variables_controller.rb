@@ -3,7 +3,7 @@
 module Admin
   module Ci
     class VariablesController < ApplicationController
-      feature_category :ci_variables
+      feature_category :pipeline_composition
 
       def show
         respond_to do |format|

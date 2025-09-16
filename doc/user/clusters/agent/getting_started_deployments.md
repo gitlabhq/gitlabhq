@@ -160,8 +160,9 @@ In this section, you'll build a simple Kubernetes manifest as an OCI artifact, t
             name: applications/nginx
             kubernetes:
                 agent: $AGENT_KUBECONTEXT
-                namespace: default
-                flux_resource_path: kustomize.toolkit.fluxcd.io/v1/namespaces/flux-system/kustomizations/nginx-example  # We will deploy this resource in the next step
+                dashboard:
+                  namespace: default
+                  flux_resource_path: kustomize.toolkit.fluxcd.io/v1/namespaces/flux-system/kustomizations/nginx-example  # We will deploy this resource in the next step
         image:
             name: "fluxcd/flux-cli:v2.4.0"
             entrypoint: [""]

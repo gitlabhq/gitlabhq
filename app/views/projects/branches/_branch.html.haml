@@ -26,14 +26,14 @@
   - if branch.name != @repository.root_ref
     .js-branch-divergence-graph
 
-  .pipeline-status.gl-hidden.md:gl-block<
+  .pipeline-status.gl-hidden{ class: '@md/panel:gl-block' }<
     - if commit_status
       = render 'ci/status/icon', status: commit_status
     - elsif show_commit_status
       .gl-inline-flex.gl-align-middle.gl-mr-3
         %svg.s16
 
-  .right-block.gl-flex.gl-items-center.md:gl-justify-end
+  .right-block.gl-flex.gl-items-center{ class: '@md/panel:gl-justify-end' }
     .gl-mr-3
       - if mr_status.present? && can?(current_user, :read_merge_request, related_merge_request)
         .issuable-reference.gl-flex.gl-justify-end.gl-overflow-hidden

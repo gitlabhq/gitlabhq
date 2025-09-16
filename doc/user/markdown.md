@@ -224,11 +224,8 @@ When rendered, the example looks similar to:
 
 ### Newlines
 
-GitLab Flavored Markdown adheres to the Markdown specification for handling
-[paragraphs and line breaks](https://spec.commonmark.org/current/).
-
 A paragraph is one or more consecutive lines of text, separated by one or
-more blank lines (two newlines at the end of the first paragraph), as explained in  [line breaks](#line-breaks).
+more blank lines (two newlines at the end of the first paragraph), as explained in [line breaks](#line-breaks).
 
 Need more control over line breaks or soft returns? Add a single line break
 by ending a line with a backslash, or two or more spaces. Two newlines in a row create a new
@@ -255,6 +252,9 @@ When rendered, the example looks similar to:
 > Second paragraph.
 > Another line, this time ending with a backslash.\
 > A new line due to the previous backslash.
+
+This syntax adheres to the Markdown specification for handling
+[paragraphs and line breaks](https://spec.commonmark.org/current/).
 
 ## Emphasis
 
@@ -677,14 +677,14 @@ points to `wikis/style` only when the link is inside a wiki Markdown file.
 Use heading ID anchors to link to a specific section in a page:
 
 ```markdown
-- This line links to [a section on a different Markdown page, using a "#" and the heading ID](permissions.md#project-members-permissions)
-- This line links to [a different section on the same page, using a "#" and the heading ID](#heading-ids-and-links)
+- This line links to [a section on a different Markdown page, using a `#` and the heading ID](permissions.md#project-members-permissions)
+- This line links to [a different section on the same page, using a `#` and the heading ID](#heading-ids-and-links)
 ```
 
 When rendered, the examples look similar to:
 
-> - This line links to [a section on a different Markdown page, using a "#" and the heading ID](permissions.md#project-members-permissions)
-> - This line links to [a different section on the same page, using a "#" and the heading ID](#heading-ids-and-links)
+> - This line links to [a section on a different Markdown page, using a `#` and the heading ID](permissions.md#project-members-permissions)
+> - This line links to [a different section on the same page, using a `#` and the heading ID](#heading-ids-and-links)
 
 Using link references:
 
@@ -745,11 +745,11 @@ When rendered, the example looks similar to:
 {{< history >}}
 
 - Autocomplete for wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442229) in GitLab 16.11.
-- Ability to reference labels from groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455120) in GitLab 17.1.
-- Ability to reference issues, epics, and work items with `[work_item:NUMBER]` syntax [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.2.
-
-- Ability to reference issues, epics, and work items with `[work_item:123]` syntax [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `extensible_reference_filters`. Disabled by default.
-- Ability to reference issues, epics, and work items with `[work_item:123]` syntax [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052) in GitLab 18.2. Feature flag `extensible_reference_filters` removed.
+- Option to reference labels from groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455120) in GitLab 17.1.
+- Option to reference issues, epics, and work items with `[work_item:NUMBER]` syntax [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.2.
+- Option to reference issues, epics, and work items with `[work_item:123]` syntax [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `extensible_reference_filters`. Disabled by default.
+- Option to reference issues, epics, and work items with `[work_item:123]` syntax [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052) in GitLab 18.2. Feature flag `extensible_reference_filters` removed.
+- Option to reference epics with `[epic:123]` syntax [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352864) in GitLab 18.4.
 
 {{< /history >}}
 
@@ -767,18 +767,18 @@ GitLab Flavored Markdown recognizes the following:
 |--------------------------------------------------------------------------------------|-------------------------------------------------------|------------------------------------------------|------------------------------------|
 | Specific user                                                                        | `@user_name`                                          |                                                |                                    |
 | Specific group                                                                       | `@group_name`                                         |                                                |                                    |
-| Entire team                                                                          | [`@all`](discussions/_index.md#mentioning-all-members) |                                                |                                    |
+| Entire team                                                                          | [`@all`](discussions/_index.md#mentioning-all-members) |                                               |                                    |
 | Project                                                                              | `namespace/project>`                                  |                                                |                                    |
-| Issue                                                                                | ``#123`` or `[issue:123]` | `namespace/project#123` or `[issue:namespace/project/123]` | `project#123` or `[issue:project/123]` |
-| [Work item](work_items/_index.md)                                                    | `[work_item:123]` | `[work_item:namespace/project/123]` | `[work_item:project/123]` |
+| Issue                                                                                | ``#123`` or `[issue:123]`                             | `namespace/project#123` or `[issue:namespace/project/123]` | `project#123` or `[issue:project/123]` |
+| [Work item](work_items/_index.md)                                                    | `[work_item:123]`                                     | `[work_item:namespace/project/123]`            | `[work_item:project/123]`          |
 | Merge request                                                                        | `!123`                                                | `namespace/project!123`                        | `project!123`                      |
 | Snippet                                                                              | `$123`                                                | `namespace/project$123`                        | `project$123`                      |
-| [Epic](group/epics/_index.md)                                                        | `#123` or `&123` or `[work_item:123]` | `group1/subgroup#123` or `group1/subgroup&123` or `[work_item:group1/subgroup/123]` | |
+| [Epic](group/epics/_index.md)                                                        | `#123`, `&123`, `[work_item:123]`, or `[epic:123]`    | `group1/subgroup#123`, `group1/subgroup&123`, `[work_item:group1/subgroup/123]`, or `[epic:group1/subgroup/123]` |  |
 | [Iteration](group/iterations/_index.md)                                              | `*iteration:"iteration title"`                        |                                                |                                    |
 | [Iteration cadence](group/iterations/_index.md) by ID<sup>1</sup>                    | `[cadence:123]`                                       |                                                |                                    |
 | [Iteration cadence](group/iterations/_index.md) by title (one word)<sup>1</sup>      | `[cadence:plan]`                                      |                                                |                                    |
-| [Iteration cadence](group/iterations/_index.md) by title (multiple words)<sup>1</sup> | `[cadence:"plan a"]`                                  |                                                |                                    |
-| [Vulnerability](application_security/vulnerabilities/_index.md)                       | `[vulnerability:123]`                                 | `[vulnerability:namespace/project/123]`        | `[vulnerability:project/123]`      |
+| [Iteration cadence](group/iterations/_index.md) by title (multiple words)<sup>1</sup> | `[cadence:"plan a"]`                                 |                                                |                                    |
+| [Vulnerability](application_security/vulnerabilities/_index.md)                       | `[vulnerability:123]`                                | `[vulnerability:namespace/project/123]`        | `[vulnerability:project/123]`      |
 | Feature flag                                                                         | `[feature_flag:123]`                                  | `[feature_flag:namespace/project/123]`         | `[feature_flag:project/123]`       |
 | Label by ID <sup>2</sup>                                                             | `~123`                                                | `namespace/project~123`                        | `project~123`                      |
 | Label by name (one word) <sup>2</sup>                                                | `~bug`                                                | `namespace/project~bug`                        | `project~bug`                      |
@@ -793,8 +793,8 @@ GitLab Flavored Markdown recognizes the following:
 | Repository file reference (specific line)                                            | `[README](doc/README.md#L13)`                         |                                                |                                    |
 | [Alert](../operations/incident_management/alerts.md)                                 | `^alert#123`                                          | `namespace/project^alert#123`                  | `project^alert#123`                |
 | [Contact](crm/_index.md#contacts)                                                    | `[contact:test@example.com]`                          |                                                |                                    |
-| [Wiki page](project/wiki/_index.md) (if the page slug is the same as the title)       | `[[Home]]`                                            |                                                |                                    |
-| [Wiki page](project/wiki/_index.md) (if the page slug is different from the title)    | `[[How to use GitLab\|how-to-use-gitlab]]`            |                                                |                                    |
+| [Wiki page](project/wiki/_index.md) (if the page slug is the same as the title)      | `[[Home]]` or `[wiki_page:Home]`                      | `[wiki_page:namespace/project:Home]` or `[wiki_page:group1/subgroup:Home]` |        |
+| [Wiki page](project/wiki/_index.md) (if the page slug is different from the title)   | `[[How to use GitLab\|how-to-use-gitlab]]`            |                                                |                                    |
 
 **Footnotes**:
 
@@ -900,7 +900,7 @@ Example:
 
 ```markdown
 | header 1 | header 2 | header 3 |
-| ---      | ---      | ---      |
+| ---      | ------   | -------- |
 | cell 1   | cell 2   | cell 3   |
 | cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's ok. It eventually wraps the text when the cell is too large for the display size. |
 | cell 7   |          | cell 9   |
@@ -909,7 +909,7 @@ Example:
 When rendered, the example looks similar to:
 
 > | header 1 | header 2 | header 3 |
-> | ---      | ---      | ---      |
+> | ---      | ------   | -------- |
 > | cell 1   | cell 2   | cell 3   |
 > | cell 4 | cell 5 is longer | cell 6 is much longer than the others, but that's ok. It eventually wraps the text when the cell is too large for the display size. |
 > | cell 7   |          | cell 9   |
@@ -921,7 +921,7 @@ to the sides of the "dash" lines in the second row. This affects every cell in t
 
 ```markdown
 | Left Aligned | Centered | Right Aligned |
-| :---         | :---:    | ---:          |
+| :----------- | :------: | ------------: |
 | Cell 1       | Cell 2   | Cell 3        |
 | Cell 4       | Cell 5   | Cell 6        |
 ```
@@ -929,7 +929,7 @@ to the sides of the "dash" lines in the second row. This affects every cell in t
 When rendered, the example looks similar to:
 
 > | Left Aligned | Centered | Right Aligned |
-> | :---         | :---:    | ---:          |
+> | :----------- | :------: | ------------: |
 > | Cell 1       | Cell 2   | Cell 3        |
 > | Cell 4       | Cell 5   | Cell 6        |
 
@@ -942,16 +942,16 @@ You can use HTML formatting to adjust the rendering of tables. For example, you 
 use `<br>` tags to force a cell to have multiple lines:
 
 ```markdown
-| Name | Details |
-| ---  | ---     |
+| Name  | Details |
+| ----- | ------- |
 | Item1 | This text is on one line |
 | Item2 | This item has:<br>- Multiple items<br>- That we want listed separately |
 ```
 
 When rendered, the example looks similar to:
 
-> | Name | Details |
-> | ---  | ---     |
+> | Name  | Details |
+> | ----- | ------- |
 > | Item1 | This text is on one line |
 > | Item2 | This item has:<br>- Multiple items<br>- That we want listed separately |
 
@@ -1355,47 +1355,55 @@ To create a code block:
 
 For example:
 
-- ````markdown
-  ```python
-  def function():
-      #indenting works just fine in the fenced code block
-      s = "Python code"
-      print s
-  ```
-  ````
+````markdown
+Python code block:
 
-- ```markdown
-      Using 4 spaces
-      is like using
-      3-backtick fences.
-  ```
+```python
+def function():
+    #indenting works just fine in the fenced code block
+    s = "Python code"
+    print s
+```
 
-- ```markdown
-  ~~~javascript
-  var s = "JavaScript syntax highlighting";
-  alert(s);
-  ~~~
-  ```
+Markdown code block using 4 spaces:
+
+    Using 4 spaces
+    is like using
+    3-backtick fences.
+
+JavaScript code block using tildes:
+
+~~~javascript
+var s = "JavaScript syntax highlighting";
+alert(s);
+~~~
+````
 
 The three previous examples render as:
 
-- > ```python
-  > def function():
-  >     #indenting works just fine in the fenced code block
-  >     s = "Python code"
-  >     print s
-  > ```
-
-- > ```plaintext
-  > Using 4 spaces
-  > is like using
-  > 3-backtick fences.
-  > ```
-
-- > ```javascript
-  > var s = "JavaScript syntax highlighting";
-  > alert(s);
-  > ```
+> Python code block:
+>
+> ```python
+> def function():
+>     #indenting works just fine in the fenced code block
+>     s = "Python code"
+>     print s
+> ```
+>
+> Markdown code block using 4 spaces:
+>
+> ```plaintext
+> Using 4 spaces
+> is like using
+> 3-backtick fences.
+> ```
+>
+> JavaScript code block using tildes:
+>
+> ```javascript
+> var s = "JavaScript syntax highlighting";
+> alert(s);
+> ```
 
 ### Syntax highlighting
 
@@ -1565,7 +1573,7 @@ the language declared as `math` is rendered on a separate line:
 `````markdown
 This math is inline: $`a^2+b^2=c^2`$.
 
-This math is on a separate line using a ```` ```math ```` block:
+This math is on a separate line using a ` ```math ` block:
 
 ```math
 a^2+b^2=c^2
@@ -1627,7 +1635,7 @@ For more information, see [issue 359077](https://gitlab.com/gitlab-org/gitlab/-/
 {{< /alert >}}
 
 ```markdown
-This sentence introduces my wiki page.
+This is an intro sentence to my wiki page.
 
 [[_TOC_]]
 
@@ -1716,7 +1724,7 @@ You should consider the following ramifications:
 
 The alerts render as:
 
-![How Markdown alerts are rendered in GitLab](img/markdown_alerts_v17_10.png)
+![How Markdown alerts are rendered in GitLab](img/markdown_alerts_v18_3.png)
 
 ## Colors
 
@@ -1876,7 +1884,7 @@ The following delimiters are supported:
   ```json
   ;;;
   {
-    "title": "About Front Matter"
+    "title": "About Front Matter",
     "example": {
       "language": "json"
     }
@@ -2032,10 +2040,9 @@ Examples:
 ```plaintext
 \# Not a heading
 
-| Food            | Do you like this food? (circle) |
-|-----------------|---------------------------------|
-|  Pizza          |  Yes \| No                      |
-
+| Food  | Do you like this food? (circle) |
+|-------|---------------------------------|
+| Pizza | Yes \| No                       |
 
 \**Not bold, just italic text placed between some asterisks*\*
 ```
@@ -2044,9 +2051,9 @@ When rendered, the example looks similar to:
 
 > \# Not a heading
 >
-> | Food            | Do you like this food? (circle)|
-> |-----------------|--------------------------------|
-> |  Pizza          |  Yes \| No                     |
+> | Food  | Do you like this food? (circle) |
+> |-------|---------------------------------|
+> | Pizza | Yes \| No                       |
 >
 > \**Not bold, just italic text placed between some asterisks*\*
 
@@ -2332,11 +2339,3 @@ HTML comments inside code blocks are treated as literal text and are displayed:
 <div>Content</div>
 ```
 ````
-
-## References
-
-- This document leveraged heavily from the [Markdown-Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
-- The original [Markdown Syntax Guide](https://daringfireball.net/projects/markdown/syntax)
-  at Daring Fireball is an excellent resource for a detailed explanation of standard Markdown.
-- You can find the detailed specification for CommonMark in the [CommonMark Spec](https://spec.commonmark.org/current/).
-- The [CommonMark Dingus](https://spec.commonmark.org/dingus/) helps you test CommonMark syntax.

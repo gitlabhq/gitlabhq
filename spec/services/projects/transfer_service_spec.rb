@@ -284,7 +284,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       end
 
       context 'when the new default integration is instance specific and deactivated' do
-        let!(:instance_specific_integration) { create(:beyond_identity_integration) }
+        let!(:instance_specific_integration) { create(:beyond_identity_integration, :instance) }
         let!(:project_instance_specific_integration) do
           create(
             :beyond_identity_integration,
@@ -521,6 +521,20 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
       expect(transfer_result).to eq false
       expect(project.namespace).to eq(user.namespace)
       expect(project.errors[:new_namespace]).to include('Project with same name or path in target namespace already exists')
+    end
+  end
+
+  context 'when the project is archived' do
+    before do
+      project.update!(archived: true)
+    end
+
+    it 'does not allow the project transfer' do
+      transfer_result = execute_transfer
+
+      expect(transfer_result).to eq false
+      expect(project.namespace).to eq(user.namespace)
+      expect(project.errors[:new_namespace]).to include("You don't have permission to transfer this project.")
     end
   end
 

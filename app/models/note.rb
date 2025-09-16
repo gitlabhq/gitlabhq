@@ -74,6 +74,7 @@ class Note < ApplicationRecord
 
   belongs_to :namespace
   belongs_to :project
+  belongs_to :organization, class_name: 'Organizations::Organization'
   belongs_to :noteable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :review, inverse_of: :notes
 
@@ -98,7 +99,8 @@ class Note < ApplicationRecord
   accepts_nested_attributes_for :note_metadata
 
   validates :project, presence: true, if: :for_project_noteable?
-  validates :namespace, presence: true
+  validates :namespace, presence: true, unless: :for_personal_snippet?
+  validates :organization, presence: true, if: :for_personal_snippet?
 
   validates :noteable_type, presence: true
   validates :noteable_id, presence: true, unless: [:for_commit?, :importing?]
@@ -126,7 +128,8 @@ class Note < ApplicationRecord
   scope :user, -> { where(system: false) }
   scope :not_internal, -> { where(internal: false) }
   scope :common, -> { where(noteable_type: ["", nil]) }
-  scope :fresh, -> { order_created_asc.with_order_id_asc }
+  scope :order_created_at_id_asc, -> { order_created_asc.with_order_id_asc }
+  scope :order_created_at_id_desc, -> { order_created_desc.with_order_id_desc }
   scope :updated_after, ->(time) { where('updated_at > ?', time) }
   scope :with_suggestions, -> { joins(:suggestions) }
   scope :inc_author, -> { includes(:author) }
@@ -199,7 +202,7 @@ class Note < ApplicationRecord
     )
   end
 
-  before_validation :ensure_namespace_id, :nullify_blank_type, :nullify_blank_line_code
+  before_validation :ensure_namespace_id, :ensure_organization_id, :nullify_blank_type, :nullify_blank_line_code
   # Syncs `confidential` with `internal` as we rename the column.
   # https://gitlab.com/gitlab-org/gitlab/-/issues/367923
   before_create :set_internal_flag
@@ -267,7 +270,7 @@ class Note < ApplicationRecord
     def grouped_diff_discussions(diff_refs = nil)
       groups = {}
 
-      diff_notes.fresh.discussions.each do |discussion|
+      diff_notes.order_created_at_id_asc.discussions.each do |discussion|
         group_key =
           if discussion.on_image?
             discussion.file_new_path
@@ -779,6 +782,12 @@ class Note < ApplicationRecord
     project.repository.keep_around(self.commit_id, source: "#{noteable_type}/#{self.class.name}")
   end
 
+  def ensure_organization_id
+    return if organization_id.present? && !noteable_changed? && !project_changed?
+
+    self.organization_id = noteable&.organization_id if for_personal_snippet?
+  end
+
   def ensure_namespace_id
     return if namespace_id.present? && !noteable_changed? && !project_changed?
 
@@ -788,8 +797,6 @@ class Note < ApplicationRecord
                           noteable&.namespace_id
                         elsif for_project_noteable?
                           project&.project_namespace_id
-                        elsif for_personal_snippet?
-                          noteable&.author&.namespace&.id
                         end
   end
 

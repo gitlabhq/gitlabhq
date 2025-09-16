@@ -63,6 +63,25 @@ module Ci
       end
     end
 
+    def link_to_environment(environment)
+      job_environment = build_job_environment(
+        environment: environment,
+        expanded_environment_name: environment.name,
+        project: project,
+        pipeline: pipeline,
+        options: environment_options_for_permanent_storage
+      )
+
+      if persisted? && !job_environment.save
+        Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
+          ActiveRecord::RecordInvalid.new(job_environment),
+          job_id: id
+        )
+      end
+
+      job_environment
+    end
+
     def persisted_environment
       return unless has_environment_keyword?
 
@@ -82,6 +101,16 @@ module Ci
       persisted_environment.respond_to?(:__sync) ? persisted_environment.__sync : persisted_environment
     end
 
+    def environment_options_for_permanent_storage
+      return {} unless options && options[:environment]
+
+      environment_options = options[:environment].slice(:action, :deployment_tier)
+      kubernetes_options = options.dig(:environment, :kubernetes)&.slice(:namespace)
+
+      environment_options[:kubernetes] = kubernetes_options if kubernetes_options.present?
+      environment_options
+    end
+
     def expanded_environment_name
       return unless has_environment_keyword?
 
@@ -99,7 +128,8 @@ module Ci
     def expanded_kubernetes_namespace
       return unless has_environment_keyword?
 
-      namespace = options.dig(:environment, :kubernetes, :namespace)
+      namespace = options.dig(:environment, :kubernetes, :dashboard, :namespace) ||
+        options.dig(:environment, :kubernetes, :namespace)
 
       return unless namespace.present?
 

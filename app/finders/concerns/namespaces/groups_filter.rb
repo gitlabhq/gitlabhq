@@ -30,8 +30,18 @@ module Namespaces
       current_user && params[:min_access_level].present?
     end
 
+    def can_sort_by_similarity?
+      params[:allow_similarity_sort] && current_user && params[:search].present?
+    end
+
     def sort(groups)
       return groups.order_id_desc unless params[:sort]
+
+      if params[:sort] == :similarity
+        return groups.sorted_by_similarity_desc(params[:search]) if can_sort_by_similarity?
+
+        return groups.order_id_desc
+      end
 
       groups.sort_by_attribute(params[:sort])
     end

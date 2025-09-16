@@ -17,6 +17,7 @@ export default {
       hasQualityManagementFeature: computed(() => this.metadata.hasQualityManagementFeature),
       hasLinkedItemsEpicsFeature: computed(() => this.metadata.hasLinkedItemsEpicsFeature),
       hasIssueDateFilterFeature: computed(() => this.metadata.hasIssueDateFilterFeature),
+      hasStatusFeature: computed(() => this.metadata?.hasWorkItemStatusFeature),
       issuesListPath: computed(() => this.metadata.issuesList),
       contributionGuidePath: computed(() => this.metadata.contributionGuidePath),
       epicsListPath: computed(() => this.metadata.epicsList),
@@ -28,8 +29,13 @@ export default {
       reportAbusePath: computed(() => this.metadata.reportAbuse),
       signInPath: computed(() => this.metadata.signIn),
       issuesSettings: computed(() => this.metadata?.issuesSettings),
-      hasStatusFeature: computed(() => this.metadata?.hasWorkItemStatusFeature),
       metadataLoading: computed(() => this.$apollo.queries.metadata.loading),
+      userExportEmail: computed(() => this.metadata?.userExportEmail),
+      newWorkItemEmailAddress: computed(() => this.metadata.newWorkItemEmailAddress),
+      canCreateWorkItem: computed(() => this.metadata.createWorkItem),
+      emailsHelpPagePath: computed(() => this.metadata.emailsHelpPagePath),
+      markdownHelpPath: computed(() => this.metadata.markdownHelpPath),
+      quickActionsHelpPath: computed(() => this.metadata.quickActionsHelpPath),
       // newCommentTemplatePaths not included as it is already available on the `WorkItem` type.
     };
   },
@@ -57,6 +63,7 @@ export default {
         return {
           ...(namespace.licensedFeatures || {}),
           ...(namespace.linkPaths || {}),
+          ...(namespace.userPermissions || {}),
         };
       },
     },

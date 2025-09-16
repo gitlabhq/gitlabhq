@@ -1,0 +1,10 @@
+---
+name: glql_typescript
+description: Use TypeScript version of GLQL
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/562607
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202269
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/562608
+milestone: '18.4'
+group: group::knowledge
+type: wip
+default_enabled: false

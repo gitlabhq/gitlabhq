@@ -30,10 +30,10 @@ Start a new group relations export:
 POST /groups/:id/export_relations
 ```
 
-| Attribute | Type           | Required | Description                                      |
-|-----------|----------------|----------|--------------------------------------------------|
-| `id`      | integer/string | yes      | ID of the group. |
-| `batched` | boolean        | no       | Whether to export in batches.                    |
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|------------ |
+| `id`      | Integer or string | Yes      | ID of the group. |
+| `batched` | Boolean           | No       | Whether to export in batches. |
 
 ```shell
 curl --request POST \
@@ -55,10 +55,10 @@ View the status of the relations export:
 GET /groups/:id/export_relations/status
 ```
 
-| Attribute  | Type           | Required | Description                                      |
-|------------|----------------|----------|--------------------------------------------------|
-| `id`       | integer/string | yes      | ID of the group. |
-| `relation` | string         | no       | Name of the project top-level relation to view.  |
+| Attribute  | Type              | Required | Description |
+|------------|-------------------|----------|------------ |
+| `id`       | Integer or string | Yes      | ID of the group. |
+| `relation` | String            | No       | Name of the project top-level relation to view. |
 
 ```shell
 curl --request GET \
@@ -110,12 +110,12 @@ Download the finished relations export:
 GET /groups/:id/export_relations/download
 ```
 
-| Attribute      | Type           | Required | Description                                       |
-|----------------|----------------|----------|---------------------------------------------------|
-| `id`           | integer/string | yes      | ID of the group.  |
-| `relation`     | string         | yes      | Name of the group top-level relation to download. |
-| `batched`      | boolean        | no       | Whether the export is batched.                    |
-| `batch_number` | integer        | no       | Number of export batch to download.               |
+| Attribute      | Type              | Required | Description |
+|----------------|-------------------|----------|------------ |
+| `id`           | Integer or string | Yes      | ID of the group. |
+| `relation`     | String            | Yes      | Name of the group top-level relation to download. |
+| `batched`      | Boolean           | No       | Whether the export is batched. |
+| `batch_number` | Integer           | No       | Number of export batch to download. |
 
 ```shell
 curl --request GET \

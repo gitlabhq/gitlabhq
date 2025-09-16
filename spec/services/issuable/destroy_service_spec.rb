@@ -35,6 +35,14 @@ RSpec.describe Issuable::DestroyService, feature_category: :team_planning do
       it_behaves_like 'service deleting label links' do
         let(:issuable) { merge_request }
       end
+
+      context 'when the merge request has associated pipelines' do
+        let!(:pipeline) { create(:ci_pipeline, project: project, merge_request: merge_request) }
+
+        it 'destroys the associated pipelines' do
+          expect { service.execute(merge_request) }.to change { project.all_pipelines.count }.by(-1)
+        end
+      end
     end
   end
 end

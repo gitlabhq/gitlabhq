@@ -13,7 +13,7 @@ import {
   GlSkeletonLoader,
   GlResizeObserverDirective,
 } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import { __, s__ } from '~/locale';
 import getRunnerPlatformsQuery from './graphql/get_runner_platforms.query.graphql';
 import {

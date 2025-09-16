@@ -2,7 +2,7 @@
 
 class RequeueBackfillBulkImportTrackersOrganizationId < Gitlab::Database::Migration[2.3]
   milestone '18.2'
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   MIGRATION = "BackfillBulkImportTrackersOrganizationId"
   DELAY_INTERVAL = 2.minutes

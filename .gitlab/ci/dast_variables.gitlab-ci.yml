@@ -11,9 +11,4 @@ dast-variables-check-docs:
     - job: cache:ruby-gems
       optional: true
   script:
-    - |
-      function dast_variables_check_docs() {
-        bundle exec rake gitlab:dast_variables:check_docs
-      }
-
-      run_with_custom_exit_code dast_variables_check_docs
+    - bundle exec rake gitlab:dast_variables:check_docs

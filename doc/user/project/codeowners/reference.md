@@ -336,7 +336,7 @@ In this example:
 
 {{< alert type="note" >}}
 
-When [Global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) is enabled, you cannot set a group or subgroup as a Code Owner. For more information, see [Incompatibility with Global SAML group memberships lock](troubleshooting.md#incompatibility-with-global-saml-group-memberships-lock).
+When [Global SAML group memberships lock](../../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) is enabled, you cannot set a group or subgroup as a Code Owner. For more information, see [Incompatibility with Global SAML group memberships lock](troubleshooting.md#incompatibility-with-global-group-memberships-locks).
 
 {{< /alert >}}
 

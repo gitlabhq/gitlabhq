@@ -1,5 +1,5 @@
 <script>
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { __, formatNumber } from '~/locale';
 import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 

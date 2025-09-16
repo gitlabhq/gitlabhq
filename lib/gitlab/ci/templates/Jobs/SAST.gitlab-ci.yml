@@ -47,6 +47,7 @@ sast:
     - when: never
 
 # list of extensions that are supported by gitlab-advanced-sast. Some of these are also supported by semgrep-sast
+# NOTE: When adding a new extension here, make sure to remove any matching extensions from `.semgrep-with-advanced-sast-exist-rules`
 .gitlab-advanced-sast-exist-rules:
   exists:
     - '**/{*.py,*.go,*.java,*.jsp,*.js,*.jsx,*.ts,*.tsx,*.cjs,*.mjs,*.cs,*.rb,*.php}'
@@ -204,10 +205,10 @@ pmd-apex-sast:
     - '**/{*.py,*.js,*.jsx,*.ts,*.tsx,*.cjs,*.mjs,*.c,*.cc,*.cpp,*.c++,*.cp,*.cxx,*.h,*.hpp,*.go,*.java,*.cs,*.scala,*.sc,*.php,*.swift,*.m,*.rb,*.kt,*.properties,application*.yml,bootstrap*.yml,application*.yaml,bootstrap*.yaml}'
 
 # list of extensions that are only supported by semgrep, and not gitlab-advanced-sast
+# NOTE: this list MUST NOT contain any extensions that are present in `.gitlab-advanced-sast-exist-rules`
 .semgrep-with-advanced-sast-exist-rules:
   exists:
-    # TODO: remove this `php` pattern. See https://gitlab.com/gitlab-org/gitlab/-/issues/559997 for more details
-    - '**/{*.c,*.cc,*.cpp,*.c++,*.cp,*.cxx,*.h,*.hpp,*.scala,*.sc,*.php,*.swift,*.m,*.kt,*.properties,application*.yml,bootstrap*.yml,application*.yaml,bootstrap*.yaml}'
+    - '**/{*.c,*.cc,*.cpp,*.c++,*.cp,*.cxx,*.h,*.hpp,*.scala,*.sc,*.swift,*.m,*.kt,*.properties,application*.yml,bootstrap*.yml,application*.yaml,bootstrap*.yaml}'
 
 security-code-scan-sast:
   extends: .sast-analyzer
@@ -244,7 +245,9 @@ semgrep-sast:
           $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
           ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
       variables:
+        # Customization of SAST_EXCLUDED_PATHS to be removed in 19.0, more details https://gitlab.com/gitlab-org/gitlab/-/issues/562940
         SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs, **/*.rb, **/*.php"
+        SAST_SEMGREP_EXCLUDED_PATHS: "**/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs, **/*.rb, **/*.php"
       exists: !reference [.semgrep-with-advanced-sast-exist-rules, exists]
     ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned (i.e the previous rule did not match) skip this job
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
@@ -252,7 +255,7 @@ semgrep-sast:
           $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
           ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
       when: never
-    ## In case gitlab-advanced-sast don't run, scan all files supported by semgrep
+    ## In case gitlab-advanced-sast doesn't run, scan all files supported by semgrep
     - if: $AST_ENABLE_MR_PIPELINES == "true" &&
           $CI_PIPELINE_SOURCE == "merge_request_event"
       exists: !reference [.semgrep-exist-rules, exists]
@@ -269,7 +272,9 @@ semgrep-sast:
           $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
           ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
       variables:
+        # Customization of SAST_EXCLUDED_PATHS to be removed in 19.0, more details https://gitlab.com/gitlab-org/gitlab/-/issues/562940
         SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs, **/*.rb, **/*.php"
+        SAST_SEMGREP_EXCLUDED_PATHS: "**/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs, **/*.rb, **/*.php"
       exists: !reference [.semgrep-with-advanced-sast-exist-rules, exists]
     ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned
     - if: $CI_COMMIT_BRANCH &&
@@ -277,7 +282,7 @@ semgrep-sast:
           $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
           ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
       when: never
-    ## In case gitlab-advanced-sast don't run, scan all files supported by semgrep
+    ## In case gitlab-advanced-sast doesn't run, scan all files supported by semgrep
     - if: $CI_COMMIT_BRANCH
       exists: !reference [.semgrep-exist-rules, exists]
 

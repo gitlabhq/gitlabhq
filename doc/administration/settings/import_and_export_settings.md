@@ -128,7 +128,7 @@ For more information, see the history.
 
 Prerequisites:
 
-- [User impersonation](../admin_area.md#user-impersonation) must be enabled on the GitLab instance.
+- Ensure [user impersonation is not disabled](../../api/rest/authentication.md#disable-impersonation) on the GitLab instance.
 
 To skip confirmation when administrators reassign placeholder users:
 

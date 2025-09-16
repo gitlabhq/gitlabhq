@@ -1,3 +1,4 @@
+- return if Feature.enabled?(:disallow_immediate_deletion, current_user)
 - return unless group.self_deletion_scheduled?
 
 - remove_form_id = local_assigns.fetch(:remove_form_id, nil)

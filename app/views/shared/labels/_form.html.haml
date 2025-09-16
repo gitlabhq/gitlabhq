@@ -4,18 +4,18 @@
 = gitlab_ui_form_for @label, as: :label, url: url, html: { class: 'label-form js-quick-submit' } do |f|
   = form_errors(@label)
 
-  .form-group.row
-    .col-12
+  .gl-form-group.gl-row
+    .gl-col-12
       = f.label :title
       = f.text_field :title, class: "gl-form-input form-control js-label-title", required: true, autofocus: true, data: { testid: 'label-title-field' }
     = render_if_exists 'shared/labels/create_label_help_text'
 
-  .form-group.row
-    .col-12
+  .gl-form-group.gl-row
+    .gl-col-12
       = f.label :description, _("Description (optional)")
       = f.text_area :description, class: "gl-form-input form-control js-quick-submit", rows: 4, data: { testid: 'label-description-field' }
-  .form-group.row
-    .col-12
+  .gl-form-group.gl-row
+    .gl-col-12
       = f.label :color, _("Background color")
       .input-group
         .input-group-prepend
@@ -25,13 +25,13 @@
         = _('Select a color from the color picker or from the presets below.')
       = render_suggested_colors
   - if Feature.enabled?(:labels_archive, :instance)
-    .form-group.row
-      .col-12
+    .gl-form-group.gl-row
+      .gl-col-12
         = f.label :archived, _("Archived")
         = f.gitlab_ui_checkbox_component :archived
   - if show_lock_on_merge
-    .form-group.row
-      .col-12
+    .gl-form-group.gl-row
+      .gl-col-12
         = f.gitlab_ui_checkbox_component :lock_on_merge,
           _('Lock label after a merge request is merged'),
           help_text: label_lock_on_merge_help_text,

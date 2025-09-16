@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {

@@ -5,7 +5,7 @@
   "properties": {
     "enforce_pipl_compliance": {
       "type": "boolean",
-      "default": true
+      "default": false
     }
   },
   "additionalProperties": false

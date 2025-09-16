@@ -101,6 +101,20 @@ module Types
         fallback_value: nil,
         experiment: { milestone: '18.3' }
 
+      field :rss_path,
+        GraphQL::Types::String,
+        null: true,
+        description: 'RSS path for work items.',
+        fallback_value: nil,
+        experiment: { milestone: '18.4' }
+
+      field :calendar_path,
+        GraphQL::Types::String,
+        null: true,
+        description: 'Calendar path for work items.',
+        fallback_value: nil,
+        experiment: { milestone: '18.4' }
+
       def self.type_mappings
         TYPE_MAPPINGS
       end

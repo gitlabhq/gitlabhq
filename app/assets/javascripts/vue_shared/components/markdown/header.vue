@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlPopover, GlButton, GlTooltipDirective, GlFormInput } from '@gitlab/ui';
-import { GL_COLOR_ORANGE_50, GL_COLOR_ORANGE_200 } from '@gitlab/ui/dist/tokens/build/js/tokens';
+import { GL_COLOR_ORANGE_50, GL_COLOR_ORANGE_200 } from '@gitlab/ui/src/tokens/build/js/tokens';
 import $ from 'jquery';
 import { escapeRegExp } from 'lodash';
 import {
@@ -26,6 +26,7 @@ import ToolbarButton from './toolbar_button.vue';
 import DrawioToolbarButton from './drawio_toolbar_button.vue';
 import CommentTemplatesModal from './comment_templates_modal.vue';
 import HeaderDivider from './header_divider.vue';
+import ToolbarMoreDropdown from './toolbar_more_dropdown.vue';
 
 export default {
   findAndReplace: {
@@ -47,6 +48,7 @@ export default {
     HeaderDivider,
     SummarizeCodeChanges: () =>
       import('ee_component/merge_requests/components/summarize_code_changes.vue'),
+    ToolbarMoreDropdown,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -164,10 +166,6 @@ export default {
         `{text}`,
         codeblockChars,
       ].join('\n');
-    },
-    mdCollapsibleSection() {
-      const expandText = s__('MarkdownEditor|Click to expand');
-      return [`<details><summary>${expandText}</summary>`, `{text}`, '</details>'].join('\n');
     },
     hideDividerBeforeTable() {
       return (
@@ -591,7 +589,7 @@ export default {
                 triggers=""
               >
                 <strong>{{ __('New! Suggest changes directly') }}</strong>
-                <p class="mb-2">
+                <p class="!gl-mb-3">
                   {{
                     __(
                       'Suggest code changes which can be immediately applied in one click. Try it out!',
@@ -756,22 +754,13 @@ export default {
             tracking-property="outdent"
           />
           <div class="gl-flex gl-gap-y-2">
-            <toolbar-button
-              v-if="!restrictedToolBarItems.includes('collapsible-section')"
-              v-show="!previewMarkdown"
-              :tag="mdCollapsibleSection"
-              tag-select="Click to expand"
-              :button-title="__('Add a collapsible section')"
-              icon="details-block"
-              tracking-property="details"
-            />
             <header-divider v-if="!hideDividerBeforeTable" />
+            <toolbar-table-button
+              v-show="!previewMarkdown"
+              v-if="!restrictedToolBarItems.includes('table')"
+              @insert-table="insertTable"
+            />
           </div>
-          <toolbar-table-button
-            v-show="!previewMarkdown"
-            v-if="!restrictedToolBarItems.includes('table')"
-            @insert-table="insertTable"
-          />
           <!--
             The attach file button's click behavior is added by
             dropzone_input.js.
@@ -800,11 +789,15 @@ export default {
             icon="quick-actions"
             tracking-property="quickAction"
           />
-          <comment-templates-modal
-            v-if="!previewMarkdown && commentTemplatePaths.length"
-            :new-comment-template-paths="commentTemplatePaths"
-            @select="insertSavedReply"
-          />
+          <div v-if="!previewMarkdown" class="gl-flex gl-gap-y-2">
+            <header-divider />
+            <comment-templates-modal
+              v-if="!previewMarkdown && commentTemplatePaths.length"
+              :new-comment-template-paths="commentTemplatePaths"
+              @select="insertSavedReply"
+            />
+            <toolbar-more-dropdown />
+          </div>
           <template v-if="!previewMarkdown && canSummarizeChanges && !canUseComposer">
             <header-divider />
             <summarize-code-changes />

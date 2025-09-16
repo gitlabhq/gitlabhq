@@ -57,7 +57,7 @@ RSpec.describe Mutations::Achievements::Award, feature_category: :user_profile d
         subject
 
         expect(graphql_data_at(:achievements_award,
-          :errors)).to include("Couldn't find User with 'id'=#{non_existing_record_id}")
+          :errors)).to include("Couldn't find User with 'id'=\"#{non_existing_record_id}\"")
       end
     end
 

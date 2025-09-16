@@ -79,6 +79,7 @@ describe('your work groups resolver', () => {
       isLinkedToSubscription: mockGroup.is_linked_to_subscription,
       permanentDeletionDate: mockGroup.permanent_deletion_date,
       userPermissions: {
+        archiveGroup: true,
         canLeave: false,
         removeGroup: true,
         viewEditPage: true,

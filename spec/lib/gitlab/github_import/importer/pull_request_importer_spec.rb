@@ -18,7 +18,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
   let_it_be(:source_user_2) { generate_source_user(project, user_representation_2.id) }
   let_it_be(:user) { create(:user) }
 
-  let(:client) { instance_double(Gitlab::GithubImport::Client) }
+  let(:client) { instance_double(Gitlab::GithubImport::Client, web_endpoint: 'https://github.com') }
   let(:created_at) { DateTime.strptime('2024-11-05T20:10:15Z') }
   let(:updated_at) { DateTime.strptime('2024-11-06T20:10:15Z') }
   let(:merged_at) { DateTime.strptime('2024-11-07T20:10:15Z') }

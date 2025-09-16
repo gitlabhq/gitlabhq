@@ -17,6 +17,12 @@ RSpec.describe Repositories::ChangelogTagFinder, feature_category: :source_code_
       end
     end
 
+    context 'when provided version is invalid' do
+      it 'returns an error' do
+        expect { finder.execute(nil) }.to raise_error(Gitlab::Changelog::Error)
+      end
+    end
+
     context 'when there is a previous tag' do
       it 'returns the previous tag' do
         tag1 = double(:tag1, name: 'v1.0.0')

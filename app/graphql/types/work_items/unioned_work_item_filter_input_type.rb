@@ -17,3 +17,5 @@ module Types
     end
   end
 end
+
+Types::WorkItems::UnionedWorkItemFilterInputType.prepend_mod_with('Types::WorkItems::UnionedWorkItemFilterInputType')

@@ -25,7 +25,7 @@ export default {
 </script>
 
 <template>
-  <div class="weight-count text-nowrap">
+  <div class="weight-count gl-whitespace-nowrap">
     <span :class="{ 'gl-text-red-700': issuesExceedMax }" data-testid="board-weight-count">
       {{ issueWeight }}
     </span>

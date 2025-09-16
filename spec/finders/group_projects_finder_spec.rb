@@ -112,12 +112,11 @@ RSpec.describe GroupProjectsFinder do
 
       context "with min access level" do
         let!(:shared_project_4) { create(:project, :internal, path: '8') }
+        let(:params) { { min_access_level: Gitlab::Access::MAINTAINER } }
 
         before do
           shared_project_4.project_group_links.create!(group_access: Gitlab::Access::REPORTER, group: group)
         end
-
-        let(:params) { { min_access_level: Gitlab::Access::MAINTAINER } }
 
         it { is_expected.to match_array([shared_project_3, shared_project_2, shared_project_1, private_project, public_project]) }
       end

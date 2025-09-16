@@ -19,7 +19,6 @@ describe('access tokens', () => {
   let wrapper;
 
   afterEach(() => {
-    wrapper?.destroy();
     resetHTMLFixture();
   });
 
@@ -75,7 +74,7 @@ describe('access tokens', () => {
       const component = wrapper.findComponent({ name: 'AccessTokenTableRoot' });
 
       expect(component.exists()).toBe(true);
-      expect(component.findComponent(AccessTokenTableApp).vm).toMatchObject({
+      expect(wrapper.findComponent(AccessTokenTableApp).vm).toMatchObject({
         accessTokenType,
         accessTokenTypePlural,
         initialActiveAccessTokens,
@@ -142,7 +141,7 @@ describe('access tokens', () => {
       const component = wrapper.findComponent({ name: 'NewAccessTokenRoot' });
 
       expect(component.exists()).toBe(true);
-      expect(component.findComponent(NewAccessTokenApp).vm).toMatchObject({ accessTokenType });
+      expect(wrapper.findComponent(NewAccessTokenApp).vm).toMatchObject({ accessTokenType });
     });
 
     it('returns `null`', () => {

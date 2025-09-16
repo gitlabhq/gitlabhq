@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'new tables with gitlab_main schema', feature_category: :cell do
   # During the development of Cells, we will be moving tables from the `gitlab_main` schema
-  # to either the `gitlab_main_cell`, or another schema in
+  # to either the `gitlab_main_org`, or another schema in
   # https://docs.gitlab.com/development/cells/#available-cells--organization-schemas.
   # As part of this process, starting from milestone 16.7, it will be a mandatory requirement that
   # all newly created tables are associated with one of these two schemas.
@@ -20,13 +20,10 @@ RSpec.describe 'new tables with gitlab_main schema', feature_category: :cell do
       'abuse_report_uploads',                                   # gitlab_main_clusterwide now deprecated
       'admin_roles',                                            # gitlab_main_clusterwide now deprecated
       'audit_events_instance_amazon_s3_configurations',         # gitlab_main_clusterwide now deprecated
-      'audit_events_instance_external_streaming_destinations',  # gitlab_main_clusterwide now deprecated
-      'audit_events_instance_streaming_event_type_filters',     # gitlab_main_clusterwide now deprecated
-      'instance_audit_events',                                  # gitlab_main_clusterwide now deprecated
       'instance_integrations',                                  # gitlab_main_clusterwide now deprecated
       'ldap_admin_role_links',                                  # gitlab_main_clusterwide now deprecated
-      'user_audit_events',                                      # gitlab_main_clusterwide now deprecated
-      'user_permission_export_upload_uploads'                   # gitlab_main_clusterwide now deprecated
+      'user_permission_export_upload_uploads',                  # gitlab_main_clusterwide now deprecated
+      'ai_settings'                                             # awaiting schema decision: https://gitlab.com/gitlab-org/gitlab/-/issues/531356
     ]
   end
 
@@ -53,7 +50,7 @@ RSpec.describe 'new tables with gitlab_main schema', feature_category: :cell do
   def error_message(table_name)
     <<~HEREDOC
       The table `#{table_name}` has been added with `gitlab_main` schema.
-      Starting from GitLab #{starting_from_milestone}, we expect new tables to use either the `gitlab_main_cell` or the
+      Starting from GitLab #{starting_from_milestone}, we expect new tables to use either the `gitlab_main_org` or the
       `gitlab_main_cell_local`, or `gitlab_main_user` schema.
 
       To choose an appropriate schema for this table, please refer

@@ -82,7 +82,7 @@ module ContainerRegistry
     end
 
     def config
-      return unless config_blob&.data
+      return if config_blob&.data.blank?
 
       strong_memoize(:config) do
         ContainerRegistry::Config.new(self, config_blob)

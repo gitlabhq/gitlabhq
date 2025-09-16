@@ -4,10 +4,13 @@ classes:
 - Security::InventoryFilter
 feature_categories:
 - security_asset_inventories
-description: |
-  Denormalized table storing data relevant for filtering the security inventory.
+description: 'Denormalized table storing data relevant for filtering the security
+  inventory.
+
+  '
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197186
 milestone: '18.3'
 gitlab_schema: gitlab_sec
 sharding_key:
   project_id: projects
+table_size: small

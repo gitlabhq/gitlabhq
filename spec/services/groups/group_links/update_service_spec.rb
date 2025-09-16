@@ -48,21 +48,6 @@ RSpec.describe Groups::GroupLinks::UpdateService, '#execute', feature_category: 
     subject
   end
 
-  context 'when feature-flag `project_authorizations_update_in_background_for_group_shares` is disabled' do
-    before do
-      stub_feature_flags(project_authorizations_update_in_background_for_group_shares: false)
-    end
-
-    it 'executes refresh_members_authorized_projects' do
-      expect(group)
-        .to receive(:refresh_members_authorized_projects)
-        .with(direct_members_only: true, priority: UserProjectAccessChangedService::MEDIUM_PRIORITY)
-        .once
-
-      subject
-    end
-  end
-
   context 'with only param not requiring authorization refresh' do
     let(:group_link_params) { { expires_at: Date.tomorrow } }
 

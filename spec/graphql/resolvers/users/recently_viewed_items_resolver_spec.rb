@@ -19,6 +19,8 @@ RSpec.describe Resolvers::Users::RecentlyViewedItemsResolver, feature_category: 
     before do
       allow(Gitlab::Search::RecentIssues).to receive(:new).with(user: user).and_return(issue_service)
       allow(Gitlab::Search::RecentMergeRequests).to receive(:new).with(user: user).and_return(mr_service)
+      allow(Ability).to receive(:allowed?).with(user, :read_issue, anything).and_return(true)
+      allow(Ability).to receive(:allowed?).with(user, :read_merge_request, anything).and_return(true)
     end
 
     it 'combines results from all available service types' do
@@ -69,6 +71,57 @@ RSpec.describe Resolvers::Users::RecentlyViewedItemsResolver, feature_category: 
 
       results = resolve_recent_items(current_user: user)
 
+      expect(results).to be_empty
+    end
+
+    it 'filters out items the user cannot read (e.g., SAML authorization failure)' do
+      allow(issue_service).to receive(:latest_with_timestamps).and_return({
+        issue => 2.hours.ago
+      })
+      allow(mr_service).to receive(:latest_with_timestamps).and_return({
+        merge_request => 1.hour.ago
+      })
+
+      # Simulate SAML authorization failure: user can no longer read the issue
+      allow(Ability).to receive(:allowed?).with(user, :read_issue, issue).and_return(false)
+      allow(Ability).to receive(:allowed?).with(user, :read_merge_request, merge_request).and_return(true)
+
+      results = resolve_recent_items(current_user: user)
+
+      # Should only return merge request, issue should be filtered out
+      expect(results).to have_attributes(size: 1)
+      expect(results.first.item).to eq(merge_request)
+    end
+
+    it 'returns empty array when user cannot read any items' do
+      allow(issue_service).to receive(:latest_with_timestamps).and_return({
+        issue => 2.hours.ago
+      })
+      allow(mr_service).to receive(:latest_with_timestamps).and_return({
+        merge_request => 1.hour.ago
+      })
+
+      # Simulate SAML authorization failure: user can no longer read any items
+      allow(Ability).to receive(:allowed?).with(user, :read_issue, issue).and_return(false)
+      allow(Ability).to receive(:allowed?).with(user, :read_merge_request, merge_request).and_return(false)
+
+      results = resolve_recent_items(current_user: user)
+
+      expect(results).to be_empty
+    end
+
+    it 'filters out unknown item types' do
+      # Use a real class that's not Issue or MergeRequest to test the else clause
+      unknown_item = create(:todo)
+
+      allow(issue_service).to receive(:latest_with_timestamps).and_return({
+        unknown_item => 1.hour.ago
+      })
+      allow(mr_service).to receive(:latest_with_timestamps).and_return({})
+
+      results = resolve_recent_items(current_user: user)
+
+      # Unknown item type should be filtered out (returns false in else clause)
       expect(results).to be_empty
     end
   end

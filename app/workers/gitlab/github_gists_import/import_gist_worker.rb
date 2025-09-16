@@ -143,7 +143,7 @@ module Gitlab
           exception_message: exception_message.truncate(255),
           correlation_id_value: correlation_id || Labkit::Correlation::CorrelationId.current_or_new_id,
           user_id: user_id,
-          organization_id: user(user_id).organizations.first.id,
+          organization_id: user(user_id).organization.id,
           external_identifiers: github_identifiers
         )
       end

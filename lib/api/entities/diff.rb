@@ -9,6 +9,8 @@ module API
       } do |instance, options|
         options[:enable_unidiff] == true ? instance.unidiff : instance.json_safe_diff
       end
+      expose :collapsed?, as: :collapsed, documentation: { type: 'boolean' }
+      expose :too_large?, as: :too_large, documentation: { type: 'boolean' }
       expose :new_path, documentation: { type: 'string', example: 'doc/update/5.4-to-6.0.md' }
       expose :old_path, documentation: { type: 'string', example: 'doc/update/5.4-to-6.0.md' }
       expose :a_mode, documentation: { type: 'string', example: '100755' }

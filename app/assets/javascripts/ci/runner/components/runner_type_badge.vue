@@ -58,7 +58,7 @@ export default {
   <gl-badge
     v-if="badge"
     v-gl-tooltip="badge.tooltip"
-    variant="muted"
+    variant="neutral"
     :icon="badge.icon"
     v-bind="$attrs"
   >

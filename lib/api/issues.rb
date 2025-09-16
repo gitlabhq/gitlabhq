@@ -219,6 +219,10 @@ module API
         use :issues_params
         optional :cursor, type: String, desc: 'Cursor for obtaining the next set of records'
       end
+      route_setting :authentication, job_token_allowed: true
+      route_setting :authorization,
+        job_token_policies: :read_work_items,
+        allow_public_access_for_enabled_project_features: :issues
       get ":id/issues" do
         validate_search_rate_limit! if declared_params[:search].present?
 
@@ -256,6 +260,11 @@ module API
       params do
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
       end
+      route_setting :mcp, tool_name: :get_issue, params: [:id, :issue_iid]
+      route_setting :authentication, job_token_allowed: true
+      route_setting :authorization,
+        job_token_policies: :read_work_items,
+        allow_public_access_for_enabled_project_features: :issues
       get ":id/issues/:issue_iid", as: :api_v4_project_issue do
         issue = find_project_issue(params[:issue_iid])
         present issue, with: Entities::Issue, current_user: current_user, project: user_project
@@ -277,6 +286,7 @@ module API
 
         use :issue_params
       end
+      route_setting :mcp, tool_name: :create_issue, params: Helpers::IssuesHelpers.create_issue_mcp_params
       post ':id/issues' do
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/21140')
 

@@ -1,10 +1,11 @@
+import { nextTick } from 'vue';
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitListHeader from '~/projects/commits/components/commit_list_header.vue';
 import CommitFilteredSearch from '~/projects/commits/components/commit_filtered_search.vue';
 import CommitListBreadcrumb from '~/projects/commits/components/commit_list_breadcrumb.vue';
+import OpenMrBadge from '~/badges/components/open_mr_badge/open_mr_badge.vue';
 import RefSelector from '~/ref/components/ref_selector.vue';
-import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
@@ -17,21 +18,30 @@ const browseFilesPath = '/gitlab-org/gitlab/-/tree/main';
 describe('CommitListHeader', () => {
   let wrapper;
 
-  const defaultProvide = {
-    projectRootPath: 'gitlab-org/gitlab',
-    projectId: '1',
-    escapedRef: 'feature',
-    refType: 'heads',
-    rootRef: 'main',
-    browseFilesPath,
-    commitsFeedPath,
+  const mockRouter = {
+    push: jest.fn(),
   };
 
-  const createComponent = (provide = {}) => {
+  const createComponent = (path = 'README.md') => {
     wrapper = shallowMountExtended(CommitListHeader, {
       provide: {
-        ...defaultProvide,
-        ...provide,
+        projectRootPath: 'gitlab-org/gitlab',
+        projectFullPath: 'gitlab-org/gitlab',
+        projectId: '1',
+        escapedRef: 'feature',
+        refType: 'heads',
+        rootRef: 'main',
+        browseFilesPath,
+        commitsFeedPath,
+      },
+      mocks: {
+        $router: mockRouter,
+        $route: {
+          path: '/dev/README.md',
+          params: {
+            path,
+          },
+        },
       },
     });
   };
@@ -42,6 +52,7 @@ describe('CommitListHeader', () => {
   const findCommitsFeedItem = () => wrapper.findByTestId('commits-feed-link');
   const findCommitListBreadcrumb = () => wrapper.findComponent(CommitListBreadcrumb);
   const findRefSelector = () => wrapper.findComponent(RefSelector);
+  const findOpenMrBadge = () => wrapper.findComponent(OpenMrBadge);
 
   beforeEach(() => {
     createComponent();
@@ -108,6 +119,22 @@ describe('CommitListHeader', () => {
         value: 'refs/heads/feature',
       });
     });
+
+    describe('open mr badge', () => {
+      it('renders OpenMrBadge with correct props', () => {
+        expect(findOpenMrBadge().exists()).toBe(true);
+        expect(findOpenMrBadge().props()).toMatchObject({
+          projectPath: 'gitlab-org/gitlab',
+          blobPath: 'README.md',
+          currentRef: 'feature',
+        });
+      });
+
+      it('does not render OpenMrBadge when there is no file path', () => {
+        createComponent('');
+        expect(findOpenMrBadge().exists()).toBe(false);
+      });
+    });
   });
 
   describe('events', () => {
@@ -119,9 +146,14 @@ describe('CommitListHeader', () => {
       expect(wrapper.emitted('filter')).toEqual([[filterTokens]]);
     });
 
-    it('calls visitUrl with correct props when ref changes', () => {
+    it('updates router with correct props when ref changes', async () => {
       findRefSelector().vm.$emit('input', 'dev');
-      expect(visitUrl).toHaveBeenCalledWith('http://test.host/gitlab-org/gitlab/-/tree/dev');
+      await nextTick();
+
+      expect(mockRouter.push).toHaveBeenCalledWith({
+        path: '/dev/README.md',
+        query: {},
+      });
     });
   });
 });

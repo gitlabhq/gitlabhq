@@ -29,7 +29,11 @@ The following regions are verified for use:
 
 | Region | Code |
 |--------|------|
+| Africa (Cape Town) | `af-south-1` |
+| Asia Pacific (Hyderabad) | `ap-south-2` |
+| Asia Pacific (Jakarta) | `ap-southeast-3` |
 | Asia Pacific (Mumbai) | `ap-south-1` |
+| Asia Pacific (Osaka) | `ap-northeast-3` |
 | Asia Pacific (Seoul) | `ap-northeast-2` |
 | Asia Pacific (Singapore) | `ap-southeast-1` |
 | Asia Pacific (Sydney) | `ap-southeast-2` |
@@ -38,12 +42,17 @@ The following regions are verified for use:
 | Europe (Frankfurt) | `eu-central-1` |
 | Europe (Ireland) | `eu-west-1` |
 | Europe (London) | `eu-west-2` |
+| Europe (Milan) | `eu-south-1` |
+| Europe (Paris) | `eu-west-3` |
 | Europe (Stockholm) | `eu-north-1` |
+| Europe (Zurich) | `eu-central-2` |
+| Israel (Tel Aviv) | `il-central-1` |
+| Middle East (Bahrain) | `me-south-1` |
+| South America (São Paulo) | `sa-east-1` |
 | US East (Ohio) | `us-east-2` |
 | US East (N. Virginia) | `us-east-1` |
 | US West (N. California) | `us-west-1` |
 | US West (Oregon) | `us-west-2` |
-| Middle East (Bahrain) | `me-south-1` |
 
 For more information about selecting low emission regions, see [Choose Region based on both business requirements and sustainability goals](https://docs.aws.amazon.com/wellarchitected/latest/sustainability-pillar/sus_sus_region_a2.html).
 
@@ -56,39 +65,20 @@ disaster recovery. Some AWS regions are available only as secondary regions beca
 features that GitLab Dedicated relies on. If GitLab initiates a failover to your secondary region during
 a disaster recovery event or test, these limitations impact available features.
 
-The following regions are verified for use as a secondary region but with known limitations:
+The following regions are verified for use as a secondary region but do not support AWS Simple Email Service (SES):
 
-| Region | Code | io2 volume support| AWS SES support |
-|--------|------|-------------------|------------|
-| Africa (Cape Town) | `af-south-1` | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
-| Asia Pacific (Hong Kong) | `ap-east-1` | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
-| Asia Pacific (Osaka) | `ap-northeast-3` | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
-| Asia Pacific (Hyderabad) | `ap-south-2` | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
-| Asia Pacific (Jakarta) | `ap-southeast-3` | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
-| Asia Pacific (Melbourne) | `ap-southeast-4` | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
-| Asia Pacific (Malaysia) | `ap-southeast-5` | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
-| Asia Pacific (Thailand) | `ap-southeast-7` | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
-| Canada West (Calgary) | `ca-west-1` | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
-| Europe (Zurich) | `eu-central-2` | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
-| Europe (Milan) | `eu-south-1` | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
-| Europe (Spain) | `eu-south-2` | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
-| Europe (Paris) | `eu-west-3` | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
-| Israel (Tel Aviv) | `il-central-1` | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
-| Middle East (UAE) | `me-central-1` | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
-| Mexico (Central) | `mx-central-1` | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
-| South America (São Paulo) | `sa-east-1` | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes |
+| Region | Code |
+|--------|------|
+| Asia Pacific (Hong Kong) | `ap-east-1` |
+| Asia Pacific (Melbourne) | `ap-southeast-4` |
+| Asia Pacific (Malaysia) | `ap-southeast-5` |
+| Asia Pacific (Thailand) | `ap-southeast-7` |
+| Canada West (Calgary) | `ca-west-1` |
+| Europe (Spain) | `eu-south-2` |
+| Mexico (Central) | `mx-central-1` |
 
-These limitations may affect your service in the following ways:
-
-- **No io2 volume support**: In regions where AWS does not support io2 volumes, GitLab Dedicated uses GP3
-  volumes instead. GP3 volumes have lower durability (99.8-99.9% compared to 99.999% for io2), which
-  increases the risk of disk failures in your replica region. This can affect availability during failover
-  or while operating in the failed-over state. As a result, these regions are not covered by our standard
-  recovery time objective (RTO) and recovery point objective (RPO) targets.
-
-- **No SES support**: In regions where AWS does not support Simple Email Service (SES), GitLab
-  cannot send email notifications using the default configuration. To maintain email functionality
-  in these regions, set up your own [external SMTP mail service](../../administration/dedicated/configure_instance/users_notifications.md#smtp-email-service).
+Without SES support, you cannot send email notifications using the default configuration.
+To maintain email functionality in these regions, set up an [external SMTP mail service](../../administration/dedicated/configure_instance/users_notifications.md#smtp-email-service).
 
 During onboarding, regions with these limitations are clearly marked. You must acknowledge the
 associated risks before selecting one as your secondary region.

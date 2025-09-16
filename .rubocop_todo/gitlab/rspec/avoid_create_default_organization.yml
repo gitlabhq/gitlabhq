@@ -1,11 +1,6 @@
 ---
 Gitlab/RSpec/AvoidCreateDefaultOrganization:
   Exclude:
-    - 'ee/spec/finders/ai/code_suggestion_events_finder_spec.rb'
-    - 'spec/helpers/organizations/organization_helper_spec.rb'
     - 'spec/lib/gitlab/current/organization_spec.rb'
     - 'spec/lib/gitlab/database_importers/default_organization_importer_spec.rb'
     - 'spec/models/organizations/organization_spec.rb'
-    - 'spec/models/organizations/organization_user_spec.rb'
-    - 'spec/models/user_spec.rb'
-    - 'spec/requests/api/graphql/organizations/organization_query_spec.rb'

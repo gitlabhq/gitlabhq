@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Gitlab::Seeders::ProjectEnvironmentSeeder, feature_category: :ci_variables do
+RSpec.describe ::Gitlab::Seeders::ProjectEnvironmentSeeder, feature_category: :pipeline_composition do
   let_it_be(:project) { create(:project) }
 
   let(:seeder) { described_class.new(project_path: project.full_path) }

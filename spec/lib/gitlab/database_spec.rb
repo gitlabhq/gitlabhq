@@ -218,11 +218,11 @@ RSpec.describe Gitlab::Database, feature_category: :database do
       it 'returns primary db config even if ambiguous queries default to replica' do
         Gitlab::Database.database_base_models_using_load_balancing.each_value do |database_base_model|
           connection = database_base_model.connection
-          Gitlab::Database::LoadBalancing::SessionMap.with_sessions([::ApplicationRecord, ::Ci::ApplicationRecord]).use_primary!
+          Gitlab::Database::LoadBalancing::SessionMap.with_sessions(Gitlab::Database::LoadBalancing.base_models).use_primary!
           primary_config = described_class.db_config_for_connection(connection)
 
           Gitlab::Database::LoadBalancing::SessionMap.clear_session
-          Gitlab::Database::LoadBalancing::SessionMap.with_sessions([::ApplicationRecord, ::Ci::ApplicationRecord]).fallback_to_replicas_for_ambiguous_queries do
+          Gitlab::Database::LoadBalancing::SessionMap.with_sessions(Gitlab::Database::LoadBalancing.base_models).fallback_to_replicas_for_ambiguous_queries do
             expect(described_class.db_config_for_connection(connection)).to eq(primary_config)
           end
         end
@@ -500,6 +500,18 @@ RSpec.describe Gitlab::Database, feature_category: :database do
       it 'returns MAX_TIMESTAMP_VALUE' do
         expect(subject).to eq(max_timestamp)
       end
+    end
+  end
+
+  describe '.quote_table_name' do
+    it 'quotes the given table name' do
+      expect(described_class.quote_table_name('table name')).to eq '"table name"'
+    end
+  end
+
+  describe '.quote_column_name' do
+    it 'quotes the given column name' do
+      expect(described_class.quote_column_name('column name')).to eq '"column name"'
     end
   end
 

@@ -24,36 +24,37 @@
   #js-review-drawer{ data: review_bar_data(@merge_request, current_user) }
   #js-merge-sticky-header{ data: { data: sticky_header_data(@project, @merge_request).to_json } }
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
-    .merge-request-sticky-header.gl-border-b{ class: "!gl-h-auto" }
-      = render "projects/merge_requests/mr_box"
-      .merge-request-tabs-container.gl-flex.gl-justify-between.gl-relative{ class: "#{'is-merge-request' if !fluid_layout} #{'js-tabs-affix' unless ENV['RAILS_ENV'] == 'test'}" }
-        %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-flex.gl-flex-nowrap.gl-m-0.gl-p-0.gl-w-full.lg:gl-w-auto.gl-border-0.gl-h-9
-          = render "projects/merge_requests/tabs/tab", class: "notes-tab", testid: "notes-tab" do
-            = tab_link_for @merge_request, :show, force_link: @commit.present? do
-              = _("Overview")
-              = gl_badge_tag @merge_request.related_notes.user.count, { class: 'js-discussions-count' }
-          - if @merge_request.source_project
-            = render "projects/merge_requests/tabs/tab", name: "commits", class: "commits-tab", testid: "commits-tab" do
-              = tab_link_for @merge_request, :commits do
-                = _("Commits")
-                = gl_badge_tag tab_count_display(@merge_request, @commits_count), { class: 'js-commits-count' }
-          - if @project.builds_enabled?
-            = render "projects/merge_requests/tabs/tab", name: "pipelines", class: "pipelines-tab" do
-              = tab_link_for @merge_request, :pipelines do
-                = _("Pipelines")
-                = gl_badge_tag @number_of_pipelines, { class: 'js-pipelines-mr-count' }
-          = render_if_exists "projects/merge_requests/reports_tab"
-          = render "projects/merge_requests/tabs/tab", name: "diffs", class: "diffs-tab js-diffs-tab", id: "diffs-tab", testid: "diffs-tab" do
-            = tab_link_for @merge_request, :diffs do
-              = _("Changes")
-              = gl_badge_tag tab_count_display(@merge_request, @diffs_count), { class: 'js-changes-tab-count', data: { gid: @merge_request.to_gid.to_s } }
-        .merge-request-tabs-actions.gl-flex.gl-flex-wrap.gl-items-center.gl-gap-3
-          #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }
-          - if !!@issuable_sidebar.dig(:current_user, :id)
-            .js-sidebar-todo-widget-root{ data: { project_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid], id: @issuable_sidebar[:id] } }
-            - if notifications_todos_buttons_enabled?
-              .js-sidebar-subscriptions-widget-root{ data: { full_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid] } }
-          #js-submit-review-button
+    .merge-request-sticky-header-wrapper
+      .merge-request-sticky-header.gl-border-b
+        = render "projects/merge_requests/mr_box"
+        .merge-request-tabs-container.gl-flex.gl-justify-between.gl-relative{ class: "#{'is-merge-request' if !fluid_layout} #{'js-tabs-affix' unless ENV['RAILS_ENV'] == 'test'}" }
+          %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-flex.gl-flex-nowrap.gl-m-0.gl-p-0.gl-border-0.gl-h-9
+            = render "projects/merge_requests/tabs/tab", class: "notes-tab", testid: "notes-tab" do
+              = tab_link_for @merge_request, :show, force_link: @commit.present? do
+                = _("Overview")
+                = gl_badge_tag @merge_request.related_notes.user.count, { class: 'js-discussions-count' }
+            - if @merge_request.source_project
+              = render "projects/merge_requests/tabs/tab", name: "commits", class: "commits-tab", testid: "commits-tab" do
+                = tab_link_for @merge_request, :commits do
+                  = _("Commits")
+                  = gl_badge_tag tab_count_display(@merge_request, @commits_count), { class: 'js-commits-count' }
+            - if @project.builds_enabled?
+              = render "projects/merge_requests/tabs/tab", name: "pipelines", class: "pipelines-tab" do
+                = tab_link_for @merge_request, :pipelines do
+                  = _("Pipelines")
+                  = gl_badge_tag @number_of_pipelines, { class: 'js-pipelines-mr-count' }
+            = render_if_exists "projects/merge_requests/reports_tab"
+            = render "projects/merge_requests/tabs/tab", name: "diffs", class: "diffs-tab js-diffs-tab", id: "diffs-tab", testid: "diffs-tab" do
+              = tab_link_for @merge_request, :diffs do
+                = _("Changes")
+                = gl_badge_tag tab_count_display(@merge_request, @diffs_count), { class: 'js-changes-tab-count', data: { gid: @merge_request.to_gid.to_s } }
+          .merge-request-tabs-actions.gl-flex.gl-flex-wrap.gl-items-center.gl-gap-3
+            #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s, can_resolve_discussion: @merge_request.resolvable_discussions.first&.can_resolve_discussion?(current_user).to_s } }
+            - if !!@issuable_sidebar.dig(:current_user, :id)
+              .js-sidebar-todo-widget-root{ data: { project_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid], id: @issuable_sidebar[:id] } }
+              - if notifications_todos_buttons_enabled?
+                .js-sidebar-subscriptions-widget-root{ data: { full_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid] } }
+            #js-submit-review-button
     .tab-content#diff-notes-app
       #js-diff-file-finder
         #js-code-navigation

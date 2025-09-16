@@ -1,6 +1,6 @@
 <script>
 import { GlForm, GlFormFields, GlButton } from '@gitlab/ui';
-import { formValidators } from '@gitlab/ui/dist/utils';
+import { formValidators } from '@gitlab/ui/src/utils';
 import { n__, s__, __ } from '~/locale';
 import { slugify } from '~/lib/utils/text_utility';
 import AvatarUploadDropzone from '~/organizations/shared/components/avatar_upload_dropzone.vue';
@@ -201,7 +201,6 @@ export default {
       formFieldsInputEvent(event);
       this.hasPathBeenManuallySet = true;
     },
-    helpPagePath,
   },
 };
 </script>

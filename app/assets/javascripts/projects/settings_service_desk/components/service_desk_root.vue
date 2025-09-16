@@ -173,7 +173,7 @@ export default {
   <div>
     <gl-alert
       v-if="publicProject && isEnabled"
-      class="mb-3"
+      class="gl-mb-5"
       variant="warning"
       data-testid="public-project-alert"
       :dismissible="false"
@@ -192,7 +192,7 @@ export default {
         </template>
       </gl-sprintf>
     </gl-alert>
-    <gl-alert v-if="isAlertShowing" class="mb-3" :variant="alertVariant" @dismiss="onDismiss">
+    <gl-alert v-if="isAlertShowing" class="gl-mb-5" :variant="alertVariant" @dismiss="onDismiss">
       <span v-safe-html="alertMessage"></span>
     </gl-alert>
     <service-desk-setting

@@ -106,6 +106,86 @@ first push. The group Owner can
 [customize the initial branch](../project/repository/branches/default.md#change-the-default-branch-name-for-new-projects-in-a-group)
 for the group's projects to meet your group's needs.
 
+## Archive a group
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15019) in GitLab 18.3 [with a flag](../../administration/feature_flags/_index.md) named `archive_group`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+Archive a group and all of its subgroups and projects. When archived, a group and its contents become read-only, and group data is preserved for future reference.
+
+Additionally, archived groups:
+
+- Display an `Archived` badge on the group page
+- Appear in the **Inactive** tab on the **Your work** page, and **Explore** page
+- Cannot be transferred to another namespace
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To archive a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
+1. In the **Archive group** section, select **Archive**.
+
+{{< alert type="note" >}}
+
+Archiving a group automatically archives all its subgroups and projects. Individual subgroups or projects within an archived group cannot be unarchived separately.
+
+{{< /alert >}}
+
+To archive a group from the **Your work** list view directly:
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **View all my groups**.
+1. In the **Member** tab, find the group you want to archive and select ({{< icon name="ellipsis_v" >}}).
+1. Select **Archive**.
+
+This action is also available on other list pages.
+
+### Unarchive a group
+
+Unarchive a group and all of its subgroups and projects. When you unarchive a group:
+
+- Read-only restrictions are removed from the group and its contents.
+- The group and its subgroups and projects return to the **Active** or **Member** tabs in group lists.
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the group.
+
+To unarchive a group:
+
+1. Find the archived group.
+   1. On the left sidebar, select **Search or go to**.
+   1. Select **View all my groups**.
+   1. In the **Inactive** tab, select your group.
+1. On the left sidebar, select **Settings > General**.
+1. Under **Advanced**, select **Expand**.
+1. In the **Unarchive group** section, select **Unarchive**.
+
+To unarchive a group from the **Your work** list view directly:
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **View all my groups**.
+1. In the **Inactive** tab, find the group you want to unarchive and select ({{< icon name="ellipsis_v" >}}).
+1. Select **Unarchive**.
+
+This action is also available on other list pages.
+
 ## Transfer a group
 
 Transferring groups moves them from one place to another in the same GitLab instance. You can:
@@ -347,7 +427,7 @@ To turn on restricted access:
 When you turn on restricted access, the following known issues might occur and result in overages:
 
 - The number of seats can still be exceeded if:
-  - You use SAML or SCIM to add new members, and have exceeded the number of seats in the subscription.
+  - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription.
   - Multiple users with the Owner role add members simultaneously.
   - New billable members delay accepting an invitation.
   - You change from using the user cap to restricted access, and have members pending approval

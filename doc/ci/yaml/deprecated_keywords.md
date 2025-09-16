@@ -266,3 +266,44 @@ The job-level `publish` keyword and the `pages` job name for GitLab Pages deploy
 
 To control the pages deployment, use the [`pages`](_index.md#pages) and [`pages.publish`](_index.md#pagespublish)
 keywords instead.
+
+### `environment:kubernetes:namespace` and `environment:kubernetes:flux_resource_path`
+
+{{< alert type="note" >}}
+
+`environment:kubernetes:namespace` and `environment:kubernetes:flux_resource_path` are deprecated
+when used directly under `kubernetes`. To configure dashboard settings use `environment:kubernetes:dashboard:namespace` and `environment:kubernetes:dashboard:flux_resource_path`
+instead. For more information, see [`environment:kubernetes`](_index.md#environmentkubernetes).
+
+{{< /alert >}}
+
+You can use `environment:kubernetes:namespace` and `environment:kubernetes:flux_resource_path`
+to configure Kubernetes dashboard settings, but using them directly under the `kubernetes`
+section is deprecated.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Example of `environment:kubernetes:namespace` and `environment:kubernetes:flux_resource_path`**:
+
+```yaml
+deploy:
+  environment:
+    name: production
+    kubernetes:
+      agent: path/to/agent/project:agent-name
+      namespace: my-namespace
+      flux_resource_path: helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release
+```
+
+**Example of `environment:kubernetes:dashboard:namespace` and `environment:kubernetes:dashboard:flux_resource_path`**:
+
+```yaml
+deploy:
+  environment:
+    name: production
+    kubernetes:
+      agent: path/to/agent/project:agent-name
+      dashboard:
+        namespace: my-namespace
+        flux_resource_path: helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release
+```

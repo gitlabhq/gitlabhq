@@ -546,6 +546,32 @@ following [PURL types](https://github.com/package-url/purl-spec/blob/34658984613
 - `nuget`
 - `pypi`
 
+### Package hash information
+
+Dependency scanning SBOMs include package hash information when available. This information is provided only for NuGet packages.
+Package hashes appear in the following locations within the SBOM, allowing you to verify package integrity and authenticity:
+
+- Dedicated hashes field
+- PURL qualifiers
+
+For example:
+
+```json
+{
+  "name": "Iesi.Collections",
+  "version": "4.0.4",
+  "purl": "pkg:nuget/Iesi.Collections@4.0.4?sha512=8e579b4a3bf66bb6a661f297114b0f0d27f6622f6bd3f164bef4fa0f2ede865ef3f1dbbe7531aa283bbe7d86e713e5ae233fefde9ad89b58e90658ccad8d69f9",
+  "hashes": [
+    {
+      "alg": "SHA-512",
+      "content": "8e579b4a3bf66bb6a661f297114b0f0d27f6622f6bd3f164bef4fa0f2ede865ef3f1dbbe7531aa283bbe7d86e713e5ae233fefde9ad89b58e90658ccad8d69f9"
+    }
+  ],
+  "type": "library",
+  "bom-ref": "pkg:nuget/Iesi.Collections@4.0.4?sha512=8e579b4a3bf66bb6a661f297114b0f0d27f6622f6bd3f164bef4fa0f2ede865ef3f1dbbe7531aa283bbe7d86e713e5ae233fefde9ad89b58e90658ccad8d69f9"
+}
+```
+
 ## Customizing analyzer behavior
 
 How to customize the analyzer varies depending on the enablement solution.

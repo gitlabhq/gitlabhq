@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: 'Cloud Connector: Configuration'
 ---
 
-A GitLab Rails instance accesses backend services uses a [Cloud Connector Service Access Token](architecture.md#access-control):
+A GitLab Rails instance accesses backend services uses a Cloud Connector [Service Access Token](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/authentication/architecture/#access-control):
 
 - This token is synced to a GitLab instance from CustomersDot daily and stored in the instance's local database.
 - For GitLab.com, we do not require this step; instead, we issue short-lived tokens for each request.
@@ -14,7 +14,7 @@ The Cloud Connector **JWT** contains a custom claim, which represents the list o
 
 ## Unit Primitives and Configuration
 
-According to the [Architecture Decision Record (ADR) 003](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/decisions/003_unit_primitives/),
+According to the [Architecture Decision Record (ADR) PROV-001](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/fulfillment/decisions/prov_001_unit_primitives/),
 this configuration of unit primitives is maintained in the [`gitlab-cloud-connector`](https://gitlab.com/gitlab-org/cloud-connector/gitlab-cloud-connector) library.
 This library serves as the Single Source of Truth (SSoT) for all Cloud Connector configurations and is available as both a Ruby gem and a Python package.
 

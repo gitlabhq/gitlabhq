@@ -14,28 +14,20 @@ title: API security testing analyzer
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/4254) in GitLab 15.6 to the default analyzer for on-demand API security testing scans.
 - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/457449) in GitLab 17.0 from "DAST API analyzer" to "API security testing analyzer".
 
 {{< /history >}}
 
-Perform Dynamic Application Security Testing (DAST) of web APIs to help discover bugs and potential
-security issues that other QA processes may miss. Use API security testing in addition to
-other [GitLab Secure](../_index.md) security scanners and your own test processes. You can run DAST
-API tests either as part your CI/CD workflow, [on-demand](../dast/on-demand_scan.md), or both.
+Test web APIs to help discover bugs and potential security issues that other QA processes may miss.
+Use API security testing in addition to other security scanners and your own test processes. You can
+run API security testing tests either as part your CI/CD workflow,
+[on-demand](../dast/on-demand_scan.md), or both.
 
 {{< alert type="warning" >}}
 
 Do not run API security testing against a production server. Not only can it perform any function that
 the API can, it may also trigger bugs in the API. This includes actions like modifying and deleting
 data. Only run API security testing against a test server.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-DAST API has been re-branded to API Security Testing. As part of this re-branding the template
-name and variable prefixes have also been updated. The old template and variable names continue to work until the next major release, 18.0 in May 2025.
 
 {{< /alert >}}
 
@@ -224,7 +216,7 @@ services: # use services to link the container to the dast job
 
 To get support for your particular problem, use the [getting help channels](https://about.gitlab.com/get-help/).
 
-The [GitLab issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues) is the right place for bugs and feature proposals about API Security and API security testing.
+The [GitLab issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues) is the right place for bugs and feature proposals about API security testing.
 Use `~"Category:API Security"` label when opening a new issue regarding API security testing to ensure it is quickly reviewed by the right people.
 
 [Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) for similar entries before submitting your own, there's a good chance somebody else had the same issue or feature proposal. Show your support with an emoji reaction or join the discussion.

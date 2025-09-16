@@ -12,6 +12,9 @@ module API
       expose :subgroup_creation_level_str, as: :subgroup_creation_level
       expose(:emails_disabled, documentation: { type: 'boolean' }) { |group, options| group.emails_disabled? }
       expose :emails_enabled, documentation: { type: 'boolean' }
+      expose(:show_diff_preview_in_email, documentation: { type: 'boolean' }) do |group, options|
+        group.show_diff_preview_in_email?
+      end
       expose :mentions_disabled
       expose :lfs_enabled?, as: :lfs_enabled
       expose(:archived, documentation: { type: 'boolean' }) { |group, _options| group.self_or_ancestors_archived? }

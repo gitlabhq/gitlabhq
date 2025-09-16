@@ -28,6 +28,12 @@ If a user is not a member of a private group, a `GET` request on that group resu
 
 If epics feature is not available a `403` status code is returned.
 
+## Legacy Epic IDs and WorkItem IDs
+
+The legacy Epic ID is not the same as the WorkItem ID. Only the `iid` matches. However, to retrieve the corresponding WorkItem ID for an epic, we expose `work_item_id` as part of the response.
+
+This ID can be used for the WorkItem GraphQL API, e.g. the `work_item_id` would be the Global ID `gid://gitlab/WorkItem/123` on the WorkItem GraphQL API.
+
 ## Epic issues API
 
 The [epic issues API](epic_issues.md) allows you to interact with issues associated with an epic.
@@ -78,7 +84,7 @@ GET /groups/:id/epics?state=opened
 
 | Attribute           | Type             | Required   | Description                                                                                                                 |
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)               |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group               |
 | `author_id`         | integer          | no         | Return epics created by the given user `id`                                                                                 |
 | `author_username`   | string           | no         | Return epics created by the user with the given `username`. |
 | `labels`            | string           | no         | Return epics matching a comma-separated list of labels names. Label names from the epic group or a parent group can be used |
@@ -108,6 +114,7 @@ Example response:
 [
   {
   "id": 29,
+  "work_item_id": 1032,
   "iid": 4,
   "group_id": 7,
   "parent_id": 23,
@@ -158,6 +165,7 @@ Example response:
   },
   {
   "id": 50,
+  "work_item_id": 1035,
   "iid": 35,
   "group_id": 17,
   "parent_id": 19,
@@ -220,8 +228,8 @@ GET /groups/:id/epics/:epic_iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
-| `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group                |
+| `epic_iid`          | integer or string   | yes        | The internal ID of the epic.  |
 
 ```shell
 curl --request GET \
@@ -234,6 +242,7 @@ Example response:
 ```json
 {
   "id": 30,
+  "work_item_id": 1099,
   "iid": 5,
   "group_id": 7,
   "parent_id": null,
@@ -304,7 +313,7 @@ POST /groups/:id/epics
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group                |
 | `title`             | string           | yes        | The title of the epic |
 | `labels`            | string           | no         | The comma-separated list of labels |
 | `description`       | string           | no         | The description of the epic. Limited to 1,048,576 characters.  |
@@ -315,7 +324,7 @@ POST /groups/:id/epics
 | `start_date_fixed`  | string           | no         | The fixed start date of an epic |
 | `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` or from milestones |
 | `due_date_fixed`    | string           | no         | The fixed due date of an epic |
-| `parent_id`         | integer/string   | no         | The ID of a parent epic |
+| `parent_id`         | integer or string   | no         | The ID of a parent epic |
 
 ```shell
 curl --request POST \
@@ -328,6 +337,7 @@ Example response:
 ```json
 {
   "id": 33,
+  "work_item_id": 1020,
   "iid": 6,
   "group_id": 7,
   "parent_id": 29,
@@ -390,15 +400,15 @@ PUT /groups/:id/epics/:epic_iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
-| `epic_iid`          | integer/string   | yes        | The internal ID of the epic  |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group                |
+| `epic_iid`          | integer or string   | yes        | The internal ID of the epic  |
 | `add_labels`        | string           | no         | Comma-separated label names to add to an issue. |
 | `confidential`      | boolean          | no         | Whether the epic should be confidential |
 | `description`       | string           | no         | The description of an epic. Limited to 1,048,576 characters.  |
 | `due_date_fixed`    | string           | no         | The fixed due date of an epic |
 | `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` or from milestones |
 | `labels`            | string           | no         | Comma-separated label names for an issue. Set to an empty string to unassign all labels. |
-| `parent_id`         | integer/string   | no         | The ID of a parent epic. |
+| `parent_id`         | integer or string   | no         | The ID of a parent epic. |
 | `remove_labels`     | string           | no         | Comma-separated label names to remove from an issue. |
 | `start_date_fixed`  | string           | no         | The fixed start date of an epic |
 | `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` or from milestones |
@@ -418,6 +428,7 @@ Example response:
 ```json
 {
   "id": 33,
+  "work_item_id": 1019,
   "iid": 6,
   "group_id": 7,
   "parent_id": 29,
@@ -480,8 +491,8 @@ DELETE /groups/:id/epics/:epic_iid
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
-| `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group                |
+| `epic_iid`          | integer or string   | yes        | The internal ID of the epic.  |
 
 ```shell
 curl --request DELETE \
@@ -501,7 +512,7 @@ POST /groups/:id/epics/:epic_iid/todo
 
 | Attribute   | Type    | Required | Description                          |
 |-------------|---------|----------|--------------------------------------|
-| `id`        | integer/string | yes   | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)  |
+| `id`        | integer or string | yes   | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group  |
 | `epic_iid` | integer | yes          | The internal ID of a group's epic |
 
 ```shell

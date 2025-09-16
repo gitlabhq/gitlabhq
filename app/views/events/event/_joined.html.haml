@@ -1,0 +1,17 @@
+= icon_for_profile_event(event)
+
+= event_user_info(event)
+
+.event-title.gl-flex
+  = inline_event_icon(event)
+  .event-title-block.gl-inline-block.gl-mr-2
+    - if event.target
+      %span.event-type{ class: event.action_name + user_profile_activity_classes }
+        = localized_action_name(event)
+      %span.event-target-type{ class: user_profile_activity_classes }
+        = event.target_type_name
+      = link_to event_feed_url(event), class: 'event-target-link', title: event.target_title do
+        = event.target.name
+    - else
+      %span.event-type.gl-inline-block{ class: event.action_name }
+        = event_action_name(event)

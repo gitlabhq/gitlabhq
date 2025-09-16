@@ -28,7 +28,7 @@ export default {
         {
           key: 'spentAt',
           label: s__('TimeTrackingReport|Spent at'),
-          tdClass: 'md:gl-w-30',
+          tdClass: '@md/panel:gl-w-30',
         },
         {
           key: 'source',
@@ -37,12 +37,12 @@ export default {
         {
           key: 'user',
           label: s__('TimeTrackingReport|User'),
-          tdClass: 'md:gl-w-20',
+          tdClass: '@md/panel:gl-w-20',
         },
         {
           key: 'timeSpent',
           label: s__('TimeTrackingReport|Time spent'),
-          tdClass: 'md:gl-w-15',
+          tdClass: '@md/panel:gl-w-15',
         },
         {
           key: 'summary',

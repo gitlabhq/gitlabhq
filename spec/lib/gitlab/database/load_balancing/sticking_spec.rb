@@ -6,8 +6,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, feature_catego
   let(:load_balancer) { ActiveRecord::Base.load_balancer }
   let(:primary_write_location) { 'the-primary-lsn' }
   let(:last_write_location) { 'the-last-write-lsn' }
-  let(:namespace) { 'user' }
-  let(:location) { '0/1234ABED' }
 
   let(:sticking) do
     described_class.new(load_balancer)
@@ -141,90 +139,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::Sticking, :redis, feature_catego
     it_behaves_like 'sticking' do
       let(:ids) { [42, 43] }
       subject { sticking.bulk_stick(:user, ids) }
-    end
-  end
-
-  describe '#log_database_sticking_operations_enabled?' do
-    it 'returns true when the feature flag is enabled' do
-      stub_feature_flags(log_database_sticking_operations: true)
-      expect(sticking.send(:log_database_sticking_operations_enabled?)).to be true
-    end
-
-    it 'returns false when the feature flag is disabled' do
-      stub_feature_flags(log_database_sticking_operations: false)
-      expect(sticking.send(:log_database_sticking_operations_enabled?)).to be false
-    end
-  end
-
-  describe '#capture_stick_logs' do
-    let(:id) { 123 }
-    let(:ids) { [124, 125, 16] }
-
-    context 'when logging is enabled and namespace is user' do
-      before do
-        stub_feature_flags(log_database_sticking_operations: true)
-
-        allow(sticking).to receive(:with_primary_write_location).and_yield(location)
-        allow(sticking).to receive(:set_write_location_for)
-        allow(sticking).to receive(:use_primary!)
-      end
-
-      it 'logs the sticking operation with correct parameters' do
-        expect(::Gitlab::Database::LoadBalancing::Logger).to receive(:info).with(
-          event: :load_balancer_stick_logging,
-          client_id: "#{namespace}/#{id}",
-          stick_id: id,
-          stick_type: namespace,
-          current_lsn: location
-        )
-        sticking.stick(namespace, id)
-      end
-
-      it 'logs only the first ID for bulk sticking operations with correct parameters' do
-        expect(::Gitlab::Database::LoadBalancing::Logger).to receive(:info).with(
-          event: :load_balancer_stick_logging,
-          client_id: "#{namespace}/#{ids.first}",
-          stick_id: ids.first,
-          stick_type: namespace,
-          current_lsn: location
-        )
-
-        sticking.bulk_stick(namespace, ids)
-      end
-    end
-
-    context 'when logging is disabled' do
-      before do
-        stub_feature_flags(log_database_sticking_operations: false)
-
-        allow(sticking).to receive(:with_primary_write_location).and_yield(location)
-        allow(sticking).to receive(:set_write_location_for)
-        allow(sticking).to receive(:use_primary!)
-      end
-
-      it 'does not log anything' do
-        expect(::Gitlab::Database::LoadBalancing::Logger).not_to receive(:info)
-
-        sticking.stick(namespace, id)
-      end
-    end
-
-    context 'when logging is enabled and namespace is not user' do
-      let(:namespace) { 'project' }
-
-      before do
-        stub_feature_flags(log_database_sticking_operations: true)
-
-        allow(sticking).to receive(:with_primary_write_location).and_yield(location)
-        allow(sticking).to receive(:set_write_location_for)
-        allow(sticking).to receive(:use_primary!)
-      end
-
-      it 'does not log anything' do
-        expect(::Gitlab::Database::LoadBalancing::Logger).not_to receive(:info)
-
-        sticking.bulk_stick(namespace, ids)
-      end
     end
   end
 end

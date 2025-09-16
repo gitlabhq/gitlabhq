@@ -1,5 +1,5 @@
 import { GlAlert } from '@gitlab/ui';
-import { GlAreaChart } from '@gitlab/ui/dist/charts';
+import { GlAreaChart } from '@gitlab/ui/src/charts';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';

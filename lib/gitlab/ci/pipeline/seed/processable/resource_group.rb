@@ -19,7 +19,9 @@ module Gitlab
               return unless resource_group_key.present?
 
               resource_group = processable.project.resource_groups
-                .safe_find_or_create_by(key: expanded_resource_group_key)
+                .safe_find_or_create_by(key: expanded_resource_group_key) do |resource_group|
+                  resource_group.process_mode = processable.project.resource_group_default_process_mode
+                end
 
               resource_group if resource_group.persisted?
             end

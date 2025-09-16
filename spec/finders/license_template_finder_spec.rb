@@ -81,11 +81,10 @@ RSpec.describe LicenseTemplateFinder do
 
   describe '#template_names' do
     let(:params) { {} }
-
-    subject(:template_names) { described_class.new(nil, params).template_names }
-
     let(:categories) { categorised_licenses.keys }
     let(:categorised_licenses) { template_names }
+
+    subject(:template_names) { described_class.new(nil, params).template_names }
 
     it_behaves_like 'filters by popular category'
 

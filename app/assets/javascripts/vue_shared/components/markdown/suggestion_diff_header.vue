@@ -139,7 +139,7 @@ export default {
 
 <template>
   <div
-    class="md-suggestion-header border-bottom-0 gl-flex-col gl-items-start gl-gap-3 gl-px-4 gl-py-3 sm:gl-flex-row sm:gl-flex-wrap"
+    class="md-suggestion-header gl-flex-col gl-items-start gl-gap-3 !gl-border-b-0 gl-px-4 gl-py-3 @sm/panel:gl-flex-row @sm/panel:gl-flex-wrap"
   >
     <div class="js-suggestion-diff-header gl-font-bold">
       {{ __('Suggested change') }}

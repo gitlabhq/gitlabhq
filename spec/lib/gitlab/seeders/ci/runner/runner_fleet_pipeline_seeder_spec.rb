@@ -27,6 +27,10 @@ RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetPipelineSeeder, feature
   end
 
   describe '#seed' do
+    before do
+      stub_feature_flags(ci_validate_config_options: false)
+    end
+
     context 'with job_count specified' do
       let(:job_count) { 20 }
 
@@ -71,6 +75,11 @@ RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetPipelineSeeder, feature
 
         it 'asynchronously triggers PipelineFinishedWorker for each pipeline' do
           expect(Ci::PipelineFinishedWorker).to receive(:perform_async).twice
+          seeder.seed
+        end
+
+        it 'asynchronously triggers BuildFinishedWorker for each build' do
+          expect(Ci::BuildFinishedWorker).to receive(:perform_async).twice
           seeder.seed
         end
       end

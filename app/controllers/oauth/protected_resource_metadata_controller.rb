@@ -16,7 +16,10 @@ module Oauth
 
     def resource_metadata
       {
-        resource: "#{request.base_url}/api/v4/mcp",
+        resource: [
+          "#{request.base_url}/api/v4/mcp",
+          "#{request.base_url}/api/v4/mcp_server"
+        ],
         authorization_servers: [
           request.base_url
         ]

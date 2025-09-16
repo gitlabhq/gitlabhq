@@ -33,7 +33,7 @@ module RuboCop
         ].freeze
         EE_FEATURES = %i[requirements].freeze
         ALL_FEATURES = (FEATURES + EE_FEATURES).freeze
-        SPECIAL_CLASS = %w[License Gitlab::Saas].freeze
+        SPECIAL_CLASS = %w[License Gitlab::Saas Search::Zoekt].freeze
 
         def on_send(node)
           return unless method_name(node) == OBSERVED_METHOD

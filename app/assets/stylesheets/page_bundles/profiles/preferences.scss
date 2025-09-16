@@ -3,45 +3,27 @@
 .application-theme {
   .preview {
     font-size: 0;
-    height: 48px;
-    border-radius: 4px;
-    min-width: 112px;
-    margin-bottom: $gl-padding-8;
+    height: 3rem;
+    @apply gl-rounded-base gl-mb-3;
 
     &.ui-indigo {
-      background-color: var(--gl-color-theme-indigo-900);
-    }
-
-    &.ui-light-indigo {
-      background-color: var(--gl-color-theme-indigo-700);
+      @apply gl-bg-purple-500 dark:gl-bg-purple-600;
     }
 
     &.ui-blue {
-      background-color: var(--gl-color-theme-blue-900);
-    }
-
-    &.ui-light-blue {
-      background-color: var(--gl-color-theme-light-blue-800);
+      @apply gl-bg-blue-500 dark:gl-bg-blue-600;
     }
 
     &.ui-green {
-      background-color: var(--gl-color-theme-green-900);
-    }
-
-    &.ui-light-green {
-      background-color: var(--gl-color-theme-green-800);
+      @apply gl-bg-green-500 dark:gl-bg-green-600;
     }
 
     &.ui-red {
-      background-color: var(--gl-color-theme-red-900);
-    }
-
-    &.ui-light-red {
-      background-color: var(--gl-color-theme-light-red-700);
+      @apply gl-bg-red-500 dark:gl-bg-red-600;
     }
 
     &.ui-gray {
-      @apply gl-bg-neutral-900;
+      @apply gl-bg-neutral-500 dark:gl-bg-neutral-300;
     }
 
     &.ui-neutral {

@@ -22,6 +22,10 @@ RSpec.describe Ci::Workloads::WorkloadDefinition, feature_category: :continuous_
   end
 
   describe '#to_job_hash' do
+    before do
+      stub_feature_flags(ci_validate_config_options: false)
+    end
+
     it 'builds a workload_definition' do
       expect(definition.to_job_hash).to eq({
         image: image,
@@ -52,6 +56,22 @@ RSpec.describe Ci::Workloads::WorkloadDefinition, feature_category: :continuous_
       expect(definition.to_job_hash[:artifacts]).to eq({
         paths: ['my-artifact-path']
       })
+    end
+
+    it 'allows setting cache' do
+      cache_config = { key: 'my-cache-key', paths: ['node_modules'] }
+      definition.cache = cache_config
+      expect(definition.to_job_hash[:cache]).to eq(cache_config)
+    end
+
+    it 'does not include cache when cache is nil' do
+      definition.cache = nil
+      expect(definition.to_job_hash).not_to have_key(:cache)
+    end
+
+    it 'does not include cache when cache is empty hash' do
+      definition.cache = {}
+      expect(definition.to_job_hash).not_to have_key(:cache)
     end
 
     it 'raises ArgumentError if image is not present' do

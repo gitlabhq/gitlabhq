@@ -12,20 +12,6 @@ FactoryBot.define do
     scheduling_type { 'stage' }
     pending
 
-    options do
-      {
-        image: 'image:1.0',
-        services: ['postgres'],
-        script: ['ls -a']
-      }
-    end
-
-    yaml_variables do
-      [
-        { key: 'DB_NAME', value: 'postgres', public: true }
-      ]
-    end
-
     project { pipeline.project }
 
     ref { pipeline.ref }
@@ -34,10 +20,38 @@ FactoryBot.define do
 
     execution_config { nil }
 
+    transient do
+      options do
+        {
+          image: 'image:1.0',
+          services: ['postgres'],
+          script: ['ls -a']
+        }
+      end
+
+      yaml_variables do
+        [
+          { key: 'DB_NAME', value: 'postgres', public: true }
+        ]
+      end
+
+      id_tokens { nil }
+    end
+
     after(:build) do |build, evaluator|
       if evaluator.runner_manager
         build.runner = evaluator.runner_manager.runner
         create(:ci_runner_machine_build, build: build, runner_manager: evaluator.runner_manager)
+      end
+
+      if evaluator.id_tokens
+        # TODO: Remove this when FF `stop_writing_builds_metadata` is removed.
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/552065
+        build.metadata.write_attribute(:id_tokens, evaluator.id_tokens)
+        next unless build.job_definition
+
+        updated_config = build.job_definition.config.merge(id_tokens: evaluator.id_tokens)
+        build.job_definition.write_attribute(:config, updated_config)
       end
     end
 
@@ -376,6 +390,14 @@ FactoryBot.define do
       end
     end
 
+    trait :artifacts_with_maintainer_access do
+      after(:create) do |build, evaluator|
+        create(:ci_job_artifact, :archive, :maintainer, job: build, expire_at: build.artifacts_expire_at)
+        create(:ci_job_artifact, :metadata, :maintainer, job: build, expire_at: build.artifacts_expire_at)
+        build.reload
+      end
+    end
+
     trait :no_access_artifacts do
       after(:create) do |build, evaluator|
         create(:ci_job_artifact, :archive, :none, job: build, expire_at: build.artifacts_expire_at)
@@ -603,6 +625,14 @@ FactoryBot.define do
       end
     end
 
+    trait :sbom_dependency_scanning do
+      options do
+        {
+          artifacts: { reports: { cyclonedx: 'gl-sbom-report.cdx.json' } }
+        }
+      end
+    end
+
     trait :container_scanning do
       options do
         {
@@ -660,6 +690,14 @@ FactoryBot.define do
       options do
         {
           artifacts: { access: 'developer' }
+        }
+      end
+    end
+
+    trait :with_maintainer_access_artifacts do
+      options do
+        {
+          artifacts: { access: 'maintainer' }
         }
       end
     end
@@ -737,6 +775,16 @@ FactoryBot.define do
     trait :with_runner_session do
       after(:build) do |build|
         build.build_runner_session(url: 'https://gitlab.example.com')
+      end
+    end
+
+    trait :slsa_artifacts do
+      after(:create) do |build, evaluator|
+        create(:ci_job_artifact, :mocked_checksum, :slsa_archive, :public, job: build,
+          expire_at: build.artifacts_expire_at)
+        create(:ci_job_artifact, :mocked_checksum, :slsa_metadata, :public, job: build,
+          expire_at: build.artifacts_expire_at)
+        build.reload
       end
     end
   end

@@ -146,6 +146,7 @@ export default {
     :title="title"
     :action-primary="primaryActionProps"
     :action-cancel="cancelActionProps"
+    data-testid="confirm-modal"
     size="sm"
     @primary.prevent="performAction"
     @hide="checkModalClose"

@@ -1,7 +1,7 @@
 PATH
   remote: ../gems/gitlab-utils
   specs:
-    gitlab-utils (0.1.0)
+    gitlab-utils (0.2.0)
       actionview (>= 6.1.7.2)
       activesupport (>= 6.1.7.2)
       addressable (~> 2.8)
@@ -22,13 +22,13 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    actionview (7.1.5.1)
-      activesupport (= 7.1.5.1)
+    actionview (7.1.5.2)
+      activesupport (= 7.1.5.2)
       builder (~> 3.1)
       erubi (~> 1.11)
       rails-dom-testing (~> 2.2)
       rails-html-sanitizer (~> 1.6)
-    activesupport (7.1.5.1)
+    activesupport (7.1.5.2)
       base64
       benchmark (>= 0.3)
       bigdecimal
@@ -86,7 +86,7 @@ GEM
     domain_name (0.6.20240107)
     drb (2.2.1)
     erubi (1.12.0)
-    excon (1.2.7)
+    excon (1.3.0)
       logger
     factory_bot (6.5.1)
       activesupport (>= 6.1.0)
@@ -140,7 +140,7 @@ GEM
       rainbow (>= 3, < 4)
       table_print (= 1.5.7)
       zeitwerk (>= 2, < 3)
-    gitlab_quality-test_tooling (2.19.0)
+    gitlab_quality-test_tooling (2.20.0)
       activesupport (>= 7.0, < 7.3)
       amatch (~> 0.4.1)
       fog-google (~> 1.24, >= 1.24.1)
@@ -376,7 +376,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport (~> 7.1.5.1)
+  activesupport (~> 7.1.5.2)
   allure-rspec (~> 2.27.0)
   capybara (~> 3.40.0)
   capybara-screenshot (~> 1.0.26)
@@ -388,7 +388,7 @@ DEPENDENCIES
   gitlab-orchestrator!
   gitlab-qa (~> 15, >= 15.5.0)
   gitlab-utils!
-  gitlab_quality-test_tooling (~> 2.19.0)
+  gitlab_quality-test_tooling (~> 2.20.0)
   influxdb-client (~> 3.2)
   junit_merge (~> 0.1.2)
   knapsack (~> 4.0)

@@ -35,11 +35,11 @@ export default {
 };
 </script>
 <template>
-  <gl-loading-icon v-if="isLoading" size="lg" class="mt-3" />
-  <gl-alert v-else-if="loadingError" variant="danger" :dismissible="false" class="mt-3">
+  <gl-loading-icon v-if="isLoading" size="lg" class="!gl-mt-5" />
+  <gl-alert v-else-if="loadingError" variant="danger" :dismissible="false" class="!gl-mt-5">
     {{ loadingFailedText }}
   </gl-alert>
-  <div v-else-if="commits.length === 0" class="text-center mt-4">
+  <div v-else-if="commits.length === 0" class="!gl-mt-6 !gl-text-center">
     <span>{{ emptyListText }}</span>
   </div>
   <div v-else>

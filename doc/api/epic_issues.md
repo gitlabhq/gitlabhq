@@ -45,8 +45,8 @@ GET /groups/:id/epics/:epic_iid/issues
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
-| `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group                |
+| `epic_iid`          | integer or string   | yes        | The internal ID of the epic.  |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics/5/issues/"
@@ -140,9 +140,9 @@ POST /groups/:id/epics/:epic_iid/issues/:issue_id
 
 | Attribute           | Type             | Required   | Description                                                                            |
 | ------------------- | ---------------- | ---------- | ---------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
-| `epic_iid`          | integer/string   | yes        | The internal ID of the epic.  |
-| `issue_id`          | integer/string   | yes        | The ID of the issue.          |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group                |
+| `epic_iid`          | integer or string   | yes        | The internal ID of the epic.  |
+| `issue_id`          | integer or string   | yes        | The ID of the issue.          |
 
 ```shell
 curl --header POST "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics/5/issues/55"
@@ -246,9 +246,9 @@ DELETE /groups/:id/epics/:epic_iid/issues/:epic_issue_id
 
 | Attribute           | Type             | Required   | Description                                                                                          |
 | ------------------- | ---------------- | ---------- | -----------------------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
-| `epic_iid`          | integer/string   | yes        | The internal ID of the epic.                |
-| `epic_issue_id`     | integer/string   | yes        | The ID of the issue - epic association.     |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group                |
+| `epic_iid`          | integer or string   | yes        | The internal ID of the epic.                |
+| `epic_issue_id`     | integer or string   | yes        | The ID of the issue - epic association.     |
 
 ```shell
 curl --header DELETE "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics/5/issues/11"
@@ -352,11 +352,11 @@ PUT /groups/:id/epics/:epic_iid/issues/:epic_issue_id
 
 | Attribute           | Type             | Required   | Description                                                                                          |
 | ------------------- | ---------------- | ---------- | -----------------------------------------------------------------------------------------------------|
-| `id`                | integer/string   | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths)                |
-| `epic_iid`          | integer/string   | yes        | The internal ID of the epic.                |
-| `epic_issue_id`     | integer/string   | yes        | The ID of the issue - epic association.     |
-| `move_before_id`    | integer/string   | no         | The ID of the issue - epic association that should be placed before the link in the question.     |
-| `move_after_id`     | integer/string   | no         | The ID of the issue - epic association that should be placed after the link in the question.     |
+| `id`                | integer or string   | yes        | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group                |
+| `epic_iid`          | integer or string   | yes        | The internal ID of the epic.                |
+| `epic_issue_id`     | integer or string   | yes        | The ID of the issue - epic association.     |
+| `move_before_id`    | integer or string   | no         | The ID of the issue - epic association that should be placed before the link in the question.     |
+| `move_after_id`     | integer or string   | no         | The ID of the issue - epic association that should be placed after the link in the question.     |
 
 ```shell
 curl --header PUT "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/epics/5/issues/11?move_before_id=20"

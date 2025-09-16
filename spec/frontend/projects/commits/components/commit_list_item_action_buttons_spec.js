@@ -1,6 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitListItemActionButtons from '~/projects/commits/components/commit_list_item_action_buttons.vue';
-import ExpandCollapseButton from '~/projects/commits/components/expand_collapse_button.vue';
+import ExpandCollapseButton from '~/vue_shared/components/expand_collapse_button/expand_collapse_button.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import { mockCommit } from './mock_data';
 

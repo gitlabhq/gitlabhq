@@ -14,14 +14,12 @@ title: Custom roles
 
 {{< history >}}
 
-- [Custom roles feature introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256) in GitLab 15.7 [with a flag](../../administration/feature_flags/_index.md) named `customizable_roles`.
-- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810) in GitLab 15.9.
-- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114524) in GitLab 15.10.
 - Ability to create and remove a custom role with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393235) in GitLab 16.4.
 - Ability to use the UI to add a user to your group with a custom role, change a user's custom role, or remove a custom role from a group member [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393239) in GitLab 16.7.
 - Ability to create and remove an instance-wide custom role on GitLab Self-Managed [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141562) in GitLab 16.9.
 - Custom admin roles [introduced](https://gitlab.com/groups/gitlab-org/-/epics/15854) as an [experiment](../../policy/development_stages_support.md) in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `custom_ability_read_admin_dashboard`.
 - Ability to manage custom admin roles with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181346) in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `custom_admin_roles`. Disabled by default.
+- Custom admin roles [generally available](https://gitlab.com/groups/gitlab-org/-/epics/15957) in GitLab 18.3. Feature flag `custom_admin_roles` enabled by default.
 
 {{< /history >}}
 
@@ -52,7 +50,7 @@ The base role defines the minimum permissions available to the custom role. You 
 [auditor](../../administration/auditor_users.md) as a base role.
 
 Custom permissions can allow actions typically restricted to the Maintainer or Owner role. For
-example, a custom role with permission to manage CI/CD variables also allows manangement of CI/CD
+example, a custom role with permission to manage CI/CD variables also allows management of CI/CD
 variables added by other Maintainers or Owners.
 
 Custom member roles are available to groups and projects:
@@ -82,6 +80,12 @@ To create a custom member role:
 You can also [use the API](../../api/graphql/reference/_index.md#mutationmemberrolecreate) to create a custom role.
 
 ## Create a custom admin role
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 To create a custom admin role, you add [permissions](abilities.md) that allow actions typically
 limited to administrators. Each custom admin role can have one or more permissions.
@@ -197,11 +201,17 @@ You can also [use the API](../../api/graphql/reference/_index.md#mutationmemberr
 
 ## Assign a custom admin role
 
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 You can assign or modify admin roles to users in your instance. You can do this for existing users or when you add a user to the [instance](../profile/account/create_accounts.md).
 
 Prerequisites:
 
-- You must be an administrator for the GitLab Self-Managed instance.
+- You must be an administrator for the GitLab instance.
 
 To assign a custom admin role to an existing user:
 

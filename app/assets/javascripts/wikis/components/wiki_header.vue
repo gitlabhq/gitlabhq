@@ -74,7 +74,7 @@ export default {
       return this.isPageTemplate ? this.$options.i18n.editTemplate : this.$options.i18n.editPage;
     },
     editTooltip() {
-      return `${this.editTooltipText} <kbd class='flat ml-1' aria-hidden=true>e</kbd>`;
+      return `${this.editTooltipText} <kbd class='flat gl-ml-2' aria-hidden=true>e</kbd>`;
     },
     subscribeItem() {
       return {
@@ -168,7 +168,7 @@ export default {
 
 <template>
   <div
-    class="wiki-page-header has-sidebar-toggle detail-page-header border-bottom-0 gl-flex gl-flex-wrap !gl-pt-0"
+    class="js-wiki-page-header wiki-page-header has-sidebar-toggle detail-page-header gl-flex gl-flex-wrap gl-border-b-0 !gl-pt-0"
   >
     <page-heading :heading="pageHeadingComputed" class="gl-w-full">
       <template v-if="!isEditingPath" #actions>
@@ -197,7 +197,8 @@ export default {
         <gl-button
           v-gl-tooltip.html
           icon="chevron-double-lg-left"
-          class="js-sidebar-wiki-toggle md:gl-hidden"
+          class="js-sidebar-wiki-toggle @sm/panel:gl-hidden"
+          :aria-label="__('Toggle sidebar')"
         />
         <wiki-more-dropdown />
       </template>

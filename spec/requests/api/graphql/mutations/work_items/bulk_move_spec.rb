@@ -9,7 +9,7 @@ RSpec.describe 'Bulk move work items', feature_category: :team_planning do
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:target_group) { create(:group) }
   let_it_be(:target_project) { create(:project, group: target_group) }
-  let_it_be(:developer) { create(:user, developer_of: group) }
+  let_it_be(:developer) { create(:user, :with_namespace, developer_of: group) }
   let_it_be_with_reload(:moveable_work_items) { create_list(:work_item, 2, :issue, project: project) }
   let_it_be(:task_work_item) { create(:work_item, :task, project: project) }
   let_it_be(:private_project) { create(:project, :private) }
@@ -69,7 +69,7 @@ RSpec.describe 'Bulk move work items', feature_category: :team_planning do
     it 'returns error message and do not move any work items' do
       post_graphql_mutation(mutation, current_user: current_user)
 
-      expect(mutation_response['errors']).to include("Unknown target namespace")
+      expect(mutation_response['errors']).to include("You do not have permission to move items to this namespace.")
       expect(mutation_response['movedWorkItemCount']).to be_nil
     end
   end
@@ -107,11 +107,22 @@ RSpec.describe 'Bulk move work items', feature_category: :team_planning do
   context 'when target namespace is a group' do
     let(:target_full_path) { target_group.full_path }
 
-    it 'returns error because groups cannot be move targets' do
+    context 'when source namespace is a project' do
+      it 'returns an error' do
+        post_graphql_mutation(mutation, current_user: current_user)
+        expect(mutation_response).to include('errors' => ['Cannot move work items from projects to groups.'])
+      end
+    end
+  end
+
+  context 'when target namespace is a user namespace' do
+    let(:target_full_path) { current_user.namespace.full_path }
+
+    it 'returns an error' do
       post_graphql_mutation(mutation, current_user: current_user)
 
-      expect(graphql_errors.first['message']).to eq(
-        'At this moment, it is only possible to move work items to projects.'
+      expect(mutation_response).to include(
+        'errors' => ['User namespaces are not supported as target namespaces.']
       )
     end
   end
@@ -195,9 +206,7 @@ RSpec.describe 'Bulk move work items', feature_category: :team_planning do
     it 'returns an error' do
       post_graphql_mutation(mutation, current_user: current_user)
 
-      expect(graphql_errors.first['message']).to eq(
-        'At this moment, it is only possible to move work items to projects.'
-      )
+      expect(graphql_errors.first['message']).to eq('Cannot find target namespace.')
     end
   end
 

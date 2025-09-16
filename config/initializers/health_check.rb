@@ -1,8 +1,19 @@
 # frozen_string_literal: true
 
 HealthCheck.setup do |config|
-  config.standard_checks = %w[database migrations cache]
-  config.full_checks = %w[database migrations cache]
+  config.standard_checks = %w[database all_migrations cache]
+  config.full_checks = %w[database all_migrations cache]
+
+  # In Rails 7.1+, `check_pending!` was deprecated in favor of `check_all_pending!`
+  # which loops through all DB connection pools.
+  # This isn't supported natively by the gem so we implement a custom check for this.
+  # See https://github.com/Purple-Devs/health_check/pull/148
+  config.add_custom_check('all_migrations') do
+    ActiveRecord::Migration.check_all_pending!
+    ''
+  rescue ActiveRecord::PendingMigrationError => ex
+    ex.message
+  end
 
   Gitlab.ee do
     config.add_custom_check('geo') do

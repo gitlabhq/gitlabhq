@@ -7,17 +7,33 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
 
   describe 'POST /oauth/token' do
     context 'with dynamic user scope', :aggregate_failures do
+      def expect_token_info_appended_to_logs
+        expect_next_instance_of(described_class) do |instance|
+          expect(instance).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
+            method.call(payload)
+
+            expect(payload[:metadata]).to have_key(:oauth_access_token_id)
+            expect(payload[:metadata][:oauth_access_token_application_id]).to eq(oauth_application.id)
+            expect(payload[:metadata][:oauth_access_token_scopes]).to eq(scopes)
+          end
+        end
+      end
+
       let_it_be(:user) { create(:user) }
       let_it_be(:scopes) { "api user:#{user.id}" }
       let_it_be(:oauth_application) { create(:oauth_application, owner: nil, scopes: "api user:*") }
       let_it_be(:oauth_access_grant) { create(:oauth_access_grant, scopes: scopes, application: oauth_application, redirect_uri: oauth_application.redirect_uri) }
 
       context 'when authorization code flow' do
+        let_it_be(:grant_type) { 'authorization_code' }
+
         it 'returns an access token with the dynamic scopes' do
+          expect_token_info_appended_to_logs
+
           post(
             '/oauth/token',
             params: {
-              grant_type: 'authorization_code',
+              grant_type: grant_type,
               client_secret: oauth_application.secret,
               client_id: oauth_application.uid,
               redirect_uri: oauth_application.redirect_uri,
@@ -31,13 +47,16 @@ RSpec.describe Oauth::TokensController, feature_category: :system_access do
       end
 
       context 'when refresh token flow' do
+        let_it_be(:grant_type) { 'refresh_token' }
         let_it_be(:oauth_token) { create(:oauth_access_token, application: oauth_application, scopes: scopes, use_refresh_token: true) }
 
         it 'returns an access token with the dynamic scopes' do
+          expect_token_info_appended_to_logs
+
           post(
             '/oauth/token',
             params: {
-              grant_type: 'refresh_token',
+              grant_type: grant_type,
               refresh_token: oauth_token.plaintext_refresh_token,
               client_secret: oauth_application.secret,
               client_id: oauth_application.uid,

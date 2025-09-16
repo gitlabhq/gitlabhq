@@ -19,7 +19,6 @@ Gitlab/FeatureFlagKeyDynamic:
     - 'ee/lib/gitlab/llm/chain/concerns/use_ai_gateway_agent_prompt.rb'
     - 'ee/lib/gitlab/llm/completions_factory.rb'
     - 'ee/lib/tasks/gitlab/nav/variant_generator.rb'
-    - 'ee/spec/graphql/resolvers/ai/user_available_features_resolver_spec.rb'
     - 'ee/spec/lib/gitlab/duo/developments/setup_spec.rb'
     - 'ee/spec/models/gitlab_subscriptions/features_spec.rb'
     - 'lib/feature/gitaly.rb'

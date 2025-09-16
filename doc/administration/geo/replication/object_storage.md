@@ -56,7 +56,7 @@ In case of issues, avoid manually deleting individual files as that can lead to 
 
 {{< /alert >}}
 
-**Secondary** sites can replicate files stored on the **primary** site regardless of
+**Secondary** sites can replicate files stored by the **primary** site regardless of
 whether they are stored on the local file system or in object storage.
 
 To enable GitLab replication:
@@ -83,6 +83,10 @@ configure the **secondary** in a few ways:
   replication.
 - Use a separate object store and enable the **Allow this secondary node to replicate
   content on Object Storage** setting.
+
+If the **Allow this secondary node to replicate content on Object Storage** setting
+is disabled, and if you have migrated all your files from local storage to object storage,
+then many **Admin** > **Geo** > **Sites** progress bars display **Nothing to synchronize**.
 
 {{< alert type="warning" >}}
 

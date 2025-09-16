@@ -5,7 +5,7 @@
   count: @registrations.length,
   description: _('Set up a WebAuthn device to enable two-factor authentication (2FA).'),
   form_options: { class: has_errors ? '' : 'gl-hidden js-toggle-content' },
-  options: { class: 'js-toggle-container js-token-card' }) do |c|
+  options: { class: 'gl-mt-5 js-toggle-container js-token-card' }) do |c|
   - c.with_actions do
     = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-toggle-button js-toggle-content', data: { testid: 'register-webauthn-button' } }) do
       = _('Register device')

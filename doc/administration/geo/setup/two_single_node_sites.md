@@ -75,6 +75,8 @@ When using [Docker Compose](../../../install/docker/installation.md#install-gitl
 
    This command uses the `external_url` defined in `/etc/gitlab/gitlab.rb`.
 
+1. Copy the configuration example from [Complete secondary site](#complete-secondary-site).
+
 1. Create a password for the `gitlab` database user and update Rail to use the new password.
 
    {{< alert type="note" >}}
@@ -375,7 +377,9 @@ When using [Docker Compose](../../../install/docker/installation.md#install-gitl
 
    Be sure to replace the IP addresses with addresses appropriate to your network configuration.
 
-1. To apply the changes, reconfigure GitLab:
+1. Copy the configuration example from [Complete secondary site](#complete-secondary-site).
+
+1. To apply the changes, save the file and reconfigure GitLab:
 
    ```shell
    gitlab-ctl reconfigure
@@ -699,6 +703,60 @@ You can monitor the synchronization process on each Geo site from the primary
 site **Geo Sites** dashboard in your browser.
 
 ![The Geo Sites dashboard displaying the synchronization status.](img/geo_dashboard_v14_0.png)
+
+## Example configurations
+
+### Complete secondary site
+
+<!-- If you update this configuration example, also update the example in two_single_node_external_services.md -->
+
+This complete `gitlab.rb` configuration example is for a Geo secondary site:
+
+```ruby
+# Secondary site configuration example
+
+## Geo Secondary role
+roles(['geo_secondary_role'])
+
+## The unique identifier for the Geo site
+gitlab_rails['geo_node_name'] = 'location-2'
+
+## External URL (can be the same as primary for unified URL setup)
+external_url 'https://gitlab.example.com'
+
+## Database configuration
+gitlab_rails['db_password'] = 'your_database_password_here'
+postgresql['sql_user_password'] = 'md5_hash_of_your_database_password'
+postgresql['sql_replication_password'] = 'md5_hash_of_your_replication_password'
+
+## PostgreSQL network configuration
+postgresql['listen_address'] = '10.0.2.10'  # Secondary site IP
+postgresql['md5_auth_cidr_addresses'] = ['10.0.2.10/32']
+
+## SSL/TLS configuration
+nginx['listen_port'] = 80
+nginx['listen_https'] = false
+letsencrypt['enable'] = false
+
+## Object Storage configuration (must match primary)
+gitlab_rails['object_store']['enabled'] = true
+gitlab_rails['object_store']['connection'] = {
+  'provider' => 'AWS',
+  'region' => 'us-east-1',
+  'aws_access_key_id' => 'your_access_key',
+  'aws_secret_access_key' => 'your_secret_key'
+}
+
+## Monitoring configuration (optional)
+node_exporter['listen_address'] = '0.0.0.0:9100'
+gitlab_workhorse['prometheus_listen_addr'] = '0.0.0.0:9229'
+gitlab_rails['monitoring_whitelist'] = ['127.0.0.0/8', '10.0.0.0/8']
+
+## Gitaly configuration
+gitaly['configuration'] = {
+  prometheus_listen_addr: '0.0.0.0:9236',
+}
+```
 
 ## Related topics
 

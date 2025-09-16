@@ -23,6 +23,7 @@ Merge requests containing changes to Markdown (`.md`) files run these CI/CD jobs
 - `docs-lint redirects`: Checks for deleted or renamed documentation files without [redirects](../redirects.md).
 - `docs code_quality` and `code_quality cache`: Runs [code quality](../../../ci/testing/code_quality.md)
   to add Vale [warnings and errors into the MR changes tab (diff view)](../../../ci/testing/code_quality.md#merge-request-changes-view).
+- `docs hugo_build`: Runs a partial build of the Hugo website using [test-specific configuration](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/config/test/hugo.yaml?ref_type=heads) to validate [shortcodes](../styleguide/_index.md#shortcodes) and filenames.
 
 A few files are generated from scripts. A CI/CD job fails when either the source code files
 or the documentation files are updated without following the correct process:

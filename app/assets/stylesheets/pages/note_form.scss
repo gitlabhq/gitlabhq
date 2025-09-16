@@ -1,3 +1,4 @@
+@use "sass:map";
 /**
  * Note Form
  */
@@ -44,7 +45,7 @@
 .gfm-form .note-textarea, .md .ProseMirror {
   overflow-y: auto !important;
   resize: vertical !important;
-  max-height: unset !important;
+  max-height: 70vh !important;
 }
 
 .note-image-attach {
@@ -237,12 +238,12 @@ table {
 }
 
 .notes.notes-form > li.timeline-entry {
-  @include notes-media('max', map-get($grid-breakpoints, md) - 1) {
+  @include notes-media('max', map.get($grid-breakpoints, md) - 1) {
     padding: 0;
   }
 
   .timeline-content {
-    @include notes-media('max', map-get($grid-breakpoints, md) - 1) {
+    @include notes-media('max', map.get($grid-breakpoints, md) - 1) {
       margin: 0;
     }
   }

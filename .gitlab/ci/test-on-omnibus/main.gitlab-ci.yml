@@ -176,6 +176,7 @@ group-saml:
   variables:
     QA_SCENARIO: Test::Integration::GroupSAML
   rules:
+    - !reference [.rules:test:omnibus-base, rules]
     - if: $QA_SUITES =~ /Test::Integration::GroupSAML/
 
 oauth:

@@ -54,6 +54,20 @@ const getDefaultProps = () => ({
       name: 'flag without description',
       description: '',
     },
+    {
+      id: 3,
+      iid: 3,
+      active: true,
+      name: 'flag with invalid strategy',
+      scopes: [],
+      strategies: [
+        {
+          name: ROLLOUT_STRATEGY_GITLAB_USER_LIST,
+          parameters: {},
+          scopes: [{ environment_scope: '*' }],
+        },
+      ],
+    },
   ],
 });
 
@@ -125,6 +139,9 @@ describe('Feature flag table', () => {
     it('should render an actions column', () => {
       expect(wrapper.findByTestId('flags-table-action-buttons').exists()).toBe(true);
       expect(wrapper.findByTestId('feature-flag-delete-button').exists()).toBe(true);
+      expect(wrapper.findByTestId('feature-flag-delete-button').attributes('aria-label')).toBe(
+        'Delete flag name',
+      );
       expect(wrapper.findByTestId('feature-flag-edit-button').exists()).toBe(true);
       expect(wrapper.findByTestId('feature-flag-edit-button').attributes()).toMatchObject({
         'aria-label': 'Edit flag name',
@@ -172,10 +189,10 @@ describe('Feature flag table', () => {
       spy = mockTracking('_category_', toggle.element, jest.spyOn);
     });
 
-    it('should have a toggle', () => {
+    it('should have a toggle with descriptive label', () => {
       expect(toggle.exists()).toBe(true);
       expect(toggle.props()).toMatchObject({
-        label: FeatureFlagsTable.i18n.toggleLabel,
+        label: 'flag name feature flag status',
         value: true,
       });
     });
@@ -220,7 +237,11 @@ describe('Feature flag table', () => {
   });
 
   it('shows the name of a user list for user list', () => {
-    expect(labels.at(3).text()).toContain('User List - test list');
+    expect(labels.at(3).text()).toBe('User List - test list: All Environments');
+  });
+
+  it('shows the empty name of a user list if it is not provided', () => {
+    expect(labels.at(4).text()).toBe('User List: All Environments');
   });
 
   it('renders a feature flag without an iid', () => {

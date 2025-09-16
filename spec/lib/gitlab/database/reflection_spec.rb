@@ -257,7 +257,7 @@ RSpec.describe Gitlab::Database::Reflection, feature_category: :database do
     end
 
     it "returns false if the database doesn't exist" do
-      expect(database.model.connection.schema_cache)
+      expect(database.model.connection)
         .to receive(:database_version)
         .and_raise(ActiveRecord::NoDatabaseError)
 

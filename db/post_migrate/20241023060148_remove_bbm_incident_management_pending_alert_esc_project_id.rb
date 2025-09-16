@@ -3,7 +3,7 @@
 class RemoveBbmIncidentManagementPendingAlertEscProjectId < Gitlab::Database::Migration[2.2]
   milestone '17.6'
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   MIGRATION = "BackfillIncidentManagementPendingAlertEscalationsProjectId"
 

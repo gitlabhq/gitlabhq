@@ -15,8 +15,7 @@ module AuthorizedProjectUpdate
     deduplicate :until_executing, including_scheduled: true
 
     def perform(user_id)
-      sessions = [::ApplicationRecord, ::Ci::ApplicationRecord]
-      ::Gitlab::Database::LoadBalancing::SessionMap.use_replica_if_available(sessions) do
+      ::Gitlab::Database::LoadBalancing::SessionMap.use_replica_if_available do
         user = User.find_by_id(user_id)
 
         if user && project_authorizations_needs_refresh?(user)

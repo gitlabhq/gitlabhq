@@ -82,6 +82,11 @@ export default {
     blocksMerge: { default: false },
   },
   props: {
+    canResolveDiscussion: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isImported: {
       type: Boolean,
       required: false,
@@ -169,12 +174,12 @@ export default {
 
 <template>
   <gl-intersection-observer
-    class="gl-relative -gl-top-5"
+    class="merge-request-sticky-header-wrapper gl-relative -gl-top-5"
     @appear="setStickyHeaderVisible(false)"
     @disappear="setStickyHeaderVisible(true)"
   >
     <div
-      class="issue-sticky-header merge-request-sticky-header gl-border-b gl-fixed gl-hidden gl-flex-col gl-justify-end gl-bg-default md:gl-flex"
+      class="issue-sticky-header merge-request-sticky-header gl-border-b gl-fixed gl-hidden gl-flex-col gl-justify-end gl-bg-default @md/panel:gl-flex"
       :class="{ 'gl-invisible': !isStickyHeaderVisible }"
     >
       <div
@@ -191,7 +196,7 @@ export default {
           <a
             v-safe-html:[$options.safeHtmlConfig]="titleHtml"
             href="#top"
-            class="gl-my-0 gl-ml-1 gl-mr-2 gl-hidden gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-font-bold gl-text-default lg:gl-block"
+            class="gl-my-0 gl-ml-1 gl-mr-2 gl-hidden gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-font-bold gl-text-default @lg/panel:gl-block"
           ></a>
           <div class="gl-flex gl-items-center">
             <gl-sprintf :message="__('%{source} %{copyButton} into %{target} %{targetCopyButton}')">
@@ -257,7 +262,7 @@ export default {
             >
               <gl-link :href="tab[2]" :data-action="tab[0]" class="!gl-py-4" @click="visitTab">
                 {{ tab[1] }}
-                <gl-badge variant="muted">
+                <gl-badge variant="neutral">
                   <template v-if="index === 0 && discussionCounter !== 0">
                     {{ discussionCounter }}
                   </template>
@@ -268,8 +273,12 @@ export default {
               </gl-link>
             </li>
           </ul>
-          <div class="gl-hidden gl-items-center gl-gap-3 lg:gl-flex">
-            <discussion-counter :blocks-merge="blocksMerge" hide-options />
+          <div class="gl-hidden gl-items-center gl-gap-3 @lg/panel:gl-flex">
+            <discussion-counter
+              :blocks-merge="blocksMerge"
+              :can-resolve-discussion="canResolveDiscussion"
+              hide-options
+            />
             <template v-if="isSignedIn">
               <todo-widget
                 :issuable-id="issuableId"

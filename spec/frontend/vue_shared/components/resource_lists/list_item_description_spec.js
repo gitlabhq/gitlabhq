@@ -78,7 +78,7 @@ describe('ListItemDescription', () => {
         props: {
           resource: {
             ...project,
-            markedForDeletionOn: '2024-12-24',
+            markedForDeletion: true,
             permanentDeletionDate: '2024-12-31',
           },
         },

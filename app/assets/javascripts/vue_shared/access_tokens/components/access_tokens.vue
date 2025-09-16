@@ -158,7 +158,7 @@ export default {
       :scopes="tokenScopes"
     />
     <access-token-statistics />
-    <div class="gl-my-5 gl-flex gl-flex-col gl-gap-3 md:gl-flex-row">
+    <div class="gl-my-5 gl-flex gl-flex-col gl-gap-3 @md/panel:gl-flex-row">
       <gl-filtered-search
         class="gl-min-w-0 gl-grow"
         :value="filters"

@@ -58,7 +58,7 @@ RSpec.describe Admin::ApplicationsController do
 
     context 'when renew fails' do
       before do
-        allow_next_found_instance_of(Doorkeeper::Application) do |application|
+        allow_next_found_instance_of(Authn::OauthApplication) do |application|
           allow(application).to receive(:save).and_return(false)
         end
       end
@@ -73,10 +73,10 @@ RSpec.describe Admin::ApplicationsController do
       create_params = attributes_for(:application, trusted: true, confidential: false, scopes: ['api'])
 
       expect do
-        post :create, params: { doorkeeper_application: create_params }
-      end.to change { Doorkeeper::Application.count }.by(1)
+        post :create, params: { authn_oauth_application: create_params }
+      end.to change { Authn::OauthApplication.count }.by(1)
 
-      application = Doorkeeper::Application.last
+      application = Authn::OauthApplication.last
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template :show
@@ -85,8 +85,8 @@ RSpec.describe Admin::ApplicationsController do
 
     it 'renders the application form on errors' do
       expect do
-        post :create, params: { doorkeeper_application: attributes_for(:application).merge(redirect_uri: nil) }
-      end.not_to change { Doorkeeper::Application.count }
+        post :create, params: { authn_oauth_application: attributes_for(:application).merge(redirect_uri: nil) }
+      end.not_to change { Authn::OauthApplication.count }
 
       expect(response).to render_template :new
       expect(assigns[:scopes]).to be_kind_of(Doorkeeper::OAuth::Scopes)
@@ -97,10 +97,10 @@ RSpec.describe Admin::ApplicationsController do
         create_params = attributes_for(:application, confidential: true, scopes: ['read_user'])
 
         expect do
-          post :create, params: { doorkeeper_application: create_params }
-        end.to change { Doorkeeper::Application.count }.by(1)
+          post :create, params: { authn_oauth_application: create_params }
+        end.to change { Authn::OauthApplication.count }.by(1)
 
-        application = Doorkeeper::Application.last
+        application = Authn::OauthApplication.last
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template :show
@@ -113,8 +113,8 @@ RSpec.describe Admin::ApplicationsController do
         create_params = attributes_for(:application, trusted: true, confidential: false)
 
         expect do
-          post :create, params: { doorkeeper_application: create_params }
-        end.not_to change { Doorkeeper::Application.count }
+          post :create, params: { authn_oauth_application: create_params }
+        end.not_to change { Authn::OauthApplication.count }
 
         expect(response).to render_template :new
       end
@@ -125,7 +125,7 @@ RSpec.describe Admin::ApplicationsController do
     it 'updates the application' do
       doorkeeper_params = { redirect_uri: 'http://example.com/', trusted: true, confidential: false }
 
-      patch :update, params: { id: application.id, doorkeeper_application: doorkeeper_params }
+      patch :update, params: { id: application.id, authn_oauth_application: doorkeeper_params }
 
       application.reload
 
@@ -135,7 +135,7 @@ RSpec.describe Admin::ApplicationsController do
     end
 
     it 'renders the application form on errors' do
-      patch :update, params: { id: application.id, doorkeeper_application: { redirect_uri: nil } }
+      patch :update, params: { id: application.id, authn_oauth_application: { redirect_uri: nil } }
 
       expect(response).to render_template :edit
       expect(assigns[:scopes]).to be_kind_of(Doorkeeper::OAuth::Scopes)
@@ -145,7 +145,7 @@ RSpec.describe Admin::ApplicationsController do
       it 'successfully sets the application to confidential' do
         doorkeeper_params = { confidential: true }
 
-        patch :update, params: { id: application.id, doorkeeper_application: doorkeeper_params }
+        patch :update, params: { id: application.id, authn_oauth_application: doorkeeper_params }
 
         expect(response).to redirect_to(admin_application_path(application))
         expect(application).to be_confidential

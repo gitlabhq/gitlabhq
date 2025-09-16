@@ -4,6 +4,14 @@ require 'flipper/adapters/active_record'
 require 'flipper/adapters/active_support_cache_store'
 
 module Feature
+  SUPPORTED_MODELS = %w[
+    User
+    Project
+    Namespace
+    Ci::Runner
+    Organizations::Organization
+  ].freeze
+
   class FlipperRecord < ActiveRecord::Base # rubocop:disable Rails/ApplicationRecord -- This class perfectly replaces
     # Flipper::Adapters::ActiveRecord::Model, which inherits ActiveRecord::Base
     include DatabaseReflection
@@ -412,12 +420,30 @@ module Feature
     def check_feature_flags_definition!(key, thing, type)
       return unless check_feature_flags_definition?
 
-      if thing && !thing.respond_to?(:flipper_id) && !thing.is_a?(Flipper::Types::Group)
+      validate_thing!(key, thing)
+      Feature::Definition.valid_usage!(key, type: type)
+    end
+
+    def validate_thing!(key, thing)
+      return unless thing
+
+      # All models have a flipper_id defined by the flipper ActiveRecord adapter,
+      # so we need additional validation to ensure an unsupported model is not used accidentally.
+      if thing.is_a?(ActiveRecord::Base) && !supported_models.any? { |model| thing.is_a?(model) }
         raise InvalidFeatureFlagError,
-          "The thing '#{thing.class.name}' for feature flag '#{key}' needs to include `FeatureGate` or implement `flipper_id`"
+          "'#{thing.class.name}' is not a valid feature flag actor but was used for feature flag '#{key}'."
       end
 
-      Feature::Definition.valid_usage!(key, type: type)
+      return if thing.is_a?(Flipper::Types::Group) || thing.respond_to?(:flipper_id)
+
+      raise InvalidFeatureFlagError,
+        "The thing '#{thing.class.name}' for feature flag '#{key}' needs to include `FeatureGate` or implement `flipper_id`"
+    end
+
+    def supported_models
+      # Feature is loaded before the Rails environment is initialized
+      # so we need to constantize these at runtime.
+      @supported_models ||= SUPPORTED_MODELS.map(&:constantize)
     end
 
     def l1_cache_backend

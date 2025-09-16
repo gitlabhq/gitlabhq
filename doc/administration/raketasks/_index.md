@@ -1,6 +1,6 @@
 ---
 stage: GitLab Delivery
-group: Self Managed
+group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Rake tasks
 ---
@@ -38,6 +38,7 @@ The following Rake tasks are available for use with GitLab:
 | [Import large project exports](project_import_export.md#import-large-projects)                        | Import large GitLab [project exports](../../user/project/settings/import_export.md). |
 | [Incoming email](incoming_email.md)                                                                   | Incoming email-related tasks. |
 | [Integrity checks](check.md)                                                                          | Check the integrity of repositories, files, LDAP, and more. |
+| [Keep-around references](keep_around.md)                                                              | Find all orphaned keep-around references for a project. |
 | [LDAP maintenance](ldap.md)                                                                           | [LDAP](../auth/ldap/_index.md)-related tasks. |
 | [Password](password.md)                                                                               | Password management tasks. |
 | [Praefect Rake tasks](praefect.md)                                                                    | [Praefect](../gitaly/praefect/_index.md)-related tasks. |

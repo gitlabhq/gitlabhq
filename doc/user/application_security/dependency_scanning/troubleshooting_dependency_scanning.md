@@ -375,6 +375,6 @@ With the rollout of [Dependency Scanning by using SBOM](dependency_scanning_sbom
 
 As we move forward with the rollout and ultimately replace the existing Gemnasium analyzer, the `GitLab SBoM Vulnerability Scanner` will be the only expected value for GitLab built-in Dependency Scanning feature.
 
-## Dependency List for project not being updated based on latest SBOM
+## Dependency list for project not being updated based on latest SBOM
 
 When a pipeline has a failing job that would generate an SBOM, the `DeleteNotPresentOccurrencesService` does not execute, which prevents the dependency list from being changed or updated. This can occur even if there are other successful jobs that upload an SBOM, and the pipeline overall is successful. This is designed to prevent accidentally removing dependencies from the dependency list when related security scanning jobs fail. If the project dependency list is not updating as expected, check for any SBOM-related jobs that may have failed in the pipeline, and fix them or remove them.

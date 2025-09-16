@@ -5,7 +5,7 @@ module Gitlab
     class BumpSequences
       SEQUENCE_NAME_MATCHER = /nextval\('([a-z_]+)'::regclass\)/
 
-      # gitlab_schema: can be 'gitlab_main', 'gitlab_ci', 'gitlab_main_cell', 'gitlab_shared'
+      # gitlab_schema: can be 'gitlab_main', 'gitlab_ci', 'gitlab_main_org', 'gitlab_shared'
       # increase_by: positive number, to increase the sequence by
       # base_model: is to choose which connection to use to query the tables
       def initialize(gitlab_schema, increase_by, base_model = ApplicationRecord)

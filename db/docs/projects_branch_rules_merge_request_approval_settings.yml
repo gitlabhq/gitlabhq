@@ -7,7 +7,7 @@ feature_categories:
 description: Contains merge request approval settings for a protected branch
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183679
 milestone: '17.10'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

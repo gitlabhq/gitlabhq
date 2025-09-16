@@ -124,6 +124,7 @@ RSpec.describe SemanticVersionable, feature_category: :mlops do
     let(:first_alpha1) { model_class.create!(semver: '1.0.1-alpha1') }
     let(:first_alpha10) { model_class.create!(semver: '1.0.1-alpha10') }
     let(:first_alpha_dot_10) { model_class.create!(semver: '1.0.1-alpha.10') }
+    let(:prerelease) { model_class.create!(semver: '1.0.1-0a3f617f4303ed7b10dc603243452c5fb1d8e69b') }
 
     describe '.order_by_semantic_version_asc' do
       it 'orders the versions by semantic order ascending' do
@@ -140,7 +141,7 @@ RSpec.describe SemanticVersionable, feature_category: :mlops do
         before do
           [first_release, second_release, patch, first_beta, first_beta1, first_beta2, first_beta10,
             first_beta12, first_alpha, first_alpha1, first_alpha2, first_alpha10, first_alpha_dot_10,
-            second_rc].each(&:reload)
+            second_rc, prerelease].each(&:reload)
         end
 
         it 'orders release versions before prerelease versions' do
@@ -172,7 +173,8 @@ RSpec.describe SemanticVersionable, feature_category: :mlops do
             first_alpha10,        # 1.0.1-alpha10
             first_alpha2,         # 1.0.1-alpha2
             first_alpha1,         # 1.0.1-alpha1
-            first_alpha           # 1.0.1-alpha
+            first_alpha,          # 1.0.1-alpha
+            prerelease            # 1.0.1-0a3f617f4303ed7b10dc603243452c5fb1d8e69b
           ]
 
           expect(model_class.order_by_semantic_version_desc).to eq(expected_order)

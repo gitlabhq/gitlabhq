@@ -3,6 +3,7 @@ stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Dependency proxy for container images
+description: To reduce data transfer from upstream container images, configure the GitLab Dependency Proxy for your container images.
 ---
 
 {{< details >}}

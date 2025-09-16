@@ -34,7 +34,7 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :organizati
 
     let_it_be(:organizations) { create_list(:organization, 3) }
     let_it_be(:organization) { organizations.first }
-    let_it_be_with_reload(:current_user) { create(:user, organization: organization, organizations: []) }
+    let_it_be_with_reload(:current_user) { create(:admin, organization: organization, organizations: []) }
     let_it_be(:user) { create(:user, organization: organization, organizations: []) }
     let_it_be(:groups) { create_list(:group, 3, organization: organization) }
 
@@ -99,6 +99,12 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :organizati
     end
 
     describe 'organization groups' do
+      let_it_be_with_reload(:current_user) { create(:user, organization: organization, organizations: []) }
+
+      before_all do
+        group.add_owner(current_user)
+      end
+
       base_input_path = 'organizations/shared/graphql/queries/'
       base_output_path = 'graphql/organizations/'
       query_name = 'groups.query.graphql'

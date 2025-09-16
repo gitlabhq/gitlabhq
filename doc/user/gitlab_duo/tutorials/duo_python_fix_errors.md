@@ -470,7 +470,7 @@ Now, you will use Chat to help implement validation rules for the `Article` clas
    a non-negative integer, and handle any validation errors.
    ```
 
-1. Review the response. Consider asking follow-up questions to iterate the reponse:
+1. Review the response. Consider asking follow-up questions to iterate the response:
 
    - Ask Chat to explain a specific part of the validation implementation:
 

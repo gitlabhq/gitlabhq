@@ -591,6 +591,7 @@ export const mockWorkItemReferenceQueryResponse = {
           title: 'Objective _linked_ items 104',
           titleHtml: 'Objective <em>linked</em> items 104',
           confidential: false,
+          webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_items/1',
           namespace: {
             id: 'gid://gitlab/Group/1',
             fullPath: 'test-project-path',
@@ -1911,6 +1912,9 @@ export const workItemResponseFactory = ({
               __typename: 'WorkItemWidgetTimeTracking',
               type: 'TIME_TRACKING',
               timeEstimate: 5,
+              humanReadableAttributes: {
+                timeEstimate: '',
+              },
               timelogs: {
                 nodes: [
                   {
@@ -2488,6 +2492,9 @@ export const workItemChangeTypeWidgets = {
   TIME_TRACKING: {
     type: 'TIME_TRACKING',
     timeEstimate: 10,
+    humanReadableAttributes: {
+      timeEstimate: '',
+    },
     timelogs: {
       nodes: [
         {
@@ -3642,6 +3649,7 @@ export const availableObjectivesResponse = {
             iid: '122',
             title: 'Objective 101',
             confidential: false,
+            webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/1',
             namespace: {
               id: 'gid://gitlab/Group/1',
               fullPath: 'test-project-path',
@@ -3660,6 +3668,7 @@ export const availableObjectivesResponse = {
             iid: '118',
             title: 'Objective 103',
             confidential: false,
+            webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/1',
             namespace: {
               id: 'gid://gitlab/Group/1',
               fullPath: 'test-project-path',
@@ -3678,6 +3687,7 @@ export const availableObjectivesResponse = {
             iid: '117',
             title: 'Objective 102',
             confidential: false,
+            webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/1',
             namespace: {
               id: 'gid://gitlab/Group/1',
               fullPath: 'test-project-path',
@@ -3709,6 +3719,7 @@ export const searchedObjectiveResponse = {
             iid: '122',
             title: 'Objective 101',
             confidential: false,
+            webUrl: 'http://127.0.0.1:3000/gitlab-org/gitlab-test/-/work_item/1',
             namespace: {
               id: 'gid://gitlab/Group/1',
               fullPath: 'test-project-path',
@@ -5559,6 +5570,7 @@ export const groupEpicsWithMilestonesQueryResponse = {
             iid: '23',
             title: 'Epic 1',
             confidential: false,
+            webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/work_items/1',
             widgets: [
               {
                 __typename: 'WorkItemWidgetMilestone',
@@ -5578,6 +5590,7 @@ export const groupEpicsWithMilestonesQueryResponse = {
             iid: '24',
             title: 'Epic 2',
             confidential: false,
+            webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/work_items/2',
             widgets: [
               {
                 __typename: 'WorkItemWidgetMilestone',
@@ -5716,6 +5729,119 @@ export const workItemsQueryResponse = {
                   ],
                 },
                 type: 'LABELS',
+              },
+            ],
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/5',
+              name: 'Issue',
+            },
+          },
+        ],
+      },
+    },
+  },
+};
+
+export const workItemsWithSubChildQueryResponse = {
+  data: {
+    namespace: {
+      id: 'gid://gitlab/Group/3',
+      __typename: 'Group',
+      name: 'Test',
+      workItems: {
+        pageInfo: {
+          hasNextPage: true,
+          hasPreviousPage: false,
+          startCursor: 'startCursor',
+          endCursor: 'endCursor',
+          __typename: 'PageInfo',
+        },
+        nodes: [
+          {
+            id: 'gid://gitlab/WorkItem/103',
+            iid: '103',
+            author: {
+              id: 'gid://gitlab/User/9',
+              avatarUrl: 'author/avatar/url',
+              name: 'Arthur',
+              username: 'arthur',
+              webUrl: 'author/web/url',
+              webPath: 'author/web/url',
+            },
+            closedAt: '',
+            confidential: true,
+            createdAt: '2020-01-23T12:34:56Z',
+            hidden: true,
+            namespace: {
+              id: 'full-path-epic-id',
+              fullPath: 'full-path',
+            },
+            reference: 'javascriptjs/js#103',
+            state: 'OPEN',
+            title: 'a group level work item 103',
+            updatedAt: '',
+            webUrl: 'web/url',
+            userDiscussionsCount: 0,
+            widgets: [
+              {
+                type: 'HIERARCHY',
+                hasChildren: false,
+                parent: {
+                  id: 'gid://gitlab/WorkItem/102',
+                },
+                hasParent: true,
+                rolledUpCountsByType: [],
+                children: {
+                  nodes: [],
+                  __typename: 'WorkItemConnection',
+                },
+                __typename: 'WorkItemWidgetHierarchy',
+              },
+            ],
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/5',
+              name: 'Issue',
+            },
+          },
+          {
+            id: 'gid://gitlab/WorkItem/102',
+            iid: '102',
+            author: {
+              id: 'gid://gitlab/User/9',
+              avatarUrl: 'author/avatar/url',
+              name: 'Arthur',
+              username: 'arthur',
+              webUrl: 'author/web/url',
+              webPath: 'author/web/url',
+            },
+            closedAt: '',
+            confidential: true,
+            createdAt: '2020-01-23T12:34:56Z',
+            hidden: true,
+            namespace: {
+              id: 'full-path-epic-id',
+              fullPath: 'full-path',
+            },
+            reference: 'javascriptjs/js#102',
+            state: 'OPEN',
+            title: 'a group level work item 102',
+            updatedAt: '',
+            webUrl: 'web/url',
+            userDiscussionsCount: 0,
+            widgets: [
+              {
+                type: 'HIERARCHY',
+                hasChildren: false,
+                parent: {
+                  id: 'gid://gitlab/WorkItem/1',
+                },
+                hasParent: true,
+                rolledUpCountsByType: [],
+                children: {
+                  nodes: [],
+                  __typename: 'WorkItemConnection',
+                },
+                __typename: 'WorkItemWidgetHierarchy',
               },
             ],
             workItemType: {
@@ -6528,6 +6654,9 @@ export const createWorkItemQueryResponse = (widgets = []) => ({
           {
             type: 'TIME_TRACKING',
             timeEstimate: 0,
+            humanReadableAttributes: {
+              timeEstimate: '',
+            },
             timelogs: {
               nodes: [],
               __typename: 'WorkItemTimelogConnection',
@@ -7191,6 +7320,9 @@ export const mockCreateWorkItemDraftData = {
           __typename: 'WorkItemWidgetTimeTracking',
           type: 'TIME_TRACKING',
           timeEstimate: 0,
+          humanReadableAttributes: {
+            timeEstimate: '',
+          },
           timelogs: { __typename: 'WorkItemTimelogConnection', nodes: [] },
           totalTimeSpent: 0,
         },
@@ -7406,6 +7538,9 @@ export const restoredDraftDataWidgets = [
   {
     type: 'TIME_TRACKING',
     timeEstimate: 0,
+    humanReadableAttributes: {
+      timeEstimate: '',
+    },
     timelogs: { nodes: [], __typename: 'WorkItemTimelogConnection' },
     totalTimeSpent: 0,
     __typename: 'WorkItemWidgetTimeTracking',
@@ -7496,6 +7631,9 @@ export const restoredDraftDataWidgetsEmpty = [
   {
     type: 'TIME_TRACKING',
     timeEstimate: 0,
+    humanReadableAttributes: {
+      timeEstimate: '',
+    },
     timelogs: {
       nodes: [],
       __typename: 'WorkItemTimelogConnection',
@@ -7888,6 +8026,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                 allowedStatuses: [
                   {
                     id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
+                    category: 'to_do',
                     name: 'To do',
                     description: null,
                     iconName: 'status-waiting',
@@ -7897,6 +8036,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                   },
                   {
                     id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/2',
+                    category: 'in_progress',
                     name: 'In progress',
                     description: null,
                     iconName: 'status-running',
@@ -7906,6 +8046,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                   },
                   {
                     id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/3',
+                    category: 'done',
                     name: 'Done',
                     description: null,
                     iconName: 'status-success',
@@ -7915,6 +8056,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                   },
                   {
                     id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/4',
+                    category: 'canceled',
                     name: "Won't do",
                     description: null,
                     iconName: 'status-cancelled',
@@ -7924,6 +8066,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                   },
                   {
                     id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/5',
+                    category: 'canceled',
                     name: 'Duplicate',
                     description: null,
                     iconName: 'status-cancelled',
@@ -7934,6 +8077,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                 ],
                 defaultOpenStatus: {
                   id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
+                  category: 'to_do',
                   name: 'To do',
                   description: null,
                   iconName: 'status-waiting',
@@ -8358,6 +8502,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                 allowedStatuses: [
                   {
                     id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
+                    category: 'to_do',
                     name: 'To do',
                     description: null,
                     iconName: 'status-waiting',
@@ -8366,8 +8511,9 @@ export const namespaceWorkItemTypesQueryResponse = {
                     __typename: 'WorkItemStatus',
                   },
                   {
-                    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/2',
-                    name: 'In progress',
+                    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/7',
+                    category: 'in_progress',
+                    name: 'In dev',
                     description: null,
                     iconName: 'status-running',
                     color: '#1f75cb',
@@ -8375,35 +8521,29 @@ export const namespaceWorkItemTypesQueryResponse = {
                     __typename: 'WorkItemStatus',
                   },
                   {
-                    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/3',
-                    name: 'Done',
+                    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/8',
+                    category: 'in_progress',
+                    name: 'In review',
+                    description: null,
+                    iconName: 'status-running',
+                    color: '#1f75cb',
+                    position: 0,
+                    __typename: 'WorkItemStatus',
+                  },
+                  {
+                    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/9',
+                    category: 'done',
+                    name: 'Complete',
                     description: null,
                     iconName: 'status-success',
                     color: '#108548',
                     position: 0,
                     __typename: 'WorkItemStatus',
                   },
-                  {
-                    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/4',
-                    name: "Won't do",
-                    description: null,
-                    iconName: 'status-cancelled',
-                    color: '#DD2B0E',
-                    position: 0,
-                    __typename: 'WorkItemStatus',
-                  },
-                  {
-                    id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/5',
-                    name: 'Duplicate',
-                    description: null,
-                    iconName: 'status-cancelled',
-                    color: '#DD2B0E',
-                    position: 10,
-                    __typename: 'WorkItemStatus',
-                  },
                 ],
                 defaultOpenStatus: {
                   id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
+                  category: 'to_do',
                   name: 'To do',
                   description: null,
                   iconName: 'status-waiting',
@@ -8984,11 +9124,57 @@ export const namespacePathsQueryResponse = {
     namespace: {
       id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
       markdownPaths: {
-        markdownPreviewPath: '/flightjs/Flight/-/preview_markdown?target_type=WorkItem',
+        autocompleteSourcesPath: {
+          members:
+            '/flightjs/Flight/-/autocomplete_sources/members?type=WorkItem&work_item_type_id=1',
+          issues:
+            '/flightjs/Flight/-/autocomplete_sources/issues?type=WorkItem&work_item_type_id=1',
+          mergeRequests:
+            '/flightjs/Flight/-/autocomplete_sources/merge_requests?type=WorkItem&work_item_type_id=1',
+          labels:
+            '/flightjs/Flight/-/autocomplete_sources/labels?type=WorkItem&work_item_type_id=1',
+          milestones:
+            '/flightjs/Flight/-/autocomplete_sources/milestones?type=WorkItem&work_item_type_id=1',
+          commands:
+            '/flightjs/Flight/-/autocomplete_sources/commands?type=WorkItem&work_item_type_id=1',
+          snippets:
+            '/flightjs/Flight/-/autocomplete_sources/snippets?type=WorkItem&work_item_type_id=1',
+          contacts:
+            '/flightjs/Flight/-/autocomplete_sources/contacts?type=WorkItem&work_item_type_id=1',
+          wikis: '/flightjs/Flight/-/autocomplete_sources/wikis?type=WorkItem&work_item_type_id=1',
+          epics: '/flightjs/Flight/-/autocomplete_sources/epics?type=WorkItem&work_item_type_id=1',
+          iterations:
+            '/flightjs/Flight/-/autocomplete_sources/iterations?type=WorkItem&work_item_type_id=1',
+          vulnerabilities:
+            '/flightjs/Flight/-/autocomplete_sources/vulnerabilities?type=WorkItem&work_item_type_id=1',
+        },
+        markdownPreviewPath:
+          '/flightjs/Flight/-/preview_markdown?target_id=new-work-item-iid&target_type=WorkItem',
         uploadsPath: '/flightjs/Flight/uploads',
         __typename: 'ProjectNamespaceMarkdownPaths',
       },
       __typename: 'Namespace',
     },
   },
+};
+
+export const workItemsCsvExportResponse = {
+  data: {
+    workItemsCsvExport: {
+      message: 'Your CSV export request has succeeded. The result will be emailed to email',
+      errors: [],
+      __typename: 'WorkItemsCsvExportPayload',
+    },
+  },
+};
+
+export const workItemsCsvExportFailureResponse = {
+  data: {},
+  errors: [
+    {
+      message: 'Csv export failed',
+      locations: [{ line: 2, column: 3 }],
+      path: ['workItemsCsvExport'],
+    },
+  ],
 };

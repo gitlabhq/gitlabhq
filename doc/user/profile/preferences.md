@@ -1,5 +1,5 @@
 ---
-stage: none
+stage: none - [facilitated functionality](https://handbook.gitlab.com/handbook/product/categories/#facilitated-functionality)
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Profile preferences
@@ -33,11 +33,14 @@ To change the appearance:
 1. In the **Mode** section, select an option.
 1. Select **Save changes**.
 
+<!-- When new navigation is released and feature flag `paneled_view` is removed, change **Navigation** to **Theme** -->
+
 ## Change the navigation theme
 
 {{< history >}}
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/470413) from **Color theme** to **Navigation theme** in GitLab 18.1.
+- Themes: Light Indigo, Light Blue, Light Green, and Light Red [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200475) in GitLab 18.4.
 
 {{< /history >}}
 
@@ -121,7 +124,7 @@ You can change the default editor for editing content in GitLab.
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section.
-1. Under **Default text editor**, enssure the **Enable default text editor** checkbox is selected.
+1. Under **Default text editor**, ensure the **Enable default text editor** checkbox is selected.
 1. Choose either **Rich text editor** or **Plain text editor** as your default.
 1. Select **Save changes**.
 
@@ -392,7 +395,7 @@ For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epi
 Prerequisites:
 
 - For [GitLab Self-Managed](../../subscriptions/self_managed/_index.md), an administrator must
-  [enable exact code search](../../integration/exact_code_search/zoekt.md#enable-exact-code-search).
+  [enable exact code search](../../integration/zoekt/_index.md#enable-exact-code-search).
 
 To disable [exact code search](../search/exact_code_search.md) in user preferences:
 
@@ -494,16 +497,16 @@ You must be the administrator of the GitLab instance to configure GitLab with So
 
 {{< /history >}}
 
-You can use the extension marketplace to search and
-[manage extensions](../project/web_ide/_index.md#manage-extensions) for the [Web IDE](../project/web_ide/_index.md) and [workspaces](../workspace/_index.md).
-For third-party extensions, you must enable the marketplace in user preferences.
+The VS Code Extension Marketplace provides access to extensions that enhance the functionality of the
+Web IDE and workspaces.
 
 Prerequisites:
 
-- In the **Admin** area, a GitLab administrator must
-  [enable the extension marketplace](../../administration/settings/vscode_extension_marketplace.md).
+- For GitLab Self-Managed and GitLab Dedicated, a GitLab administrator must [enable the extension registry](../../administration/settings/vscode_extension_marketplace.md#enable-the-extension-registry).
+- For enterprise users, a group Owner must [enable the Extension Marketplace](../enterprise_user/_index.md#enable-the-extension-marketplace-for-enterprise-users)
+for the associated group.
 
-To enable the extension marketplace for the Web IDE and workspaces:
+To integrate with the Extension Marketplace:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.

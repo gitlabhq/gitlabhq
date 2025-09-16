@@ -222,8 +222,6 @@ After a vulnerability is found, you can [address it](../vulnerabilities/_index.m
 The merge request widget lists the vulnerability and contains a button for downloading the fuzzing
 artifacts. By selecting one of the detected vulnerabilities, you can see its details.
 
-![Coverage Fuzzing Security Report](img/coverage_fuzzing_report_v13_6.png)
-
 You can also view the vulnerability from the [Security Dashboard](../security_dashboard/_index.md),
 which shows an overview of all the security vulnerabilities in your groups, projects, and pipelines.
 

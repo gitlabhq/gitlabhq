@@ -7,7 +7,7 @@ feature_categories:
 description: Separate table for Design Repository verification states
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113958
 milestone: '16.0'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

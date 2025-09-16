@@ -48,7 +48,6 @@ describe('FeaturedCard', () => {
     it('renders the button with correct properties', () => {
       const button = findButton();
 
-      expect(button.text()).toBe('Learn more');
       expect(button.attributes('href')).toBe(defaultProps.buttonLink);
     });
   });

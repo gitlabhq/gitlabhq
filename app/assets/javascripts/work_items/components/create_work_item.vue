@@ -607,9 +607,6 @@ export default {
     workItemCustomFields() {
       return findWidget(WIDGET_TYPE_CUSTOM_FIELDS, this.workItem)?.customFieldValues ?? null;
     },
-    showWorkItemStatus() {
-      return this.workItemStatus && this.glFeatures.workItemStatusFeatureFlag;
-    },
     inputNamespacePath() {
       if (this.workItemPlanningViewEnabled) {
         return this.selectedNamespacePath;
@@ -626,6 +623,11 @@ export default {
       return this.isModal
         ? '-gl-mx-5 gl-px-5 gl-bg-overlap gl-py-3'
         : '-gl-mx-3 -gl-mb-10 gl-px-3 gl-bg-default gl-py-4';
+    },
+    selectedProjectGroupPath() {
+      return this.selectedProjectFullPath
+        ? this.selectedProjectFullPath.split('/')[0]
+        : this.groupPath;
     },
   },
   watch: {
@@ -1144,7 +1146,7 @@ export default {
             >
               <template v-if="canSetNewWorkItemMetadata">
                 <work-item-status
-                  v-if="showWorkItemStatus"
+                  v-if="workItemStatus"
                   class="work-item-attributes-item"
                   :can-update="canUpdate"
                   :full-path="selectedProjectFullPath"
@@ -1188,7 +1190,7 @@ export default {
                   :can-update="canUpdate"
                   :work-item-id="workItemId"
                   :work-item-type="selectedWorkItemTypeName"
-                  :group-path="groupPath"
+                  :group-path="selectedProjectGroupPath"
                   :full-path="selectedProjectFullPath"
                   :parent="workItemParent"
                   :is-group="isGroup"
@@ -1298,7 +1300,7 @@ export default {
           </template>
         </div>
         <div
-          class="gl-border-t gl-sticky gl-bottom-0 gl-z-1 gl-flex gl-flex-col gl-justify-between gl-gap-2 sm:gl-flex-row sm:gl-items-center"
+          class="gl-border-t gl-sticky gl-bottom-0 gl-z-1 gl-flex gl-flex-col gl-justify-between gl-gap-2 @sm/panel:gl-flex-row @sm/panel:gl-items-center"
           :class="formButtonsClasses"
           data-testid="form-buttons"
         >

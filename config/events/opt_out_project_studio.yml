@@ -1,0 +1,13 @@
+---
+description: Tracks when a user opts out of the Project Studio experience
+internal_events: true
+action: opt_out_project_studio
+identifiers:
+- user
+product_group: engagement
+milestone: "18.4"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203708
+tiers:
+- free
+- premium
+- ultimate

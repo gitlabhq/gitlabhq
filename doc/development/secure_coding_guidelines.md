@@ -515,7 +515,7 @@ when persisting the record, **we need to recheck** its validity before using it.
 
 There are many tricks to bypass common SSRF validations. If feature-specific mitigations are necessary, they should be reviewed by the AppSec team, or a developer who has worked on SSRF mitigations previously.
 
-For situations in which you can't use an allowlist or GitLab:HTTP, you must implement mitigations
+For situations in which you can't use an allowlist or `GitLab:HTTP`, you must implement mitigations
 directly in the feature. It's best to validate the destination IP addresses themselves, not just
 domain names, as the attacker can control DNS. Below is a list of mitigations that you should
 implement.

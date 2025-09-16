@@ -15,6 +15,25 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
 
       expect(helper.dashboard_value).to eq('your_activity')
     end
+
+    context 'with flipped dashboard mapping for rollout' do
+      before do
+        stub_feature_flags(personal_homepage: user)
+        allow(user).to receive(:should_use_flipped_dashboard_mapping_for_rollout?).and_return(true)
+        allow(user).to receive(:effective_dashboard_for_routing).and_return('homepage')
+      end
+
+      it 'returns effective dashboard value when flipped mapping is enabled' do
+        expect(helper.dashboard_value).to eq('homepage')
+      end
+
+      it 'returns raw dashboard value when flipped mapping is disabled' do
+        allow(user).to receive(:should_use_flipped_dashboard_mapping_for_rollout?).and_return(false)
+        allow(user).to receive(:dashboard).and_return('projects')
+
+        expect(helper.dashboard_value).to eq('projects')
+      end
+    end
   end
 
   describe '#dashboard_choices' do
@@ -56,7 +75,53 @@ RSpec.describe PreferencesHelper, feature_category: :shared do
       end
 
       it 'has an additional option' do
-        expect(helper.dashboard_choices).to include({ text: "Personal homepage", value: 'homepage' })
+        expect(helper.dashboard_choices).to include({ text: "Personal homepage (default)", value: 'homepage' })
+      end
+
+      context 'with flipped dashboard mapping for rollout' do
+        before do
+          allow(user).to receive(:should_use_flipped_dashboard_mapping_for_rollout?).and_return(true)
+        end
+
+        it 'uses localized_dashboard_choices_for_user for text labels' do
+          choices = helper.dashboard_choices
+          homepage_choice = choices.find { |choice| choice[:value] == 'homepage' }
+          projects_choice = choices.find { |choice| choice[:value] == 'projects' }
+
+          expect(homepage_choice[:text]).to eq('Personal homepage (default)')
+          expect(projects_choice[:text]).to eq('Your Contributed Projects')
+        end
+      end
+    end
+  end
+
+  describe '#localized_dashboard_choices_for_user' do
+    context 'when flipped dashboard mapping is disabled' do
+      before do
+        allow(user).to receive(:should_use_flipped_dashboard_mapping_for_rollout?).and_return(false)
+      end
+
+      it 'returns standard localized dashboard choices' do
+        expect(helper.localized_dashboard_choices_for_user).to eq(helper.localized_dashboard_choices)
+      end
+    end
+
+    context 'when flipped dashboard mapping is enabled' do
+      before do
+        stub_feature_flags(personal_homepage: user)
+        allow(user).to receive(:should_use_flipped_dashboard_mapping_for_rollout?).and_return(true)
+      end
+
+      it 'returns modified choices with flipped labels' do
+        choices = helper.localized_dashboard_choices_for_user
+
+        expect(choices[:projects]).to eq('Your Contributed Projects')
+        expect(choices[:homepage]).to eq('Personal homepage (default)')
+        expect(choices[:stars]).to eq('Starred Projects') # unchanged
+      end
+
+      it 'returns a frozen hash' do
+        expect(helper.localized_dashboard_choices_for_user).to be_frozen
       end
     end
   end

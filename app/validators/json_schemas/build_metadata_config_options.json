@@ -1,0 +1,865 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "CI builds metadata config_options with recursive support",
+  "type": [
+    "object",
+    "null"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "after_script": {
+      "$ref": "#/definitions/scriptArray"
+    },
+    "allow_failure_criteria": {
+      "$ref": "#/definitions/allowFailureCriteria"
+    },
+    "artifacts": {
+      "$ref": "#/definitions/artifactsConfig"
+    },
+    "before_script": {
+      "$ref": "#/definitions/scriptArray"
+    },
+    "bridge_needs": {
+      "$ref": "#/definitions/bridgeNeedsDefinition"
+    },
+    "cache": {
+      "$ref": "#/definitions/cacheDefinition"
+    },
+    "cross_dependencies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/crossDependencyDefinition"
+      }
+    },
+    "dast_configuration": {
+      "$ref": "#/definitions/dastConfigurationDefinition"
+    },
+    "dependencies": {
+      "$ref": "#/definitions/stringArray"
+    },
+    "downstream_errors": {
+      "$ref": "#/definitions/stringArray"
+    },
+    "enqueue_immediately": {
+      "type": "boolean"
+    },
+    "environment": {
+      "$ref": "#/definitions/environmentDefinition"
+    },
+    "execution_policy_job": {
+      "type": "boolean"
+    },
+    "execution_policy_name": {
+      "type": "string"
+    },
+    "execution_policy_pre_succeeds": {
+      "type": "boolean"
+    },
+    "execution_policy_variables_override": {
+      "$ref": "#/definitions/executionPolicyVariablesOverrideDefinition"
+    },
+    "hooks": {
+      "$ref": "#/definitions/hooksDefinition"
+    },
+    "identity": {
+      "type": "string"
+    },
+    "image": {
+      "$ref": "#/definitions/imageDefinition"
+    },
+    "instance": {
+      "type": "integer"
+    },
+    "job_timeout": true,
+    "manual_confirmation": {
+      "type": "string"
+    },
+    "pages": {
+      "$ref": "#/definitions/pagesDefinition"
+    },
+    "parallel": {
+      "$ref": "#/definitions/parallelDefinition"
+    },
+    "publish": true,
+    "release": {
+      "$ref": "#/definitions/releaseDefinition"
+    },
+    "resource_group_key": {
+      "type": "string"
+    },
+    "retry": {
+      "$ref": "#/definitions/retryDefinition"
+    },
+    "scoped_user_id": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "integer"
+        }
+      ]
+    },
+    "script": {
+      "$ref": "#/definitions/scriptArray"
+    },
+    "services": {
+      "$ref": "#/definitions/servicesDefinition"
+    },
+    "start_in": {
+      "type": "string"
+    },
+    "trigger": {
+      "$ref": "#/definitions/triggerDefinition"
+    }
+  },
+  "definitions": {
+    "allowFailureCriteria": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "exit_codes": {
+          "$ref": "#/definitions/integerOrArrayOfIntegers"
+        }
+      }
+    },
+    "artifactReports": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "accessibility": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "annotations": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "api_fuzzing": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "browser_performance": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "cluster_image_scanning": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "cobertura": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "codequality": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "container_scanning": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "coverage_fuzzing": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "coverage_report": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "coverage_format": {
+              "type": "string",
+              "enum": [
+                "cobertura",
+                "jacoco"
+              ]
+            },
+            "path": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "coverage_format",
+            "path"
+          ]
+        },
+        "cyclonedx": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "dast": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "dependency_scanning": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "dotenv": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "junit": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "license_scanning": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "load_performance": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "lsif": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "metrics": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "performance": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "repository_xray": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "requirements": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "requirements_v2": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "sast": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "secret_detection": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "terraform": {
+          "$ref": "#/definitions/reportPath"
+        }
+      }
+    },
+    "artifactsConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "access": true,
+        "exclude": true,
+        "expire_in": true,
+        "expose_as": true,
+        "name": true,
+        "paths": true,
+        "public": true,
+        "reports": {
+          "$ref": "#/definitions/artifactReports"
+        },
+        "untracked": true,
+        "when": true
+      }
+    },
+    "bridgeNeedsDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pipeline": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "pipeline"
+      ]
+    },
+    "cacheConfigBase": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fallback_keys": {
+          "$ref": "#/definitions/stringArray"
+        },
+        "key": {
+          "$ref": "#/definitions/cacheKeyDefinition"
+        },
+        "paths": {
+          "$ref": "#/definitions/stringArray"
+        },
+        "policy": {
+          "type": "string",
+          "enum": [
+            "pull",
+            "push",
+            "pull-push"
+          ]
+        },
+        "unprotect": {
+          "type": "boolean"
+        },
+        "untracked": {
+          "type": "boolean"
+        },
+        "when": true
+      }
+    },
+    "cacheDefinition": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/cacheConfigBase"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/cacheConfigBase"
+          },
+          "maxItems": 4
+        }
+      ]
+    },
+    "cacheKeyDefinition": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "files": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 2
+            },
+            "prefix": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "crossDependencyDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "artifacts": {
+          "type": "boolean"
+        },
+        "job": {
+          "type": "string"
+        },
+        "pipeline": {
+          "type": "string"
+        },
+        "project": {
+          "type": "string"
+        },
+        "ref": {
+          "type": "string"
+        }
+      }
+    },
+    "dastConfigurationDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "scanner_profile": true,
+        "site_profile": true
+      }
+    },
+    "dockerOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "platform": {
+          "type": "string"
+        },
+        "user": {
+          "type": "string"
+        }
+      }
+    },
+    "environmentDefinition": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "start",
+                "prepare",
+                "stop",
+                "verify",
+                "access"
+              ]
+            },
+            "auto_stop_in": {
+              "type": "string"
+            },
+            "deployment_tier": {
+              "type": "string",
+              "enum": [
+                "production",
+                "staging",
+                "testing",
+                "development",
+                "other"
+              ]
+            },
+            "kubernetes": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "agent": {
+                  "type": "string"
+                },
+                "flux_resource_path": {
+                  "type": "string"
+                },
+                "namespace": {
+                  "type": "string"
+                },
+                "managed_resources": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "enabled": {
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "dashboard": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "namespace": {
+                      "type": "string"
+                    },
+                    "flux_resource_path": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "name": {
+              "type": "string"
+            },
+            "on_stop": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      ]
+    },
+    "executionPolicyVariablesOverrideDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "allowed": {
+          "type": "boolean"
+        },
+        "exceptions": {
+          "$ref": "#/definitions/stringArray"
+        }
+      }
+    },
+    "hooksDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pre_get_sources_script": {
+          "$ref": "#/definitions/stringArray"
+        }
+      }
+    },
+    "imageDefinition": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "entrypoint": {
+              "type": "string"
+            },
+            "executor_opts": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "docker": {
+                  "$ref": "#/definitions/dockerOptions"
+                },
+                "kubernetes": {
+                  "$ref": "#/definitions/kubernetesOptions"
+                }
+              }
+            },
+            "name": {
+              "type": "string"
+            },
+            "pull_policy": {
+              "$ref": "#/definitions/pullPolicyOptions"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      ]
+    },
+    "integerOrArrayOfIntegers": {
+      "oneOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      ]
+    },
+    "kubernetesOptions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "user": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            }
+          ]
+        }
+      }
+    },
+    "pagesDefinition": {
+      "oneOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "expire_in": true,
+            "path_prefix": true,
+            "publish": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "parallelDefinition": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "matrix": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            },
+            "number": {
+              "type": "integer"
+            },
+            "total": {
+              "type": "integer"
+            }
+          }
+        }
+      ]
+    },
+    "pullPolicyEnum": {
+      "type": "string",
+      "enum": [
+        "always",
+        "if-not-present",
+        "never"
+      ]
+    },
+    "pullPolicyOptions": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/pullPolicyEnum"
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/pullPolicyEnum"
+          }
+        }
+      ]
+    },
+    "releaseDefinition": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "assets": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "links": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "filepath": {
+                    "type": "string"
+                  },
+                  "link_type": {
+                    "type": "string",
+                    "enum": [
+                      "other",
+                      "runbook",
+                      "package",
+                      "image"
+                    ]
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "url": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "url"
+                ]
+              }
+            }
+          }
+        },
+        "description": {
+          "type": "string"
+        },
+        "milestones": {
+          "$ref": "#/definitions/stringArray"
+        },
+        "name": {
+          "type": "string"
+        },
+        "ref": {
+          "type": "string"
+        },
+        "released_at": {
+          "type": "string"
+        },
+        "tag_message": {
+          "type": "string"
+        },
+        "tag_name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tag_name",
+        "description"
+      ]
+    },
+    "reportPath": {
+      "$ref": "#/definitions/stringOrArrayOfStrings"
+    },
+    "retryDefinition": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "exit_codes": {
+              "$ref": "#/definitions/integerOrArrayOfIntegers"
+            },
+            "max": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 2
+            },
+            "when": {
+              "oneOf": [
+                true,
+                {
+                  "type": "array",
+                  "items": true
+                }
+              ]
+            }
+          },
+          "required": [
+            "max"
+          ]
+        }
+      ]
+    },
+    "scriptArray": {
+      "$ref": "#/definitions/stringOrArrayOfStrings"
+    },
+    "serviceDefinition": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "alias": {
+              "type": "string"
+            },
+            "command": {
+              "$ref": "#/definitions/scriptArray"
+            },
+            "docker": {
+              "$ref": "#/definitions/dockerOptions"
+            },
+            "entrypoint": {
+              "type": "string"
+            },
+            "kubernetes": {
+              "$ref": "#/definitions/kubernetesOptions"
+            },
+            "name": {
+              "type": "string"
+            },
+            "pull_policy": {
+              "$ref": "#/definitions/pullPolicyOptions"
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      ]
+    },
+    "servicesDefinition": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/serviceDefinition"
+      }
+    },
+    "stringArray": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "stringMap": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "stringOrArrayOfStrings": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "$ref": "#/definitions/stringArray"
+        }
+      ]
+    },
+    "triggerDefinition": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "branch": {
+              "type": "string"
+            },
+            "forward": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "pipeline_variables": {
+                  "type": "boolean"
+                },
+                "yaml_variables": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "include": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/triggerIncludeItem"
+                  }
+                }
+              ]
+            },
+            "inputs": {
+              "$ref": "#/definitions/stringMap"
+            },
+            "project": {
+              "type": "string"
+            },
+            "strategy": {
+              "type": "string",
+              "enum": [
+                "depend",
+                "mirror"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "triggerIncludeItem": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "artifact": {
+              "type": "string"
+            },
+            "file": {
+              "$ref": "#/definitions/stringOrArrayOfStrings"
+            },
+            "inputs": {
+              "$ref": "#/definitions/stringMap"
+            },
+            "job": {
+              "type": "string"
+            },
+            "local": {
+              "type": "string"
+            },
+            "project": {
+              "type": "string"
+            },
+            "ref": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

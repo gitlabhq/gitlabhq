@@ -2,99 +2,139 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting, :js, feature_category: :instance_resiliency, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/556094' do
+RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting, :js, :with_organization_url_helpers, feature_category: :instance_resiliency do
   include EmailHelpers
 
-  let_it_be_with_reload(:user) { create(:user) }
-  let_it_be(:another_user) { create(:user) }
-  let_it_be(:new_email) { build_stubbed(:user).email }
-
+  let(:user) { create(:user) }
+  let(:current_organization) { user.organization }
+  let(:another_user) { create(:user) }
+  let(:new_email) { build_stubbed(:user).email }
   let(:email_verification_required) { true }
 
   before do
     stub_application_setting(require_email_verification_on_account_locked: email_verification_required)
     stub_feature_flags(skip_require_email_verification: false)
+    ActionMailer::Base.deliveries.clear
   end
 
-  shared_examples 'email verification required' do
+  describe 'when user login successfully without previous authentication event' do
+    it 'does not lock the user or require email verification' do
+      gitlab_sign_in(user)
+      expect_no_email_verification
+    end
+  end
+
+  describe 'when failing to login the maximum allowed number of times' do
     before do
-      allow(Gitlab::AppLogger).to receive(:info)
+      RequireEmailVerification::MAXIMUM_ATTEMPTS.times do
+        gitlab_sign_in(user, password: 'wrong_password')
+      end
+      user.reload # ensure user attributes are updated with user.reload
     end
 
-    it 'requires email verification before being able to access GitLab' do
-      perform_enqueued_jobs do
-        # When logging in
-        gitlab_sign_in(user)
-        expect_log_message(message: "Account Locked: username=#{user.username}")
-        expect_log_message('Instructions Sent')
-
-        # Expect the user to be locked and the unlock_token to be set
-        user.reload
+    describe 'initial account lock state' do
+      it 'locks the user without setting unlock token' do
         expect(user.locked_at).not_to be_nil
-        expect(user.unlock_token).not_to be_nil
+        expect(user.unlock_token).to be_nil # Only set after valid credentials
+        expect(user.failed_attempts).to eq(RequireEmailVerification::MAXIMUM_ATTEMPTS)
+      end
+    end
 
-        # Expect to see the verification form on the login page
-        expect(page).to have_current_path(new_user_session_path)
-        expect(page).to have_content(s_('IdentityVerification|Help us protect your account'))
+    describe 'login with valid credentials after account lock' do
+      before do
+        allow(Gitlab::AppLogger).to receive(:info).and_call_original
+      end
 
-        # Expect an instructions email to be sent with a code
-        expect(ActionMailer::Base.deliveries.size).to eq(1)
-        code = expect_instructions_email_and_extract_code
+      it 'triggers email verification process' do
+        perform_enqueued_jobs do
+          gitlab_sign_in(user)
+          expect_verification_triggered(reason: 'new unlock token needed')
+        end
+      end
 
-        # Signing in again prompts for the code and doesn't send a new one
+      it 'does not send duplicate verification emails on subsequent logins' do
+        perform_enqueued_jobs do
+          expect_no_duplicated_verification_email
+        end
+      end
+
+      it 'shows success page with redirect after verification' do
+        perform_enqueued_jobs do
+          gitlab_sign_in(user)
+          code = expect_instructions_email_and_extract_code
+          perform_verification_with_code(code)
+          expect_successful_verification
+        end
+      end
+    end
+
+    context 'with 2fa enabled' do
+      let(:user) { create(:user, :two_factor) }
+
+      it 'does not lock the user or require email verification' do
+        gitlab_sign_in(user, two_factor_auth: true)
+        expect_no_email_verification
+      end
+    end
+
+    context 'when email_verification_required feature flag disabled' do
+      let(:email_verification_required) { false }
+
+      it 'does not lock the user and redirects to the root page after logging in' do
         gitlab_sign_in(user)
-        expect(ActionMailer::Base.deliveries.size).to eq(0)
+        expect_no_email_verification
+      end
+    end
 
+    context 'when auto unlock time has passed' do
+      before do
+        travel User::UNLOCK_IN + 1.second
+      end
+
+      it 'does does not require email verification' do
+        gitlab_sign_in(user)
+        expect_no_email_verification
+      end
+    end
+
+    describe 'rate limiting password guessing' do
+      before do
+        5.times { gitlab_sign_in(user, password: 'wrong_password') }
+        gitlab_sign_in(user)
+      end
+
+      it 'shows an error message on on the login page' do
         expect(page).to have_current_path(new_user_session_path)
-        expect(page).to have_content(s_('IdentityVerification|Help us protect your account'))
-
-        # Verify the code
-        verify_code(code)
-        expect_log_message('Successful')
-        expect_log_message(message: "Successful Login: username=#{user.username} "\
-                                    "ip=127.0.0.1 method=standard admin=false")
-
-        # Expect the user to be unlocked
-        expect_user_to_be_unlocked
-
-        # Expect a confirmation page with a meta refresh tag for 3 seconds to the root
-        expect(page).to have_current_path(users_successful_verification_path)
-        expect(page).to have_content(s_('IdentityVerification|Verification successful'))
-        expect(page).to have_selector("meta[http-equiv='refresh'][content='3; url=#{root_path}']", visible: false)
+        expect(page).to have_content(format(s_('IdentityVerification|Maximum login attempts exceeded. '\
+                                              'Wait %{interval} and try again.'), interval: '10 minutes'))
+        expect(ActionMailer::Base.deliveries).to be_empty
       end
     end
 
     describe 'resending a new code' do
+      before do
+        allow(Gitlab::AppLogger).to receive(:info).and_call_original
+      end
+
       it 'resends a new code' do
         perform_enqueued_jobs do
-          # When logging in
           gitlab_sign_in(user)
-
-          # Expect an instructions email to be sent with a code
           code = expect_instructions_email_and_extract_code
+          expect_log_message('Instructions Sent', reason: 'new unlock token needed')
 
-          # Request a new code
-          click_button s_('IdentityVerification|Resend code')
+          click_request_new_code_button
           expect(page).to have_content(s_('IdentityVerification|A new code has been sent.'))
-          expect_log_message('Instructions Sent', 2)
+          expect_log_message('Instructions Sent', reason: 'resend lock verification code')
           new_code = expect_instructions_email_and_extract_code
-
-          # Verify the old code is different from the new code
           expect(code).not_to eq(new_code)
         end
       end
 
       it 'rate limits resends' do
-        # When logging in
         gitlab_sign_in(user)
-
-        # It shows a resend button
         expect(page).to have_button s_('IdentityVerification|Resend code')
-
         # Resend more than the rate limited amount of times
-        10.times do
-          click_button s_('IdentityVerification|Resend code')
-        end
+        10.times { click_request_new_code_button }
 
         # Expect an error alert
         expect(page).to have_content format(s_("IdentityVerification|You've reached the maximum amount of resends. "\
@@ -107,20 +147,17 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
         it 'resends a new code' do
           perform_enqueued_jobs do
             gitlab_sign_in(user)
-
             code_from_primary_email = expect_instructions_email_and_extract_code
+            expect_log_message('Instructions Sent', reason: 'new unlock token needed')
 
             click_button s_('IdentityVerification|send a code to another address associated with this account')
-
             fill_in _('Email'), with: secondary_email.email
 
-            click_button s_('IdentityVerification|Resend code')
-
+            click_request_new_code_button
             expect(page).to have_content(s_('IdentityVerification|A new code has been sent.'))
-            expect_log_message('Instructions Sent', 2)
+            expect_log_message('Instructions Sent', reason: 'resend lock verification code')
 
             code_from_secondary_email = expect_instructions_email_and_extract_code(email: secondary_email.email)
-
             expect(code_from_primary_email).not_to eq(code_from_secondary_email)
           end
         end
@@ -128,14 +165,14 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
     end
 
     describe 'resending a new code when an existing code expires' do
+      before do
+        allow(Gitlab::AppLogger).to receive(:info).and_call_original
+      end
+
       it 'resends a new code' do
         perform_enqueued_jobs do
-          # When logging in
           gitlab_sign_in(user)
-
-          # Expect an instructions email to be sent with a code
           code = expect_instructions_email_and_extract_code
-
           token_valid_for = Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES + 1
 
           # Signing in again prompts for the code and sends a new one when the current code is expired
@@ -144,10 +181,8 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
             expect(page).to have_current_path(new_user_session_path)
             expect(page).to have_content(s_('IdentityVerification|Help us protect your account'))
 
-            # Expect an instructions email to be sent with a new code
             new_code = expect_instructions_email_and_extract_code
-
-            # Verify the old code is different from the new code
+            expect_log_message('Instructions Sent', 2, reason: 'new unlock token needed')
             expect(code).not_to eq(new_code)
           end
         end
@@ -155,18 +190,16 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
     end
 
     describe 'verification errors' do
+      before do
+        allow(Gitlab::AppLogger).to receive(:info).and_call_original
+      end
+
       it 'rate limits verifications' do
         perform_enqueued_jobs do
-          # When logging in
           gitlab_sign_in(user)
-
-          # Expect an instructions email to be sent with a code
           code = expect_instructions_email_and_extract_code
-
           # Verify an invalid token more than the rate limited amount of times
-          11.times do
-            verify_code('123456')
-          end
+          11.times { perform_verification_with_code('123456') }
 
           # Expect an error message
           expect_log_message('Failed Attempt', reason: 'rate_limited')
@@ -178,17 +211,16 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
           travel 10.minutes
 
           # Now it works again
-          verify_code(code)
+          perform_verification_with_code(code)
           expect_log_message('Successful')
         end
       end
 
       it 'verifies invalid codes' do
-        # When logging in
         gitlab_sign_in(user)
 
         # Verify an invalid code
-        verify_code('123456')
+        perform_verification_with_code('123456')
 
         # Expect an error message
         expect_log_message('Failed Attempt', reason: 'invalid')
@@ -198,7 +230,6 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
 
       it 'verifies expired codes' do
         perform_enqueued_jobs do
-          # When logging in
           gitlab_sign_in(user)
 
           # Expect an instructions email to be sent with a code
@@ -206,7 +237,7 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
 
           # Wait for the code to expire before verifying
           travel Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES.minutes + 1.second
-          verify_code(code)
+          perform_verification_with_code(code)
 
           # Expect an error message
           expect_log_message('Failed Attempt', reason: 'expired')
@@ -216,67 +247,49 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
     end
   end
 
-  shared_examples 'no email verification required' do |**login_args|
-    it 'does not lock the user and redirects to the root page after logging in' do
-      gitlab_sign_in(user, **login_args)
-
-      expect_user_to_be_unlocked
-
-      expect(page).to have_current_path(root_path)
-    end
-  end
-
-  shared_examples 'no email verification required when 2fa enabled' do
-    context 'when 2FA is enabled' do
-      let_it_be(:user) { create(:user, :two_factor) }
-
-      it_behaves_like 'no email verification required', two_factor_auth: true
-    end
-
-    context 'when the feature flag is disabled' do
-      let(:email_verification_required) { false }
-
-      it_behaves_like 'no email verification required'
-    end
-  end
-
-  describe 'when failing to login the maximum allowed number of times' do
-    before do
-      RequireEmailVerification::MAXIMUM_ATTEMPTS.times do
-        gitlab_sign_in(user, password: 'wrong_password')
-      end
-    end
-
-    it 'locks the user, but does not set the unlock token', :aggregate_failures do
-      user.reload
-      expect(user.locked_at).not_to be_nil
-      expect(user.unlock_token).to be_nil # The unlock token is only set after logging in with valid credentials
-      expect(user.failed_attempts).to eq(RequireEmailVerification::MAXIMUM_ATTEMPTS)
-    end
-
-    it_behaves_like 'email verification required'
-    it_behaves_like 'no email verification required when 2fa enabled'
-
-    describe 'when waiting for the auto unlock time' do
-      before do
-        travel User::UNLOCK_IN + 1.second
-      end
-
-      it_behaves_like 'no email verification required'
-    end
-  end
-
-  describe 'when no previous authentication event exists' do
-    it_behaves_like 'no email verification required'
-  end
-
   describe 'when a previous authentication event exists for another ip address' do
     before do
       create(:authentication_event, :successful, user: user, ip_address: '1.2.3.4')
+      allow(Gitlab::AppLogger).to receive(:info).and_call_original
     end
 
-    it_behaves_like 'email verification required'
-    it_behaves_like 'no email verification required when 2fa enabled'
+    context 'without 2fa enabled' do
+      context 'with email_verification_required feature flag disabled' do
+        let(:email_verification_required) { false }
+
+        it 'does does not require email verification' do
+          gitlab_sign_in(user)
+          expect_no_email_verification
+        end
+      end
+
+      context 'with email_verification_required feature flag enabled' do
+        it 'triggers email verification process' do
+          perform_enqueued_jobs do
+            gitlab_sign_in(user)
+            expect_verification_triggered(reason: 'sign in from untrusted IP address')
+          end
+        end
+
+        it 'shows success page with redirect after verification' do
+          perform_enqueued_jobs do
+            gitlab_sign_in(user)
+            code = expect_instructions_email_and_extract_code
+            perform_verification_with_code(code)
+            expect_successful_verification
+          end
+        end
+      end
+    end
+
+    context 'with 2fa enabled' do
+      let(:user) { create(:user, :two_factor) }
+
+      it 'does does not require email verification' do
+        gitlab_sign_in(user, two_factor_auth: true)
+        expect_no_email_verification
+      end
+    end
   end
 
   describe 'when a previous authentication event exists for the same ip address' do
@@ -284,19 +297,9 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
       create(:authentication_event, :successful, user: user)
     end
 
-    it_behaves_like 'no email verification required'
-  end
-
-  describe 'rate limiting password guessing' do
-    before do
-      5.times { gitlab_sign_in(user, password: 'wrong_password') }
+    it 'does does not require email verification' do
       gitlab_sign_in(user)
-    end
-
-    it 'shows an error message on on the login page' do
-      expect(page).to have_current_path(new_user_session_path)
-      expect(page).to have_content(format(s_('IdentityVerification|Maximum login attempts exceeded. '\
-                                             'Wait %{interval} and try again.'), interval: '10 minutes'))
+      expect_no_email_verification
     end
   end
 
@@ -304,37 +307,35 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
     context 'when the feature flag is toggled off after being prompted for a verification token' do
       before do
         create(:authentication_event, :successful, user: user, ip_address: '1.2.3.4')
+        allow(Gitlab::AppLogger).to receive(:info).and_call_original
       end
 
-      it 'still accepts the token' do
+      it 'token still works as expected' do
         perform_enqueued_jobs do
-          # The user is prompted for a verification code
           gitlab_sign_in(user)
           expect(page).to have_content(s_('IdentityVerification|Help us protect your account'))
           code = expect_instructions_email_and_extract_code
 
-          # We toggle the application setting off
+          # toggle the application setting off
           stub_application_setting(require_email_verification_on_account_locked: false)
 
-          # Resending and veryfying the code work as expected
-          click_button s_('IdentityVerification|Resend code')
+          # test verification using outdated token
+          click_request_new_code_button
           new_code = expect_instructions_email_and_extract_code
-
-          verify_code(code)
+          perform_verification_with_code(code)
           expect(page)
             .to have_content(s_('IdentityVerification|The code is incorrect. Enter it again, or send a new code.'))
 
+          # force token expiration and test verification
           travel Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES.minutes + 1.second
-
-          verify_code(new_code)
+          perform_verification_with_code(new_code)
           expect(page).to have_content(s_('IdentityVerification|The code has expired. Send a new code and try again.'))
 
-          click_button s_('IdentityVerification|Resend code')
-          another_code = expect_instructions_email_and_extract_code
-
-          verify_code(another_code)
-          expect_user_to_be_unlocked
-          expect(page).to have_current_path(users_successful_verification_path)
+          # succssful validation with valid token
+          click_request_new_code_button
+          code = expect_instructions_email_and_extract_code
+          perform_verification_with_code(code)
+          expect_successful_verification
         end
       end
     end
@@ -356,16 +357,17 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
         user.reload
         expect(user.locked_at).not_to be_nil
         expect(user.unlock_token).not_to be_nil
-        mail = find_email_for(user)
 
-        expect(mail.to).to match_array([user.email])
+        mail = wait_for('mail found for user') { find_email_for(user) }
+        mail_to = mail&.to
+        expect(mail_to).to match_array([user.email])
         expect(mail.subject).to eq('Unlock instructions')
         unlock_url = mail.body.parts.first.to_s[/http.*/]
 
-        # We toggle the application setting on
+        # toggle the application setting on
         stub_application_setting(require_email_verification_on_account_locked: true)
 
-        # Unlocking works as expected
+        # unlocking works as expected
         visit unlock_url
         expect_user_to_be_unlocked
         expect(page).to have_current_path(new_user_session_path)
@@ -377,28 +379,55 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
     end
   end
 
-  def expect_user_to_be_unlocked
+  private
+
+  def expect_no_email_verification
+    expect_user_to_be_unlocked
+    expect(page).to have_current_path(root_path)
+  end
+
+  def expect_verification_triggered(reason: '')
+    expect_log_message(message: "Account Locked: username=#{user.username}")
+    expect_log_message('Instructions Sent', reason: reason)
+
     user.reload
+    expect(user.locked_at).not_to be_nil
+    expect(user.unlock_token).not_to be_nil
 
-    aggregate_failures do
-      expect(user.locked_at).to be_nil
-      expect(user.unlock_token).to be_nil
-      expect(user.failed_attempts).to eq(0)
+    expect(page).to have_current_path(new_user_session_path)
+    expect(page).to have_content(s_('IdentityVerification|Help us protect your account'))
+
+    expect(ActionMailer::Base.deliveries.size).to eq(1)
+  end
+
+  def expect_successful_verification
+    expect_log_message('Successful')
+    expect_log_message(message: "Successful Login: username=#{user.username} "\
+                                "ip=127.0.0.1 method=standard admin=false")
+
+    expect_user_to_be_unlocked
+
+    expect(page).to have_current_path(users_successful_verification_path)
+    expect(page).to have_content(s_('IdentityVerification|Verification successful'))
+    expect(page).to have_selector("meta[http-equiv='refresh'][content='3; url=#{root_path}']", visible: false)
+  end
+
+  def expect_no_duplicated_verification_email
+    gitlab_sign_in(user)
+    # First login triggers email
+    wait_for('verification email delivered') do
+      !ActionMailer::Base.deliveries.empty?
     end
-  end
 
-  def expect_instructions_email_and_extract_code(email: nil)
-    mail = find_email_for(email || user)
-    expect(mail.to).to match_array([email || user.email])
-    expect(mail.subject).to eq(s_('IdentityVerification|Verify your identity'))
-    code = mail.body.parts.first.to_s[/\d{#{Users::EmailVerification::GenerateTokenService::TOKEN_LENGTH}}/o]
-    reset_delivered_emails!
-    code
-  end
+    expect(ActionMailer::Base.deliveries.size).to eq(1)
 
-  def verify_code(code)
-    fill_in s_('IdentityVerification|Verification code'), with: code
-    click_button s_('IdentityVerification|Verify code')
+    ActionMailer::Base.deliveries.clear
+    gitlab_sign_in(user)
+    # Second login should not send another email
+    expect(ActionMailer::Base.deliveries.size).to eq(0)
+
+    expect(page).to have_current_path(new_user_session_path)
+    expect(page).to have_content(s_('IdentityVerification|Help us protect your account'))
   end
 
   def expect_log_message(event = nil, times = 1, reason: '', message: nil)
@@ -411,5 +440,31 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
         ip: '127.0.0.1',
         reason: reason
       ))
+  end
+
+  def expect_instructions_email_and_extract_code(email: nil)
+    mail = wait_for('mail found for email || user') { find_email_for(email || user) }
+    mail_to = mail&.to
+    expect(mail_to).to match_array([email || user.email])
+    expect(mail.subject).to eq(s_('IdentityVerification|Verify your identity'))
+    code = mail.body.parts.first.to_s[/\d{#{Users::EmailVerification::GenerateTokenService::TOKEN_LENGTH}}/o]
+    reset_delivered_emails!
+    code
+  end
+
+  def expect_user_to_be_unlocked
+    user.reload
+    expect(user.locked_at).to be_nil
+    expect(user.unlock_token).to be_nil
+    expect(user.failed_attempts).to eq(0)
+  end
+
+  def perform_verification_with_code(code)
+    fill_in s_('IdentityVerification|Verification code'), with: code
+    click_button s_('IdentityVerification|Verify code')
+  end
+
+  def click_request_new_code_button
+    click_button s_('IdentityVerification|Resend code')
   end
 end

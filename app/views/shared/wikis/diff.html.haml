@@ -25,7 +25,8 @@
     - c.with_description do
       .header-main-content
         %strong= markdown_field(commit, :title)
-        %span.gl-hidden.sm:gl-inline= _('authored')
+        %span.gl-hidden{ class: '@sm/panel:gl-inline' }
+          = _('authored')
         #{time_ago_with_tooltip(commit.authored_date)}
         %span= s_('ByAuthor|by')
         = author_avatar(commit, size: 24, has_tooltip: false)

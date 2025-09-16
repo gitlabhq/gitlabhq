@@ -3,7 +3,7 @@ import Vue, { nextTick } from 'vue';
 
 import VueApollo, { ApolloMutation } from 'vue-apollo';
 import VueRouter from 'vue-router';
-import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/src/utils';
 import VueDraggable from 'vuedraggable';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';

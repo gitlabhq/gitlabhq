@@ -61,8 +61,6 @@ module Ci
     }
 
     def self.prefix_for_trigger_token
-      return TRIGGER_TOKEN_PREFIX unless Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
-
       ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(TRIGGER_TOKEN_PREFIX)
     end
 

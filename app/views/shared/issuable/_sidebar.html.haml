@@ -9,7 +9,7 @@
 - in_group_context_with_iterations = @project.group.present? && issuable_sidebar[:supports_iterations]
 - is_merge_request = issuable_type === 'merge_request'
 - add_page_specific_style 'page_bundles/labels'
-- sidebar_header_classes = 'md:gl-flex lg:!gl-hidden gl-justify-end' if is_merge_request
+- sidebar_header_classes = '@md/panel:gl-flex @lg/panel:!gl-hidden gl-justify-end' if is_merge_request
 
 %aside.right-sidebar.js-right-sidebar.js-issuable-sidebar{ data: { auto_collapse: true, always_show_toggle: true, signed: { in: signed_in }, issuable_type: issuable_type }, class: "#{sidebar_gutter_collapsed_class(is_merge_request)} #{'right-sidebar-merge-requests right-sidebar-collapsed' if is_merge_request}", 'aria-live' => 'polite', 'aria-label': issuable_type }
   .issuable-sidebar{ class: "#{'is-merge-request' if is_merge_request}" }

@@ -7,13 +7,8 @@ class ApplicationSetting < ApplicationRecord
   include ChronicDurationAttribute
   include Sanitizable
   include Gitlab::EncryptedAttribute
-  include SafelyChangeColumnDefault
   include IgnorableColumns
 
-  columns_changing_default :enforce_ci_inbound_job_token_scope_enabled, :deletion_adjourned_period,
-    :wiki_page_max_content_bytes
-
-  ignore_column :pre_receive_secret_detection_enabled, remove_with: '17.9', remove_after: '2025-02-15'
   ignore_column :model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
   ignore_column :lock_model_prompt_cache_enabled, remove_with: '18.5', remove_after: '2025-10-05'
 
@@ -58,7 +53,7 @@ class ApplicationSetting < ApplicationRecord
   add_authentication_token_field :error_tracking_access_token, encrypted: :required # rubocop:todo -- https://gitlab.com/gitlab-org/gitlab/-/issues/439292
 
   belongs_to :push_rule
-  belongs_to :web_ide_oauth_application, class_name: 'Doorkeeper::Application'
+  belongs_to :web_ide_oauth_application, class_name: 'Authn::OauthApplication'
 
   alias_attribute :housekeeping_optimize_repository_period, :housekeeping_incremental_repack_period
 

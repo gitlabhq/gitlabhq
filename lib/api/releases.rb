@@ -204,7 +204,7 @@ module API
         not_found! unless latest_release
 
         # Build the full API URL with the tag of the latest release
-        redirect_url = api_v4_projects_releases_path(id: user_project.id, tag_name: latest_release.tag)
+        redirect_url = api_v4_projects_releases_path(id: user_project.id, tag_name: ERB::Util.url_encode(latest_release.tag))
 
         # Include the additional suffix_path if present
         redirect_url += "/#{declared_params[:suffix_path]}" if declared_params[:suffix_path].present?

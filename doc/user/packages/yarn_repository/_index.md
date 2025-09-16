@@ -241,7 +241,7 @@ If you have a one-off package, you can install it from a group or project.
 
    - Replace `<my-org>` with the top-level group that contains the group you want to install from. Exclude the `@` symbol.
    - Replace `<domain_name>` with your domain name, for example, `gitlab.com`.
-   - Replace `<group_id>` with your group ID, found on the [group overview page](../../group#find-the-group-id).
+   - Replace `<group_id>` with your group ID, found on the [group overview page](../../group/_index.md#find-the-group-id).
 
 1. Optional. If your package is private, you must set the registry:
 
@@ -254,7 +254,7 @@ If you have a one-off package, you can install it from a group or project.
 
    - Replace `<domain_name>` with your domain name, for example, `gitlab.com`.
    - Replace `<token>` with a deployment token (recommended), group access token, project access token, or personal access token.
-   - Replace `<group_id>` with your group ID, found on the [group overview page](../../group#find-the-group-id).
+   - Replace `<group_id>` with your group ID, found on the [group overview page](../../group/_index.md#find-the-group-id).
 
 1. [Install the package with Yarn](#install-with-yarn).
 

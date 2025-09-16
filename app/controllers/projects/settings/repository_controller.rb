@@ -3,6 +3,8 @@
 module Projects
   module Settings
     class RepositoryController < Projects::ApplicationController
+      include Gitlab::Utils::StrongMemoize
+
       layout 'project_settings'
       before_action :authorize_admin_project!
       before_action :define_variables, only: [:create_deploy_token]
@@ -87,9 +89,21 @@ module Projects
         @deploy_keys = DeployKeysPresenter.new(@project, current_user: current_user)
 
         define_deploy_token_variables
+        tag_names
+        branch_names
         define_protected_refs
         remote_mirror
       end
+
+      def tag_names
+        @project.repository.tag_names
+      end
+      strong_memoize_attr :tag_names
+
+      def branch_names
+        @project.repository.branch_names
+      end
+      strong_memoize_attr :branch_names
 
       # rubocop: disable CodeReuse/ActiveRecord
       def define_protected_refs
@@ -97,8 +111,8 @@ module Projects
         @protected_tags = @project.protected_tags.preload_access_levels.order(:name).page(pagination_params[:page])
         @protected_branch = @project.protected_branches.new
         @protected_tag = @project.protected_tags.new
+        @protected_tags_count = @protected_tags.reduce(0) { |sum, tag| sum + tag.matching(tag_names).size }
 
-        @protected_tags_count = @protected_tags.reduce(0) { |sum, tag| sum + tag.matching(@project.repository.tag_names).size }
         load_gon_index
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -139,11 +153,11 @@ module Projects
       end
 
       def protectable_tags_for_dropdown
-        { open_tags: ProtectableDropdown.new(@project, :tags).hash }
+        { open_tags: ProtectableDropdown.new(@project, :tags, ref_names: tag_names).array }
       end
 
       def protectable_branches_for_dropdown
-        { open_branches: ProtectableDropdown.new(@project, :branches).hash }
+        { open_branches: ProtectableDropdown.new(@project, :branches, ref_names: branch_names).array }
       end
 
       def define_deploy_token_variables

@@ -91,11 +91,11 @@ export default {
     </template>
     <div class="row">
       <div
-        class="col-md-5 order-md-last col-12 svg-content svg-225 gl-mt-5 md:!-gl-mt-2 md:gl-pt-2"
+        class="gl-col-md-5 order-md-last gl-col-12 svg-content svg-225 gl-mt-5 @md/panel:gl-pt-2 md:!-gl-mt-2"
       >
         <img data-testid="pipeline-image" :src="pipelineSvgPath" />
       </div>
-      <div class="col-md-7 order-md-first col-12">
+      <div class="gl-col-md-7 order-md-first gl-col-12">
         <div class="ml-6 gl-pt-5">
           <p class="gl-mt-2">
             <gl-sprintf :message="$options.SP_HELP_CONTENT">

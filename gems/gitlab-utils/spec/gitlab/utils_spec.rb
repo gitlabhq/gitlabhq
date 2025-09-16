@@ -807,4 +807,103 @@ RSpec.describe Gitlab::Utils, feature_category: :shared do
       end
     end
   end
+
+  describe '.uuid_v7' do
+    # Helper method to get current time with precision based on extra_timestamp_bits
+    def current_uuid7_time(extra_timestamp_bits: 0)
+      denominator = (1 << extra_timestamp_bits).to_r
+      Process.clock_gettime(Process::CLOCK_REALTIME, :nanosecond)
+        .then { |ns| ((ns / 1_000_000r) * denominator).floor / denominator }
+        .then { |ms| Time.at(ms / 1000r, in: "+00:00") }
+    end
+
+    # Helper method to extract timestamp from UUID v7
+    def get_uuid7_time(uuid, extra_timestamp_bits: 0)
+      denominator     = (1 << extra_timestamp_bits) * 1000r
+      extra_chars     = extra_timestamp_bits / 4
+      last_char_bits  = extra_timestamp_bits % 4
+      extra_chars    += 1 if last_char_bits != 0
+      timestamp_re    = /\A(\h{8})-(\h{4})-7(\h{#{extra_chars}})/
+      timestamp_chars = uuid.match(timestamp_re).captures.join
+      timestamp       = timestamp_chars.to_i(16)
+      timestamp     >>= 4 - last_char_bits unless last_char_bits == 0
+      timestamp /= denominator
+      Time.at(timestamp, in: "+00:00")
+    end
+
+    context 'without extra_timestamp_bits' do
+      it 'generates a valid UUID v7 with correct format' do
+        uuid = described_class.uuid_v7
+        expect(uuid).to match(/\A\h{8}-\h{4}-7\h{3}-[89ab]\h{3}-\h{12}\z/)
+      end
+
+      it 'generates UUID with timestamp within expected range' do
+        t1 = current_uuid7_time
+        uuid = described_class.uuid_v7
+        t3 = current_uuid7_time
+
+        t2 = get_uuid7_time(uuid)
+
+        expect(t1).to be <= t2
+        expect(t2).to be <= t3
+      end
+
+      it 'generates unique UUIDs' do
+        uuid1 = described_class.uuid_v7
+        uuid2 = described_class.uuid_v7
+
+        expect(uuid1).not_to eq(uuid2)
+      end
+    end
+
+    context 'with extra_timestamp_bits' do
+      where(:extra_timestamp_bits) do
+        (0..12).to_a
+      end
+
+      with_them do
+        it 'generates valid UUID v7 with correct format' do
+          uuid = described_class.uuid_v7(extra_timestamp_bits: extra_timestamp_bits)
+          expect(uuid).to match(/\A\h{8}-\h{4}-7\h{3}-[89ab]\h{3}-\h{12}\z/)
+        end
+
+        it 'generates UUID with timestamp within expected range' do
+          t1 = current_uuid7_time(extra_timestamp_bits: extra_timestamp_bits)
+          uuid = described_class.uuid_v7(extra_timestamp_bits: extra_timestamp_bits)
+          t3 = current_uuid7_time(extra_timestamp_bits: extra_timestamp_bits)
+
+          t2 = get_uuid7_time(uuid, extra_timestamp_bits: extra_timestamp_bits)
+
+          expect(t1).to be <= t2
+          expect(t2).to be <= t3
+        end
+      end
+    end
+
+    context 'with invalid extra_timestamp_bits' do
+      it 'raises ArgumentError for negative values' do
+        expect { described_class.uuid_v7(extra_timestamp_bits: -1) }
+          .to raise_error(ArgumentError, 'extra_timestamp_bits must be in 0..12, got: -1')
+      end
+
+      it 'raises ArgumentError for values greater than 12' do
+        expect { described_class.uuid_v7(extra_timestamp_bits: 13) }
+          .to raise_error(ArgumentError, 'extra_timestamp_bits must be in 0..12, got: 13')
+      end
+
+      it 'raises ArgumentError for non-integer values' do
+        expect { described_class.uuid_v7(extra_timestamp_bits: 'invalid') }
+          .to raise_error(ArgumentError)
+      end
+    end
+
+    context 'with monotonicity' do
+      it 'maintains order for UUIDs with maximum extra_timestamp_bits' do
+        uuids = Array.new(5) { described_class.uuid_v7(extra_timestamp_bits: 12) }
+        timestamps = uuids.map { |uuid| get_uuid7_time(uuid, extra_timestamp_bits: 12) }
+
+        expect(timestamps).to eq(timestamps.sort)
+      end
+    end
+  end
 end

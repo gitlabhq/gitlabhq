@@ -22,7 +22,7 @@ module DevOpsReportHelper
     if score < 33.33
       {
         label: s_('DevopsReport|Low'),
-        variant: 'muted'
+        variant: 'neutral'
       }
     elsif score < 66.66
       {

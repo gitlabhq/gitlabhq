@@ -167,7 +167,6 @@ Rails/Date:
     - 'spec/requests/api/graphql/group/milestones_spec.rb'
     - 'spec/requests/api/graphql/mutations/work_items/create_spec.rb'
     - 'spec/requests/api/graphql/mutations/work_items/update_spec.rb'
-    - 'spec/requests/api/graphql/work_item_spec.rb'
     - 'spec/requests/api/internal/base_spec.rb'
     - 'spec/requests/api/personal_access_tokens_spec.rb'
     - 'spec/requests/api/project_statistics_spec.rb'

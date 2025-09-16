@@ -24,11 +24,11 @@ export const parseQueryTextWithFrontmatter = (text) => {
   };
 };
 
-export const parseQuery = async (query, config) => {
+export const parseQuery = async (query, { groupBy, aggregate, ...config }) => {
   const { output, success, variables, fields } = await glql.compile(query, {
     ...config,
     ...extractGroupOrProject(),
-    aggregate: glqlAggregationEnabled() ? config.aggregate : undefined,
+    ...(glqlAggregationEnabled() ? { groupBy, aggregate } : {}),
     username: gon.current_username,
     featureFlags: glqlFeatureFlags(),
   });

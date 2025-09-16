@@ -5,8 +5,11 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pipeline_composition do
   include StubRequests
 
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { project.owner }
+
   let(:variables) { Gitlab::Ci::Variables::Collection.new([{ 'key' => 'GITLAB_TOKEN', 'value' => 'secret_file', 'masked' => true }]) }
-  let(:context_params) { { sha: '12345', variables: variables } }
+  let(:context_params) { { project: project, sha: project.commit.sha, user: user, variables: variables } }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
   let(:params) { { remote: location } }
   let(:remote_file) { described_class.new(params, context) }
@@ -299,8 +302,8 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote, feature_category: :pi
 
     it do
       is_expected.to eq(
-        context_project: nil,
-        context_sha: '12345',
+        context_project: project.full_path,
+        context_sha: project.commit.sha,
         type: :remote,
         location: 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml',
         raw: 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.[MASKED]xxx.yml',

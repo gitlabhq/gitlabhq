@@ -305,7 +305,7 @@ export default {
     <user-access-role-badge
       v-if="isAuthor"
       v-gl-tooltip
-      class="gl-mr-3 gl-hidden sm:gl-block"
+      class="gl-mr-3 gl-hidden @sm/panel:gl-block"
       :title="displayAuthorBadgeText"
     >
       {{ __('Author') }}
@@ -313,7 +313,7 @@ export default {
     <user-access-role-badge
       v-if="accessLevel"
       v-gl-tooltip
-      class="gl-mr-3 gl-hidden sm:gl-block"
+      class="gl-mr-3 gl-hidden @sm/panel:gl-block"
       :title="displayMemberBadgeText"
     >
       {{ accessLevel }}
@@ -321,7 +321,7 @@ export default {
     <user-access-role-badge
       v-else-if="isContributor"
       v-gl-tooltip
-      class="gl-mr-3 gl-hidden sm:gl-block"
+      class="gl-mr-3 gl-hidden @sm/panel:gl-block"
       :title="displayContributorBadgeText"
     >
       {{ __('Contributor') }}

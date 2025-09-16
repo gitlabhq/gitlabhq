@@ -7,7 +7,7 @@ feature_categories:
 description: Represents a root namespace that has zoekt enabled
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138992
 milestone: '16.8'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   root_namespace_id: namespaces
 table_size: small

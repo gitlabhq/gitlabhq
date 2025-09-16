@@ -12,6 +12,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
   let(:ref_name) { 'refs/heads/master' }
 
   before do
+    stub_feature_flags(ci_validate_config_options: false)
     project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
     stub_ci_pipeline_to_return_yaml_file
   end
@@ -228,10 +229,10 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
               stub_ci_pipeline_yaml_file(config)
             end
 
-            it 'is cancelable' do
+            it 'is not cancelable' do
               pipeline = execute_service.payload
 
-              expect(pipeline.builds.find_by(name: 'rspec').interruptible).to be_nil
+              expect(pipeline.builds.find_by(name: 'rspec').interruptible).to be_falsy
             end
           end
 
@@ -264,6 +265,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
         context 'interruptible builds' do
           before do
+            stub_feature_flags(stop_writing_builds_metadata: false)
             stub_ci_pipeline_yaml_file(YAML.dump(config))
           end
 
@@ -300,19 +302,21 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
             }
           end
 
+          # Remove metadata interruptible with stop_writing_builds_metadata
           it 'properly configures interruptible status' do
             interruptible_status =
               pipeline_on_previous_commit
                 .builds
                 .joins(:metadata)
-                .pluck(:name, "#{Ci::BuildMetadata.quoted_table_name}.interruptible")
+                .joins(:job_definition)
+                .pluck(:name, "#{Ci::BuildMetadata.quoted_table_name}.interruptible", "#{Ci::JobDefinition.quoted_table_name}.interruptible")
 
             expect(interruptible_status).to contain_exactly(
-              ['build_1_1', true],
-              ['build_1_2', true],
-              ['build_2_1', true],
-              ['build_3_1', false],
-              ['build_4_1', nil]
+              ['build_1_1', true, true],
+              ['build_1_2', true, true],
+              ['build_2_1', true, true],
+              ['build_3_1', false, false],
+              ['build_4_1', nil, false]
             )
           end
 
@@ -765,7 +769,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         stub_ci_pipeline_yaml_file(YAML.dump({
           rspec: { script: 'rspec', retry: retry_value }
         }))
-        rspec_job.update!(options: { retry: retry_value })
+        allow(rspec_job).to receive(:options).and_return({ retry: retry_value })
       end
 
       context 'as an integer' do
@@ -785,7 +789,7 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       end
     end
 
-    context 'with resource group' do
+    shared_examples 'with resource group' do
       context 'when resource group is defined' do
         before do
           config = YAML.dump(
@@ -823,7 +827,9 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
       end
     end
 
-    context 'when resource group is defined for review app deployment' do
+    it_behaves_like 'with resource group'
+
+    shared_examples 'when resource group is defined for review app deployment' do
       before do
         config = YAML.dump(
           review_app: {
@@ -872,6 +878,26 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
         end
 
         expect(execute_service.payload).to be_created_successfully
+      end
+    end
+
+    it_behaves_like 'when resource group is defined for review app deployment'
+
+    context 'when FF `stop_writing_builds_metadata` is disabled' do
+      before do
+        stub_feature_flags(stop_writing_builds_metadata: false)
+      end
+
+      it_behaves_like 'with resource group'
+      it_behaves_like 'when resource group is defined for review app deployment'
+
+      context 'when FF `read_from_new_ci_destinations` is disabled' do
+        before do
+          stub_feature_flags(read_from_new_ci_destinations: false)
+        end
+
+        it_behaves_like 'with resource group'
+        it_behaves_like 'when resource group is defined for review app deployment'
       end
     end
 

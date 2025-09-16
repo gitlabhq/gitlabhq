@@ -113,6 +113,13 @@ RSpec.describe AbuseReportsController, :with_organization_url_helpers, feature_c
         end.to change { AbuseReport.count }.by(1)
       end
 
+      it 'sets organization_id from the reporter' do
+        post abuse_reports_path(abuse_report: attrs)
+
+        abuse_report = AbuseReport.last
+        expect(abuse_report.organization_id).to eq(reporter.organization_id)
+      end
+
       it 'calls notify' do
         expect_next_instance_of(AbuseReport) do |instance|
           expect(instance).to receive(:notify)

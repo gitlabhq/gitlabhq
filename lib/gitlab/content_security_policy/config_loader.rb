@@ -82,8 +82,8 @@ module Gitlab
           # We need both Websocket and HTTP URLs because Vite will attempt to ping
           # the HTTP URL if the Websocket isn't available:
           # https://github.com/vitejs/vite/blob/899d9b1d272b7057aafc6fa01570d40f288a473b/packages/vite/src/client/client.ts#L320-L327
-          hmr_ws_url = Gitlab::Utils.append_path(ws_origin, 'vite-dev/')
-          http_path = Gitlab::Utils.append_path(ViteRuby.config.origin, 'vite-dev/')
+          hmr_ws_url = Gitlab::Utils.append_path(ws_origin, 'assets/vite/')
+          http_path = Gitlab::Utils.append_path(ViteRuby.config.origin, 'assets/vite/')
 
           # http_path is used for openInEditorHost feature
           # https://devtools.vuejs.org/getting-started/open-in-editor#customize-request

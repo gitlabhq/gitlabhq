@@ -95,13 +95,6 @@ module Resolvers
       validates mutually_exclusive: [:release_tag, :release_tag_wildcard_id]
 
       class << self
-        def resolver_complexity(args, child_complexity:)
-          complexity = super
-          complexity += 2 if args[:labelName]
-
-          complexity
-        end
-
         def accept_release_tag
           argument :release_tag, [GraphQL::Types::String],
             required: false,

@@ -27,12 +27,12 @@ module Gitlab
           @use_primary = true
         end
 
-        def use_primary
+        def use_primary(write_fallback: true)
           used_primary = @use_primary
           @use_primary = true
           yield
         ensure
-          @use_primary = used_primary || @performed_write
+          @use_primary = used_primary || (write_fallback && @performed_write)
         end
 
         def ignore_writes

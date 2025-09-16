@@ -12,7 +12,7 @@ RSpec.describe Gitlab::GithubImport::Attachments::ImportMergeRequestWorker, feat
       instance_double('Project', full_path: 'foo/bar', id: 1, import_state: import_state)
     end
 
-    let(:client) { instance_double('Gitlab::GithubImport::Client') }
+    let(:client) { instance_double('Gitlab::GithubImport::Client', web_endpoint: "https://github.com") }
 
     let(:mr_hash) do
       {

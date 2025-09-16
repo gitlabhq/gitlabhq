@@ -59,7 +59,10 @@ module Packages
 
     scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
     scope :with_name, ->(name) { where(name: name) }
-    scope :with_name_like, ->(name) { where(arel_table[:name].matches(name)) }
+
+    scope :with_name_like, ->(name, case_sensitive: false) do
+      where(arel_table[:name].matches(name, nil, case_sensitive))
+    end
 
     scope :with_case_insensitive_version, ->(version) do
       where('LOWER(version) = ?', version.downcase)
@@ -135,7 +138,7 @@ module Packages
         conan: 'Packages::Conan::Package',
         rpm: 'Packages::Rpm::Package',
         debian: 'Packages::Debian::Package',
-        composer: 'Packages::Composer::Package',
+        composer: 'Packages::Composer::Sti::Package',
         helm: 'Packages::Helm::Package',
         generic: 'Packages::Generic::Package',
         pypi: 'Packages::Pypi::Package',
@@ -192,14 +195,15 @@ module Packages
     end
 
     def versions
-      project.packages
-             .preload_pipelines
-             .including_tags
-             .displayable
-             .with_name(name)
-             .where.not(version: version)
-             .with_package_type(package_type)
-             .order(:version)
+      self.class.inheritance_column_to_class_map[package_type.to_sym]
+                .constantize
+                .for_projects(project)
+                .preload_pipelines
+                .including_tags
+                .displayable
+                .with_name(name)
+                .where.not(version: version)
+                .order(:version)
     end
 
     # Technical debt: to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/281937

@@ -93,12 +93,16 @@ module Admin
       end
 
       def record_event(action)
+        organization_id = abuse_report.organization_id
         reason = params[:reason]
         unless reason.in?(ResourceEvents::AbuseReportEvent.reasons.keys)
           reason = ResourceEvents::AbuseReportEvent.reasons[:other]
         end
 
-        abuse_report.events.create(action: action, user: current_user, reason: reason, comment: params[:comment])
+        abuse_report.events.create(
+          action: action, user: current_user, reason: reason, comment: params[:comment],
+          organization_id: organization_id
+        )
       end
     end
   end

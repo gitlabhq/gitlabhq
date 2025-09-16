@@ -18,7 +18,7 @@ RSpec.describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redi
 
   let_it_be(:milestone) { create(:milestone, project: project) }
 
-  let(:client) { instance_double(Gitlab::GithubImport::Client) }
+  let(:client) { instance_double(Gitlab::GithubImport::Client, web_endpoint: 'https://github.com') }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
   let(:description) { 'This is my issue' }

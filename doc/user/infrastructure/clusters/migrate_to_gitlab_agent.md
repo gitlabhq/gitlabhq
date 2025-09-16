@@ -183,12 +183,22 @@ To migrate from Auto DevOps:
      If you are not sure what your agent's context is, edit your `.gitlab-ci.yml` file and add a job to see the available contexts:
 
      ```yaml
-      deploy:
-       image:
-         name: bitnami/kubectl:latest
-         entrypoint: [""]
+     deploy:
+       image: debian:13-slim
+       variables:
+         KUBECTL_VERSION: v1.34
+         DEBIAN_FRONTEND: noninteractive
        script:
-       - kubectl config get-contexts
+         # Follows https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-using-native-package-management
+         - apt-get update
+         - apt-get install -y --no-install-recommends apt-transport-https ca-certificates curl gnupg
+         - curl --fail --silent --show-error --location "https://pkgs.k8s.io/core:/stable:/${KUBECTL_VERSION}/deb/Release.key" | gpg --dearmor --output /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+         - chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+         - echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/${KUBECTL_VERSION}/deb/ /" | tee /etc/apt/sources.list.d/kubernetes.list
+         - chmod 644 /etc/apt/sources.list.d/kubernetes.list
+         - apt-get update
+         - apt-get install -y --no-install-recommends kubectl
+         - kubectl config get-contexts
       ```
 
    - Add a key called `KUBE_NAMESPACE` with a value of the Kubernetes namespace for your deployments to target. Set the same environment scope.

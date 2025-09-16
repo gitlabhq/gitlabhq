@@ -13,6 +13,7 @@ import {
   SORT_LABEL_STARS,
   SORT_LABEL_STORAGE_SIZE,
   SORT_LABEL_UPDATED,
+  PAGINATION_TYPE_KEYSET,
 } from '~/groups_projects/constants';
 import projectsQuery from './graphql/queries/projects.query.graphql';
 
@@ -30,6 +31,7 @@ const baseTab = {
     type: TYPES.filter,
   },
   queryPath: 'projects',
+  paginationType: PAGINATION_TYPE_KEYSET,
   formatter: (projects) =>
     formatGraphQLProjects(projects, (project) => {
       const adminPath = joinPaths('/', gon.relative_url_root, '/admin/projects', project.fullPath);

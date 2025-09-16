@@ -317,6 +317,11 @@ RSpec.describe API::Snippets, :aggregate_failures, factory_default: :keep, featu
       end
     end
 
+    it_behaves_like 'restricted visibility level for API', 'snippet' do
+      let(:endpoint) { '/snippets' }
+      let(:params_with_public_visibility) { params }
+    end
+
     context 'with files parameter' do
       it_behaves_like 'snippet creation with files parameter'
 

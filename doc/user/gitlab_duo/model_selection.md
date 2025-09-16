@@ -10,24 +10,15 @@ title: GitLab Duo model selection
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro or Enterprise
-- Offering: GitLab.com
-- Status: Private beta
-- Available on GitLab Duo with self-hosted models: Not supported
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17570) for top-level groups in GitLab 18.1 with a [flag](../../administration/feature_flags/_index.md) named `ai_model_switching`. Disabled by default.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/18818) in GitLab 18.4.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 Every GitLab Duo feature has a pre-selected default large language model (LLM), chosen by GitLab.
 
@@ -38,6 +29,25 @@ If you do not want to use the default LLM for each feature, or have specific req
 If you select a specific LLM for a feature, the feature uses that LLM until you select another.
 
 ## Select an LLM for a feature
+
+### On GitLab.com
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17570) for top-level groups in GitLab 18.1 with a [flag](../../administration/feature_flags/_index.md) named `ai_model_switching`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/526307) to beta in GitLab 18.4.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/526307) in GitLab 18.4.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+On GitLab.com, you can select a model for top-level groups.
 
 Prerequisites:
 
@@ -50,19 +60,20 @@ Prerequisites:
 To select a different LLM for a feature:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > GitLab Duo**.
+1. Select **Settings** > **GitLab Duo**.
 
-   If you **GitLab Duo** is not visible, ensure you have GitLab Duo Core, Pro or Enterprise turned on for the group.
+   If **GitLab Duo** is not visible, ensure you have GitLab Duo Core, Pro, or Enterprise turned on for the group.
 1. Select **Configure features**.
 1. For the feature you want to configure, select an LLM from the dropdown list.
 
-![The GitLab UI for selecting a model.](img/configure_model_selections_v18_1.png)
+![The GitLab UI for selecting a model at the top-group level.](img/configure_model_selections_v18_1.png)
 
-## Assign a default GitLab Duo namespace
+#### Assign a default GitLab Duo namespace
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/552081) in GitLab 18.3 with a [flag](../../administration/feature_flags/_index.md) named `ai_user_default_duo_namespace`. Disabled by default.
+- [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/560319) in GitLab 18.4.
 
 {{< /history >}}
 
@@ -84,11 +95,46 @@ If this happens, GitLab Duo uses the LLMs you have selected in your default name
 
 To select a default namespace:
 
-1. On the left sidebar, select your avatar.
+1. In GitLab.com, on the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. Go to the **Behavior** section.
-1. From the **Default GitLab Duo group** dropdown list, select the namespace to set as your default.
+1. From the **Default GitLab Duo namespace** dropdown list, select the namespace to set as your default.
 1. Select **Save changes**.
+
+### On GitLab Self-Managed
+
+{{< details >}}
+
+- Add-on: GitLab Duo Enterprise
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19144) in GitLab 18.4 with a [flag](../../administration/feature_flags/_index.md) named `instance_level_model_selection`. Set to beta and disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+On GitLab Self-Managed, you can select a model for a feature that applies to the entire instance. If you don't select a specific model, all GitLab Duo features inherit the default GitLab model.
+
+Prerequisites:
+
+- You must be an administrator.
+
+To select a model for a feature:
+
+1. In the left sidebar, at the bottom, select **Admin**.
+1. Select **GitLab Duo**.
+1. On **Configure AI features**, select **Configure models for GitLab Duo**. If **Configure AI features** is not displayed, verify that the GitLab Duo Enterprise add-on is configured for your instance.
+1. For the feature you want to configure, select an LLM from the dropdown list.
 
 ## Troubleshooting
 
@@ -109,9 +155,9 @@ If you are assigned a seat in a project that has a specific LLM selected for [co
 
 This might cause increased latency with code completion requests.
 
-### Agentic Chat incompatibility
+### Agentic Chat compatibility
 
-When a specific LLM is selected for GitLab Duo Chat or its sub-features, [GitLab Duo Agentic Chat](../gitlab_duo_chat/agentic_chat.md) is not available in that namespace.
+[Agentic Chat](../gitlab_duo_chat/agentic_chat.md) continues to use the default model regardless of the model you select for [Classic Duo Chat](../gitlab_duo_chat/_index.md) or its sub-features.
 
 ### No default GitLab Duo namespace
 

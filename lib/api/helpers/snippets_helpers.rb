@@ -6,7 +6,7 @@ module API
       extend Grape::API::Helpers
 
       params :raw_file_params do
-        requires :file_path, type: String, file_path: true, desc: 'The url encoded path to the file, e.g. lib%2Fclass%2Erb'
+        requires :file_path, type: String, file_path: true, desc: 'The URL-encoded path to the file, like lib%2Fclass%2Erb'
         requires :ref, type: String, desc: 'The name of branch, tag or commit'
       end
 

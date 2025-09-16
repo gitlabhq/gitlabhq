@@ -37,21 +37,21 @@ module Gitlab
         assignee_ids = issue_attributes.delete('assignee_ids')
         issue_id = insert_and_return_id(issue_attributes, Issue)
 
-        label_issue(project_id, issue_id, label_ids)
+        label_issue(project_id, issue_id, label_ids, issue_attributes['namespace_id'])
         assign_issue(project_id, issue_id, assignee_ids)
 
         issue_id
       end
 
-      def label_issue(project_id, issue_id, label_ids)
+      def label_issue(project_id, issue_id, label_ids, namespace_id)
         label_link_attrs = label_ids.to_a.map do |label_id|
-          build_label_attrs(issue_id, label_id.to_i)
+          build_label_attrs(issue_id, label_id.to_i, namespace_id)
         end
 
         import_label_id = JiraImport.get_import_label_id(project_id)
         return unless import_label_id
 
-        label_link_attrs << build_label_attrs(issue_id, import_label_id.to_i)
+        label_link_attrs << build_label_attrs(issue_id, import_label_id.to_i, namespace_id)
 
         ApplicationRecord.legacy_bulk_insert(LabelLink.table_name, label_link_attrs) # rubocop:disable Gitlab/BulkInsert
       end
@@ -64,14 +64,15 @@ module Gitlab
         ApplicationRecord.legacy_bulk_insert(IssueAssignee.table_name, assignee_attrs) # rubocop:disable Gitlab/BulkInsert
       end
 
-      def build_label_attrs(issue_id, label_id)
+      def build_label_attrs(issue_id, label_id, namespace_id)
         time = Time.current
         {
           label_id: label_id,
           target_id: issue_id,
           target_type: 'Issue',
           created_at: time,
-          updated_at: time
+          updated_at: time,
+          namespace_id: namespace_id
         }
       end
     end

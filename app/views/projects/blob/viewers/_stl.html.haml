@@ -1,7 +1,7 @@
 .file-content.is-stl-loading
-  .text-center#js-stl-viewer{ data: { endpoint: blob_raw_path } }
+  .gl-text-center#js-stl-viewer{ data: { endpoint: blob_raw_path } }
     = gl_loading_icon(size: "md", css_class: "gl-my-4")
-  .text-center.gl-mt-3.gl-mb-3.stl-controls
+  .gl-text-center.gl-mt-3.gl-mb-3.stl-controls
     .btn-group
       = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-material-changer', data: { material: 'wireframe' } }) do
         = _('Wireframe')

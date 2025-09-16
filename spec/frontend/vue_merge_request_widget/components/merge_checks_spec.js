@@ -53,6 +53,7 @@ function factory(mountFn, { canMerge = true, mergeabilityChecks = [] } = {}) {
           data: {
             project: {
               id: '1',
+              allowMergeOnSkippedPipeline: true,
               mergeRequest: {
                 id: '2',
                 rebaseInProgress: false,

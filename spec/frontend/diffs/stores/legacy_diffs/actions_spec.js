@@ -2469,6 +2469,36 @@ describe('legacyDiffs actions', () => {
       );
     });
 
+    it('does nothing for lines in removed files', () => {
+      return testAction(
+        store.fetchLinkedExpandedLine,
+        { fileHash: 'foo', oldLine: 10, newLine: 0 },
+        {
+          linkedFileHash: 'foo',
+          diffFiles: [
+            { file_hash: 'foo', highlighted_diff_lines: [{ old_line: 10, new_line: 10 }] },
+          ],
+        },
+        [],
+        [],
+      );
+    });
+
+    it('does nothing for lines in added files', () => {
+      return testAction(
+        store.fetchLinkedExpandedLine,
+        { fileHash: 'foo', oldLine: 0, newLine: 10 },
+        {
+          linkedFileHash: 'foo',
+          diffFiles: [
+            { file_hash: 'foo', highlighted_diff_lines: [{ old_line: 10, new_line: 10 }] },
+          ],
+        },
+        [],
+        [],
+      );
+    });
+
     it('propagates the error when fetching expanded line data', () => {
       const fakeError = new Error();
       store.loadMoreLines.mockRejectedValueOnce(fakeError);

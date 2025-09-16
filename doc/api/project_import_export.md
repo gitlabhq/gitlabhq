@@ -60,13 +60,13 @@ Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/430277)
 POST /projects/:id/export
 ```
 
-| Attribute | Type           | Required | Description                              |
-| --------- | -------------- | -------- | ---------------------------------------- |
-| `id`                  | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `upload[url]`         | string | yes      | The URL to upload the project. |
-| `description`         | string | no | Overrides the project description. |
-| `upload`              | hash | no | Hash that contains the information to upload the exported project to a web server. |
-| `upload[http_method]` | string | no      | The HTTP method to upload the exported project. Only `PUT` and `POST` methods allowed. Default is `PUT`. |
+| Attribute             | Type              | Required | Description |
+|-----------------------|-------------------|----------|-------------|
+| `id`                  | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `upload[url]`         | string            | Yes      | The URL to upload the project. |
+| `description`         | string            | No       | Overrides the project description. |
+| `upload`              | hash              | No       | Hash that contains the information to upload the exported project to a web server. |
+| `upload[http_method]` | string            | No       | The HTTP method to upload the exported project. Only `PUT` and `POST` methods allowed. Default is `PUT`. |
 
 ```shell
 curl --request POST \
@@ -90,9 +90,9 @@ Get the status of export.
 GET /projects/:id/export
 ```
 
-| Attribute | Type           | Required | Description                              |
-| --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ```shell
 curl --request GET \
@@ -142,7 +142,7 @@ GET /projects/:id/export/download
 
 | Attribute | Type              | Required | Description                              |
 | --------- | ----------------- | -------- | ---------------------------------------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ```shell
 curl --request GET \
@@ -161,7 +161,7 @@ ls *export.tar.gz
 
 {{< history >}}
 
-- Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0 and backported to GitLab 15.11.1 and GitLab 15.10.5.
+- Requirement for Maintainer role instead of Developer role introduced in GitLab 16.0.
 
 {{< /history >}}
 
@@ -169,14 +169,14 @@ ls *export.tar.gz
 POST /projects/import
 ```
 
-| Attribute   | Type           | Required | Description                              |
-| ----------- | -------------- | -------- | ---------------------------------------- |
-| `file`      | string | yes | The file to be uploaded. |
-| `path`      | string | yes | Name and path for new project. |
-| `name`      | string | no | The name of the project to be imported. Defaults to the path of the project if not provided. |
-| `namespace` | integer or string | no | The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group to import to. |
-| `override_params` | Hash | no | Supports all fields defined in the [Project API](projects.md). |
-| `overwrite` | boolean | no | If there is a project with the same path the import overwrites it. Defaults to `false`. |
+| Attribute         | Type              | Required | Description |
+|-------------------|-------------------|----------|-------------|
+| `file`            | string            | Yes      | The file to be uploaded. |
+| `path`            | string            | Yes      | Name and path for new project. |
+| `name`            | string            | No       | The name of the project to be imported. Defaults to the path of the project if not provided. |
+| `namespace`       | integer or string | No       | The ID or path of the namespace to import the project to. Defaults to the current user's namespace.<br/><br/> Requires at least the Maintainer role on the destination group to import to. |
+| `override_params` | hash              | No       | Supports all fields defined in the [Project API](projects.md). |
+| `overwrite`       | boolean           | No       | If there is a project with the same path the import overwrites it. Defaults to `false`. |
 
 The override parameters passed take precedence over all values defined inside the export file.
 
@@ -255,12 +255,12 @@ POST /projects/remote-import
 
 | Attribute         | Type              | Required | Description                              |
 | ----------------- | ----------------- | -------- | ---------------------------------------- |
-| `path`            | string            | yes      | Name and path for the new project. |
-| `url`             | string            | yes      | URL for the file to import. |
-| `name`            | string            | no       | The name of the project to import. If not provided, defaults to the path of the project. |
-| `namespace`       | integer or string | no       | The ID or path of the namespace to import the project to. Defaults to the current user's namespace. |
-| `overwrite`       | boolean           | no       | Whether to overwrite a project with the same path when importing. Defaults to `false`. |
-| `override_params` | Hash              | no       | Supports all fields defined in the [Project API](projects.md). |
+| `path`            | string            | Yes      | Name and path for the new project. |
+| `url`             | string            | Yes      | URL for the file to import. |
+| `name`            | string            | No       | The name of the project to import. If not provided, defaults to the path of the project. |
+| `namespace`       | integer or string | No       | The ID or path of the namespace to import the project to. Defaults to the current user's namespace. |
+| `overwrite`       | boolean           | No       | Whether to overwrite a project with the same path when importing. Defaults to `false`. |
+| `override_params` | hash              | No       | Supports all fields defined in the [Project API](projects.md). |
 
 The passed override parameters take precedence over all values defined in the export file.
 
@@ -316,9 +316,9 @@ POST /projects/import-relation
 
 | Attribute  | Type   | Required | Description                                                                                                    |
 |------------|--------|----------|----------------------------------------------------------------------------------------------------------------|
-| `file`     | string | yes      | The file to be uploaded.                                                                                       |
-| `path`     | string | yes      | Name and path for new project.                                                                                 |
-| `relation` | string | yes      | The name of the relation to import. Must be one of `issues`, `milestones`, `ci_pipelines` or `merge_requests`. |
+| `file`     | string | Yes      | The file to be uploaded.                                                                                       |
+| `path`     | string | Yes      | Name and path for new project.                                                                                 |
+| `relation` | string | Yes      | The name of the relation to import. Must be one of `issues`, `milestones`, `ci_pipelines` or `merge_requests`. |
 
 To upload a file from your file system, use the `--form` option, which causes
 cURL to post data using the header `Content-Type: multipart/form-data`.
@@ -361,7 +361,7 @@ GET /projects/:id/relation-imports
 
 | Attribute | Type               | Required | Description                                                                          |
 | --------- |--------------------| -------- |--------------------------------------------------------------------------------------|
-| `id`      | integer or string  | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string  | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ```shell
 curl --request GET \
@@ -401,16 +401,16 @@ Status can be one of:
 POST /projects/remote-import-s3
 ```
 
-| Attribute           | Type           | Required | Description                              |
-| ------------------- | -------------- | -------- | ---------------------------------------- |
-| `access_key_id`     | string         | yes      | [AWS S3 access key ID](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html). |
-| `bucket_name`       | string         | yes      | [AWS S3 bucket name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html) where the file is stored. |
-| `file_key`          | string         | yes      | [AWS S3 file key](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingObjects.html) to identify the file. |
-| `path`              | string         | yes      | The full path of the new project. |
-| `region`            | string         | yes      | [AWS S3 region name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html#Regions) where the file is stored. |
-| `secret_access_key` | string         | yes      | [AWS S3 secret access key](https://docs.aws.amazon.com/IAM/latest/UserGuide/security-creds.html#access-keys-and-secret-access-keys). |
-| `name`              | string         | no       | The name of the project to import. If not provided, defaults to the path of the project. |
-| `namespace`         | integer or string | no       | The ID or path of the namespace to import the project to. Defaults to the current user's namespace. |
+| Attribute           | Type              | Required | Description |
+| ------------------- | ----------------- | -------- | ----------- |
+| `access_key_id`     | string            | Yes      | [AWS S3 access key ID](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html). |
+| `bucket_name`       | string            | Yes      | [AWS S3 bucket name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html) where the file is stored. |
+| `file_key`          | string            | Yes      | [AWS S3 file key](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingObjects.html) to identify the file. |
+| `path`              | string            | Yes      | The full path of the new project. |
+| `region`            | string            | Yes      | [AWS S3 region name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html#Regions) where the file is stored. |
+| `secret_access_key` | string            | Yes      | [AWS S3 secret access key](https://docs.aws.amazon.com/IAM/latest/UserGuide/security-creds.html#access-keys-and-secret-access-keys). |
+| `name`              | string            | No       | The name of the project to import. If not provided, defaults to the path of the project. |
+| `namespace`         | integer or string | No       | The ID or path of the namespace to import the project to. Defaults to the current user's namespace. |
 
 The passed override parameters take precedence over all values defined in the export file.
 
@@ -477,7 +477,7 @@ GET /projects/:id/import
 
 | Attribute | Type           | Required | Description                              |
 | --------- | -------------- | -------- | ---------------------------------------- |
-| `id`      | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 
 ```shell
 curl --request GET \

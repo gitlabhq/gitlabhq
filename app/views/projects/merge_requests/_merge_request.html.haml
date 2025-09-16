@@ -8,7 +8,7 @@
           %span.gl-sr-only
             = merge_request.title
 
-  .issuable-info-container.gl-flex-col.md:gl-flex-row.gl-gap-3
+  .issuable-info-container.gl-flex-col.gl-gap-3{ class: '@md/panel:gl-flex-row' }
     .issuable-main-info{ class: '!gl-mr-0' }
       .merge-request-title.title
         - if Feature.enabled?(:show_merge_request_status_draft, current_user) && merge_request.draft? && merge_request.state == 'opened'
@@ -24,7 +24,7 @@
       .issuable-info
         %span.issuable-reference.gl-inline-block
           #{issuable_reference(merge_request)}
-        %span.gl-hidden.sm:gl-inline
+        %span.gl-hidden{ class: '@sm/panel:gl-inline' }
           %span.issuable-authored.gl-inline-block{ class: '!gl-text-subtle' }
             &middot;
             #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(merge_request.created_at, placement: 'bottom'), user: link_to_member(merge_request.author, avatar: false, extra_class: '!gl-text-subtle') }}
@@ -45,7 +45,7 @@
               - presented_labels_sorted_by_title(merge_request.labels, merge_request.project).each do |label|
                 = link_to_label(label, type: :merge_request)
 
-    .gl-text-sm.gl-flex.gl-shrink-0.gl-self-start.gl-gap-1.gl-flex-row.gl-justify-between.gl-w-full.md:gl-w-auto{ class: 'md:!gl-flex-col' }
+    .gl-text-sm.gl-flex.gl-shrink-0.gl-self-start.gl-gap-1.gl-flex-row.gl-justify-between.gl-w-full{ class: '@md/panel:gl-w-auto @md/panel:!gl-flex-col' }
       %ul.controls.gl-gap-3.gl-pl-0.gl-self-end
         - if merge_request.merged?
           - merged_at = merge_request.merged_at ? l(merge_request.merged_at.to_time) : _("Merge date & time could not be determined")
@@ -70,6 +70,6 @@
         = render 'shared/merge_request_pipeline_status', merge_request: merge_request
 
       - if merge_request.updated_at != merge_request.created_at
-        .issuable-updated-at.gl-self-end.gl-hidden.sm:gl-inline-block.gl-text-subtle
+        .issuable-updated-at.gl-self-end.gl-hidden.gl-text-subtle{ class: '@sm/panel:gl-inline-block' }
           %span
             = _('updated %{time_ago}').html_safe % { time_ago: time_ago_with_tooltip(merge_request.updated_at, placement: 'bottom', html_class: 'merge_request_updated_ago') }

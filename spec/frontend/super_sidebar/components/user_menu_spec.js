@@ -46,8 +46,9 @@ describe('UserMenu component', () => {
         ...stubs,
       },
       provide: {
-        glFeatures: { globalTopbar: false },
         isImpersonating: false,
+        projectStudioAvailable: false,
+        projectStudioEnabled: false,
         ...provide,
       },
     });
@@ -103,14 +104,28 @@ describe('UserMenu component', () => {
   describe('Impersonate', () => {
     describe('when not impersonating another user', () => {
       it('does not render the "Stop impersonation" button', () => {
-        createWrapper({}, {}, { isImpersonating: false, glFeatures: { globalTopbar: true } });
+        createWrapper(
+          {},
+          {},
+          {
+            isImpersonating: false,
+            projectStudioEnabled: true,
+          },
+        );
         expect(findStopImpersonationButton().exists()).toBe(false);
       });
     });
 
     describe('when impersonating another user', () => {
       it('renders the "Stop impersonation" button', () => {
-        createWrapper({}, {}, { isImpersonating: true, glFeatures: { globalTopbar: true } });
+        createWrapper(
+          {},
+          {},
+          {
+            isImpersonating: true,
+            projectStudioEnabled: true,
+          },
+        );
         expect(findStopImpersonationButton().exists()).toBe(true);
       });
     });
@@ -563,6 +578,32 @@ describe('UserMenu component', () => {
         expect(item.exists()).toBe(false);
       });
     });
+  });
+
+  describe('Admin item', () => {
+    const findAdminLinkItem = () => wrapper.findByTestId('admin-link');
+
+    it.each`
+      projectStudioEnabled | isAdmin  | isRendered
+      ${false}             | ${false} | ${false}
+      ${false}             | ${true}  | ${false}
+      ${true}              | ${false} | ${false}
+      ${true}              | ${true}  | ${true}
+    `(
+      'admin link item rendered is $isRendered when project studio is $projectStudioEnabled and isAdmin is $isAdmin',
+      ({ projectStudioEnabled, isAdmin, isRendered }) => {
+        createWrapper(
+          {
+            admin_mode: {
+              user_is_admin: isAdmin,
+            },
+          },
+          {},
+          { projectStudioEnabled },
+        );
+        expect(findAdminLinkItem().exists()).toBe(isRendered);
+      },
+    );
   });
 
   describe('Admin Mode items', () => {

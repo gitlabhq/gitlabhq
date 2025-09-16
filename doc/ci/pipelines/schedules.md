@@ -12,32 +12,38 @@ title: Scheduled pipelines
 
 {{< /details >}}
 
-Use scheduled pipelines to run GitLab CI/CD [pipelines](_index.md) at regular intervals.
+Create pipeline schedules to run pipelines at regular intervals based on cron patterns.
+Use pipeline schedules for tasks that need to run on a time-based schedule rather than triggered by code changes.
 
-## Prerequisites
+Unlike pipelines triggered by commits or merge requests, scheduled pipelines run independently of code changes.
+This makes them suitable for tasks that need to happen regardless of development activity,
+such as keeping deployments current or running periodic maintenance.
 
-For a scheduled pipeline to run:
-
-- The schedule owner must have the Developer role. For pipelines on protected branches,
-  the schedule owner must be [allowed to merge](../../user/project/repository/branches/protected.md#protect-a-branch)
-  to the branch.
-- The `.gitlab-ci.yml` file must have valid syntax.
-
-Otherwise, the pipeline is not created. No error message is displayed.
-
-## Add a pipeline schedule
+## Create a pipeline schedule
 
 {{< history >}}
 
-- **Inputs** option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525504) in GitLab 17.11.
+- Inputs option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525504) in GitLab 17.11.
 
 {{< /history >}}
 
-To add a pipeline schedule:
+When you create a pipeline schedule, you become the schedule owner.
+The pipeline runs with your permissions and can access [protected environments](../environments/protected_environments.md)
+and use the [CI/CD job token](../jobs/ci_job_token.md) based on your access level.
+
+Prerequisites:
+
+- You must have at least the Developer role for the project.
+- For protected branches, you must have [merge permissions](../../user/project/repository/branches/protected.md#protect-a-branch)
+  for the target branch.
+- Your `.gitlab-ci.yml` file must have valid syntax. You can [validate your configuration](../yaml/lint.md) before scheduling.
+
+To create a pipeline schedule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipeline schedules**.
-1. Select **New schedule** and fill in the form.
+1. Select **Build** > **Pipeline schedules**.
+1. Select **New schedule**.
+1. Complete the fields.
    - **Interval Pattern**: Select one of the preconfigured intervals, or enter a custom
      interval in [cron notation](../../topics/cron/_index.md). You can use any cron value,
      but scheduled pipelines cannot run more frequently than the instance's
@@ -50,83 +56,86 @@ To add a pipeline schedule:
      and not in any other pipeline run. Inputs are recommended for pipeline configuration instead of variables
      because they offer improved security and flexibility.
 
-If the project already has the [maximum number of pipeline schedules](../../administration/instance_limits.md#number-of-pipeline-schedules),
-you must delete unused schedules before you can add another.
+If the project has reached the [maximum number of pipeline schedules](../../administration/instance_limits.md#number-of-pipeline-schedules),
+delete unused schedules before adding another.
 
 ## Edit a pipeline schedule
 
-The owner of a pipeline schedule can edit it:
+Prerequisites:
+
+- You must be the schedule owner or take ownership of the schedule.
+- For schedules that run on protected tags, you must be [allowed to create protected tags](../../user/project/protected_tags.md#configuring-protected-tags).
+
+To edit a pipeline schedule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipeline schedules**.
-1. Next to the schedule, select **Edit** ({{< icon name="pencil" >}}) and fill in the form.
-
-The user must have at least the Developer role for the project. If the user is
-not the owner of the schedule, they must first [take ownership](#take-ownership)
-of the schedule.
+1. Select **Build** > **Pipeline schedules**.
+1. Next to the schedule, select **Edit** ({{< icon name="pencil" >}}).
+1. Make your changes, then select **Save changes**.
 
 ## Run manually
 
-To trigger a pipeline schedule manually, so that it runs immediately instead of
-the next scheduled time:
+You can manually run scheduled pipelines once per minute.
+When you run a scheduled pipeline manually, it uses your permissions instead of the schedule owner's permissions.
+
+To trigger a pipeline schedule immediately instead of waiting for the next scheduled time:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipeline schedules**.
-1. On the right of the list, for
-   the pipeline you want to run, select **Run** ({{< icon name="play" >}}).
-
-You can manually run scheduled pipelines once per minute.
-
-When you run a scheduled pipeline manually, the pipeline runs with the
-permissions of the user who triggered it, not the permissions of the schedule owner.
+1. Select **Build** > **Pipeline schedules**.
+1. Next to the schedule, select **Run** ({{< icon name="play" >}}).
 
 ## Take ownership
 
-Scheduled pipelines execute with the permissions of the user
-who owns the schedule. The pipeline has access to the same resources as the pipeline owner,
-including [protected environments](../environments/protected_environments.md) and the
-[CI/CD job token](../jobs/ci_job_token.md).
+Prerequisites:
 
-To take ownership of a pipeline created by a different user:
+- You need at least the Maintainer role to take ownership of a schedule created by someone else.
+
+If a pipeline schedule becomes inactive because the original owner is unavailable, you can take ownership.
+Scheduled pipelines execute with the permissions of the user who owns the schedule.
+
+To take ownership of a schedule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipeline schedules**.
-1. On the right of the list, for
-   the pipeline you want to become owner of, select **Take ownership**.
+1. Select **Build** > **Pipeline schedules**.
+1. Next to the schedule, select **Take ownership**.
 
-You need at least the Maintainer role to take ownership of a pipeline created by a different user.
+## View your scheduled pipelines
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/558979) in GitLab 18.4.
+
+{{< /history >}}
+
+To view the active pipeline schedules that you own across all your projects:
+
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile**.
+1. Select **Account**.
+1. Scroll to **Scheduled pipelines you own**.
 
 ## Related topics
 
-- [Pipeline schedules API](../../api/pipeline_schedules.md)
+- [CI/CD pipelines](_index.md)
 - [Run jobs for scheduled pipelines](../jobs/job_rules.md#run-jobs-for-scheduled-pipelines)
+- [Pipeline schedules API](../../api/pipeline_schedules.md)
+- [Pipeline efficiency](pipeline_efficiency.md#reduce-how-often-jobs-run)
 
 ## Troubleshooting
 
 When working with pipeline schedules, you might encounter the following issues.
 
-### Short refs are expanded to full refs
+### Scheduled pipeline becomes inactive
 
-When you provide a short `ref` to the API, it is automatically expanded to a full `ref`.
-This behavior is intended and ensures explicit resource identification.
+If a scheduled pipeline status changes to `Inactive` unexpectedly,
+the schedule owner might have been blocked or removed from the project.
 
-The API accepts both short refs (such as `main`) and full refs (such as `refs/heads/main` or `refs/tags/main`).
+Take ownership of the schedule to reactivate it.
 
-### Ambiguous refs
+### Distribute pipeline schedules to prevent system load
 
-In some cases, the API can't automatically expand a short `ref` to a full `ref`. This can happen when:
-
-- You provide a short `ref` (such as `main`), but both a branch and a tag exist with that name.
-- You provide a short `ref`, but no branch or tag with that name exists.
-
-To resolve this issue, provide the full `ref` to ensure the correct resource is identified.
-
-### View and optimize pipeline schedules
-
-To prevent [excessive load](pipeline_efficiency.md) caused by too many pipelines starting simultaneously,
-you can review and optimize your pipeline schedules.
-
-To get an overview of all existing schedules and identify opportunities to distribute them more evenly:
+To prevent excessive load from too many pipelines starting simultaneously,
+review and distribute your pipeline schedules:
 
 1. Run this command to extract and format schedule data:
 
@@ -145,12 +154,7 @@ To get an overview of all existing schedules and identify opportunities to distr
    ```
 
 1. Review the output to identify popular `cron` patterns.
-   For example, you might see many schedules set to run at the start of each hour (`0 * * * *`).
+   For example, many schedules might run at the start of every hour (`0 * * * *`).
 1. Adjust the schedules to create a staggered [`cron` pattern](../../topics/cron/_index.md#cron-syntax), especially for large repositories.
-   For example, instead of multiple schedules running at the start of each hour, distribute them throughout the hour (`5 * * * *`, `15 * * * *`, `25 * * * *`).
-
-### Scheduled pipeline suddenly becomes inactive
-
-If a scheduled pipeline status changes to `Inactive` unexpectedly, it might be because
-the owner of the schedule was blocked or removed. [Take ownership](#take-ownership)
-of the schedule to modify and activate it.
+   For example, instead of multiple schedules running at the start of every hour,
+   distribute them throughout the hour (`5 * * * *`, `15 * * * *`, `25 * * * *`).

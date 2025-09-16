@@ -209,12 +209,13 @@ module Keeps
       ]
 
       change.description = build_description(feature_flag, latest_feature_flag_status)
-      change.reviewers = assignees(feature_flag.rollout_issue_url)
+      change.assignees = assignees(feature_flag.rollout_issue_url)
 
-      if change.reviewers.empty?
+      if change.assignees.empty?
         group_data = groups_helper.group_for_group_label(feature_flag.group)
 
-        change.reviewers = groups_helper.pick_reviewer(group_data, change.identifiers) if group_data
+        # `pick_reviewer` method returns username and here we are adding them as a assignee
+        change.assignees = groups_helper.pick_reviewer(group_data, change.identifiers) if group_data
       end
 
       change

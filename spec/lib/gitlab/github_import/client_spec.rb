@@ -632,10 +632,34 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
         endpoint = 'https://github.kittens.com'
 
         expect(client)
-          .to receive(:custom_api_endpoint)
+          .to receive(:custom_api_endpoint).twice
           .and_return(endpoint)
 
         expect(client.web_endpoint).to eq(endpoint)
+      end
+    end
+  end
+
+  describe '#custom_web_endpoint' do
+    context 'with custom API endpoint' do
+      it 'returns the web endpoint derived from API endpoint' do
+        endpoint = 'https://github.enterprise.com'
+
+        expect(client)
+          .to receive(:custom_api_endpoint).twice
+          .and_return('https://github.enterprise.com/api/v3')
+
+        expect(client.custom_web_endpoint).to eq(endpoint)
+      end
+    end
+
+    context 'without custom API endpoint' do
+      it 'returns nil' do
+        expect(client)
+          .to receive(:custom_api_endpoint)
+          .and_return(nil)
+
+        expect(client.custom_web_endpoint).to be_nil
       end
     end
   end

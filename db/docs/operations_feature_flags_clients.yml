@@ -7,7 +7,7 @@ feature_categories:
 description: https://docs.gitlab.com/ee/operations/feature_flags.html
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7433
 milestone: '11.4'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

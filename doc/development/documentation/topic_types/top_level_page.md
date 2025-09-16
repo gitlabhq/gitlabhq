@@ -9,30 +9,26 @@ The top-level page is at the highest level of each section in **Use GitLab** in 
 This page type:
 
 - Introduces the workflow briefly.
-- Lists features in the workflow, in the order they appear in the global navigation.
+- Lists only the pages that are one level below the top-level page.
 
 ## Format
 
-The top-level page should be in this format.
+The top-level page should be in this format. Use [cards](../styleguide/_index.md#cards) to list the pages.
 
 ```markdown
 title: Title (The name of the top-level page, like "Manage your organization")
 ---
 
-Briefly describe the workflow's key features. Use the active voice, for example, "Manage projects to track issues, plan work, and collaborate on code."
+List features in the workflow, in the order they appear in the global navigation.
 
-|   |   |   |
-|---|---|---|
-| [**Getting started**](../../user/get_started/get_started_projects.md)<br>Overview of how features fit together. | [**Page name**](file.md)<br>Keyword, keyword, keyword, keyword. | [**Page name**](file.md)<br>Keyword, keyword, keyword, keyword. |
-| [**Page name**](file.md)<br>Keyword, keyword, keyword, keyword. | [**Page name**](file.md)<br>Keyword, keyword, keyword, keyword. | [**Page name**](file.md)<br>Keyword, keyword, keyword, keyword. |
+{{</* cards */>}}
 
+- [The first page](first_page.md)
+- [Another page](another/page.md)
+- [One more page](one_more.md)
+
+{{</* /cards */>}}
 ```
-
-- For each page, use three to four keywords to describe the page contents.
-- For **Getting started** pages, use `Overview of how features fit together`.
-- List only the pages that are one level below the top-level page.
-
-Update the table when a new page is added, or if the pages are reordered.
 
 ## Top-level page titles
 

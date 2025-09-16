@@ -65,7 +65,7 @@ export default {
         case connectionStatus.disconnected:
           return 'warning';
         default:
-          return 'muted';
+          return 'neutral';
       }
     },
     badgeHref() {

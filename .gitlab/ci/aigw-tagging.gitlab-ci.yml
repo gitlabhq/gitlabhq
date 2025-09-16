@@ -2,9 +2,11 @@ trigger-ai-gateway-tagging:
   stage: ai-gateway
   # We need the tagging process to be executed even if other jobs in the gitlab pipeline fails
   needs: []
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}curlimages/curl:latest
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:latest
+  before_script:
+    - apk add --no-cache curl bash
   script:
-    - ./scripts/aigw-tagging.sh
+    - bash scripts/aigw-tagging.sh
   extends:
     - .ai-gateway:rules:tagging
   allow_failure: true

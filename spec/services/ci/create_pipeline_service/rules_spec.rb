@@ -285,6 +285,10 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :pipeline_compositio
         EOY
       end
 
+      before do
+        stub_feature_flags(ci_validate_config_options: false)
+      end
+
       it 'creates a pipeline' do
         expect(pipeline).to be_persisted
         expect(build_names).to contain_exactly(

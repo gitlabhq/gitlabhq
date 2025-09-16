@@ -18,6 +18,10 @@ module RapidDiffs
 
       private
 
+      def mode_changed?
+        @diff_file.mode_changed? && !@diff_file.new_file? && !@diff_file.deleted_file?
+      end
+
       def change_description
         if @diff_file.new_file?
           _("File added.")
@@ -33,14 +37,14 @@ module RapidDiffs
       end
 
       def mode_changed_description
-        return unless @diff_file.mode_changed? && !@diff_file.new_file? && !@diff_file.deleted_file?
+        return unless mode_changed?
 
         message = _('File mode changed from %{from} to %{to}.')
         helpers.safe_format(message, from: @diff_file.a_mode, to: @diff_file.b_mode)
       end
 
       def has_description?
-        !change_description.nil? || !mode_changed_description.nil?
+        !change_description.nil? || mode_changed?
       end
 
       def no_preview_reason

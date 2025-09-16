@@ -98,5 +98,9 @@ FactoryBot.define do
     initialize_with do
       ::Gitlab::Ci::Reports::Security::Finding.new(**attributes)
     end
+
+    trait :dependency_scanning do
+      location factory: :ci_reports_security_locations_dependency_scanning
+    end
   end
 end

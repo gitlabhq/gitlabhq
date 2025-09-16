@@ -4,26 +4,30 @@ import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import {
-  ACTION_EDIT,
-  ACTION_RESTORE,
+  ACTION_ARCHIVE,
   ACTION_DELETE,
   ACTION_DELETE_IMMEDIATELY,
+  ACTION_EDIT,
   ACTION_LEAVE,
+  ACTION_RESTORE,
+  ACTION_UNARCHIVE,
 } from '~/vue_shared/components/list_actions/constants';
-import { restoreGroup } from '~/api/groups_api';
-import { renderRestoreSuccessToast } from './utils';
+import { archiveGroup, restoreGroup, unarchiveGroup } from '~/api/groups_api';
+import { InternalEvents } from '~/tracking';
+import { RESOURCE_TYPES } from '~/groups_projects/constants';
+import {
+  renderArchiveSuccessToast,
+  renderRestoreSuccessToast,
+  renderUnarchiveSuccessToast,
+} from './utils';
 
 export default {
   name: 'GroupListItemActions',
-  i18n: {
-    restoreErrorMessage: __(
-      'An error occurred restoring this group. Please refresh the page to try again.',
-    ),
-  },
   components: {
     GlLoadingIcon,
     ListActions,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     group: {
       type: Object,
@@ -44,8 +48,32 @@ export default {
         [ACTION_EDIT]: {
           href: this.group.editPath,
         },
+        [ACTION_ARCHIVE]: {
+          action: () =>
+            this.onActionWithLoading({
+              action: this.archive,
+              errorMessage: __(
+                'An error occurred archiving this group. Please refresh the page to try again.',
+              ),
+            }),
+        },
+        [ACTION_UNARCHIVE]: {
+          action: () =>
+            this.onActionWithLoading({
+              action: this.unarchive,
+              errorMessage: __(
+                'An error occurred unarchiving this group. Please refresh the page to try again.',
+              ),
+            }),
+        },
         [ACTION_RESTORE]: {
-          action: this.onActionRestore,
+          action: () =>
+            this.onActionWithLoading({
+              action: this.restore,
+              errorMessage: __(
+                'An error occurred restoring this group. Please refresh the page to try again.',
+              ),
+            }),
         },
         [ACTION_DELETE]: {
           action: this.onActionDelete,
@@ -60,15 +88,38 @@ export default {
     },
   },
   methods: {
-    async onActionRestore() {
+    async archive() {
+      await archiveGroup(this.group.id);
+      this.$emit('refetch');
+      renderArchiveSuccessToast(this.group);
+
+      this.trackEvent('archive_namespace_in_quick_action', {
+        label: RESOURCE_TYPES.GROUP,
+        property: 'archive',
+      });
+    },
+    async unarchive() {
+      await unarchiveGroup(this.group.id);
+      this.$emit('refetch');
+      renderUnarchiveSuccessToast(this.group);
+
+      this.trackEvent('archive_namespace_in_quick_action', {
+        label: RESOURCE_TYPES.GROUP,
+        property: 'unarchive',
+      });
+    },
+    async restore() {
+      await restoreGroup(this.group.id);
+      this.$emit('refetch');
+      renderRestoreSuccessToast(this.group);
+    },
+    async onActionWithLoading({ action, errorMessage }) {
       this.actionsLoading = true;
 
       try {
-        await restoreGroup(this.group.id);
-        this.$emit('refetch');
-        renderRestoreSuccessToast(this.group);
+        await action();
       } catch (error) {
-        createAlert({ message: this.$options.i18n.restoreErrorMessage, error, captureError: true });
+        createAlert({ message: errorMessage, error, captureError: true });
       } finally {
         this.actionsLoading = false;
       }

@@ -14,21 +14,21 @@ title: Connect to cloud services
 
 {{< history >}}
 
-- [ID tokens](../yaml/_index.md#id_tokens) to support any OIDC provider, including HashiCorp Vault, [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
+- [ID tokens](../secrets/id_token_authentication.md) to support any OIDC provider, including HashiCorp Vault, [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
 
 {{< /history >}}
 
 {{< alert type="warning" >}}
 
 `CI_JOB_JWT` and `CI_JOB_JWT_V2` were [deprecated in GitLab 15.9](../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-and are scheduled to be removed in GitLab 17.0. Use [ID tokens](../yaml/_index.md#id_tokens) instead.
+and are scheduled to be removed in GitLab 17.0. Use [ID tokens](../secrets/id_token_authentication.md) instead.
 
 {{< /alert >}}
 
 GitLab CI/CD supports [OpenID Connect (OIDC)](https://openid.net/developers/how-connect-works/) to
 give your build and deployment jobs access to cloud credentials and services.
 Historically, teams stored secrets in projects or applied permissions on the GitLab Runner
-instance to build and deploy. OIDC capable [ID tokens](../yaml/_index.md#id_tokens) are configurable
+instance to build and deploy. OIDC capable [ID tokens](../secrets/id_token_authentication.md) are configurable
 in the CI/CD job allowing you to follow a scalable and least-privilege security approach.
 
 In GitLab 15.6 and earlier, you must use `CI_JOB_JWT_V2` instead of an ID token, but it is not customizable.

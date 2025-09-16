@@ -6,16 +6,12 @@ import {
   GlDisclosureDropdownGroup,
 } from '@gitlab/ui';
 import { __ } from '~/locale';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import namespaceMergeRequestsEnabledQuery from '../../graphql/namespace_merge_requests_enabled.query.graphql';
 import WorkItemCreateBranchMergeRequestModal from './work_item_create_branch_merge_request_modal.vue';
 
 export default {
   name: 'WorkItemCreateBranchMergeRequestSplitButton',
-  i18n: {
-    createMergeRequest: __('Create merge request'),
-    createBranch: __('Create branch'),
-    branchLabel: __('Branch'),
-    mergeRequestLabel: __('Merge request'),
-  },
   components: {
     GlButton,
     GlButtonGroup,
@@ -49,18 +45,44 @@ export default {
   },
   data() {
     return {
+      mergeRequestsEnabled: false,
       showBranchFlow: true,
-      showCreateBranchAndMrModal: false,
-      checkingBranchAvailibility: true,
-      showCreateOptions: true,
+      showModal: false,
+      checkingBranchAvailability: true,
+      canCreateBranch: true,
     };
   },
+  apollo: {
+    mergeRequestsEnabled: {
+      query: namespaceMergeRequestsEnabledQuery,
+      variables() {
+        return {
+          fullPath: this.workItemFullPath,
+        };
+      },
+      update(data) {
+        return data.workspace?.mergeRequestsEnabled ?? false;
+      },
+      skip() {
+        return !this.workItemFullPath;
+      },
+      error(error) {
+        Sentry.captureException(error);
+      },
+    },
+  },
   computed: {
+    buttonText() {
+      return this.mergeRequestsEnabled ? __('Create merge request') : __('Create branch');
+    },
+    isLoading() {
+      return this.$apollo.queries.mergeRequestsEnabled.loading || this.checkingBranchAvailability;
+    },
     mergeRequestGroup() {
       const items = [
         {
-          text: this.$options.i18n.createMergeRequest,
-          action: this.openModal.bind(this, false, true),
+          text: __('Create merge request'),
+          action: this.openCreateMergeRequestModal,
           extraAttrs: {
             'data-testid': 'create-mr-dropdown-button',
           },
@@ -72,8 +94,8 @@ export default {
     branchGroup() {
       const items = [
         {
-          text: this.$options.i18n.createBranch,
-          action: this.openModal.bind(this, true, false),
+          text: __('Create branch'),
+          action: this.openCreateBranchModal,
           extraAttrs: {
             'data-testid': 'create-branch-dropdown-button',
           },
@@ -84,33 +106,44 @@ export default {
     },
   },
   methods: {
-    openModal(createBranch = true) {
-      this.toggleCreateModal(true);
-      this.showBranchFlow = createBranch;
+    handleButtonClick() {
+      if (this.mergeRequestsEnabled) {
+        this.openCreateMergeRequestModal();
+      } else {
+        this.openCreateBranchModal();
+      }
     },
-    toggleCreateModal(showOrhide) {
-      this.showCreateBranchAndMrModal = showOrhide;
+    openCreateBranchModal() {
+      this.showBranchFlow = true;
+      this.toggleCreateModal(true);
+    },
+    openCreateMergeRequestModal() {
+      this.showBranchFlow = false;
+      this.toggleCreateModal(true);
+    },
+    toggleCreateModal(showModal) {
+      this.showModal = showModal;
     },
     updatePermissions(canCreateBranch) {
-      this.checkingBranchAvailibility = false;
-      this.showCreateOptions = canCreateBranch;
+      this.checkingBranchAvailability = false;
+      this.canCreateBranch = canCreateBranch;
     },
   },
 };
 </script>
 
 <template>
-  <div v-if="showCreateOptions">
+  <div v-if="canCreateBranch">
     <gl-button-group>
       <gl-button
-        :loading="checkingBranchAvailibility"
+        :loading="isLoading"
         icon="merge-request"
         category="primary"
         variant="default"
         size="medium"
-        @click="openModal(false, true)"
+        @click="handleButtonClick"
       >
-        {{ $options.i18n.createMergeRequest }}
+        {{ buttonText }}
       </gl-button>
       <gl-disclosure-dropdown
         :toggle-text="__('More options')"
@@ -118,13 +151,12 @@ export default {
         placement="bottom-end"
         data-testid="create-options-dropdown"
       >
-        <gl-disclosure-dropdown-group :group="mergeRequestGroup" />
-
-        <gl-disclosure-dropdown-group bordered :group="branchGroup" />
+        <gl-disclosure-dropdown-group v-if="mergeRequestsEnabled" :group="mergeRequestGroup" />
+        <gl-disclosure-dropdown-group :bordered="mergeRequestsEnabled" :group="branchGroup" />
       </gl-disclosure-dropdown>
     </gl-button-group>
     <work-item-create-branch-merge-request-modal
-      :show-modal="showCreateBranchAndMrModal"
+      :show-modal="showModal"
       :show-branch-flow="showBranchFlow"
       :work-item-iid="workItemIid"
       :work-item-type="workItemType"

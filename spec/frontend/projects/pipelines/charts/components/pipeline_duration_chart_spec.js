@@ -1,5 +1,5 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { GlLineChart } from '@gitlab/ui/dist/charts';
+import { GlLineChart } from '@gitlab/ui/src/charts';
 import { shallowMount } from '@vue/test-utils';
 import PipelineDurationChart from '~/projects/pipelines/charts/components/pipeline_duration_chart.vue';
 import { stubComponent } from 'helpers/stub_component';

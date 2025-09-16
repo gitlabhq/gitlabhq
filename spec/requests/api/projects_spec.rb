@@ -172,7 +172,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
 
     shared_examples_for 'projects response without N + 1 queries' do |threshold|
-      let(:additional_project) { create(:project, :public) }
+      let_it_be(:additional_project) { create(:project, :public) }
 
       it 'avoids N + 1 queries', :use_sql_query_cache do
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
@@ -269,7 +269,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         let(:projects) { user_projects }
       end
 
-      it_behaves_like 'projects response without N + 1 queries', 0 do
+      it_behaves_like 'projects response without N + 1 queries', 2 do
         let(:current_user) { user }
       end
 
@@ -1353,6 +1353,13 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
+    it_behaves_like 'restricted visibility level for API', 'project' do
+      let(:endpoint) { path }
+      let(:params_with_public_visibility) do
+        { name: 'test-project', path: 'test-project', visibility: 'public' }
+      end
+    end
+
     it 'creates new project without path but with name and returns 201' do
       expect { post api(path, user), params: { name: 'Foo Project' } }
         .to change { Project.count }.by(1)
@@ -1409,6 +1416,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         merge_requests_enabled: false,
         forking_access_level: 'disabled',
         analytics_access_level: 'disabled',
+        package_registry_access_level: 'disabled',
         wiki_enabled: false,
         resolve_outdated_diff_discussions: false,
         remove_source_branch_after_merge: true,
@@ -1423,6 +1431,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       }).tap do |attrs|
         attrs[:analytics_access_level] = 'disabled'
         attrs[:container_registry_access_level] = 'private'
+        attrs[:package_registry_access_level] = 'disabled'
         attrs[:security_and_compliance_access_level] = 'private'
         attrs[:releases_access_level] = 'disabled'
         attrs[:environments_access_level] = 'disabled'
@@ -1447,7 +1456,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           has_external_issue_tracker has_external_wiki issues_enabled merge_requests_enabled wiki_enabled storage_version
           container_registry_access_level releases_access_level environments_access_level feature_flags_access_level
           infrastructure_access_level monitor_access_level model_experiments_access_level model_registry_access_level
-          namespace
+          package_registry_access_level namespace
         ].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
@@ -1460,6 +1469,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(project.project_feature.wiki_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.analytics_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.container_registry_access_level).to eq(ProjectFeature::PRIVATE)
+      expect(project.project_feature.package_registry_access_level).to eq(ProjectFeature::PRIVATE)
       expect(project.project_feature.security_and_compliance_access_level).to eq(ProjectFeature::PRIVATE)
       expect(project.project_feature.releases_access_level).to eq(ProjectFeature::DISABLED)
       expect(project.project_feature.environments_access_level).to eq(ProjectFeature::DISABLED)
@@ -1804,29 +1814,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         end
       end
     end
-
-    context 'when a visibility level is restricted' do
-      let(:project_param) { attributes_for(:project, visibility: 'public') }
-
-      before do
-        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
-      end
-
-      it 'does not allow a non-admin to use a restricted visibility level' do
-        post api(path, user), params: project_param
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response['message']['visibility_level'].first).to(
-          match('restricted by your GitLab administrator')
-        )
-      end
-
-      it 'allows an admin to override restricted visibility settings' do
-        post api(path, admin), params: project_param
-
-        expect(json_response['visibility']).to eq('public')
-      end
-    end
   end
 
   describe 'GET /users/:user_id/projects/' do
@@ -2029,6 +2016,11 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         user3.reload
       end
 
+      after do
+        user3.update!(private_profile: false)
+        user3.reload
+      end
+
       context 'user does not have access to view the private profile' do
         it 'returns no projects' do
           get api(path, user)
@@ -2098,6 +2090,11 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     context 'with a private profile' do
       before do
         user3.update!(private_profile: true)
+        user3.reload
+      end
+
+      after do
+        user3.update!(private_profile: false)
         user3.reload
       end
 
@@ -2777,6 +2774,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['warn_about_potentially_unwanted_characters']).to be_present
         expect(json_response).to have_key('emails_disabled')
         expect(json_response).to have_key('emails_enabled')
+        expect(json_response).to have_key('show_diff_preview_in_email')
       end
 
       it 'exposes all necessary attributes' do
@@ -2836,6 +2834,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['jobs_enabled']).to be_present
         expect(json_response['snippets_enabled']).to be_present
         expect(json_response['snippets_access_level']).to be_present
+        expect(json_response['package_registry_access_level']).to be_present
         expect(json_response['pages_access_level']).to be_present
         expect(json_response['repository_access_level']).to be_present
         expect(json_response['issues_access_level']).to be_present
@@ -2883,6 +2882,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['ci_forward_deployment_rollback_allowed']).to eq(project.ci_forward_deployment_rollback_allowed)
         expect(json_response['ci_allow_fork_pipelines_to_run_in_parent_project']).to eq(project.ci_allow_fork_pipelines_to_run_in_parent_project)
         expect(json_response['ci_separated_caches']).to eq(project.ci_separated_caches)
+        expect(json_response['resource_group_default_process_mode']).to eq(project.resource_group_default_process_mode)
         expect(json_response['merge_method']).to eq(project.merge_method.to_s)
         expect(json_response['squash_option']).to eq(project.squash_option.to_s)
         expect(json_response['readme_url']).to eq(project.readme_url)
@@ -4254,6 +4254,14 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
+    it 'sets package_registry_access_level' do
+      put api(path, user), params: { package_registry_access_level: 'public' }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['package_registry_access_level']).to eq('public')
+      expect(Project.find_by(path: project[:path]).package_registry_access_level).to eq(ProjectFeature::PUBLIC)
+    end
+
     it 'sets container_registry_access_level' do
       put api(path, user), params: { container_registry_access_level: 'private' }
 
@@ -4466,6 +4474,16 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(response).to have_gitlab_http_status(:ok)
 
         expect(json_response['emails_enabled']).to eq(false)
+      end
+
+      it 'updates show_diff_preview_in_email?' do
+        project_param = { show_diff_preview_in_email: false }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['show_diff_preview_in_email']).to eq(false)
+        expect(project3.reload.show_diff_preview_in_email?).to eq(false)
       end
 
       it 'updates build_git_strategy' do
@@ -4917,12 +4935,47 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
                           ci_forward_deployment_rollback_allowed: false,
                           ci_allow_fork_pipelines_to_run_in_parent_project: false,
                           ci_separated_caches: false,
+                          resource_group_default_process_mode: 'oldest_first',
                           description: 'new description' }
 
         put api("/projects/#{project3.id}", user4), params: project_param
         expect(response).to have_gitlab_http_status(:ok)
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
+        end
+      end
+
+      context 'when updating resource_group_default_process_mode' do
+        %w[unordered oldest_first newest_first newest_ready_first].each do |mode|
+          it "updates resource_group_default_process_mode to #{mode}" do
+            project_param = { resource_group_default_process_mode: mode }
+
+            put api("/projects/#{project3.id}", user4), params: project_param
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['resource_group_default_process_mode']).to eq(mode)
+            expect(project3.reload.resource_group_default_process_mode).to eq(mode)
+          end
+        end
+
+        it 'returns error for invalid resource_group_default_process_mode' do
+          project_param = { resource_group_default_process_mode: 'invalid_mode' }
+
+          put api("/projects/#{project3.id}", user4), params: project_param
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['error']).to include('resource_group_default_process_mode')
+        end
+
+        it 'does not update resource_group_default_process_mode if not specified' do
+          original_mode = project3.resource_group_default_process_mode
+          project_param = { description: 'updated description' }
+
+          put api("/projects/#{project3.id}", user4), params: project_param
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['resource_group_default_process_mode']).to eq(original_mode)
+          expect(project3.reload.resource_group_default_process_mode).to eq(original_mode)
         end
       end
 
@@ -5541,23 +5594,23 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
-    shared_examples 'deletes project immediately' do
+    shared_examples 'deletes project immediately' do |admin_mode = false|
       it :aggregate_failures do
         expect(::Projects::DestroyService).to receive(:new).with(project, user, {}).and_call_original
 
-        delete api(path, user), params: params
+        delete api(path, user, admin_mode: admin_mode), params: params
         expect(response).to have_gitlab_http_status(:accepted)
       end
     end
 
-    shared_examples 'immediately delete project error' do
+    shared_examples 'immediately delete project error' do |admin_mode = false, expected_http_status = :bad_request|
       it :aggregate_failures do
         expect(::Projects::DestroyService).not_to receive(:new)
         expect(::Projects::MarkForDeletionService).not_to receive(:new)
 
-        delete api(path, user), params: params
+        delete api(path, user, admin_mode: admin_mode), params: params
 
-        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response).to have_gitlab_http_status(expected_http_status)
         expect(Gitlab::Json.parse(response.body)['message']).to eq(error_message)
       end
     end
@@ -5591,34 +5644,65 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           params.merge!(permanently_remove: true)
         end
 
-        context 'when project is already marked for deletion' do
-          before do
-            project.update!(archived: true, marked_for_deletion_at: 1.day.ago, deleting_user: user)
-          end
+        context 'forbidden by the :disallow_immediate_deletion feature flag' do
+          let(:error_message) { '`permanently_remove` option is not available anymore (behind the :disallow_immediate_deletion feature flag).' }
 
-          context 'with correct project full path' do
+          it_behaves_like 'immediately delete project error'
+        end
+
+        context 'when current user is an admin' do
+          let_it_be(:user) { admin }
+
+          context 'when project is already marked for deletion' do
             before do
+              project.update!(archived: true, marked_for_deletion_at: 1.day.ago, deleting_user: user)
               params.merge!(full_path: project.full_path)
             end
 
-            it_behaves_like 'deletes project immediately'
-          end
+            it_behaves_like 'deletes project immediately', true
 
-          context 'with incorrect project full path' do
-            let(:error_message) { '`full_path` is incorrect. You must enter the complete path for the project.' }
+            context 'when admin_mode is false' do
+              let(:error_message) { '404 Project Not Found' }
 
-            before do
-              params.merge!(full_path: "#{project.full_path}-wrong-path")
+              it_behaves_like 'immediately delete project error', false, :not_found
             end
-
-            it_behaves_like 'immediately delete project error'
           end
         end
 
-        context 'when project is not marked for deletion' do
-          let(:error_message) { 'Project must be marked for deletion first.' }
+        context 'when the :disallow_immediate_deletion feature flag is disabled' do
+          before do
+            stub_feature_flags(disallow_immediate_deletion: false)
+          end
 
-          it_behaves_like 'immediately delete project error'
+          context 'when project is not marked for deletion' do
+            let(:error_message) { 'Project must be marked for deletion first.' }
+
+            it_behaves_like 'immediately delete project error'
+          end
+
+          context 'when project is already marked for deletion' do
+            before do
+              project.update!(archived: true, marked_for_deletion_at: 1.day.ago, deleting_user: user)
+            end
+
+            context 'with correct project full path' do
+              before do
+                params.merge!(full_path: project.full_path)
+              end
+
+              it_behaves_like 'deletes project immediately'
+            end
+
+            context 'with incorrect project full path' do
+              let(:error_message) { '`full_path` is incorrect. You must enter the complete path for the project.' }
+
+              before do
+                params.merge!(full_path: "#{project.full_path}-wrong-path")
+              end
+
+              it_behaves_like 'immediately delete project error'
+            end
+          end
         end
       end
     end
@@ -6106,6 +6190,19 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         put api(path, user)
 
         expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      context 'when the project is archived' do
+        before do
+          project.update!(archived: true)
+          group.add_owner(user)
+        end
+
+        it 'returns forbidden' do
+          put api(path, user), params: { namespace: group.id }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
       end
     end
 

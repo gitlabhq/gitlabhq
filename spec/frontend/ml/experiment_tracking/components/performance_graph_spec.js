@@ -1,4 +1,4 @@
-import { GlLineChart } from '@gitlab/ui/dist/charts';
+import { GlLineChart } from '@gitlab/ui/src/charts';
 import { GlEmptyState } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PerformanceGraph from '~/ml/experiment_tracking/components/performance_graph.vue';

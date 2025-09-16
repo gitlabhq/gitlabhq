@@ -9,12 +9,7 @@ RSpec.shared_examples 'issuable invite members' do
       visit issuable_path
 
       open_assignees_dropdown
-
-      page.within '.dropdown-menu-user' do
-        expect(page).to have_link('Invite members')
-
-        click_link 'Invite members'
-      end
+      click_link 'Invite members'
 
       page.within invite_modal_selector do
         expect(page).to have_content("You're inviting members to the #{project.name} project")
@@ -29,9 +24,7 @@ RSpec.shared_examples 'issuable invite members' do
 
       open_assignees_dropdown
 
-      page.within '.dropdown-menu-user' do
-        expect(page).not_to have_link('Invite members')
-      end
+      expect(page).not_to have_link('Invite members')
     end
   end
 end

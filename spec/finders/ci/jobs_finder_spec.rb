@@ -418,8 +418,16 @@ RSpec.describe Ci::JobsFinder, '#execute', feature_category: :continuous_integra
           context 'when current user is a maintainer of group' do
             let(:user) { maintainer }
 
-            it { is_expected.to be_empty }
+            it 'returns the pending job' do
+              expect(execute).to contain_exactly(job)
+            end
           end
+        end
+
+        context 'when current user is a developer of group' do
+          let(:user) { developer }
+
+          it { is_expected.to be_empty }
         end
 
         context 'without user' do

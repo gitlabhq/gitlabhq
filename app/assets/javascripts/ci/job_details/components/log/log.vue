@@ -8,6 +8,7 @@ import LogLine from './line.vue';
 import LogLineHeader from './line_header.vue';
 
 export default {
+  name: 'JobLog',
   components: {
     LogLineHeader,
     LogLine,
@@ -51,7 +52,7 @@ export default {
     this.setupFullScreenListeners();
   },
   methods: {
-    ...mapActions(['toggleCollapsibleLine', 'scrollBottom', 'setupFullScreenListeners']),
+    ...mapActions(['toggleCollapsibleLine', 'setupFullScreenListeners']),
     handleOnClickCollapsibleLine(section) {
       this.toggleCollapsibleLine(section);
       this.$emit('toggleCollapsibleLine');
@@ -101,7 +102,7 @@ export default {
       </template>
     </template>
 
-    <div v-if="!isJobLogComplete" class="js-log-animation loader-animation pt-3 pl-3">
+    <div v-if="!isJobLogComplete" class="loader-animation gl-pl-5 gl-pt-5">
       <div class="dot"></div>
       <div class="dot"></div>
       <div class="dot"></div>

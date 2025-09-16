@@ -74,6 +74,7 @@ Data usage: The diff of changes between the source branch's head and the target 
 - Feature flag `duo_code_review_chat` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190640) in GitLab 18.1.
 - Generally available in GitLab 18.1.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/524929) to be available on GitLab Duo with self-hosted models in beta in GitLab 18.3.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/548975) to be generally available on GitLab Duo with self-hosted models in GitLab 18.4.
 
 {{< /history >}}
 
@@ -91,10 +92,12 @@ Provide feedback on this feature in issue [517386](https://gitlab.com/gitlab-org
 
 Data usage: When you use this feature, the following data is sent to the large language model:
 
-- Contents of the changed files
-- Filenames
 - Merge request title
 - Merge request description
+- File contents before changes applied (for context)
+- Merge request diffs
+- Filenames
+- [Custom instructions](#customize-instructions-for-gitlab-duo-code-review)
 
 ### Interact with GitLab Duo in reviews
 
@@ -102,7 +105,10 @@ You can mention `@GitLabDuo` in comments to interact with GitLab Duo on your mer
 
 Interactions with GitLab Duo can help to improve the suggestions and feedback as you work to improve your merge request.
 
-### Automatic reviews from GitLab Duo
+Feedback provided to GitLab Duo does not influence later reviews of other merge requests.
+There is a feature request to add this functionality, see [issue 560116](https://gitlab.com/gitlab-org/gitlab/-/issues/560116).
+
+### Automatic reviews from GitLab Duo for a project
 
 {{< history >}}
 
@@ -127,12 +133,20 @@ To enable `@GitLabDuo` to automatically review merge requests:
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
 
-### Customize instructions for GitLab Duo Code Review
+### Automatic reviews from GitLab Duo for groups and applications
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Enterprise
+- Offering: GitLab.com
+- Status: Beta
+
+{{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/545136) in GitLab 18.2 as a [beta](../../../policy/development_stages_support.md#beta) [with a flag](../../../administration/feature_flags/_index.md) named `duo_code_review_custom_instructions`. Disabled by default.
-- Feature flag `duo_code_review_custom_instructions` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199802) in GitLab 18.3.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/554070) in GitLab 18.4 as a [beta](../../../policy/development_stages_support.md#beta) [with a flag](../../../administration/feature_flags/_index.md) named `cascading_auto_duo_code_review_settings`. Disabled by default.
 
 {{< /history >}}
 
@@ -142,6 +156,40 @@ The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 
 {{< /alert >}}
+
+Use group or application settings to enable automatic reviews for multiple projects.
+
+Prerequisites:
+
+- To enable automatic reviews for groups, you must have the Owner role for the group.
+- To enable automatic reviews for all projects, you must be an administrator.
+
+To enable automatic reviews for groups:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > General**.
+1. Expand the **Merge requests** section.
+1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
+1. Select **Save changes**.
+
+To enable automatic reviews for all projects:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
+1. Select **Save changes**.
+
+Settings cascade from application to group to project. More specific settings override broader ones.
+
+### Customize instructions for GitLab Duo Code Review
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/545136) in GitLab 18.2 as a [beta](../../../policy/development_stages_support.md#beta) [with a flag](../../../administration/feature_flags/_index.md) named `duo_code_review_custom_instructions`. Disabled by default.
+- Feature flag `duo_code_review_custom_instructions` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199802) in GitLab 18.3.
+- Feature flag `duo_code_review_custom_instructions` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202262) in GitLab 18.4.
+
+{{< /history >}}
 
 GitLab Duo Code Review can help ensure consistent code review standards in your project.
 Define a glob pattern for files, and create custom instructions for files matching that

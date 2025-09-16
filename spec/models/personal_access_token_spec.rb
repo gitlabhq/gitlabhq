@@ -40,6 +40,8 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     it { is_expected.to belong_to(:organization).class_name('Organizations::Organization') }
     it { is_expected.to belong_to(:group).optional }
     it { is_expected.to have_many(:last_used_ips) }
+    it { is_expected.to have_many(:personal_access_token_granular_scopes).class_name('Authz::PersonalAccessTokenGranularScope') }
+    it { is_expected.to have_many(:granular_scopes).class_name('Authz::GranularScope') }
   end
 
   describe 'scopes' do
@@ -213,6 +215,24 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       it "returns personal access tokens for the specified organization only" do
         expect(described_class.for_organization(organization)).to contain_exactly(personal_access_token)
       end
+    end
+  end
+
+  describe 'PolicyActor methods' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:boundary) { Authz::Boundary.for(project) }
+    let_it_be(:pat) { create(:granular_pat, namespace: boundary.namespace, permissions: :create_issue) }
+
+    let(:methods) { PolicyActor.instance_methods }
+
+    it 'responds to all PolicyActor methods' do
+      methods.each do |method|
+        expect(pat.respond_to?(method)).to be true
+      end
+    end
+
+    describe '#can?' do
+      it { expect(pat.can?(:create_issue, boundary)).to be true }
     end
   end
 
@@ -451,6 +471,10 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
         end
       end
     end
+  end
+
+  describe 'delegations' do
+    it { is_expected.to delegate_method(:permitted_for_boundary?).to(:granular_scopes) }
   end
 
   describe 'scopes' do

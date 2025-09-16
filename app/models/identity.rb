@@ -4,7 +4,7 @@ class Identity < ApplicationRecord
   include Sortable
   include CaseSensitivity
 
-  belongs_to :user
+  belongs_to :user, optional: false
 
   validates :provider, presence: true
   validates :extern_uid, allow_blank: true, uniqueness: {

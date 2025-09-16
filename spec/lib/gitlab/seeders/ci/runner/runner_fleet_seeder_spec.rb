@@ -114,25 +114,7 @@ RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetSeeder, feature_categor
     context 'when organization is not passed to the initializer' do
       it 'assigns organization_id of the user to created entities' do
         expect { seed }.not_to raise_error
-        expect(Group.search(registration_prefix).pluck(:organization_id)).to all(eq(user.organizations.first.id))
-      end
-    end
-
-    context 'when no organization can be used' do
-      let(:user_without_org) { create(:user, organizations: []) }
-
-      subject(:seed_without_organization) do
-        described_class.new(NULL_LOGGER,
-          username: user_without_org.username,
-          registration_prefix: registration_prefix,
-          runner_count: runner_count
-        ).seed
-      end
-
-      it 'fails with error' do
-        expect { seed_without_organization }.to raise_error(
-          "No organization found. Ensure user has an organization or pass an organization_id"
-        )
+        expect(Group.search(registration_prefix).pluck(:organization_id)).to all(eq(user.organization.id))
       end
     end
   end

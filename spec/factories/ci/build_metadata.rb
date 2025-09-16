@@ -2,10 +2,7 @@
 
 FactoryBot.define do
   factory :ci_build_metadata, class: 'Ci::BuildMetadata' do
+    config_options { { script: ['script-record'], services: ['services-record'] } }
     build { association(:ci_build, strategy: :build, metadata: instance) }
-
-    after(:build) do |metadata|
-      metadata.build&.valid?
-    end
   end
 end

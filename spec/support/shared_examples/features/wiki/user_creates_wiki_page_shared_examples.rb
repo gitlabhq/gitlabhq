@@ -178,7 +178,9 @@ RSpec.shared_examples 'User creates wiki page' do
 
       page.within('.wiki-form') do
         find('#wiki_format option[value=org]').select_option
-        fill_in(:wiki_content, with: org_content)
+
+        # use `clear: nil` to avoid extra list `*` chars from being added
+        fill_in(:wiki_content, with: org_content, fill_options: { clear: nil })
         click_button('Create page')
       end
 

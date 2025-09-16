@@ -32,7 +32,7 @@ module Users
     end
 
     def admin_bot
-      Users::Internal.admin_bot
+      Users::Internal.for_organization(user.organization_id).admin_bot
     end
 
     def ban_duplicate_users

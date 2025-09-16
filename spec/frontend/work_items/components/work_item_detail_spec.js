@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { isLoggedIn } from '~/lib/utils/common_utils';
+import toast from '~/vue_shared/plugins/global_toast';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -56,6 +57,7 @@ import {
 
 jest.mock('~/lib/utils/common_utils');
 jest.mock('~/work_items/components/design_management/cache_updates');
+jest.mock('~/vue_shared/plugins/global_toast');
 
 describe('WorkItemDetail component', () => {
   let wrapper;
@@ -397,6 +399,9 @@ describe('WorkItemDetail component', () => {
       findWorkItemActions().vm.$emit('toggleWorkItemConfidentiality', true);
       await waitForPromises();
 
+      await nextTick();
+      expect(toast).toHaveBeenCalledWith('Confidentiality turned on.');
+
       expect(wrapper.emitted('workItemUpdated')).toEqual([[{ confidential: true }]]);
       expect(mutationHandler).toHaveBeenCalledWith({
         input: {
@@ -483,7 +488,7 @@ describe('WorkItemDetail component', () => {
       createComponent({ handler: jest.fn().mockResolvedValue(workItemQueryResponseWithoutParent) });
 
       await waitForPromises();
-      expect(findWorkItemType().classes()).toEqual(['sm:!gl-block', 'gl-w-full']);
+      expect(findWorkItemType().classes()).toEqual(['@sm/panel:!gl-block', 'gl-w-full']);
     });
 
     describe('`subepics` is unavailable', () => {
@@ -498,7 +503,7 @@ describe('WorkItemDetail component', () => {
         await waitForPromises();
 
         expect(findAncestors().exists()).toBe(false);
-        expect(findWorkItemType().classes()).toEqual(['sm:!gl-block', 'gl-w-full']);
+        expect(findWorkItemType().classes()).toEqual(['@sm/panel:!gl-block', 'gl-w-full']);
       });
     });
 
@@ -530,7 +535,7 @@ describe('WorkItemDetail component', () => {
       });
 
       it('does not show title in the header when parent exists', () => {
-        expect(findWorkItemType().classes()).toEqual(['sm:!gl-hidden', '!gl-mt-3']);
+        expect(findWorkItemType().classes()).toEqual(['@sm/panel:!gl-hidden', '!gl-mt-3']);
       });
     });
 
@@ -547,7 +552,7 @@ describe('WorkItemDetail component', () => {
       });
 
       it('does not show title in the header when parent exists', () => {
-        expect(findWorkItemType().classes()).toEqual(['sm:!gl-hidden', '!gl-mt-3']);
+        expect(findWorkItemType().classes()).toEqual(['@sm/panel:!gl-hidden', '!gl-mt-3']);
       });
     });
   });
@@ -1336,13 +1341,13 @@ describe('WorkItemDetail component', () => {
       createComponent({ showSidebar: true });
       await waitForPromises();
       expect(findShowSidebarButton().exists()).toBe(false);
-      expect(findRightSidebar().classes()).not.toContain('md:gl-hidden');
+      expect(findRightSidebar().classes()).not.toContain('@md/panel:gl-hidden');
     });
     it('when sidebar is hidden based on view options', async () => {
       createComponent({ showSidebar: false });
       await waitForPromises();
       expect(findShowSidebarButton().exists()).toBe(true);
-      expect(findRightSidebar().classes()).toContain('md:gl-hidden');
+      expect(findRightSidebar().classes()).toContain('@md/panel:gl-hidden');
     });
     it('when show sidebar button is used', async () => {
       createComponent({ showSidebar: false });

@@ -7,6 +7,10 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
   let_it_be(:user) { create(:user) }
   let_it_be(:access_token) { create(:oauth_access_token, user: user, scopes: [:mcp]) }
 
+  before do
+    stub_feature_flags(mcp_server_new_implementation: false)
+  end
+
   describe 'POST /mcp with tools/call method' do
     context 'with valid tool name' do
       let(:mock_tool_name) { 'get_mcp_server_version' }

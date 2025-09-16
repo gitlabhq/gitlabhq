@@ -5,6 +5,7 @@ class WikiPage
     include Gitlab::Utils::StrongMemoize
     include Mentionable
     include Noteable
+    include Participable
     include Subscribable
     include Todoable
 
@@ -25,6 +26,8 @@ class WikiPage
     validates :title, length: { maximum: 255 }, allow_nil: false
     validate :no_two_metarecords_in_same_container_can_have_same_canonical_slug
     validate :project_or_namespace_present?
+
+    participant :notes_with_associations
 
     scope :with_canonical_slug, ->(slug) do
       slug_table_name = klass.reflect_on_association(:slugs).table_name
@@ -192,6 +195,14 @@ class WikiPage
 
     def to_ability_name
       'wiki_page'
+    end
+
+    def notes_with_associations
+      notes.includes(:author)
+    end
+
+    def subscribed_without_subscriptions?(user, _project)
+      participant?(user)
     end
 
     private

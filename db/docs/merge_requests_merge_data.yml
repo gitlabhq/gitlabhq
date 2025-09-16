@@ -1,0 +1,16 @@
+---
+table_name: merge_requests_merge_data
+classes:
+- MergeRequests::MergeData
+feature_categories:
+- code_review_workflow
+description: |
+  Stores the merge action related data for merge requests. This table was extracted from
+  the merge_requests table to reduce WAL pressure caused by frequent merge_status updates
+  on the heavily indexed merge_requests table.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202323
+milestone: '18.4'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+table_size: medium

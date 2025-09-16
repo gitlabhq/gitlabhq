@@ -118,7 +118,7 @@ RSpec.describe Resolvers::ProjectsResolver, feature_category: :source_code_manag
 
     context 'when user is logged in' do
       let(:current_user) { user }
-      let(:organization) { user.organizations.first }
+      let(:organization) { user.organization }
       let(:visible_projects) do
         [project, other_project, group_project, private_project, private_group_project, private_personal_project,
           project_marked_for_deletion, archived_project]
@@ -254,6 +254,61 @@ RSpec.describe Resolvers::ProjectsResolver, feature_category: :source_code_manag
 
           it 'returns only archived and marked for deletion projects' do
             is_expected.to contain_exactly(archived_project, project_marked_for_deletion)
+          end
+        end
+
+        context 'when last_repository_check_failed filter is provided' do
+          let_it_be(:admin) { create(:admin) }
+
+          let_it_be(:project_repository_check_failed) do
+            project.tap { |p| p.update!(last_repository_check_failed: true) }
+          end
+
+          let_it_be(:project_repository_check_success) do
+            other_project.tap { |p| p.update!(last_repository_check_failed: false) }
+          end
+
+          let_it_be(:project_repository_check_nil) do
+            group_project.tap { |p| p.update!(last_repository_check_failed: nil) }
+          end
+
+          let(:current_user) { admin }
+
+          context 'when true' do
+            let(:filters) { { last_repository_check_failed: true } }
+
+            context 'when admin_mode enabled', :enable_admin_mode do
+              it { is_expected.to contain_exactly(project_repository_check_failed) }
+            end
+
+            context 'when admin_mode disabled' do
+              it 'ignores filter' do
+                is_expected.to include(
+                  project_repository_check_failed,
+                  project_repository_check_success,
+                  project_repository_check_nil
+                )
+              end
+            end
+          end
+
+          context 'when false' do
+            let(:filters) { { last_repository_check_failed: false } }
+
+            context 'when admin_mode enabled', :enable_admin_mode do
+              it { is_expected.not_to include(project_repository_check_failed) }
+              it { is_expected.to include(project_repository_check_success, project_repository_check_nil) }
+            end
+
+            context 'when admin_mode disabled' do
+              it 'ignores filter' do
+                is_expected.to include(
+                  project_repository_check_failed,
+                  project_repository_check_success,
+                  project_repository_check_nil
+                )
+              end
+            end
           end
         end
       end

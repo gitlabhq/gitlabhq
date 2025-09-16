@@ -14,9 +14,14 @@ module Gitlab
       include Gitlab::UsageDataCounters::RedisHashCounter
 
       def track_event(event_name, category: nil, additional_properties: {}, **kwargs)
+        if Feature.enabled?(:merge_additional_properties_for_snowplow, kwargs[:user])
+          extract_additional_properties!(event_name, additional_properties, kwargs)
+        end
+
         Gitlab::Tracking::EventValidator.new(event_name, additional_properties, kwargs).validate!
 
         send_snowplow_event = kwargs.key?(:send_snowplow_event) ? kwargs.delete(:send_snowplow_event) : true
+
         event_router = Gitlab::InternalEvents::EventsRouter.new(event_name, additional_properties, kwargs)
         track_analytics_event(event_name, send_snowplow_event, category: category,
           additional_properties: event_router.public_additional_properties, **kwargs)
@@ -197,6 +202,17 @@ module Gitlab
 
       def base_additional_properties_keys
         Gitlab::Tracking::EventValidator::BASE_ADDITIONAL_PROPERTIES.keys
+      end
+
+      def extract_additional_properties!(event_name, additional_properties, kwargs)
+        return unless additional_properties.empty?
+
+        event_definition = Gitlab::Tracking::EventDefinition.find(event_name)
+        return unless event_definition&.additional_properties
+
+        event_definition.additional_properties.each_key do |key|
+          additional_properties[key] = kwargs.delete(key) if kwargs.key?(key)
+        end
       end
     end
   end

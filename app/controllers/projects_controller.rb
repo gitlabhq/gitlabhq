@@ -44,6 +44,7 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:page_specific_styles, current_user)
     push_licensed_feature(:file_locks) if @project.present? && @project.licensed_feature_available?(:file_locks)
     push_frontend_feature_flag(:directory_code_dropdown_updates, current_user)
+    push_frontend_feature_flag(:repository_file_tree_browser, @project)
 
     if @project.present? && @project.licensed_feature_available?(:security_orchestration_policies)
       push_licensed_feature(:security_orchestration_policies)
@@ -191,7 +192,13 @@ class ProjectsController < Projects::ApplicationController
   def destroy
     return access_denied! unless can?(current_user, :remove_project, @project)
 
-    return destroy_immediately if @project.self_deletion_scheduled? && params[:permanently_delete].present?
+    if @project.self_deletion_scheduled? &&
+        ::Gitlab::Utils.to_boolean(params.permit(:permanently_delete)[:permanently_delete])
+
+      return access_denied! if Feature.enabled?(:disallow_immediate_deletion, current_user)
+
+      return destroy_immediately
+    end
 
     result = ::Projects::MarkForDeletionService.new(@project, current_user).execute
 
@@ -354,7 +361,11 @@ class ProjectsController < Projects::ApplicationController
     options = {}
 
     if find_branches
-      branches = BranchesFinder.new(@repository, refs_params.merge(per_page: REFS_LIMIT))
+      # Set default sort to 'updated_desc' for branches if no sort specified
+      branch_params = refs_params.merge(per_page: REFS_LIMIT)
+      branch_params[:sort] = 'updated_desc' if branch_params[:sort].blank?
+
+      branches = BranchesFinder.new(@repository, branch_params)
                    .execute(gitaly_pagination: true)
                    .take(REFS_LIMIT)
                    .map(&:name)

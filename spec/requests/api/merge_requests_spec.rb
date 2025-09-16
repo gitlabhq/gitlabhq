@@ -775,6 +775,12 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
 
+      it "returns authentication error when scope is reviews_for_me" do
+        get api("/merge_requests"), params: { scope: 'reviews_for_me' }
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+
       it "returns authentication error  when scope is created-by-me" do
         get api("/merge_requests"), params: { scope: 'created-by-me' }
 
@@ -1044,6 +1050,24 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect_response_contain_exactly(merge_request3.id)
       end
 
+      it 'returns an array of merge requests where I am a reviewer' do
+        # Create a merge request where user2 is a reviewer
+        merge_request3 = create(:merge_request, :simple, author: user, source_project: project2, target_project: project2, source_branch: 'other-branch')
+        merge_request3.update!(reviewer_ids: [user2.id])
+
+        # Create a merge request where someone else is a reviewer (should not be returned)
+        merge_request4 = create(:merge_request, :simple, author: user, source_project: project2, target_project: project2, source_branch: 'another-branch')
+        merge_request4.update!(reviewer_ids: [user.id])
+
+        # Create a merge request with no reviewers (should not be returned)
+        create(:merge_request, :simple, author: user, source_project: project2, target_project: project2, source_branch: 'no-reviewer-branch')
+
+        get api('/merge_requests', user2), params: { scope: 'reviews_for_me' }
+
+        # Should only return the merge request where user2 is a reviewer
+        expect_response_contain_exactly(merge_request3.id)
+      end
+
       it 'returns merge requests reacted by the authenticated user by the given emoji' do
         merge_request3 = create(:merge_request, :simple, author: user, assignees: [user], source_project: project2, target_project: project2, source_branch: 'other-branch')
         award_emoji = create(:award_emoji, awardable: merge_request3, user: user2, name: 'star')
@@ -1149,6 +1173,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     include_context 'with merge requests'
 
     let(:endpoint_path) { "/projects/#{project.id}/merge_requests" }
+
+    it_behaves_like 'enforcing job token policies', :read_merge_requests,
+      allow_public_access_for_enabled_project_features: [:repository, :merge_requests] do
+      let(:request) do
+        get api(endpoint_path), params: { job_token: target_job.token }
+      end
+    end
 
     it_behaves_like 'merge requests list'
 
@@ -1422,6 +1453,13 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
 
   describe "GET /projects/:id/merge_requests/:merge_request_iid" do
     let(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], milestone: milestone, source_project: project, source_branch: 'markdown', title: "Test") }
+
+    it_behaves_like 'enforcing job token policies', :read_merge_requests,
+      allow_public_access_for_enabled_project_features: [:repository, :merge_requests] do
+      let(:request) do
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}"), params: { job_token: target_job.token }
+      end
+    end
 
     context 'with oauth token that has ai_workflows scope' do
       let(:user) { create(:user) }
@@ -2745,7 +2783,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
 
     context 'when user is using a composite identity', :request_store, :sidekiq_inline do
-      let(:user) { create(:user, username: 'user-with-composite-identity') }
+      let(:user) { create(:user, :service_account, username: 'user-with-composite-identity') }
 
       let(:params) do
         {
@@ -2757,16 +2795,14 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       end
 
       before do
-        allow_any_instance_of(::User).to receive(:composite_identity_enforced) do |user|
-          user.username == 'user-with-composite-identity'
-        end
+        user.update!(composite_identity_enforced: true)
       end
 
       context 'when composite identity is missing' do
-        it 'responds with 403 forbidden http status' do
+        it 'responds with 401 unauthorized http status' do
           post api("/projects/#{project.id}/merge_requests", user), params: params
 
-          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(response).to have_gitlab_http_status(:unauthorized)
         end
       end
 

@@ -207,8 +207,8 @@ RSpec.describe 'Project fork', feature_category: :source_code_management do
     it 'shows the filled in info forked project on the forks page' do
       fork_name = 'some-name'
       visit new_project_fork_path(project)
-      fill_in('fork-name', with: fork_name, fill_options: { clear: :backspace })
-      fill_in('fork-slug', with: fork_name, fill_options: { clear: :backspace })
+      fill_in('fork-name', with: fork_name)
+      fill_in('fork-slug', with: fork_name)
       submit_form
       wait_for_requests
 

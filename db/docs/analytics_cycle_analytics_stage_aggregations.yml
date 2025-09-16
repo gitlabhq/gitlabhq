@@ -8,7 +8,7 @@ description: Stores Value Stream Analytics stage aggregation related metadata fo
   initial aggregations after stage creation.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170988
 milestone: '17.6'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   group_id: namespaces
 table_size: small

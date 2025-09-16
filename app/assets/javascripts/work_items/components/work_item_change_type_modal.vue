@@ -427,6 +427,7 @@ export default {
     modal-id="work-item-change-type"
     :title="s__('WorkItem|Change type')"
     size="sm"
+    modal-class="gl-@container"
     :action-primary="actionPrimary"
     :action-cancel="$options.actionCancel"
     @primary="changeType"

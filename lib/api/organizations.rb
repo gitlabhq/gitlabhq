@@ -16,7 +16,8 @@ module API
       desc 'Create an organization' do
         detail 'This feature was introduced in GitLab 17.5. \
                     This feature is currently in an experimental state. \
-                    This feature is behind the `allow_organization_creation` feature flag.'
+                    This feature is behind the `allow_organization_creation` feature flag. \
+                    In GitLab 18.3, feature flag changed to `organization_switching`.'
         success Entities::Organizations::Organization
         tags %w[organizations]
       end
@@ -28,7 +29,7 @@ module API
           documentation: { type: 'file' }
       end
       post do
-        forbidden! unless Feature.enabled?(:allow_organization_creation, current_user)
+        forbidden! unless Feature.enabled?(:organization_switching, current_user)
         check_rate_limit!(:create_organization_api, scope: current_user)
         authorize_organization_creation!
 

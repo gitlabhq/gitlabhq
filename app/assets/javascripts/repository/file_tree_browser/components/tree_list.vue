@@ -4,7 +4,9 @@ import micromatch from 'micromatch';
 import { createAlert } from '~/alert';
 import { RecycleScroller } from 'vendor/vue-virtual-scroller';
 import FileRow from '~/vue_shared/components/file_row.vue';
+import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import { s__, __ } from '~/locale';
+import { InternalEvents } from '~/tracking';
 import { joinPaths } from '~/lib/utils/url_utility';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { TREE_PAGE_SIZE } from '~/repository/constants';
@@ -13,7 +15,15 @@ import { FOCUS_FILE_TREE_BROWSER_FILTER_BAR, keysFor } from '~/behaviors/shortcu
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { Mousetrap } from '~/lib/mousetrap';
 import Shortcut from '~/behaviors/shortcuts/shortcut.vue';
-import { normalizePath, dedupeByFlatPathAndId } from '../utils';
+import {
+  normalizePath,
+  dedupeByFlatPathAndId,
+  generateShowMoreItem,
+  directoryContainsChild,
+  shouldStopPagination,
+  hasMorePages,
+  isExpandable,
+} from '../utils';
 
 export default {
   ROW_HEIGHT: 32,
@@ -27,9 +37,11 @@ export default {
     RecycleScroller,
     FileRow,
     GlLoadingIcon,
+    FileTreeBrowserToggle,
     GlTooltip,
     Shortcut,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     currentRef: {
       type: String,
@@ -48,10 +60,10 @@ export default {
   data() {
     return {
       filter: '',
-      currentPath: '/',
       directoriesCache: {},
       expandedPathsMap: {},
       loadingPathsMap: {},
+      flatFilesList: [],
     };
   },
   computed: {
@@ -82,13 +94,16 @@ export default {
         micromatch.contains(item.path, pattern, { nocase: true }),
       );
     },
-    flatFilesList() {
-      if (this.isRootLoading) return [];
-      return this.buildList('/', 0);
+    currentRouterPath() {
+      return this.$route.params?.path && normalizePath(this.$route.params.path);
     },
   },
+  watch: {
+    directoriesCache: { deep: true, handler: 'updateFlatFilesList' },
+    expandedPathsMap: { deep: true, handler: 'updateFlatFilesList' },
+  },
   mounted() {
-    this.navigateTo(this.$route.params.path || '/');
+    this.expandPathAncestors(this.currentRouterPath || '/');
     this.mousetrap = new Mousetrap();
 
     if (!this.shortcutsDisabled) {
@@ -99,18 +114,22 @@ export default {
     this.mousetrap.unbind(keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR));
   },
   methods: {
+    updateFlatFilesList() {
+      if (this.isRootLoading) return;
+      // Replace array contents in-place to maintain same reference for RecycleScroller
+      this.flatFilesList.splice(0, this.flatFilesList.length, ...this.buildList('/', 0));
+    },
     isCurrentPath(path) {
       if (!this.$route.params.path) return path === '/';
-      const routePath = normalizePath(this.$route.params.path);
-      return path === routePath;
+      return path === this.currentRouterPath;
     },
     buildList(path, level) {
       const contents = this.getDirectoryContents(path);
-      return this.processDirectories(contents.trees, path, level)
-        .concat(this.processFiles(contents.blobs, level))
-        .concat(this.processSubmodules(contents.submodules, level));
+      return this.processDirectories({ trees: contents.trees, path, level })
+        .concat(this.processFiles({ blobs: contents.blobs, path, level }))
+        .concat(this.processSubmodules({ submodules: contents.submodules, path, level }));
     },
-    processDirectories(trees = [], path, level) {
+    processDirectories({ trees = [], path, level }) {
       const directoryList = [];
 
       trees.forEach((tree, index) => {
@@ -124,8 +143,10 @@ export default {
           level,
           opened: Boolean(this.expandedPathsMap[treePath]),
           loading: this.isDirectoryLoading(treePath),
-          isCurrentPath: this.isCurrentPath(treePath),
         });
+
+        if (this.shouldRenderShowMore(treePath, path))
+          directoryList.push(generateShowMoreItem(tree.id, path, level));
 
         // Recursively add children for expanded directories
         if (this.expandedPathsMap[treePath] && !this.isDirectoryLoading(treePath)) {
@@ -135,7 +156,7 @@ export default {
 
       return directoryList;
     },
-    processFiles(blobs = [], level) {
+    processFiles({ blobs = [], path, level }) {
       const filesList = [];
 
       blobs.forEach((blob, index) => {
@@ -148,13 +169,15 @@ export default {
           name: blob.name,
           mode: blob.mode,
           level,
-          isCurrentPath: this.isCurrentPath(blobPath),
         });
+
+        if (this.shouldRenderShowMore(blobPath, path))
+          filesList.push(generateShowMoreItem(blob.id, path, level));
       });
 
       return filesList;
     },
-    processSubmodules(submodules = [], level) {
+    processSubmodules({ submodules = [], path, level }) {
       const submodulesList = [];
 
       submodules.forEach((submodule, index) => {
@@ -166,8 +189,10 @@ export default {
           name: submodule.name,
           submodule: true,
           level,
-          isCurrentPath: this.isCurrentPath(submodulePath),
         });
+
+        if (this.shouldRenderShowMore(submodulePath, path))
+          submodulesList.push(generateShowMoreItem(submodule.id, path, level));
       });
 
       return submodulesList;
@@ -175,8 +200,9 @@ export default {
     async fetchDirectory(dirPath) {
       const path = normalizePath(dirPath);
       const apiPath = path === '/' ? path : path.substring(1);
+      const nextPageCursor = this.directoriesCache[path]?.pageInfo?.endCursor || '';
 
-      if (this.directoriesCache[path] || this.loadingPathsMap[path]) return;
+      if ((this.directoriesCache[path] && !nextPageCursor) || this.loadingPathsMap[path]) return;
 
       this.loadingPathsMap = { ...this.loadingPathsMap, [path]: true };
 
@@ -189,7 +215,7 @@ export default {
             ref: currentRef,
             refType: getRefType(refType),
             path: apiPath,
-            nextPageCursor: '',
+            nextPageCursor,
             pageSize: TREE_PAGE_SIZE,
           },
         });
@@ -201,10 +227,16 @@ export default {
           blobs: dedupeByFlatPathAndId(treeData.blobs.nodes),
           submodules: dedupeByFlatPathAndId(treeData.submodules.nodes),
         };
+        const cached = this.directoriesCache[path] || { trees: [], blobs: [], submodules: [] };
 
         this.directoriesCache = {
           ...this.directoriesCache,
-          [path]: directoryContents,
+          [path]: {
+            trees: [...cached.trees, ...directoryContents.trees],
+            blobs: [...cached.blobs, ...directoryContents.blobs],
+            submodules: [...cached.submodules, ...directoryContents.submodules],
+            pageInfo: project?.repository?.paginatedTree?.pageInfo,
+          },
         };
       } catch (error) {
         createAlert({
@@ -220,32 +252,54 @@ export default {
     },
 
     // Expand all parent directories leading to a path
-    expandPathAncestors(path) {
-      const normalizedPath = normalizePath(path);
-      this.fetchDirectory('/');
+    async expandPathAncestors(path) {
+      await this.fetchDirectory('/');
+      const segments = (path || '').split('/').filter(Boolean);
+      if (!isExpandable(segments)) return;
 
-      const segments = normalizedPath.split('/').filter(Boolean);
-      let currentPath = '';
+      const expand = async (index = 0, currentPath = '', page = 0) => {
+        if (index >= segments.length) return;
 
-      // For each segment of the path, expand the parent directory
-      segments.forEach((segment) => {
-        currentPath += `/${segment}`;
-        this.expandedPathsMap = {
-          ...this.expandedPathsMap,
-          [currentPath]: true,
-        };
-        this.fetchDirectory(currentPath);
-      });
+        const parent = currentPath || '/';
+        const segment = segments[index];
+        const parentContents = this.getDirectoryContents(parent);
+
+        // Check if segment exists in parent directory
+        if (!directoryContainsChild(parentContents, segment)) {
+          if (shouldStopPagination(page, this.loadingPathsMap[parent])) return;
+
+          await this.fetchDirectory(parent);
+
+          // Check if found after fetch
+          const updatedContents = this.getDirectoryContents(parent);
+          if (!directoryContainsChild(updatedContents, segment)) {
+            // If more pages exist, try next page
+            if (hasMorePages(updatedContents)) {
+              await expand(index, currentPath, page + 1);
+              return;
+            }
+            return; // Not found
+          }
+        }
+
+        // Expand and move to next segment
+        const next = `${currentPath}/${segment}`;
+        this.expandedPathsMap = { ...this.expandedPathsMap, [next]: true };
+        if (!this.directoriesCache[next]) await this.fetchDirectory(next);
+        await expand(index + 1, next);
+      };
+
+      await expand();
     },
 
     toggleDirectory(normalizedPath) {
       if (!this.expandedPathsMap[normalizedPath]) {
         // If directory is collapsed, expand it
-        this.expandPathAncestors(normalizedPath);
         this.expandedPathsMap = {
           ...this.expandedPathsMap,
           [normalizedPath]: true,
         };
+        this.fetchDirectory(normalizedPath);
       } else {
         // If directory is already expanded, collapse it
         const newExpandedPaths = { ...this.expandedPathsMap };
@@ -254,25 +308,38 @@ export default {
       }
     },
 
-    // Navigate to a specific directory or file
-    navigateTo(path) {
-      const normalizedPath = normalizePath(path);
-      this.currentPath = normalizedPath;
-      this.toggleDirectory(normalizedPath);
-    },
-
     isDirectoryLoading(path) {
       return Boolean(this.loadingPathsMap[normalizePath(path)]);
     },
 
     getDirectoryContents(path) {
-      return this.directoriesCache[normalizePath(path)] || { trees: [], blobs: [], submodules: [] };
+      return this.directoriesCache[path] || { trees: [], blobs: [], submodules: [] };
+    },
+    shouldRenderShowMore(itemPath, parentPath) {
+      const cached = this.directoriesCache[parentPath];
+      if (!cached) return false;
+
+      const { trees, blobs, submodules, pageInfo } = cached;
+      const lastItemPath = normalizePath([...trees, ...blobs, ...submodules].at(-1)?.path);
+      return itemPath === lastItemPath && pageInfo?.hasNextPage;
     },
     triggerFocusFilterBar() {
       const filterBar = this.$refs.filterInput;
       if (filterBar && filterBar.$el) {
+        this.trackEvent('focus_file_tree_browser_filter_bar_on_repository_page', {
+          label: 'shortcut',
+        });
         filterBar.focus();
       }
+    },
+    onFilterBarClick() {
+      this.trackEvent('focus_file_tree_browser_filter_bar_on_repository_page', {
+        label: 'click',
+      });
+    },
+    filterInputTooltipTarget() {
+      // The input might not always be available (i.e. when the FTB is in collapsed state)
+      return this.$refs.filterInput?.$el;
     },
   },
   filterPlaceholder: s__('Repository|Filter files (*.vue, *.rb...)'),
@@ -281,25 +348,29 @@ export default {
 
 <template>
   <section aria-labelledby="tree-list-heading" class="gl-flex gl-h-full gl-flex-col">
-    <h3 id="tree-list-heading" class="gl-sr-only" :aria-label="__('File tree browser')">
-      {{ __('Files') }}
-    </h3>
+    <div class="gl-mb-3 gl-flex gl-items-center gl-gap-3">
+      <file-tree-browser-toggle />
+      <h3 id="tree-list-heading" class="gl-heading-3 gl-mb-0">
+        {{ __('Files') }}
+      </h3>
+    </div>
+
     <div class="gl-relative gl-flex">
       <gl-icon name="filter" class="gl-absolute gl-left-3 gl-top-3" variant="subtle" />
       <gl-form-input
         ref="filterInput"
         v-model="filter"
-        data-testid="ftb-filter-input"
         :aria-label="__('Filter input')"
         :aria-keyshortcuts="filterSearchShortcutKey"
         type="search"
         class="!gl-pl-7"
         :placeholder="$options.filterPlaceholder"
+        @click="onFilterBarClick"
       />
       <gl-tooltip
         v-if="!shortcutsDisabled"
         custom-class="file-browser-filter-tooltip"
-        :target="() => $refs.filterInput.$el"
+        :target="filterInputTooltipTarget"
         trigger="hover focus"
       >
         {{ __('Focus on the filter bar') }}
@@ -330,11 +401,12 @@ export default {
             :style="{ '--level': item.level }"
             :class="{
               'tree-list-parent': item.level > 0,
-              '!gl-bg-gray-50': item.isCurrentPath,
+              '!gl-bg-gray-50': isCurrentPath(item.path),
             }"
             class="!gl-mx-0"
             truncate-middle
-            @clickTree="navigateTo(item.path)"
+            @clickTree="toggleDirectory(item.path)"
+            @showMore="fetchDirectory(item.parentPath)"
           />
         </template>
       </recycle-scroller>

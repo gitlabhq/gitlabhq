@@ -16,6 +16,7 @@ describe('WorkItemBreadcrumb', () => {
     workItemsAlpha = false,
     workItemPlanningView = false,
     workItemViewForIssues = false,
+    workItemsProjectIssuesList = false,
     props = {},
   } = {}) => {
     wrapper = shallowMount(WorkItemBreadcrumb, {
@@ -25,6 +26,7 @@ describe('WorkItemBreadcrumb', () => {
           workItemsAlpha,
           workItemPlanningView,
           workItemViewForIssues,
+          workItemsProjectIssuesList,
         },
         listPath,
         isGroup,
@@ -93,12 +95,12 @@ describe('WorkItemBreadcrumb', () => {
         ]);
       });
 
-      it('renders root breadcrumb with router link if user turned work item view on and alpha flag is on', () => {
+      it('renders root breadcrumb with router link if user turned work item view on and is on work item project issues list', () => {
         createComponent({
           isGroup: false,
           listPath: '/issues',
-          workItemsAlpha: true,
           workItemViewForIssues: true,
+          workItemsProjectIssuesList: true,
         });
 
         expect(findBreadcrumb().props('items')).toEqual([
@@ -112,12 +114,29 @@ describe('WorkItemBreadcrumb', () => {
         ]);
       });
 
-      it('renders root breadcrumb with href if user turned work item view on and alpha flag is off', () => {
+      it('renders root breadcrumb with href if user turned work item view on but not on work item project issues list', () => {
         createComponent({
           isGroup: false,
           listPath: '/issues',
-          workItemsAlpha: false,
           workItemViewForIssues: true,
+          workItemsProjectIssuesList: false,
+        });
+
+        expect(findBreadcrumb().props('items')).toEqual([
+          {
+            text: 'Issues',
+            href: '/issues',
+          },
+        ]);
+      });
+
+      it('renders root breadcrumb with href if not on work item project issues list regardless of workItemsAlpha flag', () => {
+        createComponent({
+          isGroup: false,
+          listPath: '/issues',
+          workItemsAlpha: true,
+          workItemViewForIssues: true,
+          workItemsProjectIssuesList: false,
         });
 
         expect(findBreadcrumb().props('items')).toEqual([

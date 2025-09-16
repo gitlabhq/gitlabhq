@@ -6,7 +6,8 @@ import { logError } from '~/lib/logger';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import BlobContent from '~/blob/components/blob_content.vue';
 import BlobHeader from 'ee_else_ce/blob/components/blob_header.vue';
-import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
+import BlameHeader from '~/blob/components/blame_header.vue';
+import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER, BLAME_VIEWER } from '~/blob/components/constants';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
@@ -37,6 +38,7 @@ const trackingMixin = InternalEvents.mixin();
 export default {
   components: {
     BlobHeader,
+    BlameHeader,
     BlobContent,
     GlLoadingIcon,
     GlButton,
@@ -105,7 +107,8 @@ export default {
 
         if (this.isUnsupportedLanguage(this.blobInfo.language) && this.isTooLarge) return;
         this.initHighlightWorker(this.blobInfo, this.isUsingLfs);
-        this.switchViewer(useSimpleViewer ? SIMPLE_BLOB_VIEWER : RICH_BLOB_VIEWER); // By default, if present, use the rich viewer to render
+        if (this.isBlameAvailable) this.switchViewer(BLAME_VIEWER);
+        else this.switchViewer(useSimpleViewer ? SIMPLE_BLOB_VIEWER : RICH_BLOB_VIEWER); // By default, if present, use the rich viewer to render
       },
       error(error) {
         logError(`Unexpected error while fetching blobInfo query`, error);
@@ -263,6 +266,9 @@ export default {
         this.blobInfo.simpleViewer?.fileType === EMPTY_FILE
       );
     },
+    isBlameAvailable() {
+      return this.glFeatures.inlineBlame && !this.isBinaryFileType && this.showBlame;
+    },
   },
   watch: {
     // Watch the URL 'plain' query value to know if the viewer needs changing.
@@ -401,7 +407,7 @@ export default {
         :blob="blobInfo"
         :hide-viewer-switcher="shouldHideViewerSwitcher"
         :is-binary="isBinaryFileType"
-        :active-viewer-type="viewer.type"
+        :active-viewer-type="activeViewerType"
         :has-render-error="hasRenderError"
         :show-path="false"
         :override-copy="true"
@@ -418,6 +424,7 @@ export default {
         @error="displayError"
         @blame="handleToggleBlame"
       />
+      <blame-header v-if="isBlameAvailable" />
       <blob-content
         v-if="!blobViewer"
         class="js-syntax-highlight"

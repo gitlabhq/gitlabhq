@@ -1342,7 +1342,7 @@ When you take screenshots:
   review app in the merge request. Make sure the image isn't blurry or overwhelming.
 - **Be consistent.** Coordinate screenshots with the other screenshots already on
   a documentation page for a consistent reading experience. Ensure your navigation theme
-  is set to the default preference **Indigo** and the syntax highlighting theme is also set to the default preference **Light**.
+  is set to the default preference **Neutral** and the syntax highlighting theme is also set to the default preference **Light**.
 
 #### Add callouts
 
@@ -1980,6 +1980,17 @@ To create a set of cards, follow this example:
 - [The first page](first_page.md)
 - [Another page](another/page.md)
 - [One more page](one_more.md)
+
+{{</* /cards */>}}
+```
+
+Additionally, cards support external URLs with optional descriptions.
+Use the following syntax:
+
+```markdown
+{{</* cards */>}}
+
+- [External page title](https://example.com "Optional Description")
 
 {{</* /cards */>}}
 ```

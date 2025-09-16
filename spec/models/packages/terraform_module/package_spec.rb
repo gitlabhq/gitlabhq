@@ -32,4 +32,28 @@ RSpec.describe Packages::TerraformModule::Package, type: :model, feature_categor
       it_behaves_like 'validating version to be SemVer compliant for', :terraform_module_package
     end
   end
+
+  describe 'scopes' do
+    describe '.unscope_order' do
+      subject(:unscoped) { described_class.order(:name, created_at: :desc).unscope_order }
+
+      it 'removes order clauses' do
+        expect(unscoped.order_values).to be_empty
+      end
+    end
+
+    describe '.order_metadatum_semver_desc' do
+      subject { described_class.order_metadatum_semver_desc }
+
+      let_it_be(:package1) do
+        create(:terraform_module_package, :with_metadatum, version: '0.0.9', without_package_files: true)
+      end
+
+      let_it_be(:package2) do
+        create(:terraform_module_package, :with_metadatum, version: '0.0.10', without_package_files: true)
+      end
+
+      it { is_expected.to eq([package2, package1]) }
+    end
+  end
 end

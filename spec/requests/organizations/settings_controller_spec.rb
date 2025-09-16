@@ -29,14 +29,14 @@ RSpec.describe Organizations::SettingsController, feature_category: :organizatio
 
       context 'with no association to an organization' do
         it_behaves_like 'organization - not found response'
-        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
 
       context 'as as admin', :enable_admin_mode do
         let_it_be(:user) { create(:admin) }
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
 
       context 'as a default organization user' do
@@ -45,7 +45,7 @@ RSpec.describe Organizations::SettingsController, feature_category: :organizatio
         end
 
         it_behaves_like 'organization - not found response'
-        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
 
       context 'as an owner of an organization' do
@@ -54,7 +54,7 @@ RSpec.describe Organizations::SettingsController, feature_category: :organizatio
         end
 
         it_behaves_like 'organization - successful response'
-        it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
       end
     end
   end

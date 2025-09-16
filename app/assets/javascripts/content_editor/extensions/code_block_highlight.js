@@ -7,7 +7,7 @@ import { __ } from '~/locale';
 import languageLoader from '../services/code_block_language_loader';
 import CodeBlockWrapper from '../components/wrappers/code_block.vue';
 
-const DEFAULT_GLQL_VIEW_CONTENT = `query: assignee = currentUser()\nfields: title, createdAt, milestone, assignee\ntitle: ${__('Issues assigned to current user')}`;
+export const DEFAULT_GLQL_VIEW_CONTENT = `query: assignee = currentUser()\nfields: title, createdAt, milestone, assignee\ntitle: ${__('Issues assigned to current user')}`;
 
 const extractLanguage = (element) => element.dataset.canonicalLang ?? element.getAttribute('lang');
 

@@ -269,11 +269,13 @@ export default {
         workItems: this.enableAutocomplete,
         mergeRequests: this.enableAutocomplete,
         epics: this.enableAutocomplete,
+        epicsAlternative: this.enableAutocomplete,
         milestones: this.enableAutocomplete,
         labels: this.enableAutocomplete,
         snippets: this.enableAutocomplete,
         vulnerabilities: this.enableAutocomplete,
         contacts: this.enableAutocomplete,
+        statuses: this.enableAutocomplete,
       },
       true,
       this.autocompleteDataSources,
@@ -365,7 +367,7 @@ export default {
 <template>
   <div
     ref="gl-form"
-    class="js-vue-markdown-field md-area position-relative gfm-form"
+    class="js-vue-markdown-field md-area gfm-form !gl-relative"
     :data-uploads-path="uploadsPath"
   >
     <markdown-header

@@ -15,28 +15,52 @@ class RunPipelineScheduleWorker
 
   def perform(schedule_id, user_id, options = {})
     schedule = Ci::PipelineSchedule.find_by_id(schedule_id)
-
-    return unless schedule&.project
-    return if schedule.project.self_or_ancestors_archived?
-
-    if Feature.enabled?(:notify_pipeline_schedule_owner_unavailable,
-      schedule.project) && !schedule_owner_still_available?(schedule)
-      return
-    end
-
     user = User.find_by_id(user_id)
 
-    return unless user
+    return unless schedule_valid?(schedule, schedule_id, user, options)
 
-    options.symbolize_keys!
+    update_next_run_at_for(schedule) if options['scheduling']
 
-    if options[:scheduling]
-      return if schedule.next_run_at.future?
+    response = run_pipeline_schedule(schedule, user)
+    log_error(schedule.id, response.message) if response&.error?
 
-      update_next_run_at_for(schedule)
+    response
+  end
+
+  def schedule_valid?(schedule, schedule_id, user, options)
+    unless schedule
+      log_error(schedule_id, "Schedule not found")
+      return false
     end
 
-    run_pipeline_schedule(schedule, user)
+    unless schedule.project
+      log_error(schedule_id, "Project not found for schedule")
+      return false
+    end
+
+    if schedule.project.self_or_ancestors_archived?
+      log_error(schedule_id, "Project or ancestors are archived")
+      return false
+    end
+
+    if Feature.enabled?(:notify_pipeline_schedule_owner_unavailable,
+      user) && schedule_owner_not_available?(schedule)
+      log_error(schedule_id, "Pipeline schedule owner is no longer available to schedule the pipeline")
+      notify_project_owner_and_deactivate_schedule(schedule)
+      return false
+    end
+
+    unless user
+      log_error(schedule_id, "User not found")
+      return false
+    end
+
+    if options['scheduling'] && schedule.next_run_at.future?
+      log_error(schedule_id, "Schedule next run time is in future")
+      return false
+    end
+
+    true
   end
 
   def run_pipeline_schedule(schedule, user)
@@ -59,26 +83,24 @@ class RunPipelineScheduleWorker
     schedule.schedule_next_run!
   end
 
-  def schedule_owner_still_available?(schedule)
-    return true if schedule.owner&.can?(:create_pipeline, schedule.project)
-
-    notify_project_owner(schedule)
-    false
+  def schedule_owner_not_available?(schedule)
+    !schedule.owner&.can?(:create_pipeline, schedule.project)
   end
 
-  def notify_project_owner(schedule)
+  def notify_project_owner_and_deactivate_schedule(schedule)
     NotificationService.new.pipeline_schedule_owner_unavailable(schedule)
+    schedule.deactivate!
   end
 
   def error(schedule, error)
     failed_creation_counter.increment
-    log_error(schedule, error)
+    log_error(schedule.id, error.message)
     track_error(schedule, error)
   end
 
-  def log_error(schedule, error)
+  def log_error(schedule_id, message)
     Gitlab::AppLogger.error "Failed to create a scheduled pipeline. " \
-                       "schedule_id: #{schedule.id} message: #{error.message}"
+                              "schedule_id: #{schedule_id} message: #{message}"
   end
 
   def track_error(schedule, error)

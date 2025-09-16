@@ -593,3 +593,13 @@ Attribute names starting with phrases such as `http://schemas.xmlsoap.org/ws/200
   <AttributeValue>user@example.com‹/AttributeValue>
 </Attribute>
 ```
+
+## Cannot add service accounts with global SAML group memberships lock
+
+{{< details >}}
+
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+If the [global SAML group membership lock](group_sync.md#global-saml-group-memberships-lock) is enabled, only administrators can manage group members and service accounts through the UI. If a group Owner needs to manage service accounts, they can use the [group members API](../../../api/members.md) instead.

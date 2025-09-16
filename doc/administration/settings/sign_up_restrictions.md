@@ -1,6 +1,6 @@
 ---
-stage: none
-group: unassigned
+stage: Software Supply Chain Security
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: yes
 title: Sign-up restrictions
@@ -129,7 +129,7 @@ To turn on restricted access:
 When you turn on restricted access, the following known issues might occur and result in overages:
 
 - The number of billable users can still be exceeded if:
-  - You use SAML or SCIM to add new members, and have exceeded the number of seats in the subscription.
+  - You use SAML, SCIM, or LDAP to add new members, and have exceeded the number of seats in the subscription.
   - Multiple users with administrator access add members simultaneously.
   - New billable users delay accepting an invitation.
 - If you renew your subscription through the GitLab Sales Team for fewer users than your current

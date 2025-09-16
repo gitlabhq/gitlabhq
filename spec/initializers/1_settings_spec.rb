@@ -81,7 +81,10 @@ RSpec.describe '1_settings', feature_category: :shared do
         address: 'test-topology-service-host:8080',
         ca_file: '/test/topology-service-ca.pem',
         certificate_file: '/test/topology-service-cert.pem',
-        private_key_file: '/test/topology-service-key.pem'
+        private_key_file: '/test/topology-service-key.pem',
+        metadata: {
+          'key1' => 'val1'
+        }
       }
     end
 
@@ -95,6 +98,7 @@ RSpec.describe '1_settings', feature_category: :shared do
       it { expect(Settings.cell.topology_service_client.ca_file).to eq(config[:ca_file]) }
       it { expect(Settings.cell.topology_service_client.certificate_file).to eq(config[:certificate_file]) }
       it { expect(Settings.cell.topology_service_client.private_key_file).to eq(config[:private_key_file]) }
+      it { expect(Settings.cell.topology_service_client.metadata.to_h).to eq(config[:metadata]) }
     end
 
     context 'when topology service client config is provided as a key nested' do
@@ -107,6 +111,18 @@ RSpec.describe '1_settings', feature_category: :shared do
       it { expect(Settings.cell.topology_service_client.ca_file).to eq(config[:ca_file]) }
       it { expect(Settings.cell.topology_service_client.certificate_file).to eq(config[:certificate_file]) }
       it { expect(Settings.cell.topology_service_client.private_key_file).to eq(config[:private_key_file]) }
+      it { expect(Settings.cell.topology_service_client.metadata.to_h).to eq(config[:metadata]) }
+    end
+
+    context 'when topology service client config does not include metadata' do
+      let(:config_without_metadata) { config.delete(:metadata) }
+
+      before do
+        stub_config({ cell: { enabled: true, id: 1, topology_service_client: config_without_metadata } })
+        load_settings
+      end
+
+      it { expect(Settings.cell.topology_service_client.metadata.to_h).to eq({}) }
     end
   end
 
@@ -202,7 +218,6 @@ RSpec.describe '1_settings', feature_category: :shared do
         environments_auto_delete_cron_worker
         environments_auto_stop_cron_worker
         expire_build_artifacts_worker
-        flush_stale_counter_increments_cron_worker
         gitlab_export_prune_project_export_jobs_worker
         gitlab_import_import_file_cleanup_worker
         gitlab_service_ping_worker

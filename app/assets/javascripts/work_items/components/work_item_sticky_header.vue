@@ -67,6 +67,27 @@ export default {
       return this.glFeatures.notificationsTodosButtons;
     },
   },
+  watch: {
+    isStickyHeaderShowing: {
+      handler(isShowing) {
+        if (isShowing) {
+          this.$nextTick(() => {
+            this.syncStickyHeaderHeight();
+          });
+        }
+      },
+      immediate: true,
+    },
+  },
+  methods: {
+    syncStickyHeaderHeight() {
+      const el = this.$refs.stickyHeader;
+      if (!el) return;
+      const container = document.documentElement;
+      const heightPx = `${el.offsetHeight}px`;
+      container.style.setProperty('--work-item-sticky-header-height', heightPx);
+    },
+  },
   WORKSPACE_PROJECT,
   TITLE_CLASS: 'gl-mr-auto gl-block gl-truncate gl-pr-3 gl-font-bold gl-text-strong',
 };
@@ -80,12 +101,13 @@ export default {
     <transition name="issuable-header-slide">
       <div
         v-if="isStickyHeaderShowing"
+        ref="stickyHeader"
         class="issue-sticky-header gl-border-b gl-z-3 gl-bg-default gl-py-2"
         :class="{ 'gl-absolute gl-left-0 gl-top-10': isDrawer, 'gl-fixed': !isDrawer }"
         data-testid="work-item-sticky-header"
       >
         <div
-          class="work-item-sticky-header-text gl-mx-auto gl-flex gl-items-center gl-gap-3 gl-px-5 xl:gl-px-6"
+          class="work-item-sticky-header-text gl-mx-auto gl-flex gl-items-center gl-gap-3 gl-px-5 @xl/panel:gl-px-6"
         >
           <work-item-state-badge
             v-if="workItemState"

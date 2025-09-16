@@ -1,12 +1,20 @@
 import { GlSkeletonLoader, GlCollapsibleListbox } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ActivityWidget from '~/homepage/components/activity_widget.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import { localTimeAgo } from '~/lib/utils/datetime_utility';
-import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
+import BaseWidget from '~/homepage/components/base_widget.vue';
+import { InternalEvents } from '~/tracking';
+import {
+  EVENT_USER_CLICKS_LINK_ON_ACTIVITY_FEED,
+  TRACKING_SCOPE_YOUR_ACTIVITY,
+  TRACKING_SCOPE_STARRED_PROJECTS,
+  TRACKING_SCOPE_FOLLOWED_USERS,
+} from '~/homepage/tracking_constants';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/datetime_utility');
@@ -14,6 +22,9 @@ jest.mock('~/lib/utils/datetime_utility');
 describe('ActivityWidget', () => {
   let wrapper;
   let mockAxios;
+  let trackEventSpy;
+
+  useMockInternalEventsTracking();
 
   const MOCK_CURRENT_USERNAME = 'administrator';
 
@@ -25,8 +36,8 @@ describe('ActivityWidget', () => {
     );
   const findEmptyState = () => wrapper.findByTestId('empty-state');
   const findEventsList = () => wrapper.findByTestId('events-list');
-  const findDetector = () => wrapper.findComponent(VisibilityChangeDetector);
-  const findAllActivityLink = () => wrapper.find('a[href="/foo/bar"]');
+  const findBaseWidget = () => wrapper.findComponent(BaseWidget);
+  const findAllActivityLink = () => wrapper.findByText('All activity');
 
   function createWrapper() {
     gon.current_username = MOCK_CURRENT_USERNAME;
@@ -38,11 +49,21 @@ describe('ActivityWidget', () => {
   }
 
   beforeEach(() => {
+    if (wrapper) {
+      wrapper.destroy();
+      wrapper = null;
+    }
+
     mockAxios = new MockAdapter(axios);
+    trackEventSpy = jest.spyOn(InternalEvents, 'trackEvent');
+    jest.clearAllMocks();
+    sessionStorage.clear();
+    delete gon.current_username;
   });
 
   afterEach(() => {
     mockAxios.restore();
+    wrapper?.destroy();
   });
 
   it('shows a loading state while events are being fetched', () => {
@@ -118,13 +139,28 @@ describe('ActivityWidget', () => {
     expect(localTimeAgo).toHaveBeenCalledWith(timestampEls);
   });
 
-  it('populates the activity feed seletor with the correct options', () => {
+  it('populates the activity feed selector with the correct options', () => {
     createWrapper();
 
     expect(findActivityFeedSelector().props('items')).toEqual([
-      { text: 'Your activity', value: null },
-      { text: 'Starred projects', value: 'starred' },
-      { text: 'Followed users', value: 'followed' },
+      {
+        text: 'Your activity',
+        value: null,
+        scope: 'Your activity',
+        description: 'Your contributions, like commits and work on issues and merge requests.',
+      },
+      {
+        text: 'Starred projects',
+        value: 'starred',
+        scope: 'Starred projects',
+        description: 'Activity in projects you have starred.',
+      },
+      {
+        text: 'Followed users',
+        value: 'followed',
+        scope: 'Followed users',
+        description: 'Activity from users you follow.',
+      },
     ]);
   });
 
@@ -178,7 +214,7 @@ describe('ActivityWidget', () => {
       await waitForPromises();
       reloadSpy.mockClear();
 
-      findDetector().vm.$emit('visible');
+      findBaseWidget().vm.$emit('visible');
       await waitForPromises();
 
       expect(reloadSpy).toHaveBeenCalled();
@@ -207,6 +243,121 @@ describe('ActivityWidget', () => {
       findActivityFeedSelector().vm.$emit('select', 'followed');
       await waitForPromises();
       expect(sessionStorage.getItem('homepage-activity-filter')).toBe('followed');
+    });
+  });
+
+  describe('tracking events', () => {
+    it('tracks event when clicking on a link with "Your activity" filter', async () => {
+      mockAxios
+        .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
+        .reply(200, {
+          html: '<li><a href="/project/1">Project Link</a></li>',
+        });
+
+      createWrapper();
+      await waitForPromises();
+
+      const projectLink = wrapper.findByText('Project Link');
+      expect(projectLink.exists()).toBe(true);
+
+      projectLink.element.addEventListener('click', (e) => e.preventDefault());
+      await projectLink.trigger('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_USER_CLICKS_LINK_ON_ACTIVITY_FEED,
+        {
+          label: TRACKING_SCOPE_YOUR_ACTIVITY,
+        },
+        undefined,
+      );
+    });
+
+    it('tracks event when clicking on a link with "Starred projects" filter', async () => {
+      mockAxios
+        .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
+        .reply(200, {
+          html: '<li><a href="/project/1">Project Link</a></li>',
+        });
+      mockAxios.onGet('/dashboard/activity?limit=5&offset=0&filter=starred').reply(200, {
+        html: '<li><a href="/project/1">Project Link</a></li>',
+      });
+
+      createWrapper();
+      await waitForPromises();
+
+      findActivityFeedSelector().vm.$emit('select', 'starred');
+      await waitForPromises();
+
+      const projectLink = wrapper.findByText('Project Link');
+      expect(projectLink.exists()).toBe(true);
+
+      projectLink.element.addEventListener('click', (e) => e.preventDefault());
+      await projectLink.trigger('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_USER_CLICKS_LINK_ON_ACTIVITY_FEED,
+        {
+          label: TRACKING_SCOPE_STARRED_PROJECTS,
+        },
+        undefined,
+      );
+    });
+
+    it('tracks event when clicking on a link with "Followed users" filter', async () => {
+      mockAxios.reset();
+
+      mockAxios
+        .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=5&is_personal_homepage=1`)
+        .reply(200, {
+          html: '<li><a href="/project/1">Project Link</a></li>',
+        });
+      mockAxios.onGet('/dashboard/activity?limit=5&offset=0&filter=followed').reply(200, {
+        html: '<li><a href="/project/1">Project Link</a></li>',
+      });
+
+      createWrapper();
+      await waitForPromises();
+
+      findActivityFeedSelector().vm.$emit('select', 'followed');
+      await waitForPromises();
+
+      const projectLink = wrapper.findByText('Project Link');
+      expect(projectLink.exists()).toBe(true);
+
+      projectLink.element.addEventListener('click', (e) => e.preventDefault());
+      await projectLink.trigger('click');
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        EVENT_USER_CLICKS_LINK_ON_ACTIVITY_FEED,
+        {
+          label: TRACKING_SCOPE_FOLLOWED_USERS,
+        },
+        undefined,
+      );
+    });
+
+    it('uses InternalEvents mixin for tracking', () => {
+      createWrapper();
+
+      expect(wrapper.vm.trackEvent).toBeDefined();
+    });
+  });
+
+  describe('tracking constants', () => {
+    it('imports and uses correct tracking constants', () => {
+      expect(EVENT_USER_CLICKS_LINK_ON_ACTIVITY_FEED).toBe('user_clicks_link_in_activity_feed');
+      expect(TRACKING_SCOPE_YOUR_ACTIVITY).toBe('Your activity');
+      expect(TRACKING_SCOPE_STARRED_PROJECTS).toBe('Starred projects');
+      expect(TRACKING_SCOPE_FOLLOWED_USERS).toBe('Followed users');
+    });
+
+    it('matches scope constants with filter option text values', () => {
+      createWrapper();
+      const filterOptions = findActivityFeedSelector().props('items');
+
+      expect(filterOptions[0].scope).toBe(TRACKING_SCOPE_YOUR_ACTIVITY);
+      expect(filterOptions[1].scope).toBe(TRACKING_SCOPE_STARRED_PROJECTS);
+      expect(filterOptions[2].scope).toBe(TRACKING_SCOPE_FOLLOWED_USERS);
     });
   });
 });

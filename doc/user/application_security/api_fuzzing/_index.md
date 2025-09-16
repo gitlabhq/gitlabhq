@@ -2,7 +2,7 @@
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Web API Fuzz Testing
+title: Web API fuzz testing
 description: Testing, security, vulnerabilities, automation, and errors.
 ---
 
@@ -210,7 +210,7 @@ You can run a Web API fuzzing scan using the following methods:
 
 To get support for your particular problem use the [getting help channels](https://about.gitlab.com/get-help/).
 
-The [GitLab issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues) is the right place for bugs and feature proposals about API Security and API Fuzzing.
+The [GitLab issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues) is the right place for bugs and feature proposals about API security and API fuzzing.
 Use `~"Category:API Security"` label when opening a new issue regarding API fuzzing to ensure it is quickly reviewed by the right people.
 
 [Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) for similar entries before submitting your own, there's a good chance somebody else had the same issue or feature proposal. Show your support with an emoji reaction or join the discussion.

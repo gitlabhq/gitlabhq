@@ -88,7 +88,7 @@ module Users
     def organization_access_level
       return organization_params[:organization_access_level] if organization_params.has_key?(:organization_access_level)
 
-      Organizations::OrganizationUser.default_organization_access_level(user_is_admin: @user.admin?)
+      Organizations::OrganizationUser.home_organization_access_level(user_is_admin: @user.admin?)
     end
 
     def assign_organization
@@ -110,12 +110,17 @@ module Users
     def assign_common_user_params
       @user_params[:created_by_id] = current_user&.id
       @user_params[:external] = user_external? if set_external_param?
+      @user_params[:email_otp_required_after] = Time.current if enrol_new_users_in_email_otp?
 
       @user_params.delete(:user_type) unless allowed_user_type?
     end
 
     def set_external_param?
       user_default_internal_regex_enabled? && !user_params.key?(:external)
+    end
+
+    def enrol_new_users_in_email_otp?
+      Feature.enabled?(:enrol_new_users_in_email_otp, :instance)
     end
 
     def user_external?

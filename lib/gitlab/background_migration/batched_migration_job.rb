@@ -152,7 +152,7 @@ module Gitlab
 
       def base_relation
         if cursor?
-          model_class = define_batchable_model(batch_table, connection: connection)
+          model_class = define_batchable_model(batch_table, primary_key: fetch_primary_key, connection: connection)
 
           cursor_expression = Arel::Nodes::Grouping.new(
             cursor_columns.map { |column| model_class.arel_table[column] }
@@ -197,6 +197,10 @@ module Gitlab
         end
 
         sub_batch_relation
+      end
+
+      def fetch_primary_key
+        connection.primary_keys(batch_table)
       end
 
       def operation_name

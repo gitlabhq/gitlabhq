@@ -1,0 +1,12 @@
+---
+table_name: p_ci_job_messages
+classes:
+- Ci::JobMessage
+feature_categories:
+- continuous_integration
+description: Stores error messages related to CI/CD jobs
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201775
+milestone: '18.4'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects

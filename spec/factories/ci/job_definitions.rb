@@ -5,5 +5,6 @@ FactoryBot.define do
     project factory: :project
 
     checksum { Digest::SHA256.hexdigest(rand.to_s) }
+    interruptible { false }
   end
 end

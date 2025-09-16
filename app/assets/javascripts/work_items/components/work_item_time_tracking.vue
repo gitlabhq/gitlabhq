@@ -241,6 +241,7 @@ export default {
       data-testid="time-tracking-report-modal"
       hide-footer
       size="lg"
+      modal-class="gl-@container"
       :title="__('Time tracking report')"
     >
       <time-tracking-report

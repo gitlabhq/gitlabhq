@@ -41,6 +41,28 @@ RSpec.describe Banzai::Filter::CommitTrailersFilter, feature_category: :source_c
       expect_to_have_user_link_with_avatar(doc, user: user, trailer: trailer)
     end
 
+    context 'with leading whitespace' do
+      let(:trailer) { "\t\t\t#{generate(:short_text)}-by:" }
+
+      it 'preserves whitespace' do
+        doc = filter(commit_message_html)
+
+        expect(doc.to_html).to include("\t\t\t")
+        expect(doc.to_html).to include(trailer.strip)
+      end
+    end
+
+    context 'with mixed whitespace' do
+      let(:trailer) { "  \t  #{generate(:short_text)}-by:" }
+
+      it 'preserves whitespace' do
+        doc = filter(commit_message_html)
+
+        expect(doc.to_html).to include("  \t  ")
+        expect(doc.to_html).to include(trailer.strip)
+      end
+    end
+
     it 'does not detect GitLab users via a secondary email' do
       _, message_html = build_commit_message(
         trailer: trailer,

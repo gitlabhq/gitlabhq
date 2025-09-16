@@ -20,7 +20,7 @@ module Groups
       def edit; end
 
       def create
-        @application = Applications::CreateService.new(current_user, application_params).execute(request)
+        @application = Applications::CreateService.new(current_user, request, application_params).execute
 
         if @application.persisted?
           flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
@@ -65,7 +65,7 @@ module Groups
         @applications_total_count = @group.oauth_applications.count
 
         # Don't overwrite a value possibly set by `create`
-        @application ||= Doorkeeper::Application.new
+        @application ||= Authn::OauthApplication.new
       end
 
       def set_application

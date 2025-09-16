@@ -7,7 +7,7 @@ feature_categories:
 description: Store push rules for organizations
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186740
 milestone: '17.11'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   organization_id: organizations
 table_size: small

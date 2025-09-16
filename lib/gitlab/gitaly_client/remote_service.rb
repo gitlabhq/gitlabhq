@@ -64,7 +64,9 @@ module Gitlab
           end
 
           slices.each do |slice|
-            y.yield Gitaly::UpdateRemoteMirrorRequest.new(only_branches_matching: slice)
+            encoded_slice = slice.map { |branch_name| encode_binary(branch_name) }
+
+            y.yield Gitaly::UpdateRemoteMirrorRequest.new(only_branches_matching: encoded_slice)
           end
         end
 

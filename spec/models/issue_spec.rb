@@ -304,6 +304,21 @@ RSpec.describe Issue, feature_category: :team_planning do
       end
     end
 
+    describe '#ensure_namespace_traversal_ids' do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:project) { create(:project, group: group) }
+
+      let(:issue) { build(:issue, project: project) }
+
+      it 'set the namespace_traversal_ids for a project issue' do
+        expect(issue.namespace_traversal_ids).to eq([])
+
+        issue.save!
+
+        expect(issue.namespace_traversal_ids).to eq([group.id, project.project_namespace.id])
+      end
+    end
+
     describe '#record_create_action' do
       it 'records the creation action after saving' do
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_created_action)

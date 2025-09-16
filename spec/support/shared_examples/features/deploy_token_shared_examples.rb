@@ -20,8 +20,10 @@ RSpec.shared_examples 'a deploy token in settings' do
 
     within('#js-deploy-tokens') do
       fill_in _('Name'), with: 'new_deploy_key'
-      fill_in _('Expiration date (optional)'), with: (Date.today + 1.month).to_s
-      fill_in _('Username (optional)'), with: 'deployer'
+
+      # use `clear: nil` to prevent events (like an open datepicker) from firing
+      fill_in _('Expiration date (optional)'), with: (Date.today + 1.month).to_s, fill_options: { clear: nil }
+      fill_in _('Username (optional)'), with: 'deployer', fill_options: { clear: nil }
     end
     check 'read_repository'
     check 'read_registry'

@@ -135,7 +135,7 @@ RSpec.describe 'issuable templates', :js, feature_category: :team_planning do
 
       assert_template # default template is loaded the first time
 
-      fill_in 'issue_description', with: 'my own description', fill_options: { clear: :backspace }
+      fill_in 'issue_description', with: 'my own description'
 
       visit new_project_issue_path project
       wait_for_requests

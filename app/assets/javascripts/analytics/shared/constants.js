@@ -80,6 +80,7 @@ export const MAX_METRIC_PRECISION = 4;
 
 export const UNITS = {
   COUNT: 'COUNT',
+  BIGINT_COUNT: 'BIGINT_COUNT',
   DAYS: 'DAYS',
   PER_DAY: 'PER_DAY',
   PERCENT: 'PERCENT',

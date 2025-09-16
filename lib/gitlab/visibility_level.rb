@@ -76,7 +76,9 @@ module Gitlab
       end
 
       def allowed_for?(user, level)
-        user.admin? || allowed_level?(level.to_i)
+        return true if user.can_admin_all_resources?
+
+        allowed_level?(level.to_i)
       end
 
       # Level should be a numeric value, e.g. `20`

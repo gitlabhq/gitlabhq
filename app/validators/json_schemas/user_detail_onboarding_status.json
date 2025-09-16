@@ -65,6 +65,13 @@
         99
       ]
     },
+    "experiments": {
+      "description": "Array storing experiment assignments",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "version": {
       "description": "Version of registration flow",
       "type": "integer"

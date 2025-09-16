@@ -6,6 +6,7 @@ import { createAlert } from '~/alert';
 import { RESOURCE_TYPES } from '~/groups_projects/constants';
 import { archiveGroup } from '~/api/groups_api';
 import { archiveProject } from '~/api/projects_api';
+import { InternalEvents } from '~/tracking';
 
 export default {
   name: 'ArchiveSettings',
@@ -14,6 +15,7 @@ export default {
     GlLink,
     GlButton,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     resourceType: {
       type: String,
@@ -78,7 +80,6 @@ export default {
         visitUrl(this.resourcePath);
       } catch (error) {
         createAlert({ message: this.i18n.error, error, captureError: true });
-      } finally {
         this.loading = false;
       }
     },
@@ -98,7 +99,14 @@ export default {
           {{ i18n.helpLink }}
         </gl-link>
       </p>
-      <gl-button :loading="loading" data-testid="archive-button" @click="archive">
+      <gl-button
+        :loading="loading"
+        data-testid="archive-button"
+        data-event-tracking="archive_namespace_in_settings"
+        data-event-property="archive"
+        :data-event-label="resourceType"
+        @click="archive"
+      >
         {{ s__('GroupProjectArchiveSettings|Archive') }}
       </gl-button>
     </template>

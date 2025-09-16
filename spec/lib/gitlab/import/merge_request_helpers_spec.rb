@@ -118,6 +118,37 @@ RSpec.describe Gitlab::Import::MergeRequestHelpers, type: :helper, feature_categ
       )
       expect(note.system_note_metadata).to have_attributes(action: 'approved')
     end
+
+    shared_examples 'a duplicate approval' do
+      it 'does not create an approval or system note' do
+        expect { create_approval }.to not_change { Approval.count }
+          .and not_change { Note.count }
+      end
+    end
+
+    context 'when an approval from the user has already been imported' do
+      let_it_be(:approval) { create(:approval, user: user, merge_request: merge_request) }
+
+      it_behaves_like 'a duplicate approval'
+    end
+
+    context 'when importing multiple approvals causes a race condition during validation' do
+      context 'and a ActiveRecord::RecordNotUnique error is raised' do
+        before do
+          allow(Approval).to receive(:create).and_raise(ActiveRecord::RecordNotUnique)
+        end
+
+        it_behaves_like 'a duplicate approval'
+      end
+
+      context 'and a PG::UniqueViolation error is raised' do
+        before do
+          allow(Approval).to receive(:create).and_raise(PG::UniqueViolation)
+        end
+
+        it_behaves_like 'a duplicate approval'
+      end
+    end
   end
 
   describe '.create_merge_request_metrics' do

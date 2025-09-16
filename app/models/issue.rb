@@ -287,7 +287,7 @@ class Issue < ApplicationRecord
     joins(:work_item_type)
   }
 
-  before_validation :ensure_namespace_id, :ensure_work_item_type
+  before_validation :ensure_namespace_id, :ensure_work_item_type, :ensure_namespace_traversal_ids
 
   after_save :ensure_metrics!, unless: :skip_metrics?
   after_commit :expire_etag_cache, unless: :importing?
@@ -902,6 +902,10 @@ class Issue < ApplicationRecord
     return if work_item_type.present? || work_item_type_id.present? || work_item_type_id_change&.last.present?
 
     self.work_item_type = WorkItems::Type.default_by_type(DEFAULT_ISSUE_TYPE)
+  end
+
+  def ensure_namespace_traversal_ids
+    self.namespace_traversal_ids = self.namespace&.traversal_ids
   end
 
   def allowed_work_item_type_change

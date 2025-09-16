@@ -20,7 +20,8 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :cl
   let(:client_double) do
     instance_double(
       'Gitlab::GithubImport::Client',
-      user: { id: 999, login: 'author', email: 'author@email.com' }
+      user: { id: 999, login: 'author', email: 'author@email.com' },
+      web_endpoint: 'https://github.com'
     )
   end
 

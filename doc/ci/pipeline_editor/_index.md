@@ -18,57 +18,47 @@ the `.gitlab-ci.yml` file in the root of your repository. To access the editor, 
 From the pipeline editor page you can:
 
 - Select the branch to work from.
-- [Validate](#validate-ci-configuration) your configuration syntax while editing the file.
-- Do a deeper [lint](#lint-ci-configuration) of your configuration, that verifies it with any configuration
+- [Validate](#validate-cicd-syntax) your configuration syntax while editing the file.
+- Do a deeper [validation of your configuration](#validate-cicd-configuration), that verifies it with any configuration
   added with the [`include`](../yaml/_index.md#include) keyword.
 - View a [list of the CI/CD configuration added with the `include` keyword](#view-included-cicd-configuration).
 - See a [visualization](#visualize-ci-configuration) of the current configuration.
 - View the [full configuration](#view-full-configuration), which displays the configuration with any configuration from `include` added.
 - [Commit](#commit-changes-to-ci-configuration) the changes to a specific branch.
 
-## Validate CI configuration
+## Validate CI/CD syntax
 
-As you edit your pipeline configuration, it is continually validated against the GitLab CI/CD
-pipeline schema. It checks the syntax of your CI YAML configuration, and also runs
-some basic logical validations.
+As you use the pipeline editor, the pipeline configuration syntax is continually validated against
+the GitLab CI/CD pipeline schema. The syntax of your CI/CD YAML and also some basic logical validations
+are checked.
 
 The result of this validation is shown at the top of the editor page. If the validation fails,
-this section displays a tip to help you fix the problem:
+this section displays a tip to help you fix the problem.
 
-## Lint CI configuration
+## Validate CI/CD configuration
 
-{{< alert type="note" >}}
+{{< history >}}
 
-The **Lint** tab is replaced with the **Validate** tab in GitLab 15.3. The lint results are included
-in a successful [pipeline simulation](#simulate-a-cicd-pipeline).
+- Option to select different branches [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/482676) in GitLab 18.4.
 
-{{< /alert >}}
+{{< /history >}}
 
 To test the validity of your GitLab CI/CD configuration before committing the changes,
-you can use the CI lint tool:
+use the pipeline editor validation tool. This tool simulates the creation of pipeline
+due to a Git push event, and can help troubleshoot logic issues, including incorrect
+`rules` and `needs` job dependencies:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipeline editor**.
 1. Select the **Validate** tab.
+1. Optional. Select a different branch to use for the simulated push event by using
+   the **Pipeline run source** dropdown list.
+1. Select **Validate pipeline**.
 
-This tool checks for syntax and logical errors but goes into more detail than the
-automatic [validation](#validate-ci-configuration) in the editor.
+The simulated pipeline uses the existing pipeline configuration from the **Edit** tab.
 
-The results are updated in real-time. Any changes you make to the configuration are
-reflected in the CI lint. It displays the same results as the existing [CI Lint tool](../yaml/lint.md).
-
-## Simulate a CI/CD pipeline
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337282) in GitLab 15.3.
-
-{{< /history >}}
-
-To look for pipeline syntax and logic issues, you can simulate the creation of a
-GitLab CI/CD pipeline in the **Validate** tab. A pipeline simulation can help find
-problems such as incorrect `rules` and `needs` job dependencies, and is similar to
-simulations in the [CI Lint tool](../yaml/lint.md#simulate-a-pipeline).
+To validate a CI/CD YAML snippet without adding it to the **Edit** tab, use the
+[CI Lint tool](../yaml/lint.md#simulate-a-pipeline) instead.
 
 ## View included CI/CD configuration
 

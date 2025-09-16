@@ -40,7 +40,7 @@ function run_rubocop {
 
   while IFS='' read -r file; do
     files_for_rubocop+=("$file")
-  done < <(git ls-files -- '*/duo_workflows/*.rb' '*/duo_workflow/*.rb')
+  done < <(git ls-files -- '*/duo_workflows*.rb' '*/duo_workflow*.rb')
 
   REVEAL_RUBOCOP_TODO=${REVEAL_RUBOCOP_TODO:-0} bundle exec rubocop --parallel --force-exclusion --no-server "${files_for_rubocop[@]}"
 }
@@ -52,7 +52,7 @@ function run_rspec {
 
   printf "Running rspec command:\n\n"
 
-  git ls-files -- '*/duo_workflows/*_spec.rb' '*/duo_workflow/*_spec.rb' | xargs bin/rspec -fd
+  git ls-files -- '*/duo_workflows*_spec.rb' '*/duo_workflow*_spec.rb' | xargs bin/rspec -fd
 }
 
 function run_jest {
@@ -74,8 +74,15 @@ function print_success_message {
 function main {
   trap onexit_err ERR
 
+  # Ensure we were not invoked via a non-bash shell which overrode the /bin/bash shebang
+  [ -n "${BASH_VERSION:-}" ] || { printf "\n❌❌❌ ${BRed}Please run with bash${Color_Off} ❌❌❌\n" >&2; exit 1; }
+
   # cd to gitlab root directory
   cd "$(dirname "${BASH_SOURCE[0]}")"/../..
+
+  # ensure mise is activated for gitlab directory (if we were invoked from a different directory)
+  command -v mise >/dev/null 2>&1 || { printf "\n❌❌❌ ${BRed}mise is required, please install it${Color_Off} ❌❌❌\n" >&2; exit 1; }
+  eval "$(mise activate bash)"
 
   print_start_message
 

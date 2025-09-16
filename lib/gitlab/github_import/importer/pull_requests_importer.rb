@@ -40,7 +40,7 @@ module Gitlab
           # updating the timestamp.
           project.touch(:last_repository_updated_at)
 
-          project.repository.fetch_remote(project.import_url, refmap: Gitlab::GithubImport.refmap, forced: true)
+          project.repository.fetch_remote(project.unsafe_import_url, refmap: Gitlab::GithubImport.refmap, forced: true)
 
           pname = project.path_with_namespace
 

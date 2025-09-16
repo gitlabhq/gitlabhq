@@ -13,7 +13,7 @@ RSpec.describe BulkImports::PipelineSchemaInfo, feature_category: :importers do
   describe '#db_schema' do
     context 'when pipeline defines a relation name which is an association' do
       it 'returns the schema name of the table used by the association' do
-        expect(subject.db_schema).to eq(:gitlab_main_cell)
+        expect(subject.db_schema).to eq(:gitlab_main_org)
       end
     end
 

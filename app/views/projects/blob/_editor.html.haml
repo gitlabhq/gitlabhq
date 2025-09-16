@@ -37,7 +37,7 @@
           = _("Soft wrap")
 
   .file-editor.code
-    .js-edit-mode-pane#editor{ data: { 'editor-loading': true, testid: 'source-editor-preview-container', ref: ref} }<
+    .js-edit-mode-pane#editor{ data: { 'editor-loading': true, testid: 'source-editor-preview-container', ref: ref } }<
       %pre.editor-loading-content= params[:content] || local_assigns[:blob_data]
     - if local_assigns[:path]
       .js-edit-mode-pane#preview.hide

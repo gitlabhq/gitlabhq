@@ -80,7 +80,7 @@ export default {
       </div>
       <div class="board-card-footer gl-mt-3 gl-flex gl-items-end gl-justify-between">
         <div
-          class="align-items-start board-card-number-container gl-flex gl-flex-wrap-reverse gl-overflow-hidden"
+          class="board-card-number-container gl-flex gl-flex-wrap-reverse !gl-items-start gl-overflow-hidden"
         >
           <span class="board-info-items gl-inline-block gl-leading-20">
             <span

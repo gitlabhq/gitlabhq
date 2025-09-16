@@ -1,10 +1,10 @@
 import { GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
 import VueRouter from 'vue-router';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
@@ -23,7 +23,12 @@ import {
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
-import { CREATED_DESC, UPDATED_DESC, urlSortParams } from '~/issues/list/constants';
+import {
+  CREATED_DESC,
+  UPDATED_DESC,
+  urlSortParams,
+  RELATIVE_POSITION_ASC,
+} from '~/issues/list/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import getUserWorkItemsDisplaySettingsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
@@ -50,10 +55,13 @@ import {
   TOKEN_TYPE_ORGANIZATION,
   TOKEN_TYPE_CONTACT,
   TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_PARENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
+import IssuableItem from '~/vue_shared/issuable/list/components/issuable_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemUserPreferences from '~/work_items/components/shared/work_item_user_preferences.vue';
+import WorkItemByEmail from '~/work_items/components/work_item_by_email.vue';
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
 import getWorkItemsFullQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
@@ -72,12 +80,14 @@ import {
   WORK_ITEM_TYPE_NAME_TASK,
 } from '~/work_items/constants';
 import { createRouter } from '~/work_items/router';
+import workItemsReorderMutation from '~/work_items/graphql/work_items_reorder.mutation.graphql';
 import {
   workItemsQueryResponseCombined,
   workItemsQueryResponseNoLabels,
   workItemsQueryResponseNoAssignees,
   groupWorkItemStateCountsQueryResponse,
   combinedQueryResultExample,
+  workItemsWithSubChildQueryResponse,
 } from '../../mock_data';
 
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
@@ -102,6 +112,9 @@ describeSkipVue3(skipReason, () => {
   Vue.use(VueRouter);
 
   const defaultQueryHandler = jest.fn().mockResolvedValue(workItemsQueryResponseNoLabels);
+  const workItemsSubChildQueryHandler = jest
+    .fn()
+    .mockResolvedValue(workItemsWithSubChildQueryResponse);
   const defaultSlimQueryHandler = jest.fn().mockResolvedValue(workItemsQueryResponseNoAssignees);
   const defaultCountsQueryHandler = jest
     .fn()
@@ -120,10 +133,15 @@ describeSkipVue3(skipReason, () => {
   const findDrawer = () => wrapper.findComponent(WorkItemDrawer);
   const findEmptyStateWithoutAnyIssues = () => wrapper.findComponent(EmptyStateWithoutAnyIssues);
   const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
-  const findBulkEditStartButton = () => wrapper.find('[data-testid="bulk-edit-start-button"]');
+  const findBulkEditStartButton = () => wrapper.findByTestId('bulk-edit-start-button');
   const findBulkEditSidebar = () => wrapper.findComponent(WorkItemBulkEditSidebar);
   const findWorkItemListHeading = () => wrapper.findComponent(WorkItemListHeading);
   const findWorkItemUserPreferences = () => wrapper.findComponent(WorkItemUserPreferences);
+  const findWorkItemByEmail = () => wrapper.findComponent(WorkItemByEmail);
+  const findChildItem1 = () => wrapper.findAllComponents(IssuableItem).at(0);
+  const findChildItem2 = () => wrapper.findAllComponents(IssuableItem).at(1);
+  const findSubChildIndicator = (item) =>
+    item.find('[data-testid="sub-child-work-item-indicator"]');
 
   const mountComponent = ({
     provide = {},
@@ -138,6 +156,7 @@ describeSkipVue3(skipReason, () => {
     additionalHandlers = [],
     canReadCrmOrganization = true,
     canReadCrmContact = true,
+    stubs = {},
   } = {}) => {
     window.gon = {
       ...window.gon,
@@ -146,7 +165,7 @@ describeSkipVue3(skipReason, () => {
         workItemViewForIssues: workItemsToggleEnabled,
       },
     };
-    wrapper = shallowMount(WorkItemsListApp, {
+    wrapper = shallowMountExtended(WorkItemsListApp, {
       router: createRouter({ fullPath: '/work_item' }),
       apolloProvider: createMockApollo([
         [getWorkItemsFullQuery, queryHandler],
@@ -180,9 +199,21 @@ describeSkipVue3(skipReason, () => {
         isSignedIn: true,
         showNewWorkItem: true,
         workItemType: null,
+        canCreateWorkItem: false,
+        newWorkItemEmailAddress: null,
+        emailsHelpPagePath: '/help/development/emails.md#email-namespace',
+        markdownHelpPath: '/help/user/markdown.md',
+        quickActionsHelpPath: '/help/user/project/quick_actions.md',
         hasStatusFeature: true,
         releasesPath: RELEASES_ENDPOINT,
         metadataLoading: false,
+        email: '',
+        hasAnyWorkItems: false,
+        projectImportJiraPath: '/project/import/jira',
+        isGroupIssuesList: false,
+        groupId: 'gid://gitlab/Group/1',
+        isProject: false,
+        exportCsvPath: '/export/csv',
         ...provide,
       },
       propsData: {
@@ -191,6 +222,7 @@ describeSkipVue3(skipReason, () => {
       },
       stubs: {
         WorkItemBulkEditSidebar: true,
+        ...stubs,
       },
       mocks: {
         $toast: {
@@ -305,6 +337,26 @@ describeSkipVue3(skipReason, () => {
     it('calls `getParameterByName` to get the `show` param', () => {
       expect(getParameterByName).toHaveBeenCalledWith(DETAIL_VIEW_QUERY_PARAM_NAME);
     });
+
+    it('does not show tree icon if not searched parent', async () => {
+      mountComponent({ queryHandler: workItemsSubChildQueryHandler, stubs: { IssuableList } });
+
+      await waitForPromises();
+
+      expect(findSubChildIndicator(findChildItem1()).exists()).toBe(false);
+      expect(findSubChildIndicator(findChildItem2()).exists()).toBe(false);
+    });
+
+    it('shows tree icon based on a sub child of the searched parent', async () => {
+      setWindowLocation('?parent_id=1');
+
+      mountComponent({ queryHandler: workItemsSubChildQueryHandler, stubs: { IssuableList } });
+
+      await waitForPromises();
+
+      expect(findSubChildIndicator(findChildItem1()).exists()).toBe(true);
+      expect(findSubChildIndicator(findChildItem2()).exists()).toBe(false);
+    });
   });
 
   describe('sort options', () => {
@@ -328,6 +380,7 @@ describeSkipVue3(skipReason, () => {
           expect.objectContaining({ title: 'Due date' }),
           expect.objectContaining({ title: 'Popularity' }),
           expect.objectContaining({ title: 'Label priority' }),
+          expect.objectContaining({ title: 'Manual' }),
           expect.objectContaining({ title: 'Title' }),
           expect.objectContaining({ title: 'Start date' }),
           expect.objectContaining({ title: 'Health' }),
@@ -357,6 +410,7 @@ describeSkipVue3(skipReason, () => {
           expect.objectContaining({ title: 'Due date' }),
           expect.objectContaining({ title: 'Popularity' }),
           expect.objectContaining({ title: 'Label priority' }),
+          expect.objectContaining({ title: 'Manual' }),
           expect.objectContaining({ title: 'Title' }),
           expect.objectContaining({ title: 'Start date' }),
         ]);
@@ -364,7 +418,7 @@ describeSkipVue3(skipReason, () => {
     });
 
     describe('when epics list', () => {
-      it('does not render "Priority", "Label priority", and "Weight" sort options', async () => {
+      it('does not render "Priority", "Label priority", "Manual" and "Weight" sort options', async () => {
         mountComponent({
           provide: {
             hasBlockedIssuesFeature: true,
@@ -522,6 +576,7 @@ describeSkipVue3(skipReason, () => {
         TOKEN_TYPE_MILESTONE,
         TOKEN_TYPE_MY_REACTION,
         TOKEN_TYPE_ORGANIZATION,
+        TOKEN_TYPE_PARENT,
         TOKEN_TYPE_SEARCH_WITHIN,
         TOKEN_TYPE_SUBSCRIBED,
         TOKEN_TYPE_TYPE,
@@ -561,6 +616,7 @@ describeSkipVue3(skipReason, () => {
           TOKEN_TYPE_MILESTONE,
           TOKEN_TYPE_MY_REACTION,
           TOKEN_TYPE_ORGANIZATION,
+          TOKEN_TYPE_PARENT,
           TOKEN_TYPE_SEARCH_WITHIN,
           TOKEN_TYPE_SUBSCRIBED,
           TOKEN_TYPE_TYPE,
@@ -593,6 +649,7 @@ describeSkipVue3(skipReason, () => {
           TOKEN_TYPE_MILESTONE,
           TOKEN_TYPE_MY_REACTION,
           TOKEN_TYPE_ORGANIZATION,
+          TOKEN_TYPE_PARENT,
           TOKEN_TYPE_SEARCH_WITHIN,
           TOKEN_TYPE_SUBSCRIBED,
           TOKEN_TYPE_TYPE,
@@ -682,6 +739,29 @@ describeSkipVue3(skipReason, () => {
               }),
             ]),
           );
+        });
+      });
+    });
+
+    describe('Parent filter token', () => {
+      beforeEach(async () => {
+        mountComponent({ provide: { isGroup: false } });
+        await waitForPromises();
+      });
+
+      it('configures parent token with correct properties', () => {
+        const parentToken = findIssuableList()
+          .props('searchTokens')
+          .find((token) => token.type === TOKEN_TYPE_PARENT);
+
+        expect(parentToken).toMatchObject({
+          fullPath: 'full/path',
+          isProject: true,
+          recentSuggestionsStorageKey: 'full/path-issues-recent-tokens-parent',
+          operators: [
+            { description: 'is', value: '=' },
+            { description: 'is not one of', value: '!=' },
+          ],
         });
       });
     });
@@ -1311,12 +1391,55 @@ describeSkipVue3(skipReason, () => {
           queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
           slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlimResponse),
           countsQueryHandler: jest.fn().mockResolvedValue(emptyCountsResponse),
+          provide: {
+            isProject: false,
+          },
         });
         await waitForPromises();
       });
 
       it('renders the list empty state', () => {
         expect(findEmptyStateWithoutAnyIssues().exists()).toBe(true);
+      });
+
+      it('passes correct props to empty state component for groups', () => {
+        expect(findEmptyStateWithoutAnyIssues().props()).toMatchObject({
+          exportCsvPathWithQuery: null,
+          showCsvButtons: false,
+          showNewIssueDropdown: false,
+        });
+      });
+    });
+
+    describe('when there are no work items in project context', () => {
+      it('passes correct props to empty state component for projects', async () => {
+        const projectEmptyCountsResponse = cloneDeep(groupWorkItemStateCountsQueryResponse);
+        projectEmptyCountsResponse.data.project = {
+          id: 'gid://gitlab/Project/1',
+          workItemStateCounts: {
+            all: 0,
+            closed: 0,
+            opened: 0,
+          },
+        };
+        mountComponent({
+          provide: {
+            isGroup: false,
+            isProject: true,
+            exportCsvPath: '/export/csv',
+          },
+          queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
+          slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlimResponse),
+          countsQueryHandler: jest.fn().mockResolvedValue(projectEmptyCountsResponse),
+        });
+
+        await waitForPromises();
+
+        expect(findEmptyStateWithoutAnyIssues().props()).toMatchObject({
+          exportCsvPathWithQuery: '/export/csv',
+          showCsvButtons: true,
+          showNewIssueDropdown: false,
+        });
       });
     });
   });
@@ -1551,6 +1674,102 @@ describeSkipVue3(skipReason, () => {
 
       expect(defaultQueryHandler).not.toHaveBeenCalled();
       expect(defaultSlimQueryHandler).not.toHaveBeenCalled();
+    });
+  });
+  describe('when "reorder" event is emitted by IssuableList', () => {
+    beforeEach(async () => {
+      mountComponent({
+        provide: { initialSort: RELATIVE_POSITION_ASC },
+      });
+      await waitForPromises();
+    });
+
+    describe('when successful', () => {
+      describe.each`
+        description                        | oldIndex | newIndex | expectedMoveBeforeId                                                   | expectedMoveAfterId
+        ${'first item to second position'} | ${0}     | ${1}     | ${workItemsQueryResponseCombined.data.namespace.workItems.nodes[1].id} | ${null}
+        ${'second item to first position'} | ${1}     | ${0}     | ${null}                                                                | ${workItemsQueryResponseCombined.data.namespace.workItems.nodes[0].id}
+      `(
+        'when moving $description',
+        ({ oldIndex, newIndex, expectedMoveBeforeId, expectedMoveAfterId }) => {
+          it('calls workItemsReorder mutation with correct parameters', async () => {
+            const reorderMutationSpy = jest.fn().mockResolvedValue({
+              data: {
+                workItemsReorder: {
+                  workItem: workItemsQueryResponseCombined.data.namespace.workItems.nodes[oldIndex],
+                  errors: [],
+                },
+              },
+            });
+
+            mountComponent({
+              provide: { initialSort: RELATIVE_POSITION_ASC },
+              additionalHandlers: [[workItemsReorderMutation, reorderMutationSpy]],
+            });
+            await waitForPromises();
+
+            findIssuableList().vm.$emit('reorder', { oldIndex, newIndex });
+            await waitForPromises();
+
+            const expectedInput = {
+              id: workItemsQueryResponseCombined.data.namespace.workItems.nodes[oldIndex].id,
+            };
+
+            if (expectedMoveBeforeId) expectedInput.moveBeforeId = expectedMoveBeforeId;
+            if (expectedMoveAfterId) expectedInput.moveAfterId = expectedMoveAfterId;
+
+            expect(reorderMutationSpy).toHaveBeenCalledWith({
+              input: expectedInput,
+            });
+          });
+        },
+      );
+    });
+  });
+
+  describe('WorkItemByEmail component', () => {
+    describe.each`
+      canCreateWorkItem | isGroup  | newWorkItemEmailAddress | exists
+      ${false}          | ${true}  | ${null}                 | ${false}
+      ${false}          | ${true}  | ${'test@example.com'}   | ${false}
+      ${true}           | ${true}  | ${null}                 | ${false}
+      ${true}           | ${true}  | ${'test@example.com'}   | ${false}
+      ${false}          | ${false} | ${null}                 | ${false}
+      ${false}          | ${false} | ${'test@example.com'}   | ${false}
+      ${true}           | ${false} | ${null}                 | ${false}
+      ${true}           | ${false} | ${'test@example.com'}   | ${true}
+    `(
+      'when canCreateWorkItem=$canCreateWorkItem, isGroup=$isGroup, newWorkItemEmailAddress=$newWorkItemEmailAddress',
+      ({ canCreateWorkItem, isGroup, newWorkItemEmailAddress, exists }) => {
+        it(`${exists ? 'renders' : 'does not render'}`, async () => {
+          mountComponent({
+            provide: {
+              canCreateWorkItem,
+              isGroup,
+              newWorkItemEmailAddress,
+            },
+          });
+          await waitForPromises();
+
+          expect(findWorkItemByEmail().exists()).toBe(exists);
+        });
+      },
+    );
+
+    it('passes correct tracking attributes when rendered', async () => {
+      mountComponent({
+        provide: {
+          canCreateWorkItem: true,
+          isGroup: false,
+          newWorkItemEmailAddress: 'test@example.com',
+        },
+      });
+      await waitForPromises();
+
+      expect(findWorkItemByEmail().attributes()).toMatchObject({
+        'data-track-action': 'click_email_work_item_project_work_items_empty_list_page',
+        'data-track-label': 'email_work_item_project_work_items_empty_list',
+      });
     });
   });
 });

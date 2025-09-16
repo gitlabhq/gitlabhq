@@ -2,6 +2,7 @@
 import { GlToggle, GlIcon, GlSprintf, GlLink } from '@gitlab/ui';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { REQUIRED_ICON, NOT_REQUIRED_ICON } from './constants';
+import GroupInheritancePopover from './group_inheritance_popover.vue';
 
 export default {
   components: {
@@ -9,6 +10,7 @@ export default {
     GlIcon,
     GlSprintf,
     GlLink,
+    GroupInheritancePopover,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
@@ -50,6 +52,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    isGroupLevel: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     iconName() {
@@ -83,9 +90,16 @@ export default {
       :help="help"
       :value="isProtected"
       :is-loading="isLoading"
-      class="gl-mb-5"
+      :disabled="isGroupLevel"
+      class="gl-flex-grow-1 gl-mb-5"
       @change="$emit('toggle', $event)"
     >
+      <template #label>
+        <div class="gl-flex gl-items-center">
+          {{ label }}
+          <group-inheritance-popover v-if="isGroupLevel" />
+        </div>
+      </template>
       <template v-if="hasDescription" #description>
         <gl-sprintf :message="description">
           <template #link="{ content }">

@@ -26,9 +26,19 @@ Some features in the plugin are in experiment or beta status. To use them, you m
 
 To update your extension to the latest version:
 
-1. In your JetBrains IDE, go to **Settings > Plugins**.
+1. In your JetBrains IDE, go to **Settings** > **Plugins**.
 1. From **Marketplace**, select **GitLab Duo** published by **GitLab, Inc.**.
 1. Select **Update** to update to the latest plugin version.
+
+## Enable telemetry
+
+The GitLab Duo plugin uses the telemetry settings in your JetBrains IDE to send usage and error
+information to GitLab. To enable telemetry in your JetBrains IDE:
+
+1. Go to your IDE's top menu bar and select **Settings**. For example, in PyCharm, select **PyCharm** > **Settings**.
+1. On the left sidebar, expand **Tools** and select **GitLab Duo**.
+1. Under **Advanced**, select the **Enable telemetry** checkbox.
+1. Select **OK** or **Apply** to save your changes.
 
 ## Integrate with 1Password CLI
 

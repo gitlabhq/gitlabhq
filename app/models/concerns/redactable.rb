@@ -10,7 +10,7 @@
 module Redactable
   extend ActiveSupport::Concern
 
-  UNSUBSCRIBE_PATTERN = %r{/sent_notifications/\h{32}/unsubscribe}
+  UNSUBSCRIBE_PATTERN = %r{/sent_notifications/#{::SentNotification::FULL_REPLY_KEY_REGEX}/unsubscribe}
 
   class_methods do
     def redact_field(field)

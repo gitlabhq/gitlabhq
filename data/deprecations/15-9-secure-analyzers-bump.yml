@@ -24,7 +24,7 @@
     - Dependency Scanning: version 3
     - Dynamic Application Security Testing (DAST): version 3
     - DAST API: version 2
-    - IaC Scanning: version 3
+    - IaC scanning: version 3
     - License Scanning: version 4
     - Secret Detection: version 4
     - Static Application Security Testing (SAST): version 3 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/#supported-languages-and-frameworks)

@@ -29,14 +29,13 @@ require (
 	github.com/sebest/xff v0.0.0-20210106013422-671bd2870b3a
 	github.com/sirupsen/logrus v1.9.3
 	github.com/sony/gobreaker/v2 v2.1.0
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.1
 	gitlab.com/gitlab-org/gitaly/v16 v16.11.0-rc1.0.20250408053233-c6d43513e93c
-	gitlab.com/gitlab-org/labkit v1.24.1
-	gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb v0.0.0-20250904102453-d00588020e86
+	gitlab.com/gitlab-org/labkit v1.25.0
+	gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb v0.0.0-20250910175730-e1ecde3df22c
 	go.uber.org/goleak v1.3.0
 	gocloud.dev v0.40.1-0.20241107185025-56954848c3aa
 	golang.org/x/image v0.28.0
-	golang.org/x/net v0.42.0
 	golang.org/x/oauth2 v0.30.0
 	google.golang.org/grpc v1.73.0
 	google.golang.org/protobuf v1.36.6
@@ -157,12 +156,13 @@ require (
 	go.opentelemetry.io/otel/sdk/metric v1.35.0 // indirect
 	go.opentelemetry.io/otel/trace v1.35.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
-	golang.org/x/crypto v0.40.0 // indirect
+	golang.org/x/crypto v0.41.0 // indirect
+	golang.org/x/net v0.42.0 // indirect
 	golang.org/x/sync v0.16.0 // indirect
-	golang.org/x/sys v0.34.0 // indirect
-	golang.org/x/text v0.27.0 // indirect
+	golang.org/x/sys v0.35.0 // indirect
+	golang.org/x/text v0.28.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
-	golang.org/x/tools v0.34.0 // indirect
+	golang.org/x/tools v0.35.0 // indirect
 	golang.org/x/xerrors v0.0.0-20240716161551-93cc26a95ae9 // indirect
 	google.golang.org/api v0.197.0 // indirect
 	google.golang.org/genproto v0.0.0-20240903143218-8af14fe29dc1 // indirect

@@ -13,13 +13,11 @@ module Packages
     end
 
     def execute
-      packages = project.packages
-                        .including_project_namespace_route
-                        .including_tags
+      packages = base.including_project_namespace_route
+                     .including_tags
       packages = packages.preload_pipelines if preload_pipelines
 
       packages = filter_with_version(packages)
-      packages = filter_by_package_type(packages)
       packages = filter_by_package_name(packages)
       packages = filter_by_status(packages)
       packages = filter_by_package_version(packages)
@@ -36,6 +34,16 @@ module Packages
 
     def preload_pipelines
       params.fetch(:preload_pipelines, true)
+    end
+
+    def base
+      return ::Packages::Package.for_projects(project).without_package_type(:terraform_module) unless package_type
+
+      package_class = ::Packages::Package.inheritance_column_to_class_map[package_type.to_sym]
+
+      raise ArgumentError, "'#{package_type}' is not a valid package_type" unless package_class
+
+      package_class.constantize.for_projects(project)
     end
   end
 end

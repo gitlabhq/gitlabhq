@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::SidekiqMiddleware::Identity::Passthrough, :request_store, feature_category: :system_access do
-  let_it_be(:primary_user) { create(:user) }
+  let_it_be_with_reload(:primary_user) { create(:user, :service_account) }
   let_it_be(:scoped_user) { create(:user) }
 
   let(:worker) { Class.new }
@@ -20,7 +20,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::Identity::Passthrough, :request_store,
 
       context 'when user has a composite identity' do
         before do
-          allow(primary_user).to receive(:composite_identity_enforced).and_return(true)
+          primary_user.update!(composite_identity_enforced: true)
         end
 
         it 'adds composite identity to job payload' do

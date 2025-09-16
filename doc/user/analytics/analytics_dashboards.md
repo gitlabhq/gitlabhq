@@ -1,5 +1,5 @@
 ---
-stage: Monitor
+stage: Analytics
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Analytics dashboards
@@ -47,7 +47,7 @@ You cannot edit the built-in dashboards, but you can create custom dashboards wi
 The following built-in dashboards are available:
 
 - [**Value Streams Dashboard**](value_streams_dashboard.md) displays metrics related to DevOps performance, security exposure, and workstream optimization.
-- [**AI Impact Dashboard**](ai_impact_analytics.md) displays the impact of AI tools on software development lifecycle (SDLC) metrics for a project or group.
+- [**GitLab Duo and SDLC trends**](duo_and_sdlc_trends.md) displays the impact of AI tools on software development lifecycle (SDLC) metrics for a project or group.
 
 ## Custom dashboards
 

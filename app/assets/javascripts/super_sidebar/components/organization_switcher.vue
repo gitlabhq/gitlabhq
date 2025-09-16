@@ -42,6 +42,7 @@ export default {
     'https://gitlab.com/gitlab-com/gl-infra/tenant-scale/organizations/organizations-internal-feedback/-/issues/1',
   components: { GlDisclosureDropdown, GlAvatar, GlIcon, GlLoadingIcon, GlLink, GlBadge },
   mixins: [glFeatureFlagsMixin()],
+  inject: ['projectStudioEnabled'],
   data() {
     return {
       organizations: {},
@@ -71,9 +72,6 @@ export default {
     },
   },
   computed: {
-    superTopbarEnabled() {
-      return this.glFeatures.globalTopbar;
-    },
     organizationSwitchingEnabled() {
       return gon?.features?.organizationSwitching;
     },
@@ -137,7 +135,7 @@ export default {
     dropdownOffset() {
       return {
         mainAxis: 0,
-        crossAxis: this.superTopbarEnabled ? 12 : 0,
+        crossAxis: this.projectStudioEnabled ? 12 : 0,
       };
     },
   },
@@ -161,8 +159,8 @@ export default {
       <button
         class="user-bar-button organization-switcher-button gl-flex gl-w-full gl-items-center gl-text-left gl-font-semibold gl-leading-1"
         :class="{
-          'gl-gap-4 gl-rounded-base gl-border-none gl-p-2 gl-pr-3': !superTopbarEnabled,
-          'btn gl-button btn-default gl-gap-3 !gl-rounded-lg !gl-px-2': superTopbarEnabled,
+          'gl-gap-4 gl-rounded-base gl-border-none gl-p-2 gl-pr-3': !projectStudioEnabled,
+          'btn gl-button btn-default gl-gap-3 !gl-rounded-lg !gl-px-2': projectStudioEnabled,
         }"
         data-testid="toggle-button"
       >
@@ -173,7 +171,11 @@ export default {
           :entity-name="currentOrganization.name"
           :src="currentOrganization.avatar_url"
         />
-        <span class="gl-grow">{{ currentOrganization.name }}</span>
+        <span
+          class="gl-grow"
+          :class="{ 'gl-max-w-10 gl-truncate sm:gl-max-w-15': projectStudioEnabled }"
+          >{{ currentOrganization.name }}</span
+        >
         <gl-icon class="gl-button-icon gl-new-dropdown-chevron" name="chevron-down" />
       </button>
     </template>

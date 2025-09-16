@@ -159,6 +159,8 @@ This number remains the same throughout your subscription period unless you purc
 
 The number of maximum users reflects the highest number of billable users on your system for the current license period.
 
+You can view and export your [license usage](../administration/license_usage.md).
+
 ### Users over subscription
 
 A GitLab subscription is valid for a specific number of seats.
@@ -272,49 +274,6 @@ your instance immediately. If you're using a license file, you receive an update
 To add the seats, [add the license file](../administration/license_file.md)
 to your instance.
 
-### Export license usage
-
-Prerequisites:
-
-- You must be an administrator.
-
-You can export your license usage into a CSV file.
-
-This file contains the information GitLab uses to manually process
-[quarterly reconciliations](quarterly_reconciliation.md)
-and [renewals](manage_subscription.md#renew-subscription). If your instance is firewalled or an
-offline environment, you must provide GitLab with this information.
-
-{{< alert type="warning" >}}
-
-Do not open the license usage file. If you open the file, failures might occur when [you submit your license usage data](../administration/license_file.md#submit-license-usage-data).
-
-{{< /alert >}}
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Subscription**.
-1. In the upper-right corner, select **Export license usage file**.
-
-#### License usage file contents
-
-The license usage file includes the following information:
-
-- License key
-- Licensee email
-- License start date (UTC)
-- License end date (UTC)
-- Company
-- Timestamp the file was generated at and exported (UTC)
-- Table of historical user counts for each day in the period:
-  - Timestamp the count was recorded (UTC)
-  - Billable user count
-
-{{< alert type="note" >}}
-
-A custom format is used for [dates](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L7) and [times](https://gitlab.com/gitlab-org/gitlab/blob/3be39f19ac3412c089be28553e6f91b681e5d739/config/initializers/date_time_formats.rb#L13) in CSV files.
-
-{{< /alert >}}
-
 ## GitLab.com billing and usage
 
 {{< details >}}
@@ -361,18 +320,16 @@ This setting restricts groups from adding new billable users when there are no s
 
 {{< /history >}}
 
-If you have the Owner role for the top-level group, an alert notifies you
-of your total seat usage.
+If you have the Owner role for a top-level group that is linked to a subscription enrolled in
+[quarterly subscription reconciliations](quarterly_reconciliation.md),
+you receive alerts about the seat usage in the subscription.
 
-The alert displays on group, subgroup, and project
-pages, and only for top-level groups linked to subscriptions enrolled
-in [quarterly subscription reconciliations](quarterly_reconciliation.md).
-After you dismiss the alert, it doesn't display until another seat is used.
+The alert displays on group, subgroup, and project pages.
+After you dismiss the alert, it doesn't display again until another seat is used.
 
-The alert displays based on the following seat usage. You cannot configure the
-amounts at which the alert displays.
+The alert displays at the following intervals:
 
-| Seats in subscription | Alert displays when |
+| Seats in subscription | Alert               |
 |-----------------------|---------------------|
 | 0-15                  | One seat remains.   |
 | 16-25                 | Two seats remain.   |
@@ -408,24 +365,22 @@ To view your subscription information and a summary of seat counts:
 - The **Last login** field is updated when a user signs in after they have signed out. If there is an active session
   when a user re-authenticates (for example, after a 24 hour SAML session timeout), this field is not updated.
 
-### Search seat usage
+### Search users' seat usage
 
-To search seat usage:
+You can view the users that use seats on your subscription.
+To search for a user's seat usage:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage quotas**.
-1. On the **Seats** tab, enter a string in the search field. A minimum of 3 characters are required.
+1. On the **Seats** tab, in the search field, enter the user's name or username.
+   The search string must have minimum three characters.
 
-The search returns users whose first name, last name, or username contain the search string.
+The search returns a list of users whose first name, last name, or username match the search string.
 
-For example:
+For example, for a user with the first name Amir,
+the search string `ami` results in a match, but `amr` does not.
 
-| First name | Search string | Match ? |
-|:-----------|:--------------|:--------|
-| Amir       | `ami`         | Yes     |
-| Amir       | `amr`         | No      |
-
-### Export seat usage
+### Export seat usage data
 
 To export seat usage data as a CSV file:
 

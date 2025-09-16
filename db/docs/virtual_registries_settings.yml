@@ -1,0 +1,13 @@
+---
+table_name: virtual_registries_settings
+classes:
+- VirtualRegistries::Setting
+feature_categories:
+- virtual_registry
+description: Root group-level virtual registry settings.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201571
+milestone: '18.4'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  group_id: namespaces
+table_size: small

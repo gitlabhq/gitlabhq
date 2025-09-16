@@ -221,12 +221,6 @@ tests = [
   },
 
   {
-    explanation: 'Spec for FOSS sidekiq worker',
-    changed_file: 'app/workers/background_migration/single_database_worker.rb',
-    expected: ['spec/workers/every_sidekiq_worker_spec.rb']
-  },
-
-  {
     explanation: 'Spec for EE sidekiq worker',
     changed_file: 'ee/app/workers/concerns/geo/base_registry_sync_worker.rb',
     expected: ['spec/workers/every_sidekiq_worker_spec.rb']
@@ -721,11 +715,9 @@ tests = [
   {
     explanation: 'Spec for in-app duo pro trials',
     changed_file: 'ee/app/controllers/gitlab_subscriptions/trials/duo_pro_controller.rb',
-    # rubocop:disable Layout/LineLength -- fix CI failures - not sure why other lines in this file don't get errors
     expected: %w[
       ee/spec/features/gitlab_subscriptions/trials/duo_pro/access_denied_spec.rb
-      ee/spec/features/gitlab_subscriptions/trials/duo_pro/two_step_creation_with_multiple_existing_namespace_flow_spec.rb
-      ee/spec/features/gitlab_subscriptions/trials/duo_pro/two_step_creation_with_one_existing_namespace_flow_spec.rb
+      ee/spec/features/gitlab_subscriptions/trials/duo_pro/*_spec.rb
       ee/spec/requests/gitlab_subscriptions/trials/duo_pro_controller_spec.rb
     ]
   },
@@ -734,12 +726,9 @@ tests = [
     explanation: 'Spec for in-app duo enterprise trials',
     changed_file: 'ee/app/controllers/gitlab_subscriptions/trials/duo_enterprise_controller.rb',
     expected: %w[
-      ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/access_denied_spec.rb
-      ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/two_step_creation_with_multiple_existing_namespace_flow_spec.rb
-      ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/two_step_creation_with_one_existing_namespace_flow_spec.rb
+      ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/*_spec.rb
       ee/spec/requests/gitlab_subscriptions/trials/duo_enterprise_controller_spec.rb
     ]
-    # rubocop:enable Layout/LineLength
   },
 
   {
@@ -808,6 +797,16 @@ tests = [
     explanation: 'Verify application settings based on related API doc changes',
     changed_file: 'doc/api/settings.md',
     expected: ['spec/scripts/cells/application_settings_analysis_spec.rb']
+  },
+  {
+    explanation: 'Map any yaml file changes in devfile folder',
+    changed_file: '.devfile/search.yaml',
+    expected: ['spec/dot_gitlab_ci/rules_spec.rb']
+  },
+  {
+    explanation: 'Map any yaml file changes in project root',
+    changed_file: '.devfile.yaml',
+    expected: ['spec/dot_gitlab_ci/rules_spec.rb']
   }
 ]
 

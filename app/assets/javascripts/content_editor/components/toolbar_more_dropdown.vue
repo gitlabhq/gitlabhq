@@ -27,7 +27,7 @@ export default {
           action: () => this.insert('codeBlock'),
         },
         {
-          text: __('Details block'),
+          text: __('Collapsible section'),
           action: () => this.insertList('details', 'detailsContent'),
         },
         {
@@ -62,11 +62,11 @@ export default {
         },
         {
           text: __('Mermaid diagram'),
-          action: () => this.insert('diagram', { language: 'mermaid' }),
+          action: () => this.execute('insertMermaid', 'diagram'),
         },
         {
           text: __('PlantUML diagram'),
-          action: () => this.insert('diagram', { language: 'plantuml' }),
+          action: () => this.execute('insertPlantUML', 'diagram'),
         },
         ...(this.contentEditor.drawioEnabled
           ? [

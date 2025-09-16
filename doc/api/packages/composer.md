@@ -45,7 +45,8 @@ GET group/:id/-/packages/composer/packages
 | `id`      | string | yes      | The ID or full path of the group. |
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/group/1/-/packages/composer/packages"
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/group/1/-/packages/composer/packages"
 ```
 
 Example response:
@@ -69,7 +70,7 @@ This endpoint is used by Composer V1 and V2. To see the V2-specific response, in
 ```shell
 curl --user <username>:<personal_access_token> \
      --header "User-Agent: Composer/2" \
-     "https://gitlab.example.com/api/v4/group/1/-/packages/composer/packages"
+     --url "https://gitlab.example.com/api/v4/group/1/-/packages/composer/packages"
 ```
 
 Example response:
@@ -96,7 +97,8 @@ GET group/:id/-/packages/composer/p/:sha
 | `sha`     | string | yes | The provider SHA, provided by the Composer [base request](#base-repository-request). |
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/group/1/-/packages/composer/p/082df4a5035f8725a12i4a3d2da5e6aaa966d06843d0a5c6d499313810427bd6"
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/group/1/-/packages/composer/p/082df4a5035f8725a12i4a3d2da5e6aaa966d06843d0a5c6d499313810427bd6"
 ```
 
 Example response:
@@ -131,7 +133,8 @@ the table:
 | `sha`          | string | yes      | The SHA digest of the package, provided by the [V1 packages list](#v1-packages-list). |
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/group/1/-/packages/composer/my-org/my-composer-package%245c873497cdaa82eda35af5de24b789be92dfb6510baf117c42f03899c166b6e7"
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/group/1/-/packages/composer/my-org/my-composer-package%245c873497cdaa82eda35af5de24b789be92dfb6510baf117c42f03899c166b6e7"
 ```
 
 Example response:
@@ -195,7 +198,8 @@ GET group/:id/-/packages/composer/p2/:package_name
 | `package_name` | string | yes      | The name of the package. |
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/group/1/-/packages/composer/p2/my-org/my-composer-package"
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/group/1/-/packages/composer/p2/my-org/my-composer-package"
 ```
 
 Example response:
@@ -261,7 +265,8 @@ POST projects/:id/packages/composer
 
 ```shell
 curl --request POST --user <username>:<personal_access_token> \
-     --data tag=v1.0.0 "https://gitlab.example.com/api/v4/projects/1/packages/composer"
+     --data tag=v1.0.0 \
+     --url "https://gitlab.example.com/api/v4/projects/1/packages/composer"
 ```
 
 Example response:
@@ -289,13 +294,15 @@ GET projects/:id/packages/composer/archives/:package_name
 | `sha`          | string | yes      | The target SHA of the requested package version. |
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/composer/archives/my-org/my-composer-package.zip?sha=673594f85a55fe3c0eb45df7bd2fa9d95a1601ab"
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/composer/archives/my-org/my-composer-package.zip?sha=673594f85a55fe3c0eb45df7bd2fa9d95a1601ab"
 ```
 
 Write the output to file:
 
 ```shell
-curl --user <username>:<personal_access_token> "https://gitlab.example.com/api/v4/projects/1/packages/composer/archives/my-org/my-composer-package.zip?sha=673594f85a55fe3c0eb45df7bd2fa9d95a1601ab" >> package.tar.gz
+curl --user <username>:<personal_access_token> \
+  --url "https://gitlab.example.com/api/v4/projects/1/packages/composer/archives/my-org/my-composer-package.zip?sha=673594f85a55fe3c0eb45df7bd2fa9d95a1601ab" >> package.tar.gz
 ```
 
 This writes the downloaded file to `package.tar.gz` in the current directory.

@@ -1,9 +1,10 @@
 import Vue from 'vue';
-import { GlAlert, GlDisclosureDropdownGroup } from '@gitlab/ui';
+import { GlAlert } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
-import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import namespaceMergeRequestsEnabledQuery from '~/work_items/graphql/namespace_merge_requests_enabled.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import workItemDevelopmentQuery from '~/work_items/graphql/work_item_development.query.graphql';
 import workItemDevelopmentUpdatedSubscription from '~/work_items/graphql/work_item_development.subscription.graphql';
@@ -74,17 +75,21 @@ describe('WorkItemDevelopment CE', () => {
   const workItemDevelopmentUpdatedSubscriptionHandler = jest
     .fn()
     .mockResolvedValue({ data: { workItemUpdated: null } });
+  const defaultNamespaceMergeRequestsEnabledHandler = jest.fn().mockResolvedValue({
+    data: { workspace: { id: 'gid://gitlab/Group/33', mergeRequestsEnabled: true } },
+  });
 
   const createComponent = ({
-    mountFn = shallowMountExtended,
     workItemQueryHandler = workItemSuccessQueryHandler,
     workItemDevelopmentQueryHandler = devWidgetSuccessQueryHandlerWithOneMR,
+    namespaceMergeRequestsEnabledHandler = defaultNamespaceMergeRequestsEnabledHandler,
   } = {}) => {
-    wrapper = mountFn(WorkItemDevelopment, {
+    wrapper = shallowMountExtended(WorkItemDevelopment, {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, workItemQueryHandler],
         [workItemDevelopmentQuery, workItemDevelopmentQueryHandler],
         [workItemDevelopmentUpdatedSubscription, workItemDevelopmentUpdatedSubscriptionHandler],
+        [namespaceMergeRequestsEnabledQuery, namespaceMergeRequestsEnabledHandler],
       ]),
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
@@ -105,11 +110,8 @@ describe('WorkItemDevelopment CE', () => {
   const findAddButton = () => wrapper.findComponent(WorkItemActionsSplitButton);
   const findMoreInformation = () => wrapper.findByTestId('more-information');
   const findRelationshipList = () => wrapper.findComponent(WorkItemDevelopmentRelationshipList);
-  const findCreateOptionsDropdown = () => wrapper.findByTestId('create-options-dropdown');
   const findCreateBranchMergeRequestModal = () =>
     wrapper.findComponent(WorkItemCreateBranchMergeRequestModal);
-  const findDropdownGroups = () =>
-    findCreateOptionsDropdown().findAllComponents(GlDisclosureDropdownGroup);
   const findWorkItemCreateMergeRequestModal = () =>
     wrapper.findComponent(WorkItemCreateBranchMergeRequestModal);
 
@@ -122,20 +124,20 @@ describe('WorkItemDevelopment CE', () => {
     });
 
     it('should render the add button when `canUpdate` is true', async () => {
-      createComponent({ mountFn: mountExtended });
+      createComponent();
       await waitForPromises();
 
       expect(findAddButton().exists()).toBe(true);
     });
 
     it('does not render the modal when the queries are still loading', () => {
-      createComponent({ mountFn: mountExtended });
+      createComponent();
 
       expect(findWorkItemCreateMergeRequestModal().exists()).toBe(false);
     });
 
     it('renders the modal when the queries are have loaded', async () => {
-      createComponent({ mountFn: mountExtended });
+      createComponent();
       await waitForPromises();
 
       expect(findWorkItemCreateMergeRequestModal().exists()).toBe(true);
@@ -209,31 +211,65 @@ describe('WorkItemDevelopment CE', () => {
   });
 
   describe('Create branch/merge request flow', () => {
-    beforeEach(() => {
-      createComponent({ mountFn: mountExtended });
-      return waitForPromises();
-    });
+    it('should not show the create branch or merge request flow by default', async () => {
+      createComponent();
+      await waitForPromises();
 
-    it('should not show the create branch or merge request flow by default', () => {
       expect(findCreateBranchMergeRequestModal().props('showModal')).toBe(false);
     });
 
     describe('Add button', () => {
-      it('should show the options in dropdown on click', () => {
-        const groups = findDropdownGroups();
-        const mergeRequestGroup = groups.at(0);
-        const branchGroup = groups.at(1);
+      describe('when mergeRequestsEnabled=true', () => {
+        it('renders "Create merge request" and "Create branch" in dropdown', async () => {
+          createComponent();
+          await waitForPromises();
 
-        expect(groups).toHaveLength(2);
+          expect(findAddButton().props('actions')).toEqual([
+            {
+              name: 'Merge request',
+              items: [expect.objectContaining({ text: 'Create merge request' })],
+            },
+            {
+              name: 'Branch',
+              items: [expect.objectContaining({ text: 'Create branch' })],
+            },
+          ]);
+        });
+      });
 
-        expect(mergeRequestGroup.props('group').name).toBe('Merge request');
-        expect(mergeRequestGroup.props('group').items).toEqual([
-          expect.objectContaining({ text: 'Create merge request' }),
-        ]);
+      describe('when mergeRequestsEnabled=false', () => {
+        it('renders only "Create branch" in dropdown', async () => {
+          createComponent({
+            namespaceMergeRequestsEnabledHandler: jest.fn().mockResolvedValue({
+              data: { workspace: { id: 'gid://gitlab/Group/33', mergeRequestsEnabled: false } },
+            }),
+          });
+          await waitForPromises();
 
-        expect(branchGroup.props('group').name).toBe('Branch');
-        expect(branchGroup.props('group').items).toEqual([
-          expect.objectContaining({ text: 'Create branch' }),
+          expect(findAddButton().props('actions')).toEqual([
+            {
+              name: 'Branch',
+              items: [expect.objectContaining({ text: 'Create branch' })],
+            },
+          ]);
+        });
+      });
+    });
+  });
+
+  describe('namespaceMergeRequestsEnabledQuery', () => {
+    describe('when namespaceMergeRequestsEnabledQuery fails', () => {
+      it('renders only "Create branch" in dropdown', async () => {
+        createComponent({
+          namespaceMergeRequestsEnabledHandler: jest.fn().mockRejectedValue('Error!'),
+        });
+        await waitForPromises();
+
+        expect(findAddButton().props('actions')).toEqual([
+          {
+            name: 'Branch',
+            items: [expect.objectContaining({ text: 'Create branch' })],
+          },
         ]);
       });
     });

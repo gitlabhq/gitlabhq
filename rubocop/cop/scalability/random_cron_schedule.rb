@@ -3,9 +3,26 @@
 module RuboCop
   module Cop
     module Scalability
-      # Cop that detects use of randomized cron expressions for sidekiq-cron.
+      # Detects the use of `rand` inside cron job settings (e.g. Settings.cron_jobs),
+      # which may produce randomized cron expressions. Randomization can lead to missed job
+      # executions and unpredictable scheduling behavior.
       #
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/536393
+      # Instead of using `rand`, developers should use `Gitlab::Scheduling::ScheduleWithinWorker`
+      # to safely apply jitter at runtime while keeping the cron expression deterministic.
+      #
+      # @example
+      #   # bad
+      #   Settings.cron_jobs['my_worker'] = {
+      #     cron: \"#{rand(0..59)} * * * *\"
+      #   }
+      #
+      #   # good
+      #   Settings.cron_jobs['my_worker'] = {
+      #     cron: '0 * * * *'
+      #   }
+      #
+      #   # See:
+      #   # https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/gitlab/scheduling/schedule_within_worker.rb
       class RandomCronSchedule < RuboCop::Cop::Base
         MSG = "Avoid randomized cron expressions. This can lead to missed executions. " \
           "Use Gitlab::Scheduling::ScheduleWithinWorker if you want to add random jitter. " \

@@ -175,9 +175,6 @@ export default {
         },
       });
     },
-    toggleDrawer() {
-      this.isDrawerOpen = !this.isDrawerOpen;
-    },
   },
   i18n: {
     errorCreate: s__('Integrations|Failed to add the exclusion. Try adding it again.'),

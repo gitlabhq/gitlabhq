@@ -185,7 +185,7 @@ RSpec.describe DesignManagement::CopyDesignCollection::CopyService, :clean_gitla
 
             expect { subject }.to change { Note.count }.by(2)
 
-            new_notes = target_issue.designs.first.notes.fresh
+            new_notes = target_issue.designs.first.notes.order_created_at_id_asc
 
             expect(new_notes).to match_array(matchers)
           end

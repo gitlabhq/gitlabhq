@@ -12,6 +12,7 @@ module Packages
       DEFAULT_LEASE_TIMEOUT = 1.hour.to_i.freeze
 
       # From https://salsa.debian.org/ftp-team/dak/-/blob/991aaa27a7f7aa773bb9c0cf2d516e383d9cffa0/setup/core-init.d/080_metadatakeys#L9
+      # Additionally using "Build-Ids" (not used by dak, which is used to generate archives)
       METADATA_KEYS = %w[
         Package
         Source
@@ -60,6 +61,7 @@ module Packages
         Tag
         Package-Type
         Installer-Menu-Item
+        Build-Ids
       ].freeze
 
       GenerateDistributionError = Class.new(StandardError)

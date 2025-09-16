@@ -146,7 +146,7 @@ export default {
     :id="noteAnchorId"
     :class="{
       target: isTargetNote,
-      'pr-0': shouldShowDescriptionVersion,
+      '!gl-pr-0': shouldShowDescriptionVersion,
     }"
     class="system-note"
   >
@@ -218,7 +218,7 @@ export default {
         ></div>
         <div v-if="hasMoreCommits" class="flex-list">
           <div
-            class="flex-row gl-relative gl-z-2 gl-cursor-pointer gl-pl-4 gl-pt-3 gl-text-link hover:gl-underline"
+            class="gl-relative gl-z-2 gl-cursor-pointer !gl-flex-row gl-pl-4 gl-pt-3 gl-text-link hover:gl-underline"
             @click="expanded = !expanded"
           >
             <gl-icon :name="toggleIcon" :size="12" class="gl-mr-2" />

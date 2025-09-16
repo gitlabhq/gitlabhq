@@ -3,7 +3,7 @@
 .form-group
   = label_tag _('User restrictions')
   = render_if_exists 'admin/application_settings/updating_name_disabled_for_users', form: form
-  - if Feature.enabled?(:ui_for_organizations, current_user)
+  - if ui_for_organizations_enabled?
     = form.gitlab_ui_checkbox_component :can_create_organization, _("Allow users to create organizations")
   = form.gitlab_ui_checkbox_component :can_create_group, _("Allow new users to create top-level groups")
   = render_if_exists 'admin/application_settings/private_profile_restrictions', form: form

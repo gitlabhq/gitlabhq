@@ -33,7 +33,7 @@
     - DAST: version 5
     - DAST API: version 4
     - Fuzz API: version 4
-    - IaC Scanning: version 5
+    - IaC scanning: version 5
     - Pipeline Secret Detection: version 6
     - Static Application Security Testing (SAST): version 5 of [all analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/)
       - `kics`

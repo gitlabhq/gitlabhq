@@ -15,6 +15,14 @@ module Types
       calls_gitaly: true,
       description: 'Commit from the repository.',
       resolver: Resolvers::Repositories::CommitResolver
+    field :commits, Types::Repositories::CommitType.connection_type,
+      null: true,
+      calls_gitaly: true,
+      description: 'List of commits from the repository.',
+      experiment: { milestone: '18.4' },
+      resolver: Resolvers::Repositories::CommitsResolver,
+      connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension,
+      max_page_size: 100
     field :disk_path, GraphQL::Types::String,
       description: 'Shows a disk path of the repository.',
       null: true,

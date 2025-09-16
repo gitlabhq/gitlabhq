@@ -2,7 +2,7 @@
 stage: none
 group: unassigned
 info: For help with this Community Programs page, see https://handbook.gitlab.com/handbook/marketing/developer-relations/community-programs/
-description: Education, Open Source, Startups.
+description: Use GitLab for Education, Open Source, and Startups.
 title: Community programs
 ---
 

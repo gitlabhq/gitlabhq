@@ -132,9 +132,9 @@ module GroupsHelper
     {
       group_id: group.id,
       subgroups_and_projects_endpoint:
-        group_children_path(group, format: :json, archived: false, not_aimed_for_deletion: true),
+        group_children_path(group, format: :json, active: true),
       shared_projects_endpoint: group_shared_projects_path(group, format: :json),
-      inactive_projects_endpoint: group_children_path(group, format: :json, active: false),
+      inactive_subgroups_and_projects_endpoint: group_children_path(group, format: :json, active: false),
       current_group_visibility: group.visibility,
       initial_sort: project_list_sort_by,
       show_schema_markup: 'true',
@@ -146,6 +146,13 @@ module GroupsHelper
       can_create_subgroups: can?(current_user, :create_subgroup, group).to_s,
       can_create_projects: can?(current_user, :create_projects, group).to_s
     }
+  end
+
+  def groups_show_app_data(group)
+    {
+      subgroups_and_projects_endpoint: group_children_path(group, format: :json),
+      initial_sort: project_list_sort_by
+    }.to_json
   end
 
   def group_readme_app_data(group_readme)
@@ -254,6 +261,14 @@ module GroupsHelper
     MergeRequestsFinder.new(current_user, group_id: group.id, include_subgroups: true, non_archived: true).execute
   end
 
+  def step_up_auth_provider_options_for_select
+    available_step_up_auth_providers_for_namespace.map do |provider|
+      provider_config = Gitlab::Auth::OAuth::Provider.config_for(provider.to_s)
+      provider_label = provider_config[:label].presence || provider.to_s.humanize
+      [provider_label, provider.to_s]
+    end
+  end
+
   private
 
   def group_title_link(group, hidable: false, show_avatar: false)
@@ -330,6 +345,12 @@ module GroupsHelper
       ci: _('I want to use GitLab CI with my existing repository'),
       other: _('A different reason')
     }.with_indifferent_access.freeze
+  end
+
+  def available_step_up_auth_providers_for_namespace
+    Gitlab::Auth::Oidc::StepUpAuthentication.enabled_providers(
+      scope: Gitlab::Auth::Oidc::StepUpAuthentication::STEP_UP_AUTH_SCOPE_NAMESPACE
+    )
   end
 end
 

@@ -49,6 +49,25 @@ const getTrialStatusWidgetData = (sidebarData) => {
   };
 };
 
+const getDuoAgentPlatformWidgetData = (sidebarData) => {
+  if (sidebarData.duoAgentWidgetProvide) {
+    const { actionPath, stateProgression, initialState, contextualAttributes } =
+      sidebarData.duoAgentWidgetProvide;
+
+    return {
+      showDuoAgentPlatformWidget: true,
+      actionPath,
+      stateProgression,
+      initialState,
+      contextualAttributes,
+    };
+  }
+
+  return {
+    showDuoAgentPlatformWidget: false,
+  };
+};
+
 export const getSuperSidebarData = () => {
   const el = document.querySelector('.js-super-sidebar');
   if (!el) return false;
@@ -69,6 +88,8 @@ export const getSuperSidebarData = () => {
   const contextSwitcherLinks = sidebarData.context_switcher_links;
   const isImpersonating = parseBoolean(sidebarData.is_impersonating);
   const isGroup = Boolean(sidebarData.current_context?.namespace === CONTEXT_NAMESPACE_GROUPS);
+
+  const { projectStudioEnabled, projectStudioAvailable } = document.body.dataset;
 
   return {
     el,
@@ -92,6 +113,8 @@ export const getSuperSidebarData = () => {
     contextSwitcherLinks,
     isImpersonating,
     isGroup,
+    projectStudioEnabled: parseBoolean(projectStudioEnabled),
+    projectStudioAvailable: parseBoolean(projectStudioAvailable),
   };
 };
 
@@ -117,6 +140,8 @@ export const initSuperSidebar = async ({
   contextSwitcherLinks,
   isImpersonating,
   isGroup,
+  projectStudioEnabled,
+  projectStudioAvailable,
 }) => {
   if (!el) return false;
 
@@ -132,6 +157,7 @@ export const initSuperSidebar = async ({
       currentPath,
       isImpersonating,
       ...getTrialStatusWidgetData(sidebarData),
+      ...getDuoAgentPlatformWidgetData(sidebarData),
       commandPaletteCommands,
       commandPaletteLinks,
       contextSwitcherLinks,
@@ -155,6 +181,8 @@ export const initSuperSidebar = async ({
       ),
       isGroup,
       isSaas: parseBoolean(isSaas),
+      projectStudioEnabled,
+      projectStudioAvailable,
     },
     store: createStore({
       searchPath,
@@ -200,7 +228,7 @@ export const initSuperSidebarToggle = () => {
 
 /**
  * This init function duplicates the args of `initSuperSidebar` for now.
- * TODO: When we clean up the `global_topbar` feature flag, we should remove the unused args from
+ * TODO: When we clean up the `paneled_view` feature flag, we should remove the unused args from
  * both functions.
  */
 export const initSuperTopbar = async ({
@@ -221,6 +249,9 @@ export const initSuperTopbar = async ({
   contextSwitcherLinks,
   isImpersonating,
   isGroup,
+  isSaas,
+  projectStudioEnabled,
+  projectStudioAvailable,
 }) => {
   const el = document.querySelector('.js-super-topbar');
   if (!el) return false;
@@ -231,7 +262,6 @@ export const initSuperTopbar = async ({
     provide: {
       rootPath,
       isImpersonating,
-
       commandPaletteCommands,
       commandPaletteLinks,
       contextSwitcherLinks,
@@ -249,6 +279,9 @@ export const initSuperTopbar = async ({
         sidebarData.work_items?.work_item_planning_view_enabled,
       ),
       isGroup,
+      isSaas: parseBoolean(isSaas),
+      projectStudioEnabled,
+      projectStudioAvailable,
     },
     store: createStore({
       searchPath,

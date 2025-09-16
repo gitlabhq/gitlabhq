@@ -25,16 +25,16 @@ export default {
 
 <template>
   <tr class="line_holder" :class="lineType">
-    <td class="diff-line-num old_line border-top-0 border-bottom-0" :class="lineType">
+    <td class="diff-line-num old_line !gl-border-b-0 !gl-border-t-0" :class="lineType">
       {{ line.old_line }}
     </td>
-    <td class="diff-line-num new_line border-top-0 border-bottom-0" :class="lineType">
+    <td class="diff-line-num new_line !gl-border-b-0 !gl-border-t-0" :class="lineType">
       {{ line.new_line }}
     </td>
     <td
       data-testid="suggestion-diff-content"
       class="line_content"
-      :class="[{ 'd-table-cell': displayAsCell }, lineType]"
+      :class="[{ '!gl-table-cell': displayAsCell }, lineType]"
     >
       <span v-if="line.rich_text" v-safe-html="line.rich_text" class="line"></span>
       <span v-else-if="line.text" class="line">{{ line.text }}</span>

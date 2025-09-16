@@ -57,7 +57,8 @@
       = safe_format(_('Please review the %{strong_start}%{contribution_guidelines_start}contribution guidelines%{contribution_guidelines_end}%{strong_end} for this project.'), tag_pair('<strong></strong>'.html_safe, :strong_start, :strong_end), tag_pair(contribution_guidelines, :contribution_guidelines_start, :contribution_guidelines_end))
 
   - if issuable.new_record?
-    = form.submit "#{_('Create')} #{issuable.class.model_name.human.downcase}", pajamas_button: true, class: 'gl-mr-2 js-issuable-submit-button js-reset-autosave', data: { testid: 'issuable-create-button', track_action: 'click_button', track_label: 'submit_mr', track_value: 0 }
+    - create_issuable_text = issuable.is_a?(MergeRequest) ? _('Create merge request') : _('Create issue')
+    = form.submit "#{create_issuable_text}", pajamas_button: true, class: 'gl-mr-2 js-issuable-submit-button js-reset-autosave', data: { testid: 'issuable-create-button', track_action: 'click_button', track_label: 'submit_mr', track_value: 0 }
   - else
     = form.submit _('Save changes'), pajamas_button: true, class: 'gl-mr-2 js-issuable-submit-button js-reset-autosave', data: { track_action: 'click_button', track_label: 'submit_mr', track_value: 0 }
 

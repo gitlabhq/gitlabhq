@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillPackagesDebianGroupArchitecturesGroupId, migration: :gitlab_main_cell,
+RSpec.describe QueueBackfillPackagesDebianGroupArchitecturesGroupId, migration: :gitlab_main_org,
   feature_category: :package_registry do
   let!(:batched_migration) { described_class::MIGRATION }
 
@@ -20,7 +20,7 @@ RSpec.describe QueueBackfillPackagesDebianGroupArchitecturesGroupId, migration: 
           interval: described_class::DELAY_INTERVAL,
           batch_size: described_class::BATCH_SIZE,
           sub_batch_size: described_class::SUB_BATCH_SIZE,
-          gitlab_schema: :gitlab_main_cell,
+          gitlab_schema: :gitlab_main_org,
           job_arguments: [
             :group_id,
             :packages_debian_group_distributions,

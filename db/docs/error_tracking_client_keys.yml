@@ -7,7 +7,7 @@ feature_categories:
 description: Model to store public keys used by Sentry SDK for Error Tracking
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66466
 milestone: '14.2'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

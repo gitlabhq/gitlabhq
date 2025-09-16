@@ -13,17 +13,17 @@ exports[`packages_list_row renders 1`] = `
     >
       <gl-form-checkbox-stub
         class="gl-m-0"
-        id="reference-0"
+        value="true"
       />
     </div>
     <div
-      class="gl-flex gl-flex-col gl-grow gl-items-stretch gl-justify-between sm:gl-flex-row"
+      class="@sm/panel:gl-flex-row gl-flex gl-flex-col gl-grow gl-items-stretch gl-justify-between"
     >
       <div
-        class="gl-flex gl-flex-col gl-grow gl-mb-3 gl-min-w-0 sm:gl-mb-0"
+        class="@sm/panel:gl-mb-0 gl-flex gl-flex-col gl-grow gl-mb-3 gl-min-w-0"
       >
         <div
-          class="gl-font-semibold gl-items-center gl-min-h-6 gl-min-w-0 gl-text-default sm:gl-flex"
+          class="@sm/panel:gl-flex gl-font-semibold gl-items-center gl-min-h-6 gl-min-w-0 gl-text-default"
         >
           <div
             class="gl-flex gl-gap-3 gl-items-center gl-min-w-0 gl-mr-5"
@@ -64,10 +64,10 @@ exports[`packages_list_row renders 1`] = `
         </div>
       </div>
       <div
-        class="gl-flex gl-flex-col gl-justify-center gl-shrink-0 gl-text-subtle sm:gl-items-end"
+        class="@sm/panel:gl-items-end gl-flex gl-flex-col gl-justify-center gl-shrink-0 gl-text-subtle"
       >
         <div
-          class="gl-flex gl-items-center gl-min-h-6 sm:gl-text-default"
+          class="@sm/panel:gl-text-default gl-flex gl-items-center gl-min-h-6"
         >
           <publish-method-stub />
         </div>
@@ -84,7 +84,7 @@ exports[`packages_list_row renders 1`] = `
       </div>
     </div>
     <div
-      class="gl-items-center gl-pl-3 sm:gl-flex"
+      class="@sm/panel:gl-flex gl-items-center gl-pl-3"
     >
       <gl-disclosure-dropdown-stub
         autoclose="true"
@@ -97,7 +97,7 @@ exports[`packages_list_row renders 1`] = `
         positioningstrategy="absolute"
         size="medium"
         textsronly="true"
-        toggleid="dropdown-toggle-btn-3"
+        toggleid="dropdown-toggle-btn-2"
         toggletext="More actions"
         variant="default"
       >

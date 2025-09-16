@@ -39,16 +39,23 @@ module Gitlab
             fix_attribute(instance, attribute_name)
           end
 
+          instance.save! if !@dry_run && Gitlab::Database.read_write?
+
           logger.info "Checked #{index + 1}/#{total_count} #{model.name.pluralize}" if index % PRINT_PROGRESS_EVERY == 0
+        rescue StandardError => e
+          logger.debug "Something went wrong for #{instance.class.name}[#{instance.id}]: #{e}"
         end
         logger.info "Checked #{total_count} #{model.name.pluralize}"
       end
 
       def fix_attribute(instance, attribute_name)
-        instance.public_send(attribute_name) # rubocop:disable GitlabSecurity/PublicSend
+        instance.public_send(attribute_name) # rubocop:disable GitlabSecurity/PublicSend -- filtered with model attributes not user input
       rescue OpenSSL::Cipher::CipherError, TypeError
         logger.debug "> Fix #{instance.class.name}[#{instance.id}].#{attribute_name}"
-        instance.public_send("reset_#{attribute_name}!") unless @dry_run # rubocop:disable GitlabSecurity/PublicSend
+
+        # Use rewrite_#{token_field} instead of reset_#{token_field} to avoid save
+        # when fixing multiple invalid token fields on the same record. Read more: https://gitlab.com/gitlab-org/gitlab/-/issues/558408
+        instance.public_send("rewrite_#{attribute_name}") # rubocop:disable GitlabSecurity/PublicSend -- filtered with model attributes not user input
       rescue StandardError => e
         logger.debug(
           Rainbow("> Something went wrong for #{instance.class.name}[#{instance.id}].#{attribute_name}: #{e}").red)

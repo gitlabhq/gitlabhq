@@ -26,7 +26,7 @@ Takes [pagination parameters](rest/_index.md#offset-based-pagination) `page` and
 {{< history >}}
 
 - Keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 16.5.
-- `saml_provider_id` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/424505) in GitLab 18.2.
+- `saml_provider_id` attribute removed in GitLab 18.2.
 
 {{< /history >}}
 

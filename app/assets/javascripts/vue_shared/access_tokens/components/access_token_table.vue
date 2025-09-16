@@ -253,7 +253,9 @@ export default {
       </template>
 
       <template #cell(lifetime)="{ item: { createdAt, expiresAt } }">
-        <div class="gl-flex gl-flex-col gl-gap-3 gl-justify-self-end md:gl-justify-self-start">
+        <div
+          class="gl-flex gl-flex-col gl-gap-3 gl-justify-self-end @md/panel:gl-justify-self-start"
+        >
           <div class="gl-flex gl-gap-2 gl-whitespace-nowrap" data-testid="field-expires">
             <gl-icon
               v-gl-tooltip

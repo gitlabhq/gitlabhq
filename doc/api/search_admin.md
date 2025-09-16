@@ -93,7 +93,7 @@ Parameters:
 
 | Attribute         | Type           | Required | Description                          |
 |-------------------|----------------|----------|--------------------------------------|
-| `version_or_name` | integer/string | Yes      | The version or name of the migration. |
+| `version_or_name` | integer or string | Yes      | The version or name of the migration. |
 
 Example request:
 

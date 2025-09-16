@@ -14,15 +14,14 @@ module Gitlab
           .joins("LEFT JOIN namespaces AS parent ON namespaces.parent_id = parent.id")
           .where(parent: { id: nil })
           .pluck(:id).each do |orphaned_group_id|
+            organization_id = Group.where(id: orphaned_group_id).includes(:organization).first&.organization_id
+
+            # if organization is nil, returns the default organization admin_bot
+            admin_bot = Users::Internal.for_organization(organization_id).admin_bot
+
             ::GroupDestroyWorker.perform_async(orphaned_group_id, admin_bot.id)
           end
         end
-      end
-
-      private
-
-      def admin_bot
-        @_admin_bot ||= Users::Internal.admin_bot
       end
     end
   end

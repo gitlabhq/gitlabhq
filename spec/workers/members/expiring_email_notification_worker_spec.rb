@@ -64,18 +64,6 @@ RSpec.describe Members::ExpiringEmailNotificationWorker, type: :worker, feature_
         worker.perform(notified_member.id)
       end
     end
-
-    context "when feature member_expiring_email_notification is disabled" do
-      before do
-        stub_feature_flags(member_expiring_email_notification: false)
-      end
-
-      it "not notify member" do
-        expect(NotificationService).not_to receive(:new)
-
-        worker.perform(member.id)
-      end
-    end
   end
 
   describe '#valid_for_notification?' do
@@ -95,16 +83,6 @@ RSpec.describe Members::ExpiringEmailNotificationWorker, type: :worker, feature_
       with_them do
         it { is_expected.to be result }
       end
-    end
-
-    context 'when :member_expiring_email_notification FF is disabled' do
-      let(:test_member) { member }
-
-      before do
-        stub_feature_flags(member_expiring_email_notification: false)
-      end
-
-      it { is_expected.to be false }
     end
   end
 end

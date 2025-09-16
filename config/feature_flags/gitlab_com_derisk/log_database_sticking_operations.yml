@@ -1,9 +1,0 @@
----
-name: log_database_sticking_operations
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/548158
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193945
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/548413
-milestone: '18.2'
-group: group::database frameworks
-type: gitlab_com_derisk
-default_enabled: false

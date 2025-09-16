@@ -194,7 +194,7 @@ class BackfillPartitionAuditEvents < Gitlab::Database::Migration[2.1]
 
   disable_ddl_transaction!
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   def up
     enqueue_partitioning_data_migration :audit_events
@@ -231,7 +231,7 @@ class CleanupPartitionedAuditEventsBackfill < Gitlab::Database::Migration[2.1]
 
   disable_ddl_transaction!
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   def up
     finalize_backfilling_partitioned_table :audit_events

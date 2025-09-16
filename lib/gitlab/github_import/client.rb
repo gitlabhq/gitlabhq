@@ -243,15 +243,23 @@ module Gitlab
       end
 
       def api_endpoint
-        formatted_host || custom_api_endpoint || default_api_endpoint
+        formatted_api_endpoint || custom_api_endpoint || default_api_endpoint
       end
 
       def web_endpoint
-        formatted_host || custom_api_endpoint || ::Octokit::Default.web_endpoint
+        formatted_web_endpoint || custom_web_endpoint || ::Octokit::Default.web_endpoint
       end
 
       def custom_api_endpoint
         github_omniauth_provider.dig('args', 'client_options', 'site')
+      end
+
+      def custom_web_endpoint
+        return unless custom_api_endpoint
+
+        uri = URI.parse(custom_api_endpoint)
+        uri.path = ''
+        uri.to_s.chomp('/')
       end
 
       def default_api_endpoint
@@ -282,12 +290,22 @@ module Gitlab
 
       private
 
-      def formatted_host
-        strong_memoize(:formatted_host) do
+      def formatted_api_endpoint
+        strong_memoize(:formatted_api_endpoint) do
           next if @host.nil?
 
           uri = URI.parse(@host)
           uri.path = '/api/v3' if uri.host != 'github.com' && !uri.path.start_with?('/api/')
+          uri.to_s
+        end
+      end
+
+      def formatted_web_endpoint
+        strong_memoize(:formatted_web_endpoint) do
+          next if @host.nil?
+
+          uri = URI.parse(@host)
+          uri.path = ''
           uri.to_s
         end
       end

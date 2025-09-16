@@ -2,21 +2,22 @@
 
 module Applications
   class CreateService
-    attr_reader :current_user, :params
+    attr_reader :current_user, :request, :params
 
     ## Overridden in EE
     def self.disable_ropc_available?
       false
     end
 
-    def initialize(current_user, params)
+    # EE would override and use `request` arg
+    def initialize(current_user, request, params)
       @current_user = current_user
+      @request = request
       @params = params.except(:ip_address)
     end
 
-    # EE would override and use `request` arg
-    def execute(request)
-      @application = Doorkeeper::Application.new(params)
+    def execute
+      @application = Authn::OauthApplication.new(params)
 
       unless params[:scopes].present?
         @application.errors.add(:base, _("Scopes can't be blank"))

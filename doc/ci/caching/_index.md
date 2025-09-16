@@ -18,6 +18,11 @@ the same cache don't have to download the files again, so they execute more quic
 To learn how to define the cache in your `.gitlab-ci.yml` file,
 see the [`cache` reference](../yaml/_index.md#cache).
 
+For advanced cache key strategies, you can use:
+
+- [`cache:key:files`](../yaml/_index.md#cachekeyfiles): Generate keys linked to the content of specific files.
+- [`cache:key:files_commits`](../yaml/_index.md#cachekeyfiles_commits): Generate keys linked to the latest commit of specific files.
+
 ## How cache is different from artifacts
 
 Use cache for dependencies, like packages you download from the internet.
@@ -71,7 +76,7 @@ For runners to work with caches efficiently, you must do one of the following:
 
 ## Use multiple caches
 
-You can have a maximum of four caches:
+You can have a maximum of four caches, per job:
 
 ```yaml
 test-job:
@@ -579,10 +584,25 @@ A suffix is added to the cache key, with the exception of the [global fallback c
 As an example, assuming that `cache.key` is set to `$CI_COMMIT_REF_SLUG`, and that we have two branches `main`
 and `feature`, then the following table represents the resulting cache keys:
 
-| Branch name | Cache key |
-|-------------|-----------|
-| `main`      | `main-protected` |
+| Branch name | Cache key               |
+|-------------|-------------------------|
+| `main`      | `main-protected`        |
 | `feature`   | `feature-non_protected` |
+
+##### Cache suffix with tag triggers
+
+When a pipeline is triggered by a tag (like `$CI_COMMIT_TAG`), the cache suffix (`-protected` or `-non_protected`)
+is determined by the tag's protection status, not the branch where the pipeline executes.
+
+This behavior ensures consistent security boundaries, because the triggering reference determines cache access permissions.
+
+For example, with tags that trigger pipelines on different branches:
+
+| Trigger type                | Tag protection | Branch                  | Cache suffix     |
+|-----------------------------|----------------|-------------------------|------------------|
+| Tag `0.26.1` (unprotected)  | Unprotected    | `main` (protected)      | `-non_protected` |
+| Tag `1.0.0` (protected)     | Protected      | `main` (protected)      | `-protected`     |
+| Tag `dev-123` (unprotected) | Unprotected    | `feature` (unprotected) | `-non_protected` |
 
 ##### Use the same cache for all branches
 
@@ -804,5 +824,6 @@ instance.
 To share the cache between concurrent runners, you can either:
 
 - Use the `[runners.docker]` section of the runners' `config.toml` to configure a single mount point on the host that
-  is mapped to `/cache` in each container, preventing the runner from creating unique volume names.
+  is mapped to `/cache` in each container, such as `volumes = ["/mnt/gitlab-runner/cache-for-all-concurrent-jobs:/cache"]`.
+  This approach prevents the runner from creating unique volume names for concurrent jobs.
 - Use a distributed cache.

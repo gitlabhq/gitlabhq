@@ -98,9 +98,9 @@ export default {
 
 <template>
   <div v-if="runner">
-    <div class="md:gl-columns-2">
+    <div class="@md/panel:gl-columns-2">
       <dl
-        class="gl-mb-0 gl-flex gl-flex-col gl-gap-x-5 gl-gap-y-1 md:gl-grid md:gl-grid-cols-[auto_1fr] md:gl-gap-y-3"
+        class="gl-mb-0 gl-flex gl-flex-col gl-gap-x-5 gl-gap-y-1 @md/panel:gl-grid @md/panel:gl-grid-cols-[auto_1fr] @md/panel:gl-gap-y-3"
       >
         <runner-detail :label="s__('Runners|Description')" :value="runner.description" />
         <runner-detail
@@ -158,7 +158,7 @@ export default {
 
     <div class="gl-mt-6 gl-flex gl-flex-col gl-gap-5">
       <runner-groups v-if="isGroupRunner" :runner="runner" />
-      <runner-projects v-if="isProjectRunner" :runner="runner" />
+      <runner-projects v-if="isProjectRunner" :show-access-help="showAccessHelp" :runner="runner" />
       <runner-managers :runner="runner" />
       <runner-jobs :runner-id="runnerId" :show-access-help="showAccessHelp" />
     </div>

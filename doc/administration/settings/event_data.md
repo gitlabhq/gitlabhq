@@ -1,5 +1,5 @@
 ---
-stage: Monitor
+stage: Analytics
 group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Event data
@@ -62,6 +62,23 @@ To enable or disable event-level data collection:
 1. Expand **Event tracking**.
 1. To enable the setting, select the checkbox **Enable event tracking**. To disable the setting, clear the checkbox.
 1. Select **Save changes**.
+
+### Programmatically enabling or disabling event-level data collection
+
+This configuration only works for new instances during first-time installation.
+
+**For Omnibus installations:**
+
+Set `gitlab_rails['initial_gitlab_product_usage_data']` to `false` to disable usage data collection during installation.
+
+**For Kubernetes Operator deployments:**
+
+Set `global.appConfig.initialDefaults.gitlabProductUsageData` to `false` to disable event-level data collection.
+
+**Important notes:**
+
+- Initial defaults only apply during installation. Changing these settings later has no effect.
+- To enable or disable event data collection after installation, use the Administrator settings as described in the previous section.
 
 ### Event delivery timing
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::SafeDisablePipelineVariablesService, feature_category: :ci_variables do
+RSpec.describe Ci::SafeDisablePipelineVariablesService, feature_category: :pipeline_composition do
   let(:log_output) { StringIO.new }
   let(:service) { described_class.new(current_user: current_user, group: parent_group) }
 

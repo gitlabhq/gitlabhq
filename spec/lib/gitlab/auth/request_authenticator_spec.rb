@@ -454,6 +454,26 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
     end
   end
 
+  describe '#job_from_token' do
+    let_it_be(:job) { create(:ci_build, :running) }
+
+    it 'returns the job using #find_job_from_job_token' do
+      allow_any_instance_of(described_class)
+        .to receive(:find_job_from_job_token)
+        .and_return(job)
+
+      expect(subject.job_from_token).to eq job
+    end
+
+    it 'rescue Gitlab::Auth::AuthenticationError exceptions' do
+      allow_any_instance_of(described_class)
+          .to receive(:find_job_from_job_token)
+          .and_raise(Gitlab::Auth::UnauthorizedError)
+
+      expect(subject.job_from_token).to be_blank
+    end
+  end
+
   describe '#route_authentication_setting' do
     using RSpec::Parameterized::TableSyntax
 

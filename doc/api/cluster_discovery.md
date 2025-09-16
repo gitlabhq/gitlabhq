@@ -30,7 +30,7 @@ Parameters:
 
 | Attribute | Type           | Required | Description                                                                   |
 | --------- | -------------- | -------- | ----------------------------------------------------------------------------- |
-| `group_id`      | integer/string | yes      | The ID of the group |
+| `group_id`      | integer or string | yes      | The ID of the group |
 
 Example request:
 

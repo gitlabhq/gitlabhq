@@ -1,6 +1,6 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_pages_jbake
-description: ''
+description: Count of distinct projects that included the Pages/JBake.gitlab-ci.yml template in a pipeline
 product_group: pipeline_authoring
 value_type: number
 status: active

@@ -104,7 +104,6 @@ RSpec.shared_examples 'work items comments' do |type|
         expect(page).to have_text("/shrug")
         expect(page).to have_text("/tableflip")
         expect(page).to have_text("/close")
-        expect(page).to have_text("/cc")
       end
     end
 
@@ -281,7 +280,6 @@ RSpec.shared_examples 'work items description' do
       expect(page).to have_button 'Add a bullet list'
       expect(page).to have_button 'Add a numbered list'
       expect(page).to have_button 'Add a checklist'
-      expect(page).to have_button 'Add a collapsible section'
       expect(page).to have_button 'Insert table'
       expect(page).to have_button 'Attach a file or image'
       expect(page).to have_button 'Add a quick action'
@@ -299,7 +297,6 @@ RSpec.shared_examples 'work items description' do
       expect(page).to have_text("shrug")
       expect(page).to have_text("tableflip")
       expect(page).to have_text("close")
-      expect(page).to have_text("cc")
     end
   end
 
@@ -742,7 +739,7 @@ RSpec.shared_examples 'work items time tracking' do
     expect(page).to have_button '1d'
   end
 
-  it 'checks for progess bar with both time entries and estimate', :aggregate_failures do
+  it 'checks for progress bar with both time entries and estimate', :aggregate_failures do
     add_estimate('5d')
 
     expect(page).to have_text 'Estimate 5d'
@@ -842,54 +839,41 @@ end
 
 RSpec.shared_examples 'work items status' do
   context 'when feature is licensed' do
-    context 'when work_item_status_feature_flag feature flag is enabled' do
-      it 'updates and selects system defined work item status' do
-        within_testid 'work-item-status' do
-          click_button 'Edit'
-          select_listbox_item 'In progress'
+    it 'updates and selects system defined work item status' do
+      within_testid 'work-item-status' do
+        click_button 'Edit'
+        select_listbox_item 'In progress'
 
-          expect(page).to have_text 'In progress'
-        end
-      end
-
-      context 'when namespace has custom status' do
-        let(:custom_status) { create(:work_item_custom_status, name: "Ready for development", namespace: root_group) }
-
-        let(:custom_lifecycle) do
-          create(:work_item_custom_lifecycle, default_open_status: custom_status, namespace: root_group)
-        end
-
-        let!(:type_custom_lifecycle) do
-          create(:work_item_type_custom_lifecycle,
-            lifecycle: custom_lifecycle,
-            work_item_type: work_item.work_item_type,
-            namespace: root_group
-          )
-        end
-
-        before do
-          visit work_items_path
-        end
-
-        it 'selects and updates custom status' do
-          within_testid 'work-item-status' do
-            click_button 'Edit'
-            select_listbox_item 'Ready for development'
-
-            expect(page).to have_text 'Ready for development'
-          end
-        end
+        expect(page).to have_text 'In progress'
       end
     end
 
-    context 'when work_item_status_feature_flag feature flag is disabled' do
-      before do
-        stub_feature_flags(work_item_status_feature_flag: false)
-        page.refresh
+    context 'when namespace has custom status' do
+      let(:custom_status) { create(:work_item_custom_status, name: "Ready for development", namespace: root_group) }
+
+      let(:custom_lifecycle) do
+        create(:work_item_custom_lifecycle, default_open_status: custom_status, namespace: root_group)
       end
 
-      it 'does not show the work item status' do
-        expect(page).not_to have_text 'Status'
+      let!(:type_custom_lifecycle) do
+        create(:work_item_type_custom_lifecycle,
+          lifecycle: custom_lifecycle,
+          work_item_type: work_item.work_item_type,
+          namespace: root_group
+        )
+      end
+
+      before do
+        visit work_items_path
+      end
+
+      it 'selects and updates custom status' do
+        within_testid 'work-item-status' do
+          click_button 'Edit'
+          select_listbox_item 'Ready for development'
+
+          expect(page).to have_text 'Ready for development'
+        end
       end
     end
   end

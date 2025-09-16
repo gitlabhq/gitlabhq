@@ -244,6 +244,8 @@ module MergeRequestsHelper
   def common_merge_request_list_data(current_user)
     {
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
+      merge_request_target_branches_path: autocomplete_merge_request_target_branches_path,
+      merge_request_source_branches_path: autocomplete_merge_request_source_branches_path,
       initial_sort: default_merge_request_sort || current_user&.user_preference&.merge_requests_sort,
       is_public_visibility_restricted:
         Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,
@@ -300,6 +302,7 @@ module MergeRequestsHelper
   def sticky_header_data(project, merge_request)
     data = {
       iid: merge_request.iid,
+      canResolveDiscussion: merge_request.resolvable_discussions.first&.can_resolve_discussion?(current_user).to_s,
       defaultBranchName: project.default_branch,
       projectPath: project.full_path,
       sourceProjectPath: merge_request.source_project_path,
@@ -344,6 +347,12 @@ module MergeRequestsHelper
 
   def merge_request_squash_option?(merge_request)
     merge_request.persisted? ? merge_request.squash : merge_request.squash_enabled_by_default?
+  end
+
+  def merge_request_dashboard_show_drafts?
+    return true if Feature.disabled?(:mr_dashboard_drafts_toggle, current_user)
+
+    current_user.merge_request_dashboard_show_drafts
   end
 
   private
@@ -472,7 +481,7 @@ module MergeRequestsHelper
             [
               {
                 id: 'reviews',
-                title: _('Reviewer (Active)'),
+                title: _('Review requested'),
                 helpContent: _('Merge requests awaiting your review.'),
                 query: 'reviewRequestedMergeRequests',
                 variables: {
@@ -481,48 +490,23 @@ module MergeRequestsHelper
                 }
               },
               {
+                id: 'assigned',
+                title: _('Your merge requests'),
+                helpContent: _("Your merge requests"),
+                query: 'authorOrAssigneeMergeRequests',
+                variables: {
+                  draft: merge_request_dashboard_show_drafts?,
+                  perPage: 10
+                }
+              },
+              {
                 id: 'reviews_inactive',
-                title: _('Reviewer (Inactive)'),
+                title: _('Reviewed'),
                 hideCount: true,
                 helpContent: _("Merge requests you've reviewed."),
                 query: 'reviewRequestedMergeRequests',
                 variables: {
                   reviewStates: %w[APPROVED REQUESTED_CHANGES REVIEWED],
-                  perPage: 10
-                }
-              },
-              {
-                id: 'assigned',
-                title: _('Your merge requests (Active)'),
-                helpContent: _(
-                  "Your merge requests that need reviewers assigned, " \
-                    "or has feedback to address."
-                ),
-                query: 'authorOrAssigneeMergeRequests',
-                variables: {
-                  or: {
-                    reviewerWildcard: "NONE",
-                    onlyReviewerUsername: duo_code_review_bot.username,
-                    reviewStates: %w[REVIEWED REQUESTED_CHANGES]
-                  },
-                  perPage: 10
-                }
-              },
-              {
-                id: 'assigned_inactive',
-                title: _('Your merge requests (Inactive)'),
-                hideCount: true,
-                helpContent: _(
-                  "Your merge requests awaiting approvals, " \
-                    "or has been approved by all assigned reviewers."
-                ),
-                query: 'authorOrAssigneeMergeRequests',
-                variables: {
-                  reviewStates: %w[APPROVED UNAPPROVED UNREVIEWED REVIEW_STARTED],
-                  not: {
-                    reviewStates: %w[REQUESTED_CHANGES REVIEWED]
-                  },
-                  ignoredReviewerUsername: duo_code_review_bot.username,
                   perPage: 10
                 }
               }
@@ -598,6 +582,7 @@ module MergeRequestsHelper
                 helpContent: _("Merge requests you authored or are assigned to, without reviewers."),
                 query: 'authorOrAssigneeMergeRequests',
                 variables: {
+                  draft: merge_request_dashboard_show_drafts?,
                   or: {
                     reviewerWildcard: 'NONE',
                     onlyReviewerUsername: duo_code_review_bot.username

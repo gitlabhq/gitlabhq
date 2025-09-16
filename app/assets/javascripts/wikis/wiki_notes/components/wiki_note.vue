@@ -44,6 +44,26 @@ export default {
       required: false,
       default: false,
     },
+    resolvable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    resolved: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    resolvedBy: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    discussionId: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -119,6 +139,11 @@ export default {
           'internal-note-bg': this.note.internal,
         },
       };
+    },
+    canResolve() {
+      if (!this.resolvable) return false;
+
+      return this.note.userPermissions?.resolveNote;
     },
   },
   mounted() {
@@ -288,7 +313,7 @@ export default {
             :email-participant="note.externalAuthor"
             :is-internal-note="note.internal"
           >
-            <span class="gl-hidden sm:gl-inline">&middot;</span>
+            <span class="gl-hidden @sm/panel:gl-inline">&middot;</span>
           </note-header>
           <note-actions
             :class="{ '-gl-mr-5': replyNote }"
@@ -300,6 +325,10 @@ export default {
             :note-url="note.url"
             :can-award-emoji="canAwardEmoji"
             :access-level="note.maxAccessLevelOfAuthor"
+            :can-resolve="canResolve"
+            :is-resolved="resolved"
+            :resolved-by="resolvedBy"
+            :discussion-id="discussionId"
             @reply="$emit('reply')"
             @edit="toggleEditing(true)"
             @delete="deleteNote"

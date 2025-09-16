@@ -34,7 +34,7 @@ If the model was successfully pulled, give it a run with `ollama run mistral:ins
 
 Now you can use the Ollama server. Visit [`http://localhost:11434/`](http://localhost:11434/); you should see `Ollama is running`. This means your server is already running. If that's not the case, you can run `ollama serve` in your terminal. Use `brew services start ollama` if you installed it with Homebrew.
 
-The Ollama serving framework has an OpenAI-compatible API. The API reference is documented [here](https://github.com/ollama/ollama/blob/main/docs/api.md).
+The Ollama serving framework has an OpenAI-compatible API. See the [API reference](https://github.com/ollama/ollama/blob/main/docs/api.md).
 Here is a simple example you can try:
 
 ```shell

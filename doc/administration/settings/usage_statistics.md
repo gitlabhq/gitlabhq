@@ -1,5 +1,5 @@
 ---
-stage: Monitor
+stage: Analytics
 group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Usage statistics
@@ -37,6 +37,20 @@ There are several other benefits to enabling Service Ping:
 - Insight and advice into how to get the most value out of your investment in GitLab.
 - Reports that show how you compare against other similar organizations (anonymized), with specific advice and recommendations on how to improve your DevOps processes.
 - Participation in our [Registration Features Program](#registration-features-program) to receive free paid features.
+
+### Service Ping settings
+
+GitLab provides three settings related to Service Ping:
+
+- **Enable Service Ping**: Controls whether Service Ping data is sent to GitLab.
+- **Enable Service Ping Generation**: Controls whether Service Ping data is generated on your instance.
+- **Include optional data in Service Ping**: Controls whether optional metrics are included in Service Ping data.
+
+These three settings interact in the following ways:
+
+- When **Service Ping** is enabled, **Service Ping Generation** is automatically enabled and cannot be disabled.
+- When **Service Ping** is disabled, you can independently control **Service Ping Generation**.
+- **Include optional data in Service Ping** is available only when either **Service Ping** or **Service Ping Generation** is enabled.
 
 ## Registration Features Program
 
@@ -197,9 +211,77 @@ the **Admin** area.
 
 {{< /tabs >}}
 
+## Enable or disable Service Ping Generation
+
+Service Ping Generation controls whether Service Ping data is automatically generated on your instance. When enabled, GitLab periodically generates Service Ping payloads containing usage statistics. This setting works independently of whether the data is shared with GitLab.
+
+### Through the UI
+
+To enable or disable Service Ping Generation:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Metrics and profiling**.
+1. Expand **Usage statistics**.
+1. Select or clear the **Enable Service Ping Generation** checkbox.
+   - If **Enable Service Ping** is selected, this setting is automatically enabled and disabled from interaction.
+   - If **Enable Service Ping** is cleared, you can control this setting independently.
+1. Select **Save changes**.
+
+### Through the configuration file
+
+To control Service Ping Generation through configuration:
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['usage_ping_enabled'] = false
+   gitlab_rails['usage_ping_generation_enabled'] = false
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled (source)" >}}
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     # ...
+     gitlab:
+       # ...
+       usage_ping_enabled: false
+       usage_ping_generation_enabled: false
+   ```
+
+1. Restart GitLab:
+
+   ```shell
+   sudo service gitlab restart
+   ```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ## Enable or disable optional data in Service Ping
 
 GitLab differentiates between operational and optional collected data.
+
+{{< alert type="note" >}}
+
+The **Include optional data in Service Ping** option is available only if either **Enable Service Ping** or **Enable Service Ping Generation** is enabled. If both settings are disabled, this option is disabled automatically.
+
+{{< /alert >}}
 
 ### Through the UI
 
@@ -208,6 +290,7 @@ To enable or disable optional data in Service Ping:
 1. In the left sidebar, at the bottom, select **Admin**.
 1. Go to **Settings > Metrics and Profiling**.
 1. Expand the **Usage Statistics** section.
+1. Ensure that the checkbox for either **Enable Service Ping** or **Enable Service Ping Generation** is selected.
 1. To enable optional data, select the **Include optional data in Service Ping** checkbox. To disable it, clear the box.
 1. Select **Save Changes**.
 

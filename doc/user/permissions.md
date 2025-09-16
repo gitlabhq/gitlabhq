@@ -2,6 +2,7 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn about GitLab user permissions and what actions each role can take across groups, subgroups, and projects
 title: Roles and permissions
 ---
 
@@ -98,6 +99,7 @@ Group permissions for [CI/CD](../ci/_index.md) features including runners, varia
 
 | Action                                | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
+| View instance runner                  |   ✓   |    ✓    |     ✓    |    ✓      |     ✓      |   ✓   |
 | View group runners                    |       |         |          |           |     ✓      |   ✓   |
 | Manage group-level Kubernetes cluster |       |         |          |           |     ✓      |   ✓   |
 | Manage group runners                  |       |         |          |           |            |   ✓   |
@@ -127,7 +129,7 @@ Group permissions for [GitLab Duo](gitlab_duo/_index.md):
 
 | Action                                                                                                     | Non-member | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ---------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: | :---: |
-| Use GitLab Duo features <sup>1</sup>                                                                       |            |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
+| Use GitLab Duo features <sup>1</sup>                                                                       |            |       |     ✓   |    ✓     |     ✓     |     ✓      |   ✓   |
 | Configure [GitLab Duo feature availability](gitlab_duo/turn_on_off.md#for-a-group-or-subgroup)             |            |       |         |          |           |     ✓      |   ✓   |
 | Configure [GitLab Duo Self Hosted](../administration/gitlab_duo_self_hosted/configure_duo_features.md)     |            |       |         |          |           |            |   ✓   |
 | Enable [beta and experimental features](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features)  |            |       |         |          |           |            |   ✓   |
@@ -156,6 +158,7 @@ Group permissions for [group features](group/_index.md):
 | View [Billing](../subscriptions/manage_subscription.md#view-subscription) <sup>4</sup>      |       |         |          |           |            |   ✓   |
 | View group [Usage quotas](storage_usage_quotas.md) page <sup>4</sup>                        |       |         |          |           |            |   ✓   |
 | [Migrate group](group/import/_index.md)                                                     |       |         |          |           |            |   ✓   |
+| Archive group                                                                                |       |         |          |           |            |   ✓   |
 | Delete group                                                                                |       |         |          |           |            |   ✓   |
 | Manage [subscriptions, storage, and compute minutes](../subscriptions/gitlab_com/_index.md) |       |         |          |           |            |   ✓   |
 | Manage [group access tokens](group/settings/group_access_tokens.md)                         |       |         |          |           |            |   ✓   |
@@ -305,7 +308,8 @@ Project permissions for [analytics](analytics/_index.md) features including valu
 | View [DORA metrics](analytics/ci_cd_analytics.md)                                          |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
 | View [merge request analytics](analytics/merge_request_analytics.md)                       |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
 | View [repository analytics](analytics/repository_analytics.md)                             |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| View [Value Streams Dashboard & AI impact analytics](analytics/value_streams_dashboard.md) |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
+| View [Value Streams Dashboard](analytics/value_streams_dashboard.md)                       |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
+| View [GitLab Duo and SDLC trends](analytics/duo_and_sdlc_trends.md)                        |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
 
 ### Application security
 
@@ -328,7 +332,7 @@ Project permissions for [application security](application_security/secure_your_
 | Change vulnerability status <sup>1</sup>                                                                                            |       |         |          |           |     ✓      |   ✓   |
 | Create [security policy project](application_security/policies/_index.md)                                                           |       |         |          |           |            |   ✓   |
 | Assign [security policy project](application_security/policies/_index.md)                                                           |       |         |          |           |            |   ✓   |
-| Manage [security configurations](application_security/detect/security_configuration.md)                                             |       |         |          |           |            |   ✓   |
+| Manage [security configurations](application_security/detect/security_configuration.md)                                             |       |         |          |           |     ✓      |   ✓   |
 
 **Footnotes**
 
@@ -347,6 +351,7 @@ Project Owners can perform any listed action, and can delete pipelines:
 
 | Action                                                                                                      | Non-member | Guest | Planner | Reporter | Developer | Maintainer |
 | ----------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: |
+| View instance runner                                                                                        |     ✓      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |
 | View existing artifacts <sup>1</sup>                                                                        |     ✓      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |
 | View list of jobs <sup>2</sup>                                                                              |     ✓      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |
 | View artifacts <sup>3</sup>                                                                                 |     ✓      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |
@@ -372,6 +377,9 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Read [Terraform](infrastructure/_index.md) state                                                            |            |       |         |          |     ✓     |     ✓      |
 | Run [interactive web terminals](../ci/interactive_web_terminal/_index.md)                                   |            |       |         |          |     ✓     |     ✓      |
 | Use pipeline editor                                                                                         |            |       |         |          |     ✓     |     ✓      |
+| View project runners <sup>9</sup>                                                                           |            |       |         |          |           |     ✓      |
+| Manage project runners <sup>9</sup>                                                                         |            |       |         |          |           |     ✓      |
+| Delete project runners <sup>10</sup>                                                                        |            |       |         |          |           |     ✓      |
 | Manage [agents for Kubernetes](clusters/agent/_index.md)                                                    |            |       |         |          |           |     ✓      |
 | Manage CI/CD settings                                                                                       |            |       |         |          |           |     ✓      |
 | Manage job triggers                                                                                         |            |       |         |          |           |     ✓      |
@@ -379,7 +387,7 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Manage project protected environments                                                                       |            |       |         |          |           |     ✓      |
 | Manage project [Secure Files](../api/secure_files.md)                                                       |            |       |         |          |           |     ✓      |
 | Manage [Terraform](infrastructure/_index.md) state                                                          |            |       |         |          |           |     ✓      |
-| Add project runners to project                                                                              |            |       |         |          |           |     ✓      |
+| Add project runners to project <sup>11</sup>                                                                |            |       |         |          |           |     ✓      |
 | Clear runner caches manually                                                                                |            |       |         |          |           |     ✓      |
 | Enable instance runners in project                                                                          |            |       |         |          |           |     ✓      |
 
@@ -398,10 +406,13 @@ Project Owners can perform any listed action, and can delete pipelines:
    is not set on the job.
 4. Guests: Only if **Project-based pipeline visibility** is enabled in **Project Settings > CI/CD**.
 5. Reporters: Only if the user is [part of a group with access to the protected environment](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments).
-   <br>Developers and maintainers: Only if the user is [allowed to deploy to the protected branch](../ci/environments/protected_environments.md#protecting-environments).
+   <br>Developers and maintainers: Only if the user is [allowed to deploy to the protected environment](../ci/environments/protected_environments.md#protecting-environments).
 6. Developers and maintainers: Only if the user is [allowed to merge or push to the protected branch](../ci/pipelines/_index.md#pipeline-security-on-protected-branches).
 7. Developers: Only if the job was triggered by the user and runs for a non-protected branch.
 8. Cancellation permissions can be [restricted in the pipeline settings](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs).
+9. Maintainers: Must have the Maintainer role for a project associated with the runner.
+10. Maintainers: Must have the Maintainer role for [the owner project](../ci/runners/runners_scope.md#project-runner-ownership) (first project associated with runner).
+11. Maintainers: Must have the Maintainer role for the project being added and for a project already associated with the runner.
 
 <!-- markdownlint-enable MD029 -->
 
@@ -606,7 +617,7 @@ Project permissions for [container registry](packages/_index.md):
 
 **Footnotes**:
 
-1. Viewing the container registry and pulling images is controlled by [container registry visibility permissions](packages/container_registry/_index.md#container-registry-visibility-permissions).
+1. Viewing the container registry and pulling images is controlled by [container registry visibility permissions](packages/container_registry/_index.md#container-registry-visibility-permissions). The Guest role does not have viewing or pulling permissions in private projects.
 
 Project permissions for [package registry](packages/_index.md):
 
@@ -865,6 +876,7 @@ To work around the issue, give these users the Guest role or higher to any proje
 
 ## Related topics
 
+- [Protect your repository](project/repository/protect.md)
 - [Custom roles](custom_roles/_index.md)
 - [Members](project/members/_index.md)
 - Customize permissions on [protected branches](project/repository/branches/protected.md)

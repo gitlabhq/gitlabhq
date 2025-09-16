@@ -27,7 +27,7 @@ module Ci
       check_access!(job)
       variables = ensure_project_id!(variables)
 
-      new_job = job.clone(current_user: current_user, new_job_variables_attributes: variables)
+      new_job = Ci::CloneJobService.new(job, current_user: current_user).execute(new_job_variables: variables)
       if enqueue_if_actionable && new_job.action?
         new_job.set_enqueue_immediately!
       end
@@ -35,6 +35,10 @@ module Ci
       start_pipeline_proc = -> { start_pipeline(job, new_job) } if start_pipeline
 
       new_job.run_after_commit do
+        if Feature.enabled?(:persisted_job_environment_relationship, project) && job.persisted_environment.present?
+          new_job.link_to_environment(job.persisted_environment)
+        end
+
         start_pipeline_proc&.call
 
         ::Ci::CopyCrossDatabaseAssociationsService.new.execute(job, new_job)
@@ -80,7 +84,7 @@ module Ci
     end
 
     def check_access!(job)
-      unless can?(current_user, :update_build, job)
+      unless can?(current_user, :retry_job, job)
         raise Gitlab::Access::AccessDeniedError, '403 Forbidden'
       end
     end

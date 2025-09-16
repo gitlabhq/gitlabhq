@@ -27,6 +27,7 @@ module Ci
     validates :build, presence: true
     validates :id_tokens, json_schema: { filename: 'build_metadata_id_tokens' }
     validates :secrets, json_schema: { filename: 'build_metadata_secrets' }
+    validate :validate_config_options_schema
 
     attribute :config_options, ::Gitlab::Database::Type::SymbolizedJsonb.new
     attribute :config_variables, ::Gitlab::Database::Type::SymbolizedJsonb.new
@@ -40,19 +41,7 @@ module Ci
 
     scope :with_interruptible, -> { where(interruptible: true) }
 
-    enum :timeout_source, {
-      unknown_timeout_source: 1,
-      project_timeout_source: 2,
-      runner_timeout_source: 3,
-      job_timeout_source: 4
-    }
-
-    def update_timeout_state
-      timeout = ::Ci::Builds::TimeoutCalculator.new(build).applicable_timeout
-      return unless timeout
-
-      update(timeout: timeout.value, timeout_source: timeout.source)
-    end
+    enum :timeout_source, ::Ci::Build.timeout_sources
 
     def enable_debug_trace!
       self.debug_trace_enabled = true
@@ -64,6 +53,34 @@ module Ci
 
     def set_build_project
       self.project_id ||= build.project_id
+    end
+
+    def ci_validate_config_options_enabled?
+      Feature.enabled?(:ci_validate_config_options, project)
+    end
+
+    def validate_config_options_schema
+      return unless ci_validate_config_options_enabled?
+      return if config_options.nil?
+
+      validator = JsonSchemaValidator.new({
+        filename: 'build_metadata_config_options',
+        attributes: [:config_options],
+        detail_errors: true
+      })
+
+      validator.validate(self)
+      return if errors[:config_options].empty?
+
+      Gitlab::AppJsonLogger.warn(
+        class: self.class.name,
+        message: 'Invalid config_options schema detected',
+        build_metadata_id: id,
+        project_id: project_id,
+        schema_errors: errors[:config_options]
+      )
+
+      errors.delete(:config_options) if Rails.env.production?
     end
   end
 end

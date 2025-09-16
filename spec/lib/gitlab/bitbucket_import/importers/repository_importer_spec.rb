@@ -18,8 +18,8 @@ RSpec.describe Gitlab::BitbucketImport::Importers::RepositoryImporter, feature_c
   describe '#execute' do
     context 'when repository is empty' do
       it 'imports the repository' do
-        expect(project.repository).to receive(:import_repository).with(project.import_url)
-        expect(project.repository).to receive(:fetch_as_mirror).with(project.import_url,
+        expect(project.repository).to receive(:import_repository).with(project.unsafe_import_url)
+        expect(project.repository).to receive(:fetch_as_mirror).with(project.unsafe_import_url,
           refmap: ['+refs/pull-requests/*/to:refs/merge-requests/*/head'])
         expect(project.last_repository_updated_at).to be_present
 

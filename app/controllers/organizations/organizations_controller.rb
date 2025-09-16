@@ -13,7 +13,11 @@ module Organizations
     before_action :event_filter, only: [:activity]
     before_action :authorize_read_organization!, only: [:activity, :show, :groups_and_projects]
     before_action only: [:index] do
-      push_frontend_feature_flag(:allow_organization_creation, current_user)
+      push_frontend_feature_flag(:organization_switching, current_user)
+    end
+
+    before_action only: [:show, :groups_and_projects] do
+      push_frontend_feature_flag(:archive_group)
     end
 
     skip_before_action :authenticate_user!, only: [:activity, :show, :groups_and_projects]

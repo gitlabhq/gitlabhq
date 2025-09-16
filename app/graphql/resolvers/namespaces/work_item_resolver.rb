@@ -35,7 +35,7 @@ module Resolvers
         return unless self.class.recent_services_map.key?(base_type)
 
         service_class = self.class.recent_services_map[base_type]
-        return unless defined?(service_class)
+        return unless service_class
 
         service_class.new(user: current_user).log_view(work_item)
       end

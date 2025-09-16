@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp, breakpoints } from '@gitlab/ui/src/utils';
 import { Mousetrap } from '~/lib/mousetrap';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuperSidebar from '~/super_sidebar/components/super_sidebar.vue';
@@ -9,6 +9,7 @@ import SidebarPeekBehavior from '~/super_sidebar/components/sidebar_peek_behavio
 import SidebarHoverPeekBehavior from '~/super_sidebar/components/sidebar_hover_peek_behavior.vue';
 import SidebarPortalTarget from '~/super_sidebar/components/sidebar_portal_target.vue';
 import SidebarMenu from '~/super_sidebar/components/sidebar_menu.vue';
+import IconOnlyToggle from '~/super_sidebar/components/icon_only_toggle.vue';
 import {
   sidebarState,
   SUPER_SIDEBAR_PEEK_STATE_CLOSED as STATE_CLOSED,
@@ -36,6 +37,22 @@ jest.mock('~/super_sidebar/utils', () => ({
 
 const trialWidgetStubTestId = 'trial-widget';
 const TrialWidgetStub = { template: `<div data-testid="${trialWidgetStubTestId}" />` };
+const dapWidgetStubTestId = 'dap-widget';
+const DapWidgetStub = {
+  template: `<div data-testid="${dapWidgetStubTestId}" />`,
+  inject: {
+    isAuthorized: { default: false },
+    requestCount: { default: 0 },
+    showRequestAccess: { default: false },
+    hasRequested: { default: false },
+    showDuoAgentPlatformWidget: { default: false },
+  },
+  render(h) {
+    return this.showDuoAgentPlatformWidget
+      ? h('div', { attrs: { 'data-testid': dapWidgetStubTestId } })
+      : null;
+  },
+};
 const UserBarStub = {
   template: `<div><a href="#">link</a></div>`,
 };
@@ -56,9 +73,11 @@ describe('SuperSidebar component', () => {
   const findPeekBehavior = () => wrapper.findComponent(SidebarPeekBehavior);
   const findHoverPeekBehavior = () => wrapper.findComponent(SidebarHoverPeekBehavior);
   const findTrialWidget = () => wrapper.findByTestId(trialWidgetStubTestId);
+  const findDapWidget = () => wrapper.findByTestId(dapWidgetStubTestId);
+  const findIconOnlyToggle = () => wrapper.findComponent(IconOnlyToggle);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
   const findAdminLink = () => wrapper.findByTestId('sidebar-admin-link');
-  const findContextHeader = () => wrapper.findComponent('#super-sidebar-context-header');
+  const findContextHeader = () => wrapper.find('#super-sidebar-context-header');
   let trackingSpy = null;
 
   const createWrapper = ({
@@ -71,6 +90,12 @@ describe('SuperSidebar component', () => {
     wrapper = shallowMountExtended(SuperSidebar, {
       provide: {
         showTrialWidget: false,
+        projectStudioEnabled: false,
+        showDuoAgentPlatformWidget: false,
+        isAuthorized: false,
+        requestCount: 0,
+        showRequestAccess: false,
+        hasRequested: false,
         ...provide,
       },
       propsData: {
@@ -78,6 +103,7 @@ describe('SuperSidebar component', () => {
       },
       stubs: {
         TrialWidget: TrialWidgetStub,
+        DuoAgentPlatformWidget: DapWidgetStub,
         UserBar: stubComponent(UserBar, UserBarStub),
       },
       attachTo: document.body,
@@ -197,6 +223,17 @@ describe('SuperSidebar component', () => {
       expect(findTrialWidget().exists()).toBe(false);
     });
 
+    it('does not render Duo agent platform widget', () => {
+      createWrapper();
+
+      expect(findDapWidget().exists()).toBe(false);
+    });
+
+    it('does not render icon-only toggle', () => {
+      createWrapper();
+      expect(findIconOnlyToggle().exists()).toBe(false);
+    });
+
     it('does not have peek behaviors', () => {
       createWrapper();
 
@@ -303,6 +340,48 @@ describe('SuperSidebar component', () => {
     });
   });
 
+  describe('in the panel-based layout', () => {
+    describe('on desktop', () => {
+      beforeEach(() => {
+        createWrapper({
+          provide: { projectStudioEnabled: true },
+          sidebarState: { isMobile: false },
+        });
+      });
+
+      it('renders the icon-only toggle', () => {
+        expect(findIconOnlyToggle().exists()).toBe(true);
+      });
+
+      it('does not render the context header text when in icon-only mode', () => {
+        expect(findContextHeader().exists()).toBe(false);
+      });
+
+      it('renders the context header normally while not in icon-only mode', async () => {
+        findIconOnlyToggle().vm.$emit('toggle');
+        await nextTick();
+        expect(findContextHeader().text()).toBe('Your work');
+      });
+    });
+
+    describe('on mobile', () => {
+      beforeEach(() => {
+        createWrapper({
+          provide: { projectStudioEnabled: true },
+          sidebarState: { isMobile: true },
+        });
+      });
+
+      it('does not render the icon-only toggle', () => {
+        expect(findIconOnlyToggle().exists()).toBe(false);
+      });
+
+      it('sets the correct class', () => {
+        expect(findSidebar().classes()).toContain('super-sidebar-is-mobile');
+      });
+    });
+  });
+
   describe('nav container', () => {
     beforeEach(() => {
       createWrapper();
@@ -320,6 +399,86 @@ describe('SuperSidebar component', () => {
 
     it('renders trial widget', () => {
       expect(findTrialWidget().exists()).toBe(true);
+    });
+  });
+
+  describe('when a Duo agent platform widget is active', () => {
+    beforeEach(() => {
+      createWrapper({
+        provide: {
+          showDuoAgentPlatformWidget: true,
+          isAuthorized: false,
+          showRequestAccess: false,
+          hasRequested: false,
+          requestCount: 0,
+        },
+      });
+    });
+
+    it('renders Duo agent platform widget', () => {
+      expect(findDapWidget().exists()).toBe(true);
+    });
+
+    describe('with admin access', () => {
+      beforeEach(() => {
+        createWrapper({
+          provide: {
+            showDuoAgentPlatformWidget: true,
+            isAuthorized: true,
+            showRequestAccess: false,
+            hasRequested: false,
+            requestCount: 5,
+          },
+        });
+      });
+
+      it('passes admin status to widget', () => {
+        expect(findDapWidget().vm.isAuthorized).toBe(true);
+      });
+
+      it('passes request count to widget', () => {
+        expect(findDapWidget().vm.requestCount).toBe(5);
+      });
+    });
+
+    describe('with request access functionality', () => {
+      beforeEach(() => {
+        createWrapper({
+          provide: {
+            showDuoAgentPlatformWidget: true,
+            isAuthorized: false,
+            showRequestAccess: true,
+            hasRequested: false,
+            requestCount: 0,
+          },
+        });
+      });
+
+      it('shows request access option', () => {
+        expect(findDapWidget().vm.showRequestAccess).toBe(true);
+      });
+
+      it('shows request not yet made', () => {
+        expect(findDapWidget().vm.hasRequested).toBe(false);
+      });
+    });
+
+    describe('with request already made', () => {
+      beforeEach(() => {
+        createWrapper({
+          provide: {
+            showDuoAgentPlatformWidget: true,
+            isAuthorized: false,
+            showRequestAccess: true,
+            hasRequested: true,
+            requestCount: 0,
+          },
+        });
+      });
+
+      it('shows request has been made', () => {
+        expect(findDapWidget().vm.hasRequested).toBe(true);
+      });
     });
   });
 

@@ -85,11 +85,11 @@ RSpec.describe PipelineScheduleWorker, :sidekiq_inline, feature_category: :conti
     end
   end
 
-  context 'when the schedule is not runnable by the user' do
-    it 'does not deactivate the schedule' do
+  context 'when the schedule is not runnable by the schedule owner' do
+    it 'deactivates the schedule' do
       subject
 
-      expect(pipeline_schedule.reload.active).to be_truthy
+      expect(pipeline_schedule.reload.active).to be_falsey
     end
 
     it 'does not create a pipeline' do

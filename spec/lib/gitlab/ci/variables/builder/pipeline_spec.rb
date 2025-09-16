@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :ci_variables do
+RSpec.describe Gitlab::Ci::Variables::Builder::Pipeline, feature_category: :pipeline_composition do
   let_it_be(:project) { create_default(:project, :repository, create_tag: 'test').freeze }
   let_it_be(:user) { create(:user) }
 

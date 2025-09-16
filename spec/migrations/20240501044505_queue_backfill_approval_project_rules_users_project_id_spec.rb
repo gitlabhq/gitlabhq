@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillApprovalProjectRulesUsersProjectId, migration: :gitlab_main_cell,
+RSpec.describe QueueBackfillApprovalProjectRulesUsersProjectId, migration: :gitlab_main_org,
   feature_category: :source_code_management do
   let!(:batched_migration) { described_class::MIGRATION }
 
@@ -20,7 +20,7 @@ RSpec.describe QueueBackfillApprovalProjectRulesUsersProjectId, migration: :gitl
           interval: described_class::DELAY_INTERVAL,
           batch_size: described_class::BATCH_SIZE,
           sub_batch_size: described_class::SUB_BATCH_SIZE,
-          gitlab_schema: :gitlab_main_cell,
+          gitlab_schema: :gitlab_main_org,
           job_arguments: [
             :project_id,
             :approval_project_rules,

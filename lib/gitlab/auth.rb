@@ -555,7 +555,7 @@ module Gitlab
 
       def find_build_by_token(token)
         ::Gitlab::Database::LoadBalancing::SessionMap
-          .with_sessions([::ApplicationRecord, ::Ci::ApplicationRecord]).use_primary do
+          .with_sessions.use_primary do
           ::Ci::AuthJobFinder.new(token: token).execute
         end
       end

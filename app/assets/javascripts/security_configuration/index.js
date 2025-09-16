@@ -21,6 +21,7 @@ export const initSecurityConfiguration = (el) => {
 
   const {
     projectFullPath,
+    groupFullPath,
     upgradePath,
     features,
     latestPipelinePath,
@@ -42,6 +43,7 @@ export const initSecurityConfiguration = (el) => {
     name: 'SecurityConfigurationRoot',
     provide: {
       projectFullPath,
+      groupFullPath,
       upgradePath,
       autoDevopsHelpPagePath,
       autoDevopsPath,

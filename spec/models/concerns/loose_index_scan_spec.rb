@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe LooseIndexScan, type: :model do
+RSpec.describe LooseIndexScan, feature_category: :database do
   let(:issue_model) do
     Class.new(ApplicationRecord) do
       include LooseIndexScan
@@ -21,7 +21,7 @@ RSpec.describe LooseIndexScan, type: :model do
   let_it_be(:issue_4) { create(:issue, author: user_2) }
   let_it_be(:issue_5) { create(:issue, author: user_3) }
 
-  context 'loading distinct author_ids' do
+  context 'when loading distinct author_ids' do
     subject(:author_ids) do
       issue_model
         .loose_index_scan(column: issue_model.arel_table[:author_id].as("example_alias"), order: order)
@@ -58,7 +58,7 @@ RSpec.describe LooseIndexScan, type: :model do
     end
   end
 
-  context 'using Arel column objects' do
+  context 'when using Arel column objects' do
     subject(:author_ids) do
       issue_model.loose_index_scan(column: issue_model.arel_table[:author_id], order: order).pluck(:author_id)
     end
@@ -82,7 +82,7 @@ RSpec.describe LooseIndexScan, type: :model do
     end
   end
 
-  context 'loading distinct values from a different column' do
+  context 'when loading distinct values from a different column' do
     # Create completely separate test data for this context
     let_it_be(:project_context_user_1) { create(:user) }
     let_it_be(:project_context_user_2) { create(:user) }

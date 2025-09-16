@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::PostgresForeignKey, type: :model, feature_category: :database do
+RSpec.describe Gitlab::Database::PostgresForeignKey, type: :model, feature_category: :database, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/569061' do
   # PostgresForeignKey does not `behaves_like 'a postgres model'` because it does not correspond 1-1 with a single entry
   # in pg_class
 

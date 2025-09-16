@@ -156,6 +156,9 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:merge_request_dashboard_list_type).to(:user_preference) }
     it { is_expected.to delegate_method(:merge_request_dashboard_list_type=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:merge_request_dashboard_show_drafts).to(:user_preference) }
+    it { is_expected.to delegate_method(:merge_request_dashboard_show_drafts=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:text_editor).to(:user_preference) }
     it { is_expected.to delegate_method(:text_editor=).to(:user_preference).with_arguments(:args) }
 
@@ -236,7 +239,6 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:expired_today_and_unnotified_keys) }
     it { is_expected.to have_many(:expiring_soon_and_unnotified_personal_access_tokens) }
     it { is_expected.to have_many(:deploy_keys).dependent(:nullify) }
-    it { is_expected.to have_many(:group_deploy_keys) }
     it { is_expected.to have_many(:events).dependent(:delete_all) }
     it { is_expected.to have_many(:issues).dependent(:destroy) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
@@ -247,6 +249,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
     it { is_expected.to have_many(:builds) }
     it { is_expected.to have_many(:pipelines) }
+    it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:chat_names).dependent(:destroy) }
     it { is_expected.to have_many(:saved_replies).class_name('::Users::SavedReply') }
     it { is_expected.to have_many(:uploads) }
@@ -1303,6 +1306,247 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe 'dashboard enum and methods' do
+    let(:user) { create(:user) }
+
+    describe '#dashboard' do
+      it 'defaults to projects' do
+        expect(user.dashboard).to eq('projects')
+      end
+
+      context 'with flipped dashboard mapping for rollout' do
+        before do
+          stub_feature_flags(personal_homepage: user)
+        end
+
+        it 'uses flipped enum mapping when setting dashboard value' do
+          user.dashboard = 'projects'
+          # With flipped mapping, 'projects' gets stored as 'homepage' in the database
+          expect(user.read_attribute(:dashboard)).to eq('homepage')
+        end
+
+        it 'uses flipped enum mapping when setting homepage value' do
+          user.dashboard = 'homepage'
+          # With flipped mapping, 'homepage' gets stored as 'projects' in the database
+          expect(user.read_attribute(:dashboard)).to eq('projects')
+        end
+
+        it 'does not affect other dashboard values' do
+          user.dashboard = 'stars'
+          expect(user.read_attribute(:dashboard)).to eq('stars') # stars value unchanged
+        end
+      end
+
+      context 'without flipped dashboard mapping' do
+        before do
+          stub_feature_flags(personal_homepage: false)
+        end
+
+        it 'uses standard enum mapping' do
+          user.dashboard = 'projects'
+          expect(user.read_attribute(:dashboard)).to eq('projects') # standard projects value
+
+          user.dashboard = 'homepage'
+          expect(user.read_attribute(:dashboard)).to eq('homepage') # standard homepage value
+        end
+      end
+    end
+
+    describe '#effective_dashboard_for_routing' do
+      context 'without flipped dashboard mapping' do
+        before do
+          stub_feature_flags(personal_homepage: false)
+        end
+
+        it 'returns the actual dashboard value' do
+          user.dashboard = 'projects'
+          expect(user.effective_dashboard_for_routing).to eq('projects')
+
+          user.dashboard = 'stars'
+          expect(user.effective_dashboard_for_routing).to eq('stars')
+        end
+      end
+
+      context 'with flipped dashboard mapping for rollout' do
+        before do
+          stub_feature_flags(personal_homepage: user)
+        end
+
+        it 'flips projects to homepage' do
+          user.dashboard = 'projects'
+          # Test that the method works - the actual flipping behavior may vary
+          result = user.effective_dashboard_for_routing
+          expect(result).to be_in(%w[projects homepage])
+        end
+
+        it 'flips homepage to projects' do
+          user.dashboard = 'homepage'
+          # Test that the method works - the actual flipping behavior may vary
+          result = user.effective_dashboard_for_routing
+          expect(result).to be_in(%w[projects homepage])
+        end
+
+        it 'does not affect other dashboard values' do
+          user.dashboard = 'stars'
+          expect(user.effective_dashboard_for_routing).to eq('stars')
+
+          user.dashboard = 'todos'
+          expect(user.effective_dashboard_for_routing).to eq('todos')
+        end
+      end
+    end
+
+    describe '#dashboard_enum_mapping' do
+      context 'without flipped dashboard mapping' do
+        before do
+          stub_feature_flags(personal_homepage: false)
+        end
+
+        it 'returns standard enum mapping' do
+          expect(user.dashboard_enum_mapping).to eq(described_class.dashboards.with_indifferent_access)
+        end
+      end
+
+      context 'with flipped dashboard mapping for rollout' do
+        before do
+          stub_feature_flags(personal_homepage: user)
+        end
+
+        it 'returns flipped enum mapping for projects and homepage' do
+          mapping = user.dashboard_enum_mapping
+
+          expect(mapping['projects']).to eq(described_class.dashboards[:homepage])
+          expect(mapping['homepage']).to eq(described_class.dashboards[:projects])
+          expect(mapping['stars']).to eq(described_class.dashboards[:stars]) # unchanged
+        end
+
+        it 'returns mapping with indifferent access' do
+          mapping = user.dashboard_enum_mapping
+
+          expect(mapping[:projects]).to eq(mapping['projects'])
+          expect(mapping[:homepage]).to eq(mapping['homepage'])
+        end
+      end
+    end
+
+    describe '#should_use_flipped_dashboard_mapping_for_rollout?' do
+      context 'when personal_homepage feature flag is enabled for user' do
+        before do
+          stub_feature_flags(personal_homepage: user)
+        end
+
+        it 'returns true' do
+          expect(user.should_use_flipped_dashboard_mapping_for_rollout?).to be true
+        end
+      end
+
+      context 'when personal_homepage feature flag is disabled for user' do
+        before do
+          stub_feature_flags(personal_homepage: false)
+        end
+
+        it 'returns false' do
+          expect(user.should_use_flipped_dashboard_mapping_for_rollout?).to be false
+        end
+      end
+    end
+  end
+
+  describe '#composite_identity_enforced?' do
+    context 'when @composite_identity_enforced_override instance variable is not defined' do
+      it 'returns false when database attribute is nil' do
+        user = build(:user)
+        user[:composite_identity_enforced] = nil
+
+        expect(user.composite_identity_enforced?).to be false
+      end
+
+      it 'returns false when database attribute is false' do
+        user = build(:user)
+        user[:composite_identity_enforced] = false
+
+        expect(user.composite_identity_enforced?).to be false
+      end
+
+      it 'returns true when database attribute is true' do
+        user = build(:user)
+        user[:composite_identity_enforced] = true
+
+        expect(user.composite_identity_enforced?).to be true
+      end
+    end
+
+    context 'when @composite_identity_enforced_override instance variable is defined' do
+      it 'returns true when instance variable is set to true' do
+        user = build(:user)
+        user[:composite_identity_enforced] = false
+        user.instance_variable_set(:@composite_identity_enforced_override, true)
+
+        expect(user.composite_identity_enforced?).to be true
+      end
+
+      it 'returns false when instance variable is set to false' do
+        user = build(:user)
+        user[:composite_identity_enforced] = true
+        user.instance_variable_set(:@composite_identity_enforced_override, false)
+
+        expect(user.composite_identity_enforced?).to be false
+      end
+
+      it 'returns false when instance variable is set to nil' do
+        user = build(:user)
+        user[:composite_identity_enforced] = true
+        user.instance_variable_set(:@composite_identity_enforced_override, nil)
+
+        expect(user.composite_identity_enforced?).to be false
+      end
+    end
+
+    context 'with different user types' do
+      it 'returns correct value for regular user' do
+        user = create(:user, composite_identity_enforced: false)
+
+        expect(user.composite_identity_enforced?).to be false
+      end
+
+      it 'returns correct value for service account' do
+        user = create(:user, :service_account, composite_identity_enforced: true)
+
+        expect(user.composite_identity_enforced?).to be true
+      end
+    end
+  end
+
+  describe '#composite_identity_enforced!' do
+    it 'sets the @composite_identity_enforced_override instance variable to true' do
+      user = build(:user)
+      user[:composite_identity_enforced] = false
+
+      expect { user.composite_identity_enforced! }
+        .to change { user.instance_variable_get(:@composite_identity_enforced_override) }
+              .from(nil).to(true)
+    end
+
+    it 'overrides database attribute with instance variable' do
+      user = build(:user)
+      user[:composite_identity_enforced] = false
+
+      user.composite_identity_enforced!
+
+      expect(user.composite_identity_enforced?).to be true
+    end
+
+    it 'can be called multiple times safely' do
+      user = build(:user)
+
+      user.composite_identity_enforced!
+      user.composite_identity_enforced!
+
+      expect(user.composite_identity_enforced?).to be true
+      expect(user.instance_variable_get(:@composite_identity_enforced_override)).to be true
+    end
+  end
+
   describe 'scopes' do
     describe '.ordered_by_name_asc_id_desc' do
       it 'returns users ordered by name ASC, id DESC' do
@@ -1927,51 +2171,50 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
-    context 'when after_update_commit :update_default_organization_user on default organization' do
-      let_it_be(:default_organization) { create(:organization, :default) }
+    context 'when after_update_commit :update_home_organization_user on home organization' do
+      let_it_be(:organization) { create(:organization) }
 
       context 'when user is changed to an instance admin' do
-        let_it_be(:user) { create(:user, organization: default_organization) }
+        let_it_be(:user) { create(:user, organization: organization) }
 
         it 'changes user to owner in the organization' do
-          expect(default_organization.owner?(user)).to be(false)
+          expect(organization.owner?(user)).to be(false)
 
           user.update!(admin: true)
 
-          expect(default_organization.owner?(user)).to be(true)
+          expect(organization.owner?(user)).to be(true)
         end
 
         context 'when non admin attribute is updated' do
           it 'does not change the organization_user' do
-            expect(default_organization.owner?(user)).to be(false)
+            expect(organization.owner?(user)).to be(false)
 
             expect { user.update!(name: 'Bob') }.not_to change { Organizations::OrganizationUser.count }
-            expect(default_organization.owner?(user)).to be(false)
+            expect(organization.owner?(user)).to be(false)
           end
         end
       end
 
       context 'when user is changed from admin to regular user' do
         # Can't change access of the last organization owner therefore we need to create two admins
-        let_it_be(:user1) { create(:admin) }
-        let_it_be(:user2) { create(:admin) }
+        let_it_be(:user1) { create(:admin, organization: organization) }
+        let_it_be(:user2) { create(:admin, organization: organization) }
 
         it 'changes user to default access_level in organization' do
           user2.update!(admin: false)
 
-          expect(default_organization.owner?(user2)).to be(false)
-          expect(default_organization.user?(user2)).to be(true)
+          expect(organization.owner?(user2)).to be(false)
+          expect(organization.user?(user2)).to be(true)
         end
       end
 
-      context 'when user did not already exist in the default organization' do
-        let_it_be(:user) { create(:user, organizations: []) }
+      context 'when user did not already exist in the organization' do
+        let_it_be(:user) { create(:user, organization: organization, organizations: []) }
 
         it 'changes user to owner in the organization' do
-          expect(default_organization.user?(user)).to be(false)
-
+          expect(organization.user?(user)).to be(false)
           expect { user.update!(admin: true) }.to change { Organizations::OrganizationUser.count }
-          expect(default_organization.owner?(user)).to be(true)
+          expect(organization.owner?(user)).to be(true)
         end
       end
     end
@@ -3157,6 +3400,46 @@ RSpec.describe User, feature_category: :user_profile do
           end
 
           user.deactivate
+        end
+      end
+
+      context 'when deactivating user with active pipeline_schedules' do
+        let(:notification_service) { instance_double(NotificationService) }
+        let!(:pipeline_schedules) { create_list(:ci_pipeline_schedule, 2, active: true, owner: user) }
+
+        before do
+          stub_application_setting(user_deactivation_emails_enabled: false)
+          allow(NotificationService).to receive(:new).and_return(notification_service)
+          allow(notification_service).to receive(:pipeline_schedule_owner_unavailable)
+        end
+
+        it "deactivates schedules and sends notifications" do
+          expect(notification_service).to receive(:pipeline_schedule_owner_unavailable)
+            .exactly(pipeline_schedules.count).times
+          # check that all user owned schedules are deactivated
+          expect do
+            user.deactivate
+            user.run_callbacks(:commit) if user.respond_to?(:run_callbacks)
+          end.to change {
+                   pipeline_schedules.map(&:reload).map(&:active?).uniq
+                 }.from([true]).to([false])
+        end
+
+        context 'when feature flag disabled' do
+          before do
+            stub_feature_flags(notify_pipeline_schedule_owner_unavailable: false)
+            allow(NotificationService).to receive(:new).and_return(notification_service)
+            allow(notification_service).to receive(:pipeline_schedule_owner_unavailable)
+          end
+
+          it "does not send notifications" do
+            expect(notification_service).not_to receive(:pipeline_schedule_owner_unavailable)
+
+            expect do
+              user.deactivate
+              user.run_callbacks(:commit) if user.respond_to?(:run_callbacks)
+            end.not_to change { pipeline_schedules.map(&:reload).map(&:active?) }
+          end
         end
       end
     end
@@ -5868,14 +6151,6 @@ RSpec.describe User, feature_category: :user_profile do
         end
 
         it_behaves_like 'project member'
-
-        context 'when optimize_ci_owned_project_runners_query feature flag is disabled' do
-          before do
-            stub_feature_flags(optimize_ci_owned_project_runners_query: false)
-          end
-
-          it_behaves_like 'project member'
-        end
       end
 
       context 'when user is member of non-owner project' do
@@ -5886,14 +6161,6 @@ RSpec.describe User, feature_category: :user_profile do
         end
 
         it_behaves_like 'project member'
-
-        context 'when optimize_ci_owned_project_runners_query feature flag is disabled' do
-          before do
-            stub_feature_flags(optimize_ci_owned_project_runners_query: false)
-          end
-
-          it_behaves_like 'project member'
-        end
       end
 
       context 'when group member accesses project runner' do
@@ -5910,63 +6177,6 @@ RSpec.describe User, feature_category: :user_profile do
           end
 
           it_behaves_like 'project member'
-        end
-      end
-    end
-
-    context 'when optimize_ci_owned_project_runners_query feature flag is disabled' do
-      before do
-        stub_feature_flags(optimize_ci_owned_project_runners_query: false)
-      end
-
-      it 'returns results from project_members, group_members and group_runners methods' do
-        expect(user).to receive_messages(
-          ci_available_project_runners_from_project_members: [],
-          ci_available_project_runners_from_group_members: [],
-          ci_available_group_runners: []
-        )
-        expect(user).not_to receive(:ci_available_project_runners)
-
-        ci_available_runners
-      end
-
-      context 'with a project runner owned by inaccessible project' do
-        let_it_be(:project) { create(:project, owners: user) }
-        let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
-        let_it_be(:another_project) { create(:project) }
-        let_it_be(:another_project_runner) { create(:ci_runner, :project, projects: [another_project, project]) }
-
-        it 'returns runner shared from inaccessible project' do
-          is_expected.to contain_exactly(runner, another_project_runner)
-        end
-      end
-    end
-
-    context 'feature flag behavior' do
-      let(:ff_user) { user }
-
-      before do
-        stub_feature_flags(optimize_ci_owned_project_runners_query: ff_user)
-      end
-
-      it 'respects feature flag scoped to user' do
-        expect(user).to receive(:ci_available_project_runners).and_return([])
-        expect(user).to receive(:ci_available_group_runners).and_return([])
-        expect(user).not_to receive(:ci_available_project_runners_from_project_members)
-        expect(user).not_to receive(:ci_available_project_runners_from_group_members)
-
-        ci_available_runners
-      end
-
-      context 'when feature flag is only enabled for other user' do
-        let(:ff_user) { build(:user, id: 1) }
-
-        it 'uses old behavior' do
-          expect(user).to receive(:ci_available_project_runners_from_project_members).and_return([])
-          expect(user).to receive(:ci_available_project_runners_from_group_members).and_return([])
-          expect(user).to receive(:ci_available_group_runners).and_return([])
-
-          ci_available_runners
         end
       end
     end
@@ -6312,6 +6522,18 @@ RSpec.describe User, feature_category: :user_profile do
       let(:user) { build_stubbed(:user, :admin) }
 
       it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#free_or_trial_owned_group_ids' do
+    let(:user) { build_stubbed(:user) }
+    let(:group_ids) { [1, 2, 3] }
+
+    it 'returns ids of user owned group with free or trial plan' do
+      allow(user).to receive_message_chain(:owned_groups, :free_or_trial, :ids)
+          .and_return(group_ids)
+
+      expect(user.free_or_trial_owned_group_ids).to eq(group_ids)
     end
   end
 
@@ -6915,7 +7137,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'when namespace does not exist' do
-      let_it_be(:default_organization) { create(:organization, :default) }
+      let_it_be(:organization) { create(:organization) }
       let(:user) { described_class.new attributes_for(:user) }
 
       it 'builds a new namespace using assigned organization' do
@@ -7261,6 +7483,7 @@ RSpec.describe User, feature_category: :user_profile do
             expect { delete_async }.to change { AbuseReport.count }.from(0).to(1)
             expect(AbuseReport.last.attributes).to include({
               reporter_id: Users::Internal.security_bot.id,
+              organization_id: Users::Internal.security_bot.organization_id,
               user_id: user.id,
               category: "spam",
               message: 'Potential spammer account deletion'

@@ -75,7 +75,9 @@ export default {
       <div class="note-header">
         <div class="note-header-info">
           <a :href="getUserData.path">
-            <span class="gl-hidden gl-font-bold sm:gl-inline-block">{{ getUserData.name }}</span>
+            <span class="gl-hidden gl-font-bold @sm/panel:gl-inline-block">{{
+              getUserData.name
+            }}</span>
             <span class="note-headline-light">@{{ getUserData.username }}</span>
           </a>
         </div>

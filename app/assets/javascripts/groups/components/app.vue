@@ -5,7 +5,7 @@ import { HTTP_STATUS_FORBIDDEN } from '~/lib/utils/http_status';
 import { mergeUrlParams, getParameterByName } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
 
-import { COMMON_STR } from '../constants';
+import { COMMON_STR, ACTIVE_TAB_INACTIVE } from '../constants';
 import eventHub from '../event_hub';
 import GroupsComponent from './groups.vue';
 
@@ -213,11 +213,9 @@ export default {
     updateGroups(groups, fromSearch) {
       this.fromSearch = fromSearch;
 
-      if (fromSearch) {
-        this.store.setSearchedGroups(groups);
-      } else {
-        this.store.setGroups(groups);
-      }
+      const isOpenOverride = this.action === ACTIVE_TAB_INACTIVE ? false : undefined;
+
+      this.store.setGroups(groups, isOpenOverride);
     },
   },
 };

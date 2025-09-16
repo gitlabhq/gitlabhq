@@ -1384,7 +1384,7 @@ paths:
   /admin/ci/variables/{key}:
     get:
       tags:
-      - ci_variables
+      - pipeline_composition
       description: Get the details of a specific instance-level variable
       operationId: getApiV4AdminCiVariablesKey
       parameters:
@@ -1406,7 +1406,7 @@ paths:
           content: {}
     put:
       tags:
-      - ci_variables
+      - pipeline_composition
       description: Update an instance-level variable
       operationId: putApiV4AdminCiVariablesKey
       parameters:
@@ -1452,7 +1452,7 @@ paths:
           content: {}
     delete:
       tags:
-      - ci_variables
+      - pipeline_composition
       description: Delete an existing instance-level variable
       operationId: deleteApiV4AdminCiVariablesKey
       parameters:
@@ -1475,7 +1475,7 @@ paths:
   /admin/ci/variables:
     get:
       tags:
-      - ci_variables
+      - pipeline_composition
       description: List all instance-level variables
       operationId: getApiV4AdminCiVariables
       parameters:
@@ -1502,7 +1502,7 @@ paths:
                 $ref: '#/components/schemas/API_Entities_Ci_Variable'
     post:
       tags:
-      - ci_variables
+      - pipeline_composition
       description: Create a new instance-level variable
       operationId: postApiV4AdminCiVariables
       requestBody:

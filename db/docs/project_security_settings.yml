@@ -8,7 +8,7 @@ feature_categories:
 description: Project settings related to security features.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32577
 milestone: '13.1'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

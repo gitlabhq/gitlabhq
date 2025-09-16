@@ -8,7 +8,7 @@ description: Represents when issues should be escalated according to a project's
   policy
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65209
 milestone: '14.3'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

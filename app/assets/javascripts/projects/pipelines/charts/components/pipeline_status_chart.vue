@@ -1,11 +1,11 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
-import { GlStackedColumnChart } from '@gitlab/ui/dist/charts';
+import { GlStackedColumnChart } from '@gitlab/ui/src/charts';
 import {
   DATA_VIZ_GREEN_500,
   DATA_VIZ_MAGENTA_600,
   DATA_VIZ_BLUE_500,
-} from '@gitlab/ui/dist/tokens/build/js/tokens';
+} from '@gitlab/ui/src/tokens/build/js/tokens';
 import { s__ } from '~/locale';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 

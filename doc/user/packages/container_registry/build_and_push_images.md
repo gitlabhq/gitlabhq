@@ -3,6 +3,7 @@ stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Build and push container images to the container registry
+description: Build container images and push them to your GitLab registry with Docker commands or CI/CD pipelines.
 ---
 
 {{< details >}}

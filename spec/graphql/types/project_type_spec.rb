@@ -21,7 +21,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     expected_fields = %w[
       user_permissions id full_path path name_with_namespace
       name description description_html tag_list topics ssh_url_to_repo
-      http_url_to_repo web_url star_count forks_count
+      http_url_to_repo web_url web_path edit_path star_count forks_count
       created_at updated_at last_activity_at archived visibility
       container_registry_enabled shared_runners_enabled
       lfs_enabled merge_requests_ff_only_enabled avatar_url
@@ -1371,6 +1371,58 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
           expect(available_deploy_keys).to be_nil
         end
       end
+    end
+  end
+
+  describe 'web_path' do
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:project) { create(:project, :public) }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            webPath
+          }
+        }
+      )
+    end
+
+    subject(:web_path) do
+      GitlabSchema
+        .execute(query, context: { current_user: current_user })
+        .as_json
+        .dig('data', 'project', 'webPath')
+    end
+
+    it 'returns web_path field' do
+      expect(web_path).to eq("/#{project.path_with_namespace}")
+    end
+  end
+
+  describe 'edit_path' do
+    let_it_be(:current_user) { create(:user) }
+    let_it_be(:project) { create(:project, :public) }
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            editPath
+          }
+        }
+      )
+    end
+
+    subject(:edit_path) do
+      GitlabSchema
+        .execute(query, context: { current_user: current_user })
+        .as_json
+        .dig('data', 'project', 'editPath')
+    end
+
+    it 'returns edit_path field' do
+      expect(edit_path).to eq("/#{project.path_with_namespace}/edit")
     end
   end
 

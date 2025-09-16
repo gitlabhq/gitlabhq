@@ -26,12 +26,12 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
     let_it_be(:downstream_project) { create(:project, :repository) }
 
     let_it_be_with_refind(:job) do
-      create(:ci_bridge, :success,
+      create(:ci_bridge, :success, :teardown_environment,
         pipeline: pipeline, downstream: downstream_project, description: 'a trigger job', ci_stage: stage
       )
     end
 
-    let_it_be(:job_to_clone) { job }
+    let_it_be_with_refind(:job_to_clone) { job }
 
     before do
       job.update!(retried: false)
@@ -45,7 +45,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
     let_it_be(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
 
-    let_it_be(:job_to_clone) do
+    let_it_be_with_refind(:job_to_clone) do
       create(
         :ci_build, :failed, :picked, :expired, :erased, :queued, :coverage, :tags,
         :allowed_to_fail, :on_tag, :triggered, :teardown_environment, :resource_group,
@@ -95,6 +95,31 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
           expect(Ci::BuildNeed).to receive(:bulk_insert!).and_call_original
 
           new_job
+        end
+      end
+
+      context 'when the job is related to an environment' do
+        let!(:environment) { create(:environment, project: project, name: job.environment) }
+
+        it 'links the cloned job to the environment' do
+          expect(new_job.reload_job_environment).to be_present
+          expect(new_job.job_environment).to have_attributes(
+            project: project,
+            environment: environment,
+            pipeline: pipeline,
+            expanded_environment_name: environment.name,
+            options: job.environment_options_for_permanent_storage.deep_stringify_keys
+          )
+        end
+
+        context 'when the persisted_job_environment_relationship feature flag is disabled' do
+          before do
+            stub_feature_flags(persisted_job_environment_relationship: false)
+          end
+
+          it 'does not link the cloned job to the environment' do
+            expect(new_job.reload_job_environment).to be_nil
+          end
         end
       end
 
@@ -225,6 +250,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
       it 'creates a new deployment' do
         expect { new_job }.to change { Deployment.count }.by(1)
+        expect(new_job.job_environment.deployment).to eq(new_job.deployment)
       end
 
       it 'does not create a new environment' do
@@ -248,6 +274,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
       it 'creates a new deployment' do
         expect { new_job }.to change { Deployment.count }.by(1)
+        expect(new_job.job_environment.deployment).to eq(new_job.deployment)
       end
 
       it 'does not create a new environment' do
@@ -372,6 +399,49 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
         it 'does not give variables to the new bridge' do
           expect { new_job }.not_to raise_error
+        end
+      end
+
+      context "when the retried bridge job has a resource group" do
+        let(:resource_group) { create(:ci_resource_group, project: project) }
+        let(:original_job) do
+          create(
+            :ci_bridge, :retryable,
+            :allowed_to_fail, description: 'bridge-job',
+            pipeline: pipeline,
+            resource_group: resource_group
+          )
+        end
+
+        it "passes the resource group to the newly created job via bridge job retry" do
+          service_response = service.execute(original_job)
+
+          expect { service_response }.not_to raise_error
+          expect(original_job.resource_group_id).to eq(service_response[:job].resource_group_id)
+        end
+
+        it 'prevents a new pipeline from running when retried bridge is running with same resource group' do
+          retried_bridge_job = service.execute(original_job)[:job]
+
+          resource_group.assign_resource_to(retried_bridge_job)
+          retried_bridge_job.update!(status: 'running')
+
+          new_bridge_job = create(
+            :ci_bridge, :waiting_for_resource,
+            pipeline: create(:ci_pipeline, project: project),
+            resource_group: resource_group
+          )
+
+          expect(new_bridge_job.status).to eq('waiting_for_resource')
+
+          retried_bridge_job.update!(status: 'success')
+          resource_group.release_resource_from(retried_bridge_job)
+
+          Ci::ResourceGroups::AssignResourceFromResourceGroupService.new(project, user).execute(resource_group)
+
+          new_bridge_job.reload
+
+          expect(new_bridge_job.status).to eq('pending')
         end
       end
     end

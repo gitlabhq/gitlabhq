@@ -10,7 +10,7 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/71cc57b1e4b7721
 milestone: '9.3'
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151938
 removed_in_milestone: '17.0'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 allow_cross_joins:
 - gitlab_main_clusterwide
 allow_cross_transactions:

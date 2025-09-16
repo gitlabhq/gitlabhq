@@ -5,9 +5,10 @@ FactoryBot.define do
     sequence(:identifier) { |n| "table_#{n}" }
     schema_name { 'public' }
     table_name { 'foo' }
-    total_size { '2 GB' }
+    total_size { '3 GB' }
     table_size { '1 GB' }
+    toast_size { '1 GB' }
     index_size { '1 GB' }
-    size_in_bytes { 2.gigabytes }
+    size_in_bytes { 3.gigabytes }
   end
 end

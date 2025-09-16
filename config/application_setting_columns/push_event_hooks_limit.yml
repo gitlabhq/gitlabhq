@@ -5,8 +5,9 @@ clusterwide: false
 column: push_event_hooks_limit
 db_type: integer
 default: '3'
-description: Maximum number of changes (branches or tags) in a single push above which
-  webhooks and integrations are not triggered. Setting to `0` does not disable throttling.
+description: 'Maximum number of changes (branches or tags) in a single push above
+  which webhooks and integrations are not triggered. Setting to `0` does not disable
+  throttling. Default: `3`.'
 encrypted: false
 gitlab_com_different_than_default: false
 jihu: false

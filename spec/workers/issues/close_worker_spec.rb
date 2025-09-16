@@ -12,10 +12,9 @@ RSpec.describe Issues::CloseWorker, feature_category: :team_planning do
     let(:project_id) { project.id }
     let(:issue_id) { issue.id }
     let(:current_user_id) { developer&.id }
-    let(:current_author_id) { author&.id }
     let(:commit) { project.commit }
     let(:opts) do
-      { "closed_by" => current_author_id, "user_id" => current_user_id, "commit_hash" => commit.to_hash }
+      { "user_id" => current_user_id, "commit_hash" => commit.to_hash }
     end
 
     subject(:perform_job) { described_class.new.perform(project_id, issue_id, issue.class.to_s, opts) }
@@ -29,21 +28,6 @@ RSpec.describe Issues::CloseWorker, feature_category: :team_planning do
 
           expect(issue).to be_closed
           expect(issue.closed_by).to eq(developer)
-        end
-
-        context 'when auto_close_issues_stop_using_commit_author FF is disabled' do
-          before do
-            stub_feature_flags(auto_close_issues_stop_using_commit_author: false)
-          end
-
-          it 'uses author as the current user to close issues' do
-            perform_job
-
-            issue.reload
-
-            expect(issue).to be_closed
-            expect(issue.closed_by).to eq(author)
-          end
         end
 
         it "closes external issues" do
@@ -93,12 +77,6 @@ RSpec.describe Issues::CloseWorker, feature_category: :team_planning do
 
     context "when the project does not exist" do
       let(:project_id) { non_existing_record_id }
-
-      it_behaves_like "when object does not exist"
-    end
-
-    context "when the author does not exist" do
-      let(:current_author_id) { non_existing_record_id }
 
       it_behaves_like "when object does not exist"
     end

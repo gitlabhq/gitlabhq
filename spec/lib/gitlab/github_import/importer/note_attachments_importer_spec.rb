@@ -8,7 +8,12 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
   let_it_be(:project) { create(:project, import_source: 'nickname/public-test-repo') }
 
   let(:note_text) { Gitlab::GithubImport::Representation::NoteText.from_db_record(record) }
-  let(:client) { instance_double(Gitlab::GithubImport::Client) }
+  let(:web_endpoint) { 'https://github.com' }
+  let(:client) do
+    instance_double(Gitlab::GithubImport::Client).tap do |double|
+      allow(double).to receive(:web_endpoint).and_return(web_endpoint)
+    end
+  end
 
   let(:doc_url) { 'https://github.com/nickname/public-test-repo/files/9020437/git-cheat-sheet.txt' }
   let(:image_url) { 'https://user-images.githubusercontent.com/6833842/0cf366b61ef2.jpeg' }
@@ -82,13 +87,17 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
     let(:options) { { headers: { 'Authorization' => "Bearer #{access_token}" } } }
 
     before do
-      allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new).with(doc_url, options: options)
+      allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new)
+        .with(doc_url, options: options, web_endpoint: web_endpoint)
         .and_return(downloader_stub)
-      allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new).with(image_url, options: options)
+      allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new)
+        .with(image_url, options: options, web_endpoint: web_endpoint)
         .and_return(downloader_stub)
-      allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new).with(image_tag_url, options: options)
+      allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new)
+        .with(image_tag_url, options: options, web_endpoint: web_endpoint)
         .and_return(downloader_stub)
-      allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new).with(user_attachment_url, options: options)
+      allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new)
+        .with(user_attachment_url, options: options, web_endpoint: web_endpoint)
         .and_return(downloader_stub)
       allow(downloader_stub).to receive(:perform).and_return(tmp_stub_doc, tmp_stub_image, tmp_stub_image_tag,
         tmp_stub_user_attachment)
@@ -142,7 +151,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
         expect(record.note).to include("[link to other project blob file](#{other_project_blob_url})")
       end
 
-      context 'when the attachment is video media' do
+      context 'when the attachment is supported video media' do
         let(:media_attachment_url) { 'https://github.com/user-attachments/assets/media-attachment' }
         let(:text) { media_attachment_url }
         let(:record) { create(:note, project: project, note: text) }
@@ -155,7 +164,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
 
         before do
           allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new).with(media_attachment_url,
-            options: options)
+            options: options, web_endpoint: web_endpoint)
             .and_return(downloader_stub)
           allow(downloader_stub).to receive(:perform).and_return(tmp_stub_media_attachment)
 
@@ -173,6 +182,285 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
           record.reload
           expect(record.note).to include("![media_attachment](/uploads/test-secret/video.mp4)")
         end
+      end
+
+      context 'with GHE domain' do
+        let(:web_endpoint) { 'https://github.enterprise.com' }
+        let(:client) { instance_double(Gitlab::GithubImport::Client, web_endpoint: web_endpoint) }
+        let(:ghe_doc_url) { "#{web_endpoint}/nickname/public-test-repo/files/9020437/git-cheat-sheet.txt" }
+        let(:ghe_image_url) { "#{web_endpoint}/user-attachments/assets/73433gh3" }
+
+        let(:text) do
+          <<-TEXT.split("\n").map(&:strip).join("\n")
+            Some text...
+            [ghe-doc](#{ghe_doc_url})
+            ![ghe-image](#{ghe_image_url})
+          TEXT
+        end
+
+        let(:record) { create(:release, project: project, description: text) }
+
+        before do
+          allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new)
+            .with(ghe_doc_url, options: options, web_endpoint: web_endpoint)
+            .and_return(downloader_stub)
+          allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new)
+            .with(ghe_image_url, options: options, web_endpoint: web_endpoint)
+            .and_return(downloader_stub)
+          allow(downloader_stub).to receive(:perform).and_return(tmp_stub_doc, tmp_stub_image, tmp_stub_image_tag,
+            tmp_stub_user_attachment)
+          allow(downloader_stub).to receive(:delete).twice
+          allow(client).to receive_message_chain(:octokit, :access_token).and_return(access_token)
+          allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for).with('github').and_return(nil)
+        end
+
+        it 'changes attachment links' do
+          importer.execute
+
+          record.reload
+          expect(record.description).to start_with("Some text...\n[ghe-doc](/uploads/")
+          expect(record.description).to include("![ghe-image](/uploads/")
+        end
+
+        context 'when the attachment is file' do
+          let(:pdf_file_url) { "#{web_endpoint}/user-attachments/files/3/pdf-attachment.pdf" }
+          let(:zip_file_url) { "#{web_endpoint}/user-attachments/files/4/zip-attachment.zip" }
+
+          let(:text) do
+            <<-TEXT.split("\n").map(&:strip).join("\n")
+              Some text...
+              [pdf-file](#{pdf_file_url})
+              [zip-file](#{zip_file_url})
+            TEXT
+          end
+
+          let(:record) { create(:note, project: project, note: text) }
+
+          before do
+            allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new)
+              .with(pdf_file_url, options: options, web_endpoint: web_endpoint)
+              .and_return(downloader_stub)
+            allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new)
+              .with(zip_file_url, options: options, web_endpoint: web_endpoint)
+              .and_return(downloader_stub)
+            allow(downloader_stub).to receive(:perform).and_return(pdf_file_url, zip_file_url)
+            allow(client).to receive_message_chain(:octokit, :access_token).and_return(access_token)
+          end
+
+          it 'does not change attachment link' do
+            importer.execute
+
+            record.reload
+            expect(record.note).to include(pdf_file_url)
+            expect(record.note).to include(zip_file_url)
+          end
+        end
+
+        # rubocop:disable RSpec/MultipleMemoizedHelpers -- required
+        context 'when the attachment is a mov file' do
+          let(:ghe_video_url) { "#{web_endpoint}/user-attachments/assets/video-attachment" }
+          let(:text) { ghe_video_url }
+          let(:record) { create(:note, project: project, note: text) }
+          let(:tmp_stub_video) { Tempfile.create('video-attachment') }
+          let(:tmp_stub_path) { Pathname.new(tmp_stub_video.path) }
+          let(:tmp_stub_video_with_ext) { Tempfile.create('video-attachment.mov') }
+          let(:uploader_hash) do
+            { alt: nil,
+              url: '/uploads/test-secret/video.mov',
+              markdown: nil }
+          end
+
+          before do
+            allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new)
+              .with(ghe_video_url, options: options, web_endpoint: web_endpoint)
+              .and_return(downloader_stub)
+            allow(downloader_stub).to receive(:perform).and_return(tmp_stub_video)
+            allow(downloader_stub).to receive(:delete)
+
+            allow(Marcel::MimeType).to receive(:for).with(tmp_stub_path).and_return('video/quicktime')
+
+            allow(File).to receive(:extname).and_call_original
+            allow(File).to receive(:extname).with(tmp_stub_video.path).and_return('')
+
+            mime_type_double = instance_double(Mime::Type)
+            allow(Mime::Type).to receive(:lookup).with('video/quicktime').and_return(mime_type_double)
+            allow(FileUtils).to receive(:mv).and_return(true)
+
+            allow(File).to receive(:open).with(
+              a_string_matching(/\.mov/), 'rb').and_return(tmp_stub_video_with_ext)
+
+            allow(UploadService).to receive_message_chain(:new, :execute).and_return(uploader_hash)
+
+            allow(client).to receive_message_chain(:octokit, :access_token).and_return(access_token)
+            allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for).with('github').and_return(nil)
+          end
+
+          it 'calls update_ghe_video_path for video files on GHE' do
+            expect(importer).to receive(:update_ghe_video_path).with(tmp_stub_video).at_least(:once).and_call_original
+
+            importer.execute
+          end
+
+          it 'changes standalone attachment link to correct markdown' do
+            importer.execute
+            record.reload
+            expect(record.note).to include("![media_attachment](/uploads/test-secret/video.mov)")
+          end
+        end
+
+        context 'when the attachment is a mp4 file' do
+          let(:ghe_video_url) { "#{web_endpoint}/user-attachments/assets/video-attachment" }
+          let(:text) { ghe_video_url }
+          let(:record) { create(:note, project: project, note: text) }
+          let(:tmp_stub_video) { Tempfile.create('video-attachment') }
+          let(:tmp_stub_path) { Pathname.new(tmp_stub_video.path) }
+          let(:tmp_stub_video_with_ext) { Tempfile.create('video-attachment.mp4') }
+          let(:uploader_hash) do
+            { alt: nil,
+              url: '/uploads/test-secret/video.mp4',
+              markdown: nil }
+          end
+
+          before do
+            allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new)
+              .with(ghe_video_url, options: options, web_endpoint: web_endpoint)
+              .and_return(downloader_stub)
+            allow(downloader_stub).to receive(:perform).and_return(tmp_stub_video)
+            allow(downloader_stub).to receive(:delete)
+
+            allow(Marcel::MimeType).to receive(:for).with(tmp_stub_path).and_return('video/mp4')
+
+            allow(File).to receive(:extname).and_call_original
+            allow(File).to receive(:extname).with(tmp_stub_video.path).and_return('')
+
+            mime_type_double = instance_double(Mime::Type)
+            allow(Mime::Type).to receive(:lookup).with('video/mp4').and_return(mime_type_double)
+            allow(FileUtils).to receive(:mv).and_return(true)
+
+            allow(File).to receive(:open).with(
+              a_string_matching(/\.mp4/), 'rb').and_return(tmp_stub_video_with_ext)
+
+            allow(UploadService).to receive_message_chain(:new, :execute).and_return(uploader_hash)
+
+            allow(client).to receive_message_chain(:octokit, :access_token).and_return(access_token)
+            allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for).with('github').and_return(nil)
+          end
+
+          it 'calls update_ghe_video_path for video files on GHE' do
+            expect(importer).to receive(:update_ghe_video_path).with(tmp_stub_video).at_least(:once).and_call_original
+
+            importer.execute
+          end
+
+          it 'changes standalone attachment link to correct markdown' do
+            importer.execute
+            record.reload
+            expect(record.note).to include("![media_attachment](/uploads/test-secret/video.mp4)")
+          end
+        end
+
+        context 'when the attachment is a webm file' do
+          let(:ghe_video_url) { "#{web_endpoint}/user-attachments/assets/video-attachment" }
+          let(:text) { ghe_video_url }
+          let(:record) { create(:note, project: project, note: text) }
+          let(:tmp_stub_video) { Tempfile.create('video-attachment') }
+          let(:tmp_stub_path) { Pathname.new(tmp_stub_video.path) }
+          let(:tmp_stub_video_with_ext) { Tempfile.create('video-attachment.webm') }
+          let(:uploader_hash) do
+            { alt: nil,
+              url: '/uploads/test-secret/video.webm',
+              markdown: nil }
+          end
+
+          before do
+            allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new)
+              .with(ghe_video_url, options: options, web_endpoint: web_endpoint)
+              .and_return(downloader_stub)
+            allow(downloader_stub).to receive(:perform).and_return(tmp_stub_video)
+            allow(downloader_stub).to receive(:delete)
+
+            allow(Marcel::MimeType).to receive(:for).with(tmp_stub_path).and_return('video/webm')
+
+            allow(File).to receive(:extname).and_call_original
+            allow(File).to receive(:extname).with(tmp_stub_video.path).and_return('')
+
+            mime_type_double = instance_double(Mime::Type)
+            allow(Mime::Type).to receive(:lookup).with('video/webm').and_return(mime_type_double)
+            allow(FileUtils).to receive(:mv).and_return(true)
+
+            allow(File).to receive(:open).with(
+              a_string_matching(/\.webm/), 'rb').and_return(tmp_stub_video_with_ext)
+
+            allow(UploadService).to receive_message_chain(:new, :execute).and_return(uploader_hash)
+
+            allow(client).to receive_message_chain(:octokit, :access_token).and_return(access_token)
+            allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for).with('github').and_return(nil)
+          end
+
+          it 'calls update_ghe_video_path for video files on GHE' do
+            expect(importer).to receive(:update_ghe_video_path).with(tmp_stub_video).at_least(:once).and_call_original
+
+            importer.execute
+          end
+
+          it 'changes standalone attachment link to correct markdown' do
+            importer.execute
+            record.reload
+            expect(record.note).to include("![media_attachment](/uploads/test-secret/video.webm)")
+          end
+        end
+
+        context 'when the attachment is an unsupported video format' do
+          let(:ghe_video_url) { "#{web_endpoint}/user-attachments/assets/video-attachment" }
+          let(:text) { ghe_video_url }
+          let(:record) { create(:note, project: project, note: text) }
+          let(:tmp_stub_video) { Tempfile.create('video-attachment') }
+          let(:tmp_stub_path) { Pathname.new(tmp_stub_video.path) }
+          let(:tmp_stub_video_with_ext) { Tempfile.create('video-attachment.avi') }
+          let(:uploader_hash) do
+            { alt: nil,
+              url: '/uploads/test-secret/video.avi',
+              markdown: nil }
+          end
+
+          before do
+            allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new)
+              .with(ghe_video_url, options: options, web_endpoint: web_endpoint)
+              .and_return(downloader_stub)
+            allow(downloader_stub).to receive(:perform).and_return(tmp_stub_video)
+            allow(downloader_stub).to receive(:delete)
+
+            allow(Marcel::MimeType).to receive(:for).with(tmp_stub_path).and_return('video/avi')
+
+            allow(File).to receive(:extname).and_call_original
+            allow(File).to receive(:extname).with(tmp_stub_video.path).and_return('')
+
+            mime_type_double = instance_double(Mime::Type)
+            allow(Mime::Type).to receive(:lookup).with('video/avi').and_return(mime_type_double)
+            allow(FileUtils).to receive(:mv).and_return(true)
+
+            allow(File).to receive(:open).with(
+              a_string_matching(/\.avi/), 'rb').and_return(tmp_stub_video_with_ext)
+
+            allow(UploadService).to receive_message_chain(:new, :execute).and_return(uploader_hash)
+
+            allow(client).to receive_message_chain(:octokit, :access_token).and_return(access_token)
+            allow(Gitlab::Auth::OAuth::Provider).to receive(:config_for).with('github').and_return(nil)
+          end
+
+          it 'calls update_ghe_video_path for video files on GHE' do
+            expect(importer).to receive(:update_ghe_video_path).with(tmp_stub_video).at_least(:once).and_call_original
+
+            importer.execute
+          end
+
+          it 'does not update the link with a file extension' do
+            importer.execute
+            record.reload
+            expect(record.note).to include("/uploads/test-secret/video")
+          end
+        end
+        # rubocop:enable RSpec/MultipleMemoizedHelpers
       end
     end
   end

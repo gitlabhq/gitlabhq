@@ -56,4 +56,11 @@ describe('whats new mutations', () => {
       expect(state.drawerBodyHeight).toBe(840);
     });
   });
+
+  describe('setReadArticles', () => {
+    it('sets readArticles', () => {
+      mutations[types.SET_READ_ARTICLES](state, [1]);
+      expect(state.readArticles).toEqual([1]);
+    });
+  });
 });

@@ -259,7 +259,7 @@ export default {
       >
         <gl-disclosure-dropdown-item
           v-if="canUpdateMergeRequest"
-          class="sm:!gl-hidden"
+          class="@sm/panel:!gl-hidden"
           data-testid="edit-merge-request"
           :item="editItem"
         >

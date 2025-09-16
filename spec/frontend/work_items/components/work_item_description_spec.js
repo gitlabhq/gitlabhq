@@ -3,6 +3,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EditedAt from '~/issues/show/components/edited.vue';
 import { updateDraft } from '~/lib/utils/autosave';
@@ -17,8 +18,8 @@ import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.grap
 import workItemDescriptionTemplateQuery from '~/work_items/graphql/work_item_description_template.query.graphql';
 import namespacePathsQuery from '~/work_items/graphql/namespace_paths.query.graphql';
 import projectPermissionsQuery from '~/work_items/graphql/ai_permissions_for_project.query.graphql';
-import { autocompleteDataSources, newWorkItemId } from '~/work_items/utils';
-import { ROUTES, NEW_WORK_ITEM_IID, NEW_WORK_ITEM_GID } from '~/work_items/constants';
+import { newWorkItemId } from '~/work_items/utils';
+import { ROUTES } from '~/work_items/constants';
 import {
   updateWorkItemMutationResponse,
   workItemByIidResponseFactory,
@@ -156,114 +157,12 @@ describe('WorkItemDescription', () => {
 
   describe('editing description', () => {
     it('passes correct autocompletion data and preview markdown sources and enables quick actions', async () => {
-      const {
-        iid,
-        namespace: { fullPath },
-      } = workItemQueryResponse.data.workItem;
-
       await createComponent({ isEditing: true });
 
       expect(findMarkdownEditor().props()).toMatchObject({
         supportsQuickActions: true,
         renderMarkdownPath: markdownPaths.markdownPreviewPath,
-        autocompleteDataSources: autocompleteDataSources({ fullPath, iid, markdownPaths }),
-      });
-    });
-
-    it('passes correct autocompletion data sources when it is a group work item', async () => {
-      const {
-        iid,
-        namespace: { fullPath },
-      } = workItemQueryResponse.data.workItem;
-
-      const workItemResponse = workItemByIidResponseFactory();
-
-      const groupWorkItem = {
-        data: {
-          workspace: {
-            __typename: 'Group',
-            id: 'gid://gitlab/Group/24',
-            workItem: {
-              ...workItemResponse.data.workspace.workItem,
-              namespace: {
-                id: 'gid://gitlab/Group/24',
-                fullPath: 'gitlab-org',
-                name: 'Gitlab Org',
-                fullName: 'Gitlab Org',
-                webUrl: 'http://127.0.0.1:3000/test-project-path',
-                __typename: 'Namespace',
-              },
-            },
-          },
-        },
-      };
-
-      createComponent({ isEditing: true, workItemResponse: groupWorkItem, isGroup: true });
-
-      await waitForPromises();
-
-      expect(findMarkdownEditor().props()).toMatchObject({
-        supportsQuickActions: true,
-        renderMarkdownPath: markdownPaths.markdownPreviewPath,
-        autocompleteDataSources: autocompleteDataSources({
-          fullPath,
-          iid,
-          isGroup: true,
-          markdownPaths,
-        }),
-      });
-    });
-
-    it('passes correct autocompletion data sources when it is a new group work item', async () => {
-      const workItemResponse = workItemByIidResponseFactory({
-        iid: NEW_WORK_ITEM_IID,
-        id: NEW_WORK_ITEM_GID,
-      });
-
-      const newGroupWorkItem = {
-        data: {
-          workspace: {
-            __typename: 'Group',
-            id: 'gid://gitlab/Group/24',
-            workItem: {
-              ...workItemResponse.data.workspace.workItem,
-              namespace: {
-                id: 'gid://gitlab/Group/24',
-                fullPath: 'gitlab-org',
-                name: 'Gitlab Org',
-                fullName: 'Gitlab Org',
-                webUrl: 'http://127.0.0.1:3000/test-project-path',
-                __typename: 'Namespace',
-              },
-            },
-          },
-        },
-      };
-
-      const {
-        namespace: { fullPath },
-      } = newGroupWorkItem.data.workspace.workItem;
-
-      createComponent({
-        isEditing: true,
-        isGroup: true,
-        workItemResponse: newGroupWorkItem,
-        workItemIid: NEW_WORK_ITEM_IID,
-        fullPath,
-      });
-
-      await waitForPromises();
-
-      expect(findMarkdownEditor().props()).toMatchObject({
-        supportsQuickActions: true,
-        renderMarkdownPath: markdownPaths.markdownPreviewPath,
-        autocompleteDataSources: autocompleteDataSources({
-          fullPath,
-          iid: NEW_WORK_ITEM_IID,
-          isGroup: true,
-          workItemTypeId: 'gid://gitlab/WorkItems::Type/5',
-          markdownPaths,
-        }),
+        autocompleteDataSources: markdownPaths.autocompleteSourcesPath,
       });
     });
 
@@ -410,6 +309,21 @@ describe('WorkItemDescription', () => {
       );
 
       expect(wrapper.emitted('updateWorkItem')).toEqual([[{ clearDraft: expect.any(Function) }]]);
+    });
+
+    it('tracks saved using editor event on submit', async () => {
+      const trackingSpy = mockTracking(undefined, null, jest.spyOn);
+      await createComponent({ isEditing: true });
+      editDescription('updated description');
+      findMarkdownEditor().vm.$emit(
+        'keydown',
+        new KeyboardEvent('keydown', { key: ENTER_KEY, ctrlKey: true }),
+      );
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'save_markdown', {
+        label: 'markdown_editor',
+        property: 'WorkItem_Description',
+      });
     });
 
     describe('description templates', () => {

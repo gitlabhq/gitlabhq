@@ -1,0 +1,11 @@
+---
+table_name: packages_nuget_symbol_states
+description: Separate table for Packages Nuget Symbol verification states
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203221
+milestone: '18.4'
+feature_categories:
+- geo_replication
+classes:
+- Geo::PackagesNugetSymbolState
+gitlab_schema: gitlab_main_cell_local
+table_size: small

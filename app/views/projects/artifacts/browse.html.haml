@@ -1,13 +1,13 @@
 - breadcrumb_title _('Artifacts')
 - page_title @path.presence, _('Artifacts'), "#{@build.name} (##{@build.id})", _('Jobs')
+- add_to_breadcrumbs(s_('CICD|Jobs'), project_jobs_path(@project))
+- add_to_breadcrumbs("##{@build.id}", project_job_path(@project, @build))
+
 - add_page_specific_style 'page_bundles/tree'
 - add_page_specific_style 'page_bundles/ci_status'
 - add_page_specific_style 'page_bundles/projects'
 
-= render "projects/jobs/header"
-
-- add_to_breadcrumbs(s_('CICD|Jobs'), project_jobs_path(@project))
-- add_to_breadcrumbs("##{@build.id}", project_job_path(@project, @build))
+= render "header"
 
 .tree-holder
   .nav-block

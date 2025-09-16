@@ -5,6 +5,9 @@ module Types
     class DescriptionTemplateContentInputType < BaseInputObject
       graphql_name 'WorkItemDescriptionTemplateContentInput'
 
+      argument :from_namespace, GraphQL::Types::String,
+        required: false,
+        description: 'Full path of the group or project using the template.'
       argument :name, GraphQL::Types::String,
         required: true,
         description: 'Name of the description template.'

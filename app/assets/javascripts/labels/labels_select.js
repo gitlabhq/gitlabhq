@@ -241,7 +241,7 @@ export default class LabelsSelect {
 
           // We need to identify which items are actually labels
           if (label.id) {
-            const selectedLayoutClasses = ['gl-flex', 'flex-row', 'gl-break-all'];
+            const selectedLayoutClasses = ['gl-flex', '!gl-flex-row', 'gl-break-all'];
             selectedClass.push('label-item', ...selectedLayoutClasses);
             linkEl.dataset.labelId = label.id;
           }
@@ -440,7 +440,7 @@ export default class LabelsSelect {
     const tooltipTitleTemplate = template(
       [
         '<% if (isScopedLabel(label) && enableScopedLabels) { %>',
-        "<span class='font-weight-bold'>Scoped label</span>",
+        "<span class='!gl-font-bold'>Scoped label</span>",
         '<br>',
         '<%= escapeStr(label.description) %>',
         '<% } else { %>',

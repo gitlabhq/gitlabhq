@@ -6,7 +6,7 @@ module Gitlab
       module Build
         class Retryable < Status::Extended
           def has_action?
-            can?(user, :update_build, subject)
+            can?(user, :retry_job, subject)
           end
 
           def action_icon

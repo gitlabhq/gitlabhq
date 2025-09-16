@@ -80,3 +80,43 @@ export function getAdaptiveStatusColor(color = '') {
 
   return adaptiveColor;
 }
+
+/**
+ * Creates a CSS style object with a linear gradient background
+ * from the specified color to white at a 315-degree angle.
+ *
+ * @param {string} color - The starting color for the gradient (any valid CSS color format)
+ * @returns {Object} CSS style object with background property
+ *
+ * @example
+ * // Create a gradient from blue to white
+ * const style = gradientStyle('#0066cc');
+ * // Returns: { background: 'linear-gradient(315deg, #0066cc, white)' }
+ *
+ * @example
+ * // Use with Vue or React components
+ * <div :style="gradientStyle('#ff6b6b')">Content</div>
+ */
+export const gradientStyle = (color) => {
+  return { background: `linear-gradient(315deg, ${color}, white)` };
+};
+
+/**
+ * Creates a CSS style object with a 2px solid border in the specified color.
+ *
+ * @param {string} color - The border color (any valid CSS color format)
+ * @returns {Object} CSS style object with border property
+ *
+ * @example
+ * // Create a red border
+ * const style = borderStyle('#ff0000');
+ * // Returns: { border: '2px solid #ff0000' }
+ *
+ * @example
+ * // Use with Vue or React components
+ * <div :style="borderStyle('rgba(255, 0, 0, 0.5)')">Content</div>
+ */
+export const borderStyle = (color) => {
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  return { border: `2px solid ${color}` };
+};

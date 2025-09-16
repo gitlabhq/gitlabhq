@@ -66,6 +66,11 @@ module Import
         state status_name, value: value
       end
 
+      before_transition any => :pending_reassignment do |source_user|
+        source_user.reassign_to_user = nil
+        source_user.reassigned_by_user = nil
+      end
+
       before_transition awaiting_approval: any do |source_user|
         source_user.reassignment_token = nil
       end
@@ -88,6 +93,10 @@ module Import
 
       event :keep_as_placeholder do
         transition REASSIGNABLE_STATUSES => :keep_as_placeholder
+      end
+
+      event :undo_keep_as_placeholder do
+        transition keep_as_placeholder: :pending_reassignment
       end
 
       event :accept do

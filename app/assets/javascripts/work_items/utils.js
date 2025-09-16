@@ -1,4 +1,5 @@
 import { escapeRegExp, kebabCase } from 'lodash';
+import { ref } from 'vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { joinPaths, queryToObject } from '~/lib/utils/url_utility';
 import AccessorUtilities from '~/lib/utils/accessor';
@@ -11,7 +12,6 @@ import {
   NAME_TO_ICON_MAP,
   NAME_TO_ROUTE_MAP,
   NEW_WORK_ITEM_GID,
-  NEW_WORK_ITEM_IID,
   STATE_CLOSED,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_AWARD_EMOJI,
@@ -46,6 +46,8 @@ export const isAssigneesWidget = (widget) => widget.type === WIDGET_TYPE_ASSIGNE
 export const isMilestoneWidget = (widget) => widget.type === WIDGET_TYPE_MILESTONE;
 
 export const isNotesWidget = (widget) => widget.type === WIDGET_TYPE_NOTES;
+
+export const isStatusWidget = (widget) => widget.type === WIDGET_TYPE_STATUS;
 
 export const findAssigneesWidget = (workItem) =>
   workItem?.widgets?.find((widget) => widget.type === WIDGET_TYPE_ASSIGNEES);
@@ -170,147 +172,24 @@ export const getParentGroupName = (namespaceFullName) => {
   return parts.length > 1 ? parts[parts.length - 2].trim() : '';
 };
 
-const autocompleteSourcesPath = ({ autocompleteType, fullPath, iid, workItemTypeId, isGroup }) => {
-  const domain = gon.relative_url_root || '';
-  const basePath = isGroup ? `groups/${fullPath}` : fullPath;
-
-  const typeId =
-    iid === NEW_WORK_ITEM_IID
-      ? `work_item_type_id=${getIdFromGraphQLId(workItemTypeId)}`
-      : `type_id=${iid}`;
-  return `${domain}/${basePath}/-/autocomplete_sources/${autocompleteType}?type=WorkItem&${typeId}`;
-};
-
-export const autocompleteDataSources = ({
-  fullPath,
-  iid,
-  workItemTypeId,
-  isGroup = false,
-  markdownPaths = {},
-}) => {
-  const fetchedPaths = markdownPaths;
+export const autocompleteDataSources = (autocompleteSourcesPaths = {}) => {
   const sources = {
-    labels: autocompleteSourcesPath({
-      autocompleteType: 'labels',
-      fullPath,
-      iid,
-      isGroup,
-      workItemTypeId,
-    }),
-    members: autocompleteSourcesPath({
-      autocompleteType: 'members',
-      fullPath,
-      iid,
-      isGroup,
-      workItemTypeId,
-    }),
-    commands: autocompleteSourcesPath({
-      autocompleteType: 'commands',
-      fullPath,
-      iid,
-      isGroup,
-      workItemTypeId,
-    }),
-    issues: autocompleteSourcesPath({
-      autocompleteType: 'issues',
-      fullPath,
-      iid,
-      isGroup,
-      workItemTypeId,
-    }),
-    mergeRequests: autocompleteSourcesPath({
-      autocompleteType: 'merge_requests',
-      fullPath,
-      iid,
-      isGroup,
-      workItemTypeId,
-    }),
-    epics: autocompleteSourcesPath({
-      autocompleteType: 'epics',
-      fullPath,
-      iid,
-      workItemTypeId,
-      isGroup,
-    }),
-    milestones: autocompleteSourcesPath({
-      autocompleteType: 'milestones',
-      fullPath,
-      iid,
-      workItemTypeId,
-      isGroup,
-    }),
-    iterations: autocompleteSourcesPath({
-      autocompleteType: 'iterations',
-      fullPath,
-      iid,
-      workItemTypeId,
-      isGroup,
-    }),
-    vulnerabilities: autocompleteSourcesPath({
-      autocompleteType: 'vulnerabilities',
-      fullPath,
-      iid,
-      isGroup,
-      workItemTypeId,
-    }),
-    wikis: autocompleteSourcesPath({
-      autocompleteType: 'wikis',
-      fullPath,
-      iid,
-      isGroup,
-      workItemTypeId,
-    }),
-    ...fetchedPaths,
+    ...autocompleteSourcesPaths,
+    statuses: true, // Include `statuses` as a property so GLFM autocompletion is enabled
   };
 
-  const enableExtensibleReferenceFilters = gon.features?.extensibleReferenceFilters ?? false;
-  const extensibleReferenceFilters = enableExtensibleReferenceFilters
-    ? {
-        issuesAlternative: autocompleteSourcesPath({
-          autocompleteType: 'issues',
-          fullPath,
-          iid,
-          isGroup,
-          workItemTypeId,
-        }),
-        workItems: autocompleteSourcesPath({
-          autocompleteType: 'issues',
-          fullPath,
-          iid,
-          isGroup,
-          workItemTypeId,
-        }),
-      }
-    : {};
+  // TODO - remove in %18.5. Adding this temporarily for multi-version compatibility
+  if (autocompleteSourcesPaths.merge_requests) {
+    sources.mergeRequests = autocompleteSourcesPaths.merge_requests;
+  }
 
-  // contacts and snippets are only available in project scope
-  const projectOnlySources = !isGroup
-    ? {
-        contacts: autocompleteSourcesPath({
-          autocompleteType: 'contacts',
-          fullPath,
-          iid,
-          isGroup,
-          workItemTypeId,
-        }),
-        snippets: autocompleteSourcesPath({
-          autocompleteType: 'snippets',
-          fullPath,
-          iid,
-          isGroup,
-          workItemTypeId,
-        }),
-      }
-    : {};
+  if (gon.features?.extensibleReferenceFilters) {
+    sources.epicsAlternative = autocompleteSourcesPaths.epics;
+    sources.issuesAlternative = autocompleteSourcesPaths.issues;
+    sources.workItems = autocompleteSourcesPaths.issues;
+  }
 
-  return { ...sources, ...extensibleReferenceFilters, ...projectOnlySources };
-};
-
-export const markdownPreviewPath = ({ fullPath, iid, isGroup = false }) => {
-  const domain = gon.relative_url_root || '';
-  const basePath = isGroup ? `groups/${fullPath}` : fullPath;
-  const targetId = iid === NEW_WORK_ITEM_IID ? '' : `&target_id=${iid}`;
-  return `${domain}/${basePath}/-/preview_markdown?target_type=WorkItem${targetId}`;
+  return sources;
 };
 
 // the path for creating a new work item of that type, e.g. /groups/gitlab-org/-/epics/new
@@ -327,10 +206,10 @@ export const newWorkItemPath = ({ fullPath, isGroup = false, workItemType, query
 };
 
 export const getDisplayReference = (workItemFullPath, workitemReference) => {
-  // The reference is replaced by work item fullpath in case the project and group are same.
+  // The full reference is replaced by IID reference in case the project and group are same.
   // e.g., gitlab-org/gitlab-test#45 will be shown as #45
-  if (new RegExp(`${workItemFullPath}#`, 'g').test(workitemReference)) {
-    return workitemReference.replace(new RegExp(`${workItemFullPath}`, 'g'), '');
+  if (workitemReference.startsWith(`${workItemFullPath}#`)) {
+    return workitemReference.replace(workItemFullPath, '');
   }
   return workitemReference;
 };
@@ -609,3 +488,5 @@ export const preserveDetailsState = (element, descriptionHtml) => {
   });
   return nextTemplate.innerHTML;
 };
+
+export const activeWorkItemIds = ref([]);

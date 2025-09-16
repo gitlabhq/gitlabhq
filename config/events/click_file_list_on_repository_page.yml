@@ -1,0 +1,18 @@
+---
+description: User click a row within file list
+internal_events: true
+status: active
+action: click_file_list_on_repository_page
+identifiers:
+- project
+- namespace
+- user
+product_group: source_code
+product_categories:
+- source_code_management
+milestone: '18.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203015
+tiers:
+- free
+- premium
+- ultimate

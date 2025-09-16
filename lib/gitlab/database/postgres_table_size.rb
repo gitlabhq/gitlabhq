@@ -53,6 +53,7 @@ module Gitlab
           total_size: total_size,
           table_size: table_size,
           index_size: index_size,
+          toast_size: toast_size,
           size_in_bytes: size_in_bytes,
           classification: size_classification,
           feature_categories: feature_categories

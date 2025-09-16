@@ -1695,7 +1695,16 @@
               "type": "object",
               "properties": {
                 "files": {
-                  "markdownDescription": "Use the `cache:key:files` keyword to generate a new key when one or two specific files change. [Learn More](https://docs.gitlab.com/ci/yaml/#cachekeyfiles)",
+                  "markdownDescription": "Use the `cache:key:files` keyword to generate a new cache key when specified file content changes. Cache keys remain stable across branches with identical file content. [Learn More](https://docs.gitlab.com/ci/yaml/#cachekeyfiles)",
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "maxItems": 2
+                },
+                "files_commits": {
+                  "markdownDescription": "Use the `cache:key:files_commits` keyword to generate a new cache key when the latest commit changes for the specified files. [Learn More](https://docs.gitlab.com/ci/yaml/#cachekeyfiles_commits)",
                   "type": "array",
                   "items": {
                     "type": "string"
@@ -1704,7 +1713,7 @@
                   "maxItems": 2
                 },
                 "prefix": {
-                  "markdownDescription": "Use `cache:key:prefix` to combine a prefix with the SHA computed for `cache:key:files`. [Learn More](https://docs.gitlab.com/ci/yaml/#cachekeyprefix)",
+                  "markdownDescription": "Use `cache:key:prefix` to combine a prefix with the SHA computed for `cache:key:files` or `cache:key:files_commits`. [Learn More](https://docs.gitlab.com/ci/yaml/#cachekeyprefix)",
                   "type": "string"
                 }
               }
@@ -2282,18 +2291,44 @@
                   "type": "object",
                   "description": "Used to configure the kubernetes deployment for this environment. This is currently not supported for kubernetes clusters that are managed by GitLab.",
                   "properties": {
-                    "namespace": {
-                      "type": "string",
-                      "description": "The kubernetes namespace where this environment should be deployed to.",
-                      "minLength": 1
-                    },
                     "agent": {
                       "type": "string",
                       "description": "Specifies the GitLab Agent for Kubernetes. The format is `path/to/agent/project:agent-name`."
                     },
+                    "namespace": {
+                      "type": "string",
+                      "description": "Deprecated. Use `dashboard.namespace` instead. The kubernetes namespace where this environment's dashboard should be deployed to.",
+                      "minLength": 1
+                    },
                     "flux_resource_path": {
                       "type": "string",
-                      "description": "The Flux resource path to associate with this environment. This must be the full resource path. For example, 'helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent'."
+                      "description": "Deprecated. Use `dashboard.flux_resource_path` instead. The Flux resource path to associate with this environment. This must be the full resource path. For example, 'helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent'."
+                    },
+                    "managed_resources": {
+                      "type": "object",
+                      "description": "Used to configure the managed resources for this environment.",
+                      "properties": {
+                        "enabled": {
+                          "type": "boolean",
+                          "description": "Indicates whether the managed resources are enabled for this environment.",
+                          "default": true
+                        }
+                      }
+                    },
+                    "dashboard": {
+                      "type": "object",
+                      "description": "Used to configure the dashboard for this environment.",
+                      "properties": {
+                        "namespace": {
+                          "type": "string",
+                          "description": "The kubernetes namespace where the dashboard for this environment should be deployed to.",
+                          "minLength": 1
+                        },
+                        "flux_resource_path": {
+                          "type": "string",
+                          "description": "The Flux resource path to associate with this environment. This must be the full resource path. For example, 'helm.toolkit.fluxcd.io/v2/namespaces/gitlab-agent/helmreleases/gitlab-agent'."
+                        }
+                      }
                     }
                   }
                 },

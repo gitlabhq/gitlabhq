@@ -3,6 +3,7 @@ stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Reduce container registry storage
+description: Tips for monitoring and reducing storage usage for GitLab container registries.
 ---
 
 {{< details >}}

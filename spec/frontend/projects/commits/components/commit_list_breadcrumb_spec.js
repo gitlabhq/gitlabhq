@@ -10,14 +10,20 @@ describe('CommitListBreadcrumb', () => {
     projectPath: 'gitlab',
     escapedRef: 'main',
     refType: 'heads',
-    path: 'README.md',
   };
 
-  const createComponent = ({ provide = {} } = {}) => {
+  const createComponent = ({ provide = {}, path = 'README.md' } = {}) => {
     wrapper = shallowMountExtended(CommitListBreadcrumb, {
       provide: {
         ...defaultProvide,
         ...provide,
+      },
+      mocks: {
+        $route: {
+          params: {
+            path,
+          },
+        },
       },
     });
   };
@@ -37,11 +43,11 @@ describe('CommitListBreadcrumb', () => {
       items: [
         {
           text: 'gitlab',
-          to: '/gitlab-org/gitlab/-/commits/main?ref_type=heads',
+          to: '/main?ref_type=heads',
         },
         {
           text: 'README.md',
-          to: '/gitlab-org/gitlab/-/commits/main/README.md?ref_type=heads',
+          to: '/main/README.md?ref_type=heads',
         },
       ],
     });
@@ -49,18 +55,14 @@ describe('CommitListBreadcrumb', () => {
 
   describe('project root breadcrumb (no path)', () => {
     it('shows only project name for root path', () => {
-      createComponent({
-        provide: {
-          path: '',
-        },
-      });
+      createComponent({ path: '' });
 
       const items = findBreadcrumb().props('items');
 
       expect(items).toStrictEqual([
         {
           text: 'gitlab',
-          to: '/gitlab-org/gitlab/-/commits/main?ref_type=heads',
+          to: '/main?ref_type=heads',
         },
       ]);
     });
@@ -77,11 +79,11 @@ describe('CommitListBreadcrumb', () => {
       expect(items).toStrictEqual([
         {
           text: 'gitlab',
-          to: '/gitlab-org/gitlab/-/commits/v1.0?ref_type=tags', // Use v1.0 and tags
+          to: '/v1.0?ref_type=tags',
         },
         {
           text: 'README.md',
-          to: '/gitlab-org/gitlab/-/commits/v1.0/README.md?ref_type=tags', // Use v1.0 and tags
+          to: '/v1.0/README.md?ref_type=tags',
         },
       ]);
     });
@@ -89,11 +91,7 @@ describe('CommitListBreadcrumb', () => {
 
   describe('nested directory path', () => {
     beforeEach(() => {
-      createComponent({
-        provide: {
-          path: 'app/assets/javascripts',
-        },
-      });
+      createComponent({ path: 'app/assets/javascripts' });
     });
 
     it('creates breadcrumb items for each path segment', () => {
@@ -102,19 +100,19 @@ describe('CommitListBreadcrumb', () => {
       expect(items).toStrictEqual([
         {
           text: 'gitlab',
-          to: '/gitlab-org/gitlab/-/commits/main?ref_type=heads',
+          to: '/main?ref_type=heads',
         },
         {
           text: 'app',
-          to: '/gitlab-org/gitlab/-/commits/main/app?ref_type=heads',
+          to: '/main/app?ref_type=heads',
         },
         {
           text: 'assets',
-          to: '/gitlab-org/gitlab/-/commits/main/app/assets?ref_type=heads',
+          to: '/main/app/assets?ref_type=heads',
         },
         {
           text: 'javascripts',
-          to: '/gitlab-org/gitlab/-/commits/main/app/assets/javascripts?ref_type=heads',
+          to: '/main/app/assets/javascripts?ref_type=heads',
         },
       ]);
     });
@@ -122,26 +120,22 @@ describe('CommitListBreadcrumb', () => {
 
   describe('file paths with special characters', () => {
     it('properly escapes file names with spaces and special characters', () => {
-      createComponent({
-        provide: {
-          path: 'src/My Component #1.vue',
-        },
-      });
+      createComponent({ path: 'src/My Component #1.vue' });
 
       const items = findBreadcrumb().props('items');
 
       expect(items).toStrictEqual([
         {
           text: 'gitlab',
-          to: '/gitlab-org/gitlab/-/commits/main?ref_type=heads',
+          to: '/main?ref_type=heads',
         },
         {
           text: 'src',
-          to: '/gitlab-org/gitlab/-/commits/main/src?ref_type=heads',
+          to: '/main/src?ref_type=heads',
         },
         {
           text: 'My Component #1.vue',
-          to: '/gitlab-org/gitlab/-/commits/main/src/My%20Component%20%231.vue?ref_type=heads',
+          to: '/main/src/My%20Component%20%231.vue?ref_type=heads',
         },
       ]);
     });

@@ -7,7 +7,7 @@ feature_categories:
 description: Debian package group-level distribution components
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/51732
 milestone: '13.9'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 table_size: small
 sharding_key:
   group_id: namespaces

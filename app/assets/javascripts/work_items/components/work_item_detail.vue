@@ -16,6 +16,7 @@ import { InternalEvents } from '~/tracking';
 import { getParameterByName, updateHistory, removeParams } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import toast from '~/vue_shared/plugins/global_toast';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -25,7 +26,6 @@ import { sanitize } from '~/lib/dompurify';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { keysFor, ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybindings';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
-import { buildApiUrl } from '~/api/api_utils';
 import {
   i18n,
   WIDGET_TYPE_ASSIGNEES,
@@ -54,7 +54,7 @@ import workItemByIdQuery from '../graphql/work_item_by_id.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import getAllowedWorkItemChildTypes from '../graphql/work_item_allowed_children.query.graphql';
 import workspacePermissionsQuery from '../graphql/workspace_permissions.query.graphql';
-import { findHierarchyWidgetDefinition } from '../utils';
+import { findHierarchyWidgetDefinition, activeWorkItemIds } from '../utils';
 import { updateWorkItemCurrentTodosWidget } from '../graphql/cache_utils';
 
 import getWorkItemDesignListQuery from './design_management/graphql/design_collection.query.graphql';
@@ -155,8 +155,8 @@ export default {
     hasLinkedItemsEpicsFeature: {
       from: 'hasLinkedItemsEpicsFeature',
     },
-    duoRemoteFlowsEnabled: {
-      from: 'duoRemoteFlowsEnabled',
+    duoRemoteFlowsAvailability: {
+      from: 'duoRemoteFlowsAvailability',
       default: false,
     },
   },
@@ -323,6 +323,9 @@ export default {
     workItemType() {
       return this.workItem.workItemType?.name;
     },
+    workItemTypeId() {
+      return this.workItem.workItemType?.id;
+    },
     workItemAuthorId() {
       return getIdFromGraphQLId(this.workItem.author?.id);
     },
@@ -463,16 +466,16 @@ export default {
     },
     titleClassHeader() {
       return {
-        'sm:!gl-hidden !gl-mt-3': this.shouldShowAncestors,
-        'sm:!gl-block': !this.shouldShowAncestors,
+        '@sm/panel:!gl-hidden !gl-mt-3': this.shouldShowAncestors,
+        '@sm/panel:!gl-block': !this.shouldShowAncestors,
         'gl-w-full': !this.shouldShowAncestors && !this.editMode,
         'editable-wi-title': this.editMode && !this.shouldShowAncestors,
       };
     },
     titleClassComponent() {
       return {
-        'sm:!gl-block': !this.shouldShowAncestors,
-        'gl-hidden sm:!gl-block !gl-mt-3': this.shouldShowAncestors,
+        '@sm/panel:!gl-block': !this.shouldShowAncestors,
+        'gl-hidden @sm/panel:!gl-block !gl-mt-3': this.shouldShowAncestors,
         'editable-wi-title': this.workItemsAlphaEnabled,
       };
     },
@@ -491,7 +494,7 @@ export default {
     },
     modalCloseButtonClass() {
       return {
-        'sm:gl-hidden': !this.error,
+        '@sm/panel:gl-hidden': !this.error,
         'gl-flex': true,
       };
     },
@@ -555,7 +558,7 @@ export default {
         canReportSpam: this.canReportSpam,
         canUpdate: this.canUpdate,
         canUpdateMetadata: this.canUpdateMetadata,
-        canMove: this.canMove,
+        canMove: this.canMove && !this.workItem.movedToWorkItemUrl,
         isConfidential: this.workItem.confidential,
         isDiscussionLocked: this.isDiscussionLocked,
         isParentConfidential: this.parentWorkItemConfidentiality,
@@ -577,10 +580,6 @@ export default {
         truncationEnabled: this.truncationEnabled,
       };
     },
-    uploadsPath() {
-      const rootPath = this.workItem?.namespace?.webUrl || '';
-      return this.isGroupWorkItem ? `${rootPath}/-/uploads` : `${rootPath}/uploads`;
-    },
     canAddDesign() {
       return this.workspacePermissions.createDesign;
     },
@@ -591,22 +590,24 @@ export default {
       return !this.isSaving && !this.isAddingNotes && !this.editMode && !this.activeChildItem;
     },
     isDuoWorkflowEnabled() {
-      return this.duoRemoteFlowsEnabled && this.glFeatures.duoWorkflowInCi;
-    },
-    projectIdAsNumber() {
-      return getIdFromGraphQLId(this.workItemProjectId);
+      return this.duoRemoteFlowsAvailability && this.glFeatures.duoWorkflowInCi;
     },
     agentPrivileges() {
       return [1, 2, 3, 4, 5];
     },
-    agentInvokePath() {
-      return buildApiUrl(`/api/:version/ai/duo_workflows/workflows`);
+    confidentialityToggledText() {
+      return this.workItem.confidential
+        ? s__('WorkItem|Confidentiality turned on.')
+        : s__('WorkItem|Confidentiality turned off.');
     },
   },
   watch: {
     'workItem.id': {
       immediate: true,
       async handler(newId) {
+        if (newId) {
+          activeWorkItemIds.value.push(newId);
+        }
         // Update allowedChildTypes using manual query instead of a smart query to prevent cache inconsistency (issue: #521771)
         const { workItem } = await this.fetchAllowedChildTypes(newId);
         this.allowedChildTypes = workItem
@@ -617,6 +618,7 @@ export default {
   },
   beforeDestroy() {
     document.removeEventListener('actioncable:reconnected', this.refetchIfStale);
+    activeWorkItemIds.value = activeWorkItemIds.value.filter((id) => id !== this.workItem.id);
   },
   mounted() {
     addShortcutsExtension(ShortcutsWorkItems);
@@ -672,6 +674,7 @@ export default {
             this.$emit('workItemUpdated', {
               confidential: workItem?.confidential,
             });
+            toast(this.confidentialityToggledText);
           },
         )
         .catch((error) => {
@@ -925,6 +928,7 @@ export default {
   <work-item-metadata-provider :full-path="workItemFullPath">
     <div
       ref="workItemDetail"
+      class="work-item-detail"
       data-testid="work-item-detail"
       @dragstart.prevent.stop
       @dragend.prevent.stop
@@ -1030,7 +1034,7 @@ export default {
             :svg-path="$options.noAccessSvg"
           />
           <div v-else data-testid="detail-wrapper">
-            <div class="gl-block gl-flex-row gl-items-start gl-gap-3 sm:!gl-flex">
+            <div class="gl-block gl-flex-row gl-items-start gl-gap-3 @sm/panel:!gl-flex">
               <work-item-ancestors
                 v-if="shouldShowAncestors"
                 :work-item="workItem"
@@ -1094,7 +1098,7 @@ export default {
               </div>
               <gl-button
                 v-if="isModal"
-                class="gl-hidden sm:!gl-block"
+                class="gl-hidden @sm/panel:!gl-block"
                 category="tertiary"
                 data-testid="work-item-close"
                 icon="close"
@@ -1124,7 +1128,7 @@ export default {
                 />
                 <div
                   v-if="!showSidebar"
-                  class="work-item-container-xs-hidden gl-hidden md:gl-block"
+                  class="work-item-container-xs-hidden gl-hidden @md/panel:gl-block"
                 >
                   <gl-button
                     size="small"
@@ -1199,14 +1203,12 @@ export default {
                     <div>
                       <duo-workflow-action
                         v-if="isDuoWorkflowEnabled"
-                        :project-id="projectIdAsNumber"
                         :project-path="workItemFullPath"
                         :title="__('Generate MR with Duo')"
                         :hover-message="__('Generate merge request with Duo')"
                         :goal="workItem.webUrl"
                         workflow-definition="issue_to_merge_request"
                         :agent-privileges="agentPrivileges"
-                        :duo-workflow-invoke-path="agentInvokePath"
                         size="medium"
                       />
                     </div>
@@ -1220,7 +1222,7 @@ export default {
               <section
                 data-testid="work-item-overview-right-sidebar"
                 class="work-item-overview-right-sidebar"
-                :class="{ 'is-modal': isModal, 'md:gl-hidden': !showSidebar }"
+                :class="{ 'is-modal': isModal, '@md/panel:gl-hidden': !showSidebar }"
               >
                 <h2 class="gl-sr-only">{{ s__('WorkItem|Attributes') }}</h2>
                 <work-item-attributes-wrapper
@@ -1335,6 +1337,7 @@ export default {
                 :work-item-id="workItem.id"
                 :work-item-iid="workItem.iid"
                 :work-item-type="workItemType"
+                :work-item-type-id="workItemTypeId"
                 :is-modal="isModal"
                 :is-drawer="isDrawer"
                 :assignees="workItemAssignees && workItemAssignees.assignees.nodes"
@@ -1349,7 +1352,6 @@ export default {
                 :small-header-style="isModal"
                 :parent-id="parentWorkItemId"
                 :hide-fullscreen-markdown-button="isDrawer"
-                :uploads-path="uploadsPath"
                 @error="updateError = $event"
                 @openReportAbuse="openReportAbuseModal"
                 @startEditing="isAddingNotes = true"

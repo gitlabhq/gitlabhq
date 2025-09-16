@@ -203,7 +203,7 @@ publish:
 
 ## Summary and next steps
 
-Organizing your GitLab projects under one top-level group confers several benfits:
+Organizing your GitLab projects under one top-level group confers several benefits:
 
 - **Simplified configuration**
   - One URL for all package access

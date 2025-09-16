@@ -24,7 +24,7 @@ class BuildActionEntity < Grape::Entity
   alias_method :build, :object
 
   def playable?
-    build.playable? && can?(request.current_user, :update_build, build)
+    build.playable? && can?(request.current_user, :play_job, build)
   end
 
   def scheduled?

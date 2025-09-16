@@ -38,6 +38,7 @@ class UserPreference < ApplicationRecord
   validates :render_whitespace_in_code, allow_nil: false, inclusion: { in: [true, false] }
   validates :pass_user_identities_to_ci_jwt, allow_nil: false, inclusion: { in: [true, false] }
   validates :pinned_nav_items, json_schema: { filename: 'pinned_nav_items' }
+  validates :project_studio_enabled, allow_nil: false, inclusion: { in: [true, false] }
 
   validates :time_display_format, inclusion: { in: TIME_DISPLAY_FORMATS.values }, presence: true
   validates :extensions_marketplace_opt_in_url, length: { maximum: 512 }
@@ -52,6 +53,7 @@ class UserPreference < ApplicationRecord
   attribute :project_shortcut_buttons, default: true
   attribute :keyboard_shortcuts_enabled, default: true
   attribute :dpop_enabled, default: false
+  attribute :project_studio_enabled, default: false
   attribute :text_editor_type, default: 2
 
   enum :visibility_pipeline_id_type, { id: 0, iid: 1 }, scopes: false

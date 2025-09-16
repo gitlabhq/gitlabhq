@@ -1,7 +1,7 @@
 <script>
 import { v4 as uuidv4 } from 'uuid';
 import { GlSkeletonLoader } from '@gitlab/ui';
-import { GlAreaChart } from '@gitlab/ui/dist/charts';
+import { GlAreaChart } from '@gitlab/ui/src/charts';
 import { CHART_CONTAINER_HEIGHT } from './constants';
 
 export default {

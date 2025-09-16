@@ -1,3 +1,4 @@
+import { gql } from '@apollo/client/core';
 import { GlSearchBoxByType } from '@gitlab/ui';
 import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
@@ -70,12 +71,17 @@ describe('User select dropdown', () => {
     props = {},
     searchQueryHandler = searchQueryHandlerSuccess,
     participantsQueryHandler = participantsQueryHandlerSuccess,
+    customSearchQueryAndHandler = null,
   } = {}) => {
-    fakeApollo = createMockApollo([
+    const queryHandlers = [
       [searchUsersQuery, searchQueryHandler],
       [searchUsersQueryOnMR, jest.fn().mockResolvedValue(searchAutocompleteResponseOnMR)],
       [getIssueParticipantsQuery, participantsQueryHandler],
-    ]);
+    ];
+    if (customSearchQueryAndHandler) {
+      queryHandlers.push(customSearchQueryAndHandler);
+    }
+    fakeApollo = createMockApollo(queryHandlers);
     wrapper = shallowMountExtended(UserSelect, {
       apolloProvider: fakeApollo,
       propsData: {
@@ -242,6 +248,65 @@ describe('User select dropdown', () => {
       await waitForPromises();
 
       expect(findIssuableAuthor().exists()).toBe(true);
+    });
+  });
+
+  describe('when customSearchUsersQuery prop provided', () => {
+    it('uses custom query and processor', async () => {
+      const customSearchUsersQuery = gql`
+        query projectServiceAccounts($search: String!, $fullPath: ID!) {
+          project(fullPath: $fullPath) {
+            id
+            projectMembers(
+              accessLevels: [DEVELOPER]
+              userTypes: [SERVICE_ACCOUNT]
+              search: $search
+            ) {
+              nodes {
+                id
+                user {
+                  id
+                  avatarUrl
+                  name
+                  username
+                  webUrl
+                  webPath
+                }
+              }
+            }
+          }
+        }
+      `;
+      const customSearchQueryHandler = jest
+        .fn()
+        .mockResolvedValue(projectAutocompleteMembersResponse);
+      const customSearchQueryAndHandler = [customSearchUsersQuery, customSearchQueryHandler];
+      createComponent({
+        props: {
+          customSearchUsersQuery,
+        },
+        customSearchQueryAndHandler,
+      });
+      await waitForPromises();
+
+      expect(customSearchQueryHandler).toHaveBeenCalled();
+    });
+  });
+
+  describe('when customSearchUsersProcessor prop provided', () => {
+    it('uses custom query and processor', async () => {
+      const customSearchUsersProcessor = (data) => {
+        return data.workspace?.users.filter((user) => user?.username === 'francina.skiles');
+      };
+      createComponent({
+        props: {
+          iid: null,
+          customSearchUsersProcessor,
+        },
+      });
+      await waitForPromises();
+
+      expect(findUnselectedParticipants()).toHaveLength(1);
     });
   });
 

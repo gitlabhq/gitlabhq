@@ -40,4 +40,11 @@ module WhatsNewHelper
         tag_pair(tag.i, :italic_start, :italic_end))
     end
   end
+
+  def whats_new_read_articles
+    return [] unless current_user
+
+    Onboarding::WhatsNew::ReadStatusService.new(current_user.id,
+      whats_new_version_digest).most_recent_version_read_articles
+  end
 end

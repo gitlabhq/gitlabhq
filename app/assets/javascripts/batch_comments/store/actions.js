@@ -77,15 +77,6 @@ export function fetchDrafts() {
     );
 }
 
-export function publishSingleDraft(draftId) {
-  this[types.REQUEST_PUBLISH_DRAFT](draftId);
-
-  service
-    .publishDraft(this.getNotesData.draftsPublishPath, draftId)
-    .then(() => this[types.RECEIVE_PUBLISH_DRAFT_SUCCESS](draftId))
-    .catch(() => this[types.RECEIVE_PUBLISH_DRAFT_ERROR](draftId));
-}
-
 export function publishReview(noteData = {}) {
   this[types.REQUEST_PUBLISH_REVIEW]();
 

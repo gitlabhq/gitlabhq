@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlLink, GlBadge, GlSprintf } from '@gitlab/ui';
+import { GlIcon, GlLink } from '@gitlab/ui';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { InternalEvents } from '~/tracking';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -10,23 +10,15 @@ import {
   TRACKING_PROPERTY_REVIEW_REQUESTED,
   TRACKING_PROPERTY_ASSIGNED_TO_YOU,
 } from '../tracking_constants';
-import VisibilityChangeDetector from './visibility_change_detector.vue';
 
 export default {
   name: 'MergeRequestsWidget',
   components: {
     GlIcon,
     GlLink,
-    GlBadge,
-    GlSprintf,
-    VisibilityChangeDetector,
   },
   mixins: [timeagoMixin, InternalEvents.mixin()],
-  inject: [
-    'duoCodeReviewBotUsername',
-    'mergeRequestsReviewRequestedTitle',
-    'mergeRequestsYourMergeRequestsTitle',
-  ],
+  inject: ['duoCodeReviewBotUsername'],
 
   props: {
     reviewRequestedPath: {
@@ -63,19 +55,39 @@ export default {
   },
   computed: {
     reviewRequestedCount() {
-      return this.metadata.reviewRequestedMergeRequests?.count ?? '-';
+      const count = this.metadata.reviewRequestedMergeRequests?.count;
+      return count != null ? this.formatCount(count) : '-';
     },
     reviewRequestedLastUpdatedAt() {
       return this.metadata?.reviewRequestedMergeRequests?.nodes?.[0]?.updatedAt ?? null;
     },
     assignedCount() {
-      return this.metadata.assignedMergeRequests?.count ?? '-';
+      const count = this.metadata.assignedMergeRequests?.count;
+      return count != null ? this.formatCount(count) : '-';
     },
     assignedLastUpdatedAt() {
       return this.metadata?.assignedMergeRequests?.nodes?.[0]?.updatedAt ?? null;
     },
   },
+  mounted() {
+    document.addEventListener('visibilitychange', this.handleVisibilityChanged);
+  },
+  beforeDestroy() {
+    document.removeEventListener('visibilitychange', this.handleVisibilityChanged);
+  },
   methods: {
+    formatCount(count) {
+      if (Math.abs(count) < 10000) {
+        return new Intl.NumberFormat(navigator.language, {
+          useGrouping: false,
+        }).format(count);
+      }
+      return new Intl.NumberFormat(navigator.language, {
+        notation: 'compact',
+        compactDisplay: 'short',
+        maximumFractionDigits: 1,
+      }).format(count);
+    },
     reload() {
       this.hasError = false;
       this.$apollo.queries.metadata.refetch();
@@ -92,63 +104,97 @@ export default {
         property: TRACKING_PROPERTY_ASSIGNED_TO_YOU,
       });
     },
+    handleVisibilityChanged() {
+      if (!document.hidden) {
+        this.reload();
+      }
+    },
   },
 };
 </script>
 
 <template>
-  <visibility-change-detector class="gl-border gl-rounded-lg gl-px-4 gl-py-1" @visible="reload">
-    <h2 class="gl-heading-4 gl-my-4 gl-flex gl-items-center gl-gap-2">
-      <gl-icon name="merge-request" :size="16" />{{ __('Merge requests') }}
-    </h2>
-    <p v-if="hasError" data-testid="error-message">
-      <gl-sprintf
-        :message="
-          s__(
-            'HomePageMergeRequestsWidget|The number of merge requests is not available. Please refresh the page to try again, or visit the %{linkStart}dashboard%{linkEnd}.',
-          )
-        "
-      >
-        <template #link="{ content }">
-          <gl-link :href="assignedToYouPath">{{ content }}</gl-link>
-        </template>
-      </gl-sprintf>
-    </p>
-    <ul v-else class="gl-list-none gl-p-0" data-testid="links-list">
-      <li>
-        <gl-link
-          class="gl-flex gl-items-center gl-gap-3 gl-rounded-small gl-px-1 gl-py-1 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
-          variant="meta"
-          :href="reviewRequestedPath"
-          @click="handleReviewRequestedClick"
-        >
-          {{ mergeRequestsReviewRequestedTitle }}
-          <gl-badge data-testid="review-requested-count">{{ reviewRequestedCount }}</gl-badge>
+  <div class="gl-grid gl-grid-cols-2 gl-gap-5">
+    <gl-link
+      class="gl-border gl-flex-1 gl-cursor-pointer gl-rounded-lg gl-border-subtle gl-bg-subtle gl-px-4 gl-py-4 hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
+      :href="reviewRequestedPath"
+      :aria-label="s__('HomePageMergeRequestsWidget|Merge requests with review requested')"
+      variant="meta"
+      @click="handleReviewRequestedClick"
+    >
+      <div>
+        <div v-if="hasError" class="gl-m-2">
+          <div class="gl-flex gl-flex-col gl-items-start gl-gap-4">
+            <gl-icon name="error" class="gl-text-red-500" :size="16" />
+            <p class="gl-text-size-h5 gl-text-default-400 gl-mb-0">
+              {{
+                s__(
+                  'HomePageMergeRequestsWidget|The number of merge requests is not available. Please refresh the page to try again, or visit the dashboard.',
+                )
+              }}
+            </p>
+          </div>
+        </div>
+        <div v-else>
+          <div class="gl-m-2 gl-flex gl-items-center gl-gap-4">
+            <div class="gl-heading-1 gl-mb-0" data-testid="review-requested-count">
+              {{ reviewRequestedCount }}
+            </div>
+            <gl-icon name="merge-request" :size="16" />
+          </div>
+          <h2 class="gl-heading-5 gl-mb-0 gl-font-normal">
+            {{ s__('HomePageMergeRequestsWidget|Merge requests waiting for your review') }}
+          </h2>
           <span
             v-if="reviewRequestedLastUpdatedAt"
             data-testid="review-requested-last-updated-at"
-            class="gl-ml-auto gl-text-sm gl-text-subtle"
-            >{{ timeFormatted(reviewRequestedLastUpdatedAt) }}</span
+            class="gl-text-sm gl-text-gray-400 gl-text-subtle"
           >
-        </gl-link>
-      </li>
-      <li>
-        <gl-link
-          class="gl-flex gl-items-center gl-gap-3 gl-rounded-small gl-px-1 gl-py-1 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
-          variant="meta"
-          :href="assignedToYouPath"
-          @click="handleAssignedClick"
-        >
-          {{ mergeRequestsYourMergeRequestsTitle }}
-          <gl-badge data-testid="assigned-count">{{ assignedCount }}</gl-badge>
+            {{ timeFormatted(reviewRequestedLastUpdatedAt) }}
+          </span>
+        </div>
+      </div>
+    </gl-link>
+    <gl-link
+      class="gl-border gl-flex-1 gl-cursor-pointer gl-rounded-lg gl-border-subtle gl-bg-subtle gl-px-4 gl-py-4 hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
+      :href="assignedToYouPath"
+      :aria-label="s__('HomePageMergeRequestsWidget|Merge requests assigned to you')"
+      data-testid="assigned-to-you-card"
+      variant="meta"
+      @click="handleAssignedClick"
+    >
+      <div>
+        <div v-if="hasError" class="gl-m-2">
+          <div class="gl-flex gl-flex-col gl-items-start gl-gap-4">
+            <gl-icon name="error" class="gl-text-red-500" :size="16" />
+            <p class="gl-text-size-h3 gl-text-default-400 gl-mb-0">
+              {{
+                s__(
+                  'HomePageMergeRequestsWidget|The number of merge requests is not available. Please refresh the page to try again, or visit the dashboard.',
+                )
+              }}
+            </p>
+          </div>
+        </div>
+        <div v-else>
+          <div class="gl-m-2 gl-flex gl-items-center gl-gap-4">
+            <div class="gl-heading-1 gl-mb-0" data-testid="assigned-count">
+              {{ assignedCount }}
+            </div>
+            <gl-icon name="merge-request" :size="16" />
+          </div>
+          <h2 class="gl-heading-5 gl-mb-0 gl-font-normal">
+            {{ s__('HomePageMergeRequestsWidget|Merge requests assigned to you') }}
+          </h2>
           <span
             v-if="assignedLastUpdatedAt"
             data-testid="assigned-last-updated-at"
-            class="gl-ml-auto gl-text-sm gl-text-subtle"
-            >{{ timeFormatted(assignedLastUpdatedAt) }}</span
+            class="gl-text-sm gl-text-gray-400 gl-text-subtle"
           >
-        </gl-link>
-      </li>
-    </ul>
-  </visibility-change-detector>
+            {{ timeFormatted(assignedLastUpdatedAt) }}
+          </span>
+        </div>
+      </div>
+    </gl-link>
+  </div>
 </template>

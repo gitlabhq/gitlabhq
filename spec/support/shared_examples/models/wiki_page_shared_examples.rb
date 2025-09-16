@@ -778,7 +778,7 @@ RSpec.shared_examples 'wiki_page' do |container_type|
       3.times { |i| subject.update(content: "content #{i}") }
     end
 
-    context 'when number of versions is less than the default paginiated per page' do
+    context 'when number of versions is less than the default paginated per page' do
       it "returns an array of all commits for the page" do
         expect(subject.versions).to be_a(::CommitCollection)
         expect(subject.versions.length).to eq(4)
@@ -786,7 +786,7 @@ RSpec.shared_examples 'wiki_page' do |container_type|
       end
     end
 
-    context 'when number of versions is more than the default paginiated per page' do
+    context 'when number of versions is more than the default paginated per page' do
       before do
         allow(Kaminari.config).to receive(:default_per_page).and_return(3)
       end

@@ -5,7 +5,7 @@ class EnvironmentPolicy < BasePolicy
 
   condition(:stop_with_deployment_allowed) do
     @subject.stop_actions_available? &&
-      can?(:create_deployment) && can?(:update_build, @subject.stop_actions.last)
+      can?(:create_deployment) && can?(:play_job, @subject.stop_actions.last)
   end
 
   condition(:stop_with_update_allowed) do

@@ -1,0 +1,194 @@
+/*
+ * DS experiments
+ */
+
+ // Increased border radii
+
+ :where(.application-chrome) {
+
+  // Form elements and buttons
+  .gl-button,
+  .gl-button.gl-button,
+  .form-control:not(.gl-search-box-by-type-input-borderless),
+  .gl-form-input,
+  .gl-form-input.form-control:not(.gl-search-box-by-type-input-borderless):not(.input-group-prepend + .gl-form-input):not(.gl-search-box-by-click-input),
+  .gl-form-select,
+  .input-group-text,
+  &.application-chrome .filtered-search-box {
+    @apply gl-rounded-lg;
+  }
+
+  // Decrease spacing between buttons
+  // to align with optical spacing
+  .gl-gap-3:has(> .gl-button) {
+    @apply gl-gap-[0.375rem]; // 6px
+  }
+
+  // Filtered search button
+  .input-group-prepend > div,
+  .filtered-search-history-dropdown-toggle-button.gl-button,
+  .input-group-prepend .btn {
+    @apply gl-rounded-l-lg #{!important};
+  }
+
+  .input-group-append .btn {
+    @apply gl-rounded-r-lg #{!important};
+  }
+
+  // Increased border radii for GlModal
+  .gl-modal .modal-content {
+    @apply gl-rounded-[1rem] #{!important};
+  }
+
+  // Increased border radii for drawers
+  .gl-drawer {
+    @apply gl-rounded-l-[1rem];
+
+    .gl-drawer-body-scrim::after {
+      @apply gl-rounded-bl-[1rem];
+    }
+  }
+
+  // Increased border radii for GlAlert
+  .gl-alert {
+    @apply gl-rounded-lg;
+  }
+
+  // Increased border radii for GlCard
+  .gl-card {
+    @apply gl-rounded-lg;
+  }
+
+  .gl-card-header {
+    @apply gl-rounded-t-lg;
+  }
+
+  .gl-card-footer {
+    @apply gl-rounded-b-lg;
+  }
+
+  // Increased border radii for more components
+  .info-well,
+  .file-holder,
+  .table-holder {
+    @apply gl-rounded-lg #{!important};
+  }
+
+  // Tree
+  table.tree-table tbody tr:last-child {
+    td, th {
+      &:first-child {
+        border-bottom-left-radius: $gl-border-radius-lg-inner !important;
+      }
+
+      &:last-child {
+        border-bottom-right-radius: $gl-border-radius-lg-inner !important;
+      }
+    }
+  }
+
+  // File title
+  .file-title-flex-parent, .file-holder .file-title-flex-parent {
+    border-top-left-radius: $gl-border-radius-lg-inner !important;
+    border-top-right-radius: $gl-border-radius-lg-inner !important;
+  }
+
+  // Discussion file comment
+  .discussion-body .diff-file .file-title.file-title-flex-parent {
+    @apply gl-rounded-none #{!important};
+  }
+
+  // Diff border radii
+  .diff-file {
+    .code.md-suggestion-diff {
+      border-bottom-right-radius: $gl-border-radius-lg-inner !important;
+      border-bottom-left-radius: $gl-border-radius-lg-inner !important;
+    }
+
+    .diff-content {
+      border-bottom-right-radius: $gl-border-radius-lg-inner !important;
+      border-bottom-left-radius: $gl-border-radius-lg-inner !important;
+    }
+
+    .gl-alert-danger {
+      @apply gl-rounded-t-lg;
+    }
+
+    .file-title-flex-parent,
+    .file-holder .file-title-flex-parent {
+      border-top-left-radius: $gl-border-radius-lg-inner !important;
+      border-top-right-radius: $gl-border-radius-lg-inner !important;
+    }
+
+    .gl-alert + .file-title-flex-parent,
+    .gl-alert + .file-holder .file-title-flex-parent {
+      border-top-left-radius: initial !important;
+      border-top-right-radius: initial !important;
+    }
+
+    &:not(.has-body) {
+      .file-title-flex-parent,
+      .file-holder .file-title-flex-parent {
+        border-bottom-right-radius: $gl-border-radius-lg-inner !important;
+        border-bottom-left-radius: $gl-border-radius-lg-inner !important;
+      }
+    }
+  }
+
+  .diff-table.code,
+  table.code {
+    border-radius: 0 0 $gl-border-radius-lg-inner $gl-border-radius-lg-inner !important;
+
+    .line_holder:last-of-type {
+      .diff-grid-left {
+        .diff-td:first-child,
+        td:first-child {
+          border-bottom-left-radius: $gl-border-radius-lg-inner !important;
+
+          .diff-line-expand-button {
+            border-bottom-left-radius: $gl-border-radius-lg-inner !important;
+          }
+        }
+      }
+
+      .diff-td:last-child:not(.left-side.parallel),
+      td:last-child:not(.left-side.parallel) {
+        border-bottom-right-radius: $gl-border-radius-lg-inner !important;
+      }
+    }
+  }
+
+  // Issue boards
+  // Profile readme
+  // User calendar
+  .board > .gl-rounded-base,
+  .profile-readme.read-more-container.gl-rounded-base,
+  .read-more-trigger.gl-rounded-base,
+  .user-calendar.gl-rounded-base {
+    @apply gl-rounded-lg;
+  }
+
+  // Readme
+  .read-more-trigger.gl-rounded-b-base {
+    @apply gl-rounded-b-lg;
+  }
+
+}
+
+// GlBadge within GlButton variants
+
+:where(.application-chrome) {
+
+  // Primary confirm variant
+
+  .gl-button.btn-confirm:not(.btn-confirm-secondary) .gl-badge {
+    @apply gl-text-default gl-bg-default;
+  }
+
+  // Secondary confirm variant
+
+  .gl-button.btn-confirm.btn-confirm-secondary .gl-badge {
+    @apply gl-text-default gl-bg-neutral-100 dark:gl-bg-neutral-800;
+  }
+
+}

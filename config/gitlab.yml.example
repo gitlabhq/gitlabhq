@@ -133,17 +133,13 @@ production: &base
     ##   3 - Neutral
     ##   4 - Blue
     ##   5 - Green
-    ##   6 - Light Indigo
-    ##   7 - Light Blue
-    ##   8 - Light Green
     ##   9 - Red
-    ##   10 - Light Red
-    # default_theme: 1 # default: 1
+    # default_theme: 3 # default: 3
     ## Default color mode ID
     ##   1 - Light
     ##   2 - Dark
     ##   3 - Automatic
-    # default_color_mode: 1 # default: 1
+    # default_color_mode: 3 # default: 3
 
     ## Custom html header tags
     # In some cases some custom header tags are needed
@@ -1318,6 +1314,15 @@ production: &base
     # File that contains the secret key for verifying access for gitlab-workhorse.
     # Default is '.gitlab_workhorse_secret' relative to Rails.root (i.e. root of the GitLab app).
     # secret_file: /home/git/gitlab/.gitlab_workhorse_secret
+
+  database_traffic_capture:
+    config:
+      storage:
+        connector:
+          provider: Gcs
+          project_id: 'my-project'
+          credentials: '/path/to/keyfile.json'
+          bucket: 'my-bucket'
 
   cell:
     # enabled: false

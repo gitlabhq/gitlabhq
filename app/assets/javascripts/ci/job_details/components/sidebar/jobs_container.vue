@@ -24,7 +24,7 @@ export default {
 };
 </script>
 <template>
-  <div class="block builds-container">
+  <div class="builds-container">
     <h2 class="gl-m-0 gl-mb-2 gl-text-base gl-leading-reset">
       {{ __('Related jobs') }}
     </h2>

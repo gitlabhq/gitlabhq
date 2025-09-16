@@ -20,7 +20,6 @@ gdk-update:
     ENABLE_BOOTSNAP: "false"
     PUMA_SINGLE_MODE: "true"
     GDK_DEBUG: "true"
-    BUNDLE_WITHOUT: production
   script:
     - unset BUNDLER_CHECKSUM_VERIFICATION_OPT_IN
     - cd /home/gdk/gdk/gitlab

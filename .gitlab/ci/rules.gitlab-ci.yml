@@ -52,6 +52,10 @@
 .if-default-branch-push: &if-default-branch-push
   if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"'
 
+# canonical project creates branches in foss project to run mr pipelines via cross project trigger
+.if-as-if-foss-mr-refs: &if-as-if-foss-mr-refs
+  if: '$CI_PROJECT_NAME == "gitlab-foss" && $CI_COMMIT_REF_NAME =~ /^as-if-foss\//'
+
 # This rule ensures the job runs for push pipeline events on stable branches.
 # This is used for ensuring jobs run in a pipeline triggered by mirror sync.
 .if-sync-changes-on-stable-branches: &if-sync-changes-on-stable-branches
@@ -116,6 +120,9 @@
 
 .if-merge-request-labels-run-all-jest: &if-merge-request-labels-run-all-jest
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-jest/'
+
+.if-merge-request-labels-run-rspec-vue3: &if-merge-request-labels-run-rspec-vue3
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-rspec-vue3/'
 
 .if-merge-request-labels-run-all-e2e: &if-merge-request-labels-run-all-e2e
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-e2e/'
@@ -471,6 +478,9 @@
   - "{,ee/,jh/}{bin,config,db,elastic,gems,generator_templates,lib}/**/*"
   - "{,ee/,jh/}spec/**/*"
 
+.search-migration-patterns: &search-migration-patterns
+  - "{ee/,jh/}{,spec/}elastic/migrate/**/*"
+
 .search-version-patterns: &search-version-patterns
   - "GITLAB_ELASTICSEARCH_INDEXER_VERSION"
   - "GITLAB_ZOEKT_VERSION"
@@ -499,8 +509,6 @@
 # DB patterns + .ci-patterns
 .db-patterns: &db-patterns
   - "{,ee/,jh/}{,spec/}{db,migrations}/**/*"
-  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration{,_spec}.rb"
-  - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration/**/*"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database{,_spec}.rb"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/database/**/*"
   - "{,ee/,jh/}spec/support/db_cleaner.rb"
@@ -869,6 +877,8 @@
       changes: *search-backend-patterns
     - <<: *if-merge-request
       changes: *search-version-patterns
+    - <<: *if-merge-request
+      changes: *search-migration-patterns
 
 .rails:rules:ee-and-foss-default-rules:
   rules:
@@ -1207,44 +1217,35 @@
 #################
 # Caching rules #
 #################
-.caching:rules:packages-cleanup:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    # The security mirror doesn't use the package registry
-    - <<: *if-security-schedule
-      when: never
-    # That would run for any project that has a "maintenance" pipeline schedule
-    # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
-    - <<: *if-schedule-maintenance
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes:
-        - ".gitlab/ci/caching.gitlab-ci.yml"
-        - "scripts/packages/automated_cleanup.rb"
-      when: manual
-      allow_failure: true
-
-# rules for updating unprotected caches via maintenance schedule pipelines, like rubocop cache
-.caching:rules:update-master-based-caches:
-  rules:
-    - <<: *if-schedule-maintenance
-    - <<: *if-security-schedule
-    - <<: *if-foss-schedule
-    - <<: *if-merge-request-labels-update-caches
-
 # This rule is used by pull-push cache jobs to ensure pipeline always has cache populated
-.caching:rules:update-cache:
+# All caches are generally related to app code, so limit cache jobs to code-backstage-patterns
+.caching:rules:update-cache-on-code-changes:
   rules:
-    - <<: *if-merge-train
-      when: never
-    - when: always
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+    - *if-as-if-foss-mr-refs
 
 # e2e runners are only available in .com and in gitlab-org grouped projects
 .caching:rules:e2e-gem-cache-e2e-runners:
   rules:
     - <<: *if-not-dot-com-gitlab-org-and-not-jihulab
       when: never
-    - !reference [.caching:rules:update-cache, rules]
+    - !reference [.caching:rules:update-cache-on-code-changes, rules]
+
+# this rule is combination of rules for compile assets jobs:
+#  * .frontend:rules:compile-test-assets
+#  * .frontend:rules:compile-production-assets
+#  * .build-images:rules:build-gdk-image
+.caching:rules:frontend-asset-hash:
+  rules:
+    - <<: *if-tag
+    - <<: *if-sync-changes-on-stable-branches
+    - if: '$ENABLE_COMPILE_PRODUCTION_ASSETS == "true"'
+    - if: '$ENABLE_COMPILE_TEST_ASSETS == "true"'
+    - !reference [.frontend:rules:compile-test-assets, rules]
+    - !reference [.frontend:rules:assets-shared, rules]
+    - !reference [.releases:rules:canonical-dot-com-security-gitlab-stable-branch-only, rules]
+    - !reference [.build-images:rules:build-gdk-image, rules]
 
 ######################
 # CI Templates Rules #
@@ -1300,6 +1301,13 @@
 
 .docs:rules:docs-i18n-lint:
   rules:
+    - <<: *if-tech-docs-localization
+      changes: *docs-i18n-patterns
+
+.docs:rules:docs-all-lint:
+  rules:
+    - <<: *if-default-refs
+      changes: *docs-patterns
     - <<: *if-tech-docs-localization
       changes: *docs-i18n-patterns
 
@@ -1473,6 +1481,7 @@
     - if: '$ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
@@ -1506,6 +1515,7 @@
       changes: *code-backstage-patterns
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
     - <<: *if-merge-request
       changes: *frontend-dependency-patterns
     - <<: *if-merge-request
@@ -1531,6 +1541,7 @@
     - if: '$ENABLE_COMPILE_STORYBOOK == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
     # If the MR isn't approved, only run when jest predictive jobs would
     - <<: *if-merge-request-not-approved
       changes: *frontend-predictive-patterns
@@ -1546,6 +1557,7 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
     # If the MR isn't approved, only run when jest predictive jobs would
     - <<: *if-merge-request-not-approved
       changes:
@@ -1555,28 +1567,6 @@
       changes:
         - '{,ee/}app/**/*.vue'
         - '{,ee/}app/**/*.stories.js'
-
-.frontend:rules:upload-frontend-fixtures:
-  rules:
-    # The new strategy to upload fixtures as generic packages is experimental and can be disabled by removing the `REUSE_FRONTEND_FIXTURES_ENABLED` variable
-    - if: '$REUSE_FRONTEND_FIXTURES_ENABLED != "true"'
-      when: never
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - <<: *if-default-branch-schedule-weekly
-      when: never
-    - <<: *if-dot-com-gitlab-org-default-branch
-      changes: *code-backstage-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
-    - <<: *if-dot-com-gitlab-org-merge-request
-      changes:
-        - ".gitlab/ci/frontend.gitlab-ci.yml"
-        - "scripts/gitlab_component_helpers.sh"
-      when: manual
-      allow_failure: true
 
 .frontend:rules:jest:
   rules:
@@ -1591,6 +1581,7 @@
       changes: *code-backstage-patterns
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
     - <<: *if-merge-request
       changes: *frontend-dependency-patterns
     - <<: *if-merge-request
@@ -1626,6 +1617,7 @@
     - if: '$ENABLE_JEST_INTEGRATION == "true"'
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
     # If the MR isn't approved, only run when jest predictive jobs would
     - <<: *if-merge-request-not-approved
       changes: *frontend-predictive-patterns
@@ -1673,6 +1665,7 @@
       when: manual
       allow_failure: true
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
       when: manual
       allow_failure: true
     - <<: *if-merge-request
@@ -1702,6 +1695,15 @@
     - <<: *if-merge-request-targeting-stable-branch
       when: never
     - !reference [.frontend:rules:jest, rules]
+
+.frontend:rules:fixtures-packages-cleanup:
+  rules:
+    - *if-dot-com-ee-schedule-default-branch-maintenance
+
+.frontend:rules:update-frontend-fixtures:
+  rules:
+    - if: $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"
+      changes: *code-backstage-patterns
 
 ################
 # Memory rules #
@@ -2409,6 +2411,10 @@
     - <<: *if-default-refs
       changes: *backend-patterns
 
+.rails:rules:ee-and-foss-system-vue3:
+  rules:
+    - <<: *if-merge-request-labels-run-rspec-vue3
+
 .rails:rules:ee-and-foss-system:
   rules:
     - <<: *if-fork-merge-request
@@ -2698,7 +2704,20 @@
       variables:
         RUN_ALL_RUBOCOP: "true"
     - <<: *if-default-refs
-      changes: *code-backstage-qa-patterns
+      # this is a combination of ruby-patterns and additional paths that contain ruby scripts without extension
+      changes:
+        - "**/Rakefile"
+        - "**/Dangerfile"
+        - "**/Gemfile"
+        - "**/Gemfile.next"
+        - "**/Guardfile"
+        - "**/*.rake"
+        - "**/*.rb"
+        - "**/*.ru"
+        - "**/*.haml"
+        - "**/*.builder"
+        - "scripts/**/*"
+        - "bin/*"
 
 .static-analysis:rules:ensure-application-settings-have-definition-file:
   rules:
@@ -2770,8 +2789,8 @@
 
 .releases:rules:canonical-dot-com-security-gitlab-stable-branch-only:
   rules:
-    # Run release environment related jobs for initial RC tag pipelines - https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/21267
-    - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_COMMIT_REF_NAME =~ /^v?[\d.]+-rc42-ee$/'
+    # Run release environment related jobs for RC tag pipelines
+    - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_COMMIT_REF_NAME =~ /^v?[\d.]+-rc\d+-ee$/'
     - if: '$CI_COMMIT_MESSAGE =~ /\[merge-train skip\]/'
       when: never
     - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable-ee$/'
@@ -3151,6 +3170,7 @@
       changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
     - <<: *if-merge-request
       changes: *backend-patterns
     - <<: *if-default-branch-schedule-weekly
@@ -3276,6 +3296,7 @@
     - <<: *if-security-merge-request
       changes: *db-patterns
     - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *setup-test-env-patterns
     - <<: *if-merge-request
       changes: *code-backstage-qa-patterns
     - <<: *if-merge-request

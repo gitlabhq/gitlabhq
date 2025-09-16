@@ -96,8 +96,8 @@ RSpec.describe 'Editing file blob', :js, feature_category: :source_code_manageme
           "Add a bullet list",
           "Add a numbered list",
           "Add a checklist",
-          "Add a collapsible section",
-          "Add a table"
+          "Add a table",
+          "Add a collapsible section"
         ]
         visit project_edit_blob_path(project, tree_join(branch, readme_file_path))
         buttons = page.all('.file-buttons .md-header-toolbar button[type="button"]')

@@ -85,6 +85,30 @@ RSpec.shared_examples 'create deployment for job' do
         expect(subject.deployment_cluster).to be_nil
       end
 
+      context 'when there is a job environment record' do
+        let!(:job_environment) do
+          create(:job_environment, project: project, environment: environment, job: job, pipeline: job.pipeline)
+        end
+
+        it 'associates the deployment with the job environment' do
+          subject
+
+          expect(job_environment.deployment_id).to eq(subject.id)
+        end
+
+        context 'when the persisted_job_environment_relationship feature flag is disabled' do
+          before do
+            stub_feature_flags(persisted_job_environment_relationship: false)
+          end
+
+          it 'does not update the associated job environment record' do
+            subject
+
+            expect(job_environment.deployment_id).to be_nil
+          end
+        end
+      end
+
       context 'when environment has deployment platform' do
         let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project], managed: managed_cluster) }
         let(:managed_cluster) { true }

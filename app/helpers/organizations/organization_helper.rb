@@ -8,6 +8,10 @@ module Organizations
       current_action?(:index, :new) ? "your_work" : "organization"
     end
 
+    def ui_for_organizations_enabled?
+      Feature.disabled?(:opt_out_organizations, current_user) && Feature.enabled?(:ui_for_organizations, current_user)
+    end
+
     def organization_show_app_data(organization)
       {
         organization: organization.slice(:id, :name, :description_html, :visibility)
@@ -105,7 +109,7 @@ module Organizations
     def shared_organization_index_app_data
       {
         new_organization_url: new_organization_path,
-        can_create_organization: Feature.enabled?(:allow_organization_creation, current_user) &&
+        can_create_organization: Feature.enabled?(:organization_switching, current_user) &&
           can?(current_user, :create_organization)
       }
     end

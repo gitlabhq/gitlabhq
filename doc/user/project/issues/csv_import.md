@@ -16,17 +16,19 @@ description: "Import issues to a project by uploading a CSV file."
 {{< history >}}
 
 - Additionally [allowed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) for Planner role in GitLab 17.7.
+- Support for the `type` column [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199945) in GitLab 18.4, [with a flag](../../../administration/feature_flags/_index.md) named `work_items_project_issues_list`. Enabled by default.
 
 {{< /history >}}
 
 You can import issues to a project by uploading a CSV (comma-separated values) file with the following columns:
 
-| Name          | Required?              | Description                                      |
-|:--------------|:-----------------------|:-------------------------------------------------|
-| `title`       | {{< icon name="check-circle" >}} Yes | Issue title.                                     |
-| `description` | {{< icon name="check-circle" >}} Yes | Issue description.                               |
-| `due_date`    | {{< icon name="dotted-circle" >}} No | Issue due date in `YYYY-MM-DD` format. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91317) in GitLab 15.2. |
-| `milestone`   | {{< icon name="dotted-circle" >}} No | Title of the issue milestone. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112204) in GitLab 16.7.         |
+| Name          | Required                             | Description |
+| ------------- | ------------------------------------ | ----------- |
+| `title`       | {{< icon name="check-circle" >}} Yes | Issue title. |
+| `description` | {{< icon name="check-circle" >}} Yes | Issue description. |
+| `due_date`    | {{< icon name="dotted-circle" >}} No | Issue due date in `YYYY-MM-DD` format. |
+| `milestone`   | {{< icon name="dotted-circle" >}} No | Title of the issue milestone. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112204) in GitLab 16.7. |
+| `type`        | {{< icon name="dotted-circle" >}} No | Type of issue. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200893) in GitLab 18.4. |
 
 Data in other columns is not imported.
 
@@ -69,9 +71,9 @@ For information about CSV parsing requirements that can affect how imported file
 {{< /alert >}}
 
 | Element                | Format |
-|------------------------|--------|
+| ---------------------- | ------ |
 | header row             | CSV files must include the following headers: `title` and `description`. The case of the headers does not matter. |
-| columns                | Data from columns outside of `title`, `description`, `due_date`, and `milestone` are not imported. |
+| columns                | Data from columns outside of `title`, `description`, `due_date`, `milestone` and `type` are not imported. |
 | separators             | The column separator is detected from the header row. Supported separator characters are commas (`,`), semicolons (`;`), and tabs (`\t`). The row separator can be either `CRLF` or `LF`. |
 | double-quote character | The double-quote (`"`) character is used to quote fields, enabling the use of the column separator in a field (see the third line in the sample CSV data below). To insert a double-quote (`"`) in a quoted field use two double-quote characters in succession (`""`). |
 | data rows              | After the header row, following rows must use the same column order. The issue title is required, but the description is optional. |

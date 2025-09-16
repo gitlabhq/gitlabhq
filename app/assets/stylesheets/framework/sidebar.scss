@@ -1,11 +1,14 @@
+@use "sass:map";
+
 .content-wrapper {
   width: 100%;
 
   .container-fluid {
-    padding: 0 $container-margin;
+    --container-padding-x: #{$container-margin};
+    padding: 0 var(--container-padding-x);
 
     @include media-breakpoint-up(xl) {
-      padding: 0 $container-margin-xl;
+      --container-padding-x: #{$container-margin-xl};
     }
 
     &.container-blank {
@@ -25,6 +28,8 @@
 
   &:not(.is-merge-request) {
     @include media-breakpoint-up(sm) {
+      @apply gl-border-l;
+
       &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
         padding-right: $right-sidebar-collapsed-width;
       }
@@ -100,7 +105,9 @@
 }
 
 .right-sidebar {
-  @apply gl-border-l;
+  &:where(.right-sidebar-expanded) {
+    @apply gl-border-l;
+  }
 
   &.right-sidebar-merge-requests {
     @include media-breakpoint-up(lg) {
@@ -209,18 +216,18 @@
       position: absolute;
       top: $gl-padding;
       bottom: $gl-padding;
-      left: map-get($spacers, 2) - px-to-rem(1px);
+      left: map.get($spacers, 2) - px-to-rem(1px);
     }
 
     &-row {
-      margin-top: map-get($spacers, 3);
+      margin-top: map.get($spacers, 3);
 
       &:nth-child(1) {
         margin-top: 0;
       }
     }
 
-    $line-height: map-get($spacers, 4);
+    $line-height: map.get($spacers, 4);
 
     &-icon {
       height: $line-height;
@@ -820,3 +827,4 @@
     font-size: 13px;
   }
 }
+

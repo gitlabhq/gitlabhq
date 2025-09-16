@@ -4,6 +4,7 @@ import {
   GlButton,
   GlModal,
   GlSearchBoxByType,
+  GlSkeletonLoader,
   GlTruncate,
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
@@ -52,6 +53,7 @@ export default {
     GlButton,
     GlModal,
     GlSearchBoxByType,
+    GlSkeletonLoader,
     GlTruncate,
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
@@ -138,30 +140,33 @@ export default {
         :placeholder="__('Search comment templates')"
         @keydown="onKeydown"
       />
-      <section v-if="!filteredSavedReplies.length" class="gl-mt-3">
-        {{ __('No comment templates found.') }}
-      </section>
-      <ul
-        v-else
-        ref="resultsList"
-        class="comment-templates-options gl-m-0 gl-list-none gl-p-0"
-        data-testid="comment-templates-list"
-        @keydown="onKeydown"
-      >
-        <gl-disclosure-dropdown-group
-          v-for="(commentTemplateGroup, index) in filteredSavedReplies"
-          :key="commentTemplateGroup.name"
-          :class="{ '!gl-mt-0 !gl-border-t-0 gl-pt-0': index === 0 }"
-          :group="commentTemplateGroup"
-          bordered
-          @action="onSelect"
+      <gl-skeleton-loader v-if="$apollo.queries.savedReplies.loading" class="gl-mt-3" />
+      <template v-else>
+        <section v-if="!filteredSavedReplies.length" class="gl-mt-3">
+          {{ __('No comment templates found.') }}
+        </section>
+        <ul
+          v-else
+          ref="resultsList"
+          class="comment-templates-options gl-m-0 gl-list-none gl-p-0"
+          data-testid="comment-templates-list"
+          @keydown="onKeydown"
         >
-          <template #list-item="{ item }">
-            <strong class="gl-block gl-w-full">{{ item.text }}</strong>
-            <gl-truncate class="gl-mt-2 gl-text-subtle" :text="item.content" position="end" />
-          </template>
-        </gl-disclosure-dropdown-group>
-      </ul>
+          <gl-disclosure-dropdown-group
+            v-for="(commentTemplateGroup, index) in filteredSavedReplies"
+            :key="commentTemplateGroup.name"
+            :class="{ '!gl-mt-0 !gl-border-t-0 gl-pt-0': index === 0 }"
+            :group="commentTemplateGroup"
+            bordered
+            @action="onSelect"
+          >
+            <template #list-item="{ item }">
+              <strong class="gl-block gl-w-full">{{ item.text }}</strong>
+              <gl-truncate class="gl-mt-2 gl-text-subtle" :text="item.content" position="end" />
+            </template>
+          </gl-disclosure-dropdown-group>
+        </ul>
+      </template>
       <template #modal-footer>
         <gl-disclosure-dropdown
           :items="newCommentTemplatePaths"

@@ -1043,6 +1043,26 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         expect(mr_diff.empty?).to be_truthy
       end
 
+      it 'sets project_id on created diff files correctly' do
+        mr_diff = create(:merge_request).merge_request_diff
+
+        mr_diff.merge_request_diff_files.each do |mrdf|
+          expect(mrdf.project_id).to eq(mr_diff.project_id)
+        end
+      end
+
+      it 'sets new_path to nil when new_path == old_path' do
+        mr_diff = create(:merge_request).merge_request_diff
+
+        mr_diff.merge_request_diff_files.each do |mrdf|
+          if mrdf.new_path == mrdf.old_path
+            expect(mrdf[:new_path]).to be_nil
+          else
+            expect(mrdf[:new_path]).to eq(mrdf.new_path)
+          end
+        end
+      end
+
       it 'persists diff files sorted directory first' do
         mr_diff = create(:merge_request).merge_request_diff
         diff_files_paths = mr_diff.merge_request_diff_files.map { |file| file.new_path.presence || file.old_path }
@@ -1074,15 +1094,22 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
       it 'expands collapsed diffs before saving' do
         mr_diff = create(:merge_request, source_branch: 'expand-collapse-lines', target_branch: 'master').merge_request_diff
-        diff_file = mr_diff.merge_request_diff_files.find_by(new_path: 'expand-collapse/file-5.txt')
-
+        diff_file = mr_diff.merge_request_diff_files.find_by(
+          "new_path = ? OR (new_path IS NULL AND old_path = ?)",
+          'expand-collapse/file-5.txt',
+          'expand-collapse/file-5.txt'
+        )
         expect(diff_file.diff).not_to be_empty
       end
 
       it 'saves binary diffs correctly' do
         path = 'files/images/icn-time-tracking.pdf'
         mr_diff = create(:merge_request, source_branch: 'add-pdf-text-binary', target_branch: 'master').merge_request_diff
-        diff_file = mr_diff.merge_request_diff_files.find_by(new_path: path)
+        diff_file = mr_diff.merge_request_diff_files.find_by(
+          "new_path = ? OR (new_path IS NULL AND old_path = ?)",
+          path,
+          path
+        )
 
         expect(diff_file).to be_binary
         expect(diff_file.diff).to eq(mr_diff.compare.diffs(paths: [path]).to_a.first.diff)
@@ -1099,7 +1126,11 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
           create_file_in_repo(project, target_branch, branch, filename, content)
 
           mr_diff = create(:merge_request, target_project: project, source_project: project, source_branch: branch, target_branch: target_branch).merge_request_diff
-          diff_file = mr_diff.merge_request_diff_files.find_by(new_path: filename)
+          diff_file = mr_diff.merge_request_diff_files.find_by(
+            "new_path = ? OR (new_path IS NULL AND old_path = ?)",
+            filename,
+            filename
+          )
 
           expect(diff_file).to be_binary
           expect(diff_file.diff).to eq(mr_diff.compare.diffs(paths: [filename]).to_a.first.diff)
@@ -1161,9 +1192,23 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
         end
 
         it 'sets generated field correctly' do
-          expect(diff_files.find_by(new_path: generated_file_name_manual)).to be_generated
-          expect(diff_files.find_by(new_path: generated_file_name_auto)).to be_generated
-          expect(diff_files.find_by(new_path: regular_file_name)).not_to be_generated
+          [generated_file_name_manual, generated_file_name_auto].each do |file|
+            diff_file = diff_files.find_by(
+              "new_path = ? OR (new_path IS NULL AND old_path = ?)",
+              file,
+              file
+            )
+
+            expect(diff_file).to be_generated
+          end
+
+          diff_file = diff_files.find_by(
+            "new_path = ? OR (new_path IS NULL AND old_path = ?)",
+            regular_file_name,
+            regular_file_name
+          )
+
+          expect(diff_file).not_to be_generated
         end
       end
     end
@@ -1524,18 +1569,6 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
               expect(diff.external_diff_store).to eq(ObjectStorage::Store::REMOTE)
             end
           end
-
-          context 'when feature flag update_external_diff_storage is disabled' do
-            before do
-              stub_feature_flags(update_external_diff_storage: false)
-            end
-
-            it 'does not update value to remote' do
-              diff.opening_external_diff do
-                expect(diff.external_diff_store).to eq(ObjectStorage::Store::LOCAL)
-              end
-            end
-          end
         end
       end
     end
@@ -1752,5 +1785,10 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
 
       merge_request_diff
     end
+  end
+
+  it_behaves_like 'it has loose foreign keys' do
+    let(:factory_name) { :merge_request_diff }
+    let(:worker_class) { LooseForeignKeys::MergeRequestDiffCommitCleanupWorker }
   end
 end

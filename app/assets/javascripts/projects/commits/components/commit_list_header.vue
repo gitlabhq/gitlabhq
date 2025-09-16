@@ -5,10 +5,11 @@ import {
   GlTooltipDirective,
   GlIcon,
 } from '@gitlab/ui';
-import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
-import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
+import { joinPaths } from '~/lib/utils/url_utility';
+import { generateRouterParams } from '~/repository/utils/ref_switcher_utils';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { __ } from '~/locale';
+import OpenMrBadge from '~/badges/components/open_mr_badge/open_mr_badge.vue';
 import CommitFilteredSearch from './commit_filtered_search.vue';
 import CommitListBreadcrumb from './commit_list_breadcrumb.vue';
 
@@ -21,12 +22,14 @@ export default {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
     GlIcon,
+    OpenMrBadge,
   },
   directives: {
     GlTooltipDirective,
   },
   inject: [
     'projectRootPath',
+    'projectFullPath',
     'projectId',
     'escapedRef',
     'refType',
@@ -35,6 +38,9 @@ export default {
     'commitsFeedPath',
   ],
   computed: {
+    currentPath() {
+      return this.$route.params.path || '';
+    },
     dropdownItems() {
       return [
         {
@@ -66,7 +72,8 @@ export default {
   },
   methods: {
     onRefChange(selectedRef) {
-      visitUrl(generateRefDestinationPath(this.projectRootPath, this.escapedRef, selectedRef));
+      const { path, query } = generateRouterParams(selectedRef, this.$route);
+      this.$router.push({ path, query });
     },
   },
 };
@@ -90,27 +97,36 @@ export default {
 
     <div class="gl-flex gl-items-center gl-justify-between">
       <h1 class="gl-text-size-h1">{{ __('Commits') }}</h1>
-      <gl-disclosure-dropdown
-        v-gl-tooltip-directive.hover="__('Actions')"
-        no-caret
-        icon="ellipsis_v"
-        :toggle-text="__('Actions')"
-        text-sr-only
-        category="tertiary"
-        placement="bottom-end"
-      >
-        <gl-disclosure-dropdown-item
-          v-for="item in dropdownItems"
-          :key="item.text"
-          :item="item"
-          v-bind="item.extraAttrs"
+
+      <div class="gl-flex gl-items-baseline gl-gap-3">
+        <open-mr-badge
+          v-if="currentPath"
+          :project-path="projectFullPath"
+          :blob-path="currentPath"
+          :current-ref="escapedRef"
+        />
+        <gl-disclosure-dropdown
+          v-gl-tooltip-directive.hover="__('Actions')"
+          no-caret
+          icon="ellipsis_v"
+          :toggle-text="__('Actions')"
+          text-sr-only
+          category="tertiary"
+          placement="bottom-end"
         >
-          <template #list-item>
-            <gl-icon :name="item.icon" class="gl-mr-2" variant="subtle" />
-            {{ item.text }}
-          </template>
-        </gl-disclosure-dropdown-item>
-      </gl-disclosure-dropdown>
+          <gl-disclosure-dropdown-item
+            v-for="item in dropdownItems"
+            :key="item.text"
+            :item="item"
+            v-bind="item.extraAttrs"
+          >
+            <template #list-item>
+              <gl-icon :name="item.icon" class="gl-mr-2" variant="subtle" />
+              {{ item.text }}
+            </template>
+          </gl-disclosure-dropdown-item>
+        </gl-disclosure-dropdown>
+      </div>
     </div>
 
     <commit-filtered-search @filter="$emit('filter', $event)" />

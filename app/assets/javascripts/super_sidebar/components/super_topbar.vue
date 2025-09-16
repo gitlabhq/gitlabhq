@@ -6,6 +6,7 @@ import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
 import CreateMenu from './create_menu.vue';
 import UserMenu from './user_menu.vue';
 import UserCounts from './user_counts.vue';
+import PromoMenu from './promo_menu.vue';
 import { SEARCH_MODAL_ID } from './global_search/constants';
 
 export default {
@@ -21,6 +22,7 @@ export default {
     CreateMenu,
     UserCounts,
     UserMenu,
+    PromoMenu,
     OrganizationSwitcher: () =>
       import(/* webpackChunkName: 'organization_switcher' */ './organization_switcher.vue'),
     SearchModal: () =>
@@ -36,6 +38,7 @@ export default {
     adminArea: s__('Navigation|Admin'),
     searchBtnText: __('Search or go to…'),
   },
+  inject: ['isSaas'],
   props: {
     sidebarData: {
       type: Object,
@@ -62,8 +65,8 @@ export default {
   <header
     class="super-topbar gl-grid gl-w-full gl-grid-cols-[1fr_auto_1fr] gl-items-center gl-gap-4"
   >
-    <div class="gl-flex gl-items-center gl-gap-3">
-      <div class="gl-flex gl-items-center gl-gap-2">
+    <div class="gl-contents gl-items-center gl-gap-5 md:gl-flex">
+      <div class="gl-flex gl-items-center gl-gap-3">
         <brand-logo :logo-url="sidebarData.logo_url" class="!gl-p-0" />
 
         <gl-badge
@@ -74,50 +77,80 @@ export default {
         >
           {{ $options.NEXT_LABEL }}
         </gl-badge>
+
+        <promo-menu v-if="!isLoggedIn" :pricing-url="sidebarData.compare_plans_url" />
       </div>
 
       <organization-switcher v-if="shouldShowOrganizationSwitcher" />
     </div>
 
-    <gl-button
-      id="super-sidebar-search"
-      v-gl-modal="$options.SEARCH_MODAL_ID"
-      button-text-classes="gl-flex gl-w-full"
-      class="topbar-search-button !gl-rounded-lg !gl-border-strong !gl-pl-3 !gl-pr-2 dark:!gl-bg-alpha-light-8"
-      data-testid="super-topbar-search-button"
-    >
-      <gl-icon name="search" class="gl-shrink-0" />
-      <span
-        class="topbar-search-button-placeholder gl-min-w-[24vw] gl-grow gl-text-left gl-font-normal"
-        >{{ $options.i18n.searchBtnText }}</span
-      >
-      <kbd class="gl-mr-1 gl-shrink-0 gl-shadow-none">/</kbd>
-    </gl-button>
-
-    <div class="gl-flex gl-justify-end gl-gap-3">
-      <create-menu
-        v-if="isLoggedIn && sidebarData.create_new_menu_groups.length > 0"
-        :groups="sidebarData.create_new_menu_groups"
-      />
-      <div class="gl-border-r gl-my-3 gl-h-5 gl-w-1 gl-border-r-strong"></div>
-
-      <user-counts
-        v-if="isLoggedIn"
-        :sidebar-data="sidebarData"
-        counter-class="gl-button btn btn-default btn-default-tertiary !gl-px-3 !gl-rounded-lg"
-      />
-
+    <div class="gl-col-start-3 gl-flex gl-justify-end gl-gap-3 md:gl-contents">
       <gl-button
-        v-if="isAdmin"
-        :href="sidebarData.admin_url"
-        icon="admin"
-        class="!gl-rounded-lg"
-        data-testid="topbar-admin-link"
+        id="super-sidebar-search"
+        v-gl-modal="$options.SEARCH_MODAL_ID"
+        button-text-classes="gl-flex gl-w-full gl-items-center"
+        category="tertiary"
+        class="topbar-search-button !gl-rounded-lg !gl-bg-transparent !gl-pl-3 !gl-pr-2 md:!gl-border-strong md:!gl-bg-default md:hover:!gl-border-alpha-dark-40 dark:md:!gl-bg-alpha-light-8 dark:md:hover:!gl-border-alpha-light-36"
+        data-testid="super-topbar-search-button"
       >
-        {{ $options.i18n.adminArea }}
+        <gl-icon name="search" class="gl-shrink-0" />
+        <span
+          class="topbar-search-button-placeholder gl-hidden gl-min-w-[24vw] gl-grow gl-text-left gl-font-normal md:gl-block"
+          >{{ $options.i18n.searchBtnText }}</span
+        >
+        <kbd class="gl-mr-1 gl-hidden gl-shrink-0 gl-shadow-none md:gl-block">/</kbd>
       </gl-button>
 
-      <user-menu v-if="isLoggedIn" :data="sidebarData" />
+      <div class="gl-flex gl-justify-end gl-gap-3">
+        <template v-if="isLoggedIn">
+          <create-menu
+            v-if="isLoggedIn && sidebarData.create_new_menu_groups.length > 0"
+            class="gl-hidden lg:gl-block"
+            :groups="sidebarData.create_new_menu_groups"
+          />
+          <div
+            class="gl-border-r gl-my-3 gl-hidden gl-h-5 gl-w-1 gl-border-r-strong lg:gl-block"
+          ></div>
+
+          <user-counts
+            v-if="isLoggedIn"
+            :sidebar-data="sidebarData"
+            class="gl-hidden md:gl-flex"
+            counter-class="gl-button btn btn-default btn-default-tertiary !gl-px-3 !gl-rounded-lg"
+          />
+
+          <gl-button
+            v-if="isAdmin"
+            :href="sidebarData.admin_url"
+            icon="admin"
+            class="topbar-admin-link gl-hidden !gl-rounded-lg sm:gl-mr-1 xl:gl-flex"
+            data-testid="topbar-admin-link"
+          >
+            {{ $options.i18n.adminArea }}
+          </gl-button>
+
+          <user-menu :data="sidebarData" />
+        </template>
+        <template v-else>
+          <gl-button
+            v-if="sidebarData.sign_in_visible"
+            :href="sidebarData.sign_in_path"
+            class="!gl-rounded-lg"
+            data-testid="topbar-signin-button"
+          >
+            {{ __('Sign in') }}
+          </gl-button>
+          <gl-button
+            v-if="sidebarData.allow_signup"
+            :href="sidebarData.new_user_registration_path"
+            variant="confirm"
+            class="topbar-signup-button !gl-rounded-lg"
+            data-testid="topbar-signup-button"
+          >
+            {{ isSaas ? __('Get free trial') : __('Register') }}
+          </gl-button>
+        </template>
+      </div>
     </div>
 
     <search-modal />

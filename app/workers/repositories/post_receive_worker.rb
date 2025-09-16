@@ -12,6 +12,10 @@ module Repositories
     include Gitlab::Experiment::Dsl
     include ::Gitlab::ExclusiveLeaseHelpers
 
+    # Max number of references supported by granular update
+    # It's an arbitrary number, but it should cover the majority of jobs (with one reference in changes).
+    GRANULAR_UPDATE_LIMIT = 5
+
     feature_category :source_code_management
     urgency :high
     worker_resource_boundary :cpu
@@ -116,11 +120,25 @@ module Repositories
     # Expire the repository status, branch, and tag cache once per push.
     def expire_caches(post_received, repository)
       repository.expire_status_cache if repository.empty?
-      expire_branch_cache(repository) if post_received.includes_branches?
-      expire_tag_cache(repository) if post_received.includes_tags?
+      expire_branch_cache(post_received, repository) if post_received.includes_branches?
+      expire_tag_cache(post_received, repository) if post_received.includes_tags?
     end
 
-    def expire_branch_cache(repository)
+    def expire_branch_cache(post_received, repository)
+      refs_to_update = post_received.changes.branch_changes.map { |b| b[:ref] } # rubocop:disable Rails/Pluck -- usage of pluck triggers CodeReuse/ActiveRecord
+
+      if repository.repo_type.project? && refs_to_update.count <= GRANULAR_UPDATE_LIMIT &&
+          Feature.enabled?(:incremental_cache_for_refs, @project)
+        # Lock to prevent race conditions during concurrent ref updates
+        with_lock(:branch) do
+          # Update cache only for branches that were changed
+          refs_to_update.each do |ref|
+            repository.granular_ref_name_update(ref)
+          end
+        end
+        return
+      end
+
       unless Feature.enabled?(:post_receive_sync_refresh_cache, @project)
         repository.expire_branches_cache
         return
@@ -146,7 +164,22 @@ module Repositories
       repository.expire_branches_cache
     end
 
-    def expire_tag_cache(repository)
+    def expire_tag_cache(post_received, repository)
+      refs_to_update = post_received.changes.tag_changes.map { |b| b[:ref] } # rubocop:disable Rails/Pluck -- usage of pluck triggers CodeReuse/ActiveRecord
+
+      if repository.repo_type.project? && refs_to_update.count <= GRANULAR_UPDATE_LIMIT &&
+          Feature.enabled?(:incremental_cache_for_refs, repository.project)
+        # Lock to prevent race conditions during concurrent ref updates
+        with_lock(:tag) do
+          # Update cache only for tags that were changed
+          refs_to_update.each do |ref|
+            repository.granular_ref_name_update(ref)
+          end
+        end
+
+        return
+      end
+
       unless Feature.enabled?(:post_receive_sync_refresh_cache, @project)
         repository.expire_caches_for_tags
         return

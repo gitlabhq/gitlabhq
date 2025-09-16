@@ -41,8 +41,8 @@ module Gitlab
 
           attr_reader :structure_sql, :database
 
-          def build_inconsistency(validator_class, structure_sql_object, database_object)
-            Inconsistency.new(validator_class, structure_sql_object, database_object)
+          def build_inconsistency(validator_class, structure_sql_object, database_object, details: {})
+            Inconsistency.new(validator_class, structure_sql_object, database_object, details: details)
           end
         end
       end

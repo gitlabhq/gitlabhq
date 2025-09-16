@@ -11,10 +11,8 @@ describe('TokenAccessApp component', () => {
   const findTokenPermissions = () => wrapper.findComponent(TokenPermissions);
   const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
 
-  const createComponent = ({ allowPushRepositoryForJobToken = true } = {}) => {
-    wrapper = shallowMount(TokenAccessApp, {
-      provide: { glFeatures: { allowPushRepositoryForJobToken } },
-    });
+  const createComponent = () => {
+    wrapper = shallowMount(TokenAccessApp, {});
   };
 
   const emitIntersectionObserverUpdate = (isIntersecting) => {
@@ -42,17 +40,6 @@ describe('TokenAccessApp component', () => {
 
     it('renders/does not render the token permissions component', () => {
       expect(findTokenPermissions().exists()).toBe(expected);
-    });
-  });
-
-  describe('when allowPushRepositoryForJobToken feature flag is disabled', () => {
-    beforeEach(() => {
-      createComponent({ allowPushRepositoryForJobToken: false });
-      findIntersectionObserver().vm.$emit('update', { isIntersecting: true });
-    });
-
-    it('does not render the token permissions component', () => {
-      expect(findTokenPermissions().exists()).toBe(false);
     });
   });
 });

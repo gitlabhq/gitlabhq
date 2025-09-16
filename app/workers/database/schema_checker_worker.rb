@@ -5,7 +5,7 @@ module Database # rubocop:disable Gitlab/BoundedContexts -- Database Framework
     include ApplicationWorker
 
     SCHEMA_CHECK_CACHE_TTL = 1.week.to_i
-    SCHEMA_CHECK_CACHE_KEY = 'gitlab:database:schema_check:v1'
+    SCHEMA_CHECK_CACHE_KEY = 'gitlab:database:schema_check:v2'
 
     feature_category :database
     sidekiq_options retry: false

@@ -57,6 +57,7 @@ module Ci
     scope :preloaded, -> { preload(:owner, project: [:route]) }
     scope :owned_by, ->(user) { where(owner: user) }
     scope :for_project, ->(project_id) { where(project_id: project_id) }
+    scope :with_project_path, -> { includes(project: [:route, { namespace: :route }]) }
 
     accepts_nested_attributes_for :inputs, allow_destroy: true
     accepts_nested_attributes_for :variables, allow_destroy: true

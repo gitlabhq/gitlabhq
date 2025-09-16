@@ -30,7 +30,7 @@ domains:
       - duo_chat
       - ai_abstraction_layer
       - code_suggestions # Also in CodeSuggestions
-      - duo_workflow
+      - agent_foundations
       - workflow_catalog
       - knowledge_graph
 
@@ -79,6 +79,11 @@ domains:
       - team_planning
       - portfolio_management
 
+  Cells:
+    description: Manages cell-to-cluster operations such as claims, leases, and others.
+    feature_categories:
+      - cell
+
   Ci:
     description: Create and run CI/CD pipelines
     feature_categories:
@@ -87,7 +92,6 @@ domains:
       - fleet_visibility
       - job_artifacts
       - pipeline_reports
-      - artifact_security
       - code_testing
 
   CloudConnector:
@@ -242,7 +246,6 @@ domains:
     description:
     feature_categories:
       - organization
-      - cell
 
   Packages:
     description: Package registry implementation for each supported format (such as Maven, NPM, NuGet, ...).
@@ -254,7 +257,7 @@ domains:
     description:
     feature_categories:
       - pages
-  
+
   DeployTokens:
     description: Managing deploy tokens
     feature_categories:
@@ -332,6 +335,11 @@ domains:
     description:
     feature_categories:
       - incident_management
+
+  SupplyChain:
+    description: Capabilities related to securing the software supply chain
+    feature_categories:
+      - artifact_security
 
   Terraform:
     description:

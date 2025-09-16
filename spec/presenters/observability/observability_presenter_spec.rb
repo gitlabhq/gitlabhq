@@ -82,6 +82,58 @@ RSpec.describe Observability::ObservabilityPresenter, feature_category: :observa
     end
   end
 
+  describe '#url_with_path' do
+    it 'returns a URI with the observability service URL and path' do
+      result = presenter.url_with_path
+
+      expect(result).to be_a(URI::HTTPS)
+      expect(result.to_s).to eq('https://observability.example.com/services')
+    end
+
+    context 'with different paths' do
+      let(:path) { 'traces-explorer' }
+
+      it 'joins the service URL with the specified path' do
+        result = presenter.url_with_path
+
+        expect(result.to_s).to eq('https://observability.example.com/traces-explorer')
+      end
+    end
+
+    context 'when group has no observability settings' do
+      let(:group_without_settings) { build_stubbed(:group) }
+      let(:presenter_without_settings) { described_class.new(group_without_settings, path) }
+
+      before do
+        allow(group_without_settings).to receive(:observability_group_o11y_setting).and_return(nil)
+      end
+
+      it 'returns nil' do
+        result = presenter_without_settings.url_with_path
+
+        expect(result).to be_nil
+      end
+    end
+
+    context 'when observability setting has no service URL' do
+      let!(:observability_setting_without_url) do
+        build_stubbed(:observability_group_o11y_setting,
+          group: group,
+          o11y_service_url: nil)
+      end
+
+      before do
+        allow(group).to receive(:observability_group_o11y_setting).and_return(observability_setting_without_url)
+      end
+
+      it 'returns nil' do
+        result = presenter.url_with_path
+
+        expect(result).to be_nil
+      end
+    end
+  end
+
   describe '#to_h' do
     it 'returns a hash with all required keys' do
       result = presenter.to_h

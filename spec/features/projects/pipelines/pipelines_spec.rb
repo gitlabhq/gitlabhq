@@ -111,7 +111,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
         end
 
         context 'when canceling support is disabled' do
-          it 'indicates that pipeline can be canceled' do
+          it 'indicates that pipeline can be canceled', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/514469' do
             expect(page).to have_selector('.js-pipelines-cancel-button')
             expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
           end
@@ -161,7 +161,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
         context 'when canceling support is enabled' do
           include_context 'when canceling support'
 
-          it 'indicates that pipeline can be canceled' do
+          it 'indicates that pipeline can be canceled', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/514542' do
             expect(page).to have_selector('.js-pipelines-cancel-button')
             expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')
           end
@@ -173,7 +173,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
               wait_for_requests
             end
 
-            it 'indicates that pipeline is canceling', :sidekiq_inline do
+            it 'indicates that pipeline is canceling', :sidekiq_inline, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/514463' do
               expect(page).not_to have_selector('.js-pipelines-cancel-button')
               expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Canceling')
             end

@@ -10,7 +10,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
     id="reference-0"
   >
     <header
-      class="crud-header gl-bg-section gl-border-b gl-border-section gl-flex gl-flex-wrap gl-gap-x-5 gl-gap-y-2 gl-justify-between gl-p-4 gl-pl-5 gl-pr-10 gl-relative gl-rounded-t-lg md:gl-flex-nowrap"
+      class="@md/panel:gl-flex-nowrap crud-header gl-bg-section gl-border-b gl-border-section gl-flex gl-flex-wrap gl-gap-x-5 gl-gap-y-2 gl-justify-between gl-p-4 gl-pl-5 gl-pr-10 gl-relative gl-rounded-t-lg"
     >
       <div
         class="gl-flex gl-flex-col gl-grow gl-self-center"
@@ -25,7 +25,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
             size="sm"
             tag="span"
             target="_self"
-            variant="muted"
+            variant="neutral"
           >
             3
           </gl-badge-stub>

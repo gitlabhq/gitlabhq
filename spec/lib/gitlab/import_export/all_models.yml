@@ -106,6 +106,7 @@ notes:
 - award_emoji
 - project
 - namespace
+- organization
 - noteable
 - author
 - updated_by
@@ -125,6 +126,7 @@ note_metadata:
   - email_participant
 commit_notes:
 - namespace
+- organization
 - award_emoji
 - noteable
 - author
@@ -144,6 +146,7 @@ label_links:
 - target
 - label
 - own_label
+- namespace
 label:
 - subscriptions
 - project
@@ -227,6 +230,7 @@ merge_requests:
 - todos
 - target_project
 - source_project
+- merge_data
 - merge_user
 - merge_request_diffs
 - merge_request_diff
@@ -291,8 +295,13 @@ merge_requests:
 - approval_metrics
 - approval_policy_merge_request_bypass_events
 - generated_ref_commits
+- policy_dismissals
 external_pull_requests:
 - project
+merge_data:
+- merge_request
+- project
+- merge_user
 merge_request_diff:
 - merge_request
 - merge_request_diff_commits
@@ -478,6 +487,8 @@ builds:
 - job_artifacts_repository_xray
 - job_definition
 - job_definition_instance
+- job_messages
+- error_job_messages
 - runner_manager
 - runner_manager_build
 - runner_session
@@ -490,6 +501,7 @@ builds:
 - tags
 - simple_tags
 - security_scans
+- security_report_artifacts
 - dast_site_profiles_build
 - dast_site_profile
 - dast_scanner_profiles_build
@@ -510,6 +522,8 @@ bridges:
 - sourced_pipeline
 - deployment
 - job_environment
+- job_messages
+- error_job_messages
 - resource_group
 - metadata
 - trigger
@@ -839,7 +853,6 @@ project:
 - helm_metadata_caches
 - packages_cleanup_policy
 - dependency_proxy_packages_setting
-- alerting_setting
 - project_setting
 - webide_pipelines
 - reviews
@@ -941,6 +954,7 @@ project:
 - approval_policy_rules
 - security_pipeline_execution_config_links
 - secrets_manager
+- secret_rotation_infos
 - observability_metrics
 - observability_traces
 - observability_logs
@@ -952,6 +966,10 @@ project:
 - project_requirement_compliance_statuses
 - analyzer_statuses
 - configured_ai_catalog_items
+- security_project_tracked_contexts
+- security_attributes
+- project_to_security_attributes
+- policy_dismissals
 award_emoji:
 - awardable
 - user

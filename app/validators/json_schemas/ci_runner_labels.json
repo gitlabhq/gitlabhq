@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "CI Runner labels",
+  "type": "object",
+  "maxProperties": 32,
+  "patternProperties": {
+    "^[a-zA-Z0-9_][a-zA-Z0-9._-]{2,64}$": {
+      "type": "string",
+      "maxLength": 256,
+      "pattern": "^[a-zA-Z0-9._-]+$"
+    }
+  },
+  "additionalProperties": false
+}

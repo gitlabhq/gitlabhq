@@ -2,7 +2,7 @@
 
 class QueueBackfillIssueUserMentionsNamespaceId < Gitlab::Database::Migration[2.2]
   milestone '17.7'
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   MIGRATION = "BackfillIssueUserMentionsNamespaceId"
   DELAY_INTERVAL = 2.minutes

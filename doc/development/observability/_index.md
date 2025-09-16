@@ -1,5 +1,5 @@
 ---
-stage: Monitor
+stage: Analytics
 group: Platform Insights
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 description: Documentation for developers interested in contributing features or bugfixes for GitLab Observability.
@@ -71,7 +71,7 @@ Visit [`devvm`](https://gitlab.com/gitlab-org/opstrace/devvm) and follow the REA
 
 The [OpenTelemetry Demo app](https://opentelemetry.io/docs/demo/) is a great way to run several Docker containers (representing a distributed system), and to send the logs, metrics, and traces to your local GDK instance.
 
-You can reference the instructions for running the demo app [here](https://opentelemetry.io/docs/demo/docker-deployment/).
+You can reference the [instructions for running the demo app](https://opentelemetry.io/docs/demo/docker-deployment/).
 
 ### OpenTelemetry Demo app Quickstart
 

@@ -80,13 +80,13 @@ export default {
 <template>
   <div class="file-holder">
     <div ref="header" class="file-title file-title-flex-parent">
-      <div class="file-header-content align-content-center overflow-hidden gl-flex gl-flex-wrap">
+      <div class="file-header-content gl-flex gl-flex-wrap !gl-content-center !gl-overflow-hidden">
         <div v-if="hasCode" class="cursor-pointer gl-inline-block" @click="toggle()">
           <gl-icon :name="collapseIcon" :size="16" class="gl-mr-2" />
         </div>
         <template v-if="filePath">
           <file-icon :file-name="filePath" :size="16" aria-hidden="true" css-classes="gl-mr-2" />
-          <strong class="file-title-name overflow-hidden limited-width gl-inline-block">
+          <strong class="file-title-name limited-width gl-inline-block !gl-overflow-hidden">
             <gl-truncate with-tooltip :text="filePath" position="middle" />
           </strong>
           <clipboard-button

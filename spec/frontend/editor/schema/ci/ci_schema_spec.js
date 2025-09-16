@@ -24,6 +24,7 @@ import RetryUnknownWhenJson from './json_tests/negative_tests/retry_unknown_when
 import ArtifactsYaml from './yaml_tests/positive_tests/artifacts.yml';
 import ImageYaml from './yaml_tests/positive_tests/image.yml';
 import CacheYaml from './yaml_tests/positive_tests/cache.yml';
+import CacheFilesCommitsYaml from './yaml_tests/positive_tests/cache_files_commits.yml';
 import MultipleCachesYaml from './yaml_tests/positive_tests/cache_multiple.yml';
 import FilterYaml from './yaml_tests/positive_tests/filter.yml';
 import IncludeYaml from './yaml_tests/positive_tests/include.yml';
@@ -113,6 +114,7 @@ describe('positive tests', () => {
       ArtifactsYaml,
       ImageYaml,
       CacheYaml,
+      CacheFilesCommitsYaml,
       MultipleCachesYaml,
       FilterYaml,
       HooksYaml,

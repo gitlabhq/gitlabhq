@@ -17,7 +17,7 @@ module WorkItems
       non_widget_attributes = @attributes.except(*all_widget_keys)
 
       updated_work_items = scoped_work_items
-        .find_each(batch_size: 100) # rubocop:disable CodeReuse/ActiveRecord -- Implementation would be identical in model
+        .includes(namespace: [:route]).find_each(batch_size: 100) # rubocop:disable CodeReuse/ActiveRecord -- Implementation would be identical in model
         .filter_map do |work_item|
           next unless @current_user.can?(:update_work_item, work_item)
 

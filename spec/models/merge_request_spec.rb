@@ -41,6 +41,23 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     it { is_expected.to have_many(:created_environments).class_name('Environment').inverse_of(:merge_request) }
     it { is_expected.to have_many(:assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent').inverse_of(:merge_request) }
 
+    if ::Gitlab.next_rails?
+      it 'has many generated_ref_commits' do
+        is_expected.to have_many(:generated_ref_commits)
+          .with_primary_key(%i[iid target_project_id])
+          .with_query_constraints(%i[merge_request_iid project_id])
+          .inverse_of(:merge_request)
+      end
+    else
+      it 'has many generated_ref_commits' do
+        is_expected.to have_many(:generated_ref_commits)
+          .with_primary_key(%i[iid target_project_id])
+          .with_foreign_key(:merge_request_iid)
+          .inverse_of(:merge_request)
+          .with_query_constraints(%i[merge_request_iid project_id])
+      end
+    end
+
     context 'for forks' do
       let!(:project) { create(:project) }
       let!(:fork) { fork_project(project) }
@@ -375,16 +392,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       it 'only returns public issuables' do
         expect(described_class.without_hidden).not_to include(hidden_merge_request)
-      end
-
-      context 'when optimize_merge_requests_banned_users_query is disabled' do
-        before do
-          stub_feature_flags(optimize_merge_requests_banned_users_query: false)
-        end
-
-        it 'only returns public issuables' do
-          expect(described_class.without_hidden).not_to include(hidden_merge_request)
-        end
       end
     end
 
@@ -2932,7 +2939,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       let(:schedule_pipeline) { create(:ci_empty_pipeline, sha: sha, ref: subject.target_branch, project: subject.target_project, source: :schedule) }
 
       before do
-        stub_feature_flags(source_filter_pipelines: true)
         subject.mark_as_merged!
       end
 
@@ -4467,33 +4473,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           .to receive(:success?)
 
         subject.diff_head_pipeline_success?
-      end
-    end
-  end
-
-  describe "#diff_head_pipeline_active? " do
-    context 'when project lacks an diff_head_pipeline relation' do
-      before do
-        allow(subject).to receive(:diff_head_pipeline) { nil }
-      end
-
-      it 'returns false' do
-        expect(subject.diff_head_pipeline_active?).to be false
-      end
-    end
-
-    context 'when project has a diff_head_pipeline relation' do
-      let(:pipeline) { create(:ci_empty_pipeline) }
-
-      before do
-        allow(subject).to receive(:diff_head_pipeline) { pipeline }
-      end
-
-      it 'accesses the value from the diff_head_pipeline' do
-        expect(subject.diff_head_pipeline)
-          .to receive(:active?)
-
-        subject.diff_head_pipeline_active?
       end
     end
   end
@@ -6620,6 +6599,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  it_behaves_like 'loose foreign key with custom delete limit' do
+    let(:from_table) { "p_ci_pipelines" }
+    let(:delete_limit) { 100 }
+  end
+
   describe '#merge_blocked_by_other_mrs?' do
     it 'returns false when there is no blocking merge requests' do
       expect(subject.merge_blocked_by_other_mrs?).to be_falsy
@@ -7401,6 +7385,56 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       expect(count_service).to receive(:delete_cache)
 
       subject.invalidate_project_counter_caches
+    end
+  end
+
+  describe '#diffs_batch_cache_key' do
+    let_it_be(:merge_request) { create(:merge_request) }
+
+    subject { merge_request.diffs_batch_cache_key }
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(diffs_batch_cache_with_max_age: false)
+      end
+
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+
+    context 'when the feature flag is enabled' do
+      before do
+        stub_feature_flags(diffs_batch_cache_with_max_age: true)
+      end
+
+      context 'when the merge request cannot be merged' do
+        before do
+          allow(merge_request).to receive(:cannot_be_merged?).and_return(true)
+          # Ensure latest_merge_request_diff is the one we created
+          merge_request.reload
+        end
+
+        it 'returns the patch_id_sha of the latest_merge_request_diff' do
+          expect(subject).to eq(merge_request.latest_merge_request_diff.patch_id_sha)
+        end
+      end
+
+      context 'when the merge request can be merged' do
+        context 'and a merge_head_diff exists' do
+          let!(:merge_head_diff) { create(:merge_request_diff, :merge_head, merge_request: merge_request) }
+
+          it 'returns the patch_id_sha of the merge_head_diff' do
+            expect(subject).to eq(merge_head_diff.patch_id_sha)
+          end
+        end
+
+        context 'and a merge_head_diff does not exist' do
+          it 'returns nil' do
+            expect(subject).to be_nil
+          end
+        end
+      end
     end
   end
 end

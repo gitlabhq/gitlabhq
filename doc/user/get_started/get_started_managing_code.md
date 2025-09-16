@@ -98,11 +98,17 @@ Reviewers can also suggest changes directly in the diff.
 Reviewers can approve the changes or request additional changes before merging.
 GitLab tracks the review status and prevents merging until necessary approvals are obtained.
 
-For details, see:
+Your organization might have protection rules that require specific approvals
+or prevent certain actions. For example, you might need approval from a code owner
+for files you're changing, or your merge request might need a certain number of approvals
+before it can be merged.
+
+For more information, see:
 
 - [Request a review of your merge request](../project/merge_requests/reviews/_index.md#request-a-review)
 - [Add suggestions to a merge request](../project/merge_requests/reviews/suggestions.md#create-suggestions)
 - [Merge request approvals](../project/merge_requests/approvals/_index.md)
+- [Code Owners](../project/codeowners/_index.md)
 
 ## Step 5: Merge the merge request
 
@@ -113,10 +119,15 @@ usually they include ensuring:
 - The code changes adhere to your organization's guidelines.
 - The commit messages are clear, and link to related issues.
 
+Protected branches and other repository protection measures might prevent you from
+merging directly or require additional steps. If you can't merge your changes,
+check with your team about the protection rules in place.
+
 Merge conflicts can occur if someone else edits a file after you created your branch,
 but before you merged it into the target branch. You must resolve any conflicts before you can merge.
 
-For details, see:
+For more information, see:
 
 - [Merge conflicts](../project/merge_requests/conflicts.md)
 - [Merge methods](../project/merge_requests/methods/_index.md)
+- [Protect your repository](../project/repository/protect.md)

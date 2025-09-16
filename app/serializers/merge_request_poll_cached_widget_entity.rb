@@ -28,12 +28,9 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
     merge_request.default_squash_commit_message(user: request.current_user)
   end
 
-  expose :commits_without_merge_commits, using: MergeRequestWidgetCommitEntity do |merge_request|
-    if Feature.enabled?(:disable_widget_responses, merge_request.target_project)
-      []
-    else
-      merge_request.recent_commits.without_merge_commits
-    end
+  expose :commits_without_merge_commits do |_|
+    # Deprecated: This value was unused
+    []
   end
 
   expose :diff_head_sha do |merge_request|

@@ -44,7 +44,7 @@ describe('Merge requests list discussions badge component', () => {
         resolvableDiscussionsCount: 2,
       });
 
-      expect(findBadge().props('variant')).toBe('muted');
+      expect(findBadge().props('variant')).toBe('neutral');
     });
 
     it.each`

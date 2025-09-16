@@ -8,7 +8,7 @@ description: Represents a subgroup or project filter for audit event streaming o
   groups
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135080
 milestone: '16.6'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

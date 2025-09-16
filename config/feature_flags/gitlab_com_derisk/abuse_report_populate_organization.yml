@@ -1,0 +1,9 @@
+---
+name: abuse_report_populate_organization
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553437
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201976
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/562993
+milestone: '18.4'
+group: group::authorization
+type: gitlab_com_derisk
+default_enabled: false

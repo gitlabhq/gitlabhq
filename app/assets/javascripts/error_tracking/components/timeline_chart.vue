@@ -1,7 +1,7 @@
 <script>
-import { GlChart } from '@gitlab/ui/dist/charts';
-import { DATA_VIZ_BLUE_500 } from '@gitlab/ui/dist/tokens/build/js/tokens';
-import { hexToRgba } from '@gitlab/ui/dist/utils/utils';
+import { GlChart } from '@gitlab/ui/src/charts';
+import { DATA_VIZ_BLUE_500 } from '@gitlab/ui/src/tokens/build/js/tokens';
+import { hexToRgba } from '@gitlab/ui/src/utils/utils';
 import { isNumber } from 'lodash';
 import { newDate } from '~/lib/utils/datetime/date_calculation_utility';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';

@@ -31,7 +31,7 @@ module Gitlab
                             Array.wrap(@model_class.primary_key)
                           end
 
-          @primary_keys.map!(&:to_s)
+          @primary_keys = @primary_keys.map(&:to_s)
         end
 
         def build_order

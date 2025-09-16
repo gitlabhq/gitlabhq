@@ -16,7 +16,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Commented, feature_catego
 
   let_it_be(:source_user) { generate_source_user(project, 1000) }
 
-  let(:client) { instance_double('Gitlab::GithubImport::Client') }
+  let(:client) { instance_double('Gitlab::GithubImport::Client', web_endpoint: 'https://github.com') }
   let(:issuable) { create(:issue, project: project) }
 
   let(:issue_event) do

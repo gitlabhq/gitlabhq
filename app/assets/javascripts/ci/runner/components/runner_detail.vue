@@ -45,7 +45,7 @@ export default {
         <slot name="label">{{ label }}</slot>
       </template>
     </dt>
-    <dd class="md:gl-mb-0" data-testid="value-slot">
+    <dd class="@md/panel:gl-mb-0" data-testid="value-slot">
       <template v-if="value || $scopedSlots.value">
         <slot name="value">{{ value }}</slot>
       </template>

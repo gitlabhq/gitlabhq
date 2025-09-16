@@ -836,6 +836,20 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
   end
 
+  context 'when invalid parent used with label_url_method' do
+    let_it_be(:group) { create(:group) }
+    let(:context) { { project: nil, group: nil } }
+
+    it 'does not raise NoMethodError' do
+      context[:label_url_method] = :project_merge_requests_url
+      filter = described_class.new(Nokogiri::HTML::DocumentFragment.parse(''), context)
+
+      result = filter.url_for_object(label, group)
+
+      expect(result).to be_nil
+    end
+  end
+
   context 'checking N+1' do
     let_it_be(:group)              { create(:group) }
     let_it_be(:group2)             { create(:group) }

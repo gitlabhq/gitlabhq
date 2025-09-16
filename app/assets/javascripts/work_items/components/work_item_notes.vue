@@ -1,5 +1,6 @@
 <script>
 import { GlModal } from '@gitlab/ui';
+import { isEmpty } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __ } from '~/locale';
 import {
@@ -25,7 +26,7 @@ import {
   NEW_WORK_ITEM_IID,
 } from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
-import { autocompleteDataSources, findNotesWidget, markdownPreviewPath } from '~/work_items/utils';
+import { autocompleteDataSources, findNotesWidget } from '~/work_items/utils';
 import {
   updateCacheAfterCreatingNote,
   updateCacheAfterDeletingNote,
@@ -36,6 +37,7 @@ import { getLocationHash } from '~/lib/utils/url_utility';
 import { collapseSystemNotes } from '~/work_items/notes/collapse_utils';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemHistoryOnlyFilterNote from '~/work_items/components/notes/work_item_history_only_filter_note.vue';
+import namespacePathsQuery from '~/work_items/graphql/namespace_paths.query.graphql';
 import workItemNoteCreatedSubscription from '~/work_items/graphql/notes/work_item_note_created.subscription.graphql';
 import workItemNoteUpdatedSubscription from '~/work_items/graphql/notes/work_item_note_updated.subscription.graphql';
 import workItemNoteDeletedSubscription from '~/work_items/graphql/notes/work_item_note_deleted.subscription.graphql';
@@ -54,7 +56,6 @@ export default {
     WorkItemHistoryOnlyFilterNote,
     WorkItemNotesLoading,
   },
-  inject: ['isGroup'],
   props: {
     fullPath: {
       type: String,
@@ -71,6 +72,11 @@ export default {
     workItemType: {
       type: String,
       required: true,
+    },
+    workItemTypeId: {
+      type: String,
+      required: false,
+      default: '',
     },
     isDrawer: {
       type: Boolean,
@@ -137,10 +143,6 @@ export default {
       required: false,
       default: false,
     },
-    uploadsPath: {
-      type: String,
-      required: true,
-    },
   },
   data() {
     return {
@@ -148,6 +150,7 @@ export default {
       sortOrder: ASC,
       noteToDelete: null,
       discussionFilter: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
+      markdownPaths: {},
       workItemNamespace: null,
       previewNote: null,
       workItemNotes: [],
@@ -173,21 +176,20 @@ export default {
     formAtTop() {
       return this.sortOrder === DESC;
     },
+    markdownPathsLoaded() {
+      return !isEmpty(this.markdownPaths);
+    },
     markdownPreviewPath() {
-      const { fullPath, workItemIid: iid } = this;
-      return markdownPreviewPath({ fullPath, iid, isGroup: this.isGroupWorkItem });
+      return this.markdownPaths.markdownPreviewPath;
+    },
+    uploadsPath() {
+      return this.markdownPaths.uploadsPath;
     },
     isGroupWorkItem() {
       return this.workItemNamespace?.id?.includes?.(TYPENAME_GROUP);
     },
     autocompleteDataSources() {
-      const { fullPath, workItemIid: iid } = this;
-      const isNewWorkItemInGroup = this.isGroup && iid === NEW_WORK_ITEM_IID;
-      return autocompleteDataSources({
-        fullPath,
-        iid,
-        isGroup: this.isGroupWorkItem || isNewWorkItemInGroup,
-      });
+      return autocompleteDataSources(this.markdownPaths.autocompleteSourcesPath);
     },
     workItemCommentFormProps() {
       return {
@@ -395,6 +397,27 @@ export default {
         },
       ],
     },
+    markdownPaths: {
+      query: namespacePathsQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          iidForAutocompleteSources: this.workItemIid,
+          iidForMarkdownPreview:
+            this.workItemIid === NEW_WORK_ITEM_IID ? undefined : this.workItemIid,
+          workItemTypeId: this.workItemTypeId,
+        };
+      },
+      update(data) {
+        return data?.namespace?.markdownPaths || {};
+      },
+      skip() {
+        return !this.fullPath || !this.workItemIid || !this.workItemTypeId;
+      },
+      error(error) {
+        Sentry.captureException(error);
+      },
+    },
   },
   methods: {
     editCurrentUserLastNote(e) {
@@ -564,7 +587,7 @@ export default {
       @changeFilter="setFilter"
     />
     <div class="issuable-discussion gl-mb-5 !gl-clearfix">
-      <div v-if="formAtTop && !commentsDisabled" class="js-comment-form">
+      <div v-if="formAtTop && !commentsDisabled && markdownPathsLoaded" class="js-comment-form">
         <ul class="notes notes-form timeline">
           <work-item-add-note
             ref="addNoteTop"
@@ -588,40 +611,39 @@ export default {
             :key="discussion.notes.nodes[0].id"
             :note="discussion.notes.nodes[0]"
           />
-          <template v-else>
-            <work-item-discussion
-              :key="getDiscussionKey(discussion)"
-              ref="workItemDiscussion"
-              :discussion="discussion"
-              :full-path="fullPath"
-              :work-item-id="workItemId"
-              :work-item-iid="workItemIid"
-              :work-item-type="workItemType"
-              :is-modal="isModal"
-              :autocomplete-data-sources="autocompleteDataSources"
-              :markdown-preview-path="markdownPreviewPath"
-              :new-comment-template-paths="newCommentTemplatePaths"
-              :assignees="assignees"
-              :can-reply="canCreateNote"
-              :can-set-work-item-metadata="canSetWorkItemMetadata"
-              :is-discussion-locked="isDiscussionLocked"
-              :is-work-item-confidential="isWorkItemConfidential"
-              :is-expanded-on-load="isDiscussionExpandedOnLoad(discussion)"
-              :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
-              :uploads-path="uploadsPath"
-              @deleteNote="showDeleteNoteModal($event, discussion)"
-              @reportAbuse="reportAbuse(true, $event)"
-              @error="$emit('error', $event)"
-              @startEditing="$emit('startEditing')"
-              @cancelEditing="$emit('stopEditing')"
-            />
-          </template>
+          <work-item-discussion
+            v-else-if="markdownPathsLoaded"
+            :key="getDiscussionKey(discussion)"
+            ref="workItemDiscussion"
+            :discussion="discussion"
+            :full-path="fullPath"
+            :work-item-id="workItemId"
+            :work-item-iid="workItemIid"
+            :work-item-type="workItemType"
+            :is-modal="isModal"
+            :autocomplete-data-sources="autocompleteDataSources"
+            :markdown-preview-path="markdownPreviewPath"
+            :new-comment-template-paths="newCommentTemplatePaths"
+            :assignees="assignees"
+            :can-reply="canCreateNote"
+            :can-set-work-item-metadata="canSetWorkItemMetadata"
+            :is-discussion-locked="isDiscussionLocked"
+            :is-work-item-confidential="isWorkItemConfidential"
+            :is-expanded-on-load="isDiscussionExpandedOnLoad(discussion)"
+            :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
+            :uploads-path="uploadsPath"
+            @deleteNote="showDeleteNoteModal($event, discussion)"
+            @reportAbuse="reportAbuse(true, $event)"
+            @error="$emit('error', $event)"
+            @startEditing="$emit('startEditing')"
+            @cancelEditing="$emit('stopEditing')"
+          />
         </template>
 
         <work-item-history-only-filter-note v-if="commentsDisabled" @changeFilter="setFilter" />
       </ul>
       <work-item-notes-loading v-if="!formAtTop && isLoadingMore && !notesCached" />
-      <div v-if="!formAtTop && !commentsDisabled" class="js-comment-form">
+      <div v-if="!formAtTop && !commentsDisabled && markdownPathsLoaded" class="js-comment-form">
         <ul class="notes notes-form timeline">
           <work-item-add-note
             ref="addNoteBottom"
@@ -641,6 +663,7 @@ export default {
     <gl-modal
       ref="deleteNoteModal"
       modal-id="delete-note-modal"
+      modal-class="gl-@container"
       :title="__('Delete comment?')"
       :ok-title="__('Delete comment')"
       ok-variant="danger"

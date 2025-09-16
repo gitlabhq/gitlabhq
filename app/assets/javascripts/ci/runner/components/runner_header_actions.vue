@@ -74,7 +74,7 @@ export default {
   <div v-if="canUpdate || canDelete">
     <gl-disclosure-dropdown
       v-gl-tooltip="dropdownTooltip"
-      class="gl-block sm:gl-hidden"
+      class="gl-block @sm/panel:gl-hidden"
       data-testid="compact-runner-actions"
       v-bind="dropdownAttrs"
       @shown="showDropdown"
@@ -88,7 +88,7 @@ export default {
         @deleted="onDeleted"
       />
     </gl-disclosure-dropdown>
-    <div class="gl-hidden gl-gap-3 sm:gl-flex" data-testid="expanded-runner-actions">
+    <div class="gl-hidden gl-gap-3 @sm/panel:gl-flex" data-testid="expanded-runner-actions">
       <runner-edit-button v-if="canUpdate" :href="editPath" />
       <runner-pause-button v-if="canUpdate" :runner="runner" />
       <gl-disclosure-dropdown

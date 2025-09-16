@@ -9,7 +9,7 @@ description: Stores uploads for Dependencies::DependencyListExport model
 introduced_by_url:
 milestone: '17.11'
 table_size: small
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   organization_id: organizations
   namespace_id: namespaces

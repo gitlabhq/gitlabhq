@@ -8,6 +8,11 @@
 @import 'bootstrap_migration';
 @import 'framework/layout';
 
+// Project Studio
+@import 'framework/application-chrome';
+@import 'framework/ds_experiments';
+@import 'framework/ds_experiments_tokens';
+
 @import 'framework/animations';
 @import 'framework/vue_transitions';
 @import 'framework/blocks';
@@ -57,3 +62,5 @@
 @import 'framework/diffs';
 @import 'framework/duo_chat';
 @import 'framework/crud';
+
+@include make-container-grid-columns;

@@ -279,4 +279,20 @@ RSpec.describe PageLayoutHelper do
       end
     end
   end
+
+  describe '#favicon' do
+    it 'returns the default favicon' do
+      expect(helper.favicon).to match_asset_path 'assets/favicon.png'
+    end
+
+    context 'when in web-ide' do
+      before do
+        allow(helper).to receive(:current_controller?).with(:ide).and_return(true)
+      end
+
+      it 'returns the favicon path for the web-ide' do
+        expect(helper.favicon).to match_asset_path 'assets/web_ide_favicons/favicon.png'
+      end
+    end
+  end
 end

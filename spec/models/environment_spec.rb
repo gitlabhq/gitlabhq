@@ -964,18 +964,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
         end
       end
 
-      context 'when there are more then one stop action for the environment' do
-        let(:pipeline) { create(:ci_pipeline, project: project) }
-        let(:job_a) { create(factory_type, :success, pipeline: pipeline, **factory_options) }
-        let(:job_b) { create(factory_type, :success, pipeline: pipeline, **factory_options) }
-
-        let!(:close_actions) do
-          [
-            create(factory_type, :manual, pipeline: pipeline, name: 'close_app_a', **factory_options),
-            create(factory_type, :manual, pipeline: pipeline, name: 'close_app_b', **factory_options)
-          ]
-        end
-
+      context 'when there are more than one stop action for the environment' do
         before do
           project.add_developer(user)
 
@@ -992,6 +981,17 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
             on_stop: 'close_app_b')
         end
 
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+        let(:job_a) { create(factory_type, :success, pipeline: pipeline, **factory_options) }
+        let(:job_b) { create(factory_type, :success, pipeline: pipeline, **factory_options) }
+
+        let!(:close_actions) do
+          [
+            create(factory_type, :manual, pipeline: pipeline, name: 'close_app_a', **factory_options),
+            create(factory_type, :manual, pipeline: pipeline, name: 'close_app_b', **factory_options)
+          ]
+        end
+
         it 'returns the same actions' do
           actions = subject
 
@@ -1005,6 +1005,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
           let(:scoped_user) { create(:user) }
           let(:user_a) { user }
           let(:user_b) { user }
+          let(:options) { { scoped_user_id: scoped_user.id } }
 
           before do
             project.add_maintainer(user_a)
@@ -1012,9 +1013,9 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
             project.add_maintainer(scoped_user)
 
             job = close_actions.first
-            job.update!(user: user_a, options: job.options.merge(scoped_user_id: scoped_user.id))
+            job.update!(user: user_a)
             job = close_actions.last
-            job.update!(user: user_b, options: job.options.merge(scoped_user_id: scoped_user.id))
+            job.update!(user: user_b)
           end
 
           it 'ensures composite identity is present when checking permissions to run the actions' do
@@ -1089,12 +1090,12 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
 
     it_behaves_like 'stop with playing a teardown job' do
       let(:factory_type) { :ci_build }
-      let(:factory_options) { { user: user } }
+      let(:factory_options) { { user: user, options: try(:options) }.compact }
     end
 
     it_behaves_like 'stop with playing a teardown job' do
       let(:factory_type) { :ci_bridge }
-      let(:factory_options) { { user: user, downstream: project } }
+      let(:factory_options) { { user: user, downstream: project, options: try(:options) }.compact }
     end
   end
 

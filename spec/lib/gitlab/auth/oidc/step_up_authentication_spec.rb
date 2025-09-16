@@ -223,4 +223,147 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthentication, feature_category: :syst
       end
     end
   end
+
+  describe '.failed_step_up_auth_flows' do
+    let(:scope) { 'admin_mode' }
+    let(:openid_connect_config) do
+      GitlabSettings::Options.new(
+        name: 'openid_connect',
+        step_up_auth: {
+          admin_mode: {
+            id_token: {
+              required: { claim_1: 'gold' }
+            }
+          }
+        }
+      )
+    end
+
+    let(:saml_config) do
+      GitlabSettings::Options.new(
+        name: 'saml',
+        step_up_auth: {
+          admin_mode: {
+            id_token: {
+              required: { claim_2: 'silver' }
+            }
+          }
+        }
+      )
+    end
+
+    let(:auth0_config) do
+      GitlabSettings::Options.new(
+        name: 'auth0',
+        step_up_auth: {
+          admin_mode: {
+            id_token: {
+              required: { claim_3: 'bronze' }
+            }
+          }
+        }
+      )
+    end
+
+    let(:no_step_up_provider_config) do
+      GitlabSettings::Options.new(name: 'no_step_up_provider')
+    end
+
+    subject(:failed_flows) { described_class.failed_step_up_auth_flows(session, scope: scope) }
+
+    before do
+      stub_omniauth_setting(
+        enabled: true,
+        providers: [openid_connect_config, saml_config, auth0_config, no_step_up_provider_config]
+      )
+    end
+
+    # rubocop:disable Layout/LineLength -- Avoid formatting to ensure one-line table syntax
+    where(:session, :scope, :expected_providers) do
+      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'admin_mode' => { 'state' => 'failed' } }, 'saml' => { 'admin_mode' => { 'state' => 'succeeded' } }, 'auth0' => { 'admin_mode' => { 'state' => 'failed' } } } } | 'admin_mode'  | %w[openid_connect auth0]
+      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'admin_mode' => { 'state' => 'failed' }, 'other_scope' => { 'state' => 'succeeded' } } } }                                                                      | 'other_scope' | []
+      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'other_scope' => { 'state' => 'failed' } } } }                                                                                                                  | 'admin_mode'  | []
+      { 'omniauth_step_up_auth' => { 'openid_connect' => { 'admin_mode' => {} }, 'saml' => { 'admin_mode' => { 'state' => 'failed' } } } }                                                                                 | 'admin_mode'  | ['saml']
+      { 'omniauth_step_up_auth' => { 'no_step_up_provider' => { 'admin_mode' => { 'state' => 'failed' } } } }                                                                                                              | 'admin_mode'  | []
+      { 'omniauth_step_up_auth' => { 'no_step_up_provider' => { 'admin_mode' => { 'state' => 'failed' } }, 'openid_connect' => { 'admin_mode' => { 'state' => 'failed' } } } }                                             | 'admin_mode'  | ['openid_connect']
+      { 'omniauth_step_up_auth' => nil }                                                                                                                                                                                   | 'admin_mode'  | []
+      {}                                                                                                                                                                                                                   | 'admin_mode'  | []
+      nil                                                                                                                                                                                                                  | 'admin_mode'  | []
+    end
+    # rubocop:enable Layout/LineLength
+
+    with_them do
+      it 'returns flow objects for the expected providers' do
+        expect(failed_flows.map(&:provider)).to match_array(expected_providers)
+      end
+
+      it { is_expected.to all be_a(Gitlab::Auth::Oidc::StepUpAuthenticationFlow) }
+
+      it { is_expected.to all be_failed.and(be_enabled_by_config) }
+    end
+  end
+
+  describe '.enabled_providers' do
+    subject { described_class.enabled_providers(scope: scope) }
+
+    let(:omniauth_provider_oidc) do
+      GitlabSettings::Options.new(
+        name: "openid_connect",
+        step_up_auth: {
+          admin_mode: {
+            id_token: {
+              required: {
+                acr: 'gold'
+              }
+            }
+          },
+          namespace: {
+            id_token: {
+              required: {
+                acr: 'gold'
+              }
+            }
+          }
+        }
+      )
+    end
+
+    let(:omniauth_provider_oidc_only_namespace) do
+      GitlabSettings::Options.new(
+        name: "openid_connect_aad",
+        step_up_auth: {
+          namespace: {
+            id_token: {
+              required: {
+                acr: 'gold'
+              }
+            }
+          }
+        }
+      )
+    end
+
+    before do
+      stub_omniauth_setting(enabled: true, providers: provider_configs)
+      allow(Devise).to receive(:omniauth_providers).and_return(provider_configs.map(&:name))
+    end
+
+    # rubocop:disable Layout/LineLength -- Avoid formatting to ensure one-line table syntax
+    where(:scope, :provider_configs, :expected_result) do
+      :admin_mode    | [ref(:omniauth_provider_oidc)]                                              | ['openid_connect']
+      'admin_mode'   | [ref(:omniauth_provider_oidc)]                                              | ['openid_connect']
+      :admin_mode    | [ref(:omniauth_provider_oidc_only_namespace)]                               | []
+      :namespace     | [ref(:omniauth_provider_oidc), ref(:omniauth_provider_oidc_only_namespace)] | %w[openid_connect openid_connect_aad]
+      'namespace'    | [ref(:omniauth_provider_oidc)]                                              | ['openid_connect']
+      :namespace     | [ref(:omniauth_provider_oidc)]                                              | ['openid_connect']
+      :namespace     | []                                                                          | []
+      :unknown_scope | [ref(:omniauth_provider_oidc), ref(:omniauth_provider_oidc_only_namespace)] | []
+      nil            | [ref(:omniauth_provider_oidc), ref(:omniauth_provider_oidc_only_namespace)] | []
+    end
+    # rubocop:enable Layout/LineLength
+
+    with_them do
+      it { is_expected.to match_array(expected_result) }
+    end
+  end
 end

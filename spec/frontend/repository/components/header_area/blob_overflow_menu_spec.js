@@ -56,7 +56,7 @@ describe('Blob Overflow Menu', () => {
         blobInfo: blobControlsDataMock.repository.blobs.nodes[0],
         currentRef: refMock,
         rootRef: 'main',
-        glFeatures: {
+        glLicensedFeatures: {
           fileLocks: false,
         },
         ...provide,

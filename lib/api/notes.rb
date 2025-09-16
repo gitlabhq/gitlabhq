@@ -26,13 +26,13 @@ module API
       parent_type = noteable_type.parent_type
       noteables_str = noteable_type.noteables_str
       feature_category = noteable_type.feature_category
-      noteable_type = noteable_type.noteable_class
+      noteable_class = noteable_type.noteable_class
 
       params do
         requires :id, type: String, desc: "The ID of a #{parent_type}"
       end
       resource parent_type.pluralize.to_sym, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc "Get a list of #{noteable_type.to_s.downcase} notes" do
+        desc "Get a list of #{noteable_type.human_name} notes" do
           success Entities::Note
         end
         params do
@@ -45,9 +45,18 @@ module API
             desc: 'The type of notables which are returned.'
           use :pagination
         end
+
+        policy = Helpers::NotesHelpers.job_token_policy_for(noteable_type, 'GET')
+
+        if policy
+          route_setting :authentication, job_token_allowed: true
+          route_setting :authorization, job_token_policies: policy,
+            allow_public_access_for_enabled_project_features: [:repository, :merge_requests]
+        end
+
         # rubocop: disable CodeReuse/ActiveRecord
         get ":id/#{noteables_str}/:noteable_id/notes", feature_category: feature_category do
-          noteable = find_noteable(noteable_type, params[:noteable_id], parent_type)
+          noteable = find_noteable(noteable_class, params[:noteable_id], parent_type)
 
           # We exclude notes that are cross-references and that cannot be viewed
           # by the current user. By doing this exclusion at this level and not
@@ -67,19 +76,27 @@ module API
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        desc "Get a single #{noteable_type.to_s.downcase} note" do
+        desc "Get a single #{noteable_type.human_name} note" do
           success Entities::Note
         end
         params do
           requires :note_id, type: Integer, desc: 'The ID of a note'
           requires :noteable_id, type: Integer, desc: 'The ID of the noteable'
         end
+        policy = Helpers::NotesHelpers.job_token_policy_for(noteable_type, 'GET')
+
+        if policy
+          route_setting :authentication, job_token_allowed: true
+          route_setting :authorization, job_token_policies: policy,
+            allow_public_access_for_enabled_project_features: [:repository, :merge_requests]
+        end
+
         get ":id/#{noteables_str}/:noteable_id/notes/:note_id", feature_category: feature_category do
-          noteable = find_noteable(noteable_type, params[:noteable_id], parent_type)
+          noteable = find_noteable(noteable_class, params[:noteable_id], parent_type)
           get_note(noteable, params[:note_id])
         end
 
-        desc "Create a new #{noteable_type.to_s.downcase} note" do
+        desc "Create a new #{noteable_type.human_name} note" do
           success Entities::Note
         end
         params do
@@ -94,7 +111,7 @@ module API
           allowlist =
             Gitlab::CurrentSettings.current_application_settings.notes_create_limit_allowlist
           check_rate_limit! :notes_create, scope: current_user, users_allowlist: allowlist
-          noteable = find_noteable(noteable_type, params[:noteable_id], parent_type)
+          noteable = find_noteable(noteable_class, params[:noteable_id], parent_type)
 
           opts = {
             note: params[:body],
@@ -112,7 +129,7 @@ module API
           end
         end
 
-        desc "Update an existing #{noteable_type.to_s.downcase} note" do
+        desc "Update an existing #{noteable_type.human_name} note" do
           success Entities::Note
         end
         params do
@@ -122,12 +139,12 @@ module API
           optional :confidential, type: Boolean, desc: '[Deprecated in 14.10] No longer allowed to update confidentiality of notes'
         end
         put ":id/#{noteables_str}/:noteable_id/notes/:note_id", feature_category: feature_category do
-          noteable = find_noteable(noteable_type, params[:noteable_id], parent_type)
+          noteable = find_noteable(noteable_class, params[:noteable_id], parent_type)
 
           update_note(noteable, params[:note_id])
         end
 
-        desc "Delete a #{noteable_type.to_s.downcase} note" do
+        desc "Delete a #{noteable_type.human_name} note" do
           success Entities::Note
         end
         params do
@@ -135,7 +152,7 @@ module API
           requires :note_id, type: Integer, desc: 'The ID of a note'
         end
         delete ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
-          noteable = find_noteable(noteable_type, params[:noteable_id], parent_type)
+          noteable = find_noteable(noteable_class, params[:noteable_id], parent_type)
 
           delete_note(noteable, params[:note_id])
         end

@@ -17,13 +17,13 @@ class Admin::ApplicationsController < Admin::ApplicationController
   def show; end
 
   def new
-    @application = Doorkeeper::Application.new
+    @application = Authn::OauthApplication.new
   end
 
   def edit; end
 
   def create
-    @application = Applications::CreateService.new(current_user, application_params).execute(request)
+    @application = Applications::CreateService.new(current_user, request, application_params).execute
 
     if @application.persisted?
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])

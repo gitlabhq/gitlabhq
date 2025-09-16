@@ -141,6 +141,19 @@ describe('MoveWorkItemModal', () => {
     });
   });
 
+  describe('toggle text', () => {
+    it('renders "Select project" when there is no selected project', () => {
+      expect(findDropdown().props('toggleText')).toBe('Select project');
+    });
+
+    it('renders project namespace and name when there is a selected project', async () => {
+      findDropdown().vm.$emit('select', mockProject1.id);
+      await nextTick();
+
+      expect(findDropdown().props('toggleText')).toBe('Group / Project 1');
+    });
+  });
+
   describe('project search', () => {
     it('fetches projects when dropdown is shown', () => {
       expect(searchProjectsSuccessHandler).toHaveBeenCalledWith({ search: '', sort: 'stars_desc' });

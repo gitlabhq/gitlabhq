@@ -1,3 +1,4 @@
+@use "sass:list";
 // This file is based off animate.css 3.5.1, available here:
 // https://github.com/daneden/animate.css/blob/3.5.1/animate.css
 //
@@ -50,7 +51,7 @@
 @mixin transition($transitions...) {
   $unfolded-transitions: ();
   @each $transition in $transitions {
-    $unfolded-transitions: append($unfolded-transitions, unfold-transition($transition), comma);
+    $unfolded-transitions: list.append($unfolded-transitions, unfold-transition($transition), comma);
   }
 
   transition: $unfolded-transitions;
@@ -66,14 +67,14 @@
 
   // Grab transition properties if they exist
   $unfolded-transition: ();
-  @for $i from 1 through length($default-properties) {
+  @for $i from 1 through list.length($default-properties) {
     $p: null;
-    @if $i <= length($transition) {
-      $p: nth($transition, $i);
+    @if $i <= list.length($transition) {
+      $p: list.nth($transition, $i);
     } @else {
-      $p: nth($default-properties, $i);
+      $p: list.nth($default-properties, $i);
     }
-    $unfolded-transition: append($unfolded-transition, $p);
+    $unfolded-transition: list.append($unfolded-transition, $p);
   }
 
   @return $unfolded-transition;
@@ -190,9 +191,9 @@ $skeleton-line-widths: (
   200px,
 );
 
-@for $count from 1 through length($skeleton-line-widths) {
+@for $count from 1 through list.length($skeleton-line-widths) {
   .skeleton-line-#{$count} {
-    width: nth($skeleton-line-widths, $count);
+    width: list.nth($skeleton-line-widths, $count);
   }
 }
 

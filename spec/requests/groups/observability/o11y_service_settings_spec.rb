@@ -72,11 +72,9 @@ RSpec.describe "Groups::Observability::O11yServiceSettings", feature_category: :
         stub_feature_flags(o11y_settings_access: user_without_group_access)
       end
 
-      it 'returns 200 and builds new settings' do
+      it 'returns 404' do
         edit_request
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template(:edit)
-        expect_new_settings_built
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -175,21 +173,9 @@ RSpec.describe "Groups::Observability::O11yServiceSettings", feature_category: :
         stub_feature_flags(o11y_settings_access: user_without_group_access)
       end
 
-      it 'allows updating settings' do
-        expect_next_instance_of(Observability::GroupO11ySettingsUpdateService) do |service|
-          expect(service).to receive(:execute).with(
-            an_instance_of(Observability::GroupO11ySetting),
-            an_instance_of(ActionController::Parameters)
-          ).and_wrap_original do
-            settings.update!(o11y_service_url: 'https://new-o11y-instance.com')
-            ServiceResponse.success(payload: { settings: settings })
-          end
-        end
-
+      it 'does not allow updating settings' do
         update_request
-
-        expect(response).to redirect_to(edit_group_observability_o11y_service_settings_path(group))
-        expect(flash[:notice]).to eq('Observability service settings updated successfully.')
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -277,12 +263,10 @@ RSpec.describe "Groups::Observability::O11yServiceSettings", feature_category: :
         stub_feature_flags(o11y_settings_access: user_without_group_access)
       end
 
-      it 'allows deleting settings' do
-        expect { destroy_request }.to change { Observability::GroupO11ySetting.count }.by(-1)
+      it 'does not allow deleting settings' do
+        expect { destroy_request }.not_to change { Observability::GroupO11ySetting.count }
 
-        expect(response).to redirect_to(edit_group_observability_o11y_service_settings_path(group))
-        expect(response).to have_gitlab_http_status(:see_other)
-        expect(flash[:notice]).to eq('Observability service settings deleted successfully.')
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

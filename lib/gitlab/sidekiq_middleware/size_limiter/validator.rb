@@ -18,7 +18,7 @@ module Gitlab
       # then compressed. If the compressed payload still exceeds the limit, the
       # job is discarded, and a ExceedLimitError exception is raised.
       class Validator
-        # Avoid limiting the size of jobs for `BackgroundMigrationWorker` classes.
+        # Avoid limiting the size of jobs for `BatchedBackgroundMigrationWorker` classes.
         # We can't read the configuration from `ApplicationSetting` for those jobs
         # when migrating a path that modifies the `application_settings` table.
         # Reading the application settings through `ApplicationSetting#current`
@@ -30,11 +30,12 @@ module Gitlab
         # Application Settings to be loaded earlier causing failures loading
         # the environment in rake tasks
 
-        EXEMPT_WORKER_NAMES = %w[BackgroundMigrationWorker
-                                 BackgroundMigration::CiDatabaseWorker
-                                 Database::BatchedBackgroundMigrationWorker
-                                 Database::BatchedBackgroundMigration::CiDatabaseWorker
-                                 RedisMigrationWorker].to_set
+        EXEMPT_WORKER_NAMES = %w[
+          Database::BatchedBackgroundMigrationWorker
+          Database::BatchedBackgroundMigration::CiDatabaseWorker
+          Database::BatchedBackgroundMigration::SecDatabaseWorker
+          RedisMigrationWorker
+        ].to_set
 
         JOB_STATUS_KEY = 'size_limiter'
 

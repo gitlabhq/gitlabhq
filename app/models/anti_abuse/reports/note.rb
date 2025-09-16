@@ -24,14 +24,14 @@ module AntiAbuse
 
       self.table_name = 'abuse_report_notes'
 
-      belongs_to :abuse_report
+      belongs_to :abuse_report, class_name: '::AbuseReport'
 
       alias_attribute :noteable_id, :abuse_report_id
       alias_method :noteable, :abuse_report
 
       validates :abuse_report, presence: true
 
-      scope :fresh, -> { order_created_asc.with_order_id_asc }
+      scope :order_created_at_id_asc, -> { order_created_asc.with_order_id_asc }
       scope :inc_relations_for_view, ->(_abuse_report = nil) do
         relations = [
           { author: :status }, :updated_by, :award_emoji

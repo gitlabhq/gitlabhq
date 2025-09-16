@@ -27,7 +27,8 @@ module Gitlab
           author_id: reporter,
           assignee_ids: assignees,
           label_ids: label_ids,
-          work_item_type_id: @work_item_type.id
+          work_item_type_id: @work_item_type.id,
+          imported_from: ::Issue::IMPORT_SOURCES[:jira]
         }
       end
 

@@ -65,13 +65,17 @@ module ActiveRecord
     end
 
     def with_values_=(values)
-      raise ImmutableRelation if @loaded
+      if @loaded
+        raise Gitlab.next_rails? ? UnmodifiableRelation : ImmutableRelation
+      end
 
       @values[:with_values] = values
     end
 
     def recursive_value=(value)
-      raise ImmutableRelation if @loaded
+      if @loaded
+        raise Gitlab.next_rails? ? UnmodifiableRelation : ImmutableRelation
+      end
 
       @values[:recursive] = value
     end
@@ -110,8 +114,6 @@ module ActiveRecord
     def build_with(arel)
       with_statements = with_values_.flat_map do |with_value|
         case with_value
-        when String
-          with_value
         when Hash
           with_value.map do |name, expression|
             case expression
@@ -122,19 +124,17 @@ module ActiveRecord
             end
             Arel::Nodes::As.new Arel::Nodes::SqlLiteral.new("\"#{name}\""), select
           end
-        when Arel::Nodes::As
-          with_value
-        when Gitlab::Database::AsWithMaterialized
+        when String, Arel::Nodes::As, Gitlab::Database::AsWithMaterialized
           with_value
         end
       end
 
-      unless with_statements.empty?
-        if recursive_value
-          arel.with :recursive, with_statements
-        else
-          arel.with with_statements
-        end
+      return if with_statements.empty?
+
+      if recursive_value
+        arel.with :recursive, with_statements
+      else
+        arel.with with_statements
       end
     end
   end

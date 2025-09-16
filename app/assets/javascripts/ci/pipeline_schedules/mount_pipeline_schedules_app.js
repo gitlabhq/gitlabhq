@@ -18,7 +18,8 @@ export default () => {
     return false;
   }
 
-  const { projectPath, pipelinesPath, newSchedulePath, schedulesPath } = containerEl.dataset;
+  const { projectPath, pipelinesPath, newSchedulePath, schedulesPath, projectId } =
+    containerEl.dataset;
 
   return new Vue({
     el: containerEl,
@@ -29,6 +30,7 @@ export default () => {
       pipelinesPath,
       newSchedulePath,
       schedulesPath,
+      projectId,
     },
     render(createElement) {
       return createElement(PipelineSchedules);

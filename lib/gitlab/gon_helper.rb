@@ -5,6 +5,7 @@
 module Gitlab
   module GonHelper
     include WebpackHelper
+    include ::Organizations::OrganizationHelper
 
     def add_gon_variables
       gon.api_version                   = 'v4'
@@ -61,7 +62,7 @@ module Gitlab
 
       gon.diagramsnet_url = Gitlab::CurrentSettings.diagramsnet_url if Gitlab::CurrentSettings.diagramsnet_enabled
 
-      if current_organization && Feature.enabled?(:ui_for_organizations, current_user)
+      if current_organization && ui_for_organizations_enabled?
         gon.current_organization = current_organization.slice(:id, :name, :full_path, :web_url, :avatar_url)
       end
 
@@ -88,7 +89,9 @@ module Gitlab
     # Initialize gon.features with any flags that should be
     # made globally available to the frontend
     def add_gon_feature_flags
-      push_frontend_feature_flag(:ui_for_organizations, current_user)
+      # Use `push_to_gon_attributes` directly since we have a computed feature flag with
+      # an opt-out in ui_for_organizations_enabled?
+      push_to_gon_attributes(:features, :ui_for_organizations, ui_for_organizations_enabled?)
       push_frontend_feature_flag(:organization_switching, current_user)
       push_frontend_feature_flag(:find_and_replace, current_user)
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
@@ -99,10 +102,14 @@ module Gitlab
       push_frontend_feature_flag(:work_items_client_side_boards, current_user)
       push_frontend_feature_flag(:glql_work_items, current_user, type: :wip)
       push_frontend_feature_flag(:glql_aggregation, current_user, type: :wip)
+      push_frontend_feature_flag(:glql_typescript, current_user, type: :wip)
       push_frontend_feature_flag(:whats_new_featured_carousel)
       push_frontend_feature_flag(:extensible_reference_filters, current_user)
-      push_frontend_feature_flag(:global_topbar, current_user)
       push_frontend_feature_flag(:paneled_view, current_user)
+      push_frontend_feature_flag(:disallow_immediate_deletion, current_user)
+
+      # Expose the Project Studio user preference as if it were a feature flag
+      push_force_frontend_feature_flag(:project_studio_enabled, Users::ProjectStudio.new(current_user).enabled?)
     end
 
     # Exposes the state of a feature flag to the frontend code.

@@ -4,6 +4,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { ERROR_POLICY_ALL } from '~/lib/graphql';
 import { s__, __, sprintf } from '~/locale';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import namespaceMergeRequestsEnabledQuery from '~/work_items/graphql/namespace_merge_requests_enabled.query.graphql';
 import workItemDevelopmentQuery from '~/work_items/graphql/work_item_development.query.graphql';
 import workItemDevelopmentUpdatedSubscription from '~/work_items/graphql/work_item_development.subscription.graphql';
 import {
@@ -52,11 +53,12 @@ export default {
   data() {
     return {
       error: undefined,
+      mergeRequestsEnabled: false,
       workItem: {},
       workItemDevelopment: {},
-      showCreateBranchAndMrModal: false,
+      showModal: false,
       showBranchFlow: true,
-      showCreateOptions: true,
+      canCreateBranch: true,
     };
   },
   computed: {
@@ -133,7 +135,7 @@ export default {
       return this.workItemState === STATE_OPEN ? this.openStateText : this.closedStateText;
     },
     showAddButton() {
-      return this.canUpdate && this.showCreateOptions;
+      return this.canUpdate && this.canCreateBranch;
     },
     isConfidentialWorkItem() {
       return this.workItem?.confidential;
@@ -142,8 +144,10 @@ export default {
       return this.workItem?.project?.id;
     },
     addItemsActions() {
-      return [
-        {
+      const actions = [];
+
+      if (this.mergeRequestsEnabled) {
+        actions.push({
           name: __('Merge request'),
           items: [
             {
@@ -154,20 +158,21 @@ export default {
               },
             },
           ],
-        },
-        {
-          name: __('Branch'),
-          items: [
-            {
-              text: __('Create branch'),
-              action: this.openModal.bind(this, true, false),
-              extraAttrs: {
-                'data-testid': 'create-branch-dropdown-button',
-              },
+        });
+      }
+
+      return actions.concat({
+        name: __('Branch'),
+        items: [
+          {
+            text: __('Create branch'),
+            action: this.openModal.bind(this, true, false),
+            extraAttrs: {
+              'data-testid': 'create-branch-dropdown-button',
             },
-          ],
-        },
-      ];
+          },
+        ],
+      });
     },
   },
   apollo: {
@@ -224,17 +229,34 @@ export default {
         },
       },
     },
+    mergeRequestsEnabled: {
+      query: namespaceMergeRequestsEnabledQuery,
+      variables() {
+        return {
+          fullPath: this.workItemFullPath,
+        };
+      },
+      update(data) {
+        return data.workspace?.mergeRequestsEnabled ?? false;
+      },
+      skip() {
+        return !this.workItemFullPath;
+      },
+      error(error) {
+        Sentry.captureException(error);
+      },
+    },
   },
   methods: {
     openModal(createBranch = true) {
       this.toggleCreateModal(true);
       this.showBranchFlow = createBranch;
     },
-    toggleCreateModal(showOrhide) {
-      this.showCreateBranchAndMrModal = showOrhide;
+    toggleCreateModal(showModal) {
+      this.showModal = showModal;
     },
     updatePermissions(canCreateBranch) {
-      this.showCreateOptions = canCreateBranch;
+      this.canCreateBranch = canCreateBranch;
     },
   },
   DEVELOPMENT_ITEMS_ANCHOR,
@@ -297,7 +319,7 @@ export default {
     </crud-component>
     <work-item-create-branch-merge-request-modal
       v-if="!isLoading"
-      :show-modal="showCreateBranchAndMrModal"
+      :show-modal="showModal"
       :show-branch-flow="showBranchFlow"
       :work-item-iid="workItemIid"
       :work-item-type="workItemType"

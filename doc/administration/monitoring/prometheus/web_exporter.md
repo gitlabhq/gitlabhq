@@ -23,7 +23,7 @@ during high load periods.
 
 ## How GitLab metrics collection works
 
-When [monitoring GitLab with Prometheus](_index.md), GitLab runs various collectors that
+When monitoring GitLab with Prometheus, GitLab runs various collectors that
 sample the application for data related to usage, load and performance. GitLab can then make
 this data available to a Prometheus scraper by running one or more Prometheus exporters.
 A Prometheus exporter is an HTTP server that serializes metric data into a format the
@@ -38,10 +38,10 @@ To export background job metrics, learn how to [configure the Sidekiq metrics se
 
 We provide two mechanisms by which web application metrics can be exported:
 
-- Through the main Rails application. This means [Puma](../../operations/puma.md), the application server we use,
-  makes metric data available via its own `/-/metrics` endpoint. This is the default,
-  and is described in [GitLab Metrics](_index.md#gitlab-metrics). We recommend this
-  default for small GitLab installations where the amount of metrics collected is small.
+- Through the main Rails application. This means the application server we use,
+  Puma, makes metric data available through its own `/-/metrics` endpoint. This is the default,
+  and is described in GitLab Metrics. You should use this default
+  for small GitLab installations where the amount of metrics collected is small.
 - Through a dedicated metrics server. Enabling this server causes Puma to launch an
   additional process whose sole responsibility is to serve metrics. This approach leads
   to better fault isolation and performance for very large GitLab installations, but
@@ -63,10 +63,9 @@ To enable the dedicated server:
    puma['exporter_port'] = 8083
    ```
 
-1. When using the GitLab-bundled Prometheus, make sure that its `scrape_config` is pointing
-   to `localhost:8083/metrics`. Refer to the [Adding custom scrape configurations](_index.md#adding-custom-scrape-configurations) page
-   for how to configure scraper targets. For external Prometheus setup, refer to
-   [Using an external Prometheus server](_index.md#using-an-external-prometheus-server) instead.
+1. Configure the Prometheus scraper:
+   - If you are using the GitLab-bundled Prometheus, make sure that its [`scrape_config` points to `localhost:8083/metrics`](_index.md#adding-custom-scrape-configurations).
+   - If you are using an external Prometheus server, configure that [external server to scrape the new endpoint](_index.md#using-an-external-prometheus-server).
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation)
    for the changes to take effect.
 
@@ -96,10 +95,17 @@ To serve metrics via HTTPS instead of HTTP, enable TLS in the exporter settings:
 When TLS is enabled, the same `port` and `address` is used as described previously.
 The metrics server cannot serve both HTTP and HTTPS at the same time.
 
+## Related topics
+
+- [GitLab Docker installation](../../../install/docker/_index.md)
+- [Monitoring GitLab with Prometheus](_index.md)
+- [GitLab Metrics](_index.md#gitlab-metrics)
+- [Puma operations](../../operations/puma.md)
+
 ## Troubleshooting
 
 ### Docker container runs out of space
 
-When running [GitLab in Docker](../../../install/docker/_index.md), your container might run out of space. This can happen if you enable certain features which increase your space consumption, for example Web Exporter.
+When running GitLab in Docker, your container might run out of space. This can happen if you enable certain features which increase your space consumption, for example Web Exporter.
 
 To work around this issue, [update your `shm-size`](../../../install/docker/troubleshooting.md#devshm-mount-not-having-enough-space-in-docker-container).

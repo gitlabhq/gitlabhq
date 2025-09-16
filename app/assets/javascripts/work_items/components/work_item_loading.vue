@@ -39,7 +39,7 @@ export default {
         <!--- END work item description -->
 
         <div
-          class="work-item-attributes-wrapper gl-my-6 md:!gl-hidden"
+          class="work-item-attributes-wrapper gl-my-6 @md/panel:!gl-hidden"
           data-testid="work-item-attributes-xssm-loading"
         >
           <div v-for="i in $options.loader.attributesRepeat" :key="i">
@@ -68,7 +68,7 @@ export default {
 
       <!--- START work item attributes wrapper md/lg screens -->
       <aside
-        class="work-item-overview-right-sidebar gl-hidden md:!gl-block"
+        class="work-item-overview-right-sidebar gl-hidden @md/panel:!gl-block"
         data-testid="work-item-attributes-mdup-loading"
       >
         <div class="work-item-attributes-wrapper">

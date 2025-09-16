@@ -21,8 +21,8 @@ in the instance.
 
 These merge request approval settings can be set for the entire instance:
 
-- **Prevent approval by author**. Prevents project maintainers from allowing request authors to
-  merge their own merge requests.
+- **Prevent approval by merge request creator**. Prevents project maintainers from allowing merge
+  request authors to approve their own merge requests.
 - **Prevent approvals by users who add commits**. Prevents project maintainers from allowing users
   to approve merge requests if they have submitted any commits to the source branch.
 - **Prevent editing approval rules in projects and merge requests**. Prevents users from modifying

@@ -573,6 +573,104 @@ RSpec.describe Groups::UpdateService, feature_category: :groups_and_projects do
     end
   end
 
+  describe 'when updating namespace setting #step_up_auth_required_oauth_provider' do
+    let_it_be_with_reload(:group) { create(:group, :private) }
+    let_it_be(:user) { create(:user, owner_of: group) }
+
+    let(:ommiauth_provider_config_oidc) do
+      GitlabSettings::Options.new(
+        name: 'openid_connect',
+        step_up_auth: {
+          namespace: {
+            id_token: {
+              required: {
+                acr: 'gold'
+              }
+            }
+          }
+        }
+      )
+    end
+
+    let(:ommiauth_provider_config_oidc_aad) do
+      GitlabSettings::Options.new(
+        name: 'openid_connect_aad',
+        step_up_auth: {
+          namespace: {
+            id_token: {
+              required: {
+                acr: 'gold'
+              }
+            }
+          }
+        }
+      )
+    end
+
+    let(:params) { {} }
+
+    subject(:execute_update) { update_group(group, user, params) }
+
+    before do
+      stub_omniauth_setting(enabled: true, providers: [ommiauth_provider_config_oidc, ommiauth_provider_config_oidc_aad])
+      allow(Devise).to receive(:omniauth_providers).and_return([ommiauth_provider_config_oidc.name, ommiauth_provider_config_oidc_aad.name])
+    end
+
+    context 'when updating with valid provider' do
+      let(:params) { { step_up_auth_required_oauth_provider: 'openid_connect' } }
+
+      it 'successfully updates the setting' do
+        expect(execute_update).to be_truthy
+        expect(group.reload.namespace_settings.step_up_auth_required_oauth_provider).to eq('openid_connect')
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(omniauth_step_up_auth_for_namespace: false)
+        end
+
+        it 'does not update the setting when feature flag is disabled' do
+          expect(execute_update).to be_truthy
+          expect(group.reload.namespace_settings.step_up_auth_required_oauth_provider).to be_nil
+        end
+      end
+    end
+
+    context 'when updating to disabled (nil)' do
+      let(:params) { { step_up_auth_required_oauth_provider: nil } }
+
+      before do
+        group.namespace_settings.update!(step_up_auth_required_oauth_provider: 'openid_connect')
+      end
+
+      it 'successfully disables step-up auth' do
+        expect(execute_update).to be_truthy
+        expect(group.reload.namespace_settings.step_up_auth_required_oauth_provider).to be_nil
+      end
+    end
+
+    context 'when updating to disabled (empty string)' do
+      let(:params) { { step_up_auth_required_oauth_provider: '' } }
+
+      before do
+        group.namespace_settings.update!(step_up_auth_required_oauth_provider: 'openid_connect')
+      end
+
+      it 'successfully disables step-up auth' do
+        expect(execute_update).to be_truthy
+        expect(group.reload.namespace_settings.step_up_auth_required_oauth_provider).to be_nil
+      end
+    end
+
+    context 'when updating with invalid provider' do
+      let(:params) { { step_up_auth_required_oauth_provider: 'invalid_provider' } }
+
+      it 'fails to update with validation error' do
+        expect(execute_update).to be_falsey
+      end
+    end
+  end
+
   context 'updating default_branch_protection' do
     let(:service) do
       described_class.new(internal_group, user, default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)

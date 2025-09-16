@@ -52,12 +52,13 @@ GET /groups/:id/-/debian_distributions
 
 | Attribute  | Type            | Required | Description |
 | ---------- | --------------- | -------- | ----------- |
-| `id`       | integer/string  | yes      | The ID or [URL-encoded path of the group](../rest/_index.md#namespaced-paths). |
+| `id`       | integer or string  | yes      | The ID or [URL-encoded path of the group](../rest/_index.md#namespaced-paths). |
 | `codename` | string          | no       | Filter with specific `codename`. |
 | `suite`    | string          | no       | Filter with specific `suite`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions"
 ```
 
 Example response:
@@ -94,11 +95,12 @@ GET /groups/:id/-/debian_distributions/:codename
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/_index.md#namespaced-paths). |
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the group](../rest/_index.md#namespaced-paths). |
 | `codename` | string         | yes      | The `codename` of a distribution. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions/unstable"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions/unstable"
 ```
 
 Example response:
@@ -133,11 +135,12 @@ GET /groups/:id/-/debian_distributions/:codename/key.asc
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/_index.md#namespaced-paths). |
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the group](../rest/_index.md#namespaced-paths). |
 | `codename` | string         | yes      | The `codename` of a distribution. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions/unstable/key.asc"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions/unstable/key.asc"
 ```
 
 Example response:
@@ -170,7 +173,7 @@ POST /groups/:id/-/debian_distributions
 
 | Attribute                     | Type           | Required | Description |
 | ----------------------------- | -------------- | -------- | ----------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/_index.md#namespaced-paths). |
+| `id`                          | integer or string | yes      | The ID or [URL-encoded path of the group](../rest/_index.md#namespaced-paths). |
 | `codename`                    | string         | yes      | The codename of a Debian distribution. |
 | `suite`                       | string         | no       | The suite of the new Debian distribution. |
 | `origin`                      | string         | no       | The origin of the new Debian distribution. |
@@ -182,7 +185,9 @@ POST /groups/:id/-/debian_distributions
 | `architectures`               | string array   | no       | The new Debian distribution's list of architectures. |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions?codename=sid"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions?codename=sid"
 ```
 
 Example response:
@@ -217,7 +222,7 @@ PUT /groups/:id/-/debian_distributions/:codename
 
 | Attribute                     | Type           | Required | Description |
 | ----------------------------- | -------------- | -------- | ----------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/_index.md#namespaced-paths). |
+| `id`                          | integer or string | yes      | The ID or [URL-encoded path of the group](../rest/_index.md#namespaced-paths). |
 | `codename`                    | string         | yes      | The Debian distribution's new codename.  |
 | `suite`                       | string         | no       | The Debian distribution's new suite. |
 | `origin`                      | string         | no       | The Debian distribution's new origin. |
@@ -229,7 +234,9 @@ PUT /groups/:id/-/debian_distributions/:codename
 | `architectures`               | string array   | no       | The Debian distribution's new list of architectures. |
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions/unstable?suite=new-suite&valid_time_duration_seconds=604800"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions/unstable?suite=new-suite&valid_time_duration_seconds=604800"
 ```
 
 Example response:
@@ -264,9 +271,11 @@ DELETE /groups/:id/-/debian_distributions/:codename
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the group](../rest/_index.md#namespaced-paths). |
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the group](../rest/_index.md#namespaced-paths). |
 | `codename` | string         | yes      | The codename of the Debian distribution. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions/unstable"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/-/debian_distributions/unstable"
 ```

@@ -1,3 +1,4 @@
+@use "sass:map";
 @import './page_bundles/notes/diff_comments';
 @import './page_bundles/notes/image_comments';
 
@@ -16,15 +17,36 @@ $diff-file-header: 41px;
   .file-title-flex-parent {
     cursor: pointer;
 
+    @supports (container-type: scroll-state) {
+      container-type: scroll-state;
+      container-name: file-holder-wrapper;
+
+      @container file-holder-wrapper scroll-state(stuck: top) {
+        &::before,
+        &::after {
+          content: '';
+          @apply gl-absolute gl-top-0 gl-w-4 gl-h-4 gl-bg-inherit;
+        }
+
+        &::before {
+          @apply gl-left-0;
+        }
+
+        &::after {
+          @apply gl-right-0;
+        }
+      }
+    }
+
     .dropdown-menu {
       cursor: auto;
     }
 
     &:has(.gl-new-dropdown-toggle[aria-expanded="true"]) {
-   z-index: $zindex-dropdown-menu;
-  }
+      z-index: $zindex-dropdown-menu;
+    }
 
-    @media (max-width: map-get($grid-breakpoints, sm)-1) {
+    @media (max-width: map.get($grid-breakpoints, sm)-1) {
       .file-header-content {
         width: 0;
         flex: 1;
@@ -35,7 +57,7 @@ $diff-file-header: 41px;
       }
     }
 
-    @media (min-width: map-get($grid-breakpoints, md)) {
+    @media (min-width: map.get($grid-breakpoints, md)) {
       position: sticky;
       top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} - #{$gl-border-size-1});
       z-index: 120;
@@ -62,7 +84,7 @@ $diff-file-header: 41px;
     }
   }
 
-  @media (min-width: map-get($grid-breakpoints, md)) {
+  @media (min-width: map.get($grid-breakpoints, md)) {
     &.conflict .file-title,
     &.conflict .file-title-flex-parent {
       top: $calc-application-header-height;
@@ -410,21 +432,18 @@ table.code {
   margin: 0;
   padding: 0;
   table-layout: fixed;
-  border-radius: 0 0 $gl-border-radius-large $gl-border-radius-large;
+  border-radius: 0 0 $gl-border-radius-base-inner $gl-border-radius-base-inner;
 
   .diff-td.highlight-top {
-    box-shadow: 0 -1px var(--highlight-border-color, $blue-300);
-    z-index: 1;
+    box-shadow: inset 0 1px var(--highlight-border-color, $blue-300);
   }
 
   .diff-td.highlight-bottom {
-    box-shadow: 0 1px var(--highlight-border-color, $blue-300);
-    z-index: 1;
+    box-shadow: inset 0 -1px var(--highlight-border-color, $blue-300);
   }
 
   .diff-td.highlight-top.highlight-bottom {
-    box-shadow: 0 -1px var(--highlight-border-color, $blue-300), 0 1px var(--highlight-border-color, $blue-300);
-    z-index: 2;
+    box-shadow: inset 0 -1px var(--highlight-border-color, $blue-300), inset 0 1px var(--highlight-border-color, $blue-300);
   }
 
   .diff-tr.line_holder .diff-td,
@@ -831,7 +850,7 @@ table.code {
   }
 }
 
-@media (max-width: map-get($grid-breakpoints, lg)-1) {
+@media (max-width: map.get($grid-breakpoints, lg)-1) {
   .diffs .files {
     flex-direction: column;
   }

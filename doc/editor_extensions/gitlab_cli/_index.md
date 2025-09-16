@@ -111,8 +111,8 @@ or provide suggestions on how to run `git` commands to perform other tasks.
 
 ## Install the CLI
 
-Installation instructions are available in the `glab`
-[`README`](https://gitlab.com/gitlab-org/cli/#installation).
+Installation instructions are available in
+[the `glab` `README`](https://gitlab.com/gitlab-org/cli/#installation).
 
 ## Authenticate with GitLab
 
@@ -234,5 +234,5 @@ results if they query the wrong remote. To fix this problem, change the remote `
    with the name of your preferred remote:
 
    ```shell
-   git config --append remote.origin.glab-resolved base
+   git config set --append remote.origin.glab-resolved base
    ```

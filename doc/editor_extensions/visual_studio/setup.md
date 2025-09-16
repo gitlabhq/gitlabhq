@@ -50,6 +50,16 @@ Then authenticate with GitLab.
 1. In the **Access Token** field, paste in your token. The token is not displayed, nor is it accessible to others.
 1. In the **GitLab URL** text box, enter the URL of your GitLab instance. For GitLab.com, use `https://gitlab.com`.
 
+## Enable telemetry
+
+The GitLab extension uses the telemetry settings in Visual Studio to send usage and error
+information to GitLab. To enable telemetry in GitLab for Visual Studio:
+
+1. In Visual Studio, on the top bar, go to **Tools** > **Options**.
+1. In the left sidebar, expand **GitLab** and select **General**.
+1. In the **Enable telemetry** dropdown list, select **True**.
+1. Select **OK**.
+
 ## Configure the extension
 
 This extension provides custom commands that you can use with GitLab. Most commands don't have

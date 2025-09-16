@@ -8,7 +8,7 @@ import WikiDiscussionsSignedOut from '~/wikis/wiki_notes/components/wiki_discuss
 import WikiCommentForm from '~/wikis/wiki_notes/components/wiki_comment_form.vue';
 import * as autosave from '~/lib/utils/autosave';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
-import { currentUserData, note, noteableId, noteableType } from '../mock_data';
+import { currentUserData, discussion, noteableId, noteableType, note } from '../mock_data';
 
 describe('WikiDiscussion', () => {
   let wrapper;
@@ -20,7 +20,7 @@ describe('WikiDiscussion', () => {
   const createWrapper = ({ props, provideData = { userData: currentUserData } } = {}) =>
     shallowMountExtended(WikiDiscussion, {
       propsData: {
-        discussion: [note],
+        discussion,
         noteableId,
         ...props,
       },
@@ -60,14 +60,19 @@ describe('WikiDiscussion', () => {
       beforeEach(() => {
         wrapper = createWrapper({
           props: {
-            discussion: [
-              note,
-              {
-                ...note,
-                body: 'another example note',
-                bodyHtml: '<p data-sourcepos="1:1-1:29" dir="auto">another example note</p>',
+            discussion: {
+              ...discussion,
+              notes: {
+                nodes: [
+                  note,
+                  {
+                    ...note,
+                    body: 'another example note',
+                    bodyHtml: '<p data-sourcepos="1:1-1:29" dir="auto">another example note</p>',
+                  },
+                ],
               },
-            ],
+            },
           },
         });
       });
@@ -112,27 +117,32 @@ describe('WikiDiscussion', () => {
         beforeEach(() => {
           wrapper = createWrapper({
             props: {
-              discussion: [
-                note,
-                {
-                  ...note,
-                  id: 2,
-                  body: 'first note',
-                  bodyHtml: '<p data-sourcepos="1:1-1:29" dir="auto">first note</p>',
+              discussion: {
+                ...discussion,
+                notes: {
+                  nodes: [
+                    note,
+                    {
+                      ...note,
+                      id: 2,
+                      body: 'first note',
+                      bodyHtml: '<p data-sourcepos="1:1-1:29" dir="auto">first note</p>',
+                    },
+                    {
+                      ...note,
+                      id: 3,
+                      body: 'second note',
+                      bodyHtml: '<p data-sourcepos="1:1-1:29" dir="auto">second note</p>',
+                    },
+                    {
+                      ...note,
+                      id: 4,
+                      body: 'third note',
+                      bodyHtml: '<p data-sourcepos="1:1-1:29" dir="auto">third note</p>',
+                    },
+                  ],
                 },
-                {
-                  ...note,
-                  id: 3,
-                  body: 'second note',
-                  bodyHtml: '<p data-sourcepos="1:1-1:29" dir="auto">second note</p>',
-                },
-                {
-                  ...note,
-                  id: 4,
-                  body: 'third note',
-                  bodyHtml: '<p data-sourcepos="1:1-1:29" dir="auto">third note</p>',
-                },
-              ],
+              },
             },
           });
         });
@@ -161,7 +171,7 @@ describe('WikiDiscussion', () => {
   describe('when user is not signed in', () => {
     beforeEach(() => {
       wrapper = createWrapper({
-        props: { discussion: [note, note] },
+        props: { discussion: { ...discussion, notes: { nodes: [note, note] } } },
         provideData: { currentUserData: null },
       });
     });
@@ -181,7 +191,9 @@ describe('WikiDiscussion', () => {
 
   describe('component functions properly when user is signed in', () => {
     beforeEach(() => {
-      wrapper = createWrapper({ props: { discussion: [note, note] } });
+      wrapper = createWrapper({
+        props: { discussion: { ...discussion, notes: { nodes: [note, note] } } },
+      });
     });
 
     it('should call clearDraft whenever toggle reply is called with a value of false', () => {

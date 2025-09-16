@@ -24,6 +24,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index], unless: -> { request.format.json? }
   before_action :set_kas_cookie, only: [:edit, :new, :show, :k8s], if: -> { current_user && request.format.html? }
+  before_action :ensure_certificate_based_clusters_enabled!, only: [:terminal]
   after_action :expire_etag_cache, only: [:cancel_auto_stop]
 
   track_event :index, :folder, :show, :new, :edit, :create, :update, :stop, :cancel_auto_stop, :terminal, :k8s,
@@ -258,6 +259,10 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def authorize_update_environment!
     access_denied! unless can?(current_user, :update_environment, environment)
+  end
+
+  def ensure_certificate_based_clusters_enabled!
+    render_404 unless @project.certificate_based_clusters_enabled?
   end
 end
 

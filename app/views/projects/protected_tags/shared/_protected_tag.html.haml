@@ -6,7 +6,7 @@
       = gl_badge_tag s_('ProtectedTags|default'), variant: :info, class: 'gl-ml-2'
   %td{ data: { label: s_('ProtectedBranch|Last commit') }, class: '!gl-align-middle' }
     - if protected_tag.wildcard?
-      - matching_tags = protected_tag.matching(repository.tag_names)
+      - matching_tags = protected_tag.matching(@tag_names)
       = link_to pluralize(matching_tags.count, "matching tag"), project_protected_tag_path(@project, protected_tag)
     - else
       - if commit = protected_tag.commit

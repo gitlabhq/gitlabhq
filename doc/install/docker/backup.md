@@ -1,6 +1,6 @@
 ---
 stage: GitLab Delivery
-group: Self Managed
+group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Back up GitLab running in a Docker container
 ---
@@ -50,4 +50,5 @@ docker exec -t <container name> gitlab-backup create SKIP=artifacts,repositories
 The backup is written to `/var/opt/gitlab/backups` which should be on a
 [volume mounted by Docker](installation.md#create-a-directory-for-the-volumes).
 
-For more information on using the backup to roll back an upgrade, see [Downgrade GitLab](../../update/docker/_index.md#downgrade-gitlab).
+For more information on using the backup to roll back an upgrade, see
+[roll back a Docker instance](../../update/package/downgrade.md#roll-back-a-docker-instance).

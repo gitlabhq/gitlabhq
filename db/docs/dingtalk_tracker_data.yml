@@ -5,7 +5,7 @@ feature_categories:
 - integrations
 description: Data related to the Dingtalk integration (JiHu-specific, see https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/417).
 milestone: '15.0'
-gitlab_schema: gitlab_main
-exempt_from_sharding: true
-notes: Exempted because because this is a JiHu specific table
+gitlab_schema: gitlab_main_jh
+notes: Exempted because this is a JiHu specific table
 table_size: small
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/560435

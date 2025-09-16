@@ -3,9 +3,6 @@ import { get, mapValues, pick } from 'lodash';
 import { DEFAULT_VARIANT, CANDIDATE_VARIANT, TRACKING_CONTEXT_SCHEMA } from './constants';
 
 function getExperimentsData() {
-  // Pull from deprecated window.gon.experiment
-  const experimentsFromGon = get(window, ['gon', 'experiment'], {});
-  // Pull from preferred window.gl.experiments
   const experimentsFromGl = get(window, ['gl', 'experiments'], {});
 
   // Bandaid to allow-list only the properties which the current gitlab_experiment
@@ -13,7 +10,7 @@ function getExperimentsData() {
   // Snowplow context.
   // See TRACKING_CONTEXT_SCHEMA for current version (1-0-0)
   // https://gitlab.com/gitlab-org/iglu/-/blob/master/public/schemas/com.gitlab/gitlab_experiment/jsonschema/1-0-0
-  return mapValues({ ...experimentsFromGon, ...experimentsFromGl }, (xp) => {
+  return mapValues({ ...experimentsFromGl }, (xp) => {
     return pick(xp, ['experiment', 'key', 'variant', 'migration_keys']);
   });
 }

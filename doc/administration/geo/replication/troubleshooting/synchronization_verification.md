@@ -641,6 +641,74 @@ Exit code 128 during repository creation means Git encountered a fatal error whi
 
 When unsure where to start, run an integrity check on the source repository on the Primary site by [executing the `git fsck` command manually on the command line](../../../../administration/repository_checks.md#run-a-check-using-the-command-line).
 
+### Error: `gitmodulesUrl: disallowed submodule url`
+
+Some project repositories consistently fail to sync with the error
+`Error syncing repository: 13:creating repository: cloning repository: exit status 128`. However,
+for some repositories, the specific error message in the Gitaly logs is different: `gitmodulesUrl: disallowed submodule url`.
+This failure happens when repositories contain invalid submodule URLs in their `.gitmodules` files.
+
+The problem is in the repository's commit history. Submodule URLs in `.gitmodules` files contain
+invalid formats, using `:` instead of `/` in the path:
+
+- Invalid: `https://example.gitlab.com:group/project.git`
+- Valid: `https://example.gitlab.com/group/project.git`
+
+This issue is known in GitLab 17.0 and later, and is a result of more strict repository consistency
+checks. This new behavior results from a change in Git itself, where this check was added. It is not
+specific to GitLab Geo or Gitaly. For more information, see
+[issue 468560](https://gitlab.com/gitlab-org/gitlab/-/issues/468560).
+
+#### Workaround
+
+{{< alert type="note" >}}
+
+If the problematic repositories are part of a fork network, this blob removal method might not work as blobs
+contained in object pools cannot be removed this way.
+
+{{< /alert >}}
+
+You should remove the problematic blobs from the repository:
+
+1. Back up the projects before proceeding, using
+   the [project export option](../../../../user/project/settings/import_export.md).
+
+1. Identify the problematic blob IDs using one of these methods:
+
+   - Use `git fsck`: Clone the repository, then run `git fsck` to confirm the issue:
+
+     ```shell
+     git clone https://example.gitlab.com/group/project.git
+     cd project
+     git fsck
+     ```
+
+     The output shows the problematic blob:
+
+     ```plaintext
+     Checking object directories: 100% (256/256), done.
+     error in blob <SHA>: gitmodulesUrl: disallowed submodule url: https://example.gitlab.com:group/project.git
+     Checking objects: 100% (12/12), done.
+     ```
+
+   - Check the Gitaly logs. Look for error messages containing `gitmodulesUrl`
+     to find the specific blob SHA.
+
+1. Remove the offending blobs using the process documented in the
+   [repository size management guide](../../../../user/project/repository/repository_size.md#remove-blobs).
+
+1. After removing the blobs, check the `.gitmodules` files in your current branch for
+   invalid URLs. Edit the files to change URLs from
+   `https://example.gitlab.com:group/project.git` (with a colon) to `https://example.gitlab.com/group/project.git`
+   (with a slash) and commit the changes.
+
+{{< alert type="warning" >}}
+
+After the fix, all developers working on the affected projects must remove their current local copies
+and clone fresh repositories. Otherwise, they might reintroduce the offending blobs when pushing changes.
+
+{{< /alert >}}
+
 ### Error: `fetch remote: signal: terminated: context deadline exceeded` at exactly 3 hours
 
 If Git fetch fails at exactly three hours while syncing a Git repository:
@@ -877,6 +945,102 @@ Geo::ProjectRegistry.where(last_repository_check_failed: true).count
 ```ruby
 Geo::ProjectRegistry.where(last_repository_check_failed: true)
 ```
+
+## Hard delete a repository from Gitaly Cluster and resync
+
+{{< alert type="warning" >}}
+
+This procedure is risky, and heavy-handed. Use it as a last resort only when other
+troubleshooting methods have failed. This procedure causes temporary data loss until the
+repository is resynced.
+
+{{< /alert >}}
+
+This procedure deletes the repository from the secondary site's Gitaly cluster, and re-syncs it.
+You should consider using it only if you understand the risks, and if these conditions are all true:
+
+- `git clone` is working for a repository on the primary site.
+- `p.replicator.sync_repository` (where `p` is a project model instance) logs a Gitaly error on a secondary site.
+- Standard troubleshooting has not resolved the issue.
+
+Prerequisites:
+
+- Ensure you have administrative access to both the secondary site's Rails console and Praefect nodes.
+- Verify that the repository is accessible and working correctly on the primary site.
+- Have a backup plan in case you must reverse this procedure.
+
+To do this:
+
+1. Sign in to the Rails console in the secondary site.
+1. Instantiate a project model, and save it to a variable `p`, using one of these options:
+
+   - If you know the affected project ID (for example, `60087`):
+
+     ```ruby
+     p = Project.find(60087)
+     ```
+
+   - If you know the affected project path in GitLab (for example, `my-group/my-project`):
+
+     ```ruby
+     p = Project.find_by_full_path('my-group/my-project')
+     ```
+
+1. Output the project Git repository's virtual storage, and note it for later:
+
+   ```ruby
+   p.repository.storage
+   ```
+
+   Example output:
+
+   ```ruby
+   irb(main):002:0> p.repository.storage
+   => "default"
+   ```
+
+1. Output the project Git repository's relative path, and note it for later:
+
+   ```ruby
+   p.repository.disk_path + '.git'
+   ```
+
+   Example output:
+
+   ```ruby
+   irb(main):003:0> p.repository.disk_path + '.git'
+   => "@hashed/66/b2/66b2fc8562b3432399acc2d0108fcd2782b32bd31d59226c7a03a20b32c76ee8.git"
+   ```
+
+1. SSH into a Praefect node in the secondary site.
+1. Follow the procedure to
+   [Manually remove repositories from Gitaly Cluster](../../../gitaly/praefect/recovery.md#manually-remove-repositories),
+   using the virtual storage and relative path you noted in the previous steps.
+
+   The Git repository on the secondary site is now deleted.
+
+1. In the Rails console, before you resync, set a correlation ID. This ID helps you search all logs
+   related to the commands you run in this session:
+
+   ```ruby
+   Gitlab::ApplicationContext.push({})
+   ```
+
+   Example output:
+
+   ```ruby
+   [2] pry(main)> Gitlab::ApplicationContext.push({})
+   => #<Labkit::Context:0x0000000122aa4060 @data={"correlation_id"=>"53da64ae800bd4794a2b61ab1c80b028"}>
+   ```
+
+1. Sync the project Git repository:
+
+   ```ruby
+   p.replicator.sync_repository
+   ```
+
+The Git repository should now be resynced from the primary site to the secondary site. Monitor the sync
+process through the Geo admin interface, or by checking the repository's sync status in the Rails console.
 
 ## Resetting Geo **secondary** site replication
 

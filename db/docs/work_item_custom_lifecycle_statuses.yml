@@ -8,7 +8,7 @@ description: Stores the association between custom lifecycles and statuses with 
   information for ordering
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186050
 milestone: '17.11'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

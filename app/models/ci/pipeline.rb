@@ -191,7 +191,7 @@ module Ci
     validates :yaml_errors, bytesize: { maximum: -> { YAML_ERRORS_MAX_LENGTH } }, if: :yaml_errors_changed?
 
     after_create :keep_around_commits, unless: :importing?
-    after_commit :trigger_pipeline_status_change_subscription, if: :saved_change_to_status?
+    after_commit :trigger_status_change_subscriptions, if: :saved_change_to_status?
     after_commit :track_ci_pipeline_created_event, on: :create, if: :internal_pipeline?
     after_find :observe_age_in_minutes, unless: :importing?
 
@@ -474,9 +474,15 @@ module Ci
       where_exists(Ci::Build.latest.scoped_pipeline.with_artifacts(reports_scope))
     end
 
+    scope :legacy_conservative_interruptible, -> do
+      where_not_exists(
+        Ci::Build.scoped_pipeline.with_status(STARTED_STATUSES).with_metadata_interruptible_false
+      )
+    end
+
     scope :conservative_interruptible, -> do
       where_not_exists(
-        Ci::Build.scoped_pipeline.with_status(STARTED_STATUSES).not_interruptible
+        Ci::Build.scoped_pipeline.with_status(STARTED_STATUSES).with_interruptible_false
       )
     end
 
@@ -512,9 +518,7 @@ module Ci
       relation = order(id: :desc)
       relation = relation.where(ref: ref) if ref
       relation = relation.where(sha: sha) if sha
-      if source && Feature.enabled?(:source_filter_pipelines, :current_request)
-        relation = relation.where(source: source)
-      end
+      relation = relation.where(source: source) if source
 
       if limit
         ids = relation.limit(limit).select(:id)
@@ -522,6 +526,10 @@ module Ci
       end
 
       relation
+    end
+
+    def self.newest_without_schedules(ref: nil, sha: nil)
+      newest_first(ref: ref, sha: sha).where.not(source: :schedule)
     end
 
     def self.latest_status(ref = nil)
@@ -636,8 +644,12 @@ module Ci
       :ci_pipelines
     end
 
-    def trigger_pipeline_status_change_subscription
+    def trigger_status_change_subscriptions
       GraphqlTriggers.ci_pipeline_status_updated(self)
+
+      return unless self.pipeline_schedule_id.present?
+
+      GraphqlTriggers.ci_pipeline_schedule_status_updated(self.pipeline_schedule)
     end
 
     def uses_needs?

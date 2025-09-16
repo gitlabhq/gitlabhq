@@ -58,9 +58,17 @@ class NamespaceSetting < ApplicationRecord
   validate :validate_enterprise_bypass_expires_at, if: ->(record) {
     record.allow_enterprise_bypass_placeholder_confirmation? && (record.new_record? || record.will_save_change_to_enterprise_bypass_expires_at?)
   }
+  validates :step_up_auth_required_oauth_provider, presence: true, allow_nil: true
+  validates :step_up_auth_required_oauth_provider, inclusion: { in: ->(_) {
+    Gitlab::Auth::Oidc::StepUpAuthentication
+      .enabled_providers(scope: Gitlab::Auth::Oidc::StepUpAuthentication::STEP_UP_AUTH_SCOPE_NAMESPACE)
+      .map(&:to_s)
+  } }, allow_nil: true
 
   sanitizes! :default_branch_name
   nullify_if_blank :default_branch_name
+
+  nullify_if_blank :step_up_auth_required_oauth_provider
 
   before_validation :set_pipeline_variables_default_role, on: :create
 
@@ -100,6 +108,14 @@ class NamespaceSetting < ApplicationRecord
 
   def self.allowed_namespace_settings_params
     NAMESPACE_SETTINGS_PARAMS
+  end
+
+  def self.enterprise_bypass_min_date
+    Date.current.tomorrow.beginning_of_day
+  end
+
+  def self.enterprise_bypass_max_date
+    Date.current.advance(years: 1, days: -1).end_of_day
   end
 
   def prevent_sharing_groups_outside_hierarchy
@@ -162,17 +178,17 @@ class NamespaceSetting < ApplicationRecord
 
   def validate_enterprise_bypass_expires_at
     if enterprise_bypass_expires_at.blank?
-      errors.add(:enterprise_bypass_expires_at, s_('BulkImports|end date is required when bypass is enabled.'))
+      errors.add(:enterprise_bypass_expires_at, s_('BulkImports|You must enter a date when user confirmation is bypassed.'))
       return
     end
 
-    min_date = Date.current.tomorrow.beginning_of_day
-    max_date = Date.current.advance(years: 1, days: -1).end_of_day
+    min_date = self.class.enterprise_bypass_min_date
+    max_date = self.class.enterprise_bypass_max_date
 
     if enterprise_bypass_expires_at < min_date
-      errors.add(:enterprise_bypass_expires_at, s_('BulkImports|end date must be a future date.'))
+      errors.add(:enterprise_bypass_expires_at, s_('BulkImports|The date must be in the future.'))
     elsif enterprise_bypass_expires_at > max_date
-      errors.add(:enterprise_bypass_expires_at, s_('BulkImports|end date must not be more than a year in the future.'))
+      errors.add(:enterprise_bypass_expires_at, s_('BulkImports|The date must not be more than one year in the future.'))
     end
   end
 

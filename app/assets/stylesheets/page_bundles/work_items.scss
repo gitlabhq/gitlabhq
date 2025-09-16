@@ -1,9 +1,9 @@
 @import 'mixins_and_variables_and_functions';
 @import 'issues_show';
+@import 'issues_list';
 
 $work-item-field-inset-shadow: inset 0 0 0 $gl-border-size-1 var(--gray-200, $gray-200) !important;
 $work-item-overview-right-sidebar-width: px-to-rem(290px);
-$work-item-sticky-header-height: 52px;
 $work-item-overview-gap-width: 2rem;
 
 // sticky error placement for errors in modals, by default it is 83px for full view
@@ -16,6 +16,7 @@ $work-item-overview-gap-width: 2rem;
 
 // stylelint-disable-next-line gitlab/no-gl-class
 .gl-modal .work-item-view,
+:where(.page-with-panels) .work-item-view, // when it's in a panel, treat work items like drawers
 .work-item-drawer .work-item-view:not(:has(.design-detail)) {
   container-name: work-item-view;
   container-type: inline-size;
@@ -49,6 +50,7 @@ $work-item-overview-gap-width: 2rem;
     overflow-y: initial !important;
     margin-bottom: 0 !important;
     height: auto !important;
+    @apply gl-mt-5;
   }
 }
 
@@ -473,4 +475,16 @@ ul.content-list {
       @apply gl-relative gl-z-2;
     }
   }
+}
+
+[data-testid="work-item-detail"]:has(.issue-sticky-header) .flash-container.sticky {
+  top: calc(#{$calc-application-header-height} + var(--work-item-sticky-header-height, 3rem) + $gl-spacing-scale-3);
+}
+
+.work-item-drawer .flash-container.sticky {
+  top: 0;
+}
+
+.work-item-drawer [data-testid="work-item-detail"]:has(.issue-sticky-header) .flash-container.sticky {
+  top: calc(var(--work-item-sticky-header-height, 3rem) + $gl-spacing-scale-3);
 }

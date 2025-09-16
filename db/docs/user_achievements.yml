@@ -7,7 +7,7 @@ feature_categories:
 description: Achievements awarded to and revoked from users
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107027
 milestone: '15.8'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 table_size: small
 sharding_key:
   namespace_id: namespaces

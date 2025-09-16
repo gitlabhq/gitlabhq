@@ -45,7 +45,6 @@ Performance/StringIdentifierArgument:
     - 'ee/app/helpers/ee/gitlab_routing_helper.rb'
     - 'ee/app/models/ee/namespace_setting.rb'
     - 'ee/app/models/ee/project.rb'
-    - 'ee/app/models/geo_node_status.rb'
     - 'ee/app/models/license.rb'
     - 'ee/app/services/incident_management/pending_escalations/process_service.rb'
     - 'ee/lib/gitlab/graphql/aggregations/issuables/lazy_links_aggregate.rb'

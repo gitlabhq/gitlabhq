@@ -7,12 +7,14 @@ query getProjects(
   $searchNamespaces: Boolean = false
   $sort: String
   $membership: Boolean = true
+  $minAccessLevel: AccessLevelEnum
 ) {
   projects(
     search: $search
     after: $after
     first: $first
     membership: $membership
+    minAccessLevel: $minAccessLevel
     searchNamespaces: $searchNamespaces
     sort: $sort
   ) {

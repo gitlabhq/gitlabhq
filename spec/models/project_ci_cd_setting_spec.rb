@@ -207,4 +207,41 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
       expect(described_class.configured_to_delete_old_pipelines).to contain_exactly(project.ci_cd_settings)
     end
   end
+
+  describe '#resource_group_default_process_mode' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:setting) { project.ci_cd_settings }
+
+    it 'defines an enum with all process modes' do
+      expect(described_class.resource_group_default_process_modes).to eq({
+        'unordered' => 0,
+        'oldest_first' => 1,
+        'newest_first' => 2,
+        'newest_ready_first' => 3
+      })
+    end
+
+    it 'defaults to unordered' do
+      expect(setting.resource_group_default_process_mode).to eq('unordered')
+    end
+
+    it 'can be set to different process modes' do
+      described_class.resource_group_default_process_modes.each_key do |mode|
+        setting.update!(resource_group_default_process_mode: mode)
+        expect(setting.reload.resource_group_default_process_mode).to eq(mode)
+      end
+    end
+
+    it 'provides predicate methods for each mode' do
+      setting.update!(resource_group_default_process_mode: 'oldest_first')
+      expect(setting.resource_group_default_process_mode_oldest_first?).to be true
+      expect(setting.resource_group_default_process_mode_unordered?).to be false
+      expect(setting.resource_group_default_process_mode_newest_first?).to be false
+      expect(setting.resource_group_default_process_mode_newest_ready_first?).to be false
+    end
+
+    it 'validates enum values' do
+      expect { setting.update!(resource_group_default_process_mode: 'invalid') }.to raise_error(ArgumentError)
+    end
+  end
 end

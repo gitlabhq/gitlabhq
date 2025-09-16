@@ -8,9 +8,10 @@ RSpec.describe Packages::CreateTemporaryPackageService, feature_category: :packa
   let_it_be(:params) { {} }
   let_it_be(:package_name) { 'my-package' }
   let_it_be(:package_type) { 'rubygems' }
+  let_it_be(:packages_class) { ::Packages::Rubygems::Package }
 
   describe '#execute' do
-    subject { described_class.new(project, user, params).execute(package_type, name: package_name) }
+    subject { described_class.new(project, user, params).execute(packages_class, name: package_name) }
 
     let(:package) { Packages::Package.last }
 
@@ -28,7 +29,7 @@ RSpec.describe Packages::CreateTemporaryPackageService, feature_category: :packa
       expect { subject }.to change { Packages::Package.count }.by(1)
 
       expect do
-        described_class.new(project, user, params).execute(package_type, name: package_name)
+        described_class.new(project, user, params).execute(packages_class, name: package_name)
       end.to change { Packages::Package.count }.by(1)
 
       expect(package).to be_valid

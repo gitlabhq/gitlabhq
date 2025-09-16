@@ -1,6 +1,6 @@
 ---
 stage: GitLab Delivery
-group: Self Managed
+group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab release and maintenance policy
 description: Version support, release cadence, and backporting polices.
@@ -41,7 +41,7 @@ The following table describes the version types and their release cadence:
 | Minor        | For when new backward-compatible functionality is introduced to the public API, a minor feature is introduced, or when a set of smaller features is rolled out. | Monthly, scheduled for the third Thursday of each month. |
 | Patch        | For backward-compatible bug fixes that fix incorrect behavior. See [Patch releases](#patch-releases). | Twice monthly, scheduled for the Wednesday the week before and the Wednesday the week after the monthly minor release. |
 
-<!-- Do not edit the following section whithout consulting the Technical Writing team -->
+<!-- Do not edit the following section without consulting the Technical Writing team -->
 
 <!-- vale gitlab_base.CurrentStatus = NO -->
 

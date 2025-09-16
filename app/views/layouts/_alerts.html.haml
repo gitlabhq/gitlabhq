@@ -6,7 +6,7 @@
   = dispensable_render_if_exists "layouts/header/account_notification"
   = dispensable_render "shared/groups_projects/self_or_ancestor_marked_for_deletion_notice", context: context
   = dispensable_render "shared/projects/inactive_project_deletion_alert"
-  = dispensable_render "shared/projects/archived_alert"
+  = dispensable_render "shared/groups_projects/self_or_ancestor_archived_notice", context: context
   = dispensable_render "layouts/header/read_only_banner"
   = dispensable_render "layouts/header/registration_enabled_callout"
   = dispensable_render "layouts/header/openssl_callout"
@@ -16,7 +16,6 @@
   = dispensable_render "shared/service_ping_consent"
   = yield :group_invite_members_banner
   = dispensable_render_if_exists "layouts/header/ee_subscribable_banner"
-  = dispensable_render_if_exists "layouts/header/seat_count_alert", context: context
   = dispensable_render_if_exists "shared/namespace_user_cap_reached_alert"
   = dispensable_render_if_exists "shared/new_user_signups_cap_reached_alert"
   = dispensable_render_if_exists "shared/silent_mode_banner"

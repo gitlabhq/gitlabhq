@@ -114,7 +114,7 @@ export default {
 
 <template>
   <div class="gl-border-t gl-bg-subtle gl-p-5">
-    <div class="gl-flex gl-flex-col gl-gap-3 md:gl-flex-row">
+    <div class="gl-flex gl-flex-col gl-gap-3 @md/panel:gl-flex-row">
       <div class="gl-grow">
         <filtered-search-bar
           :namespace="filteredSearchNamespace"

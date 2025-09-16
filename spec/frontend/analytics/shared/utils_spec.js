@@ -6,6 +6,7 @@ import {
   generateValueStreamsDashboardLink,
   getDataZoomOption,
   overviewMetricsRequestParams,
+  formatBigInt,
 } from '~/analytics/shared/utils';
 import { objectToQuery } from '~/lib/utils/url_utility';
 
@@ -257,5 +258,21 @@ describe('overviewMetricsRequestParams', () => {
   `('correctly transforms the $requestParam parameter', ({ requestParam, value, expected }) => {
     const result = overviewMetricsRequestParams({ [requestParam]: value });
     expect(result[expected]).toBe(value);
+  });
+});
+
+describe('formatBigInt', () => {
+  const largeNumber = '12345678901234567890'; // Larger than MAX_SAFE_INTEGER
+
+  it.each`
+    input             | output
+    ${'1234'}         | ${'1,234'}
+    ${largeNumber}    | ${'12,345,678,901,234,567,890'}
+    ${'0'}            | ${'0'}
+    ${'not-a-number'} | ${'-'}
+    ${null}           | ${'-'}
+    ${undefined}      | ${'-'}
+  `('formats $input as "$output"', ({ input, output }) => {
+    expect(formatBigInt(input)).toBe(output);
   });
 });

@@ -48,7 +48,7 @@ describe('Form group component', () => {
     expect(findGlLink().text()).toContain(I18N_DELETION_PROTECTION.learnMore);
     expect(findGlLink().attributes('href')).toBe(
       helpPagePath('administration/settings/visibility_and_access_controls', {
-        anchor: 'delayed-project-deletion',
+        anchor: 'deletion-protection',
       }),
     );
   });

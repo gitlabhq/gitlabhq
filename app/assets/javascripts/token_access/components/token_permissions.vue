@@ -46,6 +46,7 @@ export default {
       allowPushToRepo: false,
       isUpdating: false,
       projectName: '',
+      // eslint-disable-next-line vue/no-unused-properties -- Provided by Apollo query, used implicitly
       ciCdSettings: null,
     };
   },

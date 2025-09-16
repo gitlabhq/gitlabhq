@@ -4,4 +4,5 @@
 #js-security-configuration{ data: { **@configuration.to_html_data_attribute,
   vulnerability_training_docs_path: vulnerability_training_docs_path,
   upgrade_path: security_upgrade_path,
-  project_full_path: @project.full_path } }
+  project_full_path: @project.full_path,
+  group_full_path: @project.root_ancestor.full_path } }

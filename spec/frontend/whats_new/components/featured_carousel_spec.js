@@ -54,26 +54,48 @@ describe('FeaturedCarousel', () => {
       expect(cards).toHaveLength(2);
     });
 
-    it('renders first featured card with correct props', () => {
-      const firstCard = findFeaturedCards().at(0);
+    describe('with release FF', () => {
+      const granularCard = {
+        title: 'Granular access controls for GitLab Duo Core',
+        description:
+          'Set detailed permissions for GitLab Duo Core across projects and groups to fit your workflow.',
+        buttonLink: `${DOCS_URL}/user/gitlab_duo/turn_on_off`,
+      };
 
-      expect(firstCard.props('title')).toBe('Granular access controls for GitLab Duo Core');
-      expect(firstCard.props('description')).toBe(
-        'Set detailed permissions for GitLab Duo Core across projects and groups to fit your workflow.',
-      );
-      expect(firstCard.props('buttonLink')).toBe(`${DOCS_URL}/user/gitlab_duo/turn_on_off`);
-    });
+      const duoProCard = {
+        title: 'Explore GitLab Duo Core',
+        description:
+          'Discover AI-native features including Code Suggestions and Chat in your IDE in GitLab Premium and Ultimate.',
+        buttonLink: `${DOCS_URL}/subscriptions/subscription-add-ons/#gitlab-duo-core`,
+      };
 
-    it('renders second featured card with correct props', () => {
-      const secondCard = findFeaturedCards().at(1);
+      beforeAll(() => {
+        jest.useFakeTimers({ legacyFakeTimers: false });
+      });
 
-      expect(secondCard.props('title')).toBe('GitLab Premium and Ultimate with Duo');
-      expect(secondCard.props('description')).toBe(
-        'Discover AI-native features including Code Suggestions and Chat in your IDE in GitLab Premium and Ultimate.',
-      );
-      expect(secondCard.props('buttonLink')).toBe(
-        `${DOCS_URL}/subscriptions/subscription-add-ons/#gitlab-duo-core`,
-      );
+      afterAll(() => {
+        jest.useFakeTimers({ legacyFakeTimers: true });
+      });
+
+      it('renders correct order of feature cards when FF on', () => {
+        jest.setSystemTime(new Date('2025-09-18T00:00:00Z'));
+        buildWrapper();
+
+        const cards = findFeaturedCards();
+
+        expect(cards.at(0).props()).toMatchObject(duoProCard);
+        expect(cards.at(1).props()).toMatchObject(granularCard);
+      });
+
+      it('renders correct order of feature cards when FF off', () => {
+        jest.setSystemTime(new Date('2025-09-17T00:00:00Z'));
+        buildWrapper();
+
+        const cards = findFeaturedCards();
+
+        expect(cards.at(0).props()).toMatchObject(granularCard);
+        expect(cards.at(1).props()).toMatchObject(duoProCard);
+      });
     });
   });
 

@@ -44,8 +44,8 @@ module Gitlab
         end
 
         # @return [String] content of the file
-        def self.main_component_updater_container_args
-          read_file("workspace_operations/create/bm_main_component_updater_container_args.sh")
+        def self.container_keepalive_command_args
+          read_file("workspace_operations/create/bm_container_keepalive_command_args.sh")
         end
 
         # @return [String] content of the file
@@ -91,7 +91,7 @@ module Gitlab
         INTERNAL_POSTSTART_COMMAND_START_SSHD_SCRIPT = internal_poststart_command_start_sshd_script
         KUBERNETES_LEGACY_POSTSTART_HOOK_COMMAND = kubernetes_legacy_poststart_hook_command
         KUBERNETES_POSTSTART_HOOK_COMMAND = kubernetes_poststart_hook_command
-        MAIN_COMPONENT_UPDATER_CONTAINER_ARGS = main_component_updater_container_args
+        CONTAINER_KEEPALIVE_COMMAND_ARGS = container_keepalive_command_args
 
         # @return [Array]
         def self.all_expected_file_constants
@@ -107,7 +107,7 @@ module Gitlab
             :INTERNAL_POSTSTART_COMMAND_START_SSHD_SCRIPT,
             :KUBERNETES_LEGACY_POSTSTART_HOOK_COMMAND,
             :KUBERNETES_POSTSTART_HOOK_COMMAND,
-            :MAIN_COMPONENT_UPDATER_CONTAINER_ARGS
+            :CONTAINER_KEEPALIVE_COMMAND_ARGS
           ]
         end
 

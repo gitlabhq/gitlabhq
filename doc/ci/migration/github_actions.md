@@ -2,7 +2,7 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Migrating from GitHub Actions
+title: Migrate from GitHub Actions
 ---
 
 {{< details >}}
@@ -640,13 +640,9 @@ Privileged information, often referred to as "secrets", is sensitive information
 or credentials you need in your CI/CD workflow. You might use secrets to unlock protected resources
 or sensitive information in tools, applications, containers, and cloud-native environments.
 
-For secrets management in GitLab, you can use one of the supported integrations
+For secrets management in GitLab, you can use one of the [supported integrations](../secrets/_index.md)
 for an external service. These services securely store secrets outside of your GitLab project,
-though you must have a subscription for the service:
-
-- [HashiCorp Vault](../secrets/hashicorp_vault.md)
-- [Azure Key Vault](../secrets/azure_key_vault.md)
-- [Google Cloud Secret Manager](../secrets/gcp_secret_manager.md)
+though you must have a subscription for the service.
 
 GitLab also supports [OIDC authentication](../secrets/id_token_authentication.md)
 for other third party services that support OIDC.

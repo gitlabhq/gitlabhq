@@ -8,7 +8,7 @@ description: Represents a Terraform state file at a point in time, with a corres
   file stored in object storage
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35211
 milestone: '13.4'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 table_size: small
 sharding_key:
   project_id: projects

@@ -555,149 +555,177 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
     end
   end
 
-  describe 'archive_group' do
-    context 'when archive_group allowed for owner and admin' do
-      context 'with owner' do
-        let(:current_user) { owner }
-
-        it { is_expected.to be_allowed(:archive_group) }
-      end
-
-      context 'with admin', :enable_admin_mode do
-        let(:current_user) { admin }
-
-        it { is_expected.to be_allowed(:archive_group) }
-      end
-    end
-
-    context 'when archive_group disallowed for non-owner roles' do
-      where(role: %w[maintainer reporter developer guest])
-      with_them do
-        let(:current_user) { public_send role }
-
-        it { is_expected.to be_disallowed(:archive_group) }
-      end
-    end
-
-    context 'when archive_group is disabled' do
-      before do
-        stub_feature_flags(archive_group: false)
-      end
-
-      let(:current_user) { owner }
-
-      it { is_expected.to be_disallowed(:archive_group) }
-    end
-  end
-
-  describe 'group archiving abilities' do
-    let(:group) { create(:group, :public) }
-    let(:policy) { described_class.new(current_user, group) }
-    let(:current_user) { owner }
-
+  it_behaves_like 'group archiving abilities' do
     let(:archived_abilities) do
       %i[
+        activate_group_member
+        add_cluster
+        admin_achievement
+        admin_ai_catalog_item
         admin_build
+        admin_cicd_variables
+        admin_cluster
+        admin_compliance_framework
+        admin_compliance_pipeline_configuration
+        admin_custom_field
+        admin_epic
         admin_group_member
+        admin_integrations
         admin_issue
         admin_issue_board
         admin_issue_board_list
+        admin_iteration
+        admin_iteration_cadence
         admin_label
+        admin_member_access_request
+        admin_merge_request
         admin_milestone
+        admin_namespace
+        admin_note
+        admin_package
         admin_pipeline
+        admin_protected_environments
+        admin_push_rules
+        admin_runners
+        admin_software_license_policy
+        admin_tag
+        admin_vulnerability
+        admin_wiki
         admin_work_item
+        award_achievement
+        award_emoji
+        change_group
+        change_new_user_signups_cap
+        change_prevent_sharing_groups_outside_hierarchy
+        change_seat_control
+        change_share_with_group_lock
+        change_visibility_level
+        create_cluster
+        create_custom_emoji
+        create_deploy_token
+        create_epic
+        create_incident
+        create_iteration
+        create_iteration_cadence
+        create_jira_connect_subscription
+        create_merge_request_from
+        create_merge_request_in
+        create_note
+        create_observability_access_request
         create_package
         create_projects
+        create_resource_access_tokens
         create_runners
         create_subgroup
-        edit_billing
+        create_test_case
+        create_wiki
         import_projects
-        remove_group
+        invite_group_members
+        manage_merge_request_settings
+        modify_security_policy
+        push_code
+        push_to_delete_protected_branch
+        register_group_runners
         reopen_issue
+        request_access
+        resolve_note
+        rollover_issues
+        set_epic_created_at
+        set_epic_updated_at
+        set_issue_created_at
+        set_issue_updated_at
+        set_new_issue_metadata
+        set_new_work_item_metadata
+        set_note_created_at
+        set_show_diff_preview_in_email
         transfer_projects
+        update_cluster
+        update_default_branch_protection
+        update_epic
+        update_git_access_protocol
         update_issue
+        update_max_artifacts_size
+        update_o11y_settings
+        update_runners_registration_token
+        upload_file
       ]
     end
 
     let(:destroy_abilities) do
       %i[
+        destroy_deploy_token
+        destroy_epic
+        delete_custom_emoji
+        delete_o11y_settings
         destroy_issue
-        destroy_user_achievement
         destroy_package
         destroy_upload
+        destroy_user_achievement
       ]
     end
+  end
 
-    shared_examples 'prevents archived abilities' do
-      it 'prevents abilities defined in ARCHIVED_ABILITIES' do
-        archived_abilities.each do |ability|
-          expect(policy).not_to be_allowed(ability)
+  describe 'remove_group' do
+    let(:policy) { described_class.new(current_user, group) }
+
+    context 'anonymous user' do
+      let(:current_user) { anonymous }
+
+      it { is_expected.to be_disallowed(:remove_group) }
+    end
+
+    context 'group member' do
+      %w[guest planner reporter developer maintainer].each do |role|
+        context role do
+          let(:current_user) { send(role) }
+
+          it { is_expected.to be_disallowed(:remove_group) }
         end
       end
-    end
 
-    shared_examples 'prevents destroy actions' do
-      it 'prevents destroy actions on archived features' do
-        destroy_abilities.each do |feature|
-          expect(policy).not_to be_allowed(feature)
+      context 'owner' do
+        let(:current_user) { owner }
+
+        context 'when group is marked for deletion' do
+          let(:group) { create(:group_with_deletion_schedule, organization: organization) }
+
+          before do
+            group.add_owner(owner)
+          end
+
+          it 'allows remove_group action' do
+            expect(policy).to be_allowed(:remove_group)
+          end
+        end
+
+        context 'when group ancestor is marked for deletion' do
+          let(:ancestor) { create(:group_with_deletion_schedule, organization: group.organization) }
+
+          before do
+            group.parent = ancestor
+            group.save!
+          end
+
+          it 'prevents remove_group action' do
+            expect(policy).not_to be_allowed(:remove_group)
+          end
+        end
+
+        context 'when group ancestor is marked for deletion and being deleted' do
+          let(:ancestor) do
+            create(:group_with_deletion_schedule, organization: group.organization, deleted_at: Time.current)
+          end
+
+          before do
+            group.parent = ancestor
+            group.save!
+          end
+
+          it 'allows remove_group action' do
+            expect(policy).to be_allowed(:remove_group)
+          end
         end
       end
-    end
-
-    shared_examples 'allows destroy actions' do
-      it 'allows destroy actions on archived features' do
-        destroy_abilities.each do |feature|
-          expect(policy).to be_allowed(feature) if policy.respond_to?(:"#{feature}")
-        end
-      end
-    end
-
-    shared_examples 'archived but not marked for deletion' do
-      it_behaves_like 'prevents archived abilities'
-      it_behaves_like 'prevents destroy actions'
-    end
-
-    shared_examples 'archived and marked for deletion' do
-      it_behaves_like 'prevents archived abilities'
-      it_behaves_like 'allows destroy actions'
-    end
-
-    context 'when group is archived but not marked for deletion' do
-      before do
-        group.archive
-      end
-
-      it_behaves_like 'archived but not marked for deletion'
-    end
-
-    context 'when group is archived and marked for deletion' do
-      before do
-        group.archive
-        group.namespace_details.update!(deleted_at: Time.current)
-      end
-
-      it_behaves_like 'archived and marked for deletion'
-    end
-
-    context 'when group ancestor is archived' do
-      let(:group) { create(:group, :nested) }
-
-      before do
-        group.parent.archive
-      end
-
-      it_behaves_like 'archived but not marked for deletion'
-    end
-
-    context 'when group ancestor is marked for deletion' do
-      let(:group) { create(:group, :nested) }
-
-      before do
-        group.parent.archive
-        group.parent.namespace_details.update!(deleted_at: Time.current)
-      end
-
-      it_behaves_like 'archived and marked for deletion'
     end
   end
 

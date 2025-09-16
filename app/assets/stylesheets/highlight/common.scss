@@ -1,3 +1,4 @@
+@use "sass:map";
 @use "sass:color";
 
 @import '../framework/variables';
@@ -68,14 +69,14 @@
   .diff-line-num {
     &.conflict_marker_our,
     &.conflict_our {
-      background-color: map-get($conflict-colors, #{$theme}-header-head-neutral);
-      border-color: map-get($conflict-colors, #{$theme}-header-head-neutral);
+      background-color: map.get($conflict-colors, #{$theme}-header-head-neutral);
+      border-color: map.get($conflict-colors, #{$theme}-header-head-neutral);
     }
 
     &.conflict_marker_their,
     &.conflict_their {
-      background-color: map-get($conflict-colors, #{$theme}-header-origin-neutral);
-      border-color: map-get($conflict-colors, #{$theme}-header-origin-neutral);
+      background-color: map.get($conflict-colors, #{$theme}-header-origin-neutral);
+      border-color: map.get($conflict-colors, #{$theme}-header-origin-neutral);
     }
   }
 
@@ -85,23 +86,23 @@
       position: relative;
 
       &.conflict_marker_our {
-        background-color: map-get($conflict-colors, #{$theme}-header-head-neutral);
-        border-color: map-get($conflict-colors, #{$theme}-header-head-neutral);
+        background-color: map.get($conflict-colors, #{$theme}-header-head-neutral);
+        border-color: map.get($conflict-colors, #{$theme}-header-head-neutral);
       }
 
       &.conflict_marker_their {
-        background-color: map-get($conflict-colors, #{$theme}-header-origin-neutral);
-        border-color: map-get($conflict-colors, #{$theme}-header-origin-neutral);
+        background-color: map.get($conflict-colors, #{$theme}-header-origin-neutral);
+        border-color: map.get($conflict-colors, #{$theme}-header-origin-neutral);
       }
 
       &.conflict_our {
-        background-color: map-get($conflict-colors, #{$theme}-line-head-neutral);
-        border-color: map-get($conflict-colors, #{$theme}-line-head-neutral);
+        background-color: map.get($conflict-colors, #{$theme}-line-head-neutral);
+        border-color: map.get($conflict-colors, #{$theme}-line-head-neutral);
       }
 
       &.conflict_their {
-        background-color: map-get($conflict-colors, #{$theme}-line-origin-neutral);
-        border-color: map-get($conflict-colors, #{$theme}-line-origin-neutral);
+        background-color: map.get($conflict-colors, #{$theme}-line-origin-neutral);
+        border-color: map.get($conflict-colors, #{$theme}-line-origin-neutral);
       }
     }
   }
@@ -153,58 +154,58 @@
     .header.line_content,
     .diff-line-num {
       &.origin {
-        background-color: map-get($conflict-colors, #{$theme}-header-origin-neutral);
-        border-color: map-get($conflict-colors, #{$theme}-header-origin-neutral);
+        background-color: map.get($conflict-colors, #{$theme}-header-origin-neutral);
+        border-color: map.get($conflict-colors, #{$theme}-header-origin-neutral);
 
         &.selected {
-          background-color: map-get($conflict-colors, #{$theme}-header-origin-chosen);
-          border-color: map-get($conflict-colors, #{$theme}-header-origin-chosen);
+          background-color: map.get($conflict-colors, #{$theme}-header-origin-chosen);
+          border-color: map.get($conflict-colors, #{$theme}-header-origin-chosen);
         }
 
         &.unselected {
-          background-color: map-get($conflict-colors, #{$theme}-header-not-chosen);
-          border-color: map-get($conflict-colors, #{$theme}-header-not-chosen);
+          background-color: map.get($conflict-colors, #{$theme}-header-not-chosen);
+          border-color: map.get($conflict-colors, #{$theme}-header-not-chosen);
         }
       }
 
       &.head {
-        background-color: map-get($conflict-colors, #{$theme}-header-head-neutral);
-        border-color: map-get($conflict-colors, #{$theme}-header-head-neutral);
+        background-color: map.get($conflict-colors, #{$theme}-header-head-neutral);
+        border-color: map.get($conflict-colors, #{$theme}-header-head-neutral);
 
         &.selected {
-          background-color: map-get($conflict-colors, #{$theme}-header-head-chosen);
-          border-color: map-get($conflict-colors, #{$theme}-header-head-chosen);
+          background-color: map.get($conflict-colors, #{$theme}-header-head-chosen);
+          border-color: map.get($conflict-colors, #{$theme}-header-head-chosen);
         }
 
         &.unselected {
-          background-color: map-get($conflict-colors, #{$theme}-header-not-chosen);
-          border-color: map-get($conflict-colors, #{$theme}-header-not-chosen);
+          background-color: map.get($conflict-colors, #{$theme}-header-not-chosen);
+          border-color: map.get($conflict-colors, #{$theme}-header-not-chosen);
         }
       }
     }
 
     .line_content {
       &.origin {
-        background-color: map-get($conflict-colors, #{$theme}-line-origin-neutral);
+        background-color: map.get($conflict-colors, #{$theme}-line-origin-neutral);
 
         &.selected {
-          background-color: map-get($conflict-colors, #{$theme}-line-origin-chosen);
+          background-color: map.get($conflict-colors, #{$theme}-line-origin-chosen);
         }
 
         &.unselected {
-          background-color: map-get($conflict-colors, #{$theme}-line-not-chosen);
+          background-color: map.get($conflict-colors, #{$theme}-line-not-chosen);
         }
       }
 
       &.head {
-        background-color: map-get($conflict-colors, #{$theme}-line-head-neutral);
+        background-color: map.get($conflict-colors, #{$theme}-line-head-neutral);
 
         &.selected {
-          background-color: map-get($conflict-colors, #{$theme}-line-head-chosen);
+          background-color: map.get($conflict-colors, #{$theme}-line-head-chosen);
         }
 
         &.unselected {
-          background-color: map-get($conflict-colors, #{$theme}-line-not-chosen);
+          background-color: map.get($conflict-colors, #{$theme}-line-not-chosen);
         }
       }
     }

@@ -45,9 +45,9 @@ module CommitsHelper
       'escaped_ref' => ActionDispatch::Journey::Router::Utils.escape_path(@ref),
       'ref_type' => @ref_type.to_s,
       'root_ref' => @project.default_branch,
-      'path' => @path,
-      "browse_files_path" => path_to_browse_file_or_directory(@project, @ref, @path),
-      "commits_feed_path" => project_commits_path(@project, @id, rss_url_options)
+      'browse_files_path' => path_to_browse_file_or_directory(@project, @ref, @path),
+      'commits_feed_path' => project_commits_path(@project, @id, rss_url_options),
+      'base_path' => project_commits_root_path(@project)
     }
   end
 
@@ -82,31 +82,6 @@ module CommitsHelper
     end
 
     crumbs.html_safe
-  end
-
-  # Returns a link formatted as a commit branch link
-  def commit_branch_link(url, text)
-    gl_badge_tag(text, { variant: :info, icon: 'branch' }, { href: url, class: 'gl-font-monospace gl-mb-1' })
-  end
-
-  # Returns the sorted alphabetically links to branches, separated by a comma
-  def commit_branches_links(project, branches)
-    branches.sort.map do |branch|
-      commit_branch_link(project_ref_path(project, branch), branch)
-    end.join(' ').html_safe
-  end
-
-  # Returns a link formatted as a commit tag link
-  def commit_tag_link(url, text)
-    gl_badge_tag(text, { variant: :info, icon: 'tag' }, { href: url, class: 'gl-font-monospace' })
-  end
-
-  # Returns the sorted links to tags, separated by a comma
-  def commit_tags_links(project, tags)
-    sorted = VersionSorter.rsort(tags)
-    sorted.map do |tag|
-      commit_tag_link(project_ref_path(project, tag), tag)
-    end.join(' ').html_safe
   end
 
   def commit_blob

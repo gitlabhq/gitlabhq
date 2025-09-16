@@ -32,7 +32,7 @@ export default {
 
 <template>
   <a
-    v-gl-tooltip:super-sidebar.right="homepageTooltip"
+    v-gl-tooltip.right="homepageTooltip"
     class="brand-logo gl-inline-block gl-rounded-base gl-border-none gl-bg-transparent gl-p-2 focus:gl-focus active:gl-focus"
     :href="rootPath"
     data-track-action="click_link"

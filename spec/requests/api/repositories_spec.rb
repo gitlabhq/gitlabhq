@@ -1147,6 +1147,19 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
       expect(response).to have_gitlab_http_status(:too_many_requests)
     end
 
+    context 'when version is empty' do
+      it 'returns an error' do
+        get(
+          api("/projects/#{project.id}/repository/changelog", user),
+          params: {
+            version: nil
+          }
+        )
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
     context 'when previous tag version does not exist' do
       it_behaves_like '422 response' do
         let(:request) { get api("/projects/#{project.id}/repository/changelog", user), params: { version: 'v0.0.0' } }

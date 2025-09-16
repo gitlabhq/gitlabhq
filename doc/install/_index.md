@@ -1,6 +1,6 @@
 ---
 stage: GitLab Delivery
-group: Self Managed
+group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Read through the GitLab installation methods.
 title: Install GitLab
@@ -19,8 +19,8 @@ ease of administration (backups, upgrades, and troubleshooting) with the cost of
 - [Offline GitLab](../topics/offline/_index.md)
 - [Reference architectures](../administration/reference_architectures/_index.md)
 - [Upgrade GitLab](../update/_index.md)
-- [Install GitLab Runner](https://docs.gitlab.com/runner/install/)
-- [Configure GitLab Runner](https://docs.gitlab.com/runner/configuration/)
+- [Install GitLab Runner](https://docs.gitlab.com/runner/install/ "Run CI/CD jobs in a pipeline.")
+- [Configure GitLab Runner](https://docs.gitlab.com/runner/configuration/ "Configuration and monitoring options.")
 - [Install GitLab AI gateway](install_ai_gateway.md)
 
 {{< /cards >}}

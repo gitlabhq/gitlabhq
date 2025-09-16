@@ -1,6 +1,6 @@
 <script>
-import { GlSkeletonLoader, GlTableLite, GlTooltipDirective } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlTableLite, GlTooltipDirective } from '@gitlab/ui';
+import DuoWorkflowAction from 'ee_component/ai/components/duo_workflow_action.vue';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
@@ -8,12 +8,14 @@ import { PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/con
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
 import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import PipelineOperations from '../pipelines_page/components/pipeline_operations.vue';
 import PipelineTriggerer from '../pipelines_page/components/pipeline_triggerer.vue';
 import PipelineUrl from '../pipelines_page/components/pipeline_url.vue';
 import PipelineStatusBadge from '../pipelines_page/components/pipeline_status_badge.vue';
 
-const HIDE_TD_ON_MOBILE = '!gl-hidden lg:!gl-table-cell';
+// Query should correspond to the `stacked` value of this table: `lg`.
+const HIDE_WHEN_STACKED = '@max-lg/panel:!gl-hidden';
 
 /**
  * Pipelines Table
@@ -34,9 +36,7 @@ const HIDE_TD_ON_MOBILE = '!gl-hidden lg:!gl-table-cell';
 
 export default {
   name: 'PipelinesTable',
-  cellHeight: 50,
   components: {
-    GlSkeletonLoader,
     GlTableLite,
     PipelineFailedJobsWidget,
     PipelineMiniGraph,
@@ -44,11 +44,12 @@ export default {
     PipelineStatusBadge,
     PipelineTriggerer,
     PipelineUrl,
+    DuoWorkflowAction,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [glFeatureFlagMixin(), Tracking.mixin()],
   inject: {
     useFailedJobsWidget: {
       default: false,
@@ -74,9 +75,6 @@ export default {
     },
   },
   computed: {
-    isMobile() {
-      return ['md', 'sm', 'xs'].includes(GlBreakpointInstance.getBreakpointSize());
-    },
     tableFields() {
       return [
         {
@@ -96,7 +94,7 @@ export default {
         {
           key: 'triggerer',
           label: s__('Pipeline|Created by'),
-          tdClass: `${this.tdClasses} ${HIDE_TD_ON_MOBILE}`,
+          tdClass: [this.tdClasses, HIDE_WHEN_STACKED],
           columnClass: 'gl-w-3/20',
           thAttr: { 'data-testid': 'triggerer-th' },
         },
@@ -133,11 +131,11 @@ export default {
 
       return pipelines;
     },
+    agentPrivileges() {
+      return [1, 2, 3, 5];
+    },
   },
   methods: {
-    cellWidth(ref) {
-      return this.$refs[ref]?.offsetWidth;
-    },
     displayFailedJobsWidget(item) {
       return !item.isLoading && this.useFailedJobsWidget;
     },
@@ -168,15 +166,52 @@ export default {
         ? ''
         : '!gl-border-b';
     },
-    setLoaderPosition(ref) {
-      if (this.isMobile) {
-        return this.cellWidth(ref) / 2;
-      }
-
-      return 0;
-    },
     trackPipelineMiniGraph() {
       this.track('click_minigraph', { label: TRACKING_CATEGORIES.table });
+    },
+    isFailed(item) {
+      return item.details.status.group === 'failed';
+    },
+    getPipelinePath(item) {
+      if (item.path) {
+        return `${gon.gitlab_url}${item.path}`;
+      }
+      return null;
+    },
+    mergeRequestPath(item) {
+      if (item.merge_request?.path) {
+        return `${gon.gitlab_url}${item.merge_request.path}`;
+      }
+      return null;
+    },
+    currentBranch(item) {
+      if (item.source === 'push') {
+        return item.ref?.name;
+      }
+      if (item.source === 'merge_request_event') {
+        return item.merge_request?.source_branch;
+      }
+      return null;
+    },
+    showDuoWorkflowAction(item) {
+      return (
+        this.isFailed(item) &&
+        this.mergeRequestPath(item) &&
+        this.currentBranch(item) &&
+        this.glFeatures.aiDuoAgentFixPipelineButton
+      );
+    },
+    getAdditionalContext(item) {
+      return [
+        {
+          Category: 'agent_user_environment',
+          Content: JSON.stringify({
+            merge_request_url: this.mergeRequestPath(item),
+            source_branch: this.currentBranch(item),
+          }),
+          Metadata: '{}',
+        },
+      ];
     },
   },
   TBODY_TR_ATTR: {
@@ -207,44 +242,29 @@ export default {
 
       <template #cell(status)="{ item }">
         <div v-if="item.isLoading" ref="status">
-          <gl-skeleton-loader :height="$options.cellHeight" :width="cellWidth('status')">
-            <rect height="30" rx="4" ry="4" :width="cellWidth('status')" />
-          </gl-skeleton-loader>
+          <div class="gl-animate-skeleton-loader gl-h-7 gl-w-full gl-rounded-base"></div>
         </div>
         <pipeline-status-badge v-else :pipeline="item" />
       </template>
 
       <template #cell(pipeline)="{ item }">
-        <div v-if="item.isLoading" ref="pipeline">
-          <gl-skeleton-loader :height="$options.cellHeight" :width="cellWidth('pipeline')">
-            <rect height="14" rx="4" ry="4" :width="cellWidth('pipeline')" />
-            <rect
-              height="10"
-              rx="4"
-              ry="4"
-              :width="cellWidth('pipeline') / 2"
-              :x="setLoaderPosition('pipeline')"
-              y="20"
-            />
-          </gl-skeleton-loader>
+        <div v-if="item.isLoading">
+          <div class="gl-animate-skeleton-loader gl-mb-2 gl-h-4 gl-w-full gl-rounded-base"></div>
+          <div class="gl-animate-skeleton-loader gl-h-4 gl-w-1/2 gl-rounded-base"></div>
         </div>
         <pipeline-url v-else :pipeline="item" :pipeline-id-type="pipelineIdType" />
       </template>
 
       <template #cell(triggerer)="{ item }">
-        <div v-if="item.isLoading" ref="triggerer" class="gl-ml-3">
-          <gl-skeleton-loader :height="$options.cellHeight" :width="cellWidth('triggerer')">
-            <rect :height="34" rx="50" ry="50" :width="34" />
-          </gl-skeleton-loader>
+        <div v-if="item.isLoading" class="gl-ml-3">
+          <div class="gl-animate-skeleton-loader gl-h-7 gl-w-7 gl-rounded-full"></div>
         </div>
         <pipeline-triggerer v-else :pipeline="item" />
       </template>
 
       <template #cell(stages)="{ item }">
-        <div v-if="item.isLoading" ref="stages">
-          <gl-skeleton-loader :height="$options.cellHeight" :width="cellWidth('stages')">
-            <rect height="20" rx="10" ry="10" :width="cellWidth('stages')" />
-          </gl-skeleton-loader>
+        <div v-if="item.isLoading">
+          <div class="gl-animate-skeleton-loader gl-h-6 gl-w-full gl-rounded-pill"></div>
         </div>
         <pipeline-mini-graph
           v-else
@@ -257,10 +277,8 @@ export default {
       </template>
 
       <template #cell(actions)="{ item }">
-        <div v-if="item.isLoading" ref="actions">
-          <gl-skeleton-loader :height="$options.cellHeight" :width="cellWidth('actions')">
-            <rect height="20" rx="4" ry="4" :width="cellWidth('actions')" />
-          </gl-skeleton-loader>
+        <div v-if="item.isLoading">
+          <div class="gl-animate-skeleton-loader gl-h-6 gl-w-full gl-rounded-lg"></div>
         </div>
         <pipeline-operations
           v-else
@@ -268,7 +286,21 @@ export default {
           @cancel-pipeline="onCancelPipeline"
           @refresh-pipelines-table="onRefreshPipelinesTable"
           @retry-pipeline="onRetryPipeline"
-        />
+        >
+          <template #duo-workflow-action>
+            <duo-workflow-action
+              v-if="showDuoWorkflowAction(item)"
+              :project-path="getProjectPath(item)"
+              :goal="getPipelinePath(item)"
+              :hover-message="__('Fix pipeline with Duo')"
+              :agent-privileges="agentPrivileges"
+              :source-branch="currentBranch(item)"
+              :additional-context="getAdditionalContext(item)"
+              workflow-definition="fix_pipeline/experimental"
+              size="medium"
+            />
+          </template>
+        </pipeline-operations>
       </template>
 
       <template #row-details="{ item }">

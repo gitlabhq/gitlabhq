@@ -3,11 +3,11 @@ table_name: duo_workflows_checkpoint_writes
 classes:
 - Ai::DuoWorkflows::CheckpointWrite
 feature_categories:
-- duo_workflow
+- agent_foundations
 description: Checkpoint writes for Duo Workflow
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178271
 milestone: '17.9'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
   namespace_id: namespaces

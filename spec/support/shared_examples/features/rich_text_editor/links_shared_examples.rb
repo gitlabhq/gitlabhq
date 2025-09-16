@@ -5,6 +5,12 @@ require 'spec_helper'
 RSpec.shared_examples 'rich text editor - links' do
   include RichTextEditorHelpers
 
+  def close_glql_promo_popover
+    page.within('.glql-popover') do
+      find_by_testid('close-button').click
+    end
+  end
+
   describe 'creating and editing links' do
     before do
       switch_to_content_editor
@@ -99,6 +105,7 @@ RSpec.shared_examples 'rich text editor - links' do
 
     context 'if cursor is placed on an existing link' do
       before do
+        close_glql_promo_popover
         type_in_content_editor 'Link to [GitLab home **page**](https://gitlab.com)'
         type_in_content_editor :left
       end

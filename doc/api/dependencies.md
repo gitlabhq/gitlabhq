@@ -20,7 +20,7 @@ To see vulnerabilities in response, user should be authorized to read
 ## List project dependencies
 
 Get a list of project dependencies. This API partially mirroring
-[Dependency List](../user/application_security/dependency_list/_index.md) feature.
+[dependency list](../user/application_security/dependency_list/_index.md) feature.
 This list can be generated only for [languages and package managers](../user/application_security/dependency_scanning/_index.md#supported-languages-and-package-managers)
 supported by Gemnasium.
 
@@ -32,7 +32,7 @@ GET /projects/:id/dependencies?package_manager=yarn,bundler
 
 | Attribute     | Type           | Required | Description                                                                                                                                                                 |
 | ------------- | -------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).                                                            |
+| `id`          | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).                                                            |
 | `package_manager` | string array   | no       | Returns dependencies belonging to specified package manager. Valid values: `bundler`, `composer`, `conan`, `go`, `gradle`, `maven`, `npm`, `nuget`, `pip`, `pipenv`, `pnpm`, `yarn`, `sbt`, or `setuptools`. |
 
 ```shell

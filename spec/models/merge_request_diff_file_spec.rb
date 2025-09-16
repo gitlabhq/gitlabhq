@@ -17,11 +17,151 @@ RSpec.describe MergeRequestDiffFile, feature_category: :code_review_workflow do
   let(:packed) { [unpacked].pack('m0') }
   let(:unpacked) { 'unpacked' }
 
+  # rubocop:disable Database/MultipleDatabases -- This is a test for a partitioned table, which doesn't have an ActiveRecord model
+  def load_partitioned_mrdf(mrd_id)
+    ActiveRecord::Base.connection.execute(
+      "SELECT * FROM merge_request_diff_files_99208b8fac WHERE merge_request_diff_id = #{mrd_id}"
+    )
+  end
+  # rubocop:enable Database/MultipleDatabases
+
+  describe 'data migration to partitioned table' do
+    let(:mrd) { create(:merge_request_diff) }
+    let(:partitioned_mrdf) { load_partitioned_mrdf(mrd.id) }
+
+    context 'when record is created' do
+      it 'creates a new record in the partitioned table' do
+        # rubocop:disable Database/MultipleDatabases -- This is a test for a partitioned table, which doesn't have an ActiveRecord model
+        expect do
+          mrd.tap do |diff|
+            create(:merge_request_diff_file, :new_file, merge_request_diff: diff)
+          end
+        end.to change {
+                 ActiveRecord::Base.connection.execute(
+                   'SELECT COUNT(*) FROM merge_request_diff_files_99208b8fac'
+                 ).first["count"]
+               }.by(1)
+        # rubocop:enable Database/MultipleDatabases
+      end
+    end
+
+    context 'setting new_path values on create' do
+      context "when original record's old_path == new_path" do
+        before do
+          mrd.tap do |diff|
+            create(:merge_request_diff_file, :new_file, merge_request_diff: diff)
+          end
+        end
+
+        it 'nullifies new_path on the partitioned record' do
+          mrdf = mrd.reload.merge_request_diff_files.last
+
+          expect(mrd.merge_request_diff_files.count).to eq(1)
+          expect(mrdf.new_path).to eq(mrdf.old_path)
+          expect(partitioned_mrdf.first['new_path']).to be_nil
+        end
+      end
+
+      context "when original record's old_path != new_path" do
+        before do
+          mrd.tap do |diff|
+            # Renamed files have different old_path/new_path values
+            #
+            create(:merge_request_diff_file, :renamed_file, merge_request_diff: diff)
+          end
+        end
+
+        it 'does not nullify new_path on the partitioned record' do
+          mrdf = mrd.reload.merge_request_diff_files.last
+
+          expect(mrd.merge_request_diff_files.count).to eq(1)
+          expect(mrdf.new_path).not_to eq(mrdf.old_path)
+          expect(partitioned_mrdf.first['new_path']).not_to be_nil
+        end
+      end
+    end
+
+    context 'when record is destroyed' do
+      before do
+        mrd.tap do |diff|
+          create(:merge_request_diff_file, :new_file, merge_request_diff: diff)
+        end
+      end
+
+      it 'deletes the corresponding record in the partitioned table' do
+        expect(mrd.merge_request_diff_files.count).to eq(1)
+
+        # rubocop:disable Database/MultipleDatabases -- This is a test for a partitioned table, which doesn't have an ActiveRecord model
+        expect do
+          mrd.reload.merge_request_diff_files.first.destroy!
+        end.to change {
+                 ActiveRecord::Base.connection.execute(
+                   'SELECT COUNT(*) FROM merge_request_diff_files_99208b8fac'
+                 ).first["count"]
+               }.by(-1)
+      end
+      # rubocop:enable Database/MultipleDatabases
+    end
+
+    context 'when original record is modified' do
+      context "when original record is updated so that old_path != new_path" do
+        before do
+          mrd.tap do |diff|
+            create(:merge_request_diff_file, :new_file, merge_request_diff: diff)
+          end
+        end
+
+        it 'modifies the corresponding record in the partitioned table' do
+          mrdf = mrd.reload.merge_request_diff_files.last
+
+          expect(mrd.merge_request_diff_files.count).to eq(1)
+          expect(mrdf.new_path).to eq(mrdf.old_path)
+          expect(partitioned_mrdf.first['new_path']).to be_nil
+
+          mrdf.update!(new_path: 'new_path')
+
+          # Reload partitioned_mrdf result
+          #
+          partitioned_mrdf = load_partitioned_mrdf(mrd.id).first
+          expect(mrdf.new_path).not_to eq(mrdf.old_path)
+          expect(partitioned_mrdf['new_path']).to eq(mrdf.new_path)
+        end
+      end
+
+      context 'when original record is updated so that old_path == new_path' do
+        before do
+          mrd.tap do |diff|
+            # Renamed files have different old_path/new_path values
+            #
+            create(:merge_request_diff_file, :renamed_file, merge_request_diff: diff)
+          end
+        end
+
+        it 'updates the partitioned record to nullify new_path' do
+          mrdf = mrd.reload.merge_request_diff_files.last
+
+          expect(mrd.merge_request_diff_files.count).to eq(1)
+          expect(mrdf.new_path).not_to eq(mrdf.old_path)
+          expect(partitioned_mrdf.first['new_path']).to eq(mrdf.new_path)
+
+          mrdf.update!(new_path: mrdf.old_path)
+
+          # Reload partitioned_mrdf result
+          #
+          partitioned_mrdf = load_partitioned_mrdf(mrd.id).first
+          expect(mrdf.new_path).to eq(mrdf.old_path)
+          expect(partitioned_mrdf['new_path']).to be_nil
+        end
+      end
+    end
+  end
+
   describe '#update_project_id callback' do
     let_it_be(:merge_request) { create(:merge_request) }
 
     it 'sets project_id when missing' do
       mrdf = merge_request.merge_request_diff.merge_request_diff_files.first
+      mrdf.update_column(:project_id, nil)
 
       expect(mrdf.project_id).to be_nil
 
@@ -35,8 +175,47 @@ RSpec.describe MergeRequestDiffFile, feature_category: :code_review_workflow do
     end
   end
 
+  describe '#deduplicate_new_path callback' do
+    let_it_be(:merge_request) { create(:merge_request) }
+    let(:mrdf) { merge_request.merge_request_diff.merge_request_diff_files.first }
+
+    it 'does not modify new_path when it does not match old_path' do
+      mrdf.update!(new_path: 'example/new_path', old_path: 'example/old_path')
+
+      expect(mrdf[:new_path]).to eq('example/new_path')
+    end
+
+    it 'sets new_path to nil when it equals old_path' do
+      mrdf.update!(new_path: 'example/path', old_path: 'example/path')
+
+      expect(mrdf[:new_path]).to be_nil
+    end
+
+    it 'leaves new_path nil when nil' do
+      mrdf.update!(new_path: nil, old_path: 'example/old_path')
+
+      expect(mrdf[:new_path]).to be_nil
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(deduplicate_new_path_value: false)
+      end
+
+      it 'does not set new_path to nil when it equals old_path' do
+        mrdf.update!(new_path: 'example/path', old_path: 'example/path')
+
+        expect(mrdf[:new_path]).not_to be_nil
+      end
+    end
+  end
+
   describe '#new_path' do
     context 'file[:new_path] exists' do
+      before do
+        file.update!(new_path: 'example/new_path', old_path: 'example/old_path')
+      end
+
       it 'returns [:new_path]' do
         expect(file.new_path).to eq(file[:new_path])
       end

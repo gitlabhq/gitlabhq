@@ -1,3 +1,4 @@
+@use "sass:color";
 @use 'constants';
 
 .rd-diff-file[data-virtual="text_parallel"],
@@ -178,12 +179,12 @@
 }
 
 .rd-line-number[data-change=removed] {
-  --rd-line-link-color: var(--code-old-diff-line-number-color, #{scale-color($gl-color-neutral-300, $red: -30%, $green: -30%, $blue: -30%)});
+  --rd-line-link-color: var(--code-old-diff-line-number-color, #{color.scale($gl-color-neutral-300, $red: -30%, $green: -30%, $blue: -30%)});
   --rd-line-background-color: var(--custom-diff-deletion-color, var(--code-old-diff-line-number-background-color));
 }
 
 .rd-line-number[data-change=added] {
-  --rd-line-link-color: var(--code-new-diff-line-number-color, #{scale-color($gl-color-neutral-200, $red: -30%, $green: -30%, $blue: -30%)});
+  --rd-line-link-color: var(--code-new-diff-line-number-color, #{color.scale($gl-color-neutral-200, $red: -30%, $green: -30%, $blue: -30%)});
   --rd-line-background-color: var(--custom-diff-addition-color, var(--code-new-diff-line-number-background-color));
 }
 
@@ -300,7 +301,7 @@
   &::before {
     // / "" allows us to not announce this with screen readers
     content: "−" / "";
-    color: var(--code-old-diff-sign-color, scale-color($line-number-old, $red: -30%, $green: -30%, $blue: -30%));
+    color: var(--code-old-diff-sign-color, color.scale($line-number-old, $red: -30%, $green: -30%, $blue: -30%));
   }
 }
 
@@ -310,7 +311,7 @@
   &::before {
     // / "" allows us to not announce this with screen readers
     content: "+" / "";
-    color: var(--code-new-diff-sign-color, scale-color($line-number-new, $red: -30%, $green: -30%, $blue: -30%));
+    color: var(--code-new-diff-sign-color, color.scale($line-number-new, $red: -30%, $green: -30%, $blue: -30%));
   }
 }
 

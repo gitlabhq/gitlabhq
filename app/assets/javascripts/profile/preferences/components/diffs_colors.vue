@@ -1,5 +1,5 @@
 <script>
-import { hexToRgba } from '@gitlab/ui/dist/utils/utils';
+import { hexToRgba } from '@gitlab/ui/src/utils/utils';
 
 import { s__ } from '~/locale';
 import { getCssVariable } from '~/lib/utils/css_utils';

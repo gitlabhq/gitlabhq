@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Entities::Ci::JobRequest::Response, feature_category: :continuous_integration do
   let_it_be(:runner) { create(:ci_runner) }
   let_it_be(:job) do
+    stub_feature_flags(ci_validate_config_options: false)
     create(
       :ci_build, runner: runner,
       options: { inputs: { test_input: { input_type: 'string', default: 'test' } } }

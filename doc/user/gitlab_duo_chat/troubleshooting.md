@@ -207,6 +207,18 @@ You might get an error that states
 
 This error occurs when ReAct agent failed to find a solution for your query. Try a different prompt or clear your conversation history with `/clear`.
 
+## `Error A1007`
+
+You might get an error that states `There was an error processing your request. Please try again or contact support if the issue persists. Error code: A1007`.
+
+This error occurs when an unexpected error was encountered handling your request in the GitLab Duo Agent Platform.
+
+## `Error A1008`
+
+You might get an error that states `There was an error processing your request. Please try again or contact support if the issue persists. Error code: A1008`.
+
+This error occurs when your request was submitted to an upstream LLM provider used by the GitLab Duo Agent Platform.
+
 ## `Error A6000`
 
 You might get an error that states

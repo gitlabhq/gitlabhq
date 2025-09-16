@@ -1,5 +1,8 @@
 import { builders } from 'prosemirror-test-builder';
-import Diagram from '~/content_editor/extensions/diagram';
+import Diagram, {
+  DEFAULT_MERMAID_CONTENT,
+  DEFAULT_PLANTUML_CONTENT,
+} from '~/content_editor/extensions/diagram';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
 import { createTestEditor } from '../test_utils';
 
@@ -45,6 +48,34 @@ describe('content_editor/extensions/diagram', () => {
             'pie title NETFLIX  "Time spent looking for movie" : 90  "Time spent watching it" : 10',
           ),
         ).toJSON(),
+      );
+    });
+  });
+
+  describe('when inserting a mermaid diagram', () => {
+    beforeEach(() => {
+      createEditor();
+
+      tiptapEditor.commands.insertMermaid();
+    });
+
+    it('inserts a mermaid diagram', () => {
+      expect(tiptapEditor.getJSON()).toEqual(
+        doc(diagram({ language: 'mermaid' }, DEFAULT_MERMAID_CONTENT)).toJSON(),
+      );
+    });
+  });
+
+  describe('when inserting a plantuml diagram', () => {
+    beforeEach(() => {
+      createEditor();
+
+      tiptapEditor.commands.insertPlantUML();
+    });
+
+    it('inserts a plantuml diagram', () => {
+      expect(tiptapEditor.getJSON()).toEqual(
+        doc(diagram({ language: 'plantuml' }, DEFAULT_PLANTUML_CONTENT)).toJSON(),
       );
     });
   });

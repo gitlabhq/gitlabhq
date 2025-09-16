@@ -27,6 +27,8 @@ You can also interact with service accounts through the [users API](users.md).
 Instance service accounts are available to an entire GitLab instance, but must still be added
 to groups and projects like a human user.
 
+To manage personal access tokens for instance service accounts, use the [personal access tokens API](personal_access_tokens.md).
+
 Prerequisites:
 
 - You must have administrator access to the instance.
@@ -195,7 +197,7 @@ Parameters:
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
 | `order_by` | string         | no       | Orders list of users by `username` or `id`. Default is `id`. |
 | `sort`     | string         | no       | Specifies sorting by `asc` or `desc`. Default is `desc`. |
 
@@ -253,7 +255,7 @@ Supported attributes:
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
+| `id`       | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
 | `name`     | string         | no       | User account name. If not specified, uses `Service account user`. |
 | `username` | string         | no       | User account username. If not specified, generates a name prepended with `service_account_group_`. |
 | `email`    | string         | no       | Email of the user account. If not specified, generates an email prepended with `service_account_group_`. Custom email addresses require confirmation, unless the group has a matching [verified domain](../user/enterprise_user/_index.md#manage-group-domains) or email confirmation settings are [turned off](../administration/settings/sign_up_restrictions.md#confirm-user-email). |
@@ -300,7 +302,7 @@ Parameters:
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
 | `user_id`  | integer        | yes      | The ID of the service account. |
 | `name`     | string         | no       | Name of the user. |
 | `username` | string         | no       | Username of the user. |
@@ -348,7 +350,7 @@ Parameters:
 
 | Attribute     | Type           | Required | Description |
 | ------------- | -------------- | -------- | ----------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `id`          | integer or string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
 | `user_id`     | integer        | yes      | The ID of a service account. |
 | `hard_delete` | boolean        | no       | If true, contributions that would usually be [moved to a Ghost User](../user/profile/account/delete_account.md#associated-records) are instead deleted, as well as groups owned solely by this service account. |
 
@@ -376,7 +378,7 @@ Supported attributes:
 
 | Attribute          | Type                | Required | Description |
 | ------------------ | ------------------- | -------- | ----------- |
-| `id`               | integer/string      | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
+| `id`               | integer or string      | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
 | `user_id`          | integer             | yes      | ID of service account. |
 | `created_after`    | datetime (ISO 8601) | no       | If defined, returns tokens created after the specified time. |
 | `created_before`   | datetime (ISO 8601) | no       | If defined, returns tokens created before the specified time. |
@@ -441,7 +443,7 @@ Parameters:
 
 | Attribute     | Type           | Required | Description |
 | ------------- | -------------- | -------- | ----------- |
-| `id`          | integer/string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
+| `id`          | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
 | `user_id`     | integer        | yes      | ID of service account. |
 | `name`        | string         | yes      | Name of personal access token. |
 | `description` | string         | no       | Description of personal access token. |
@@ -495,7 +497,7 @@ Parameters:
 
 | Attribute  | Type           | Required | Description |
 | ---------- | -------------- | -------- | ----------- |
-| `id`       | integer/string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `id`       | integer or string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
 | `user_id`  | integer        | yes      | The ID of the service account. |
 | `token_id` | integer        | yes      | The ID of the token. |
 
@@ -538,7 +540,7 @@ Parameters:
 
 | Attribute    | Type           | Required | Description |
 | ------------ | -------------- | -------- | ----------- |
-| `id`         | integer/string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `id`         | integer or string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
 | `user_id`    | integer        | yes      | The ID of the service account. |
 | `token_id`   | integer        | yes      | The ID of the token. |
 | `expires_at` | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505671) in GitLab 17.9. If the token requires an expiration date, defaults to one week. If not required, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |

@@ -12,38 +12,25 @@
     BROWSERSLIST_IGNORE_OLD_DATA: "true"
     GRAPHQL_SCHEMA_APOLLO_FILE: "tmp/tests/graphql/gitlab_schema_apollo.graphql"
 
-update-static-analysis-cache:
-  extends:
-    - .static-analysis-base
-    - .rubocop-job-cache-push
-    - .caching:rules:update-master-based-caches
-  stage: prepare
-  script:
-    # Silence cop offenses for rules with "grace period".
-    # This will notify Slack if offenses were silenced.
-    # For the moment we only cache `tmp/rubocop_cache` so we don't need to run all the tasks.
-    - fail_on_warnings bundle exec rake rubocop:check:graceful
-
 static-analysis:
   extends:
     - .static-analysis-base
     - .static-analysis-cache
     - .static-analysis:rules:static-analysis
+    - .use-pg16
   needs:
     - job: cache:ruby-gems
       optional: true
     - job: cache:node-modules
       optional: true
+    - job: db:setup pg16
+      optional: true
   parallel: 2
+  variables:
+    SETUP_DB: "true"
   script:
-    - |
-      function static_analysis() {
-        yarn_install_script
-        fail_on_warnings scripts/static-analysis
-      }
-
-      run_with_custom_exit_code static_analysis
-
+    - yarn_install_script
+    - fail_on_warnings scripts/static-analysis
 
 static-verification-with-database:
   extends:
@@ -82,32 +69,23 @@ generate-apollo-graphql-schema:
   variables:
     USE_BUNDLE_INSTALL: "false"
     ESLINT_CODE_QUALITY_REPORT: "gl-code-quality-report.json"
+  before_script:
+    - !reference [.default-before_script, before_script]
+    - yarn_install_script
 
 eslint-changed-files:
   extends:
     - .eslint-base
     - .frontend:rules:eslint-changed-files
   script:
-    - |
-      function eslint_script() {
-        yarn_install_script
-        ./tooling/ci/changed_files.rb eslint
-      }
-
-      run_with_custom_exit_code eslint_script
+    - ./tooling/ci/changed_files.rb eslint
 
 eslint:
   extends:
     - .eslint-base
     - .frontend:rules:eslint-default
   script:
-    - |
-      function eslint_script() {
-        yarn_install_script
-        yarn run lint:eslint:all --format gitlab
-      }
-
-      run_with_custom_exit_code eslint_script
+    - yarn run lint:eslint:all --format gitlab
   artifacts:
     reports:
       codequality: gl-code-quality-report.json
@@ -120,13 +98,8 @@ eslint-docs:
   variables:
     USE_BUNDLE_INSTALL: "false"
   script:
-    - |
-      function eslint_docs_script() {
-        yarn_install_script
-        scripts/frontend/lint_docs_links.mjs
-      }
-
-      run_with_custom_exit_code eslint_docs_script
+    - yarn_install_script
+    - scripts/frontend/lint_docs_links.mjs
 
 haml-lint:
   extends:
@@ -147,7 +120,7 @@ haml-lint:
 rubocop:
   extends:
     - .static-analysis-base
-    - .rubocop-job-cache
+    - .rubocop-job-cache-push
     - .static-analysis:rules:rubocop
   needs:
     - job: detect-tests
@@ -158,10 +131,11 @@ rubocop:
     - |
       # For non-merge request, or when RUN_ALL_RUBOCOP is 'true', run all RuboCop rules
       if [ -z "${CI_MERGE_REQUEST_IID:-$FIND_CHANGES_MERGE_REQUEST_IID}" ] || [ "${RUN_ALL_RUBOCOP}" == "true" ]; then
-        # Silence cop offenses for rules with "grace period".
-        # We won't notify Slack if offenses were silenced to avoid frequent messages.
-        # Job `update-static-analysis-cache` takes care of Slack notifications every 2 hours.
-        unset CI_SLACK_WEBHOOK_URL
+        if [ "${CI_PIPELINE_SOURCE}" != "schedule" ]; then
+          # Silence cop offenses for rules with "grace period".
+          # To avoid frequent notification, unset slack webhook url for everything but scheduled pipelines
+          unset CI_SLACK_WEBHOOK_URL
+        fi
         fail_on_warnings bundle exec rake rubocop:check:graceful
       else
         select_existing_files < "${GLCI_PREDICTIVE_CHANGED_FILES_PATH}" > "${RUBOCOP_TARGET_FILES}"
@@ -225,11 +199,12 @@ rails-next-dependency-check:
 feature-flags-usage:
   extends:
     - .static-analysis-base
-    - .rubocop-job-cache
-    - .static-analysis:rules:rubocop
+    # rubocop cache for this job is disabled since it creates files under tmp/feature_flags/*.used,
+    # the cache would prevent these files from being created
+    - .ruby-cache
+    # this jobs is a non optional needs for rspec:feature-flags job so it should use same rule to ensure it is present
+    - .rails:rules:rspec-feature-flags
   script:
-    # We need to disable the cache for this cop since it creates files under tmp/feature_flags/*.used,
-    # the cache would prevent these files from being created.
     - fail_on_warnings bundle exec rubocop --only Gitlab/MarkUsedFeatureFlags --cache false
   artifacts:
     expire_in: 31d

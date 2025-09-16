@@ -142,7 +142,7 @@ You can manage service account access to groups and projects the same way you ma
 human users. For more information, see
 [groups](../group/_index.md#add-users-to-a-group) and [members of a project](../project/members/_index.md#add-users-to-a-project).
 
-You can also manage group and project assignments with the [members API](../../api/members.md).
+You can also manage group and project assignments with the [members API](../../api/members.md). You must use this API if the [global SAML group memberships lock](../group/saml_sso/group_sync.md#global-saml-group-memberships-lock) or the [global LDAP group memberships lock](../../administration/auth/ldap/ldap_synchronization.md#global-ldap-group-memberships-lock) are enabled.
 
 ### Delete a service account
 

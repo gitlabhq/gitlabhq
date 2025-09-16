@@ -7,7 +7,7 @@ feature_categories:
 description: Keeps relation between blocked and blocking merge requests
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/27323
 milestone: '11.11'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 table_size: small
 sharding_key:
   project_id: projects

@@ -186,6 +186,15 @@ module AuthHelper
       end
   end
 
+  def step_up_auth_documentation_link(flow)
+    link_url = flow.documentation_link
+
+    return unless link_url
+
+    provider_label = ::Gitlab::Auth::OAuth::Provider.label_for(flow.provider)
+    link_to(provider_label, link_url, target: '_blank', rel: 'noopener noreferrer', class: 'gl-link')
+  end
+
   def provider_image_tag(provider, size = 64)
     label = label_for_provider(provider)
 
@@ -271,11 +280,10 @@ module AuthHelper
                 _('Are you sure you want to invalidate your one-time password authenticator and WebAuthn devices?')
               end
 
-    { button_text: _('Disable two-factor authentication'),
+    { button_text: _('Disable 2FA'),
       message: message,
       path: profile_two_factor_auth_path,
-      password_required: password_required.to_s,
-      size: 'small' }
+      password_required: password_required.to_s }
   end
 
   def codes_two_factor_authentication_data(password_required)

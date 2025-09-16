@@ -16,6 +16,7 @@ module Gitlab::UsageDataCounters
       p_ci_templates_code_quality
       p_ci_templates_composer
       p_ci_templates_implicit_auto_devops
+      p_ci_templates_implicit_jobs_deploy
       p_ci_templates_implicit_jobs_dast_default_branch_deploy
       p_ci_templates_maven
       p_ci_templates_nodejs
@@ -37,6 +38,68 @@ module Gitlab::UsageDataCounters
       p_ci_templates_indeni_cloudrail
       p_ci_templates_ios_fastlane
       p_ci_templates_julia
+      p_ci_templates_security_coverage_fuzzing
+      p_ci_templates_security_dast_on_demand_scan
+      p_ci_templates_jobs_sast
+      p_ci_templates_workflows_mergerequest_pipelines
+      p_ci_templates_openshift
+      p_ci_templates_laravel
+      p_ci_templates_pages_hugo
+      p_ci_templates_terraform
+      p_ci_templates_implicit_jobs_secret_detection
+      p_ci_templates_jobs_sast_iac_latest
+      p_ci_templates_pages_doxygen
+      p_ci_templates_pages_html
+      p_ci_templates_verify_load_performance_testing
+      p_ci_templates_jobs_sast_iac
+      p_ci_templates_npm
+      p_ci_templates_pages_brunch
+      p_ci_templates_pages_nanoc
+      p_ci_templates_terraform_module_base
+      p_ci_templates_auto_devops
+      p_ci_templates_aws_deploy_ecs
+      p_ci_templates_implicit_jobs_browser_performance_testing
+      p_ci_templates_implicit_jobs_build
+      p_ci_templates_implicit_jobs_code_intelligence
+      p_ci_templates_implicit_jobs_code_quality
+      p_ci_templates_implicit_jobs_container_scanning
+      p_ci_templates_implicit_jobs_dependency_scanning
+      p_ci_templates_implicit_jobs_deploy_ec2
+      p_ci_templates_implicit_jobs_deploy_ecs
+      p_ci_templates_implicit_jobs_helm_2to3
+      p_ci_templates_implicit_jobs_license_scanning
+      p_ci_templates_implicit_jobs_sast
+      p_ci_templates_implicit_jobs_test
+      p_ci_templates_implicit_security_container_scanning
+      p_ci_templates_implicit_security_dast
+      p_ci_templates_implicit_security_dependency_scanning
+      p_ci_templates_implicit_security_license_scanning
+      p_ci_templates_implicit_security_sast
+      p_ci_templates_implicit_security_secret_detection
+      p_ci_templates_jobs_browser_performance_testing
+      p_ci_templates_jobs_browser_performance_testing_latest
+      p_ci_templates_jobs_build
+      p_ci_templates_jobs_build_latest
+      p_ci_templates_jobs_cf_provision
+      p_ci_templates_jobs_code_intelligence
+      p_ci_templates_jobs_code_quality
+      p_ci_templates_jobs_container_scanning
+      p_ci_templates_jobs_container_scanning_latest
+      p_ci_templates_jobs_dast_default_branch_deploy
+      p_ci_templates_jobs_dependency_scanning
+      p_ci_templates_jobs_dependency_scanning_latest
+      p_ci_templates_jobs_deploy
+      p_ci_templates_jobs_deploy_ec2
+      p_ci_templates_jobs_deploy_ecs
+      p_ci_templates_jobs_deploy_latest
+      p_ci_templates_jobs_helm_2to3
+      p_ci_templates_jobs_license_scanning
+      p_ci_templates_jobs_license_scanning_latest
+      p_ci_templates_jobs_load_performance_testing
+      p_ci_templates_jobs_sast_latest
+      p_ci_templates_jobs_secret_detection
+      p_ci_templates_jobs_secret_detection_latest
+      p_ci_templates_jobs_test
     ].freeze
 
     class << self

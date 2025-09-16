@@ -313,8 +313,8 @@ RSpec.describe SessionsController, feature_category: :system_access do
 
           post_action
 
-          expect(cookies["hide_broadcast_message_#{message_banner.id}"]).to be(true)
-          expect(cookies["hide_broadcast_message_#{message_notification.id}"]).to be(true)
+          expect(cookies["hide_broadcast_message_#{message_banner.id}"].to_s).to eq('true')
+          expect(cookies["hide_broadcast_message_#{message_notification.id}"].to_s).to eq('true')
           expect(cookies["hide_broadcast_message_#{other_message.id}"]).to be_nil
         end
 

@@ -47,7 +47,7 @@ module Packages
       def create_temporary_package
         package = ::Packages::CreateTemporaryPackageService.new(
           project, user, package_params
-        ).execute(:nuget, name: package_params[:name])
+        ).execute(::Packages::Nuget::Package, name: package_params[:name])
 
         return ERRORS[:failed_to_create_temporary_package] if package.blank?
 

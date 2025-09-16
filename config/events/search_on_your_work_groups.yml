@@ -1,0 +1,18 @@
+---
+description: Search on Your work > Groups
+internal_events: true
+action: search_on_your_work_groups
+identifiers:
+- user
+additional_properties:
+  label:
+    description: Tab name (e.g. "Member")
+product_group: organizations
+product_categories:
+- groups_and_projects
+milestone: '18.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203490
+tiers:
+- free
+- premium
+- ultimate

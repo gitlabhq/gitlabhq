@@ -1,6 +1,6 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_security_coverage_fuzzing_latest_weekly
-description: Weekly counts for Coverage Fuzzing latest CI template. Originally monthly count, fixed in 17.0.
+description: Count of distinct projects that included the Security/Coverage-Fuzzing.latest.gitlab-ci.yml template in a pipeline
 product_group: dynamic_analysis
 value_type: number
 status: active

@@ -2,7 +2,7 @@
 - namespace_id = local_assigns.fetch(:destination_namespace_id, nil)
 
 .project-import
-  .form-group.import-btn-container.clearfix
+  .form-group.import-btn-container.gl-clearfix
     %h5.gl-flex
       = _("Import project from")
       = link_to _('History'), import_history_index_path, class: 'gl-link gl-ml-auto gl-font-normal'
@@ -47,8 +47,13 @@
 
       - if git_import_enabled?
         %div
-          = render Pajamas::ButtonComponent.new(icon: 'link', button_options: { class: 'js-toggle-button js-import-git-toggle-button js-import-project-btn', data: { platform: 'repo_url', toggle_open_class: 'active', **tracking_attrs_data('import_project', 'click_button', 'repo_url') } }) do
-            = _('Repository by URL')
+          - if Feature.enabled?(:import_by_url_new_page, current_user)
+            = render Pajamas::ButtonComponent.new(href: new_import_url_path(namespace_id: namespace_id), icon: 'link', button_options: { class: 'js-import-project-btn', data: { platform: 'repo_url',
+             **tracking_attrs_data('import_project', 'click_button', 'repo_url') } }) do
+              = _('Repository by URL')
+          - else
+            = render Pajamas::ButtonComponent.new(icon: 'link', button_options: { class: 'js-toggle-button js-import-git-toggle-button js-import-project-btn', data: { platform: 'repo_url', toggle_open_class: 'active', **tracking_attrs_data('import_project', 'click_button', 'repo_url') } }) do
+              = _('Repository by URL')
 
       - if manifest_import_enabled?
         %div
@@ -57,9 +62,9 @@
 
       = render_if_exists "projects/gitee_import_button", namespace_id: namespace_id, track_label: 'import_project'
 
-
-  .js-toggle-content.toggle-import-form{ class: ('hide' if active_tab != 'import') }
-    = gitlab_ui_form_for @project, html: { class: 'new_project gl-show-field-errors js-project-import' } do |f|
-      %hr
-      = render "shared/import_form", f: f
-      = render 'projects/new_project_fields', f: f, project_name_id: "import-url-name", hide_init_with_readme: true, track_label: 'import_project'
+  - if !Feature.enabled?(:import_by_url_new_page, current_user)
+    .js-toggle-content.toggle-import-form{ class: ('hide' if active_tab != 'import') }
+      = gitlab_ui_form_for @project, html: { class: 'new_project gl-show-field-errors js-project-import' } do |f|
+        %hr
+        = render "shared/import_form", f: f
+        = render 'projects/new_project_fields', f: f, project_name_id: "import-url-name", hide_init_with_readme: true, track_label: 'import_project'

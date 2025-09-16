@@ -33,17 +33,37 @@ example text
 
 ## Apply a suggestion
 
-Applies a suggested patch in a merge request. Users must have
-at least the Developer role to perform such action.
+Applies a suggested patch in a merge request.
+
+Prerequisites:
+
+- Users must have at least the Developer role.
 
 ```plaintext
 PUT /suggestions/:id/apply
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id` | integer | yes | The ID of a suggestion |
-| `commit_message` | string | no | A custom commit message to use instead of the default generated message or the project's default message |
+Supported attributes:
+
+| Attribute        | Type    | Required | Description |
+|------------------|---------|----------|-------------|
+| `id`             | integer | Yes      | ID of a suggestion. |
+| `commit_message` | string  | No       | Custom commit message to use instead of the default generated message or the project's default message. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute      | Type    | Description |
+|----------------|---------|-------------|
+| `applicable`   | boolean | If `true`, suggestion can be applied. |
+| `applied`      | boolean | If `true`, suggestion has been applied. |
+| `from_content` | string  | Original content before the suggestion. |
+| `from_line`    | integer | Starting line number of the suggestion. |
+| `id`           | integer | ID of the suggestion. |
+| `to_content`   | string  | Suggested content to replace the original. |
+| `to_line`      | integer | Ending line number of the suggestion. |
+
+Example request:
 
 ```shell
 curl --request PUT \
@@ -67,19 +87,42 @@ Example response:
 
 ## Apply multiple suggestions
 
+Applies multiple suggested patches in a merge request.
+
+Prerequisites:
+
+- Users must have at least the Developer role.
+
 ```plaintext
 PUT /suggestions/batch_apply
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `ids` | integer | yes | The IDs of suggestions |
-| `commit_message` | string | no | A custom commit message to use instead of the default generated message or the project's default message |
+Supported attributes:
+
+| Attribute        | Type          | Required | Description |
+|------------------|---------------|----------|-------------|
+| `ids`            | integer array | Yes      | IDs of suggestions to apply. |
+| `commit_message` | string        | No       | Custom commit message to use instead of the default generated message or the project's default message. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and an array of suggestion objects with the following
+response attributes:
+
+| Attribute      | Type    | Description |
+|----------------|---------|-------------|
+| `applicable`   | boolean | If `true`, suggestion can be applied. |
+| `applied`      | boolean | If `true`, suggestion has been applied. |
+| `from_content` | string  | Original content before the suggestion. |
+| `from_line`    | integer | Starting line number of the suggestion. |
+| `id`           | integer | ID of the suggestion. |
+| `to_content`   | string  | Suggested content to replace the original. |
+| `to_line`      | integer | Ending line number of the suggestion. |
+
+Example request:
 
 ```shell
 curl --request PUT \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --header 'Content-Type: application/json' \
+  --header "Content-Type: application/json" \
   --data '{"ids": [5, 6]}' \
   --url "https://gitlab.example.com/api/v4/suggestions/batch_apply"
 ```
@@ -96,15 +139,15 @@ Example response:
     "applied": false,
     "from_content": "This is an example\n",
     "to_content": "This is an example\n"
-  }
+  },
   {
     "id": 6,
-    "from_line": 19
+    "from_line": 19,
     "to_line": 19,
     "applicable": true,
     "applied": false,
     "from_content": "This is another example\n",
     "to_content": "This is another example\n"
   }
- ]
+]
 ```

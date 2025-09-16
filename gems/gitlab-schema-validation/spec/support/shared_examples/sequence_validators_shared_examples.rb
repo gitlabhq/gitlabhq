@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples 'sequence validators' do |validator, expected_result|
+RSpec.shared_examples 'sequence validators' do |validator, expected_result, expected_details|
   let(:structure_file_path) { 'spec/fixtures/structure.sql' }
   let(:inconsistency_type) { validator.name }
   let(:connection_class) { class_double(Class, name: 'ActiveRecord::ConnectionAdapters::PostgreSQLAdapter') }
@@ -73,5 +73,6 @@ RSpec.shared_examples 'sequence validators' do |validator, expected_result|
   it 'returns sequence inconsistencies' do
     expect(result.map(&:object_name)).to match_array(expected_result)
     expect(result.map(&:type)).to all(eql inconsistency_type)
+    expect(result.map(&:details)).to eq(expected_details)
   end
 end

@@ -1,0 +1,10 @@
+---
+name: new_security_dashboard_total_risk_score
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/561341
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201997
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/563079
+milestone: '18.4'
+group: group::security insights
+type: wip
+default_enabled: false

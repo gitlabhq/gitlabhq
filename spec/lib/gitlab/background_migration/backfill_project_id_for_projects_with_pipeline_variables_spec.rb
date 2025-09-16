@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillProjectIdForProjectsWithPipelineVariables,
-  feature_category: :ci_variables do
+  feature_category: :pipeline_composition do
   let(:projects_table) { table(:projects) }
   let(:namespaces_table) { table(:namespaces) }
   let(:organizations_table) { table(:organizations) }

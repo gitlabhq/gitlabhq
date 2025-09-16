@@ -9,7 +9,7 @@ PATH
 PATH
   remote: ../gitlab-utils
   specs:
-    gitlab-utils (0.1.0)
+    gitlab-utils (0.2.0)
       actionview (>= 6.1.7.2)
       activesupport (>= 6.1.7.2)
       addressable (~> 2.8)
@@ -259,7 +259,7 @@ CHECKSUMS
   gitlab-http (0.1.0)
   gitlab-rspec (0.1.0)
   gitlab-styles (13.0.1) sha256=bf1840fe97b215ab76fe1f1a83af0aee30d33ded905415918462b832004b68bd
-  gitlab-utils (0.1.0)
+  gitlab-utils (0.2.0)
   hashdiff (1.0.1) sha256=2cd4d04f5080314ecc8403c4e2e00dbaa282dff395e2d031bc16c8d501bdd6db
   httparty (0.22.0) sha256=78652a5c9471cf0093d3b2083c2295c9c8f12b44c65112f1846af2b71430fa6c
   i18n (1.14.1) sha256=9d03698903547c060928e70a9bc8b6b87fda674453cda918fc7ab80235ae4a61

@@ -45,7 +45,7 @@ Prerequisites:
 - Build and sign an image/artifact in the same job to prevent it from being tampered with before it is signed.
 - When signing container images, sign the digest (which is immutable) instead of the tag.
 
-GitLab [ID tokens](../secrets/id_token_authentication.md#id-tokens) can be used by Cosign for
+GitLab [ID tokens](../secrets/id_token_authentication.md) can be used by Cosign for
 [keyless signing](https://docs.sigstore.dev/quickstart/quickstart-cosign/#keyless-signing-of-a-container). The token must have
 `sigstore` set as the [`aud`](../secrets/id_token_authentication.md#token-payload) claim. The token can be used by Cosign automatically when it is set in the
 `SIGSTORE_ID_TOKEN` environment variable.

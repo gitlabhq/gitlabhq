@@ -119,5 +119,16 @@ RSpec.describe Authn::Tokens::Jwt, feature_category: :system_access do
 
       it { is_expected.to be_nil }
     end
+
+    context 'when the subject does not exist' do
+      let(:jwt) do
+        described_class.new(
+          payload: { 'sub' => "gid://gitlab/Ci::Build/#{non_existing_record_id}" },
+          subject_type: subject_type
+        )
+      end
+
+      it { is_expected.to be_nil }
+    end
   end
 end

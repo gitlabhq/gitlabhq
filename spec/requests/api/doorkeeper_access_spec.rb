@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'doorkeeper access', feature_category: :system_access do
   let_it_be(:organization) { create(:organization) }
   let_it_be_with_reload(:user) { create(:user) }
-  let!(:application) { Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
+  let!(:application) { Authn::OauthApplication.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user) }
   let!(:token) { Doorkeeper::AccessToken.create! application_id: application.id, resource_owner_id: user.id, scopes: "api", organization_id: organization.id }
 
   describe 'access token with composite identity scope', :request_store do

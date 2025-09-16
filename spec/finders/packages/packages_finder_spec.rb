@@ -10,7 +10,7 @@ RSpec.describe ::Packages::PackagesFinder do
   describe '#execute' do
     let(:params) { {} }
 
-    subject { described_class.new(project, params).execute }
+    subject(:find_packages) { described_class.new(project, params).execute }
 
     context 'with package_type' do
       let_it_be(:npm_package1) { create(:npm_package, project: project) }
@@ -26,6 +26,15 @@ RSpec.describe ::Packages::PackagesFinder do
         let(:params) { { package_type: 'npm' } }
 
         it { is_expected.to match_array([npm_package1, npm_package2]) }
+      end
+
+      context 'with unknown type' do
+        let(:package_type) { 'zig' }
+        let(:params) { { package_type: } }
+
+        it 'raises the error' do
+          expect { find_packages }.to raise_error(ArgumentError, "'#{package_type}' is not a valid package_type")
+        end
       end
     end
 

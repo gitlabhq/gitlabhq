@@ -3,11 +3,11 @@ table_name: duo_workflows_workflows
 classes:
 - Ai::DuoWorkflows::Workflow
 feature_categories:
-- duo_workflow
+- agent_foundations
 description:
 introduced_by_url:
 milestone: '17.2'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
   namespace_id: namespaces

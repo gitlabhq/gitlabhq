@@ -224,7 +224,7 @@ You can disable prompt caching for top-level groups in the GitLab Duo settings.
 On GitLab.com:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > GitLab Duo**.
+1. Select **Settings** > **GitLab Duo**.
 1. Select **Change configuration**.
 1. Disable the **Prompt caching** toggle.
 1. Select **Save changes**.
@@ -232,7 +232,7 @@ On GitLab.com:
 On GitLab Self-Managed:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Disable the **Prompt caching** toggle.
 1. Select **Save changes**.
@@ -280,7 +280,7 @@ Prerequisites:
 {{< tab title="In 17.4 and later" >}}
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **GitLab Duo features**.
 1. Under **Connection method**, choose an option:
    - To minimize latency for code completion requests, select **Direct connections**.
@@ -292,7 +292,7 @@ Prerequisites:
 {{< tab title="In 17.3 and earlier" >}}
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **AI-native features**.
 1. Choose an option:
    - To enable direct connections and minimize latency for code completion requests, clear the **Disable direct connections for code suggestions** checkbox.

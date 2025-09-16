@@ -59,15 +59,27 @@ module QA
             {
               class: exception.class.name,
               message: exception.message,
-              message_lines: strip_ansi_codes(notification.message_lines),
               correlation_id: exception.message[match_data_after(Loglinking::CORRELATION_ID_TITLE)],
               sentry_url: exception.message[match_data_after(Loglinking::SENTRY_URL_TITLE)],
               kibana_discover_url: exception.message[match_data_after(Loglinking::KIBANA_DISCOVER_URL_TITLE)],
               kibana_dashboard_url: exception.message[match_data_after(Loglinking::KIBANA_DASHBOARD_URL_TITLE)],
-              backtrace: notification.formatted_backtrace
-            }
+              message_lines: message_lines(notification),
+              backtrace: formatted_backtrace(notification)
+            }.compact
           end
         })
+      end
+
+      def message_lines(notification)
+        return unless notification.respond_to?(:message_lines)
+
+        strip_ansi_codes(notification.message_lines)
+      end
+
+      def formatted_backtrace(notification)
+        return unless notification.respond_to?(:formatted_backtrace)
+
+        notification.formatted_backtrace
       end
 
       def location_including_shared_examples(metadata)

@@ -3,8 +3,9 @@ import {
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
+  GlSkeletonLoader,
 } from '@gitlab/ui';
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import savedRepliesResponse from 'test_fixtures/graphql/comment_templates/saved_replies.query.graphql.json';
 import { mockTracking } from 'helpers/tracking_helper';
@@ -20,6 +21,8 @@ import {
   TRACKING_SAVED_REPLIES_USE_IN_OTHER,
 } from '~/vue_shared/components/markdown/constants';
 
+Vue.use(VueApollo);
+
 let wrapper;
 let savedRepliesResp;
 
@@ -28,26 +31,33 @@ const newCommentTemplatePaths = [
   { href: '/group/comment_templates', text: 'Manage group' },
 ];
 
-function createMockApolloProvider(response) {
-  Vue.use(VueApollo);
-
+function createMockApolloProvider() {
   savedRepliesResp = jest
     .fn()
-    .mockResolvedValue({ data: { currentUser: { ...response.data.object } } });
+    .mockResolvedValue({ data: { currentUser: { ...savedRepliesResponse.data.object } } });
 
   const requestHandlers = [[savedRepliesQuery, savedRepliesResp]];
-
   return createMockApollo(requestHandlers);
 }
 
-function createComponent(options = {}) {
-  const { mockApollo } = options;
+function createLoadingMockApolloProvider() {
+  const requestHandlers = [[savedRepliesQuery, jest.fn().mockReturnValue(new Promise(() => {}))]];
+  return createMockApollo(requestHandlers);
+}
+
+function createComponent({ apolloLoading = false } = {}) {
+  const options = {};
+  if (apolloLoading) {
+    options.apolloProvider = createLoadingMockApolloProvider();
+  } else {
+    options.apolloProvider = createMockApolloProvider();
+  }
 
   return shallowMountExtended(CommentTemplatesDropdown, {
     propsData: {
       newCommentTemplatePaths,
     },
-    apolloProvider: mockApollo,
+    ...options,
     stubs: {
       GlModal,
       GlDisclosureDropdown,
@@ -74,8 +84,7 @@ useMockLocationHelper();
 
 describe('Comment templates dropdown', () => {
   it('fetches data when dropdown gets opened', async () => {
-    const mockApollo = createMockApolloProvider(savedRepliesResponse);
-    wrapper = createComponent({ mockApollo });
+    wrapper = createComponent();
 
     findToggleButton().vm.$emit('click');
 
@@ -85,8 +94,7 @@ describe('Comment templates dropdown', () => {
   });
 
   it('renders multiple manage links', () => {
-    const mockApollo = createMockApolloProvider(savedRepliesResponse);
-    wrapper = createComponent({ mockApollo });
+    wrapper = createComponent();
 
     findToggleButton().vm.$emit('click');
 
@@ -99,12 +107,10 @@ describe('Comment templates dropdown', () => {
 
   describe('when selecting a comment', () => {
     let trackingSpy;
-    let mockApollo;
 
     beforeEach(() => {
       trackingSpy = mockTracking(undefined, window.document, jest.spyOn);
-      mockApollo = createMockApolloProvider(savedRepliesResponse);
-      wrapper = createComponent({ mockApollo });
+      wrapper = createComponent();
     });
 
     it('emits a select event', async () => {
@@ -181,6 +187,17 @@ describe('Comment templates dropdown', () => {
           );
         });
       });
+    });
+  });
+
+  describe('while loading', () => {
+    it('shows a skeleton loader', async () => {
+      wrapper = createComponent({ apolloLoading: true });
+
+      findToggleButton().vm.$emit('click');
+      await nextTick();
+
+      expect(wrapper.findComponent(GlSkeletonLoader).exists()).toBe(true);
     });
   });
 });

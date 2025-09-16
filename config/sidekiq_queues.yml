@@ -125,10 +125,6 @@
   - 2
 - - auto_merge
   - 3
-- - background_migration
-  - 1
-- - background_migration_ci_database
-  - 1
 - - batched_background_migrations
   - 1
 - - batched_git_ref_updates_project_cleanup
@@ -236,8 +232,6 @@
 - - ci_runners_export_usage_csv
   - 1
 - - ci_runners_process_runner_version_update
-  - 1
-- - ci_runners_update_project_runners_owner
   - 1
 - - ci_safe_disable_pipeline_variables
   - 1
@@ -489,6 +483,10 @@
   - 1
 - - gitlab_subscriptions_seat_assignments_group_links_create_or_update_seats
   - 1
+- - gitlab_subscriptions_seat_assignments_member_transfers_create_group_seats
+  - 1
+- - gitlab_subscriptions_seat_assignments_member_transfers_create_project_seats
+  - 1
 - - gitlab_subscriptions_self_managed_duo_core_todo_notification
   - 1
 - - gitlab_subscriptions_trials_apply_trial
@@ -627,7 +625,7 @@
   - 1
 - - merge_requests_approval_metrics_event
   - 1
-- - merge_requests_capture_suggested_reviewers_accepted
+- - merge_requests_audit_update_status_check_response
   - 1
 - - merge_requests_cleanup_ref
   - 1
@@ -645,8 +643,6 @@
   - 1
 - - merge_requests_execute_approval_hooks
   - 1
-- - merge_requests_fetch_suggested_reviewers
-  - 1
 - - merge_requests_handle_assignees_change
   - 1
 - - merge_requests_mergeability_check_batch
@@ -662,6 +658,8 @@
 - - merge_requests_process_draft_note_published
   - 1
 - - merge_requests_process_merge_audit_event
+  - 1
+- - merge_requests_refresh_web_hooks
   - 1
 - - merge_requests_remove_user_approval_rules
   - 1
@@ -769,8 +767,6 @@
   - 1
 - - projects_delete_branch
   - 1
-- - projects_deregister_suggested_reviewers_project
-  - 1
 - - projects_finalize_project_statistics_refresh
   - 1
 - - projects_forks_sync
@@ -800,8 +796,6 @@
 - - projects_record_target_platforms
   - 1
 - - projects_refresh_build_artifacts_size_statistics
-  - 1
-- - projects_register_suggested_reviewers_project
   - 1
 - - projects_repository_destroy
   - 1
@@ -985,13 +979,13 @@
   - 1
 - - security_policies_project_transfer
   - 1
+- - security_policies_scheduled_scans_not_enforced_audit
+  - 1
 - - security_policies_skip_pipelines_audit
   - 1
 - - security_process_scan_result_policy
   - 1
 - - security_recreate_orchestration_configuration
-  - 1
-- - security_refresh_compliance_framework_security_policies
   - 1
 - - security_refresh_project_policies
   - 1
@@ -1048,6 +1042,10 @@
 - - security_unenforceable_policy_rules_notification
   - 1
 - - security_unenforceable_policy_rules_pipeline_notification
+  - 1
+- - security_vulnerability_scanning_process_sbom_scan
+  - 1
+- - security_vulnerability_scanning_process_sbom_scan_throttled
   - 1
 - - service_desk_email_receiver
   - 2
@@ -1149,6 +1147,10 @@
   - 1
 - - work_items_import_work_items_csv
   - 1
+- - work_items_process_group_transfer_events
+  - 1
+- - work_items_process_project_transfer_events
+  - 1
 - - work_items_rolledup_dates_bulk_update_handler
   - 1
 - - work_items_rolledup_dates_update_milestone_related_work_item_dates_event_handler
@@ -1158,6 +1160,8 @@
 - - work_items_rolledup_dates_update_rolledup_dates
   - 1
 - - work_items_rolledup_dates_update_rolledup_dates_event_handler
+  - 1
+- - work_items_update_namespace_traversal_ids
   - 1
 - - work_items_update_parent_objectives_progress
   - 1

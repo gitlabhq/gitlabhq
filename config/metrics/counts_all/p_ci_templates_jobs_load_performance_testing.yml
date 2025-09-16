@@ -1,6 +1,6 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_jobs_load_performance_testing
-description: ''
+description: Count of distinct projects that included the Jobs/Load-Performance-Testing.gitlab-ci.yml template in a pipeline
 product_group: pipeline_authoring
 value_type: number
 status: active
@@ -9,13 +9,15 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69204
 time_frame:
 - 28d
 - 7d
-data_source: redis_hll
+data_source: internal_events
 data_category: optional
-instrumentation_class: RedisHLLMetric
 tiers:
 - free
 - premium
 - ultimate
-options:
-  events:
-  - p_ci_templates_jobs_load_performance_testing
+events:
+- name: ci_template_included
+  unique: project.id
+  filter:
+    label: jobs_load_performance_testing
+    property: 'false'

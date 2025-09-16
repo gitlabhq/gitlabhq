@@ -34,7 +34,7 @@ Prerequisites:
 
 | Attribute           | Type              | Required   | Description                                                                                                                  |
 | ------------------- | ----------------- | ---------- | -----------------------------------------------------------------------------------------------------------------------------|
-| `id`                | integer or string | yes        | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) which the authenticated user is a member of  |
+| `id`                | integer or string | yes        | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group which the authenticated user is a member of  |
 | `secret_push_protection_enabled`        | boolean | yes        | Whether secret push protection is enabled for the group. |
 | `projects_to_exclude`        | array of integers | no        | The IDs of projects to exclude from the feature.  |
 

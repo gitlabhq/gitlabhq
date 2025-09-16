@@ -7,7 +7,7 @@ feature_categories:
 description: "(Deprecated) AWS specific details for an EKS cluster integration"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17057
 milestone: '12.4'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 desired_sharding_key:
   project_id:
     awaiting_backfill_on_parent: true

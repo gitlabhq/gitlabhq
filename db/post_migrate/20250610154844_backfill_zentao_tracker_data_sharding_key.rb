@@ -2,7 +2,7 @@
 
 class BackfillZentaoTrackerDataShardingKey < Gitlab::Database::Migration[2.3]
   milestone '18.1'
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
   disable_ddl_transaction!
 
   class Integration < MigrationRecord

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::GroupPackagesFinder, feature_category: :package_registry do
@@ -8,6 +9,7 @@ RSpec.describe Packages::GroupPackagesFinder, feature_category: :package_registr
   let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, namespace: group, builds_access_level: ProjectFeature::PRIVATE, merge_requests_access_level: ProjectFeature::PRIVATE) }
 
+  let(:service) { described_class.new(user, group, params) }
   let(:add_user_to_group) { true }
 
   before do
@@ -17,7 +19,7 @@ RSpec.describe Packages::GroupPackagesFinder, feature_category: :package_registr
   describe '#execute' do
     let(:params) { { exclude_subgroups: false } }
 
-    subject { described_class.new(user, group, params).execute }
+    subject { service.execute }
 
     shared_examples 'with package type' do |package_type|
       let(:params) { { exclude_subgroups: false, package_type: package_type } }
@@ -304,6 +306,16 @@ RSpec.describe Packages::GroupPackagesFinder, feature_category: :package_registr
       let(:params) { { package_type: 'invalid_type' } }
 
       it { expect { subject }.to raise_exception(described_class::InvalidPackageTypeError) }
+    end
+
+    context 'when packages_class is not Packages::Package' do
+      let(:params) { { packages_class: ::Packages::TerraformModule::Package, package_type: :terraform_module } }
+
+      it 'does not call filter_by_package_type' do
+        expect(Packages::Package).not_to receive(:with_package_type)
+
+        subject
+      end
     end
   end
 end

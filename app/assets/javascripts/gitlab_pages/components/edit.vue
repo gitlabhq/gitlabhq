@@ -8,5 +8,5 @@ export default {
 </script>
 
 <template>
-  <pages-deployments class="mb-5" />
+  <pages-deployments class="gl-mb-7" />
 </template>

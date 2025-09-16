@@ -43,7 +43,7 @@ For more information, see [Platform compatibility](configuration.md#platform-com
 ## Workspaces and projects
 
 Workspaces are scoped to a project.
-When you [create a workspace](configuration.md#create-a-workspace), you must:
+When you create a workspace, you must:
 
 - Assign the workspace to a specific project.
 - Select a project with a [devfile](#devfile).
@@ -116,8 +116,8 @@ In deployments that contain multiple agents, you might want to identify an agent
 To identify an agent associated with a running workspace, use one of the following GraphQL endpoints:
 
 - `agent-id` to return the project the agent belongs to.
-- [`Query.workspaces`](../../api/graphql/reference/_index.md#queryworkspaces) to return:
-  - The [cluster agent](../../api/graphql/reference/_index.md#clusteragent) associated with the workspace.
+- `Query.workspaces` to return:
+  - The cluster agent associated with the workspace.
   - The project the agent belongs to.
 
 ## Devfile
@@ -191,7 +191,7 @@ For example, `.devfile/subfolder/devfile.yaml` is not recognized.
 - The devfile size must not exceed 3 MB.
 - For `components`:
   - Names must not start with `gl-`.
-  - Only [`container`](#container-component-type) and `volume` are supported.
+  - Only `container` and `volume` are supported.
 - For `commands`:
   - IDs must not start with `gl-`.
   - Only `exec` and `apply` command types are supported.
@@ -199,7 +199,7 @@ For example, `.devfile/subfolder/devfile.yaml` is not recognized.
   - When `hotReloadCapable` is specified for `exec` commands, it must be set to `false`.
 - For `events`:
   - Names must not start with `gl-`.
-  - Only `preStart` and [`postStart`](#user-defined-poststart-events) are supported.
+  - Only `preStart` and `postStart` are supported.
   - The Devfile standard only allows exec commands to be linked to `postStart` events. If you want an apply command, you must use a `preStart` event.
 - `parent`, `projects`, and `starterProjects` are not supported.
 - For `variables`, keys must not start with `gl-`, `gl_`, `GL-`, or `GL_`.
@@ -214,17 +214,25 @@ You can specify the base image, dependencies, and other settings.
 
 The `container` component type supports the following schema properties only:
 
-| Property          | Description                                                                                                                    |
-|----------------   | -------------------------------------------------------------------------------------------------------------------------------|
-| `image`           | Name of the container image to use for the workspace.                                                                          |
-| `memoryRequest`   | Minimum amount of memory the container can use.                                                                                |
-| `memoryLimit`     | Maximum amount of memory the container can use.                                                                                |
-| `cpuRequest`      | Minimum amount of CPU the container can use.                                                                                   |
-| `cpuLimit`        | Maximum amount of CPU the container can use.                                                                                   |
-| `env`             | Environment variables to use in the container. Names must not start with `gl-`.                                                |
-| `endpoints`       | Port mappings to expose from the container. Names must not start with `gl-`.                                                   |
-| `volumeMounts`    | Storage volume to mount in the container.                                                                                      |
-| `overrideCommand` | Override the container entrypoint with a keep-alive command. Defaults vary by component type.                                  |
+| Property             | Description |
+|----------------------|-------------|
+| `image` <sup>1</sup> | Name of the container image to use for the workspace. |
+| `memoryRequest`      | Minimum amount of memory the container can use. |
+| `memoryLimit`        | Maximum amount of memory the container can use. |
+| `cpuRequest`         | Minimum amount of CPU the container can use. |
+| `cpuLimit`           | Maximum amount of CPU the container can use. |
+| `env`                | Environment variables to use in the container. Names must not start with `gl-`. |
+| `endpoints`          | Port mappings to expose from the container. Names must not start with `gl-`. |
+| `volumeMounts`       | Storage volume to mount in the container. |
+| `overrideCommand`    | Override the container entrypoint with a keep-alive command. Defaults vary by component type. |
+
+**Footnotes**:
+
+1. When you create custom container images for the `image` property, you can use the
+   [workspace base image](#workspace-base-image) as your foundation.
+   It includes critical configurations for SSH access, user permissions, and workspace
+   compatibility. If you choose not to use the base image, ensure your custom image meets
+   all workspace requirements.
 
 #### `overrideCommand` attribute
 
@@ -285,12 +293,32 @@ Use this type of event to:
 For an example that shows how to configure `postStart` events,
 see the [example configurations](#example-configurations).
 
+#### Working directory for `postStart` commands
+
+By default, `postStart` commands run in different working directories depending on the component:
+
+- Main component with attribute `gl/inject-editor: true`: Commands run in the project directory (`/projects/<project-path>`).
+- Other components: Commands run in the container's default working directory.
+
+You can override the default behavior by specifying a `workingDir` in your command definition:
+
+```yaml
+commands:
+  - id: install-dependencies
+    exec:
+      component: tooling-container
+      commandLine: "npm install"
+      workingDir: "/custom/path"
+  - id: setup-project
+    exec:
+      component: tooling-container
+      commandLine: "echo 'Setting up in project directory'"
+      # Runs in project directory by default
+```
+
 #### Monitor `postStart` event progress
 
-When your workspace runs `postStart` events, you can monitor their progress and check the workspace logs.
-All `postStart` command output is captured in log files located in the [workspace logs directory](#workspace-logs-directory).
-
-To check the progress of your `postStart` scripts:
+When your workspace runs `postStart` events, you can monitor their progress and check the workspace logs. To check the progress of your `postStart` scripts:
 
 1. Open a terminal in your workspace.
 1. Go to the workspace logs directory:
@@ -304,6 +332,8 @@ To check the progress of your `postStart` scripts:
    ```shell
    tail -f poststart-stdout.log
    ```
+
+All `postStart` command output is captured in log files located in the [workspace logs directory](#workspace-logs-directory).
 
 ### Example configurations
 
@@ -325,29 +355,53 @@ components:
       endpoints:
         - name: http-3000
           targetPort: 3000
+  - name: database-container
+    container:
+      image: mysql
+      env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "my-secret-pw"
 commands:
+  # Command 1: Container 1, no working directory (uses project directory)
   - id: install-dependencies
     exec:
       component: tooling-container
       commandLine: "npm install"
+
+  # Command 2: Container 1, with working directory
   - id: setup-environment
     exec:
       component: tooling-container
       commandLine: "echo 'Setting up development environment'"
+      workingDir: "/home/gitlab-workspaces"
+
+  # Command 3: Container 2, no working directory (uses container default)
+  - id: init-database
+    exec:
+      component: database-container
+      commandLine: "echo 'Database initialized' > db-init.log"
+
+  # Command 4: Container 2, with working directory
+  - id: setup-database
+    exec:
+      component: database-container
+      commandLine: "mkdir -p /var/lib/mysql/logs && echo 'DB setup complete' > setup.log"
+      workingDir: "/var/lib/mysql"
+
 events:
   postStart:
     - install-dependencies
     - setup-environment
+    - init-database
+    - setup-database
 ```
 
 {{< alert type="note" >}}
 
-This container image is for demonstration purposes only. To use your own container image,
-see [Arbitrary user IDs](#arbitrary-user-ids).
+This container `image` is for demonstration purposes only.
 
 {{< /alert >}}
 
-For more information, see the [devfile documentation](https://devfile.io/docs/2.2.0/devfile-schema).
 For other examples, see the [`examples` projects](https://gitlab.com/gitlab-org/remote-development/examples).
 
 ## Workspace container requirements
@@ -363,19 +417,59 @@ must meet the following system requirements:
   - `glibcxx` 3.4.25 and later
 
 These requirements have been tested on Debian 10.13 and Ubuntu 20.04.
-For more information, see the [VS Code documentation](https://code.visualstudio.com/docs/remote/linux).
 
 {{< alert type="note" >}}
 
-GitLab always pulls the workspace injector image (`gl-tools-injector`) and project cloner image
-(`gl-project-cloner`) from the GitLab registry (`registry.gitlab.com/gitlab-org/gitlab-web-ide-vscode-fork/web-ide-injector`).
-These images cannot be overridden.
+GitLab always pulls the workspace tools injector image from the GitLab registry (`registry.gitlab.com`).
+This image cannot be overridden.
 
-If you use a private container registry for your other images, GitLab still needs to fetch these
+If you use a private container registry for your other images, GitLab fetches these
 specific images from the GitLab registry. This requirement may impact environments with strict network
 controls, such as offline environments.
 
 {{< /alert >}}
+
+## Workspace base image
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-build-images/-/merge_requests/983) in GitLab 18.3.
+
+{{< /history >}}
+
+GitLab provides a workspace base image
+(`registry.gitlab.com/gitlab-org/gitlab-build-images:workspaces-base`)
+that serves as the foundation for all workspace environments.
+
+The base image includes:
+
+- A stable Linux operating system foundation.
+- Pre-configured user with appropriate permissions for workspace operations.
+- Essential development tools and system libraries.
+- Version management for programming languages and tools.
+- SSH server configuration for remote access.
+- Security configurations for arbitrary user ID support.
+
+If you prefer not to use the workspace base image, you can create a custom workspace
+image. To ensure GitLab can properly initialize and connect to your custom image, copy the
+necessary configuration commands from the [base image Dockerfile](https://gitlab.com/gitlab-org/gitlab-build-images/-/blob/master/Dockerfile.workspaces-base)
+into your own Dockerfile.
+
+### Extend the base image
+
+You can create custom workspace images based on the workspace base image. For example:
+
+```dockerfile
+FROM registry.gitlab.com/gitlab-org/gitlab-build-images:workspaces-base
+
+# Install additional tools
+RUN sudo apt-get update && sudo apt-get install -y \
+    your-additional-package \
+    && sudo rm -rf /var/lib/apt/lists/*
+
+# Install specific language versions
+RUN mise install python@3.11 && mise use python@3.11
+```
 
 ## Workspace add-ons
 
@@ -388,12 +482,9 @@ controls, such as offline environments.
 The GitLab Workflow extension for VS Code is configured by default in workspaces.
 
 With this extension, you can view issues, create merge requests, and manage CI/CD pipelines.
-This extension also powers AI features like [GitLab Duo Code Suggestions](../project/repository/code_suggestions/_index.md)
-and [GitLab Duo Chat](../gitlab_duo_chat/_index.md).
+This extension also powers AI features like GitLab Duo Code Suggestions and GitLab Duo Chat.
 
-For more information, see [GitLab Workflow extension for VS Code](https://gitlab.com/gitlab-org/gitlab-vscode-extension).
-
-## Extension marketplace
+## Extension Marketplace
 
 {{< details >}}
 
@@ -408,12 +499,10 @@ For more information, see [GitLab Workflow extension for VS Code](https://gitlab
 
 {{< /history >}}
 
-The VS Code Extension Marketplace provides you with access to extensions that enhance the
-functionality of your workspace.
+The VS Code Extension Marketplace provides access to extensions that enhance the functionality of the
+Web IDE. By default, the GitLab Web IDE connects to the [Open VSX Registry](https://open-vsx.org/).
 
-You can use the [extension marketplace](../project/web_ide/_index.md#manage-extensions) in your
-workspace Web IDE. The extension marketplace connects to the [Open VSX Registry](https://open-vsx.org/).
-For more information, see [Configure VS Code Extension Marketplace](../../administration/settings/vscode_extension_marketplace.md).
+For more information, see [configure VS Code Extension Marketplace](../../administration/settings/vscode_extension_marketplace.md).
 
 ## Personal access token
 
@@ -424,7 +513,7 @@ For more information, see [Configure VS Code Extension Marketplace](../../admini
 
 {{< /history >}}
 
-When you [create a workspace](configuration.md#create-a-workspace), you get a personal access token
+When you create a workspace, you get a personal access token
 with `write_repository` and `api` permissions.
 Use this token to clone the project initially, while starting the workspace,
 and to configure the GitLab Workflow extension for VS Code.
@@ -469,9 +558,7 @@ To delete the provisioned volume, you must terminate the workspace.
 By default, a workspace automatically:
 
 - Stops 36 hours after the workspace was last started or restarted.
-  For more information, see [`max_active_hours_before_stop`](settings.md#max_active_hours_before_stop).
 - Terminates 722 hours after the workspace was last stopped.
-  For more information, see [`max_stopped_hours_before_termination`](settings.md#max_stopped_hours_before_termination).
 
 ## Arbitrary user IDs
 
@@ -485,9 +572,6 @@ If you have a container image that does not support arbitrary user IDs,
 you cannot create, update, or delete files in a workspace.
 To create a container image that supports arbitrary user IDs,
 see [Create a custom workspace image that supports arbitrary user IDs](create_image.md).
-
-For more information, see the
-[OpenShift documentation](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).
 
 ## Workspace logs directory
 
@@ -524,16 +608,10 @@ when you stop and restart a workspace.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/543982) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `workspaces_shallow_clone_project`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/550330) in GitLab 18.3.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/558154) in GitLab 18.4. Feature flag `workspaces_shallow_clone_project` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 When you create a workspace, GitLab uses shallow cloning to improve performance.
 A shallow clone downloads only the latest commit history instead of the complete Git history,
@@ -544,4 +622,11 @@ This process is transparent and doesn't affect your development workflow.
 
 ## Related topics
 
+- [Create a workspace](configuration.md#create-a-workspace)
+- [Workspace settings](settings.md)
 - [Troubleshooting Workspaces](workspaces_troubleshooting.md)
+- [GitLab Duo Code Suggestions](../project/repository/code_suggestions/_index.md)
+- [GitLab Duo Chat](../gitlab_duo_chat/_index.md)
+- [GraphQL API reference](../../api/graphql/reference/_index.md)
+- [Devfile documentation](https://devfile.io/docs/2.2.0/devfile-schema)
+- [OpenShift documentation on arbitrary user IDs](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images)

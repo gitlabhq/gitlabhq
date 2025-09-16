@@ -43,6 +43,7 @@ end
 {{< alert type="note" >}}
 Until recently, we used `attr_encrypted` instead of `ActiveRecord::Encryption`. We are in the process of
 migrating all columns to use the new Rails-native encryption framework (see [epic 15420](https://gitlab.com/groups/gitlab-org/-/epics/15420)).
+For guidance on migrating existing `attr_encrypted` attributes, see [Migrating from `attr_encrypted` to `ActiveRecord::Encryption`](#migrating-from-attr_encrypted-to-activerecordencryption).
 {{< /alert >}}
 
 {{< alert type="note" >}}
@@ -57,6 +58,174 @@ to bootstrap the Rails application, it may have to access the database in an ini
 initialization races as the database connection itself may not yet be ready. In this case, store the secret
 as an operational secret instead.
 {{< /alert >}}
+
+### Migrating from `attr_encrypted` to `ActiveRecord::Encryption`
+
+We are migrating all encrypted attributes from the `attr_encrypted` gem to Rails' native `ActiveRecord::Encryption` framework. This migration ensures better security, performance, and maintainability while maintaining backward compatibility during the transition.
+
+#### The `migrate_to_encrypts` method
+
+The `migrate_to_encrypts` method provides a seamless migration path from `attr_encrypted` to `ActiveRecord::Encryption`. It temporarily stores data in both encryption formats during the transition period.
+
+**Usage:**
+
+```ruby
+class MyModel < ApplicationRecord
+  include Gitlab::EncryptedAttribute
+
+  # Replace attr_encrypted with migrate_to_encrypts
+  # Keep the same encryption options (mode, key, algorithm etc.) during migration
+  migrate_to_encrypts :my_secret_attribute,
+    mode: :per_attribute_iv,
+    key: :db_key_base_truncated,
+    algorithm: 'aes-256-cbc',
+    insecure_mode: true
+end
+```
+
+**How it works:**
+
+1. **Dual encryption**: When an attribute is set, it's saved using both the old (`attr_encrypted`) and new (`ActiveRecord::Encryption`) formats
+1. **Fallback reading**: When retrieving data, the system first checks the new format (`tmp_<attribute>` column), then falls back to the old format if needed
+1. **Backward compatibility**: Existing encrypted data remains accessible throughout the migration process
+
+**Generated methods:**
+
+The `migrate_to_encrypts` method creates several helper methods:
+
+- `attr_encrypted_<attribute>`: Access to the original `attr_encrypted` value
+- `tmp_<attribute>`: Access to the new `ActiveRecord::Encryption` value
+- `<attribute>`: Primary accessor that reads from new format first, falls back to old format
+
+#### Migration process
+
+The migration follows a four-milestone process to ensure zero-downtime deployment:
+
+**Milestone M (Initial Migration):**
+
+1. **Add temporary column**: Create a `tmp_<attribute>` column with `:jsonb` type:
+
+   ```ruby
+   class AddTmpSecretKeyToMyModel < Gitlab::Database::Migration[2.3]
+     milestone '18.4'
+
+     def change
+       add_column :my_models, :tmp_secret_key, :jsonb
+     end
+   end
+   ```
+
+1. **Update model**: Replace `attr_encrypted` with `migrate_to_encrypts`:
+
+   ```ruby
+   class MyModel < ApplicationRecord
+     include Gitlab::EncryptedAttribute
+
+     # Before:
+     # attr_encrypted :secret_key, mode: :per_attribute_iv, key: :db_key_base_truncated, algorithm: 'aes-256-cbc', insecure_mode: true
+
+     # After:
+     # Keep the same encryption options (mode, key, algorithm etc.) during migration
+     migrate_to_encrypts :secret_key,
+       mode: :per_attribute_iv,
+       key: :db_key_base_truncated,
+       algorithm: 'aes-256-cbc',
+       insecure_mode: true
+   end
+   ```
+
+1. **Create data migration**: Create a post-deployment migration to populate the new column:
+
+   ```ruby
+   class MigrateSecretKeyToNewEncryptionFramework < Gitlab::Database::Migration[2.3]
+     milestone '18.1'
+     restrict_gitlab_migration gitlab_schema: :gitlab_main
+
+     class MigrationMyModel < MigrationRecord
+       include Gitlab::EncryptedAttribute
+
+       self.table_name = 'my_models'
+
+       migrate_to_encrypts :secret_key,
+         mode: :per_attribute_iv,
+         key: :db_key_base_truncated,
+         algorithm: 'aes-256-cbc',
+         insecure_mode: true
+     end
+
+     def up
+       MigrationMyModel.find_each do |record|
+         next if record.secret_key.blank?
+
+         record.secret_key = record.attr_encrypted_secret_key
+         record.save!
+       end
+     end
+
+     def down
+       execute "UPDATE my_models SET tmp_secret_key = NULL"
+     end
+   end
+   ```
+
+   Large tables may require [batched background migrations](database/batched_background_migrations.md) instead of regular post-deployment migrations.
+
+**Milestone M+1 (Column Rename):**
+
+1. **Finalize migration**: Ensure the background migration has completed
+1. **Rename column**: Rename the `tmp_<attribute>` column to `<attribute>`
+   - [Add the regular migration](database/avoiding_downtime_in_migrations.md#add-the-regular-migration-release-m)
+   - [Ignore the column](database/avoiding_downtime_in_migrations.md#ignore-the-column-release-m)
+   - [Add a post-deployment migration](database/avoiding_downtime_in_migrations.md#add-a-post-deployment-migration-release-m)
+1. **Update model**: Replace the `migrate_to_encrypts` method call with [the native `encrypts` Rails method](https://guides.rubyonrails.org/active_record_encryption.html#declaration-of-encrypted-attributes)
+1. **Ignore old columns**: [Add `ignore_columns` for the `encrypted_<attribute>`, `encrypted_<attribute>_iv`, and `encrypted_<attribute>_salt` columns](database/avoiding_downtime_in_migrations.md#ignoring-the-column-release-m)
+
+**Milestone M+2 (Cleanup):**
+
+1. **Drop old columns**: [Drop the `encrypted_<attribute>`, `encrypted_<attribute>_iv`, and `encrypted_<attribute>_salt` columns](database/avoiding_downtime_in_migrations.md#dropping-the-column-release-m1)
+1. **Remove ignore rule**: [Remove the `ignore_column` for `tmp_<attribute>`](database/avoiding_downtime_in_migrations.md#remove-the-ignore-rule-release-m1)
+
+**Milestone M+3 (Final Cleanup):**
+
+1. **Remove ignore rules**: [Remove the `ignore_columns` for the `encrypted_<attribute>`, `encrypted_<attribute>_iv`, and `encrypted_<attribute>_salt` columns](database/avoiding_downtime_in_migrations.md#removing-the-ignore-rule-release-m2)
+
+#### Testing migrations
+
+Use the provided shared example to test that attributes are properly encrypted with both frameworks:
+
+```ruby
+RSpec.describe MyModel, feature_category: :my_feature do
+  let(:record) { build(:my_model) }
+
+  it_behaves_like 'encrypted attribute being migrated to the new encryption framework',
+    :secret_key do
+    let(:record) { build(:my_model) }
+  end
+end
+```
+
+This shared example verifies that:
+
+- The attribute value is correctly stored and retrieved
+- Both encryption frameworks store the same decrypted value
+- The encrypted values are different from the plain text (ensuring encryption is working)
+- Both `attr_encrypted_<attribute>` and `tmp_<attribute>` accessors work correctly
+
+#### Best practices
+
+1. **Use JSONB columns**: Always use `:jsonb` type for new encrypted columns, not `:text`
+1. **Maintain encryption options**: Keep the same encryption options (mode, key, algorithm) during migration
+1. **Test thoroughly**: Use the provided shared examples to ensure both encryption methods work
+1. **Monitor performance**: Large tables may require [batched background migrations](database/batched_background_migrations.md) instead of regular post-deployment migrations
+1. **Validate data integrity**: Always verify that migrated data matches the original after migration
+
+#### Example implementation
+
+See the complete implementation example in:
+
+- [MR !191926](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191926): Introduction of the `migrate_to_encrypts` method
+- [MR !189940](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189940): Example usage migrating `ApplicationSetting.asset_proxy_secret_key`
+- [Epic &15420](https://gitlab.com/groups/gitlab-org/-/epics/15420): Overall migration project tracking 104+ attributes
 
 ## Operational secrets
 

@@ -1,0 +1,21 @@
+---
+description: User collapse the file tree browser through a click or keyboard shortcut
+internal_events: true
+status: active
+action: collapse_file_tree_browser_on_repository_page
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: method (click/shortcut)
+product_group: source_code
+product_categories:
+- source_code_management
+milestone: '18.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203015
+tiers:
+- free
+- premium
+- ultimate

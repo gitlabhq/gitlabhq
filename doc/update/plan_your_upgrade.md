@@ -1,8 +1,8 @@
 ---
 stage: GitLab Delivery
-group: Self Managed
+group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Create an upgrade plan
+title: Before you upgrade
 description: Steps to take before you upgrade.
 ---
 
@@ -13,15 +13,31 @@ description: Steps to take before you upgrade.
 
 {{< /details >}}
 
-Creating an upgrade plan involves documenting:
+Before you upgrade, review the [GitLab release and maintenance policy](../policy/maintenance.md).
 
-- The steps to take to upgrade your instance.
+You should then create an upgrade plan that documents:
+
+- The steps to take to upgrade your instance, including your [upgrade path](upgrade_paths.md). Use the
+  [upgrade path tool](upgrade_paths.md#upgrade-path-tool) to determine if your upgrade includes required upgrade stops.
+  Upgrade stops might require you to perform multiple upgrades. If relevant, check
+  [OS compatibility with the target GitLab version](../administration/package_information/supported_os.md).
 - The steps to take if the upgrade doesn't go smoothly.
 
 Your upgrade plan should include:
 
 - How to upgrade GitLab including, if possible and required, a [zero-downtime upgrade](zero_downtime.md).
 - How to [roll back GitLab](#rollback-plan), if necessary.
+
+## Pre-upgrade steps
+
+Before you upgrade, you should:
+
+1. Check for [background migrations](background_migrations.md). All migrations must finish running before each upgrade.
+   You must spread out upgrades between major and minor releases to allow time for background migrations to finish.
+1. Test your upgrade in a test environment first, and have a [rollback plan](#rollback-plan)
+   to reduce the risk of unplanned outages and extended downtime.
+1. Consult the [GitLab upgrade notes](versions/_index.md) for different versions of GitLab to ensure compatibility
+   before upgrading.
 
 ## Working with Support
 
@@ -33,7 +49,7 @@ upgrade plan, document and share it with the answers to the following questions:
   to confirm that later updates are available.
 - Is it a single-node or a multi-node setup? If multi-node, document and share any architectural details about each node.
   Which external components are used? For example, Gitaly, PostgreSQL, or Redis?
-- Are you using [GitLab Geo](../administration/geo/_index.md)? If so, document and share any architectural details about
+- Are you using [Geo](../administration/geo/_index.md)? If so, document and share any architectural details about
   each secondary node.
 - What else might be unique or interesting in your setup that might be important?
 - Are you running into any known issues with your current version of GitLab?

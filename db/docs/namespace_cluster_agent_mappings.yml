@@ -8,7 +8,7 @@ description: This table records associations between Namespaces and Cluster Agen
   as a part of supporting group-cluster agent association in the context of Workspaces
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181926
 milestone: '17.10'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

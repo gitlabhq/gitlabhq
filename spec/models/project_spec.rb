@@ -113,7 +113,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_one(:auto_devops).class_name('ProjectAutoDevops') }
     it { is_expected.to have_one(:error_tracking_setting).class_name('ErrorTracking::ProjectErrorTrackingSetting') }
     it { is_expected.to have_one(:project_setting) }
-    it { is_expected.to have_one(:alerting_setting).class_name('Alerting::ProjectAlertingSetting') }
     it { is_expected.to have_one(:mock_ci_integration) }
     it { is_expected.to have_one(:mock_monitoring_integration) }
     it { is_expected.to have_one(:service_desk_custom_email_verification).class_name('ServiceDesk::CustomEmailVerification') }
@@ -877,6 +876,26 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it_behaves_like 'includes projects in archived hierarchy'
       it_behaves_like 'includes projects in hierarchy marked for deletion'
     end
+
+    describe '.last_repository_check_failed' do
+      let_it_be(:project_repository_check_failed) { create(:project, :public, :last_repository_check_failed) }
+      let_it_be(:project_repository_check_success) { create(:project, :public, last_repository_check_failed: false) }
+      let_it_be(:project_repository_check_nil) { create(:project, :public, last_repository_check_failed: nil) }
+
+      subject { described_class.last_repository_check_failed }
+
+      it { is_expected.to contain_exactly(project_repository_check_failed) }
+    end
+
+    describe '.last_repository_check_not_failed' do
+      let_it_be(:project_repository_check_failed) { create(:project, :public, :last_repository_check_failed) }
+      let_it_be(:project_repository_check_success) { create(:project, :public, last_repository_check_failed: false) }
+      let_it_be(:project_repository_check_nil) { create(:project, :public, last_repository_check_failed: nil) }
+
+      subject { described_class.last_repository_check_not_failed }
+
+      it { is_expected.to contain_exactly(project_repository_check_success, project_repository_check_nil) }
+    end
   end
 
   describe 'modules' do
@@ -1091,21 +1110,21 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         project = build(:project, import_url: 'http://localhost:9000/t.git')
 
         expect(project).to be_invalid
-        expect(project.errors[:import_url].first).to include('Requests to localhost are not allowed')
+        expect(project.errors.full_messages).to contain_exactly('Import URL is blocked: Requests to localhost are not allowed')
       end
 
       it 'does not allow import_url pointing to the local network' do
         project = build(:project, import_url: 'https://192.168.1.1')
 
         expect(project).to be_invalid
-        expect(project.errors[:import_url].first).to include('Requests to the local network are not allowed')
+        expect(project.errors.full_messages).to contain_exactly('Import URL is blocked: Requests to the local network are not allowed')
       end
 
       it "does not allow import_url with invalid ports for new projects" do
         project = build(:project, import_url: 'http://github.com:25/t.git')
 
         expect(project).to be_invalid
-        expect(project.errors[:import_url].first).to include('Only allowed ports are 80, 443')
+        expect(project.errors.full_messages).to contain_exactly('Import URL is blocked: Only allowed ports are 80, 443, and any over 1024')
       end
 
       it "does not allow import_url with invalid ports for persisted projects" do
@@ -1113,14 +1132,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         project.import_url = 'http://github.com:25/t.git'
 
         expect(project).to be_invalid
-        expect(project.errors[:import_url].first).to include('Only allowed ports are 22, 80, 443')
+        expect(project.errors.full_messages).to contain_exactly('Import URL is blocked: Only allowed ports are 22, 80, 443, and any over 1024')
       end
 
       it "does not allow import_url with invalid user" do
         project = build(:project, import_url: 'http://$user:password@github.com/t.git')
 
         expect(project).to be_invalid
-        expect(project.errors[:import_url].first).to include('Username needs to start with an alphanumeric character')
+        expect(project.errors.full_messages).to contain_exactly('Import URL is blocked: Username needs to start with an alphanumeric character')
       end
 
       include_context 'invalid urls'
@@ -1280,6 +1299,49 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   it_behaves_like 'a BulkUsersByEmailLoad model'
+
+  describe '#create_labels' do
+    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be(:project_organization) { project.organization }
+    let_it_be(:organization1) { create(:organization) }
+
+    before_all do
+      create(:admin_label, organization: project_organization, title: 'project_org_1')
+      create(:admin_label, organization: project_organization, title: 'project_org_2')
+      create(:admin_label, organization: organization1, title: 'org1_1')
+      create(:admin_label, organization: organization1, title: 'org1_2')
+    end
+
+    it 'creates all label templates scoped to the project\'s organization' do
+      expect do
+        project.create_labels
+      end.to change { Label.count }.by(2)
+
+      expect(project.reload.labels.pluck(:title)).to contain_exactly(
+        'project_org_1',
+        'project_org_2'
+      )
+    end
+
+    context 'when template_labels_scoped_by_org feature flag is disabled' do
+      before do
+        stub_feature_flags(template_labels_scoped_by_org: false)
+      end
+
+      it 'creates all label templates from all organizations' do
+        expect do
+          project.create_labels
+        end.to change { Label.count }.by(4)
+
+        expect(project.reload.labels.pluck(:title)).to contain_exactly(
+          'project_org_1',
+          'project_org_2',
+          'org1_1',
+          'org1_2'
+        )
+      end
+    end
+  end
 
   describe '#notification_group' do
     it 'is expected to be an alias' do
@@ -1696,7 +1758,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           'job_token_scope_enabled' => 'ci_outbound_',
           'id_token_sub_claim_components' => 'ci_',
           'delete_pipelines_in_seconds' => 'ci_',
-          'display_pipeline_variables' => 'ci_'
+          'display_pipeline_variables' => 'ci_',
+          'resource_group_default_process_mode' => ''
         }
       end
 
@@ -1862,6 +1925,25 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     describe '#group_runners_enabled?' do
       it_behaves_like 'a ci_cd_settings predicate method' do
         let(:delegated_method) { :group_runners_enabled? }
+      end
+    end
+
+    describe '#resource_group_default_process_mode' do
+      let_it_be(:project) { create(:project) }
+
+      it 'delegates to ci_cd_settings' do
+        expect(project.resource_group_default_process_mode).to eq('unordered')
+      end
+
+      it 'can be set through delegation' do
+        project.resource_group_default_process_mode = 'oldest_first'
+        expect(project.resource_group_default_process_mode).to eq('oldest_first')
+        expect(project.ci_cd_settings.resource_group_default_process_mode).to eq('oldest_first')
+      end
+
+      it 'returns nil when ci_cd_settings is nil' do
+        allow(project).to receive(:ci_cd_settings).and_return(nil)
+        expect(project.resource_group_default_process_mode).to be_nil
       end
     end
   end
@@ -3954,7 +4036,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       project.import_state.finish
 
-      expect(project.reload.import_url).to eq('http://test.com')
+      expect(project.reload.unsafe_import_url).to eq('http://test.com')
     end
 
     it 'saves the url credentials percent decoded' do
@@ -3962,7 +4044,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       project = build(:project, import_url: url)
 
       # When the credentials are not decoded this expectation fails
-      expect(project.import_url).to eq(url)
+      expect(project.unsafe_import_url).to eq(url)
       expect(project.import_data.credentials).to eq(user: 'user', password: 'pass!?@')
     end
 
@@ -3970,7 +4052,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       url = 'http://github.com/t.git'
       project = build(:project, import_url: url)
 
-      expect(project.import_url).to eq(url)
+      expect(project.unsafe_import_url).to eq(url)
       expect(project.import_data.credentials).to eq(user: nil, password: nil)
     end
   end
@@ -4292,6 +4374,51 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it 'always returns nil despite a pipeline exists' do
         expect(subject).to be_nil
       end
+    end
+  end
+
+  describe '#latest_unscheduled_pipelines' do
+    let_it_be(:project) { create(:project, :repository) }
+
+    let_it_be(:push_pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch, source: :push)
+    end
+
+    let_it_be(:scheduled_pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch, source: :schedule)
+    end
+
+    context 'when retrieving the latest_unscheduled_pipelines' do
+      subject { project.latest_unscheduled_pipelines(ref: project.default_branch, sha: project.commit.id) }
+
+      it 'should not contain scheduled pipelines' do
+        expect(subject.length).to eq(1)
+        expect(subject).to include(push_pipeline)
+      end
+    end
+  end
+
+  describe '#latest_unscheduled_pipeline' do
+    let_it_be(:project) { create(:project, :repository) }
+
+    let_it_be(:push_pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch, source: :push)
+    end
+
+    let_it_be(:scheduled_pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch, source: :schedule)
+    end
+
+    context 'when retrieving the latest_pipeline the pipeline should not be a scheduled one' do
+      subject { project.latest_unscheduled_pipeline(project.default_branch) }
+
+      it { is_expected.to eq(push_pipeline) }
+    end
+
+    context 'with provided sha' do
+      subject { project.latest_unscheduled_pipeline(project.default_branch, project.commit.id) }
+
+      it { is_expected.to eq(push_pipeline) }
     end
   end
 
@@ -8850,6 +8977,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#resource_parent' do
+    let_it_be(:project) { create(:project) }
+
+    it 'returns self' do
+      expect(project.resource_parent).to eq(project)
+    end
+  end
+
   describe '#parent_loaded?' do
     let_it_be(:project) { create(:project) }
 
@@ -8885,49 +9020,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it { is_expected.to contain_exactly(project_bot) }
     it { is_expected.not_to include(user) }
-  end
-
-  describe '#enabled_group_deploy_keys' do
-    let_it_be(:project) { create(:project) }
-
-    subject { project.enabled_group_deploy_keys }
-
-    context 'when a project does not have a group' do
-      it { is_expected.to be_empty }
-    end
-
-    context 'when a project has a parent group' do
-      let!(:group) { create(:group, projects: [project]) }
-
-      context 'and this group has a group deploy key enabled' do
-        let!(:group_deploy_key) { create(:group_deploy_key, groups: [group]) }
-
-        it { is_expected.to contain_exactly(group_deploy_key) }
-
-        context 'and this group has parent group which also has a group deploy key enabled' do
-          let(:super_group) { create(:group) }
-
-          it 'returns both group deploy keys' do
-            super_group = create(:group)
-            super_group_deploy_key = create(:group_deploy_key, groups: [super_group])
-            group.update!(parent: super_group)
-
-            expect(subject).to contain_exactly(group_deploy_key, super_group_deploy_key)
-          end
-        end
-      end
-
-      context 'and another group has a group deploy key enabled' do
-        let_it_be(:group_deploy_key) { create(:group_deploy_key) }
-
-        it 'does not return this group deploy key' do
-          another_group = create(:group)
-          create(:group_deploy_key, groups: [another_group])
-
-          expect(subject).to be_empty
-        end
-      end
-    end
   end
 
   describe '#default_branch_or_main' do
@@ -9588,14 +9680,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       let(:feature_flag_method) { :work_items_project_issues_list_feature_flag_enabled? }
       let(:feature_flag) { :work_items_project_issues_list }
       let(:subject_project) { group_project }
-    end
-  end
-
-  describe '#work_item_status_feature_available?' do
-    let_it_be(:group_project) { create(:project, :in_subgroup) }
-
-    it "return false" do
-      expect(group_project.work_item_status_feature_available?).to be false
     end
   end
 

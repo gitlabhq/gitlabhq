@@ -2,7 +2,7 @@
 stage: Fulfillment
 group: Seat Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Seat assignment, GitLab Duo subscription add-on.
+description: Discover GitLab Duo subscription add-ons and assign seats.
 title: GitLab Duo add-ons
 ---
 
@@ -16,6 +16,9 @@ title: GitLab Duo add-ons
 {{< history >}}
 
 - Changed to include GitLab Duo Core add-on in GitLab 18.0.
+- GitLab Duo Chat (Classic) in the UI [added to Core](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201721) in GitLab 18.3.
+- [Added ability to disable seat assignment emails on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/557290)
+  in GitLab 18.4.
 
 {{< /history >}}
 
@@ -35,9 +38,9 @@ GitLab Duo Core is included automatically if you have:
 - GitLab 18.0 or later.
 - A Premium or Ultimate subscription.
 
-If you are a new customer in GitLab 18.0 or later, IDE features are automatically turned on and no further action is needed.
+If you are an existing customer from GitLab 17.11 or earlier, you must [turn on Web or IDE features](../user/gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off) to start using GitLab Duo Core.
 
-If you are a pre-existing customer from GitLab 17.11 or earlier, you must [turn on IDE features](../user/gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off) to start using GitLab Duo in your IDEs. No further action is needed.
+If you are a new customer in GitLab 18.0 or later, GitLab Duo Core features are automatically turned on and no further action is needed.
 
 Users assigned the following roles have access to GitLab Duo Core:
 
@@ -167,6 +170,9 @@ Prerequisites:
 1. To the right of the user, turn on the toggle to assign a GitLab Duo seat.
 
 The user is sent a confirmation email.
+
+- To disable this email, set the `sm_duo_seat_assignment_email` feature flag to `false`.
+  This flag is enabled by default.
 
 After you assign seats,
 [ensure GitLab Duo is set up for your GitLab Self-Managed instance](../user/gitlab_duo/setup.md).

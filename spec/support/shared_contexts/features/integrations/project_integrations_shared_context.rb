@@ -34,10 +34,15 @@ RSpec.shared_context 'project integration activation' do
   def click_test_then_save_integration(expect_test_to_fail: true)
     click_test_integration
 
-    if expect_test_to_fail
-      expect(page).to have_content('Connection failed.')
-    else
-      expect(page).to have_content('Connection successful.')
+    page.within('.b-toaster') do
+      if expect_test_to_fail
+        expect(page).to have_content('Connection failed.')
+      else
+        expect(page).to have_content('Connection successful.')
+      end
+
+      # dismiss toast to have "Save changes" button is visible
+      click_button('Close')
     end
 
     click_save_integration

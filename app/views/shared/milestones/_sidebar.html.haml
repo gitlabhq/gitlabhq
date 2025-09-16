@@ -1,7 +1,7 @@
 - affix_offset = local_assigns.fetch(:affix_offset, "50")
 - project = local_assigns[:project]
 
-%aside.right-sidebar.js-right-sidebar{ data: { "auto-collapse" => true, "offset-top" => affix_offset, "spy" => "affix", "always-show-toggle" => true }, class: sidebar_gutter_collapsed_class(false), 'aria-live' => 'polite', 'aria-label': _('Milestone') }
+%aside.right-sidebar.js-right-sidebar{ data: { "auto-collapse" => true, "offset-top" => affix_offset, "spy" => "affix", "always-show-toggle" => true }, class: "#{sidebar_gutter_collapsed_class(false)} !gl-hidden @sm/panel:!gl-block", 'aria-live' => 'polite', 'aria-label': _('Milestone') }
   .issuable-sidebar.milestone-sidebar
     .block.milestone-progress.issuable-sidebar-header
       %a.gutter-toggle.gl-float-right.js-sidebar-toggle.has-tooltip{ role: "button", href: "#", "aria-label" => s_('MilestoneSidebar|Toggle sidebar'), title: sidebar_gutter_tooltip_text, data: { container: 'body', placement: 'left', boundary: 'viewport' } }
@@ -79,7 +79,7 @@
           %span= milestone.issues_visible_to_user(current_user).count
         .title.hide-collapsed
           = s_('MilestoneSidebar|Work items')
-          = gl_badge_tag milestone.milestone_issues(current_user).length, variant: :muted
+          = gl_badge_tag milestone.milestone_issues(current_user).length, variant: :neutral
           - if show_new_issue_link?(project)
             = link_to new_project_issue_path(project, issue: { milestone_id: milestone.id }), class: "gl-float-right", title: s_('MilestoneSidebar|New Issue') do
               = s_('MilestoneSidebar|New issue')
@@ -111,7 +111,7 @@
           %span= milestone.merge_requests.count
         .title.hide-collapsed
           = s_('MilestoneSidebar|Merge requests')
-          = gl_badge_tag milestone.merge_requests.count, variant: :muted
+          = gl_badge_tag milestone.merge_requests.count, variant: :neutral
         .value.hide-collapsed.gl-font-bold
           - if !project || can?(current_user, :read_merge_request, project)
             %span.milestone-stat
@@ -148,13 +148,13 @@
         - if total_count == 0
           .no-value= s_('MilestoneSidebar|None')
         - else
-          .font-weight-bold
+          %div{ class: "!gl-font-bold" }
             - recent_releases.each do |release|
               = link_to release.name, project_releases_path(release.project, anchor: release.tag)
               - unless release == recent_releases.last
-                %span.font-weight-normal &bull;
+                %span{ class: "!gl-font-normal" } &bull;
             - if more_count > 0
-              %span.font-weight-normal &bull;
+              %span{ class: "!gl-font-normal" } &bull;
               - more_text = n_('%{count} more release', '%{count} more releases', more_count) % { count: more_count }
               - if milestone.project_milestone?
                 = link_to more_text, project_releases_path(milestone.project)

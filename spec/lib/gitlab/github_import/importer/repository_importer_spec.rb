@@ -24,7 +24,7 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter, feature_categ
     double(
       :project,
       id: 1,
-      import_url: 'foo.git',
+      unsafe_import_url: 'foo.git',
       import_source: 'foo/bar',
       repository_storage: 'foo',
       disk_path: 'foo',
@@ -203,7 +203,7 @@ RSpec.describe Gitlab::GithubImport::Importer::RepositoryImporter, feature_categ
 
       expect(repository)
         .to receive(:fetch_as_mirror)
-        .with(project.import_url, refmap: Gitlab::GithubImport.refmap, forced: true)
+        .with(project.unsafe_import_url, refmap: Gitlab::GithubImport.refmap, forced: true)
 
       expect(importer).to receive(:validate_repository_size!)
 

@@ -1,3 +1,4 @@
+@use "sass:map";
 @import 'mixins_and_variables_and_functions';
 
 .issuable-list {
@@ -78,7 +79,7 @@
       }
     }
 
-    @media(max-width: map-get($grid-breakpoints, lg)-1) {
+    @media(max-width: map.get($grid-breakpoints, lg)-1) {
       .task-status,
       .issuable-due-date,
       .issuable-weight,

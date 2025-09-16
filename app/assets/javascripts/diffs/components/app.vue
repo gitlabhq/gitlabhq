@@ -1,6 +1,6 @@
 <script>
 import { GlLoadingIcon, GlPagination, GlSprintf, GlAlert } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import { debounce, throttle } from 'lodash';
 import { mapState, mapActions } from 'pinia';
 import FindingsDrawer from 'ee_component/diffs/components/shared/findings_drawer.vue';
@@ -162,6 +162,9 @@ export default {
   apollo: {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     getMRCodequalityAndSecurityReports: {
+      context: {
+        featureCategory: 'code_quality',
+      },
       query: getMRCodequalityAndSecurityReports,
       pollInterval: FINDINGS_POLL_INTERVAL,
       variables() {
@@ -240,8 +243,8 @@ export default {
       'isBatchLoading',
       'isBatchLoadingError',
       'flatBlobsList',
-      'diffFiles',
     ]),
+    ...mapState(useLegacyDiffs, { diffFiles: 'diffFilesFiltered' }),
     ...mapState(useNotes, ['discussions', 'isNotesFetched', 'getNoteableData']),
     ...mapState(useFileBrowser, ['fileBrowserVisible']),
     ...mapState(useFindingsDrawer, ['activeDrawer']),
@@ -790,7 +793,7 @@ export default {
           @clickFile="goToFile({ path: $event.path })"
           @toggleFolder="toggleTreeOpen"
         />
-        <div class="col-12 col-md-auto diff-files-holder">
+        <div class="gl-col-12 gl-col-md-auto diff-files-holder">
           <commit-widget v-if="commit" :commit="commit" :collapsible="false" />
           <gl-alert
             v-if="isBatchLoadingError"

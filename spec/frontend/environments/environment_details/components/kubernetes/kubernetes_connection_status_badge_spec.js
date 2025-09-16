@@ -27,7 +27,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_co
   describe.each([
     [connectionStatus.connected, 'success', 'connected', undefined, 'Synced', false],
     [connectionStatus.disconnected, 'warning', 'retry', '#', 'Refresh', true],
-    [connectionStatus.connecting, 'muted', 'spinner', undefined, 'Updating', false],
+    [connectionStatus.connecting, 'neutral', 'spinner', undefined, 'Updating', false],
     // eslint-disable-next-line max-params
   ])('when connection status is %s', (status, variant, icon, href, text, shouldReconnect) => {
     beforeEach(() => {

@@ -18,29 +18,39 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
   let_it_be(:issue_d) { create(:issue, project: project) }
   let_it_be(:issue_project_b_a) { create(:issue, project: project_b) }
   let_it_be(:issue_project_unauthorized_a) { create(:issue, project: project_unauthorized) }
-  let_it_be(:internal_issue) { create(:issue, project: internal_project) }
   let_it_be(:private_issue) { create(:issue, project: private_project) }
+  let_it_be(:internal_issue) { create(:issue, project: internal_project) }
+  let_it_be(:internal_issue_2) { create(:issue, project: internal_project) }
+  let_it_be(:internal_issue_link) { create :issue_link, source: internal_issue, target: internal_issue_2 }
   let_it_be(:public_issue) { create(:issue, project: public_project) }
+  let_it_be(:public_issue_2) { create(:issue, project: public_project) }
+  let_it_be(:public_issue_link) { create :issue_link, source: public_issue, target: public_issue_2 }
+
+  before do
+    stub_feature_flags(work_item_view_for_issues: true)
+  end
 
   context 'widget visibility' do
     context 'when not logged in' do
       it 'does not show widget when internal project' do
         visit project_issue_path(internal_project, internal_issue)
 
-        expect(page).not_to have_css('[data-testid="related-issues-block"]')
+        expect(page).not_to have_css('[data-testid="work-item-relationships"]')
       end
 
       it 'does not show widget when private project' do
         visit project_issue_path(private_project, private_issue)
 
-        expect(page).not_to have_css('[data-testid="related-issues-block"]')
+        expect(page).not_to have_css('[data-testid="work-item-relationships"]')
       end
 
       it 'shows widget when public project' do
         visit project_issue_path(public_project, public_issue)
 
-        expect(page).to have_css('[data-testid="related-issues-block"]')
-        expect(page).not_to have_button 'Add a related issue'
+        expect(page).to have_css('[data-testid="work-item-relationships"]')
+        within_testid('work-item-relationships') do
+          expect(page).not_to have_button 'Add'
+        end
       end
     end
 
@@ -52,30 +62,38 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
       it 'shows widget when internal project' do
         visit project_issue_path(internal_project, internal_issue)
 
-        expect(page).to have_css('[data-testid="related-issues-block"]')
-        expect(page).not_to have_button 'Add a related issue'
+        expect(page).to have_css('[data-testid="work-item-relationships"]')
+        within_testid('work-item-relationships') do
+          expect(page).not_to have_button 'Add'
+        end
       end
 
       it 'does not show widget when private project' do
         visit project_issue_path(private_project, private_issue)
 
-        expect(page).not_to have_css('[data-testid="related-issues-block"]')
+        expect(page).not_to have_css('[data-testid="work-item-relationships"]')
       end
 
       it 'shows widget when public project' do
         visit project_issue_path(public_project, public_issue)
 
-        expect(page).to have_css('[data-testid="related-issues-block"]')
-        expect(page).not_to have_button 'Add a related issue'
+        expect(page).to have_css('[data-testid="work-item-relationships"]')
+        within_testid('work-item-relationships') do
+          expect(page).not_to have_button 'Add'
+        end
       end
 
       it 'shows widget on their own public issue' do
         issue = create :issue, project: public_project, author: user
+        issue_2 = create :issue, project: public_project, author: user
+        create :issue_link, source: issue, target: issue_2
 
         visit project_issue_path(public_project, issue)
 
-        expect(page).to have_css('[data-testid="related-issues-block"]')
-        expect(page).not_to have_button 'Add a related issue'
+        expect(page).to have_css('[data-testid="work-item-relationships"]')
+        within_testid('work-item-relationships') do
+          expect(page).not_to have_button 'Add'
+        end
       end
     end
 
@@ -89,8 +107,10 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
 
         visit project_issue_path(internal_project, internal_issue)
 
-        expect(page).to have_css('[data-testid="related-issues-block"]')
-        expect(page).to have_button 'Add a related issue'
+        expect(page).to have_css('[data-testid="work-item-relationships"]')
+        within_testid('work-item-relationships') do
+          expect(page).to have_button 'Add'
+        end
       end
 
       it 'shows widget when private project' do
@@ -98,8 +118,10 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
 
         visit project_issue_path(private_project, private_issue)
 
-        expect(page).to have_css('[data-testid="related-issues-block"]')
-        expect(page).to have_button 'Add a related issue'
+        expect(page).to have_css('[data-testid="work-item-relationships"]')
+        within_testid('work-item-relationships') do
+          expect(page).to have_button 'Add'
+        end
       end
 
       it 'shows widget when public project' do
@@ -107,8 +129,10 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
 
         visit project_issue_path(public_project, public_issue)
 
-        expect(page).to have_css('[data-testid="related-issues-block"]')
-        expect(page).to have_button 'Add a related issue'
+        expect(page).to have_css('[data-testid="work-item-relationships"]')
+        within_testid('work-item-relationships') do
+          expect(page).to have_button 'Add'
+        end
       end
 
       it 'shows widget on their own public issue' do
@@ -117,8 +141,10 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
 
         visit project_issue_path(public_project, issue)
 
-        expect(page).to have_css('[data-testid="related-issues-block"]')
-        expect(page).to have_button 'Add a related issue'
+        expect(page).to have_css('[data-testid="work-item-relationships"]')
+        within_testid('work-item-relationships') do
+          expect(page).to have_button 'Add'
+        end
       end
     end
   end
@@ -138,12 +164,11 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
     context 'visiting some issue someone else created' do
       before do
         visit project_issue_path(project, issue_a)
-        wait_for_requests
       end
 
       it 'shows related issues count' do
-        within_testid('related-issues-block') do
-          expect(find_by_testid('crud-count')).to have_content('2')
+        within_testid('work-item-relationships') do
+          expect(page).to have_css('[data-testid="crud-count"]', text: '2')
         end
       end
     end
@@ -151,12 +176,11 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
     context 'visiting issue_b which was targeted by issue_a' do
       before do
         visit project_issue_path(project, issue_b)
-        wait_for_requests
       end
 
       it 'shows related issues count' do
-        within_testid('related-issues-block') do
-          expect(find_by_testid('crud-count')).to have_content('1')
+        within_testid('work-item-relationships') do
+          expect(page).to have_css('[data-testid="crud-count"]', text: '1')
         end
       end
     end
@@ -175,118 +199,92 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
     context 'without existing related issues' do
       before do
         visit project_issue_path(project, issue_a)
-        wait_for_requests
-      end
-
-      it 'shows related issues count' do
-        within_testid('related-issues-block') do
-          expect(find_by_testid('crud-count')).to have_content('0')
-        end
       end
 
       it 'add related issue' do
-        click_button 'Add a related issue'
-        fill_in 'Enter issue URL', with: "#{issue_b.to_reference(project)} "
-        within_testid('crud-form') do
+        within_testid('work-item-relationships') do
+          expect(page).to have_css('[data-testid="crud-count"]', text: '0')
+
           click_button 'Add'
-        end
+          fill_in 'Search existing items', with: issue_b.title
+          click_button issue_b.title, match: :first
+          send_keys :escape # hide issue autocomplete dropdown
+          within_testid('crud-form') do
+            click_button 'Add'
+          end
 
-        wait_for_requests
-
-        items = all('.item-title a')
-
-        # Form gets hidden after submission
-        expect(page).not_to have_selector('[data-testid="crud-form"]')
-        # Check if related issues are present
-        expect(items.count).to eq(1)
-        expect(items[0].text).to eq(issue_b.title)
-        within_testid('related-issues-block') do
-          expect(find_by_testid('crud-count')).to have_content('1')
-        end
-      end
-
-      it 'add cross-project related issue' do
-        click_button 'Add a related issue'
-        fill_in 'Enter issue URL', with: "#{issue_project_b_a.to_reference(project)} "
-        within_testid('crud-form') do
-          click_button 'Add'
-        end
-
-        wait_for_requests
-
-        items = all('.item-title a')
-
-        expect(items.count).to eq(1)
-        expect(items[0].text).to eq(issue_project_b_a.title)
-
-        within_testid('related-issues-block') do
-          expect(find_by_testid('crud-count')).to have_content('1')
+          expect(page).to have_css('[data-testid="crud-count"]', text: '1')
+          expect(page).to have_link(issue_b.title)
+          # Form gets hidden after submission
+          expect(page).not_to have_selector('[data-testid="crud-form"]')
         end
       end
 
       it 'pressing enter should submit the form' do
-        click_button 'Add a related issue'
-        fill_in 'Enter issue URL', with: "#{issue_project_b_a.to_reference(project)} "
-        find_field('Enter issue URL').native.send_key(:enter)
+        within_testid('work-item-relationships') do
+          click_button 'Add'
+          fill_in 'Search existing items', with: issue_b.title
+          click_button issue_b.title, match: :first
+          send_keys :enter
 
-        wait_for_requests
-
-        items = all('.item-title a')
-
-        expect(items.count).to eq(1)
-        expect(items[0].text).to eq(issue_project_b_a.title)
-
-        within_testid('related-issues-block') do
-          expect(find_by_testid('crud-count')).to have_content('1')
+          expect(page).to have_css('[data-testid="crud-count"]', text: '1')
+          expect(page).to have_link(issue_b.title)
+          # Form gets hidden after submission
+          expect(page).not_to have_selector('[data-testid="crud-form"]')
         end
       end
 
       it 'disallows duplicate entries' do
-        click_button 'Add a related issue'
-        fill_in 'Enter issue URL', with: 'duplicate duplicate duplicate'
+        within_testid('work-item-relationships') do
+          click_button 'Add'
+          fill_in 'Search existing items', with: issue_b.title
+          click_button issue_b.title, match: :first
+          send_keys issue_b.title
 
-        items = all('.issue-token')
-        expect(items.count).to eq(1)
-        expect(items[0].text).to eq('duplicate')
-
-        # Pending issues aren't counted towards the related issue count
-        within_testid('related-issues-block') do
-          expect(find_by_testid('crud-count')).to have_content('0')
+          expect(page).to have_text('No matches found')
         end
       end
 
       it 'allows us to remove pending issues' do
         # Tests against https://gitlab.com/gitlab-org/gitlab/issues/11625
-        click_button 'Add a related issue'
-        fill_in 'Enter issue URL', with: 'issue1 issue2 issue3 '
+        within_testid('work-item-relationships') do
+          click_button 'Add'
+          fill_in 'Search existing items', with: issue_b.title
+          click_button issue_b.title, match: :first
+          send_keys issue_c.title
+          click_button issue_c.title, match: :first
+          send_keys issue_d.title
+          click_button issue_d.title, match: :first
 
-        items = all('.issue-token')
-        expect(items.count).to eq(3)
-        expect(items[0].text).to eq('issue1')
-        expect(items[1].text).to eq('issue2')
-        expect(items[2].text).to eq('issue3')
+          expect(page).to have_css('.gl-token-selector-token-container', count: 3)
+          expect(page).to have_text(issue_b.title)
+          expect(page).to have_text(issue_c.title)
+          expect(page).to have_text(issue_d.title)
 
-        # Remove pending issues left to right to make sure none get stuck
-        within items[0] do
-          click_button 'Remove'
+          click_button 'Remove', match: :first
+          send_keys :escape # hide issue autocomplete dropdown
+
+          expect(page).to have_css('.gl-token-selector-token-container', count: 2)
+          expect(page).not_to have_text(issue_b.title)
+          expect(page).to have_text(issue_c.title)
+          expect(page).to have_text(issue_d.title)
+
+          click_button 'Remove', match: :first
+          send_keys :escape # hide issue autocomplete dropdown
+
+          expect(page).to have_css('.gl-token-selector-token-container', count: 1)
+          expect(page).not_to have_text(issue_b.title)
+          expect(page).not_to have_text(issue_c.title)
+          expect(page).to have_text(issue_d.title)
+
+          click_button 'Remove', match: :first
+          send_keys :escape # hide issue autocomplete dropdown
+
+          expect(page).to have_css('.gl-token-selector-token-container', count: 0)
+          expect(page).not_to have_text(issue_b.title)
+          expect(page).not_to have_text(issue_c.title)
+          expect(page).not_to have_text(issue_d.title)
         end
-        items = all('.issue-token')
-        expect(items.count).to eq(2)
-        expect(items[0].text).to eq('issue2')
-        expect(items[1].text).to eq('issue3')
-
-        within items[0] do
-          click_button 'Remove'
-        end
-        items = all('.issue-token')
-        expect(items.count).to eq(1)
-        expect(items[0].text).to eq('issue3')
-
-        within items[0] do
-          click_button 'Remove'
-        end
-        items = all('.issue-token')
-        expect(items.count).to eq(0)
       end
     end
 
@@ -296,95 +294,54 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
 
       before do
         visit project_issue_path(project, issue_a)
-        wait_for_requests
       end
 
-      it 'shows related issues count' do
-        within_testid('related-issues-block') do
-          expect(find_by_testid('crud-count')).to have_content('2')
-        end
-      end
+      it 'allows us to add and remove related issues' do
+        within_testid('work-item-relationships') do
+          expect(page).to have_css('[data-testid="crud-count"]', text: '2')
+          expect(page).to have_link(issue_b.title)
+          expect(page).to have_link(issue_c.title)
+          expect(page).not_to have_link(issue_d.title)
 
-      it 'shows related issues' do
-        items = all('.item-title a')
-
-        expect(items.count).to eq(2)
-        expect(items[0].text).to eq(issue_b.title)
-        expect(items[1].text).to eq(issue_c.title)
-      end
-
-      it 'allows us to remove a related issues' do
-        items_before = all('.item-title a')
-
-        expect(items_before.count).to eq(2)
-
-        first('.js-issue-item-remove-button').click
-
-        wait_for_requests
-
-        items_after = all('.item-title a')
-
-        expect(items_after.count).to eq(1)
-      end
-
-      it 'add related issue' do
-        click_button 'Add a related issue'
-        fill_in 'Enter issue URL', with: "##{issue_d.iid} "
-        within_testid('crud-form') do
           click_button 'Add'
-        end
+          fill_in 'Search existing items', with: issue_d.title
+          click_button issue_d.title, match: :first
+          within_testid('crud-form') do
+            click_button 'Add'
+          end
 
-        wait_for_requests
+          expect(page).to have_css('[data-testid="crud-count"]', text: '3')
+          expect(page).to have_link(issue_b.title)
+          expect(page).to have_link(issue_c.title)
+          expect(page).to have_link(issue_d.title)
 
-        items = all('.item-title a')
+          click_button 'Remove', match: :first
 
-        expect(items.count).to eq(3)
-        expect(items[0].text).to eq(issue_b.title)
-        expect(items[1].text).to eq(issue_c.title)
-        expect(items[2].text).to eq(issue_d.title)
-
-        within_testid('related-issues-block') do
-          expect(find_by_testid('crud-count')).to have_content('3')
+          expect(page).to have_css('[data-testid="crud-count"]', text: '2')
+          expect(page).to have_link(issue_b.title)
+          expect(page).to have_link(issue_c.title)
+          expect(page).not_to have_link(issue_d.title)
         end
       end
 
       it 'add invalid related issue' do
-        click_button 'Add a related issue'
-        fill_in 'Enter issue URL', with: '#9999999 '
-        within_testid('crud-form') do
+        within_testid('work-item-relationships') do
           click_button 'Add'
-        end
+          fill_in 'Search existing items', with: '#9999999 '
 
-        wait_for_requests
-
-        items = all('.item-title a')
-
-        expect(items.count).to eq(2)
-        expect(items[0].text).to eq(issue_b.title)
-        expect(items[1].text).to eq(issue_c.title)
-
-        within_testid('related-issues-block') do
-          expect(find_by_testid('crud-count')).to have_content('2')
+          expect(page).to have_text('No matches found')
+          within_testid('crud-form') do
+            expect(page).to have_button('Add', disabled: true)
+          end
         end
       end
 
-      it 'add unauthorized related issue' do
-        click_button 'Add a related issue'
-        fill_in 'Enter issue URL', with: "#{issue_project_unauthorized_a.to_reference(project)} "
-        within_testid('crud-form') do
+      it 'cannot add unauthorized related issue' do
+        within_testid('work-item-relationships') do
           click_button 'Add'
-        end
+          fill_in 'Search existing items', with: issue_project_unauthorized_a.title
 
-        wait_for_requests
-
-        items = all('.item-title a')
-
-        expect(items.count).to eq(2)
-        expect(items[0].text).to eq(issue_b.title)
-        expect(items[1].text).to eq(issue_c.title)
-
-        within_testid('related-issues-block') do
-          expect(find_by_testid('crud-count')).to have_content('2')
+          expect(page).to have_text('No matches found')
         end
       end
     end

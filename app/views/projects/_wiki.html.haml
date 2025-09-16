@@ -4,11 +4,11 @@
       = render_wiki_content(@wiki_home)
 - else
   - can_create_wiki = can?(current_user, :create_wiki, @project)
-  .landing{ class: [('row-content-block row p-0 align-items-center' if can_create_wiki), ('content-block' unless can_create_wiki)] }
-    .col-12.col-md-3.p-0
+  .landing{ class: [('row-content-block row gl-p-0 gl-items-center' if can_create_wiki), ('content-block' unless can_create_wiki)] }
+    .gl-col-12.gl-col-md-3.gl-p-0
       .svg-content
         = image_tag 'illustrations/empty-state/empty-wiki-md.svg'
-    .col-12.col-md-9.text-center.text-md-left.pl-md-0.pl-sm-3.mb-4
+    .gl-col-12.gl-col-md-9.gl-mb-6.gl-text-center{ class: '@md/panel:gl-text-left @md/panel:gl-pl-0 @sm/panel:gl-pl-5' }
       %h4
         = _("This project does not have a wiki homepage yet")
       - if can_create_wiki

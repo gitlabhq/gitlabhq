@@ -151,7 +151,7 @@ RSpec.describe UseSqlFunctionForPrimaryKeyLookups, feature_category: :groups_and
 
     context 'when the provided id is not a string that can cast to numeric' do
       it 'raises ActiveRecord::RecordNotFound' do
-        expect { model.find('foo') }.to raise_error ActiveRecord::RecordNotFound, "Couldn't find  with 'id'=foo"
+        expect { model.find('foo') }.to raise_error ActiveRecord::RecordNotFound, "Couldn't find  with 'id'=\"foo\""
       end
     end
 

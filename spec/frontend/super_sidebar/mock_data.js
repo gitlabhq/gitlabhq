@@ -181,8 +181,10 @@ export const sidebarData = {
   support_path: '/support',
   docs_path: '/help/docs',
   display_whats_new: true,
-  whats_new_most_recent_release_items_count: 5,
+  whats_new_most_recent_release_items_count: 2,
   whats_new_version_digest: 1,
+  whats_new_mark_as_read_path: 'path/to/mark_as_read',
+  whats_new_read_articles: [],
   show_version_check: false,
   gitlab_version: { major: 16, minor: 0 },
   gitlab_version_check: { severity: 'success' },
@@ -204,6 +206,10 @@ export const sidebarData = {
     },
   ],
   track_visits_path: '/-/track_visits',
+  sign_in_visible: true,
+  sign_in_path: '/sign_in',
+  allow_signup: true,
+  new_user_registration_path: '/sign_up',
 };
 
 export const loggedOutSidebarData = {

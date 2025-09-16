@@ -103,7 +103,6 @@ export default {
     'isPublicVisibilityRestricted',
     'isSignedIn',
     'rssPath',
-    'isStatusFeatureEnabledOnInstance',
   ],
   data() {
     const state = getParameterByName(PARAM_STATE);
@@ -505,7 +504,7 @@ export default {
         });
     },
     showStatusBadge(issuable) {
-      return issuable?.status && this.isStatusFeatureEnabledOnInstance;
+      return issuable?.status;
     },
   },
 };

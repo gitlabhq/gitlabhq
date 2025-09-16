@@ -14,6 +14,16 @@ module Types
             'Returns null if incoming email is not configured. More details on how to configure incoming email ' \
             'is in this [documentation](https://docs.gitlab.com/administration/incoming_email/#set-it-up).'
 
+        field :releases_path,
+          GraphQL::Types::String,
+          null: true,
+          description: 'Project releases path.'
+
+        field :project_import_jira_path,
+          GraphQL::Types::String,
+          null: true,
+          description: 'JIRA import path.'
+
         def issues_list
           url_helpers.project_issues_path(project)
         end
@@ -38,6 +48,22 @@ module Types
 
         def new_work_item_email_address
           project.new_issuable_address(current_user, 'issue')
+        end
+
+        def releases_path
+          url_helpers.project_releases_path(project)
+        end
+
+        def project_import_jira_path
+          url_helpers.project_import_jira_path(project)
+        end
+
+        def rss_path
+          url_helpers.project_work_items_path(project, format: :atom)
+        end
+
+        def calendar_path
+          url_helpers.project_work_items_path(project, format: :ics)
         end
 
         private

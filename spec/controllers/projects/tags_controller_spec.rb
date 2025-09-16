@@ -208,22 +208,45 @@ RSpec.describe Projects::TagsController do
     end
   end
 
+  # rubocop:disable RSpec/InstanceVariable -- Needed to stub HTTP_REFERER.
   describe 'DELETE #destroy' do
     let(:tag) { project.repository.add_tag(user, 'fake-tag', 'master') }
-    let(:request) do
-      delete(:destroy, params: { id: tag.name, namespace_id: project.namespace.to_param, project_id: project })
+    let(:perform_request) do
+      delete :destroy, params: {
+        id: tag.name,
+        namespace_id: project.namespace.to_param,
+        project_id: project
+      }
     end
 
     before do
       project.add_developer(user)
       sign_in(user)
-      request
     end
 
-    it 'deletes tag and redirects to tags path' do
-      expect(project.repository.find_tag(tag.name)).not_to be_present
-      expect(controller).to set_flash[:notice].to(/Tag was removed/)
-      expect(response).to redirect_to(project_tags_path(project))
+    context 'with referrer' do
+      it 'deletes tag and redirects back to the referrer page with sort_params preserved' do
+        # Setting a referrer with sorting params
+        @request.env['HTTP_REFERER'] = project_tags_path(project, sort: 'updated_desc')
+        perform_request
+
+        expect(response).to redirect_to(project_tags_path(project, sort: 'updated_desc'))
+        expect(project.repository.find_tag(tag.name)).not_to be_present
+        expect(controller).to set_flash[:notice].to(/Tag was removed/)
+      end
+    end
+
+    context 'without referer' do
+      it 'deletes tag and redirects to tags path' do
+        # Ensure no referrer is set so we can test the fallback
+        @request.env['HTTP_REFERER'] = nil
+        perform_request
+
+        expect(project.repository.find_tag(tag.name)).not_to be_present
+        expect(controller).to set_flash[:notice].to(/Tag was removed/)
+        expect(response).to redirect_to(project_tags_path(project))
+      end
     end
   end
+  # rubocop:enable RSpec/InstanceVariable
 end

@@ -4,9 +4,9 @@
 
 %li{ class: "!gl-py-3 milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: custom_dom_id }
   .gl-flex.gl-gap-3.gl-px-4
-    .gl-flex.gl-gap-4.gl-grow.gl-flex-wrap.sm:gl-flex-nowrap
+    .gl-flex.gl-gap-4.gl-grow.gl-flex-wrap{ class: "@sm/panel:gl-flex-nowrap" }
       -# NAME AND PROJECT/GROUP
-      .gl-flex.gl-flex-wrap.gl-grow.gl-gap-4.gl-gap-y-0.gl-items-center{ class: "xl:gl-basis-1/2 gl-w-full sm:gl-w-auto" }
+      .gl-flex.gl-flex-wrap.gl-grow.gl-gap-4.gl-gap-y-0.gl-items-center{ class: "@xl/panel:gl-basis-1/2 gl-w-full @sm/panel:gl-w-auto" }
         .gl-shrink.gl-font-bold{ data: { testid: "milestone-link", qa_milestone_title: milestone.title } }
           = link_to milestone.title, milestone_path(milestone)
         .gl-flex.gl-shrink-0.gl-items-center.gl-gap-2.gl-text-subtle.gl-text-sm
@@ -21,7 +21,7 @@
               = milestone.group.full_name
 
       -# RELEASES, STATUS AND DATES
-      .gl-flex.gl-shrink-0.gl-gap-3.gl-items-center.gl-justify-end.gl-text-sm.gl-whitespace-nowrap{ class: "xl:gl-basis-[17rem]" }
+      .gl-flex.gl-shrink-0.gl-gap-3.gl-items-center.gl-justify-end.gl-text-sm.gl-whitespace-nowrap{ class: "@xl/panel:gl-basis-[17rem]" }
         -# RELEASES
         - recent_releases, total_count, more_count = recent_releases_with_counts(milestone, current_user)
         - unless total_count == 0
@@ -43,8 +43,8 @@
           = gl_badge_tag milestone_status_string(milestone), { variant: milestone_badge_variant(milestone) }
 
       -# PROGRESS
-      .gl-flex.gl-shrink-0.gl-items-center.gl-gap-3.gl-justify-end.gl-text-subtle.gl-text-sm{ class: "xl:gl-basis-1/5" }
-        .gl-text-right{ class: "gl-w-[6.5rem] gl-hidden md:gl-block" }
+      .gl-flex.gl-shrink-0.gl-items-center.gl-gap-3.gl-justify-end.gl-text-subtle.gl-text-sm{ class: "@xl/panel:gl-basis-1/5" }
+        .gl-text-right{ class: "gl-w-[6.5rem] gl-hidden @md/panel:gl-block" }
           = format('%{completed}/%{total} %{complete}', completed: milestone.closed_issues_count, total: milestone.total_issues_count, complete: _('complete'))
         .gl-w-11
           = milestone_progress_bar(milestone)

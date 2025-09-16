@@ -3,6 +3,7 @@ stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab container registry
+description: Use the GitLab Container Registry to store container images for your GitLab project.
 ---
 
 {{< details >}}
@@ -14,7 +15,8 @@ title: GitLab container registry
 
 You can use the integrated container registry to store container images for each GitLab project.
 
-To enable the container registry for your GitLab instance, see the [administrator documentation](../../../administration/packages/container_registry.md).
+An administrator must enable the container registry for your GitLab instance. For more information,
+see [GitLab container registry administration](../../../administration/packages/container_registry.md).
 
 {{< alert type="note" >}}
 
@@ -45,8 +47,8 @@ You can use the container registry **Tag Details** page to view a list of tags a
 You can view details about each tag, such as when it was published, how much storage it consumes,
 and the manifest and configuration digests.
 
-You can search, sort (by tag name), and [delete](delete_container_registry_images.md#use-the-gitlab-ui)
-tags on this page. You can share a filtered view by copying the URL from your browser.
+You can search, sort (by tag name), and delete tags on this page.
+You can share a filtered view by copying the URL from your browser.
 
 ### Storage usage
 
@@ -70,12 +72,11 @@ To download and run a container image hosted in the container registry:
 
 {{< alert type="note" >}}
 
-You must [authenticate with the container registry](authenticate_with_container_registry.md) to download
+You must authenticate with the container registry to download
 container images from a private repository.
+For more information, see [authenticate with the container registry](authenticate_with_container_registry.md).
 
 {{< /alert >}}
-
-For more information on running container images, see the [Docker documentation](https://docs.docker.com/get-started/).
 
 ## Naming convention for your container images
 
@@ -107,9 +108,10 @@ registry.example.com/mynamespace/myproject/my/image:rc1
 ## Move or rename container registry repositories
 
 The path of a container repository always matches the related project's repository path,
-so renaming or moving only the container registry is not possible. Instead, you can
-[rename](../../project/working_with_projects.md#rename-a-repository) or [move](../../project/settings/migrate_projects.md)
-the entire project.
+so renaming or moving only the container registry is not possible. Instead, you can either:
+
+- [Rename the project's repository](../../project/working_with_projects.md#rename-a-repository).
+- [Transfer the project](../../project/working_with_projects.md#transfer-a-project).
 
 Renaming projects with populated container repositories is only supported on GitLab.com.
 
@@ -159,10 +161,12 @@ see [Container registry visibility permissions](#container-registry-visibility-p
 ## Container registry visibility permissions
 
 The ability to view the container registry and pull container images is controlled by the container registry's
-visibility permissions. You can change the visibility through the [visibility setting on the UI](#change-visibility-of-the-container-registry)
+visibility permissions. You can change the visibility through the visibility setting on the UI
 or the [API](../../../api/container_registry.md#change-the-visibility-of-the-container-registry).
-[Other permissions](../../permissions.md) such as updating the container registry and pushing or deleting container images are not affected by
-this setting. However, disabling the container registry disables all container registry operations.
+
+Other permissions, such as updating the container registry and pushing or deleting container images, are not affected by
+this setting. However, disabling the container registry disables all container registry operations. For more information,
+see [Roles and permissions](../../permissions.md).
 
 |                                                                                                                   |                                               | Anonymous<br/>(Everyone on internet) | Guest | Reporter, Developer, Maintainer, Owner |
 |-------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|--------------------------------------|-------|----------------------------------------|
@@ -186,7 +190,7 @@ The container registry supports the [Docker V2](https://distribution.github.io/d
 and [Open Container Initiative (OCI)](https://github.com/opencontainers/image-spec/blob/main/spec.md)
 image formats. Additionally, the container registry [conforms to the OCI distribution specification](https://conformance.opencontainers.org/#gitlab-container-registry).
 
-OCI support means that you can host OCI-based image formats in the registry, such as [Helm 3+ chart packages](https://helm.sh/docs/topics/registries/). There is no distinction between image formats in the GitLab [API](../../../api/container_registry.md) and the UI. [Issue 38047](https://gitlab.com/gitlab-org/gitlab/-/issues/38047) addresses this distinction, starting with Helm.
+OCI support means that you can host OCI-based image formats in the registry, such as Helm 3+ chart packages. There is no distinction between image formats in the GitLab API and the UI. [Issue 38047](https://gitlab.com/gitlab-org/gitlab/-/issues/38047) addresses this distinction, starting with Helm.
 
 ## Container image signatures
 
@@ -201,15 +205,15 @@ to associate container images with [Cosign signatures](../../../ci/yaml/signing_
 You can then view signature information alongside its associated container image without having to
 search for that signature's tag.
 
-When [viewing a container image's tags](#view-the-tags-of-a-specific-container-image-in-the-container-registry), you see an icon displayed
+When viewing a container image's tags, you see an icon displayed
 next to each tag that has an associated signature. To see the details of the signature, select the icon.
 
 Prerequisites:
 
 - To sign container images, Cosign v2.0 or later.
-- For GitLab Self-Managed, you need a
-  [GitLab container registry configured with a metadata database](../../../administration/packages/container_registry_metadata_database.md)
-  to display signatures.
+- For GitLab Self-Managed, you need a GitLab container
+registry configured with a metadata database
+  to display signatures. For more information, see [container registry metadata database](../../../administration/packages/container_registry_metadata_database.md).
 
 ### Sign container images with OCI referrer data
 

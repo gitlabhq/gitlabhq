@@ -1,3 +1,4 @@
+@use "sass:map";
 @use 'constants';
 
 $no-preview-padding: $gl-padding;
@@ -36,11 +37,11 @@ $no-preview-action-margin-top: $gl-spacing-scale-3;
 .rd-no-preview-actions {
   display: flex;
 
-  @media (max-width: map-get($grid-breakpoints, md)-1) {
+  @media (max-width: map.get($grid-breakpoints, md)-1) {
     flex-direction: column;
   }
 
-  @media (min-width: map-get($grid-breakpoints, md)) {
+  @media (min-width: map.get($grid-breakpoints, md)) {
     margin-top: $no-preview-action-margin-top;
   }
 }
@@ -53,12 +54,12 @@ $no-preview-action-margin-top: $gl-spacing-scale-3;
     flex: 1;
   }
 
-  @media (min-width: map-get($grid-breakpoints, md)) {
+  @media (min-width: map.get($grid-breakpoints, md)) {
     flex: 0;
     margin-right: $gl-spacing-scale-4;
   }
 
-  @media (max-width: map-get($grid-breakpoints, md)-1) {
+  @media (max-width: map.get($grid-breakpoints, md)-1) {
     margin-top: $no-preview-action-margin-top;
   }
 }

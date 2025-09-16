@@ -1,5 +1,5 @@
 <script>
-import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils';
 import superSidebarDataQuery from '~/super_sidebar/graphql/queries/super_sidebar.query.graphql';
 import { s__, sprintf } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';

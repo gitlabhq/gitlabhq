@@ -51,6 +51,41 @@ RSpec.describe Projects::WorkItemsController, feature_category: :team_planning d
     end
   end
 
+  describe 'GET rss' do
+    before do
+      sign_in(reporter)
+
+      # Mock the default page size so we can test this with only 2 work items
+      allow(Kaminari.config).to receive(:default_per_page).and_return(1)
+    end
+
+    let_it_be(:work_items) { create_list(:work_item, 2, project: project) }
+
+    it 'renders the correct template' do
+      get :rss, format: :atom, params: { project_id: project, namespace_id: project.namespace }
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(response).to render_template('projects/work_items/rss')
+      expect(response).to render_template(layout: :xml)
+    end
+
+    it 'paginates the result' do
+      get :rss, format: :atom, params: { project_id: project, namespace_id: project.namespace, page: 1 }
+      expect(response).to have_gitlab_http_status(:success)
+      expect(assigns(:work_items).size).to eq(1)
+
+      first_page_item = assigns(:work_items).first
+
+      get :rss, format: :atom, params: { project_id: project, namespace_id: project.namespace, page: 2 }
+      expect(response).to have_gitlab_http_status(:success)
+      expect(assigns(:work_items).size).to eq(1)
+
+      second_page_item = assigns(:work_items).first
+
+      expect(first_page_item.id).not_to eq(second_page_item.id)
+    end
+  end
+
   describe 'POST import_csv' do
     subject { post :import_csv, params: { namespace_id: project.namespace, project_id: project, file: file } }
 

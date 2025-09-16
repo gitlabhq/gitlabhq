@@ -1,7 +1,5 @@
 ---
-asdf:
-  opt_out: true
-mise:
+tool_version_manager:
   enabled: true
 hostname: gdk.test
 sshd:

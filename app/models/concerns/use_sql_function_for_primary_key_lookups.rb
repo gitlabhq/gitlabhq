@@ -4,12 +4,15 @@ module UseSqlFunctionForPrimaryKeyLookups
   extend ActiveSupport::Concern
 
   class_methods do
-    def _query_by_sql(sql, ...)
+    def _query_by_sql(*args, **kwargs, &block)
+      idx = Gitlab.next_rails? ? 1 : 0
+      sql = args[idx]
+
       replaced = try_replace_with_function_call(sql)
 
-      return super unless replaced
+      args[idx] = replaced.arel if replaced
 
-      super(replaced.arel, ...)
+      super
     end
 
     def cached_find_by_statement(*args, **kwargs, &_block)

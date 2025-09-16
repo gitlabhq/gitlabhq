@@ -18,6 +18,9 @@ module Resolvers
           recent_items_service = klass.new(user: current_user)
 
           recent_items_service.latest_with_timestamps.each do |item, timestamp|
+            # Filter out items the user can no longer access (e.g., due to SAML expiry)
+            next unless authorized_to_read_item?(item)
+
             all_items << RecentlyViewedItem.new(item, timestamp)
           end
         end
@@ -30,6 +33,17 @@ module Resolvers
 
       def available_types
         [::Gitlab::Search::RecentIssues, ::Gitlab::Search::RecentMergeRequests]
+      end
+
+      def authorized_to_read_item?(item)
+        case item
+        when Issue
+          Ability.allowed?(current_user, :read_issue, item)
+        when MergeRequest
+          Ability.allowed?(current_user, :read_merge_request, item)
+        else
+          false
+        end
       end
     end
   end

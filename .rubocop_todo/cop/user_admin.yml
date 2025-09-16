@@ -25,4 +25,3 @@ Cop/UserAdmin:
     - 'lib/constraints/admin_constrainer.rb'
     - 'lib/gitlab/import_export/members_mapper.rb'
     - 'lib/gitlab/performance_bar.rb'
-    - 'lib/gitlab/visibility_level.rb'

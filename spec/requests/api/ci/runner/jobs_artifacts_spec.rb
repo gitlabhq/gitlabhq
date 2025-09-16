@@ -904,7 +904,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
       def expect_use_primary
         expect(Gitlab::Database::LoadBalancing::SessionMap)
-          .to receive(:with_sessions).with([::ApplicationRecord, ::Ci::ApplicationRecord]).and_call_original
+          .to receive(:with_sessions).and_call_original
 
         expect_next_instance_of(Gitlab::Database::LoadBalancing::ScopedSessions) do |inst|
           expect(inst).to receive(:use_primary).and_call_original
@@ -1048,7 +1048,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             {
               cross_dependencies: [
                 {
-                  pipeline: pipeline.id,
+                  pipeline: pipeline.id.to_s,
                   job: job.name,
                   artifacts: true
                 }

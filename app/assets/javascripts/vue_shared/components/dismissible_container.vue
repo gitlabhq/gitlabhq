@@ -37,7 +37,7 @@ export default {
   <div>
     <div class="gl-flex gl-items-center">
       <slot name="title"></slot>
-      <div class="ml-auto">
+      <div class="!gl-ml-auto">
         <button
           :aria-label="__('Close')"
           class="gl-rounded-none gl-border-none !gl-bg-transparent gl-p-0 !gl-shadow-none !gl-outline-none"

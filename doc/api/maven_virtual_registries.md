@@ -40,6 +40,7 @@ Use the following endpoints to create and manage Maven virtual registries.
 - Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
+- `downloads_count` and `downloaded_at` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201790) in GitLab 18.4.
 
 {{< /history >}}
 
@@ -278,7 +279,7 @@ Use the following endpoints to configure and manage upstream Maven registries.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/550728) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Enabled by default.
-
+- `upstream_name` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/561675) in GitLab 18.4.
 {{< /history >}}
 
 Lists all upstream registries for a top-level group.
@@ -294,6 +295,7 @@ Supported attributes:
 | `id` | string/integer | yes | The group ID or full group path. Must be a top-level group. |
 | `page` | integer | no | The page number. Defaults to 1. |
 | `per_page` | integer | no | The number of items per page. Defaults to 20. |
+| `upstream_name` | string | no | The name of the upstream registry for fuzzy search filtering by name. |
 
 Example request:
 
@@ -444,6 +446,7 @@ Example response:
 - Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
+- `metadata_cache_validity_hours` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556138) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -468,6 +471,10 @@ POST /virtual_registries/packages/maven/registries/:id/upstreams
 
 You must include both the `username` and `password` in the request, or not at all. If not set, a public (anonymous) request is used to access the upstream.
 
+You cannot add two upstreams with the same URL and credentials (`username` and `password`) to the same top-level group. Instead, you can either:
+
+- Set different credentials for each upstream with the same URL.
+- [Associate an upstream](#associate-an-upstream-with-a-registry) with multiple virtual registries.
 {{< /alert >}}
 
 Example request:
@@ -564,6 +571,7 @@ Example response:
 - Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197432) in GitLab 18.2.
+- `metadata_cache_validity_hours` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556138) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -720,12 +728,6 @@ Example response:
 
 Removes the association between an upstream registry and a Maven virtual registry.
 
-{{< alert type="warning" >}}
-
-If this is the last association for the upstream, removal of the association deletes the upstream itself and all its cache entries.
-
-{{< /alert >}}
-
 ```plaintext
 DELETE /virtual_registries/packages/maven/registry_upstreams/:id
 ```
@@ -877,7 +879,9 @@ Example response:
     "content_type": "application/xml",
     "upstream_etag": "\"686897696a7c876b7e\"",
     "created_at": "2024-05-30T12:28:27.855Z",
-    "updated_at": "2024-05-30T12:28:27.855Z"
+    "updated_at": "2024-05-30T12:28:27.855Z",
+    "downloads_count": 6,
+    "downloaded_at": "2024-06-05T14:58:32.855Z"
   }
 ]
 ```

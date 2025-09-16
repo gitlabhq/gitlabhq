@@ -23,8 +23,7 @@ RSpec.describe ResourceAccessTokens::InactiveTokensDeletionCronWorker, feature_c
       :freeze_time,
       :sidekiq_inline
     ) do
-      cut_off = cut_off_days.days.ago
-      admin_bot = Users::Internal.admin_bot
+      cut_off = Gitlab::CurrentSettings.inactive_resource_access_tokens_delete_after_days.days.ago
 
       active_personal_access_token =
         create(:personal_access_token)
@@ -141,6 +140,7 @@ RSpec.describe ResourceAccessTokens::InactiveTokensDeletionCronWorker, feature_c
       worker.perform
 
       users_to_keep.each do |user|
+        admin_bot = Users::Internal.for_organization(user.organization).admin_bot
         expect(
           Users::GhostUserMigration.find_by(
             user: user,
@@ -150,6 +150,7 @@ RSpec.describe ResourceAccessTokens::InactiveTokensDeletionCronWorker, feature_c
       end
 
       users_to_delete.each do |user|
+        admin_bot = Users::Internal.for_organization(user.organization).admin_bot
         expect(
           Users::GhostUserMigration.find_by(
             user: user,

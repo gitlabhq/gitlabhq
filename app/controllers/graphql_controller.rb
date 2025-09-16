@@ -4,6 +4,35 @@ class GraphqlController < ApplicationController
   include Gitlab::Auth::AuthFinders
   extend ::Gitlab::Utils::Override
 
+  ERROR_STATUS_MAP = {
+    StandardError => { status: :internal },
+
+    # ApplicationController has similar rescues but we declare these again here because the
+    # `rescue_from StandardError` above would prevent these from bubbling up to ApplicationController.
+    # These also return errors in a JSON format similar to GraphQL errors.
+    ActionController::InvalidAuthenticityToken => { status: :unprocessable_entity },
+
+    # Domain errors -> 422
+    Gitlab::Graphql::Variables::Invalid => { status: :unprocessable_entity },
+    Gitlab::Graphql::Errors::ArgumentError => { status: :unprocessable_entity },
+    Issuables::GroupMembersFilterable::TooManyGroupMembersError => { status: :unprocessable_entity },
+    Issuables::GroupMembersFilterable::TooManyAssignedIssuesError => { status: :unprocessable_entity },
+
+    # Auth errors
+    Gitlab::Auth::RestrictedLanguageServerClientError => { status: :unauthorized },
+    Gitlab::Auth::DpopValidationError => { status: :unauthorized },
+
+    # # Other errors
+    Gitlab::Auth::TooManyIps => { status: :forbidden },
+    RateLimitedService::RateLimitedError => { status: :too_many_requests },
+    Gitlab::Git::ResourceExhaustedError => { status: :service_unavailable },
+    ActiveRecord::QueryAborted => { status: :service_unavailable },
+    ActiveRecord::QueryCanceled => {
+      status: :service_unavailable,
+      custom_message: 'Request timed out. Please try a less complex query or a smaller set of records.'
+    }
+  }.freeze
+
   # Unauthenticated users have access to the API for public data
   skip_before_action :authenticate_user!
   # This is already handled by authorize_access_api!
@@ -59,6 +88,8 @@ class GraphqlController < ApplicationController
   # SLI. But queries could be multiplexed, so the total duration could be longer.
   urgency :low, [:execute]
 
+  rescue_from(*ERROR_STATUS_MAP.keys, with: :handle_exception)
+
   def execute
     result = if multiplex?
                execute_multiplex
@@ -69,69 +100,12 @@ class GraphqlController < ApplicationController
     render json: result
   end
 
-  rescue_from StandardError do |exception|
-    @exception_object = exception
-
-    log_exception(exception)
-
+  def handle_internal_error(exception)
     if Rails.env.test? || Rails.env.development?
       render_error("Internal server error: #{exception.message}", raised_at: exception.backtrace[0..10].join(' <-- '))
     else
       render_error("Internal server error")
     end
-  end
-
-  rescue_from Gitlab::Auth::RestrictedLanguageServerClientError do |exception|
-    log_exception(exception)
-
-    render_error(exception.message, status: :unauthorized)
-  end
-
-  rescue_from Gitlab::Auth::DpopValidationError do |exception|
-    log_exception(exception)
-
-    render_error(exception.message, status: :unauthorized)
-  end
-
-  # ApplicationController has similar rescues but we declare these again here because the
-  # `rescue_from StandardError` above would prevent these from bubbling up to ApplicationController.
-  # These also return errors in a JSON format similar to GraphQL errors.
-  rescue_from ActionController::InvalidAuthenticityToken do |exception|
-    render_error(exception.message, status: :unprocessable_entity)
-  end
-
-  rescue_from RateLimitedService::RateLimitedError do |e|
-    e.log_request(request, current_user)
-
-    render_error(e.message, status: :too_many_requests)
-  end
-
-  rescue_from Gitlab::Auth::TooManyIps do |exception|
-    log_exception(exception)
-
-    render_error(exception.message, status: :forbidden)
-  end
-
-  rescue_from Gitlab::Git::ResourceExhaustedError do |exception|
-    log_exception(exception)
-
-    response.headers.merge!(exception.headers)
-    render_error(exception.message, status: :service_unavailable)
-  end
-
-  rescue_from Gitlab::Graphql::Variables::Invalid do |exception|
-    render_error(exception.message, status: :unprocessable_entity)
-  end
-
-  rescue_from Gitlab::Graphql::Errors::ArgumentError do |exception|
-    render_error(exception.message, status: :unprocessable_entity)
-  end
-
-  rescue_from ActiveRecord::QueryAborted do |exception|
-    log_exception(exception)
-
-    error = "Request timed out. Please try a less complex query or a smaller set of records."
-    render_error(error, status: :service_unavailable)
   end
 
   override :feature_category
@@ -140,6 +114,23 @@ class GraphqlController < ApplicationController
   end
 
   private
+
+  def handle_exception(exception)
+    @exception_object = exception
+    http_status = ERROR_STATUS_MAP.dig(exception.class, :status)
+    custom_message = ERROR_STATUS_MAP.dig(exception.class, :custom_message)
+
+    response.headers.merge!(exception.headers) if exception.respond_to?(:headers)
+
+    # For exceptions that support logging of the request
+    exception.try(:log_request, request, current_user)
+
+    log_exception(exception)
+
+    return handle_internal_error(exception) if http_status.nil? || http_status == :internal
+
+    render_error(custom_message || exception.message, status: http_status)
+  end
 
   def check_dpop!
     return unless !!sessionless_user? # DPoP is only enforced on token-based authentication

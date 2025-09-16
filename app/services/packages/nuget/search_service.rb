@@ -5,7 +5,6 @@ module Packages
     class SearchService < BaseService
       include ::Packages::FinderHelper
       include Gitlab::Utils::StrongMemoize
-      include ActiveRecord::ConnectionAdapters::Quoting
 
       MAX_PER_PAGE = 30
       MAX_VERSIONS_PER_PACKAGE = 10
@@ -43,7 +42,7 @@ module Packages
         subquery_name = :partition_subquery
         arel_table = Arel::Table.new(subquery_name)
         column_names = packages_class.column_names.map do |cn|
-          "#{subquery_name}.#{quote_column_name(cn)}"
+          "#{subquery_name}.#{Gitlab::Database.quote_column_name(cn)}"
         end
 
         # rubocop: disable CodeReuse/ActiveRecord
@@ -62,9 +61,10 @@ module Packages
 
       def package_names_partition
         # rubocop: disable CodeReuse/ActiveRecord
-        table_name = quote_table_name(packages_class.table_name)
-        name_column = "#{table_name}.#{quote_column_name('name')}"
-        created_at_column = "#{table_name}.#{quote_column_name('created_at')}"
+        table_name = Gitlab::Database.quote_table_name(packages_class.table_name)
+        name_column = "#{table_name}.#{Gitlab::Database.quote_column_name('name')}"
+        created_at_column = "#{table_name}.#{Gitlab::Database.quote_column_name('created_at')}"
+
         select_sql = "ROW_NUMBER() OVER (PARTITION BY #{name_column} ORDER BY #{created_at_column} DESC) AS row_number, #{table_name}.*"
 
         nuget_packages.select(select_sql)

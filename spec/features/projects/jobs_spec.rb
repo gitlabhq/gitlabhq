@@ -586,6 +586,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :grou
       end
 
       before do
+        stub_feature_flags(ci_validate_config_options: false)
         visit project_job_path(project, build)
         wait_for_requests
       end

@@ -63,6 +63,7 @@ export default class MergeRequestStore {
     this.squashIsReadonly = data.squash_readonly;
     this.enableSquashBeforeMerge = this.enableSquashBeforeMerge || true;
     this.squashIsSelected = data.squash_readonly ? data.squash_on_merge : data.squash;
+    this.isSHAMismatch = this.sha !== data.diff_head_sha;
 
     this.iid = data.iid;
     this.title = data.title;
@@ -137,6 +138,7 @@ export default class MergeRequestStore {
     this.ciStatus = data.ci_status;
     this.isPipelinePassing =
       this.ciStatus === 'success' || this.ciStatus === 'success-with-warnings';
+    this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
     this.isPipelineSkipped = this.ciStatus === 'skipped';
     this.pipelineDetailedStatus = pipelineStatus;
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
@@ -190,34 +192,26 @@ export default class MergeRequestStore {
     this.issuableId = mergeRequest.id;
     this.projectArchived = project.archived;
     this.onlyAllowMergeIfPipelineSucceeds = project.onlyAllowMergeIfPipelineSucceeds;
-    this.allowMergeOnSkippedPipeline = project.allowMergeOnSkippedPipeline;
 
     this.autoMergeEnabled = mergeRequest.autoMergeEnabled;
-    this.canBeMerged = mergeRequest.mergeStatus === 'can_be_merged';
     this.canMerge = mergeRequest.userPermissions.canMerge;
 
-    this.commitsCount = mergeRequest.commitCount;
     this.branchMissing =
       mergeRequest.detailedMergeStatus !== 'NOT_OPEN' &&
-      (!mergeRequest.sourceBranchExists || !mergeRequest.targetBranchExists);
-    this.hasConflicts = mergeRequest.conflicts;
-    this.hasMergeableDiscussionsState = mergeRequest.mergeableDiscussionsState === false;
+      (this.sourceBranchRemoved || !this.targetBranchSha);
     this.mergeError = mergeRequest.mergeError;
-    this.mergeStatus = mergeRequest.mergeStatus;
-    this.mergeAfter = mergeRequest.mergeAfter;
-    this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
-    this.isSHAMismatch = this.sha !== mergeRequest.diffHeadSha;
-    this.shouldBeRebased = mergeRequest.shouldBeRebased;
     this.draft = mergeRequest.draft;
     this.mergeRequestState = mergeRequest.state;
-    this.detailedMergeStatus = mergeRequest.detailedMergeStatus;
+
+    this.commitsCount = mergeRequest.commitCount || this.commitsCount;
+    this.detailedMergeStatus = mergeRequest.detailedMergeStatus || this.detailedMergeStatus;
 
     this.setState();
   }
 
   setGraphqlSubscriptionData(data) {
-    this.detailedMergeStatus = data.detailedMergeStatus;
-    this.commitsCount = data.commitCount;
+    this.commitsCount = data.commitCount || this.commitsCount;
+    this.detailedMergeStatus = data.detailedMergeStatus || this.detailedMergeStatus;
 
     this.setState();
   }

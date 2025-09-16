@@ -298,6 +298,30 @@ To do this:
     delete_report_artifact: false
   ```
 
+## Configure Trivy severity threshold filter
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/559278) in GitLab 18.4.
+
+{{< /history >}}
+
+OCS scans for vulnerabilities for all [severity](../../application_security/vulnerabilities/severities.md) levels by default.
+
+To report only vulnerabilities at or above a specific severity level, set the configuration variable `severity_threshold` to that value.
+After you set a severity threshold, vulnerabilities below the severity you choose are no longer returned in the Vulnerability Report, API payloads, and other reporting mechanisms.
+
+This allows you to focus on vulnerabilities that meet your organization's risk tolerance needs.
+
+Supported threshold values are `UNKNOWN`, `LOW`, `MEDIUM`, `HIGH`, and `CRITICAL`.
+
+For example, to report vulnerabilities of high and critical severity:
+
+```yaml
+container_scanning:
+  severity_threshold: "HIGH"
+```
+
 ## View cluster vulnerabilities
 
 To view vulnerability information in GitLab:

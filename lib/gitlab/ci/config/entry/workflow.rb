@@ -16,7 +16,7 @@ module Gitlab
           validations do
             validates :config, type: Hash
             validates :config, allowed_keys: ALLOWED_KEYS
-            validates :name, allow_nil: true, length: { minimum: 1, maximum: 255 }
+            validates :name, allow_nil: true, length: { minimum: 0, maximum: 255 }
           end
 
           # `start_in`, `allow_failure`, and `needs` should not be allowed but we can't break this behavior now.

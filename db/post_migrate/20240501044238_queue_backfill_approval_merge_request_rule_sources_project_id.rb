@@ -2,7 +2,7 @@
 
 class QueueBackfillApprovalMergeRequestRuleSourcesProjectId < Gitlab::Database::Migration[2.2]
   milestone '17.0'
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   MIGRATION = "BackfillApprovalMergeRequestRuleSourcesProjectId"
   DELAY_INTERVAL = 2.minutes

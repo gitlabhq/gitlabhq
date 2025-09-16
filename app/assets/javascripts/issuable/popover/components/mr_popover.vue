@@ -106,7 +106,7 @@ export default {
         </div>
         <ci-icon v-if="detailedStatus" :status="detailedStatus" class="gl-ml-2" />
       </div>
-      <h5 v-if="!$apollo.queries.mergeRequest.loading" class="my-2">{{ title }}</h5>
+      <h5 v-if="!$apollo.queries.mergeRequest.loading" class="!gl-my-3">{{ title }}</h5>
       <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
       <div class="gl-text-subtle">
         <gl-icon name="merge-request" />

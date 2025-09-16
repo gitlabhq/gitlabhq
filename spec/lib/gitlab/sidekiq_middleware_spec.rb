@@ -128,7 +128,6 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
         stub_feature_flags("drop_sidekiq_jobs_#{worker_class.name}": false) # not dropping the job
 
         # Apply concurrency limiting
-        allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap).to receive(:over_the_limit?).and_return(true)
         allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
           .to receive(:has_jobs_in_queue?).and_return(true)
         allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)

@@ -1,8 +1,6 @@
-- tag_name = Gitlab::Git.ref_name(matching_tag.name, types: 'tags')
-
 %tr
   %td
-    = link_to tag_name, project_ref_path(@project, tag_name), class: 'ref-name'
+    = link_to tag_name, project_ref_path(@project, tag_name, ref_type: 'tags'), class: 'ref-name'
 
     - if @project.root_ref?(tag_name)
       = gl_badge_tag s_('ProtectedTag|default'), { variant: :info }, { class: 'gl-ml-2' }

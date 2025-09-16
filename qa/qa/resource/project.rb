@@ -267,6 +267,30 @@ module QA
         post_body
       end
 
+      def get_branch(branch)
+        get(request_url("#{api_get_path}/repository/branches/#{CGI.escape(branch)}"))
+      end
+
+      def wait_for_branch_creation(branch)
+        response = nil
+        Support::Retrier.retry_until(
+          max_duration: 60,
+          sleep_interval: 2,
+          message: "Waiting for branch #{branch} creation"
+        ) do
+          response = get_branch(branch)
+          response.code == 200
+        end
+
+        response
+      end
+
+      def branch_is_protected?(branch)
+        response = wait_for_branch_creation(branch)
+        parsed_branch = parse_body(response)
+        parsed_branch[:protected]
+      end
+
       def has_file?(file_path)
         response = repository_tree
 

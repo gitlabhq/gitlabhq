@@ -8,4 +8,4 @@
       = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", 0, id: nil, data: { meta: '' }
 
     = dropdown_tag(users_dropdown_label(issuable.assignees), options: assignees_dropdown_options(issuable.to_ability_name))
-  = link_to _('Assign to me'), '#', class: "assign-to-me-link gl-whitespace-nowrap md:gl-pl-3 #{'hide' if issuable.assignees.include?(current_user)}", data: { testid: 'assign-to-me-link' }
+  = link_to _('Assign to me'), '#', class: "assign-to-me-link gl-whitespace-nowrap @md:gl-pl-3 #{'hide' if issuable.assignees.include?(current_user)}", data: { testid: 'assign-to-me-link' }

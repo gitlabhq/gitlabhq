@@ -14,7 +14,7 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
 
   let_it_be(:user) { create(:user) }
 
-  let(:client) { instance_double(Gitlab::GithubImport::Client) }
+  let(:client) { instance_double(Gitlab::GithubImport::Client, web_endpoint: 'https://github.com') }
   let(:discussion_id) { 'b0fa404393eeebb4e82becb8104f238812bb1fe6' }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00).utc }
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15).utc }
@@ -109,6 +109,18 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
           expect(note.system).to eq(false)
           expect(note.type).to eq('LegacyDiffNote')
           expect(note.updated_at).to eq(updated_at)
+        end
+
+        context 'when the note body includes @ mentions' do
+          let(:note_body) { "I said to @sam_allen\0 the code should follow @bob's\0 advice. @.ali-ce/group#9?\0" }
+          let(:expected_note_body) { "I said to `@sam_allen` the code should follow `@bob`'s advice. `@.ali-ce/group#9`?" }
+
+          it 'formats the text correctly' do
+            subject.execute
+
+            note = project.notes.diff_notes.take
+            expect(note.note).to eq(expected_note_body)
+          end
         end
 
         context 'when the note has suggestions' do

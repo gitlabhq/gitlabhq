@@ -31,8 +31,6 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
       'snippet_repositories.snippet_organization_id',                    # https://gitlab.com/groups/gitlab-org/-/epics/17347
       'snippet_repositories.snippet_project_id',                         # https://gitlab.com/groups/gitlab-org/-/epics/17347
       'upload_states.upload_id',                                         # https://gitlab.com/groups/gitlab-org/-/epics/17347
-      'ai_settings.duo_workflow_service_account_user_id',           # https://gitlab.com/gitlab-org/gitlab/-/issues/531356
-      'ai_settings.amazon_q_service_account_user_id',               # https://gitlab.com/gitlab-org/gitlab/-/issues/531356
       'targeted_message_dismissals.targeted_message_id',            # https://gitlab.com/gitlab-org/gitlab/-/issues/531357
       'user_broadcast_message_dismissals.broadcast_message_id',     # https://gitlab.com/gitlab-org/gitlab/-/issues/531358
       'targeted_message_namespaces.targeted_message_id',            # https://gitlab.com/gitlab-org/gitlab/-/issues/531357
@@ -42,8 +40,12 @@ RSpec.describe 'cross-database foreign keys', feature_category: :database do
       'appearance_uploads.namespace_id',                            # https://gitlab.com/gitlab-org/gitlab/-/issues/534207
       'appearance_uploads.organization_id',                         # https://gitlab.com/gitlab-org/gitlab/-/issues/534207
 
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/560435
+      'dingtalk_tracker_data.integration_id',
+
       # https://gitlab.com/gitlab-org/gitlab/-/issues/560712
-      'audit_events_streaming_http_instance_namespace_filters.audit_events_instance_external_audit_event_destination_id'
+      'audit_events_streaming_instance_namespace_filters.external_streaming_destination_id',
+      'audit_events_streaming_http_instance_namespace_filters.namespace_id'
     ]
 
     keys

@@ -25,7 +25,7 @@ RSpec.describe Gitlab::Database::PostgresqlAdapter::ForceDisconnectableMixin, :d
       expect(pool.active_connection?).to be_truthy
       expect(connection).to receive(:force_disconnect_if_old!).and_call_original
 
-      model.clear_active_connections!
+      model.connection_handler.clear_active_connections!
     end
   end
 

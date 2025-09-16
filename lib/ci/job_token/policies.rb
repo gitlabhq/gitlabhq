@@ -10,16 +10,19 @@ module Ci
         :admin_environments,
         :read_jobs,
         :admin_jobs,
+        :read_merge_requests,
         :read_packages,
         :admin_packages,
         :read_pipelines,
         :admin_pipelines,
         :read_releases,
         :admin_releases,
+        :read_repositories,
         :read_secure_files,
         :admin_secure_files,
         :read_terraform_state,
-        :admin_terraform_state
+        :admin_terraform_state,
+        :read_work_items
       ].freeze
 
       DEPRECATED_POLICIES = [

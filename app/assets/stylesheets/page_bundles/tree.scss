@@ -15,7 +15,7 @@ $bottom-padding: $gl-spacing-scale-6;
   --file-tree-min-height: 300px;
   --file-tree-bottom-padding: #{rem-to-px($bottom-padding)};
   position: sticky;
-  top: calc(var(--application-header-height) + #{$gl-spacing-scale-5});
+  top: calc(var(--application-header-height) + #{$gl-spacing-scale-4});
   min-height: var(--file-tree-min-height);
   flex: none;
 
@@ -29,18 +29,12 @@ $bottom-padding: $gl-spacing-scale-6;
 .repository-tree-list-responsive {
   width: var(--tree-width);
 
-  @include media-breakpoint-down(md) {
+  @include gl-container-width-down(lg) {
     width: 250px;
   }
 }
 
 .tree-holder {
-  .repo-breadcrumb {
-    li {
-      min-width: $gl-spacing-scale-9;
-    }
-  } 
-
   .nav-block {
     margin: $gl-spacing-scale-2 0 $gl-spacing-scale-5;
 
@@ -48,7 +42,7 @@ $bottom-padding: $gl-spacing-scale-6;
       margin-right: 15px;
     }
 
-    @include media-breakpoint-up(sm) {
+    @include gl-container-width-up(sm) {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
@@ -146,7 +140,7 @@ $bottom-padding: $gl-spacing-scale-6;
 
       &:hover:not(.tree-truncated-warning) {
         td, th {
-          @apply gl-bg-blue-50 dark:gl-bg-neutral-800 gl-bg-clip-padding;
+          @apply gl-bg-blue-50 dark:gl-bg-neutral-800;
           border-top: 1px solid var(--gl-action-selected-border-color-default);
           border-bottom: 1px solid var(--gl-action-selected-border-color-default);
 
@@ -172,13 +166,13 @@ $bottom-padding: $gl-spacing-scale-6;
             &:first-child {
               box-shadow: inset 1px 0 0 0 var(--gl-action-selected-border-color-default),
                 inset 0 -1px 0 0 var(--gl-action-selected-border-color-default);
-              border-bottom-left-radius: calc(#{$gl-border-radius-base} - 1px);
+              border-bottom-left-radius: $gl-border-radius-base-inner;
             }
 
             &:last-child {
               box-shadow: inset -1px 0 0 0 var(--gl-action-selected-border-color-default),
                 inset 0 -1px 0 0 var(--gl-action-selected-border-color-default);
-              border-bottom-right-radius: calc(#{$gl-border-radius-base} - 1px);
+              border-bottom-right-radius: $gl-border-radius-base-inner;
             }
           }
         }

@@ -328,6 +328,50 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
     end
   end
 
+  describe '#invalid_usage_for_partial_semver?' do
+    let_it_be(:project) { create(:project) }
+    let(:project_path) { project.full_path }
+    let(:address) { "acme.com/#{project_path}/secret-detection@#{version}" }
+
+    context 'when the project is a catalog resource' do
+      let!(:catalog_resource) { create(:ci_catalog_resource, project: project) }
+
+      context 'when selected by a partial semantic version' do
+        let(:version) { '1.0' }
+
+        it 'does not return the error message' do
+          expect(path.invalid_usage_for_partial_semver?).to be_falsey
+        end
+      end
+
+      context 'when selected by a full semantic version' do
+        let(:version) { '1.0.0' }
+
+        it 'does not return the error message' do
+          expect(path.invalid_usage_for_partial_semver?).to be_falsey
+        end
+      end
+    end
+
+    context 'when the project is not a catalog resource' do
+      context 'when selected by a partial semantic version' do
+        let(:version) { '1.0' }
+
+        it 'returns the error message' do
+          expect(path.invalid_usage_for_partial_semver?).to be_truthy
+        end
+      end
+
+      context 'when selected by a full semantic version' do
+        let(:version) { '1.0.0' }
+
+        it 'does not return the error message' do
+          expect(path.invalid_usage_for_partial_semver?).to be_falsey
+        end
+      end
+    end
+  end
+
   describe '.match?' do
     subject(:match) { described_class.match?(address) }
 

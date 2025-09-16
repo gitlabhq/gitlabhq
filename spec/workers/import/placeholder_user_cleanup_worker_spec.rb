@@ -40,14 +40,14 @@ RSpec.describe Import::PlaceholderUserCleanupWorker, feature_category: :importer
     context 'when there are eligible placeholder users marked for deletion' do
       it 'schedules a delete worker for each eligible placeholder user with delays' do
         expect(Import::DeletePlaceholderUserWorker).to receive(:perform_in)
-          .with(anything, eligible_detail_one.placeholder_user_id, { type: 'placeholder_user' })
+          .with(anything, eligible_detail_one.placeholder_user_id)
         expect(Import::DeletePlaceholderUserWorker).to receive(:perform_in)
-          .with(anything, eligible_detail_two.placeholder_user_id, { type: 'placeholder_user' })
+          .with(anything, eligible_detail_two.placeholder_user_id)
 
         expect(Import::DeletePlaceholderUserWorker).not_to receive(:perform_in)
-          .with(anything, recently_atttempted_detail.placeholder_user_id, { type: 'placeholder_user' })
+          .with(anything, recently_atttempted_detail.placeholder_user_id)
         expect(Import::DeletePlaceholderUserWorker).not_to receive(:perform_in)
-          .with(anything, max_attempts_detail.placeholder_user_id, { type: 'placeholder_user' })
+          .with(anything, max_attempts_detail.placeholder_user_id)
 
         perform
       end

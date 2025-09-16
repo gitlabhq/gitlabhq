@@ -46,7 +46,6 @@ workflow:
   variables:
     NAMESPACE: gitlab
     KUBECONFIG: /root/.kube/config
-    BUNDLE_WITHOUT: development
     RSPEC_LAST_RUN_RESULTS_FILE: "$CI_PROJECT_DIR/qa/tmp/examples.txt"
     ORCHESTRATOR_FORCE_COLOR: "true"
     DEPLOYMENT_TYPE: kind
@@ -55,7 +54,6 @@ workflow:
     QA_PARALLEL_PROCESSES: 4
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
     GIT_STRATEGY: "none"
-  timeout: 30m
   before_script:
     - !reference [.qa-install, before_script]
     - !reference [.cng-deploy-cmd, script]

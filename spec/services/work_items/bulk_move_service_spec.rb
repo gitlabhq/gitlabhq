@@ -7,7 +7,7 @@ RSpec.describe WorkItems::BulkMoveService, feature_category: :team_planning do
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:target_group) { create(:group) }
   let_it_be(:target_project) { create(:project, group: target_group) }
-  let_it_be(:developer) { create(:user, developer_of: [group, target_group]) }
+  let_it_be(:developer) { create(:user, :with_namespace, developer_of: [group, target_group]) }
   let_it_be(:work_item1) { create(:work_item, :issue, project: project) }
   let_it_be(:work_item2) { create(:work_item, :issue, project: project) }
   let_it_be(:work_item3) { create(:work_item, :issue, project: project) }
@@ -47,7 +47,7 @@ RSpec.describe WorkItems::BulkMoveService, feature_category: :team_planning do
 
         it 'returns error response' do
           expect(service_result).to be_error
-          expect(service_result.message).to eq("Unknown target namespace")
+          expect(service_result.message).to eq("You do not have permission to move items to this namespace.")
         end
       end
 
@@ -94,12 +94,12 @@ RSpec.describe WorkItems::BulkMoveService, feature_category: :team_planning do
       end
     end
 
-    context 'when target namespace is a group' do
-      let(:target_namespace) { target_group }
+    context 'when target namespace is a user namespace' do
+      let(:target_namespace) { developer.namespace }
 
-      it 'returns error because groups do not support work item creation via move' do
+      it 'returns an error' do
         expect(service_result).to be_error
-        expect(service_result.message).to eq("Unknown target namespace")
+        expect(service_result.message).to eq("User namespaces are not supported as target namespaces.")
       end
     end
 
@@ -107,9 +107,18 @@ RSpec.describe WorkItems::BulkMoveService, feature_category: :team_planning do
       let(:source_namespace) { group }
       let(:target_namespace) { target_project.project_namespace }
 
-      it 'can find work items from group projects but may fail to move to group targets' do
+      it 'moves project level work items in projects under the group' do
         expect(service_result).to be_success
         expect(service_result[:moved_work_item_count]).to eq(2)
+      end
+    end
+
+    context 'when target namespace is a group' do
+      let(:target_namespace) { group }
+
+      it 'raises an error' do
+        expect(service_result).to be_error
+        expect(service_result.message).to eq('Cannot move work items from projects to groups.')
       end
     end
 

@@ -114,7 +114,6 @@ Lint/AssignmentInCondition:
     - 'ee/lib/gitlab/group_plans_preloader.rb'
     - 'ee/lib/gitlab/path_locks_finder.rb'
     - 'ee/lib/gitlab/subscription_portal/clients/graphql.rb'
-    - 'ee/lib/system_check/geo/authorized_keys_check.rb'
     - 'ee/spec/factories/protected_environments.rb'
     - 'lib/api/base.rb'
     - 'lib/api/integrations.rb'

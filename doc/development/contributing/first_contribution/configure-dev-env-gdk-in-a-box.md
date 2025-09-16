@@ -31,7 +31,7 @@ If you prefer to use GDK locally without a VM, use the steps in [Install the GDK
    - Docker Desktop can also be installed through package managers like [Homebrew](https://formulae.brew.sh/formula/docker).
    - **Note**: On Rancher Desktop, you may want to disable Kubernetes under "Preferences".
    - Other container runtimes that support Docker-compatible commands should also work.
-1. Pull the container image. The image requires a download of less than 6 GB and might take some time to download.
+1. Pull the container image. The image requires a download of more than 8 GB and might take some time to download.
    - `docker pull registry.gitlab.com/gitlab-org/gitlab-development-kit/gitlab-gdk-in-a-box:latest`
 1. Create a container from the image:
 
@@ -57,7 +57,7 @@ If you prefer to use GDK locally without a VM, use the steps in [Install the GDK
 
 {{< alert type="note" >}}
 
-You might need to modify the system configuration of your container runtime (CPU cores and RAM) before starting it. A suggested configuration is less than 12 GB RAM, and 4 cores.
+You might need to modify the system configuration of your container runtime (CPU cores and RAM) before starting it. A suggested configuration is at least 12 GB RAM, and 4 cores.
 
 {{< /alert >}}
 

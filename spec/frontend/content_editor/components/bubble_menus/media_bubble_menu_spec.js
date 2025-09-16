@@ -184,6 +184,11 @@ describe.each`
       it(`shows a form to edit the ${mediaType} src/alt`, () => {
         expect(wrapper.findComponent(GlForm).exists()).toBe(true);
 
+        // Assert focus is managed correctly
+        expect(mediaSrcInput.props('autofocus')).toBe(true);
+        expect(mediaAltInput.props('autofocus')).toBe(false);
+
+        // Assert input values are correct
         expect(mediaSrcInput.element.value).toBe(filePath);
         expect(mediaAltInput.element.value).toBe('test-file');
       });

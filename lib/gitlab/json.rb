@@ -25,6 +25,9 @@ module Gitlab
         string = string.to_s unless string.is_a?(String)
 
         legacy_mode = legacy_mode_enabled?(opts.delete(:legacy_mode))
+
+        log_oversize_object(string)
+
         data = adapter_load(string, **opts)
 
         handle_legacy_mode!(data) if legacy_mode
@@ -168,6 +171,27 @@ module Gitlab
       # @raise [JSON::ParserError]
       def handle_legacy_mode!(data)
         raise parser_error if INVALID_LEGACY_TYPES.any? { |type| data.is_a?(type) }
+      end
+
+      def log_oversize_object(string)
+        oversize_threshold = ENV['GITLAB_JSON_SIZE_THRESHOLD'].to_i
+
+        return if oversize_threshold <= 0
+
+        # Estimates the total number of values in the JSON response by counting:
+        # : => Number of key-value pairs
+        # , => Number of elements in arrays (off by one since [1, 2, 3] has just 2 commas)
+        # [ => Number of arrays
+        # { => Number of objects
+        total_value_count_estimate = string.count('{[,:')
+
+        return if total_value_count_estimate < oversize_threshold
+
+        Gitlab::AppJsonLogger.info(
+          message: 'Large JSON object',
+          number_of_fields: total_value_count_estimate,
+          caller: Gitlab::BacktraceCleaner.clean_backtrace(caller)
+        )
       end
     end
 

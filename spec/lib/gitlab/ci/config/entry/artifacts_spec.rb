@@ -157,18 +157,21 @@ RSpec.describe Gitlab::Ci::Config::Entry::Artifacts do
 
         it 'reports error' do
           expect(entry.errors)
-            .to include 'artifacts access should be one of: none, developer, all'
+            .to include 'artifacts access should be one of: none, developer, maintainer, all'
         end
       end
 
-      context 'when value is correct' do
-        let(:config) { { paths: %w[results.txt], access: 'developer' } }
+      shared_examples 'valid artifacts access' do |access|
+        let(:config) { { paths: %w[results.txt], access: access } }
 
         it 'correctly parses the configuration' do
           expect(entry).to be_valid
           expect(entry.value).to eq(config)
         end
       end
+
+      include_examples 'valid artifacts access', 'developer'
+      include_examples 'valid artifacts access', 'maintainer'
     end
 
     context 'when the `when` keyword is not a string' do

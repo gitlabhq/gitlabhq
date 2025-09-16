@@ -67,27 +67,51 @@ To enable Arkose Protect:
    ApplicationSetting.current.update(arkose_labs_private_api_key: '<your_private_api_key>')
    ```
 
-To disable Arkose Protect:
-
-To disable the ArkoseLabs integration, run the following command in the Rails console.
+To disable Arkose Protect, run the following command in the Rails console.
 
    ```ruby
-   Feature.disable(:arkose_labs)
+   ApplicationSetting.current.update(arkose_labs_enabled: false)
    ```
+
+{{< alert type="note" >}}
+
+Disabling Arkose also disables phone number and credit card verification.
+New users are only required to verify their email address.
+
+{{< /alert >}}
+
+It is important to note that disabling Arkose also disables phone number and credit card verification. All new users will only be required to verify their email address.
 
 ## Triage and debug ArkoseLabs issues
 
 You can triage and debug issues raised by ArkoseLabs with:
 
+<!-- markdownlint-disable MD044 -->
+- ArkoseLabs and GitLab collaboration channel on Slack: [#ext-gitlab-arkose](https://gitlab.slack.com/archives/C02SGF6RLPQ)
+<!-- markdownlint-enable MD044 -->
+
 - The [GitLab production logs](https://log.gprd.gitlab.net).
-- The [Arkose logging service](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/arkose/logger.rb).
+- The [Arkose logging service](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/arkose/logger.rb)
+- The [Arkose Labs Portal](https://portal.arkoselabs.com) (users can request access through the Okta portal)
+
+### Analysing Arkose Labs dashboard
+
+- GitLab regularly sends session data to the Arkose team, which is used to apply custom
+  telltales to prevent malicious users from signing up.
+- When functioning normally, less than 10% of users should be classified as `high` risk
+  and over 90% of sessions should be verified.
+<!-- markdownlint-disable MD044 -->
+- If the percentage of `high` risk users or verified sessions is significantly different
+  from the expected percentages, contact the [#ext-gitlab-arkose](https://gitlab.slack.com/archives/C02SGF6RLPQ)
+ Slack channel.
+<!-- markdownlint-enable MD044 -->
 
 ### View ArkoseLabs Verify API response for a user session
 
 To view an ArkoseLabs Verify API response for a user, [query the GitLab production logs](https://log.gprd.gitlab.net/goto/54b82f50-935a-11ed-9f43-e3784d7fe3ca) with the following KQL:
 
 ```plaintext
-KQL: json.message:"Arkose verify response" AND json.username:replace_username_here
+KQL: json.message:"Arkose challenge solved" AND json.username:replace_username_here
 ```
 
 If the query is valid, the result contains debug information about the user's session:
@@ -104,8 +128,15 @@ If the query is valid, the result contains debug information about the user's se
 To check if a user failed to sign in because the ArkoseLabs challenge was not solved, [query the GitLab production logs](https://log.gprd.gitlab.net/goto/b97c8a80-935a-11ed-85ed-e7557b0a598c) with the following KQL:
 
 ```plaintext
-KQL: json.message:"Challenge was not solved" AND json.username:replace_username_here
+KQL: json.message:"Arkose*" AND json.username:replace_username_here
 ```
+
+| Log message                             | Description |
+| --------------------------------------- | ----------- |
+| `Arkose was unable to verify the token` | The user solved the challenge, but Arkose could not verify the token. If this error appears repeatedly for the same user, there might be an error on Arkose's end. |
+| `Arkose challenge not solved`           | The user did not solve the challenge. |
+| `Arkose challenge solved`               | The user successfully solved the challenge. |
+| `Arkose challenge skipped`              | Arkose's status service returned an error, so the challenge was skipped. |
 
 ## Allowlists
 
@@ -155,9 +186,7 @@ index 191ae0b5cf82..b2d888b98c95 100644
 
 ## Additional resources
 
-<!-- markdownlint-disable MD044 -->
-The Anti-abuse team owns the ArkoseLabs Protect feature. You can join the ArkoseLabs and GitLab collaboration channel on Slack: [#ext-gitlab-arkose](https://gitlab.slack.com/archives/C02SGF6RLPQ).
-<!-- markdownlint-enable MD044 -->
+- GitLab team members only. [Identity Verification](https://internal.gitlab.com/handbook/engineering/identity-verification/#arkose-integration)
 
 ArkoseLabs also maintains the following resources:
 

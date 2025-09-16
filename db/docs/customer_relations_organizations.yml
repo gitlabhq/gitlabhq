@@ -8,7 +8,7 @@ description: Organizations, against which time can be spent by users on issues u
   the CRM functionality
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67551
 milestone: '14.2'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   group_id: namespaces
 table_size: small

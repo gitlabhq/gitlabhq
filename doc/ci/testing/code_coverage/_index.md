@@ -98,8 +98,8 @@ See: https://docs.gitlab.com/user/markdown/#tables
 | Tool | Command                              | Regex pattern |
 |------|--------------------------------------|---------------|
 | tap  | `tap --coverage-report=text-summary` | `/^Statements\s*:\s*([^%]+)/` |
-| nyc  | `nyc npm test`                       | `/All files[^\|]*\|[^\|]*\s+([\d\.]+)/` |
-| jest | `jest --ci --coverage`               | `/All files[^\|]*\|[^\|]*\s+([\d\.]+)/` |
+| nyc  | `nyc npm test`                       | `/All files[^\|]*\\|[^\|]*\s+([\d\.]+)/` |
+| jest | `jest --ci --coverage`               | `/All files[^\|]*\\|[^\|]*\s+([\d\.]+)/` |
 
 {{< /tab >}}
 

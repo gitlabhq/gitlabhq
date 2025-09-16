@@ -3,6 +3,7 @@
 exports[`Repository table row component renders a symlink table row 1`] = `
 <tr
   class="tree-item"
+  data-event-tracking="click_file_list_on_repository_page"
 >
   <th
     class="gl-cursor-default gl-font-normal gl-relative tree-item-file-name"
@@ -38,7 +39,7 @@ exports[`Repository table row component renders a symlink table row 1`] = `
     />
   </th>
   <td
-    class="cursor-default gl-hidden sm:gl-table-cell tree-commit"
+    class="@sm/panel:gl-table-cell cursor-default gl-hidden tree-commit"
   >
     <gl-link-stub
       class="gl-text-subtle str-truncated-100 tree-commit-link"
@@ -64,6 +65,7 @@ exports[`Repository table row component renders a symlink table row 1`] = `
 exports[`Repository table row component renders table row 1`] = `
 <tr
   class="tree-item"
+  data-event-tracking="click_file_list_on_repository_page"
 >
   <th
     class="gl-cursor-default gl-font-normal gl-relative tree-item-file-name"
@@ -99,7 +101,7 @@ exports[`Repository table row component renders table row 1`] = `
     />
   </th>
   <td
-    class="cursor-default gl-hidden sm:gl-table-cell tree-commit"
+    class="@sm/panel:gl-table-cell cursor-default gl-hidden tree-commit"
   >
     <gl-link-stub
       class="gl-text-subtle str-truncated-100 tree-commit-link"
@@ -125,6 +127,7 @@ exports[`Repository table row component renders table row 1`] = `
 exports[`Repository table row component renders table row for path with special character 1`] = `
 <tr
   class="tree-item"
+  data-event-tracking="click_file_list_on_repository_page"
 >
   <th
     class="gl-cursor-default gl-font-normal gl-relative tree-item-file-name"
@@ -160,7 +163,7 @@ exports[`Repository table row component renders table row for path with special 
     />
   </th>
   <td
-    class="cursor-default gl-hidden sm:gl-table-cell tree-commit"
+    class="@sm/panel:gl-table-cell cursor-default gl-hidden tree-commit"
   >
     <gl-link-stub
       class="gl-text-subtle str-truncated-100 tree-commit-link"

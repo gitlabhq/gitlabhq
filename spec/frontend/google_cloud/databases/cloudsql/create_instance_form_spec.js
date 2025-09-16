@@ -94,6 +94,6 @@ describe('google_cloud/databases/cloudsql/create_instance_form', () => {
 
   it('checkbox must be required', () => {
     const checkbox = findCheckbox();
-    expect(checkbox.attributes('required')).toBe('true');
+    expect(checkbox.props('required')).toBe(true);
   });
 });

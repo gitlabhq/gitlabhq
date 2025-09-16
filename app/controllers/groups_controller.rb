@@ -20,7 +20,8 @@ class GroupsController < Groups::ApplicationController
   before_action :group, except: [:index, :new, :create]
 
   # Authorize
-  before_action :authorize_admin_group!, only: [:update, :transfer, :export, :download_export]
+  before_action :authorize_admin_group!, only: [:update, :export, :download_export]
+  before_action :authorize_change_group!, only: [:transfer]
   before_action :authorize_view_edit_page!, only: :edit
   before_action :authorize_remove_group!, only: [:destroy, :restore]
   before_action :authorize_create_group!, only: [:new]
@@ -38,7 +39,6 @@ class GroupsController < Groups::ApplicationController
     push_force_frontend_feature_flag(:work_items_alpha, group.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:issues_list_create_modal, group)
     push_frontend_feature_flag(:issues_list_drawer, group)
-    push_frontend_feature_flag(:work_item_status_feature_flag, group&.root_ancestor)
   end
 
   skip_cross_project_access_check :index, :new, :create, :edit, :update, :destroy
@@ -174,6 +174,12 @@ class GroupsController < Groups::ApplicationController
   def destroy
     if group.self_deletion_scheduled? &&
         ::Gitlab::Utils.to_boolean(params.permit(:permanently_remove)[:permanently_remove])
+
+      # Admin frontend uses this endpoint to force-delete groups
+      if Feature.enabled?(:disallow_immediate_deletion, current_user) && !current_user.can_admin_all_resources?
+        return access_denied!
+      end
+
       return destroy_immediately
     end
 

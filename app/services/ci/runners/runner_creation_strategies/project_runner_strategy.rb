@@ -14,7 +14,6 @@ module Ci
         def normalize_params
           params.merge!({
             runner_type: 'project_type',
-            sharding_key_id: scope&.id,
             organization_id: scope&.organization_id,
             projects: [scope]
           })

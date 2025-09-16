@@ -7,7 +7,7 @@ feature_categories:
 description: Used to store information related to GitLab subscriptions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7885
 milestone: '11.6'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

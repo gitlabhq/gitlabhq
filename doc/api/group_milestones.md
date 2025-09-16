@@ -39,7 +39,7 @@ Parameters:
 
 | Attribute                   | Type   | Required | Description |
 | ---------                   | ------ | -------- | ----------- |
-| `id`                        | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths). |
+| `id`                        | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group. |
 | `iids[]`                    | integer array | no | Return only the milestones having the given `iid`. Ignored if `include_ancestors` is `true`. |
 | `state`                     | string | no | Return only `active` or `closed` milestones. |
 | `title`                     | string | no | Return only the milestones having the given `title` (case-sensitive). |
@@ -91,7 +91,7 @@ Parameters:
 
 | Attribute | Type   | Required | Description |
 | --------- | ------ | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id` | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `milestone_id` | integer | yes | The ID of the group milestone |
 
 ## Create new milestone
@@ -106,7 +106,7 @@ Parameters:
 
 | Attribute | Type   | Required | Description |
 | --------- | ------ | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id` | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `title` | string | yes | The title of a milestone |
 | `description` | string | no | The description of the milestone |
 | `due_date` | date | no | The due date of the milestone, in ISO 8601 format (`YYYY-MM-DD`) |
@@ -124,7 +124,7 @@ Parameters:
 
 | Attribute | Type   | Required | Description |
 | --------- | ------ | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id` | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `milestone_id` | integer | yes | The ID of a group milestone |
 | `title` | string | no | The title of a milestone |
 | `description` | string | no | The description of a milestone |
@@ -144,7 +144,7 @@ Parameters:
 
 | Attribute | Type   | Required | Description |
 | --------- | ------ | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id` | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `milestone_id` | integer | yes | The ID of the group's milestone |
 
 ## Get all issues assigned to a single milestone
@@ -159,7 +159,7 @@ Parameters:
 
 | Attribute | Type   | Required | Description |
 | --------- | ------ | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id` | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `milestone_id` | integer | yes | The ID of a group milestone |
 
 Currently, this API endpoint doesn't return issues from any subgroups.
@@ -179,7 +179,7 @@ Parameters:
 
 | Attribute | Type   | Required | Description |
 | --------- | ------ | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id` | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `milestone_id` | integer | yes | The ID of a group milestone |
 
 ## Get all burndown chart events for a single milestone
@@ -201,5 +201,5 @@ Parameters:
 
 | Attribute | Type   | Required | Description |
 | --------- | ------ | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
+| `id` | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group |
 | `milestone_id` | integer | yes | The ID of a group milestone |

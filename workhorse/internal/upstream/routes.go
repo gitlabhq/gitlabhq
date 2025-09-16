@@ -88,6 +88,8 @@ var (
 	// from downloading it we configure static.ServeExisting to treat files
 	// under public/uploads/ as if they do not exist.
 	staticExclude = []string{"/uploads/"}
+	// XGitalyCorrelationID is the header name for Git operation correlation IDs
+	XGitalyCorrelationID = "X-Gitaly-Correlation-Id"
 )
 
 func newRoute(regexpStr, routeID string, backendID routeBackend) routeMetadata {
@@ -146,7 +148,7 @@ func (u *upstream) observabilityMiddlewares(handler http.Handler, method string,
 		handler,
 		log.WithAccessLogger(u.accessLogger),
 		log.WithTrustedProxies(u.TrustedCIDRsForXForwardedFor),
-		log.WithExtraFields(func(_ *http.Request) log.Fields {
+		log.WithExtraFields(func(r *http.Request) log.Fields {
 			fields := log.Fields{
 				"route":      metadata.regexpStr, // This field matches the `route` label in Prometheus metrics
 				"route_id":   metadata.routeID,
@@ -155,6 +157,10 @@ func (u *upstream) observabilityMiddlewares(handler http.Handler, method string,
 
 			if opts != nil {
 				fields["body_limit"] = opts.bodyLimit
+			}
+
+			if correlationID := r.Header.Get(XGitalyCorrelationID); correlationID != "" {
+				fields["gitaly_correlation_id"] = correlationID
 			}
 
 			return fields
@@ -501,6 +507,10 @@ func configureRoutes(u *upstream) {
 			newRoute(apiPattern+`v4/users\z`, "api_users", railsBackend), tempfileMultipartProxy),
 		u.route("PUT",
 			newRoute(apiPattern+`v4/users/[0-9]+\z`, "api_users", railsBackend), tempfileMultipartProxy),
+
+		// SBOM Vulnerability Scans
+		u.route("POST",
+			newRoute(apiPattern+`v4/jobs/[0-9]+/sbom_scans\z`, "api_jobs_sbom_scans", railsBackend), mimeMultipartUploader),
 
 		// GitLab Observability Backend (GOB). Write paths are versioned with v1 to align with
 		// OpenTelemetry compatibility, where SDKs POST to /v1/traces, /v1/logs and /v1/metrics.

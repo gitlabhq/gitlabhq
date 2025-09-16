@@ -295,7 +295,7 @@ RSpec.describe BulkImports::PipelineBatchWorker, feature_category: :importers do
 
       schema, table = block.call([job_args])
 
-      expect(schema).to eq(:gitlab_main_cell)
+      expect(schema).to eq(:gitlab_main_org)
       expect(table).to eq(['labels'])
     end
 

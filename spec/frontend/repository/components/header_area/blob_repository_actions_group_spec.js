@@ -63,7 +63,7 @@ describe('BlobRepositoryActionsGroup', () => {
 
   describe('Find file dropdown item', () => {
     it('renders only on mobile layout', () => {
-      expect(findFindFileDropdownItem().classes()).toContain('sm:gl-hidden');
+      expect(findFindFileDropdownItem().classes()).toContain('@sm/panel:gl-hidden');
     });
 
     it('triggers a `focusSearchFile` shortcut when the findFile button is clicked', () => {
@@ -85,7 +85,7 @@ describe('BlobRepositoryActionsGroup', () => {
 
   describe('Blame dropdown item', () => {
     it('renders only on mobile layout', () => {
-      expect(findBlameDropdownItem().classes()).toContain('sm:gl-hidden');
+      expect(findBlameDropdownItem().classes()).toContain('@sm/panel:gl-hidden');
     });
 
     it('does not render for lfs files', () => {

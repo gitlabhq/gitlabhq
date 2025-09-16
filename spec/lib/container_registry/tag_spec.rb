@@ -265,9 +265,25 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
       context 'for config processing' do
         shared_examples 'a processable' do
           describe '#config' do
-            subject { tag.config }
+            subject(:config) { tag.config }
 
             it { is_expected.not_to be_nil }
+
+            context 'when config_blob is empty string' do
+              before do
+                allow(tag.config_blob).to receive(:data).and_return('')
+              end
+
+              it { is_expected.to be_nil }
+            end
+
+            context 'when config_blob is nil' do
+              before do
+                allow(tag).to receive(:config_blob).and_return(nil)
+              end
+
+              it { is_expected.to be_nil }
+            end
           end
 
           describe '#created_at' do

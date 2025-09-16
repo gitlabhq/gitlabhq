@@ -4,9 +4,9 @@
 
 - tree_path = project_tree_path(@project, @ref)
 - blob_path = project_blob_path(@project, @ref)
-.file-finder-holder.tree-holder.clearfix.js-file-finder.gl-pt-4{ data: { file_find_url: "#{escape_javascript(project_files_path(@project, @ref, ref_type: @ref_type, format: :json))}", find_tree_url: escape_javascript(tree_path), blob_url_template: escape_javascript(blob_path), ref_type: @ref_type } }
+.file-finder-holder.tree-holder.gl-clearfix.js-file-finder.gl-pt-4{ data: { file_find_url: "#{escape_javascript(project_files_path(@project, @ref, ref_type: @ref_type, format: :json))}", find_tree_url: escape_javascript(tree_path), blob_url_template: escape_javascript(blob_path), ref_type: @ref_type } }
   .nav-block.gl-xs-mr-0
-    .tree-ref-holder.gl-mb-3.sm:gl-mb-0.gl-max-w-26
+    .tree-ref-holder.gl-mb-3{ class: "@sm/panel:gl-mb-0 @sm/panel:gl-max-w-26" }
       #js-blob-ref-switcher{ data: { project_id: @project.id, ref: @ref, ref_type: @ref_type, namespace: "/-/find_file" } }
     %ul.breadcrumb.repo-breadcrumb.gl-flex-nowrap
       %li.breadcrumb-item.gl-whitespace-nowrap
@@ -19,10 +19,10 @@
     .table-holder
       %table.table.files-slider{ class: "table_#{@hex_path} tree-table" }
         %tbody
-        .col-12.empty-state.hidden
+        .gl-col-12.empty-state.hidden
           .svg-150.svg-content
             = image_tag('illustrations/empty-state/empty-search-md.svg', alt: 'No files svg', lazy: true)
-          .text-center
+          .gl-text-center
             %h4
               = _('There are no matching files')
             %p.gl-text-subtle

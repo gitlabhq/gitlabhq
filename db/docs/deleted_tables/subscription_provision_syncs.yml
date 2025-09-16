@@ -7,7 +7,7 @@ feature_categories:
 - plan_provisioning
 classes:
 - GitlabSubscriptions::ProvisionSync
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178183

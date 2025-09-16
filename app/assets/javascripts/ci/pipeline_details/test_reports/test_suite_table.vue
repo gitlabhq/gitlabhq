@@ -77,7 +77,7 @@ export default {
   <div>
     <div v-if="hasSuites" class="test-reports-table js-test-cases-table gl-mb-3">
       <div class="row gl-mt-3">
-        <div class="col-12">
+        <div class="gl-col-12">
           <h4>{{ heading }}</h4>
         </div>
       </div>
@@ -94,7 +94,7 @@ export default {
         <div role="rowheader" class="table-section section-10">
           {{ __('Filename') }}
         </div>
-        <div role="rowheader" class="table-section section-10 text-center">
+        <div role="rowheader" class="table-section section-10 gl-text-center">
           {{ __('Status') }}
         </div>
         <div role="rowheader" class="table-section section-10">
@@ -113,21 +113,21 @@ export default {
       >
         <div class="table-section section-20 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Suite') }}</div>
-          <div class="table-mobile-content gl-break-words gl-pr-0 sm:gl-pr-2">
+          <div class="table-mobile-content gl-break-words gl-pr-0 @sm/panel:gl-pr-2">
             <gl-friendly-wrap :symbols="$options.wrapSymbols" :text="testCase.classname" />
           </div>
         </div>
 
         <div class="table-section section-40 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Name') }}</div>
-          <div class="table-mobile-content gl-break-words gl-pr-0 sm:gl-pr-2">
+          <div class="table-mobile-content gl-break-words gl-pr-0 @sm/panel:gl-pr-2">
             <gl-friendly-wrap :symbols="$options.wrapSymbols" :text="testCase.name" />
           </div>
         </div>
 
         <div class="table-section section-10 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Filename') }}</div>
-          <div class="table-mobile-content gl-break-words gl-pr-0 sm:gl-pr-2">
+          <div class="table-mobile-content gl-break-words gl-pr-0 @sm/panel:gl-pr-2">
             <gl-link v-if="testCase.file" :href="testCase.filePath" target="_blank">
               <gl-friendly-wrap :symbols="$options.wrapSymbols" :text="testCase.file" />
             </gl-link>
@@ -146,7 +146,7 @@ export default {
 
         <div class="table-section section-10 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Status') }}</div>
-          <div class="table-mobile-content gl-justify-center md:gl-flex">
+          <div class="table-mobile-content gl-justify-center @md/panel:gl-flex">
             <div class="ci-status-icon" :class="`ci-status-icon-${testCase.status}`">
               <gl-icon :size="24" :name="testCase.icon" />
             </div>
@@ -157,7 +157,7 @@ export default {
           <div role="rowheader" class="table-mobile-header">
             {{ __('Duration') }}
           </div>
-          <div class="table-mobile-content gl-pr-0 sm:gl-pr-2">
+          <div class="table-mobile-content gl-pr-0 @sm/panel:gl-pr-2">
             {{ testCase.formattedTime }}
           </div>
         </div>

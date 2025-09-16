@@ -225,8 +225,7 @@ module IssuesHelper
       is_public_visibility_restricted:
         Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,
       is_signed_in: current_user.present?.to_s,
-      rss_path: url_for(safe_params.merge(rss_url_options)),
-      is_status_feature_enabled_on_instance: Feature.enabled?(:work_item_status_feature_flag, :instance).to_s
+      rss_path: url_for(safe_params.merge(rss_url_options))
     }
   end
 

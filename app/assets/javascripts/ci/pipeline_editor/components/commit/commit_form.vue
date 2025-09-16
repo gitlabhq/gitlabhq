@@ -20,6 +20,7 @@ export default {
     GlFormTextarea,
     GlSprintf,
   },
+  expose: ['resetCommitMessage'],
   props: {
     currentBranch: {
       type: String,
@@ -85,6 +86,9 @@ export default {
     },
     onReset() {
       this.$emit('resetContent');
+    },
+    resetCommitMessage() {
+      this.message = this.defaultMessage;
     },
     scrollIntoView() {
       this.$el.scrollIntoView({ behavior: 'smooth' });

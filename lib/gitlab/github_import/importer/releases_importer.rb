@@ -75,7 +75,7 @@ module Gitlab
           description = release[:body].presence || "Release for tag #{release[:tag_name]}"
           user = map_github_user_info(release)
 
-          MarkdownText.format(description, user, user[:id], project: project)
+          MarkdownText.format(description, user, user[:id], project: project, client: client)
         end
 
         def object_type

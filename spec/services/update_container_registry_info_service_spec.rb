@@ -134,39 +134,6 @@ RSpec.describe UpdateContainerRegistryInfoService, feature_category: :container_
 
       it_behaves_like 'querying the /v2 route of the registry'
     end
-
-    context 'when the feature use_registry_statistics_endpoint is disabled' do
-      before do
-        stub_feature_flags(use_registry_statistics_endpoint: false)
-      end
-
-      context 'when the Gitlab API is not supported' do
-        before do
-          stub_supports_gitlab_api(false)
-        end
-
-        it_behaves_like 'querying the /v2 route of the registry'
-      end
-
-      context 'when the Gitlab API is supported' do
-        before do
-          stub_registry_info(vendor: 'gitlab', version: '2.9.1-gitlab', features: %w[a b c], db_enabled: true)
-          stub_supports_gitlab_api(true)
-        end
-
-        it 'updates application settings accordingly and adds the API feature to the feature list' do
-          subject
-
-          expect(application_settings).to have_attributes(
-            container_registry_vendor: 'gitlab',
-            container_registry_version: '2.9.1-gitlab',
-            container_registry_features: %W[a b c
-              #{ContainerRegistry::GitlabApiClient::REGISTRY_GITLAB_V1_API_FEATURE}],
-            container_registry_db_enabled: true
-          )
-        end
-      end
-    end
   end
 
   def stub_access_token

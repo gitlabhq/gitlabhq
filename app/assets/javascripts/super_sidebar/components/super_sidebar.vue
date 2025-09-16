@@ -1,12 +1,12 @@
 <script>
-import { GlButton } from '@gitlab/ui';
-import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/dist/utils';
+import { computed } from 'vue';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlBreakpointInstance, breakpoints } from '@gitlab/ui/src/utils';
 import { Mousetrap } from '~/lib/mousetrap';
 import { TAB_KEY_CODE } from '~/lib/utils/keycodes';
 import { keysFor, TOGGLE_SUPER_SIDEBAR } from '~/behaviors/shortcuts/keybindings';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   sidebarState,
   JS_TOGGLE_EXPAND_CLASS,
@@ -18,6 +18,7 @@ import { isCollapsed, toggleSuperSidebarCollapsed } from '../super_sidebar_colla
 import { trackContextAccess } from '../utils';
 import UserBar from './user_bar.vue';
 import SidebarPortalTarget from './sidebar_portal_target.vue';
+import IconOnlyToggle from './icon_only_toggle.vue';
 import HelpCenter from './help_center.vue';
 import SidebarMenu from './sidebar_menu.vue';
 import SidebarPeekBehavior from './sidebar_peek_behavior.vue';
@@ -27,6 +28,7 @@ import ScrollScrim from './scroll_scrim.vue';
 export default {
   components: {
     GlButton,
+    IconOnlyToggle,
     UserBar,
     HelpCenter,
     SidebarMenu,
@@ -35,14 +37,24 @@ export default {
     SidebarPortalTarget,
     ScrollScrim,
     TrialWidget: () => import('jh_else_ee/contextual_sidebar/components/trial_widget.vue'),
+    DuoAgentPlatformWidget: () =>
+      import('jh_else_ee/contextual_sidebar/components/duo_agent_platform_widget.vue'),
   },
-  mixins: [glFeatureFlagsMixin(), Tracking.mixin()],
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  mixins: [Tracking.mixin()],
   i18n: {
     skipToMainContent: __('Skip to main content'),
     primaryNavigation: s__('Navigation|Primary navigation'),
     adminArea: s__('Navigation|Admin'),
   },
-  inject: ['showTrialWidget'],
+  inject: ['showTrialWidget', 'projectStudioEnabled', 'showDuoAgentPlatformWidget'],
+  provide() {
+    return {
+      isIconOnly: computed(() => this.canIconOnly && this.isIconOnly),
+    };
+  },
   props: {
     sidebarData: {
       type: Object,
@@ -54,6 +66,7 @@ export default {
       sidebarState,
       showPeekHint: false,
       isMouseover: false,
+      isIconOnly: this.projectStudioEnabled,
     };
   },
   computed: {
@@ -68,10 +81,15 @@ export default {
         'super-sidebar-peek-hint': this.showPeekHint,
         'super-sidebar-peek': this.showOverlay,
         'super-sidebar-has-peeked': this.sidebarState.hasPeeked,
+        'super-sidebar-is-icon-only': this.canIconOnly && this.isIconOnly,
+        'super-sidebar-is-mobile': this.sidebarState.isMobile,
       };
     },
     isAdmin() {
       return this.sidebarData?.admin_mode?.user_is_admin;
+    },
+    canIconOnly() {
+      return this.projectStudioEnabled && !this.sidebarState.isMobile;
     },
   },
   watch: {
@@ -108,6 +126,11 @@ export default {
   },
   methods: {
     toggleSidebar() {
+      if (this.canIconOnly) {
+        this.isIconOnly = !this.isIconOnly;
+        return;
+      }
+
       this.track(isCollapsed() ? 'nav_show' : 'nav_hide', {
         label: 'nav_toggle_keyboard_shortcut',
         property: 'nav_sidebar',
@@ -167,10 +190,12 @@ export default {
       }
     },
     firstFocusableElement() {
+      if (this.projectStudioEnabled) return this.$refs.sidebarMenu.$el.querySelector('a');
+
       return this.$refs.userBar.$el.querySelector('a');
     },
     lastFocusableElement() {
-      if (this.isAdmin && !this.glFeatures.globalTopbar) {
+      if (this.isAdmin && !this.projectStudioEnabled) {
         return this.$refs.adminAreaLink.$el;
       }
       return this.$refs.helpCenter.$el.querySelector('button');
@@ -197,7 +222,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="super-sidebar-wrapper">
     <div ref="overlay" class="super-sidebar-overlay" @click="collapseSidebar"></div>
     <gl-button
       v-if="sidebarData.is_logged_in"
@@ -223,14 +248,14 @@ export default {
         {{ $options.i18n.primaryNavigation }}
       </h2>
       <user-bar
-        v-if="!glFeatures.globalTopbar"
+        v-if="!projectStudioEnabled"
         ref="userBar"
         :has-collapse-button="!showOverlay"
         :sidebar-data="sidebarData"
       />
       <div class="contextual-nav gl-flex gl-grow gl-flex-col gl-overflow-hidden">
         <div
-          v-if="sidebarData.current_context_header"
+          v-if="sidebarData.current_context_header && !isIconOnly"
           id="super-sidebar-context-header"
           class="super-sidebar-context-header gl-m-0 gl-px-5 gl-py-3 gl-font-bold gl-leading-reset"
         >
@@ -239,6 +264,7 @@ export default {
         <scroll-scrim class="gl-grow" data-testid="nav-container">
           <sidebar-menu
             v-if="menuItems.length"
+            ref="sidebarMenu"
             :items="menuItems"
             :is-logged-in="sidebarData.is_logged_in"
             :panel-type="sidebarData.panel_type"
@@ -252,12 +278,23 @@ export default {
             class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-base gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
           />
         </div>
-        <div class="gl-p-2">
+        <div v-if="showDuoAgentPlatformWidget" class="gl-p-2">
+          <duo-agent-platform-widget
+            class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-base gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
+          />
+        </div>
+        <help-center
+          v-if="canIconOnly"
+          ref="helpCenter"
+          :sidebar-data="sidebarData"
+          class="gl-p-3"
+        />
+        <div v-else class="gl-p-2">
           <div class="gl-flex gl-flex-col gl-justify-end">
-            <help-center ref="helpCenter" :sidebar-data="sidebarData" />
+            <help-center ref="helpCenter" :sidebar-data="sidebarData" class="gl-mr-2" />
 
             <gl-button
-              v-if="isAdmin && !glFeatures.globalTopbar"
+              v-if="isAdmin && !projectStudioEnabled"
               ref="adminAreaLink"
               class="gl-fixed gl-right-0 gl-mb-2 gl-mr-3"
               data-testid="sidebar-admin-link"
@@ -269,6 +306,11 @@ export default {
             </gl-button>
           </div>
         </div>
+        <icon-only-toggle
+          v-if="canIconOnly"
+          class="gl-hidden xl:gl-flex"
+          @toggle="isIconOnly = !isIconOnly"
+        />
       </div>
     </nav>
     <a
@@ -286,12 +328,12 @@ export default {
       setting up event listeners unnecessarily.
     -->
     <sidebar-peek-behavior
-      v-if="sidebarState.isPeekable && !sidebarState.isHoverPeek"
+      v-if="!projectStudioEnabled && sidebarState.isPeekable && !sidebarState.isHoverPeek"
       :is-mouse-over-sidebar="isMouseover"
       @change="onPeekChange"
     />
     <sidebar-hover-peek-behavior
-      v-if="sidebarState.isPeekable && !sidebarState.isPeek"
+      v-if="!projectStudioEnabled && sidebarState.isPeekable && !sidebarState.isPeek"
       :is-mouse-over-sidebar="isMouseover"
       @change="onHoverPeekChange"
     />

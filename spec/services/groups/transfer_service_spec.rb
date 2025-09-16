@@ -276,6 +276,17 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
         end
       end
 
+      context 'when transferring an archived group' do
+        before do
+          group.update!(archived: true)
+        end
+
+        it "adds an error on group" do
+          expect(transfer_service.execute(new_parent_group)).to be_falsy
+          expect(transfer_service.error).to eq("Transfer failed: You don't have enough permissions.")
+        end
+      end
+
       context 'when the parent has a group with the same path' do
         before do
           create(:group_member, :owner, group: new_parent_group, user: user)
@@ -366,7 +377,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
           end
 
           context 'with instance specific integration' do
-            let_it_be(:instance_specific_integration) { create(:beyond_identity_integration) }
+            let_it_be(:instance_specific_integration) { create(:beyond_identity_integration, :instance) }
             let_it_be(:group_instance_specific_integration) do
               create(
                 :beyond_identity_integration,

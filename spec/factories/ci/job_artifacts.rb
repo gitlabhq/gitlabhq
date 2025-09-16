@@ -188,6 +188,10 @@ FactoryBot.define do
       accessibility { 'none' }
     end
 
+    trait :maintainer_only_access do
+      accessibility { 'maintainer' }
+    end
+
     trait :accessibility do
       file_type { :accessibility }
       file_format { :raw }
@@ -517,6 +521,34 @@ FactoryBot.define do
       after(:build) do |artifact, evaluator|
         artifact.file = fixture_file_upload(
           Rails.root.join('spec/fixtures/gl-annotations.json.gz'), 'application/x-gzip')
+      end
+    end
+
+    trait :slsa_archive do
+      file_type { :archive }
+      file_format { :zip }
+
+      transient do
+        file { fixture_file_upload(Rails.root.join('spec/fixtures/slsa/artifacts.zip'), 'application/zip') }
+      end
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = evaluator.file
+      end
+    end
+
+    trait :slsa_metadata do
+      file_type { :metadata }
+      file_format { :gzip }
+      exposed_as { job.options.dig(:artifacts, :expose_as) }
+      exposed_paths { (job.options.dig(:artifacts, :paths) if job.options.dig(:artifacts, :expose_as)) }
+
+      transient do
+        file { fixture_file_upload(Rails.root.join('spec/fixtures/slsa/artifacts_metadata.gz'), 'application/x-gzip') }
+      end
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = evaluator.file
       end
     end
   end

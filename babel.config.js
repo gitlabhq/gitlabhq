@@ -29,6 +29,7 @@ const plugins = [
   '@babel/plugin-transform-logical-assignment-operators',
   'lodash',
   '@babel/plugin-transform-class-static-block',
+  '@babel/plugin-transform-export-namespace-from',
 ];
 
 const env = {};

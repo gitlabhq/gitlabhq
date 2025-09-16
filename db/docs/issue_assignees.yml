@@ -7,7 +7,7 @@ feature_categories:
 description: Users assigned to an issue
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1541
 milestone: '9.2'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

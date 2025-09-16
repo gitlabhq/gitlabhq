@@ -3,6 +3,9 @@
 module Gitlab
   module Database
     module MigrationHelpers
+      # This cop detects multiple table locks across different statements in a single migration.
+      # This scenario has caused incidents in the past due to deadlocks
+      # (for example https://app.incident.io/gitlab/incidents/202).
       module RequireDisableDdlTransactionForMultipleLocks
         extend ActiveSupport::Concern
 
@@ -22,6 +25,8 @@ module Gitlab
         }.freeze
 
         class_methods do
+          # If you are aware of the potential consequences and still want to disable this cop in a particular scenario,
+          # you can disable it by calling skip_require_disable_ddl_transactions!
           def skip_require_disable_ddl_transactions!
             @skip_require_disable_ddl_transactions = true
           end

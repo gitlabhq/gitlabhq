@@ -37,6 +37,7 @@ module WorkItems
               # Epic Work Item(i.e. target_type=Issue) and some to the legacy Epic(i.e target_type=Epic)
               ep["target_type"] = target_work_item.class.base_class.name
               ep["label_id"] = cloneable_labels[label_link.label.title]
+              ep["namespace_id"] = target_work_item.namespace_id
             end
           end
         end

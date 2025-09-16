@@ -315,7 +315,6 @@ class Project < ApplicationRecord
   has_one :error_tracking_setting, inverse_of: :project, class_name: 'ErrorTracking::ProjectErrorTrackingSetting'
   has_one :grafana_integration, inverse_of: :project
   has_one :project_setting, inverse_of: :project, autosave: true
-  has_one :alerting_setting, inverse_of: :project, class_name: 'Alerting::ProjectAlertingSetting'
   has_one :service_desk_setting, class_name: 'ServiceDeskSetting'
   has_one :service_desk_custom_email_verification, class_name: 'ServiceDesk::CustomEmailVerification'
   has_one :service_desk_custom_email_credential, class_name: 'ServiceDesk::CustomEmailCredential'
@@ -566,6 +565,7 @@ class Project < ApplicationRecord
     delegate :restrict_user_defined_variables, :restrict_user_defined_variables=
     delegate :runner_token_expiration_interval, :runner_token_expiration_interval=, :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval_human_readable=
     delegate :job_token_scope_enabled, :job_token_scope_enabled=, prefix: :ci_outbound
+    delegate :resource_group_default_process_mode, :resource_group_default_process_mode=
 
     with_options prefix: :ci do
       delegate :pipeline_variables_minimum_override_role, :pipeline_variables_minimum_override_role=
@@ -642,9 +642,9 @@ class Project < ApplicationRecord
   validates :project_namespace, presence: true, on: :create, if: -> { self.namespace }
   validates :project_namespace, presence: true, on: :update, if: -> { self.project_namespace_id_changed?(to: nil) }
   validates :name, uniqueness: { scope: :namespace_id }
-  validates :import_url, public_url: { schemes: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
-                                       ports: ->(project) { project.persisted? ? VALID_MIRROR_PORTS : VALID_IMPORT_PORTS },
-                                       enforce_user: true }, if: [:external_import?, :import_url_changed?]
+  validates :unsafe_import_url, public_url: { schemes: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
+                                              ports: ->(project) { project.persisted? ? VALID_MIRROR_PORTS : VALID_IMPORT_PORTS },
+                                              enforce_user: true }, if: :validate_unsafe_import_url?
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_personal_projects_limit, on: :create
   validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
@@ -991,6 +991,9 @@ class Project < ApplicationRecord
     left_outer_joins(:fork_network_member).where(fork_network_member: { forked_from_project_id: nil })
   }
 
+  scope :last_repository_check_failed, -> { where(last_repository_check_failed: true) }
+  scope :last_repository_check_not_failed, -> { where(last_repository_check_failed: [false, nil]) }
+
   enum :auto_cancel_pending_pipelines, { disabled: 0, enabled: 1 }
 
   chronic_duration_attr :build_timeout_human_readable, :build_timeout,
@@ -1327,6 +1330,10 @@ class Project < ApplicationRecord
     end
   end
 
+  def resource_parent
+    self
+  end
+
   def parent_loaded?
     association(:namespace).loaded?
   end
@@ -1585,6 +1592,18 @@ class Project < ApplicationRecord
     ci_pipelines.newest_first(ref: ref, sha: sha, limit: limit, source: source)
   end
 
+  def latest_unscheduled_pipelines(ref: default_branch, sha: nil)
+    ref = ref.presence || default_branch
+    sha ||= commit(ref)&.sha
+    return ci_pipelines.none unless sha
+
+    ci_pipelines.newest_without_schedules(ref: ref, sha: sha)
+  end
+
+  def latest_unscheduled_pipeline(ref = default_branch, sha = nil)
+    latest_unscheduled_pipelines(ref: ref, sha: sha).take
+  end
+
   def latest_pipeline(ref = default_branch, sha = nil, source = nil)
     latest_pipelines(ref: ref, sha: sha, source: source).take
   end
@@ -1687,7 +1706,7 @@ class Project < ApplicationRecord
   #
   # @return [String] Sanitized import URL.
   def safe_import_url(masked: true)
-    url = Gitlab::UrlSanitizer.new(import_url)
+    url = Gitlab::UrlSanitizer.new(unsafe_import_url)
     masked ? url.masked_url : url.sanitized_url
   end
 
@@ -1713,18 +1732,17 @@ class Project < ApplicationRecord
   #
   # @see #safe_import_url
   #
-  # @example project.import_url #=> "https://user:secretpassword@example.com"
+  # @example project.unsafe_import_url #=> "https://user:secretpassword@example.com"
   #
   # @return [String] Unsanitized import URL.
-  def import_url
-    if import_data && super.present?
-      import_url = Gitlab::UrlSanitizer.new(super, credentials: import_data.credentials)
-      import_url.full_url
+  def unsafe_import_url
+    if import_data && import_url.present?
+      Gitlab::UrlSanitizer.new(import_url, credentials: import_data.credentials).full_url
     else
-      super
+      import_url
     end
   rescue StandardError
-    super
+    import_url
   end
 
   def build_or_assign_import_data(data: nil, credentials: nil)
@@ -1741,7 +1759,7 @@ class Project < ApplicationRecord
   end
 
   def external_import?
-    import_url.present?
+    safe_import_url.present?
   end
 
   def notify_project_import_complete?
@@ -2049,7 +2067,12 @@ class Project < ApplicationRecord
 
   # rubocop: disable CodeReuse/ServiceClass
   def create_labels
-    Label.templates.each do |label|
+    label_scope = Label.templates
+    if Feature.enabled?(:template_labels_scoped_by_org, :instance)
+      label_scope = label_scope.for_organization(organization)
+    end
+
+    label_scope.each do |label|
       # slice on column_names to ensure an added DB column will not break a mixed deployment
       params = label.attributes
                     .slice(*Label.column_names)
@@ -3305,12 +3328,6 @@ class Project < ApplicationRecord
     repository.blob_data_at(sha, ci_config_path_or_default)
   end
 
-  def enabled_group_deploy_keys
-    return GroupDeployKey.none unless group
-
-    GroupDeployKey.for_groups(group.self_and_ancestors_ids)
-  end
-
   def feature_flags_client_token
     instance = operations_feature_flags_client || create_operations_feature_flags_client!
     instance.token
@@ -3478,11 +3495,6 @@ class Project < ApplicationRecord
 
   def work_items_project_issues_list_feature_flag_enabled?
     group&.work_items_project_issues_list_feature_flag_enabled? || Feature.enabled?(:work_items_project_issues_list, type: :beta)
-  end
-
-  def work_item_status_feature_available?
-    (group&.work_item_status_feature_available? || Feature.enabled?(:work_item_status_feature_flag)) &&
-      licensed_feature_available?(:work_item_status)
   end
 
   def glql_load_on_click_feature_flag_enabled?
@@ -3971,9 +3983,13 @@ class Project < ApplicationRecord
   end
 
   # Overriding of Namespaces::AdjournedDeletable method
-  override :all_scheduled_for_deletion_in_hierarchy_chain
-  def all_scheduled_for_deletion_in_hierarchy_chain
+  override :ancestors_scheduled_for_deletion
+  def ancestors_scheduled_for_deletion
     ancestors(hierarchy_order: :asc).joins(:deletion_schedule)
+  end
+
+  def validate_unsafe_import_url?
+    import_url.present? && import_url_changed?
   end
 end
 

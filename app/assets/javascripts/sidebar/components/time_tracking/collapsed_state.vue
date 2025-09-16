@@ -102,7 +102,7 @@ export default {
     v-gl-tooltip:body.viewport.left
     :title="tooltipText"
     data-testid="collapsedState"
-    class="sidebar-collapsed-icon py-1 !gl-h-auto"
+    class="sidebar-collapsed-icon !gl-h-auto !gl-py-2"
   >
     <gl-icon name="timer" />
     <div class="time-tracking-collapsed-summary">

@@ -57,7 +57,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_beta, !!project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, !!project&.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:work_item_view_for_issues, project&.group)
-    push_frontend_feature_flag(:work_item_status_feature_flag, project&.root_ancestor)
+    push_frontend_feature_flag(:work_items_project_issues_list, project)
     push_frontend_feature_flag(:hide_incident_management_features, project)
   end
 
@@ -97,6 +97,8 @@ class Projects::IssuesController < Projects::ApplicationController
   attr_accessor :vulnerability_id
 
   def index
+    redirect_if_epic_params
+
     if index_html_request?
       set_sort_order
     else
@@ -496,6 +498,9 @@ class Projects::IssuesController < Projects::ApplicationController
     # issue type changes
     redirect_to project_issue_path(project, issue)
   end
+
+  # Overridden in EE
+  def redirect_if_epic_params; end
 end
 
 Projects::IssuesController.prepend_mod_with('Projects::IssuesController')

@@ -351,4 +351,28 @@ RSpec.describe Authn::TokenField::Base, feature_category: :system_access do
       strategy.token_with_expiration(token_owner_record)
     end
   end
+
+  describe '#write_new_token' do
+    context 'without options' do
+      it 'populates the token and does not save' do
+        expect(token_owner_record).not_to receive(:save!)
+        strategy.write_new_token(token_owner_record)
+
+        expect(token_owner_record.token).to be_present
+        expect(token_owner_record.token_expires_at).not_to be_present
+      end
+    end
+
+    context 'with expires_at option' do
+      let(:options) { super().merge(expires_at: ->(_) { 1.day.from_now }) }
+
+      it 'populates the token and expires_at field' do
+        expect(token_owner_record).not_to receive(:save!)
+        strategy.write_new_token(token_owner_record)
+
+        expect(token_owner_record.token).to be_present
+        expect(token_owner_record.token_expires_at).to be_present
+      end
+    end
+  end
 end

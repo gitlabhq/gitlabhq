@@ -1,4 +1,4 @@
-import { formValidators } from '@gitlab/ui/dist/utils';
+import { formValidators } from '@gitlab/ui/src/utils';
 import { s__, sprintf } from '~/locale';
 
 export const FORM_FIELD_NAME = 'name';

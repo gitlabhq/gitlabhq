@@ -63,6 +63,8 @@ Prerequisites:
 
    This command uses the `external_url` defined in `/etc/gitlab/gitlab.rb`.
 
+For a configuration example, see [Complete primary site with external PostgreSQL](#complete-primary-site-with-external-postgresql).
+
 ### Configure the external database to be replicated
 
 To set up an external database, you can either:
@@ -124,13 +126,16 @@ To configure the connection to the external read-replica database:
    postgresql['enable'] = false
    ```
 
-1. Save the file and reconfigure GitLab:
+1. Copy the configuration example from
+   [Complete secondary site with external PostgreSQL](#complete-secondary-site-with-external-postgresql).
+   To apply the changes, save the file and reconfigure GitLab:
 
    ```shell
    gitlab-ctl reconfigure
    ```
 
-In case you have connectivity issues to your replica database you can [check TCP connectivity](../../raketasks/maintenance.md) from your server with the following command:
+If you have connectivity issues to your replica database,
+[check TCP connectivity](../../raketasks/maintenance.md) from your server with the following command:
 
 ```shell
 gitlab-rake gitlab:tcp_check[<replica FQDN>,5432]
@@ -502,6 +507,109 @@ The reconfigure command in the [previously listed steps](#configure-gitlab) hand
    ```shell
    sudo gitlab-rake db:migrate:geo
    ```
+
+## Example configurations
+
+### Complete primary site with external PostgreSQL
+
+<!-- If you update this configuration example, also update the example in two_single_node_sites.md -->
+
+This complete `gitlab.rb` configuration example is for a Geo primary site that uses external PostgreSQL:
+
+```ruby
+# Primary site with external PostgreSQL configuration example
+
+## Geo Primary role
+roles(['geo_primary_role'])
+
+## The unique identifier for the Geo site
+gitlab_rails['geo_node_name'] = 'headquarters'
+
+## External URL
+external_url 'https://gitlab.example.com'
+
+## External PostgreSQL configuration
+postgresql['enable'] = false
+gitlab_rails['db_adapter'] = 'postgresql'
+gitlab_rails['db_encoding'] = 'unicode'
+gitlab_rails['db_host'] = 'primary-postgres.example.com'
+gitlab_rails['db_port'] = 5432
+gitlab_rails['db_database'] = 'gitlabhq_production'
+gitlab_rails['db_username'] = 'gitlab'
+gitlab_rails['db_password'] = 'your_database_password_here'
+
+## SSL/TLS configuration
+nginx['listen_port'] = 80
+nginx['listen_https'] = false
+letsencrypt['enable'] = false
+
+## Object Storage configuration (recommended for external services)
+gitlab_rails['object_store']['enabled'] = true
+gitlab_rails['object_store']['connection'] = {
+  'provider' => 'AWS',
+  'region' => 'us-east-1',
+  'aws_access_key_id' => 'your_access_key',
+  'aws_secret_access_key' => 'your_secret_key'
+}
+
+## Monitoring configuration
+node_exporter['listen_address'] = '0.0.0.0:9100'
+gitlab_workhorse['prometheus_listen_addr'] = '0.0.0.0:9229'
+```
+
+### Complete secondary site with external PostgreSQL
+
+<!-- If you update this configuration example, also update the example in two_single_node_sites.md -->
+
+This complete `gitlab.rb` configuration example is for a Geo secondary site that uses external PostgreSQL:
+
+```ruby
+# Secondary site with external PostgreSQL configuration example
+
+## Geo Secondary role
+roles(['geo_secondary_role'])
+
+## The unique identifier for the Geo site
+gitlab_rails['geo_node_name'] = 'location-2'
+
+## External URL
+external_url 'https://gitlab.example.com'
+
+## External PostgreSQL configuration (read-only replica)
+postgresql['enable'] = false
+gitlab_rails['db_adapter'] = 'postgresql'
+gitlab_rails['db_encoding'] = 'unicode'
+gitlab_rails['db_host'] = 'secondary-postgres.example.com'
+gitlab_rails['db_port'] = 5432
+gitlab_rails['db_database'] = 'gitlabhq_production'
+gitlab_rails['db_username'] = 'gitlab'
+gitlab_rails['db_password'] = 'your_database_password_here'
+
+## Geo tracking database configuration
+geo_secondary['db_username'] = 'gitlab_geo'
+geo_secondary['db_password'] = 'your_tracking_db_password_here'
+geo_secondary['db_host'] = 'secondary-tracking-db.example.com'
+geo_secondary['db_port'] = 5432
+geo_postgresql['enable'] = false
+
+## SSL/TLS configuration
+nginx['listen_port'] = 80
+nginx['listen_https'] = false
+letsencrypt['enable'] = false
+
+## Object Storage configuration (must match primary)
+gitlab_rails['object_store']['enabled'] = true
+gitlab_rails['object_store']['connection'] = {
+  'provider' => 'AWS',
+  'region' => 'us-east-1',
+  'aws_access_key_id' => 'your_access_key',
+  'aws_secret_access_key' => 'your_secret_key'
+}
+
+## Monitoring configuration
+node_exporter['listen_address'] = '0.0.0.0:9100'
+gitlab_workhorse['prometheus_listen_addr'] = '0.0.0.0:9229'
+```
 
 ## Troubleshooting
 

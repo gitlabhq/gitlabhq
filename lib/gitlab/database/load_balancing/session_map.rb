@@ -14,7 +14,7 @@ module Gitlab
         end
 
         # models - Array<ActiveRecord::Base>
-        def self.with_sessions(models)
+        def self.with_sessions(models = Gitlab::Database::LoadBalancing.base_models)
           dbs = models.map { |m| m.load_balancer.name }.uniq
           dbs.each { |db| cached_instance.validate_db_name(db) }
           ScopedSessions.new(dbs, cached_instance.session_map)

@@ -75,7 +75,11 @@ module ClickHouseHelpers
     structure = data.first.keys
 
     rows = data.map do |row|
-      cols = structure.map { |col| ClickHouseHelpers.quote(row[col]) }
+      cols = structure.map do |col|
+        val = row[col].is_a?(Hash) ? row[col].to_json : row[col]
+        ClickHouseHelpers.quote(val)
+      end
+
       "(#{cols.join(', ')})"
     end
 

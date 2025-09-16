@@ -25,7 +25,7 @@ Sidekiq::Testing.inline! do
         full_path, _, project_path = full_path.rpartition('/')
         group = Sidekiq::Worker.skipping_transaction_check do
           Group.find_by_full_path(full_path) || Groups::NestedCreateService.new(
-            user, group_path: full_path, organization_id: user.organizations.first.id
+            user, group_path: full_path, organization_id: user.organization.id
           ).execute
         end
 

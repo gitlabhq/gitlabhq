@@ -337,7 +337,7 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
 
         allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!)
           .with(
-            project.import_url,
+            project.unsafe_import_url,
             ports: Project::VALID_IMPORT_PORTS,
             schemes: Project::VALID_IMPORT_PROTOCOLS,
             allow_local_network: false,
@@ -374,7 +374,7 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
 
           allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!)
             .with(
-              project.import_url,
+              project.unsafe_import_url,
               ports: Project::VALID_IMPORT_PORTS,
               schemes: Project::VALID_IMPORT_PROTOCOLS,
               allow_local_network: false,
@@ -404,7 +404,7 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
 
             allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!)
               .with(
-                project.import_url,
+                project.unsafe_import_url,
                 ports: Project::VALID_IMPORT_PORTS,
                 schemes: Project::VALID_IMPORT_PROTOCOLS,
                 allow_local_network: false,
@@ -436,7 +436,7 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
 
           allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!)
             .with(
-              project.import_url,
+              project.unsafe_import_url,
               ports: Project::VALID_IMPORT_PORTS,
               schemes: Project::VALID_IMPORT_PROTOCOLS,
               allow_local_network: false,
@@ -467,7 +467,7 @@ RSpec.describe Projects::ImportService, feature_category: :importers do
 
           allow(Gitlab::HTTP_V2::UrlBlocker).to receive(:validate!)
             .with(
-              project.import_url,
+              project.unsafe_import_url,
               ports: Project::VALID_IMPORT_PORTS,
               schemes: Project::VALID_IMPORT_PROTOCOLS,
               allow_local_network: false,

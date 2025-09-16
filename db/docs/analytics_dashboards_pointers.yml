@@ -8,7 +8,7 @@ description: Stores project link with configuration files for Analytics Dashboar
   group feature.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107673
 milestone: '15.8'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   target_project_id: projects
 table_size: small

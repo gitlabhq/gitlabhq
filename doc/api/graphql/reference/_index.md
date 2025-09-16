@@ -92,6 +92,35 @@ Returns [`[AddOnPurchase!]`](#addonpurchase).
 | ---- | ---- | ----------- |
 | <a id="queryaddonpurchasesnamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | ID of namespace that the add-ons were purchased for. |
 
+### `Query.adminGroups`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Find groups visible to the current admin.
+
+Returns [`GroupInterfaceConnection`](#groupinterfaceconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryadmingroupsactive"></a>`active` | [`Boolean`](#boolean) | When `nil` (default value), returns all groups. When `true`, returns only groups that are not pending deletion. When `false`, only returns groups that are pending deletion. |
+| <a id="queryadmingroupsallavailable"></a>`allAvailable` | [`Boolean`](#boolean) | When `true`, returns all accessible groups. When `false`, returns only groups where the user is a member. Unauthenticated requests always return all public groups. The `owned_only` argument takes precedence. |
+| <a id="queryadmingroupsids"></a>`ids` | [`[ID!]`](#id) | Filter groups by IDs. |
+| <a id="queryadmingroupsmarkedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
+| <a id="queryadmingroupsownedonly"></a>`ownedOnly` | [`Boolean`](#boolean) | Only include groups where the current user has an owner role. |
+| <a id="queryadmingroupsparentpath"></a>`parentPath` | [`ID`](#id) | Full path of the parent group. |
+| <a id="queryadmingroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
+| <a id="queryadmingroupssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
+| <a id="queryadmingroupstoplevelonly"></a>`topLevelOnly` | [`Boolean`](#boolean) | Only include top-level groups. |
+
 ### `Query.adminMemberRole`
 
 {{< details >}}
@@ -151,6 +180,67 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryadminmemberrolesorderby"></a>`orderBy` | [`MemberRolesOrderBy`](#memberrolesorderby) | Ordering column. Default is NAME. |
 | <a id="queryadminmemberrolessort"></a>`sort` | [`SortDirectionEnum`](#sortdirectionenum) | Ordering column. Default is ASC. |
 
+### `Query.adminProjects`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Find projects visible to the current admin.
+
+Returns [`ProjectInterfaceConnection`](#projectinterfaceconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryadminprojectsactive"></a>`active` | [`Boolean`](#boolean) | Filters by projects that are not archived and not marked for deletion. |
+| <a id="queryadminprojectsaimedfordeletion"></a>`aimedForDeletion` | [`Boolean`](#boolean) | Return only projects marked for deletion. |
+| <a id="queryadminprojectsarchived"></a>`archived` | [`ProjectArchived`](#projectarchived) | Filter projects by archived status. |
+| <a id="queryadminprojectsfullpaths"></a>`fullPaths` | [`[String!]`](#string) | Filter projects by full paths. You cannot provide more than 50 full paths. |
+| <a id="queryadminprojectsids"></a>`ids` | [`[ID!]`](#id) | Filter projects by IDs. |
+| <a id="queryadminprojectsincludehidden"></a>`includeHidden` | [`Boolean`](#boolean) | Include hidden projects. |
+| <a id="queryadminprojectslastrepositorycheckfailed"></a>`lastRepositoryCheckFailed` | [`Boolean`](#boolean) | Return only projects where the last repository check failed. Only available for administrators. |
+| <a id="queryadminprojectsmarkedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the project was marked for deletion. |
+| <a id="queryadminprojectsmembership"></a>`membership` | [`Boolean`](#boolean) | Return only projects that the current user is a member of. |
+| <a id="queryadminprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
+| <a id="queryadminprojectsnamespacepath"></a>`namespacePath` | [`ID`](#id) | Filter projects by their namespace's full path (group or user). |
+| <a id="queryadminprojectsnotaimedfordeletion"></a>`notAimedForDeletion` | [`Boolean`](#boolean) | Exclude projects that are marked for deletion. |
+| <a id="queryadminprojectspersonal"></a>`personal` | [`Boolean`](#boolean) | Return only personal projects. |
+| <a id="queryadminprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="queryadminprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
+| <a id="queryadminprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
+| <a id="queryadminprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Defaults to `id_desc`, or `similarity` if search used. |
+| <a id="queryadminprojectstopics"></a>`topics` | [`[String!]`](#string) | Filter projects by topics. |
+| <a id="queryadminprojectstrending"></a>`trending` | [`Boolean`](#boolean) | Return only projects that are trending. |
+| <a id="queryadminprojectsvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter projects by visibility level. |
+| <a id="queryadminprojectswithcodeembeddingsindexed"></a>`withCodeEmbeddingsIndexed` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Include projects with indexed code embeddings. Requires `ids` to be sent. Applies only if the feature flag `allow_with_code_embeddings_indexed_projects_filter` is enabled. |
+| <a id="queryadminprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
+| <a id="queryadminprojectswithmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
+
+### `Query.aiCatalogAgentFlowConfig`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Get flow configuration for an AI Catalog agent.
+
+Returns [`String`](#string).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaicatalogagentflowconfigagentversionid"></a>`agentVersionId` | [`AiCatalogItemVersionID!`](#aicatalogitemversionid) | Global ID of the agent version to use. |
+| <a id="queryaicatalogagentflowconfigflowconfigtype"></a>`flowConfigType` | [`AiCatalogFlowConfigType!`](#aicatalogflowconfigtype) | Type of flow configuration to generate. |
+
 ### `Query.aiCatalogBuiltInTools`
 
 {{< details >}}
@@ -183,6 +273,31 @@ Returns [`AiCatalogItem`](#aicatalogitem).
 | ---- | ---- | ----------- |
 | <a id="queryaicatalogitemid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog item to find. |
 
+### `Query.aiCatalogItemConsumers`
+
+{{< details >}}
+**Introduced** in GitLab 18.2.
+**Status**: Experiment.
+{{< /details >}}
+
+AI Catalog items configured for use.
+
+Returns [`AiCatalogItemConsumerConnection!`](#aicatalogitemconsumerconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaicatalogitemconsumersgroupid"></a>`groupId` | [`GroupID`](#groupid) | Group ID to retrieve configured AI Catalog items for. |
+| <a id="queryaicatalogitemconsumersincludeinherited"></a>`includeInherited` | [`Boolean`](#boolean) | Include configured AI Catalog items inherited from parent groups. |
+| <a id="queryaicatalogitemconsumersitemid"></a>`itemId` | [`AiCatalogItemID`](#aicatalogitemid) | Item ID to retrieve configured AI Catalog items for. |
+| <a id="queryaicatalogitemconsumersitemtype"></a>`itemType` | [`AiCatalogItemType`](#aicatalogitemtype) | Type of items to retrieve. |
+| <a id="queryaicatalogitemconsumersprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Project ID to retrieve configured AI Catalog items for. |
+
 ### `Query.aiCatalogItems`
 
 {{< details >}}
@@ -204,6 +319,23 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="queryaicatalogitemsitemtype"></a>`itemType` | [`AiCatalogItemType`](#aicatalogitemtype) | Type of items to retrieve. |
 | <a id="queryaicatalogitemssearch"></a>`search` | [`String`](#string) | Search items by name and description. |
+
+### `Query.aiChatAvailableModels`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Get available models for Duo Agentic Chat.
+
+Returns [`AvailableModels`](#availablemodels).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaichatavailablemodelsrootnamespaceid"></a>`rootNamespaceId` | [`GroupID!`](#groupid) | Global ID of the namespace the user is acting on. |
 
 ### `Query.aiChatContextPresets`
 
@@ -587,27 +719,6 @@ Returns [`CloudConnectorStatus`](#cloudconnectorstatus).
 Get the list of all the compliance requirement controls.
 
 Returns [`ComplianceRequirementControl`](#compliancerequirementcontrol).
-
-### `Query.configuredAiCatalogItems`
-
-{{< details >}}
-**Introduced** in GitLab 18.2.
-**Status**: Experiment.
-{{< /details >}}
-
-AI Catalog items configured for use.
-
-Returns [`AiCatalogItemConsumerConnection!`](#aicatalogitemconsumerconnection).
-
-This field returns a [connection](#connections). It accepts the
-four standard [pagination arguments](#pagination-arguments):
-`before: String`, `after: String`, `first: Int`, and `last: Int`.
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="queryconfiguredaicatalogitemsprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | Project ID to retrieve configured AI Catalog items for. |
 
 ### `Query.containerRepository`
 
@@ -1044,6 +1155,23 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
+### `Query.mavenUpstreamRegistry`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Find a Maven upstream registry. Returns null if the `maven_virtual_registry` feature flag is disabled.
+
+Returns [`MavenUpstream`](#mavenupstream).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querymavenupstreamregistryid"></a>`id` | [`VirtualRegistriesPackagesMavenUpstreamID!`](#virtualregistriespackagesmavenupstreamid) | Global ID of the Maven upstream registry. |
+
 ### `Query.mavenVirtualRegistry`
 
 {{< details >}}
@@ -1190,6 +1318,25 @@ Returns [`Namespace`](#namespace).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="querynamespacefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. For example, `gitlab-org/gitlab-foss`. |
+
+### `Query.namespaceSecurityProjects`
+
+Security-filtered projects for a namespace.
+
+Returns [`ProjectConnection`](#projectconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querynamespacesecurityprojectsnamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Global ID of the namespace. |
+| <a id="querynamespacesecurityprojectssearch"></a>`search` | [`String`](#string) | Search projects by name. |
+| <a id="querynamespacesecurityprojectssecurityanalyzerfilters"></a>`securityAnalyzerFilters` | [`[AnalyzerFilterInput!]`](#analyzerfilterinput) | Filter projects by analyzer type and status. |
+| <a id="querynamespacesecurityprojectsvulnerabilitycountfilters"></a>`vulnerabilityCountFilters` | [`[VulnerabilityCountFilterInput!]`](#vulnerabilitycountfilterinput) | Filter projects by vulnerability counts using comparison operators. |
 
 ### `Query.note`
 
@@ -1352,6 +1499,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryprojectsfullpaths"></a>`fullPaths` | [`[String!]`](#string) | Filter projects by full paths. You cannot provide more than 50 full paths. |
 | <a id="queryprojectsids"></a>`ids` | [`[ID!]`](#id) | Filter projects by IDs. |
 | <a id="queryprojectsincludehidden"></a>`includeHidden` | [`Boolean`](#boolean) | Include hidden projects. |
+| <a id="queryprojectslastrepositorycheckfailed"></a>`lastRepositoryCheckFailed` | [`Boolean`](#boolean) | Return only projects where the last repository check failed. Only available for administrators. |
 | <a id="queryprojectsmarkedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the project was marked for deletion. |
 | <a id="queryprojectsmembership"></a>`membership` | [`Boolean`](#boolean) | Return only projects that the current user is a member of. |
 | <a id="queryprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
@@ -1536,6 +1684,26 @@ Returns [`UsersQueuedForRolePromotionConnection`](#usersqueuedforrolepromotionco
 This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+### `Query.semanticCodeSearch`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Semantically search for code in provided repositories.
+
+Returns [`[SemanticSearchCode!]`](#semanticsearchcode).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querysemanticcodesearchknn"></a>`knn` | [`Int`](#int) | KNN count. |
+| <a id="querysemanticcodesearchlimit"></a>`limit` | [`Int`](#int) | Max number of search results to return. |
+| <a id="querysemanticcodesearchproject"></a>`project` | [`ProjectInfoInput!`](#projectinfoinput) | Project to search, with optional path prefix. |
+| <a id="querysemanticcodesearchsearchterm"></a>`searchTerm` | [`String!`](#string) | Search term to search for. |
 
 ### `Query.snippets`
 
@@ -1830,6 +1998,27 @@ Returns [`WorkItem`](#workitem).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryworkitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
+
+### `Query.workItemAllowedStatuses`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Allowed work item statuses from the root groups the current user belongs to.
+
+Returns [`WorkItemStatusConnection`](#workitemstatusconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryworkitemallowedstatusesname"></a>`name` | [`String`](#string) | Filter statuses by name. |
 
 ### `Query.workItemDescriptionTemplateContent`
 
@@ -2139,6 +2328,7 @@ Input type: `AdminSidekiqQueuesDeleteJobsInput`
 | <a id="mutationadminsidekiqqueuesdeletejobsmergeactionstatus"></a>`mergeActionStatus` | [`String`](#string) | Delete jobs matching merge_action_status in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsorganizationid"></a>`organizationId` | [`String`](#string) | Delete jobs matching organization_id in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobspipelineid"></a>`pipelineId` | [`String`](#string) | Delete jobs matching pipeline_id in the context metadata. |
+| <a id="mutationadminsidekiqqueuesdeletejobspolicysyncconfigid"></a>`policySyncConfigId` | [`String`](#string) | Delete jobs matching policy_sync_config_id in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsproject"></a>`project` | [`String`](#string) | Delete jobs matching project in the context metadata. |
 | <a id="mutationadminsidekiqqueuesdeletejobsqueuename"></a>`queueName` | [`String!`](#string) | Name of the queue to delete jobs from. |
 | <a id="mutationadminsidekiqqueuesdeletejobsrelatedclass"></a>`relatedClass` | [`String`](#string) | Delete jobs matching related_class in the context metadata. |
@@ -2351,6 +2541,7 @@ Input type: `AiCatalogAgentExecuteInput`
 | <a id="mutationaicatalogagentexecuteagentid"></a>`agentId` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the AI catalog agent to execute. |
 | <a id="mutationaicatalogagentexecuteagentversionid"></a>`agentVersionId` | [`AiCatalogItemVersionID`](#aicatalogitemversionid) | Global ID of the specific agent version to use. If not provided, the latest version will be used. |
 | <a id="mutationaicatalogagentexecuteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogagentexecuteuserprompt"></a>`userPrompt` | [`String`](#string) | Optional user prompt. If provided, it will be used for agent execution; otherwise, the database-stored user_prompt will be used. |
 
 #### Fields
 
@@ -2359,6 +2550,7 @@ Input type: `AiCatalogAgentExecuteInput`
 | <a id="mutationaicatalogagentexecuteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaicatalogagentexecuteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationaicatalogagentexecuteflowconfig"></a>`flowConfig` | [`String`](#string) | YAML configuration file that can be used in Duo workflow service for flow execution. |
+| <a id="mutationaicatalogagentexecuteworkflow"></a>`workflow` | [`DuoWorkflow`](#duoworkflow) | Created workflow. |
 
 ### `Mutation.aiCatalogAgentUpdate`
 
@@ -2382,6 +2574,7 @@ Input type: `AiCatalogAgentUpdateInput`
 | <a id="mutationaicatalogagentupdatesystemprompt"></a>`systemPrompt` | [`String`](#string) | System prompt for the agent. |
 | <a id="mutationaicatalogagentupdatetools"></a>`tools` | [`[AiCatalogBuiltInToolID!]`](#aicatalogbuiltintoolid) | List of GitLab tools enabled for the agent. |
 | <a id="mutationaicatalogagentupdateuserprompt"></a>`userPrompt` | [`String`](#string) | User prompt for the agent. |
+| <a id="mutationaicatalogagentupdateversionbump"></a>`versionBump` | [`AiCatalogVersionBump`](#aicatalogversionbump) | Bump version, calculated from the last released version name. |
 
 #### Fields
 
@@ -2409,6 +2602,7 @@ Input type: `AiCatalogFlowCreateInput`
 | <a id="mutationaicatalogflowcreatename"></a>`name` | [`String!`](#string) | Name for the flow. |
 | <a id="mutationaicatalogflowcreateprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | Project for the flow. |
 | <a id="mutationaicatalogflowcreatepublic"></a>`public` | [`Boolean!`](#boolean) | Whether the flow is publicly visible in the catalog. |
+| <a id="mutationaicatalogflowcreaterelease"></a>`release` | [`Boolean`](#boolean) | Whether to release the latest version of the flow. |
 | <a id="mutationaicatalogflowcreatesteps"></a>`steps` | [`[AiCatalogFlowStepsInput!]!`](#aicatalogflowstepsinput) | Steps for the flow. |
 
 #### Fields
@@ -2461,6 +2655,7 @@ Input type: `AiCatalogFlowUpdateInput`
 | <a id="mutationaicatalogflowupdateid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog flow to update. |
 | <a id="mutationaicatalogflowupdatename"></a>`name` | [`String`](#string) | Name for the flow. |
 | <a id="mutationaicatalogflowupdatepublic"></a>`public` | [`Boolean`](#boolean) | Whether the flow is publicly visible in the catalog. |
+| <a id="mutationaicatalogflowupdaterelease"></a>`release` | [`Boolean`](#boolean) | Whether to release the latest version of the flow. |
 | <a id="mutationaicatalogflowupdatesteps"></a>`steps` | [`[AiCatalogFlowStepsInput!]`](#aicatalogflowstepsinput) | Steps for the flow. |
 
 #### Fields
@@ -2485,9 +2680,8 @@ Input type: `AiCatalogItemConsumerCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationaicatalogitemconsumercreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationaicatalogitemconsumercreateenabled"></a>`enabled` | [`Boolean`](#boolean) | Whether to enable the item. |
 | <a id="mutationaicatalogitemconsumercreateitemid"></a>`itemId` | [`AiCatalogItemID!`](#aicatalogitemid) | Item to configure. |
-| <a id="mutationaicatalogitemconsumercreatelocked"></a>`locked` | [`Boolean`](#boolean) | Whether to lock the item configuration (groups only). |
+| <a id="mutationaicatalogitemconsumercreatepinnedversionprefix"></a>`pinnedVersionPrefix` | [`String`](#string) | Major version, minor version, or patch to pin the item to. |
 | <a id="mutationaicatalogitemconsumercreatetarget"></a>`target` | [`ItemConsumerTargetInput!`](#itemconsumertargetinput) | Target in which the catalog item is configured. |
 
 #### Fields
@@ -2536,9 +2730,8 @@ Input type: `AiCatalogItemConsumerUpdateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationaicatalogitemconsumerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationaicatalogitemconsumerupdateenabled"></a>`enabled` | [`Boolean`](#boolean) | Whether the flow is enabled in the group or project. |
 | <a id="mutationaicatalogitemconsumerupdateid"></a>`id` | [`AiCatalogItemConsumerID!`](#aicatalogitemconsumerid) | Global ID of the catalog item consumer to update. |
-| <a id="mutationaicatalogitemconsumerupdatelocked"></a>`locked` | [`Boolean`](#boolean) | Whether the configuration is locked. |
+| <a id="mutationaicatalogitemconsumerupdatepinnedversionprefix"></a>`pinnedVersionPrefix` | [`String`](#string) | Major version, minor version, or patch to pin the item to. |
 
 #### Fields
 
@@ -2562,6 +2755,7 @@ Input type: `AiDuoWorkflowCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationaiduoworkflowcreateagentprivileges"></a>`agentPrivileges` | [`[Int!]`](#int) | Actions the agent is allowed to perform. |
+| <a id="mutationaiduoworkflowcreateaicatalogitemversionid"></a>`aiCatalogItemVersionId` | [`AiCatalogItemVersionID`](#aicatalogitemversionid) | ID of the catalog item the workflow is triggered from. |
 | <a id="mutationaiduoworkflowcreateallowagenttorequestuser"></a>`allowAgentToRequestUser` | [`Boolean`](#boolean) | When enabled, Duo Agent Platform may stop to ask the user questions before proceeding. |
 | <a id="mutationaiduoworkflowcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiduoworkflowcreateenvironment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment for the workflow. |
@@ -2597,6 +2791,7 @@ Input type: `AiFeatureSettingUpdateInput`
 | <a id="mutationaifeaturesettingupdateaiselfhostedmodelid"></a>`aiSelfHostedModelId` | [`AiSelfHostedModelID`](#aiselfhostedmodelid) | Global ID of the self-hosted model providing the AI setting. |
 | <a id="mutationaifeaturesettingupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaifeaturesettingupdatefeatures"></a>`features` | [`[AiFeatures!]!`](#aifeatures) | Array of AI features being configured (for single or batch update). |
+| <a id="mutationaifeaturesettingupdateofferedmodelref"></a>`offeredModelRef` | [`String`](#string) | Identifier of the selected model for the feature. |
 | <a id="mutationaifeaturesettingupdateprovider"></a>`provider` | [`AiFeatureProviders!`](#aifeatureproviders) | Provider for AI setting. |
 
 #### Fields
@@ -6166,6 +6361,30 @@ Input type: `DestroySnippetInput`
 | <a id="mutationdestroysnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationdestroysnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | Snippet after mutation. |
 
+### `Mutation.devfileValidate`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `DevfileValidateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdevfilevalidateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdevfilevalidatedevfileyaml"></a>`devfileYaml` | [`String!`](#string) | Input devfile. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdevfilevalidateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdevfilevalidateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationdevfilevalidatevalid"></a>`valid` | [`Boolean`](#boolean) | Status whether devfile is valid or not. |
+
 ### `Mutation.disableDevopsAdoptionNamespace`
 
 **Status**: Beta.
@@ -6208,6 +6427,34 @@ Input type: `DiscussionToggleResolveInput`
 | <a id="mutationdiscussiontoggleresolvediscussion"></a>`discussion` | [`Discussion`](#discussion) | Discussion after mutation. |
 | <a id="mutationdiscussiontoggleresolveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.dismissPolicyViolations`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Dismisses policy violations linked to a merge request.
+
+Input type: `DismissPolicyViolationsInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdismisspolicyviolationsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdismisspolicyviolationsiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationdismisspolicyviolationsprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+| <a id="mutationdismisspolicyviolationssecuritypolicyids"></a>`securityPolicyIds` | [`[ID!]!`](#id) | IDs of warn mode policies with violations to dismiss. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdismisspolicyviolationsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdismisspolicyviolationserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationdismisspolicyviolationsmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
+
 ### `Mutation.duoSettingsUpdate`
 
 {{< details >}}
@@ -6225,6 +6472,7 @@ Input type: `DuoSettingsUpdateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationduosettingsupdateaigatewayurl"></a>`aiGatewayUrl` | [`String`](#string) | URL for local AI gateway server. |
 | <a id="mutationduosettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationduosettingsupdateduoagentplatformserviceurl"></a>`duoAgentPlatformServiceUrl` | [`String`](#string) | URL for the local Duo Agent Platform service. |
 | <a id="mutationduosettingsupdateduocorefeaturesenabled"></a>`duoCoreFeaturesEnabled` | [`Boolean`](#boolean) | Indicates whether GitLab Duo Core features are enabled. |
 
 #### Fields
@@ -7375,6 +7623,30 @@ Input type: `ImportSourceUserResendNotificationInput`
 | <a id="mutationimportsourceuserresendnotificationerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationimportsourceuserresendnotificationimportsourceuser"></a>`importSourceUser` | [`ImportSourceUser`](#importsourceuser) | Mapping of a user on source instance to a user on destination instance after mutation. |
 
+### `Mutation.importSourceUserUndoKeepAsPlaceholder`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `ImportSourceUserUndoKeepAsPlaceholderInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationimportsourceuserundokeepasplaceholderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationimportsourceuserundokeepasplaceholderid"></a>`id` | [`ImportSourceUserID!`](#importsourceuserid) | Global ID of the mapping of a user on source instance to a user on destination instance. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationimportsourceuserundokeepasplaceholderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationimportsourceuserundokeepasplaceholdererrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationimportsourceuserundokeepasplaceholderimportsourceuser"></a>`importSourceUser` | [`ImportSourceUser`](#importsourceuser) | Mapping of a user on source instance to a user on destination instance after mutation. |
+
 ### `Mutation.instanceAuditEventStreamingDestinationsCreate`
 
 {{< details >}}
@@ -8302,6 +8574,26 @@ Input type: `LabelCreateInput`
 | <a id="mutationlabelcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationlabelcreatelabel"></a>`label` | [`Label`](#label) | Label after mutation. |
 
+### `Mutation.labelUpdate`
+
+Input type: `LabelUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlabelupdatearchived"></a>`archived` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
+| <a id="mutationlabelupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlabelupdateid"></a>`id` | [`LabelID!`](#labelid) | Global ID of the label to update. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlabelupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlabelupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationlabelupdatelabel"></a>`label` | [`Label`](#label) | Label after mutation. |
+
 ### `Mutation.ldapAdminRoleLinkCreate`
 
 {{< details >}}
@@ -8357,6 +8649,87 @@ Input type: `LdapAdminRoleLinkDestroyInput`
 | <a id="mutationldapadminrolelinkdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationldapadminrolelinkdestroyldapadminrolelink"></a>`ldapAdminRoleLink` | [`LdapAdminRoleLink`](#ldapadminrolelink) | Deleted instance-level LDAP link. |
 
+### `Mutation.lifecycleAttachWorkItemType`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `LifecycleAttachWorkItemTypeInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlifecycleattachworkitemtypeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlifecycleattachworkitemtypelifecycleid"></a>`lifecycleId` | [`WorkItemsStatusesLifecycleID!`](#workitemsstatuseslifecycleid) | Global ID of the lifecycle to attach the work item type to. |
+| <a id="mutationlifecycleattachworkitemtypenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Namespace path where the lifecycle exists. |
+| <a id="mutationlifecycleattachworkitemtypestatusmappings"></a>`statusMappings` | [`[StatusMappingInput!]`](#statusmappinginput) | Status mappings from the old lifecycle to the new lifecycle. |
+| <a id="mutationlifecycleattachworkitemtypeworkitemtypeid"></a>`workItemTypeId` | [`WorkItemsTypeID!`](#workitemstypeid) | Global ID of the work item type to attach to the lifecycle. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlifecycleattachworkitemtypeclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlifecycleattachworkitemtypeerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationlifecycleattachworkitemtypelifecycle"></a>`lifecycle` | [`WorkItemLifecycle`](#workitemlifecycle) | Lifecycle after attaching the work item type. |
+
+### `Mutation.lifecycleCreate`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `LifecycleCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlifecyclecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlifecyclecreatedefaultclosedstatusindex"></a>`defaultClosedStatusIndex` | [`Int!`](#int) | Index of the default closed status in the statuses array. |
+| <a id="mutationlifecyclecreatedefaultduplicatestatusindex"></a>`defaultDuplicateStatusIndex` | [`Int!`](#int) | Index of the default duplicated status in the statuses array. |
+| <a id="mutationlifecyclecreatedefaultopenstatusindex"></a>`defaultOpenStatusIndex` | [`Int!`](#int) | Index of the default open status in the statuses array. |
+| <a id="mutationlifecyclecreatename"></a>`name` | [`String!`](#string) | Name of the lifecycle. |
+| <a id="mutationlifecyclecreatenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Namespace path where the lifecycle will be created. |
+| <a id="mutationlifecyclecreatestatuses"></a>`statuses` | [`[WorkItemStatusInput!]!`](#workitemstatusinput) | Statuses of the lifecycle. Can be existing (with id) or new (without id). |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlifecyclecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlifecyclecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationlifecyclecreatelifecycle"></a>`lifecycle` | [`WorkItemLifecycle`](#workitemlifecycle) | Lifecycle created. |
+
+### `Mutation.lifecycleDelete`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `LifecycleDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlifecycledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlifecycledeleteid"></a>`id` | [`WorkItemsStatusesLifecycleID!`](#workitemsstatuseslifecycleid) | Global ID of the lifecycle to delete. |
+| <a id="mutationlifecycledeletenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Namespace path where the lifecycle exists. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationlifecycledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationlifecycledeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationlifecycledeletelifecycle"></a>`lifecycle` | [`WorkItemLifecycle`](#workitemlifecycle) | Deleted lifecycle. |
+
 ### `Mutation.lifecycleUpdate`
 
 {{< details >}}
@@ -8377,6 +8750,7 @@ Input type: `LifecycleUpdateInput`
 | <a id="mutationlifecycleupdateid"></a>`id` | [`WorkItemsStatusesLifecycleID!`](#workitemsstatuseslifecycleid) | Global ID of the lifecycle to be updated. |
 | <a id="mutationlifecycleupdatename"></a>`name` | [`String`](#string) | Name of the lifecycle. |
 | <a id="mutationlifecycleupdatenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Namespace path where the lifecycle exists. |
+| <a id="mutationlifecycleupdatestatusmappings"></a>`statusMappings` | [`[StatusMappingInput!]`](#statusmappinginput) | Mappings for statuses being removed from the lifecycle. Maps old status to replacement status. |
 | <a id="mutationlifecycleupdatestatuses"></a>`statuses` | [`[WorkItemStatusInput!]`](#workitemstatusinput) | Statuses of the lifecycle. Can be existing (with id) or new (without id). |
 
 #### Fields
@@ -8445,10 +8819,11 @@ Input type: `MavenUpstreamCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationmavenupstreamcreatecachevalidityhours"></a>`cacheValidityHours` | [`Int!`](#int) | Cache validity period. Defaults to 24 hours. |
+| <a id="mutationmavenupstreamcreatecachevalidityhours"></a>`cacheValidityHours` | [`Int`](#int) | Cache validity period. Defaults to 24 hours. |
 | <a id="mutationmavenupstreamcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationmavenupstreamcreatedescription"></a>`description` | [`String`](#string) | Description of the upstream registry. |
 | <a id="mutationmavenupstreamcreateid"></a>`id` | [`VirtualRegistriesPackagesMavenRegistryID!`](#virtualregistriespackagesmavenregistryid) | ID of the upstream registry. |
+| <a id="mutationmavenupstreamcreatemetadatacachevalidityhours"></a>`metadataCacheValidityHours` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
 | <a id="mutationmavenupstreamcreatename"></a>`name` | [`String!`](#string) | Name of upstream registry. |
 | <a id="mutationmavenupstreamcreatepassword"></a>`password` | [`String`](#string) | Password of the upstream registry. |
 | <a id="mutationmavenupstreamcreateurl"></a>`url` | [`String!`](#string) | URL of the upstream registry. |
@@ -8685,6 +9060,7 @@ Input type: `MergeRequestCreateInput`
 | <a id="mutationmergerequestcreatelabels"></a>`labels` | [`[String!]`](#string) | Labels of the merge request. |
 | <a id="mutationmergerequestcreatemergeafter"></a>`mergeAfter` | [`Time`](#time) | Date after which the merge request can be merged. |
 | <a id="mutationmergerequestcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project full path the merge request is associated with. |
+| <a id="mutationmergerequestcreateremovesourcebranch"></a>`removeSourceBranch` | [`Boolean`](#boolean) | Indicates if the source branch of the merge request will be deleted after merge. |
 | <a id="mutationmergerequestcreatesourcebranch"></a>`sourceBranch` | [`String!`](#string) | Source branch of the merge request. |
 | <a id="mutationmergerequestcreatetargetbranch"></a>`targetBranch` | [`String!`](#string) | Target branch of the merge request. |
 | <a id="mutationmergerequestcreatetitle"></a>`title` | [`String!`](#string) | Title of the merge request. |
@@ -8904,6 +9280,7 @@ Input type: `MergeRequestUpdateInput`
 | <a id="mutationmergerequestupdatemergeafter"></a>`mergeAfter` | [`Time`](#time) | Date after which the merge request can be merged. |
 | <a id="mutationmergerequestupdateoverriderequestedchanges"></a>`overrideRequestedChanges` | [`Boolean`](#boolean) | Override all requested changes. Can only be set by users who have permissionto merge this merge request. |
 | <a id="mutationmergerequestupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+| <a id="mutationmergerequestupdateremovesourcebranch"></a>`removeSourceBranch` | [`Boolean`](#boolean) | Indicates if the source branch of the merge request will be deleted after merge. |
 | <a id="mutationmergerequestupdatestate"></a>`state` | [`MergeRequestNewState`](#mergerequestnewstate) | Action to perform to change the state. |
 | <a id="mutationmergerequestupdatetargetbranch"></a>`targetBranch` | [`String`](#string) | Target branch of the merge request. |
 | <a id="mutationmergerequestupdatetimeestimate"></a>`timeEstimate` | [`String`](#string) | Estimated time to complete the merge request. Use `null` or `0` to remove the current estimate. |
@@ -9939,6 +10316,7 @@ Input type: `ProjectCiCdSettingsUpdateInput`
 | <a id="mutationprojectcicdsettingsupdatemergetrainsskiptrainallowed"></a>`mergeTrainsSkipTrainAllowed` | [`Boolean`](#boolean) | Indicates whether an option is allowed to merge without refreshing the merge train. Ignored unless the `merge_trains_skip_train` feature flag is also enabled. |
 | <a id="mutationprojectcicdsettingsupdatepipelinevariablesminimumoverriderole"></a>`pipelineVariablesMinimumOverrideRole` | [`String`](#string) | Minimum role required to set variables when creating a pipeline or running a job. |
 | <a id="mutationprojectcicdsettingsupdatepushrepositoryforjobtokenallowed"></a>`pushRepositoryForJobTokenAllowed` | [`Boolean`](#boolean) | Indicates the ability to push to the original project repository using a job token. |
+| <a id="mutationprojectcicdsettingsupdateresourcegroupdefaultprocessmode"></a>`resourceGroupDefaultProcessMode` | [`ResourceGroupsProcessMode`](#resourcegroupsprocessmode) | Default process mode for resource groups in the project. |
 
 #### Fields
 
@@ -10081,6 +10459,7 @@ Input type: `ProjectSecretCreateInput`
 | <a id="mutationprojectsecretcreateenvironment"></a>`environment` | [`String!`](#string) | Environments that can access the secret. |
 | <a id="mutationprojectsecretcreatename"></a>`name` | [`String!`](#string) | Name of the project secret. |
 | <a id="mutationprojectsecretcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the secret. |
+| <a id="mutationprojectsecretcreaterotationintervaldays"></a>`rotationIntervalDays` | [`Int`](#int) | Number of days between rotation reminders for the secret. |
 | <a id="mutationprojectsecretcreatesecret"></a>`secret` | [`String!`](#string) | Value of the project secret. |
 
 #### Fields
@@ -10123,9 +10502,10 @@ Input type: `ProjectSecretUpdateInput`
 | <a id="mutationprojectsecretupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprojectsecretupdatedescription"></a>`description` | [`String`](#string) | New description of the project secret. |
 | <a id="mutationprojectsecretupdateenvironment"></a>`environment` | [`String`](#string) | New environments that can access the secret. |
-| <a id="mutationprojectsecretupdatemetadatacas"></a>`metadataCas` | [`Int`](#int) | This should match the current metadata version of the project secret being updated. |
+| <a id="mutationprojectsecretupdatemetadatacas"></a>`metadataCas` | [`Int!`](#int) | This should match the current metadata version of the project secret being updated. |
 | <a id="mutationprojectsecretupdatename"></a>`name` | [`String!`](#string) | Name of the project secret to update. |
 | <a id="mutationprojectsecretupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the secret. |
+| <a id="mutationprojectsecretupdaterotationintervaldays"></a>`rotationIntervalDays` | [`Int`](#int) | Number of days between rotation reminders for the secret. |
 | <a id="mutationprojectsecretupdatesecret"></a>`secret` | [`String`](#string) | New value of the project secret. |
 
 #### Fields
@@ -10601,6 +10981,25 @@ Input type: `RefreshFindingTokenStatusInput`
 | <a id="mutationrefreshfindingtokenstatuserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationrefreshfindingtokenstatusfindingtokenstatus"></a>`findingTokenStatus` | [`VulnerabilityFindingTokenStatus`](#vulnerabilityfindingtokenstatus) | Updated token status record for the given finding. |
 
+### `Mutation.refreshSecurityFindingTokenStatus`
+
+Input type: `RefreshSecurityFindingTokenStatusInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrefreshsecurityfindingtokenstatusclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrefreshsecurityfindingtokenstatussecurityfindinguuid"></a>`securityFindingUuid` | [`String!`](#string) | UUID of the Security::Finding whose token status should be refreshed (MR context). |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrefreshsecurityfindingtokenstatusclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrefreshsecurityfindingtokenstatuserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationrefreshsecurityfindingtokenstatusfindingtokenstatus"></a>`findingTokenStatus` | [`SecurityFindingTokenStatus`](#securityfindingtokenstatus) | Updated token status record for the given Security::Finding. |
+
 ### `Mutation.refreshStandardsAdherenceChecks`
 
 Input type: `RefreshStandardsAdherenceChecksInput`
@@ -10619,6 +11018,25 @@ Input type: `RefreshStandardsAdherenceChecksInput`
 | <a id="mutationrefreshstandardsadherencechecksadherencechecksstatus"></a>`adherenceChecksStatus` | [`StandardsAdherenceChecksStatus`](#standardsadherencechecksstatus) | Progress of standards adherence checks. |
 | <a id="mutationrefreshstandardsadherencechecksclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationrefreshstandardsadherencecheckserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
+### `Mutation.refreshVulnerabilityFindingTokenStatus`
+
+Input type: `RefreshVulnerabilityFindingTokenStatusInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrefreshvulnerabilityfindingtokenstatusclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrefreshvulnerabilityfindingtokenstatusvulnerabilityid"></a>`vulnerabilityId` | [`VulnerabilityID!`](#vulnerabilityid) | Global ID of the Vulnerability whose token status should be refreshed. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrefreshvulnerabilityfindingtokenstatusclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrefreshvulnerabilityfindingtokenstatuserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationrefreshvulnerabilityfindingtokenstatusfindingtokenstatus"></a>`findingTokenStatus` | [`VulnerabilityFindingTokenStatus`](#vulnerabilityfindingtokenstatus) | Updated token status record for the given Vulnerabilities::Finding. |
 
 ### `Mutation.releaseAssetLinkCreate`
 
@@ -11220,6 +11638,95 @@ Input type: `SecretPermissionUpdateInput`
 | <a id="mutationsecretpermissionupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsecretpermissionupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationsecretpermissionupdatesecretpermission"></a>`secretPermission` | [`SecretPermission`](#secretpermission) | Secret Permission that was created. |
+
+### `Mutation.securityAttributeCreate`
+
+Input type: `SecurityAttributeCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityattributecreateattributes"></a>`attributes` | [`[SecurityAttributeInput!]!`](#securityattributeinput) | Attributes to create. |
+| <a id="mutationsecurityattributecreatecategoryid"></a>`categoryId` | [`SecurityCategoryID`](#securitycategoryid) | Global ID of the security category. |
+| <a id="mutationsecurityattributecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityattributecreatenamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | Global ID of the namespace. Will be used if no Category ID is given. |
+| <a id="mutationsecurityattributecreatetemplatetype"></a>`templateType` | [`SecurityCategoryTemplateType`](#securitycategorytemplatetype) | Template type for predefined categories. Will be used if no Category ID is given. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityattributecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityattributecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationsecurityattributecreatesecurityattributes"></a>`securityAttributes` | [`[SecurityAttribute!]`](#securityattribute) | Created security attributes. |
+
+### `Mutation.securityAttributeUpdate`
+
+Input type: `SecurityAttributeUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityattributeupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityattributeupdatecolor"></a>`color` | [`Color`](#color) | Color of the security attribute. |
+| <a id="mutationsecurityattributeupdatedescription"></a>`description` | [`String`](#string) | Description of the security attribute. |
+| <a id="mutationsecurityattributeupdateid"></a>`id` | [`SecurityAttributeID!`](#securityattributeid) | Global ID of the security attribute. |
+| <a id="mutationsecurityattributeupdatename"></a>`name` | [`String`](#string) | Name of the security attribute. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityattributeupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityattributeupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationsecurityattributeupdatesecurityattribute"></a>`securityAttribute` | [`SecurityAttribute`](#securityattribute) | Updated security attribute. |
+
+### `Mutation.securityCategoryCreate`
+
+Input type: `SecurityCategoryCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecuritycategorycreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecuritycategorycreatedescription"></a>`description` | [`String`](#string) | Description of the security category. |
+| <a id="mutationsecuritycategorycreatemultipleselection"></a>`multipleSelection` | [`Boolean`](#boolean) | Whether multiple attributes can be selected. |
+| <a id="mutationsecuritycategorycreatename"></a>`name` | [`String!`](#string) | Name of the security category. |
+| <a id="mutationsecuritycategorycreatenamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Global ID of the category namespace. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecuritycategorycreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecuritycategorycreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationsecuritycategorycreatesecuritycategory"></a>`securityCategory` | [`SecurityCategory`](#securitycategory) | Created security category. |
+
+### `Mutation.securityCategoryUpdate`
+
+Input type: `SecurityCategoryUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecuritycategoryupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecuritycategoryupdatedescription"></a>`description` | [`String`](#string) | Description of the security category. |
+| <a id="mutationsecuritycategoryupdateid"></a>`id` | [`SecurityCategoryID`](#securitycategoryid) | Global ID of the security category. |
+| <a id="mutationsecuritycategoryupdatename"></a>`name` | [`String`](#string) | Name of the security category. |
+| <a id="mutationsecuritycategoryupdatenamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Global ID of the category namespace. |
+| <a id="mutationsecuritycategoryupdatetemplatetype"></a>`templateType` | [`SecurityCategoryTemplateType`](#securitycategorytemplatetype) | Template type for predefined categories. Will be used if no Category ID is given. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecuritycategoryupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecuritycategoryupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationsecuritycategoryupdatesecuritycategory"></a>`securityCategory` | [`SecurityCategory`](#securitycategory) | Updated security category. |
 
 ### `Mutation.securityFindingCreateIssue`
 
@@ -13086,9 +13593,11 @@ Input type: `UserPreferencesUpdateInput`
 | <a id="mutationuserpreferencesupdateextensionsmarketplaceoptinstatus"></a>`extensionsMarketplaceOptInStatus` | [`ExtensionsMarketplaceOptInStatus`](#extensionsmarketplaceoptinstatus) | Status of the Web IDE Extension Marketplace opt-in for the user. |
 | <a id="mutationuserpreferencesupdateissuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
 | <a id="mutationuserpreferencesupdatemergerequestdashboardlisttype"></a>`mergeRequestDashboardListType` | [`MergeRequestsDashboardListType`](#mergerequestsdashboardlisttype) | Merge request dashboard list rendering type. |
+| <a id="mutationuserpreferencesupdatemergerequestdashboardshowdrafts"></a>`mergeRequestDashboardShowDrafts` | [`Boolean`](#boolean) | Show draft merge requests on the merge request dashboard. |
 | <a id="mutationuserpreferencesupdatemergerequestssort"></a>`mergeRequestsSort` | [`MergeRequestSort`](#mergerequestsort) | Sort order for issue lists. |
 | <a id="mutationuserpreferencesupdateorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectDisplay`](#organizationgroupprojectdisplay) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.2. |
 | <a id="mutationuserpreferencesupdateorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.2. |
+| <a id="mutationuserpreferencesupdateprojectstudioenabled"></a>`projectStudioEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
 | <a id="mutationuserpreferencesupdateprojectssort"></a>`projectsSort` | [`ProjectSort`](#projectsort) | Sort order for projects. |
 | <a id="mutationuserpreferencesupdateuseworkitemsview"></a>`useWorkItemsView` | [`Boolean`](#boolean) | Use work item view instead of legacy issue view. |
 | <a id="mutationuserpreferencesupdatevisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
@@ -13471,6 +13980,28 @@ Input type: `VulnerabilityIssueLinkCreateInput`
 | <a id="mutationvulnerabilityissuelinkcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationvulnerabilityissuelinkcreateissuelinks"></a>`issueLinks` | [`[VulnerabilityIssueLink!]`](#vulnerabilityissuelink) | Created issue links. |
 
+### `Mutation.vulnerabilityLinkMergeRequest`
+
+Link a merge request to a vulnerability.
+
+Input type: `VulnerabilityLinkMergeRequestInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilitylinkmergerequestclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilitylinkmergerequestmergerequestid"></a>`mergeRequestId` | [`MergeRequestID!`](#mergerequestid) | ID of the merge request. |
+| <a id="mutationvulnerabilitylinkmergerequestvulnerabilityid"></a>`vulnerabilityId` | [`VulnerabilityID!`](#vulnerabilityid) | ID of the vulnerability. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilitylinkmergerequestclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilitylinkmergerequesterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationvulnerabilitylinkmergerequestvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Updated vulnerability. |
+
 ### `Mutation.vulnerabilityResolve`
 
 Input type: `VulnerabilityResolveInput`
@@ -13601,7 +14132,7 @@ Input type: `WorkItemAddLinkedItemsInput`
 **Status**: Experiment.
 {{< /details >}}
 
-Allows move several work items.
+Moves work items between projects or groups.
 
 Input type: `WorkItemBulkMoveInput`
 
@@ -13612,7 +14143,7 @@ Input type: `WorkItemBulkMoveInput`
 | <a id="mutationworkitembulkmoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitembulkmoveids"></a>`ids` | [`[WorkItemID!]!`](#workitemid) | Global ID array of the work items that will be moved. IDs that the user can't move will be ignored. A max of 100 can be provided. |
 | <a id="mutationworkitembulkmovesourcefullpath"></a>`sourceFullPath` | [`String!`](#string) | Full path of the source namespace. For example, `gitlab-org/gitlab-foss`. |
-| <a id="mutationworkitembulkmovetargetfullpath"></a>`targetFullPath` | [`String!`](#string) | Full path of the target namespace. For example, `gitlab-org/gitlab-foss`. Only project namespaces are supported. |
+| <a id="mutationworkitembulkmovetargetfullpath"></a>`targetFullPath` | [`String!`](#string) | Full path of the target namespace. For example, `gitlab-org/gitlab-foss`. User paths are not supported. |
 
 #### Fields
 
@@ -13640,14 +14171,13 @@ Input type: `WorkItemBulkUpdateInput`
 | <a id="mutationworkitembulkupdateassigneeswidget"></a>`assigneesWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetAssigneesInput`](#workitemwidgetassigneesinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitembulkupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitembulkupdateconfidential"></a>`confidential` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
-| <a id="mutationworkitembulkupdatefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
+| <a id="mutationworkitembulkupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project or group (Premium and Ultimate only) containing the work items that will be updated. User paths are not supported. |
 | <a id="mutationworkitembulkupdatehealthstatuswidget"></a>`healthStatusWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetHealthStatusInput`](#workitemwidgethealthstatusinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitembulkupdatehierarchywidget"></a>`hierarchyWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetHierarchyCreateInput`](#workitemwidgethierarchycreateinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitembulkupdateids"></a>`ids` | [`[WorkItemID!]!`](#workitemid) | Global ID array of the work items that will be updated. IDs that the user can't update will be ignored. A max of 100 can be provided. |
 | <a id="mutationworkitembulkupdateiterationwidget"></a>`iterationWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetIterationInput`](#workitemwidgetiterationinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitembulkupdatelabelswidget"></a>`labelsWidget` | [`WorkItemWidgetLabelsUpdateInput`](#workitemwidgetlabelsupdateinput) | Input for labels widget. |
 | <a id="mutationworkitembulkupdatemilestonewidget"></a>`milestoneWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetMilestoneInput`](#workitemwidgetmilestoneinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
-| <a id="mutationworkitembulkupdateparentid"></a>`parentId` {{< icon name="warning-solid" >}} | [`WorkItemsParentID`](#workitemsparentid) | **Deprecated**: Use full_path instead. Deprecated in GitLab 18.2. |
 | <a id="mutationworkitembulkupdatestateevent"></a>`stateEvent` {{< icon name="warning-solid" >}} | [`WorkItemStateEvent`](#workitemstateevent) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitembulkupdatestatuswidget"></a>`statusWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetStatusInput`](#workitemwidgetstatusinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.3. |
 | <a id="mutationworkitembulkupdatesubscriptionevent"></a>`subscriptionEvent` {{< icon name="warning-solid" >}} | [`WorkItemSubscriptionEvent`](#workitemsubscriptionevent) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
@@ -14686,6 +15216,29 @@ The edge type for [`AiModelSelectionNamespaceFeatureSetting`](#aimodelselectionn
 | ---- | ---- | ----------- |
 | <a id="aimodelselectionnamespacefeaturesettingedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="aimodelselectionnamespacefeaturesettingedgenode"></a>`node` | [`AiModelSelectionNamespaceFeatureSetting`](#aimodelselectionnamespacefeaturesetting) | The item at the end of the edge. |
+
+#### `AiModelSelectionOfferedModelConnection`
+
+The connection type for [`AiModelSelectionOfferedModel`](#aimodelselectionofferedmodel).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aimodelselectionofferedmodelconnectionedges"></a>`edges` | [`[AiModelSelectionOfferedModelEdge]`](#aimodelselectionofferedmodeledge) | A list of edges. |
+| <a id="aimodelselectionofferedmodelconnectionnodes"></a>`nodes` | [`[AiModelSelectionOfferedModel]`](#aimodelselectionofferedmodel) | A list of nodes. |
+| <a id="aimodelselectionofferedmodelconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AiModelSelectionOfferedModelEdge`
+
+The edge type for [`AiModelSelectionOfferedModel`](#aimodelselectionofferedmodel).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aimodelselectionofferedmodeledgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="aimodelselectionofferedmodeledgenode"></a>`node` | [`AiModelSelectionOfferedModel`](#aimodelselectionofferedmodel) | The item at the end of the edge. |
 
 #### `AiSelfHostedModelConnection`
 
@@ -17778,6 +18331,7 @@ The connection type for [`GroupInterface`](#groupinterface).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupinterfaceconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="groupinterfaceconnectionedges"></a>`edges` | [`[GroupInterfaceEdge]`](#groupinterfaceedge) | A list of edges. |
 | <a id="groupinterfaceconnectionnodes"></a>`nodes` | [`[GroupInterface]`](#groupinterface) | A list of nodes. |
 | <a id="groupinterfaceconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
@@ -19899,6 +20453,30 @@ The edge type for [`Project`](#project).
 | <a id="projectedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="projectedgenode"></a>`node` | [`Project`](#project) | The item at the end of the edge. |
 
+#### `ProjectInterfaceConnection`
+
+The connection type for [`ProjectInterface`](#projectinterface).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectinterfaceconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="projectinterfaceconnectionedges"></a>`edges` | [`[ProjectInterfaceEdge]`](#projectinterfaceedge) | A list of edges. |
+| <a id="projectinterfaceconnectionnodes"></a>`nodes` | [`[ProjectInterface]`](#projectinterface) | A list of nodes. |
+| <a id="projectinterfaceconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ProjectInterfaceEdge`
+
+The edge type for [`ProjectInterface`](#projectinterface).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectinterfaceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="projectinterfaceedgenode"></a>`node` | [`ProjectInterface`](#projectinterface) | The item at the end of the edge. |
+
 #### `ProjectMemberConnection`
 
 The connection type for [`ProjectMember`](#projectmember).
@@ -20320,6 +20898,29 @@ The edge type for [`Requirement`](#requirement).
 | ---- | ---- | ----------- |
 | <a id="requirementedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="requirementedgenode"></a>`node` | [`Requirement`](#requirement) | The item at the end of the edge. |
+
+#### `RiskScoreByProjectConnection`
+
+The connection type for [`RiskScoreByProject`](#riskscorebyproject).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="riskscorebyprojectconnectionedges"></a>`edges` | [`[RiskScoreByProjectEdge]`](#riskscorebyprojectedge) | A list of edges. |
+| <a id="riskscorebyprojectconnectionnodes"></a>`nodes` | [`[RiskScoreByProject]`](#riskscorebyproject) | A list of nodes. |
+| <a id="riskscorebyprojectconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `RiskScoreByProjectEdge`
+
+The edge type for [`RiskScoreByProject`](#riskscorebyproject).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="riskscorebyprojectedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="riskscorebyprojectedgenode"></a>`node` | [`RiskScoreByProject`](#riskscorebyproject) | The item at the end of the edge. |
 
 #### `RunnerArchitectureConnection`
 
@@ -22604,7 +23205,7 @@ An AI catalog agent.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aicatalogagentcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="aicatalogagentcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item was created. |
 | <a id="aicatalogagentdescription"></a>`description` | [`String!`](#string) | Description of the item. |
 | <a id="aicatalogagentid"></a>`id` | [`ID!`](#id) | ID of the item. |
 | <a id="aicatalogagentitemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
@@ -22612,6 +23213,7 @@ An AI catalog agent.
 | <a id="aicatalogagentname"></a>`name` | [`String!`](#string) | Name of the item. |
 | <a id="aicatalogagentproject"></a>`project` | [`Project`](#project) | Project for the item. |
 | <a id="aicatalogagentpublic"></a>`public` | [`Boolean!`](#boolean) | Whether the item is publicly visible in the catalog. |
+| <a id="aicatalogagentupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item was updated. |
 | <a id="aicatalogagentuserpermissions"></a>`userPermissions` | [`AiCatalogItemPermissions!`](#aicatalogitempermissions) | Permissions for the current user on the resource. |
 | <a id="aicatalogagentversions"></a>`versions` | [`AiCatalogItemVersionConnection`](#aicatalogitemversionconnection) | Versions of the item. (see [Connections](#connections)) |
 
@@ -22624,6 +23226,7 @@ An AI catalog agent version.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aicatalogagentversioncreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item version was created. |
+| <a id="aicatalogagentversionhumanversionname"></a>`humanVersionName` | [`String`](#string) | Human-friendly name of the item version. In the form v1.0.0-draft. |
 | <a id="aicatalogagentversionid"></a>`id` | [`ID!`](#id) | ID of the item version. |
 | <a id="aicatalogagentversionreleased"></a>`released` | [`Boolean!`](#boolean) | Indicates the item version is released. |
 | <a id="aicatalogagentversionreleasedat"></a>`releasedAt` | [`Time`](#time) | Timestamp of when the item version was released. |
@@ -22654,7 +23257,7 @@ An AI catalog flow.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aicatalogflowcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="aicatalogflowcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item was created. |
 | <a id="aicatalogflowdescription"></a>`description` | [`String!`](#string) | Description of the item. |
 | <a id="aicatalogflowid"></a>`id` | [`ID!`](#id) | ID of the item. |
 | <a id="aicatalogflowitemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
@@ -22662,6 +23265,7 @@ An AI catalog flow.
 | <a id="aicatalogflowname"></a>`name` | [`String!`](#string) | Name of the item. |
 | <a id="aicatalogflowproject"></a>`project` | [`Project`](#project) | Project for the item. |
 | <a id="aicatalogflowpublic"></a>`public` | [`Boolean!`](#boolean) | Whether the item is publicly visible in the catalog. |
+| <a id="aicatalogflowupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item was updated. |
 | <a id="aicatalogflowuserpermissions"></a>`userPermissions` | [`AiCatalogItemPermissions!`](#aicatalogitempermissions) | Permissions for the current user on the resource. |
 | <a id="aicatalogflowversions"></a>`versions` | [`AiCatalogItemVersionConnection`](#aicatalogitemversionconnection) | Versions of the item. (see [Connections](#connections)) |
 
@@ -22671,7 +23275,7 @@ An AI catalog flow.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aicatalogflowstepsagent"></a>`agent` | [`AiCatalogAgent!`](#aicatalogagent) | Agent used. |
+| <a id="aicatalogflowstepsagent"></a>`agent` | [`AiCatalogAgent`](#aicatalogagent) | Agent used. |
 | <a id="aicatalogflowstepspinnedversionprefix"></a>`pinnedVersionPrefix` | [`String`](#string) | Major version, minor version, or patch the agent is pinned to. |
 
 ### `AiCatalogFlowVersion`
@@ -22683,6 +23287,7 @@ An AI catalog flow version.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aicatalogflowversioncreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item version was created. |
+| <a id="aicatalogflowversionhumanversionname"></a>`humanVersionName` | [`String`](#string) | Human-friendly name of the item version. In the form v1.0.0-draft. |
 | <a id="aicatalogflowversionid"></a>`id` | [`ID!`](#id) | ID of the item version. |
 | <a id="aicatalogflowversionreleased"></a>`released` | [`Boolean!`](#boolean) | Indicates the item version is released. |
 | <a id="aicatalogflowversionreleasedat"></a>`releasedAt` | [`Time`](#time) | Timestamp of when the item version was released. |
@@ -22698,12 +23303,11 @@ An AI catalog item configuration.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aicatalogitemconsumerenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the catalog item is enabled or not. |
 | <a id="aicatalogitemconsumergroup"></a>`group` | [`Group`](#group) | Group in which the catalog item is configured. |
 | <a id="aicatalogitemconsumerid"></a>`id` | [`ID!`](#id) | ID of the configuration item. |
 | <a id="aicatalogitemconsumeritem"></a>`item` | [`AiCatalogItem`](#aicatalogitem) | Configuration catalog item. |
-| <a id="aicatalogitemconsumerlocked"></a>`locked` | [`Boolean!`](#boolean) | Indicates whether the catalog item configuration is locked or can be overridden. |
 | <a id="aicatalogitemconsumerorganization"></a>`organization` | [`Organization`](#organization) | Organization in which the catalog item is configured. |
+| <a id="aicatalogitemconsumerpinnedversionprefix"></a>`pinnedVersionPrefix` | [`String`](#string) | Major version, minor version, or patch item is pinned to. |
 | <a id="aicatalogitemconsumerproject"></a>`project` | [`Project`](#project) | Project in which the catalog item is configured. |
 
 ### `AiCatalogItemPermissions`
@@ -22740,12 +23344,15 @@ Duo Chat feature setting.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aifeaturesettingcompatiblellms"></a>`compatibleLlms` | [`[String!]`](#string) | LLMs Compatible with the feature. |
+| <a id="aifeaturesettingdefaultgitlabmodel"></a>`defaultGitlabModel` | [`AiModelSelectionOfferedModel`](#aimodelselectionofferedmodel) | GitLab model selected for use with the AI feature. |
 | <a id="aifeaturesettingfeature"></a>`feature` | [`String!`](#string) | Identifier for the AI feature. |
+| <a id="aifeaturesettinggitlabmodel"></a>`gitlabModel` | [`AiModelSelectionOfferedModel`](#aimodelselectionofferedmodel) | GitLab model selected for use with the AI feature. |
 | <a id="aifeaturesettingmainfeature"></a>`mainFeature` | [`String`](#string) | Displayed name of the main feature. |
 | <a id="aifeaturesettingprovider"></a>`provider` | [`String!`](#string) | Humanized name for the AI feature, e.g "Code Completion". |
 | <a id="aifeaturesettingreleasestate"></a>`releaseState` | [`String`](#string) | Current release state of the feature. |
 | <a id="aifeaturesettingselfhostedmodel"></a>`selfHostedModel` | [`AiSelfHostedModel`](#aiselfhostedmodel) | Self-hosted model selected for use with the AI feature. |
 | <a id="aifeaturesettingtitle"></a>`title` | [`String`](#string) | Displayed AI feature name. |
+| <a id="aifeaturesettingvalidgitlabmodels"></a>`validGitlabModels` | [`AiModelSelectionOfferedModelConnection!`](#aimodelselectionofferedmodelconnection) | Valid GitLab managed models for the feature. (see [Connections](#connections)) |
 | <a id="aifeaturesettingvalidmodels"></a>`validModels` | [`AiSelfHostedModelConnection!`](#aiselfhostedmodelconnection) | Compatible self-hosted models for the feature. (see [Connections](#connections)) |
 
 ### `AiFlowTriggerType`
@@ -22882,12 +23489,6 @@ Self-hosted LLM servers.
 
 Usage data for events stored in the default PostgreSQL database. Data retained for three months. Requires a personal access token. Endpoint works only on the top-level group. Ultimate with GitLab Duo Enterprise only.
 
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="aiusagedatacodesuggestionevents"></a>`codeSuggestionEvents` | [`CodeSuggestionEventConnection`](#codesuggestioneventconnection) | Events related to code suggestions. (see [Connections](#connections)) |
-
 #### Fields with arguments
 
 ##### `AiUsageData.all`
@@ -22904,8 +23505,25 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aiusagedataallenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current day. |
-| <a id="aiusagedataallstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is 7 days ago. |
+| <a id="aiusagedataallenddate"></a>`endDate` | [`Date`](#date) | End date for the date range. Default is the current day. |
+| <a id="aiusagedataallstartdate"></a>`startDate` | [`Date`](#date) | Start date for the date range. Default is 7 days before the current date. |
+
+##### `AiUsageData.codeSuggestionEvents`
+
+Events related to code suggestions.
+
+Returns [`CodeSuggestionEventConnection`](#codesuggestioneventconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiusagedatacodesuggestioneventsenddate"></a>`endDate` | [`Date`](#date) | End date for the date range. Default is the current day. |
+| <a id="aiusagedatacodesuggestioneventsstartdate"></a>`startDate` | [`Date`](#date) | Start date for the date range. Default is 7 days before the current date. |
 
 ### `AiUsageEvent`
 
@@ -22914,7 +23532,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aiusageeventevent"></a>`event` | [`AiUsageEventType!`](#aiusageeventtype) | Type of the event. |
-| <a id="aiusageeventid"></a>`id` | [`ID!`](#id) | ID of the code suggestion event. |
+| <a id="aiusageeventid"></a>`id` | [`ID!`](#id) | ID of the usage event. |
 | <a id="aiusageeventtimestamp"></a>`timestamp` | [`Time!`](#time) | When the event happened. |
 | <a id="aiusageeventuser"></a>`user` | [`UserCore!`](#usercore) | User associated with the event. |
 
@@ -23807,6 +24425,17 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="autocompleteduserworkspacesincludeactualstates"></a>`includeActualStates` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated** in GitLab 16.7. Use actual_states instead. |
 | <a id="autocompleteduserworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
+### `AvailableModels`
+
+Available models for Duo Agentic Chat.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="availablemodelsdefaultmodel"></a>`defaultModel` | [`AiModelSelectionOfferedModel`](#aimodelselectionofferedmodel) | Default LLM for Duo Agentic Chat. |
+| <a id="availablemodelsselectablemodels"></a>`selectableModels` | [`[AiModelSelectionOfferedModel!]`](#aimodelselectionofferedmodel) | LLMs compatible with Duo Agentic Chat. |
+
 ### `AwardEmoji`
 
 An emoji awarded by a user.
@@ -24025,6 +24654,7 @@ Represents an epic on an issue board.
 | <a id="boardepicuserpreferences"></a>`userPreferences` | [`BoardEpicUserPreferences`](#boardepicuserpreferences) | User preferences for the epic on the issue board. |
 | <a id="boardepicwebpath"></a>`webPath` | [`String!`](#string) | Web path of the epic. |
 | <a id="boardepicweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the epic. |
+| <a id="boardepicworkitemid"></a>`workItemId` | [`WorkItemID!`](#workitemid) | ID of the corresponding work item for a legacy epic. |
 
 #### Fields with arguments
 
@@ -25056,7 +25686,7 @@ CI/CD variables for a project.
 | <a id="cirunnerownerproject"></a>`ownerProject` | [`ProjectInterface`](#projectinterface) | Project that owns the runner. For project runners only. |
 | <a id="cirunnerpaused"></a>`paused` | [`Boolean!`](#boolean) | Indicates the runner is paused and not available to run jobs. |
 | <a id="cirunnerprivateprojectsminutescostfactor"></a>`privateProjectsMinutesCostFactor` | [`Float`](#float) | Private projects' "compute cost factor" associated with the runner (GitLab.com only). |
-| <a id="cirunnerprojectcount"></a>`projectCount` | [`Int`](#int) | Number of projects that the runner is associated with. |
+| <a id="cirunnerprojectcount"></a>`projectCount` | [`Int`](#int) | Number of projects that the runner is associated with. The count includes projects that might not be visible to the current user. |
 | <a id="cirunnerpublicprojectsminutescostfactor"></a>`publicProjectsMinutesCostFactor` | [`Float`](#float) | Public projects' "compute cost factor" associated with the runner (GitLab.com only). |
 | <a id="cirunnerregisteradminurl"></a>`registerAdminUrl` | [`String`](#string) | URL of the temporary registration page of the runner. Only available before the runner is registered. Only available for administrators. |
 | <a id="cirunnerrununtagged"></a>`runUntagged` | [`Boolean!`](#boolean) | Indicates the runner is able to run untagged jobs. |
@@ -25532,8 +26162,8 @@ Code Quality report for a pipeline.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="codesuggestioneventevent"></a>`event` | [`AiUsageCodeSuggestionEvent!`](#aiusagecodesuggestionevent) | Type of the event. |
-| <a id="codesuggestioneventid"></a>`id` | [`ID!`](#id) | ID of the code suggestion event. |
+| <a id="codesuggestioneventevent"></a>`event` | [`AiUsageEventType!`](#aiusageeventtype) | Type of the event. |
+| <a id="codesuggestioneventid"></a>`id` | [`ID!`](#id) | ID of the usage event. |
 | <a id="codesuggestioneventlanguage"></a>`language` | [`String`](#string) | Programming language in the context of the suggestion. |
 | <a id="codesuggestioneventsuggestionsize"></a>`suggestionSize` | [`String`](#string) | Size of the code suggestion measured in lines of code. |
 | <a id="codesuggestioneventtimestamp"></a>`timestamp` | [`Time!`](#time) | When the event happened. |
@@ -26349,6 +26979,7 @@ Represents a vulnerability. The connection type is countable.
 | <a id="countablevulnerabilitylinks"></a>`links` | [`[VulnerabilityLink!]!`](#vulnerabilitylink) | List of links associated with the vulnerability. |
 | <a id="countablevulnerabilitylocation"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | <a id="countablevulnerabilitymergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request that fixes the vulnerability. |
+| <a id="countablevulnerabilitymergerequests"></a>`mergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge requests that are linked to fix the vulnerability. (see [Connections](#connections)) |
 | <a id="countablevulnerabilityname"></a>`name` | [`String`](#string) | Name or title of the object. |
 | <a id="countablevulnerabilitypresentondefaultbranch"></a>`presentOnDefaultBranch` | [`Boolean!`](#boolean) | Indicates whether the vulnerability is present on the default branch or not. |
 | <a id="countablevulnerabilityprimaryidentifier"></a>`primaryIdentifier` | [`VulnerabilityIdentifier`](#vulnerabilityidentifier) | Primary identifier of the vulnerability. |
@@ -27455,6 +28086,7 @@ A software dependency used by a project.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="dependencycomponentversion"></a>`componentVersion` | [`ComponentVersion`](#componentversion) | Version of the dependency. |
+| <a id="dependencyhasdependencypaths"></a>`hasDependencyPaths` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.4. **Status**: Experiment. Indicates whether the dependency has any dependency paths. |
 | <a id="dependencyid"></a>`id` | [`GlobalID!`](#globalid) | ID of the dependency. |
 | <a id="dependencylicenses"></a>`licenses` | [`[License!]`](#license) | Licenses associated to the dependency. |
 | <a id="dependencylocation"></a>`location` | [`Location`](#location) | Information about where the dependency is located. |
@@ -28192,12 +28824,14 @@ Snapshot.
 | ---- | ---- | ----------- |
 | <a id="diffamode"></a>`aMode` | [`String`](#string) | Old file mode of the file. |
 | <a id="diffbmode"></a>`bMode` | [`String`](#string) | New file mode of the file. |
+| <a id="diffcollapsed"></a>`collapsed` | [`String`](#string) | File diffs are excluded but can be fetched on request. |
 | <a id="diffdeletedfile"></a>`deletedFile` | [`String`](#string) | Indicates if the file has been removed. |
 | <a id="diffdiff"></a>`diff` | [`String`](#string) | Diff representation of the changes made to the file. |
 | <a id="diffnewfile"></a>`newFile` | [`String`](#string) | Indicates if the file has just been added. |
 | <a id="diffnewpath"></a>`newPath` | [`String`](#string) | New path of the file. |
 | <a id="diffoldpath"></a>`oldPath` | [`String`](#string) | Old path of the file. |
 | <a id="diffrenamedfile"></a>`renamedFile` | [`String`](#string) | Indicates if the file has been renamed. |
+| <a id="difftoolarge"></a>`tooLarge` | [`String`](#string) | File diffs are excluded and cannot be retrieved. |
 
 ### `DiffPosition`
 
@@ -28343,6 +28977,7 @@ GitLab Duo settings.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duosettingsaigatewayurl"></a>`aiGatewayUrl` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.9. **Status**: Experiment. URL for local AI gateway server. |
+| <a id="duosettingsduoagentplatformserviceurl"></a>`duoAgentPlatformServiceUrl` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. URL for local Duo Agent Platform service. |
 | <a id="duosettingsduocorefeaturesenabled"></a>`duoCoreFeaturesEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.0. **Status**: Experiment. Indicates whether GitLab Duo Core features are enabled. |
 | <a id="duosettingsupdatedat"></a>`updatedAt` {{< icon name="warning-solid" >}} | [`Time!`](#time) | **Introduced** in GitLab 17.9. **Status**: Experiment. Timestamp of last GitLab Duo setting update. |
 
@@ -28355,6 +28990,7 @@ GitLab Duo Agent Platform session.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkflowagentprivilegesnames"></a>`agentPrivilegesNames` | [`[String!]`](#string) | Privileges granted to the agent during execution. |
+| <a id="duoworkflowaicatalogitemversionid"></a>`aiCatalogItemVersionId` {{< icon name="warning-solid" >}} | [`AiCatalogItemVersionID`](#aicatalogitemversionid) | **Introduced** in GitLab 18.4. **Status**: Experiment. ID of the AI catalog item version that triggered the workflow. |
 | <a id="duoworkflowallowagenttorequestuser"></a>`allowAgentToRequestUser` | [`Boolean`](#boolean) | Allow the agent to request user input. |
 | <a id="duoworkflowarchived"></a>`archived` | [`Boolean`](#boolean) | Archived due to retention policy. |
 | <a id="duoworkflowcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the session was created. |
@@ -28388,6 +29024,7 @@ Duo Agent Platform enablement status checks.
 | ---- | ---- | ----------- |
 | <a id="duoworkflowenablementchecks"></a>`checks` | [`[DuoWorkflowEnablementCheck!]`](#duoworkflowenablementcheck) | Enablement checks. |
 | <a id="duoworkflowenablementenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether Duo Agent Platform is enabled for current user and the project. |
+| <a id="duoworkflowenablementremoteflowsenabled"></a>`remoteFlowsEnabled` | [`Boolean`](#boolean) | Indicates if Duo Agent Platform remote flows are enabled for the project. |
 
 ### `DuoWorkflowEnablementCheck`
 
@@ -28413,8 +29050,8 @@ Events that describe the history and progress of a GitLab Duo Agent Platform ses
 | <a id="duoworkfloweventerrors"></a>`errors` | [`[String!]`](#string) | Message errors. |
 | <a id="duoworkfloweventexecutionstatus"></a>`executionStatus` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 17.10. **Status**: Experiment. Granular status of the session's execution. |
 | <a id="duoworkfloweventmetadata"></a>`metadata` | [`JsonString`](#jsonstring) | Metadata associated with the event. |
-| <a id="duoworkfloweventparenttimestamp"></a>`parentTimestamp` | [`Time`](#time) | Time of the parent event. |
-| <a id="duoworkfloweventtimestamp"></a>`timestamp` | [`Time`](#time) | Time of the event. |
+| <a id="duoworkfloweventparenttimestamp"></a>`parentTimestamp` | [`String`](#string) | UUID v7 timestamp identifier of the parent message for branched conversations or responses. |
+| <a id="duoworkfloweventtimestamp"></a>`timestamp` | [`String`](#string) | UUID v7 timestamp identifier for the conversation thread/session in LangGraph state management. |
 | <a id="duoworkfloweventworkflowdefinition"></a>`workflowDefinition` | [`String`](#string) | GitLab Duo Agent Platform flow type based on its capabilities. |
 | <a id="duoworkfloweventworkflowgoal"></a>`workflowGoal` | [`String`](#string) | Goal of the session. |
 | <a id="duoworkfloweventworkflowstatus"></a>`workflowStatus` | [`DuoWorkflowStatus`](#duoworkflowstatus) | Status of the session. |
@@ -28466,6 +29103,7 @@ Types of scans enabled on a merge request.
 | <a id="enabledsecurityscanscoveragefuzzing"></a>`coverageFuzzing` | [`Boolean!`](#boolean) | `true` if there is a Coverage fuzzing scan in the pipeline. |
 | <a id="enabledsecurityscansdast"></a>`dast` | [`Boolean!`](#boolean) | `true` if there is a Dast scan in the pipeline. |
 | <a id="enabledsecurityscansdependencyscanning"></a>`dependencyScanning` | [`Boolean!`](#boolean) | `true` if there is a Dependency scanning scan in the pipeline. |
+| <a id="enabledsecurityscansready"></a>`ready` | [`Boolean!`](#boolean) | Returns `true` when report processing has been completed. |
 | <a id="enabledsecurityscanssast"></a>`sast` | [`Boolean!`](#boolean) | `true` if there is a Sast scan in the pipeline. |
 | <a id="enabledsecurityscanssecretdetection"></a>`secretDetection` | [`Boolean!`](#boolean) | `true` if there is a Secret detection scan in the pipeline. |
 
@@ -28606,6 +29244,7 @@ Represents an epic.
 | <a id="epicuserpermissions"></a>`userPermissions` | [`EpicPermissions!`](#epicpermissions) | Permissions for the current user on the resource. |
 | <a id="epicwebpath"></a>`webPath` | [`String!`](#string) | Web path of the epic. |
 | <a id="epicweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the epic. |
+| <a id="epicworkitemid"></a>`workItemId` | [`WorkItemID!`](#workitemid) | ID of the corresponding work item for a legacy epic. |
 
 #### Fields with arguments
 
@@ -29779,6 +30418,7 @@ GPG signature for a signed commit.
 | <a id="groupdesignatedascsp"></a>`designatedAsCsp` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. Indicates whether the namespace is designated to centrally manage security policies. |
 | <a id="groupdora"></a>`dora` | [`GroupDora`](#groupdora) | Group's DORA metrics. |
 | <a id="groupduofeaturesenabled"></a>`duoFeaturesEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 16.10. **Status**: Experiment. Indicates whether GitLab Duo features are enabled for the group. |
+| <a id="groupeditpath"></a>`editPath` | [`String!`](#string) | Path for editing group. |
 | <a id="groupemailsdisabled"></a>`emailsDisabled` | [`Boolean`](#boolean) | Indicates if a group has email notifications disabled. |
 | <a id="groupemailsenabled"></a>`emailsEnabled` | [`Boolean`](#boolean) | Indicates if a group has email notifications enabled. |
 | <a id="groupenforcefreeusercap"></a>`enforceFreeUserCap` | [`Boolean`](#boolean) | Indicates whether the group has limited users for a free plan. |
@@ -29788,7 +30428,7 @@ GPG signature for a signed commit.
 | <a id="groupexternalauditeventstreamingdestinations"></a>`externalAuditEventStreamingDestinations` {{< icon name="warning-solid" >}} | [`GroupAuditEventStreamingDestinationConnection`](#groupauditeventstreamingdestinationconnection) | **Introduced** in GitLab 16.11. **Status**: Experiment. External destinations that receive audit events belonging to the group. |
 | <a id="groupflowmetrics"></a>`flowMetrics` {{< icon name="warning-solid" >}} | [`GroupValueStreamAnalyticsFlowMetrics`](#groupvaluestreamanalyticsflowmetrics) | **Introduced** in GitLab 15.10. **Status**: Experiment. Flow metrics for value stream analytics. |
 | <a id="groupfullname"></a>`fullName` | [`String`](#string) | Full name of the group. |
-| <a id="groupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
+| <a id="groupfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the group. |
 | <a id="groupgooglecloudloggingconfigurations"></a>`googleCloudLoggingConfigurations` | [`GoogleCloudLoggingConfigurationTypeConnection`](#googlecloudloggingconfigurationtypeconnection) | Google Cloud logging configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupgroupmemberscount"></a>`groupMembersCount` | [`Int!`](#int) | Count of direct members of the group. |
 | <a id="groupid"></a>`id` | [`ID`](#id) | ID of the group. |
@@ -29797,6 +30437,7 @@ GPG signature for a signed commit.
 | <a id="groupisselfdeletionscheduled"></a>`isSelfDeletionScheduled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Indicates if group deletion is scheduled. |
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="grouplicensedfeatures"></a>`licensedFeatures` {{< icon name="warning-solid" >}} | [`NamespaceAvailableFeatures!`](#namespaceavailablefeatures) | **Introduced** in GitLab 18.1. **Status**: Experiment. Licensed features available on the namespace. |
+| <a id="grouplifecycletemplates"></a>`lifecycleTemplates` {{< icon name="warning-solid" >}} | [`[WorkItemLifecycle!]`](#workitemlifecycle) | **Introduced** in GitLab 18.4. **Status**: Experiment. Lifecycle templates available to the namespace. |
 | <a id="grouplifecycles"></a>`lifecycles` {{< icon name="warning-solid" >}} | [`WorkItemLifecycleConnection`](#workitemlifecycleconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Lifecycles of work items available to the namespace. |
 | <a id="grouplinkpaths"></a>`linkPaths` {{< icon name="warning-solid" >}} | [`NamespacesLinkPaths`](#namespaceslinkpaths) | **Introduced** in GitLab 18.1. **Status**: Experiment. Namespace relevant paths to create links on the UI. |
 | <a id="grouplockduofeaturesenabled"></a>`lockDuoFeaturesEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 16.10. **Status**: Experiment. Indicates if the GitLab Duo features enabled setting is enforced for all subgroups. |
@@ -29828,6 +30469,7 @@ GPG signature for a signed commit.
 | <a id="grouprequestaccessenabled"></a>`requestAccessEnabled` | [`Boolean`](#boolean) | Indicates if users can request access to namespace. |
 | <a id="grouprequiretwofactorauthentication"></a>`requireTwoFactorAuthentication` | [`Boolean`](#boolean) | Indicates if all users in the group are required to set up two-factor authentication. |
 | <a id="grouprootstoragestatistics"></a>`rootStorageStatistics` | [`RootStorageStatistics`](#rootstoragestatistics) | Aggregated storage statistics of the namespace. Only available for root namespaces. |
+| <a id="groupsecuritycategories"></a>`securityCategories` | [`[SecurityCategory!]`](#securitycategory) | Security categories for the group. |
 | <a id="groupsecuritypolicyproject"></a>`securityPolicyProject` | [`Project`](#project) | Security policy project assigned to the namespace. |
 | <a id="groupsharewithgrouplock"></a>`shareWithGroupLock` | [`Boolean`](#boolean) | Indicates if sharing a project with another group within the group is prevented. |
 | <a id="groupsharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
@@ -29848,6 +30490,7 @@ GPG signature for a signed commit.
 | <a id="groupvulnerabilitynamespacestatistic"></a>`vulnerabilityNamespaceStatistic` | [`VulnerabilityNamespaceStatisticType`](#vulnerabilitynamespacestatistictype) | Counts for each vulnerability severity in the group and its subgroups. |
 | <a id="groupvulnerabilityscanners"></a>`vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities of the group and its subgroups. (see [Connections](#connections)) |
 | <a id="groupwebbasedcommitsigningenabled"></a>`webBasedCommitSigningEnabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.2. **Status**: Experiment. Indicates whether web-based commit signing is enabled for the group. |
+| <a id="groupwebpath"></a>`webPath` | [`String!`](#string) | Web path of the group. |
 | <a id="groupweburl"></a>`webUrl` | [`String!`](#string) | Web URL of the group. |
 
 #### Fields with arguments
@@ -29935,8 +30578,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupaiusermetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
-| <a id="groupaiusermetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
+| <a id="groupaiusermetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. \ ClickHouse needs to be enabled when passing this param. |
+| <a id="groupaiusermetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. \ ClickHouse needs to be enabled when passing this param. |
 
 ##### `Group.approvalPolicies`
 
@@ -31226,6 +31869,43 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupsecuritypolicyprojectsuggestionsonlylinked"></a>`onlyLinked` | [`Boolean`](#boolean) | Whether to suggest only projects already linked as security policy projects. |
 | <a id="groupsecuritypolicyprojectsuggestionssearch"></a>`search` | [`String!`](#string) | Search query for projects' full paths. |
 
+##### `Group.sharedGroups`
+
+List of shared groups this group was invited to.
+
+Returns [`GroupConnection`](#groupconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupsharedgroupssearch"></a>`search` | [`String`](#string) | Search for a specific group. |
+| <a id="groupsharedgroupssort"></a>`sort` | [`GroupSort`](#groupsort) | Order by name, created at, updated at, path, id or similarity if searching. |
+
+##### `Group.sharedProjects`
+
+List of shared projects this group was invited to.
+
+Returns [`ProjectConnection`](#projectconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupsharedprojectsactive"></a>`active` | [`Boolean`](#boolean) | Filters by projects that are not archived and not marked for deletion. |
+| <a id="groupsharedprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
+| <a id="groupsharedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="groupsharedprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
+| <a id="groupsharedprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Defaults to `id_desc`, or `similarity` if search used. |
+
 ##### `Group.standardRole`
 
 {{< details >}}
@@ -31518,6 +32198,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="groupworkitemstatecountscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Introduced** in GitLab 17.10. **Status**: Experiment. Filter by custom fields. |
 | <a id="groupworkitemstatecountsdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
 | <a id="groupworkitemstatecountsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
+| <a id="groupworkitemstatecountsexcludegroupworkitems"></a>`excludeGroupWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.4. **Status**: Experiment. Exclude group-level work items within the group and its descendants.Ignored for project namespaces. |
 | <a id="groupworkitemstatecountsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. Ignored for project namespaces. |
 | <a id="groupworkitemstatecountshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
 | <a id="groupworkitemstatecountshierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filtering options related to the work item hierarchy. |
@@ -31601,6 +32282,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Introduced** in GitLab 17.10. **Status**: Experiment. Filter by custom fields. |
 | <a id="groupworkitemsdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
 | <a id="groupworkitemsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
+| <a id="groupworkitemsexcludegroupworkitems"></a>`excludeGroupWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.4. **Status**: Experiment. Exclude group-level work items within the group and its descendants.Ignored for project namespaces. |
 | <a id="groupworkitemsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. Ignored for project namespaces. |
 | <a id="groupworkitemshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
 | <a id="groupworkitemshierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filtering options related to the work item hierarchy. |
@@ -31821,8 +32503,10 @@ Limited group data accessible to users without full group read access (e.g. non-
 | ---- | ---- | ----------- |
 | <a id="groupminimalaccessavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
 | <a id="groupminimalaccessfullname"></a>`fullName` | [`String!`](#string) | Full name of the group. |
-| <a id="groupminimalaccessid"></a>`id` | [`ID`](#id) | ID of the group. |
+| <a id="groupminimalaccessfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the group. |
+| <a id="groupminimalaccessid"></a>`id` | [`ID!`](#id) | ID of the group. |
 | <a id="groupminimalaccessname"></a>`name` | [`String!`](#string) | Name of the group. |
+| <a id="groupminimalaccessuserpermissions"></a>`userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
 | <a id="groupminimalaccessweburl"></a>`webUrl` | [`String`](#string) | Web URL of the group. |
 
 ### `GroupNamespaceLinks`
@@ -31831,6 +32515,7 @@ Limited group data accessible to users without full group read access (e.g. non-
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupnamespacelinkscalendarpath"></a>`calendarPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. Calendar path for work items. |
 | <a id="groupnamespacelinkscontributionguidepath"></a>`contributionGuidePath` | [`String`](#string) | Namespace contribution guide path. |
 | <a id="groupnamespacelinksemailshelppagepath"></a>`emailsHelpPagePath` | [`String`](#string) | Help page path for emails. |
 | <a id="groupnamespacelinksepicslist"></a>`epicsList` | [`String`](#string) | Namespace epics_list. |
@@ -31845,6 +32530,7 @@ Limited group data accessible to users without full group read access (e.g. non-
 | <a id="groupnamespacelinksquickactionshelppath"></a>`quickActionsHelpPath` | [`String`](#string) | Help page path for quick actions. |
 | <a id="groupnamespacelinksregister"></a>`register` | [`String`](#string) | Namespace register_path. |
 | <a id="groupnamespacelinksreportabuse"></a>`reportAbuse` | [`String`](#string) | Namespace report_abuse. |
+| <a id="groupnamespacelinksrsspath"></a>`rssPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. RSS path for work items. |
 | <a id="groupnamespacelinkssignin"></a>`signIn` | [`String`](#string) | Namespace sign_in_path. |
 | <a id="groupnamespacelinksuserexportemail"></a>`userExportEmail` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.3. **Status**: Experiment. User email for export CSV. Returns `null` for user namespaces. |
 
@@ -33092,8 +33778,10 @@ Represents the upstream registries of a Maven virtual registry.
 | <a id="mavenupstreamcachevalidityhours"></a>`cacheValidityHours` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.1. **Status**: Experiment. Time before the cache expires for the upstream registry. |
 | <a id="mavenupstreamdescription"></a>`description` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Description of the upstream registry. |
 | <a id="mavenupstreamid"></a>`id` {{< icon name="warning-solid" >}} | [`ID!`](#id) | **Introduced** in GitLab 18.1. **Status**: Experiment. ID of the upstream registry. |
+| <a id="mavenupstreammetadatacachevalidityhours"></a>`metadataCacheValidityHours` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.4. **Status**: Experiment. Time before the cache expires for Maven metadata. |
 | <a id="mavenupstreamname"></a>`name` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Name of the upstream registry. |
 | <a id="mavenupstreampassword"></a>`password` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Password to sign in to the upstream registry. |
+| <a id="mavenupstreamregistries"></a>`registries` {{< icon name="warning-solid" >}} | [`MavenVirtualRegistryConnection!`](#mavenvirtualregistryconnection) | **Introduced** in GitLab 18.4. **Status**: Experiment. Represents the virtual registries which use the upstream. |
 | <a id="mavenupstreamregistryupstreams"></a>`registryUpstreams` {{< icon name="warning-solid" >}} | [`[MavenRegistryUpstream!]!`](#mavenregistryupstream) | **Introduced** in GitLab 18.2. **Status**: Experiment. Represents the upstream registry for the upstream which contains the position data. |
 | <a id="mavenupstreamurl"></a>`url` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. URL of the upstream registry. |
 | <a id="mavenupstreamusername"></a>`username` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Username to sign in to the upstream registry. |
@@ -33330,6 +34018,7 @@ Returns [`FindingReportsComparer`](#findingreportscomparer).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestfindingreportscomparerreporttype"></a>`reportType` | [`ComparableSecurityReportType!`](#comparablesecurityreporttype) | Filter vulnerability findings by report type. |
+| <a id="mergerequestfindingreportscomparerscanmode"></a>`scanMode` | [`ScanModeEnum`](#scanmodeenum) | Filter results by scan mode. |
 
 ##### `MergeRequest.notes`
 
@@ -35496,6 +36185,7 @@ Product analytics events for a specific month and year.
 | <a id="namespaceid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
 | <a id="namespacelfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="namespacelicensedfeatures"></a>`licensedFeatures` {{< icon name="warning-solid" >}} | [`NamespaceAvailableFeatures!`](#namespaceavailablefeatures) | **Introduced** in GitLab 18.1. **Status**: Experiment. Licensed features available on the namespace. |
+| <a id="namespacelifecycletemplates"></a>`lifecycleTemplates` {{< icon name="warning-solid" >}} | [`[WorkItemLifecycle!]`](#workitemlifecycle) | **Introduced** in GitLab 18.4. **Status**: Experiment. Lifecycle templates available to the namespace. |
 | <a id="namespacelifecycles"></a>`lifecycles` {{< icon name="warning-solid" >}} | [`WorkItemLifecycleConnection`](#workitemlifecycleconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Lifecycles of work items available to the namespace. |
 | <a id="namespacelinkpaths"></a>`linkPaths` {{< icon name="warning-solid" >}} | [`NamespacesLinkPaths`](#namespaceslinkpaths) | **Introduced** in GitLab 18.1. **Status**: Experiment. Namespace relevant paths to create links on the UI. |
 | <a id="namespacemarkdownpaths"></a>`markdownPaths` {{< icon name="warning-solid" >}} | [`MarkdownPaths`](#markdownpaths) | **Introduced** in GitLab 18.1. **Status**: Experiment. Namespace relevant paths to create markdown links on the UI. |
@@ -35913,6 +36603,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="namespaceworkitemstatecountscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Introduced** in GitLab 17.10. **Status**: Experiment. Filter by custom fields. |
 | <a id="namespaceworkitemstatecountsdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
 | <a id="namespaceworkitemstatecountsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
+| <a id="namespaceworkitemstatecountsexcludegroupworkitems"></a>`excludeGroupWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.4. **Status**: Experiment. Exclude group-level work items within the group and its descendants.Ignored for project namespaces. |
 | <a id="namespaceworkitemstatecountsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. Ignored for project namespaces. |
 | <a id="namespaceworkitemstatecountshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
 | <a id="namespaceworkitemstatecountshierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filtering options related to the work item hierarchy. |
@@ -36001,6 +36692,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceworkitemscustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Introduced** in GitLab 17.10. **Status**: Experiment. Filter by custom fields. |
 | <a id="namespaceworkitemsdueafter"></a>`dueAfter` | [`Time`](#time) | Work items due after the timestamp. |
 | <a id="namespaceworkitemsduebefore"></a>`dueBefore` | [`Time`](#time) | Work items due before the timestamp. |
+| <a id="namespaceworkitemsexcludegroupworkitems"></a>`excludeGroupWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.4. **Status**: Experiment. Exclude group-level work items within the group and its descendants.Ignored for project namespaces. |
 | <a id="namespaceworkitemsexcludeprojects"></a>`excludeProjects` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 17.5. **Status**: Experiment. Exclude work items from projects within the group. Ignored for project namespaces. |
 | <a id="namespaceworkitemshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the work item, "none" and "any" values are supported. |
 | <a id="namespaceworkitemshierarchyfilters"></a>`hierarchyFilters` {{< icon name="warning-solid" >}} | [`HierarchyFilterInput`](#hierarchyfilterinput) | **Introduced** in GitLab 18.3. **Status**: Experiment. Filtering options related to the work item hierarchy. |
@@ -36424,6 +37116,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="organizationprojectsfullpaths"></a>`fullPaths` | [`[String!]`](#string) | Filter projects by full paths. You cannot provide more than 50 full paths. |
 | <a id="organizationprojectsids"></a>`ids` | [`[ID!]`](#id) | Filter projects by IDs. |
 | <a id="organizationprojectsincludehidden"></a>`includeHidden` | [`Boolean`](#boolean) | Include hidden projects. |
+| <a id="organizationprojectslastrepositorycheckfailed"></a>`lastRepositoryCheckFailed` | [`Boolean`](#boolean) | Return only projects where the last repository check failed. Only available for administrators. |
 | <a id="organizationprojectsmarkedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the project was marked for deletion. |
 | <a id="organizationprojectsmembership"></a>`membership` | [`Boolean`](#boolean) | Return only projects that the current user is a member of. |
 | <a id="organizationprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
@@ -37434,7 +38127,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="pipelinesecurityreportfindingdismissedby"></a>`dismissedBy` | [`UserCore`](#usercore) | User who dismissed the security report finding. |
 | <a id="pipelinesecurityreportfindingevidence"></a>`evidence` | [`VulnerabilityEvidence`](#vulnerabilityevidence) | Evidence for the vulnerability. |
 | <a id="pipelinesecurityreportfindingfalsepositive"></a>`falsePositive` | [`Boolean`](#boolean) | Indicates whether the vulnerability is a false positive. |
-| <a id="pipelinesecurityreportfindingfindingtokenstatus"></a>`findingTokenStatus` | [`VulnerabilityFindingTokenStatus`](#vulnerabilityfindingtokenstatus) | Status of the secret token associated with this vulnerability. |
+| <a id="pipelinesecurityreportfindingfindingtokenstatus"></a>`findingTokenStatus` | [`VulnerabilityFindingTokenStatus`](#vulnerabilityfindingtokenstatus) | Status of the secret token associated with this finding. Returns `null` if the `validity_checks_security_finding_status` feature flag is disabled. |
 | <a id="pipelinesecurityreportfindingidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifier!]!`](#vulnerabilityidentifier) | Identifiers of the vulnerability finding. |
 | <a id="pipelinesecurityreportfindingissuelinks"></a>`issueLinks` | [`VulnerabilityIssueLinkConnection`](#vulnerabilityissuelinkconnection) | List of issue links related to the vulnerability. (see [Connections](#connections)) |
 | <a id="pipelinesecurityreportfindinglinks"></a>`links` | [`[VulnerabilityLink!]`](#vulnerabilitylink) | List of links associated with the vulnerability. |
@@ -37480,6 +38173,20 @@ Check permissions for the current user on a vulnerability finding.
 | <a id="pipelinetriggerlastused"></a>`lastUsed` | [`Time`](#time) | Timestamp of the last usage of the pipeline trigger token. |
 | <a id="pipelinetriggerowner"></a>`owner` | [`UserCore!`](#usercore) | Owner of the pipeline trigger token. |
 | <a id="pipelinetriggertoken"></a>`token` | [`String!`](#string) | Value of the pipeline trigger token. |
+
+### `PoliciesSyncUpdated`
+
+Security policy state synchronization update. Returns `null` if the `security_policy_sync_propagation_tracking` feature flag is disabled.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policiessyncupdatedfailedprojects"></a>`failedProjects` | [`[String!]`](#string) | IDs of failed projects. |
+| <a id="policiessyncupdatedmergerequestsprogress"></a>`mergeRequestsProgress` | [`Float`](#float) | Percentage of merge requests synced. |
+| <a id="policiessyncupdatedmergerequeststotal"></a>`mergeRequestsTotal` | [`Int`](#int) | Total number of merge requests synced. |
+| <a id="policiessyncupdatedprojectsprogress"></a>`projectsProgress` | [`Float`](#float) | Percentage of projects synced. |
+| <a id="policiessyncupdatedprojectstotal"></a>`projectsTotal` | [`Int`](#int) | Total number of projects synced. |
 
 ### `PolicyAnyMergeRequestViolation`
 
@@ -37721,6 +38428,7 @@ Project-level settings for product analytics provider.
 | <a id="projectduocontextexclusionsettings"></a>`duoContextExclusionSettings` {{< icon name="warning-solid" >}} | [`DuoContextExclusionSettings`](#duocontextexclusionsettings) | **Introduced** in GitLab 18.2. **Status**: Experiment. Settings for excluding files from Duo context. |
 | <a id="projectduofeaturesenabled"></a>`duoFeaturesEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 16.9. **Status**: Experiment. Indicates whether GitLab Duo features are enabled for the project. |
 | <a id="projectduoworkflowstatuscheck"></a>`duoWorkflowStatusCheck` {{< icon name="warning-solid" >}} | [`DuoWorkflowEnablement`](#duoworkflowenablement) | **Introduced** in GitLab 17.7. **Status**: Experiment. Indicates whether Duo Agent Platform is enabled for the project. |
+| <a id="projecteditpath"></a>`editPath` | [`String!`](#string) | Path for editing project. |
 | <a id="projectexplorecatalogpath"></a>`exploreCatalogPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.6. **Status**: Experiment. Path to the project catalog resource. |
 | <a id="projectflowmetrics"></a>`flowMetrics` {{< icon name="warning-solid" >}} | [`ProjectValueStreamAnalyticsFlowMetrics`](#projectvaluestreamanalyticsflowmetrics) | **Introduced** in GitLab 15.10. **Status**: Experiment. Flow metrics for value stream analytics. |
 | <a id="projectforkedfrom"></a>`forkedFrom` | [`Project`](#project) | Project the project was forked from. |
@@ -37826,6 +38534,7 @@ Project-level settings for product analytics provider.
 | <a id="projectvulnerabilityimages"></a>`vulnerabilityImages` | [`VulnerabilityContainerImageConnection`](#vulnerabilitycontainerimageconnection) | Container images reported on the project vulnerabilities. (see [Connections](#connections)) |
 | <a id="projectvulnerabilityscanners"></a>`vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities. (see [Connections](#connections)) |
 | <a id="projectvulnerabilitystatistic"></a>`vulnerabilityStatistic` | [`VulnerabilityStatisticType`](#vulnerabilitystatistictype) | Counts for each vulnerability severity in the project. |
+| <a id="projectwebpath"></a>`webPath` | [`String!`](#string) | Web path of the project. |
 | <a id="projectweburl"></a>`webUrl` | [`String`](#string) | Web URL of the project. |
 | <a id="projectwikienabled"></a>`wikiEnabled` | [`Boolean`](#boolean) | Indicates if Wikis are enabled for the current user. |
 
@@ -37906,8 +38615,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectaiusermetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
-| <a id="projectaiusermetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
+| <a id="projectaiusermetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. \ ClickHouse needs to be enabled when passing this param. |
+| <a id="projectaiusermetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. \ ClickHouse needs to be enabled when passing this param. |
 
 ##### `Project.alertManagementAlert`
 
@@ -40224,6 +40933,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectcicdsettingpipelinevariablesminimumoverriderole"></a>`pipelineVariablesMinimumOverrideRole` | [`String!`](#string) | Minimum role required to set variables when creating a pipeline or running a job. |
 | <a id="projectcicdsettingproject"></a>`project` | [`Project`](#project) | Project the CI/CD settings belong to. |
 | <a id="projectcicdsettingpushrepositoryforjobtokenallowed"></a>`pushRepositoryForJobTokenAllowed` | [`Boolean`](#boolean) | Indicates the ability to push to the original project repository using a job token. |
+| <a id="projectcicdsettingresourcegroupdefaultprocessmode"></a>`resourceGroupDefaultProcessMode` | [`ResourceGroupsProcessMode`](#resourcegroupsprocessmode) | Default process mode for resource groups. |
 
 ### `ProjectComplianceControlStatusType`
 
@@ -40354,9 +41064,10 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="projectminimalaccessavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the project. |
 | <a id="projectminimalaccessdescription"></a>`description` | [`String`](#string) | Short description of the project. |
 | <a id="projectminimalaccessfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. |
-| <a id="projectminimalaccessid"></a>`id` | [`ID`](#id) | ID of the project. |
+| <a id="projectminimalaccessid"></a>`id` | [`ID!`](#id) | ID of the project. |
 | <a id="projectminimalaccessname"></a>`name` | [`String!`](#string) | Name of the project without the namespace. |
 | <a id="projectminimalaccessnamewithnamespace"></a>`nameWithNamespace` | [`String!`](#string) | Name of the project including the namespace. |
+| <a id="projectminimalaccessuserpermissions"></a>`userPermissions` | [`ProjectPermissions!`](#projectpermissions) | Permissions for the current user on the resource. |
 | <a id="projectminimalaccessweburl"></a>`webUrl` | [`String`](#string) | Web URL of the project. |
 
 ### `ProjectNamespaceLinks`
@@ -40365,6 +41076,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectnamespacelinkscalendarpath"></a>`calendarPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. Calendar path for work items. |
 | <a id="projectnamespacelinkscontributionguidepath"></a>`contributionGuidePath` | [`String`](#string) | Namespace contribution guide path. |
 | <a id="projectnamespacelinksemailshelppagepath"></a>`emailsHelpPagePath` | [`String`](#string) | Help page path for emails. |
 | <a id="projectnamespacelinksepicslist"></a>`epicsList` | [`String`](#string) | Namespace epics_list. |
@@ -40377,9 +41089,12 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="projectnamespacelinksnewcommenttemplate"></a>`newCommentTemplate` | [`[CommentTemplatePath!]`](#commenttemplatepath) | Namespace new_comment_template_paths. |
 | <a id="projectnamespacelinksnewproject"></a>`newProject` | [`String`](#string) | Namespace new_project. |
 | <a id="projectnamespacelinksnewworkitememailaddress"></a>`newWorkItemEmailAddress` | [`String`](#string) | Email address that can be used to create a new work item in this project. Returns null if incoming email is not configured. More details on how to configure incoming email is in this [documentation](https://docs.gitlab.com/administration/incoming_email/#set-it-up). |
+| <a id="projectnamespacelinksprojectimportjirapath"></a>`projectImportJiraPath` | [`String`](#string) | JIRA import path. |
 | <a id="projectnamespacelinksquickactionshelppath"></a>`quickActionsHelpPath` | [`String`](#string) | Help page path for quick actions. |
 | <a id="projectnamespacelinksregister"></a>`register` | [`String`](#string) | Namespace register_path. |
+| <a id="projectnamespacelinksreleasespath"></a>`releasesPath` | [`String`](#string) | Project releases path. |
 | <a id="projectnamespacelinksreportabuse"></a>`reportAbuse` | [`String`](#string) | Namespace report_abuse. |
+| <a id="projectnamespacelinksrsspath"></a>`rssPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. RSS path for work items. |
 | <a id="projectnamespacelinkssignin"></a>`signIn` | [`String`](#string) | Namespace sign_in_path. |
 | <a id="projectnamespacelinksuserexportemail"></a>`userExportEmail` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.3. **Status**: Experiment. User email for export CSV. Returns `null` for user namespaces. |
 
@@ -40550,6 +41265,7 @@ Representation of a project secret.
 | <a id="projectsecretmetadataversion"></a>`metadataVersion` | [`Int`](#int) | Current metadata version of the project secret. |
 | <a id="projectsecretname"></a>`name` | [`String!`](#string) | Name of the project secret. |
 | <a id="projectsecretproject"></a>`project` | [`Project!`](#project) | Project the secret belong to. |
+| <a id="projectsecretrotationinfo"></a>`rotationInfo` | [`SecretRotationInfo`](#secretrotationinfo) | Rotation configuration for the secret. |
 
 ### `ProjectSecretsManager`
 
@@ -41151,6 +41867,31 @@ Returns [`Commit`](#commit).
 | ---- | ---- | ----------- |
 | <a id="repositorycommitref"></a>`ref` | [`String!`](#string) | Commit reference (SHA, branch name, or tag name). |
 
+##### `Repository.commits`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+List of commits from the repository.
+
+Returns [`CommitConnection`](#commitconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="repositorycommitsauthor"></a>`author` | [`String`](#string) | Name or email of the author. |
+| <a id="repositorycommitscommittedafter"></a>`committedAfter` | [`Time`](#time) | Commits created after an ISO8601 formatted time or date. |
+| <a id="repositorycommitscommittedbefore"></a>`committedBefore` | [`Time`](#time) | Commits created before an ISO8601 formatted time or date. |
+| <a id="repositorycommitsquery"></a>`query` | [`UntrustedRegexp`](#untrustedregexp) | Regular expression to filter the commits. |
+| <a id="repositorycommitsref"></a>`ref` | [`String!`](#string) | Branch or tag to search for commits. |
+
 ##### `Repository.lastCommit`
 
 The last commit made in the repository for the given path and ref.
@@ -41413,6 +42154,41 @@ Resource quotas of a workspace.
 | <a id="resourcequotascpu"></a>`cpu` | [`String!`](#string) | Number of cpu cores. |
 | <a id="resourcequotasmemory"></a>`memory` | [`String!`](#string) | Bytes of memory. |
 
+### `RiskFactors`
+
+Risk factors contributing to the total risk score.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="riskfactorsvulnerabilitiesaveragescore"></a>`vulnerabilitiesAverageScore` {{< icon name="warning-solid" >}} | [`VulnerabilityAverageScoreFactor`](#vulnerabilityaveragescorefactor) | **Introduced** in GitLab 18.4. **Status**: Experiment. Factor based on average vulnerability score. |
+
+### `RiskScore`
+
+Total risk score information.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="riskscorebyproject"></a>`byProject` {{< icon name="warning-solid" >}} | [`RiskScoreByProjectConnection`](#riskscorebyprojectconnection) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk scores grouped by project. |
+| <a id="riskscorefactors"></a>`factors` {{< icon name="warning-solid" >}} | [`RiskFactors`](#riskfactors) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk factors contributing to the score. |
+| <a id="riskscorerating"></a>`rating` {{< icon name="warning-solid" >}} | [`RiskRating!`](#riskrating) | **Introduced** in GitLab 18.4. **Status**: Experiment. Overall risk rating. |
+| <a id="riskscorescore"></a>`score` {{< icon name="warning-solid" >}} | [`Float!`](#float) | **Introduced** in GitLab 18.4. **Status**: Experiment. Overall risk score. |
+
+### `RiskScoreByProject`
+
+Risk score information for a specific project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="riskscorebyprojectproject"></a>`project` {{< icon name="warning-solid" >}} | [`Project`](#project) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk score belongs to the project. |
+| <a id="riskscorebyprojectrating"></a>`rating` {{< icon name="warning-solid" >}} | [`RiskRating`](#riskrating) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk rating for the project. |
+| <a id="riskscorebyprojectscore"></a>`score` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk score for the project. |
+
 ### `RootStorageStatistics`
 
 #### Fields
@@ -41669,9 +42445,72 @@ Representation of a secrets permission.
 | <a id="secretpermissionprincipal"></a>`principal` | [`Principal!`](#principal) | Who is provided access to. For eg: User/Role/MemberRole/Group. |
 | <a id="secretpermissionproject"></a>`project` | [`Project!`](#project) | Project the secret permission belong to. |
 
+### `SecretRotationInfo`
+
+Rotation configuration and status for a project secret.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="secretrotationinfocreatedat"></a>`createdAt` | [`Time!`](#time) | When the rotation configuration was created. |
+| <a id="secretrotationinforotationintervaldays"></a>`rotationIntervalDays` | [`Int!`](#int) | Number of days between rotation reminders. |
+| <a id="secretrotationinfostatus"></a>`status` | [`SecretRotationStatus!`](#secretrotationstatus) | Current rotation status. |
+| <a id="secretrotationinfoupdatedat"></a>`updatedAt` | [`Time!`](#time) | When the rotation configuration was last updated. |
+
+### `SecurityAttribute`
+
+A security attribute.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityattributecolor"></a>`color` | [`Color!`](#color) | Color of the security attribute. |
+| <a id="securityattributedescription"></a>`description` | [`String`](#string) | Description of the security attribute. |
+| <a id="securityattributeeditablestate"></a>`editableState` | [`SecurityCategoryEditableState!`](#securitycategoryeditablestate) | Editable state of the security attribute. |
+| <a id="securityattributeid"></a>`id` | [`SecurityAttributeID`](#securityattributeid) | Global ID of the security attribute. |
+| <a id="securityattributename"></a>`name` | [`String!`](#string) | Name of the security attribute. |
+| <a id="securityattributesecuritycategory"></a>`securityCategory` | [`SecurityCategory!`](#securitycategory) | Security category the attribute belongs to. |
+
+### `SecurityCategory`
+
+A security category.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securitycategorydescription"></a>`description` | [`String`](#string) | Description of the security category. |
+| <a id="securitycategoryeditablestate"></a>`editableState` | [`SecurityCategoryEditableState!`](#securitycategoryeditablestate) | Editable state of the security category. |
+| <a id="securitycategoryid"></a>`id` | [`SecurityCategoryID`](#securitycategoryid) | Global ID of the security category. |
+| <a id="securitycategorymultipleselection"></a>`multipleSelection` | [`Boolean!`](#boolean) | Whether multiple attributes can be selected. |
+| <a id="securitycategoryname"></a>`name` | [`String!`](#string) | Name of the security category. |
+| <a id="securitycategorysecurityattributes"></a>`securityAttributes` | [`[SecurityAttribute!]`](#securityattribute) | Security attributes belonging to the category. |
+| <a id="securitycategorytemplatetype"></a>`templateType` | [`SecurityCategoryTemplateType`](#securitycategorytemplatetype) | Template type for predefined categories. |
+
+### `SecurityFindingTokenStatus`
+
+Represents the status of a secret token found in a security finding.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityfindingtokenstatuscreatedat"></a>`createdAt` | [`Time!`](#time) | When the token status was created. |
+| <a id="securityfindingtokenstatusid"></a>`id` | [`ID!`](#id) | ID of the finding token status. |
+| <a id="securityfindingtokenstatusstatus"></a>`status` | [`VulnerabilityFindingTokenStatusState!`](#vulnerabilityfindingtokenstatusstate) | Status of the token (unknown, active, inactive). |
+| <a id="securityfindingtokenstatusupdatedat"></a>`updatedAt` | [`Time!`](#time) | When the token status was last updated. |
+
 ### `SecurityMetrics`
 
 Represents security metrics.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securitymetricsriskscore"></a>`riskScore` {{< icon name="warning-solid" >}} | [`RiskScore`](#riskscore) | **Introduced** in GitLab 18.4. **Status**: Experiment. Total risk score information. This feature is currently under development and not yet available for general use. |
 
 #### Fields with arguments
 
@@ -41798,6 +42637,17 @@ Represents a URL related to a security training.
 | <a id="securitytrainingurlname"></a>`name` | [`String`](#string) | Name of the training provider. |
 | <a id="securitytrainingurlstatus"></a>`status` | [`TrainingUrlRequestStatus`](#trainingurlrequeststatus) | Status of the request to training provider. |
 | <a id="securitytrainingurlurl"></a>`url` | [`String`](#string) | URL of the link for security training content. |
+
+### `SemanticSearchCode`
+
+Code snippet returned by semantic search.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="semanticsearchcodecontent"></a>`content` | [`String!`](#string) | Content of the code snippet. |
+| <a id="semanticsearchcodepath"></a>`path` | [`String!`](#string) | File path to the code snippet. |
 
 ### `SentryDetailedError`
 
@@ -43311,6 +44161,7 @@ fields relate to interactions between the two entities.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="usernamespacelinkscalendarpath"></a>`calendarPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. Calendar path for work items. |
 | <a id="usernamespacelinkscontributionguidepath"></a>`contributionGuidePath` | [`String`](#string) | Namespace contribution guide path. |
 | <a id="usernamespacelinksemailshelppagepath"></a>`emailsHelpPagePath` | [`String`](#string) | Help page path for emails. |
 | <a id="usernamespacelinksepicslist"></a>`epicsList` | [`String`](#string) | Namespace epics_list. |
@@ -43325,6 +44176,7 @@ fields relate to interactions between the two entities.
 | <a id="usernamespacelinksquickactionshelppath"></a>`quickActionsHelpPath` | [`String`](#string) | Help page path for quick actions. |
 | <a id="usernamespacelinksregister"></a>`register` | [`String`](#string) | Namespace register_path. |
 | <a id="usernamespacelinksreportabuse"></a>`reportAbuse` | [`String`](#string) | Namespace report_abuse. |
+| <a id="usernamespacelinksrsspath"></a>`rssPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. RSS path for work items. |
 | <a id="usernamespacelinkssignin"></a>`signIn` | [`String`](#string) | Namespace sign_in_path. |
 | <a id="usernamespacelinksuserexportemail"></a>`userExportEmail` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.3. **Status**: Experiment. User email for export CSV. Returns `null` for user namespaces. |
 
@@ -43380,8 +44232,10 @@ Returns [`String`](#string).
 | <a id="userpreferencesextensionsmarketplaceoptinstatus"></a>`extensionsMarketplaceOptInStatus` | [`ExtensionsMarketplaceOptInStatus!`](#extensionsmarketplaceoptinstatus) | Status of the Web IDE Extension Marketplace opt-in for the user. |
 | <a id="userpreferencesissuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
 | <a id="userpreferencesmergerequestdashboardlisttype"></a>`mergeRequestDashboardListType` | [`MergeRequestsDashboardListType`](#mergerequestsdashboardlisttype) | Merge request dashboard list rendering type. |
+| <a id="userpreferencesmergerequestdashboardshowdrafts"></a>`mergeRequestDashboardShowDrafts` | [`Boolean`](#boolean) | Show draft merge requests on merge request dashboard. |
 | <a id="userpreferencesorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectDisplay!`](#organizationgroupprojectdisplay) | **Introduced** in GitLab 17.2. **Status**: Experiment. Default list view for organization groups and projects. |
 | <a id="userpreferencesorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` {{< icon name="warning-solid" >}} | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **Introduced** in GitLab 17.2. **Status**: Experiment. Sort order for organization groups and projects. |
+| <a id="userpreferencesprojectstudioenabled"></a>`projectStudioEnabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.4. **Status**: Experiment. Whether Project Studio is enabled for the user. |
 | <a id="userpreferencesprojectssort"></a>`projectsSort` | [`ProjectSort`](#projectsort) | Sort order for projects. |
 | <a id="userpreferencestimezone"></a>`timezone` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.7. **Status**: Experiment. Timezone of the user. |
 | <a id="userpreferencesuseworkitemsview"></a>`useWorkItemsView` | [`Boolean`](#boolean) | Use work item view instead of legacy issue view. |
@@ -43395,6 +44249,7 @@ Returns [`String`](#string).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="userstatusavailability"></a>`availability` | [`AvailabilityEnum!`](#availabilityenum) | User availability status. |
+| <a id="userstatusclearstatusat"></a>`clearStatusAt` | [`Time`](#time) | Timestamp when the status should be automatically cleared. |
 | <a id="userstatusemoji"></a>`emoji` | [`String`](#string) | String representation of emoji. |
 | <a id="userstatusmessage"></a>`message` | [`String`](#string) | User status message. |
 | <a id="userstatusmessagehtml"></a>`messageHtml` | [`String`](#string) | HTML of the user status message. |
@@ -43623,12 +44478,12 @@ Represents vulnerability counts grouped by severity level.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="vulnerabilitiesperseveritycritical"></a>`critical` | [`Int!`](#int) | Number of CRITICAL severity vulnerabilities. |
-| <a id="vulnerabilitiesperseverityhigh"></a>`high` | [`Int!`](#int) | Number of HIGH severity vulnerabilities. |
-| <a id="vulnerabilitiesperseverityinfo"></a>`info` | [`Int!`](#int) | Number of INFO severity vulnerabilities. |
-| <a id="vulnerabilitiesperseveritylow"></a>`low` | [`Int!`](#int) | Number of LOW severity vulnerabilities. |
-| <a id="vulnerabilitiesperseveritymedium"></a>`medium` | [`Int!`](#int) | Number of MEDIUM severity vulnerabilities. |
-| <a id="vulnerabilitiesperseverityunknown"></a>`unknown` | [`Int!`](#int) | Number of UNKNOWN severity vulnerabilities. |
+| <a id="vulnerabilitiesperseveritycritical"></a>`critical` | [`VulnerabilitySeverityCount`](#vulnerabilityseveritycount) | Number of CRITICAL severity vulnerabilities. |
+| <a id="vulnerabilitiesperseverityhigh"></a>`high` | [`VulnerabilitySeverityCount`](#vulnerabilityseveritycount) | Number of HIGH severity vulnerabilities. |
+| <a id="vulnerabilitiesperseverityinfo"></a>`info` | [`VulnerabilitySeverityCount`](#vulnerabilityseveritycount) | Number of INFO severity vulnerabilities. |
+| <a id="vulnerabilitiesperseveritylow"></a>`low` | [`VulnerabilitySeverityCount`](#vulnerabilityseveritycount) | Number of LOW severity vulnerabilities. |
+| <a id="vulnerabilitiesperseveritymedium"></a>`medium` | [`VulnerabilitySeverityCount`](#vulnerabilityseveritycount) | Number of MEDIUM severity vulnerabilities. |
+| <a id="vulnerabilitiesperseverityunknown"></a>`unknown` | [`VulnerabilitySeverityCount`](#vulnerabilityseveritycount) | Number of UNKNOWN severity vulnerabilities. |
 
 ### `Vulnerability`
 
@@ -43665,6 +44520,7 @@ Represents a vulnerability.
 | <a id="vulnerabilitylinks"></a>`links` | [`[VulnerabilityLink!]!`](#vulnerabilitylink) | List of links associated with the vulnerability. |
 | <a id="vulnerabilitylocation"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
 | <a id="vulnerabilitymergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request that fixes the vulnerability. |
+| <a id="vulnerabilitymergerequests"></a>`mergeRequests` | [`MergeRequestConnection`](#mergerequestconnection) | Merge requests that are linked to fix the vulnerability. (see [Connections](#connections)) |
 | <a id="vulnerabilityname"></a>`name` | [`String`](#string) | Name or title of the object. |
 | <a id="vulnerabilitypresentondefaultbranch"></a>`presentOnDefaultBranch` | [`Boolean!`](#boolean) | Indicates whether the vulnerability is present on the default branch or not. |
 | <a id="vulnerabilityprimaryidentifier"></a>`primaryIdentifier` | [`VulnerabilityIdentifier`](#vulnerabilityidentifier) | Primary identifier of the vulnerability. |
@@ -43773,6 +44629,16 @@ Represents a vulnerability archive.
 | <a id="vulnerabilityarchivearchivedrecordscount"></a>`archivedRecordsCount` | [`Int!`](#int) | Number of records the archive contains. |
 | <a id="vulnerabilityarchivemonth"></a>`month` | [`Int!`](#int) | Month of the archive, represented as a number from 1 (January) to 12 (December). |
 | <a id="vulnerabilityarchiveyear"></a>`year` | [`Int!`](#int) | Year of the archive. |
+
+### `VulnerabilityAverageScoreFactor`
+
+Risk factor based on average vulnerability score.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityaveragescorefactorfactor"></a>`factor` {{< icon name="warning-solid" >}} | [`Float!`](#float) | **Introduced** in GitLab 18.4. **Status**: Experiment. Factor value contributing to the risk score. |
 
 ### `VulnerabilityContainerImage`
 
@@ -44541,7 +45407,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="workitemarchived"></a>`archived` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.5. **Status**: Experiment. Whether the work item belongs to an archived project. Always false for group level work items. |
+| <a id="workitemarchived"></a>`archived` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.5. **Status**: Experiment. Whether the work item belongs to an archived project or group. |
 | <a id="workitemauthor"></a>`author` {{< icon name="warning-solid" >}} | [`UserCore`](#usercore) | **Introduced** in GitLab 15.9. **Status**: Experiment. User that created the work item. |
 | <a id="workitemclosedat"></a>`closedAt` | [`Time`](#time) | Timestamp of when the work item was closed. |
 | <a id="workitemcommenttemplatespaths"></a>`commentTemplatesPaths` | [`[CommentTemplatePathType!]!`](#commenttemplatepathtype) | Paths of the comment templates. |
@@ -44608,6 +45474,15 @@ Returns [`[WorkItemWidget!]`](#workitemwidget).
 | <a id="workitemclosingmergerequestid"></a>`id` | [`MergeRequestsClosingIssuesID!`](#mergerequestsclosingissuesid) | Global ID of the closing merge request association. |
 | <a id="workitemclosingmergerequestmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Related merge request. |
 
+### `WorkItemDateFieldValue`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemdatefieldvaluecustomfield"></a>`customField` | [`CustomField!`](#customfield) | Custom field associated with the custom field value. |
+| <a id="workitemdatefieldvaluevalue"></a>`value` | [`Date`](#date) | Date value of the custom field. |
+
 ### `WorkItemDescriptionTemplate`
 
 #### Fields
@@ -44632,6 +45507,7 @@ Represents a lifecycle for work items.
 | <a id="workitemlifecycledefaultopenstatus"></a>`defaultOpenStatus` {{< icon name="warning-solid" >}} | [`WorkItemStatus`](#workitemstatus) | **Introduced** in GitLab 18.1. **Status**: Experiment. Default open status of the lifecycle. |
 | <a id="workitemlifecycleid"></a>`id` {{< icon name="warning-solid" >}} | [`GlobalID`](#globalid) | **Introduced** in GitLab 18.1. **Status**: Experiment. ID of the lifecycle. |
 | <a id="workitemlifecyclename"></a>`name` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Name of the lifecycle. |
+| <a id="workitemlifecyclestatuscounts"></a>`statusCounts` {{< icon name="warning-solid" >}} | [`[WorkItemStatusCount!]`](#workitemstatuscount) | **Introduced** in GitLab 18.4. **Status**: Experiment. Work item counts by status for the lifecycle. |
 | <a id="workitemlifecyclestatuses"></a>`statuses` {{< icon name="warning-solid" >}} | [`[WorkItemStatus!]`](#workitemstatus) | **Introduced** in GitLab 18.1. **Status**: Experiment. All available statuses of the lifecycle. |
 | <a id="workitemlifecycleworkitemtypes"></a>`workItemTypes` {{< icon name="warning-solid" >}} | [`[WorkItemType!]`](#workitemtype) | **Introduced** in GitLab 18.1. **Status**: Experiment. Work item types associated to the lifecycle. |
 
@@ -44721,6 +45597,17 @@ Represents status.
 | <a id="workitemstatusid"></a>`id` {{< icon name="warning-solid" >}} | [`GlobalID`](#globalid) | **Introduced** in GitLab 17.11. **Status**: Experiment. ID of the status. |
 | <a id="workitemstatusname"></a>`name` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.11. **Status**: Experiment. Name of the status. |
 | <a id="workitemstatusposition"></a>`position` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 17.11. **Status**: Experiment. Position of the status within its category. |
+
+### `WorkItemStatusCount`
+
+Represents a status with its work item count.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemstatuscountcount"></a>`count` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. Work item count for the status. Shows "999+" when count exceeds 999. |
+| <a id="workitemstatuscountstatus"></a>`status` {{< icon name="warning-solid" >}} | [`WorkItemStatus!`](#workitemstatus) | **Introduced** in GitLab 18.4. **Status**: Experiment. Status of the work items. |
 
 ### `WorkItemTextFieldValue`
 
@@ -45236,6 +46123,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetnotesdiscussionsfilter"></a>`filter` | [`NotesFilterType`](#notesfiltertype) | Type of notes collection: ALL_NOTES, ONLY_COMMENTS, ONLY_ACTIVITY. |
+| <a id="workitemwidgetnotesdiscussionssort"></a>`sort` | [`WorkItemDiscussionsSort`](#workitemdiscussionssort) | Sort order for the discussions. |
 
 ##### `WorkItemWidgetNotes.notes`
 
@@ -45620,7 +46508,9 @@ The category of the additional context.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="aiadditionalcontextcategoryagent_user_environment"></a>`AGENT_USER_ENVIRONMENT` | Agent_user_environment content category. |
 | <a id="aiadditionalcontextcategorydependency"></a>`DEPENDENCY` | Dependency content category. |
+| <a id="aiadditionalcontextcategorydirectory"></a>`DIRECTORY` | Directory content category. |
 | <a id="aiadditionalcontextcategoryfile"></a>`FILE` | File content category. |
 | <a id="aiadditionalcontextcategoryissue"></a>`ISSUE` | Issue content category. |
 | <a id="aiadditionalcontextcategorylocal_git"></a>`LOCAL_GIT` | Local_git content category. |
@@ -45630,6 +46520,14 @@ The category of the additional context.
 | <a id="aiadditionalcontextcategoryterminal"></a>`TERMINAL` | Terminal content category. |
 | <a id="aiadditionalcontextcategoryuser_rule"></a>`USER_RULE` | User_rule content category. |
 
+### `AiCatalogFlowConfigType`
+
+Possible flow configuration types for AI Catalog agents.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aicatalogflowconfigtypechat"></a>`CHAT` | Chat flow configuration. |
+
 ### `AiCatalogItemType`
 
 Possible item types for AI items.
@@ -45638,6 +46536,16 @@ Possible item types for AI items.
 | ----- | ----------- |
 | <a id="aicatalogitemtypeagent"></a>`AGENT` | Agent. |
 | <a id="aicatalogitemtypeflow"></a>`FLOW` | Flow. |
+
+### `AiCatalogVersionBump`
+
+Possible version bumps for AI catalog items.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aicatalogversionbumpmajor"></a>`MAJOR` | Major version bump. |
+| <a id="aicatalogversionbumpminor"></a>`MINOR` | Minor version bump. |
+| <a id="aicatalogversionbumppatch"></a>`PATCH` | Patch version bump. |
 
 ### `AiConversationsThreadsConversationType`
 
@@ -45711,6 +46619,7 @@ AI features that can be configured through the Model Selection feature settings.
 | ----- | ----------- |
 | <a id="aimodelselectionfeaturescode_completions"></a>`CODE_COMPLETIONS` | Code completion feature setting. |
 | <a id="aimodelselectionfeaturescode_generations"></a>`CODE_GENERATIONS` | Code generation feature setting. |
+| <a id="aimodelselectionfeaturesduo_agent_platform"></a>`DUO_AGENT_PLATFORM` | Duo agent platform feature setting. |
 | <a id="aimodelselectionfeaturesduo_chat"></a>`DUO_CHAT` | Duo Chat feature setting. |
 | <a id="aimodelselectionfeaturesduo_chat_explain_code"></a>`DUO_CHAT_EXPLAIN_CODE` | Duo chat explain code feature setting. |
 | <a id="aimodelselectionfeaturesduo_chat_explain_vulnerability"></a>`DUO_CHAT_EXPLAIN_VULNERABILITY` | Duo chat explain vulnerability feature setting. |
@@ -45735,30 +46644,29 @@ GitLab release state of the model.
 | <a id="aiselfhostedmodelreleasestateexperimental"></a>`EXPERIMENTAL` | Experimental status. |
 | <a id="aiselfhostedmodelreleasestatega"></a>`GA` | GA status. |
 
-### `AiUsageCodeSuggestionEvent`
-
-Type of code suggestion event.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="aiusagecodesuggestioneventcode_suggestion_accepted_in_ide"></a>`CODE_SUGGESTION_ACCEPTED_IN_IDE` | Code suggestion accepted. |
-| <a id="aiusagecodesuggestioneventcode_suggestion_rejected_in_ide"></a>`CODE_SUGGESTION_REJECTED_IN_IDE` | Code suggestion rejected. |
-| <a id="aiusagecodesuggestioneventcode_suggestion_shown_in_ide"></a>`CODE_SUGGESTION_SHOWN_IN_IDE` | Code suggestion shown. |
-
 ### `AiUsageEventType`
 
 Type of AI usage event.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="aiusageeventtypeagent_platform_session_created"></a>`AGENT_PLATFORM_SESSION_CREATED` | Agent platform session was created. |
+| <a id="aiusageeventtypeagent_platform_session_started"></a>`AGENT_PLATFORM_SESSION_STARTED` | Agent platform session was started. |
 | <a id="aiusageeventtypecode_suggestions_requested"></a>`CODE_SUGGESTIONS_REQUESTED` | Code Suggestion was requested. Old data only. |
 | <a id="aiusageeventtypecode_suggestion_accepted_in_ide"></a>`CODE_SUGGESTION_ACCEPTED_IN_IDE` | Code Suggestion was accepted in IDE. |
 | <a id="aiusageeventtypecode_suggestion_direct_access_token_refresh"></a>`CODE_SUGGESTION_DIRECT_ACCESS_TOKEN_REFRESH` | Code Suggestion token was refreshed. Old data only. |
 | <a id="aiusageeventtypecode_suggestion_rejected_in_ide"></a>`CODE_SUGGESTION_REJECTED_IN_IDE` | Code Suggestion was rejected in IDE. |
 | <a id="aiusageeventtypecode_suggestion_shown_in_ide"></a>`CODE_SUGGESTION_SHOWN_IN_IDE` | Code Suggestion was shown in IDE. |
-| <a id="aiusageeventtypecreate_agent_platform_session"></a>`CREATE_AGENT_PLATFORM_SESSION` | Agent platform session was created. |
+| <a id="aiusageeventtypeencounter_duo_code_review_error_during_review"></a>`ENCOUNTER_DUO_CODE_REVIEW_ERROR_DURING_REVIEW` | Duo Code Review encountered an error. |
+| <a id="aiusageeventtypeexcluded_files_from_duo_code_review"></a>`EXCLUDED_FILES_FROM_DUO_CODE_REVIEW` | Files were excluded from Duo Code Review. |
+| <a id="aiusageeventtypefind_nothing_to_review_duo_code_review_on_mr"></a>`FIND_NOTHING_TO_REVIEW_DUO_CODE_REVIEW_ON_MR` | Duo Code Review found nothing to review on MR. |
+| <a id="aiusageeventtypefind_no_issues_duo_code_review_after_review"></a>`FIND_NO_ISSUES_DUO_CODE_REVIEW_AFTER_REVIEW` | Duo Code Review found no issues after review. |
+| <a id="aiusageeventtypepost_comment_duo_code_review_on_diff"></a>`POST_COMMENT_DUO_CODE_REVIEW_ON_DIFF` | Duo Code Review posted a diff comment. |
+| <a id="aiusageeventtypereact_thumbs_down_on_duo_code_review_comment"></a>`REACT_THUMBS_DOWN_ON_DUO_CODE_REVIEW_COMMENT` | User gave thumbs-down reaction to Duo Code Review comment. |
+| <a id="aiusageeventtypereact_thumbs_up_on_duo_code_review_comment"></a>`REACT_THUMBS_UP_ON_DUO_CODE_REVIEW_COMMENT` | User gave thumbs-up reaction to Duo Code Review comment. |
 | <a id="aiusageeventtyperequest_duo_chat_response"></a>`REQUEST_DUO_CHAT_RESPONSE` | Duo Chat response was requested. |
-| <a id="aiusageeventtypestart_agent_platform_session"></a>`START_AGENT_PLATFORM_SESSION` | Agent platform session was started. |
+| <a id="aiusageeventtyperequest_review_duo_code_review_on_mr_by_author"></a>`REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_AUTHOR` | MR author requested Duo Code Review. |
+| <a id="aiusageeventtyperequest_review_duo_code_review_on_mr_by_non_author"></a>`REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_NON_AUTHOR` | Non-author requested Duo Code Review on MR. |
 | <a id="aiusageeventtypetroubleshoot_job"></a>`TROUBLESHOOT_JOB` | Troubleshoot job feature was used. |
 
 ### `AlertManagementAlertSort`
@@ -46217,11 +47125,14 @@ CI_JOB_TOKEN policy.
 | <a id="cijobtokenscopepoliciesread_deployments"></a>`READ_DEPLOYMENTS` | Read Deployments. |
 | <a id="cijobtokenscopepoliciesread_environments"></a>`READ_ENVIRONMENTS` | Read Environments. |
 | <a id="cijobtokenscopepoliciesread_jobs"></a>`READ_JOBS` | Read Jobs. |
+| <a id="cijobtokenscopepoliciesread_merge_requests"></a>`READ_MERGE_REQUESTS` | Read Merge Requests. |
 | <a id="cijobtokenscopepoliciesread_packages"></a>`READ_PACKAGES` | Read Packages. |
 | <a id="cijobtokenscopepoliciesread_pipelines"></a>`READ_PIPELINES` | Read Pipelines. |
 | <a id="cijobtokenscopepoliciesread_releases"></a>`READ_RELEASES` | Read Releases. |
+| <a id="cijobtokenscopepoliciesread_repositories"></a>`READ_REPOSITORIES` | Read Repositories. |
 | <a id="cijobtokenscopepoliciesread_secure_files"></a>`READ_SECURE_FILES` | Read Secure Files. |
 | <a id="cijobtokenscopepoliciesread_terraform_state"></a>`READ_TERRAFORM_STATE` | Read Terraform State. |
+| <a id="cijobtokenscopepoliciesread_work_items"></a>`READ_WORK_ITEMS` | Read Work Items. |
 
 ### `CiPipelineCreationStatus`
 
@@ -46436,6 +47347,16 @@ Comparable security report type.
 | <a id="comparablesecurityreporttypesast"></a>`SAST` | SAST report. |
 | <a id="comparablesecurityreporttypesecret_detection"></a>`SECRET_DETECTION` | Secret Detection report. |
 
+### `ComparisonOperator`
+
+Comparison operators for filtering.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="comparisonoperatorequal_to"></a>`EQUAL_TO` | Equal to (=). |
+| <a id="comparisonoperatorgreater_than_or_equal_to"></a>`GREATER_THAN_OR_EQUAL_TO` | Greater than or equal to (>=). |
+| <a id="comparisonoperatorless_than_or_equal_to"></a>`LESS_THAN_OR_EQUAL_TO` | Less than or equal to (<=). |
+
 ### `ComplianceFrameworkPresenceFilter`
 
 ComplianceFramework of a project for filtering.
@@ -46465,7 +47386,7 @@ Name of the check for the compliance standard.
 | <a id="compliancestandardsadherencechecknameat_least_one_non_author_approval"></a>`AT_LEAST_ONE_NON_AUTHOR_APPROVAL` | At least one non author approval. |
 | <a id="compliancestandardsadherencechecknameat_least_two_approvals"></a>`AT_LEAST_TWO_APPROVALS` | At least two approvals. |
 | <a id="compliancestandardsadherencechecknamedast"></a>`DAST` | Dast. |
-| <a id="compliancestandardsadherencechecknameprevent_approval_by_merge_request_author"></a>`PREVENT_APPROVAL_BY_MERGE_REQUEST_AUTHOR` | Prevent approval by merge request author. |
+| <a id="compliancestandardsadherencechecknameprevent_approval_by_merge_request_author"></a>`PREVENT_APPROVAL_BY_MERGE_REQUEST_AUTHOR` | Prevent approval by merge request creator (author). |
 | <a id="compliancestandardsadherencechecknameprevent_approval_by_merge_request_committers"></a>`PREVENT_APPROVAL_BY_MERGE_REQUEST_COMMITTERS` | Prevent approval by merge request committers. |
 | <a id="compliancestandardsadherencechecknamesast"></a>`SAST` | Sast. |
 
@@ -46677,6 +47598,7 @@ Type of custom field.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="customfieldtypedate"></a>`DATE` | Date field type. |
 | <a id="customfieldtypemulti_select"></a>`MULTI_SELECT` | Multi select field type. |
 | <a id="customfieldtypenumber"></a>`NUMBER` | Number field type. |
 | <a id="customfieldtypesingle_select"></a>`SINGLE_SELECT` | Single select field type. |
@@ -47289,6 +48211,8 @@ Values for sorting groups.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="groupsortcreated_at_asc"></a>`CREATED_AT_ASC` | Sort by created at, ascending order. |
+| <a id="groupsortcreated_at_desc"></a>`CREATED_AT_DESC` | Sort by created at, descending order. |
 | <a id="groupsortid_asc"></a>`ID_ASC` | Sort by ID, ascending order. |
 | <a id="groupsortid_desc"></a>`ID_DESC` | Sort by ID, descending order. |
 | <a id="groupsortname_asc"></a>`NAME_ASC` | Sort by name, ascending order. |
@@ -47296,6 +48220,8 @@ Values for sorting groups.
 | <a id="groupsortpath_asc"></a>`PATH_ASC` | Sort by path, ascending order. |
 | <a id="groupsortpath_desc"></a>`PATH_DESC` | Sort by path, descending order. |
 | <a id="groupsortsimilarity"></a>`SIMILARITY` | Most similar to the search query. |
+| <a id="groupsortupdated_at_asc"></a>`UPDATED_AT_ASC` | Sort by updated at, ascending order. |
+| <a id="groupsortupdated_at_desc"></a>`UPDATED_AT_DESC` | Sort by updated at, descending order. |
 
 ### `GroupingEnum`
 
@@ -47344,6 +48270,7 @@ Import source.
 | <a id="importsourcegitlab_group"></a>`GITLAB_GROUP` | Gitlab Group. |
 | <a id="importsourcegitlab_migration"></a>`GITLAB_MIGRATION` | Gitlab Migration. |
 | <a id="importsourcegitlab_project"></a>`GITLAB_PROJECT` | Gitlab Project. |
+| <a id="importsourcejira"></a>`JIRA` | Jira. |
 | <a id="importsourcemanifest"></a>`MANIFEST` | Manifest. |
 | <a id="importsourcenone"></a>`NONE` | Not imported. |
 
@@ -47462,6 +48389,8 @@ Values for sorting issues.
 | <a id="issuesortseverity_desc"></a>`SEVERITY_DESC` | Severity from more critical to less critical. |
 | <a id="issuesortsla_due_at_asc"></a>`SLA_DUE_AT_ASC` | Issues with earliest SLA due time shown first. |
 | <a id="issuesortsla_due_at_desc"></a>`SLA_DUE_AT_DESC` | Issues with latest SLA due time shown first. |
+| <a id="issuesortstatus_asc"></a>`STATUS_ASC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.4. **Status**: Experiment. Status by ascending order. |
+| <a id="issuesortstatus_desc"></a>`STATUS_DESC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.4. **Status**: Experiment. Status by descending order. |
 | <a id="issuesorttitle_asc"></a>`TITLE_ASC` | Title by ascending order. |
 | <a id="issuesorttitle_desc"></a>`TITLE_DESC` | Title by descending order. |
 | <a id="issuesortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
@@ -47680,6 +48609,7 @@ Member role admin permission.
 | <a id="memberroleadminpermissionread_admin_cicd"></a>`READ_ADMIN_CICD` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Read CI/CD details for runners and jobs in the Admin Area. |
 | <a id="memberroleadminpermissionread_admin_groups"></a>`READ_ADMIN_GROUPS` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.3. **Status**: Experiment. Read group details in the Admin Area. |
 | <a id="memberroleadminpermissionread_admin_monitoring"></a>`READ_ADMIN_MONITORING` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Read system information such as background migrations, health checks, and Gitaly in the Admin Area. |
+| <a id="memberroleadminpermissionread_admin_projects"></a>`READ_ADMIN_PROJECTS` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.3. **Status**: Experiment. Read project details in the Admin Area. |
 | <a id="memberroleadminpermissionread_admin_subscription"></a>`READ_ADMIN_SUBSCRIPTION` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Read subscription details in the Admin area. |
 | <a id="memberroleadminpermissionread_admin_users"></a>`READ_ADMIN_USERS` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 17.9. **Status**: Experiment. Read the user list and user details in the Admin area. |
 
@@ -47713,6 +48643,7 @@ Member role permission.
 | <a id="memberrolepermissionread_admin_cicd"></a>`READ_ADMIN_CICD` | Read CI/CD details for runners and jobs in the Admin Area. |
 | <a id="memberrolepermissionread_admin_groups"></a>`READ_ADMIN_GROUPS` | Read group details in the Admin Area. |
 | <a id="memberrolepermissionread_admin_monitoring"></a>`READ_ADMIN_MONITORING` | Read system information such as background migrations, health checks, and Gitaly in the Admin Area. |
+| <a id="memberrolepermissionread_admin_projects"></a>`READ_ADMIN_PROJECTS` | Read project details in the Admin Area. |
 | <a id="memberrolepermissionread_admin_subscription"></a>`READ_ADMIN_SUBSCRIPTION` | Read subscription details in the Admin area. |
 | <a id="memberrolepermissionread_admin_users"></a>`READ_ADMIN_USERS` | Read the user list and user details in the Admin area. |
 | <a id="memberrolepermissionread_code"></a>`READ_CODE` | Allows read-only access to the source code in the user interface. Does not allow users to edit or download repository archives, clone or pull repositories, view source code in an IDE, or view merge requests for private projects. You can download individual files because read-only access inherently grants the ability to make a local copy of the file. |
@@ -48673,6 +49604,17 @@ Status of a requirement based on last test report.
 | <a id="requirementstatusfiltermissing"></a>`MISSING` | Requirements without any test report. |
 | <a id="requirementstatusfilterpassed"></a>`PASSED` | Passed test report. |
 
+### `ResourceGroupsProcessMode`
+
+Process mode for resource groups.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="resourcegroupsprocessmodenewest_first"></a>`NEWEST_FIRST` | Newest first. |
+| <a id="resourcegroupsprocessmodenewest_ready_first"></a>`NEWEST_READY_FIRST` | Newest ready first. |
+| <a id="resourcegroupsprocessmodeoldest_first"></a>`OLDEST_FIRST` | Oldest first. |
+| <a id="resourcegroupsprocessmodeunordered"></a>`UNORDERED` | Unordered. |
+
 ### `ReviewerWildcardId`
 
 Reviewer ID wildcard values.
@@ -48681,6 +49623,18 @@ Reviewer ID wildcard values.
 | ----- | ----------- |
 | <a id="reviewerwildcardidany"></a>`ANY` | Any reviewer is assigned. |
 | <a id="reviewerwildcardidnone"></a>`NONE` | No reviewer is assigned. |
+
+### `RiskRating`
+
+Risk rating levels based on score ranges.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="riskratingcritical"></a>`CRITICAL` | Critical risk (76–100). |
+| <a id="riskratinghigh"></a>`HIGH` | High risk (51–75). |
+| <a id="riskratinglow"></a>`LOW` | Low risk (0–25). |
+| <a id="riskratingmedium"></a>`MEDIUM` | Medium risk (26–50). |
+| <a id="riskratingunknown"></a>`UNKNOWN` | Unknown risk level. |
 
 ### `SastUiComponentSize`
 
@@ -48702,6 +49656,16 @@ Values for sbom source types.
 | <a id="sbomsourcetypecontainer_scanning_for_registry"></a>`CONTAINER_SCANNING_FOR_REGISTRY` | Source Type: container_scanning_for_registry. |
 | <a id="sbomsourcetypedependency_scanning"></a>`DEPENDENCY_SCANNING` | Source Type: dependency_scanning. |
 | <a id="sbomsourcetypenil_source"></a>`NIL_SOURCE` | Enum source nil. |
+
+### `ScanModeEnum`
+
+Options for filtering by scan mode.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="scanmodeenumall"></a>`ALL` | Return results from all scans. |
+| <a id="scanmodeenumfull"></a>`FULL` | Return results from full scans. |
+| <a id="scanmodeenumpartial"></a>`PARTIAL` | Return results from partial scans. |
 
 ### `ScanStatus`
 
@@ -48736,6 +49700,37 @@ Type of search.
 | <a id="searchtypeadvanced"></a>`ADVANCED` | Advanced search. |
 | <a id="searchtypebasic"></a>`BASIC` | Basic search. |
 | <a id="searchtypezoekt"></a>`ZOEKT` | Exact code search. |
+
+### `SecretRotationStatus`
+
+Status of secret rotation.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="secretrotationstatusapproaching"></a>`APPROACHING` | Rotation is due within 7 days. |
+| <a id="secretrotationstatusok"></a>`OK` | Rotation is not due soon. |
+| <a id="secretrotationstatusoverdue"></a>`OVERDUE` | Rotation is overdue (reminder was sent). |
+
+### `SecurityCategoryEditableState`
+
+Editable state for security categories and attributes.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="securitycategoryeditablestateeditable"></a>`EDITABLE` | Editable state. |
+| <a id="securitycategoryeditablestateeditable_attributes"></a>`EDITABLE_ATTRIBUTES` | Editable attributes state. |
+| <a id="securitycategoryeditablestatelocked"></a>`LOCKED` | Locked state. |
+
+### `SecurityCategoryTemplateType`
+
+Template type for predefined security categories.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="securitycategorytemplatetypeapplication"></a>`APPLICATION` | Application category. |
+| <a id="securitycategorytemplatetypebusiness_impact"></a>`BUSINESS_IMPACT` | Business impact category. |
+| <a id="securitycategorytemplatetypebusiness_unit"></a>`BUSINESS_UNIT` | Business unit category. |
+| <a id="securitycategorytemplatetypeexposure"></a>`EXPOSURE` | Exposure category. |
 
 ### `SecurityPolicyRelationType`
 
@@ -49109,9 +50104,9 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumdeployment_details_feedback"></a>`DEPLOYMENT_DETAILS_FEEDBACK` | Callout feature name for deployment_details_feedback. |
 | <a id="usercalloutfeaturenameenumdora_dashboard_migration_group"></a>`DORA_DASHBOARD_MIGRATION_GROUP` | Callout feature name for dora_dashboard_migration_group. |
 | <a id="usercalloutfeaturenameenumdora_dashboard_migration_project"></a>`DORA_DASHBOARD_MIGRATION_PROJECT` | Callout feature name for dora_dashboard_migration_project. |
+| <a id="usercalloutfeaturenameenumduo_agent_platform_requested"></a>`DUO_AGENT_PLATFORM_REQUESTED` | Callout feature name for duo_agent_platform_requested. |
+| <a id="usercalloutfeaturenameenumduo_amazon_q_alert"></a>`DUO_AMAZON_Q_ALERT` | Callout feature name for duo_amazon_q_alert. |
 | <a id="usercalloutfeaturenameenumduo_chat_callout"></a>`DUO_CHAT_CALLOUT` | Callout feature name for duo_chat_callout. |
-| <a id="usercalloutfeaturenameenumenable_duo_banner_admin_dashboard"></a>`ENABLE_DUO_BANNER_ADMIN_DASHBOARD` | Callout feature name for enable_duo_banner_admin_dashboard. |
-| <a id="usercalloutfeaturenameenumenable_duo_banner_admin_duo_settings_page"></a>`ENABLE_DUO_BANNER_ADMIN_DUO_SETTINGS_PAGE` | Callout feature name for enable_duo_banner_admin_duo_settings_page. |
 | <a id="usercalloutfeaturenameenumexplore_duo_core_banner"></a>`EXPLORE_DUO_CORE_BANNER` | Callout feature name for explore_duo_core_banner. |
 | <a id="usercalloutfeaturenameenumfeature_flags_new_version"></a>`FEATURE_FLAGS_NEW_VERSION` | Callout feature name for feature_flags_new_version. |
 | <a id="usercalloutfeaturenameenumgcp_signup_offer"></a>`GCP_SIGNUP_OFFER` | Callout feature name for gcp_signup_offer. |
@@ -49133,6 +50128,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumopenssl_callout"></a>`OPENSSL_CALLOUT` | Callout feature name for openssl_callout. |
 | <a id="usercalloutfeaturenameenumperiod_in_terraform_state_name_alert"></a>`PERIOD_IN_TERRAFORM_STATE_NAME_ALERT` | Callout feature name for period_in_terraform_state_name_alert. |
 | <a id="usercalloutfeaturenameenumpersonal_access_token_expiry"></a>`PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for personal_access_token_expiry. |
+| <a id="usercalloutfeaturenameenumpersonal_homepage_preferences_banner"></a>`PERSONAL_HOMEPAGE_PREFERENCES_BANNER` | Callout feature name for personal_homepage_preferences_banner. |
 | <a id="usercalloutfeaturenameenumpersonal_project_limitations_banner"></a>`PERSONAL_PROJECT_LIMITATIONS_BANNER` | Callout feature name for personal_project_limitations_banner. |
 | <a id="usercalloutfeaturenameenumpipeline_inputs_announcement_banner"></a>`PIPELINE_INPUTS_ANNOUNCEMENT_BANNER` | Callout feature name for pipeline_inputs_announcement_banner. |
 | <a id="usercalloutfeaturenameenumpipeline_needs_banner"></a>`PIPELINE_NEEDS_BANNER` | Callout feature name for pipeline_needs_banner. |
@@ -49141,7 +50137,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumpipeline_schedules_inputs_adoption_banner"></a>`PIPELINE_SCHEDULES_INPUTS_ADOPTION_BANNER` | Callout feature name for pipeline_schedules_inputs_adoption_banner. |
 | <a id="usercalloutfeaturenameenumpipl_compliance_alert"></a>`PIPL_COMPLIANCE_ALERT` | Callout feature name for pipl_compliance_alert. |
 | <a id="usercalloutfeaturenameenumpreview_user_over_limit_free_plan_alert"></a>`PREVIEW_USER_OVER_LIMIT_FREE_PLAN_ALERT` | Callout feature name for preview_user_over_limit_free_plan_alert. |
-| <a id="usercalloutfeaturenameenumproduct_analytics_dashboard_feedback"></a>`PRODUCT_ANALYTICS_DASHBOARD_FEEDBACK` | Callout feature name for product_analytics_dashboard_feedback. |
 | <a id="usercalloutfeaturenameenumproduct_usage_data_collection_changes"></a>`PRODUCT_USAGE_DATA_COLLECTION_CHANGES` | Callout feature name for product_usage_data_collection_changes. |
 | <a id="usercalloutfeaturenameenumprofile_personal_access_token_expiry"></a>`PROFILE_PERSONAL_ACCESS_TOKEN_EXPIRY` | Callout feature name for profile_personal_access_token_expiry. |
 | <a id="usercalloutfeaturenameenumproject_repository_limit_alert_warning_threshold"></a>`PROJECT_REPOSITORY_LIMIT_ALERT_WARNING_THRESHOLD` | Callout feature name for project_repository_limit_alert_warning_threshold. |
@@ -49518,6 +50513,15 @@ Values for work item award emoji update enum.
 | <a id="workitemawardemojiupdateactionremove"></a>`REMOVE` | Removes the emoji. |
 | <a id="workitemawardemojiupdateactiontoggle"></a>`TOGGLE` | Toggles the status of the emoji. |
 
+### `WorkItemDiscussionsSort`
+
+Values for sorting work item discussions.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="workitemdiscussionssortcreated_asc"></a>`CREATED_ASC` | Created at in ascending order. |
+| <a id="workitemdiscussionssortcreated_desc"></a>`CREATED_DESC` | Created at in descending order. |
+
 ### `WorkItemParentWildcardId`
 
 Parent ID wildcard values.
@@ -49606,7 +50610,6 @@ Category of the work item status.
 | Value | Description |
 | ----- | ----------- |
 | <a id="workitemstatuscategoryenumcanceled"></a>`CANCELED` | Canceled status category. |
-| <a id="workitemstatuscategoryenumcancelled"></a>`CANCELLED` {{< icon name="warning-solid" >}} | **Deprecated** in GitLab 18.2. This was renamed. Use: `CANCELED`. |
 | <a id="workitemstatuscategoryenumdone"></a>`DONE` | Done status category. |
 | <a id="workitemstatuscategoryenumin_progress"></a>`IN_PROGRESS` | In progress status category. |
 | <a id="workitemstatuscategoryenumto_do"></a>`TO_DO` | To do status category. |
@@ -49673,6 +50676,7 @@ The environment of a workflow.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="workflowenvironmentchat_partial"></a>`CHAT_PARTIAL` | Chat Partial environment. |
 | <a id="workflowenvironmentide"></a>`IDE` | Ide environment. |
 | <a id="workflowenvironmentweb"></a>`WEB` | Web environment. |
 
@@ -50854,6 +51858,24 @@ A `SbomOccurrenceID` is a global ID. It is encoded as a string.
 
 An example `SbomOccurrenceID` is: `"gid://gitlab/Sbom::Occurrence/1"`.
 
+### `SecurityAttributeID`
+
+A `SecurityAttributeID` is a global ID. It is encoded as a string.
+
+An example `SecurityAttributeID` is: `"gid://gitlab/Security::Attribute/1"`.
+
+### `SecurityCategoryID`
+
+A `SecurityCategoryID` is a global ID. It is encoded as a string.
+
+An example `SecurityCategoryID` is: `"gid://gitlab/Security::Category/1"`.
+
+### `SecurityOrchestrationPolicyConfigurationID`
+
+A `SecurityOrchestrationPolicyConfigurationID` is a global ID. It is encoded as a string.
+
+An example `SecurityOrchestrationPolicyConfigurationID` is: `"gid://gitlab/Security::OrchestrationPolicyConfiguration/1"`.
+
 ### `SecurityProjectSecurityExclusionID`
 
 A `SecurityProjectSecurityExclusionID` is a global ID. It is encoded as a string.
@@ -50950,6 +51972,12 @@ A `VirtualRegistriesPackagesMavenRegistryID` is a global ID. It is encoded as a 
 
 An example `VirtualRegistriesPackagesMavenRegistryID` is: `"gid://gitlab/VirtualRegistries::Packages::Maven::Registry/1"`.
 
+### `VirtualRegistriesPackagesMavenUpstreamID`
+
+A `VirtualRegistriesPackagesMavenUpstreamID` is a global ID. It is encoded as a string.
+
+An example `VirtualRegistriesPackagesMavenUpstreamID` is: `"gid://gitlab/VirtualRegistries::Packages::Maven::Upstream/1"`.
+
 ### `VulnerabilitiesExternalIssueLinkID`
 
 A `VulnerabilitiesExternalIssueLinkID` is a global ID. It is encoded as a string.
@@ -50988,12 +52016,6 @@ An example `WorkItemID` is: `"gid://gitlab/WorkItem/1"`.
 
 While we transition from Issues into Work Items this type will temporarily support
 `IssueID` like: `"gid://gitlab/Issue/1"`. This behavior will be removed without notice in the future.
-
-### `WorkItemsParentID`
-
-A `WorkItemsParentID` is a global ID. It is encoded as a string.
-
-An example `WorkItemsParentID` is: `"gid://gitlab/WorkItems::Parent/1"`.
 
 ### `WorkItemsRelatedWorkItemLinkID`
 
@@ -51271,7 +52293,7 @@ Implementations:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aicatalogitemcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="aicatalogitemcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item was created. |
 | <a id="aicatalogitemdescription"></a>`description` | [`String!`](#string) | Description of the item. |
 | <a id="aicatalogitemid"></a>`id` | [`ID!`](#id) | ID of the item. |
 | <a id="aicatalogitemitemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
@@ -51279,6 +52301,7 @@ Implementations:
 | <a id="aicatalogitemname"></a>`name` | [`String!`](#string) | Name of the item. |
 | <a id="aicatalogitemproject"></a>`project` | [`Project`](#project) | Project for the item. |
 | <a id="aicatalogitempublic"></a>`public` | [`Boolean!`](#boolean) | Whether the item is publicly visible in the catalog. |
+| <a id="aicatalogitemupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item was updated. |
 | <a id="aicatalogitemuserpermissions"></a>`userPermissions` | [`AiCatalogItemPermissions!`](#aicatalogitempermissions) | Permissions for the current user on the resource. |
 | <a id="aicatalogitemversions"></a>`versions` | [`AiCatalogItemVersionConnection`](#aicatalogitemversionconnection) | Versions of the item. (see [Connections](#connections)) |
 
@@ -51296,6 +52319,7 @@ Implementations:
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aicatalogitemversioncreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item version was created. |
+| <a id="aicatalogitemversionhumanversionname"></a>`humanVersionName` | [`String`](#string) | Human-friendly name of the item version. In the form v1.0.0-draft. |
 | <a id="aicatalogitemversionid"></a>`id` | [`ID!`](#id) | ID of the item version. |
 | <a id="aicatalogitemversionreleased"></a>`released` | [`Boolean!`](#boolean) | Indicates the item version is released. |
 | <a id="aicatalogitemversionreleasedat"></a>`releasedAt` | [`Time`](#time) | Timestamp of when the item version was released. |
@@ -51725,8 +52749,10 @@ Implementations:
 | ---- | ---- | ----------- |
 | <a id="groupinterfaceavatarurl"></a>`avatarUrl` | [`String`](#string) | Avatar URL of the group. |
 | <a id="groupinterfacefullname"></a>`fullName` | [`String`](#string) | Full name of the group. |
+| <a id="groupinterfacefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the group. |
 | <a id="groupinterfaceid"></a>`id` | [`ID`](#id) | ID of the group. |
 | <a id="groupinterfacename"></a>`name` | [`String`](#string) | Name of the group. |
+| <a id="groupinterfaceuserpermissions"></a>`userPermissions` | [`GroupPermissions`](#grouppermissions) | Permissions for the current user on the group. |
 | <a id="groupinterfaceweburl"></a>`webUrl` | [`String`](#string) | Web URL of the group. |
 
 #### `LabelInterface`
@@ -51849,6 +52875,7 @@ Implementations:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="namespaceslinkpathscalendarpath"></a>`calendarPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. Calendar path for work items. |
 | <a id="namespaceslinkpathscontributionguidepath"></a>`contributionGuidePath` | [`String`](#string) | Namespace contribution guide path. |
 | <a id="namespaceslinkpathsemailshelppagepath"></a>`emailsHelpPagePath` | [`String`](#string) | Help page path for emails. |
 | <a id="namespaceslinkpathsepicslist"></a>`epicsList` | [`String`](#string) | Namespace epics_list. |
@@ -51863,6 +52890,7 @@ Implementations:
 | <a id="namespaceslinkpathsquickactionshelppath"></a>`quickActionsHelpPath` | [`String`](#string) | Help page path for quick actions. |
 | <a id="namespaceslinkpathsregister"></a>`register` | [`String`](#string) | Namespace register_path. |
 | <a id="namespaceslinkpathsreportabuse"></a>`reportAbuse` | [`String`](#string) | Namespace report_abuse. |
+| <a id="namespaceslinkpathsrsspath"></a>`rssPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.4. **Status**: Experiment. RSS path for work items. |
 | <a id="namespaceslinkpathssignin"></a>`signIn` | [`String`](#string) | Namespace sign_in_path. |
 | <a id="namespaceslinkpathsuserexportemail"></a>`userExportEmail` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 18.3. **Status**: Experiment. User email for export CSV. Returns `null` for user namespaces. |
 
@@ -52023,6 +53051,7 @@ Implementations:
 | <a id="projectinterfaceid"></a>`id` | [`ID`](#id) | ID of the project. |
 | <a id="projectinterfacename"></a>`name` | [`String`](#string) | Name of the project without the namespace. |
 | <a id="projectinterfacenamewithnamespace"></a>`nameWithNamespace` | [`String`](#string) | Name of the project including the namespace. |
+| <a id="projectinterfaceuserpermissions"></a>`userPermissions` | [`ProjectPermissions`](#projectpermissions) | Permissions for the current user on the project. |
 | <a id="projectinterfaceweburl"></a>`webUrl` | [`String`](#string) | Web URL of the project. |
 
 #### `ResolvableInterface`
@@ -52585,6 +53614,7 @@ Implementations:
 
 Implementations:
 
+- [`WorkItemDateFieldValue`](#workitemdatefieldvalue)
 - [`WorkItemNumberFieldValue`](#workitemnumberfieldvalue)
 - [`WorkItemSelectFieldValue`](#workitemselectfieldvalue)
 - [`WorkItemTextFieldValue`](#workitemtextfieldvalue)
@@ -52812,6 +53842,17 @@ Field that are available while modifying the custom mapping attributes for an HT
 | <a id="alertmanagementpayloadalertfieldinputpath"></a>`path` | [`[PayloadAlertFieldPathSegment!]!`](#payloadalertfieldpathsegment) | Path to value inside payload JSON. |
 | <a id="alertmanagementpayloadalertfieldinputtype"></a>`type` | [`AlertManagementPayloadAlertFieldType!`](#alertmanagementpayloadalertfieldtype) | Type of the parsed value. |
 
+### `AnalyzerFilterInput`
+
+Input type for filtering projects by analyzer type and status.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="analyzerfilterinputanalyzertype"></a>`analyzerType` | [`AnalyzerTypeEnum!`](#analyzertypeenum) | Type of analyzer to filter by. |
+| <a id="analyzerfilterinputstatus"></a>`status` | [`AnalyzerStatusEnum!`](#analyzerstatusenum) | Status of the analyzer to filter by. |
+
 ### `BoardIssueInput`
 
 #### Arguments
@@ -52827,6 +53868,7 @@ Field that are available while modifying the custom mapping attributes for an HT
 | <a id="boardissueinputepicwildcardid"></a>`epicWildcardId` | [`EpicWildcardId`](#epicwildcardid) | Filter by epic ID wildcard. Incompatible with epicId. |
 | <a id="boardissueinputhealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the issue, "none" and "any" values are supported. |
 | <a id="boardissueinputiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of issues. For example `["1", "2"]`. |
+| <a id="boardissueinputincludesubepics"></a>`includeSubepics` | [`Boolean`](#boolean) | Whether to include subepics when filtering issues by epicId. |
 | <a id="boardissueinputiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter by a list of iteration cadence IDs. |
 | <a id="boardissueinputiterationid"></a>`iterationId` | [`[IterationID!]`](#iterationid) | Filter by a list of iteration IDs. Incompatible with iterationWildcardId. |
 | <a id="boardissueinputiterationtitle"></a>`iterationTitle` | [`String`](#string) | Filter by iteration title. |
@@ -53279,6 +54321,7 @@ A year and month input for querying product analytics usage data.
 | ---- | ---- | ----------- |
 | <a id="negatedboardissueinputassigneeusername"></a>`assigneeUsername` | [`[String]`](#string) | Filter by assignee username. |
 | <a id="negatedboardissueinputauthorusername"></a>`authorUsername` | [`String`](#string) | Filter by author username. |
+| <a id="negatedboardissueinputcustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
 | <a id="negatedboardissueinputepicid"></a>`epicId` {{< icon name="warning-solid" >}} | [`EpicID`](#epicid) | **Deprecated**: This will be replaced by WorkItem hierarchyWidget. Deprecated in GitLab 17.5. |
 | <a id="negatedboardissueinputhealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatus`](#healthstatus) | Health status not applied to the issue. Includes issues where health status is not set. |
 | <a id="negatedboardissueinputiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of issues. For example `["1", "2"]`. |
@@ -53309,6 +54352,7 @@ A year and month input for querying product analytics usage data.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="negatedepicboardissueinputauthorusername"></a>`authorUsername` | [`String`](#string) | Filter by author username. |
+| <a id="negatedepicboardissueinputcustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
 | <a id="negatedepicboardissueinputlabelname"></a>`labelName` | [`[String]`](#string) | Filter by label name. |
 | <a id="negatedepicboardissueinputmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 
@@ -53319,6 +54363,7 @@ A year and month input for querying product analytics usage data.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="negatedepicfilterinputauthorusername"></a>`authorUsername` | [`String`](#string) | Filter by author username. |
+| <a id="negatedepicfilterinputcustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
 | <a id="negatedepicfilterinputlabelname"></a>`labelName` | [`[String]`](#string) | Filter by label name. |
 | <a id="negatedepicfilterinputmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 
@@ -53331,6 +54376,7 @@ A year and month input for querying product analytics usage data.
 | <a id="negatedissuefilterinputassigneeid"></a>`assigneeId` | [`String`](#string) | ID of a user not assigned to the issues. |
 | <a id="negatedissuefilterinputassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users not assigned to the issue. |
 | <a id="negatedissuefilterinputauthorusername"></a>`authorUsername` | [`[String!]`](#string) | Username of a user who didn't author the issue. |
+| <a id="negatedissuefilterinputcustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
 | <a id="negatedissuefilterinputepicid"></a>`epicId` | [`String`](#string) | ID of an epic not associated with the issues. |
 | <a id="negatedissuefilterinputhealthstatusfilter"></a>`healthStatusFilter` | [`[HealthStatus!]`](#healthstatus) | Health status not applied to the issue. Includes issues where health status is not set. |
 | <a id="negatedissuefilterinputiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of issues to exclude. For example, `[1, 2]`. |
@@ -53367,6 +54413,7 @@ A year and month input for querying product analytics usage data.
 | ---- | ---- | ----------- |
 | <a id="negatedworkitemfilterinputassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users not assigned to the work item. |
 | <a id="negatedworkitemfilterinputauthorusername"></a>`authorUsername` | [`[String!]`](#string) | Username of a user who didn't author the work item. |
+| <a id="negatedworkitemfilterinputcustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
 | <a id="negatedworkitemfilterinputhealthstatusfilter"></a>`healthStatusFilter` | [`[HealthStatus!]`](#healthstatus) | Health status not applied to the work items. Includes work items where health status is not set. |
 | <a id="negatedworkitemfilterinputiterationid"></a>`iterationId` | [`[ID!]`](#id) | List of iteration Global IDs not applied to the work items. |
 | <a id="negatedworkitemfilterinputiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by negated iteration ID wildcard. |
@@ -53457,6 +54504,17 @@ Representation of who is provided access to. For eg: User/Role/MemberRole/Group.
 | ---- | ---- | ----------- |
 | <a id="projectcompliancecontrolstatusinputcompliancerequirementid"></a>`complianceRequirementId` | [`ComplianceManagementComplianceFrameworkComplianceRequirementID`](#compliancemanagementcomplianceframeworkcompliancerequirementid) | Compliance requirement id of the statuses. |
 
+### `ProjectInfoInput`
+
+Project selector with optional path prefix for narrowing the search.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectinfoinputdirectorypath"></a>`directoryPath` | [`String`](#string) | Optional path prefix inside the repo (e.g., "app/models"). |
+| <a id="projectinfoinputprojectid"></a>`projectId` | [`Int!`](#int) | Numeric project ID. |
+
 ### `ProjectRequirementComplianceStatusInput`
 
 #### Arguments
@@ -53546,6 +54604,18 @@ Represents a CI configuration of SAST.
 | <a id="sastciconfigurationinputglobal"></a>`global` | [`[SastCiConfigurationEntityInput!]`](#sastciconfigurationentityinput) | List of global entities related to SAST configuration. |
 | <a id="sastciconfigurationinputpipeline"></a>`pipeline` | [`[SastCiConfigurationEntityInput!]`](#sastciconfigurationentityinput) | List of pipeline entities related to SAST configuration. |
 
+### `SecurityAttributeInput`
+
+Input type for security attribute.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityattributeinputcolor"></a>`color` | [`Color!`](#color) | Color of the security attribute. |
+| <a id="securityattributeinputdescription"></a>`description` | [`String!`](#string) | Description of the security attribute. |
+| <a id="securityattributeinputname"></a>`name` | [`String!`](#string) | Name of the security attribute. |
+
 ### `SnippetBlobActionInputType`
 
 Represents an action to perform over a snippet file.
@@ -53558,6 +54628,17 @@ Represents an action to perform over a snippet file.
 | <a id="snippetblobactioninputtypecontent"></a>`content` | [`String`](#string) | Snippet file content. |
 | <a id="snippetblobactioninputtypefilepath"></a>`filePath` | [`String!`](#string) | Path of the snippet file. |
 | <a id="snippetblobactioninputtypepreviouspath"></a>`previousPath` | [`String`](#string) | Previous path of the snippet file. |
+
+### `StatusMappingInput`
+
+Input for mapping a removed status to a replacement status.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="statusmappinginputnewstatusid"></a>`newStatusId` | [`GlobalID!`](#globalid) | Global ID of the replacement status. |
+| <a id="statusmappinginputoldstatusid"></a>`oldStatusId` | [`GlobalID!`](#globalid) | Global ID of the status being removed/replaced. |
 
 ### `Timeframe`
 
@@ -53593,6 +54674,7 @@ Attributes for defining a tracking event.
 | ---- | ---- | ----------- |
 | <a id="unionedepicfilterinputauthorusername"></a>`authorUsername` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated**: Use authorUsernames instead. Deprecated in GitLab 16.6. |
 | <a id="unionedepicfilterinputauthorusernames"></a>`authorUsernames` | [`[String!]`](#string) | Filters epics that are authored by one of the given users. |
+| <a id="unionedepicfilterinputcustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
 | <a id="unionedepicfilterinputlabelname"></a>`labelName` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated**: Use labelNames instead. Deprecated in GitLab 16.6. |
 | <a id="unionedepicfilterinputlabelnames"></a>`labelNames` | [`[String!]`](#string) | Filters epics that have at least one of the given labels. |
 
@@ -53604,6 +54686,7 @@ Attributes for defining a tracking event.
 | ---- | ---- | ----------- |
 | <a id="unionedissuefilterinputassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Filters issues that are assigned to at least one of the given users. |
 | <a id="unionedissuefilterinputauthorusernames"></a>`authorUsernames` | [`[String!]`](#string) | Filters issues that are authored by one of the given users. |
+| <a id="unionedissuefilterinputcustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
 | <a id="unionedissuefilterinputlabelnames"></a>`labelNames` | [`[String!]`](#string) | Filters issues that have at least one of the given labels. |
 
 ### `UnionedMergeRequestFilterInput`
@@ -53625,6 +54708,7 @@ Attributes for defining a tracking event.
 | ---- | ---- | ----------- |
 | <a id="unionedworkitemfilterinputassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Filters work items that are assigned to at least one of the given users. |
 | <a id="unionedworkitemfilterinputauthorusernames"></a>`authorUsernames` | [`[String!]`](#string) | Filters work items that are authored by one of the given users. |
+| <a id="unionedworkitemfilterinputcustomfield"></a>`customField` {{< icon name="warning-solid" >}} | [`[WorkItemWidgetCustomFieldFilterInputType!]`](#workitemwidgetcustomfieldfilterinputtype) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.4. |
 | <a id="unionedworkitemfilterinputlabelnames"></a>`labelNames` | [`[String!]`](#string) | Filters work items that have at least one of the given labels. |
 
 ### `UpdateDiffImagePositionInput`
@@ -53681,6 +54765,18 @@ Attributes for value stream setting.
 | ---- | ---- | ----------- |
 | <a id="verificationstatusinputverificationstatus"></a>`verificationStatus` | [`TestReportState!`](#testreportstate) | Verification status of the work item. |
 
+### `VulnerabilityCountFilterInput`
+
+Input type for filtering projects by vulnerability count and severity.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitycountfilterinputcount"></a>`count` | [`Int!`](#int) | Number of vulnerabilities to filter by. |
+| <a id="vulnerabilitycountfilterinputoperator"></a>`operator` | [`ComparisonOperator!`](#comparisonoperator) | Comparison operator for the vulnerability count. |
+| <a id="vulnerabilitycountfilterinputseverity"></a>`severity` | [`VulnerabilitySeverity!`](#vulnerabilityseverity) | Severity level of vulnerabilities to filter by. |
+
 ### `VulnerabilityIdentifierInput`
 
 #### Arguments
@@ -53730,6 +54826,7 @@ Attributes for value stream setting.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemdescriptiontemplatecontentinputfromnamespace"></a>`fromNamespace` | [`String`](#string) | Full path of the group or project using the template. |
 | <a id="workitemdescriptiontemplatecontentinputname"></a>`name` | [`String!`](#string) | Name of the description template. |
 | <a id="workitemdescriptiontemplatecontentinputprojectid"></a>`projectId` | [`Int!`](#int) | ID of the project the template belongs to. |
 
@@ -53823,6 +54920,7 @@ Attributes for value stream setting.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetcustomfieldvalueinputtypecustomfieldid"></a>`customFieldId` | [`IssuablesCustomFieldID!`](#issuablescustomfieldid) | Global ID of the custom field. |
+| <a id="workitemwidgetcustomfieldvalueinputtypedatevalue"></a>`dateValue` | [`Date`](#date) | Value for custom fields with date type. |
 | <a id="workitemwidgetcustomfieldvalueinputtypenumbervalue"></a>`numberValue` | [`Float`](#float) | Value for custom fields with number type. |
 | <a id="workitemwidgetcustomfieldvalueinputtypeselectedoptionids"></a>`selectedOptionIds` | [`[IssuablesCustomFieldSelectOptionID!]`](#issuablescustomfieldselectoptionid) | Global IDs of the selected options for custom fields with select type. |
 | <a id="workitemwidgetcustomfieldvalueinputtypetextvalue"></a>`textValue` | [`String`](#string) | Value for custom fields with text type. |

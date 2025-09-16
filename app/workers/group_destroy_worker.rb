@@ -14,7 +14,7 @@ class GroupDestroyWorker
   deduplicate :until_executed, ttl: 2.hours
 
   def perform(group_id, user_id, params = {}) # rubocop:disable Lint/UnusedMethodArgument -- Keep params parameter for backwards compatibility. Remove `param` in 18.0 release.
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464673')
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464673', new_threshold: 300)
 
     begin
       group = Group.find(group_id)

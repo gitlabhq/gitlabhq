@@ -8,7 +8,7 @@ description: Contains various MergeRequest-related timestamps for aggregating Va
   Stream Analytics data.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68950
 milestone: '14.3'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   group_id: namespaces
 table_size: small

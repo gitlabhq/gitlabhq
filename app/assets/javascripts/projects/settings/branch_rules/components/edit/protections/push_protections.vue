@@ -23,10 +23,6 @@ export default {
     anchor: 'force-push-to-a-remote-branch',
   }),
   props: {
-    membersAllowedToPush: {
-      type: Array,
-      required: true,
-    },
     allowForcePush: {
       type: Boolean,
       required: true,

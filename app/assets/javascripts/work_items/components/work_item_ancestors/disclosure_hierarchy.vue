@@ -1,7 +1,7 @@
 <script>
 import uniqueId from 'lodash/uniqueId';
 import { GlIcon, GlTooltip, GlDisclosureDropdown, GlResizeObserverDirective } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import DisclosureHierarchyItem from './disclosure_hierarchy_item.vue';
 
 export default {

@@ -14,7 +14,7 @@ exports[`StatisticsList displays the counts data with labels 1`] = `
       unit=""
       usedelimiters="true"
       value="40,000"
-      variant="muted"
+      variant="neutral"
     />
   </div>
   <div>
@@ -27,7 +27,7 @@ exports[`StatisticsList displays the counts data with labels 1`] = `
       unit=""
       usedelimiters="true"
       value="50%"
-      variant="muted"
+      variant="neutral"
     />
     <gl-link-stub
       class="gl-p-2"
@@ -47,7 +47,7 @@ exports[`StatisticsList displays the counts data with labels 1`] = `
       unit=""
       usedelimiters="true"
       value="50%"
-      variant="muted"
+      variant="neutral"
     />
   </div>
 </div>

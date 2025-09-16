@@ -569,12 +569,14 @@ RSpec.describe Projects::BranchesController, feature_category: :source_code_mana
     # was not raised whenever the cache is enabled yet cold.
     context 'when cache is enabled yet cold', :request_store do
       it 'return with a status 200' do
-        get :index, format: :html, params: {
-          namespace_id: project.namespace,
-          project_id: project,
-          sort: 'name_asc',
-          state: 'all'
-        }
+        expect do
+          get :index, format: :html, params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            sort: 'name_asc',
+            state: 'all'
+          }
+        end.to change { Gitlab::GitalyClient.get_request_count }.by(10)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(assigns[:sort]).to eq('name_asc')

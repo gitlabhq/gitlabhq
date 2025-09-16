@@ -3,8 +3,8 @@
 - add_page_specific_style 'page_bundles/editor'
 
 .js-blob-edit-header{ data: edit_blob_app_data(@project, @id, @blob, @ref, 'create') }
-  .gl-mb-4.gl-mt-5.gl-items-center.gl-justify-between.md:gl-flex.lg:gl-mb-5
-    %h1{ class: 'md:!gl-mb-0 gl-heading-1 gl-inline-block' }
+  .gl-mb-4.gl-mt-5.gl-items-center.gl-justify-between{ class: '@md/panel:gl-flex @lg/panel:gl-mb-5' }
+    %h1{ class: '@md/panel:!gl-mb-0 gl-heading-1 gl-inline-block' }
       = _('New file')
     .gl-flex.gl-gap-3
       = render Pajamas::ButtonComponent.new do

@@ -27,8 +27,6 @@ import {
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
   SORT_DIRECTION_ASC,
   SORT_DIRECTION_DESC,
-  PAGINATION_TYPE_KEYSET,
-  PAGINATION_TYPE_OFFSET,
   QUERY_PARAM_PAGE,
   FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
   FILTERED_SEARCH_TOKEN_NAMESPACE,
@@ -135,13 +133,6 @@ export default {
       type: Boolean,
       required: false,
       default: true,
-    },
-    paginationType: {
-      type: String,
-      required: true,
-      validator(value) {
-        return [PAGINATION_TYPE_KEYSET, PAGINATION_TYPE_OFFSET].includes(value);
-      },
     },
     userPreferencesSortKey: {
       type: String,
@@ -348,7 +339,17 @@ export default {
       this.activeTabIndex = index;
 
       const tab = this.tabs[index] || this.tabs[0];
-      this.$router.push({ name: tab.value });
+
+      // Group and project paths can have `/` in them but Vue router converts them to %2F
+      // Resolve the route then convert back to `/` before pushing
+      const resolvedRoute = this.$router.resolve({
+        name: tab.value,
+        params: this.$route.params,
+      });
+      // Vue router 3 and Vue router 4 have different formats for resolved routes
+      const path = resolvedRoute.route ? resolvedRoute.route.path : resolvedRoute.path;
+
+      this.$router.push(decodeURIComponent(path));
 
       if (!this.eventTracking?.tabs) {
         return;
@@ -429,8 +430,19 @@ export default {
         property: pagination.startCursor === null ? 'next' : 'previous',
       });
     },
-    async onOffsetPageChange(page) {
-      await this.pushQuery({ ...this.$route.query, [QUERY_PARAM_PAGE]: page });
+    async onOffsetPageChange(newPage) {
+      const currentPage = this.$route.query[QUERY_PARAM_PAGE];
+
+      await this.pushQuery({ ...this.$route.query, [QUERY_PARAM_PAGE]: newPage });
+
+      if (!this.eventTracking?.pagination) {
+        return;
+      }
+
+      this.trackEvent(this.eventTracking.pagination, {
+        label: this.activeTab.value,
+        property: newPage > currentPage ? 'next' : 'previous',
+      });
     },
     onRefetch() {
       this.getTabCounts();
@@ -575,7 +587,6 @@ export default {
         :timestamp-type="timestampType"
         :filtered-search-term-key="filteredSearchTermKey"
         :event-tracking="eventTracking"
-        :pagination-type="paginationType"
         @keyset-page-change="onKeysetPageChange"
         @offset-page-change="onOffsetPageChange"
         @refetch="onRefetch"

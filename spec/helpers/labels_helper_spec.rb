@@ -120,21 +120,6 @@ RSpec.describe LabelsHelper do
     end
   end
 
-  describe 'text_color_for_bg' do
-    it 'uses light text on dark backgrounds' do
-      expect(text_color_for_bg('#222E2E')).to be_color('#FFFFFF')
-    end
-
-    it 'uses dark text on light backgrounds' do
-      expect(text_color_for_bg('#EEEEEE')).to be_color('#1F1E24')
-    end
-
-    it 'supports RGB triplets' do
-      expect(text_color_for_bg('#FFF')).to be_color '#1F1E24'
-      expect(text_color_for_bg('#000')).to be_color '#FFFFFF'
-    end
-  end
-
   describe 'create_label_title' do
     let_it_be(:group) { create(:group) }
 
@@ -155,30 +140,6 @@ RSpec.describe LabelsHelper do
     context 'with no subject' do
       it 'returns "Create new label"' do
         expect(create_label_title(nil)).to eq _('Create new label')
-      end
-    end
-  end
-
-  describe 'manage_labels_title' do
-    let_it_be(:group) { create(:group) }
-
-    context 'with a group as subject' do
-      it 'returns "Manage group labels"' do
-        expect(manage_labels_title(group)).to eq _('Manage group labels')
-      end
-    end
-
-    context 'with a project as subject' do
-      let_it_be(:project) { create(:project, namespace: group) }
-
-      it 'returns "Manage project labels"' do
-        expect(manage_labels_title(project)).to eq _('Manage project labels')
-      end
-    end
-
-    context 'with no subject' do
-      it 'returns "Manage labels"' do
-        expect(manage_labels_title(nil)).to eq _('Manage labels')
       end
     end
   end

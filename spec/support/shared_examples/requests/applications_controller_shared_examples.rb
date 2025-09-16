@@ -46,5 +46,5 @@ end
 
 def create_application
   create_params = attributes_for(:application, trusted: true, confidential: false, scopes: ['api'])
-  post create_path, params: { doorkeeper_application: create_params }
+  post create_path, params: { authn_oauth_application: create_params }
 end

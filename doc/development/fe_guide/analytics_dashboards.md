@@ -1,5 +1,5 @@
 ---
-stage: Monitor
+stage: Analytics
 group: Platform Insights
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Analytics dashboards
@@ -239,7 +239,7 @@ To create a built-in analytics dashboard:
 
 1. Optional. Register visualization templates by adding them to `get_path_for_visualization` in [ee/app/models/analytics/visualization.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/analytics/visualization.rb).
 
-For a complete example, refer to the AI Impact [dashboard config](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/analytics/ai_impact_dashboard/dashboard.yaml).
+For a complete example, refer to the GitLab Duo and SDLC trends [dashboard config](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/analytics/ai_impact_dashboard/dashboard.yaml).
 
 ### Adding a new data source
 

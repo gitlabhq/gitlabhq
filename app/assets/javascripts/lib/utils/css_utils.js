@@ -92,7 +92,7 @@ export function listenSystemColorSchemeChange(onEvent) {
 }
 
 /**
- * Destroys event subscribtion for media query change of system color scheme.
+ * Destroys event subscription for media query change of system color scheme.
  *
  * @param {function} onEvent function to be called on system color scheme change
  * @returns {void}
@@ -103,20 +103,30 @@ export function removeListenerSystemColorSchemeChange(onEvent) {
     .removeEventListener('change', (event) => handleColorSchemeChange(onEvent, event));
 }
 
-export function isNarrowScreenMediaQuery() {
+let cachedBreakpoints = null;
+
+export function resetBreakpointsCache() {
+  cachedBreakpoints = null;
+}
+
+export function getPageBreakpoints() {
+  if (cachedBreakpoints) {
+    return cachedBreakpoints;
+  }
+
   const computedStyles = getComputedStyle(document.body);
+  const mediumBreakpointSize = parseInt(computedStyles.getPropertyValue('--breakpoint-md'), 10);
   const largeBreakpointSize = parseInt(computedStyles.getPropertyValue('--breakpoint-lg'), 10);
-  return window.matchMedia(`(max-width: ${largeBreakpointSize - 1}px)`);
-}
+  const extraLargeBreakpointSize = parseInt(computedStyles.getPropertyValue('--breakpoint-xl'), 10);
 
-export function isNarrowScreen() {
-  return isNarrowScreenMediaQuery().matches;
-}
+  cachedBreakpoints = {
+    compact: window.matchMedia(`(max-width: ${mediumBreakpointSize - 1}px)`),
+    intermediate: window.matchMedia(
+      `(min-width: ${mediumBreakpointSize}px) and (max-width: ${extraLargeBreakpointSize - 1}px)`,
+    ),
+    wide: window.matchMedia(`(min-width: ${extraLargeBreakpointSize}px)`),
+    narrow: window.matchMedia(`(max-width: ${largeBreakpointSize - 1}px)`),
+  };
 
-export function isNarrowScreenAddListener(handlerFn) {
-  isNarrowScreenMediaQuery().addEventListener('change', handlerFn);
-}
-
-export function isNarrowScreenRemoveListener(handlerFn) {
-  isNarrowScreenMediaQuery().removeEventListener('change', handlerFn);
+  return cachedBreakpoints;
 }

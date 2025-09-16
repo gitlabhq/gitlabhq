@@ -234,6 +234,5 @@ Rails/Pluck:
     - 'spec/support/helpers/api_helpers.rb'
     - 'spec/support/helpers/dns_helpers.rb'
     - 'spec/support/helpers/graphql_helpers.rb'
-    - 'spec/support/matchers/background_migrations_matchers.rb'
     - 'spec/tooling/docs/deprecation_handling_spec.rb'
     - 'tooling/docs/deprecation_handling.rb'

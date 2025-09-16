@@ -9,7 +9,7 @@ import './behaviors';
 
 // lib/utils
 import { setGlTooltipDefaultContainer } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import { initRails } from '~/lib/utils/rails_ujs';
 import * as popovers from '~/popovers';
 import * as tooltips from '~/tooltips';
@@ -34,7 +34,6 @@ import initBroadcastNotifications from './broadcast_notification';
 import { initCopyCodeButton } from './behaviors/copy_code';
 import initGitlabVersionCheck from './gitlab_version_check';
 import { initExpireSessionModal } from './authentication/sessions';
-import { initDuoPanel } from './init_duo_panel';
 import 'ee_else_ce/main_ee';
 import 'jh_else_ce/main_jh';
 
@@ -98,9 +97,6 @@ function deferredInitialisation() {
   initCopyCodeButton();
   initGitlabVersionCheck();
   initExpireSessionModal();
-  if (gon.features.paneledView) {
-    initDuoPanel();
-  }
 
   addSelectOnFocusBehaviour('.js-select-on-focus');
 

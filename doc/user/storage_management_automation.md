@@ -1214,7 +1214,7 @@ Create a test project to generate fake artifact blobs using CI/CD job matrix bui
        - remote: https://gitlab.com/gitlab-da/use-cases/efficiency/job-artifact-generator/-/raw/main/.gitlab-ci.yml
    ```
 
-1. [Configure pipeline schedules](../ci/pipelines/schedules.md#add-a-pipeline-schedule).
+1. [Configure pipeline schedules](../ci/pipelines/schedules.md#create-a-pipeline-schedule).
 1. [Trigger the pipeline manually](../ci/pipelines/schedules.md#run-manually).
 
 Alternatively, reduce the 86 MB daily generated MB to different values in the `MB_COUNT` variable.

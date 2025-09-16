@@ -142,6 +142,27 @@ RSpec.describe Projects::Settings::CiCdController, feature_category: :continuous
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
+
+      context 'when accessing CI/CD Settings page for a project' do
+        it 'creates a streaming audit event' do
+          expect(::Gitlab::Audit::Auditor).to receive(:audit).with({
+            name: 'project_ci_cd_settings_accessed',
+            author: user,
+            scope: project,
+            target: project,
+            message: 'User accessed CI/CD settings for project',
+            additional_details: hash_including(
+              project_path: project.full_path,
+              project_id: project.id,
+              ip_address: '0.0.0.0',
+              timestamp: kind_of(String),
+              action: 'project_ci_cd_settings_page_viewed'
+            )
+          })
+
+          get :show, params: { namespace_id: project.namespace, project_id: project }
+        end
+      end
     end
 
     describe 'POST reset_cache' do

@@ -20,7 +20,7 @@ RSpec.describe QueueBackfillIncidentManagementPendingAlertEscProjectId, feature_
           batch_size: described_class::BATCH_SIZE,
           batch_class_name: 'LooseIndexScanBatchingStrategy',
           sub_batch_size: described_class::SUB_BATCH_SIZE,
-          gitlab_schema: :gitlab_main_cell,
+          gitlab_schema: :gitlab_main_org,
           job_arguments: [
             :project_id,
             :alert_management_alerts,

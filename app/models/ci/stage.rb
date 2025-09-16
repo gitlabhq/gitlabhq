@@ -221,10 +221,10 @@ module Ci
     private
 
     def preload_metadata(statuses)
-      relations = [:metadata, :job_definition, :pipeline,
+      relations = [:metadata, :job_definition, :error_job_messages, :pipeline,
         { downstream_pipeline: [:user, { project: [:route, { namespace: :route }] }] }]
 
-      Preloaders::CommitStatusPreloader.new(statuses).execute(relations)
+      ::Ci::Preloaders::CommitStatusPreloader.new(statuses).execute(relations)
 
       statuses
     end

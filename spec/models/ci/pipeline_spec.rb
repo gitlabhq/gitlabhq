@@ -319,15 +319,30 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
-  describe '.trigger_pipeline_status_change_subscription' do
+  describe '.trigger_status_change_subscriptions' do
     let(:pipeline) { build(:ci_pipeline, user: user) }
 
     %w[run! succeed! drop! skip! cancel! block! delay!].each do |action|
       context "when pipeline receives #{action} event" do
-        it 'triggers GraphQL subscription ciPipelineStatusUpdated' do
-          expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
+        context 'without a schedule' do
+          it 'triggers only GraphQL subscription ciPipelineStatusUpdated' do
+            expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
+            expect(GraphqlTriggers).not_to receive(:ci_pipeline_schedule_status_updated)
 
-          pipeline.public_send(action)
+            pipeline.public_send(action)
+          end
+        end
+
+        context 'with a schedule' do
+          let(:schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
+          let(:pipeline) { build(:ci_pipeline, pipeline_schedule: schedule, project: project, user: user) }
+
+          it 'triggers both GraphQL subscriptions' do
+            expect(GraphqlTriggers).to receive(:ci_pipeline_status_updated).with(pipeline)
+            expect(GraphqlTriggers).to receive(:ci_pipeline_schedule_status_updated).with(schedule)
+
+            pipeline.public_send(action)
+          end
         end
       end
     end
@@ -2763,6 +2778,11 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#has_exposed_artifacts?' do
+    before do
+      stub_feature_flags(ci_validate_config_options: false)
+      create(:ci_build, pipeline: pipeline) # Job without artifacts
+    end
+
     let(:pipeline) { create(:ci_pipeline, :success) }
     let(:options) { nil }
     let!(:job) do
@@ -2772,10 +2792,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     subject { pipeline.has_exposed_artifacts? }
-
-    before do
-      create(:ci_build, pipeline: pipeline) # Job without artifacts
-    end
 
     it { is_expected.to eq(false) }
 
@@ -2806,30 +2822,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         end
       end
 
-      context 'when job metadata record is deleted' do
+      context 'when job is degenerated' do
         before do
-          job.metadata.delete
+          job.degenerate!
+          job.reload
         end
 
         it 'reads from job_artifacts_metadata' do
-          is_expected.to eq(true)
-        end
-
-        context 'when FF `ci_use_job_artifacts_table_for_exposed_artifacts` is disabled' do
-          before do
-            stub_feature_flags(ci_use_job_artifacts_table_for_exposed_artifacts: false)
-          end
-
-          it { is_expected.to eq(false) }
-        end
-      end
-
-      context 'when FF `ci_use_job_artifacts_table_for_exposed_artifacts` is disabled' do
-        before do
-          stub_feature_flags(ci_use_job_artifacts_table_for_exposed_artifacts: false)
-        end
-
-        it 'reads from job options' do
           is_expected.to eq(true)
         end
       end
@@ -3325,16 +3324,41 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       )
     end
 
-    before do
-      stub_feature_flags(source_filter_pipelines: true)
-    end
-
     it 'returns the newest pipeline by source' do
       expect(described_class.newest_first(source: :push)).to contain_exactly(merged_commit_pipeline)
     end
 
     it 'returns empty when a specified source has no pipelines' do
-      expect(described_class.newest_first(source: :schedule)).to be_empty
+      expect(described_class.newest_first(source: :api)).to be_empty
+    end
+  end
+
+  describe '.newest_without_schedules' do
+    let_it_be(:merged_commit_pipeline) do
+      create(
+        :ci_pipeline,
+        status: 'success',
+        ref: 'master',
+        sha: '123',
+        source: :push
+      )
+    end
+
+    let_it_be(:schedule_pipeline) do
+      create(
+        :ci_pipeline,
+        status: 'success',
+        ref: 'master',
+        sha: '123',
+        source: :schedule
+      )
+    end
+
+    it 'does not return pipelines ran by pipeline schedules' do
+      pipelines = described_class.newest_without_schedules
+
+      expect(pipelines.length).to eq(1)
+      expect(pipelines).not_to include(schedule_pipeline)
     end
   end
 

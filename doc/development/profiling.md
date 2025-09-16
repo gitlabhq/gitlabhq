@@ -280,7 +280,7 @@ and a new method [`ruby-prof`](https://ruby-prof.github.io/).
 [Performance bar](../administration/monitoring/performance/performance_bar.md) is a great tool to get a stackprof report
 and see a flamegraph via a single click;
 
-![Performance Bar Flamegraph Link](img/performance_bar_flamegraph_link_v17_7.png)
+![Performance Bar Flamegraph Link](img/performance_bar_flamegraph_link_v18_4.png)
 
 However, it's not available for other than GET requests.
 

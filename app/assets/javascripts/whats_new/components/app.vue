@@ -27,20 +27,47 @@ export default {
       required: false,
       default: undefined,
     },
+    initialReadArticles: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    markAsReadPath: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+    mostRecentReleaseItemsCount: {
+      type: Number,
+      required: true,
+    },
     withClose: {
+      type: Function,
+      required: false,
+      default: () => {},
+    },
+    updateHelpMenuUnreadBadge: {
       type: Function,
       required: false,
       default: () => {},
     },
   },
   computed: {
-    ...mapState(['open', 'features', 'pageInfo', 'drawerBodyHeight', 'fetching']),
+    ...mapState(['open', 'features', 'pageInfo', 'drawerBodyHeight', 'fetching', 'readArticles']),
     getDrawerHeaderHeight() {
       return getContentWrapperHeight();
     },
     whatsNewFeaturedCarouselEnabled() {
       return this.glFeatures.whatsNewFeaturedCarousel;
     },
+  },
+  watch: {
+    readArticles(newVal) {
+      this.updateHelpMenuUnreadBadge(this.mostRecentReleaseItemsCount - newVal.length);
+    },
+  },
+  created() {
+    this.setReadArticles(this.initialReadArticles);
   },
   mounted() {
     this.openDrawer(this.versionDigest);
@@ -56,7 +83,13 @@ export default {
     });
   },
   methods: {
-    ...mapActions(['openDrawer', 'closeDrawer', 'fetchItems', 'setDrawerBodyHeight']),
+    ...mapActions([
+      'openDrawer',
+      'closeDrawer',
+      'fetchItems',
+      'setDrawerBodyHeight',
+      'setReadArticles',
+    ]),
     bottomReached() {
       const page = this.pageInfo.nextPage;
       if (page) {
@@ -111,6 +144,9 @@ export default {
 
         <other-updates
           :features="features"
+          :read-articles="readArticles"
+          :total-articles-to-read="mostRecentReleaseItemsCount"
+          :mark-as-read-path="markAsReadPath"
           :fetching="fetching"
           :drawer-body-height="drawerBodyHeight"
           class="gl-pt-3"

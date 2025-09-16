@@ -177,22 +177,6 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
     it 'returns empty array' do
       expect(subject[:commits_without_merge_commits]).to eq([])
     end
-
-    context 'when "disable_widget_responses" is disabled' do
-      before do
-        stub_feature_flags(disable_widget_responses: false)
-      end
-
-      it 'does not include merge commits' do
-        commits_in_widget = subject[:commits_without_merge_commits]
-
-        expect(commits_in_widget.length).to be < resource.commits.length
-        expect(commits_in_widget.length).to eq(resource.commits.without_merge_commits.length)
-        commits_in_widget.each do |c|
-          expect(find_matching_commit(c[:short_id]).merge_commit?).to eq(false)
-        end
-      end
-    end
   end
 
   describe 'squash defaults for projects' do
@@ -220,13 +204,12 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
     context 'when merge request is mergeable' do
       before do
         stub_const('MergeRequestDiff::COMMITS_SAFE_SIZE', 20)
-        stub_feature_flags(disable_widget_responses: false)
       end
 
       it 'has default_squash_commit_message and commits_without_merge_commits' do
         expect(subject[:default_squash_commit_message])
           .to eq(resource.default_squash_commit_message)
-        expect(subject[:commits_without_merge_commits].size).to eq(12)
+        expect(subject[:commits_without_merge_commits].size).to eq(0)
       end
     end
   end
@@ -282,6 +265,7 @@ RSpec.describe MergeRequestPollCachedWidgetEntity, feature_category: :code_revie
     context 'when is merged', :sidekiq_inline do
       let(:resource) { create(:merged_merge_request, source_project: project, merge_commit_sha: project.commit.id) }
       let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.target_branch, sha: resource.merge_commit_sha) }
+      let(:scheduled_pipeline) { create(:ci_pipeline, project: project, ref: resource.target_branch, sha: resource.merge_commit_sha, source: :schedule) }
 
       before do
         project.add_maintainer(user)

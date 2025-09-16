@@ -110,7 +110,7 @@ export default {
           v-text="authorName"
         ></span>
       </a>
-      <span v-if="!emailParticipant" class="text-nowrap author-username gl-truncate">
+      <span v-if="!emailParticipant" class="author-username gl-truncate gl-whitespace-nowrap">
         <a
           ref="authorUsernameLink"
           class="author-username-link"
@@ -119,7 +119,7 @@ export default {
           @mouseenter="handleUsernameMouseEnter"
           @mouseleave="handleUsernameMouseLeave"
         >
-          <span data-testid="wiki-note-username" class="note-headline-light md:gl-inline"
+          <span data-testid="wiki-note-username" class="note-headline-light @md/panel:gl-inline"
             >@{{ author.username }}</span
           >
         </a>
@@ -131,7 +131,7 @@ export default {
     </template>
     <span v-else>{{ __('A deleted user') }}</span>
     <span class="note-headline-light note-healine-meta">
-      <span class="gl-hidden sm:gl-inline">·</span>
+      <span class="gl-hidden @sm/panel:gl-inline">·</span>
       <template v-if="createdAt">
         <time-ago-tooltip ref="noteTimestamp" :time="createdAt" tooltip-placement="bottom" />
       </template>

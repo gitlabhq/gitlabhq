@@ -252,13 +252,13 @@ export default {
       class="alert-management-details gl-relative"
       :class="{ 'pr-sm-8': sidebarStatus }"
     >
-      <div class="gl-mt-5 gl-justify-between gl-gap-4 sm:!gl-flex">
+      <div class="gl-mt-5 gl-justify-between gl-gap-4 @sm/panel:!gl-flex">
         <div v-if="alert">
           <h2 data-testid="title" class="gl-m-0">{{ alert.title }}</h2>
         </div>
         <gl-button
           v-if="alert.issue"
-          class="mt-sm-0 align-self-center align-self-sm-baseline alert-details-incident-button gl-mt-3"
+          class="alert-details-incident-button @xs/panel:gl-w-full gl-mt-3 gl-self-center @sm/panel:gl-mt-0 @sm/panel:gl-self-baseline"
           data-testid="viewIncidentBtn"
           :href="incidentPath(alert.issue.iid)"
           category="primary"
@@ -268,7 +268,7 @@ export default {
         </gl-button>
         <gl-button
           v-else
-          class="mt-sm-0 align-self-center align-self-sm-baseline alert-details-incident-button gl-mt-3"
+          class="alert-details-incident-button @xs/panel:gl-w-full gl-mt-3 gl-self-center @sm/panel:gl-mt-0 @sm/panel:gl-self-baseline"
           data-testid="createIncidentBtn"
           :loading="incidentCreationInProgress"
           category="primary"
@@ -281,7 +281,7 @@ export default {
           :aria-label="__('Toggle sidebar')"
           category="primary"
           variant="default"
-          class="d-sm-none toggle-sidebar-mobile-button gl-absolute"
+          class="toggle-sidebar-mobile-button gl-absolute @sm/panel:gl-hidden"
           type="button"
           icon="chevron-double-lg-left"
           @click="toggleSidebar"

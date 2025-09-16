@@ -29,13 +29,16 @@ module Resolvers
 
       finder = choose_finder(args)
 
+      using_elasticsearch = using_elasticsearch_finder?(finder)
+
       items = Gitlab::Graphql::Loaders::IssuableLoader
         .new(resource_parent, finder)
         .batching_find_all { |q| apply_lookahead(q) }
 
-      if non_stable_cursor_sort?(args[:sort])
+      if non_stable_cursor_sort?(args[:sort]) && !using_elasticsearch
         # Certain complex sorts are not supported by the stable cursor pagination yet.
         # In these cases, we use offset pagination, so we return the correct connection.
+        # However, we do allow those sorts when it's an Advanced Search finder searching in ES
         offset_pagination(items)
       else
         items
@@ -45,17 +48,22 @@ module Resolvers
     private
 
     def choose_finder(args)
-      if ::Feature.enabled?(:glql_es_integration, current_user)
-        glql_finder = glql_finder(args)
+      if ::Feature.enabled?(:glql_es_integration, current_user) ||
+          ::Feature.enabled?(:work_items_list_es_integration, current_user)
+        advanced_finder = advanced_finder(args)
 
-        return glql_finder if glql_finder.use_elasticsearch_finder?
+        return advanced_finder if advanced_finder.use_elasticsearch_finder?
       end
 
       finder(prepare_finder_params(args))
     end
 
-    def glql_finder(args)
-      ::WorkItems::Glql::WorkItemsFinder.new(current_user, context, resource_parent, args)
+    def advanced_finder(args)
+      ::Search::AdvancedFinders::WorkItemsFinder.new(current_user, context, resource_parent, args)
+    end
+
+    def using_elasticsearch_finder?(finder)
+      finder.respond_to?(:use_elasticsearch_finder?) && finder.use_elasticsearch_finder?
     end
 
     # When we search on a group level, this finder is being overwritten in

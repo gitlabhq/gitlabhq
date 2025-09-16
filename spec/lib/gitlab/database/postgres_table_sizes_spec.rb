@@ -115,6 +115,7 @@ RSpec.describe Gitlab::Database::PostgresTableSize, type: :model, feature_catego
           table_name: small_table.table_name,
           total_size: small_table.total_size,
           table_size: small_table.table_size,
+          toast_size: small_table.toast_size,
           index_size: small_table.index_size,
           size_in_bytes: small_table.size_in_bytes,
           classification: small_table.size_classification,

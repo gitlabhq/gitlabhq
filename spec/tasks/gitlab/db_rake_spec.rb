@@ -202,7 +202,11 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     let(:topology_service_healthy) { true }
 
     before do
-      stub_config(cell: { enabled: true, id: 1, database: { skip_sequence_alteration: skip_sequence_alteration } })
+      if configured_cell
+        stub_config(cell: { enabled: true, id: 1, database: { skip_sequence_alteration: skip_sequence_alteration } })
+      else
+        stub_config(cell: { enabled: false })
+      end
     end
 
     context 'with a single database' do
@@ -326,6 +330,22 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
               expect(rails_paths['db/migrate'].include?(File.join(Rails.root, 'db', 'post_migrate'))).to be(false)
             end
+          end
+        end
+
+        context 'when has cell disabled' do
+          let(:configured_cell) { false }
+
+          it 'loads the schema, seeds the database but skips altering cell sequences range' do
+            allow(connection).to receive(:tables).and_return([])
+
+            expect(Rake::Task['db:schema:load']).to receive(:invoke)
+            expect(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke)
+            expect(Rake::Task['db:seed_fu']).to receive(:invoke)
+            expect(Rake::Task['db:migrate']).not_to receive(:invoke)
+            expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).not_to receive(:invoke)
+
+            run_rake_task('gitlab:db:configure')
           end
         end
 
@@ -465,6 +485,30 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             expect(Rake::Task['db:migrate:ci']).not_to receive(:invoke)
 
             expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
+
+            expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).not_to receive(:invoke)
+
+            run_rake_task('gitlab:db:configure')
+          end
+        end
+
+        context 'when has cell disabled' do
+          let(:configured_cell) { false }
+
+          before do
+            allow(main_model.connection).to receive(:tables).and_return(%w[schema_migrations])
+            allow(ci_model.connection).to receive(:tables).and_return([])
+          end
+
+          it 'loads the schema, seeds the database but skips altering cell sequences range' do
+            expect(Rake::Task['db:schema:load:main']).to receive(:invoke)
+            expect(Rake::Task['db:schema:load:ci']).to receive(:invoke)
+
+            expect(Rake::Task['db:migrate:main']).not_to receive(:invoke)
+            expect(Rake::Task['db:migrate:ci']).not_to receive(:invoke)
+
+            expect(Rake::Task['gitlab:db:lock_writes']).to receive(:invoke)
+            expect(Rake::Task['db:seed_fu']).to receive(:invoke)
 
             expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).not_to receive(:invoke)
 
@@ -633,55 +677,124 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   end
 
   describe 'collation_checker' do
+    let(:logger_double) { instance_double(Logger, level: nil, info: nil, warn: nil, error: nil, debug: true) }
+    let(:backup_connection) { instance_double(Backup::DatabaseConnection) }
+    let(:connection_double) { double(:connection) }
+
+    before do
+      allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+      allow(Logger).to receive(:new).and_return(logger_double)
+
+      allow(Backup::DatabaseConnection).to receive(:new).and_return(backup_connection)
+      allow(backup_connection).to receive(:connection).and_return(connection_double)
+    end
+
     context 'with a single database' do
       before do
         skip_if_multiple_databases_are_setup
       end
 
-      it 'calls Gitlab::Database::CollationChecker with correct arguments' do
-        logger_double = instance_double(Logger, level: nil, info: nil, warn: nil, error: nil)
-        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+      it 'runs Gitlab::Database::CollationChecker for single database' do
+        expect(Gitlab::Database::CollationChecker).to receive(:new).with(
+          connection_double,
+          'main',
+          logger_double,
+          1.gigabyte
+        ).and_return(double(run: {}))
 
-        expect(Gitlab::Database::CollationChecker).to receive(:run)
-          .with(logger: logger_double)
+        run_rake_task('gitlab:db:collation_checker')
+      end
+
+      it 'uses custom table size limit when MAX_TABLE_SIZE is set' do
+        stub_env('MAX_TABLE_SIZE', 10.gigabytes.to_s)
+
+        expect(Gitlab::Database::CollationChecker).to receive(:new).with(
+          connection_double,
+          'main',
+          logger_double,
+          10.gigabytes
+        ).and_return(double(run: {}))
 
         run_rake_task('gitlab:db:collation_checker')
       end
     end
 
     context 'with multiple databases' do
-      let(:logger_double) { instance_double(Logger, level: nil, info: nil, warn: nil, error: nil) }
-
       before do
-        skip_if_multiple_databases_not_setup(:ci)
-
-        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+        skip_if_shared_database(:ci)
       end
 
-      it 'calls Gitlab::Database::CollationChecker with correct arguments' do
-        expect(Gitlab::Database::CollationChecker).to receive(:run)
-          .with(logger: logger_double)
+      it 'runs Gitlab::Database::CollationChecker for multiple databases' do
+        allow(Gitlab::Database::CollationChecker).to receive(:new)
+          .and_return(double(run: {}))
 
         run_rake_task('gitlab:db:collation_checker')
+
+        expect(Gitlab::Database::CollationChecker).to have_received(:new)
+          .with(connection_double, "main", logger_double, 1.gigabyte)
+
+        expect(Gitlab::Database::CollationChecker).to have_received(:new)
+          .with(connection_double, "ci", logger_double, 1.gigabyte)
+
+        if database_exists?('sec')
+          expect(Gitlab::Database::CollationChecker).to have_received(:new)
+            .with(connection_double, "sec", logger_double, 1.gigabyte)
+        end
+      end
+
+      it 'uses custom table size limit when MAX_TABLE_SIZE is set' do
+        stub_env('MAX_TABLE_SIZE', 15.gigabytes.to_s)
+
+        received_sizes = []
+        allow(Gitlab::Database::CollationChecker).to receive(:new) do |_, _, _, size|
+          received_sizes << size
+          double(run: {})
+        end
+
+        run_rake_task('gitlab:db:collation_checker')
+
+        expect(received_sizes.uniq).to eq([15.gigabytes])
       end
 
       context 'when the single database task is used' do
-        before do
-          skip_if_shared_database(:ci)
-        end
-
-        it 'calls Gitlab::Database::CollationChecker with the main database' do
-          expect(Gitlab::Database::CollationChecker).to receive(:run)
-            .with(database_name: 'main', logger: logger_double)
+        it 'runs Gitlab::Database::CollationChecker with the main database' do
+          expect(Backup::DatabaseConnection).to receive(:new).with('main').and_return(backup_connection)
+          expect(Gitlab::Database::CollationChecker).to receive(:new)
+            .with(
+              connection_double,
+              'main',
+              logger_double,
+              1.gigabyte
+            ).and_return(double(run: {}))
 
           run_rake_task('gitlab:db:collation_checker:main')
         end
 
-        it 'calls Gitlab::Database::CollationChecker with the ci database' do
-          expect(Gitlab::Database::CollationChecker).to receive(:run)
-            .with(database_name: 'ci', logger: logger_double)
+        it 'runs Gitlab::Database::CollationChecker with the ci database' do
+          expect(Backup::DatabaseConnection).to receive(:new).with('ci').and_return(backup_connection)
+          expect(Gitlab::Database::CollationChecker).to receive(:new)
+            .with(
+              connection_double,
+              'ci',
+              logger_double,
+              1.gigabyte
+            ).and_return(double(run: {}))
 
           run_rake_task('gitlab:db:collation_checker:ci')
+        end
+
+        it 'uses custom table size limit when MAX_TABLE_SIZE is set' do
+          stub_env('MAX_TABLE_SIZE', 12.gigabytes.to_s)
+
+          expect(Backup::DatabaseConnection).to receive(:new).with('main').and_return(backup_connection)
+          expect(Gitlab::Database::CollationChecker).to receive(:new).with(
+            connection_double,
+            'main',
+            logger_double,
+            12.gigabytes
+          ).and_return(double(run: {}))
+
+          run_rake_task('gitlab:db:collation_checker:main')
         end
       end
 
@@ -699,66 +812,108 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
   end
 
   describe 'repair_index' do
+    let(:logger_double) { instance_double(Logger, level: nil, info: nil, warn: nil, error: nil, debug: true) }
+    let(:backup_connection) { instance_double(Backup::DatabaseConnection) }
+    let(:connection_double) { double(:connection) }
+
+    before do
+      allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+      allow(Logger).to receive(:new).and_return(logger_double)
+      allow(Backup::DatabaseConnection).to receive(:new).and_return(backup_connection)
+      allow(backup_connection).to receive(:connection).and_return(connection_double)
+    end
+
     context 'with a single database' do
       before do
         skip_if_multiple_databases_are_setup
       end
 
-      it 'calls Gitlab::Database::RepairIndex with correct arguments' do
-        logger_double = instance_double(Logger, level: nil, info: nil, warn: nil, error: nil)
-        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
-
-        expect(Gitlab::Database::RepairIndex).to receive(:run)
-          .with(logger: logger_double, dry_run: false)
+      it 'runs Gitlab::Database::RepairIndex with correct arguments' do
+        expect(Backup::DatabaseConnection).to receive(:new).with('main').and_return(backup_connection)
+        expect(Gitlab::Database::RepairIndex).to receive(:new).with(
+          connection_double,
+          'main',
+          Gitlab::Database::RepairIndex::INDEXES_TO_REPAIR,
+          logger_double,
+          false
+        ).and_return(double(run: {}))
 
         run_rake_task('gitlab:db:repair_index')
       end
 
       it 'respects DRY_RUN environment variable' do
-        stub_env('DRY_RUN', true)
-        logger_double = instance_double(Logger, level: nil, info: nil, warn: nil, error: nil)
-        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+        stub_env('DRY_RUN', 'true')
 
-        expect(Gitlab::Database::RepairIndex).to receive(:run)
-          .with(logger: logger_double, dry_run: true)
+        expect(Backup::DatabaseConnection).to receive(:new).with('main').and_return(backup_connection)
+        expect(Gitlab::Database::RepairIndex).to receive(:new).with(
+          connection_double,
+          'main',
+          Gitlab::Database::RepairIndex::INDEXES_TO_REPAIR,
+          logger_double,
+          true
+        ).and_return(double(run: {}))
 
         run_rake_task('gitlab:db:repair_index')
       end
     end
 
     context 'with multiple databases' do
-      let(:logger_double) { instance_double(Logger, level: nil, info: nil, warn: nil, error: nil) }
-
       before do
-        skip_if_multiple_databases_not_setup(:ci)
-
-        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+        skip_if_shared_database(:ci)
       end
 
-      it 'calls Gitlab::Database::RepairIndex with correct arguments' do
-        expect(Gitlab::Database::RepairIndex).to receive(:run)
-          .with(logger: logger_double, dry_run: false)
+      it 'runs Gitlab::Database::RepairIndex for multiple databases' do
+        allow(Gitlab::Database::RepairIndex).to receive(:new)
+          .and_return(double(run: {}))
 
         run_rake_task('gitlab:db:repair_index')
+
+        expect(Gitlab::Database::RepairIndex).to have_received(:new)
+          .with(connection_double, 'main', Gitlab::Database::RepairIndex::INDEXES_TO_REPAIR, logger_double, false)
+        expect(Gitlab::Database::RepairIndex).to have_received(:new)
+          .with(connection_double, 'ci', Gitlab::Database::RepairIndex::INDEXES_TO_REPAIR, logger_double, false)
       end
 
       context 'when the single database task is used' do
-        before do
-          skip_if_shared_database(:ci)
-        end
-
-        it 'calls Gitlab::Database::RepairIndex with the main database' do
-          expect(Gitlab::Database::RepairIndex).to receive(:run)
-            .with(database_name: 'main', logger: logger_double, dry_run: false)
+        it 'runs Gitlab::Database::RepairIndex with the main database' do
+          expect(Backup::DatabaseConnection).to receive(:new).with('main').and_return(backup_connection)
+          expect(Gitlab::Database::RepairIndex).to receive(:new).with(
+            connection_double,
+            'main',
+            Gitlab::Database::RepairIndex::INDEXES_TO_REPAIR,
+            logger_double,
+            false
+          ).and_return(double(run: {}))
 
           run_rake_task('gitlab:db:repair_index:main')
         end
 
-        it 'calls Gitlab::Database::RepairIndex with the ci database' do
-          expect(Gitlab::Database::RepairIndex).to receive(:run)
-            .with(database_name: 'ci', logger: logger_double, dry_run: false)
+        it 'runs Gitlab::Database::RepairIndex with the ci database' do
+          expect(Backup::DatabaseConnection).to receive(:new).with('ci').and_return(backup_connection)
+          expect(Gitlab::Database::RepairIndex).to receive(:new).with(
+            connection_double,
+            'ci',
+            Gitlab::Database::RepairIndex::INDEXES_TO_REPAIR,
+            logger_double,
+            false
+          ).and_return(double(run: {}))
 
           run_rake_task('gitlab:db:repair_index:ci')
+        end
+
+        it 'respects DRY_RUN environment variable' do
+          stub_env('DRY_RUN', 'true')
+
+          expect(Backup::DatabaseConnection).to receive(:new).with('main').and_return(backup_connection)
+          expect(Gitlab::Database::RepairIndex).to receive(:new).with(
+            connection_double,
+            'main',
+            Gitlab::Database::RepairIndex::INDEXES_TO_REPAIR,
+            logger_double,
+            true
+          ).and_return(double(run: {}))
+
+          run_rake_task('gitlab:db:repair_index:main')
         end
       end
 
@@ -935,8 +1090,10 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
     with_them do
       it 'outputs changed message for automation after operations happen' do
-        allow(ActiveRecord::Base.connection).to receive_message_chain(:schema_migration, :table_exists?).and_return(schema_migration_table_exists)
+        connection_pool = ::Gitlab.next_rails? ? ActiveRecord::Base.connection_pool : ActiveRecord::Base.connection
+        allow(connection_pool).to receive_message_chain(:schema_migration, :table_exists?).and_return(schema_migration_table_exists)
         allow_any_instance_of(ActiveRecord::MigrationContext).to receive(:needs_migration?).and_return(needs_migrations)
+
         expect { run_rake_task('gitlab:db:unattended') }.to output(/^#{rake_output}$/).to_stdout
       end
     end
@@ -1424,32 +1581,6 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
   describe '#migrate_with_instrumentation' do
     let(:runner) { instance_double(::Gitlab::Database::Migrations::Runner) }
-
-    describe '#up (legacy mode)' do
-      subject { run_rake_task('gitlab:db:migration_testing:up') }
-
-      it 'delegates to the migration runner in legacy mode' do
-        expect(::Gitlab::Database::Migrations::Runner).to receive(:up).with(database: 'main', legacy_mode: true)
-                                                                      .and_return(runner)
-        expect(runner).to receive(:run)
-
-        subject
-      end
-    end
-
-    describe '#sample_background_migrations' do
-      it 'delegates to the migration runner with a default sample duration' do
-        expect(::Gitlab::Database::Migrations::Runner).to receive_message_chain(:background_migrations, :run_jobs).with(for_duration: 30.minutes)
-
-        run_rake_task('gitlab:db:migration_testing:sample_background_migrations')
-      end
-
-      it 'delegates to the migration runner with a configured sample duration' do
-        expect(::Gitlab::Database::Migrations::Runner).to receive_message_chain(:background_migrations, :run_jobs).with(for_duration: 100.seconds)
-
-        run_rake_task('gitlab:db:migration_testing:sample_background_migrations', '[100]')
-      end
-    end
 
     where(:db) do
       ::Gitlab::Database.db_config_names(with_schema: :gitlab_shared).map(&:to_sym)

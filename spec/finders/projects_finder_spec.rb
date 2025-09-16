@@ -601,6 +601,39 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
         end
       end
 
+      context 'filter by last_repository_check_failed' do
+        let_it_be(:project_repository_check_failed) { create(:project, :public, :last_repository_check_failed) }
+        let_it_be(:project_repository_check_success) { create(:project, :public, last_repository_check_failed: false) }
+        let_it_be(:project_repository_check_nil) { create(:project, :public, last_repository_check_failed: nil) }
+
+        context 'when true' do
+          let(:params) { { last_repository_check_failed: true } }
+
+          it { is_expected.to contain_exactly(project_repository_check_failed) }
+        end
+
+        context 'when false' do
+          let(:params) { { last_repository_check_failed: false } }
+
+          it 'returns projects that did not fail repository check', :aggregate_failures do
+            is_expected.not_to include(project_repository_check_failed)
+            is_expected.to include(project_repository_check_success, project_repository_check_nil)
+          end
+        end
+
+        context 'when nil' do
+          let(:params) { { last_repository_check_failed: nil } }
+
+          it 'returns all projects' do
+            is_expected.to include(
+              project_repository_check_failed,
+              project_repository_check_success,
+              project_repository_check_nil
+            )
+          end
+        end
+      end
+
       describe 'when with_issues_enabled is true' do
         let(:params) { { with_issues_enabled: true } }
 

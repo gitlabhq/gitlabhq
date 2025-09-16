@@ -316,15 +316,9 @@ To reorder them, drag them around.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/543862) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `work_item_status_feature_flag`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/521286) in GitLab 18.4. Feature flag `work_item_status_feature_flag` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 <!-- Turn off the future tense test because of "won't do". -->
 <!-- vale gitlab_base.FutureTense = NO -->
@@ -498,6 +492,59 @@ To set issue weight of a task:
 1. Next to **Weight**, select **Edit**.
 1. Enter a whole, positive number.
 1. Select **Apply** or press <kbd>Enter</kbd>.
+
+### View count and weight of tasks in the parent issue
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/520886) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `use_cached_rolled_up_weights`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/520886) in GitLab 18.4.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+The number of descendant tasks and their total weight is displayed in the issue
+description, in the **Child items** section header.
+
+To see the number of open and closed tasks:
+
+- In the section header, hover over the total counts.
+
+The numbers reflect all child tasks associated with the issue, including those you might
+not have permission to view.
+
+### View progress of the parent issue
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/520886) in GitLab 18.3 [with a flag](../administration/feature_flags/_index.md) named `use_cached_rolled_up_weights`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/520886) in GitLab 18.4.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+The issue progress percentage is displayed in the issue description, in the **Child items** section header.
+
+To see the completed and total weight of child tasks:
+
+- In the section header, hover over the percentage.
+
+The weights and progress reflect all tasks associated with the issue, including those you might
+not have permission to view.
 
 ## Add a task to an iteration
 

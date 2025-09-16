@@ -75,7 +75,6 @@ describe('IssuesDashboardApp component', () => {
     isPublicVisibilityRestricted: false,
     isSignedIn: true,
     rssPath: 'rss/path',
-    isStatusFeatureEnabledOnInstance: true,
   };
 
   let defaultQueryResponse = issuesQueryResponse;
@@ -85,6 +84,7 @@ describe('IssuesDashboardApp component', () => {
     defaultQueryResponse.data.issues.nodes[0].healthStatus = null;
     defaultQueryResponse.data.issues.nodes[0].weight = 5;
     defaultQueryResponse.data.issues.nodes[0].status = {
+      category: 'canceled',
       color: '#DD2B0E',
       iconName: 'status-cancelled',
       id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/4',

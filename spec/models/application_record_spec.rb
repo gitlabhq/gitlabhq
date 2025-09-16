@@ -300,6 +300,24 @@ RSpec.describe ApplicationRecord do
     end
   end
 
+  describe '.sharding_keys' do
+    it 'returns sharding keys for the model' do
+      expect(Group.sharding_keys).to eq({ 'organization_id' => 'organizations' })
+    end
+
+    context 'when no sharding key is defined' do
+      let(:entry) { instance_double(Gitlab::Database::Dictionary::Entry, sharding_key: nil) }
+
+      before do
+        allow(Gitlab::Database::Dictionary).to receive(:entry).with('namespaces').and_return(entry)
+      end
+
+      it 'returns empty hash' do
+        expect(Namespace.sharding_keys).to eq({})
+      end
+    end
+  end
+
   describe '.default_select_columns' do
     shared_examples_for 'selects identically to the default' do
       it 'generates the same sql as the default' do
@@ -339,6 +357,58 @@ RSpec.describe ApplicationRecord do
       end
 
       it_behaves_like 'selects identically to the default'
+    end
+  end
+
+  describe '.delete_all_returning' do
+    let(:column_names) { [:id, :foo, :bar] }
+
+    subject(:delete_all_returning) { receiver.delete_all_returning(column_names) }
+
+    before do
+      allow(Gitlab::Database::DeleteRelationWithReturning).to receive(:execute)
+    end
+
+    context 'when there is no relation' do
+      let(:receiver) { User }
+
+      it 'instantiates a new scope and calls the library with it' do
+        delete_all_returning
+
+        expect(Gitlab::Database::DeleteRelationWithReturning).to have_received(:execute).with(User.all, column_names)
+      end
+    end
+
+    context 'when there is a relation' do
+      let(:receiver) { User.where(id: ...2) }
+
+      it 'calls the library with the existing relation' do
+        delete_all_returning
+
+        expect(Gitlab::Database::DeleteRelationWithReturning).to have_received(:execute).with(receiver, column_names)
+      end
+    end
+
+    describe 'arguments' do
+      context 'when called with a no argument' do
+        subject(:delete_all_returning) { User.delete_all_returning }
+
+        it 'instantiates a new scope and calls the library with correct arguments' do
+          delete_all_returning
+
+          expect(Gitlab::Database::DeleteRelationWithReturning).to have_received(:execute).with(User.all, [])
+        end
+      end
+
+      context 'when called with splash arguments' do
+        subject(:delete_all_returning) { User.delete_all_returning(:id, :foo) }
+
+        it 'instantiates a new scope and calls the library with correct arguments' do
+          delete_all_returning
+
+          expect(Gitlab::Database::DeleteRelationWithReturning).to have_received(:execute).with(User.all, [:id, :foo])
+        end
+      end
     end
   end
 end

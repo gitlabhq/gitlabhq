@@ -24,4 +24,8 @@ RSpec.describe GitlabSchema.types['Repository'], feature_category: :source_code_
   specify { expect(described_class).to have_graphql_field(:disk_path) }
 
   specify { expect(described_class).to have_graphql_field(:commit, calls_gitaly?: true) }
+
+  specify do
+    expect(described_class).to have_graphql_field(:commits, calls_gitaly?: true, max_page_size: 100)
+  end
 end

@@ -1,5 +1,13 @@
 <script>
-import { GlButton, GlFilteredSearchToken, GlLoadingIcon } from '@gitlab/ui';
+import { computed } from 'vue';
+import {
+  GlButton,
+  GlFilteredSearchToken,
+  GlLoadingIcon,
+  GlTooltipDirective,
+  GlIcon,
+  GlSkeletonLoader,
+} from '@gitlab/ui';
 import { isEmpty, unionBy } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -28,6 +36,7 @@ import {
 } from '~/issues/constants';
 import { AutocompleteCache } from '~/issues/dashboard/utils';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
+import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
   CREATED_DESC,
   PARAM_FIRST_PAGE_SIZE,
@@ -37,6 +46,7 @@ import {
   PARAM_SORT,
   PARAM_STATE,
   urlSortParams,
+  RELATIVE_POSITION_ASC,
 } from '~/issues/list/constants';
 import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
@@ -87,6 +97,8 @@ import {
   TOKEN_TYPE_CONTACT,
   TOKEN_TYPE_RELEASE,
   TOKEN_TITLE_RELEASE,
+  TOKEN_TYPE_PARENT,
+  TOKEN_TITLE_PARENT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import DateToken from '~/vue_shared/components/filtered_search_bar/tokens/date_token.vue';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
@@ -95,12 +107,14 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
 import getWorkItemsQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
+import searchProjectsQuery from '~/issues/list/queries/search_projects.query.graphql';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
 import WorkItemHealthStatus from '../components/work_item_health_status.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
 import WorkItemListHeading from '../components/work_item_list_heading.vue';
 import WorkItemUserPreferences from '../components/shared/work_item_user_preferences.vue';
 import WorkItemListActions from '../components/work_item_list_actions.vue';
+import WorkItemByEmail from '../components/work_item_by_email.vue';
 import {
   BASE_ALLOWED_CREATE_TYPES,
   CREATION_CONTEXT_LIST_ROUTE,
@@ -115,6 +129,8 @@ import {
   METADATA_KEYS,
 } from '../constants';
 import getUserWorkItemsDisplaySettingsPreferences from '../graphql/get_user_preferences.query.graphql';
+import workItemsReorderMutation from '../graphql/work_items_reorder.mutation.graphql';
+import { findHierarchyWidget } from '../utils';
 
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
@@ -132,6 +148,8 @@ const CrmOrganizationToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/crm_organization_token.vue');
 const CrmContactToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/crm_contact_token.vue');
+const WorkItemParentToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/work_item_parent_token.vue');
 
 const statusMap = {
   [STATUS_OPEN]: STATE_OPEN,
@@ -141,6 +159,7 @@ const statusMap = {
 export default {
   CREATION_CONTEXT_LIST_ROUTE,
   issuableListTabs,
+  searchProjectsQuery,
   components: {
     GlLoadingIcon,
     GlButton,
@@ -157,12 +176,26 @@ export default {
     WorkItemListHeading,
     WorkItemUserPreferences,
     WorkItemListActions,
+    WorkItemByEmail,
+    GlIcon,
+    GlSkeletonLoader,
+    NewResourceDropdown,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagMixin()],
+  provide() {
+    return {
+      showExportButton: computed(() => this.showImportExportButtons && this.workItems.length > 0),
+      projectImportJiraPath: this.projectImportJiraPath,
+    };
+  },
   inject: [
     'autocompleteAwardEmojisPath',
     'canBulkUpdate',
     'canBulkEditEpics',
+    'canCreateWorkItem',
     'hasBlockedIssuesFeature',
     'hasEpicsFeature',
     'hasGroupBulkEditFeature',
@@ -174,6 +207,7 @@ export default {
     'hasCustomFieldsFeature',
     'initialSort',
     'isGroup',
+    'isProject',
     'isSignedIn',
     'showNewWorkItem',
     'workItemType',
@@ -181,7 +215,12 @@ export default {
     'hasStatusFeature',
     'canReadCrmContact',
     'releasesPath',
+    'exportCsvPath',
     'metadataLoading',
+    'projectImportJiraPath',
+    'newWorkItemEmailAddress',
+    'isGroupIssuesList',
+    'groupId',
   ],
   props: {
     eeWorkItemUpdateCount: {
@@ -311,7 +350,7 @@ export default {
         return data?.[this.namespace].workItemStateCounts ?? {};
       },
       skip() {
-        return isEmpty(this.pageParams) || !this.withTabs;
+        return isEmpty(this.pageParams);
       },
       result({ data }) {
         const { all } = data?.[this.namespace].workItemStateCounts ?? {};
@@ -333,6 +372,7 @@ export default {
       if (this.workItemsFull.length > 0 && this.workItemsSlim.length > 0 && !this.detailLoading) {
         return this.combineSlimAndFullLists(this.workItemsSlim, this.workItemsFull);
       }
+
       return this.workItemsSlim;
     },
     shouldShowList() {
@@ -381,6 +421,7 @@ export default {
         hasEpicsFeature: this.hasEpicsFeature,
         hasOkrsFeature: this.hasOkrsFeature,
         hasQualityManagementFeature: this.hasQualityManagementFeature,
+        isGroupIssuesList: this.isGroupIssuesList,
       });
     },
     workItemDrawerEnabled() {
@@ -420,13 +461,23 @@ export default {
         fullPath: this.rootPageFullPath,
         sort: this.sortKey,
         state: this.state,
-        search: this.searchQuery,
         ...this.apiFilterParams,
         ...this.pageParams,
+        search: this.searchQuery,
         excludeProjects: hasGroupFilter || this.isEpicsList,
         includeDescendants: !hasGroupFilter,
         types: this.apiFilterParams.types || singleWorkItemType || this.defaultWorkItemTypes,
         isGroup: this.isGroup,
+      };
+    },
+    csvExportQueryVariables() {
+      const singleWorkItemType = this.workItemType ? NAME_TO_ENUM_MAP[this.workItemType] : null;
+      return {
+        ...this.apiFilterParams,
+        projectPath: this.rootPageFullPath,
+        state: this.state,
+        search: this.searchQuery,
+        types: this.apiFilterParams.types || singleWorkItemType || this.defaultWorkItemTypes,
       };
     },
     searchQuery() {
@@ -504,7 +555,7 @@ export default {
         },
       ];
 
-      if (this.isGroup) {
+      if (this.isGroup && !this.isGroupIssuesList) {
         tokens.push({
           type: TOKEN_TYPE_GROUP,
           icon: 'group',
@@ -667,6 +718,19 @@ export default {
         });
       }
 
+      tokens.push({
+        type: TOKEN_TYPE_PARENT,
+        title: TOKEN_TITLE_PARENT,
+        icon: 'work-item-parent',
+        token: WorkItemParentToken,
+        fullPath: this.rootPageFullPath,
+        isProject: !this.isGroup,
+        recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-parent`,
+        operators: OPERATORS_IS_NOT,
+        unique: true,
+        idProperty: 'id',
+      });
+
       if (this.eeSearchTokens.length) {
         tokens.push(...this.eeSearchTokens);
       }
@@ -681,12 +745,15 @@ export default {
     showPageSizeSelector() {
       return this.workItems.length > 0;
     },
+    showWorkItemByEmail() {
+      return this.canCreateWorkItem && !this.isGroup && this.newWorkItemEmailAddress;
+    },
     sortOptions() {
       return getSortOptions({
         hasBlockedIssuesFeature: this.hasBlockedIssuesFeature,
         hasIssuableHealthStatusFeature: this.hasIssuableHealthStatusFeature,
         hasIssueWeightsFeature: this.hasIssueWeightsFeature,
-        hasManualSort: false,
+        hasManualSort: !this.isEpicsList,
         hasStartDate: true,
         hasPriority: !this.isEpicsList,
         hasMilestoneDueDate: true,
@@ -707,6 +774,7 @@ export default {
         hasEpicsFeature: this.hasEpicsFeature,
         hasOkrsFeature: this.hasOkrsFeature,
         hasQualityManagementFeature: this.hasQualityManagementFeature,
+        isGroupIssuesList: this.isGroupIssuesList,
       });
     },
     urlFilterParams() {
@@ -750,6 +818,32 @@ export default {
     hiddenMetadataKeys() {
       return this.displaySettings?.namespacePreferences?.hiddenMetadataKeys || [];
     },
+    showImportExportButtons() {
+      return !this.isGroup && this.isSignedIn;
+    },
+    currentTabCount() {
+      return this.tabCounts[this.state] ?? 0;
+    },
+    isManualOrdering() {
+      return this.sortKey === RELATIVE_POSITION_ASC;
+    },
+    parentId() {
+      return this.apiFilterParams?.hierarchyFilters?.parentIds?.[0] || null;
+    },
+    newIssueDropdownQueryVariables() {
+      return {
+        fullPath: this.rootPageFullPath,
+      };
+    },
+    exportCsvPathWithQuery() {
+      if (!this.isGroup) {
+        return `${this.exportCsvPath}${window.location.search}`;
+      }
+      return null;
+    },
+    showCsvButtons() {
+      return this.isProject && this.isSignedIn;
+    },
   },
   watch: {
     eeWorkItemUpdateCount() {
@@ -786,6 +880,7 @@ export default {
   methods: {
     combineSlimAndFullLists(slim, full) {
       const findSlimItem = (id) => slim.find((item) => item.id === id);
+
       return full.map((fullItem) => {
         const slimVersion = findSlimItem(fullItem.id);
         const combinedWidgets = unionBy(fullItem.widgets, slimVersion?.widgets, 'type');
@@ -836,7 +931,7 @@ export default {
       if (this.isGroup && this.isEpicsList) {
         return `${__('Epics')} · ${middleCrumb} · GitLab`;
       }
-      if (this.isGroup) {
+      if (this.isGroup && !this.isGroupIssuesList) {
         return `${s__('WorkItem|Work items')} · ${middleCrumb} · GitLab`;
       }
       return `${__('Issues')} · ${middleCrumb} · GitLab`;
@@ -1077,6 +1172,99 @@ export default {
           return [];
         });
     },
+    handleReorder({ newIndex, oldIndex }) {
+      if (newIndex === oldIndex) return Promise.resolve();
+
+      const workItemToMove = this.workItems[oldIndex];
+
+      const remainingItems = this.workItems.filter((_, index) => index !== oldIndex);
+
+      let moveBeforeId = null;
+      let moveAfterId = null;
+
+      if (newIndex === 0) {
+        // Moving to beginning
+        moveBeforeId = null;
+        moveAfterId = remainingItems[0]?.id || null;
+      } else if (newIndex >= remainingItems.length) {
+        // Moving to end
+        moveAfterId = null;
+        moveBeforeId = remainingItems[remainingItems.length - 1]?.id || null;
+      } else {
+        // Moving between items
+        moveAfterId = remainingItems[newIndex - 1]?.id || null;
+        moveBeforeId = remainingItems[newIndex]?.id || null;
+      }
+
+      const input = { id: workItemToMove.id };
+      if (moveBeforeId) input.moveBeforeId = moveBeforeId;
+      if (moveAfterId) input.moveAfterId = moveAfterId;
+
+      return this.$apollo
+        .mutate({
+          mutation: workItemsReorderMutation,
+          variables: { input },
+          update: (cache) => {
+            this.updateWorkItemsCache(cache, oldIndex, newIndex);
+          },
+        })
+        .then(({ data }) => {
+          if (data?.workItemsReorder?.errors?.length > 0) {
+            throw new Error(data.workItemsReorder.errors.join(', '));
+          }
+          return data;
+        })
+        .catch((error) => {
+          this.error = s__('WorkItem|An error occurred while reordering work items.');
+          Sentry.captureException(error);
+          throw error;
+        });
+    },
+    updateWorkItemsCache(cache, oldIndex, newIndex) {
+      cache.updateQuery(
+        {
+          query: this.$apollo.queries.workItemsFull.options.query,
+          variables: this.queryVariables,
+        },
+        (existingData) => {
+          if (!existingData?.namespace?.workItems?.nodes) {
+            return existingData;
+          }
+
+          const workItems = [...existingData.namespace.workItems.nodes];
+
+          if (oldIndex >= 0 && oldIndex < workItems.length) {
+            const [movedItem] = workItems.splice(oldIndex, 1);
+            if (movedItem) {
+              workItems.splice(newIndex, 0, movedItem);
+            }
+          }
+
+          const newData = {
+            ...existingData,
+            namespace: {
+              ...existingData.namespace,
+              workItems: {
+                ...existingData.namespace.workItems,
+                nodes: workItems,
+              },
+            },
+          };
+
+          return newData;
+        },
+      );
+    },
+    isDirectChildOfWorkItem(workItem) {
+      if (!workItem) {
+        return false;
+      }
+
+      return findHierarchyWidget(workItem)?.parent?.id !== this.parentId;
+    },
+    extractProjects(data) {
+      return data?.group?.projects?.nodes;
+    },
   },
   constants: {
     METADATA_KEYS,
@@ -1114,6 +1302,7 @@ export default {
         :initial-sort-by="sortKey"
         :issuables="workItems"
         :issuables-loading="isLoading"
+        :is-manual-ordering="isManualOrdering"
         :show-bulk-edit-sidebar="showBulkEditSidebar"
         namespace="work-items"
         :full-path="rootPageFullPath"
@@ -1139,6 +1328,7 @@ export default {
         @previous-page="handlePreviousPage"
         @sort="handleSort"
         @select-issuable="handleToggle"
+        @reorder="handleReorder"
       >
         <template #user-preference>
           <work-item-user-preferences
@@ -1165,7 +1355,7 @@ export default {
               {{ __('Bulk edit') }}
             </gl-button>
             <create-work-item-modal
-              v-if="showNewWorkItem"
+              v-if="showNewWorkItem && !isGroupIssuesList"
               :allowed-work-item-types="allowedWorkItemTypes"
               :always-show-work-item-type-select="!isEpicsList"
               :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
@@ -1173,6 +1363,19 @@ export default {
               :is-group="isGroup"
               :preselected-work-item-type="preselectedWorkItemType"
               @workItemCreated="refetchItems"
+            />
+            <new-resource-dropdown
+              v-if="showNewWorkItem && isGroupIssuesList"
+              :query="$options.searchProjectsQuery"
+              :query-variables="newIssueDropdownQueryVariables"
+              :extract-projects="extractProjects"
+              :group-id="groupId"
+            />
+            <work-item-list-actions
+              :show-import-export-buttons="showImportExportButtons"
+              :work-item-count="currentTabCount"
+              :query-variables="csvExportQueryVariables"
+              :full-path="rootPageFullPath"
             />
           </div>
         </template>
@@ -1196,7 +1399,7 @@ export default {
                 {{ __('Bulk edit') }}
               </gl-button>
               <create-work-item-modal
-                v-if="showNewWorkItem"
+                v-if="showNewWorkItem && !isGroupIssuesList"
                 :allowed-work-item-types="allowedWorkItemTypes"
                 :always-show-work-item-type-select="!isEpicsList"
                 :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
@@ -1205,7 +1408,19 @@ export default {
                 :preselected-work-item-type="preselectedWorkItemType"
                 @workItemCreated="refetchItems"
               />
-              <work-item-list-actions />
+              <new-resource-dropdown
+                v-if="showNewWorkItem && isGroupIssuesList"
+                :query="$options.searchProjectsQuery"
+                :query-variables="newIssueDropdownQueryVariables"
+                :extract-projects="extractProjects"
+                :group-id="groupId"
+              />
+              <work-item-list-actions
+                :show-import-export-buttons="showImportExportButtons"
+                :work-item-count="currentTabCount"
+                :query-variables="csvExportQueryVariables"
+                :full-path="rootPageFullPath"
+              />
             </div>
           </work-item-list-heading>
         </template>
@@ -1278,13 +1493,40 @@ export default {
             :issuable="issuable"
           ></slot>
         </template>
+        <template v-if="parentId" #title-icons="{ issuable }">
+          <span
+            v-if="!detailLoading && isDirectChildOfWorkItem(issuable)"
+            v-gl-tooltip
+            data-testid="sub-child-work-item-indicator"
+            :title="__('This item belongs to a descendant of the filtered parent.')"
+            class="gl-ml-1 gl-inline-block"
+          >
+            <gl-icon name="file-tree" variant="subtle" />
+          </span>
+          <gl-skeleton-loader
+            v-if="detailLoading"
+            class="gl-ml-1 gl-inline-block"
+            :width="20"
+            :lines="1"
+            equal-width-lines
+          />
+        </template>
       </issuable-list>
     </template>
+    <work-item-by-email
+      v-if="showWorkItemByEmail"
+      class="gl-pb-7 gl-pt-5 gl-text-center"
+      data-track-action="click_email_work_item_project_work_items_empty_list_page"
+      data-track-label="email_work_item_project_work_items_empty_list"
+    />
   </div>
 
   <div v-else>
     <slot name="page-empty-state">
-      <empty-state-without-any-issues>
+      <empty-state-without-any-issues
+        :export-csv-path-with-query="exportCsvPathWithQuery"
+        :show-csv-buttons="showCsvButtons"
+      >
         <template #new-issue-button>
           <create-work-item-modal
             :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
@@ -1296,5 +1538,11 @@ export default {
         </template>
       </empty-state-without-any-issues>
     </slot>
+    <work-item-by-email
+      v-if="showWorkItemByEmail"
+      class="gl-pb-7 gl-pt-5 gl-text-center"
+      data-track-action="click_email_work_item_project_work_items_empty_list_page"
+      data-track-label="email_work_item_project_work_items_empty_list"
+    />
   </div>
 </template>

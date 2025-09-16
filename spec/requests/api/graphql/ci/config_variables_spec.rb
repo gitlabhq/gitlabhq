@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.project(fullPath).ciConfigVariables(ref)', feature_category: :ci_variables do
+RSpec.describe 'Query.project(fullPath).ciConfigVariables(ref)', feature_category: :pipeline_composition do
   include GraphqlHelpers
   include ReactiveCachingHelpers
 

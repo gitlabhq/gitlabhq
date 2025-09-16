@@ -9,6 +9,10 @@ class Dashboard::GroupsController < Dashboard::ApplicationController
 
   urgency :low, [:index]
 
+  before_action only: :index do
+    push_frontend_feature_flag(:archive_group)
+  end
+
   def index
     groups = GroupsFinder.new(
       current_user,

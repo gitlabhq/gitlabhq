@@ -81,7 +81,7 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
       wait_for_requests
       click_button 'Merge'
 
-      expect(page).to have_content("Merged by #{user.name}")
+      expect(page).to have_content("Merged by #{user.name}", wait: 10.seconds)
     end
 
     context 'when the merge request is already merged' do

@@ -40,6 +40,10 @@ module Types
       field :name_with_namespace, GraphQL::Types::String,
         null: true,
         description: 'Name of the project including the namespace.'
+      field :user_permissions, Types::PermissionTypes::Project,
+        description: 'Permissions for the current user on the project.',
+        null: true,
+        method: :itself
       field :web_url, GraphQL::Types::String,
         null: true,
         description: 'Web URL of the project.'

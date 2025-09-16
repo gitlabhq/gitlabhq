@@ -205,7 +205,7 @@ Selecting an individual job shows you its [job log](job_logs.md), and allows you
 - Run the job again, if it passed.
 - Erase the job log.
 
-### View all jobs in a project
+### View project jobs
 
 {{< details >}}
 
@@ -215,24 +215,31 @@ Selecting an individual job shows you its [job log](job_logs.md), and allows you
 
 {{< history >}}
 
-- Filtering jobs by job name [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387547) as an [experiment](../../policy/development_stages_support.md) on GitLab.com and GitLab Self-Managed in GitLab 17.3 [with flags](../../administration/feature_flags/_index.md) named `populate_and_use_build_names_table` for the API and `fe_search_build_by_name` for the UI. Disabled by default.
+- Job name filter [added](https://gitlab.com/gitlab-org/gitlab/-/issues/387547) as an [experiment](../../policy/development_stages_support.md) on GitLab.com and GitLab Self-Managed in GitLab 17.3 [with flags](../../administration/feature_flags/_index.md) named `populate_and_use_build_names_table` for the API and `fe_search_build_by_name` for the UI. Disabled by default.
+- Job kind filter [added](https://gitlab.com/gitlab-org/gitlab/-/issues/555434) in GitLab 18.3.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
-
-Filtering jobs by name is an [experiment](../../policy/development_stages_support.md). For more information about the development of this feature, see [issue 387547](https://gitlab.com/gitlab-org/gitlab/-/issues/387547).
-
-To view the full list of jobs that ran in a project:
+To view jobs that ran in a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Jobs**.
 
-You can filter the list by [job name](#job-names), [job status](#available-job-statuses), and [job source](#available-job-sources).
+You can filter the list by job status, source, name, and kind.
+
+{{< alert type="note" >}}
+
+The filter by name returns jobs created in the last 30 days. This retention period applies to both UI and API filtering.
+
+{{< /alert >}}
+
+By default, the filter shows only build jobs. To view trigger jobs, clear the filter, then select **Kind** > **Trigger**.
+
+{{< alert type="note" >}}
+
+The **Kind** filter is available only for project jobs. It is not available in the **Admin** area.
+
+{{< /alert >}}
 
 ### Available job statuses
 
@@ -274,7 +281,7 @@ The source attribute can have the following values:
 - `external`: Job initiated by an event in an external repository integrated with GitLab. This does not include pull request events.
 - `external_pull_request_event`: Job initiated by a pull request event in an external repository.
 - `merge_request_event`: Job initiated by a merge request event.
-- `ondemand_dast_scan`:Job initiated by an on-demand DAST scan.
+- `ondemand_dast_scan`: Job initiated by an on-demand DAST scan.
 - `ondemand_dast_validation`: Job initiated by an on-demand DAST validation.
 - `parent_pipeline`: Job initiated by a parent pipeline
 - `pipeline`: Job initiated by a user manually running a pipeline.

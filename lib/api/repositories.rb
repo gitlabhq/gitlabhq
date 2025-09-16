@@ -18,7 +18,8 @@ module API
           type: String,
           regexp: Gitlab::Regex.unbounded_semver_regex,
           desc: 'The version of the release, using the semantic versioning format',
-          documentation: { example: '1.0.0' }
+          documentation: { example: '1.0.0' },
+          allow_blank: false
 
         optional :from,
           type: String,

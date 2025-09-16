@@ -105,7 +105,7 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
       wait_for_requests
 
       expect(page).not_to have_selector '.js-loading-signature-badge'
-      expect(page).to have_selector '.gl-badge.badge-muted'
+      expect(page).to have_selector '.gl-badge.badge-neutral'
     end
 
     context 'on a directory that has not changed recently' do
@@ -115,7 +115,7 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
         wait_for_requests
 
         expect(page).not_to have_selector '.js-loading-signature-badge'
-        expect(page).to have_selector '.gl-badge.badge-muted'
+        expect(page).to have_selector '.gl-badge.badge-neutral'
       end
     end
   end
@@ -154,7 +154,7 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
         wait_for_requests
 
         expect(page).not_to have_selector '.js-loading-signature-badge'
-        expect(page).to have_selector '.gl-badge.badge-muted'
+        expect(page).to have_selector '.gl-badge.badge-neutral'
       end
     end
   end

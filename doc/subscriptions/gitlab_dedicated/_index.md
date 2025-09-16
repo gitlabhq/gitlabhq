@@ -2,7 +2,7 @@
 stage: GitLab Dedicated
 group: Switchboard
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Available features and benefits.
+description: Discover available features and benefits of a single-tenant SaaS solution.
 title: GitLab Dedicated
 ---
 
@@ -53,7 +53,22 @@ Two connectivity options are available:
 - Public connectivity with IP allowlists: By default, your instance is publicly accessible. You can [configure an IP allowlist](../../administration/dedicated/configure_instance/network_security.md#ip-allowlist) to restrict access to specified IP addresses.
 - Private connectivity with AWS PrivateLink: You can configure [AWS PrivateLink](https://aws.amazon.com/privatelink/) for [inbound](../../administration/dedicated/configure_instance/network_security.md#inbound-private-link) and [outbound](../../administration/dedicated/configure_instance/network_security.md#outbound-private-link) connections.
 
-For private connections to internal resources using non-public certificates, you can also [specify trusted certificates](../../administration/dedicated/configure_instance/network_security.md#custom-certificates).
+For private connections to internal resources using non-public certificates, you can also [specify trusted certificates](../../administration/dedicated/configure_instance/network_security.md#custom-certificate-authority).
+
+##### Private connectivity for webhooks and integrations
+
+If your webhooks and integrations need to connect to services that are not accessible from the public internet,
+you can use AWS PrivateLink for private connectivity. Because GitLab Dedicated is a SaaS service,
+it cannot directly connect to local IP addresses in your network.
+
+To set up private connectivity for your internal services:
+
+1. Assign hostnames to your internal services.
+1. Configure your Private Hosted Zone (PHZ) records to route to these hostnames through outbound private links.
+1. Plan for the 10-endpoint limit on outbound private links.
+
+If you need to connect to more than 10 endpoints, implement a reverse proxy or TLS passthrough on your infrastructure.
+This approach routes multiple services through fewer private link connections.
 
 #### Data encryption
 
@@ -213,6 +228,7 @@ Limitations:
 - Single-region deployment only.
 - No SLA commitment.
 - Cannot run newer versions than production.
+- GitLab Duo Core is not available.
 
 ## Unavailable features
 
@@ -268,11 +284,8 @@ its own [release schedule](maintenance.md) for version deployments.
 | Feature                      | Description                                                     | Impact                                                                 |
 | ---------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------- |
 | Custom domains               | Host GitLab Pages sites on custom domain names.                 | Pages sites accessible only using `tenant_name.gitlab-dedicated.site`. |
-| PrivateLink access           | Private network access to GitLab Pages through AWS PrivateLink. | Pages sites must be accessed over public internet.                     |
+| PrivateLink access           | Private network access to GitLab Pages through AWS PrivateLink. | Pages sites are accessible over the public internet only. You can configure IP allowlists to restrict access to specific IP addresses. |
 | Namespaces in URL path       | Organize Pages sites with namespace-based URL structure.        | Limited URL organization options.                                      |
-| Let's Encrypt integration    | Automatic SSL certificate provisioning for Pages sites.         | Must manage SSL certificates manually.                                 |
-| Reduced authentication scope | Fine-grained access controls for Pages sites.                   | Less flexible authentication options.                                  |
-| Running Pages behind a proxy | Deploy Pages sites behind reverse proxy configurations.         | Limited deployment architecture options.                               |
 
 ### Operational features
 
@@ -295,10 +308,9 @@ The following features require direct server access and cannot be configured:
 
 {{< alert type="note" >}}
 
-Access to the underlying infrastructure is only available to GitLab team members.
-Due to the server-side configuration, there is a security concern with running arbitrary code on services,
-and the possible impact on the service SLA. As an alternative, use [push rules](../../user/project/repository/push_rules.md)
-or [webhooks](../../user/project/integrations/webhooks.md) instead.
+Server-side Git hooks are not supported for security and performance reasons.
+Instead, use [push rules](../../user/project/repository/push_rules.md) to enforce repository policies
+or [webhooks](../../user/project/integrations/webhooks.md) to trigger external actions on Git events.
 
 {{< /alert >}}
 
@@ -335,6 +347,27 @@ To migrate your data to GitLab Dedicated:
   - Use [the import sources](../../user/project/import/_index.md#supported-import-sources).
 - For complex migrations:
   - Engage [Professional Services](../../user/project/import/_index.md#migrate-by-engaging-professional-services).
+
+## Expired subscriptions
+
+Before your subscription expires, you receive a notification that the end date is approaching.
+
+When your subscription expires, you can access your instance for 30 days.
+
+To preserve your data, contact your account team or email Support within 15 days
+of expiration to request data preservation.
+
+During this 30-day period, you can:
+
+- Email Support to request additional time to retrieve data.
+- Engage Professional Services for migration assistance or offboarding support.
+
+After 30 days, if your data is not archived or migrated to another instance,
+your instance is terminated and all Customer Content is deleted.
+This includes all projects, repositories, issues, merge requests, and other data.
+
+You can request confirmation of account removal 90 days after instance termination.
+Confirmation is provided as an email from AWS stating that your account is closed.
 
 ## Get started
 

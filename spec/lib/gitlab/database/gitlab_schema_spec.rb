@@ -132,7 +132,7 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
     subject { described_class.table_schemas!(tables) }
 
     it 'returns the matched schemas' do
-      expect(subject).to match_array %i[gitlab_main_cell gitlab_ci gitlab_main_org].to_set
+      expect(subject).to match_array %i[gitlab_main_org gitlab_ci gitlab_main_org].to_set
     end
 
     context 'when one of the tables does not have a matching table schema' do
@@ -186,8 +186,8 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
       end
     end
 
-    context 'gitlab_main_clusterwide and gitlab_main_cell allows' do
-      let!(:gitlab_schemas) { %w[gitlab_main_clusterwide gitlab_main_cell] }
+    context 'gitlab_main_clusterwide and gitlab_main_org allows' do
+      let!(:gitlab_schemas) { %w[gitlab_main_clusterwide gitlab_main_org] }
 
       it 'forbids explicit allows on cross joins on individual tables' do
         # Because we allow cross joins and cross database modifications across
@@ -200,7 +200,7 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
         end
 
         expect(tables).to be_empty,
-          "Cross join queries are allowed for all gitlab_main_clusterwide and gitlab_main_cell by default"
+          "Cross join queries are allowed for all gitlab_main_clusterwide and gitlab_main_org by default"
       end
 
       it 'forbids explicit allows on cross database modification on individual tables' do
@@ -214,7 +214,7 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
         end
 
         expect(tables).to be_empty,
-          "Cross database modifications are allowed for all gitlab_main_clusterwide and gitlab_main_cell by default"
+          "Cross database modifications are allowed for all gitlab_main_clusterwide and gitlab_main_org by default"
       end
     end
   end
@@ -225,7 +225,7 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
 
       where(:schema_name, :result) do
         :gitlab_main_user | %w[organizations users]
-        :gitlab_main_cell | %w[organizations projects namespaces]
+        :gitlab_main_org | %w[organizations projects namespaces]
         :gitlab_ci | %w[organizations projects namespaces]
         :gitlab_sec | %w[organizations projects namespaces]
       end
@@ -258,9 +258,9 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
         %i[gitlab_main gitlab_ci] | %w[evidences schema_migrations] | false
         %i[gitlab_main_clusterwide gitlab_main gitlab_shared] | %w[users evidences detached_partitions] | true
         %i[gitlab_main_clusterwide gitlab_shared] | %w[users detached_partitions] | true
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users namespaces] | true
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[plans namespaces] | true
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users achievements] | true
+        %i[gitlab_main_clusterwide gitlab_main_org] | %w[users namespaces] | true
+        %i[gitlab_main_clusterwide gitlab_main_org] | %w[plans namespaces] | true
+        %i[gitlab_main_clusterwide gitlab_main_org] | %w[users achievements] | true
       end
 
       with_them do
@@ -279,9 +279,9 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
         %i[gitlab_main gitlab_ci] | %w[evidences ci_pipelines] | false
         %i[gitlab_main_clusterwide gitlab_main gitlab_shared] | %w[users evidences detached_partitions] | true
         %i[gitlab_main_clusterwide gitlab_shared] | %w[users detached_partitions] | true
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users namespaces] | true
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[plans namespaces] | true
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users achievements] | true
+        %i[gitlab_main_clusterwide gitlab_main_org] | %w[users namespaces] | true
+        %i[gitlab_main_clusterwide gitlab_main_org] | %w[plans namespaces] | true
+        %i[gitlab_main_clusterwide gitlab_main_org] | %w[users achievements] | true
       end
 
       with_them do
@@ -298,10 +298,10 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
         %i[gitlab_main_clusterwide gitlab_internal] | %w[users schema_migrations] | false
         %i[gitlab_main gitlab_ci] | %w[evidences ci_pipelines] | false
         %i[gitlab_main_clusterwide gitlab_shared] | %w[users detached_partitions] | false
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users namespaces] | false
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[plans namespaces] | false
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users achievements] | false
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users agent_group_authorizations] | false
+        %i[gitlab_main_clusterwide gitlab_main_org] | %w[users namespaces] | false
+        %i[gitlab_main_clusterwide gitlab_main_org] | %w[plans namespaces] | false
+        %i[gitlab_main_clusterwide gitlab_main_org] | %w[users achievements] | false
+        %i[gitlab_main_clusterwide gitlab_main_org] | %w[users agent_group_authorizations] | false
       end
 
       with_them do

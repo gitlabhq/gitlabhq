@@ -8,13 +8,12 @@ title: 'Tutorial: Create a custom workspace image that supports arbitrary user I
 
 <!-- vale gitlab_base.FutureTense = NO -->
 
-This tutorial guides you through creating a custom workspace image that supports arbitrary user IDs.
+This tutorial guides you through creating a custom workspace image that meets your project needs.
 Once complete, you can use this custom image with any [workspace](_index.md) you create in GitLab.
 
 To create a custom workspace image that supports arbitrary user IDs:
 
-1. [Create a base Dockerfile](#create-a-base-dockerfile).
-1. [Add support for arbitrary user IDs](#add-support-for-arbitrary-user-ids).
+1. [Create a Dockerfile](#create-a-dockerfile).
 1. [Build the custom workspace image](#build-the-custom-workspace-image).
 1. [Push the custom workspace image to the GitLab container registry](#push-the-custom-workspace-image-to-the-gitlab-container-registry).
 1. [Use the custom workspace image in GitLab](#use-the-custom-workspace-image-in-gitlab).
@@ -27,37 +26,36 @@ You need the following:
   registry.
 - Docker installed on your local machine.
 
-## Create a base Dockerfile
+## Create a Dockerfile
 
-Let's start by creating a base Dockerfile for our container image. Use the Python
-`3.11-slim-bullseye` image from Docker Hub as our starting point:
+Create a Dockerfile that uses the [workspace base image](_index.md#workspace-base-image)
+(`registry.gitlab.com/gitlab-org/gitlab-build-images:workspaces-base`) from the GitLab Container
+Registry as the starting point:
 
 ```Dockerfile
-FROM python:3.11-slim-bullseye
+FROM registry.gitlab.com/gitlab-org/gitlab-build-images:workspaces-base
+
+# Install additional tools your project needs
+RUN sudo apt-get update && \
+    sudo apt-get install -y tree && \
+    sudo rm -rf /var/lib/apt/lists/*
+
+# Install project-specific tools using mise
+# For example, install Node.js version 20
+RUN mise install node@20 && \
+    mise use node@20
+
+# Install global packages
+RUN npm install -g @angular/cli
+
+# Set up your project environment
+ENV NODE_ENV=development
+
+# Create project directories
+RUN mkdir -p /home/gitlab-workspaces/projects
 ```
 
-Great! You've created the foundation for your custom workspace image. Next, add the code
-that enables arbitrary user ID support.
-
-## Add support for arbitrary user IDs
-
-Next, you will add support for arbitrary user IDs to the base image.
-This ensures your workspace runs in GitLab.
-
-To add a new `gitlab-workspaces` user with an ID of `5001`, and assign them the necessary
-directory permissions, add the following code to your Dockerfile:
-
-```dockerfile
-RUN useradd -l -u 5001 -G sudo -md /home/gitlab-workspaces -s /bin/bash -p gitlab-workspaces gitlab-workspaces
-
-ENV HOME=/home/gitlab-workspaces
-
-WORKDIR $HOME
-
-RUN mkdir -p /home/gitlab-workspaces && chgrp -R 0 /home && chmod -R g=u /etc/passwd /etc/group /home
-
-USER 5001
-```
+Customize these steps based on your project's specific requirements. Next, build the custom workspace image.
 
 ## Build the custom workspace image
 

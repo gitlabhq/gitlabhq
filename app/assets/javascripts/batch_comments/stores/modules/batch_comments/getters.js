@@ -82,7 +82,4 @@ export const draftsForLine =
 export const draftsForFile = (state) => (diffFileSha) =>
   state.drafts.filter((draft) => draft.file_hash === diffFileSha);
 
-export const isPublishingDraft = (state) => (draftId) =>
-  state.currentlyPublishingDrafts.indexOf(draftId) !== -1;
-
 export const sortedDrafts = (state) => [...state.drafts].sort((a, b) => a.id > b.id);

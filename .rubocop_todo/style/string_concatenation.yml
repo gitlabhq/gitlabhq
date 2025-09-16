@@ -88,7 +88,6 @@ Style/StringConcatenation:
     - 'lib/gitlab/route_map.rb'
     - 'lib/gitlab/sanitizers/exception_message.rb'
     - 'lib/gitlab/sidekiq_logging/json_formatter.rb'
-    - 'lib/gitlab/sql/set_operator.rb'
     - 'lib/gitlab/ssh_public_key.rb'
     - 'lib/gitlab/throttle.rb'
     - 'lib/gitlab/time_tracking_formatter.rb'

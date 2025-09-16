@@ -10,6 +10,16 @@ const prettify = (query) => print(parseGraphQL(query));
 
 const MOCK_FIELDS = 'title, author, state, description';
 
+beforeEach(() => {
+  gon.features = {
+    glqlTypescript: true,
+  };
+});
+
+afterEach(() => {
+  gon.features = {};
+});
+
 describe('parseQueryTextWithFrontmatter', () => {
   it('separates the presentation layer from the query and returns an object', () => {
     const text = `---
@@ -77,15 +87,15 @@ describe('parse', () => {
   "variables": {
     "after": {
       "type": "String",
-      "value": null,
+      "value": undefined,
     },
     "before": {
       "type": "String",
-      "value": null,
+      "value": undefined,
     },
     "limit": {
       "type": "Int",
-      "value": null,
+      "value": undefined,
     },
   },
 }
@@ -157,15 +167,15 @@ assignee = currentUser()`),
   "variables": {
     "after": {
       "type": "String",
-      "value": null,
+      "value": undefined,
     },
     "before": {
       "type": "String",
-      "value": null,
+      "value": undefined,
     },
     "limit": {
       "type": "Int",
-      "value": null,
+      "value": undefined,
     },
   },
 }
@@ -238,15 +248,15 @@ query: assignee = currentUser()
   "variables": {
     "after": {
       "type": "String",
-      "value": null,
+      "value": undefined,
     },
     "before": {
       "type": "String",
-      "value": null,
+      "value": undefined,
     },
     "limit": {
       "type": "Int",
-      "value": null,
+      "value": undefined,
     },
   },
 }
@@ -377,7 +387,7 @@ describe('parseQuery', () => {
     const config = { fields: MOCK_FIELDS, limit: 100 };
 
     await expect(parseQuery(query, config)).rejects.toThrow(
-      'Unexpected `query syntax`, expected operator (one of IN, =, !=, >, or <)',
+      'Error: Expected valid operator near `query syntax`',
     );
   });
 });

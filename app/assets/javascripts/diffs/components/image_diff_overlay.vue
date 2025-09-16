@@ -119,7 +119,7 @@ export default {
       class="image-diff-overlay-add-comment js-add-image-diff-note-button gl-absolute gl-h-full gl-w-full gl-border-0 gl-bg-transparent"
       @click="clickedImage($event.offsetX, $event.offsetY)"
     >
-      <span class="sr-only"> {{ __('Add image comment') }} </span>
+      <span class="gl-sr-only"> {{ __('Add image comment') }} </span>
     </button>
 
     <design-note-pin

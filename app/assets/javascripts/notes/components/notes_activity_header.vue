@@ -56,10 +56,10 @@ export default {
 
 <template>
   <div
-    class="gl-flex gl-flex-col gl-justify-between gl-pb-3 gl-pt-5 sm:gl-flex-row sm:gl-items-center"
+    class="gl-flex gl-flex-col gl-justify-between gl-pb-3 gl-pt-5 @sm/panel:gl-flex-row @sm/panel:gl-items-center"
   >
     <h2 class="gl-heading-2 gl-m-0">{{ __('Activity') }}</h2>
-    <div class="gl-mt-3 gl-flex gl-w-full gl-gap-3 sm:gl-mt-0 sm:gl-w-auto">
+    <div class="gl-mt-3 gl-flex gl-w-full gl-gap-3 @sm/panel:gl-mt-0 @sm/panel:gl-w-auto">
       <ai-summarize-notes
         v-if="showAiActions"
         :work-item-type="noteableType"

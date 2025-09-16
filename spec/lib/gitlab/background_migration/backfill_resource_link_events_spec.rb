@@ -151,6 +151,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillResourceLinkEvents, feature_
       context 'when note iid is prefixed' do
         before do
           note = notes.create!(
+            project_id: project.id,
             noteable_type: 'Issue',
             noteable_id: work_item.id,
             author_id: user.id,
@@ -174,6 +175,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillResourceLinkEvents, feature_
 
   def create_relate_to_parent_note(parent:, child:, issue_type_name:)
     note = notes.create!(
+      project_id: project.id,
       noteable_type: 'Issue',
       noteable_id: child.id,
       author_id: user.id,
@@ -185,6 +187,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillResourceLinkEvents, feature_
 
   def create_unrelate_from_parent_note(parent:, child:, issue_type_name:)
     note = notes.create!(
+      project_id: project.id,
       noteable_type: 'Issue',
       noteable_id: child.id,
       author_id: user.id,

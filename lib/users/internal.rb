@@ -32,7 +32,13 @@ module Users
 
     # rubocop:disable CodeReuse/ActiveRecord -- Need to instantiate a record here
     def initialize(organization: nil)
-      @organization = organization
+      case organization
+      when ::Organizations::Organization
+        @organization = organization
+        @organization_id = organization.id
+      else
+        @organization_id = organization
+      end
     end
 
     # Return (create if necessary) the ghost user. The ghost user
@@ -153,28 +159,35 @@ module Users
 
     private
 
+    def organization
+      return @organization if @organization
+
+      Organizations::Organization.find_by_id(@organization_id)
+    end
+    strong_memoize_attr :organization
+
     # NOTE: This method is patched in spec/spec_helper.rb to allow use of exclusive lease in RSpec's
     # :before_all scope to keep the specs DRY.
     def unique_internal(scope, username, email_pattern, &block)
-      if @organization && organization_users_internal_enabled?
-        scope = scope.joins(:organization_users).where(organization_users: { organization: @organization })
+      if @organization_id && organization_users_internal_enabled? # rubocop:disable Style/IfUnlessModifier -- exceeds line length
+        scope = scope.where(organization_id: @organization_id)
       end
 
       scope.first || create_unique_internal(scope, username, email_pattern, &block)
     end
 
     def username_with_organization_suffix(username)
-      return username if @organization.nil? || @organization == first_organization
+      return username if organization.nil? || organization == first_organization
       return username unless organization_users_internal_enabled?
 
-      [username, @organization.path].join('_')
+      [username, organization.path].join('_')
     end
 
     def display_name_with_organization_suffix(display_name)
-      return display_name if @organization.nil? || @organization == first_organization
+      return display_name if organization.nil? || organization == first_organization
       return display_name unless organization_users_internal_enabled?
 
-      "#{display_name} (#{@organization.name})"
+      "#{display_name} (#{organization.name})"
     end
 
     def first_organization
@@ -183,15 +196,15 @@ module Users
     strong_memoize_attr :first_organization
 
     def organization_users_internal_enabled?
-      Feature.enabled?(:organization_users_internal, @organization)
+      Feature.enabled?(:organization_users_internal, ::Organizations::Organization.actor_from_id(@organization_id))
     end
     strong_memoize_attr :organization_users_internal_enabled?
 
     def create_unique_internal(scope, username, email_pattern, &creation_block)
       # Since we only want a single one of these in an instance, we use an
       # exclusive lease to ensure than this block is never run concurrently.
-      lease_key = if @organization
-                    "user:unique_internal:#{@organization.id}:#{username}"
+      lease_key = if organization
+                    "user:unique_internal:#{@organization_id}:#{username}"
                   else
                     "user:unique_internal:#{username}"
                   end
@@ -227,10 +240,10 @@ module Users
         &creation_block
       )
 
-      user_organization = if @organization && organization_users_internal_enabled?
-                            @organization
+      user_organization = if organization && organization_users_internal_enabled?
+                            organization
                           else
-                            Organizations::Organization.first
+                            first_organization
                           end
 
       user.assign_personal_namespace(user_organization)

@@ -98,7 +98,6 @@ Style/SymbolProc:
     - 'lib/gitlab/git/diff_stats_collection.rb'
     - 'lib/gitlab/import_export/attributes_finder.rb'
     - 'lib/gitlab/import_export/base/relation_object_saver.rb'
-    - 'lib/gitlab/import_export/fast_hash_serializer.rb'
     - 'lib/gitlab/import_export/group/relation_tree_restorer.rb'
     - 'lib/gitlab/manifest_import/manifest.rb'
     - 'lib/gitlab/quick_actions/extractor.rb'

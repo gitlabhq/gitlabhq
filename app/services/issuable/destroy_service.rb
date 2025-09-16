@@ -2,6 +2,8 @@
 
 module Issuable
   class DestroyService < IssuableBaseService
+    BATCH_SIZE = 100
+
     # TODO: this is to be removed once we get to rename the IssuableBaseService project param to container
     def initialize(container:, current_user: nil, params: {})
       super(container: container, current_user: current_user, params: params)
@@ -13,12 +15,21 @@ module Issuable
       @synced_object_to_delete = issuable.try(:sync_object)
 
       before_destroy(issuable)
+      destroy_ci_records(issuable)
       after_destroy(issuable) if issuable.destroy
     end
 
     private
 
     def before_destroy(issuable); end
+
+    def destroy_ci_records(issuable)
+      return unless issuable.is_a?(MergeRequest)
+
+      issuable.pipelines_for_merge_request.each_batch(of: BATCH_SIZE) do |batch|
+        ::Ci::DestroyPipelineService.new(project, current_user).unsafe_execute(batch.to_a)
+      end
+    end
 
     def after_destroy(issuable)
       delete_associated_records(issuable)

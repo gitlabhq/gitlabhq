@@ -1,0 +1,12 @@
+fragment ProjectInterface on ProjectInterface {
+  id
+  fullPath
+  avatarUrl
+  nameWithNamespace
+  webUrl
+  userPermissions {
+    archiveProject
+    removeProject
+    viewEditPage
+  }
+}

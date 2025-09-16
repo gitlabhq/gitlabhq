@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Mailer previews', feature_category: :shared do
+RSpec.describe 'Mailer previews', :with_trial_types, feature_category: :shared do
   # Setup needed for email previews
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, :import_failed, group: group, import_last_error: 'some error') }

@@ -67,6 +67,12 @@ single CPU core. The usefulness of threading depends on the work having some
 external dependencies to wait on, like database queries or HTTP requests. Most
 Sidekiq deployments benefit from this threading.
 
+## Database connection planning
+
+Before increasing Sidekiq processes or concurrency, consider the database connection impact on your PostgreSQL `max_connections` setting.
+
+For detailed connection planning and calculations, see the [Tune PostgreSQL](../postgresql/tune.md) page.
+
 ### Manage thread counts explicitly
 
 The correct maximum thread count (also called concurrency) depends on the

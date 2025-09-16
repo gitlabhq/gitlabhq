@@ -48,7 +48,14 @@ module Ci
       if @safe_cancellation
         # Only build and bridge (trigger) jobs can be interruptible.
         # We do not cancel GenericCommitStatuses because they can't have the `interruptible` attribute.
-        cancel_jobs(pipeline.processables.cancelable.interruptible)
+        jobs = pipeline.processables.cancelable
+        jobs = if Feature.enabled?(:ci_read_interruptible_from_job_definitions, pipeline.project)
+                 jobs.with_interruptible_true
+               else
+                 jobs.with_metadata_interruptible_true
+               end
+
+        cancel_jobs(jobs)
       else
         cancel_jobs(pipeline.cancelable_statuses)
       end
@@ -96,7 +103,7 @@ module Ci
       retry_lock(jobs, retries, name: 'ci_pipeline_cancel_running') do |jobs_to_cancel|
         jobs_to_cancel.find_in_batches do |batch|
           relation = CommitStatus.id_in(batch)
-          Preloaders::CommitStatusPreloader.new(relation).execute(build_preloads)
+          ::Ci::Preloaders::CommitStatusPreloader.new(relation).execute(build_preloads)
 
           relation.each { |job| cancel_job(job) }
         end

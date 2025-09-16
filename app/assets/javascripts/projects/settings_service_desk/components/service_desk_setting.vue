@@ -158,7 +158,6 @@ export default {
         : this.initialAreTicketsConfidentialByDefault,
       reopenIssueOnExternalParticipantNote: this.initialReopenIssueOnExternalParticipantNote,
       addExternalParticipantsFromCc: this.initialAddExternalParticipantsFromCc,
-      searchTerm: '',
       projectKeyError: null,
     };
   },
@@ -235,7 +234,7 @@ export default {
 
 <template>
   <div>
-    <gl-alert v-if="!isIssueTrackerEnabled" class="mb-3" variant="info" :dismissible="false">
+    <gl-alert v-if="!isIssueTrackerEnabled" class="gl-mb-5" variant="info" :dismissible="false">
       <gl-sprintf :message="$options.i18n.issueTrackerEnableMessage">
         <template #link="{ content }">
           <gl-link
@@ -253,16 +252,16 @@ export default {
       id="service-desk-checkbox"
       :value="isEnabled"
       :disabled="!isIssueTrackerEnabled"
-      class="align-middle mr-1 !gl-inline-block"
+      class="gl-mr-2 !gl-inline-block gl-align-middle"
       :label="$options.i18n.toggleLabel"
       label-position="hidden"
       @change="onCheckboxToggle"
     />
-    <label class="align-middle">
+    <label class="gl-align-middle">
       {{ $options.i18n.toggleLabel }}
     </label>
-    <div v-if="isEnabled" class="row mt-3">
-      <div class="col-md-9 mb-0">
+    <div v-if="isEnabled" class="row gl-mt-5">
+      <div class="gl-col-md-9 !gl-mb-0">
         <gl-form-group
           :label="__('Email address to use for Service Desk')"
           label-for="incoming-email"
@@ -295,7 +294,7 @@ export default {
           </template>
           <template v-if="!email">
             <gl-loading-icon size="sm" :inline="true" />
-            <span class="sr-only">{{ __('Fetching incoming email') }}</span>
+            <span class="gl-sr-only">{{ __('Fetching incoming email') }}</span>
           </template>
         </gl-form-group>
 
@@ -350,7 +349,7 @@ export default {
         <gl-form-group
           :label="__('Template to append to all Service Desk issues')"
           :state="!projectKeyError"
-          class="mt-3"
+          class="gl-mt-5"
           :disabled="!isIssueTrackerEnabled"
         >
           <service-desk-template-dropdown
@@ -365,7 +364,7 @@ export default {
           :label="__('Email display name')"
           label-for="service-desk-email-from-name"
           :state="!projectKeyError"
-          class="mt-3"
+          class="gl-mt-5"
         >
           <gl-form-input
             id="service-desk-email-from-name"

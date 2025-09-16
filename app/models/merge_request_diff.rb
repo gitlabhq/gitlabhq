@@ -592,7 +592,7 @@ class MergeRequestDiff < ApplicationRecord
       end
     else
       strong_memoize(:modified_paths) do
-        merge_request_diff_files.pluck(:new_path, :old_path).flatten.uniq
+        merge_request_diff_files.pluck(:new_path, :old_path).flatten.compact.uniq
       end
     end
   end
@@ -610,7 +610,7 @@ class MergeRequestDiff < ApplicationRecord
     return yield(nil) unless stored_externally?
     return yield(@external_diff_file) if @external_diff_file
 
-    if ::Feature.enabled?(:update_external_diff_storage, project) && use_external_diff? && Gitlab.config.external_diffs.object_store.enabled && external_diff_store == ObjectStorage::Store::LOCAL
+    if use_external_diff? && Gitlab.config.external_diffs.object_store.enabled && external_diff_store == ObjectStorage::Store::LOCAL
       update_column(:external_diff_store, ObjectStorage::Store::REMOTE)
     end
 
@@ -769,8 +769,13 @@ class MergeRequestDiff < ApplicationRecord
       diff_hash = diff.to_hash.merge(
         binary: false,
         merge_request_diff_id: self.id,
-        relative_order: index
+        relative_order: index,
+        project_id: self.project_id
       )
+
+      if Feature.enabled?(:deduplicate_new_path_value, Project.find(self.project_id))
+        diff_hash[:new_path] = diff.new_path == diff.old_path ? nil : diff.new_path
+      end
 
       # Compatibility with old diffs created with Psych.
       diff_hash.tap do |hash|

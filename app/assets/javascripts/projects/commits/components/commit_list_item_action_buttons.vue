@@ -1,7 +1,7 @@
 <script l>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import ExpandCollapseButton from '~/projects/commits/components/expand_collapse_button.vue';
+import ExpandCollapseButton from '~/vue_shared/components/expand_collapse_button/expand_collapse_button.vue';
 
 export default {
   name: 'CommitListItemActionButtons',
@@ -32,7 +32,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-hidden gl-items-center sm:gl-flex">
+  <div class="gl-hidden gl-items-center @sm/panel:gl-flex">
     <span class="gl-mr-2 gl-font-monospace">{{ commit.shortId }}</span>
     <clipboard-button
       :text="commit.sha"

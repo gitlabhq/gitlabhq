@@ -190,8 +190,6 @@ module Emails
     end
 
     def inject_service_desk_custom_email_reply_address
-      return unless Feature.enabled?(:service_desk_custom_email_reply, @project)
-
       reply_address = Gitlab::Email::ServiceDesk::CustomEmail.reply_address(@issue, reply_key)
       headers['Reply-To'] = Mail::Address.new(reply_address).tap do |address|
         address.display_name = reply_display_name(@issue)

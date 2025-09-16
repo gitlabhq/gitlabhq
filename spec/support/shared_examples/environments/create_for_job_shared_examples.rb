@@ -24,6 +24,35 @@ RSpec.shared_examples 'create environment for job' do
         end
       end
 
+      it 'creates an associated job environment record' do
+        subject
+
+        job.save!
+
+        expect(job.job_environment).to be_valid
+        expect(job.job_environment).to have_attributes(
+          project: project,
+          environment: instance_of(Environment),
+          pipeline: job.pipeline,
+          expanded_environment_name: job.persisted_environment.name,
+          options: job.environment_options_for_permanent_storage.deep_stringify_keys
+        )
+      end
+
+      context 'when the persisted_job_environment_relationship feature flag is disabled' do
+        before do
+          stub_feature_flags(persisted_job_environment_relationship: false)
+        end
+
+        it 'does not create an associated job environment record' do
+          subject
+
+          job.save!
+
+          expect(job.job_environment).to be_nil
+        end
+      end
+
       context 'when environment has already existed' do
         let!(:environment) do
           create(:environment,
@@ -40,6 +69,35 @@ RSpec.shared_examples 'create environment for job' do
 
           expect(subject).to be_persisted
           expect(subject).to eq(environment)
+        end
+
+        it 'creates an associated job environment record' do
+          subject
+
+          job.save!
+
+          expect(job.job_environment).to be_valid
+          expect(job.job_environment).to have_attributes(
+            project: project,
+            environment: environment,
+            pipeline: job.pipeline,
+            expanded_environment_name: environment.name,
+            options: job.environment_options_for_permanent_storage.deep_stringify_keys
+          )
+        end
+
+        context 'when the persisted_job_environment_relationship feature flag is disabled' do
+          before do
+            stub_feature_flags(persisted_job_environment_relationship: false)
+          end
+
+          it 'does not create an associated job environment record' do
+            subject
+
+            job.save!
+
+            expect(job.job_environment).to be_nil
+          end
         end
 
         it_behaves_like 'internal event tracking' do
@@ -161,6 +219,8 @@ RSpec.shared_examples 'create environment for job' do
       let_it_be(:agent) { create(:cluster_agent, project: project) }
 
       let(:environment_name) { 'production' }
+      let(:expected_environment_name) { 'production' }
+      let(:expected_auto_stop_in) { nil }
       let(:agent_path) { "#{project.full_path}:#{agent.name}" }
       let(:attributes) do
         {
@@ -169,7 +229,8 @@ RSpec.shared_examples 'create environment for job' do
             environment: {
               name: environment_name,
               kubernetes: {
-                agent: agent_path
+                agent: agent_path,
+                namespace: 'example-namespace'
               }
             }
           }
@@ -190,6 +251,8 @@ RSpec.shared_examples 'create environment for job' do
           allow(finder).to receive(:execute).and_return(authorizations)
         end
       end
+
+      it_behaves_like 'returning a correct environment'
 
       context 'when the agent has resource management enabled' do
         before do

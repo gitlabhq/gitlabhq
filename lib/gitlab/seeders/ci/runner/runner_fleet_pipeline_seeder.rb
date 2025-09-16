@@ -186,6 +186,10 @@ module Gitlab
             end
 
             build&.trace&.set("Mock log...\nMock log... DONE!")
+
+            # Trigger build finished worker to sync build data to ClickHouse,
+            # similar to pipeline sync on the create_pipeline method
+            ::Ci::BuildFinishedWorker.perform_async(build.id) if build&.complete?
           end
 
           def random_pipeline_status

@@ -1,4 +1,4 @@
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import Tracking from '~/tracking';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsWiki from '~/behaviors/shortcuts/shortcuts_wiki';
@@ -8,13 +8,13 @@ const TRACKING_CONTEXT_SCHEMA = 'iglu:com.gitlab/wiki_page_context/jsonschema/1-
 
 export default class Wikis {
   constructor() {
+    this.wikiPageHeaderEl = document.querySelector('.js-wiki-page-header');
     this.sidebarEl = document.querySelector('.js-wiki-sidebar');
     this.sidebarExpanded = false;
 
-    const sidebarToggles = document.querySelectorAll('.js-sidebar-wiki-toggle');
-    for (let i = 0; i < sidebarToggles.length; i += 1) {
-      sidebarToggles[i].addEventListener('click', (e) => this.handleToggleSidebar(e));
-    }
+    document
+      .querySelector('.js-sidebar-wiki-toggle')
+      .addEventListener('click', this.handleToggleSidebar.bind(this));
 
     // Store pages visbility in localStorage
     const pagesToggle = document.querySelector('.js-wiki-expand-pages-list');
@@ -57,8 +57,14 @@ export default class Wikis {
 
   handleToggleSidebar(e) {
     e.preventDefault();
-    this.sidebarExpanded = !this.sidebarExpanded;
-    this.renderSidebar();
+    const isSidebarExpanded = this.sidebarEl.classList.contains('right-sidebar-expanded');
+    this.sidebarExpanded = !isSidebarExpanded;
+
+    if (isSidebarExpanded) {
+      this.collapseSidebar();
+    } else {
+      this.expandSidebar();
+    }
   }
 
   static sidebarCanCollapse() {
@@ -71,13 +77,27 @@ export default class Wikis {
     const { classList } = this.sidebarEl;
     if (this.sidebarExpanded || !Wikis.sidebarCanCollapse()) {
       if (!classList.contains('right-sidebar-expanded')) {
-        classList.remove('right-sidebar-collapsed');
-        classList.add('right-sidebar-expanded');
+        this.expandSidebar();
       }
     } else if (classList.contains('right-sidebar-expanded')) {
-      classList.add('right-sidebar-collapsed');
-      classList.remove('right-sidebar-expanded');
+      this.collapseSidebar();
     }
+  }
+
+  collapseSidebar() {
+    if (!this.sidebarEl) return;
+
+    const { classList } = this.sidebarEl;
+    classList.add('right-sidebar-collapsed');
+    classList.remove('right-sidebar-expanded');
+  }
+
+  expandSidebar() {
+    if (!this.sidebarEl) return;
+
+    const { classList } = this.sidebarEl;
+    classList.remove('right-sidebar-collapsed');
+    classList.add('right-sidebar-expanded');
   }
 
   static trackPageView() {

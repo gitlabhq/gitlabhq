@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::VariableValue, feature_category: :ci_variables do
+RSpec.describe Ci::VariableValue, feature_category: :pipeline_composition do
   let_it_be(:expected_value) { 'Secret value' }
 
   subject(:service) { described_class.new(variable) }

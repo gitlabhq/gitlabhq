@@ -8,12 +8,16 @@ class LabelLink < ApplicationRecord
 
   belongs_to :target, polymorphic: true, inverse_of: :label_links # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :label
+  belongs_to :namespace
   # rubocop:disable Rails/InverseOf -- needed for unified association
   belongs_to :own_label, foreign_key: :label_id, class_name: 'Label'
   # rubocop:enable Rails/InverseOf
 
-  validates :target, presence: true, unless: :importing?
-  validates :label, presence: true, unless: :importing?
+  validates :target, presence: true, unless: :skip_validate_import?
+  validates :label, presence: true, unless: :skip_validate_import?
+  validates :namespace, presence: true, unless: :skip_validate_import?
+
+  before_validation :ensure_namespace_id
 
   scope :by_targets, ->(targets) { where(target: targets) }
   scope :for_target, ->(target_id, target_type) { where(target_id: target_id, target_type: target_type) }
@@ -30,6 +34,18 @@ class LabelLink < ApplicationRecord
     relation = relation.where(label_id: label_ids) if label_ids
     relation
   end
+
+  private
+
+  def skip_validate_import?
+    return false if Feature.enabled?(:validate_label_link_parent_presence_on_import, :instance)
+
+    importing?
+  end
+
+  def ensure_namespace_id
+    self.namespace_id = Gitlab::Issuable::NamespaceGetter.new(target, allow_nil: true).namespace_id
+  end
 end
 
-LabelLink.prepend_mod_with('LabelLink')
+LabelLink.prepend_mod

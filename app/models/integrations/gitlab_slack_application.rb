@@ -20,6 +20,9 @@ module Integrations
     has_one :slack_integration, foreign_key: :integration_id, inverse_of: :integration
     delegate :bot_access_token, :bot_user_id, to: :slack_integration, allow_nil: true
 
+    scope :by_ids, ->(ids) { where(id: ids) }
+    scope :without_slack_integration, -> { where.missing(:slack_integration) }
+
     include Integrations::Base::SlackNotification
     include SlackMattermostFields
 
@@ -77,6 +80,15 @@ module Integrations
       return [] unless editable?
 
       super
+    end
+
+    def after_build_from_integration(new_integration)
+      return unless slack_integration
+
+      new_integration.slack_integration = slack_integration.dup.tap do |entity|
+        entity.alias = new_integration.parent&.full_path || SlackIntegration::INSTANCE_ALIAS
+        entity.authorized_scope_names = slack_integration.authorized_scope_names
+      end
     end
 
     override :requires_webhook?

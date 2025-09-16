@@ -39,7 +39,7 @@ describe('RunnerTypeBadge', () => {
     createComponent({ props: { count: mockCount } });
 
     expect(findBadge().props('icon')).toBe('container-image');
-    expect(findBadge().props('variant')).toBe('muted');
+    expect(findBadge().props('variant')).toBe('neutral');
   });
 
   it('renders badge and tooltip with formatted count', () => {

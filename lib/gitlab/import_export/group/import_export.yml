@@ -50,6 +50,20 @@ included_attributes:
     - :group_id
     - :description
   iterations: *iteration_definition
+  epic_boards:
+    - :hide_backlog_list
+    - :hide_closed_list
+    - :group_id
+    - :created_at
+    - :updated_at
+    - :name
+    - :display_colors
+  epic_lists:
+    - :created_at
+    - :updated_at
+    - :position
+    - :list_type
+    - :group_id
 
 excluded_attributes:
   group:
@@ -85,6 +99,12 @@ excluded_attributes:
     - :iterations_cadence_id
     - :sequence
   iterations: *iteration_excluded_definition
+  epic_boards:
+    - id
+  epic_lists:
+    - id
+    - epic_board_id
+    - label_id
 
 methods:
   labels:
@@ -128,11 +148,16 @@ ee:
             - :push_event_payload
           - :system_note_metadata
         - :resource_state_events
+      - epic_boards:
+        - epic_lists:
+          - :label
       - boards:
         - :board_assignee
         - :milestone
         - :labels
         - lists:
+          - :iteration
+          - :label
           - milestone:
             - events:
               - :push_event_payload

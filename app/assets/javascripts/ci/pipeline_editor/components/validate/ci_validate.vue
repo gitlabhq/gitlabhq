@@ -2,7 +2,6 @@
 import {
   GlAlert,
   GlButton,
-  GlDisclosureDropdown,
   GlLoadingIcon,
   GlLink,
   GlTooltip,
@@ -20,6 +19,7 @@ import CiLintResults from '../lint/ci_lint_results.vue';
 import getBlobContent from '../../graphql/queries/blob_content.query.graphql';
 import getCurrentBranch from '../../graphql/queries/client/current_branch.query.graphql';
 import ciLintMutation from '../../graphql/mutations/ci_lint.mutation.graphql';
+import BranchSelector from '../shared/branch_selector.vue';
 
 export const i18n = {
   alertDesc: s__(
@@ -35,9 +35,8 @@ export const i18n = {
   errorAlertTitle: s__('PipelineEditor|Pipeline simulation completed with errors'),
   help: __('Help'),
   loading: s__('PipelineEditor|Validating pipeline… It can take up to a minute.'),
-  pipelineSource: s__('PipelineEditor|Pipeline Source'),
-  pipelineSourceDefault: s__('PipelineEditor|Git push event to the default branch'),
-  pipelineSourceTooltip: s__('PipelineEditor|Other pipeline sources are not available yet.'),
+  pipelineSource: s__('PipelineEditor|Pipeline run source'),
+  pipelineSourceHeader: s__('PipelineEditor|Select branch'),
   title: s__('PipelineEditor|Validate pipeline under selected conditions'),
   contentNote: s__(
     'PipelineEditor|Current content in the Edit tab will be used for the simulation.',
@@ -59,7 +58,6 @@ export default {
     CiLintResults,
     GlAlert,
     GlButton,
-    GlDisclosureDropdown,
     GlLoadingIcon,
     GlLink,
     GlSprintf,
@@ -67,6 +65,7 @@ export default {
     GlEmptyState,
     ValidatePipelinePopover,
     HelpIcon,
+    BranchSelector,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -87,14 +86,13 @@ export default {
         return {
           projectPath: this.projectFullPath,
           path: this.ciConfigPath,
-          ref: this.currentBranch,
+          ref: this.selectedBranch || this.currentBranch,
         };
       },
       update(data) {
         return data?.project?.repository?.blobs?.nodes[0]?.rawBlob;
       },
     },
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     currentBranch: {
       query: getCurrentBranch,
       update(data) {
@@ -111,6 +109,8 @@ export default {
       isValid: false,
       jobs: [],
       warnings: [],
+      currentBranch: '',
+      selectedBranch: '',
     };
   },
   computed: {
@@ -164,7 +164,7 @@ export default {
           variables: {
             projectPath: this.projectFullPath,
             content: this.yaml,
-            ref: this.currentBranch,
+            ref: this.selectedBranch || this.currentBranch,
             dryRun: true,
           },
         });
@@ -189,6 +189,9 @@ export default {
         this.cancelSimulation();
       }
     },
+    selectBranch(newBranch) {
+      this.selectedBranch = newBranch;
+    },
   },
   i18n,
   BASE_CLASSES,
@@ -198,33 +201,50 @@ export default {
 
 <template>
   <div>
-    <div class="gl-mt-3 gl-flex gl-justify-between">
+    <gl-alert v-if="canResimulatePipeline" data-testid="content-status" variant="warning">{{
+      $options.i18n.contentChange
+    }}</gl-alert>
+
+    <div class="gl-mt-3 gl-flex gl-flex-wrap gl-items-center gl-gap-3">
       <div>
-        <label id="pipeline-source-dropdown-label">{{ $options.i18n.pipelineSource }}</label>
-        <gl-disclosure-dropdown
-          v-gl-tooltip.hover
-          class="gl-ml-3"
-          :title="$options.i18n.pipelineSourceTooltip"
-          :toggle-text="$options.i18n.pipelineSourceDefault"
-          toggle-aria-labelled-by="pipeline-source-dropdown-label"
-          disabled
-        />
-        <validate-pipeline-popover />
+        <label id="pipeline-source-dropdown-label" class="gl-mb-0">{{
+          $options.i18n.pipelineSource
+        }}</label>
         <help-icon id="validate-pipeline-help" class="gl-ml-1" :aria-label="$options.i18n.help" />
       </div>
-      <div v-if="canResimulatePipeline">
-        <span class="gl-text-subtle" data-testid="content-status">
-          {{ $options.i18n.contentChange }}
-        </span>
+      <div>
+        <branch-selector
+          :dropdown-header="$options.i18n.pipelineSourceHeader"
+          :current-branch-name="currentBranch"
+          @select-branch="selectBranch"
+        />
+        <validate-pipeline-popover />
+      </div>
+      <div ref="simulatePipelineButton">
         <gl-button
           variant="confirm"
-          class="gl-mb-2 gl-ml-2"
-          data-testid="resimulate-pipeline-button"
+          :disabled="isInitialCiContentLoading"
+          :loading="isSimulationLoading"
+          data-testid="simulate-pipeline-button"
           @click="validateYaml"
         >
           {{ $options.i18n.cta }}
         </gl-button>
       </div>
+      <gl-button
+        v-if="ciLintPath"
+        class="md:gl-ml-auto"
+        :href="ciLintPath"
+        data-testid="lint-button"
+      >
+        {{ $options.i18n.lint }}
+      </gl-button>
+      <gl-tooltip
+        v-if="isInitialCiContentLoading"
+        :target="() => $refs.simulatePipelineButton"
+        :title="$options.i18n.ctaDisabledTooltip"
+        data-testid="cta-tooltip"
+      />
     </div>
     <gl-empty-state
       v-if="isInitState"
@@ -242,18 +262,6 @@ export default {
         </p>
       </template>
       <template #actions>
-        <div ref="simulatePipelineButton">
-          <gl-button
-            ref="simulatePipelineButton"
-            variant="confirm"
-            class="gl-mt-3"
-            :disabled="isInitialCiContentLoading"
-            data-testid="simulate-pipeline-button"
-            @click="validateYaml"
-          >
-            {{ $options.i18n.cta }}
-          </gl-button>
-        </div>
         <gl-button
           v-if="ciLintPath"
           class="gl-ml-3 gl-mt-3"
@@ -262,25 +270,15 @@ export default {
         >
           {{ $options.i18n.lint }}
         </gl-button>
-        <gl-tooltip
-          v-if="isInitialCiContentLoading"
-          :target="() => $refs.simulatePipelineButton"
-          :title="$options.i18n.ctaDisabledTooltip"
-          data-testid="cta-tooltip"
-        />
       </template>
     </gl-empty-state>
     <div v-else-if="isSimulationLoading" :class="$options.BASE_CLASSES">
       <gl-loading-icon size="lg" class="gl-m-3" />
       <h1 class="gl-mb-6 gl-text-size-h1">{{ $options.i18n.loading }}</h1>
-      <div>
-        <gl-button class="gl-mt-3" data-testid="cancel-simulation" @click="cancelSimulation">
-          {{ $options.i18n.cancelBtn }}
-        </gl-button>
-        <gl-button class="gl-mt-3" loading data-testid="simulate-pipeline-button">
-          {{ $options.i18n.cta }}
-        </gl-button>
-      </div>
+
+      <gl-button data-testid="cancel-simulation" @click="cancelSimulation">
+        {{ $options.i18n.cancelBtn }}
+      </gl-button>
     </div>
     <div v-else-if="hasSimulationResults" class="gl-mt-5">
       <gl-alert

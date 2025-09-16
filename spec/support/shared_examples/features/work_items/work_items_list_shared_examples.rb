@@ -89,3 +89,36 @@ RSpec.shared_examples 'pagination on the work items list page' do
     expect(page).not_to have_button _('Previous'), disabled: true
   end
 end
+
+RSpec.shared_examples 'parent filter' do
+  it 'filters the child item by parent' do
+    select_tokens 'Parent', '=', parent_item.title, submit: true
+
+    expect(page).to have_selector(issuable_container, count: 1)
+    expect(page).to have_link(child_item.title)
+  end
+
+  it 'filters the child item by not a parent' do
+    select_tokens 'Parent', '!=', parent_item.title, submit: true
+
+    expect(page).to have_selector(issuable_container, count: 2)
+    expect(page).not_to have_link(child_item.title)
+    expect(page).to have_link(work_item_2.title)
+  end
+
+  it 'filters the child items by Any wild card' do
+    select_tokens 'Parent', '=', 'Any', submit: true
+
+    expect(page).to have_selector(issuable_container, count: 1)
+    expect(page).to have_link(child_item.title)
+  end
+
+  it 'filters the child items by None' do
+    select_tokens 'Parent', '=', 'None', submit: true
+
+    expect(page).to have_selector(issuable_container, count: 2)
+    expect(page).to have_link(parent_item.title)
+    expect(page).to have_link(work_item_2.title)
+    expect(page).not_to have_link(child_item.title)
+  end
+end

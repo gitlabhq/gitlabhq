@@ -28,6 +28,7 @@ Gitlab::Database::Partitioning.register_models(
     Ci::JobDefinition,
     Ci::JobDefinitionInstance,
     Ci::JobInput,
+    Ci::JobMessage,
     Ci::Pipeline,
     Ci::PipelineVariable,
     Ci::RunnerManagerBuild,
@@ -42,7 +43,8 @@ Gitlab::Database::Partitioning.register_models(
     Users::ProjectVisit,
     MergeRequest::CommitsMetadata,
     WebHookLog,
-    MergeRequests::GeneratedRefCommit
+    MergeRequests::GeneratedRefCommit,
+    MergeRequests::MergeData
   ])
 
 if Gitlab.ee?
@@ -61,6 +63,20 @@ if Gitlab.ee?
       Vulnerabilities::Archive,
       Vulnerabilities::ArchivedRecord,
       Vulnerabilities::ArchiveExport,
+      Vulnerabilities::Backups::Vulnerability,
+      Vulnerabilities::Backups::Finding,
+      Vulnerabilities::Backups::FindingEvidence,
+      Vulnerabilities::Backups::FindingFlag,
+      Vulnerabilities::Backups::FindingIdentifier,
+      Vulnerabilities::Backups::FindingLink,
+      Vulnerabilities::Backups::FindingRemediation,
+      Vulnerabilities::Backups::FindingSignature,
+      Vulnerabilities::Backups::VulnerabilityExternalIssueLink,
+      Vulnerabilities::Backups::VulnerabilityIssueLink,
+      Vulnerabilities::Backups::VulnerabilityMergeRequestLink,
+      Vulnerabilities::Backups::VulnerabilitySeverityOverride,
+      Vulnerabilities::Backups::VulnerabilityStateTransition,
+      Vulnerabilities::Backups::VulnerabilityUserMention,
       Ai::ActiveContext::Code::EnabledNamespace,
       Ai::ActiveContext::Code::Repository,
       Ai::KnowledgeGraph::EnabledNamespace,
@@ -97,5 +113,19 @@ unless Gitlab.jh?
       }
     ])
 end
+
+# Enable partition management for the backfill table during merge_request_diff_files
+# partitioning. This way new partitions will be created as the trigger syncs new
+# rows across to this table.
+#
+Gitlab::Database::Partitioning.register_tables(
+  [
+    {
+      limit_connection_names: %i[main],
+      table_name: 'merge_request_diff_files_99208b8fac',
+      partitioned_column: :merge_request_diff_id, strategy: :int_range, partition_size: 200_000_000
+    }
+  ]
+)
 
 Gitlab::Database::Partitioning.sync_partitions_ignore_db_error

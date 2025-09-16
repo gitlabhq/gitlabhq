@@ -20,8 +20,10 @@ export default {
 <template>
   <div class="gl-flex gl-flex-col">
     <div class="gl-flex gl-items-center gl-py-3">
-      <div class="gl-flex gl-grow gl-flex-col gl-items-stretch gl-justify-between sm:gl-flex-row">
-        <div class="gl-mb-3 gl-flex gl-min-w-0 gl-grow gl-flex-col sm:gl-mb-0">
+      <div
+        class="gl-flex gl-grow gl-flex-col gl-items-stretch gl-justify-between @sm/panel:gl-flex-row"
+      >
+        <div class="gl-mb-3 gl-flex gl-min-w-0 gl-grow gl-flex-col @sm/panel:gl-mb-0">
           <div
             v-if="
               /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */ $slots[
@@ -38,13 +40,13 @@ export default {
                 'left-secondary-text'
               ]
             "
-            class="gl-flex gl-min-h-6 gl-w-7/10 gl-min-w-0 gl-grow gl-items-center gl-text-subtle md:gl-max-w-7/10"
+            class="gl-flex gl-min-h-6 gl-w-7/10 gl-min-w-0 gl-grow gl-items-center gl-text-subtle @md/panel:gl-max-w-7/10"
           >
             <slot name="left-secondary-text"></slot>
           </div>
         </div>
         <div
-          class="gl-flex gl-shrink-0 gl-flex-col gl-justify-between gl-text-subtle sm:gl-items-end"
+          class="gl-flex gl-shrink-0 gl-flex-col gl-justify-between gl-text-subtle @sm/panel:gl-items-end"
         >
           <div
             v-if="
@@ -52,7 +54,7 @@ export default {
                 'right-primary-text'
               ]
             "
-            class="gl-flex gl-min-h-6 gl-items-center sm:gl-font-bold sm:gl-text-default"
+            class="gl-flex gl-min-h-6 gl-items-center @sm/panel:gl-font-bold @sm/panel:gl-text-default"
           >
             <slot name="right-primary-text"></slot>
           </div>

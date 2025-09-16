@@ -150,17 +150,17 @@ export default {
 
 <template>
   <div class="w-100">
-    <div v-if="isLoading" class="align-items-center gl-mx-2 gl-flex">
+    <div v-if="isLoading" class="gl-mx-2 gl-flex !gl-items-center">
       <gl-loading-icon class="gl-mr-4" />
       {{ $options.i18n.loadingText }}
     </div>
-    <div v-else class="align-items-center w-100 gl-flex">
+    <div v-else class="w-100 gl-flex !gl-items-center">
       <div
-        class="flex-grow-1 justify-space-between gl-flex gl-flex-wrap gl-gap-3"
-        :class="{ 'align-items-center': !finishedAt }"
+        class="justify-space-between gl-flex !gl-grow gl-flex-wrap gl-gap-3"
+        :class="{ '!gl-items-center': !finishedAt }"
       >
         <ci-icon v-if="status" class="gl-mt-1 gl-self-start" :status="status" />
-        <div class="flex-grow-1 gl-flex gl-flex-col">
+        <div class="gl-flex !gl-grow gl-flex-col">
           <span>
             <gl-sprintf :message="$options.i18n.pipelineStatusText">
               <template #status>{{ statusLabel }}</template>
@@ -173,7 +173,7 @@ export default {
               </template>
             </gl-sprintf>
           </span>
-          <span class="align-items-center gl-flex gl-text-sm gl-text-subtle">
+          <span class="gl-flex !gl-items-center gl-text-sm gl-text-subtle">
             <span v-if="includeCommitInfo" data-testid="commit-info">
               <gl-sprintf :message="$options.i18n.pipelineCommitText">
                 <template #status>{{ statusLabel }}</template>

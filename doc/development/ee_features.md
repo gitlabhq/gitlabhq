@@ -79,7 +79,7 @@ a YAML definition in `ee/config/saas_features`.
 Only SaaS features that have a YAML definition file can be used when running the development or testing environments.
 
 ```shell
-❯ bin/saas-feature my_saas_feature
+❯ bin/saas-feature.rb my_saas_feature
 You picked the group 'group::acquisition'
 
 >> URL of the MR introducing the SaaS feature (enter to skip and let Danger provide a suggestion directly in the MR):
@@ -185,7 +185,7 @@ version of the product:
    ```
 
    There are many ways to pass an environment variable to your local GitLab instance.
-   For example, you can create an `env.runit` file in the root of your GDK with the above snippet.
+   For example, you can [create an entry in the `gdk.yml` file](https://gitlab-org.gitlab.io/gitlab-development-kit/configuration/#setting-environment-variables).
 
 1. Enable **Allow use of licensed EE features** to make licensed EE features available to projects
    only if the project namespace's plan includes the feature.
@@ -289,10 +289,11 @@ to something that evaluates as `true`. The same works for running tests
 
 To simulate a CE instance without deleting the license in a GDK:
 
-1. Create an `env.runit` file in the root of your GDK with the line:
+1. Add the following entry in `gdk.yml`:
 
-   ```shell
-   export FOSS_ONLY=1
+   ```yaml
+   env:
+     FOSS_ONLY: "1"
    ```
 
 1. Then restart the GDK:
@@ -301,8 +302,8 @@ To simulate a CE instance without deleting the license in a GDK:
    gdk restart rails && gdk restart webpack
    ```
 
-Remove the line in `env.runit` if you want to revert back to an EE
-installation, and repeat step 2.
+If you want to revert back to an EE
+installation, remove the environment variable from `gdk.yml` and repeat step 2.
 
 #### Run feature specs as CE
 
@@ -834,7 +835,7 @@ module EE
           deleted_rows = prune_orphaned_rows(table_name)
           table_name   = next_table(table_name) if deleted_rows.zero?
 
-          ::BackgroundMigrationWorker.perform_in(RESCHEDULE_DELAY, self.class.name.demodulize, table_name) if table_name
+          ::Database::BatchedBackgroundMigrationWorker.perform_in(RESCHEDULE_DELAY, self.class.name.demodulize, table_name) if table_name
         end
       end
     end

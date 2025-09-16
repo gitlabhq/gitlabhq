@@ -72,7 +72,7 @@ module Authn
         return unless payload
 
         GitlabSchema.parse_gid(payload['sub'], expected_type: subject_type)&.find
-      rescue Gitlab::Graphql::Errors::ArgumentError
+      rescue Gitlab::Graphql::Errors::ArgumentError, ActiveRecord::RecordNotFound
         # The subject doesn't exist anymore
         nil
       end

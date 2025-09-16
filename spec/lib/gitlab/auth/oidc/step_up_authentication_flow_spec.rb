@@ -109,4 +109,41 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthenticationFlow, feature_category: :
       expect { flow.fail! }.to change { flow.failed? }.from(false).to(true)
     end
   end
+
+  describe '#documentation_link' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:provider_name) { 'openid_connect' }
+    let(:scope) { 'admin_mode' }
+    let(:session) { {} }
+
+    let(:omniauth_provider_config) do
+      GitlabSettings::Options.new(
+        name: 'openid_connect',
+        **provider_config
+      )
+    end
+
+    subject(:flow) { described_class.new(session: session, provider: provider_name, scope: scope) }
+
+    before do
+      stub_omniauth_setting(enabled: true, providers: [omniauth_provider_config])
+    end
+
+    # rubocop:disable Layout/LineLength -- Avoid formatting to ensure one-line table syntax
+    where(:provider_config, :provider_name, :scope, :expected_result) do
+      { 'step_up_auth' => { 'admin_mode' => { 'documentation_link' => 'https://example.com/company/internal/auth-help' } } }          | 'openid_connect' | 'admin_mode'   | 'https://example.com/company/internal/auth-help'
+      { 'step_up_auth' => { 'admin_mode' => { 'documentation_link' => 'https://example.com/company/internal/auth-help' } } }          | :openid_connect  | 'admin_mode'   | 'https://example.com/company/internal/auth-help'
+      { 'step_up_auth' => { 'custom_scope' => { 'documentation_link' => 'https://example.com/company/internal/custom-auth-help' } } } | 'openid_connect' | 'custom_scope' | 'https://example.com/company/internal/custom-auth-help'
+      { 'step_up_auth' => { 'admin_mode' => {} } }                                                                                    | 'openid_connect' | 'admin_mode'   | nil
+      {}                                                                                                                              | 'openid_connect' | 'admin_mode'   | nil
+    end
+    # rubocop:enable Layout/LineLength
+
+    with_them do
+      it 'returns the correct documentation link' do
+        expect(flow.documentation_link).to eq(expected_result)
+      end
+    end
+  end
 end

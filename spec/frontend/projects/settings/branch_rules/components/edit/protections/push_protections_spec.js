@@ -30,7 +30,7 @@ describe('Push Protections', () => {
 
   describe('Allow force push checkbox', () => {
     it('renders a checkbox with the correct props', () => {
-      expect(findAllowForcePushCheckbox().vm.$attrs.checked).toBe(propsData.allowForcePush);
+      expect(findAllowForcePushCheckbox().props('checked')).toBe(propsData.allowForcePush);
     });
 
     it('renders help text', () => {

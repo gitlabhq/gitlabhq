@@ -142,7 +142,8 @@ module CascadingProjectSettingAttribute
     NamespaceSetting
       .select(attribute)
       .joins(
-        "join unnest(ARRAY[#{namespace_ancestor_ids_joined}]) with ordinality t(namespace_id, ord) USING (namespace_id)"
+        "join unnest(ARRAY[#{namespace_ancestor_ids_joined}]::bigint[]) with ordinality t(namespace_id, ord)
+         USING (namespace_id)"
       )
       .where("#{attribute} IS NOT NULL")
       .order('t.ord')

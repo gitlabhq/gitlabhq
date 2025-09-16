@@ -59,7 +59,6 @@ describe('WorkItemLinkChildContents', () => {
     isGroup = false,
     getRoutesMock = defaultGetRoutesMock,
     contextualViewEnabled = false,
-    workItemStatusFeatureFlag = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinkChildContents, {
       propsData: {
@@ -71,9 +70,6 @@ describe('WorkItemLinkChildContents', () => {
       },
       provide: {
         isGroup,
-        glFeatures: {
-          workItemStatusFeatureFlag,
-        },
       },
       mocks: {
         $router: {
@@ -92,19 +88,13 @@ describe('WorkItemLinkChildContents', () => {
   });
 
   it.each`
-    status      | childItem             | workItemState | rawTimestamp                   | tooltipContents | workItemStatusFeatureFlagEnabled
-    ${'open'}   | ${workItemTask}       | ${'OPEN'}     | ${workItemTask.createdAt}      | ${'Created'}    | ${true}
-    ${'closed'} | ${closedWorkItemTask} | ${'CLOSED'}   | ${closedWorkItemTask.closedAt} | ${'Closed'}     | ${false}
+    status      | childItem             | workItemState | rawTimestamp                   | tooltipContents
+    ${'open'}   | ${workItemTask}       | ${'OPEN'}     | ${workItemTask.createdAt}      | ${'Created'}
+    ${'closed'} | ${closedWorkItemTask} | ${'CLOSED'}   | ${closedWorkItemTask.closedAt} | ${'Closed'}
   `(
     'renders item status icon and tooltip when item status is `$status`',
-    ({
-      childItem,
-      workItemState,
-      rawTimestamp,
-      tooltipContents,
-      workItemStatusFeatureFlagEnabled,
-    }) => {
-      createComponent({ childItem, workItemStatusFeatureFlag: workItemStatusFeatureFlagEnabled });
+    ({ childItem, workItemState, rawTimestamp, tooltipContents }) => {
+      createComponent({ childItem });
 
       expect(findStatusBadgeComponent().props('workItemState')).toBe(workItemState);
       expect(findStatusTooltipComponent().props('rawTimestamp')).toBe(rawTimestamp);

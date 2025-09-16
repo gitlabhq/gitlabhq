@@ -7,7 +7,7 @@ feature_categories:
 description: Keeps update schedules for namespace_root_storage_statistics
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/29570
 milestone: '12.1'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

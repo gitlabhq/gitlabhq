@@ -9,6 +9,10 @@ RSpec.describe GitlabSchema.types['GroupSort'], feature_category: :groups_and_pr
     expect(described_class.values.keys).to include(
       *%w[
         SIMILARITY
+        CREATED_AT_ASC
+        CREATED_AT_DESC
+        UPDATED_AT_ASC
+        UPDATED_AT_DESC
         NAME_ASC
         NAME_DESC
         PATH_ASC

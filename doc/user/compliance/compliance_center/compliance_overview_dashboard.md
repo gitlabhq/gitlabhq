@@ -46,7 +46,7 @@ Prerequisites:
 To view the compliance overview dashboard:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 1. Select **Overview** to view the compliance dashboard.
 
 ## Compliance framework coverage

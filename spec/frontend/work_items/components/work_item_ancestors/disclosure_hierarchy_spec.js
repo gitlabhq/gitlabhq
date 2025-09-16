@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 
 import { GlDisclosureDropdown, GlTooltip } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import DisclosureHierarchy from '~/work_items/components/work_item_ancestors//disclosure_hierarchy.vue';
 import DisclosureHierarchyItem from '~/work_items/components/work_item_ancestors/disclosure_hierarchy_item.vue';

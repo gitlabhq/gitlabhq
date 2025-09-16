@@ -10,7 +10,7 @@ RSpec.describe GitlabSchema.types['Diff'], feature_category: :code_review_workfl
 
   it 'contains attributes related to diff' do
     expect(described_class).to have_graphql_fields(
-      :a_mode, :b_mode, :deleted_file, :diff, :new_file, :new_path, :old_path, :renamed_file
+      :a_mode, :b_mode, :collapsed, :deleted_file, :diff, :new_file, :new_path, :old_path, :renamed_file, :too_large
     )
   end
 

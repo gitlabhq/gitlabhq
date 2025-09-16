@@ -604,17 +604,18 @@ module.exports = {
     //
     // See https://gitlab.com/gitlab-com/gl-infra/production/-/issues/20271.
     // This should not be needed with Webpack 5.
-    new webpack.NamedChunksPlugin((chunk) => {
-      // Keep named chunks as-is (entries, magic comments)
-      if (chunk.name) return chunk.name;
+    !DEV_SERVER_LIVERELOAD &&
+      new webpack.NamedChunksPlugin((chunk) => {
+        // Keep named chunks as-is (entries, magic comments)
+        if (chunk.name) return chunk.name;
 
-      // Get all module IDs in this chunk, sorted for stability
-      const ids = Array.from(chunk.modulesIterable, (m) => m.id).sort();
+        // Get all module IDs in this chunk, sorted for stability
+        const ids = Array.from(chunk.modulesIterable, (m) => m.id).sort();
 
-      const hash = crypto.createHash('sha256').update(ids.join('_')).digest('hex');
+        const hash = crypto.createHash('sha256').update(ids.join('_')).digest('hex');
 
-      return hash.slice(0, 8);
-    }),
+        return hash.slice(0, 8);
+      }),
     // manifest filename must match config.webpack.manifest_filename
     // webpack-rails only needs assetsByChunkName to function properly
     new StatsWriterPlugin({

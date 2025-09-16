@@ -208,7 +208,7 @@ export default {
 </script>
 
 <template>
-  <tr class="tree-item">
+  <tr class="tree-item" data-event-tracking="click_file_list_on_repository_page">
     <th class="tree-item-file-name gl-relative gl-cursor-default gl-font-normal" scope="row">
       <component
         :is="linkComponent"
@@ -239,7 +239,7 @@ export default {
         />
       </component>
       <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
-      <gl-badge v-if="lfsOid" variant="muted" data-testid="label-lfs">LFS</gl-badge>
+      <gl-badge v-if="lfsOid" variant="neutral" data-testid="label-lfs">LFS</gl-badge>
       <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
       <template v-if="isSubmodule">
         @ <gl-link :href="submoduleTreeUrl" class="commit-sha">{{ shortSha }}</gl-link>
@@ -255,7 +255,7 @@ export default {
         :size="12"
       />
     </th>
-    <td class="tree-commit cursor-default gl-hidden sm:gl-table-cell">
+    <td class="tree-commit cursor-default gl-hidden @sm/panel:gl-table-cell">
       <gl-link
         v-if="commitData"
         v-safe-html:[$options.safeHtmlConfig]="commitData.titleHtml"

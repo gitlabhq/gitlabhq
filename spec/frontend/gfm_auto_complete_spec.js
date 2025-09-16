@@ -12,6 +12,7 @@ import GfmAutoComplete, {
   CONTACTS_ADD_COMMAND,
   CONTACTS_REMOVE_COMMAND,
 } from 'ee_else_ce/gfm_auto_complete';
+import * as quickActionSuggestions from '~/editor/quick_action_suggestions';
 import { initEmojiMock, clearEmojiMock } from 'helpers/emoji';
 import '~/lib/utils/jquery_at_who';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -73,6 +74,7 @@ describe('GfmAutoComplete', () => {
 
   const getAutocompleteDropdownItems = (listSelector = '') => {
     const dropdown = document.getElementById(listSelector);
+    if (!dropdown) return [];
     const items = dropdown.getElementsByTagName('li');
     return [].map.call(items, (item) => item.textContent.trim());
   };
@@ -1470,6 +1472,125 @@ describe('GfmAutoComplete', () => {
           expect(currentAssignees).toHaveBeenCalled();
         });
       });
+    });
+  });
+
+  describe('frequent actions', () => {
+    let autocomplete;
+    let $textarea;
+    let recordSpy;
+
+    beforeEach(() => {
+      setHTMLFixture('<textarea data-supports-quick-actions="true"></textarea>');
+
+      autocomplete = new GfmAutoComplete({
+        commands: `${TEST_HOST}/autocomplete_sources/commands`,
+      });
+      $textarea = $('textarea');
+      autocomplete.setup($textarea, { commands: true });
+
+      recordSpy = jest.spyOn(quickActionSuggestions, 'recordFrequentCommandUsage');
+    });
+
+    it('records frequent action when a dropdown quick action is selected', () => {
+      autocomplete.cachedData['/'] = [{ name: 'alpha', aliases: [], params: [], description: '' }];
+
+      triggerDropdown($textarea, '/alpha');
+
+      const dropdown = document.getElementById('at-view-commands');
+      const liItems = dropdown ? dropdown.getElementsByTagName('li') : [];
+      expect(liItems.length).toBeGreaterThan(0);
+      $(liItems[0]).trigger('click');
+
+      expect(recordSpy).toHaveBeenCalledWith('alpha');
+    });
+
+    it.each`
+      input         | known        | saves              | shouldCall | expectedArg
+      ${'/alpha '}  | ${'known'}   | ${'saves'}         | ${true}    | ${'alpha'}
+      ${'/foobar '} | ${'unknown'} | ${'does not save'} | ${false}   | ${undefined}
+    `(
+      'keyup space after typing $known quick action token ("$input") $saves to frequently used actions list',
+      ({ input, shouldCall, expectedArg }) => {
+        autocomplete.cachedData['/'] = [
+          { name: 'alpha', aliases: [], params: [], description: '' },
+        ];
+
+        $textarea.trigger('focus');
+        $textarea.val(input);
+        const el = $textarea.get(0);
+        el.selectionStart = $textarea.val().length;
+        el.selectionEnd = el.selectionStart;
+        $textarea.trigger($.Event('keyup', { key: ' ', keyCode: 32, which: 32 }));
+
+        if (shouldCall) {
+          expect(recordSpy).toHaveBeenCalledWith(expectedArg);
+        } else {
+          expect(recordSpy).not.toHaveBeenCalled();
+        }
+      },
+    );
+  });
+
+  describe('commands sorting', () => {
+    let autocomplete;
+    let $textarea;
+    let ajaxSpy;
+
+    const mockValue = [
+      { name: 'zebra', aliases: [], params: [], description: '' },
+      { name: 'alpha', aliases: [], params: [], description: '' },
+      { name: 'beta', aliases: [], params: [], description: '' },
+    ];
+
+    beforeEach(() => {
+      ajaxSpy = jest.spyOn(AjaxCache, 'retrieve').mockReturnValue(Promise.resolve(mockValue));
+
+      setHTMLFixture('<textarea data-supports-quick-actions="true"></textarea>');
+
+      autocomplete = new GfmAutoComplete({
+        commands: `${TEST_HOST}/autocomplete_sources/commands`,
+      });
+      $textarea = $('textarea');
+      autocomplete.setup($textarea, { commands: true });
+    });
+
+    const getCommandsItems = () => getAutocompleteDropdownItems('at-view-commands');
+
+    afterEach(() => {
+      autocomplete?.destroy();
+      resetHTMLFixture();
+      ajaxSpy?.mockRestore();
+    });
+
+    it('sorts default suggestions alphabetically when there is no query', async () => {
+      triggerDropdown($textarea, '/');
+      await waitForPromises();
+
+      const items = getCommandsItems();
+      expect(items).toHaveLength(3);
+      expect(items[0]).toContain('/alpha');
+      expect(items[1]).toContain('/beta');
+      expect(items[2]).toContain('/zebra');
+    });
+
+    it('does not re-sort results when a query is present; preserves source order', async () => {
+      // Stub default at.js sorter to identity so we can assert our code preserves order
+      const defaultSorterSpy = jest
+        .spyOn($.fn.atwho.default.callbacks, 'sorter')
+        .mockImplementation((q, items) => items);
+
+      // Type a query so our sorter should not alpha sort; with identity default sorter, order should match source
+      triggerDropdown($textarea, '/a');
+      await waitForPromises();
+
+      const items = getCommandsItems();
+      expect(items).toHaveLength(3);
+      expect(items[0]).toContain('/zebra');
+      expect(items[1]).toContain('/alpha');
+      expect(items[2]).toContain('/beta');
+
+      defaultSorterSpy.mockRestore();
     });
   });
 });

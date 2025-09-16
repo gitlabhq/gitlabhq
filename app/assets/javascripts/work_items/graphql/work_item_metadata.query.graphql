@@ -21,6 +21,16 @@ query workItemMetadata($fullPath: ID!) {
       register
       reportAbuse
       signIn
+      userExportEmail
+      emailsHelpPagePath
+      markdownHelpPath
+      quickActionsHelpPath
+      ... on ProjectNamespaceLinks {
+        newWorkItemEmailAddress
+      }
+    }
+    userPermissions {
+      createWorkItem
     }
   }
 }

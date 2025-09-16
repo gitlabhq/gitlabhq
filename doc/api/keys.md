@@ -17,17 +17,51 @@ deploy key fingerprints also retrieve information about the projects using that 
 
 If you use a SHA256 fingerprint in an API call, you should URL-encode the fingerprint.
 
-## Get SSH key with user by ID of an SSH key
+## Get SSH key with user by ID
 
-Get SSH key with user by ID of an SSH key. Only available to administrators.
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can get an SSH key and information about the user who owns the key.
 
 ```plaintext
 GET /keys/:id
 ```
 
+Supported attributes:
+
 | Attribute | Type    | Required | Description           |
-|:----------|:--------|:---------|:----------------------|
-| `id`      | integer | yes      | The ID of an SSH key. |
+|-----------|---------|----------|-----------------------|
+| `id`      | integer | Yes      | ID of an SSH key. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
+
+| Attribute           | Type    | Description |
+|---------------------|---------|-------------|
+| `created_at`        | string  | Creation date and time of the SSH key in ISO 8601 format. |
+| `expires_at`        | string  | Expiration date and time of the SSH key in ISO 8601 format. |
+| `id`                | integer | ID of the SSH key. |
+| `key`               | string  | SSH key content. |
+| `last_used_at`      | string  | Last usage date and time of the SSH key in ISO 8601 format. |
+| `title`             | string  | Title of the SSH key. |
+| `usage_type`        | string  | Usage type of the SSH key (for example, `auth` or `auth_and_signing`). |
+| `user`              | object  | User associated with the SSH key. |
+| `user.avatar_url`   | string  | URL of the user's avatar. |
+| `user.bio`          | string  | Biography of the user. |
+| `user.created_at`   | string  | Creation date and time of the user account in ISO 8601 format. |
+| `user.id`           | integer | ID of the user. |
+| `user.linkedin`     | string  | LinkedIn profile URL of the user. |
+| `user.location`     | string  | Location of the user. |
+| `user.name`         | string  | Name of the user. |
+| `user.organization` | string  | Organization of the user. |
+| `user.public_email` | string  | Public email address of the user. |
+| `user.state`        | string  | State of the user. |
+| `user.twitter`      | string  | Twitter profile URL of the user. |
+| `user.username`     | string  | Username of the user. |
+| `user.web_url`      | string  | URL of the user's profile. |
+| `user.website_url`  | string  | Website URL of the user. |
 
 Example request:
 
@@ -35,6 +69,8 @@ Example request:
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/keys/1"
 ```
+
+Example response:
 
 ```json
 {
@@ -78,17 +114,65 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## Get user by fingerprint of SSH key
+## Get user by SSH key fingerprint
 
-You can search for a user that owns a specific SSH key. Note only administrators can lookup SSH key with the fingerprint of an SSH key.
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can search for a user that owns a specific SSH key.
 
 ```plaintext
 GET /keys
 ```
 
+Supported attributes:
+
 | Attribute     | Type   | Required | Description                    |
-|:--------------|:-------|:---------|:-------------------------------|
-| `fingerprint` | string | yes      | The fingerprint of an SSH key. |
+|---------------|--------|----------|--------------------------------|
+| `fingerprint` | string | Yes      | Fingerprint of an SSH key. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
+
+| Attribute                 | Type    | Description |
+|---------------------------|---------|-------------|
+| `created_at`              | string  | Creation date and time of the SSH key in ISO 8601 format. |
+| `expires_at`              | string  | Expiration date and time of the SSH key in ISO 8601 format. |
+| `id`                      | integer | ID of the SSH key. |
+| `key`                     | string  | SSH key content. |
+| `last_used_at`            | string  | Last usage date and time of the SSH key in ISO 8601 format. |
+| `title`                   | string  | Title of the SSH key. |
+| `usage_type`              | string  | Usage type of the SSH key (for example, `auth` or `auth_and_signing`). |
+| `user`                    | object  | User associated with the SSH key. |
+| `user.avatar_url`         | string  | URL of the user's avatar. |
+| `user.bio`                | string  | Biography of the user. |
+| `user.can_create_group`   | boolean | If `true`, the user can create groups. |
+| `user.can_create_project` | boolean | If `true`, the user can create projects. |
+| `user.color_scheme_id`    | integer | Color scheme ID of the user. |
+| `user.confirmed_at`       | string  | Confirmation date and time of the user in ISO 8601 format. |
+| `user.created_at`         | string  | Creation date and time of the user account in ISO 8601 format. |
+| `user.current_sign_in_at` | string  | Current sign-in date and time of the user in ISO 8601 format. |
+| `user.email`              | string  | Email address of the user. |
+| `user.external`           | boolean | If `true`, the user is external. |
+| `user.id`                 | integer | ID of the user. |
+| `user.identities`         | array   | Identities associated with the user. |
+| `user.last_activity_on`   | string  | Last activity date of the user. |
+| `user.last_sign_in_at`    | string  | Last sign-in date and time of the user in ISO 8601 format. |
+| `user.linkedin`           | string  | LinkedIn profile URL of the user. |
+| `user.location`           | string  | Location of the user. |
+| `user.name`               | string  | Name of the user. |
+| `user.organization`       | string  | Organization of the user. |
+| `user.private_profile`    | boolean | If `true`, the user's profile is private. |
+| `user.projects_limit`     | integer | Project limit of the user. |
+| `user.public_email`       | string  | Public email address of the user. |
+| `user.state`              | string  | State of the user account. |
+| `user.theme_id`           | integer | Theme ID of the user. |
+| `user.twitter`            | string  | Twitter profile URL of the user. |
+| `user.two_factor_enabled` | boolean | If `true`, two-factor authentication is enabled for the user. |
+| `user.username`           | string  | Username of the user. |
+| `user.web_url`            | string  | URL of the user's profile. |
+| `user.website_url`        | string  | Website URL of the user. |
 
 Example request:
 
@@ -131,8 +215,7 @@ Example response:
     "color_scheme_id": 1,
     "projects_limit": 100000,
     "current_sign_in_at": "2019-11-19T14:42:18.078Z",
-    "identities": [
-    ],
+    "identities": [],
     "can_create_group": true,
     "can_create_project": true,
     "two_factor_enabled": false,
@@ -146,22 +229,84 @@ Example response:
 
 ## Get user by deploy key fingerprint
 
-Deploy keys are bound to the creating user. If you query with a deploy key
-fingerprint, you get additional information about the projects using that key.
+Deploy keys are bound to the creating user. When you query with a deploy key fingerprint, you get additional information about the projects using that key.
 
-Example request with an MD5 fingerprint:
+```plaintext
+GET /keys
+```
+
+Supported attributes:
+
+| Attribute     | Type   | Required | Description                        |
+|---------------|--------|----------|------------------------------------|
+| `fingerprint` | string | Yes      | Fingerprint of a deploy key.   |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the
+following response attributes:
+
+| Attribute                                 | Type    | Description |
+|-------------------------------------------|---------|-------------|
+| `created_at`                              | string  | Creation date and time of the deploy key in ISO 8601 format. |
+| `deploy_keys_projects`                    | array   | Deploy key projects information. |
+| `deploy_keys_projects[].can_push`         | boolean | If `true`, the deploy key can push to the project. |
+| `deploy_keys_projects[].created_at`       | string  | Creation date and time in ISO 8601 format. |
+| `deploy_keys_projects[].deploy_key_id`    | integer | ID of the deploy key. |
+| `deploy_keys_projects[].id`               | integer | ID of the deploy key project relationship. |
+| `deploy_keys_projects[].project_id`       | integer | ID of the project. |
+| `deploy_keys_projects[].updated_at`       | string  | Last update date and time in ISO 8601 format. |
+| `expires_at`                              | string  | Expiration date and time of the deploy key in ISO 8601 format. |
+| `id`                                      | integer | ID of the deploy key. |
+| `key`                                     | string  | Deploy key content. |
+| `last_used_at`                            | string  | Last usage date and time of the deploy key in ISO 8601 format. |
+| `title`                                   | string  | Title of the deploy key. |
+| `usage_type`                              | string  | Usage type of the deploy key (for example, `auth` or `auth_and_signing`). |
+| `user`                                    | object  | User associated with the deploy key. |
+| `user.avatar_url`                         | string  | URL of the user's avatar. |
+| `user.bio`                                | string  | Biography of the user. |
+| `user.can_create_group`                   | boolean | If `true`, the user can create groups. |
+| `user.can_create_project`                 | boolean | If `true`, the user can create projects. |
+| `user.color_scheme_id`                    | integer | Color scheme ID of the user. |
+| `user.confirmed_at`                       | string  | Confirmation date and time of the user in ISO 8601 format. |
+| `user.created_at`                         | string  | Creation date and time of the user account in ISO 8601 format. |
+| `user.current_sign_in_at`                 | string  | Current sign-in date and time of the user in ISO 8601 format. |
+| `user.email`                              | string  | Email address of the user. |
+| `user.external`                           | boolean | If `true`, the user is external. |
+| `user.extra_shared_runners_minutes_limit` | integer | Extra shared runners minutes limit of the user. |
+| `user.id`                                 | integer | ID of the user. |
+| `user.identities`                         | array   | Identities associated with the user. |
+| `user.last_activity_on`                   | string  | Last activity date of the user. |
+| `user.last_sign_in_at`                    | string  | Last sign-in date and time of the user in ISO 8601 format. |
+| `user.linkedin`                           | string  | LinkedIn profile URL of the user. |
+| `user.location`                           | string  | Location of the user. |
+| `user.name`                               | string  | Name of the user. |
+| `user.organization`                       | string  | Organization of the user. |
+| `user.private_profile`                    | boolean | If `true`, the user's profile is private. |
+| `user.projects_limit`                     | integer | Project limit of the user. |
+| `user.public_email`                       | string  | Public email address of the user. |
+| `user.shared_runners_minutes_limit`       | integer | Shared runners minutes limit of the user. |
+| `user.state`                              | string  | State of the user account. |
+| `user.theme_id`                           | integer | Theme ID of the user. |
+| `user.twitter`                            | string  | Twitter profile URL of the user. |
+| `user.two_factor_enabled`                 | boolean | If `true`, two-factor authentication is enabled for the user. |
+| `user.username`                           | string  | Username of the user. |
+| `user.web_url`                            | string  | URL of the user's profile. |
+| `user.website_url`                        | string  | Website URL of the user. |
+
+Example request with MD5 fingerprint:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/keys?fingerprint=ba:81:59:68:d7:6c:cd:02:02:bf:6a:9b:55:4e:af:d1"
 ```
 
-In this SHA256 example, `/` is represented by `%2F` and `:` is represented by`%3A`:
+Example request with SHA256 fingerprint (URL-encoded):
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/keys?fingerprint=SHA256%3AnUhzNyftwADy8AH3wFY31tAKs7HufskYTte2aXo%2FlCg"
 ```
+
+In the SHA256 example, `/` is represented by `%2F` and `:` is represented by `%3A`.
 
 Example response:
 
@@ -197,8 +342,7 @@ Example response:
     "color_scheme_id": 1,
     "projects_limit": 100000,
     "current_sign_in_at": "2019-11-19T14:42:18.078Z",
-    "identities": [
-    ],
+    "identities": [],
     "can_create_group": true,
     "can_create_project": true,
     "two_factor_enabled": false,

@@ -15,10 +15,28 @@ RSpec.describe Gitlab::Ci::Build::Context::Global, feature_category: :pipeline_c
 
     it { is_expected.not_to have_key('CI_JOB_NAME') }
 
-    context 'with passed yaml variables' do
+    shared_examples 'with passed yaml variables' do
       let(:yaml_variables) { [{ key: 'SUPPORTED', value: 'parsed', public: true }] }
 
       it { is_expected.to include('SUPPORTED' => 'parsed') }
+    end
+
+    it_behaves_like 'with passed yaml variables'
+
+    context 'when FF `stop_writing_builds_metadata` is disabled' do
+      before do
+        stub_feature_flags(stop_writing_builds_metadata: false)
+      end
+
+      it_behaves_like 'with passed yaml variables'
+
+      context 'when FF `read_from_new_ci_destinations` is disabled' do
+        before do
+          stub_feature_flags(read_from_new_ci_destinations: false)
+        end
+
+        it_behaves_like 'with passed yaml variables'
+      end
     end
   end
 

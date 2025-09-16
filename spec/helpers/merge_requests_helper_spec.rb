@@ -322,6 +322,8 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
     it 'returns the correct data' do
       expected_data = {
         autocomplete_award_emojis_path: autocomplete_award_emojis_path,
+        merge_request_target_branches_path: autocomplete_merge_request_target_branches_path,
+        merge_request_source_branches_path: autocomplete_merge_request_source_branches_path,
         full_path: project.full_path,
         is_public_visibility_restricted: 'false',
         is_signed_in: 'true',
@@ -340,6 +342,22 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       }
 
       expect(subject).to include(expected_data)
+    end
+
+    context 'with relative_url_root configured' do
+      let(:relative_url_root) { '/relative' }
+
+      before do
+        stub_config_setting(relative_url_root: relative_url_root)
+        allow(Rails.application.routes).to receive(:default_url_options).and_return(script_name: relative_url_root)
+      end
+
+      it 'returns relative paths' do
+        expect(subject[:merge_request_target_branches_path])
+          .to eq('/relative/-/autocomplete/merge_request_target_branches')
+        expect(subject[:merge_request_source_branches_path])
+          .to eq('/relative/-/autocomplete/merge_request_source_branches')
+      end
     end
   end
 
@@ -457,22 +475,28 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
     end
   end
 
-  describe '#merge_request_dashboard_role_based_data' do
-    subject(:data) { merge_request_dashboard_role_based_data }
+  describe '#merge_request_dashboard_show_drafts?' do
+    using RSpec::Parameterized::TableSyntax
 
-    before do
-      allow(helper).to receive(:current_user).and_return(current_user)
+    subject { helper.merge_request_dashboard_show_drafts? }
+
+    where(
+      :flag_enabled, :show_drafts, :expected
+    ) do
+      false  | false  | true
+      false  | true   | true
+      true   | false  | false
+      true   | true   | true
     end
 
-    it do
-      expect(data.dig(:tabs, 0, :lists, 0, 2, :variables)).to include(
-        or: {
-          reviewerWildcard: "NONE",
-          onlyReviewerUsername: "GitLabDuo",
-          reviewStates: %w[REVIEWED REQUESTED_CHANGES]
-        },
-        perPage: 10
-      )
+    with_them do
+      before do
+        stub_feature_flags(mr_dashboard_drafts_toggle: flag_enabled)
+        allow(helper).to receive(:current_user).and_return(current_user)
+        allow(current_user).to receive(:merge_request_dashboard_show_drafts).and_return(show_drafts)
+      end
+
+      it { is_expected.to eq(expected) }
     end
   end
 end

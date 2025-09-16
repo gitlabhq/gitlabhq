@@ -25,12 +25,15 @@ class Projects::TagsController < Projects::ApplicationController
       @tags = TagsFinder.new(@repository, tags_params).execute
 
       @tags = Kaminari.paginate_array(@tags).page(tags_params[:page])
+
+      # Instantiate signed tags so signatures can be batch loaded
+      @tags.each(&:signed_tag)
+
       tag_names = @tags.map(&:name)
       @tags_pipelines = @project.ci_pipelines.latest_successful_for_refs(tag_names)
 
       @releases = ReleasesFinder.new(project, current_user, tag: tag_names).execute
       @tag_pipeline_statuses = Ci::CommitStatusesFinder.new(@project, @repository, current_user, @tags).execute
-
     rescue Gitlab::Git::CommandError => e
       @tags = []
       @releases = []
@@ -95,7 +98,13 @@ class Projects::TagsController < Projects::ApplicationController
     flash_type = result[:status] == :error ? :alert : :notice
     flash[flash_type] = result[:message]
 
-    redirect_to project_tags_path(@project), status: :see_other
+    # When deleting from an individual tag's show page, redirect to index to avoid 404
+    # otherwise, redirect to pre-sorted list or the default tags list
+    if request.referer&.include?(project_tag_path(@project, params[:id]))
+      redirect_to project_tags_path(@project), status: :see_other
+    else
+      redirect_back_or_default(default: project_tags_path(@project), options: { status: :see_other })
+    end
   end
 
   private

@@ -32,10 +32,11 @@ describe("What's new single feature", () => {
   const findTruncatedDescription = () => wrapper.findComponent(GlTruncate);
   const findDrawerToggle = () => wrapper.find('[data-testid="whats-new-article-toggle"]');
   const findDrawerCloseButton = () => wrapper.find('[data-testid="whats-new-article-close"]');
+  const findUnreadArticleIcon = () => wrapper.find('[data-testid="unread-article-icon"]');
 
-  const createWrapper = ({ feature } = {}) => {
+  const createWrapper = ({ feature, showUnread = false } = {}) => {
     wrapper = shallowMount(Feature, {
-      propsData: { feature },
+      propsData: { feature, showUnread },
       stubs: { GlDrawer, GlButton },
     });
   };
@@ -148,6 +149,36 @@ describe("What's new single feature", () => {
     expect(findDrawerToggle().text()).toContain('Compliance pipeline configurations');
     expect(findTruncatedDescription().exists()).toBe(true);
     expect(findImageLink().exists()).toBe(false);
+  });
+
+  describe('with showUnread', () => {
+    it('does not render the unread icon when showUnread is false', () => {
+      createWrapper({ feature: exampleFeature });
+
+      expect(findUnreadArticleIcon().exists()).toBe(false);
+    });
+
+    it('does not emit mark-article-as-read event when showUnread is false', () => {
+      createWrapper({ feature: exampleFeature });
+
+      findDrawerToggle().trigger('click');
+
+      expect(wrapper.emitted('mark-article-as-read')).toBeUndefined();
+    });
+
+    it('renders the unread icon when showUnread is true', () => {
+      createWrapper({ feature: exampleFeature, showUnread: true });
+
+      expect(findUnreadArticleIcon().exists()).toBe(true);
+    });
+
+    it('emits mark-article-as-read event when the drawer toggle is clicked', () => {
+      createWrapper({ feature: exampleFeature, showUnread: true });
+
+      findDrawerToggle().trigger('click');
+
+      expect(wrapper.emitted('mark-article-as-read')).toHaveLength(1);
+    });
   });
 
   it('closes the drawer when the back button in the header is clicked', async () => {

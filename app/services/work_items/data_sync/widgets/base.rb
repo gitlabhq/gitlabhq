@@ -19,6 +19,10 @@ module WorkItems
           @params = params
         end
 
+        def raise_error!(message)
+          raise ::WorkItems::DataSync::Error, message
+        end
+
         # IMPORTANT: This is a callback that is called by `BaseCleanupDataService` from `DataSync::MoveService` after
         # the work item is moved to the target namespace to delete the original work item data. That is because we have
         # to implement `MoveService` as `copy` to destination & `delete` from source.

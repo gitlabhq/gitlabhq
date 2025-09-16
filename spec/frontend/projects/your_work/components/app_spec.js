@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
+import { GlKeysetPagination } from '@gitlab/ui';
 import contributedProjectsQueryResponse from 'test_fixtures/graphql/projects/your_work/contributed_projects.query.graphql.json';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import YourWorkProjectsApp from '~/projects/your_work/components/app.vue';
@@ -14,7 +15,6 @@ import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
-  PAGINATION_TYPE_KEYSET,
 } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
@@ -107,7 +107,6 @@ describe('YourWorkProjectsApp', () => {
       tabCountsQuery: projectCountsQuery,
       tabCountsQueryErrorMessage: 'An error occurred loading the project counts.',
       shouldUpdateActiveTabCountFromTabQuery: true,
-      paginationType: PAGINATION_TYPE_KEYSET,
       userPreferencesSortKey: 'projectsSort',
     });
   });
@@ -136,5 +135,37 @@ describe('YourWorkProjectsApp', () => {
     expect(
       wrapper.findByRole('link', { name: expectedProject.nameWithNamespace }).attributes('href'),
     ).toBe(`/gitlab/${expectedProject.fullPath}`);
+  });
+
+  it('uses keyset pagination', async () => {
+    await createComponent({
+      mountFn: mountExtended,
+      handlers: [
+        [
+          userProjectsQuery,
+          jest.fn().mockResolvedValue({
+            data: {
+              currentUser: {
+                ...contributedProjectsQueryResponse.data.currentUser,
+                contributedProjects: {
+                  ...contributedProjectsQueryResponse.data.currentUser.contributedProjects,
+                  nodes:
+                    contributedProjectsQueryResponse.data.currentUser.contributedProjects.nodes,
+                  pageInfo: {
+                    ...contributedProjectsQueryResponse.data.currentUser.contributedProjects
+                      .pageInfo,
+                    hasNextPage: true,
+                  },
+                },
+              },
+            },
+          }),
+        ],
+      ],
+    });
+
+    await waitForPromises();
+
+    expect(wrapper.findComponent(GlKeysetPagination).exists()).toBe(true);
   });
 });

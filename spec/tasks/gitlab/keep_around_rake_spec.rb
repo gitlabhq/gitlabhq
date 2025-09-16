@@ -53,12 +53,13 @@ RSpec.describe 'keep-around tasks', :silence_stdout, feature_category: :source_c
       file.unlink
     end
 
-    shared_examples 'orphans found' do |keep_around_count:, orphan_count:|
+    shared_examples 'orphans found' do |keep_around_count:, orphan_count:, expected_sources: []|
       it 'creates a report' do
         run_rake_task('gitlab:keep_around:orphaned')
 
         csv = CSV.parse(file, headers: true)
         keep_counts = {}
+        sources = []
 
         csv.each do |row|
           case row['operation']
@@ -66,11 +67,13 @@ RSpec.describe 'keep-around tasks', :silence_stdout, feature_category: :source_c
             keep_counts[row['commit_id']] = 0
           when 'usage'
             keep_counts[row['commit_id']] += 1 if keep_counts.has_key?(row['commit_id'])
+            sources << row['source']
           end
         end
 
         expect(keep_counts.size).to eq(keep_around_count)
         expect(keep_counts.values.count { |keep_count| keep_count == 0 }).to eq(orphan_count)
+        expect(sources.uniq).to match_array(expected_sources)
       end
     end
 
@@ -120,7 +123,8 @@ RSpec.describe 'keep-around tasks', :silence_stdout, feature_category: :source_c
 
       it_behaves_like 'orphans found',
         keep_around_count: 3,
-        orphan_count: 2
+        orphan_count: 2,
+        expected_sources: [::Ci::Pipeline.name]
     end
 
     context "for merge request keep-arounds" do
@@ -133,7 +137,8 @@ RSpec.describe 'keep-around tasks', :silence_stdout, feature_category: :source_c
 
       it_behaves_like 'orphans found',
         keep_around_count: 3,
-        orphan_count: 2
+        orphan_count: 2,
+        expected_sources: [::MergeRequest.name]
     end
 
     context "for fork merge request keep-arounds" do
@@ -154,7 +159,8 @@ RSpec.describe 'keep-around tasks', :silence_stdout, feature_category: :source_c
 
       it_behaves_like 'orphans found',
         keep_around_count: 3,
-        orphan_count: 2
+        orphan_count: 2,
+        expected_sources: [::MergeRequestDiff.name]
     end
 
     context "for fork merge request diff keep-arounds" do
@@ -162,7 +168,8 @@ RSpec.describe 'keep-around tasks', :silence_stdout, feature_category: :source_c
 
       it_behaves_like 'orphans found',
         keep_around_count: 3,
-        orphan_count: 2
+        orphan_count: 2,
+        expected_sources: [::MergeRequestDiff.name]
     end
 
     context "for diff note keep-arounds" do
@@ -172,7 +179,8 @@ RSpec.describe 'keep-around tasks', :silence_stdout, feature_category: :source_c
 
       it_behaves_like 'orphans found',
         keep_around_count: 3,
-        orphan_count: 2
+        orphan_count: 2,
+        expected_sources: [::DiffNote.name, ::MergeRequestDiff.name, ::Note.name]
     end
 
     context "for note keep-arounds" do
@@ -180,7 +188,8 @@ RSpec.describe 'keep-around tasks', :silence_stdout, feature_category: :source_c
 
       it_behaves_like 'orphans found',
         keep_around_count: 3,
-        orphan_count: 2
+        orphan_count: 2,
+        expected_sources: [::Note.name]
     end
   end
 end

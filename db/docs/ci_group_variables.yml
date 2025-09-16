@@ -3,7 +3,7 @@ table_name: ci_group_variables
 classes:
 - Ci::GroupVariable
 feature_categories:
-- ci_variables
+- pipeline_composition
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/5b0954759cc24bdba97be89bb117c5440174f859
 milestone: '9.4'

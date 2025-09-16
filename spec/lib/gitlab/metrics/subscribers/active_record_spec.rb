@@ -420,6 +420,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
           before do
             allow(Gitlab::Database::LoadBalancing).to receive(:db_role_for_connection).and_return(:replica)
             allow(connection).to receive_message_chain(:pool, :db_config, :name).and_return(db_config_name)
+            allow(connection).to receive(:pool).and_call_original
           end
 
           it 'queries connection db role' do

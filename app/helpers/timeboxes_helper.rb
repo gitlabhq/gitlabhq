@@ -255,17 +255,6 @@ module TimeboxesHelper
     group_milestone_path(milestone.group, milestone.iid, milestone: params)
   end
 
-  def group_or_project_milestone_path(milestone)
-    params =
-      if milestone.group_milestone?
-        { milestone: { title: milestone.title } }
-      else
-        { title: milestone.title }
-      end
-
-    milestone_path(milestone.milestone, params)
-  end
-
   def edit_milestone_path(milestone)
     if milestone.group_milestone?
       edit_group_milestone_path(milestone.group, milestone)

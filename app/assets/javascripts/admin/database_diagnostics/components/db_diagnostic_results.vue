@@ -2,10 +2,11 @@
 import { GlCard, GlSprintf } from '@gitlab/ui';
 import DbCollationMismatches from './db_collation_mismatches.vue';
 import DbCorruptedIndexes from './db_corrupted_indexes.vue';
+import DbSkippedIndexes from './db_skipped_indexes.vue';
 
 export default {
   name: 'DbDiagnosticResults',
-  components: { GlCard, GlSprintf, DbCollationMismatches, DbCorruptedIndexes },
+  components: { GlCard, GlSprintf, DbCollationMismatches, DbCorruptedIndexes, DbSkippedIndexes },
   props: {
     dbName: {
       type: String,
@@ -34,6 +35,7 @@ export default {
 
       <db-collation-mismatches :collation-mismatches="dbDiagnosticResult.collation_mismatches" />
       <db-corrupted-indexes :corrupted-indexes="dbDiagnosticResult.corrupted_indexes" />
+      <db-skipped-indexes :skipped-indexes="dbDiagnosticResult.skipped_indexes" />
     </gl-card>
   </section>
 </template>

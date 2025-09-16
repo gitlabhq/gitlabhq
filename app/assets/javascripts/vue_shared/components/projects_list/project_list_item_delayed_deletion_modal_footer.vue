@@ -22,7 +22,7 @@ export default {
   },
   computed: {
     showRestoreMessage() {
-      return !this.project.markedForDeletionOn;
+      return !this.project.markedForDeletion;
     },
   },
   RESTORE_HELP_PATH: helpPagePath('user/project/working_with_projects', {

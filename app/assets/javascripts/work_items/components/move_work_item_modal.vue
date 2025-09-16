@@ -5,7 +5,7 @@ import {
   GlTooltipDirective as GlTooltip,
   GlAlert,
 } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { findHierarchyWidget } from '~/work_items/utils';
@@ -124,6 +124,9 @@ export default {
       return this.projects?.find((project) => project?.id === this.selectedProjectId)
         ?.nameWithNamespace;
     },
+    toggleText() {
+      return this.selectedProjectNamespace || s__('WorkItem|Select project');
+    },
     actionPrimary() {
       return {
         text: __('Move'),
@@ -206,6 +209,7 @@ export default {
 <template>
   <gl-modal
     modal-id="move-work-item-modal"
+    modal-class="gl-@container"
     :visible="isModalVisible"
     size="sm"
     :title="s__('WorkItem|Move')"
@@ -234,6 +238,7 @@ export default {
       fluid-width
       searchable
       :searching="isLoadingProjects"
+      :toggle-text="toggleText"
       :no-results-text="noResultsText"
       :disabled="moveInProgress"
       @shown="onDropdownShown"

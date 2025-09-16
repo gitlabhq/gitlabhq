@@ -5,7 +5,7 @@
 
 - git_access_url = wiki_path(@wiki, action: :git_access)
 
-.wiki-page-header.top-area.gl-flex-col.lg:gl-flex-row
+.wiki-page-header.top-area.gl-flex-col{ class: '@lg/panel:gl-flex-row' }
   .gl-mt-5.gl-mb-3
     .gl-flex.gl-justify-between
       %h2.gl-mt-0.gl-mb-5{ data: { testid: 'page-heading' } }= @page ? @page.human_title : _('Failed to retrieve page')

@@ -1,13 +1,14 @@
 <script>
-import { GlLink, GlPopover } from '@gitlab/ui';
+import { GlLink, GlPopover, GlTooltipDirective } from '@gitlab/ui';
 import PolicyApprovalSettingsIcon from 'ee_component/vue_merge_request_widget/components/approvals/policy_approval_settings_icon.vue';
 import { toNounSeriesText } from '~/lib/utils/grammar';
-import { n__, sprintf } from '~/locale';
+import { n__, s__, sprintf } from '~/locale';
 import {
   APPROVED_BY_YOU_AND_OTHERS,
   APPROVED_BY_YOU,
   APPROVED_BY_OTHERS,
 } from '~/vue_merge_request_widget/components/approvals/messages';
+import HelpIcon from '~/vue_shared/components/help_icon/help_icon.vue';
 import UserAvatarList from '~/vue_shared/components/user_avatar/user_avatar_list.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { getApprovalRuleNamesLeft } from 'ee_else_ce/vue_merge_request_widget/mappers';
@@ -16,10 +17,18 @@ export default {
   components: {
     GlLink,
     GlPopover,
+    HelpIcon,
     UserAvatarList,
     PolicyApprovalSettingsIcon,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
+    optional: {
+      type: Boolean,
+      required: true,
+    },
     multipleApprovalRulesAvailable: {
       type: Boolean,
       required: false,
@@ -33,6 +42,15 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    canApprove: {
+      type: Boolean,
+      required: true,
+    },
+    helpPath: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
@@ -57,6 +75,8 @@ export default {
       );
     },
     approvalLeftMessage() {
+      if (this.optional) return s__('mrWidget|Approval is optional');
+
       if (this.rulesLeft.length) {
         return sprintf(
           n__(
@@ -146,7 +166,21 @@ export default {
     class="gl-flex gl-flex-wrap gl-items-center gl-gap-2"
     data-testid="approvals-summary-content"
   >
-    <span v-if="approvalLeftMessage" class="gl-font-bold">{{ approvalLeftMessage }}</span>
+    <span
+      v-if="approvalLeftMessage"
+      :class="{ 'gl-font-bold': !optional, 'gl-text-subtle': optional }"
+      >{{ approvalLeftMessage }}</span
+    >
+    <gl-link
+      v-if="optional && canApprove && helpPath"
+      v-gl-tooltip
+      :href="helpPath"
+      :title="__('About this feature')"
+      target="_blank"
+      class="gl-flex gl-items-center gl-justify-center"
+    >
+      <help-icon class="gl-ml-3" />
+    </gl-link>
     <template v-if="hasApprovers">
       <span v-if="approvalLeftMessage">{{ message }}</span>
       <span v-else class="gl-font-bold">{{ message }}</span>

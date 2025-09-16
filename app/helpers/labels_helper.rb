@@ -106,10 +106,6 @@ module LabelsHelper
     end
   end
 
-  def text_color_for_bg(bg_color)
-    ::Gitlab::Color.of(bg_color).contrast
-  end
-
   def labels_filter_path_with_defaults(only_group_labels: false, include_ancestor_groups: true, include_descendant_groups: false)
     options = {}
     options[:include_ancestor_groups] = include_ancestor_groups if include_ancestor_groups
@@ -162,17 +158,6 @@ module LabelsHelper
       _('Create project label')
     else
       _('Create new label')
-    end
-  end
-
-  def manage_labels_title(subject)
-    case subject
-    when Group
-      _('Manage group labels')
-    when Project
-      _('Manage project labels')
-    else
-      _('Manage labels')
     end
   end
 

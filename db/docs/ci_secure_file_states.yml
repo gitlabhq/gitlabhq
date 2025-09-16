@@ -8,5 +8,4 @@ description: Stores verification state for Geo replicated Project-level Secure F
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90510
 milestone: '15.2'
 gitlab_schema: gitlab_ci_cell_local
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/550699
 table_size: small

@@ -22,6 +22,6 @@ export default {
 <template>
   <gl-badge :variant="variant" class="gl-ml-2">
     {{ draftsCount }}
-    <span class="sr-only"> {{ n__('draft', 'drafts', draftsCount) }} </span>
+    <span class="gl-sr-only"> {{ n__('draft', 'drafts', draftsCount) }} </span>
   </gl-badge>
 </template>

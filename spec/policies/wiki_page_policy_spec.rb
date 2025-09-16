@@ -11,10 +11,11 @@ RSpec.describe WikiPagePolicy, feature_category: :wiki do
   let(:group) { build(:group, :public) }
   let(:project) { build(:project, :wiki_repo, project_level, group: group) }
   let(:wiki_page) { build(:wiki_page, container: project) }
+  let(:project_level) { :public }
 
-  shared_context 'with :read_wiki_page policy' do
-    subject(:policy) { described_class.new(user, wiki_page) }
+  subject(:policy) { described_class.new(user, wiki_page) }
 
+  shared_examples 'with :read_wiki_page policy' do
     where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
       permission_table_for_notes_feature_access
     end
@@ -57,5 +58,27 @@ RSpec.describe WikiPagePolicy, feature_category: :wiki do
     let(:user) { build_user_from_membership(group, membership) }
 
     include_context 'with :read_wiki_page policy'
+  end
+
+  context 'when user is a developer' do
+    let(:user) { build_user_from_membership(project, :developer) }
+
+    it 'grants the resolve_note permission' do
+      expect(policy).to be_allowed(:resolve_note)
+    end
+  end
+
+  context 'when user is not a developer' do
+    where(:membership) do
+      %i[reporter guest non_member anonymous]
+    end
+
+    with_them do
+      let(:user) { build_user_from_membership(project, membership) }
+
+      it 'does not grant the resolve_note permission' do
+        expect(policy).to be_disallowed(:resolve_note)
+      end
+    end
   end
 end

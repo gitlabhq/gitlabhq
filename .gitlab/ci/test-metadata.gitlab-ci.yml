@@ -23,7 +23,7 @@ retrieve-tests-metadata:
     - apk add --no-cache --update curl  # Not present in ruby-alpine, so we add it manually
     - !reference [".fast-no-clone-job", before_script]
   script:
-    - run_with_custom_exit_code ruby scripts/setup/tests-metadata.rb retrieve
+    - ruby scripts/setup/tests-metadata.rb retrieve
 
 update-tests-metadata:
   extends:
@@ -50,14 +50,10 @@ update-tests-metadata:
     - source scripts/utils.sh
     - source scripts/rspec_helpers.sh
     - |
-      function update_metadata() {
-        test -f "${FLAKY_RSPEC_SUITE_REPORT_PATH}" || echo -e "\e[31m" 'Consider add ~"pipeline:run-all-rspec" to run full rspec jobs' "\e[0m"
-        retry gem install fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document
-        update_tests_metadata
-        update_tests_mapping
-      }
-
-      run_with_custom_exit_code update_metadata
+      test -f "${FLAKY_RSPEC_SUITE_REPORT_PATH}" || echo -e "\e[31m" 'Consider add ~"pipeline:run-all-rspec" to run full rspec jobs' "\e[0m"
+      retry gem install fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document
+      update_tests_metadata
+      update_tests_mapping
 
 verify-tests-metadata:
   extends:
@@ -71,7 +67,7 @@ verify-tests-metadata:
     - source scripts/utils.sh
     - install_activesupport_gem
   script:
-    - run_with_custom_exit_code scripts/setup/tests-metadata.rb verify
+    - scripts/setup/tests-metadata.rb verify
 
 export-predictive-test-metrics:
   stage: post-test

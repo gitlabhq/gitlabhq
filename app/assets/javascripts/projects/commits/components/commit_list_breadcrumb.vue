@@ -7,13 +7,16 @@ export default {
   components: {
     GlBreadcrumb,
   },
-  inject: ['projectFullPath', 'projectPath', 'escapedRef', 'refType', 'path'],
+  inject: ['projectFullPath', 'projectPath', 'escapedRef', 'refType'],
   computed: {
+    currentPath() {
+      return this.$route.params.path || '';
+    },
     breadcrumbItems() {
       const items = [];
 
       const projectRootUrl = buildURLwithRefType({
-        path: joinPaths(this.projectFullPath, '/-/commits', this.escapedRef),
+        path: this.escapedRef,
         refType: this.refType,
       });
 
@@ -22,14 +25,14 @@ export default {
         to: projectRootUrl,
       });
 
-      if (this.path) {
-        const parts = this.path.split('/').filter(Boolean);
+      if (this.currentPath) {
+        const parts = this.currentPath.split('/').filter(Boolean);
 
         parts.forEach((part, index) => {
           const escapedParts = parts.slice(0, index + 1).map((p) => escapeFileUrl(p));
           const pathUpToHere = escapedParts.join('/');
           const segmentUrl = buildURLwithRefType({
-            path: joinPaths(this.projectFullPath, '-/commits', this.escapedRef, pathUpToHere),
+            path: joinPaths(this.escapedRef, pathUpToHere),
             refType: this.refType,
           });
 

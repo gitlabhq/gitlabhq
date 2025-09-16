@@ -4,6 +4,7 @@ module Authn
   module TokenField
     class PrefixHelper
       def self.prepend_instance_prefix(prefix)
+        return prefix unless Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
         return prefix unless instance_prefix.present?
 
         "#{instance_prefix}-#{prefix}"

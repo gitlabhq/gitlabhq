@@ -32,7 +32,7 @@ GET /projects/:id/issues/:issue_iid/resource_state_events
 
 | Attribute   | Type           | Required | Description                                                                     |
 | ----------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`        | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `issue_iid` | integer        | yes      | The IID of an issue                                                             |
 
 Example request:
@@ -90,7 +90,7 @@ Parameters:
 
 | Attribute                     | Type           | Required | Description                                                                     |
 | ----------------------------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project |
+| `id`                          | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project |
 | `issue_iid`                   | integer        | yes      | The IID of an issue                                                             |
 | `resource_state_event_id`     | integer        | yes      | The ID of a state event                                                     |
 
@@ -132,7 +132,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/resource_state_events
 
 | Attribute           | Type           | Required | Description                                                                     |
 | ------------------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`                | integer/string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project |
+| `id`                | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project |
 | `merge_request_iid` | integer        | yes      | The IID of a merge request                                                      |
 
 Example request:
@@ -190,7 +190,7 @@ Parameters:
 
 | Attribute                     | Type           | Required | Description                                                                     |
 | ----------------------------- | -------------- | -------- | ------------------------------------------------------------------------------- |
-| `id`                          | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`                          | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `merge_request_iid`           | integer        | yes      | The IID of a merge request                                                      |
 | `resource_state_event_id`     | integer        | yes      | The ID of a state event                                                     |
 
@@ -248,7 +248,7 @@ GET /groups/:id/epics/:epic_id/resource_state_events
 
 | Attribute   | Type           | Required | Description                                                                    |
 |-------------| -------------- | -------- |--------------------------------------------------------------------------------|
-| `id`        | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).   |
+| `id`        | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group.   |
 | `epic_id`   | integer        | yes      | The ID of an epic.                                                              |
 
 Example request:
@@ -306,7 +306,7 @@ Parameters:
 
 | Attribute                 | Type           | Required | Description                                                                   |
 |---------------------------| -------------- | -------- |-------------------------------------------------------------------------------|
-| `id`                      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths).  |
+| `id`                      | integer or string | yes      | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group.  |
 | `epic_id`                 | integer        | yes      | The ID of an epic.                                                           |
 | `resource_state_event_id` | integer        | yes      | The ID of a state event.                                                       |
 

@@ -29,7 +29,7 @@ module ResolvesGroups
       resolve_groups(
         *args,
         **kwargs,
-        with_statistics: lookahead.selection(:nodes).selects?(:project_statistics)
+        with_statistics: lookahead.selection(:nodes).selects?(:project_statistics, selected_type: ::Types::GroupType)
       )
     )
   end

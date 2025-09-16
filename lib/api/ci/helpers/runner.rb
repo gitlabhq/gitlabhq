@@ -26,7 +26,7 @@ module API
         def get_runner_details_from_request
           return get_runner_ip unless params['info'].present?
 
-          attributes_for_keys(%w[name version revision platform architecture executor], params['info'])
+          attributes_for_keys(%w[name version revision platform architecture executor labels], params['info'])
             .merge(get_system_id_from_request)
             .merge(get_runner_config_from_request)
             .merge(get_runner_ip)
@@ -115,10 +115,10 @@ module API
         end
 
         def authenticate_job_via_dependent_job!
-          # Use primary for both main and ci database as authenticating in the scope of runners will load
+          # Use primary for both main and non-main databases as authenticating in the scope of runners will load
           # Ci::Build model and other standard authn related models like License, Project and User.
           ::Gitlab::Database::LoadBalancing::SessionMap
-            .with_sessions([::ApplicationRecord, ::Ci::ApplicationRecord]).use_primary { authenticate! }
+            .with_sessions.use_primary { authenticate! }
 
           forbidden! unless current_job
           forbidden! unless can?(current_user, :read_build, current_job)

@@ -7,6 +7,7 @@ RSpec.describe Gitlab::Schema::Validation::Validators::MissingSequences, feature
     public.missing_sequence
     public.abuse_events_id_seq
   ]
+  expected_details = [{}, {}]
 
-  include_examples 'sequence validators', described_class, missing_sequences
+  include_examples 'sequence validators', described_class, missing_sequences, expected_details
 end

@@ -12,7 +12,7 @@
           = gl_badge_tag s_('ProtectedBranch|default'), variant: :info
 
         - if protected_branch.wildcard?
-          - matching_branches = protected_branch.matching(repository.branch_names)
+          - matching_branches = protected_branch.matching(@branch_names)
           = link_to pluralize(matching_branches.count, "matching branch"), namespace_project_protected_branch_path(@project.namespace, @project, protected_branch)
         - elsif !protected_branch.commit
           %span.gl-text-subtle= s_('ProtectedBranch|Branch does not exist.')
@@ -22,7 +22,7 @@
   = render_if_exists 'protected_branches/ee/code_owner_approval_table', can_update: local_assigns[:can_update], protected_branch: protected_branch, protected_branch_entity: protected_branch_entity
 
   - if can_admin_entity
-    %td.text-right{ data: { label: _('Actions'), testid: 'protected-branch-action' } }
+    %td.gl-text-right{ data: { label: _('Actions'), testid: 'protected-branch-action' } }
       - if local_assigns[:is_inherited]
         %span.has-tooltip{ data: { container: 'body' }, title: s_('ProtectedBranch|Inherited - This setting can be changed at the group level'), 'aria-hidden': 'true' }
           = sprite_icon 'lock'

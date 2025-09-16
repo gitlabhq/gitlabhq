@@ -90,7 +90,7 @@ send the payload body:
     --data '{"name":"<example-name>", "description":"<example-description>"}' "https://gitlab.example.com/api/v4/projects"
   ```
 
-URL encoded query strings have a length limitation. Requests that are too large
+URL-encoded query strings have a length limitation. Requests that are too large
 result in a `414 Request-URI Too Large` error message. This can be resolved by
 using a payload body instead.
 

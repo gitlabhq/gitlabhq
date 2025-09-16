@@ -48,13 +48,12 @@ module API
 
             def finder_params
               {
-                package_type: :terraform_module,
+                packages_class: ::Packages::TerraformModule::Package,
                 package_name: "#{params[:module_name]}/#{params[:module_system]}",
-                exact_name: true
-              }.tap do |finder_params|
-                finder_params[:package_version] = params[:module_version] if params.has_key?(:module_version)
-                finder_params[:within_public_package_registry] = true
-              end
+                package_version: params[:module_version],
+                exact_name: true,
+                within_public_package_registry: true
+              }.compact
             end
 
             def packages
@@ -75,6 +74,11 @@ module API
               package.installable_package_files.first
             end
             strong_memoize_attr :package_file
+
+            def latest_package
+              packages.unscope_order.order_metadatum_semver_desc.first
+            end
+            strong_memoize_attr :latest_package
           end
 
           params do
@@ -117,7 +121,7 @@ module API
               tags %w[terraform_registry]
             end
             get 'download' do
-              latest_version = packages.order_version.last&.version
+              latest_version = latest_package&.version
 
               if latest_version.nil?
                 render_api_error!({ error: "No version found for #{params[:module_name]} module" }, :not_found)
@@ -146,8 +150,6 @@ module API
               tags %w[terraform_registry]
             end
             get do
-              latest_package = packages.order_version.last
-
               if latest_package&.version.nil?
                 render_api_error!({ error: "No version found for #{params[:module_name]} module" }, :not_found)
               end

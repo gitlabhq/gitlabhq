@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillFinishOnboardingForGroupSaml, migration: :gitlab_main_cell, feature_category: :onboarding do
+RSpec.describe QueueBackfillFinishOnboardingForGroupSaml, migration: :gitlab_main_org, feature_category: :onboarding do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

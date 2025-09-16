@@ -115,15 +115,20 @@ To add a commit diff comment:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests**, and find your merge request.
 1. Select the **Commits** tab, then select the commit message.
-1. By the line you want to comment on, hover over the line number and select **Comment** ({{< icon name="comment" >}}).
-   You can select multiple lines by dragging the **Comment** ({{< icon name="comment" >}}) icon.
+1. Start a comment:
+   - To comment on an entire file, find the file you want to comment on and,
+     in the file header, select **Comment on this file** ({{< icon name="comment" >}}).
+   - To comment on specific lines, find the line number you want to comment on. Hover over the line number,
+   then select **Comment** ({{< icon name="comment" >}}). To select more lines, drag the
+   **Comment** ({{< icon name="comment" >}}) icon.
 1. Enter your comment.
-1. To add your comment immediately, select **Add comment now**, or use the keyboard shortcut:
-   - macOS: <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>Enter</kbd>
-   - All other OSes: <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>Enter</kbd>
-1. To leave your comment unpublished until you finish a review, select **Start a review**, or use the keyboard shortcut:
-   - macOS: <kbd>Command</kbd> + <kbd>Enter</kbd>
-   - All other OSes: <kbd>Control</kbd> + <kbd>Enter</kbd>
+1. Submit your comment:
+   - To add your comment immediately, select **Add comment now**, or use the keyboard shortcut:
+     - macOS: <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>Enter</kbd>
+     - All other OSes: <kbd>Shift</kbd> + <kbd>Control</kbd> + <kbd>Enter</kbd>
+   - To leave your comment unpublished until you finish a review, select **Start a review**, or use the keyboard shortcut:
+     - macOS: <kbd>Command</kbd> + <kbd>Enter</kbd>
+     - All other OSes: <kbd>Control</kbd> + <kbd>Enter</kbd>
 
 The comment displays on the merge request's **Overview** tab.
 
@@ -179,7 +184,7 @@ When you do, only project members can add and edit comments.
 Prerequisites:
 
 - In merge requests, you must have at least the Developer role.
-- In issues, you must have at least the Reporter role.
+- In issues, you must have at least the Planner role.
 
 To lock an issue or merge request:
 
@@ -209,11 +214,12 @@ Who can be notified:
 
 {{< history >}}
 
-- Internal comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142003) for merge requests in GitLab 16.9.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142003) for merge requests in GitLab 16.9.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538003) for GitLab Wiki in GitLab 18.2.
 
 {{< /history >}}
 
-Use internal notes to protect information added to a public issue, epic, or merge request.
+Use internal notes to protect information added to a public issue, epic, wiki page, or merge request.
 Internal notes differ from public comments:
 
 - Only project members with least the Reporter role can view the internal note.
@@ -230,7 +236,7 @@ Prerequisites:
 
 To add an internal note:
 
-1. On the issue, epic, or merge request, in the **Comment** text box, enter a comment.
+1. On the issue, epic, wiki page, or merge request, in the **Comment** text box, enter a comment.
 1. Below the comment, select **Make this an internal note**.
 1. Select **Add internal note**.
 

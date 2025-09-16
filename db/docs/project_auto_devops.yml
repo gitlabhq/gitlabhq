@@ -7,7 +7,7 @@ feature_categories:
 description: Auto DevOps settings for a project
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/6ed490401f49a8941dc7a9e3757ec4012f14ef0b
 milestone: '10.0'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
 table_size: small

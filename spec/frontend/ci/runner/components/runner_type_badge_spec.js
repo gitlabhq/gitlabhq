@@ -41,7 +41,7 @@ describe('RunnerTypeBadge', () => {
 
     it(`as "${text}" with an "info" variant`, () => {
       expect(findBadge().text()).toBe(text);
-      expect(findBadge().props('variant')).toBe('muted');
+      expect(findBadge().props('variant')).toBe('neutral');
     });
 
     it('with a tooltip', () => {

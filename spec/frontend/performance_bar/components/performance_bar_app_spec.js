@@ -15,9 +15,7 @@ describe('performance bar app', () => {
         store,
         env: 'development',
         requestId: '123',
-        requestMethod: 'GET',
         statsUrl: 'https://log.gprd.gitlab.net/app/dashboards#/view/',
-        peekUrl: '/-/peek/results',
       },
       stubs: {
         GlEmoji: { template: '<div/>' },

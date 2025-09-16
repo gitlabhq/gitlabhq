@@ -4,17 +4,6 @@ module SidebarsHelper
   include MergeRequestsHelper
   include Nav::NewDropdownHelper
 
-  def sidebar_tracking_attributes_by_object(object)
-    sidebar_attributes_for_object(object).fetch(:tracking_attrs, {})
-  end
-
-  def scope_avatar_classes(object)
-    %w[avatar-container rect-avatar s32].tap do |klasses|
-      klass = sidebar_attributes_for_object(object).fetch(:scope_avatar_class, nil)
-      klasses << klass if klass
-    end
-  end
-
   def organization_sidebar_context(organization, user, **args)
     Sidebars::Context.new(container: organization, current_user: user, **args)
   end
@@ -42,7 +31,7 @@ module SidebarsHelper
     super_sidebar_logged_in_context(user, group: group, project: project, panel: panel, panel_type: panel_type)
   end
 
-  def super_sidebar_logged_out_context(panel:, panel_type:)
+  def super_sidebar_shared_context(panel:, panel_type:)
     super_sidebar_instance_version_data.merge(super_sidebar_whats_new_data).merge({
       is_logged_in: false,
       compare_plans_url: compare_plans_url,
@@ -60,8 +49,21 @@ module SidebarsHelper
     })
   end
 
+  def super_sidebar_logged_out_context(panel:, panel_type:)
+    sidebar_context = super_sidebar_shared_context(panel: panel, panel_type: panel_type)
+
+    return sidebar_context unless Users::ProjectStudio.new(current_user).enabled?
+
+    sidebar_context.merge({
+      sign_in_visible: header_link?(:sign_in).to_s,
+      allow_signup: allow_signup?.to_s,
+      new_user_registration_path: new_user_registration_path,
+      sign_in_path: new_session_path(:user, redirect_to_referer: 'yes')
+    })
+  end
+
   def super_sidebar_logged_in_context(user, group:, project:, panel:, panel_type:)
-    super_sidebar_logged_out_context(panel: panel, panel_type: panel_type).merge({
+    super_sidebar_shared_context(panel: panel, panel_type: panel_type).merge({
       is_logged_in: true,
       is_admin: user.can_admin_all_resources?,
       name: user.name,
@@ -105,7 +107,7 @@ module SidebarsHelper
       gitlab_com_and_canary: Gitlab.com_and_canary?,
       canary_toggle_com_url: Gitlab::Saas.canary_toggle_com_url,
       current_context: super_sidebar_current_context(project: project, group: group),
-      pinned_items: user.pinned_nav_items[panel_type] || super_sidebar_default_pins(panel_type),
+      pinned_items: user.pinned_nav_items[panel_type] || super_sidebar_default_pins(panel_type, user),
       update_pins_url: pins_path,
       is_impersonating: impersonating?,
       stop_impersonation_path: admin_impersonation_path,
@@ -129,7 +131,9 @@ module SidebarsHelper
 
     {
       whats_new_most_recent_release_items_count: whats_new_most_recent_release_items_count,
-      whats_new_version_digest: whats_new_version_digest
+      whats_new_version_digest: whats_new_version_digest,
+      whats_new_read_articles: whats_new_read_articles,
+      whats_new_mark_as_read_path: whats_new_mark_as_read_path
     }
   end
 
@@ -324,51 +328,6 @@ module SidebarsHelper
     ]
   end
 
-  def sidebar_attributes_for_object(object)
-    case object
-    when Project
-      sidebar_project_attributes
-    when Group
-      sidebar_group_attributes
-    when User
-      sidebar_user_attributes
-    else
-      {}
-    end
-  end
-
-  def sidebar_project_attributes
-    {
-      tracking_attrs: sidebar_project_tracking_attrs,
-      scope_avatar_class: 'project_avatar'
-    }
-  end
-
-  def sidebar_group_attributes
-    {
-      tracking_attrs: sidebar_group_tracking_attrs,
-      scope_avatar_class: 'group_avatar'
-    }
-  end
-
-  def sidebar_user_attributes
-    {
-      tracking_attrs: sidebar_user_profile_tracking_attrs
-    }
-  end
-
-  def sidebar_project_tracking_attrs
-    tracking_attrs('projects_side_navigation', 'render', 'projects_side_navigation')
-  end
-
-  def sidebar_group_tracking_attrs
-    tracking_attrs('groups_side_navigation', 'render', 'groups_side_navigation')
-  end
-
-  def sidebar_user_profile_tracking_attrs
-    tracking_attrs('user_side_navigation', 'render', 'user_side_navigation')
-  end
-
   def project_sidebar_context_data(project, user, current_ref, ref_type: nil)
     {
       current_user: user,
@@ -511,15 +470,23 @@ module SidebarsHelper
     shortcut_links
   end
 
-  def super_sidebar_default_pins(panel_type)
+  def super_sidebar_default_pins(panel_type, user)
     case panel_type
     when 'project'
-      [:project_issue_list, :project_merge_request_list]
+      project_default_pins(user)
     when 'group'
-      [:group_issue_list, :group_merge_request_list]
+      group_default_pins(user)
     else
       []
     end
+  end
+
+  def project_default_pins(_user)
+    [:project_issue_list, :project_merge_request_list]
+  end
+
+  def group_default_pins(_user)
+    [:group_issue_list, :group_merge_request_list]
   end
 
   def terms_link

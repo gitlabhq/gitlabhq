@@ -392,3 +392,9 @@ mapping:
   # Docs related checks
   - source: 'doc/api/settings\.md'
     test: 'spec/scripts/cells/application_settings_analysis_spec.rb'
+
+  # Devfile and root yaml related checks
+  - source:
+      - '.*\.yaml'
+      - '\.devfile/.*\.yaml'
+    test: 'spec/dot_gitlab_ci/rules_spec.rb'

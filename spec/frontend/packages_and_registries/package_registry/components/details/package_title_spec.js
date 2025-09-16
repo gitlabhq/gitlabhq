@@ -1,5 +1,5 @@
 import { GlSprintf } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { nextTick } from 'vue';
 import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';

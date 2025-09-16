@@ -75,6 +75,10 @@ module TokenAuthenticatable
         strategy.reset_token!(self)
       end
 
+      mod.define_method("rewrite_#{token_field}") do
+        strategy.write_new_token(self)
+      end
+
       mod.define_method("#{token_field}_matches?") do |other_token|
         token = read_attribute(token_field)
         token.present? && ActiveSupport::SecurityUtils.secure_compare(other_token, token)

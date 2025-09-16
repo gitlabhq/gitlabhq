@@ -12,9 +12,7 @@ function confirmViaGlModal(message, element) {
   } = element.dataset;
 
   const screenReaderText =
-    element.querySelector('.gl-sr-only')?.textContent ||
-    element.querySelector('.sr-only')?.textContent ||
-    element.getAttribute('aria-label');
+    element.querySelector('.gl-sr-only')?.textContent || element.getAttribute('aria-label');
 
   const getTrackingEventConfig = (trackingEventNameFromDataset) => {
     if (!trackingEventNameFromDataset) return null;

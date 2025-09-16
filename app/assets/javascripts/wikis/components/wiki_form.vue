@@ -508,7 +508,7 @@ export default {
     />
 
     <div class="row">
-      <div class="col-12">
+      <div class="gl-col-12">
         <gl-form-group
           :label="$options.i18n.title.label"
           label-for="wiki_title"
@@ -534,7 +534,7 @@ export default {
         </gl-form-group>
       </div>
 
-      <div class="col-12">
+      <div class="gl-col-12">
         <gl-form-group :label="$options.i18n.path.label" label-for="wiki_path">
           <gl-form-input
             id="wiki_path"
@@ -555,7 +555,7 @@ export default {
     </div>
 
     <div class="row">
-      <div class="col-sm-6">
+      <div class="gl-col-sm-6">
         <gl-form-group :label="$options.i18n.format.label" label-for="wiki_format">
           <gl-form-select
             id="wiki_format"
@@ -570,7 +570,7 @@ export default {
           </gl-form-select>
         </gl-form-group>
       </div>
-      <div v-if="!isTemplate" class="col-sm-6">
+      <div v-if="!isTemplate" class="gl-col-sm-6">
         <gl-form-group :label="$options.i18n.template.label" label-for="wiki_template">
           <wiki-template :format="format" :templates="templates" @input="setTemplate" />
         </gl-form-group>
@@ -578,7 +578,7 @@ export default {
     </div>
 
     <div class="row">
-      <div class="col-sm-12 row-sm-5">
+      <div class="gl-col-sm-12 row-sm-5">
         <gl-form-group :label="$options.i18n.content.label" label-for="wiki_content">
           <markdown-editor
             ref="markdownEditor"
@@ -627,7 +627,7 @@ export default {
     </div>
 
     <div class="row">
-      <div class="col-sm-12 row-sm-5">
+      <div class="gl-col-sm-12 row-sm-5">
         <gl-form-group :label="$options.i18n.commitMessage.label" label-for="wiki_message">
           <gl-form-input
             id="wiki_message"

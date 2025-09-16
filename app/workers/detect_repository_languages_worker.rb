@@ -10,7 +10,7 @@ class DetectRepositoryLanguagesWorker # rubocop:disable Scalability/IdempotentWo
   sidekiq_options retry: 1
   feature_category :source_code_management
 
-  LEASE_TIMEOUT = 300
+  LEASE_TIMEOUT = 600
 
   attr_reader :project
 

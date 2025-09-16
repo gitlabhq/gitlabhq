@@ -56,5 +56,38 @@ RSpec.describe Packages::Helm::FileMetadatum, type: :model do
         is_expected.not_to allow_value({ name: 'foo', version: 'v1.0' }).for(:metadata)
       end
     end
+
+    describe '.for_package_files' do
+      let_it_be(:metadatum1) { create(:helm_file_metadatum) }
+      let_it_be(:metadatum2) { create(:helm_file_metadatum) }
+      let_it_be(:metadatum3) { create(:helm_file_metadatum) }
+
+      let(:package_files) do
+        ::Packages::PackageFile.id_in([metadatum1.package_file_id, metadatum2.package_file_id])
+      end
+
+      subject(:for_package_files) { described_class.for_package_files(package_files.select(:id)) }
+
+      it 'returns metadatum1 and metadatum2' do
+        expect(for_package_files).to match_array([metadatum1, metadatum2])
+      end
+    end
+
+    describe '.select_distinct_channel' do
+      let_it_be(:channel) { 'stable' }
+      let_it_be(:metadatum1) { create(:helm_file_metadatum, channel: channel) }
+      let_it_be(:metadatum2) { create(:helm_file_metadatum, channel: channel) }
+      let_it_be(:metadatum3) { create(:helm_file_metadatum, channel: channel) }
+
+      subject(:select_distinct_channel) { described_class.select_distinct_channel }
+
+      it 'returns de-duplicated record' do
+        expect(select_distinct_channel.count).to eq(1)
+      end
+
+      it 'returns records with selected channel attributes' do
+        expect(select_distinct_channel[0]).to have_attributes(channel: channel, package_file_id: nil)
+      end
+    end
   end
 end

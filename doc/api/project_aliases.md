@@ -26,6 +26,17 @@ Get a list of all project aliases:
 GET /project_aliases
 ```
 
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute    | Type    | Description |
+|--------------|---------|-------------|
+| `id`         | integer | ID of the project alias. |
+| `name`       | string  | Name of the alias. |
+| `project_id` | integer | ID of the associated project. |
+
+Example request:
+
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/project_aliases"
@@ -48,7 +59,7 @@ Example response:
 ]
 ```
 
-## Get project alias' details
+## Get project alias details
 
 Get details of a project alias:
 
@@ -56,9 +67,22 @@ Get details of a project alias:
 GET /project_aliases/:name
 ```
 
+Supported attributes:
+
 | Attribute | Type   | Required | Description           |
 |-----------|--------|----------|-----------------------|
 | `name`    | string | Yes      | The name of the alias. |
+
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute    | Type    | Description |
+|--------------|---------|-------------|
+| `id`         | integer | ID of the project alias. |
+| `name`       | string  | Name of the alias. |
+| `project_id` | integer | ID of the associated project. |
+
+Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -77,17 +101,29 @@ Example response:
 
 ## Create a project alias
 
-Add a new alias for a project. When successful, responds with `201 Created`.
-When there are validation errors, for example, when the alias already exists, responds with `400 Bad Request`:
+Add a new alias for a project:
 
 ```plaintext
 POST /project_aliases
 ```
 
-| Attribute    | Type           | Required | Description                            |
-|--------------|----------------|----------|----------------------------------------|
-| `name`       | string         | Yes | The name of the alias. Must be unique. |
-| `project_id` | integer or string | Yes | The ID or path of the project.         |
+Supported attributes:
+
+| Attribute    | Type              | Required | Description |
+|--------------|-------------------|----------|-------------|
+| `name`       | string            | Yes      | Name of the alias. Must be unique. |
+| `project_id` | integer or string | Yes      | ID or path of the project. |
+
+If successful, returns [`201 Created`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
+
+| Attribute    | Type    | Description |
+|--------------|---------|-------------|
+| `id`         | integer | ID of the project alias. |
+| `name`       | string  | Name of the alias. |
+| `project_id` | integer | ID of the associated project. |
+
+Example request:
 
 ```shell
 curl --request POST \
@@ -97,10 +133,11 @@ curl --request POST \
   --form "name=gitlab"
 ```
 
-or
+You can also use the project path:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/project_aliases" \
   --form "project_id=gitlab-org/gitlab" \
   --form "name=gitlab"
@@ -118,16 +155,21 @@ Example response:
 
 ## Delete a project alias
 
-Removes a project aliases. Responds with a 204 when project alias
-exists, 404 when it doesn't:
+Remove a project alias:
 
 ```plaintext
 DELETE /project_aliases/:name
 ```
 
+Supported attributes:
+
 | Attribute | Type   | Required | Description           |
 |-----------|--------|----------|-----------------------|
-| `name`    | string | Yes | The name of the alias. |
+| `name`    | string | Yes      | Name of the alias. |
+
+If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
+
+Example request:
 
 ```shell
 curl --request DELETE \

@@ -72,9 +72,8 @@ RSpec.shared_examples 'embedded views (GLQL)' do
       textarea.send_keys "display: table\n"
       textarea.send_keys "title: Issues created in the last 7 days\n"
       textarea.send_keys "query: type = Issue and label = ~glql and created > -7d and created <= today()\n"
-      textarea.send_keys "aggregate:\n"
-      textarea.send_keys "  dimensions: timeSegment(1d) on createdAt\n"
-      textarea.send_keys "  metrics: count\n"
+      textarea.send_keys "groupBy: timeSegment(1d) on createdAt\n"
+      textarea.send_keys "aggregate: count\n"
       textarea.send_keys "```"
 
       # submit

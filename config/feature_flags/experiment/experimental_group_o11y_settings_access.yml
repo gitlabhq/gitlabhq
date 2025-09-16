@@ -1,0 +1,9 @@
+---
+name: experimental_group_o11y_settings_access
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202417
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/565658
+milestone: '18.4'
+type: experiment
+group: group::embody
+default_enabled: false
+feature_issue_url: https://gitlab.com/gitlab-org/embody-team/experimental-observability/gitlab_o11y/-/issues/38

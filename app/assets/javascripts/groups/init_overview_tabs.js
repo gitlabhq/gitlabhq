@@ -52,7 +52,7 @@ export const initGroupOverviewTabs = () => {
     currentGroupVisibility,
     subgroupsAndProjectsEndpoint,
     sharedProjectsEndpoint,
-    inactiveProjectsEndpoint,
+    inactiveSubgroupsAndProjectsEndpoint,
     initialSort,
   } = el.dataset;
 
@@ -71,7 +71,7 @@ export const initGroupOverviewTabs = () => {
       endpoints: {
         [ACTIVE_TAB_SUBGROUPS_AND_PROJECTS]: subgroupsAndProjectsEndpoint,
         [ACTIVE_TAB_SHARED]: sharedProjectsEndpoint,
-        [ACTIVE_TAB_INACTIVE]: inactiveProjectsEndpoint,
+        [ACTIVE_TAB_INACTIVE]: inactiveSubgroupsAndProjectsEndpoint,
       },
       initialSort,
     },

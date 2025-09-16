@@ -266,6 +266,7 @@ export default {
         v-gl-tooltip.d0="$options.i18n.SIGNATURE_BADGE_TOOLTIP"
         class="sm:gl-ml-3"
         data-testid="signed-badge"
+        variant="neutral"
       >
         {{ s__('ContainerRegistry|Signed') }}
       </gl-badge>

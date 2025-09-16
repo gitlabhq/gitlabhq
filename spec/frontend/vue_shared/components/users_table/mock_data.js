@@ -10,7 +10,7 @@ export const MOCK_USERS = [
       'https://secure.gravatar.com/avatar/054f062d8b1a42b123f17e13a173cda8?s=80\\u0026d=identicon',
     badges: [
       { text: 'Admin', variant: 'success' },
-      { text: "It's you!", variant: 'muted' },
+      { text: "It's you!", variant: 'neutral' },
       { text: 'Admin role', variant: 'info', icon: 'admin' },
     ],
     projectsCount: 0,

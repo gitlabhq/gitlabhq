@@ -8,6 +8,10 @@ FactoryBot.define do
     reported_from_url { 'http://gitlab.com' }
     links_to_spam { ['https://gitlab.com/issue1', 'https://gitlab.com/issue2'] }
 
+    after(:build) do |abuse_report, evaluator|
+      abuse_report.organization ||= evaluator.reporter.organization
+    end
+
     trait :closed do
       status { 'closed' }
       resolved_by factory: :user

@@ -129,7 +129,7 @@ export default {
       v-gl-tooltip
       :title="buttonText"
       :aria-label="buttonText"
-      :variant="variant"
+      category="secondary"
       :icon="icon"
       data-testid="2fa-action-button"
       @click="showModal"
@@ -137,6 +137,7 @@ export default {
     <gl-button
       v-else
       :variant="variant"
+      category="secondary"
       :size="size"
       data-testid="2fa-action-button"
       block

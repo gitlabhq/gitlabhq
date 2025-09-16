@@ -199,7 +199,7 @@ export default {
     },
     parentClass() {
       return {
-        'gl-relative gl-flex gl-items-start gl-flex-wrap sm:gl-flex-nowrap': !this.isEditing,
+        'gl-relative gl-flex gl-items-start gl-flex-wrap @sm/panel:gl-flex-nowrap': !this.isEditing,
       };
     },
     isProjectArchived() {
@@ -217,8 +217,7 @@ export default {
     timelineEntryClass() {
       return {
         'timeline-entry note-form': this.isNewDiscussion,
-        // eslint-disable-next-line @gitlab/require-i18n-strings
-        '!gl-pb-5 note note-wrapper note-comment discussion-reply-holder clearfix':
+        '!gl-pb-5 note note-wrapper note-comment discussion-reply-holder gl-clearfix':
           !this.isNewDiscussion,
         'is-replying': this.isEditing,
         'internal-note': this.isInternalThread,

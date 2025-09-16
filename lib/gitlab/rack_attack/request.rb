@@ -8,6 +8,7 @@ module Gitlab
       API_PATH_REGEX = %r{^/api/|/oauth/}
       FILES_PATH_REGEX = %r{^/api/v\d+/projects/[^/]+/repository/files/.+}
       GROUP_PATH_REGEX = %r{^/api/v\d+/groups/[^/]+/?$}
+      RUNNER_JOBS_PATH_REGEX = %r{^/api/v\d+/jobs/}
 
       def unauthenticated?
         !(authenticated_identifier([:api, :rss, :ics]) || authenticated_runner_id)
@@ -105,6 +106,7 @@ module Gitlab
       def throttle_authenticated_api?
         api_request? &&
           !frontend_request? &&
+          !runner_jobs_request? &&
           !throttle_authenticated_packages_api? &&
           !throttle_authenticated_files_api? &&
           !throttle_authenticated_deprecated_api? &&
@@ -180,7 +182,6 @@ module Gitlab
 
       def throttle_authenticated_git_http?
         git_path? &&
-          Feature.enabled?(:git_authenticated_http_limit, :instance) &&
           Gitlab::Throttle.settings.throttle_authenticated_git_http_enabled
       end
 
@@ -212,6 +213,15 @@ module Gitlab
       end
 
       private
+
+      def runner_jobs_api_path?
+        matches?(RUNNER_JOBS_PATH_REGEX)
+      end
+
+      def runner_jobs_request?
+        runner_jobs_api_path? &&
+          (request_authenticator.runner.present? || request_authenticator.job_from_token.present?)
+      end
 
       def authenticated_identifier(request_formats)
         requester = request_authenticator.find_authenticated_requester(request_formats)

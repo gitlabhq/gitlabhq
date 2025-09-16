@@ -228,6 +228,7 @@ RSpec.configure do |config|
 
   include StubCurrentOrganization
   include StubFeatureFlags
+  include StubProjectStudio
   include StubSnowplow
   include StubMember
   include VersionCheckHelpers
@@ -355,14 +356,40 @@ RSpec.configure do |config|
       # New personal homepage is still a WIP and not functional.
       stub_feature_flags(personal_homepage: false)
 
-      # New global topbar is still a WIP and not functional.
-      stub_feature_flags(global_topbar: false)
-
       # New paneled view is still a WIP and not functional.
       stub_feature_flags(paneled_view: false)
 
+      # We are in the process of migrating Tailwind utils to container queries and some breakages
+      # are still expected at the moment
+      stub_feature_flags(tailwind_container_queries: false)
+
       # Handle dynamic partitions creation
       stub_feature_flags(disallow_database_ddl_feature_flags: false)
+
+      # Opting out of Organizations is the exception.
+      stub_feature_flags(opt_out_organizations: false)
+
+      # The `use_user_group_member_roles` feature flag controls whether member role preloaders
+      # fetch data from the `user_group_member_roles` table instead of using the
+      # existing query to fetch a user's custom permissions in groups/projects.
+      #
+      # When enabled:
+      #   - Preloaders::UserMemberRolesIn*Preloader modules use the `user_group_member_roles` table
+      #   - This table is populated by Authz::UserGroupMemberRoles::UpdateFor*GroupService when
+      #     users are assigned member roles
+      #
+      # When disabled:
+      #   - The preloaders fall back to their original query implementation
+      #
+      # For testing consistency, we default to the original query implementation in specs
+      # until the new implementation is fully validated and the feature flag is removed.
+      stub_feature_flags(use_user_group_member_roles: false)
+
+      # Enabled only when debugging
+      stub_feature_flags(track_struct_event_logger: false)
+
+      # FF is temporary until we add a proper UI setting to enable/disable pipeline running for composite identities.
+      stub_feature_flags(forbid_composite_identities_to_run_pipelines: false)
     else
       unstub_all_feature_flags
     end
@@ -642,12 +669,12 @@ module UsersInternalAllowExclusiveLease
     end
   end
 
-  # TODO: Until https://gitlab.com/gitlab-org/gitlab/-/issues/442780 is resolved we're creating internal users in the
+  # TODO: Until https://gitlab.com/groups/gitlab-org/-/epics/18745 is resolved we're creating internal users in the
   # first organization as a temporary workaround. Many specs lack an organization in the database, causing foreign key
   # constraint violations when creating internal users. We're not seeding organizations before all specs for
   # performance.
   def create_unique_internal(scope, username, email_pattern, &creation_block)
-    Organizations::Organization.first || FactoryBot.create(:organization)
+    FactoryBot.create(:common_organization)
 
     super
   end

@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
       expect(dictionary.to_name_and_schema_mapping).to include(
         {
           'application_settings' => :gitlab_main_cell_setting,
-          'members' => :gitlab_main_cell
+          'members' => :gitlab_main_org
         }
       )
     end
@@ -60,9 +60,9 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
 
   describe '#find_all_by_schema' do
     it 'returns an array of entries with a given schema' do
-      entries = dictionary.find_all_by_schema('gitlab_main_cell')
+      entries = dictionary.find_all_by_schema('gitlab_main_org')
       expect(entries).to all(be_instance_of(Gitlab::Database::Dictionary::Entry))
-      expect(entries).to all(have_attributes(gitlab_schema: 'gitlab_main_cell'))
+      expect(entries).to all(have_attributes(gitlab_schema: 'gitlab_main_org'))
     end
 
     it 'returns an empty array if no entries match the schema' do

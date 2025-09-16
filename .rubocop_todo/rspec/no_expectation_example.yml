@@ -13,7 +13,6 @@ RSpec/NoExpectationExample:
     - 'ee/spec/features/users/login_spec.rb'
     - 'ee/spec/frontend/fixtures/dast_profiles.rb'
     - 'ee/spec/frontend/fixtures/epic.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_check_progress_spec.rb'
     - 'ee/spec/lib/geo/console/multiple_choice_menu_spec.rb'
     - 'ee/spec/lib/gitlab/bullet/exclusions_spec.rb'
     - 'ee/spec/lib/gitlab/ci/runners_availability/allowed_plans_spec.rb'

@@ -2,6 +2,7 @@
 
 module Ci
   class BuildPolicy < CommitStatusPolicy
+    include Ci::ProcessablePolicy
     include Ci::DeployablePolicy
 
     delegate(:project) { @subject.project }
@@ -40,16 +41,16 @@ module Ci
       @subject.project.branch_allows_collaboration?(@user, @subject.ref)
     end
 
-    condition(:archived, scope: :subject) do
-      @subject.archived?(log: true)
-    end
-
     condition(:artifacts_public, scope: :subject) do
       @subject.artifacts_public?
     end
 
     condition(:artifacts_none, scope: :subject) do
       @subject.artifacts_no_access?
+    end
+
+    condition(:artifacts_maintainer_only, scope: :subject) do
+      @subject.needs_maintainer_role_for_artifact_access?
     end
 
     condition(:terminal, scope: :subject) do
@@ -79,6 +80,10 @@ module Ci
     rule { public_project & project_developer }.enable :read_manual_variables
     rule { ~public_project & guest }.enable :read_manual_variables
 
+    condition(:project_maintainer) do
+      can?(:maintainer_access, @subject.project)
+    end
+
     # Use admin_ci_minutes for detailed quota and usage reporting
     # this is limited to total usage and total quota for a builds namespace
     rule { can_read_project_build }.policy do
@@ -91,9 +96,12 @@ module Ci
     # Authorizing the user to access to protected entities.
     # There is a "jailbreak" mode to exceptionally bypass the authorization,
     # however, you should NEVER allow it, rather suspect it's a wrong feature/product design.
-    rule { ~can?(:jailbreak) & (archived | protected_ref) }.policy do
-      ProjectPolicy::UPDATE_JOB_PERMISSIONS.each { |perm| prevent(perm) }
-      ProjectPolicy::CLEANUP_JOB_PERMISSIONS.each { |perm| prevent(perm) }
+    rule { ~can?(:jailbreak) & protected_ref }.policy do
+      prevent(*all_job_write_abilities)
+    end
+
+    rule { archived }.policy do
+      prevent :create_build_terminal
     end
 
     rule { can?(:admin_build) | (can?(:update_build) & owner_of_job & unprotected_ref) }.enable :erase_build
@@ -101,7 +109,7 @@ module Ci
     rule { can?(:public_access) & branch_allows_collaboration }.policy do
       enable :cancel_build
 
-      ProjectPolicy::UPDATE_JOB_PERMISSIONS.each { |perm| enable(perm) }
+      enable(*all_job_update_abilities)
     end
 
     rule { can?(:update_build) & terminal & owner_of_job }.enable :create_build_terminal
@@ -126,6 +134,7 @@ module Ci
 
     rule { can_read_project_build & ~artifacts_none }.enable :read_job_artifacts
     rule { ~artifacts_public & ~project_developer }.prevent :read_job_artifacts
+    rule { artifacts_maintainer_only & ~project_maintainer }.prevent :read_job_artifacts
   end
 end
 

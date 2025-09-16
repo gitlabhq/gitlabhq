@@ -13,7 +13,10 @@ RSpec.describe Tasks::Ci::JobTokensTask, :silence_stdout, feature_category: :per
       allowed_route_without_policies,
       allowed_route_with_invalid_policies,
       allowed_route_with_valid_policies,
+      allowed_route_with_admin_policy,
       allowed_route_with_skipped_policies,
+      allowed_route_with_multi_policies,
+      allowed_route_with_mixed_policy_types,
       not_allowed_route
     ]
   end
@@ -163,7 +166,6 @@ RSpec.describe Tasks::Ci::JobTokensTask, :silence_stdout, feature_category: :per
     it 'creates fine_grained_permissions.md', :aggregate_failures do
       FileUtils.rm_f(doc_path)
       expect { File.read(doc_path) }.to raise_error(Errno::ENOENT)
-      expect(task).to receive(:allowed_endpoints)
 
       compile_docs
 
@@ -172,19 +174,42 @@ RSpec.describe Tasks::Ci::JobTokensTask, :silence_stdout, feature_category: :per
   end
 
   describe '#allowed_endpoints' do
-    let(:table) do
+    let(:categorized_table) do
       <<~TABLE.chomp
-        | Permissions | Permission Names | Path | Description |
-        | ----------- | ---------------- | ---- | ----------- |
-        | None |  | `GET path/to/allowed_route_with_skipped_policies` | route description |
-        | None |  | `GET path/to/allowed_route_without_policies` | route description |
-        | Packages: Read | `READ_PACKAGES` | `GET path/to/allowed_route_with_valid_policies` | route description |
-        | invalid_policy | `INVALID_POLICY` | `GET path/to/allowed_route_with_invalid_policies` | route description |
+        ## Deployments endpoints
+
+        | Permission | API endpoint | Permission name | Scope |
+        | ---------- | ------------ | --------------- | ----- |
+        | mixed permission route | `PUT /projects/:id/deployments/:id` | `ADMIN_DEPLOYMENTS`, `READ_PACKAGES` | Read and write, Read |
+        | multi permission route | `POST /projects/:id/deployments` | `ADMIN_DEPLOYMENTS`, `ADMIN_ENVIRONMENTS` | Read and write |
+
+        ## Packages endpoints
+
+        | Permission | API endpoint | Permission name | Scope |
+        | ---------- | ------------ | --------------- | ----- |
+        | route description | `GET path/to/allowed_route_with_valid_policies` | `READ_PACKAGES` | Read |
+        | admin policy route | `GET path/to/allowed_route_with_admin_policy` | `ADMIN_PACKAGES` | Read and write |
       TABLE
     end
 
-    it 'returns a sorted table for the docs that includes allowed routes only' do
-      expect(task.allowed_endpoints).to eq(table)
+    let(:unavailable_table) do
+      <<~TABLE.chomp
+        | Permission | API endpoint |
+        | ---------- | ------------ |
+        | route description | `GET path/to/allowed_route_with_skipped_policies` |
+        | route description | `GET path/to/allowed_route_without_policies` |
+      TABLE
+    end
+
+    let(:expected_hash) do
+      {
+        categorized: categorized_table,
+        unavailable: unavailable_table
+      }
+    end
+
+    it 'returns the expected tables in a hash' do
+      expect(task.allowed_endpoints).to eq(expected_hash)
     end
   end
 
@@ -223,6 +248,18 @@ RSpec.describe Tasks::Ci::JobTokensTask, :silence_stdout, feature_category: :per
     )
   end
 
+  def allowed_route_with_admin_policy
+    instance_double(Grape::Router::Route,
+      settings: {
+        authentication: { job_token_allowed: true },
+        authorization: { job_token_policies: :admin_packages }
+      },
+      request_method: 'GET',
+      description: 'admin policy route',
+      origin: 'path/to/allowed_route_with_admin_policy'
+    )
+  end
+
   def allowed_route_with_skipped_policies
     instance_double(Grape::Router::Route,
       settings: {
@@ -232,6 +269,30 @@ RSpec.describe Tasks::Ci::JobTokensTask, :silence_stdout, feature_category: :per
       request_method: 'GET',
       description: 'route description',
       origin: 'path/to/allowed_route_with_skipped_policies'
+    )
+  end
+
+  def allowed_route_with_multi_policies
+    instance_double(Grape::Router::Route,
+      settings: {
+        authentication: { job_token_allowed: true },
+        authorization: { job_token_policies: [:admin_deployments, :admin_environments] }
+      },
+      request_method: 'POST',
+      description: 'multi permission route',
+      origin: '/projects/:id/deployments'
+    )
+  end
+
+  def allowed_route_with_mixed_policy_types
+    instance_double(Grape::Router::Route,
+      settings: {
+        authentication: { job_token_allowed: true },
+        authorization: { job_token_policies: [:admin_deployments, :read_packages] }
+      },
+      request_method: 'PUT',
+      description: 'mixed permission route',
+      origin: '/projects/:id/deployments/:id'
     )
   end
 

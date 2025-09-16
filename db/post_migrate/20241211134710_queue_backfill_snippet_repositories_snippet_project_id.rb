@@ -2,7 +2,7 @@
 
 class QueueBackfillSnippetRepositoriesSnippetProjectId < Gitlab::Database::Migration[2.2]
   milestone '17.10'
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_org
 
   MIGRATION = "BackfillSnippetRepositoriesSnippetProjectId"
   DELAY_INTERVAL = 2.minutes

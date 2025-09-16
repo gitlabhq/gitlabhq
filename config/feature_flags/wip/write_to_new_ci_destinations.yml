@@ -1,0 +1,10 @@
+---
+name: write_to_new_ci_destinations
+description: Enables writing CI job definitions to the new normalized database tables during pipeline creation.
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/13886
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202196
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/552062
+milestone: '18.4'
+group: group::ci platform
+type: wip
+default_enabled: false

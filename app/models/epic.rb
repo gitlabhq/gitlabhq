@@ -14,6 +14,14 @@ class Epic < ApplicationRecord
   def self.reference_prefix_escaped
     '&amp;'
   end
+
+  def self.alternative_reference_prefix
+    '[epic:'
+  end
+
+  def self.reference_postfix
+    ']'
+  end
 end
 
 Epic.prepend_mod_with('Epic')

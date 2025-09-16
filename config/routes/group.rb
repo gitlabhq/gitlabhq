@@ -36,12 +36,18 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     as: :group,
     constraints: { group_id: Gitlab::PathRegex.full_namespace_route_regex }
   ) do
+    get :work_items, to: 'work_items#rss', constraints: ->(req) { req.format == :atom }
+    get :work_items, to: 'work_items#calendar', constraints: ->(req) { req.format == :ics }
     namespace :settings do
       resource :ci_cd, only: [:show, :update], controller: 'ci_cd' do
         put :reset_registration_token
         patch :update_auto_devops
         post :create_deploy_token, path: 'deploy_token/create', to: 'repository#create_deploy_token'
         get :runner_setup_scripts, format: :json
+      end
+
+      resource :issues, param: :work_item_type do
+        get '(/*vueroute)', to: 'work_items#show', as: :issues, format: false
       end
 
       resource :repository, only: [:show], controller: 'repository' do

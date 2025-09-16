@@ -52,7 +52,9 @@ module Gitlab
 
             note_body = MarkdownText.format(
               review_note_content,
-              review.author
+              review.author,
+              project: project,
+              client: client
             )
 
             add_note!(author_id, note_body)

@@ -286,6 +286,7 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
         expect(doc).to reference_labels
         expect(doc).to reference_milestones
         expect(doc).to reference_alerts
+        expect(doc).to reference_wiki_pages
       end
 
       aggregate_failures 'TaskListFilter' do

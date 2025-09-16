@@ -21,7 +21,7 @@ to apply those rules as a merge request moves toward completion.
 
 Use any combination of these settings to configure approval limits for merge requests:
 
-- [**Prevent approval by author**](#prevent-approval-by-author):
+- [**Prevent approval by merge request creator**](#prevent-approval-by-merge-request-creator):
   Prevents the author of a merge request from approving it.
 - [**Prevent approvals by users who add commits**](#prevent-approvals-by-users-who-add-commits):
   Prevents users who add commits to a merge request from also approving it.
@@ -59,17 +59,17 @@ at the broadest possible level. Rules created:
 If a group or project inherits settings, you can't change them in the inheriting group or project.
 You must change the settings where they originated: the top-level group or instance.
 
-## Prevent approval by author
+## Prevent approval by merge request creator
 
-By default, the author of a merge request cannot approve it. To change this setting:
+By default, the creator of a merge request (author) cannot approve it. To change this setting:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval settings** and
-   clear the **Prevent approval by author** checkbox.
+   clear the **Prevent approval by merge request creator (author)** checkbox.
 1. Select **Save changes**.
 
-Authors can edit the approval rule in an individual merge request and override
+Merge request creators can edit the approval rule in an individual merge request and override
 this setting, unless you configure one of these options:
 
 - [Prevent overrides of default approvals](#prevent-editing-approval-rules-in-merge-requests) for your project.
@@ -87,8 +87,8 @@ this setting, unless you configure one of these options:
 
 {{< /history >}}
 
-By default, users who commit to a merge request can still approve it. You can prevent committers
-in your project or on your instance from approving merge requests that are partially
+By default, users who commit to a merge request (the committers) can still approve it. To prevent
+committers in your project (or your instance) from approving merge requests that are partially
 their own:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -104,6 +104,17 @@ their own:
 if the merge request affects files they own.
 
 For more information, see the [official Git documentation](https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History).
+
+{{< alert type="warning" >}}
+
+If a merge request is rebased by someone other than the user who originally committed the changes,
+the commit history is rewritten with a new committer. This might enable users who
+previously committed changes in a merge request to now approve changes in it, as they are
+no longer a committer.
+
+See also [approving after rebase](../../../../topics/git/git_rebase.md#approving-after-rebase)
+
+{{< /alert >}}
 
 ## Prevent editing approval rules in merge requests
 
@@ -134,6 +145,7 @@ When you change this field, it can affect all open merge requests depending on t
 - Requiring re-authentication by using SAML authentication for GitLab.com groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5981) in GitLab 16.6 [with a flag](../../../../administration/feature_flags/_index.md) named `ff_require_saml_auth_to_approve`. Disabled by default.
 - Requiring re-authentication by using SAML authentication for GitLab Self-Managed instances [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/431415) in GitLab 16.7 [with a flag](../../../../administration/feature_flags/_index.md) named `ff_require_saml_auth_to_approve`. Disabled by default.
 - [Enabled `ff_require_saml_auth_to_approve` by default](https://gitlab.com/gitlab-org/gitlab/-/issues/431714) in GitLab 16.8 for GitLab.com and GitLab Self-Managed instances.
+- Feature flag removed in GitLab 18.3
 
 {{< /history >}}
 

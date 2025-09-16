@@ -45,9 +45,24 @@ To add a new user to Switchboard for your GitLab Dedicated instance:
 
 An invitation to use Switchboard is sent to the user.
 
-### Reset a Switchboard user password
+### Reset your password
 
-To reset your Switchboard password, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+To reset your Switchboard password:
+
+1. On the Switchboard sign-in page, enter your email address then select **Continue**.
+1. Select **Forgot your password?**.
+1. Select **Send verification code**.
+1. Check your email for the verification code.
+1. Enter the verification code then select **Continue**.
+1. Enter and confirm your new password.
+1. Select **Save password**.
+
+After your password is reset, you're automatically signed in to Switchboard.
+If multi-factor authentication (MFA) is set up for your account, you're prompted to enter your MFA verification code.
+
+### Reset multi-factor authentication
+
+To reset your MFA for Switchboard, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650). 
 The support team will help you regain access to your account.
 
 ## Email notifications
@@ -66,7 +81,25 @@ Operational email addresses receive customer notifications, even if recipients:
 - Have not signed in to Switchboard.
 - Turn off email notifications.
 
-To stop receiving operational email notifications, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+### Manage operational email addresses
+
+To update the list of operational email addresses:
+
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. At the top of the page, select **Configuration**.
+1. Expand **Contact information**.
+1. Under **Operational email addresses**:
+   - To add a new address:
+     1. Select **Add email address**.
+     1. Enter the email address.
+     1. Select **Save**.
+   - To edit an existing address:
+     1. Select the pencil ({{< icon name="pencil" >}}) next to the address.
+     1. Edit the email address.
+     1. Select **Save**.
+   - To delete an address:
+     1. Select the trash can ({{< icon name="remove" >}}) next to the address.
+     1. On the confirmation dialog, select **Delete**.
 
 ### Manage notification preferences
 

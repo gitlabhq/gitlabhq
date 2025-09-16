@@ -8,7 +8,7 @@ include:
   - local: .gitlab/ci/version.yml
   - local: .gitlab/ci/global.gitlab-ci.yml
   - local: .gitlab/ci/ci-images.gitlab-ci.yml
-  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@11.11.1"
+  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@11.13.0"
     inputs:
       job_name: "e2e-test-report"
       job_stage: "report"
@@ -18,7 +18,7 @@ include:
       gitlab_auth_token_variable_name: "PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE"
       allure_job_name: "${QA_RUN_TYPE}"
   - project: gitlab-org/quality/pipeline-common
-    ref: 11.11.1
+    ref: 11.13.0
     file:
       - /ci/notify-slack.gitlab-ci.yml
       - /ci/qa-report.gitlab-ci.yml
@@ -48,7 +48,6 @@ stages:
   variables:
     BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
     BUNDLE_SILENCE_ROOT_WARNING: "true"
-    BUNDLE_WITHOUT: development
   before_script:
     - cd qa && bundle install
 
@@ -77,6 +76,9 @@ stages:
     GITLAB_LICENSE_MODE: test
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
     FF_NETWORK_PER_BUILD: "true"
+    # RUNNER_SCRIPT_TIMEOUT will trigger before overall job timeout, this ensures after_script will still be executed
+    # https://docs.gitlab.com/ci/runners/configure_runners/#set-script-and-after_script-timeouts
+    RUNNER_SCRIPT_TIMEOUT: $MAX_E2E_TEST_EXECUTION_TIME
 
 .e2e-test-base:
   extends:

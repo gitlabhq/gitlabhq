@@ -34,7 +34,8 @@ export default {
     display-as-text
     text-size="sm"
     :class="{
-      'md:gl-border-r md:gl-mr-3 md:gl-border-gray-100 md:gl-pr-3': hasUpdateTimeStamp,
+      '@md/panel:gl-border-r @md/panel:gl-mr-3 @md/panel:gl-border-gray-100 @md/panel:gl-pr-3':
+        hasUpdateTimeStamp,
     }"
     :health-status="healthStatus"
   />

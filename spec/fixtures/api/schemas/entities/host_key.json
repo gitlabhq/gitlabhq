@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "required": [
+    "fingerprint_sha256"
+  ],
+  "properties": {
+    "fingerprint_sha256": {
+      "type": [
+        "string"
+      ]
+    }
+  }
+}

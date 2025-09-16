@@ -107,24 +107,16 @@ The site profile is saved, for use in an on-demand scan.
 
 ### Edit a site profile
 
+Edit a site profile to change its settings before a scan.
+
+If a site profile is linked to a security policy, you cannot edit the profile from this page. See
+[scan execution policies](../policies/scan_execution_policies.md) for more information.
+
+To activate the site validation pipeline, you must define a runner with the tag `dast-validation-runner` or define a runner that can run untagged jobs.
+
 Prerequisites:
 
 - If a DAST scan uses the profile, you must be able to push to the branch associated with the scan.
-
-{{< alert type="note" >}}
-
-If a site profile is linked to a security policy, you cannot edit the profile from this page. See
-[Scan execution policies](../policies/scan_execution_policies.md) for more information.
-
-{{< /alert >}}
-
-{{< alert type="note" >}}
-
-If a site profile's Target URL or Authenticated URL is updated, the request headers and password fields associated with that profile are cleared.
-{{< /alert >}}
-
-When a validated site profile's file, header, or meta tag is edited, the site's
-[validation status](#site-profile-validation) is revoked.
 
 To edit a site profile:
 
@@ -134,6 +126,8 @@ To edit a site profile:
 1. Select the **Site Profiles** tab.
 1. In the profile's row select the **More actions** ({{< icon name="ellipsis_v" >}}) menu, then select **Edit**.
 1. Edit the fields then select **Save profile**.
+
+If a site profile's target or authenticated URL is updated, the request headers and password fields associated with that profile are cleared.
 
 ### Delete a site profile
 

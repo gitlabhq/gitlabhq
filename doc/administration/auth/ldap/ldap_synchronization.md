@@ -473,7 +473,7 @@ group, GitLab revokes their `admin` role when syncing.
 
 {{< /tabs >}}
 
-### Global group memberships lock
+### Global LDAP group memberships lock
 
 GitLab administrators can prevent group members from inviting new members to subgroups that have their membership synchronized with LDAP.
 
@@ -482,6 +482,8 @@ membership of a top-level group configured for LDAP synchronization.
 
 When global group memberships lock is enabled:
 
+- You cannot set a group or subgroup as a Code Owner.
+  For more information, see [Incompatibility with Global group memberships locks](../../../user/project/codeowners/troubleshooting.md#incompatibility-with-global-group-memberships-locks).
 - Only an administrator can manage memberships of any group including access levels.
 - Users are not allowed to share a project with other groups or invite members to
   a project created in a group.

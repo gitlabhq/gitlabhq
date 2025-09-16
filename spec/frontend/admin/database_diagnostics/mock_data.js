@@ -30,6 +30,16 @@ export const collationMismatchResults = {
           needs_deduplication: true,
         },
       ],
+      skipped_indexes: [
+        {
+          index_name: 'index_merge_requests_on_target_project_id',
+          table_name: 'merge_requests',
+          table_size_bytes: 2147483648,
+          index_size_bytes: 214748364,
+          table_size_threshold: 1073741824,
+          reason: 'table_size_exceeds_threshold',
+        },
+      ],
     },
     ci: {
       collation_mismatches: [],
@@ -58,42 +68,41 @@ export const schemaIssuesResults = {
     main: {
       missing_indexes: [
         {
-          table_name: 'users',
-          column_name: 'email',
-          index_name: 'index_users_on_email',
+          name: 'public.index_users_on_email',
         },
         {
-          table_name: 'projects',
-          column_name: 'name',
-          index_name: 'index_projects_on_name',
+          name: 'public.index_projects_on_name',
         },
       ],
       missing_tables: [
         {
-          table_name: 'audit_logs',
-          schema: 'public',
+          name: 'public.audit_logs',
         },
       ],
       missing_foreign_keys: [
         {
-          table_name: 'merge_requests',
-          column_name: 'project_id',
-          referenced_table: 'projects',
+          name: 'public.merge_requests_project_id',
         },
       ],
       missing_sequences: [
         {
-          sequence_name: 'users_id_seq',
-          table_name: 'users',
+          name: 'users_id_seq',
+        },
+      ],
+      wrong_sequence_owners: [
+        {
+          name: 'public.abuse_events_id_seq',
+          details: {
+            current_owner: 'public.achievements.id',
+            expected_owner: 'public.abuse_events.id',
+          },
         },
       ],
     },
     ci: {
       missing_indexes: [
         {
-          table_name: 'ci_builds',
-          column_name: 'status',
-          index_name: 'index_ci_builds_on_status',
+          name: 'public.index_ci_builds_on_status',
         },
       ],
       missing_tables: [],
@@ -125,9 +134,7 @@ export const singleDatabaseResults = {
     main: {
       missing_indexes: [
         {
-          table_name: 'users',
-          column_name: 'email',
-          index_name: 'index_users_on_email',
+          name: 'public.index_users_on_email',
         },
       ],
       missing_tables: [],
@@ -143,30 +150,22 @@ export const multiDatabaseResults = {
   },
   schema_check_results: {
     main: {
-      missing_indexes: [{ table_name: 'users', column_name: 'email' }],
+      missing_indexes: [{ name: 'public.index_on_users_lower_email' }],
       missing_tables: [],
       missing_foreign_keys: [],
       missing_sequences: [],
     },
     ci: {
-      missing_indexes: [{ table_name: 'ci_builds', index_name: 'ci_index' }],
+      missing_indexes: [{ name: 'public.p_ci_builds_name_id_idx' }],
       missing_tables: [],
       missing_foreign_keys: [],
       missing_sequences: [],
     },
     registry: {
       missing_indexes: [],
-      missing_tables: [{ table_name: 'registry_table' }],
+      missing_tables: [{ name: 'public.registry_table' }],
       missing_foreign_keys: [],
       missing_sequences: [],
     },
   },
-};
-
-// Mock data for the more complex SchemaSection component
-export const complexIssueData = {
-  missing: ['missing_index_1', 'missing_index_2'],
-  extra: ['extra_column_1'],
-  invalid: ['invalid_constraint_1'],
-  inconsistent: ['inconsistent_data_1', 'inconsistent_data_2'],
 };

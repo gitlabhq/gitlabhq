@@ -14,7 +14,6 @@ describe('experiment Utilities', () => {
 
   beforeEach(() => {
     origGl = window.gl;
-    window.gon.experiment = {};
     window.gl.experiments = {};
   });
 
@@ -28,19 +27,15 @@ describe('experiment Utilities', () => {
     const DEF_DATA = '_def_data_';
 
     describe.each`
-      gonData                | glData                  | input        | output
-      ${[ABC_KEY, ABC_DATA]} | ${[]}                   | ${[ABC_KEY]} | ${{ experiment: ABC_KEY, variant: ABC_DATA }}
-      ${[]}                  | ${[ABC_KEY, ABC_DATA]}  | ${[ABC_KEY]} | ${{ experiment: ABC_KEY, variant: ABC_DATA }}
-      ${[ABC_KEY, ABC_DATA]} | ${[DEF_KEY, DEF_DATA]}  | ${[ABC_KEY]} | ${{ experiment: ABC_KEY, variant: ABC_DATA }}
-      ${[ABC_KEY, ABC_DATA]} | ${[DEF_KEY, DEF_DATA]}  | ${[DEF_KEY]} | ${{ experiment: DEF_KEY, variant: DEF_DATA }}
-      ${[ABC_KEY, ABC_DATA]} | ${[ABC_KEY, ABC_DATA2]} | ${[ABC_KEY]} | ${{ experiment: ABC_KEY, variant: ABC_DATA2 }}
-      ${[]}                  | ${[]}                   | ${[ABC_KEY]} | ${undefined}
-    `('with input=$input, gon=$gonData, & gl=$glData', ({ gonData, glData, input, output }) => {
+      glData                  | input        | output
+      ${[ABC_KEY, ABC_DATA]}  | ${[ABC_KEY]} | ${{ experiment: ABC_KEY, variant: ABC_DATA }}
+      ${[DEF_KEY, DEF_DATA]}  | ${[DEF_KEY]} | ${{ experiment: DEF_KEY, variant: DEF_DATA }}
+      ${[ABC_KEY, ABC_DATA2]} | ${[ABC_KEY]} | ${{ experiment: ABC_KEY, variant: ABC_DATA2 }}
+      ${[]}                   | ${[ABC_KEY]} | ${undefined}
+    `('with input=$input, & gl=$glData', ({ glData, input, output }) => {
       beforeEach(() => {
-        const [gonKey, gonVariant] = gonData;
         const [glKey, glVariant] = glData;
 
-        if (gonKey) window.gon.experiment[gonKey] = { experiment: gonKey, variant: gonVariant };
         if (glKey) window.gl.experiments[glKey] = { experiment: glKey, variant: glVariant };
       });
 

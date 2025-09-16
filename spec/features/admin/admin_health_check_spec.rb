@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe "Admin health check", :js, feature_category: :error_budgets do
+RSpec.describe "Admin health check", :js, :delete, feature_category: :error_budgets do
   include StubENV
   include Spec::Support::Helpers::ModalHelpers
-  let_it_be(:admin) { create(:admin) }
+  let!(:admin) { create(:admin) }
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')

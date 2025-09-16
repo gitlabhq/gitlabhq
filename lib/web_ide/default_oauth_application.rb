@@ -42,7 +42,7 @@ module WebIde
           # now just skip.
           next if oauth_application
 
-          application = Doorkeeper::Application.new(default_settings)
+          application = Authn::OauthApplication.new(default_settings)
           application.save!
           application_settings.update!(web_ide_oauth_application: application)
           should_expire_cache = true

@@ -60,7 +60,7 @@ module Notes
           'update_wiki_page_note',
           project: project,
           namespace: note.noteable.namespace,
-          user: current_user
+          user: updated_by_user
         )
       end
 
@@ -69,10 +69,14 @@ module Notes
 
     private
 
+    def updated_by_user
+      @_updated_by_user ||= Gitlab::Auth::Identity.invert_composite_identity(current_user)
+    end
+
     def update_note(note, only_commands)
       return unless note.note_changed?
 
-      note.assign_attributes(last_edited_at: Time.current, updated_by: current_user)
+      note.assign_attributes(last_edited_at: Time.current, updated_by: updated_by_user)
       note.check_for_spam(action: :update, user: current_user) unless only_commands
     end
 

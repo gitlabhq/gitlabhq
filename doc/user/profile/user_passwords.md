@@ -29,16 +29,9 @@ authorization provider, you do not need to choose a password. GitLab
 
 ## Change your password
 
-{{< history >}}
+You can change your password. The new password must meet the password requirements.
 
-- Password reset emails sent to any verified email address [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16311) in GitLab 16.1.
-
-{{< /history >}}
-
-You can change your password. GitLab enforces [password requirements](#password-requirements) when you choose your new
-password.
-
-### Change a known password
+To change your password:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
@@ -47,19 +40,27 @@ password.
 1. In the **New password** and **Password confirmation** text box, enter your new password.
 1. Select **Save password**.
 
-### Change an unknown password
+## Reset your password
 
-If you do not know your current password, select **Forgot your password?**
-from the GitLab sign-in page and complete the form.
+{{< history >}}
 
-If you enter a verified email address for an existing account, GitLab sends a password reset email.
-If the provided email address isn't associated with an existing account, no email is sent.
+- Password reset emails sent to any verified email address [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16311) in GitLab 16.1.
 
-In both situations, you are redirected to the sign-in page and see the following message:
+{{< /history >}}
 
-```plaintext
-If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes.
-```
+If you forget your password, you can submit a request to reset your password.
+
+To reset your password:
+
+1. Go to the GitLab sign-in page.
+   - On GitLab.com, this is available at [https://gitlab.com/users/sign_in](https://gitlab.com/users/sign_in/).
+   - On GitLab Self-Managed and GitLab Dedicated, use your domain. For example, `gitlab.example.com/users/sign_in`.
+1. Select **Forgot your password?**.
+1. Enter your email.
+1. Select **Reset password**.
+
+You are redirected to the sign-in page. If the provided email is verified and associated with an
+existing account, GitLab sends a password reset email.
 
 {{< alert type="note" >}}
 

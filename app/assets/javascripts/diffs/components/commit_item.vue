@@ -88,8 +88,10 @@ export default {
 
 <template>
   <li :class="{ 'js-toggle-container': collapsible }" class="commit">
-    <div class="gl-block gl-flex-row-reverse gl-items-start gl-justify-between sm:gl-flex">
-      <div class="commit-actions gl-hidden gl-flex-row gl-items-center gl-justify-end sm:gl-flex">
+    <div class="gl-block gl-flex-row-reverse gl-items-start gl-justify-between @sm/panel:gl-flex">
+      <div
+        class="commit-actions gl-hidden gl-flex-row gl-items-center gl-justify-end @sm/panel:gl-flex"
+      >
         <div
           v-if="commit.signature_html"
           v-html="commit.signature_html /* eslint-disable-line vue/no-v-html */"
@@ -97,7 +99,7 @@ export default {
         <commit-pipeline-status
           v-if="commit.pipeline_status_path"
           :endpoint="commit.pipeline_status_path"
-          class="mb-2 gl-inline-flex"
+          class="!gl-mb-3 gl-inline-flex"
         />
         <gl-button-group class="gl-ml-4" data-testid="commit-sha-group">
           <gl-button label class="gl-font-monospace" data-testid="commit-sha-short-id">{{
@@ -111,7 +113,7 @@ export default {
         </gl-button-group>
       </div>
       <div>
-        <div class="float-left align-self-start gl-flex gl-items-center">
+        <div class="!gl-float-left gl-flex gl-items-center !gl-self-start">
           <gl-form-checkbox
             v-if="isSelectable"
             :checked="checked"
@@ -123,7 +125,7 @@ export default {
             :img-src="authorAvatar"
             :img-alt="authorName"
             :img-size="32"
-            class="avatar-cell gl-my-2 gl-mr-3 gl-hidden sm:gl-block"
+            class="avatar-cell gl-my-2 gl-mr-3 gl-hidden @sm/panel:gl-block"
           />
         </div>
         <div

@@ -87,7 +87,7 @@ module Gitlab
         # point to a `ConnectionProxy`, and obtaining those doesn't involve any
         # database queries. So instead we obtain the database version, which is
         # cached after the first call.
-        connection.schema_cache.database_version
+        connection.database_version
         true
       rescue StandardError
         false

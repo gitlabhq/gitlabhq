@@ -158,10 +158,8 @@ module API
         post ':id/jobs/:job_id/retry', urgency: :low, feature_category: :continuous_integration do
           Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/473419')
 
-          authorize_update_builds!
-
           job = find_job!(params[:job_id])
-          authorize!(:update_build, job)
+          authorize!(:retry_job, job)
 
           response = ::Ci::RetryJobService.new(@project, current_user).execute(job)
 
@@ -185,8 +183,6 @@ module API
           requires :job_id, type: Integer, desc: 'The ID of a build', documentation: { example: 88 }
         end
         post ':id/jobs/:job_id/erase', urgency: :low, feature_category: :continuous_integration do
-          authorize_update_builds!
-
           build = find_build!(params[:job_id])
           authorize!(:erase_build, build)
           break forbidden!('Job is not erasable!') unless build.erasable?
@@ -245,7 +241,7 @@ module API
           # Use primary for both main and ci database as authenticating in the scope of runners will load
           # Ci::Build model and other standard authn related models like License, Project and User.
           ::Gitlab::Database::LoadBalancing::SessionMap
-            .with_sessions([::ApplicationRecord, ::Ci::ApplicationRecord]).use_primary { authenticate! }
+            .with_sessions.use_primary { authenticate! }
         end
 
         desc 'Get current job using job token' do

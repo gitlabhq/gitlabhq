@@ -42,6 +42,62 @@ approval_merge_request_rules:
   - table: approval_policy_rules
     column: approval_policy_rule_id
     on_delete: async_nullify
+backup_finding_evidences:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+backup_finding_flags:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+backup_finding_identifiers:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+backup_finding_links:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+backup_finding_remediations:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+backup_finding_signatures:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+backup_findings:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+backup_vulnerabilities:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+backup_vulnerability_external_issue_links:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+backup_vulnerability_issue_links:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+backup_vulnerability_merge_request_links:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+backup_vulnerability_severity_overrides:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+backup_vulnerability_state_transitions:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+backup_vulnerability_user_mentions:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 chat_names:
   - table: users
     column: user_id
@@ -184,14 +240,6 @@ ci_runner_taggings:
     on_delete: async_delete
   - table: organizations
     column: organization_id
-    on_delete: async_delete
-ci_runner_taggings_group_type:
-  - table: namespaces
-    column: sharding_key_id
-    on_delete: async_delete
-ci_runner_taggings_project_type:
-  - table: projects
-    column: sharding_key_id
     on_delete: async_delete
 ci_runners:
   - table: users
@@ -371,6 +419,10 @@ geo_node_namespace_links:
   - table: namespaces
     column: namespace_id
     on_delete: async_delete
+geo_node_organization_links:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
 group_push_rules:
   - table: namespaces
     column: group_id
@@ -419,6 +471,11 @@ members:
   - table: users
     column: user_id
     on_delete: async_delete
+merge_request_diff_commits:
+  - table: merge_request_diffs
+    column: merge_request_diff_id
+    on_delete: async_delete
+    worker_class: LooseForeignKeys::MergeRequestDiffCommitCleanupWorker
 merge_request_metrics:
   - table: p_ci_pipelines
     column: pipeline_id
@@ -538,10 +595,15 @@ p_ci_job_inputs:
   - table: projects
     column: project_id
     on_delete: async_delete
+p_ci_job_messages:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 p_ci_pipelines:
   - table: merge_requests
     column: merge_request_id
     on_delete: async_delete
+    delete_limit: 100
   - table: users
     column: user_id
     on_delete: async_nullify
@@ -598,6 +660,10 @@ packages_npm_metadata_caches:
     on_delete: update_column_to
     target_column: status
     target_value: 2
+packages_nuget_symbol_states:
+  - table: packages_nuget_symbols
+    column: packages_nuget_symbol_id
+    on_delete: async_delete
 packages_package_file_build_infos:
   - table: p_ci_pipelines
     column: pipeline_id
@@ -619,6 +685,10 @@ project_authorizations_for_migration:
     column: user_id
     on_delete: async_delete
 project_repositories:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
+project_repository_states:
   - table: projects
     column: project_id
     on_delete: async_delete
@@ -714,6 +784,10 @@ security_inventory_filters:
   - table: projects
     column: project_id
     on_delete: async_delete
+security_project_tracked_contexts:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 security_scans:
   - table: p_ci_builds
     column: build_id
@@ -724,6 +798,10 @@ security_scans:
 security_trainings:
   - table: projects
     column: project_id
+    on_delete: async_delete
+slsa_attestations:
+  - table: p_ci_builds
+    column: build_id
     on_delete: async_delete
 snippets:
   - table: organizations

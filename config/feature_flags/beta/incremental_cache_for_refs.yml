@@ -1,0 +1,10 @@
+---
+name: incremental_cache_for_refs
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553426
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203795
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/567993
+milestone: '18.4'
+group: group::source code
+type: beta
+default_enabled: false

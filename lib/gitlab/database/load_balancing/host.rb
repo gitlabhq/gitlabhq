@@ -7,7 +7,7 @@ module Gitlab
       class Host
         attr_reader :pool, :last_checked_at, :intervals, :load_balancer, :host, :port
 
-        delegate :connection, :release_connection, :enable_query_cache!, :disable_query_cache!, :query_cache_enabled, to: :pool
+        delegate :connection, :release_connection, :enable_query_cache!, :disable_query_cache!, :query_cache_enabled, :discarded?, to: :pool
 
         CONNECTION_ERRORS = [
           ActionView::Template::Error,
@@ -128,6 +128,10 @@ module Gitlab
 
         # Returns true if the host is online.
         def online?
+          # Avoid using a discarded connection pool because attempting
+          # to use it will fail. After the main process forks, all of
+          # its connection pools are discarded from Rails' ForkTracker.
+          return false if discarded?
           return @online unless check_replica_status?
 
           was_online = @online

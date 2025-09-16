@@ -19,7 +19,7 @@ RSpec.describe QueueBackfillIssuableSeveritiesNamespaceId, feature_category: :te
           interval: described_class::DELAY_INTERVAL,
           batch_size: described_class::BATCH_SIZE,
           sub_batch_size: described_class::SUB_BATCH_SIZE,
-          gitlab_schema: :gitlab_main_cell,
+          gitlab_schema: :gitlab_main_org,
           job_arguments: [
             :namespace_id,
             :issues,

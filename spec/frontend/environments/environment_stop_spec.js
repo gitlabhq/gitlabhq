@@ -15,7 +15,7 @@ describe('Stop Component', () => {
   const createWrapper = (props = {}, options = {}) => {
     wrapper = shallowMount(StopComponent, {
       propsData: {
-        environment: {},
+        environment: { name: 'my-environment' },
         ...props,
       },
       ...options,
@@ -31,7 +31,11 @@ describe('Stop Component', () => {
 
     it('should render a button to stop the environment', () => {
       expect(findButton().exists()).toBe(true);
-      expect(wrapper.attributes('title')).toEqual('Stop environment');
+      expect(findButton().attributes('title')).toBe('Stop environment');
+    });
+
+    it('should provide descriptive aria-label for the button', () => {
+      expect(findButton().attributes('aria-label')).toBe('Stop environment my-environment');
     });
   });
 

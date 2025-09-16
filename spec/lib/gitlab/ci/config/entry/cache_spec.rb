@@ -212,7 +212,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
             let(:config) { { key: {} } }
 
             it 'reports error with descendants' do
-              is_expected.to include 'key config missing required keys: files'
+              is_expected.to include 'key config must use exactly one of these keys: files, files_commits'
             end
           end
 
@@ -228,7 +228,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Cache do
             let(:config) { { key: { prefix: 'a-prefix' } } }
 
             it 'reports error with descendants' do
-              is_expected.to include 'key config missing required keys: files'
+              is_expected.to include 'key config must use exactly one of these keys: files, files_commits'
             end
           end
 

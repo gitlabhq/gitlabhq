@@ -8,8 +8,12 @@ class BuildDetailsEntity < Ci::JobEntity
   expose :stuck?, as: :stuck
   expose :user, using: UserEntity
   expose :runner, using: RunnerEntity
-  expose :metadata, using: BuildMetadataEntity
   expose :pipeline, using: Ci::PipelineEntity
+
+  expose :metadata do
+    expose :timeout_human_readable_value, as: :timeout_human_readable
+    expose :timeout_human_readable_source, as: :timeout_source
+  end
 
   expose :deployment_status, if: ->(*) { build.deployment_job? } do
     expose :deployment_status, as: :status
@@ -35,7 +39,7 @@ class BuildDetailsEntity < Ci::JobEntity
       fast_browse_project_job_artifacts_path(project, build)
     end
 
-    expose :keep_path, if: ->(*) { (build.has_expired_locked_archive_artifacts? || build.has_expiring_archive_artifacts?) && can?(current_user, :update_build, build) } do |build|
+    expose :keep_path, if: ->(*) { (build.has_expired_locked_archive_artifacts? || build.has_expiring_archive_artifacts?) && can?(current_user, :keep_job_artifacts, build) } do |build|
       fast_keep_project_job_artifacts_path(project, build)
     end
 
@@ -160,6 +164,13 @@ class BuildDetailsEntity < Ci::JobEntity
 
   def help_message(docs_url, troubleshooting_url)
     ERB::Util.html_escape(_("Learn more about <a href=\"#{docs_url}\">dependencies</a> and <a href=\"#{troubleshooting_url}\">common causes</a> of this error.</a>".html_safe))
+  end
+
+  def timeout_human_readable_source
+    return unless build.timeout_source_value
+
+    source = build.timeout_source_value.split('_').first
+    source == 'unknown' ? build.timeout_source_value : source
   end
 end
 

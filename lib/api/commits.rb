@@ -276,6 +276,9 @@ module API
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
         optional :stats, type: Boolean, default: true, desc: 'Include commit stats'
       end
+      route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: :read_repositories,
+        allow_public_access_for_enabled_project_features: :repository
       get ':id/repository/commits/:sha', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
         commit = user_project.commit(params[:sha])
 
@@ -323,7 +326,7 @@ module API
         commit = user_project.commit(params[:sha])
 
         not_found! 'Commit' unless commit
-        notes = commit.notes.with_api_entity_associations.fresh
+        notes = commit.notes.with_api_entity_associations.order_created_at_id_asc
 
         present paginate(notes), with: Entities::CommitNote
       end
@@ -580,6 +583,9 @@ module API
         optional :state, type: String, desc: 'Filter merge-requests by state', documentation: { example: 'merged' }
         use :pagination
       end
+      route_setting :authentication, job_token_allowed: true
+      route_setting :authorization, job_token_policies: :read_repositories,
+        allow_public_access_for_enabled_project_features: [:repository, :merge_requests]
       get ':id/repository/commits/:sha/merge_requests', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS, urgency: :low do
         authorize! :read_merge_request, user_project
 

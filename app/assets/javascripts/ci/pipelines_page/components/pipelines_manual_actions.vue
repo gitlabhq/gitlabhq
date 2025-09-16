@@ -155,7 +155,7 @@ export default {
     <gl-disclosure-dropdown-item v-if="isActionsLoading">
       <template #list-item>
         <div class="gl-flex">
-          <gl-loading-icon class="mr-2" />
+          <gl-loading-icon class="gl-mr-3" />
           <span>{{ __('Loading…') }}</span>
         </div>
       </template>

@@ -4,8 +4,12 @@ module Gitlab
   module Gpg
     class Commit < Gitlab::Repositories::BaseSignedCommit
       def update_signature!(cached_signature)
-        using_keychain do |gpg_key|
-          update_signature_with_keychain!(cached_signature, gpg_key)
+        if using_signature_class?
+          update_signature_with_keychain!(cached_signature, gpg_signature.gpg_key)
+        else
+          using_keychain do |gpg_key|
+            update_signature_with_keychain!(cached_signature, gpg_key)
+          end
         end
       end
 
@@ -15,6 +19,10 @@ module Gitlab
       end
 
       private
+
+      def project
+        @commit.project
+      end
 
       def signature_class
         CommitSignatures::GpgSignature
@@ -49,11 +57,20 @@ module Gitlab
       end
 
       def create_cached_signature!
-        using_keychain do |gpg_key|
-          attributes = attributes(gpg_key)
-          break CommitSignatures::GpgSignature.new(attributes) if Gitlab::Database.read_only?
+        if using_signature_class?
+          return unless gpg_signature.fingerprint
+
+          attributes = attributes(gpg_signature.gpg_key)
+          return CommitSignatures::GpgSignature.new(attributes) if Gitlab::Database.read_only?
 
           CommitSignatures::GpgSignature.safe_create!(attributes)
+        else
+          using_keychain do |gpg_key|
+            attributes = attributes(gpg_key)
+            break CommitSignatures::GpgSignature.new(attributes) if Gitlab::Database.read_only?
+
+            CommitSignatures::GpgSignature.safe_create!(attributes)
+          end
         end
       end
 
@@ -81,13 +98,19 @@ module Gitlab
 
         {
           commit_sha: @commit.sha,
-          project: @commit.project,
+          project: project,
           gpg_key: gpg_key,
-          gpg_key_primary_keyid: gpg_key&.keyid || verified_signature&.fingerprint,
           gpg_key_user_name: user_infos[:name],
-          gpg_key_user_email: gpg_key_user_email(user_infos, verification_status),
-          verification_status: verification_status
-        }
+          gpg_key_user_email: gpg_key_user_email(user_infos, verification_status)
+        }.tap do |attrs|
+          if using_signature_class?
+            attrs[:gpg_key_primary_keyid] = gpg_key&.keyid || gpg_signature.fingerprint
+            attrs[:verification_status] = gpg_signature.verification_status
+          else
+            attrs[:gpg_key_primary_keyid] = gpg_key&.keyid || verified_signature&.fingerprint
+            attrs[:verification_status] = verification_status
+          end
+        end
       end
 
       def verification_status(gpg_key)
@@ -129,9 +152,18 @@ module Gitlab
 
       def gpg_key_user_email(user_infos, verification_status)
         return user_infos[:email] unless Feature.enabled?(:check_for_mailmapped_commit_emails,
-          @commit.project) && verification_status == :verified_system
+          project) && verification_status == :verified_system
 
         user_infos[:email] || author_email
+      end
+
+      def gpg_signature
+        ::Gitlab::Gpg::Signature.new(signature_text, signed_text, signer, @commit.committer_email)
+      end
+      strong_memoize_attr :gpg_signature
+
+      def using_signature_class?
+        Feature.enabled?(:gpg_commit_delegate_to_signature, project)
       end
     end
   end

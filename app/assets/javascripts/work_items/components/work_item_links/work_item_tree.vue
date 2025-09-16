@@ -408,12 +408,12 @@ export default {
     <template #count>
       <work-item-rolled-up-count
         v-if="!isLoadingChildren"
-        class="gl-ml-2 sm:gl-ml-0"
+        class="gl-ml-2 @sm/panel:gl-ml-0"
         :rolled-up-counts-by-type="rolledUpCountsByType"
       />
       <work-item-rolled-up-data
         v-if="!isLoadingChildren"
-        class="gl-hidden sm:gl-flex"
+        class="gl-hidden @sm/panel:gl-flex"
         :work-item-iid="workItemIid"
         :work-item-type="workItemType"
         :full-path="fullPath"
@@ -423,7 +423,7 @@ export default {
     <template #description>
       <work-item-rolled-up-data
         v-if="!isLoadingChildren"
-        class="gl-mt-2 sm:gl-hidden"
+        class="gl-mt-2 @sm/panel:gl-hidden"
         :work-item-iid="workItemIid"
         :work-item-type="workItemType"
         :full-path="fullPath"

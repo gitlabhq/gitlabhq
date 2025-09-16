@@ -91,9 +91,11 @@ module API
       expose(:monitor_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :monitor) }
       expose(:model_experiments_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :model_experiments) }
       expose(:model_registry_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :model_registry) }
+      expose(:package_registry_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :package_registry) }
 
       expose(:emails_disabled, documentation: { type: 'boolean' }) { |project, options| project.emails_disabled? }
       expose :emails_enabled, documentation: { type: 'boolean' }
+      expose(:show_diff_preview_in_email, documentation: { type: 'boolean' }) { |project, options| project.show_diff_preview_in_email? }
 
       expose :shared_runners_enabled, documentation: { type: 'boolean' }
       expose :lfs_enabled?, as: :lfs_enabled, documentation: { type: 'boolean' }
@@ -130,6 +132,7 @@ module API
         expose :ci_pipeline_variables_minimum_override_role, documentation: { type: 'string' }
         expose :runner_token_expiration_interval, documentation: { type: 'integer', example: 3600 }
         expose :group_runners_enabled, documentation: { type: 'boolean' }
+        expose :resource_group_default_process_mode, documentation: { type: 'string', example: 'unordered' }
         expose :auto_cancel_pending_pipelines, documentation: { type: 'string', example: 'enabled' }
         expose :build_timeout, documentation: { type: 'integer', example: 3600 }
         expose :auto_devops_enabled?, as: :auto_devops_enabled, documentation: { type: 'boolean' }

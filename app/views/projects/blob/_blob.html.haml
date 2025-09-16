@@ -14,7 +14,7 @@
 .info-well
   #js-last-commit{ data: { history_link: project_commits_path(project, ref)} }
 
-  .gl-hidden.sm:gl-block
+  .gl-hidden{ class: '@sm/panel:gl-block' }
     - if project.licensed_feature_available?(:code_owners)
       #js-code-owners{ data: { blob_path: blob.path, project_path: @project.full_path, branch: @ref, can_view_branch_rules: can_view_branch_rules?, branch_rules_path: branch_rules_path } }
     = render "projects/blob/auxiliary_viewer", blob: blob, ref: @ref

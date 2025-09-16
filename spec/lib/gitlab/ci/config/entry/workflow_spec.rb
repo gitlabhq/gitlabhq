@@ -140,12 +140,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Workflow, feature_category: :pipeline_
         { name: '' }
       end
 
-      it 'is invalid' do
-        expect(config).not_to be_valid
-      end
-
-      it 'returns error about invalid name' do
-        expect(config.errors).to include('workflow name is too short (minimum is 1 character)')
+      it 'is valid' do
+        expect(config).to be_valid
       end
     end
 

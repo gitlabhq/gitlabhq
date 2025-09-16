@@ -31,7 +31,7 @@ module Oauth
       redirect_uris = client_metadata[:redirect_uris]
       redirect_uris = [redirect_uris] if redirect_uris.is_a?(String)
 
-      application = ::Doorkeeper::Application.create(
+      application = ::Authn::OauthApplication.create(
         name: "[Unverified Dynamic Application] #{client_metadata[:client_name]}",
         redirect_uri: Array(redirect_uris).join("\n"),
         scopes: scopes,

@@ -75,6 +75,78 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
       end
     end
 
+    context 'ref only exists without .json suffix' do
+      context 'with a path' do
+        let(:ref) { 'v1.0.0.json' }
+        let(:path) { 'README.md' }
+
+        it 'renders a 404' do
+          expect(self).to receive(:render_404)
+
+          assign_ref_vars
+        end
+      end
+
+      context 'without a path' do
+        let(:ref) { 'v1.0.0.json' }
+        let(:path) { nil }
+
+        before do
+          assign_ref_vars
+        end
+
+        it 'sets the un-suffixed version as @ref' do
+          expect(@ref).to eq('v1.0.0')
+        end
+
+        it 'sets the request format to JSON' do
+          expect(request).to have_received(:format=).with(:json)
+        end
+      end
+    end
+
+    context 'ref exists with .json suffix' do
+      before do
+        repository = @project.repository
+        allow(repository).to receive(:commit).and_call_original
+        allow(repository).to receive(:commit).with('master.json').and_return(repository.commit('master'))
+      end
+
+      context 'with a path' do
+        let(:ref) { 'master.json' }
+        let(:path) { 'README.md' }
+
+        before do
+          assign_ref_vars
+        end
+
+        it 'sets the suffixed version as @ref' do
+          expect(@ref).to eq('master.json')
+        end
+
+        it 'does not change the request format' do
+          expect(request).not_to have_received(:format=)
+        end
+      end
+
+      context 'without a path' do
+        let(:ref) { 'master.json' }
+        let(:path) { nil }
+
+        before do
+          assign_ref_vars
+        end
+
+        it 'sets the suffixed version as @ref' do
+          expect(@ref).to eq('master.json')
+        end
+
+        it 'does not change the request format' do
+          expect(request).not_to have_received(:format=)
+        end
+      end
+    end
+
     context 'ref only exists without .atom suffix' do
       context 'with a path' do
         let(:ref) { 'v1.0.0.atom' }
@@ -106,15 +178,17 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
     end
 
     context 'ref exists with .atom suffix' do
+      before do
+        repository = @project.repository
+        allow(repository).to receive(:commit).and_call_original
+        allow(repository).to receive(:commit).with('master.atom').and_return(repository.commit('master'))
+      end
+
       context 'with a path' do
         let(:ref) { 'master.atom' }
         let(:path) { 'README.md' }
 
         before do
-          repository = @project.repository
-          allow(repository).to receive(:commit).and_call_original
-          allow(repository).to receive(:commit).with('master.atom').and_return(repository.commit('master'))
-
           assign_ref_vars
         end
 
@@ -132,21 +206,15 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
         let(:path) { nil }
 
         before do
-          repository = @project.repository
-          allow(repository).to receive(:commit).and_call_original
-          allow(repository).to receive(:commit).with('master.atom').and_return(repository.commit('master'))
+          assign_ref_vars
         end
 
         it 'sets the suffixed version as @ref' do
-          assign_ref_vars
-
           expect(@ref).to eq('master.atom')
         end
 
         it 'does not change the request format' do
-          expect(request).not_to receive(:format=)
-
-          assign_ref_vars
+          expect(request).not_to have_received(:format=)
         end
       end
     end
@@ -268,17 +336,21 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
     end
   end
 
-  describe '#extract_ref_without_atom' do
+  describe '#extract_ref_and_format' do
     it 'ignores any matching refs suffixed with atom' do
-      expect(extract_ref_without_atom('master.atom')).to eq('master')
+      expect(extract_ref_and_format('master.atom')).to eq(['master', :atom])
     end
 
-    it 'returns the longest matching ref' do
-      expect(extract_ref_without_atom('release/app/v1.0.0.atom')).to eq('release/app/v1.0.0')
+    it 'ignores any matching refs suffixed with json' do
+      expect(extract_ref_and_format('master.json')).to eq(['master', :json])
+    end
+
+    it 'returns the exactly matching ref' do
+      expect(extract_ref_and_format('release/app/v1.0.0.atom')).to eq(['release/app/v1.0.0', :atom])
     end
 
     it 'raises an error if there are no matching refs' do
-      expect { extract_ref_without_atom('foo.atom') }.to raise_error(ExtractsPath::InvalidPathError)
+      expect { extract_ref_and_format('foo.atom') }.to raise_error(ExtractsPath::InvalidPathError)
     end
   end
 end

@@ -1,6 +1,6 @@
 <script>
 import { computed } from 'vue';
-import { GlCollapsibleListbox, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlTooltipDirective, GlSkeletonLoader, GlIcon } from '@gitlab/ui';
 import emptyTodosAllDoneSvg from '@gitlab/svgs/dist/illustrations/status/status-success-sm.svg';
 import emptyTodosFilteredSvg from '@gitlab/svgs/dist/illustrations/search-sm.svg';
 import { s__ } from '~/locale';
@@ -22,7 +22,7 @@ import {
   TRACKING_LABEL_TODO_ITEMS,
   TRACKING_PROPERTY_ALL_TODOS,
 } from '../tracking_constants';
-import VisibilityChangeDetector from './visibility_change_detector.vue';
+import BaseWidget from './base_widget.vue';
 
 const N_TODOS = 5;
 
@@ -30,31 +30,45 @@ const FILTER_OPTIONS = [
   {
     value: null,
     text: s__('Todos|All'),
+    description: s__('Todos|All your pending to-do items across GitLab.'),
   },
   {
     value: TODO_ACTION_TYPE_ASSIGNED,
     text: s__('Todos|Assigned'),
+    description: s__('Todos|Items assigned to you.'),
   },
   {
     value: `${TODO_ACTION_TYPE_MENTIONED};${TODO_ACTION_TYPE_DIRECTLY_ADDRESSED}`,
     text: s__('Todos|Mentioned'),
+    description: s__('Todos|Items where you were mentioned (@username).'),
   },
   {
     value: TODO_ACTION_TYPE_BUILD_FAILED,
     text: s__('Todos|Build failed'),
+    description: s__('Todos|Merge requests with failed pipelines.'),
   },
   {
     value: TODO_ACTION_TYPE_UNMERGEABLE,
     text: s__('Todos|Unmergeable'),
+    description: s__(
+      'Todos|Merge requests that cannot be merged due to conflicts or other issues.',
+    ),
   },
   {
     value: TODO_ACTION_TYPE_REVIEW_REQUESTED,
     text: s__('Todos|Review requested'),
+    description: s__('Todos|Merge requests that require your review or approval.'),
   },
 ];
 
 export default {
-  components: { TodoItem, GlCollapsibleListbox, GlSkeletonLoader, VisibilityChangeDetector },
+  components: {
+    TodoItem,
+    GlCollapsibleListbox,
+    GlSkeletonLoader,
+    BaseWidget,
+    GlIcon,
+  },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -74,6 +88,15 @@ export default {
       showLoading: true,
       hasError: false,
     };
+  },
+  computed: {
+    todoTrackingContext() {
+      return { source: 'personal_homepage' };
+    },
+    selectedFilterText() {
+      const selectedOption = FILTER_OPTIONS.find((option) => option.value === this.filter);
+      return selectedOption ? selectedOption.text : s__('Todos|All');
+    },
   },
   apollo: {
     todos: {
@@ -119,21 +142,44 @@ export default {
 </script>
 
 <template>
-  <visibility-change-detector @visible="reload">
-    <div class="gl-flex gl-items-center gl-justify-between gl-gap-2">
-      <h2 class="gl-heading-4 gl-my-4 gl-grow">{{ __('To-do items') }}</h2>
+  <base-widget @visible="reload">
+    <div class="gl-mb-2 gl-flex gl-items-center gl-justify-between gl-gap-2">
+      <div class="gl-flex gl-items-center gl-gap-2">
+        <h2 class="gl-heading-4 gl-m-0 gl-grow">{{ __('To-do items') }}</h2>
+        <gl-icon
+          v-gl-tooltip.hover
+          :title="s__('Todos|Filter your to-do items to focus on what needs your attention.')"
+          name="information-o"
+          class="gl-text-gray-400"
+          :size="14"
+        />
+      </div>
 
-      <gl-collapsible-listbox v-if="!hasError" v-model="filter" :items="$options.FILTER_OPTIONS" />
+      <gl-collapsible-listbox
+        v-if="!hasError"
+        v-model="filter"
+        :items="$options.FILTER_OPTIONS"
+        :toggle-text="selectedFilterText"
+      >
+        <template #list-item="{ item }">
+          <div class="gl-flex gl-w-full gl-flex-col gl-gap-1">
+            <div class="gl-font-weight-semibold gl-text-default">{{ item.text }}</div>
+            <div class="gl-line-height-normal gl-text-sm gl-text-subtle">
+              {{ item.description }}
+            </div>
+          </div>
+        </template>
+      </gl-collapsible-listbox>
     </div>
 
-    <p v-if="hasError">
+    <p v-if="hasError" class="gl-mb-3">
       {{
         s__(
           'HomePageTodosWidget|Your to-do items are not available. Please refresh the page to try again.',
         )
       }}
     </p>
-    <div v-else class="gl-rounded-lg gl-bg-subtle">
+    <template v-else>
       <div v-if="showLoading && $apollo.queries.todos.loading" class="gl-p-4">
         <gl-skeleton-loader v-for="i in 5" :key="i" :width="200" :height="10">
           <rect x="0" y="0" width="16" height="8" rx="2" ry="2" />
@@ -144,7 +190,7 @@ export default {
 
       <div
         v-else-if="!$apollo.queries.todos.loading && !todos.length && !filter"
-        class="gl-flex gl-items-center gl-gap-5 gl-rounded-lg gl-bg-subtle gl-p-4"
+        class="gl-flex gl-items-center gl-gap-5 gl-rounded-lg gl-p-4"
       >
         <img class="gl-h-11" aria-hidden="true" :src="$options.emptyTodosAllDoneSvg" />
         <span>
@@ -154,7 +200,7 @@ export default {
       </div>
       <div
         v-else-if="!$apollo.queries.todos.loading && !todos.length && filter"
-        class="gl-flex gl-items-center gl-gap-5 gl-rounded-lg gl-bg-subtle gl-p-4"
+        class="gl-flex gl-items-center gl-gap-5 gl-rounded-lg gl-p-4"
       >
         <img class="gl-h-11" aria-hidden="true" :src="$options.emptyTodosFilteredSvg" />
         <span>{{ __('Sorry, your filter produced no results') }}</span>
@@ -163,15 +209,16 @@ export default {
         <todo-item
           v-for="todo in todos"
           :key="todo.id"
-          class="first:gl-rounded-t-lg hover:!gl-bg-strong"
+          class="-gl-mx-3 gl-rounded-lg gl-border-b-0 !gl-px-3 gl-py-4"
           :todo="todo"
+          :tracking-additional="todoTrackingContext"
           @change="$apollo.queries.todos.refetch()"
         />
       </ol>
 
-      <div class="gl-px-5 gl-py-3">
+      <div class="gl-px-5 gl-pt-3">
         <a href="/dashboard/todos" @click="handleViewAllClick">{{ __('All to-do items') }}</a>
       </div>
-    </div>
-  </visibility-change-detector>
+    </template>
+  </base-widget>
 </template>

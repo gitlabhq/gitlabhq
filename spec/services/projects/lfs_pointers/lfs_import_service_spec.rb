@@ -12,11 +12,21 @@ RSpec.describe Projects::LfsPointers::LfsImportService, feature_category: :sourc
     ]
   end
 
-  subject { described_class.new(project, user) }
+  let(:updated_revisions) { ['refs/remotes/upstream/dev_branch'] }
+
+  subject { described_class.new(project, user, { updated_revisions: updated_revisions }) }
 
   context 'when lfs is enabled for the project' do
     before do
       allow(project).to receive(:lfs_enabled?).and_return(true)
+    end
+
+    it 'calls LfsObjectDownloadListService with the updated revisions' do
+      expect(Projects::LfsPointers::LfsObjectDownloadListService).to receive(:new)
+        .with(project, user, { updated_revisions: updated_revisions })
+        .and_call_original
+
+      subject.execute
     end
 
     it 'downloads lfs objects' do

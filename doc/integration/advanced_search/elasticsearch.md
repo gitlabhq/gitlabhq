@@ -270,7 +270,7 @@ use AWS OpenSearch Service with IAM credentials on your GitLab instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Advanced Search**.
+1. Expand **Advanced search**.
 1. In the **AWS OpenSearch IAM credentials** section:
    1. Select the **Use AWS OpenSearch Service with IAM credentials** checkbox.
    1. In **AWS region**, enter the AWS region where your OpenSearch domain
@@ -301,7 +301,7 @@ the master username and password on your GitLab instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Advanced Search**.
+1. Expand **Advanced search**.
 1. In **OpenSearch domain URL**, enter the URL to the OpenSearch domain endpoint.
 1. In **Username**, enter the master username.
 1. In **Password**, enter the master password.
@@ -315,13 +315,13 @@ the master username and password on your GitLab instance:
 
 {{< /history >}}
 
-When you upgrade Elasticsearch, you do not have to change the GitLab configuration.
+Prerequisites:
 
-During an Elasticsearch upgrade, you must:
-
+- [Disable search with advanced search](#disable-search-with-advanced-search)
+  so searches do not fail with an `HTTP 500` error.
 - [Pause indexing](#pause-indexing) so changes can still be tracked.
-- [Disable search with advanced search](#disable-search-with-advanced-search) so searches do not fail with an `HTTP 500` error.
 
+When you upgrade Elasticsearch, you do not have to change the GitLab configuration.
 When the Elasticsearch cluster is fully upgraded and active:
 
 1. Validate cluster connectivity, index, and search operations:
@@ -521,7 +521,7 @@ To check indexing status:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Indexing status**.
+1. Expand **Advanced search indexing status**.
 
 ### Monitor the status of background jobs
 
@@ -533,8 +533,8 @@ To monitor the status of background jobs:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Monitoring > Background jobs**.
-1. On the Sidekiq dashboard, select **Queues** and wait for the `elastic_commit_indexer` and `elastic_wiki_indexer` queues to drop to `0`.
-   These queues contain jobs to index code and wiki data for projects and groups.
+1. On the Sidekiq dashboard, select **Busy** and wait for all of the indexing jobs to complete.
+   These jobs index code and wiki data for projects and groups.
 
 ### Enable search with advanced search
 
@@ -728,7 +728,7 @@ To pause indexing:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Advanced Search**.
+1. Expand **Advanced search**.
 1. Select the **Pause Elasticsearch indexing** checkbox.
 1. Select **Save changes**.
 
@@ -742,7 +742,7 @@ To resume indexing:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Advanced Search**.
+1. Expand **Advanced search**.
 1. Clear the **Pause Elasticsearch indexing** checkbox.
 1. Select **Save changes**.
 
@@ -770,7 +770,7 @@ To trigger reindexing:
 1. Sign in to your GitLab instance as an administrator.
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Elasticsearch zero-downtime reindexing**.
+1. Expand **Advanced search zero-downtime reindexing**.
 1. Select **Trigger cluster reindexing**.
 
 Reindexing can be a lengthy process depending on the size of your Elasticsearch cluster.
@@ -791,7 +791,7 @@ To trigger zero-downtime reindexing:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Elasticsearch zero-downtime reindexing**.
+1. Expand **Advanced search zero-downtime reindexing**.
    The following settings are available:
 
    - [Slice multiplier](#slice-multiplier)
@@ -843,7 +843,7 @@ To abandon an unfinished reindexing job and resume indexing:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Advanced Search**.
+1. Expand **Advanced search**.
 1. Clear the **Pause Elasticsearch indexing** checkbox.
 
 ## Index integrity
@@ -948,7 +948,7 @@ When you believe you've fixed the cause of the failure:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
-1. Expand **Advanced Search**.
+1. Expand **Advanced search**.
 1. Inside the **Elasticsearch migration halted** alert box, select **Retry migration**. The migration is scheduled to be retried in the background.
 
 If you cannot get the migration to succeed, you may
@@ -1203,8 +1203,7 @@ due to large volumes of data being indexed:
    ```
 
    This enqueues a Sidekiq job for each project that needs to be indexed.
-   You can view the jobs in the **Admin** area under **Monitoring > Background jobs > Queues Tab**
-   and select `elastic_commit_indexer`, or you can query indexing status using a Rake task:
+   You can query indexing status with a Rake task:
 
    ```shell
    # For installations that use the Linux package
@@ -1402,8 +1401,7 @@ To create both an indexing and a non-indexing Sidekiq process in one node:
       "default,mailers" # process that listens to default and mailers queue
    ]
 
-   sidekiq['min_concurrency'] = 20
-   sidekiq['max_concurrency'] = 20
+   sidekiq['concurrency'] = 20
    ```
 
    If you are using GitLab 16.11 and earlier, explicitly disable any
@@ -1443,8 +1441,7 @@ To handle these queue groups on two nodes:
      "global_search", # process that listens to global_search queue
    ]
 
-   sidekiq['min_concurrency'] = 20
-   sidekiq['max_concurrency'] = 20
+   sidekiq['concurrency'] = 20
    ```
 
    If you are using GitLab 16.11 and earlier, explicitly disable any
@@ -1471,8 +1468,7 @@ To handle these queue groups on two nodes:
       "default,mailers" # process that listens to default and mailers queue
    ]
 
-   sidekiq['min_concurrency'] = 20
-   sidekiq['max_concurrency'] = 20
+   sidekiq['concurrency'] = 20
    ```
 
    If you are using GitLab 16.11 and earlier, explicitly disable any

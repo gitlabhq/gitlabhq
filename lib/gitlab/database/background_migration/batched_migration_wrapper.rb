@@ -59,11 +59,7 @@ module Gitlab
 
           ApplicationContext.push(feature_category: fetch_feature_category(job_class))
 
-          if job_class < Gitlab::BackgroundMigration::BatchedMigrationJob
-            execute_batched_migration_job(job_class, tracking_record)
-          else
-            execute_legacy_job(job_class, tracking_record)
-          end
+          execute_batched_migration_job(job_class, tracking_record)
         end
 
         def execute_batched_migration_job(job_class, tracking_record)
@@ -75,21 +71,6 @@ module Gitlab
           )
 
           job_instance.perform
-
-          job_instance
-        end
-
-        def execute_legacy_job(job_class, tracking_record)
-          job_instance = job_class.new
-
-          job_instance.perform(
-            tracking_record.min_value,
-            tracking_record.max_value,
-            tracking_record.migration_table_name,
-            tracking_record.migration_column_name,
-            tracking_record.sub_batch_size,
-            tracking_record.pause_ms,
-            *tracking_record.migration_job_arguments)
 
           job_instance
         end

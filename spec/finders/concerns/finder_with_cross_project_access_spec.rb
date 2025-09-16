@@ -23,9 +23,9 @@ RSpec.describe FinderWithCrossProjectAccess do
   end
 
   let(:user) { create(:user) }
-  subject(:finder) { finder_class.new(user) }
-
   let!(:result) { create(:issue) }
+
+  subject(:finder) { finder_class.new(user) }
 
   before do
     result.project.add_maintainer(user)

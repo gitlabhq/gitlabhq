@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integration do # rubocop:disable RSpec/SpecFilePathFormat -- we breakdown Ci::CreatePipelineService E2E tests this way
+RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { project.first_owner }
 
@@ -14,6 +14,7 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integrat
   describe 'composite identity', :request_store do
     before do
       stub_ci_pipeline_yaml_file(config)
+      stub_feature_flags(ci_validate_config_options: false)
     end
 
     context 'when job does not generate options' do

@@ -10,7 +10,7 @@ feature_categories:
 description: a temporary table to store the orphaned notes records that have been removed to insure against data loss
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146023
 milestone: "16.10"
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 removed_in_milestone: "17.1"
 removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154317
 sharding_key:

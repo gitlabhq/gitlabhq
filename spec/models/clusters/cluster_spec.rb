@@ -798,7 +798,7 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
     let(:environment_name) { 'the-environment-name' }
     let(:environment) { create(:environment, name: environment_name, project: cluster.project) }
-    let(:build) { create(:ci_build, environment: environment, project: cluster.project) }
+    let(:build) { create(:ci_build, environment: environment, project: cluster.project, options: build_options) }
     let(:cluster) { create(:cluster, :project, managed: managed_cluster) }
     let(:managed_cluster) { true }
     let(:default_namespace) { Gitlab::Kubernetes::DefaultNamespace.new(cluster, project: cluster.project).from_environment_slug(environment.slug) }
@@ -817,8 +817,10 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
 
     context 'when cluster is managed' do
       before do
-        build.options = { environment: { kubernetes: { namespace: 'ci yaml namespace' } } }
+        stub_feature_flags(ci_validate_config_options: false)
       end
+
+      let(:build_options) { { environment: { kubernetes: { namespace: 'ci yaml namespace' } } } }
 
       it 'returns the cached namespace if present, ignoring CI config' do
         cached_namespace = create(:cluster_kubernetes_namespace, cluster: cluster, environment: environment, namespace: 'the name', service_account_token: 'some token')
@@ -831,21 +833,28 @@ RSpec.describe Clusters::Cluster, :use_clean_rails_memory_store_caching,
     end
 
     context 'when cluster is not managed' do
+      before do
+        stub_feature_flags(ci_validate_config_options: false)
+      end
+
       let(:managed_cluster) { false }
+      let(:build_options) { { environment: { kubernetes: { namespace: 'ci yaml namespace' } } } }
 
       it 'returns the cached namespace if present, regardless of CI config' do
         cached_namespace = create(:cluster_kubernetes_namespace, cluster: cluster, environment: environment, namespace: 'the name', service_account_token: 'some token')
-        build.options = { environment: { kubernetes: { namespace: 'ci yaml namespace' } } }
         expect(subject).to eq cached_namespace.namespace
       end
 
       it 'returns the CI YAML namespace when configured' do
-        build.options = { environment: { kubernetes: { namespace: 'ci yaml namespace' } } }
         expect(subject).to eq 'ci yaml namespace'
       end
 
-      it 'returns the default namespace when no namespace is configured' do
-        expect(subject).to eq default_namespace
+      context 'when no namespace is configured' do
+        let(:build_options) { {} }
+
+        it 'returns the default namespace' do
+          expect(subject).to eq default_namespace
+        end
       end
     end
   end

@@ -74,6 +74,18 @@ RSpec.describe 'Query.ciConfig', feature_category: :continuous_integration do
     )
   end
 
+  context 'when using cookie/session authentication' do
+    before do
+      sign_in(user)
+    end
+
+    it 'returns an authentication error' do
+      post_graphql(query, current_user: nil)
+
+      expect(graphql_errors.first['message']).to eq('This query requires API authentication')
+    end
+  end
+
   it_behaves_like 'a working graphql query' do
     before do
       post_graphql_query

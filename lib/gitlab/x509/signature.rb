@@ -212,7 +212,8 @@ module Gitlab
         return if verified_signature.nil? ||
           certificate_subject_key_identifier.nil? ||
           x509_issuer.nil? ||
-          certificate_emails.nil?
+          certificate_emails.nil? ||
+          certificate_email.blank?
 
         {
           subject_key_identifier: certificate_subject_key_identifier,

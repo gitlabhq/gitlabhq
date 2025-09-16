@@ -13,7 +13,6 @@ RSpec.describe MergeRequests::ApprovalService, feature_category: :code_review_wo
 
     before do
       project.add_developer(user)
-      stub_feature_flags ff_require_saml_auth_to_approve: false
     end
 
     shared_examples 'no-op call' do

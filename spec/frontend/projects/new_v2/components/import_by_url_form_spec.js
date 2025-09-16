@@ -1,11 +1,16 @@
-import { GlFormInputGroup } from '@gitlab/ui';
+import { GlFormInputGroup, GlFormCheckbox } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK, HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
+import { visitUrl } from '~/lib/utils/url_utility';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ImportByUrlForm from '~/projects/new_v2/components/import_by_url_form.vue';
 import SharedProjectCreationFields from '~/projects/new_v2/components/shared_project_creation_fields.vue';
+import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
+
+jest.mock('~/lib/utils/url_utility');
 
 const $toast = {
   show: jest.fn(),
@@ -16,6 +21,8 @@ describe('Import Project by URL Form', () => {
   let mockAxios;
 
   const mockImportByUrlValidatePath = '/import/url/validate';
+  const mockNewProjectPath = '/projects/new';
+  const mockNewProjectFormPath = '/projects';
   const defaultProps = {
     namespace: {
       id: '1',
@@ -24,10 +31,20 @@ describe('Import Project by URL Form', () => {
     },
   };
 
-  const createComponent = () => {
+  const createComponent = (options = {}) => {
+    const { provide = {}, glFeatures = {} } = options;
+
     wrapper = shallowMountExtended(ImportByUrlForm, {
       provide: {
         importByUrlValidatePath: mockImportByUrlValidatePath,
+        newProjectPath: mockNewProjectPath,
+        newProjectFormPath: mockNewProjectFormPath,
+        hasRepositoryMirrorsFeature: false,
+        glFeatures: {
+          importByUrlNewPage: false,
+          ...glFeatures,
+        },
+        ...provide,
       },
       propsData: defaultProps,
       mocks: {
@@ -35,6 +52,8 @@ describe('Import Project by URL Form', () => {
       },
       stubs: {
         GlFormInputGroup,
+        GlFormCheckbox,
+        MultiStepFormTemplate,
       },
     });
   };
@@ -54,12 +73,65 @@ describe('Import Project by URL Form', () => {
   const findUsernameInput = () => wrapper.findByTestId('repository-username');
   const findPasswordInput = () => wrapper.findByTestId('repository-password');
   const findCheckConnectionButton = () => wrapper.findByTestId('check-connection');
+  const findMirrorCheckbox = () => wrapper.findByTestId('import-project-by-url-repo-mirror');
   const findSharedFields = () => wrapper.findComponent(SharedProjectCreationFields);
+  const findMultiStepTemplate = () => wrapper.findComponent(MultiStepFormTemplate);
 
   it('renders URL, username, password fields', () => {
-    expect(findUrlInput().exists()).toBe(true);
-    expect(findUsernameInput().exists()).toBe(true);
-    expect(findPasswordInput().exists()).toBe(true);
+    expect(findUrlInput().attributes('placeholder')).toBe(
+      'https://gitlab.company.com/group/project.git',
+    );
+    expect(findUrlInput().attributes('name')).toBe('project[import_url]');
+    expect(findPasswordInput().attributes('name')).toBe('project[import_url_password]');
+    expect(findUsernameInput().attributes('id')).toBe('repository-username');
+    expect(findMirrorCheckbox().attributes('name')).toBe('project[mirror]');
+  });
+
+  it('includes a hidden CSRF token in form', () => {
+    const csrfInput = wrapper.find('input[name="authenticity_token"]');
+    expect(csrfInput.exists()).toBe(true);
+    expect(csrfInput.attributes('type')).toBe('hidden');
+  });
+
+  it('renders multi-step form template with correct props', () => {
+    const template = findMultiStepTemplate();
+    expect(template.props('title')).toBe('Import repository by URL');
+    expect(template.props('currentStep')).toBe(3);
+  });
+
+  it('renders shared fields', () => {
+    const sharedFields = findSharedFields();
+    expect(sharedFields.exists()).toBe(true);
+    expect(sharedFields.props('namespace')).toEqual(defaultProps.namespace);
+  });
+
+  describe('when importByUrlNewPage feature flag is enabled', () => {
+    beforeEach(() => {
+      createComponent({ glFeatures: { importByUrlNewPage: true } });
+    });
+
+    it('sets currentStep to null', () => {
+      const template = findMultiStepTemplate();
+      expect(template.props('currentStep')).toBe(null);
+    });
+
+    it('renders "Create project" button instead of "Next step"', () => {
+      const nextButton = findNextButton();
+      expect(nextButton.text()).toBe('Create project');
+      expect(nextButton.attributes('type')).toBe('submit');
+    });
+
+    it('disables "Create project" button when repository URL is empty', async () => {
+      await findUrlInput().vm.$emit('input', '   ');
+
+      const nextButton = findNextButton();
+      expect(nextButton.props('disabled')).toBe(true);
+    });
+
+    it('navigates to `new project` page when back button is clicked', () => {
+      findBackButton().vm.$emit('click');
+      expect(visitUrl).toHaveBeenCalledWith(mockNewProjectPath);
+    });
   });
 
   describe('"Check connection" functionality', () => {
@@ -71,6 +143,21 @@ describe('Import Project by URL Form', () => {
       findUrlInput().vm.$emit('input', mockUrl);
       findUsernameInput().vm.$emit('input', mockUsername);
       findPasswordInput().vm.$emit('input', mockPassword);
+    });
+
+    it('shows loading state during connection check', async () => {
+      mockAxios.onPost(mockImportByUrlValidatePath).reply(HTTP_STATUS_OK, { success: true });
+
+      expect(findCheckConnectionButton().props('loading')).toBe(false);
+
+      findCheckConnectionButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findCheckConnectionButton().props('loading')).toBe(true);
+
+      await waitForPromises();
+
+      expect(findCheckConnectionButton().props('loading')).toBe(false);
     });
 
     describe('when connection is successful', () => {
@@ -120,12 +207,26 @@ describe('Import Project by URL Form', () => {
         expect($toast.show).toHaveBeenCalledWith(expect.stringContaining('Connection failed'));
       });
     });
-  });
 
-  it('renders shared fields', () => {
-    const sharedFields = findSharedFields();
-    expect(sharedFields.exists()).toBe(true);
-    expect(sharedFields.props('namespace')).toEqual(defaultProps.namespace);
+    // TODO: To be addressed in follow up before FF rollout https://gitlab.com/gitlab-org/gitlab/-/issues/562799
+    it('handles connection check with empty fields', async () => {
+      mockAxios.onPost(mockImportByUrlValidatePath).reply(HTTP_STATUS_OK, { success: true });
+
+      findUrlInput().vm.$emit('input', '');
+      findUsernameInput().vm.$emit('input', '');
+      findPasswordInput().vm.$emit('input', '');
+
+      findCheckConnectionButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(mockAxios.history.post[0].data).toBe(
+        JSON.stringify({
+          url: '',
+          user: '',
+          password: '',
+        }),
+      );
+    });
   });
 
   it('emits onSelectNamespace event when shared fields emits it', () => {
@@ -140,8 +241,23 @@ describe('Import Project by URL Form', () => {
     expect(findNextButton().text()).toBe('Next step');
   });
 
+  it('renders the next button as disabled when feature flag is off', () => {
+    expect(findNextButton().props('disabled')).toBe(true);
+  });
+
   it(`emits the "back" event when the back button is clicked`, () => {
     findBackButton().vm.$emit('click');
     expect(wrapper.emitted('back')).toHaveLength(1);
+  });
+
+  describe('mirror repository functionality', () => {
+    it('is rendered disabled when hasRepositoryMirrorsFeature is false', () => {
+      expect(findMirrorCheckbox().attributes('disabled')).not.toBeUndefined();
+    });
+
+    it('is not disabled when hasRepositoryMirrorsFeature is true', () => {
+      createComponent({ provide: { hasRepositoryMirrorsFeature: true } });
+      expect(findMirrorCheckbox().attributes('disabled')).toBeUndefined();
+    });
   });
 });

@@ -33,7 +33,6 @@ export async function mountIssuesDashboardApp() {
     isPublicVisibilityRestricted,
     isSignedIn,
     rssPath,
-    isStatusFeatureEnabledOnInstance,
   } = el.dataset;
 
   return new Vue({
@@ -62,7 +61,6 @@ export async function mountIssuesDashboardApp() {
       isPublicVisibilityRestricted: parseBoolean(isPublicVisibilityRestricted),
       isSignedIn: parseBoolean(isSignedIn),
       rssPath,
-      isStatusFeatureEnabledOnInstance: parseBoolean(isStatusFeatureEnabledOnInstance),
     },
     render: (createComponent) => createComponent(IssuesDashboardApp),
   });

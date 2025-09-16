@@ -27,7 +27,7 @@ module API
                         and Single Page Apps are considered non-confidential. Defaults to true if not supplied'
       end
       post do
-        application = Doorkeeper::Application.new(declared_params)
+        application = Authn::OauthApplication.new(declared_params)
 
         if application.save
           present application, with: Entities::ApplicationWithSecret

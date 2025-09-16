@@ -74,6 +74,27 @@ In this example, you can imagine that we are updating by one monthly release. Bu
 
 This example is not exhaustive. GitLab can be deployed in many different ways. Even each update step is not atomic. For example, with rolling deploys, nodes within a group are temporarily on different versions. You should assume that a lot of time passes between update steps. This is often true on GitLab.com.
 
+## GitLab Next
+
+GitLab.com runs a [canary stage](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/canary-stage) that runs the next version that is going to be deployed to production. This means that we
+run multiple versions of GitLab for an extended period of time.
+
+We route a small percentage of traffic to canary to test out the next version. Users can also opt-in to GitLab next by [setting a cookie](https://next.gitlab.com/). We also route paths starting with `gitlab-org` or `gitlab-com` to canary and this often exposes a lot of multi-version compatibility issues that last until the version in canary is deployed to production which can take several hours.
+
+The problem occurs because API requests do not start with the same path prefix, so these API requests made from newer canary frontend code end up on the older main nodes.
+
+Here's an example of how it could happen with a GraphQL request:
+
+```mermaid
+sequenceDiagram
+    Client browser->>Canary node: GET /gitlab-org/gitlab/-/issues/1
+    Canary node-->>Client browser: HTML page with canary JS
+    Client browser->>Main node: POST /api/graphql with query including newFieldAddedInCanary
+    Main node-->>Client browser: Returns error due to unrecognized field
+```
+
+Users can work around the problem by setting the canary cookie so that both requests end up on the canary nodes. But we cannot rely on this workaround so we need our code to be backwards-compatible.
+
 ## How long must code be backwards-compatible?
 
 For users following [zero-downtime update instructions](../update/zero_downtime.md), the answer is one monthly release. For example:

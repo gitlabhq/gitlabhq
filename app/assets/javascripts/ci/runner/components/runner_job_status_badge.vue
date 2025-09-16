@@ -46,7 +46,7 @@ export default {
     v-if="badge"
     v-bind="$attrs"
     class="!gl-bg-transparent"
-    variant="muted"
+    variant="neutral"
     :class="badge.classes"
   >
     <span class="gl-truncate">

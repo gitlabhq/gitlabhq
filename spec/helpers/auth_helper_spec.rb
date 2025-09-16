@@ -641,12 +641,11 @@ RSpec.describe AuthHelper, feature_category: :system_access do
     context 'when password is required' do
       it 'returns data to disable two-factor authentication' do
         expect(helper.disable_two_factor_authentication_data(true)).to match(a_hash_including({
-          button_text: _('Disable two-factor authentication'),
+          button_text: _('Disable 2FA'),
           message: _('Are you sure you want to invalidate your one-time password authenticator and WebAuthn devices? ' \
             'Enter your password to continue. This action cannot be undone.'),
           path: profile_two_factor_auth_path,
-          password_required: 'true',
-          size: 'small'
+          password_required: 'true'
         }))
       end
     end
@@ -654,7 +653,7 @@ RSpec.describe AuthHelper, feature_category: :system_access do
     context 'when password is not required' do
       it 'returns data to disable two-factor authentication' do
         expect(helper.disable_two_factor_authentication_data(false)).to match(a_hash_including({
-          button_text: _('Disable two-factor authentication'),
+          button_text: _('Disable 2FA'),
           message: _('Are you sure you want to invalidate your one-time password authenticator and WebAuthn devices?'),
           path: profile_two_factor_auth_path,
           password_required: 'false'

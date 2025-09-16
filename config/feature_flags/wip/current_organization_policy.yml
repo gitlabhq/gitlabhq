@@ -1,0 +1,10 @@
+---
+name: current_organization_policy
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/548417
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196700
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/559251
+milestone: '18.4'
+group: group::organizations
+type: wip
+default_enabled: false

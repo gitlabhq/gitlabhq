@@ -1,0 +1,26 @@
+- breadcrumb_title s_('Observability|O11y service settings')
+
+%h1.gl-sr-only= @breadcrumb_title
+
+- add_page_specific_style 'page_bundles/settings'
+
+= render ::Layouts::SettingsBlockComponent.new(s_('Observability|O11y service configuration'),
+  id: 'o11y-service-settings',
+  expanded: true) do |c|
+  - c.with_description do
+    = s_('Observability|Configure your o11y service connection settings.')
+  - c.with_body do
+    = gitlab_ui_form_for @o11y_service_settings, url: experimental_o11y_service_settings_path, method: :post, authenticity_token: true do |f|
+      = form_errors(@o11y_service_settings)
+
+      .row
+        .form-group.col-md-6
+          = f.label :group_id, s_('Observability|Group ID'), class: 'label-bold'
+          = f.text_field :group_id, class: 'form-control', placeholder: '12345'
+          %span.form-text.gl-text-subtle
+            = s_('Observability|The ID of the group for this o11y service configuration.')
+
+      = render 'groups/observability/o11y_service_settings/form_fields', f: f
+
+      .form-group.gl-form-group
+        = f.submit s_('Save changes'), pajamas_button: true

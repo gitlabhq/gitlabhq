@@ -1,5 +1,5 @@
 import { GlTruncate } from '@gitlab/ui';
-import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { GlSingleStat } from '@gitlab/ui/src/charts';
 import { shallowMount, mount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';

@@ -13,12 +13,6 @@ description: "Export project relations with the REST API."
 
 {{< /details >}}
 
-{{< history >}}
-
-- New application setting `bulk_import_enabled` introduced in GitLab 15.8. `bulk_import` feature flag removed.
-
-{{< /history >}}
-
 The project relations export API partially exports a project's structure as separate files for each
 top-level
 relation (for example, milestones, issues, and labels).
@@ -36,10 +30,10 @@ Start a new project relations export:
 POST /projects/:id/export_relations
 ```
 
-| Attribute | Type           | Required | Description                                        |
-|-----------|----------------|----------|----------------------------------------------------|
-| `id`      | integer/string | yes      | ID of the project.                                 |
-| `batched` | boolean        | no       | Whether to export in batches.                      |
+| Attribute | Type              | Required | Description                                        |
+|-----------|-------------------|----------|----------------------------------------------------|
+| `id`      | integer or string | Yes      | ID of the project.                                 |
+| `batched` | boolean           | No       | Whether to export in batches.                      |
 
 ```shell
 curl --request POST \
@@ -61,10 +55,10 @@ View the status of the relations export:
 GET /projects/:id/export_relations/status
 ```
 
-| Attribute  | Type           | Required | Description                                        |
-|------------|----------------|----------|----------------------------------------------------|
-| `id`       | integer/string | yes      | ID of the project.                                 |
-| `relation` | string         | no       | Name of the project top-level relation to view.    |
+| Attribute  | Type              | Required | Description                                        |
+|------------|-------------------|----------|----------------------------------------------------|
+| `id`       | integer or string | Yes      | ID of the project.                                 |
+| `relation` | string            | No       | Name of the project top-level relation to view.    |
 
 ```shell
 curl --request GET \
@@ -74,9 +68,9 @@ curl --request GET \
 
 The status can be one of the following:
 
-- `0` - `started`
-- `1` - `finished`
-- `-1` - `failed`
+- `0`: `started`
+- `1`: `finished`
+- `-1`: `failed`
 
 ```json
 [
@@ -116,12 +110,12 @@ Download the finished relations export:
 GET /projects/:id/export_relations/download
 ```
 
-| Attribute      | Type           | Required | Description                                         |
-|----------------|----------------|----------|-----------------------------------------------------|
-| `id`           | integer/string | yes      | ID of the project.                                  |
-| `relation`     | string         | yes      | Name of the project top-level relation to download. |
-| `batched`      | boolean        | no       | Whether the export is batched.                      |
-| `batch_number` | integer        | no       | Number of export batch to download.                 |
+| Attribute      | Type              | Required | Description |
+|----------------|-------------------|----------|-------------|
+| `id`           | integer or string | Yes      | ID of the project. |
+| `relation`     | string            | Yes      | Name of the project top-level relation to download. |
+| `batched`      | boolean           | No       | Whether the export is batched. |
+| `batch_number` | integer           | No       | Number of export batch to download. |
 
 ```shell
 curl --request GET \

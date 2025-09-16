@@ -12,12 +12,7 @@ describe('whats new actions', () => {
     useLocalStorageSpy();
 
     it('should commit openDrawer', async () => {
-      await testAction(actions.openDrawer, 'digest-hash', {}, [{ type: types.OPEN_DRAWER }]);
-
-      expect(window.localStorage.setItem).toHaveBeenCalledWith(
-        'display-whats-new-notification',
-        'digest-hash',
-      );
+      await testAction(actions.openDrawer, {}, {}, [{ type: types.OPEN_DRAWER }]);
     });
   });
 
@@ -109,6 +104,14 @@ describe('whats new actions', () => {
     it('should commit setDrawerBodyHeight', () => {
       return testAction(actions.setDrawerBodyHeight, 42, {}, [
         { type: types.SET_DRAWER_BODY_HEIGHT, payload: 42 },
+      ]);
+    });
+  });
+
+  describe('setReadArticles', () => {
+    it('should commit setReadArticles', () => {
+      return testAction(actions.setReadArticles, [1], {}, [
+        { type: types.SET_READ_ARTICLES, payload: [1] },
       ]);
     });
   });

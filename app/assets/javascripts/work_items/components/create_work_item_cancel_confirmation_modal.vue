@@ -40,7 +40,7 @@ export default {
 
 <template>
   <gl-modal
-    modal-id="create-work-item-cancel-confirmation-modal"
+    modal-id="create-work-item-cancel-confirmation-modal gl-@container"
     :aria-label="__('Confirmation')"
     :visible="isVisible"
     :scrollable="false"

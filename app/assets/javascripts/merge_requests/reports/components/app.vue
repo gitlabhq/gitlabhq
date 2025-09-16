@@ -32,10 +32,12 @@ export default {
 </script>
 
 <template>
-  <div class="gl-grid gl-grid-cols-[1fr] gl-gap-5 md:gl-min-h-31 md:gl-grid-cols-[200px,1fr]">
+  <div
+    class="gl-grid gl-grid-cols-[1fr] gl-gap-5 @md/panel:gl-min-h-31 @md/panel:gl-grid-cols-[200px,1fr]"
+  >
     <h2 class="gl-sr-only">{{ s__('MrReports|Reports') }}</h2>
     <aside
-      class="gl-border-b gl-border-default gl-pb-3 gl-pt-5 md:gl-border-r md:gl-border-0 md:gl-pr-5"
+      class="gl-border-b gl-border-default gl-pb-3 gl-pt-5 @md/panel:gl-border-r @md/panel:gl-border-0 @md/panel:gl-pr-5"
     >
       <nav>
         <blockers-list-item v-if="hasPolicies" />
@@ -53,7 +55,7 @@ export default {
         </div>
       </nav>
     </aside>
-    <section class="md:gl-pt-5">
+    <section class="@md/panel:gl-pt-5">
       <router-view :mr="mr" />
     </section>
   </div>

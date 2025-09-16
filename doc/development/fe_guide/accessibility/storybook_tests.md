@@ -15,7 +15,8 @@ This approach allows us to test components in isolation and catch accessibility 
 
 Before running Storybook accessibility tests, ensure you have:
 
-1. All dependencies installed (`yarn install`)
+1. All dependencies installed (`yarn install`). This needs to be done inside the storybook directory (`cd storybook`)
+1. Install `playwright` with `yarn playwright install chromium` (or `yarn playwright install` to install all browser engines)
 1. A built Storybook instance running
 
 ### Running Storybook accessibility tests

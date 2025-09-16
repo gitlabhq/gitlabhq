@@ -129,6 +129,7 @@ module Timebox
   def title=(value)
     write_attribute(:title, sanitize_title(value)) if value.present?
   end
+  alias_method :name=, :title=
 
   def timebox_name
     model_name.singular

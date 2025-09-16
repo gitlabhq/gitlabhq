@@ -12,7 +12,7 @@ RSpec.describe Admin::IntegrationsController, :with_current_organization, featur
   end
 
   it_behaves_like Integrations::Actions do
-    let(:integration_attributes) { { instance: true, project: nil } }
+    let(:integration_attributes) { { instance: true, project: nil, organization: organization } }
 
     let(:routing_params) do
       { id: integration.to_param }

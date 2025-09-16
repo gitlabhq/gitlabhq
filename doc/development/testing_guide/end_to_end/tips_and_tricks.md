@@ -87,7 +87,7 @@ After you install the extension you can use VS Code to debug end-to-end specs ru
       "program": "${workspaceRoot}/qa/bin/qa",
       "env": {
         "CHROME_HEADLESS": "false",
-        "QA_DEBUG": "true"
+        "QA_LOG_LEVEL": "debug"
       },
       "args": [
           "Test::Instance::All",
@@ -113,7 +113,7 @@ You can include multiple configurations, and any environment variables or comman
   "program": "${workspaceRoot}/qa/bin/qa",
   "env": {
     "CHROME_HEADLESS": "false",
-    "QA_DEBUG": "true",
+    "QA_LOG_LEVEL": "debug",
     "GITLAB_USERNAME": "gitlab-qa",
     "GITLAB_PASSWORD": "from 1Password",
     "GITLAB_QA_ACCESS_TOKEN": "from 1Password"

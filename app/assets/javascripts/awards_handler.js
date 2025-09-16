@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this, @gitlab/require-i18n-strings */
 
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import $ from 'jquery';
 import { uniq, escape } from 'lodash';
 import { getEmojiScoreWithIntent } from '~/emoji/utils';
@@ -235,12 +235,12 @@ export class AwardsHandler {
       <h5 class="emoji-menu-title">
         ${escape(name)}
       </h5>
-      <ul class="clearfix emoji-menu-list ${opts.frequentEmojis ? 'frequent-emojis' : ''}">
+      <ul class="gl-clearfix emoji-menu-list ${opts.frequentEmojis ? 'frequent-emojis' : ''}">
         ${emojiList
           .map(
             (emojiName) => `
           <li class="emoji-menu-list-item">
-            <button class="emoji-menu-btn text-center js-emoji-btn" type="button">
+            <button class="emoji-menu-btn !gl-text-center js-emoji-btn" type="button">
               ${this.emoji.glEmojiTag(emojiName, {
                 sprite: true,
               })}

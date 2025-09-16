@@ -78,14 +78,14 @@ export default {
         case STATUS_NEVER_CONTACTED:
           return {
             icon: 'time-out',
-            variant: 'muted',
+            variant: 'neutral',
             label: I18N_STATUS_NEVER_CONTACTED,
             tooltip: I18N_NEVER_CONTACTED_TOOLTIP,
           };
         case STATUS_OFFLINE:
           return {
             icon: 'time-out',
-            variant: 'muted',
+            variant: 'neutral',
             label: I18N_STATUS_OFFLINE,
             tooltip: sprintf(I18N_DISCONNECTED_TOOLTIP, {
               elapsedTime: this.onlineContactTimeoutDuration,

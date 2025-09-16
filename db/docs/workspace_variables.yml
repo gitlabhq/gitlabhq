@@ -7,7 +7,7 @@ feature_categories:
 description: Remote Development Workspace variables
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129688
 milestone: '16.4'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 table_size: small
 sharding_key:
   project_id: projects

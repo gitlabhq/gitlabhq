@@ -5,6 +5,7 @@ import VueApollo from 'vue-apollo';
 import markdownEditorEventHub from '~/vue_shared/components/markdown/eventhub';
 import { CLEAR_AUTOSAVE_ENTRY_EVENT } from '~/vue_shared/constants';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { mockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import createImageDiffNoteMutation from '~/work_items/components/design_management/graphql/create_image_diff_note.mutation.graphql';
@@ -175,6 +176,19 @@ describe('Design reply form component', () => {
       findSubmitButton().vm.$emit('click');
 
       expect(createImageNoteMutationSuccessHandler).toHaveBeenCalledWith(createNoteMutationData);
+    });
+
+    it('tracks saved using editor event', async () => {
+      const trackingSpy = mockTracking(undefined, null, jest.spyOn);
+
+      createComponent({ props: { value: mockComment } });
+      findSubmitButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'save_markdown', {
+        label: 'markdown_editor',
+        property: 'WorkItem_DesignComment',
+      });
     });
 
     it.each`

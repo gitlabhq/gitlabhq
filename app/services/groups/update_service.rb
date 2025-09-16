@@ -109,6 +109,10 @@ module Groups
 
     # overridden in EE
     def remove_unallowed_params
+      if Feature.disabled?(:omniauth_step_up_auth_for_namespace, group)
+        params.delete(:step_up_auth_required_oauth_provider)
+      end
+
       params.delete(:emails_enabled) unless can?(current_user, :set_emails_disabled, group)
       params.delete(:max_artifacts_size) unless can?(current_user, :update_max_artifacts_size, group)
 

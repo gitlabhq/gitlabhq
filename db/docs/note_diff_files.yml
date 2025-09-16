@@ -7,6 +7,6 @@ feature_categories:
 description: Persisted truncated note diffs
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18991
 milestone: '11.0'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/550694
 table_size: over_limit

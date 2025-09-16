@@ -542,6 +542,9 @@ export const getNewWorkItemSharedCache = ({
         widgets.push({
           type: 'TIME_TRACKING',
           timeEstimate: 0,
+          humanReadableAttributes: {
+            timeEstimate: '',
+          },
           timelogs: {
             nodes: [],
             __typename: 'WorkItemTimelogConnection',

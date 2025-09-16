@@ -21,6 +21,9 @@ module API
     content_type :yaml, 'text/yaml'
 
     formatter :yaml, ->(object, _) do
+      # Handle cases where present_carrierwave_file! returns a string as the response body
+      return object if object.is_a?(String)
+
       yaml_content = object.serializable_hash.stringify_keys.to_yaml
 
       yaml_content.gsub(Gitlab::Regex.helm_index_app_version_quote_regex, '\1"\2"')
@@ -79,7 +82,10 @@ module API
           packages = ::Packages::Helm::PackagesFinder.new(project, params[:channel]).execute
           metadata = ::Packages::Helm::GenerateMetadataService.new(params[:id], params[:channel], packages).execute
 
-          ::Packages::Helm::CreateMetadataCacheWorker.perform_async(project.id, params[:channel]) # rubocop:disable CodeReuse/Worker -- This is required because we want to sync metadata cache as soon as it's accessed
+          # rubocop:disable CodeReuse/Worker -- This is required because we want to sync metadata cache as soon as it's accessed
+          # Related issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/569680
+          ::Packages::Helm::CreateMetadataCacheWorker.perform_async(project.id, params[:channel])
+          # rubocop:enable CodeReuse/Worker
 
           present metadata.payload, with: ::API::Entities::Helm::Index
         end
@@ -152,7 +158,7 @@ module API
 
           package = ::Packages::CreateTemporaryPackageService.new(
             authorized_user_project, current_user, declared_params.merge(build: current_authenticated_job)
-          ).execute(:helm, name: ::Packages::Helm::TEMPORARY_PACKAGE_NAME)
+          ).execute(::Packages::Helm::Package, name: ::Packages::Helm::TEMPORARY_PACKAGE_NAME)
 
           chart_params = {
             file: params[:chart],

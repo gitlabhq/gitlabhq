@@ -56,7 +56,7 @@ export default {
 </script>
 
 <template>
-  <div class="col-12">
+  <div class="gl-col-12">
     <gl-collapsible-listbox v-model="selectedMode" :items="dropdownValues" />
     <div class="issuable-form-select-holder">
       <gl-form-input

@@ -33,22 +33,6 @@ RSpec.describe 'projects/settings/_archive.html.haml', feature_category: :groups
 
           expect(rendered).not_to have_selector('#js-unarchive-settings')
         end
-
-        context 'when `archive_group` flag is disabled' do
-          before do
-            stub_feature_flags(archive_group: false)
-
-            render 'projects/settings/archive', project: project
-          end
-
-          it 'does not render #js-archive-settings' do
-            expect(rendered).not_to have_selector('#js-archive-settings')
-          end
-
-          it 'does not render #js-unarchive-settings' do
-            expect(rendered).not_to have_selector('#js-unarchive-settings')
-          end
-        end
       end
 
       context 'when project is archived' do
@@ -72,22 +56,6 @@ RSpec.describe 'projects/settings/_archive.html.haml', feature_category: :groups
           render 'projects/settings/archive', project: project
 
           expect(rendered).not_to have_selector('#js-archive-settings')
-        end
-
-        context 'when `archive_group` flag is disabled' do
-          before do
-            stub_feature_flags(archive_group: false)
-
-            render 'projects/settings/archive', project: project
-          end
-
-          it 'does not render #js-archive-settings' do
-            expect(rendered).not_to have_selector('#js-archive-settings')
-          end
-
-          it 'does not render #js-unarchive-settings' do
-            expect(rendered).not_to have_selector('#js-unarchive-settings')
-          end
         end
       end
     end
@@ -113,18 +81,6 @@ RSpec.describe 'projects/settings/_archive.html.haml', feature_category: :groups
         render 'projects/settings/archive', project: project
 
         expect(rendered).not_to have_selector('#js-archive-settings')
-      end
-
-      context 'when `archive_group` flag is disabled' do
-        before do
-          stub_feature_flags(archive_group: false)
-
-          render 'projects/settings/archive', project: project
-        end
-
-        it 'does not render #js-archive-settings' do
-          expect(rendered).not_to have_selector('#js-archive-settings')
-        end
       end
     end
   end

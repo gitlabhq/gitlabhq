@@ -7,7 +7,7 @@ feature_categories:
 description: Persists link between work item and a system defined or custom status
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181962
 milestone: '17.10'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   namespace_id: namespaces
 table_size: small

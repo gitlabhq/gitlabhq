@@ -8,6 +8,7 @@ import { archiveGroup } from '~/api/groups_api';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/alert');
@@ -16,6 +17,8 @@ jest.mock('~/api/projects_api');
 
 describe('ArchiveSettings', () => {
   let wrapper;
+
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const archiveFuncByType = {
     [RESOURCE_TYPES.GROUP]: archiveGroup,
@@ -84,6 +87,17 @@ describe('ArchiveSettings', () => {
         createComponent({ props: { resourceType } });
       });
 
+      it('tracks internal event', () => {
+        const { triggerEvent, trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+        triggerEvent(findGlButton().element);
+
+        expect(trackEventSpy).toHaveBeenCalledWith('archive_namespace_in_settings', {
+          label: resourceType,
+          property: 'archive',
+        });
+      });
+
       it('calls archiveFunc', () => {
         clickArchiveButton();
 
@@ -106,6 +120,10 @@ describe('ArchiveSettings', () => {
 
         it('does not create alert', () => {
           expect(createAlert).not.toHaveBeenCalled();
+        });
+
+        it('trigger stays in loading state', () => {
+          expect(findGlButton().props('loading')).toBe(true);
         });
 
         it('visits resourcePath', () => {

@@ -1381,51 +1381,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
-  describe "#show_archived_project_banner?" do
-    subject(:show_archived_project_banner?) { helper.show_archived_project_banner?(project) }
-
-    context 'with nil project' do
-      let_it_be(:project) { nil }
-
-      it { is_expected.to be(false) }
-    end
-
-    context 'with unsaved project' do
-      let_it_be(:project) { build(:project) }
-
-      it { is_expected.to be(false) }
-    end
-
-    context 'with an active project' do
-      it { is_expected.to be(false) }
-    end
-
-    context 'with an archived project' do
-      before do
-        project.archived = true
-        project.save!
-      end
-
-      it { is_expected.to be(true) }
-    end
-
-    context 'with a project marked for deletion' do
-      before do
-        project.marked_for_deletion_at = Time.current
-        project.save!
-      end
-
-      it { is_expected.to be(false) }
-    end
-
-    context 'with archived group' do
-      let_it_be(:group) { create(:group, :archived) }
-      let_it_be(:project) { create(:project, group: group) }
-
-      it { is_expected.to be(true) }
-    end
-  end
-
   describe '#show_inactive_project_deletion_banner?' do
     shared_examples 'does not show the banner' do |pass_project: true|
       it { expect(helper.show_inactive_project_deletion_banner?(pass_project ? project : nil)).to be(false) }
@@ -1468,7 +1423,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
         end
 
         it 'shows the banner' do
-          expect(helper.show_archived_project_banner?(project)).to be(false)
           expect(helper.show_inactive_project_deletion_banner?(project)).to be(true)
         end
       end
@@ -1934,7 +1888,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     it { is_expected.to be_falsey }
 
     context 'when beyond identity is disabled for a project' do
-      let_it_be(:integration) { create(:beyond_identity_integration, active: false) }
+      let_it_be(:integration) { create(:beyond_identity_integration, :instance, active: false) }
 
       before do
         allow(project).to receive(:beyond_identity_integration).and_return(integration)
@@ -1944,7 +1898,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when a GPG key failed external validation and one GPC key is externally validated' do
-      let_it_be(:integration) { create(:beyond_identity_integration) }
+      let_it_be(:integration) { create(:beyond_identity_integration, :instance) }
 
       before do
         allow(project).to receive(:beyond_identity_integration).and_return(integration)
@@ -1956,7 +1910,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when there are no GPG keys externally validated' do
-      let_it_be(:integration) { create(:beyond_identity_integration) }
+      let_it_be(:integration) { create(:beyond_identity_integration, :instance) }
 
       before do
         allow(project).to receive(:beyond_identity_integration).and_return(integration)
@@ -1968,7 +1922,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when GPG keys are missing' do
-      let_it_be(:integration) { create(:beyond_identity_integration) }
+      let_it_be(:integration) { create(:beyond_identity_integration, :instance) }
 
       before do
         allow(project).to receive(:beyond_identity_integration).and_return(integration)

@@ -21,7 +21,6 @@ Naming/InclusiveLanguage:
     - 'config/initializers/workhorse_multipart.rb'
     - 'ee/app/controllers/projects/push_rules_controller.rb'
     - 'ee/lib/arkose/verify_response.rb'
-    - 'ee/lib/system_check/geo/http_connection_check.rb'
     - 'lib/api/entities/application_setting.rb'
     - 'lib/api/settings.rb'
     - 'lib/banzai/filter/asset_proxy_filter.rb'

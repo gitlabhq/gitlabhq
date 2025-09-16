@@ -259,6 +259,12 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
 
       expect(helper.event_feed_url(event)).to eq(design_url(event.design))
     end
+
+    it 'returns project url' do
+      event = create(:project_created_event)
+
+      expect(helper.event_feed_url(event)).to eq(project_url(event.project))
+    end
   end
 
   describe '#event_preposition' do

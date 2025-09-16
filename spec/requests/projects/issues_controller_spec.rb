@@ -104,6 +104,18 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
         expect(response).to render_template('issues/index')
       end
     end
+
+    context 'when work_items_project_issues_list feature flag is enabled' do
+      before do
+        stub_feature_flags(work_items_project_issues_list: true)
+      end
+
+      it 'redirects to work items page with the feature flag enabled' do
+        get_index
+
+        expect(response).to redirect_to(project_work_items_path(project, 'type[]' => 'issue'))
+      end
+    end
   end
 
   describe 'GET #discussions' do

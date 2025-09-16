@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { alertVariantOptions } from '@gitlab/ui/dist/utils/constants';
+import { alertVariantOptions } from '@gitlab/ui/src/utils/constants';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import initVueAlerts from '~/vue_alerts';

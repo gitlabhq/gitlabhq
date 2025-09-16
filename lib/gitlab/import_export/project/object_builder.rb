@@ -151,8 +151,7 @@ module Gitlab
             MergeRequest::DiffCommitUser.find_or_create(
               name,
               email,
-              project.organization_id,
-              with_organization: Feature.enabled?(:add_organization_to_diff_commit_users, project)
+              project.organization_id
             )
           end
         end

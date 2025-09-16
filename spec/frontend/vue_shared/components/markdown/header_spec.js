@@ -78,10 +78,9 @@ describe('Markdown field header component', () => {
     ${9}  | ${'Add a checklist'}              | ${'Add a checklist'}                       | ${'taskList'}
     ${10} | ${'Indent line (⌘])'}             | ${'Indent line (Ctrl+])'}                  | ${'indent'}
     ${11} | ${'Outdent line (⌘[)'}            | ${'Outdent line (Ctrl+[)'}                 | ${'outdent'}
-    ${12} | ${'Add a collapsible section'}    | ${'Add a collapsible section'}             | ${'details'}
-    ${13} | ${'Attach a file or image'}       | ${'Attach a file or image'}                | ${'upload'}
-    ${14} | ${'Go full screen'}               | ${'Go full screen'}                        | ${'fullScreen'}
-    ${15} | ${'Find and replace'}             | ${'Find and replace'}                      | ${null}
+    ${12} | ${'Attach a file or image'}       | ${'Attach a file or image'}                | ${'upload'}
+    ${13} | ${'Go full screen'}               | ${'Go full screen'}                        | ${'fullScreen'}
+    ${14} | ${'Find and replace'}             | ${'Find and replace'}                      | ${null}
   `('markdown header buttons', ({ i, buttonTitle, nonMacTitle, buttonType }) => {
     it('renders the buttons with the correct title', () => {
       expect(findToolbarButtons().wrappers[i].props('buttonTitle')).toBe(buttonTitle);
@@ -217,14 +216,6 @@ describe('Markdown field header component', () => {
     );
   });
 
-  it('renders collapsible section template', () => {
-    const detailsBlockButton = findToolbarButtonByProp('icon', 'details-block');
-
-    expect(detailsBlockButton.props('tag')).toEqual(
-      '<details><summary>Click to expand</summary>\n{text}\n</details>',
-    );
-  });
-
   it('does not render suggestion button if `canSuggest` is set to false', () => {
     createWrapper({
       props: {
@@ -277,7 +268,6 @@ describe('Markdown field header component', () => {
             'bullet-list',
             'numbered-list',
             'task-list',
-            'collapsible-section',
             'table',
             'attach-file',
             'full-screen',
@@ -286,7 +276,7 @@ describe('Markdown field header component', () => {
           ],
         },
       });
-      expect(findDividers()).toHaveLength(1);
+      expect(findDividers()).toHaveLength(2);
     });
   });
 

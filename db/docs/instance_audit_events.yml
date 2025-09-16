@@ -7,6 +7,5 @@ feature_categories:
 description: Stores audit events scoped to instance
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152035/
 milestone: '17.1'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell_local
 table_size: small
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553461

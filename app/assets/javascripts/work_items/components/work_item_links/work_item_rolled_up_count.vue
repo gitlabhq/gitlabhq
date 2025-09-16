@@ -84,7 +84,7 @@ export default {
       class="gl-inline-block"
       data-testid="work-item-rolled-up-badge-count"
     >
-      <gl-badge variant="muted">{{ totalCountAllByType }}</gl-badge>
+      <gl-badge variant="neutral">{{ totalCountAllByType }}</gl-badge>
     </span>
 
     <gl-popover

@@ -31,7 +31,7 @@ Agent Platform consists of four separate services:
 
 ### Development Setup for Backend Components
 
-You should [set up GitLab Duo Agent Platform with the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_workflow.md)
+You should [set up GitLab Duo Agent Platform with the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_agent_platform.md)
 to run local versions of GitLab, Duo Agent Platform Service, and Executor.
 
 This setup can be used as-is with the [publicly available version of the VS Code Extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
@@ -53,26 +53,6 @@ Each of these settings can be turned on in your user settings in VS Code.
 Enable the Duo Agent Platform as a sidepanel instead of fullview. This is going to be the default for public beta.
 
 `"gitlab.featureFlags.duoWorkflowPanel": true,`
-
-### Executor type
-
-Allow to define which Duo Agent Platform executor is selected. Accepts:
-
-- `shell` - Current default, runs the go binary directly on the user's machine
-- `docker` - Runs the go binary inside a Docker container (deprecated)
-- `node` - Runs a nodeJs/TypeScript executor directly inside the language server. Expected to become the default.
-
-`"gitlab.duo.workflow.executor": "node",`
-
-### Agent Platform flow
-
-Experimental settings that allow Duo Agent Platform flow to be swapped. Includes:
-
-- `software_development` - default
-- `chat` - used by agentic chat
-- `search_and_replace` - Used to scan large number of files and replace results with specific instructions
-
-`"gitlab.duo.workflow.graph": "software_development",`
 
 ### Tool approval
 

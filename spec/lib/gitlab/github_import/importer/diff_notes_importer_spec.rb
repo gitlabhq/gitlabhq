@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::DiffNotesImporter, feature_category: :importers do
   let(:project) { build(:project, id: 4, import_source: 'foo/bar') }
-  let(:client) { instance_double(Gitlab::GithubImport::Client) }
+  let(:client) { instance_double(Gitlab::GithubImport::Client, web_endpoint: 'https://github.com') }
 
   let(:github_comment) do
     {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Populate new pipeline CI variables with url params", :js, feature_category: :ci_variables do
+RSpec.describe "Populate new pipeline CI variables with url params", :js, feature_category: :pipeline_composition do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:page_path) { new_project_pipeline_path(project) }

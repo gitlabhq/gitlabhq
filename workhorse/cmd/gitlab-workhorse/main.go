@@ -68,20 +68,16 @@ func main() {
 
 type alreadyPrintedError struct{ error }
 
-// buildConfig may print messages to os.Stderr if err != nil. If err is
-// of type alreadyPrintedError it has already been printed.
-func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error) {
-	boot := &bootConfig{}
-	cfg := config.NewDefaultConfig()
-	cfg.Version = Version
-	fset := flag.NewFlagSet(arg0, flag.ContinueOnError)
+// setupFlagSet initializes and configures the flag set for command line parsing
+func setupFlagSet(arg0 string, boot *bootConfig, cfg *config.Config) (fset *flag.FlagSet, configFile, authBackend, cableBackend *string) {
+	fset = flag.NewFlagSet(arg0, flag.ContinueOnError)
 	fset.Usage = func() {
 		_, _ = fmt.Fprintf(fset.Output(), "Usage of %s:\n", arg0)
 		_, _ = fmt.Fprintf(fset.Output(), "\n  %s [OPTIONS]\n\nOptions:\n", arg0)
 		fset.PrintDefaults()
 	}
 
-	configFile := fset.String("config", "", "TOML file to load config from")
+	configFile = fset.String("config", "", "TOML file to load config from")
 
 	fset.StringVar(&boot.secretPath, "secretPath", "./.gitlab_workhorse_secret", "File with secret key to authenticate with authBackend")
 	fset.StringVar(&boot.listenAddr, "listenAddr", "localhost:8181", "Listen address for HTTP server")
@@ -96,11 +92,11 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	fset.BoolVar(&boot.printVersion, "version", false, "Print version and exit")
 
 	// gitlab-rails backend
-	authBackend := fset.String("authBackend", upstream.DefaultBackend.String(), "Authentication/authorization backend")
+	authBackend = fset.String("authBackend", upstream.DefaultBackend.String(), "Authentication/authorization backend")
 	fset.StringVar(&cfg.Socket, "authSocket", "", "Optional: Unix domain socket to dial authBackend at")
 
 	// actioncable backend
-	cableBackend := fset.String("cableBackend", "", "ActionCable backend")
+	cableBackend = fset.String("cableBackend", "", "ActionCable backend")
 	fset.StringVar(&cfg.CableSocket, "cableSocket", "", "Optional: Unix domain socket to dial cableBackend at")
 
 	fset.StringVar(&cfg.DocumentRoot, "documentRoot", "public", "Path to static files content")
@@ -111,6 +107,18 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	fset.DurationVar(&cfg.APIQueueTimeout, "apiQueueDuration", queueing.DefaultTimeout, "Maximum queueing duration of requests")
 	fset.DurationVar(&cfg.APICILongPollingDuration, "apiCiLongPollingDuration", 50, "Long polling duration for job requesting for runners")
 	fset.BoolVar(&cfg.PropagateCorrelationID, "propagateCorrelationID", false, "Reuse existing Correlation-ID from the incoming request header `X-Request-ID` if present")
+
+	return fset, configFile, authBackend, cableBackend
+}
+
+// buildConfig may print messages to os.Stderr if err != nil. If err is
+// of type alreadyPrintedError it has already been printed.
+func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error) {
+	boot := &bootConfig{}
+	cfg := config.NewDefaultConfig()
+	cfg.Version = Version
+
+	fset, configFile, authBackend, cableBackend := setupFlagSet(arg0, boot, cfg)
 
 	if err := fset.Parse(args); err != nil {
 		return nil, nil, alreadyPrintedError{err}

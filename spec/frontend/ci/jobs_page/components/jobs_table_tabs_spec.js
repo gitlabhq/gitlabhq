@@ -78,22 +78,25 @@ describe('Jobs Table Tabs', () => {
     });
   });
 
-  describe('admin mode', () => {
-    it('displays cancel all jobs button', () => {
-      createComponent(adminProps);
+  describe('filters', () => {
+    it('does not display job count with bridge', () => {
+      createComponent({ ...defaultProps, filters: { kind: 'BRIDGE' } });
 
-      expect(findCancelJobsButton().exists()).toBe(true);
+      expect(findCountBadge().exists()).toBe(false);
     });
   });
 
-  describe('with bridge filter', () => {
+  describe('admin mode', () => {
     beforeEach(() => {
-      createComponent({ ...defaultProps, filters: { kind: 'BRIDGE' } });
+      createComponent(adminProps);
     });
 
-    it('does not display job count', () => {
-      expect(trimText(findAllTab().text())).toBe('All');
-      expect(findCountBadge().exists()).toBe(false);
+    it('displays cancel all jobs button', () => {
+      expect(findCancelJobsButton().exists()).toBe(true);
+    });
+
+    it('displays job count', () => {
+      expect(findCountBadge().exists()).toBe(true);
     });
   });
 });

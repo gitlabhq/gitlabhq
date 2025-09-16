@@ -1,0 +1,16 @@
+---
+table_name: duo_workflows_checkpoints
+classes:
+- Ai::DuoWorkflows::Checkpoint
+feature_categories:
+- agent_foundations
+description:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156872
+milestone: '17.2'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  project_id: projects
+  namespace_id: namespaces
+table_size: large
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203421
+removed_in_milestone: '18.4'

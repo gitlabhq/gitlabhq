@@ -239,8 +239,10 @@ Array inputs must be formatted as JSON, for example `["array-input-1", "array-in
 when manually passing inputs for:
 
 - [Manually triggered pipelines](../pipelines/_index.md#run-a-pipeline-manually).
+- The [pipeline triggers API](../../api/pipeline_triggers.md#trigger-a-pipeline-with-a-token).
+- The [pipelines API](../../api/pipelines.md#create-a-new-pipeline).
 - Git [push options](../../topics/git/commit.md#push-options-for-gitlab-cicd)
-- [Pipeline schedules](../pipelines/schedules.md#add-a-pipeline-schedule)
+- [Pipeline schedules](../pipelines/schedules.md#create-a-pipeline-schedule)
 
 #### Multi-line input string values
 
@@ -350,7 +352,7 @@ You can set input values with:
 - The [pipeline triggers API](../../api/pipeline_triggers.md#trigger-a-pipeline-with-a-token)
 - The [pipelines API](../../api/pipelines.md#create-a-new-pipeline)
 - Git [push options](../../topics/git/commit.md#push-options-for-gitlab-cicd)
-- [Pipeline schedules](../pipelines/schedules.md#add-a-pipeline-schedule)
+- [Pipeline schedules](../pipelines/schedules.md#create-a-pipeline-schedule)
 - The [`trigger` keyword](../pipelines/downstream_pipelines.md#pass-inputs-to-a-downstream-pipeline)
 
 A pipeline can take up to 20 inputs.

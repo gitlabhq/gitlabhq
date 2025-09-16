@@ -27,16 +27,16 @@ export function StylePlugin({ shouldWatch = false } = {}) {
   const eeImagesPath = path.resolve(ROOT_PATH, 'ee/app/assets/images');
   const jhImagesPath = path.resolve(ROOT_PATH, 'jh/app/assets/images');
 
-  const stylesheetDir = '/stylesheets/';
-
-  const styles = resolveCompilationTargetsForVite();
-
-  const inputOptions = {};
-
-  Object.entries(styles).forEach(([source, importPath]) => {
-    inputOptions[`styles.${source}`] = importPath;
-    inputOptions[`stylesheets/styles.${source}`] = importPath;
-  });
+  const entrypoints = {
+    'styles/tailwind.css': path.join(ROOT_PATH, 'app/assets/builds/tailwind.css'),
+    'styles/tailwind_cqs.css': path.join(ROOT_PATH, 'app/assets/builds/tailwind_cqs.css'),
+    ...Object.fromEntries(
+      Object.entries(resolveCompilationTargetsForVite()).map(([key, value]) => {
+        // we must add `styles/` because ViteRuby prepends assets folder to the request if `/` is missing
+        return [`styles/${key}`, value];
+      }),
+    ),
+  };
 
   return {
     name: 'vite-plugin-style',
@@ -54,28 +54,19 @@ export function StylePlugin({ shouldWatch = false } = {}) {
         },
         build: {
           rollupOptions: {
-            input: inputOptions,
+            input: entrypoints,
           },
         },
       };
     },
+    // Vite dev server can not recognize entrypoint names from the URL
+    // so we create a virtual file that imports the real entrypoint file
     load(id) {
-      if (!id.startsWith('styles.')) {
-        return undefined;
-      }
-      const fixedId = id.replace('styles.', '').replace('.scss', '.css').replace(/\?.+/, '');
-
-      if (fixedId === 'tailwind.css') {
-        return `@import '${path.join(ROOT_PATH, 'app/assets/builds/tailwind.css')}';`;
-      }
-
-      return styles[fixedId] ? `@import '${styles[fixedId]}';` : '// Does not exist';
-    },
-    resolveId(source) {
-      if (!source.startsWith(`${stylesheetDir}styles.`)) {
-        return undefined;
-      }
-      return { id: source.replace(stylesheetDir, '') };
+      if (!id.startsWith('/styles/')) return;
+      const entrypointName = id.substring(1).replace(/\?.+/, '');
+      const resolvedPath = entrypoints[entrypointName];
+      // eslint-disable-next-line consistent-return
+      if (resolvedPath) return `@import '${resolvedPath}';`;
     },
   };
 }

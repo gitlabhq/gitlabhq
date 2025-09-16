@@ -65,6 +65,7 @@ RSpec.describe Admin::AbuseReports::ModerateUserService, feature_category: :inst
         expect(abuse_report.events.last).to have_attributes(
           action: action,
           user: admin,
+          organization_id: abuse_report.organization_id,
           reason: reason,
           comment: params[:comment]
         )

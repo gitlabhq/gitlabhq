@@ -37,6 +37,8 @@ CI/CD job tokens can access the following resources:
 
 | Resource                                                                                              | Notes |
 | ----------------------------------------------------------------------------------------------------- | ----- |
+| [Branches API](../../api/branches.md)                                                                 | Can access the `GET /projects/:id/repository/branches` endpoint. |
+| [Commits API](../../api/commits.md)                                                                   | Can access the `GET /projects/:id/repository/commits/:sha` and `GET /projects/:id/repository/commits/:sha/merge_requests` endpoints. |
 | [Container registry](../../user/packages/container_registry/build_and_push_images.md#use-gitlab-cicd) | Used as the `$CI_REGISTRY_PASSWORD` [predefined variable](../variables/predefined_variables.md) to authenticate with the container registry associated with the job's project. |
 | [Package registry](../../user/packages/package_registry/_index.md#to-build-packages)                  | Used to authenticate with the registry. |
 | [Terraform module registry](../../user/packages/terraform_module_registry/_index.md)                  | Used to authenticate with the registry. |
@@ -44,14 +46,18 @@ CI/CD job tokens can access the following resources:
 | [Container registry API](../../api/container_registry.md)                                             | Can authenticate only with the container registry associated with the job's project. |
 | [Deployments API](../../api/deployments.md)                                                           | Can access all endpoints in this API. |
 | [Environments API](../../api/environments.md)                                                         | Can access all endpoints in this API. |
+| [Files API](../../api/repository_files.md)                                                            | Can access the `GET /projects/:id/repository/files/:file_path/raw` endpoint. |
 | [Jobs API](../../api/jobs.md#get-job-tokens-job)                                                      | Can access only the `GET /job` endpoint. |
 | [Job artifacts API](../../api/job_artifacts.md)                                                       | Can access all endpoints in this API. |
+| [Merge requests API](../../api/merge_requests.md)                                                     | Can access the `GET /projects/:id/merge_requests` and `GET /projects/:id/merge_requests/:merge_request_iid` endpoints. |
+| [Notes API](../../api/notes.md)                                                                       | Can access the `GET /projects/:id/merge_requests/:merge_request_iid/notes` and `GET /projects/:id/merge_requests/:merge_request_iid/notes/:note_id` endpoints. |
 | [Packages API](../../api/packages.md)                                                                 | Can access all endpoints in this API. |
 | [Pipeline trigger tokens API](../../api/pipeline_triggers.md#trigger-a-pipeline-with-a-token)         | Can access only the `POST /projects/:id/trigger/pipeline` endpoint. |
 | [Pipelines API](../../api/pipelines.md#update-pipeline-metadata)                                      | Can access only the `PUT /projects/:id/pipelines/:pipeline_id/metadata` endpoint. |
 | [Release links API](../../api/releases/links.md)                                                      | Can access all endpoints in this API. |
 | [Releases API](../../api/releases/_index.md)                                                          | Can access all endpoints in this API. |
 | [Repositories API](../../api/repositories.md#generate-changelog-data)                                 | Can access only the `GET /projects/:id/repository/changelog` endpoint. |
+| [Tags API](../../api/tags.md)                                                                         | Can access the `GET /projects/:id/repository/tags` endpoint. |
 
 An open [proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559) exists to make permissions
 more granular.
@@ -263,6 +269,7 @@ This process is performed until the number of allowlist entries is 200 or fewer.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/405369) in GitLab 16.6.
+- Access to the repository [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439158) in GitLab 17.0.
 
 {{< /history >}}
 
@@ -272,6 +279,7 @@ Projects not in the allowlist can use a job token to authenticate with public or
 - Access the container registry.
 - Access the package registry.
 - Access releases, deployments, and environments.
+- Access the repository.
 
 You can limit access to these actions to only the projects on the allowlist by setting
 each feature to be only visible to project members.
@@ -343,28 +351,21 @@ You can also modify this setting with the [GraphQL](../../api/graphql/reference/
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389060) in GitLab 17.2. [with a flag](../../administration/feature_flags/_index.md) named `allow_push_repository_for_job_token`. Disabled by default.
 - **Token Access** section renamed to **Job token permissions**, and [**Limit access to this project** setting renamed to **Authorized groups and projects**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.2.
 
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/468320) in GitLab 18.3
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/468320) in GitLab 18.4. Feature flag `allow_push_repository_for_job_token` removed.
+
 {{< /history >}}
 
-{{< alert type="flag" >}}
+You can configure your project to allow Git push requests that are authenticated with a CI/CD job
+token. This setting is turned off by default.
 
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
+When you turn on this setting, only job tokens generated by CI/CD jobs that run in the project
+pipelines can push to the project. Job tokens from other
+[projects or groups in the allowlist](#add-a-group-or-project-to-the-job-token-allowlist) cannot
+push to your project.
 
-{{< /alert >}}
-
-{{< alert type="warning" >}}
-
-Pushing to the project repository by authenticating with a CI/CD job token is still in development
-and not yet optimized for performance. If you enable this feature for testing, you must
-thoroughly test and implement validation measures to prevent infinite loops of "push" pipelines
-triggering more pipelines.
-
-{{< /alert >}}
-
-You can allow Git push requests to your project repository that are authenticated
-with a CI/CD job token. When enabled, access is allowed only for the tokens generated
-in CI/CD jobs that run in pipelines in your project. This permission is disabled by default.
+When you use a job token to push to the project, no CI pipelines are triggered. The job token has
+the same access permissions as the user who started the job.
 
 Prerequisites:
 
@@ -377,16 +378,12 @@ To grant permission to job tokens generated in your project to push to the proje
 1. Expand **Job token permissions**.
 1. In the **Permissions** section, select **Allow Git push requests to the repository**.
 
-The job token has the same access permissions as the user that started the job.
-Job tokens from other [projects or groups in the allowlist](#add-a-group-or-project-to-the-job-token-allowlist)
-cannot push to the repository in your project.
-
-You can also control this setting with the [`ci_push_repository_for_job_token_allowed`](../../api/projects.md#edit-a-project)
-parameter in the `projects` REST API endpoint.
+You can also control this setting with the `ci_push_repository_for_job_token_allowed` parameter in
+the [projects API](../../api/projects.md#edit-a-project).
 
 ## Fine-grained permissions for job tokens
 
-Fine-grained permissions for job tokens are an [experiment](../../policy/development_stages_support.md#experiment). For information on this feature and the available resources, see [fine-grained permissions for CI/CD job tokens](fine_grained_permissions.md). Feedback is welcome on this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519575).
+You can use fine-grained permissions to explicitly allow access to a limited set of API endpoints. For more information, see [fine-grained permissions for CI/CD job tokens](fine_grained_permissions.md). Feedback is welcome on this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/519575).
 
 ## Use a job token
 

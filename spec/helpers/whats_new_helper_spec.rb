@@ -117,4 +117,27 @@ RSpec.describe WhatsNewHelper do
       expect(descriptions[3]).to be_nil
     end
   end
+
+  describe '#whats_new_read_articles' do
+    it 'returns empty array without signed in user' do
+      expect(helper.whats_new_read_articles).to eq([])
+    end
+
+    context 'when user signed in' do
+      let(:user) { create(:user) }
+      let(:digest) { 'digest' }
+      let(:service_instance) { instance_double(Onboarding::WhatsNew::ReadStatusService) }
+
+      it 'calls ReadStatusService with correct params when user signed in' do
+        sign_in(user)
+
+        expect(ReleaseHighlight).to receive(:most_recent_version_digest).and_return(digest)
+        expect(Onboarding::WhatsNew::ReadStatusService).to receive(:new).with(user.id,
+          digest).and_return(service_instance)
+        expect(service_instance).to receive(:most_recent_version_read_articles)
+
+        helper.whats_new_read_articles
+      end
+    end
+  end
 end

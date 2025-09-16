@@ -8,7 +8,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activesupport (8.0.2)
+    activesupport (8.0.2.1)
       base64
       benchmark (>= 0.3)
       bigdecimal
@@ -22,16 +22,16 @@ GEM
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
     ast (2.4.3)
-    base64 (0.2.0)
-    benchmark (0.4.0)
-    bigdecimal (3.1.9)
+    base64 (0.3.0)
+    benchmark (0.4.1)
+    bigdecimal (3.2.2)
     binding_of_caller (1.0.1)
       debug_inspector (>= 1.2.0)
     concurrent-ruby (1.3.5)
     connection_pool (2.5.3)
     debug_inspector (1.2.0)
-    diff-lcs (1.6.1)
-    drb (2.2.1)
+    diff-lcs (1.6.2)
+    drb (2.2.3)
     gitlab-styles (13.0.2)
       rubocop (~> 1.68.0)
       rubocop-capybara (~> 2.21.0)
@@ -41,20 +41,49 @@ GEM
       rubocop-rails (~> 2.26.0)
       rubocop-rspec (~> 3.0.4)
       rubocop-rspec_rails (~> 2.30.0)
-    google-protobuf (3.25.7)
+    google-protobuf (3.25.8)
+    google-protobuf (3.25.8-aarch64-linux)
+    google-protobuf (3.25.8-arm64-darwin)
+    google-protobuf (3.25.8-x86-linux)
+    google-protobuf (3.25.8-x86_64-darwin)
+    google-protobuf (3.25.8-x86_64-linux)
     googleapis-common-protos-types (1.20.0)
       google-protobuf (>= 3.18, < 5.a)
-    grpc (1.72.0)
+    grpc (1.74.1)
+      google-protobuf (>= 3.25, < 5.0)
+      googleapis-common-protos-types (~> 1.0)
+    grpc (1.74.1-aarch64-linux-gnu)
+      google-protobuf (>= 3.25, < 5.0)
+      googleapis-common-protos-types (~> 1.0)
+    grpc (1.74.1-aarch64-linux-musl)
+      google-protobuf (>= 3.25, < 5.0)
+      googleapis-common-protos-types (~> 1.0)
+    grpc (1.74.1-arm64-darwin)
+      google-protobuf (>= 3.25, < 5.0)
+      googleapis-common-protos-types (~> 1.0)
+    grpc (1.74.1-x86-linux-gnu)
+      google-protobuf (>= 3.25, < 5.0)
+      googleapis-common-protos-types (~> 1.0)
+    grpc (1.74.1-x86-linux-musl)
+      google-protobuf (>= 3.25, < 5.0)
+      googleapis-common-protos-types (~> 1.0)
+    grpc (1.74.1-x86_64-darwin)
+      google-protobuf (>= 3.25, < 5.0)
+      googleapis-common-protos-types (~> 1.0)
+    grpc (1.74.1-x86_64-linux-gnu)
+      google-protobuf (>= 3.25, < 5.0)
+      googleapis-common-protos-types (~> 1.0)
+    grpc (1.74.1-x86_64-linux-musl)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
-    json (2.11.3)
-    language_server-protocol (3.17.0.4)
+    json (2.13.2)
+    language_server-protocol (3.17.0.5)
     logger (1.7.0)
     minitest (5.25.5)
     parallel (1.27.0)
-    parser (3.3.8.0)
+    parser (3.3.9.0)
       ast (~> 2.4.1)
       racc
     prism (1.4.0)
@@ -63,20 +92,20 @@ GEM
       rouge
       unparser
     racc (1.8.1)
-    rack (3.1.14)
+    rack (3.2.0)
     rainbow (3.1.1)
-    regexp_parser (2.10.0)
-    rouge (4.5.2)
-    rspec (3.13.0)
+    regexp_parser (2.11.2)
+    rouge (4.6.0)
+    rspec (3.13.1)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
       rspec-mocks (~> 3.13.0)
-    rspec-core (3.13.3)
+    rspec-core (3.13.5)
       rspec-support (~> 3.13.0)
-    rspec-expectations (3.13.4)
+    rspec-expectations (3.13.5)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-mocks (3.13.4)
+    rspec-mocks (3.13.5)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-parameterized (1.0.2)
@@ -90,7 +119,7 @@ GEM
     rspec-parameterized-table_syntax (1.0.1)
       binding_of_caller
       rspec-parameterized-core (< 2)
-    rspec-support (3.13.3)
+    rspec-support (3.13.5)
     rubocop (1.68.0)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
@@ -101,7 +130,7 @@ GEM
       rubocop-ast (>= 1.32.2, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.44.1)
+    rubocop-ast (1.46.0)
       parser (>= 3.3.7.2)
       prism (~> 1.4)
     rubocop-capybara (2.21.0)
@@ -128,13 +157,25 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.6.0)
-    unparser (0.7.0)
+    unparser (0.8.0)
       diff-lcs (~> 1.6)
       parser (>= 3.3.0)
+      prism (>= 1.4)
     uri (1.0.3)
 
 PLATFORMS
+  aarch64-linux
+  aarch64-linux-gnu
+  aarch64-linux-musl
+  arm64-darwin
   ruby
+  x86-linux
+  x86-linux-gnu
+  x86-linux-musl
+  x86_64-darwin
+  x86_64-linux
+  x86_64-linux-gnu
+  x86_64-linux-musl
 
 DEPENDENCIES
   gitlab-styles (~> 13.0.1)
@@ -143,5 +184,73 @@ DEPENDENCIES
   rspec-parameterized (~> 1.0.2)
   rubocop (~> 1.21)
 
+CHECKSUMS
+  activesupport (8.0.2.1) sha256=0405a76fd1ca989975d9ae00d46a4d3979bdf3817482d846b63affa84bd561c6
+  ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
+  base64 (0.3.0) sha256=27337aeabad6ffae05c265c450490628ef3ebd4b67be58257393227588f5a97b
+  benchmark (0.4.1) sha256=d4ef40037bba27f03b28013e219b950b82bace296549ec15a78016552f8d2cce
+  bigdecimal (3.2.2) sha256=39085f76b495eb39a79ce07af716f3a6829bc35eb44f2195e2753749f2fa5adc
+  binding_of_caller (1.0.1) sha256=2b2902abff4246ddcfbc4da9b69bc4a019e22aeb300c2ff6289a173d4b90b29a
+  concurrent-ruby (1.3.5) sha256=813b3e37aca6df2a21a3b9f1d497f8cbab24a2b94cab325bffe65ee0f6cbebc6
+  connection_pool (2.5.3) sha256=cfd74a82b9b094d1ce30c4f1a346da23ee19dc8a062a16a85f58eab1ced4305b
+  debug_inspector (1.2.0) sha256=9bdfa02eebc3da163833e6a89b154084232f5766087e59573b70521c77ea68a2
+  diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
+  drb (2.2.3) sha256=0b00d6fdb50995fe4a45dea13663493c841112e4068656854646f418fda13373
+  gitlab-styles (13.0.2) sha256=e662b9334643763b55a861f9e26091096547f98179bd89b0fa8d6c6fb8cec861
+  gitlab-topology-service-client (0.1)
+  google-protobuf (3.25.8) sha256=102c8500502e224a5daa7447bdd2c458a25a6c7b0bf5d8496a559ada131952b7
+  google-protobuf (3.25.8-aarch64-linux) sha256=5869d1a31f39ee3361e85f3ef3db0512c19f0e0c75cd69d7303c177e17590044
+  google-protobuf (3.25.8-arm64-darwin) sha256=e294affc4fb25c8bc7edd264f0ba490d42dce3afff08db1e08fb7bb44cc57488
+  google-protobuf (3.25.8-x86-linux) sha256=288ffaaec53c9f666582cd0a5d42395fea6b7c15458c1f9d64a295ca174c0233
+  google-protobuf (3.25.8-x86_64-darwin) sha256=9c9e8c1c760eeb314fd6bcba1b0fb1e64c473fc9e2040c8992df61874974c108
+  google-protobuf (3.25.8-x86_64-linux) sha256=07783d910635e2a60eaf929fe3e45ea4d657d023be3816bda99a21c14f7be959
+  googleapis-common-protos-types (1.20.0) sha256=5e374b06bcfc7e13556e7c0d87b99f1fa3d42de6396a1de3d8fc13aefb4dd07f
+  grpc (1.74.1) sha256=e73a3a4996c14f4016c75f0b577b937535341a4095f7f9db151a82a49e371e8b
+  grpc (1.74.1-aarch64-linux-gnu) sha256=5c9eaeff04ea0abd45ab92ebcc3b70a0a24f36faa4d8ca585ff5939a77856e82
+  grpc (1.74.1-aarch64-linux-musl) sha256=ddb14a8911fe63ea0514664c11e3f122233d746e71dcc5955ae1dd1af697af60
+  grpc (1.74.1-arm64-darwin) sha256=82506da28f9d97cdfddde34d566af528bf15157daaa2946cbefb1be8743f8375
+  grpc (1.74.1-x86-linux-gnu) sha256=a702fa12d9a558096dac575276c2195e3ad5f822b105d7aa5a817f18687cde33
+  grpc (1.74.1-x86-linux-musl) sha256=f26774c02a1e7eb0ebddecd59ffd623db00f5cea810eb9ff9d693e11b01734ac
+  grpc (1.74.1-x86_64-darwin) sha256=b7b31e4d4a268bd0818da54bbabbfa2dfae8d903f092d4dcbda9e24bd014fc95
+  grpc (1.74.1-x86_64-linux-gnu) sha256=44741365c7d3c4cadb4431186ac73d896a7ac9d03fa7d76564ae1423d325784a
+  grpc (1.74.1-x86_64-linux-musl) sha256=832f204b85b3cb0fadfd709aa4ca2b451b2ba6858838a72cc55177c47bb31644
+  i18n (1.14.7) sha256=ceba573f8138ff2c0915427f1fc5bdf4aa3ab8ae88c8ce255eb3ecf0a11a5d0f
+  json (2.13.2) sha256=02e1f118d434c6b230a64ffa5c8dee07e3ec96244335c392eaed39e1199dbb68
+  language_server-protocol (3.17.0.5) sha256=fd1e39a51a28bf3eec959379985a72e296e9f9acfce46f6a79d31ca8760803cc
+  logger (1.7.0) sha256=196edec7cc44b66cfb40f9755ce11b392f21f7967696af15d274dde7edff0203
+  minitest (5.25.5) sha256=391b6c6cb43a4802bfb7c93af1ebe2ac66a210293f4a3fb7db36f2fc7dc2c756
+  parallel (1.27.0) sha256=4ac151e1806b755fb4e2dc2332cbf0e54f2e24ba821ff2d3dcf86bf6dc4ae130
+  parser (3.3.9.0) sha256=94d6929354b1a6e3e1f89d79d4d302cc8f5aa814431a6c9c7e0623335d7687f2
+  prism (1.4.0) sha256=dc0e3e00e93160213dc2a65519d9002a4a1e7b962db57d444cf1a71565bb703e
+  proc_to_ast (0.2.0) sha256=4bb446419c3878c21d8792f8a129616690168f636b9e460b5a0ed26dd6680bbe
+  racc (1.8.1) sha256=4a7f6929691dbec8b5209a0b373bc2614882b55fc5d2e447a21aaa691303d62f
+  rack (3.2.0) sha256=79cd21514d696c59d61fae02e62900f087aac2d053fdc77d45f4e91b94fb3612
+  rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
+  regexp_parser (2.11.2) sha256=5e5e9c1485ffd8de53ab1d2807affd81f617f72967dfc64fc75a69e2cbf0ff98
+  rouge (4.6.0) sha256=10198622df0ef919796da5686a9cc116a49280805e1ed4b851c97ef677eddd7a
+  rspec (3.13.1) sha256=b9f9a58fa915b8d94a1d6b3195fe6dd28c4c34836a6097015142c4a9ace72140
+  rspec-core (3.13.5) sha256=ab3f682897c6131c67f9a17cfee5022a597f283aebe654d329a565f9937a4fa3
+  rspec-expectations (3.13.5) sha256=33a4d3a1d95060aea4c94e9f237030a8f9eae5615e9bd85718fe3a09e4b58836
+  rspec-mocks (3.13.5) sha256=e4338a6f285ada9fe56f5893f5457783af8194f5d08884d17a87321d5195ea81
+  rspec-parameterized (1.0.2) sha256=b456dec0091924175ac13963e173cdbaa2ab3e1581a405a948addc34e3f3f4c2
+  rspec-parameterized-core (1.0.1) sha256=31819939c433f58b59f83d1bcd08697ca74ea7e44e2a207f7445934f88461aab
+  rspec-parameterized-table_syntax (1.0.1) sha256=ffead8f21f0711b3cdf8b74386f2ef7ac93b39c40b60658a5eda97072580f2fc
+  rspec-support (3.13.5) sha256=add745af535dd14b18f1209ab41ef987fdfad12786176b6a3b3619b9a7279fbf
+  rubocop (1.68.0) sha256=07df508504d81e97174e8d21030f25d52c1be7ee8615939db43f3b377ea6c12b
+  rubocop-ast (1.46.0) sha256=0da7f6ad5b98614f89b74f11873c191059c823eae07d6ffd40a42a3338f2232b
+  rubocop-capybara (2.21.0) sha256=5d264efdd8b6c7081a3d4889decf1451a1cfaaec204d81534e236bc825b280ab
+  rubocop-factory_bot (2.26.1) sha256=8de13cd4edcee5ca800f255188167ecef8dbfc3d1fae9f15734e9d2e755392aa
+  rubocop-graphql (1.5.4) sha256=2d888d40b08577daf1e74ca4623be1e3058c1a93543d5a7220818f561a254192
+  rubocop-performance (1.21.1) sha256=5cf20002a544275ad6aa99abca4b945d2a2ed71be925c38fe83700360ed8734e
+  rubocop-rails (2.26.2) sha256=f5561a09d6afd2f54316f3f0f6057338ca55b6c24a25ba6a938d3ed0fded84ad
+  rubocop-rspec (3.0.5) sha256=c6a8e29fb1b00d227c32df159e92f5ebb9e0ff734e52955fb13aff5c74977e0f
+  rubocop-rspec_rails (2.30.0) sha256=888112e83f9d7ef7ad2397e9d69a0b9614a4bae24f072c399804a180f80c4c46
+  ruby-progressbar (1.13.0) sha256=80fc9c47a9b640d6834e0dc7b3c94c9df37f08cb072b7761e4a71e22cff29b33
+  securerandom (0.4.1) sha256=cc5193d414a4341b6e225f0cb4446aceca8e50d5e1888743fac16987638ea0b1
+  tzinfo (2.0.6) sha256=8daf828cc77bcf7d63b0e3bdb6caa47e2272dcfaf4fbfe46f8c3a9df087a829b
+  unicode-display_width (2.6.0) sha256=12279874bba6d5e4d2728cef814b19197dbb10d7a7837a869bab65da943b7f5a
+  unparser (0.8.0) sha256=7e199512cfdf7683d51a5060d4668988f6c5659a0904f5fae89a55b3cbd548c1
+  uri (1.0.3) sha256=e9f2244608eea2f7bc357d954c65c910ce0399ca5e18a7a29207ac22d8767011
+
 BUNDLED WITH
-   2.4.4
+   2.7.1

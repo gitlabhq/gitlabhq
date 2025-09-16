@@ -12,6 +12,7 @@ import FilepathFormMediator from '~/blob/filepath_form_mediator';
 import { HTTP_STATUS_PAYLOAD_TOO_LARGE } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
 import Api from '~/api';
+import { createDynamicHeightManager } from '~/vue_shared/utils/dynamic_height';
 
 import { BLOB_EDITOR_ERROR, BLOB_PREVIEW_ERROR, BLOB_EDIT_ERROR } from './constants';
 
@@ -105,6 +106,7 @@ export default class EditBlob {
     }
 
     this.initFilepathForm();
+    this.initDynamicHeight();
     this.editor.focus();
 
     form.addEventListener('submit', async (event) => {
@@ -132,6 +134,18 @@ export default class EditBlob {
         this.editor.unuse(this.markdownExtensions);
       }
     });
+  }
+
+  initDynamicHeight() {
+    const editorElement = document.getElementById('editor');
+    this.dynamicHeightManager = createDynamicHeightManager(editorElement);
+  }
+
+  destroy() {
+    if (this.dynamicHeightManager) {
+      this.dynamicHeightManager.destroy();
+      this.dynamicHeightManager = null;
+    }
   }
 
   initFilepathForm() {

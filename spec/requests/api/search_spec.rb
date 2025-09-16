@@ -223,6 +223,8 @@ RSpec.describe API::Search, :clean_gitlab_redis_rate_limiting, feature_category:
 
           it_behaves_like 'issues orderable by created_at'
 
+          include_examples 'an endpoint with mcp route setting', :gitlab_search
+
           describe 'pagination' do
             before do
               create(:issue, project: project, title: 'another issue')

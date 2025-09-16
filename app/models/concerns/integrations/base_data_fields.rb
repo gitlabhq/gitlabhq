@@ -15,7 +15,11 @@ module Integrations
       before_validation :set_sharding_key
 
       validates :integration, presence: true
-      validate :validate_sharding_key
+      validates :project_id, :group_id, absence: true, if: -> { organization_level? }
+      validates :project_id, :organization_id, absence: true, if: -> { group_level? }
+      validates :group_id, :organization_id, absence: true, if: -> { project_level? }
+
+      validate :validate_belongs_to_one_of_project_group_or_organization
     end
 
     class_methods do
@@ -58,10 +62,22 @@ module Integrations
       self.organization_id = integration.organization_id if integration.organization_id
     end
 
-    def validate_sharding_key
-      return if project_id.present? || group_id.present? || organization_id.present?
+    def validate_belongs_to_one_of_project_group_or_organization
+      return if [group_id, project_id, organization_id].compact.one?
 
-      errors.add(:base, :blank, message: 'one of project_id, group_id or organization_id must be present')
+      errors.add(:base, 'one of project_id, group_id or organization_id must be present')
+    end
+
+    def project_level?
+      project_id.present?
+    end
+
+    def group_level?
+      group_id.present?
+    end
+
+    def organization_level?
+      organization_id.present?
     end
   end
 end

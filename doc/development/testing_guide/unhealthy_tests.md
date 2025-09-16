@@ -458,7 +458,7 @@ Reproducing a job failure in CI always helps with troubleshooting why and how a 
 1. Go to `tooling/lib/tooling/parallel_rspec_runner.rb` where the test file distribution happens. Have a look at [this merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137924/diffs) as an example, store the file list you copied from step 2 into a `TEST_FILES` constant and have RSpec run this list by updating the `rspec_command` method as done in the example MR.
 1. Skip the tests in `spec/tooling/lib/tooling/parallel_rspec_runner_spec.rb` so it doesn't cause your pipeline to fail early.
 1. Since we want to force the pipeline to run against a specific version, we do not want to run a merged results pipeline. We can introduce a merge conflict into the MR to achieve this.
-1. To preserve spec ordering, update the `spec/support/rspec_order.rb` file by hard coding `Kernel.srand` with the value shown in the originally failing job, as done [here](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128428/diffs#32f6fa4961481518204e227252552dba7483c3b0_62_62). You can fine the srand value in the job log by searching `Randomized with seed` which is followed by this value.
+1. To preserve spec ordering, update the `spec/support/rspec_order.rb` file by hard coding `Kernel.srand` with the value shown in the originally failing job, as done in [merge request 128428](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128428/diffs#32f6fa4961481518204e227252552dba7483c3b0_62_62). You can find the `srand` value in the job log by searching `Randomized with seed` which is followed by this value.
 
 ### Metrics & Tracking
 

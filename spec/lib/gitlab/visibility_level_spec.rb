@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::VisibilityLevel do
+RSpec.describe Gitlab::VisibilityLevel, feature_category: :permissions do
   using RSpec::Parameterized::TableSyntax
 
   describe '.level_value' do
@@ -113,6 +113,23 @@ RSpec.describe Gitlab::VisibilityLevel do
 
       expect(described_class.allowed_levels)
         .to contain_exactly(described_class::PRIVATE, described_class::INTERNAL, described_class::PUBLIC)
+    end
+  end
+
+  describe '.allowed_for?', :aggregate_failures do
+    let(:user) { create(:user) }
+    let(:admin_user) { create(:admin) }
+
+    it 'returns true when the user is an admin' do
+      expect(described_class.allowed_for?(admin_user, Gitlab::VisibilityLevel::PRIVATE)).to be_truthy
+      expect(described_class.allowed_for?(admin_user, "public")).to be_truthy
+      expect(described_class.allowed_for?(admin_user, "wally")).to be_truthy
+    end
+
+    it 'fallsback to an allowed_level? boolean' do
+      expect(described_class.allowed_for?(user, Gitlab::VisibilityLevel::PRIVATE)).to be_truthy
+      expect(described_class.allowed_for?(user, Gitlab::VisibilityLevel::INTERNAL)).to be_truthy
+      expect(described_class.allowed_for?(user, Gitlab::VisibilityLevel::PUBLIC)).to be_truthy
     end
   end
 

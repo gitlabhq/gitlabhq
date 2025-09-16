@@ -129,6 +129,9 @@ export default {
           if (this.currentBranch === sourceBranch) {
             this.$emit('updateCommitSha');
           }
+
+          // Reset commit message after successful commit
+          this.$refs.commitForm.resetCommitMessage();
         }
       } catch (error) {
         this.$emit('showError', { type: COMMIT_FAILURE, reasons: [error?.message] });
@@ -161,6 +164,7 @@ export default {
 
 <template>
   <commit-form
+    ref="commitForm"
     :current-branch="currentBranch"
     :default-message="defaultCommitMessage"
     :has-unsaved-changes="hasUnsavedChanges"

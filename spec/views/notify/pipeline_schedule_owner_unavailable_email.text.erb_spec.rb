@@ -19,7 +19,8 @@ RSpec.describe 'notify/pipeline_schedule_owner_unavailable_email.text.erb', feat
     expect(rendered).to have_text("The owner of the pipeline schedule")
     expect(rendered).to have_text("no longer has permission.")
     expect(rendered).to have_text(
-      "Without an owner, the pipeline will not run. Take ownership so the pipeline runs on schedule.")
+      "The schedule is deactivated and cannot run. Take ownership and reactivate the schedule to resume pipeline runs."
+    )
   end
 
   it 'includes pipeline_schedule and documentation links' do

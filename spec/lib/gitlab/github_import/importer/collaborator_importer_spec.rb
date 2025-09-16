@@ -29,7 +29,7 @@ RSpec.describe Gitlab::GithubImport::Importer::CollaboratorImporter, feature_cat
     create(
       :import_source_user, :awaiting_approval,
       namespace: project.root_ancestor,
-      source_hostname: project.safe_import_url,
+      source_hostname: project.unsafe_import_url,
       import_type: project.import_type,
       source_user_identifier: github_user_id,
       reassign_to_user: user

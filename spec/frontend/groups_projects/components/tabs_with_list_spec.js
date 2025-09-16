@@ -6,7 +6,8 @@ import projectCountsGraphQlResponse from 'test_fixtures/graphql/projects/your_wo
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import TabView from '~/groups_projects/components/tab_view.vue';
-import { createRouter } from '~/projects/your_work';
+import { createRouter as projectsYourWorkCreateRouter } from '~/projects/your_work';
+import { createRouter as groupsShowCreateRouter } from '~/groups/show';
 import { stubComponent } from 'helpers/stub_component';
 import {
   ROOT_ROUTE_NAME,
@@ -20,13 +21,12 @@ import {
   MEMBER_TAB,
   INACTIVE_TAB,
 } from '~/projects/your_work/constants';
+import { SUBGROUPS_AND_PROJECTS_TAB, GROUPS_SHOW_TABS } from '~/groups/show/constants';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
   SORT_DIRECTION_DESC,
   SORT_DIRECTION_ASC,
-  PAGINATION_TYPE_KEYSET,
-  PAGINATION_TYPE_OFFSET,
   FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
   FILTERED_SEARCH_TOKEN_NAMESPACE,
 } from '~/groups_projects/constants';
@@ -99,7 +99,6 @@ const defaultPropsData = {
   },
   tabCountsQuery: projectCountsQuery,
   tabCountsQueryErrorMessage: 'An error occurred loading the project counts.',
-  paginationType: PAGINATION_TYPE_KEYSET,
 };
 
 const { bindInternalEventDocument } = useMockInternalEventsTracking();
@@ -129,6 +128,7 @@ describe('TabsWithList', () => {
     projectsCountHandler = successHandler,
     userPreferencesUpdateHandler = userPreferencesUpdateSuccessHandler,
     route = defaultRoute,
+    createRouter = projectsYourWorkCreateRouter,
   } = {}) => {
     mockApollo = createMockApollo([
       [projectCountsQuery, projectsCountHandler],
@@ -676,7 +676,7 @@ describe('TabsWithList', () => {
 
         await nextTick();
 
-        expect(router.push).toHaveBeenCalledWith({ name: PROJECT_DASHBOARD_TABS[2].value });
+        expect(router.push).toHaveBeenCalledWith('/dashboard/projects/personal');
       });
 
       it('tracks event', () => {
@@ -703,7 +703,7 @@ describe('TabsWithList', () => {
 
         await nextTick();
 
-        expect(router.push).toHaveBeenCalledWith({ name: CONTRIBUTED_TAB.value });
+        expect(router.push).toHaveBeenCalledWith('/dashboard/projects/contributed');
       });
     });
 
@@ -727,7 +727,28 @@ describe('TabsWithList', () => {
           expect(router.currentRoute.href).toBe('/gitlab/');
         }
 
-        expect(router.push).toHaveBeenCalledWith({ name: PROJECT_DASHBOARD_TABS[3].value });
+        expect(router.push).toHaveBeenCalledWith('/dashboard/projects/member');
+      });
+    });
+
+    describe('when there is a route param with `/` in it', () => {
+      beforeEach(async () => {
+        await createComponent({
+          propsData: {
+            tabs: GROUPS_SHOW_TABS,
+          },
+          createRouter: groupsShowCreateRouter,
+          route: { name: SUBGROUPS_AND_PROJECTS_TAB.value, params: { group: 'foo/bar/baz' } },
+        });
+        router.push = jest.fn();
+
+        findGlTabs().vm.$emit('input', 1);
+
+        await nextTick();
+      });
+
+      it('converts route param to an array', () => {
+        expect(router.push).toHaveBeenCalledWith('/groups/foo/bar/baz/-/inactive');
       });
     });
   });
@@ -810,17 +831,16 @@ describe('TabsWithList', () => {
   });
 
   describe('when offset page is changed', () => {
+    let trackEventSpy;
+
     beforeEach(async () => {
-      await createComponent({
-        route: defaultRoute,
-        propsData: {
-          paginationType: PAGINATION_TYPE_OFFSET,
-        },
-      });
+      await createComponent();
 
       findTabView().vm.$emit('offset-page-change', 2);
 
       await waitForPromises();
+
+      trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
     });
 
     it('sets `page` query string', () => {
@@ -831,6 +851,38 @@ describe('TabsWithList', () => {
 
     it('passes page prop to TabView component', () => {
       expect(findTabView().props('page')).toBe(2);
+    });
+
+    describe('when going to previous page', () => {
+      beforeEach(async () => {
+        findTabView().vm.$emit('offset-page-change', 1);
+
+        await waitForPromises();
+      });
+
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'click_pagination_on_your_work_projects',
+          { label: CONTRIBUTED_TAB.value, property: 'previous' },
+          undefined,
+        );
+      });
+    });
+
+    describe('when going to next page', () => {
+      beforeEach(async () => {
+        findTabView().vm.$emit('offset-page-change', 3);
+
+        await waitForPromises();
+      });
+
+      it('tracks event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'click_pagination_on_your_work_projects',
+          { label: CONTRIBUTED_TAB.value, property: 'next' },
+          undefined,
+        );
+      });
     });
   });
 

@@ -9,7 +9,7 @@ FactoryBot.define do
         runner_namespace.namespace = evaluator.group
         runner_namespace.runner =
           build(:ci_runner, :group, runner_namespaces: [runner_namespace],
-            sharding_key_id: runner_namespace.namespace_id, organization_id: runner_namespace.namespace.organization_id)
+            organization_id: runner_namespace.namespace.organization_id)
       end
     end
   end

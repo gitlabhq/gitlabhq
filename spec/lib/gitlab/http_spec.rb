@@ -9,7 +9,8 @@ RSpec.describe Gitlab::HTTP, feature_category: :shared do
       deny_all_requests_except_allowed: false,
       dns_rebinding_protection_enabled: true,
       outbound_local_requests_allowlist: [],
-      silent_mode_enabled: false
+      silent_mode_enabled: false,
+      parser: Gitlab::HttpResponseParser
     }
   end
 
@@ -79,6 +80,49 @@ RSpec.describe Gitlab::HTTP, feature_category: :shared do
 
           expect { result.value }.to raise_error(Gitlab::Utils::ConcurrentRubyThreadIsUsedError,
             "Cannot run 'db' if running from `Concurrent::Promise`.")
+        end
+      end
+    end
+
+    context 'when response is a JSON payload' do
+      before do
+        stub_request(:get, 'http://example.org').to_return(status: 200, body: '{ "key": "value" }',
+          headers: { 'Content-Type' => 'application/json' })
+      end
+
+      it 'parses the response using the Gitlab::HttpResponseParser parser' do
+        expect_next_instance_of(Gitlab::HttpResponseParser) do |parser|
+          expect(parser).to receive(:json).and_call_original
+        end
+
+        result = described_class.get('http://example.org')
+
+        expect(result.parsed_response).to eq({ 'key' => 'value' })
+      end
+
+      context 'when log_large_json_objects feature flag is disabled' do
+        before do
+          stub_feature_flags(log_large_json_objects: false)
+        end
+
+        it 'does not use Gitlab::HttpResponseParser parser' do
+          expect(Gitlab::HttpResponseParser).not_to receive(:new)
+
+          result = described_class.get('http://example.org')
+
+          expect(result.parsed_response).to eq({ 'key' => 'value' })
+        end
+      end
+
+      context 'when customer parser is provided' do
+        it 'parses the response using the provided parser' do
+          parser = class_double(HTTParty::Parser)
+
+          allow(parser).to receive(:call).and_return({ 'key' => 'customer parser' })
+
+          result = described_class.get('http://example.org', parser: parser)
+
+          expect(result.parsed_response).to eq({ 'key' => 'customer parser' })
         end
       end
     end

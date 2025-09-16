@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Key do
+RSpec.describe Gitlab::Ci::Config::Entry::Key, feature_category: :pipeline_composition do
   let(:entry) { described_class.new(config) }
 
   describe 'validations' do
@@ -10,17 +10,51 @@ RSpec.describe Gitlab::Ci::Config::Entry::Key do
 
     context 'when entry config value is correct' do
       context 'when key is a hash' do
-        let(:config) { { files: ['test'], prefix: 'something' } }
+        context 'when using files' do
+          let(:config) { { files: ['test'], prefix: 'something' } }
 
-        describe '#value' do
-          it 'returns key value' do
-            expect(entry.value).to match(config)
+          describe '#value' do
+            it 'returns key value' do
+              expect(entry.value).to match(config)
+            end
+          end
+
+          describe '#valid?' do
+            it 'is valid' do
+              expect(entry).to be_valid
+            end
           end
         end
 
-        describe '#valid?' do
-          it 'is valid' do
-            expect(entry).to be_valid
+        context 'when using files_commits' do
+          let(:config) { { files_commits: ['yarn.lock'], prefix: 'deps' } }
+
+          describe '#value' do
+            it 'returns key value' do
+              expect(entry.value).to match(config)
+            end
+          end
+
+          describe '#valid?' do
+            it 'is valid' do
+              expect(entry).to be_valid
+            end
+          end
+        end
+
+        context 'when using both files and files_commits' do
+          let(:config) { { files: ['yarn.lock'], files_commits: ['package.json'] } }
+
+          describe '#valid?' do
+            it 'is invalid' do
+              expect(entry).not_to be_valid
+            end
+          end
+
+          describe '#errors' do
+            it 'contains error message' do
+              expect(entry.errors.first).to match(/must use exactly one of/)
+            end
           end
         end
       end

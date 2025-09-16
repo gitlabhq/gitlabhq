@@ -123,7 +123,7 @@ export default {
       :label="__('Title')"
       :label-sr-only="!showFieldTitle"
       label-for="issuable-title"
-      class="col-12 gl-px-0"
+      class="gl-col-12 gl-px-0"
     >
       <gl-form-input
         id="issuable-title"
@@ -140,7 +140,7 @@ export default {
       :label="__('Description')"
       :label-sr-only="!showFieldTitle"
       label-for="issuable-description"
-      class="col-12 common-note-form gl-px-0"
+      class="gl-col-12 common-note-form gl-px-0"
     >
       <markdown-editor
         v-model="description"

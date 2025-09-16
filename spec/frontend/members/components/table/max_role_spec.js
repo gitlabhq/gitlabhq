@@ -1,5 +1,5 @@
 import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
-import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance as bp } from '@gitlab/ui/src/utils';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports

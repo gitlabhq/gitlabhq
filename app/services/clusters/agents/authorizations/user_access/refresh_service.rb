@@ -10,7 +10,7 @@ module Clusters
           AUTHORIZED_ENTITY_LIMIT = 500
 
           delegate :project, to: :agent, private: true
-          delegate :root_ancestor, to: :project, private: true
+          delegate :root_ancestor, :organization, to: :project, private: true
 
           def initialize(agent, config:)
             @agent = agent
@@ -83,11 +83,17 @@ module Clusters
           end
 
           def allowed_projects
-            root_ancestor.all_projects
+            if organization_agents_enabled?
+              organization.projects
+            else
+              root_ancestor.all_projects
+            end
           end
 
           def allowed_groups
-            if group_root_ancestor?
+            if organization_agents_enabled?
+              organization.groups
+            elsif group_root_ancestor?
               root_ancestor.self_and_descendants
             else
               ::Group.none
@@ -100,6 +106,10 @@ module Clusters
 
           def user_access_as
             @user_access_as ||= config['user_access']&.slice('access_as') || {}
+          end
+
+          def organization_agents_enabled?
+            ::Gitlab::CurrentSettings.organization_cluster_agent_authorization_enabled
           end
         end
       end

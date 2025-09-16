@@ -184,7 +184,7 @@ To change this behavior:
 
 {{< /history >}}
 
-If your merge request should not merge before a specific date and time, set a **Merge after** date.
+If your merge request should not merge before a specific date and time, set a **Merge can start** date.
 This value sets when the merge (or merge train) can start. The exact time of merge can vary,
 however, depending on the satisfaction of other merge checks or the length of your merge train.
 
@@ -198,7 +198,7 @@ To do this:
 1. Select **Code > Merge requests**.
 1. Select the merge request to edit.
 1. Select **Edit**.
-1. Find the **Merge after** input and select a date and time.
+1. From the **Merge can start** dropdown list, select `After scheduled date`, then select a date and time.
 1. Select **Save changes**.
 
 ## Troubleshooting

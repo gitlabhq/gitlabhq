@@ -122,10 +122,10 @@ Approver visibility depends on your project membership, and group privacy:
 The list of merge requests for [your project or group](../_index.md#view-merge-requests)
 shows the approval status for each merge request:
 
-| Example | Description |
-| :-----: | :---------- |
-| ![Approvals not yet satisfied](img/approvals_unsatisfied_v17_1.png) | Required approvals are missing. ({{< icon name="approval" >}}) |
-| ![Approvals are satisfied](img/approvals_satisfied_v17_1.png) | Approvals are satisfied. ({{< icon name="check" >}}) |
+|                                       Example                                       | Description                                                                                     |
+|:-----------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------|
+|         ![Approvals not yet satisfied](img/approvals_unsatisfied_v17_1.png)         | Required approvals are missing. ({{< icon name="approval" >}})                                  |
+|            ![Approvals are satisfied](img/approvals_satisfied_v17_1.png)            | Approvals are satisfied. ({{< icon name="check" >}})                                            |
 | ![Approvals are satisfied, and you approved](img/you_approvals_satisfied_v17_1.png) | Approvals are satisfied, and you are one of the approvers. ({{< icon name="approval-solid" >}}) |
 
 ### Individual reviewer status
@@ -161,9 +161,9 @@ After a merge request receives the required approvals, it is ready to merge, unl
 - [Open threads](../_index.md#prevent-merge-unless-all-threads-are-resolved)
 - [Failed CI/CD pipeline](../auto_merge.md)
 
-### Prevent author approval
+### Prevent merge request creator approval
 
-To prevent merge request authors from approving their own work, enable the [Prevent approval by author](settings.md#prevent-approval-by-author) setting.
+To prevent merge request creators from approving their own work, enable the [Prevent approval by merge request creator](settings.md#prevent-approval-by-merge-request-creator) setting.
 
 ### Approval rule changes
 
@@ -197,5 +197,5 @@ Invalid policy-created rules:
 
 - [Merge request approvals API](../../../../api/merge_request_approvals.md)
 - [Instance approval rules](../../../../administration/merge_requests_approvals.md) for GitLab Self-Managed instances
-- [Enable approval permissions for users with the Reporter role](rules.md#enable-approval-permissions-for-users-with-the-reporter-role)
+- [Enable approval permissions for users with the Planner or Reporter role](rules.md#enable-approval-permissions-for-additional-users)
 - [Edit or override merge request approval rules](rules.md#edit-or-override-merge-request-approval-rules)

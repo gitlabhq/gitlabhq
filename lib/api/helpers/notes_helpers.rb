@@ -5,23 +5,37 @@ module API
     module NotesHelpers
       include ::RendersNotes
 
-      NoteableType = Data.define(:noteable_class, :feature_category, :noteables_str, :parent_type) do
+      NoteableType = Data.define(:noteable_class, :feature_category, :noteables_str, :parent_type, :policy_base) do
         def initialize(
           noteable_class:,
           feature_category:,
           noteables_str: noteable_class.to_s.underscore.pluralize,
-          parent_type: noteable_class.parent_class.to_s.underscore
+          parent_type: noteable_class.parent_class.to_s.underscore,
+          policy_base: nil
         )
           super
+        end
+
+        def human_name
+          noteable_class.to_s.underscore.tr('_/', ' ')
         end
       end
 
       def self.noteable_types
         [
-          NoteableType.new(Issue, :team_planning),
-          NoteableType.new(MergeRequest, :code_review_workflow),
-          NoteableType.new(Snippet, :source_code_management),
-          NoteableType.new(WikiPage::Meta, :wiki, 'wiki_pages', 'project')
+          NoteableType.new(noteable_class: Issue, feature_category: :team_planning),
+          NoteableType.new(
+            noteable_class: MergeRequest,
+            feature_category: :code_review_workflow,
+            policy_base: 'merge_requests'
+          ),
+          NoteableType.new(noteable_class: Snippet, feature_category: :source_code_management),
+          NoteableType.new(
+            noteable_class: WikiPage::Meta,
+            feature_category: :wiki,
+            noteables_str: 'wiki_pages',
+            parent_type: 'project'
+          )
         ]
       end
 
@@ -179,6 +193,16 @@ module API
 
       def disable_query_limiting
         Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/211538')
+      end
+
+      def self.job_token_policy_for(noteable_type, http_method)
+        return unless noteable_type&.policy_base
+        return unless http_method.present?
+
+        # Job tokens are restricted to read-only operations
+        raise ArgumentError, "Job tokens only support read operations" unless %w[GET HEAD].include?(http_method)
+
+        :"read_#{noteable_type.policy_base}"
       end
 
       private

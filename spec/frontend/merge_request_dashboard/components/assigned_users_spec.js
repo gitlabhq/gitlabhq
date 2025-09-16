@@ -34,26 +34,10 @@ describe('Merge request dashboard assigned users component', () => {
   const findAllUsers = () => wrapper.findAllByTestId('assigned-user');
   const findReviewStateIcon = () => wrapper.findByTestId('review-state-icon');
 
-  beforeEach(() => {
-    window.gon = { current_user_id: 1 };
-  });
-
-  afterEach(() => {
-    window.gon = {};
-  });
-
   it('renders user avatars', () => {
     createComponent();
 
     expect(findAllUsers()).toHaveLength(2);
-  });
-
-  describe('current user avatar', () => {
-    it('renders current user last', () => {
-      createComponent();
-
-      expect(findAllUsers().at(1).attributes('data-user-id')).toBe('1');
-    });
   });
 
   describe('as reviewer list', () => {

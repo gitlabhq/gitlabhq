@@ -44,10 +44,17 @@ module API
       before do
         authenticate!
         not_found! unless Feature.enabled?(:mcp_server, current_user)
-        forbidden! unless access_token&.scopes == [Gitlab::Auth::MCP_SCOPE]
+        forbidden! unless access_token&.scopes&.map(&:to_s) == [Gitlab::Auth::MCP_SCOPE.to_s]
       end
 
       helpers do
+        def invoke_basic_handler
+          method_name = params[:method]
+          handler_class = JSONRPC_METHOD_HANDLERS[method_name] || method_not_found!(method_name)
+          handler = handler_class.new(params[:params] || {})
+          handler.invoke
+        end
+
         def find_handler_class(method_name)
           JSONRPC_METHOD_HANDLERS[method_name] || method_not_found!(method_name)
         end
@@ -96,6 +103,7 @@ module API
       # Model Context Protocol (MCP) specification
       # See: https://modelcontextprotocol.io/specification/2025-06-18
       namespace :mcp do
+        namespace_setting :mcp_manager, ::Mcp::Tools::Manager.new
         params do
           # JSON-RPC Request Object
           # See: https://www.jsonrpc.org/specification#request_object
@@ -125,9 +133,21 @@ module API
         post do
           status :ok
 
-          handler_class = find_handler_class(params[:method])
-          handler = create_handler(handler_class, params[:params] || {})
-          result = handler.invoke
+          result =
+            if Feature.enabled?(:mcp_server_new_implementation, current_user)
+              case params[:method]
+              when 'tools/call'
+                Handlers::CallTool.new(namespace_setting(:mcp_manager)).invoke(request, params[:params])
+              when 'tools/list'
+                Handlers::ListTools.new(namespace_setting(:mcp_manager)).invoke
+              else
+                invoke_basic_handler
+              end
+            else
+              handler_class = find_handler_class(params[:method])
+              handler = create_handler(handler_class, params[:params] || {})
+              handler.invoke
+            end
 
           format_jsonrpc_response(result)
         end

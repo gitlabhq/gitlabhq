@@ -13,6 +13,7 @@ module Ci
     include Ci::TrackEnvironmentUsage
     include EachBatch
     include Ci::Taggable
+    include ChronicDurationAttribute
 
     extend ::Gitlab::Utils::Override
 
@@ -138,6 +139,7 @@ module Ci
 
     accepts_nested_attributes_for :runner_session, update_only: true
     accepts_nested_attributes_for :job_variables
+    accepts_nested_attributes_for :inputs
 
     delegate :url, to: :runner_session, prefix: true, allow_nil: true
     delegate :terminal_specification, to: :runner_session, allow_nil: true
@@ -148,10 +150,18 @@ module Ci
     delegate :google_play_integration, to: :project
     delegate :diffblue_cover_integration, to: :project
     delegate :ensure_persistent_ref, to: :pipeline
-    delegate :enable_debug_trace!, to: :metadata
 
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
     serialize :yaml_variables, coder: Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
+
+    chronic_duration_attr_reader :timeout_human_readable, :timeout
+
+    enum :timeout_source, {
+      unknown_timeout_source: 1,
+      project_timeout_source: 2,
+      runner_timeout_source: 3,
+      job_timeout_source: 4
+    }
 
     delegate :name, to: :project, prefix: true
 
@@ -235,9 +245,9 @@ module Ci
       run_after_commit { build.execute_hooks }
     end
 
+    after_commit :trigger_job_create_subscription, on: :create
     after_commit :track_ci_secrets_management_id_tokens_usage, on: :create, if: :id_tokens?
     after_commit :track_ci_build_created_event, on: :create
-    after_commit :trigger_job_status_change_subscription, if: :saved_change_to_status?
 
     class << self
       # This is needed for url_for to work,
@@ -256,7 +266,8 @@ module Ci
           yaml_variables when environment coverage_regex
           description tag_list protected needs_attributes
           job_variables_attributes resource_group scheduling_type
-          ci_stage partition_id id_tokens interruptible execution_config_id].freeze
+          timeout timeout_source debug_trace_enabled
+          ci_stage partition_id id_tokens interruptible execution_config_id inputs_attributes].freeze
       end
 
       def supported_keyset_orderings
@@ -311,6 +322,10 @@ module Ci
         true
       end
 
+      before_transition pending: :running do |build| # rubocop: disable Style/SymbolProc -- Better readability
+        build.update_timeout_state
+      end
+
       after_transition created: :scheduled do |build|
         build.run_after_commit do
           Ci::BuildScheduleWorker.perform_at(build.scheduled_at, build.id)
@@ -350,10 +365,6 @@ module Ci
       # rubocop:enable CodeReuse/ServiceClass
       #
       after_transition pending: :running do |build|
-        build.ensure_metadata.update_timeout_state
-      end
-
-      after_transition pending: :running do |build|
         build.run_after_commit do
           build.ensure_persistent_ref
 
@@ -392,6 +403,12 @@ module Ci
           end
         end
       end
+
+      after_transition any => any do |build|
+        build.run_after_commit do
+          trigger_job_status_change_subscription
+        end
+      end
     end
 
     def self.build_matchers(project)
@@ -423,8 +440,25 @@ module Ci
       Ci::JobArtifact.where(job: self.select(:id)).update_all(expire_at: nil)
     end
 
+    def needs_maintainer_role_for_artifact_access?
+      return false if job_artifacts_archive.nil?
+
+      job_artifacts_archive.maintainer_access?
+    end
+
     def trigger_job_status_change_subscription
       GraphqlTriggers.ci_job_status_updated(self)
+    end
+
+    def trigger_job_create_subscription
+      return unless Feature.enabled?(:ci_job_created_subscription, project)
+
+      return if Gitlab::ApplicationRateLimiter.throttled?(
+        :ci_job_created_subscription,
+        scope: project
+      )
+
+      GraphqlTriggers.ci_job_created(self)
     end
 
     # A Ci::Bridge may transition to `canceling` as a result of strategy: :depend
@@ -454,12 +488,6 @@ module Ci
 
     def auto_retry_allowed?
       auto_retry.allowed?
-    end
-
-    def exit_code=(value)
-      return unless value
-
-      ensure_metadata.exit_code = value.to_i.clamp(0, Gitlab::Database::MAX_SMALLINT_VALUE)
     end
 
     def auto_retry_expected?
@@ -810,17 +838,17 @@ module Ci
 
     def artifact_access_setting_in_config
       artifacts_public = options.dig(:artifacts, :public)
-      artifacts_access = options.dig(:artifacts, :access)
+      artifacts_access = options.dig(:artifacts, :access)&.to_s
 
-      if !artifacts_public.nil? && !artifacts_access.nil?
+      if artifacts_public.present? && artifacts_access.present?
         raise ArgumentError, 'artifacts:public and artifacts:access are mutually exclusive'
       end
 
-      return :public if artifacts_public == true || artifacts_access == 'all'
-      return :private if artifacts_public == false || artifacts_access == 'developer'
-      return :none if artifacts_access == 'none'
+      return :public     if artifacts_public == true || artifacts_access == 'all'
+      return :private    if artifacts_public == false || artifacts_access == 'developer'
+      return :maintainer if artifacts_access == 'maintainer'
+      return :none       if artifacts_access == 'none'
 
-      # default behaviour
       :public
     end
 
@@ -1138,6 +1166,14 @@ module Ci
       end
     end
 
+    def inputs_attributes
+      strong_memoize(:inputs_attributes) do
+        inputs.map do |input|
+          input.attributes.except('id', 'job_id', 'created_at', 'updated_at')
+        end
+      end
+    end
+
     def allowed_to_fail_with_code?(exit_code)
       options
         .dig(:allow_failure_criteria, :exit_codes)
@@ -1153,17 +1189,6 @@ module Ci
           yield report_artifact.file_type, blob, report_artifact
         end
       end
-    end
-
-    def clone(current_user:, new_job_variables_attributes: [])
-      new_build = super
-
-      if action? && new_job_variables_attributes.any?
-        new_build.job_variables = []
-        new_build.job_variables_attributes = new_job_variables_attributes
-      end
-
-      new_build
     end
 
     def job_artifact_types

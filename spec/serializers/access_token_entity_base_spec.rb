@@ -13,6 +13,7 @@ RSpec.describe AccessTokenEntityBase do
       include(
         id: token.id,
         name: token.name,
+        description: token.description,
         revoked: false,
         created_at: token.created_at,
         scopes: token.scopes,

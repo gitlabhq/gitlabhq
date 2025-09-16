@@ -37,9 +37,18 @@ Doorkeeper.configure do
   allow_grant_flow_for_client do |grant_flow, client|
     next true unless client
     next true unless grant_flow == 'password'
-    next true unless Applications::CreateService.disable_ropc_available?
 
-    client.ropc_enabled?
+    if ::Gitlab::Saas.respond_to?(:feature_available?) &&
+        ::Gitlab::Saas.feature_available?(:disable_ropc_for_all_applications) &&
+        ::Feature.enabled?(:disable_ropc_for_all_applications, :instance)
+      next false
+    end
+
+    if Applications::CreateService.disable_ropc_available?
+      next client.ropc_enabled?
+    end
+
+    true
   end
 
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
@@ -101,9 +110,9 @@ Doorkeeper.configure do
   # Check out the wiki for more information on customization
   access_token_methods :from_access_token_param, :from_bearer_authorization, :from_bearer_param
 
-  hash_token_secrets using: '::Gitlab::DoorkeeperSecretStoring::Token::Pbkdf2Sha512', fallback: :plain
+  hash_token_secrets using: '::Gitlab::DoorkeeperSecretStoring::Sha512Hash'
 
-  hash_application_secrets using: '::Gitlab::DoorkeeperSecretStoring::Secret::Pbkdf2Sha512', fallback: :plain
+  hash_application_secrets using: '::Gitlab::DoorkeeperSecretStoring::Sha512Hash'
 
   # Specify what grant flows are enabled in array of Strings. The valid
   # strings and the flows they enable are:
@@ -205,4 +214,7 @@ Doorkeeper.configure do
       )
     end
   end
+
+  application_class "Authn::OauthApplication"
+  access_token_class "OauthAccessToken"
 end

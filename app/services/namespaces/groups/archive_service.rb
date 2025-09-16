@@ -20,7 +20,10 @@ module Namespaces
       UpdateError = Class.new(Error)
 
       def execute
-        return NotAuthorizedError unless can?(current_user, :archive_group, group)
+        unless can?(current_user, :archive_group, group) && Feature.enabled?(:archive_group, group.root_ancestor)
+          return NotAuthorizedError
+        end
+
         return AlreadyArchivedError if group.archived
         return AncestorAlreadyArchivedError if group.ancestors_archived?
         return ArchivingFailedError unless group.archive

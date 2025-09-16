@@ -1,6 +1,7 @@
 <script>
 import {
   GlAvatar,
+  GlIcon,
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
@@ -19,6 +20,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { logError } from '~/lib/logger';
 import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET } from '../constants';
 import UserMenuProfileItem from './user_menu_profile_item.vue';
+import UserMenuProjectStudioSection from './user_menu_project_studio_section.vue';
 
 // Left offset required for the dropdown to be aligned with the super sidebar
 const DROPDOWN_X_OFFSET_BASE = -192;
@@ -34,6 +36,7 @@ export default {
     oneOfGroupsRunningOutOfPipelineMinutes: s__('CurrentUser|One of your groups is running out'),
     gitlabNext: s__('CurrentUser|Switch to GitLab Next'),
     startTrial: s__('CurrentUser|Start an Ultimate trial'),
+    adminArea: s__('Navigation|Admin'),
     enterAdminMode: s__('CurrentUser|Enter Admin Mode'),
     leaveAdminMode: s__('CurrentUser|Leave Admin Mode'),
     stopImpersonating: __('Stop impersonating'),
@@ -41,11 +44,13 @@ export default {
   },
   components: {
     GlAvatar,
+    GlIcon,
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
     GlButton,
     UserMenuProfileItem,
+    UserMenuProjectStudioSection,
     SetStatusModal: () =>
       import(
         /* webpackChunkName: 'statusModalBundle' */ '~/set_status_modal/set_status_modal_wrapper.vue'
@@ -57,7 +62,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
-  inject: ['isImpersonating'],
+  inject: ['isImpersonating', 'projectStudioAvailable', 'projectStudioEnabled'],
   props: {
     data: {
       required: true,
@@ -71,23 +76,28 @@ export default {
     };
   },
   computed: {
-    superTopbarEnabled() {
-      return this.glFeatures.globalTopbar;
-    },
     avatarUrl() {
       return this.updatedAvatarUrl || this.data.avatar_url;
     },
     toggleText() {
       return sprintf(__('%{user} user’s menu'), { user: this.data.name });
     },
-    statusItem() {
-      const { busy, customized } = this.data.status;
-
-      const statusLabel =
-        busy || customized ? this.$options.i18n.editStatus : this.$options.i18n.setStatus;
-
+    isAdmin() {
+      return this.data?.admin_mode?.user_is_admin;
+    },
+    adminLinkItem() {
       return {
-        text: statusLabel,
+        text: this.$options.i18n.adminArea,
+        href: this.data.admin_url,
+      };
+    },
+    statusLabel() {
+      const { busy, customized } = this.data.status;
+      return busy || customized ? this.$options.i18n.editStatus : this.$options.i18n.setStatus;
+    },
+    statusItem() {
+      return {
+        text: this.statusLabel,
         extraAttrs: {
           ...USER_MENU_TRACKING_DEFAULTS,
           'data-track-label': 'user_edit_status',
@@ -173,19 +183,15 @@ export default {
         },
       };
     },
-    signOutGroup() {
+    signOutItem() {
       return {
-        items: [
-          {
-            text: this.$options.i18n.signOut,
-            href: this.data.sign_out_link,
-            extraAttrs: {
-              'data-method': 'post',
-              'data-testid': 'sign-out-link',
-              class: 'sign-out-link',
-            },
-          },
-        ],
+        text: this.$options.i18n.signOut,
+        href: this.data.sign_out_link,
+        extraAttrs: {
+          'data-method': 'post',
+          'data-testid': 'sign-out-link',
+          class: 'sign-out-link',
+        },
       };
     },
     statusModalData() {
@@ -299,17 +305,17 @@ export default {
 <template>
   <div
     :class="{
-      'gl-flex gl-rounded-[1rem] gl-bg-neutral-800 dark:gl-bg-alpha-light-36': superTopbarEnabled,
+      'gl-flex gl-rounded-[1rem] gl-bg-neutral-800 dark:gl-bg-neutral-50': projectStudioEnabled,
     }"
   >
     <gl-button
-      v-if="superTopbarEnabled && isImpersonating"
+      v-if="projectStudioEnabled && isImpersonating"
       v-gl-tooltip.bottom
       :href="data.stop_impersonation_path"
       :title="$options.i18n.stopImpersonating"
       :aria-label="$options.i18n.stopImpersonating"
       icon="incognito"
-      class="-gl-mr-4 !gl-rounded-l-[1rem] !gl-rounded-r-none !gl-pl-3 !gl-pr-5 !gl-text-neutral-0"
+      class="-gl-mr-4 !gl-rounded-l-[1rem] !gl-rounded-r-none !gl-pl-3 !gl-pr-5 !gl-text-neutral-0 dark:!gl-text-neutral-800"
       category="tertiary"
       data-method="delete"
       data-testid="stop-impersonation-btn"
@@ -327,7 +333,7 @@ export default {
         <gl-button
           category="tertiary"
           class="user-bar-dropdown-toggle btn-with-notification"
-          :class="{ '!gl-rounded-full !gl-border-none !gl-px-0': superTopbarEnabled }"
+          :class="{ '!gl-rounded-full !gl-border-none !gl-px-0': projectStudioEnabled }"
           data-testid="user-menu-toggle"
           data-track-action="click_dropdown"
           data-track-label="user_profile_menu"
@@ -335,7 +341,7 @@ export default {
         >
           <span class="gl-sr-only">{{ toggleText }}</span>
           <gl-avatar
-            :size="superTopbarEnabled ? 32 : 24"
+            :size="projectStudioEnabled ? 32 : 24"
             :entity-name="data.name"
             :src="avatarUrl"
             aria-hidden="true"
@@ -351,8 +357,8 @@ export default {
         </gl-button>
 
         <div
-          v-if="superTopbarEnabled && hasEmoji"
-          class="gl-absolute -gl-bottom-1 -gl-right-1 gl-flex gl-h-5 gl-w-5 gl-items-center gl-rounded-full gl-bg-neutral-0 gl-text-sm gl-shadow-sm"
+          v-if="projectStudioEnabled && hasEmoji"
+          class="gl-absolute -gl-bottom-1 -gl-right-1 gl-flex gl-h-5 gl-w-5 gl-cursor-pointer gl-items-center gl-rounded-full gl-bg-neutral-0 gl-text-sm gl-shadow-sm"
           :title="data.status.message"
         >
           <gl-emoji
@@ -373,7 +379,12 @@ export default {
           :item="statusItem"
           data-testid="status-item"
           @action="openStatusModal"
-        />
+        >
+          <template #list-item>
+            <gl-icon name="slight-smile" variant="subtle" class="gl-mr-2" />
+            <span>{{ statusLabel }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
 
         <gl-disclosure-dropdown-item
           v-if="showTrialItem"
@@ -386,9 +397,31 @@ export default {
           </template>
         </gl-disclosure-dropdown-item>
 
-        <gl-disclosure-dropdown-item :item="editProfileItem" data-testid="edit-profile-item" />
+        <gl-disclosure-dropdown-item :item="editProfileItem" data-testid="edit-profile-item">
+          <template #list-item>
+            <gl-icon name="profile" variant="subtle" class="gl-mr-2" />
+            <span>{{ $options.i18n.editProfile }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
 
-        <gl-disclosure-dropdown-item :item="preferencesItem" data-testid="preferences-item" />
+        <gl-disclosure-dropdown-item :item="preferencesItem" data-testid="preferences-item">
+          <template #list-item>
+            <gl-icon name="preferences" variant="subtle" class="gl-mr-2" />
+            <span>{{ $options.i18n.preferences }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
+
+        <gl-disclosure-dropdown-item
+          v-if="projectStudioEnabled && isAdmin"
+          :item="adminLinkItem"
+          class="xl:gl-hidden"
+          data-testid="admin-link"
+        >
+          <template #list-item>
+            <gl-icon name="admin" variant="subtle" class="gl-mr-2" />
+            <span>{{ $options.i18n.adminArea }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
 
         <gl-disclosure-dropdown-item
           v-if="addBuyPipelineMinutesMenuItem"
@@ -409,30 +442,51 @@ export default {
         </gl-disclosure-dropdown-item>
 
         <gl-disclosure-dropdown-item
-          v-if="data.gitlab_com_but_not_canary"
-          :item="gitlabNextItem"
-          data-testid="gitlab-next-item"
-        />
-
-        <gl-disclosure-dropdown-item
           v-if="showEnterAdminModeItem"
           :item="enterAdminModeItem"
           data-testid="enter-admin-mode-item"
-        />
+        >
+          <template #list-item>
+            <gl-icon name="lock" variant="subtle" class="gl-mr-2" />
+            <span>{{ $options.i18n.enterAdminMode }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
         <gl-disclosure-dropdown-item
           v-if="showLeaveAdminModeItem"
           :item="leaveAdminModeItem"
           data-testid="leave-admin-mode-item"
-        />
+        >
+          <template #list-item>
+            <gl-icon name="lock-open" variant="subtle" class="gl-mr-2" />
+            <span>{{ $options.i18n.leaveAdminMode }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
+      </gl-disclosure-dropdown-group>
+
+      <user-menu-project-studio-section v-if="projectStudioAvailable" />
+
+      <gl-disclosure-dropdown-group v-if="data.gitlab_com_but_not_canary" bordered>
+        <gl-disclosure-dropdown-item :item="gitlabNextItem" data-testid="gitlab-next-item">
+          <template #list-item>
+            <gl-icon name="trigger-source" variant="subtle" class="gl-mr-2" />
+            <span>{{ $options.i18n.gitlabNext }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>
 
       <gl-disclosure-dropdown-group
         v-if="data.can_sign_out"
         bordered
-        :group="signOutGroup"
         data-testid="sign-out-group"
         @action="trackSignOut"
-      />
+      >
+        <gl-disclosure-dropdown-item :item="signOutItem">
+          <template #list-item>
+            <gl-icon name="power" variant="subtle" class="gl-mr-2" />
+            <span>{{ $options.i18n.signOut }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
+      </gl-disclosure-dropdown-group>
     </gl-disclosure-dropdown>
     <set-status-modal
       v-if="setStatusModalReady"

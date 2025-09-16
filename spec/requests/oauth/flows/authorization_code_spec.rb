@@ -40,6 +40,21 @@ RSpec.describe 'Gitlab OAuth2 Authorization Code Flow', feature_category: :syste
     json_response['access_token']
   end
 
+  def fetch_token_response(code)
+    post oauth_token_path, params: token_params.merge(code: code)
+    json_response
+  end
+
+  def refresh_access_token(refresh_token)
+    post oauth_token_path, params: {
+      client_id: client_id,
+      client_secret: client_secret,
+      grant_type: 'refresh_token',
+      refresh_token: refresh_token
+    }
+    json_response
+  end
+
   describe 'Authorization Consent' do
     context 'with valid params' do
       it 'renders the authorization form' do
@@ -111,6 +126,20 @@ RSpec.describe 'Gitlab OAuth2 Authorization Code Flow', feature_category: :syste
         expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
+
+    context 'with reused authorization code' do
+      it 'fails on second attempt to exchange same code' do
+        code = fetch_authorization_code
+
+        # First exchange should succeed
+        fetch_access_token(code)
+        expect(response).to have_gitlab_http_status(:ok)
+
+        # Second exchange with same code should fail
+        fetch_access_token(code)
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
   end
 
   describe 'Protected Resource Access' do
@@ -132,6 +161,122 @@ RSpec.describe 'Gitlab OAuth2 Authorization Code Flow', feature_category: :syste
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
+    end
+  end
+
+  describe 'Refresh Token Flow' do
+    let(:code) { fetch_authorization_code }
+    let(:initial_token_response) { fetch_token_response(code) }
+    let(:initial_access_token) { initial_token_response['access_token'] }
+    let(:initial_refresh_token) { initial_token_response['refresh_token'] }
+
+    context 'with valid refresh token' do
+      it 'exchanges refresh token for new access token' do
+        initial_token_response
+
+        refreshed_response = refresh_access_token(initial_refresh_token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(refreshed_response).to include('access_token', 'token_type', 'expires_in', 'refresh_token')
+        expect(refreshed_response['access_token']).not_to eq(initial_access_token)
+      end
+
+      it 'allows access to protected resources with refreshed token' do
+        initial_token_response
+
+        refreshed_response = refresh_access_token(initial_refresh_token)
+        new_access_token = refreshed_response['access_token']
+
+        get "/api/v4/user", headers: { Authorization: "Bearer #{new_access_token}" }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(user.id)
+      end
+
+      it 'maintains same scope after refresh' do
+        initial_token_response
+
+        refreshed_response = refresh_access_token(initial_refresh_token)
+
+        expect(refreshed_response['scope']).to eq('api')
+      end
+    end
+
+    context 'with invalid refresh token' do
+      it 'fails to refresh with invalid token' do
+        refresh_access_token('invalid_refresh_token')
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to be_present
+      end
+    end
+
+    context 'with expired or revoked refresh token' do
+      it 'invalidates old refresh token after use' do
+        initial_token_response
+
+        # Use refresh token once
+        refresh_access_token(initial_refresh_token)
+        expect(response).to have_gitlab_http_status(:ok)
+
+        # Try to use the same initial refresh token again
+        refresh_access_token(initial_refresh_token)
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'handles revoked application refresh tokens' do
+        initial_token_response
+
+        # Revoke application's tokens
+        application.access_tokens.update_all(revoked_at: Time.current)
+
+        refresh_access_token(initial_refresh_token)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+  end
+
+  describe 'Complete OAuth Flow with Refresh with legacy hashing' do
+    before do
+      stub_feature_flags(sha512_oauth: false)
+    end
+
+    it 'completes full authorization, access, refresh, and re-access cycle' do
+      # Step 1: Get authorization code
+      code = fetch_authorization_code
+      expect(code).to be_present
+
+      # Step 2: Exchange code for tokens
+      initial_response = fetch_token_response(code)
+      initial_access = initial_response['access_token']
+      initial_refresh = initial_response['refresh_token']
+
+      expect(initial_access).to be_present
+      expect(initial_refresh).to be_present
+
+      # Step 3: Use initial access token
+      get "/api/v4/user", headers: { Authorization: "Bearer #{initial_access}" }
+      expect(response).to have_gitlab_http_status(:ok)
+      initial_user_data = json_response
+
+      # Step 4: Turn on FF and refresh tokens
+      stub_feature_flags(sha512_oauth: true)
+      refreshed_response = refresh_access_token(initial_refresh)
+      new_access = refreshed_response['access_token']
+      new_refresh = refreshed_response['refresh_token']
+
+      expect(new_access).not_to eq(initial_access)
+      expect(new_refresh).not_to eq(initial_refresh)
+
+      # Step 5: Use new access token
+      get "/api/v4/user", headers: { Authorization: "Bearer #{new_access}" }
+      expect(response).to have_gitlab_http_status(:ok)
+      new_user_data = json_response
+
+      # Step 6: Verify same user data
+      expect(new_user_data['id']).to eq(initial_user_data['id'])
+      expect(new_user_data['id']).to eq(user.id)
     end
   end
 end

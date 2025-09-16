@@ -15,7 +15,7 @@ title: Configure OpenID Connect with GCP Workload Identity Federation
 {{< alert type="warning" >}}
 
 `CI_JOB_JWT_V2` was [deprecated in GitLab 15.9](../../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)
-and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../yaml/_index.md#id_tokens) instead.
+and is scheduled to be removed in GitLab 17.0. Use [ID tokens](../../secrets/id_token_authentication.md) instead.
 
 {{< /alert >}}
 
@@ -176,7 +176,7 @@ Where:
 - `PROJECT_NUMBER` is your Google Cloud project number (not name).
 - `POOL_ID` is the ID of the workload identity pool created in the first section.
 - `PROVIDER_ID` is the ID of the workload identity provider created in the second section.
-- `GITLAB_OIDC_TOKEN` is an OIDC [ID token](../../yaml/_index.md#id_tokens).
+- `GITLAB_OIDC_TOKEN` is an OIDC [ID token](../../secrets/id_token_authentication.md).
 
 You can then use the resulting federated token to impersonate the service account created
 in the previous section:

@@ -519,6 +519,9 @@ You can also use variables to configure how many times a runner
 When using the Kubernetes executor, you can use variables to
 [override Kubernetes CPU and memory allocations for requests and limits](https://docs.gitlab.com/runner/executors/kubernetes/#overwrite-container-resources).
 
+[Runner feature flags](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags) are also accepted as 
+[job and pipeline variables](https://docs.gitlab.com/runner/configuration/feature-flags/#enable-feature-flag-in-pipeline-configuration).
+
 ### Git strategy
 
 The `GIT_STRATEGY` variable configures how the build directory is prepared and

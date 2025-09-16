@@ -290,6 +290,69 @@ func TestGetUserKey(t *testing.T) {
 	}
 }
 
+// onceReadableBody simulates a body that can only be read once (like a real HTTP response body)
+type onceReadableBody struct {
+	content   string
+	wasClosed bool
+}
+
+func (o *onceReadableBody) Read(p []byte) (n int, err error) {
+	if o.wasClosed {
+		return 0, errors.New("body is closed")
+	}
+	n = copy(p, []byte(o.content))
+	return n, io.EOF
+}
+
+func (o *onceReadableBody) Close() error {
+	o.wasClosed = true
+	return nil
+}
+
+func TestBodyRecreationAfterCircuitBreakerRead(t *testing.T) {
+	rdb := InitRdb(t)
+
+	expectedBody := "re-readable body"
+
+	originalBody := &onceReadableBody{
+		content:   expectedBody,
+		wasClosed: false,
+	}
+
+	header := http.Header{
+		enableCircuitBreakerHeader: []string{"true"},
+	}
+	mockRT := &mockRoundTripper{
+		response: &http.Response{
+			StatusCode: http.StatusTooManyRequests,
+			Body:       originalBody,
+			Header:     header,
+		},
+	}
+
+	rt := NewRoundTripper(mockRT, &config.DefaultCircuitBreakerConfig, rdb)
+
+	reqBody, err := json.Marshal(map[string]string{"key_id": "test-user"})
+	require.NoError(t, err)
+	req, err := http.NewRequest("POST", "http://example.com", bytes.NewBuffer(reqBody))
+	require.NoError(t, err)
+
+	// The first request tracks the user in the circuit breaker
+	resp1, err := rt.RoundTrip(req)
+	require.NoError(t, err)
+
+	// The second request calls cb.Execute(), which should close and re-create the response body
+	resp2, err := rt.RoundTrip(req)
+	require.NoError(t, err)
+
+	body, err := io.ReadAll(resp2.Body)
+	require.NoError(t, err)
+	assert.Equal(t, expectedBody, string(body))
+
+	resp1.Body.Close()
+	resp2.Body.Close()
+}
+
 func InitRdb(t *testing.T) *redis.Client {
 	buf, err := os.ReadFile("../../config.toml")
 	require.NoError(t, err)

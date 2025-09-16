@@ -67,20 +67,6 @@ module Gitlab
         # - For sbom_component_versions: 'deduplication_column' => 'version'
         #   Prevents duplicate version strings for the same component after deduplication
         'merge_request_diff_commit_users' => {
-          'index_merge_request_diff_commit_users_on_name_and_email' => {
-            'columns' => %w[name email],
-            'unique' => true,
-            'references' => [
-              {
-                'table' => 'merge_request_diff_commits',
-                'column' => 'committer_id'
-              },
-              {
-                'table' => 'merge_request_diff_commits',
-                'column' => 'commit_author_id'
-              }
-            ]
-          },
           'index_merge_request_diff_commit_users_on_org_id_name_email' => {
             'columns' => %w[organization_id name email],
             'unique' => true,
@@ -221,6 +207,36 @@ module Gitlab
               {
                 'table' => 'dast_profile_tags',
                 'column' => 'tag_id'
+              }
+            ]
+          }
+        },
+        'pm_packages' => {
+          'i_pm_packages_purl_type_and_name' => {
+            'columns' => %w[purl_type name],
+            'unique' => true,
+            'references' => [
+              {
+                'table' => 'pm_package_versions',
+                'column' => 'pm_package_id'
+              }
+            ]
+          }
+        },
+        'pm_affected_packages' => {
+          'i_affected_packages_unique_for_upsert' => {
+            'columns' => %w[pm_advisory_id purl_type package_name distro_version],
+            'unique' => true
+          }
+        },
+        'container_repositories' => {
+          'index_container_repositories_on_project_id_and_name' => {
+            'columns' => %w[project_id name],
+            'unique' => true,
+            'references' => [
+              {
+                'table' => 'container_repository_states',
+                'column' => 'container_repository_id'
               }
             ]
           }

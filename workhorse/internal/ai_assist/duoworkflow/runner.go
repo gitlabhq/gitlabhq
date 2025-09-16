@@ -2,6 +2,7 @@ package duoworkflow
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -10,9 +11,11 @@ import (
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 
 	"github.com/gorilla/websocket"
 	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/proto"
 )
 
 var marshaler = protojson.MarshalOptions{
@@ -41,7 +44,29 @@ type runner struct {
 	originalReq *http.Request
 	conn        websocketConn
 	wf          workflowStream
+	client      *Client
 	sendMu      sync.Mutex
+}
+
+func newRunner(conn websocketConn, rails *api.API, r *http.Request, cfg *api.DuoWorkflow) (*runner, error) {
+	client, err := NewClient(cfg.ServiceURI, cfg.Headers, cfg.Secure)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize client: %v", err)
+	}
+
+	wf, err := client.ExecuteWorkflow(r.Context())
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize stream: %v", err)
+	}
+
+	return &runner{
+		rails:       rails,
+		token:       cfg.Headers["x-gitlab-oauth-token"],
+		originalReq: r,
+		conn:        conn,
+		wf:          wf,
+		client:      client,
+	}, nil
 }
 
 func (r *runner) Execute(ctx context.Context) error {
@@ -76,6 +101,13 @@ func (r *runner) Execute(ctx context.Context) error {
 	}()
 
 	return <-errCh
+}
+
+func (r *runner) Close() error {
+	r.sendMu.Lock()
+	defer r.sendMu.Unlock()
+
+	return errors.Join(r.wf.CloseSend(), r.client.Close())
 }
 
 func (r *runner) handleWebSocketMessage() error {
@@ -116,9 +148,21 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 			return fmt.Errorf("handleAgentAction: failed to perform API call: %v", err)
 		}
 
+		statusCode := event.GetActionResponse().GetHttpResponse().StatusCode
+		log.WithContextFields(r.originalReq.Context(), log.Fields{
+			"path":                 action.GetRunHTTPRequest().Path,
+			"status_code":          statusCode,
+			"payload_size":         proto.Size(event),
+			"event_type":           fmt.Sprintf("%T", event.Response),
+			"action_response_type": fmt.Sprintf("%T", event.GetActionResponse().GetResponseType()),
+		}).Info("Sending HTTP response event")
 		if err := r.threadSafeSend(event); err != nil {
 			return fmt.Errorf("handleAgentAction: failed to send gRPC message: %v", err)
 		}
+		log.WithContextFields(r.originalReq.Context(), log.Fields{
+			"path": action.GetRunHTTPRequest().Path,
+		}).Info("Successfully sent HTTP response event")
+
 	default:
 		message, err := marshaler.Marshal(action)
 		if err != nil {
@@ -137,10 +181,4 @@ func (r *runner) threadSafeSend(event *pb.ClientEvent) error {
 	r.sendMu.Lock()
 	defer r.sendMu.Unlock()
 	return r.wf.Send(event)
-}
-
-func (r *runner) threadSafeCloseSend() error {
-	r.sendMu.Lock()
-	defer r.sendMu.Unlock()
-	return r.wf.CloseSend()
 }

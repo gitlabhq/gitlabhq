@@ -8,7 +8,7 @@ feature_categories:
 description: Keeps a list of protected branches by project
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/37224dc9c1ee80ba9030b616e2bc87bd96919e09
 milestone: "<6.0"
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   project_id: projects
   namespace_id: namespaces

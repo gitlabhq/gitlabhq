@@ -46,9 +46,9 @@ RSpec.describe 'layouts/application' do
       end
     end
 
-    context 'when user has `global_topbar` feature enabled' do
+    context 'when user has `project studio` feature enabled' do
       before do
-        stub_feature_flags(global_topbar: true)
+        allow(view).to receive(:project_studio_enabled?).and_return(true)
       end
 
       it 'renders the new global topbar' do

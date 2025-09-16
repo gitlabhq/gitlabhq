@@ -1,4 +1,7 @@
+import Vue from 'vue';
 import { RouterLinkStub } from '@vue/test-utils';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import HeaderArea from '~/repository/components/header_area.vue';
@@ -14,6 +17,15 @@ import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { headerAppInjected } from 'ee_else_ce_jest/repository/mock_data';
 import CompactCodeDropdown from 'ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue';
+import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
+import { useViewport } from '~/pinia/global_stores/viewport';
+import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
+import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
+import { Mousetrap } from '~/lib/mousetrap';
+import { keysFor, TOGGLE_FILE_TREE_BROWSER_VISIBILITY } from '~/behaviors/shortcuts/keybindings';
+import { EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE } from '~/repository/constants';
+
+jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 
 const defaultMockRoute = {
   params: {
@@ -28,11 +40,17 @@ const defaultMockRoute = {
 };
 
 const mockRootRef = 'root-ref';
+const toggleHotkeys = keysFor(TOGGLE_FILE_TREE_BROWSER_VISIBILITY);
+
+Vue.use(PiniaVuePlugin);
 
 describe('HeaderArea', () => {
   let wrapper;
+  let pinia;
+  let fileTreeBrowserStore;
 
   const findBreadcrumbs = () => wrapper.findComponent(Breadcrumbs);
+  const findFileTreeToggle = () => wrapper.findComponent(FileTreeBrowserToggle);
   const findRefSelector = () => wrapper.findComponent(RefSelector);
   const findFindFileButton = () => wrapper.findByTestId('tree-find-file-control');
   const findWebIdeButton = () => wrapper.findByTestId('js-tree-web-ide-link');
@@ -46,7 +64,6 @@ describe('HeaderArea', () => {
   const findRepositoryOverflowMenu = () => wrapper.findComponent(RepositoryOverflowMenu);
   const findBlobControls = () => wrapper.findComponent(BlobControls);
   const findTreeControls = () => wrapper.findByTestId('tree-controls-container');
-
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const createComponent = ({
@@ -83,15 +100,142 @@ describe('HeaderArea', () => {
           },
         },
       },
+      pinia,
     });
   };
 
   beforeEach(() => {
+    pinia = createTestingPinia({ stubActions: false });
+    useViewport();
+    fileTreeBrowserStore = useFileTreeBrowserVisibility();
     wrapper = createComponent();
   });
 
   it('renders the component', () => {
     expect(wrapper.exists()).toBe(true);
+  });
+
+  describe('File tree browser toggle', () => {
+    beforeEach(() => {
+      // Reset stores to default state for each test
+      const viewportStore = useViewport();
+      // For composition API stores, we need to directly modify the internal refs
+      viewportStore.updateIsCompact(false);
+    });
+
+    describe('when repositoryFileTreeBrowser is enabled', () => {
+      it.each`
+        fileTreeVisible | isCompactViewport | isProjectOverview | expectedToggleVisible
+        ${false}        | ${false}          | ${false}          | ${true}
+        ${true}         | ${false}          | ${false}          | ${false}
+        ${false}        | ${true}           | ${false}          | ${false}
+        ${false}        | ${false}          | ${true}           | ${false}
+      `(
+        'toggles file tree visibility',
+        ({ fileTreeVisible, isCompactViewport, isProjectOverview, expectedToggleVisible }) => {
+          const viewportStore = useViewport();
+          fileTreeBrowserStore.setFileTreeVisibility(fileTreeVisible);
+          viewportStore.updateIsCompact(isCompactViewport);
+
+          const route = isProjectOverview ? { name: 'projectRoot' } : { name: 'blobPathDecoded' };
+          wrapper = createComponent({
+            route,
+            provided: {
+              glFeatures: {
+                repositoryFileTreeBrowser: true,
+              },
+            },
+          });
+
+          expect(findFileTreeToggle().exists()).toBe(expectedToggleVisible);
+        },
+      );
+    });
+
+    describe('shortcuts', () => {
+      describe('toggle visibility', () => {
+        beforeEach(() => {
+          wrapper = createComponent({
+            provided: {
+              glFeatures: {
+                repositoryFileTreeBrowser: true,
+              },
+            },
+          });
+        });
+
+        it('toggles visibility on shortcut trigger', () => {
+          shouldDisableShortcuts.mockReturnValue(false);
+          createComponent();
+          Mousetrap.trigger(toggleHotkeys[0]);
+          expect(useFileTreeBrowserVisibility().toggleFileTreeVisibility).toHaveBeenCalled();
+        });
+
+        it('triggers a tracking event when the toggle button is clicked', () => {
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+          shouldDisableShortcuts.mockReturnValue(false);
+          fileTreeBrowserStore.setFileTreeVisibility(false);
+
+          createComponent();
+          Mousetrap.trigger(toggleHotkeys[0]);
+
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
+            { label: 'shortcut' },
+            undefined,
+          );
+
+          Mousetrap.trigger(toggleHotkeys[0]);
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'collapse_file_tree_browser_on_repository_page',
+            { label: 'shortcut' },
+            undefined,
+          );
+        });
+
+        it('does not toggle visibility on shortcut trigger after component is destroyed', () => {
+          shouldDisableShortcuts.mockReturnValue(false);
+          createComponent();
+          wrapper.destroy();
+          Mousetrap.trigger(toggleHotkeys[0]);
+          expect(useFileTreeBrowserVisibility().toggleFileTreeVisibility).not.toHaveBeenCalled();
+        });
+      });
+
+      describe('toggle visibility when shortcuts are disabled', () => {
+        it('does not toggle visibility on shortcut trigger', () => {
+          shouldDisableShortcuts.mockReturnValue(true);
+          wrapper = createComponent({
+            provided: {
+              glFeatures: {
+                repositoryFileTreeBrowser: true,
+              },
+            },
+          });
+          createComponent();
+          Mousetrap.trigger(toggleHotkeys[0]);
+          expect(useFileTreeBrowserVisibility().toggleFileTreeVisibility).not.toHaveBeenCalled();
+        });
+      });
+    });
+  });
+
+  describe('when repositoryFileTreeBrowser is disabled', () => {
+    it('does not render the toggle', () => {
+      const viewportStore = useViewport();
+      fileTreeBrowserStore.setFileTreeVisibility(true);
+      viewportStore.updateIsCompact(true);
+
+      wrapper = createComponent({
+        provided: {
+          glFeatures: {
+            repositoryFileTreeBrowser: false,
+          },
+        },
+      });
+
+      expect(findFileTreeToggle().exists()).toBe(false);
+    });
   });
 
   describe('Ref selector', () => {
@@ -154,7 +298,11 @@ describe('HeaderArea', () => {
 
         findFindFileButton().vm.$emit('click');
 
-        expect(trackEventSpy).toHaveBeenCalledWith('click_find_file_button_on_repository_pages');
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          'click_find_file_button_on_repository_pages',
+          {},
+          undefined,
+        );
       });
     });
 
@@ -385,7 +533,7 @@ describe('HeaderArea', () => {
       expect(wrapper.find('section').classes()).toEqual([
         'gl-items-center',
         'gl-justify-between',
-        'sm:gl-flex',
+        '@sm/panel:gl-flex',
       ]);
     });
   });

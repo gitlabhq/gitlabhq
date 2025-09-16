@@ -19,6 +19,13 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
   describe 'GET /projects/:id/repository/tags', :use_clean_rails_memory_store_caching do
     let(:route) { "/projects/#{project_id}/repository/tags" }
 
+    it_behaves_like 'enforcing job token policies', :read_repositories,
+      allow_public_access_for_enabled_project_features: :repository do
+      let(:request) do
+        get api(route), params: { job_token: target_job.token }
+      end
+    end
+
     context 'sorting' do
       let(:current_user) { user }
 

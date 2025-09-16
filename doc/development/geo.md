@@ -657,9 +657,9 @@ on, check out our [self-service framework](geo/framework.md).
 
 ## Geo development workflow
 
-### GET:Geo pipeline
+### `GET:Geo` pipeline
 
-After triggering a successful [e2e:test-on-omnibus-ee](testing_guide/end_to_end/_index.md#using-the-test-on-omnibus-job) pipeline, you can manually trigger a job named `GET:Geo`:
+After triggering a successful [`e2e:test-on-omnibus-ee`](testing_guide/end_to_end/_index.md#using-the-test-on-omnibus-job) pipeline, you can manually trigger a job named `GET:Geo`:
 
 1. In the [GitLab project](https://gitlab.com/gitlab-org/gitlab), select the **Pipelines** tab of a merge request.
 1. Select the `Stage: qa` stage on the latest pipeline to expand and list all the related jobs.

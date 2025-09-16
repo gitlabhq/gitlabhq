@@ -59,7 +59,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     groupIssuesPath,
     labelsFetchPath,
     hasLinkedItemsEpicsFeature,
-    duoRemoteFlowsEnabled,
+    duoRemoteFlowsAvailability,
     canCreateProjects,
     newProjectPath,
     projectNamespaceFullPath,
@@ -71,6 +71,13 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     canReadCrmContact,
     releasesPath,
     projectImportJiraPath,
+    rssPath,
+    calendarPath,
+    maxAttachmentSize,
+    canImportWorkItems,
+    isGroupIssuesList,
+    canEdit,
+    exportCsvPath,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
@@ -107,10 +114,11 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     provide: {
       canAdminLabel: parseBoolean(canAdminLabel),
       canBulkUpdate: parseBoolean(canBulkUpdate),
-      duoRemoteFlowsEnabled: parseBoolean(duoRemoteFlowsEnabled),
+      duoRemoteFlowsAvailability: parseBoolean(duoRemoteFlowsAvailability),
       fullPath,
       isGroup,
       isProject: !isGroup,
+      isGroupIssuesList: parseBoolean(isGroupIssuesList),
       hasBlockedIssuesFeature: parseBoolean(hasBlockedIssuesFeature),
       hasGroupBulkEditFeature: parseBoolean(hasGroupBulkEditFeature),
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
@@ -152,6 +160,13 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       canReadCrmContact: parseBoolean(canReadCrmContact),
       releasesPath,
       projectImportJiraPath,
+      rssPath,
+      calendarPath,
+      maxAttachmentSize,
+      canImportWorkItems: parseBoolean(canImportWorkItems),
+      showImportButton: parseBoolean(canImportWorkItems),
+      canEdit: parseBoolean(canEdit),
+      exportCsvPath,
     },
     mounted() {
       performanceMarkAndMeasure({

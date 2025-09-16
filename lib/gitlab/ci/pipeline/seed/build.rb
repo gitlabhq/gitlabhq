@@ -67,12 +67,15 @@ module Gitlab
           def attributes
             @seed_attributes
               .deep_merge(pipeline_attributes)
+              .deep_merge(metadata_attributes)
               .deep_merge(rules_attributes)
               .deep_merge(allow_failure_criteria_attributes)
               .deep_merge(@cache.cache_attributes)
               .deep_merge(runner_tags)
               .deep_merge(build_execution_config_attribute)
               .deep_merge(scoped_user_id_attribute)
+              .then { |attrs| apply_job_definition_attributes(attrs) }
+              .then { |attrs| remove_ci_builds_metadata_attributes(attrs) }
               .except(:stage)
           end
 
@@ -161,9 +164,14 @@ module Gitlab
               ref: @pipeline.ref,
               tag: @pipeline.tag,
               protected: @pipeline.protected_ref?,
-              partition_id: @pipeline.partition_id,
-              metadata_attributes: { partition_id: @pipeline.partition_id }
+              partition_id: @pipeline.partition_id
             }
+          end
+
+          def metadata_attributes
+            return {} unless can_write_metadata?
+
+            { metadata_attributes: { partition_id: @pipeline.partition_id } }
           end
 
           # Scoped user is present when the user creating the pipeline supports composite identity.
@@ -174,7 +182,13 @@ module Gitlab
 
             return {} unless user_identity&.composite? && user_identity.linked?
 
-            { options: { scoped_user_id: user_identity.scoped_user.id } }
+            attrs = { scoped_user_id: user_identity.scoped_user.id }
+
+            if Feature.enabled?(:stop_writing_builds_metadata, @pipeline.project)
+              attrs
+            else
+              attrs.merge(options: attrs)
+            end
           end
 
           def rules_attributes
@@ -229,6 +243,41 @@ module Gitlab
               from: @context.root_variables, to: @job_variables, inheritance: @root_variables_inheritance
             )
           end
+
+          def apply_job_definition_attributes(attrs)
+            return attrs if ::Feature.disabled?(:write_to_new_ci_destinations, @pipeline.project)
+
+            attrs.merge(temp_job_definition: build_temp_job_definition(attrs))
+          end
+
+          def build_temp_job_definition(attrs)
+            ::Ci::JobDefinition.fabricate(
+              config: build_job_definition_config(attrs), project_id: @pipeline.project.id, partition_id: @pipeline.partition_id
+            )
+          end
+
+          def build_job_definition_config(attrs)
+            return attrs unless @execution_config_attribute
+
+            # Currently, `execution_config` is passed from `lib/gitlab/ci/yaml_processor/result.rb` and deleted
+            # in the `initialize` method of this class and assigned to `@execution_config_attribute`.
+            # Today, we don't want to make a huge change in the process; we only want to save the data to the
+            # `p_ci_job_definitions` table. In the future (https://gitlab.com/groups/gitlab-org/-/epics/19262), we'll
+            # remove the `build_execution_config_attribute` method and splat the `execution_config` to
+            # `build_attributes` in `lib/gitlab/ci/yaml_processor/result.rb`.
+            attrs.merge(@execution_config_attribute)
+          end
+
+          def remove_ci_builds_metadata_attributes(attrs)
+            return attrs if can_write_metadata?
+
+            attrs.except(*::Ci::JobDefinition::CONFIG_ATTRIBUTES_FROM_METADATA)
+          end
+
+          def can_write_metadata?
+            Feature.disabled?(:stop_writing_builds_metadata, @pipeline.project)
+          end
+          strong_memoize_attr :can_write_metadata?
         end
       end
     end

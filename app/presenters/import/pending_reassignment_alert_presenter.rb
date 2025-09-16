@@ -9,8 +9,7 @@ module Import
     presents ::BulkImport, as: :bulk_import
 
     def show_alert?
-      Feature.enabled?(:bulk_import_importer_user_mapping, current_user) &&
-        groups_awaiting_placeholder_assignment.any?
+      groups_awaiting_placeholder_assignment.any?
     end
 
     def groups_awaiting_placeholder_assignment

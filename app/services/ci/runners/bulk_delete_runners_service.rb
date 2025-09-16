@@ -50,7 +50,7 @@ module Ci
 
       def compute_authorized_runners
         limited_runners = runners.limit(RUNNER_LIMIT)
-        ::Preloaders::RunnerPolicyPreloader.new(limited_runners, current_user).execute
+        ::Ci::Preloaders::RunnerPolicyPreloader.new(limited_runners, current_user).execute
 
         authorized_runners, unauthorized_runners =
           limited_runners

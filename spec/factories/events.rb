@@ -98,11 +98,15 @@ FactoryBot.define do
     factory :project_created_event do
       project factory: :project
       action { :created }
+      target { association(:project) }
+      target_type { 'Project' }
     end
 
     factory :project_imported_event do
       association :project, :with_import_url
       action { :created }
+      target { association(:project) }
+      target_type { 'Project' }
     end
   end
 

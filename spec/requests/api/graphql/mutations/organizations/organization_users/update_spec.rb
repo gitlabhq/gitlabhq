@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Mutations::Organizations::OrganizationUsers::Update, feature_category: :organization do
   include GraphqlHelpers
 
+  let_it_be(:current_user) { create(:admin) }
   let_it_be(:organization) { create(:organization) }
   let_it_be(:organization_owner) { create(:organization_owner, organization: organization) }
   let_it_be_with_reload(:organization_user) { create(:organization_user, organization: organization) }
@@ -42,8 +43,6 @@ RSpec.describe Mutations::Organizations::OrganizationUsers::Update, feature_cate
   end
 
   context 'when the user has permission' do
-    let(:current_user) { organization_owner.user }
-
     let(:attribute_hash) do
       {
         "accessLevel" => { "integerValue" => 50, "stringValue" => "OWNER" },

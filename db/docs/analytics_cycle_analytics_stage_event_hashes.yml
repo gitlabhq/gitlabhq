@@ -7,7 +7,7 @@ feature_categories:
 description: Stores hashes of Value Stream Analytics stage configurations.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67259
 milestone: '14.2'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 sharding_key:
   organization_id: organizations
 table_size: small

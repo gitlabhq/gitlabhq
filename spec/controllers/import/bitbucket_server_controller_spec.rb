@@ -35,6 +35,7 @@ RSpec.describe Import::BitbucketServerController, feature_category: :importers d
   describe 'POST create', :with_current_organization do
     let(:project_name) { "my-project_123" }
     let(:params) { { repo_id: repo_id } }
+    let_it_be(:project) { create(:project) }
 
     before do
       allow(controller).to receive(:client).and_return(client)
@@ -42,8 +43,6 @@ RSpec.describe Import::BitbucketServerController, feature_category: :importers d
       allow(client).to receive(:repo).with(project_key, repo_slug).and_return(repo)
       assign_session_tokens
     end
-
-    let_it_be(:project) { create(:project) }
 
     it 'returns the new project' do
       allow(Gitlab::BitbucketServerImport::ProjectCreator)

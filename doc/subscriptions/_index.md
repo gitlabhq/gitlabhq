@@ -16,7 +16,7 @@ Choose and manage the subscription that's right for you and your organization.
 - [GitLab Dedicated](gitlab_dedicated/_index.md)
 - [GitLab Duo add-ons](subscription-add-ons.md)
 - [Community programs](community_programs.md)
-- [The Customers Portal](customers_portal.md)
+- [Customers Portal](customers_portal.md)
 - [Quarterly reconciliation and annual true-ups](quarterly_reconciliation.md)
 
 {{< /cards >}}

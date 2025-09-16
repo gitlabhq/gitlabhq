@@ -42,7 +42,11 @@ RSpec.describe 'Admin manages the instance-level GitLab for Slack app integratio
     end
 
     within_modal do
-      expect(page).to have_content('Are you sure you want to unlink this Slack Workspace from this integration?')
+      expect(page).to have_content(
+        'Are you sure you want to unlink this Slack Workspace from this integration? ' \
+          'All projects inheriting these settings will also be unlinked. ' \
+          'Groups and projects using custom settings will not be affected.'
+      )
       click_button('Remove')
     end
 

@@ -17,9 +17,17 @@ title: Flows
 
 {{< history >}}
 
-- Introduced as [a beta](../../../policy/development_stages_support.md) in GitLab 18.3.
+- Introduced as [a beta](../../../policy/development_stages_support.md) in GitLab 18.3 [with a flag](../../../administration/feature_flags/_index.md) named `duo_workflow`. Enabled by default.
+- Additional flags are required for individual flows.
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
 
 A flow is a combination of one or more agents working together to solve a complex problem.
 
@@ -33,8 +41,9 @@ Flows are available in IDEs and the GitLab UI.
 
 The following flows are available:
 
-- A flow to [convert a Jenkinsfile to `.gitlab-ci.yml` file](convert_to_gitlab_ci.md).
-- A flow to [convert an issue to a merge request](issue_to_mr.md).
+- [Fix your CI/CD pipeline](fix_pipeline.md).
+- [Convert a Jenkinsfile to `.gitlab-ci.yml` file](convert_to_gitlab_ci.md).
+- [Convert an issue to a merge request](issue_to_mr.md).
 - A flow for any aspect of [software development](software_development.md). In this flow,
   you describe your needs and GitLab Duo understands your repository, the codebase,
   and its structure.
@@ -42,12 +51,16 @@ The following flows are available:
 For more focused pieces of work, like understanding selected code,
 use [GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md).
 
+## Turn on flows
+
+To turn flows on or off, use [the GitLab Duo settings](../../gitlab_duo/turn_on_off.md).
+
 ## Monitor running flows in the GitLab UI
 
 To view flows that are running for your project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Automate > Sessions**.
+1. Select **Automate** > **Sessions**.
 
 ## View flow history in the IDEs
 

@@ -9,7 +9,6 @@ module QuickActions
     include Gitlab::QuickActions::IssueAndMergeRequestActions
     include Gitlab::QuickActions::MergeRequestActions
     include Gitlab::QuickActions::CommitActions
-    include Gitlab::QuickActions::CommonActions
     include Gitlab::QuickActions::RelateActions
     include Gitlab::QuickActions::WorkItemActions
 

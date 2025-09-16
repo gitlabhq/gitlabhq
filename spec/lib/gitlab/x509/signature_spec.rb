@@ -91,6 +91,36 @@ RSpec.describe Gitlab::X509::Signature, feature_category: :source_code_managemen
       end
     end
 
+    context 'when certificate has no email in subjectAltName' do
+      before do
+        allow_any_instance_of(described_class).to receive(:get_certificate_extension).and_call_original
+        allow_any_instance_of(described_class).to receive(:get_certificate_extension)
+                                                    .with('subjectAltName')
+                                                    .and_return("othername:<unsupported>, DNS:example.com")
+      end
+
+      it 'returns nil' do
+        expect(signature.x509_certificate).to be_nil
+        expect(signature.verified_signature).to be_truthy
+        expect(signature.verification_status).to eq(:unverified)
+      end
+    end
+
+    context 'when certificate has blank email in subjectAltName' do
+      before do
+        allow_any_instance_of(described_class).to receive(:get_certificate_extension).and_call_original
+        allow_any_instance_of(described_class).to receive(:get_certificate_extension)
+                                                    .with('subjectAltName')
+                                                    .and_return("email:")
+      end
+
+      it 'returns nil' do
+        expect(signature.x509_certificate).to be_nil
+        expect(signature.verified_signature).to be_truthy
+        expect(signature.verification_status).to eq(:unverified)
+      end
+    end
+
     context "if the email matches but isn't confirmed" do
       let!(:user) { create(:user, :unconfirmed, email: X509Helpers::User1.certificate_email) }
 

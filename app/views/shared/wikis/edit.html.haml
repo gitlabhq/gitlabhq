@@ -8,17 +8,19 @@
 
 = form_errors(@page, truncate: :title)
 
-#js-vue-wiki-edit-app{ data: {
-  testid: 'wiki-page-edit-app',
-  error: @error,
-  page_heading: @page.title,
-  page_info: wiki_page_info(@page, uploads_path: wiki_attachment_upload_url).to_json,
-  is_page_template: @page.template?.to_s,
-  page_persisted: (@page.persisted? && can?(current_user, :create_wiki, @wiki.container)).to_s,
-  wiki_url: wiki_page_path(@wiki, @page),
-  format_options: wiki_markup_hash_by_name_id.to_json,
-  templates: templates.to_json,
-  templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
-} }
+.wiki-overview
+  .wiki-page-details
+    #js-vue-wiki-edit-app{ data: {
+      testid: 'wiki-page-edit-app',
+      error: @error,
+      page_heading: @page.title,
+      page_info: wiki_page_info(@page, uploads_path: wiki_attachment_upload_url).to_json,
+      is_page_template: @page.template?.to_s,
+      page_persisted: (@page.persisted? && can?(current_user, :create_wiki, @wiki.container)).to_s,
+      wiki_url: wiki_page_path(@wiki, @page),
+      format_options: wiki_markup_hash_by_name_id.to_json,
+      templates: templates.to_json,
+      templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
+    } }
 
-= render 'shared/wikis/sidebar', editing: true
+  = render 'shared/wikis/sidebar', editing: true

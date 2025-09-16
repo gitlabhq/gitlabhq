@@ -53,7 +53,7 @@ found to your merge request:
 | Name | Project UI<br>setting | Group<br>`default.md` | Instance<br>`default.md` | Project<br>`default.md` | No template |
 |:-----|:---------------------:|:---------------------:|:------------------------:|:-----------------------:|:-----------:|
 | Standard commit message | 1  |           2           |            3             |            4            |      5      |
-| Commit message with an [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically) like `Closes #1234` | 1 | 2 | 3 | 4 | 5 \* |
+| Commit message with an issue closing pattern like `Closes #1234` | 1 | 2 | 3 | 4 | 5 \* |
 | Branch name [prefixed with an issue ID](../repository/branches/_index.md#prefix-branch-names-with-a-number), like `1234-example` | 1 \* | 2 \* | 3 \* | 4 \* | 5 \* |
 
 {{< alert type="note" >}}
@@ -71,7 +71,7 @@ You can view merge requests for your project, group, or yourself.
 {{< tab title="You're participating in" >}}
 
 To view all merge requests on the homepage, use the <kbd>Shift</kbd> + <kbd>m</kbd>
-[keyboard shortcut](../../shortcuts.md), or:
+keyboard shortcut, or:
 
 1. On the left sidebar, select the **Merge requests** icon.
 
@@ -89,7 +89,7 @@ To view all merge requests for a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests**.
 
-Or, to use a [keyboard shortcut](../../shortcuts.md), press <kbd>g</kbd> + <kbd>m</kbd>.
+Or, to use a keyboard shortcut, press <kbd>g</kbd> + <kbd>m</kbd>.
 
 {{< /tab >}}
 
@@ -106,7 +106,8 @@ If your group contains subgroups, this view also displays merge requests from th
 
 {{< tab title="For a file" >}}
 
-When viewing a file in your repository, GitLab shows a badge with the number of open merge requests that target the current branch and modify the file. This helps you identify files that have pending changes.
+When viewing a file in your repository, GitLab shows a badge with the number of open merge requests
+that target the current branch and modify the file. This helps you identify files that have pending changes.
 
 The availability of this feature is controlled by a feature flag.
 For more information, see [View open merge requests for a file](../repository/files/_index.md#view-open-merge-requests-for-a-file).
@@ -140,7 +141,7 @@ To filter the list of merge requests:
 1. Select **Code > Merge requests**.
 1. Above the list of merge requests, select **Search or filter results**.
 1. From the dropdown list, select the attribute you wish to filter by. Some examples:
-   - [**By environment or deployment date**](#by-environment-or-deployment-date).
+   - **By environment or deployment date**.
    - **ID**: Enter filter `#30` to return only merge request 30.
    - User filters: Type (or select from the dropdown list) any of these filters to display a list of users:
      - **Approved by**, for merge requests already approved by a user. Premium and Ultimate only.
@@ -193,20 +194,19 @@ to an existing merge request in several ways. These ways depend on the complexit
 change, and whether you need access to a development environment:
 
 - [Edit changes in the Web IDE](../web_ide/_index.md) in your browser with the
-  <kbd>.</kbd> [keyboard shortcut](../../shortcuts.md). Use this
+  <kbd>.</kbd> keyboard shortcut. Use this
   browser-based method to edit multiple files, or if you are not comfortable with Git commands.
   You cannot run tests from the Web IDE.
 - [Edit changes in Gitpod](../../../integration/gitpod.md#launch-gitpod-in-gitlab), if you
   need a fully-featured environment to both edit files, and run tests afterward. Gitpod
-  supports running the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit).
-  To use Gitpod, you must [enable Gitpod in your user account](../../../integration/gitpod.md#enable-gitpod-in-your-user-preferences).
+  supports running the GitLab Development Kit (GDK).
+  To use Gitpod, you must enable Gitpod in your user account.
 - [Push changes from the command line](../../../topics/git/commands.md), if you are
   familiar with Git and the command line.
 
 ## Assign a user to a merge request
 
-To assign the merge request to a user, use the `/assign @user`
-[quick action](../quick_actions.md#issues-merge-requests-and-epics) in a text area in
+To assign the merge request to a user, use the `/assign @user` quick action in a text area in
 a merge request, or:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -222,7 +222,7 @@ GitLab adds the merge request to the user's **Assigned merge requests** page.
 
 ## Merge a merge request
 
-During the [merge request review process](reviews/_index.md), reviewers provide
+During the merge request review process, reviewers provide
 feedback on your changes. When a reviewer is satisfied with the changes,
 they can enable [auto-merge](auto_merge.md), even if some merge checks are failing.
 After all merge checks pass, the merge request is automatically merged, without further action from you.
@@ -235,8 +235,8 @@ Default merge permissions:
 
 To determine if you have permission to merge a specific merge request, GitLab checks:
 
-- Your [role in the project](../../permissions.md#roles). For example, Developer, Maintainer, or Owner.
-- The [branch protections](../repository/branches/protected.md) of the target branch.
+- Your role in the project. For example, Developer, Maintainer, or Owner.
+- The branch protections of the target branch.
 
 ## Close a merge request
 
@@ -246,7 +246,7 @@ If you decide to permanently stop work on a merge request, close it rather than
 Prerequisites:
 
 - You must be the author or assignees of the merge request, or
-- You must have the Developer, Maintainer, or Owner [roles](../../permissions.md) in a project.
+- You must have the Developer, Maintainer, or Owner role in a project.
 
 To close merge requests in the project:
 
@@ -314,9 +314,10 @@ For a software developer working in a team:
 1. You request the [approval](approvals/_index.md) from your manager.
 1. Your manager:
    1. Pushes a commit with their final review.
-   1. [Approves the merge request](approvals/_index.md).
+   1. Approves the merge request.
    1. Sets it to [auto-merge](auto_merge.md) (formerly **Merge when pipeline succeeds**).
-1. Your changes get deployed to production with [manual jobs](../../../ci/jobs/job_control.md#create-a-job-that-must-be-run-manually) for GitLab CI/CD.
+1. Your changes get deployed to production with
+   [manual jobs](../../../ci/jobs/job_control.md#create-a-job-that-must-be-run-manually) for GitLab CI/CD.
 1. Your implementations were successfully shipped to your customer.
 
 For a web developer writing a webpage for your company's website:
@@ -325,12 +326,12 @@ For a web developer writing a webpage for your company's website:
 1. You gather feedback from your reviewers.
 1. You preview your changes with [review apps](../../../ci/review_apps/_index.md).
 1. You request your web designers for their implementation.
-1. You request the [approval](approvals/_index.md) from your manager.
+1. You request the approval from your manager.
 1. After approval, GitLab:
    - [Squashes](squash_and_merge.md) the commits.
    - Merges the commit.
    - [Deployed the changes to staging with GitLab Pages](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/).
-1. Your production team [cherry-picks](cherry_pick_changes.md) the merge commit into production.
+1. Your production team cherry-picks the merge commit into production.
 
 ## Filter activity in a merge request
 
@@ -453,8 +454,8 @@ Threads on lines that don't change and top-level resolvable threads are not reso
 
 {{< alert type="flag" >}}
 
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags/_index.md) named `notifications_todos_buttons`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
 
 {{< /alert >}}
 
@@ -465,11 +466,10 @@ Enabling this feature flag moves the notifications and to-do item buttons to the
 
 ## Related topics
 
-- [Create a merge request](creating_merge_requests.md)
+- [Protect your repository](../repository/protect.md)
 - [Review a merge request](reviews/_index.md)
 - [Authorization for merge requests](authorization_for_merge_requests.md)
 - [Testing and reports](../../../ci/testing/_index.md)
-- [GitLab keyboard shortcuts](../../shortcuts.md)
 - [Comments and threads](../../discussions/_index.md)
 - [Suggest code changes](reviews/suggestions.md)
 - [CI/CD pipelines](../../../ci/_index.md)

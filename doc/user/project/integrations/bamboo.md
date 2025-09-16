@@ -68,7 +68,7 @@ Bamboo. For example, `https://bamboo.example.com/browse/PROJ-PLAN`.
 
 ## Update Bamboo build status in GitLab
 
-You can use a script that uses the [commit status API](../../../api/commits.md#set-the-pipeline-status-of-a-commit)
+You can use a script that uses the [commit status API](../../../api/commits.md#set-commit-pipeline-status)
 and Bamboo build variables to:
 
 - Update the commit with the build status.

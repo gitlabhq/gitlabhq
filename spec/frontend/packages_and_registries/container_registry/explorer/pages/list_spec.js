@@ -479,20 +479,48 @@ describe('List Page', () => {
             );
           });
 
-          it('shows an alert with multiple errors', async () => {
+          it.each`
+            description              | errors
+            ${'an array'}            | ${['Error 1', 'Error 2', 'Error 3']}
+            ${'an array of objects'} | ${[{ message: 'Error 1' }, { message: 'Error 2' }, { message: 'Error 3' }]}
+          `(
+            'shows an alert with multiple errors when an error is $description',
+            async ({ errors }) => {
+              mountComponent();
+
+              await selectImageForDeletion();
+
+              await findDeleteImage().vm.$emit('error', errors);
+
+              expect(findDeleteAlert().exists()).toBe(true);
+              expect(findDeleteAlert().text()).toMatch(/^Something went wrong while scheduling/);
+              expect(findDeleteAlert().text()).toContain('Error 1');
+              expect(findDeleteAlert().text()).toContain('Error 2');
+              expect(findDeleteAlert().text()).toContain('Error 3');
+            },
+          );
+
+          it('shows an alert with object errors without message property', async () => {
+            const errors = [{ code: 'ERR001', details: 'Some error details' }, { status: 500 }];
             mountComponent();
 
             await selectImageForDeletion();
 
-            const errors = [{ message: 'Error 1' }, { message: 'Error 2' }, { message: 'Error 3' }];
-            findDeleteImage().vm.$emit('error', errors);
-            await nextTick();
+            await findDeleteImage().vm.$emit('error', errors);
 
-            expect(findDeleteAlert().exists()).toBe(true);
             expect(findDeleteAlert().text()).toMatch(/^Something went wrong while scheduling/);
-            expect(findDeleteAlert().text()).toContain('Error 1');
-            expect(findDeleteAlert().text()).toContain('Error 2');
-            expect(findDeleteAlert().text()).toContain('Error 3');
+          });
+
+          it('shows an alert with non-string and non-object errors', async () => {
+            const errors = [123, true, null, undefined];
+            mountComponent();
+
+            await selectImageForDeletion();
+
+            await findDeleteImage().vm.$emit('error', errors);
+
+            expect(findDeleteAlert().text()).toMatch(/^Something went wrong while scheduling/);
+            expect(findDeleteAlert().text()).toMatch(/123.*true.*undefined/s);
           });
         });
       });

@@ -4,6 +4,7 @@ import {
   SORT_LABEL_NAME,
   SORT_LABEL_CREATED,
   SORT_LABEL_UPDATED,
+  PAGINATION_TYPE_OFFSET,
 } from '~/groups_projects/constants';
 import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
 import ResourceListsEmptyState from '~/vue_shared/components/resource_lists/empty_state.vue';
@@ -24,6 +25,7 @@ const baseTab = {
   },
   query: groupsQuery,
   queryPath: 'groups',
+  paginationType: PAGINATION_TYPE_OFFSET,
   listComponent: NestedGroupsProjectsList,
   queryErrorMessage: __("Your groups couldn't be loaded. Refresh the page to try again."),
 };

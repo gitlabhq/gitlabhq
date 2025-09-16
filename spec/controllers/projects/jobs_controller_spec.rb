@@ -14,6 +14,9 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
   let_it_be(:developer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:guest) { create(:user) }
+  let(:user) { developer }
+  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:default_pipeline) { create_default(:ci_pipeline) }
 
   before_all do
     project.update!(ci_pipeline_variables_minimum_override_role: :developer)
@@ -27,11 +30,6 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     create_default(:ci_trigger, project_id: project.id)
     create_default(:ci_stage)
   end
-
-  let(:user) { developer }
-
-  let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
-  let_it_be(:default_pipeline) { create_default(:ci_pipeline) }
 
   before do
     stub_application_setting(ci_job_live_trace_enabled: true)
@@ -907,6 +905,16 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
           expect(response).to have_gitlab_http_status(:ok)
         end
+
+        context 'when user does not have permissions' do
+          let(:user) { reporter }
+
+          it 'responds :not_found' do
+            post_retry
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
       end
 
       context 'and the job is a build' do
@@ -917,6 +925,16 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
           expect(response).to have_gitlab_http_status(:found)
           expect(response).to redirect_to(namespace_project_job_path(id: Ci::Build.last.id))
+        end
+
+        context 'when user does not have permissions' do
+          let(:user) { reporter }
+
+          it 'responds :not_found' do
+            post_retry
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
         end
       end
 
@@ -961,53 +979,22 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
     let(:user) { developer }
 
     before do
-      project.add_developer(user)
-
       create(:protected_branch, :developers_can_merge, name: 'protected-branch', project: project)
 
       sign_in(user)
     end
 
-    context 'when job is playable' do
-      let(:job) { create(:ci_build, :playable, pipeline: pipeline) }
+    context 'when user has permissions to play job' do
+      let(:user) { developer }
 
-      it 'redirects to the played job page' do
-        post_play
+      context 'when job is playable' do
+        let(:job) { create(:ci_build, :playable, pipeline: pipeline) }
 
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(namespace_project_job_path(id: job.id))
-      end
-
-      it 'transits to pending' do
-        post_play
-
-        expect(job.reload).to be_pending
-      end
-
-      context 'when job variables are specified' do
-        let(:variable_attributes) { [{ key: 'first', secret_value: 'first' }] }
-
-        it 'assigns the job variables' do
-          post_play
-
-          expect(job.reload.job_variables.map(&:key)).to contain_exactly('first')
-        end
-      end
-
-      context 'when job is bridge' do
-        let(:downstream_project) { create(:project) }
-        let(:job) { create(:ci_bridge, :playable, pipeline: pipeline, downstream: downstream_project) }
-
-        before do
-          downstream_project.add_developer(user)
-        end
-
-        it 'redirects to the pipeline page' do
+        it 'redirects to the played job page' do
           post_play
 
           expect(response).to have_gitlab_http_status(:found)
-          expect(response).to redirect_to(pipeline_path(pipeline))
-          builds_namespace_project_pipeline_path(id: pipeline.id)
+          expect(response).to redirect_to(namespace_project_job_path(id: job.id))
         end
 
         it 'transits to pending' do
@@ -1015,16 +1002,63 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
 
           expect(job.reload).to be_pending
         end
+
+        context 'when job variables are specified' do
+          let(:variable_attributes) { [{ key: 'first', secret_value: 'first' }] }
+
+          it 'assigns the job variables' do
+            post_play
+
+            expect(job.reload.job_variables.map(&:key)).to contain_exactly('first')
+          end
+        end
+
+        context 'when job is bridge' do
+          let(:downstream_project) { create(:project) }
+          let(:job) { create(:ci_bridge, :playable, pipeline: pipeline, downstream: downstream_project) }
+
+          before do
+            downstream_project.add_developer(user)
+          end
+
+          it 'redirects to the pipeline page' do
+            post_play
+
+            expect(response).to have_gitlab_http_status(:found)
+            expect(response).to redirect_to(pipeline_path(pipeline))
+            builds_namespace_project_pipeline_path(id: pipeline.id)
+          end
+
+          it 'transits to pending' do
+            post_play
+
+            expect(job.reload).to be_pending
+          end
+        end
+      end
+
+      context 'when job is not playable' do
+        let(:job) { create(:ci_build, pipeline: pipeline) }
+
+        it 'renders unprocessable_entity' do
+          post_play
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        end
       end
     end
 
-    context 'when job is not playable' do
-      let(:job) { create(:ci_build, pipeline: pipeline) }
+    context 'when user does not have permissions to play job' do
+      let(:user) { reporter }
 
-      it 'renders unprocessable_entity' do
-        post_play
+      context 'when job is playable' do
+        let(:job) { create(:ci_build, :playable, pipeline: pipeline) }
 
-        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        it 'renders not_found' do
+          post_play
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 

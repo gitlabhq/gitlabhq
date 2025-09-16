@@ -9,12 +9,16 @@
 # Optional environment variables: TOP_LEVEL_GROUP_NAME,
 #                                 PERMANENTLY_DELETE (default: false),
 #                                 DELETE_BEFORE - YYYY-MM-DD, YYYY-MM-DD HH:MM:SS, or YYYY-MM-DDT00:00:00Z
+#                                 SKIP_VERIFICATION (default: false)
 # - Set TOP_LEVEL_GROUP_NAME to only delete subgroups under the given group.
 #   If not set, subgroups of all 'gitlab-e2e-sandbox-group-<#1-8>' groups will be deleted.
 # - Set PERMANENTLY_DELETE to true if you would like to permanently delete subgroups on an environment with
 #   deletion protection enabled. Otherwise, subgroups will remain available during the retention period specified
 #   in admin settings. On environments with deletion protection disabled, subgroups will always be permanently deleted.
 # - Set DELETE_BEFORE to only delete snippets that were created before a given date, otherwise defaults to 24 hours ago
+# - Set SKIP_VERIFICATION to true if you would like to skip the verification step for time constraint purposes.
+#   This should only be used in specific circumstances such as cleaning up a large backlog of resources when deletions
+#   are known to be working.
 
 # Run `rake delete_subgroups`
 

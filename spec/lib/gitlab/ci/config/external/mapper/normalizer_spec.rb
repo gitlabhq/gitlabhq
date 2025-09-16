@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::External::Mapper::Normalizer, feature_category: :pipeline_composition do
+  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:user) { project.owner }
+
   let_it_be(:variables) do
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
       variables.append(key: 'VARIABLE1', value: 'config')
@@ -11,7 +14,9 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Normalizer, feature_categor
   end
 
   let_it_be(:context) do
-    Gitlab::Ci::Config::External::Context.new(variables: variables)
+    Gitlab::Ci::Config::External::Context.new(
+      project: project, sha: project.commit.sha, user: user, variables: variables
+    )
   end
 
   subject(:normalizer) { described_class.new(context) }

@@ -9,7 +9,8 @@ module Projects
       def execute
         return success unless project&.lfs_enabled?
 
-        LfsObjectDownloadListService.new(project).each_list_item do |lfs_download_object|
+        LfsObjectDownloadListService.new(project, current_user,
+          { updated_revisions: params[:updated_revisions] }).each_list_item do |lfs_download_object|
           LfsDownloadService.new(project, lfs_download_object).execute
         end
 

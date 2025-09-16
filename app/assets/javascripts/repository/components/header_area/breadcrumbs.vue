@@ -355,7 +355,7 @@ export default {
       :path="newDirectoryPath"
     />
   </nav>
-  <div v-else class="repo-breadcrumb gl-flex gl-w-full gl-justify-between sm:gl-w-auto">
+  <div v-else class="repo-breadcrumb gl-flex gl-w-full gl-justify-between @sm/panel:gl-w-auto">
     <gl-breadcrumb
       :items="crumbs"
       :data-current-path="currentDirectoryPath"

@@ -7,7 +7,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::ReleasesImporter, fe
 
   let_it_be(:project) { create(:project) }
 
-  let(:client) { instance_double(Gitlab::GithubImport::Client) }
+  let(:client) { instance_double(Gitlab::GithubImport::Client, web_endpoint: "https://github.com") }
 
   describe '#sequential_import', :clean_gitlab_redis_shared_state do
     let_it_be(:release) { create(:release, project: project) }

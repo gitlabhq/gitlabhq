@@ -24,6 +24,7 @@ describe('App', () => {
   let trackingSpy;
 
   const withClose = jest.fn();
+  const updateHelpMenuUnreadBadge = jest.fn();
 
   const createWrapper = (options = {}) => {
     const {
@@ -38,6 +39,7 @@ describe('App', () => {
       closeDrawer: jest.fn(),
       fetchItems: jest.fn(),
       setDrawerBodyHeight: jest.fn(),
+      setReadArticles: jest.fn(),
     };
 
     store = new Vuex.Store({
@@ -48,6 +50,7 @@ describe('App', () => {
         drawerBodyHeight: MOCK_DRAWER_BODY_HEIGHT,
         fetching: false,
         pageInfo: {},
+        readArticles: [],
         ...stateOverrides,
       },
     });
@@ -56,6 +59,9 @@ describe('App', () => {
       store,
       propsData: {
         versionDigest: 'version-digest',
+        initialReadArticles: [1, 2],
+        mostRecentReleaseItemsCount: 3,
+        updateHelpMenuUnreadBadge,
         ...(includeWithClose && { withClose }),
       },
       ...(Object.keys(glFeatures).length > 0 && { provide: { glFeatures } }),
@@ -140,6 +146,18 @@ describe('App', () => {
           property: 'navigation_top',
           value: 'namespace-840',
         });
+      });
+
+      it('sets readArticles from initialReadArticles', () => {
+        expect(actions.setReadArticles).toHaveBeenCalledWith(expect.any(Object), [1, 2]);
+      });
+
+      it('calls updateHelpMenuUnreadBadge when readArticles is updated', async () => {
+        store.state.readArticles = [1, 2, 3];
+
+        await nextTick();
+
+        expect(updateHelpMenuUnreadBadge).toHaveBeenCalledWith(0);
       });
 
       it('dispatches closeDrawer when clicking close', () => {

@@ -28,7 +28,7 @@ RSpec.describe Gitlab::GonHelper, feature_category: :shared do
       end
     end
 
-    context 'when HTTP is enabled' do
+    context 'when HTTP is disabled' do
       let(:https) { false }
 
       it 'sets the secure flag to false' do
@@ -79,39 +79,41 @@ RSpec.describe Gitlab::GonHelper, feature_category: :shared do
       end
     end
 
-    context 'when ui_for_organizations feature flag is enabled' do
-      context 'when current_organization is set', :with_current_organization do
-        subject(:add_gon_variables) { helper.add_gon_variables }
+    context 'when current_organization is set', :with_current_organization do
+      subject(:add_gon_variables) { helper.add_gon_variables }
 
-        before do
-          Current.organization = current_organization
-        end
-
-        it 'exposes current_organization' do
-          expect(gon).to receive(:current_organization=).with(
-            current_organization.slice(:id, :name, :full_path, :web_url, :avatar_url)
-          )
-
-          add_gon_variables
-        end
-
-        it_behaves_like 'internal event not tracked'
+      before do
+        Current.organization = current_organization
       end
 
-      context 'when current_organization is not set' do
-        it 'does not expose current_organization' do
-          expect(gon).not_to receive(:current_organization=)
+      it 'exposes current_organization' do
+        expect(gon).to receive(:current_organization=).with(
+          current_organization.slice(:id, :name, :full_path, :web_url, :avatar_url)
+        )
 
-          helper.add_gon_variables
-        end
+        add_gon_variables
+      end
+
+      it_behaves_like 'internal event not tracked'
+    end
+
+    context 'when current_organization is not set' do
+      it 'does not expose current_organization' do
+        expect(gon).not_to receive(:current_organization=)
+
+        helper.add_gon_variables
       end
     end
 
-    context 'when ui_for_organizations feature flag is disabled', :with_current_organization do
-      before do
-        stub_feature_flags(ui_for_organizations: false)
-      end
+    context 'when ui_for_organizations_enabled? is true' do
+      it 'does expose current_organization' do
+        expect(gon).not_to receive(:current_organization=)
 
+        helper.add_gon_variables
+      end
+    end
+
+    context 'when ui_for_organizations_enabled? is false', :ui_for_organizations_disabled do
       it 'does not expose current_organization' do
         expect(gon).not_to receive(:current_organization=)
 

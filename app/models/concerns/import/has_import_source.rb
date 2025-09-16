@@ -9,6 +9,7 @@ module Import
   SOURCE_GITEA = :gitea
   SOURCE_BITBUCKET = :bitbucket
   SOURCE_BITBUCKET_SERVER = :bitbucket_server
+  SOURCE_JIRA = :jira
 
   module HasImportSource
     extend ActiveSupport::Concern
@@ -25,10 +26,12 @@ module Import
       SOURCE_GITEA => 8,
       git: 9, # aka repository by url
       manifest: 10, # aka manifest file
-      custom_template: 11 # aka gitlab custom project template export
+      custom_template: 11, # aka gitlab custom project template export
+      SOURCE_JIRA => 12
     }.freeze
 
     included do
+      attribute :imported_from, :integer, limit: 2
       enum :imported_from, IMPORT_SOURCES, prefix: :imported_from
     end
 

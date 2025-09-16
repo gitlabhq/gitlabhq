@@ -14,6 +14,9 @@ module ConcurrencyLimit
     idempotent!
     urgency :low
 
+    # Do not defer jobs from ResumeWorker itself
+    concurrency_limit -> { 0 }
+
     def perform(worker_name = nil)
       if worker_name
         process_worker(worker_name)
@@ -26,13 +29,27 @@ module ConcurrencyLimit
 
     def schedule_workers
       workers.each do |worker|
-        limit = ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: worker)
+        limit = worker.get_concurrency_limit
         queue_size = queue_size(worker)
 
         next unless queue_size > 0
         next if limit < 0 # do not re-queue jobs if circuit-broken
 
-        self.class.perform_async(worker.name)
+        schedule_worker(worker)
+      end
+    end
+
+    def schedule_worker(worker)
+      _, pool = Gitlab::SidekiqSharding::Router.get_shard_instance(worker.get_sidekiq_options['store'])
+      Sidekiq::Client.via(pool) do
+        queue = ::Gitlab::SidekiqConfig::WorkerRouter.global.route(worker)
+        # Schedules ResumeWorker job to the respective queue of the `worker` we're resuming.
+        # This is because `worker_limit` requires reading environment variables unique each sidekiq shard,
+        # whereas ResumeWorker (cronjob) always runs in the default queue.
+        #
+        # rubocop: disable Cop/SidekiqApiUsage -- valid usage of scheduling to other queue
+        Sidekiq::Client.push('class' => self.class, 'args' => [worker.name], 'queue' => queue)
+        # rubocop: enable Cop/SidekiqApiUsage
       end
     end
 
@@ -40,7 +57,7 @@ module ConcurrencyLimit
       worker = worker_name.safe_constantize
       return unless worker
 
-      limit = ::Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: worker)
+      limit = worker_limit(worker)
       queue_size = queue_size(worker)
       current = concurrent_worker_count(worker)
 
@@ -82,8 +99,16 @@ module ConcurrencyLimit
       Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService.resume_processing!(worker.name, limit: limit)
     end
 
+    def worker_limit(worker)
+      if Feature.disabled?(:concurrency_limit_current_limit_from_redis, Feature.current_request)
+        return worker.get_concurrency_limit
+      end
+
+      Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService.current_limit(worker.name)
+    end
+
     def workers
-      Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.workers
+      Gitlab::SidekiqConfig.workers_without_default.map(&:klass)
     end
   end
 end

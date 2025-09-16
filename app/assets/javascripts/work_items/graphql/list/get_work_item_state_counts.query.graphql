@@ -26,11 +26,12 @@ query getWorkItemStateCounts(
   $updatedBefore: Time
   $crmOrganizationId: String
   $crmContactId: String
+  $releaseTag: [String!]
+  $releaseTagWildcardId: ReleaseTagWildcardId
+  $hierarchyFilters: HierarchyFilterInput
   $in: [IssuableSearchableField!]
   $not: NegatedWorkItemFilterInput
   $or: UnionedWorkItemFilterInput
-  $releaseTag: [String!]
-  $releaseTagWildcardId: ReleaseTagWildcardId
 ) {
   group(fullPath: $fullPath) @include(if: $isGroup) {
     id
@@ -60,6 +61,7 @@ query getWorkItemStateCounts(
       updatedBefore: $updatedBefore
       crmOrganizationId: $crmOrganizationId
       crmContactId: $crmContactId
+      hierarchyFilters: $hierarchyFilters
       in: $in
       not: $not
       or: $or
@@ -97,6 +99,7 @@ query getWorkItemStateCounts(
       crmContactId: $crmContactId
       releaseTag: $releaseTag
       releaseTagWildcardId: $releaseTagWildcardId
+      hierarchyFilters: $hierarchyFilters
       in: $in
       not: $not
       or: $or

@@ -48,9 +48,6 @@ export default {
     };
   },
   methods: {
-    open() {
-      this.$refs.modal.show();
-    },
     buildEvents(events) {
       const eventKeys = Object.keys(events).filter((key) => key in this.$options.i18n.eventNames);
       const rawEvents = eventKeys.map((key) => ({
@@ -116,7 +113,7 @@ export default {
   >
     <div class="container-fluid">
       <div class="row">
-        <div class="col-lg-4">
+        <div class="gl-col-lg-4">
           <h4 class="gl-mt-0" data-testid="modalBodyTitle">
             {{ $options.i18n.customNotificationsModal.bodyTitle }}
           </h4>
@@ -126,7 +123,7 @@ export default {
             </template>
           </gl-sprintf>
         </div>
-        <div class="col-lg-8">
+        <div class="gl-col-lg-8">
           <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-3" />
           <template v-else>
             <gl-form-group v-for="event in events" :key="event.id">

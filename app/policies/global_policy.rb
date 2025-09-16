@@ -47,6 +47,10 @@ class GlobalPolicy < BasePolicy
     @user.unconfirmed_email.present? && !@user.unconfirmed_email.end_with?(User::NOREPLY_EMAIL_DOMAIN)
   end
 
+  condition(:project_studio_available, scope: :user, score: 0) do
+    ::Users::ProjectStudio.new(@user).available?
+  end
+
   rule { bot & ~bot_with_quick_actions_permitted }.policy do
     prevent :use_quick_actions
   end
@@ -180,6 +184,8 @@ class GlobalPolicy < BasePolicy
   rule { admin }.enable :use_project_statistics_filters
 
   rule { external_user }.prevent :create_snippet
+
+  rule { project_studio_available }.enable :enable_project_studio
 end
 
 GlobalPolicy.prepend_mod_with('GlobalPolicy')

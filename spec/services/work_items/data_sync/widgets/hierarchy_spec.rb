@@ -78,7 +78,7 @@ RSpec.describe WorkItems::DataSync::Widgets::Hierarchy, feature_category: :team_
           expect(callback).not_to receive(:new_work_item_child_link)
           expect(::WorkItems::ParentLink).not_to receive(:upsert_all)
 
-          callback.after_create
+          callback.after_save_commit
 
           expect(target_work_item.reload.work_item_children).to be_empty
         end

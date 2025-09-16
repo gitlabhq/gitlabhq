@@ -1,6 +1,5 @@
 <script>
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
-import { PAGINATION_TYPE_OFFSET } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_GROUPS } from '~/filtered_search/recent_searches_storage_keys';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
@@ -27,8 +26,15 @@ export default {
     [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
     [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_UPDATED_AT,
   },
-  PAGINATION_TYPE_OFFSET,
   tabCountsQuery: groupCountsQuery,
+  eventTracking: {
+    filteredSearch: {
+      [FILTERED_SEARCH_TERM_KEY]: 'search_on_your_work_groups',
+    },
+    pagination: 'click_pagination_on_your_work_groups',
+    tabs: 'click_tab_on_your_work_groups',
+    sort: 'click_sort_on_your_work_groups',
+  },
   name: 'YourWorkGroupsApp',
   components: { TabsWithList },
   props: {
@@ -54,6 +60,6 @@ export default {
     :tab-counts-query="$options.tabCountsQuery"
     :tab-counts-query-error-message="__('An error occurred loading the group counts.')"
     :should-update-active-tab-count-from-tab-query="false"
-    :pagination-type="$options.PAGINATION_TYPE_OFFSET"
+    :event-tracking="$options.eventTracking"
   />
 </template>

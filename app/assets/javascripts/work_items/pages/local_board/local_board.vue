@@ -81,7 +81,7 @@ export default {
     </div>
     <div class="gl-flex gl-h-[calc(100vh-60px-48px)] gl-min-h-0 gl-grow gl-flex-col">
       <div
-        class="gl-min-h-0 gl-w-full gl-grow gl-overflow-x-auto gl-whitespace-nowrap gl-py-5 gl-pl-0 gl-pr-5 xl:gl-pl-3 xl:gl-pr-6"
+        class="gl-min-h-0 gl-w-full gl-grow gl-overflow-x-auto gl-whitespace-nowrap gl-py-5 gl-pl-0 gl-pr-5 @xl/panel:gl-pl-3 @xl/panel:gl-pr-6"
       >
         <div
           v-for="(group, index) in groups"
@@ -105,7 +105,10 @@ export default {
                 <ul
                   class="gl-mb-0 gl-h-full gl-w-full gl-list-none gl-overflow-x-hidden gl-p-3 gl-pt-2"
                 >
-                  <li v-if="group.items.length === 0" class="p-2 gl-rounded gl-bg-strong gl-p-0">
+                  <li
+                    v-if="group.items.length === 0"
+                    class="gl-rounded gl-bg-strong !gl-p-3 gl-p-0"
+                  >
                     <p>
                       {{ s__('WorkItem|No items') }}
                     </p>

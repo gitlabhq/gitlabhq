@@ -7,7 +7,7 @@ module Groups
 
     skip_cross_project_access_check :show, :update
 
-    feature_category :ci_variables
+    feature_category :pipeline_composition
 
     urgency :low, [:show]
 

@@ -77,6 +77,16 @@ RSpec.shared_examples 'work items finder group parameter' do |expect_group_items
             expect(items).to contain_exactly(item1, item4, item5)
           end
         end
+
+        context 'when exclude_group_work_items is true' do
+          before do
+            params[:exclude_group_work_items] = true
+          end
+
+          it 'excludes group-level work items' do
+            expect(items).to contain_exactly(item1, item4, item5)
+          end
+        end
       end
 
       context 'when user can access all confidential items' do
@@ -137,6 +147,16 @@ RSpec.shared_examples 'work items finder group parameter' do |expect_group_items
             expect(items).to be_empty
           end
         end
+
+        context 'when exclude_group_work_items is true' do
+          before do
+            params[:exclude_group_work_items] = true
+          end
+
+          it 'excludes group-level work items' do
+            expect(items).to be_empty
+          end
+        end
       end
     end
 
@@ -162,6 +182,16 @@ RSpec.shared_examples 'work items finder group parameter' do |expect_group_items
         if expect_group_items
           expect(items).to contain_exactly(group_work_item, subgroup_work_item, sub_subgroup_work_item, item4)
         else
+          expect(items).to contain_exactly(item4)
+        end
+      end
+
+      context 'when exclude_group_work_items is true' do
+        let(:params) do
+          { group_id: subgroup, exclude_group_work_items: true, include_ancestors: true, include_descendants: true }
+        end
+
+        it 'return project-level items only' do
           expect(items).to contain_exactly(item4)
         end
       end

@@ -66,6 +66,19 @@ func TestValidateIpAddress(t *testing.T) {
 			allowLocal:       false,
 		},
 		{
+			name:             "Private IP Address with allowed endpoint as IP network range",
+			address:          "10.12.24.1:9000",
+			allowedEndpoints: []string{"10.12.24.0/23"},
+			allowLocal:       false,
+		},
+		{
+			name:             "Private IP Address with non matching IP network range",
+			address:          "10.13.24.1:9000",
+			allowedEndpoints: []string{"10.12.24.0/23"},
+			allowLocal:       false,
+			errorMessage:     "IP 10.13.24.1 is not allowed: private IPs are not allowed",
+		},
+		{
 			name:             "Private IP Address with allowed endpoint as host",
 			address:          "192.0.2.1:9000",
 			allowedEndpoints: []string{"example.com"},

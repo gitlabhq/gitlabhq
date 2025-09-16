@@ -9,21 +9,20 @@
 - add_page_specific_style 'page_bundles/merge_request'
 - add_page_startup_graphql_call('pipelines/get_pipeline_details', { projectPath: @project.full_path, iid: @pipeline.iid })
 
-.js-pipeline-container{ data: { controller_action: "#{controller.action_name}" } }
-  #js-pipeline-header-vue{ data: js_pipeline_header_data(@project, @pipeline) }
+#js-pipeline-header{ data: js_pipeline_header_data(@project, @pipeline) }
 
-  - if pipeline_has_errors
-    = render Pajamas::AlertComponent.new(title: s_('Pipelines|Unable to create pipeline'),
-      variant: :danger,
-      dismissible: false,
-      alert_options: { class: 'gl-mb-5' }) do |c|
-      - c.with_body do
-        %ul
-          - @pipeline.error_messages.pluck(:content).each do |error| # rubocop:disable CodeReuse/ActiveRecord -- done temporarily to drop yaml_errors
-            %li= error
-        - if can_view_pipeline_editor?(@project)
-          = render Pajamas::ButtonComponent.new(href: project_ci_pipeline_editor_path(@project, branch_name: @pipeline.source_ref), variant: :confirm) do
-            = s_("Pipelines|Go to the pipeline editor")
+- if pipeline_has_errors
+  = render Pajamas::AlertComponent.new(title: s_('Pipelines|Unable to create pipeline'),
+    variant: :danger,
+    dismissible: false,
+    alert_options: { class: 'gl-mb-5' }) do |c|
+    - c.with_body do
+      %ul
+        - @pipeline.error_messages.pluck(:content).each do |error| # rubocop:disable CodeReuse/ActiveRecord -- done temporarily to drop yaml_errors
+          %li= error
+      - if can_view_pipeline_editor?(@project)
+        = render Pajamas::ButtonComponent.new(href: project_ci_pipeline_editor_path(@project, branch_name: @pipeline.source_ref), variant: :confirm) do
+          = s_("Pipelines|Go to the pipeline editor")
 
-  - else
-    #js-pipeline-tabs{ data: js_pipeline_tabs_data(@project, @pipeline, @current_user) }
+- else
+  #js-pipeline-tabs{ data: js_pipeline_tabs_data(@project, @pipeline, @current_user) }

@@ -27,7 +27,7 @@ export const devopsScoreMetricsData = {
       score: '0',
       scoreLevel: {
         label: 'Low',
-        variant: 'muted',
+        variant: 'neutral',
       },
     },
   ],

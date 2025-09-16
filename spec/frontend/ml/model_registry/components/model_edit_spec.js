@@ -64,7 +64,7 @@ describe('ModelEdit', () => {
     });
 
     it('shows disabled model name input', () => {
-      expect(findModelName().attributes('disabled')).toBe('true');
+      expect(findModelName().attributes().disabled).toBe('true');
     });
 
     it('pre-populates the model name input', () => {

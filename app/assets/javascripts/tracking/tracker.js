@@ -20,9 +20,7 @@ export const Tracker = {
    * @returns {Boolean}
    */
   trackable() {
-    return !['1', 'yes'].includes(
-      window.doNotTrack || navigator.doNotTrack || navigator.msDoNotTrack,
-    );
+    return !navigator.globalPrivacyControl;
   },
 
   /**

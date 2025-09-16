@@ -53,7 +53,7 @@ For more information, see
 
 [PostgreSQL](https://www.postgresql.org/) is the only supported database and is bundled with the Linux package.
 You can also use an [external PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server)
-[which must be tuned correctly](#postgresql-tuning).
+[which must be configured correctly](#postgresql-settings).
 
 Depending on the [number of users](../administration/reference_architectures/_index.md),
 the PostgreSQL server should have:
@@ -123,7 +123,7 @@ During Rails database migrations, GitLab might create or modify schemas or table
 Database migrations are tested against the schema definition in the GitLab codebase.
 If you modify any schema, [GitLab upgrades](../update/_index.md) might fail.
 
-### PostgreSQL tuning
+### PostgreSQL settings
 
 Here are some required settings for externally managed PostgreSQL instances.
 
@@ -131,6 +131,7 @@ Here are some required settings for externally managed PostgreSQL instances.
 |:-----------------------|:---------------|:-----------------|
 | `work_mem`             | minimum `8 MB`  | This value is the Linux package default. In large deployments, if queries create temporary files, you should increase this setting. |
 | `maintenance_work_mem` | minimum `64 MB` | You require [more for larger database servers](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8377#note_1728173087). |
+| `max_connections`      | minimum `400`   | Calculate based on your GitLab components. See [Tune PostgreSQL](../administration/postgresql/tune.md) page for detailed guidance. |
 | `shared_buffers`       | minimum `2 GB`  | You require more for larger database servers. The Linux package default is set to 25% of server RAM. |
 | `statement_timeout`    | maximum 1 min  | A statement timeout prevents runaway issues with locks and the database rejecting new clients. One minute matches the Puma rack timeout setting. |
 

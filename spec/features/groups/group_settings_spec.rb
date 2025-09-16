@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe 'Edit group settings', :with_current_organization, feature_category: :groups_and_projects do
   include Spec::Support::Helpers::ModalHelpers
   include Features::WebIdeSpecHelpers
+  include SafeFormatHelper
+  include ActionView::Helpers::TagHelper
 
   let_it_be(:user) { create(:user, organization: current_organization) }
   let_it_be_with_reload(:group) { create(:group, path: 'foo', owners: [user]) }
@@ -231,11 +233,11 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
     end
   end
 
-  context 'enable email notifications' do
-    it 'is visible' do
+  describe 'enable email notifications' do
+    it 'is available' do
       visit edit_group_path(group)
 
-      expect(page).to have_selector('#group_emails_enabled', visible: true)
+      expect(page).to have_selector('#group_emails_enabled')
     end
 
     it 'accepts the changed state' do
@@ -351,10 +353,11 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
         click_button s_('GroupProjectUnarchiveSettings|Unarchive')
 
         expect(page).to have_current_path(group_path(subgroup))
-        expect(subgroup.reload.archived).to be(false)
+        expect(page.body).not_to include(safe_format(
+          _('This group is archived. Its subgroups, projects, and data are %{strong_open}read-only%{strong_close}.'),
+          tag_pair(tag.strong, :strong_open, :strong_close)
+        ))
       end
-
-      it_behaves_like 'does not render archive settings when `archive_group` flag is disabled'
     end
 
     context 'when ancestor is archived' do
@@ -379,7 +382,10 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
         click_button s_('GroupProjectArchiveSettings|Archive')
 
         expect(page).to have_current_path(group_path(subgroup))
-        expect(subgroup.reload.archived).to be(true)
+        expect(page.body).to include(safe_format(
+          _('This group is archived. Its subgroups, projects, and data are %{strong_open}read-only%{strong_close}.'),
+          tag_pair(tag.strong, :strong_open, :strong_close)
+        ))
       end
 
       it_behaves_like 'does not render archive settings when `archive_group` flag is disabled'
@@ -387,32 +393,30 @@ RSpec.describe 'Edit group settings', :with_current_organization, feature_catego
   end
 
   describe 'delayed project deletion' do
-    let(:form_group_selector) { '[data-testid="delayed-project-removal-form-group"]' }
-
     def remove_with_confirm(button_text, confirm_with, confirm_button_text = 'Confirm')
       click_button button_text
       fill_in 'confirm_name_input', with: confirm_with
       click_button confirm_button_text
     end
 
-    context 'when immediately deleting a project marked for deletion', :js do
+    context 'when group is marked for deletion', :js do
       before do
-        create(:group_deletion_schedule, group: group, marked_for_deletion_on: 2.days.from_now)
-
-        visit edit_group_path(group)
+        create(:group_deletion_schedule, group: group)
       end
 
-      it 'deletes the project immediately', :sidekiq_inline do
-        expect { remove_with_confirm('Delete group', group.path) }.to change { Group.count }.by(-1)
+      context 'when the :disallow_immediate_deletion feature flag is disabled' do
+        before do
+          stub_feature_flags(disallow_immediate_deletion: false)
 
-        expect(page).to have_content "is being deleted"
+          visit edit_group_path(group)
+        end
+
+        it 'deletes the project immediately', :sidekiq_inline do
+          expect { remove_with_confirm('Delete group immediately', group.path) }.to change { Group.count }.by(-1)
+
+          expect(page).to have_content "is being deleted"
+        end
       end
-    end
-
-    it 'does not display delayed project removal field at group level', :js do
-      visit edit_group_path(group)
-
-      expect(page).not_to have_css(form_group_selector)
     end
   end
 

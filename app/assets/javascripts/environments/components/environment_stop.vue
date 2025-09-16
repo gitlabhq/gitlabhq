@@ -6,7 +6,7 @@
 
 import { GlTooltipDirective, GlButton, GlModalDirective } from '@gitlab/ui';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 import setEnvironmentToStopMutation from '../graphql/mutations/set_environment_to_stop.mutation.graphql';
 import isEnvironmentStoppingQuery from '../graphql/queries/is_environment_stopping.query.graphql';
 
@@ -34,6 +34,7 @@ export default {
   },
   i18n: {
     stopTitle: s__('Environments|Stop environment'),
+    stopLabel: s__('Environments|Stop environment %{environmentName}'),
     stoppingTitle: s__('Environments|Stopping environment'),
   },
   data() {
@@ -48,6 +49,9 @@ export default {
     },
     title() {
       return this.isLoadingState ? this.$options.i18n.stoppingTitle : this.$options.i18n.stopTitle;
+    },
+    stopLabel() {
+      return sprintf(this.$options.i18n.stopLabel, { environmentName: this.environment?.name });
     },
   },
   methods: {
@@ -69,8 +73,9 @@ export default {
     :title="title"
     :tabindex="isLoadingState ? 0 : null"
     :loading="isLoadingState"
-    :aria-label="title"
+    :aria-label="stopLabel"
     :class="{ 'gl-pointer-events-none': isLoadingState }"
+    data-testid="stop-environment-button"
     size="small"
     icon="stop"
     variant="danger"

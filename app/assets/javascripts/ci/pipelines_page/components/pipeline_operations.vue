@@ -91,6 +91,7 @@ export default {
     />
 
     <div class="btn-group">
+      <slot name="duo-workflow-action"></slot>
       <pipelines-manual-actions
         v-if="hasActions"
         :iid="pipeline.iid"

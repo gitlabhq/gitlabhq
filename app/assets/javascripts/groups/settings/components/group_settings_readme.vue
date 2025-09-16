@@ -116,7 +116,6 @@ export default {
     <gl-button
       v-else
       v-gl-modal="$options.README_MODAL_ID"
-      variant="dashed"
       icon="file-addition"
       data-testid="group-settings-add-readme-button"
       >{{ $options.i18n.addReadme }}</gl-button

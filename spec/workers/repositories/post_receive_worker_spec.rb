@@ -155,10 +155,24 @@ RSpec.describe Repositories::PostReceiveWorker, :clean_gitlab_redis_shared_state
           CHANGES
         end
 
-        it 'expires the branches cache' do
-          expect(project.repository).to receive(:expire_branches_cache).once
+        it 'triggers a granular cache update' do
+          allow(project.repository).to receive(:granular_ref_name_update).twice.and_call_original
+          expect(project.repository).to receive(:granular_ref_name_update).with('refs/heads/test1')
+          expect(project.repository).to receive(:granular_ref_name_update).with('refs/heads/test2')
 
           perform
+        end
+
+        context 'when "incremental_cache_for_refs" is disabled' do
+          before do
+            stub_feature_flags(incremental_cache_for_refs: false)
+          end
+
+          it 'expires the branches cache' do
+            expect(project.repository).to receive(:expire_branches_cache).once
+
+            perform
+          end
         end
 
         it 'expires the status cache' do
@@ -227,12 +241,28 @@ RSpec.describe Repositories::PostReceiveWorker, :clean_gitlab_redis_shared_state
           perform
         end
 
-        it 'only invalidates tags once' do
+        it 'triggers a granular cache update' do
           expect(project.repository).to receive(:repository_event).exactly(3).times.with(:push_tag).and_call_original
-          expect(project.repository).to receive(:expire_caches_for_tags).once.and_call_original
-          expect(project.repository).to receive(:expire_tags_cache).once.and_call_original
+          allow(project.repository).to receive(:granular_ref_name_update).exactly(3).times.and_call_original
+          expect(project.repository).to receive(:granular_ref_name_update).with('refs/tags/tag1')
+          expect(project.repository).to receive(:granular_ref_name_update).with('refs/tags/tag2')
+          expect(project.repository).to receive(:granular_ref_name_update).with('refs/tags/tag3')
 
           perform
+        end
+
+        context 'when "incremental_cache_for_refs" is disabled' do
+          before do
+            stub_feature_flags(incremental_cache_for_refs: false)
+          end
+
+          it 'only invalidates tags once' do
+            expect(project.repository).to receive(:repository_event).exactly(3).times.with(:push_tag).and_call_original
+            expect(project.repository).to receive(:expire_caches_for_tags).once.and_call_original
+            expect(project.repository).to receive(:expire_tags_cache).once.and_call_original
+
+            perform
+          end
         end
 
         it 'calls Git::ProcessRefChangesService' do

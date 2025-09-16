@@ -22,7 +22,7 @@ RSpec.describe 'User edits Release', :js, feature_category: :continuous_delivery
   end
 
   def fill_out_form_and_click(button_to_click)
-    fill_in 'release-title', with: 'Updated Release title', fill_options: { clear: :backspace }
+    fill_in 'release-title', with: 'Updated Release title'
     fill_in 'release-notes', with: 'Updated Release notes'
 
     click_link_or_button button_to_click

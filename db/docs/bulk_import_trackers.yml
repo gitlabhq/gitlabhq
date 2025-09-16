@@ -8,7 +8,7 @@ description: Used to store and track the status of each pipeline associated with
   migration of groups or projects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47009
 milestone: '13.6'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_main_org
 desired_sharding_key:
   project_id:
     references: projects

@@ -4,6 +4,36 @@
 - [Cloud Native GitLab](https://gitlab.com/gitlab-org/build/CNG) using the official [GitLab Chart](https://gitlab.com/gitlab-org/charts/gitlab).
 - [Omnibus GitLab](https://docs.gitlab.com/install/docker/) instances using Docker.
 
+## Dependencies
+
+Before using orchestrator, ensure the following tools are installed:
+
+- **[kind](https://kind.sigs.k8s.io/)** - Lightweight kubernetes cluster in docker containers
+- **[kubectl](https://kubernetes.io/docs/tasks/tools/)** - Kubernetes command-line tool for cluster management
+- **[Helm](https://helm.sh/docs/intro/install/)** - Package manager for Kubernetes applications
+- 
+To check if all dependencies are satisfied, `doctor` command can be used:
+
+```console
+❯ bundle exec orchestrator doctor
+Checking system dependencies
+[✔] Checking if docker is installed ... done
+[✔] Checking if kind is installed ... done
+[✔] Checking if kubectl is installed ... done
+[✔] Checking if helm is installed ... done
+[✔] Checking if tar is installed ... done
+All system dependencies are present
+```
+
+## Working with Colima
+
+Colima is the recommended alternative to Docker Desktop for macOS when working with orchestrator.
+
+For installation and setup instructions, refer to the GitLab Charts documentation:
+
+[Installing Dependencies](https://docs.gitlab.com/charts/development/kind/#installing-dependencies) - Instructions for installing Colima and related dependencies
+[Building the VM](https://docs.gitlab.com/charts/development/kind/#building-the-vm) - Guide for creating and managing the Colima virtual machine
+
 ## Usage
 
 `orchestrator` is an internal gem; it is not published on [rubygems](https://rubygems.org/). Run `orchestrator` by prefixing commands with
@@ -50,7 +80,7 @@ It is possible to configure certain options via environment variables. Following
 
 The main feature `orchestrator` is to programmatically manage different deployment type configurations and setup. To implement new deployment configuration:
 
-1. Add a new subcommand method to the [`Deployment`](lib/gitlab/cng/commands/subcommands/deployment.rb) class. This allows you to to define your own input
+1. Add a new subcommand method to the [`Deployment`](lib/gitlab/cng/commands/subcommands/deployment.rb) class. This allows you to define your own input
    arguments and documentation.
 1. Define a configuration class based on the [`Base`](lib/gitlab/cng/lib/deployment/configurations/_base.rb) configuration class. You can implement:
    - `pre-deployment` setup: optional setup steps that are executed before installing the `GitLab` instance.
@@ -89,3 +119,24 @@ Because `orchestrator` tool essentially wraps `helm upgrade --install` command, 
 ### CI setup
 
 Documentation on where to find environment logs and other useful information for troubleshooting failures on CI can be found in [test pipelines](../../../doc/development/testing_guide/end_to_end/test_pipelines.md#e2etest-on-cng) documentation section.
+
+### CrowdStrike blocking local GitLab instance
+
+If you experience connection issues where GitLab appears to be running but returns `Empty reply from server` or connection timeouts, this may be caused by CrowdStrike blocking network traffic to your local GitLab instance.
+CrowdStrike's content filtering can intercept HTTP requests to local IP addresses (like `192.168.5.65`) while allowing localhost traffic. To work around this, add your GitLab domain to your hosts file pointing to `127.0.0.1`:
+
+```shell
+# Add this line to your /etc/hosts file with your gitlab IP address e.g.
+echo "127.0.0.1    gitlab.<YOUR_GITLAB_IP>.nip.io" | sudo tee -a /etc/hosts
+```
+
+This redirects your GitLab domain from the Docker network IP to localhost, bypassing CrowdStrike's network filtering.
+After making this change, your GitLab instance should be accessible normally through the browser.
+
+### Rancher Desktop DNS Issues
+
+Kind clusters fail to resolve external domains (like registry.gitlab.com) when running on Rancher Desktop on macOS, causing container image pulls to timeout.
+
+Example error: `dial tcp: lookup registry.gitlab.com on 192.168.5.2:53: read udp 172.19.0.2:54620->192.168.5.2:53: i/o timeout`
+
+The recommendation is to use Docker Desktop or Colima, see this [issue](https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/3752) for more details.

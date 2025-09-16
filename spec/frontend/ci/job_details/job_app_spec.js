@@ -3,8 +3,12 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { GlLoadingIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
+import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
+import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EmptyState from '~/ci/job_details/components/empty_state.vue';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import EnvironmentsBlock from '~/ci/job_details/components/environments_block.vue';
 import ErasedBlock from '~/ci/job_details/components/erased_block.vue';
 import JobApp from '~/ci/job_details/job_app.vue';
@@ -42,23 +46,29 @@ describe('Job App', () => {
     subscriptionsMoreMinutesUrl: 'https://customers.gitlab.com/buy_pipeline_minutes',
   };
 
-  const createComponent = (abilities = {}) => {
+  const createComponent = ({ abilities = {}, ...options } = {}) => {
     wrapper = shallowMountExtended(JobApp, {
       propsData: { ...props },
       store,
       provide: {
         glAbilities: { troubleshootJobWithAi: false, ...abilities },
       },
+      ...options,
     });
   };
 
-  const setupAndMount = async ({ jobData = {}, jobLogData = {}, abilities = {} } = {}) => {
+  const setupAndMount = async ({
+    jobData = {},
+    jobLogData = {},
+    abilities = {},
+    ...options
+  } = {}) => {
     mock.onGet(initSettings.jobEndpoint).replyOnce(HTTP_STATUS_OK, { ...job, ...jobData });
     mock.onGet(initSettings.logEndpoint).reply(HTTP_STATUS_OK, jobLogData);
 
     const asyncInit = store.dispatch('init', initSettings);
 
-    createComponent(abilities);
+    createComponent({ abilities, ...options });
 
     await asyncInit;
     jest.runOnlyPendingTimers();
@@ -101,6 +111,105 @@ describe('Job App', () => {
       expect(findLoadingComponent().exists()).toBe(true);
       expect(findSidebar().exists()).toBe(false);
       expect(findJobContent().exists()).toBe(false);
+    });
+  });
+
+  describe('when resizing', () => {
+    beforeEach(async () => {
+      await setupAndMount();
+
+      jest.spyOn(store, 'dispatch');
+    });
+
+    it('shows sidebar', async () => {
+      expect(store.dispatch).not.toHaveBeenCalledWith('showSidebar');
+
+      store.state.isSidebarOpen = false;
+      window.dispatchEvent(new Event('resize'));
+      await waitForPromises();
+
+      expect(store.dispatch).toHaveBeenCalledWith('showSidebar');
+    });
+
+    it('hides sidebar on mobile', () => {
+      expect(store.dispatch).not.toHaveBeenCalledWith('hideSidebar');
+
+      jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(false);
+
+      store.state.isSidebarOpen = true;
+      window.dispatchEvent(new Event('resize'));
+
+      expect(store.dispatch).toHaveBeenCalledWith('hideSidebar');
+    });
+  });
+
+  describe('while scrolling', () => {
+    beforeEach(async () => {
+      await setupAndMount({
+        directives: {
+          GlResizeObserver: createMockDirective('gl-resize-observer'),
+        },
+      });
+
+      jest.spyOn(store, 'dispatch');
+    });
+
+    it('should update scrolling when window scrolls', async () => {
+      expect(store.dispatch).not.toHaveBeenCalledWith('toggleScrollButtons');
+
+      window.dispatchEvent(new Event('scroll'));
+      await waitForPromises();
+
+      expect(store.dispatch).toHaveBeenCalledWith('toggleScrollButtons');
+    });
+
+    it('should update scrolling when resized', async () => {
+      expect(store.dispatch).not.toHaveBeenCalledWith('toggleScrollButtons');
+
+      getBinding(wrapper.element, 'gl-resize-observer').value();
+      await waitForPromises();
+
+      expect(store.dispatch).toHaveBeenCalledWith('toggleScrollButtons');
+    });
+  });
+
+  describe('while scrolling inside a content panel', () => {
+    let contentPanelWrapper;
+
+    beforeEach(async () => {
+      setHTMLFixture('<div class="js-static-panel-inner"></div>');
+      contentPanelWrapper = document.querySelector('.js-static-panel-inner');
+
+      await setupAndMount({
+        directives: {
+          GlResizeObserver: createMockDirective('gl-resize-observer'),
+        },
+        attachTo: document.body,
+      });
+
+      jest.spyOn(store, 'dispatch');
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
+    });
+
+    it('should update scrolling when content panel is scrolled', async () => {
+      expect(store.dispatch).not.toHaveBeenCalledWith('toggleScrollButtons');
+
+      contentPanelWrapper.dispatchEvent(new Event('scroll'));
+      await waitForPromises();
+
+      expect(store.dispatch).toHaveBeenCalledWith('toggleScrollButtons');
+    });
+
+    it('should update scrolling when resized', async () => {
+      expect(store.dispatch).not.toHaveBeenCalledWith('toggleScrollButtons');
+
+      getBinding(wrapper.element, 'gl-resize-observer').value();
+      await waitForPromises();
+
+      expect(store.dispatch).toHaveBeenCalledWith('toggleScrollButtons');
     });
   });
 
@@ -365,12 +474,6 @@ describe('Job App', () => {
       expect(findJobLog().exists()).toBe(true);
 
       expect(findJobLog().props()).toEqual({ searchResults: [] });
-    });
-
-    it('should toggle scroll buttons when line is toggled', () => {
-      findJobLog().vm.$emit('toggleCollapsibleLine');
-
-      expect(store.dispatch).toHaveBeenCalledWith('toggleScrollButtons');
     });
   });
 

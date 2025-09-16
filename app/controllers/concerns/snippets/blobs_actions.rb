@@ -29,6 +29,8 @@ module Snippets::BlobsActions
 
   def ensure_blob
     render_404 unless blob
+  rescue ExtractsRef::RefExtractor::InvalidPathError
+    render_404
   end
 
   def ensure_repository

@@ -29,14 +29,24 @@ Learn how to [build a PyPI package](../workflows/build_packages.md#pypi).
 
 ## Package request forwarding security notice
 
-When using the GitLab PyPI package registry, package requests that cannot be found in the GitLab registry are automatically forwarded to pypi.org. This behavior can result in packages being downloaded from pypi.org, even when using the `--index-url` flag.
+When using the GitLab PyPI package registry, package requests that cannot be found in the GitLab registry are automatically forwarded to `pypi.org`. This behavior can result in packages being downloaded from `pypi.org`, even when using the `--index-url` flag.
 
 For maximum security when working with private packages:
 
-- Turn off package forwarding in your group settings:
-  - Instance administrators can disable forwarding in the [**Continuous Integration** section](../../../administration/settings/continuous_integration.md#control-package-forwarding) of the **Admin** area.
-  - Group owners can disable forwarding in the **Packages and Registries** section of the group settings.
+- Turn off package forwarding in your group settings.
 - Use both [`--index-url` and `--no-index`](#security-implications) flags when installing packages.
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To turn off package request forwarding:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > Packages and registries**.
+1. Under **Package forwarding**, clear the **Forward PyPI package requests** checkbox.
+
+For information on how to turn off package forwarding in the **Admin area**, see [Control package forwarding](../../../administration/settings/continuous_integration.md#control-package-forwarding).
 
 ## Authenticate with the GitLab package registry
 
@@ -187,7 +197,11 @@ more than once, a `400 Bad Request` error occurs.
 
 ## Install a PyPI package
 
-By default, when a PyPI package is not found in the GitLab package registry, the request is forwarded to [pypi.org](https://pypi.org/). This behavior:
+By default, when a PyPI package is not found in the GitLab package registry,
+the request is forwarded to [pypi.org](https://pypi.org/). For more information
+about how to prevent request forwarding, see [package request forwarding and security notice](#package-request-forwarding-security-notice).
+
+This behavior:
 
 - Is enabled by default for all GitLab instances
 - Can be configured in the group's **Packages and registries** settings

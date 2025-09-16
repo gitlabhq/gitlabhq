@@ -13,7 +13,7 @@ import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry
 import HeaderActions from '~/ci/pipeline_details/header/components/header_actions.vue';
 import HeaderBadges from '~/ci/pipeline_details/header/components/header_badges.vue';
 import getPipelineDetailsQuery from '~/ci/pipeline_details/header/graphql/queries/get_pipeline_header_data.query.graphql';
-import pipelineCiStatusUpdatedSubscription from '~/graphql_shared/subscriptions/pipeline_ci_status_updated.subscription.graphql';
+import pipelineHeaderStatusUpdatedSubscription from '~/ci/pipeline_details/header/graphql/subscriptions/pipeline_header_status_updated.subscription.graphql';
 
 import {
   pipelineHeaderSuccess,
@@ -87,7 +87,7 @@ describe('Pipeline header', () => {
 
   const defaultHandlers = [
     [getPipelineDetailsQuery, successHandler],
-    [pipelineCiStatusUpdatedSubscription, subscriptionHandler],
+    [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
   ];
 
   const defaultProvideOptions = {
@@ -176,7 +176,7 @@ describe('Pipeline header', () => {
     it('passes pipeline prop to HeaderBadges component', async () => {
       await createComponent([
         [getPipelineDetailsQuery, successHandler],
-        [pipelineCiStatusUpdatedSubscription, subscriptionNullHandler],
+        [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
       ]);
 
       expect(findBadges().props('pipeline')).toEqual(pipelineHeaderSuccess.data.project.pipeline);
@@ -208,7 +208,7 @@ describe('Pipeline header', () => {
     it('displays commit title', async () => {
       await createComponent([
         [getPipelineDetailsQuery, runningHandler],
-        [pipelineCiStatusUpdatedSubscription, subscriptionHandler],
+        [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
       ]);
 
       const expectedTitle = pipelineHeaderSuccess.data.project.pipeline.commit.title;
@@ -239,7 +239,7 @@ describe('Pipeline header', () => {
     beforeEach(() => {
       return createComponent([
         [getPipelineDetailsQuery, runningHandler],
-        [pipelineCiStatusUpdatedSubscription, subscriptionHandler],
+        [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
       ]);
     });
 
@@ -265,7 +265,7 @@ describe('Pipeline header', () => {
     beforeEach(() => {
       return createComponent([
         [getPipelineDetailsQuery, runningHandlerWithDuration],
-        [pipelineCiStatusUpdatedSubscription, subscriptionHandler],
+        [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
       ]);
     });
 
@@ -279,7 +279,7 @@ describe('Pipeline header', () => {
       await createComponent([
         [getPipelineDetailsQuery, failedHandler],
         [retryPipelineMutation, retryMutationHandlerSuccess],
-        [pipelineCiStatusUpdatedSubscription, subscriptionNullHandler],
+        [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
       ]);
 
       expect(findHeaderActions().props()).toEqual({
@@ -295,7 +295,7 @@ describe('Pipeline header', () => {
         return createComponent([
           [getPipelineDetailsQuery, failedHandler],
           [retryPipelineMutation, retryMutationHandlerSuccess],
-          [pipelineCiStatusUpdatedSubscription, subscriptionHandler],
+          [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
         ]);
       });
 
@@ -321,7 +321,7 @@ describe('Pipeline header', () => {
         return createComponent([
           [getPipelineDetailsQuery, failedHandler],
           [retryPipelineMutation, retryMutationHandlerFailed],
-          [pipelineCiStatusUpdatedSubscription, subscriptionHandler],
+          [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
         ]);
       });
 
@@ -352,7 +352,7 @@ describe('Pipeline header', () => {
           await createComponent([
             [getPipelineDetailsQuery, runningHandler],
             [cancelPipelineMutation, cancelMutationHandlerSuccess],
-            [pipelineCiStatusUpdatedSubscription, subscriptionHandler],
+            [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
           ]);
 
           clickActionButton('cancelPipeline', pipelineHeaderRunning.data.project.pipeline.id);
@@ -374,7 +374,7 @@ describe('Pipeline header', () => {
           await createComponent([
             [getPipelineDetailsQuery, runningHandler],
             [cancelPipelineMutation, cancelMutationHandlerFailed],
-            [pipelineCiStatusUpdatedSubscription, subscriptionHandler],
+            [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
           ]);
 
           clickActionButton('cancelPipeline', pipelineHeaderRunning.data.project.pipeline.id);
@@ -391,7 +391,7 @@ describe('Pipeline header', () => {
         await createComponent([
           [getPipelineDetailsQuery, successHandler],
           [deletePipelineMutation, deleteMutationHandlerSuccess],
-          [pipelineCiStatusUpdatedSubscription, subscriptionHandler],
+          [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
         ]);
 
         clickActionButton('deletePipeline', pipelineHeaderSuccess.data.project.pipeline.id);
@@ -412,7 +412,7 @@ describe('Pipeline header', () => {
         await createComponent([
           [getPipelineDetailsQuery, successHandler],
           [deletePipelineMutation, deleteMutationHandlerFailed],
-          [pipelineCiStatusUpdatedSubscription, subscriptionHandler],
+          [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
         ]);
 
         clickActionButton('deletePipeline', pipelineHeaderSuccess.data.project.pipeline.id);
@@ -426,7 +426,7 @@ describe('Pipeline header', () => {
         await createComponent([
           [getPipelineDetailsQuery, successHandler],
           [deletePipelineMutation, deleteMutationHandlerFailed],
-          [pipelineCiStatusUpdatedSubscription, subscriptionHandler],
+          [pipelineHeaderStatusUpdatedSubscription, subscriptionNullHandler],
         ]);
 
         clickActionButton('deletePipeline', pipelineHeaderSuccess.data.project.pipeline.id);
@@ -443,7 +443,10 @@ describe('Pipeline header', () => {
 
     describe('subscription', () => {
       it('calls subscription with correct variables', async () => {
-        await createComponent();
+        await createComponent([
+          [getPipelineDetailsQuery, successHandler],
+          [pipelineHeaderStatusUpdatedSubscription, subscriptionHandler],
+        ]);
 
         const {
           data: {
@@ -454,6 +457,22 @@ describe('Pipeline header', () => {
         expect(subscriptionHandler).toHaveBeenCalledWith({
           pipelineId: pipeline.id,
         });
+      });
+
+      it('does not make redundant subscription calls for refetches', async () => {
+        await createComponent([
+          [getPipelineDetailsQuery, runningHandler],
+          [cancelPipelineMutation, cancelMutationHandlerSuccess],
+          [pipelineHeaderStatusUpdatedSubscription, subscriptionHandler],
+        ]);
+
+        expect(subscriptionHandler).toHaveBeenCalledTimes(1);
+
+        clickActionButton('cancelPipeline', pipelineHeaderRunning.data.project.pipeline.id);
+
+        await nextTick();
+
+        expect(subscriptionHandler).toHaveBeenCalledTimes(1);
       });
     });
   });

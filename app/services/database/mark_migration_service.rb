@@ -23,10 +23,13 @@ module Database
     attr_reader :connection, :version
 
     def migration
-      @migration ||= connection
-        .migration_context
+      @migration ||= migration_context
         .migrations
         .find { |migration| migration.version == version }
+    end
+
+    def migration_context
+      ::Gitlab.next_rails? ? connection.pool.migration_context : connection.migration_context
     end
 
     def all_versions

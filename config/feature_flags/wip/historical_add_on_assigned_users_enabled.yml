@@ -1,0 +1,9 @@
+---
+name: historical_add_on_assigned_users_enabled
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/498633
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203118
+rollout_issue_url:
+type: wip
+milestone: '18.4'
+group: group::optimize
+default_enabled: false

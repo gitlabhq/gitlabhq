@@ -1,14 +1,11 @@
 query rebaseQuery($projectPath: ID!, $iid: String!) {
   project(fullPath: $projectPath) {
     id
+    allowMergeOnSkippedPipeline
     mergeRequest(iid: $iid) {
       id
       rebaseInProgress
-      targetBranch
-      userPermissions {
-        pushToSourceBranch
-      }
-      pipelines {
+      pipelines(first: 1) {
         nodes {
           id
           project {

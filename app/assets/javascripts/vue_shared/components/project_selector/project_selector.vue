@@ -99,13 +99,13 @@ export default {
       :value="searchQuery"
       :placeholder="__('Search your projects')"
       type="search"
-      class="mb-3"
+      class="gl-mb-5"
       autofocus
       data-testid="project-search-field"
       @input="onInput"
     />
-    <div class="flex-column gl-flex">
-      <gl-loading-icon v-if="showLoadingIndicator" size="sm" class="py-2 px-4" />
+    <div class="gl-flex gl-flex-col">
+      <gl-loading-icon v-if="showLoadingIndicator" size="sm" class="gl-px-6 gl-py-3" />
       <gl-infinite-scroll
         :max-list-height="maxListHeight"
         :fetched-items="projectSearchResults.length"

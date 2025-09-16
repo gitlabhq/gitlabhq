@@ -118,6 +118,38 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
       end
     end
 
+    context 'with limited number of Redis calls' do
+      let(:from_project_id) { nil }
+      let(:from_ref) { 'cfe32cf6' }
+      let(:to_ref) { 'ddd0f15a' }
+
+      it 'preloads only necessary commits' do
+        stub_const("MergeRequestDiff::COMMITS_SAFE_SIZE", 10)
+
+        allow(Gitlab::MarkdownCache::Redis::Store).to receive(:new).exactly(20).times.and_call_original
+
+        control = RedisCommands::Recorder.new(pattern: 'markdown_cache') { show_request }
+
+        expect(control).not_to exceed_redis_command_calls_limit(:hmset, 10)
+      end
+
+      context "when feature flag is disabled" do
+        before do
+          stub_feature_flags(limit_commit_markdown_preload: false)
+        end
+
+        it 'preloads all commits' do
+          stub_const("MergeRequestDiff::COMMITS_SAFE_SIZE", 10)
+
+          allow(Gitlab::MarkdownCache::Redis::Store).to receive(:new).at_least(21).times.and_call_original
+
+          control = RedisCommands::Recorder.new(pattern: 'markdown_cache') { show_request }
+
+          expect(control).not_to exceed_redis_command_calls_limit(:hmset, 10)
+        end
+      end
+    end
+
     context 'when refs have CI::Pipeline' do
       let(:from_project_id) { nil }
       let(:from_ref) { '08f22f25' }
@@ -448,6 +480,45 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
         show_request
 
         expect(response).to be_successful
+      end
+    end
+
+    context 'with commit count threshold' do
+      let(:from_project_id) { nil }
+      let(:from_ref) { '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9' }
+      let(:to_ref) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' }
+      let(:straight) { "false" }
+
+      before do
+        create(:ci_pipeline, project: project, ref: to_ref)
+      end
+
+      context 'when commits count is below safe size limit' do
+        before do
+          stub_const('MergeRequestDiff::COMMITS_SAFE_SIZE', 100)
+        end
+
+        it 'loads pipeline information for commits' do
+          expect_next_instance_of(CommitCollection) do |instance|
+            expect(instance).to receive(:with_latest_pipeline).with(to_ref).and_call_original
+          end
+
+          show_request
+        end
+      end
+
+      context 'when commits count exceeds safe size limit' do
+        before do
+          stub_const('MergeRequestDiff::COMMITS_SAFE_SIZE', 1)
+        end
+
+        it 'does not load pipeline information' do
+          expect_next_instance_of(CommitCollection) do |instance|
+            expect(instance).not_to receive(:with_latest_pipeline)
+          end
+
+          show_request
+        end
       end
     end
   end

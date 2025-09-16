@@ -1,0 +1,21 @@
+---
+description: Count every push that goes through Secret Push Protection.
+internal_events: true
+status: active
+action: spp_scan_executed
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: Type of scan executed. Values are 'regular' (ultimate only) or 'dark-launch'
+product_group: secret_detection
+product_categories:
+- secret_detection
+milestone: '18.4'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203679
+tiers:
+- free
+- premium
+- ultimate

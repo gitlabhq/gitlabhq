@@ -1,10 +1,10 @@
 ---
 migration_job_name: BackfillProtectedBranchPushAccessLevelsFields
 description: Backfills sharding key `protected_branch_push_access_levels.protected_branch_project_id`,
-  `protected_branch_push_access_levels.protected_branch_namespace_id` from `protected_branches` and
-  convert int columns to bigint.
+  `protected_branch_push_access_levels.protected_branch_namespace_id` from `protected_branches`
+  and convert int columns to bigint.
 feature_category: source_code_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175714
 milestone: '18.0'
 queued_migration_version: 20250414090268
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20250909232224'

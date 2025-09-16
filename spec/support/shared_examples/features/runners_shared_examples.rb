@@ -176,7 +176,7 @@ RSpec.shared_examples 'submits edit runner form' do
 
   context 'when a runner is updated', :js do
     before do
-      fill_in s_('Runners|Runner description'), with: 'new-runner-description', fill_options: { clear: :backspace }
+      fill_in s_('Runners|Runner description'), with: 'new-runner-description'
 
       click_on _('Save changes')
     end
@@ -204,17 +204,6 @@ RSpec.shared_examples 'creates runner and shows register page' do
 
       click_on 'How do I install GitLab Runner?'
       expect(page.find('[data-testid="runner-platforms-drawer"]')).to have_content('gitlab-runner install')
-    end
-
-    it 'warns from leaving page without finishing registration' do
-      click_on s_('Runners|View runners')
-
-      alert = page.driver.browser.switch_to.alert
-
-      expect(alert).not_to be_nil
-      alert.dismiss
-
-      expect(current_url).to match(register_path_pattern)
     end
   end
 end

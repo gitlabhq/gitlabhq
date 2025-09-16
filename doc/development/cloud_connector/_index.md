@@ -11,7 +11,7 @@ dedicated service itself, but rather a collection of APIs and code that standard
 other items when integrating Cloud based services with the GitLab instance. This page aims to explain how to use
 Cloud Connector to link GitLab Rails to a service.
 
-See the [architecture page](architecture.md) for more information about Cloud Connector. See [terms](architecture.md#terms)
+See the [architecture page](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/authentication/architecture/) in handbook for more information about Cloud Connector. See [terms](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/authentication/architecture/#terms)
 for a list of terms used throughout the document. Also see [configuration](configuration.md) for the information
 on how paid features are bundled into GitLab tiers and add-ons.
 
@@ -38,7 +38,7 @@ because we do not currently have interfaces in place to self-service this.
 #### Register the new feature in the JWT issuer
 
 - For GitLab Dedicated and GitLab Self-Managed, the CustomersDot is the **JWT issuer**.
-- For GitLab.com deployment, GitLab.com is the **JWT issuer**, because it's able to [self-sign and create JWTs](architecture.md#gitlabcom) for every request to a Cloud Connector feature.
+- For GitLab.com deployment, GitLab.com is the **JWT issuer**, because it's able to [self-sign and create JWTs](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/authentication/architecture/#gitlabcom) for every request to a Cloud Connector feature.
 
 #### Register new feature for GitLab Self-Managed, Dedicated and GitLab.com customers
 
@@ -250,7 +250,7 @@ To accomplish this, a backend service must:
 1. [Validate JWTs with keys in this set](#validate-jwts-with-jwks).
 
 For a detailed explanation of the mechanism behind this, refer to
-[Architecture: Access control](architecture.md#access-control).
+[Architecture: Access control](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/authentication/architecture/#access-control).
 
 We strongly suggest to use existing software libraries to handle JWKS and JWT authentication.
 Examples include:
@@ -342,4 +342,9 @@ and assign it to the Runway group.
 
 ## Testing
 
-An example for how to set up an end-to-end integration with the AI gateway as the backend service can be found [here](../ai_features/_index.md#required-install-ai-gateway).
+An example for how to set up an end-to-end integration with the AI gateway as the backend service
+can be found in [install AI gateway](../ai_features/_index.md#install-ai-gateway).
+
+## Terms
+
+When talking about Cloud Connector's constituents and mechanics, we use the [following terms](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/authentication/architecture/#terms).

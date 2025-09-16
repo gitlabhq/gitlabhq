@@ -958,6 +958,43 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         expect(json_response).not_to be_an Array
       end
     end
+
+    context 'with composite identity' do
+      let(:service_account) do
+        create(:user, :service_account, composite_identity_enforced: true, organization: organization)
+      end
+
+      let(:organization) { create(:organization) }
+      let(:oauth_app)    { create(:doorkeeper_application) }
+      let(:scopes)       { ::Gitlab::Auth::AI_WORKFLOW_SCOPES + ['api'] + ["user:#{user.id}"] }
+
+      let(:token) do
+        create(
+          :oauth_access_token,
+          organization: organization,
+          application: oauth_app,
+          resource_owner: service_account,
+          expires_in: 1.hour,
+          scopes: scopes
+        )
+      end
+
+      before do
+        stub_ci_pipeline_to_return_yaml_file
+        project.add_developer(service_account)
+        project.update!(allow_composite_identities_to_run_pipelines: true)
+      end
+
+      it 'attributes the pipeline owner to the service account' do
+        post api("/projects/#{project.id}/pipeline", user, oauth_access_token: token),
+          params: { ref: project.default_branch }
+
+        expect(response).to have_gitlab_http_status(:created)
+
+        pipeline = Ci::Pipeline.find(json_response['id'])
+        expect(pipeline.user_id).to eq(service_account.id)
+      end
+    end
   end
 
   describe 'GET /projects/:id/pipelines/:pipeline_id' do

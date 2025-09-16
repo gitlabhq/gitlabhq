@@ -1,6 +1,8 @@
 import Vue, { nextTick } from 'vue';
 import { GlFormInput, GlIcon, GlTooltip } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
+import { cloneDeep } from 'lodash';
+import { PiniaVuePlugin } from 'pinia';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { RecycleScroller } from 'vendor/vue-virtual-scroller';
@@ -10,23 +12,28 @@ import { FOCUS_FILE_TREE_BROWSER_FILTER_BAR, keysFor } from '~/behaviors/shortcu
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { stubComponent } from 'helpers/stub_component';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { Mousetrap } from '~/lib/mousetrap';
+import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import { mockResponse } from '../mock_data';
 
 Vue.use(VueApollo);
+Vue.use(PiniaVuePlugin);
 
 jest.mock('~/repository/utils/ref_type', () => ({ getRefType: jest.fn(() => 'MOCK_REF_TYPE') }));
 jest.mock('~/lib/utils/url_utility', () => ({ joinPaths: jest.fn((...args) => args.join('/')) }));
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 
-const getQueryHandlerSuccess = jest.fn().mockResolvedValue(mockResponse);
-
 describe('Tree List', () => {
   let wrapper;
   let apolloProvider;
+  let pinia;
+  let getQueryHandlerSuccess;
 
-  const createComponent = async () => {
+  const createComponent = async (apiResponse = mockResponse) => {
+    getQueryHandlerSuccess = jest.fn().mockResolvedValue(apiResponse);
+
     apolloProvider = createMockApollo([[paginatedTreeQuery, getQueryHandlerSuccess]]);
 
     const recycleScrollerStub = stubComponent(
@@ -46,6 +53,7 @@ describe('Tree List', () => {
 
     wrapper = shallowMountExtended(TreeList, {
       apolloProvider,
+      pinia,
       propsData: { projectPath: 'group/project', currentRef: 'main', refType: 'branch' },
       mocks: { $route: { params: {}, $apollo: { query: jest.fn() } } },
       stubs: { RecycleScroller: recycleScrollerStub },
@@ -56,6 +64,8 @@ describe('Tree List', () => {
 
   beforeEach(() => createComponent());
 
+  const findFileTreeToggle = () => wrapper.findComponent(FileTreeBrowserToggle);
+
   const findHeader = () => wrapper.find('h3');
   const findRecycleScroller = () => wrapper.findComponent(RecycleScroller);
   const findFileRows = () => wrapper.findAllComponents(FileRow);
@@ -63,6 +73,8 @@ describe('Tree List', () => {
   const findFilterIcon = () => wrapper.findComponent(GlIcon);
   const findNoFilesMessage = () => wrapper.findByText('No files found');
   const findTooltip = () => wrapper.findComponent(GlTooltip);
+
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   it('calls apollo query with correct parameters', () => {
     expect(getQueryHandlerSuccess).toHaveBeenCalledWith({
@@ -79,12 +91,15 @@ describe('Tree List', () => {
     expect(findHeader().text()).toBe('Files');
   });
 
+  it('renders file tree browser toggle', () => {
+    expect(findFileTreeToggle().exists()).toBe(true);
+  });
+
   it('renders recycle-scroller with correct props', () => {
     const scroller = findRecycleScroller();
     expect(scroller.props('items')).toEqual([
       {
         id: '/dir_1/dir_2-gid://123-0',
-        isCurrentPath: false,
         level: 0,
         loading: false,
         name: 'dir_2',
@@ -96,7 +111,6 @@ describe('Tree List', () => {
       {
         fileHash: 'abc123',
         id: '/dir_1/file.txt-gid://456-0',
-        isCurrentPath: false,
         level: 0,
         mode: '100644',
         name: 'file.txt',
@@ -114,7 +128,6 @@ describe('Tree List', () => {
     expect(fileRows.at(0).props()).toMatchObject({
       file: {
         id: '/dir_1/dir_2-gid://123-0',
-        isCurrentPath: false,
         level: 0,
         name: 'dir_2',
         path: '/dir_1/dir_2',
@@ -130,7 +143,6 @@ describe('Tree List', () => {
       file: {
         fileHash: 'abc123',
         id: '/dir_1/file.txt-gid://456-0',
-        isCurrentPath: false,
         level: 0,
         mode: '100644',
         name: 'file.txt',
@@ -142,11 +154,36 @@ describe('Tree List', () => {
     });
   });
 
-  it('calls navigateTo with correct path when clickTree is emitted from FileRow', () => {
-    const navigateTo = jest.spyOn(wrapper.vm, 'navigateTo').mockImplementation(() => {});
+  it('calls toggleDirectory with correct path when clickTree is emitted from FileRow', () => {
+    const toggleDirectory = jest.spyOn(wrapper.vm, 'toggleDirectory').mockImplementation(() => {});
     const path = '/dir_1/dir_2';
     findFileRows().at(0).vm.$emit('clickTree', path);
-    expect(navigateTo).toHaveBeenCalledWith(path);
+    expect(toggleDirectory).toHaveBeenCalledWith(path);
+  });
+
+  describe('pagination', () => {
+    beforeEach(() => {
+      const paginatedResponse = cloneDeep(mockResponse);
+      paginatedResponse.data.project.repository.paginatedTree.pageInfo.hasNextPage = true;
+      return createComponent(paginatedResponse);
+    });
+
+    it('renders a show more button when hasNextPage is true', () => {
+      expect(findRecycleScroller().props('items')[2]).toMatchObject({ isShowMore: true });
+    });
+
+    it('fetches the next page', () => {
+      findFileRows().at(2).vm.$emit('showMore');
+
+      expect(getQueryHandlerSuccess).toHaveBeenCalledWith({
+        projectPath: 'group/project',
+        ref: 'main',
+        refType: 'MOCK_REF_TYPE',
+        path: '/',
+        nextPageCursor: 'cursor123',
+        pageSize: 100,
+      });
+    });
   });
 
   describe('filtering', () => {
@@ -181,6 +218,21 @@ describe('Tree List', () => {
     });
   });
 
+  it('triggers a tracking event when filter bar is click', async () => {
+    const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+    createComponent();
+    findFilterInput().vm.$emit('click', '*.nonexistent');
+
+    await nextTick();
+
+    expect(trackEventSpy).toHaveBeenCalledWith(
+      'focus_file_tree_browser_filter_bar_on_repository_page',
+      { label: 'click' },
+      undefined,
+    );
+  });
+
   describe('handles filter bar focus correctly when shortcuts are enabled', () => {
     beforeEach(() => {
       shouldDisableShortcuts.mockReturnValue(false);
@@ -188,9 +240,8 @@ describe('Tree List', () => {
     });
 
     it('focuses filter input when triggerFocusFilterBar is called', async () => {
-      const filterInput = wrapper.findByTestId('ftb-filter-input');
       const mockFocus = jest.fn();
-      filterInput.vm.focus = mockFocus;
+      findFilterInput().vm.focus = mockFocus;
 
       const mousetrapInstance = wrapper.vm.mousetrap;
       mousetrapInstance.trigger('f');
@@ -198,6 +249,24 @@ describe('Tree List', () => {
       await nextTick();
 
       expect(mockFocus).toHaveBeenCalled();
+    });
+
+    it('triggers a tracking event when shortcut is used', async () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      const mockFocus = jest.fn();
+      findFilterInput().vm.focus = mockFocus;
+
+      const mousetrapInstance = wrapper.vm.mousetrap;
+      mousetrapInstance.trigger('f');
+
+      await nextTick();
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'focus_file_tree_browser_filter_bar_on_repository_page',
+        { label: 'shortcut' },
+        undefined,
+      );
     });
 
     it('displays tooltip', () => {
@@ -227,9 +296,8 @@ describe('Tree List', () => {
     });
 
     it('does not focus when shortcuts are disabled', async () => {
-      const filterInput = wrapper.findByTestId('ftb-filter-input');
       const mockFocus = jest.fn();
-      filterInput.vm.focus = mockFocus;
+      findFilterInput().vm.focus = mockFocus;
 
       const mousetrapInstance = wrapper.vm.mousetrap;
       mousetrapInstance.trigger('f');
@@ -251,6 +319,91 @@ describe('Tree List', () => {
         keysFor(FOCUS_FILE_TREE_BROWSER_FILTER_BAR),
         wrapper.vm.triggerFocusFilterBar,
       );
+    });
+  });
+
+  describe('deep path navigation with pagination', () => {
+    it('paginates to find directories not on first page', async () => {
+      const page1 = cloneDeep(mockResponse);
+      page1.data.project.repository.paginatedTree.nodes[0].trees.nodes = [
+        { id: 'gid://dir_1', name: 'dir_1', path: 'dir_1', webPath: 'dir_1' },
+      ];
+      page1.data.project.repository.paginatedTree.pageInfo = {
+        __typename: 'PageInfo',
+        hasNextPage: true,
+        startCursor: null,
+        endCursor: 'page1_cursor',
+      };
+
+      const page2 = cloneDeep(mockResponse);
+      page2.data.project.repository.paginatedTree.nodes[0].trees.nodes = [
+        { id: 'gid://dir_100', name: 'dir_100', path: 'dir_100', webPath: 'dir_100' },
+      ];
+
+      const dir100Contents = cloneDeep(mockResponse);
+      dir100Contents.data.project.repository.paginatedTree.nodes[0].blobs.nodes = [
+        {
+          id: 'gid://file',
+          name: 'file.txt',
+          path: 'dir_100/file.txt',
+          sha: 'abc123',
+          webPath: 'dir_100/file.txt',
+        },
+      ];
+
+      getQueryHandlerSuccess
+        .mockResolvedValueOnce(page1) // Root page 1
+        .mockResolvedValueOnce(page2) // Root page 2
+        .mockResolvedValueOnce(dir100Contents); // dir_100 contents
+
+      wrapper = shallowMountExtended(TreeList, {
+        apolloProvider: createMockApollo([[paginatedTreeQuery, getQueryHandlerSuccess]]),
+        propsData: { projectPath: 'group/project', currentRef: 'main' },
+        mocks: { $route: { params: { path: 'dir_100/file.txt' } } },
+      });
+
+      await waitForPromises();
+      expect(getQueryHandlerSuccess).toHaveBeenCalledTimes(3);
+    });
+
+    it('respects default maxPages limit (5)', async () => {
+      getQueryHandlerSuccess.mockReset();
+
+      for (let i = 0; i < 10; i += 1) {
+        const page = cloneDeep(mockResponse);
+        page.data.project.repository.paginatedTree.pageInfo = {
+          __typename: 'PageInfo',
+          hasNextPage: i < 9,
+          startCursor: null,
+          endCursor: `cursor_${i}`,
+        };
+        page.data.project.repository.paginatedTree.nodes[0].trees.nodes = [
+          { id: `gid://dir_${i}`, name: `dir_${i}`, path: `dir_${i}`, webPath: `dir_${i}` },
+        ];
+        getQueryHandlerSuccess.mockResolvedValueOnce(page);
+      }
+
+      wrapper = shallowMountExtended(TreeList, {
+        apolloProvider: createMockApollo([[paginatedTreeQuery, getQueryHandlerSuccess]]),
+        propsData: { projectPath: 'group/project', currentRef: 'main' },
+        mocks: { $route: { params: { path: 'dir_99/file.txt' } } },
+      });
+
+      await waitForPromises();
+      expect(getQueryHandlerSuccess).toHaveBeenCalledTimes(6); // 1 + 5 pages
+    });
+
+    it('respects default maxDepth limit (20)', async () => {
+      const deepPath = Array.from({ length: 30 }, (_, i) => `dir_${i}`).join('/');
+
+      wrapper = shallowMountExtended(TreeList, {
+        apolloProvider: createMockApollo([[paginatedTreeQuery, getQueryHandlerSuccess]]),
+        propsData: { projectPath: 'group/project', currentRef: 'main' },
+        mocks: { $route: { params: { path: deepPath } } },
+      });
+
+      await waitForPromises();
+      expect(getQueryHandlerSuccess).toHaveBeenCalledTimes(2); // root + dir_0
     });
   });
 });

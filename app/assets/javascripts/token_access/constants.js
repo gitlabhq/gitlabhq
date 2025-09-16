@@ -4,14 +4,20 @@ import { s__, __ } from '~/locale';
 export const RESOURCE_DEPLOYMENTS = { value: 'DEPLOYMENTS', text: s__('JobToken|Deployments') };
 export const RESOURCE_ENVIRONMENTS = { value: 'ENVIRONMENTS', text: s__('JobToken|Environments') };
 export const RESOURCE_JOBS = { value: 'JOBS', text: s__('JobToken|Jobs') };
+export const RESOURCE_MERGE_REQUESTS = {
+  value: 'MERGE_REQUESTS',
+  text: s__('JobToken|Merge requests'),
+};
 export const RESOURCE_PACKAGES = { value: 'PACKAGES', text: s__('JobToken|Packages') };
 export const RESOURCE_PIPELINES = { value: 'PIPELINES', text: s__('JobToken|Pipelines') };
 export const RESOURCE_RELEASES = { value: 'RELEASES', text: s__('JobToken|Releases') };
+export const RESOURCE_REPOSITORIES = { value: 'REPOSITORIES', text: s__('JobToken|Repositories') };
 export const RESOURCE_SECURE_FILES = { value: 'SECURE_FILES', text: s__('JobToken|Secure files') };
 export const RESOURCE_TERRAFORM_STATE = {
   value: 'TERRAFORM_STATE',
   text: s__('JobToken|Terraform state'),
 };
+export const RESOURCE_WORK_ITEMS = { value: 'WORK_ITEMS', text: s__('JobToken|Work items') };
 
 const READ = s__('JobToken|Read');
 const READ_AND_WRITE = s__('JobToken|Read and write');
@@ -46,6 +52,11 @@ export const POLICY_ADMIN_JOBS = {
   text: READ_AND_WRITE,
   resource: RESOURCE_JOBS,
 };
+export const POLICY_READ_MERGE_REQUESTS = {
+  value: 'READ_MERGE_REQUESTS',
+  text: READ,
+  resource: RESOURCE_MERGE_REQUESTS,
+};
 export const POLICY_READ_PACKAGES = {
   value: 'READ_PACKAGES',
   text: READ,
@@ -76,6 +87,11 @@ export const POLICY_ADMIN_RELEASES = {
   text: READ_AND_WRITE,
   resource: RESOURCE_RELEASES,
 };
+export const POLICY_READ_REPOSITORIES = {
+  value: 'READ_REPOSITORIES',
+  text: READ,
+  resource: RESOURCE_REPOSITORIES,
+};
 export const POLICY_READ_SECURE_FILES = {
   value: 'READ_SECURE_FILES',
   text: READ,
@@ -96,6 +112,11 @@ export const POLICY_ADMIN_TERRAFORM_STATE = {
   text: READ_AND_WRITE,
   resource: RESOURCE_TERRAFORM_STATE,
 };
+export const POLICY_READ_WORK_ITEMS = {
+  value: 'READ_WORK_ITEMS',
+  text: READ,
+  resource: RESOURCE_WORK_ITEMS,
+};
 export const POLICY_NONE = { value: '', text: __('None') };
 
 export const POLICIES_BY_RESOURCE = [
@@ -112,6 +133,10 @@ export const POLICIES_BY_RESOURCE = [
     policies: [POLICY_NONE, POLICY_READ_JOBS, POLICY_ADMIN_JOBS],
   },
   {
+    resource: RESOURCE_MERGE_REQUESTS,
+    policies: [POLICY_NONE, POLICY_READ_MERGE_REQUESTS],
+  },
+  {
     resource: RESOURCE_PACKAGES,
     policies: [POLICY_NONE, POLICY_READ_PACKAGES, POLICY_ADMIN_PACKAGES],
   },
@@ -124,12 +149,20 @@ export const POLICIES_BY_RESOURCE = [
     policies: [POLICY_NONE, POLICY_READ_RELEASES, POLICY_ADMIN_RELEASES],
   },
   {
+    resource: RESOURCE_REPOSITORIES,
+    policies: [POLICY_NONE, POLICY_READ_REPOSITORIES],
+  },
+  {
     resource: RESOURCE_SECURE_FILES,
     policies: [POLICY_NONE, POLICY_READ_SECURE_FILES, POLICY_ADMIN_SECURE_FILES],
   },
   {
     resource: RESOURCE_TERRAFORM_STATE,
     policies: [POLICY_NONE, POLICY_READ_TERRAFORM_STATE, POLICY_ADMIN_TERRAFORM_STATE],
+  },
+  {
+    resource: RESOURCE_WORK_ITEMS,
+    policies: [POLICY_NONE, POLICY_READ_WORK_ITEMS],
   },
 ];
 

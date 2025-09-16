@@ -49,7 +49,7 @@ module Gitlab
         end
 
         def max_limit
-          Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap.limit_for(worker: worker_klass)
+          worker_klass.get_concurrency_limit
         end
 
         def recovery_strategy

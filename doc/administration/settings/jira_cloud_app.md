@@ -33,6 +33,9 @@ For an overview, see:
 - [Installing the GitLab for Jira Cloud app manually for a GitLab Self-Managed instance](https://youtu.be/fs02xS8BElA?list=PL05JrBw4t0Koazgli_PmMQCER2pVH7vUT)
   <!-- Video published on 2024-10-30 -->
 
+The videos above show the older [Universal Plugin Manager interface](https://community.atlassian.com/forums/Community-Announcements-articles/Cloud-admins-we-re-making-app-management-easier/ba-p/2806285) which might be unavailable on newer Jira Cloud instances.
+The following instructions cover both old and new app management interfaces.
+
 If you [install the GitLab for Jira Cloud app from the Atlassian Marketplace](#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace),
 you can use the [project toolchain](https://support.atlassian.com/jira-software-cloud/docs/what-is-the-connections-feature/) developed and maintained
 by Atlassian to [link GitLab repositories to Jira projects](https://support.atlassian.com/jira-software-cloud/docs/link-repositories-to-a-project/#Link-repositories-using-the-toolchain-feature).
@@ -235,8 +238,28 @@ To configure your Jira instance so you can install apps from outside the Atlassi
 1. [Enable development mode](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--enable-development-mode-in-your-site)
    on your Jira instance.
 1. Sign in to GitLab as an administrator.
-1. [Install GitLab from your Jira instance](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--install-and-test-your-app):
-   1. On your Jira instance, go to **Apps > Manage Apps** and select **Upload app**.
+1. In Jira, select the horizontal ellipsis ({{< icon name="ellipsis_h" >}}) beside **Apps** and select **Manage your apps**.
+1. [Install GitLab from your Jira instance](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--install-and-test-your-app) using one of these methods:
+
+   **For instances with centralized app management:**
+
+   1. If you see "App management has moved to Administration", select **Take me there**. Otherwise follow the **For instances with legacy app management** instructions below.
+   1. Select **Install a private app**.
+   1. For the **Choose a product to install this app on** dropdown list, select **Jira**.
+   1. In **App descriptor URL**, provide the full URL to your manifest file based
+      on your instance configuration.
+
+      By default, your manifest file is located at `/-/jira_connect/app_descriptor.json`.
+      For example, if your instance domain is `app.pet-store.cloud`,
+      your manifest file is located at `https://app.pet-store.cloud/-/jira_connect/app_descriptor.json`.
+
+   1. Select **Install app**.
+   1. Refresh the page.
+   1. Locate the app **GitLab for Jira (`<gitlab.example.com>`)**, select the horizontal ellipsis ({{< icon name="ellipsis_h" >}}) and then select **Get started** to [configure the GitLab for Jira Cloud app](../../integration/jira/connect-app.md#configure-the-gitlab-for-jira-cloud-app).
+
+   **For instances with legacy app management:**
+
+   1. Select **Upload app**.
    1. In **App descriptor URL**, provide the full URL to your manifest file based
       on your instance configuration.
 
@@ -245,12 +268,10 @@ To configure your Jira instance so you can install apps from outside the Atlassi
       your manifest file is located at `https://app.pet-store.cloud/-/jira_connect/app_descriptor.json`.
 
    1. Select **Upload**.
-   1. Select **Get started** to configure the integration.
+   1. Locate the app **GitLab for Jira (`<gitlab.example.com>`)**, select the chevron ({{< icon name="chevron-right" >}}) and then select **Get started** to [configure the GitLab for Jira Cloud app](../../integration/jira/connect-app.md#configure-the-gitlab-for-jira-cloud-app).
+
 1. [Disable development mode](https://developer.atlassian.com/cloud/jira/platform/getting-started-with-connect/#step-3--enable-development-mode-in-your-site)
    on your Jira instance.
-
-In **Apps > Manage Apps**, **GitLab for Jira Cloud** is now visible.
-You can also select **Get started** to [configure the GitLab for Jira Cloud app](../../integration/jira/connect-app.md#configure-the-gitlab-for-jira-cloud-app).
 
 If a GitLab upgrade makes changes to the app descriptor, you must reinstall the app.
 

@@ -42,22 +42,73 @@ RSpec.describe Issues::CloseService, feature_category: :team_planning do
       service.execute(issue)
     end
 
-    it 'does not close the issue when the user is not authorized to do so' do
-      allow(service).to receive(:can?).with(user, :update_issue, issue)
-        .and_return(false)
+    context 'when the user is not authorized to close the issue' do
+      let(:target_issue) { issue }
 
-      expect(service).not_to receive(:close_issue)
-      expect(service.execute(issue)).to eq(issue)
-    end
+      before do
+        allow(service).to receive(:can?).with(user, :update_issue, target_issue).and_return(false)
+      end
 
-    it 'closes the external issue even when the user is not authorized to do so' do
-      allow(service).to receive(:can?).with(user, :update_issue, external_issue)
-        .and_return(false)
+      it 'does not close the issue' do
+        expect(service).not_to receive(:close_issue)
+        expect(service.execute(issue)).to eq(issue)
+      end
 
-      expect(service).to receive(:close_issue)
-        .with(external_issue, closed_via: nil, notifications: true, system_note: true, status: nil)
+      it 'logs the failed authorization' do
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          {
+            class: 'Issues::CloseService',
+            current_user_id: user.id,
+            issue_id: target_issue.id,
+            message: 'Unauthorized close issue'
+          }.stringify_keys
+        )
 
-      service.execute(external_issue)
+        service.execute(issue)
+      end
+
+      context 'when issue is closed via merge request' do
+        it 'logs the failed authorization' do
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            {
+              class: 'Issues::CloseService',
+              current_user_id: user.id,
+              issue_id: target_issue.id,
+              message: 'Unauthorized close issue',
+              merge_request_id: closing_merge_request.id
+            }.stringify_keys
+          )
+
+          service.execute(issue, commit: closing_merge_request)
+        end
+      end
+
+      context 'when issue is closed via commit' do
+        it 'logs the failed authorization' do
+          expect(Gitlab::AppLogger).to receive(:info).with(
+            {
+              class: 'Issues::CloseService',
+              current_user_id: user.id,
+              issue_id: target_issue.id,
+              message: 'Unauthorized close issue',
+              commit: closing_commit.id
+            }.stringify_keys
+          )
+
+          service.execute(issue, commit: closing_commit)
+        end
+      end
+
+      context 'when issue is external' do
+        let(:target_issue) { external_issue }
+
+        it 'closes the external issue even when the user is not authorized to do so' do
+          expect(service).to receive(:close_issue)
+            .with(external_issue, closed_via: nil, notifications: true, system_note: true, status: nil)
+
+          service.execute(external_issue)
+        end
+      end
     end
 
     it 'closes the issue when the user is authorized to do so' do

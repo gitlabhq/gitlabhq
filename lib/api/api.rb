@@ -288,6 +288,7 @@ module API
         mount ::API::Integrations::JiraConnect::Subscriptions
         mount ::API::Invitations
         mount ::API::IssueLinks
+        mount ::API::Issues
         mount ::API::Keys
         mount ::API::Lint
         mount ::API::Markdown
@@ -340,6 +341,7 @@ module API
         mount ::API::ResourceMilestoneEvents
         mount ::API::RpmProjectPackages
         mount ::API::RubygemPackages
+        mount ::API::Search
         mount ::API::Snippets
         mount ::API::Statistics
         mount ::API::Submodules
@@ -375,7 +377,6 @@ module API
       mount ::API::GroupBoards
       mount ::API::GroupLabels
       mount ::API::GroupMilestones
-      mount ::API::Issues
       mount ::API::Labels
       mount ::API::Mcp::Base # MCP uses JSON-RPC for base protocol, omit from OpenAPI V2 documentation for REST API
       mount ::API::Notes
@@ -387,7 +388,6 @@ module API
       mount ::API::ResourceAccessTokens
       mount ::API::ResourceLabelEvents
       mount ::API::ResourceStateEvents
-      mount ::API::Search
       mount ::API::Settings
       mount ::API::SidekiqMetrics
       mount ::API::SnippetRepositoryStorageMoves

@@ -1,3 +1,4 @@
+@use "sass:map";
 @import 'mixins_and_variables_and_functions';
 
 .new_project,
@@ -213,7 +214,7 @@
       margin: 0 auto 4px;
       font-size: 24px;
 
-      @media (min-width: map-get($grid-breakpoints, sm)-1) {
+      @media (min-width: map.get($grid-breakpoints, sm)-1) {
         top: 0;
       }
     }

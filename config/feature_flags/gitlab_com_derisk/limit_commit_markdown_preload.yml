@@ -1,0 +1,10 @@
+---
+name: limit_commit_markdown_preload
+description:
+feature_issue_url:
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203533
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/567341
+milestone: '18.4'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

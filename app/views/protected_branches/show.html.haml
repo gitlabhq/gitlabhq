@@ -19,7 +19,7 @@
               %th= s_("ProtectedBranch|Last commit")
           %tbody
             - @matching_refs.each do |matching_branch|
-              = render partial: "protected_branches/shared/matching_branch", object: matching_branch
+              = render partial: "protected_branches/shared/matching_branch", locals: { branch_name: matching_branch.name }
         = render('kaminari/gitlab/without_count', previous_path: @prev_path, next_path: @next_path, event_tracking: nil)
     - else
       = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false) do |c|

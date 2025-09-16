@@ -79,7 +79,7 @@ module Issuable
     has_many :note_authors, -> { distinct }, through: :notes, source: :author
     has_many :user_note_authors, -> { distinct.where("notes.system = false") }, through: :notes, source: :author
 
-    has_many :label_links, as: :target, inverse_of: :target, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent -- Polymorphic association, so no FK
+    has_many :label_links, as: :target, inverse_of: :target
     has_many :labels, through: :label_links
     has_many :todos, as: :target
 

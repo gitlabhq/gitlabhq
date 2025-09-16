@@ -1,6 +1,6 @@
 %p
   = html_escape(s_('PipelineSchedules|The owner of the pipeline schedule %{schedule_link} no longer has permission.')) % { schedule_link: link_to(@schedule.description, project_pipeline_schedule_url(@schedule.project, @schedule))}
 %p
-  = s_('PipelineSchedules|Without an owner, the pipeline will not run. Take ownership so the pipeline runs on schedule.')
+  = s_('PipelineSchedules|The schedule is deactivated and cannot run. Take ownership and reactivate the schedule to resume pipeline runs.')
 %p
   = link_to s_('PipelineSchedules|Learn how to take ownership.'), help_page_url('ci/pipelines/schedules.md', anchor: 'take-ownership')

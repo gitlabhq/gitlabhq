@@ -16,7 +16,7 @@ description: Task management, actions, and access changes.
 Your *To-Do List* is a chronological list of items waiting for your input.
 The items are known as *to-do items*.
 
-You can use the To-Do List to track [actions](#actions-that-create-to-do-items)
+You can use the To-Do List to track actions
 related to the work you do in GitLab. When people contact you or your attention is
 needed, a to-do item appears in your To-Do List.
 
@@ -25,6 +25,7 @@ needed, a to-do item appears in your To-Do List.
 To access your To-Do List:
 
 On the left sidebar, at the top, select **To-Do List** ({{< icon name="task-done" >}}).
+<!-- When the feature flag paneled_view is removed, refer only to the button icon -->
 
 ### Filter the To-Do List
 
@@ -74,8 +75,8 @@ Many to-do items are created automatically.
 Some of the actions that add a to-do item to your To-Do List:
 
 - An issue or merge request is assigned to you.
-- A [merge request review](project/merge_requests/reviews/_index.md) is requested.
-- You're [mentioned](discussions/_index.md#mentions) in the description or
+- A merge request review is requested.
+- You're mentioned in the description or
   comment of an issue, merge request, or epic.
 - You're mentioned in a comment on a commit or design.
 - The CI/CD pipeline for your merge request fails.
@@ -87,7 +88,7 @@ Some of the actions that add a to-do item to your To-Do List:
 - A merge request is removed from a [merge train](../ci/pipelines/merge_trains.md), and you're the user that added it.
 - A member access request is raised for a group or project you're an owner of.
 
-[In GitLab 17.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/28355), you receive a new to-do notification every time someone mentions you, even in the same issue or merge request.
+In GitLab 17.8 and later, you receive a new to-do notification every time someone mentions you, even in the same issue or merge request.
 
 For other actions that create to-do items like assignments or review requests,
 you receive only one notification per action type, even if that action occurs multiple times in the same issue or merge request.
@@ -108,13 +109,13 @@ You can manually add an item to your To-Do List.
 
 1. Go to your:
 
-   - [Issue](project/issues/_index.md)
-   - [Merge request](project/merge_requests/_index.md)
-   - [Epic](group/epics/_index.md)
-   - [Design](project/issues/design_management.md)
-   - [Incident](../operations/incident_management/incidents.md)
-   - [Objective or key result](okrs.md)
-   - [Task](tasks.md)
+   - Issue
+   - Merge request
+   - Epic
+   - Design
+   - Incident
+   - Objective or key result
+   - Task
 
 1. In the upper-right corner, select **Add a to-do item** ({{< icon name="todo-add" >}}).
 
@@ -138,17 +139,6 @@ Hi, please message @frank :incoming_envelope:
 ```
 ````
 
-### Re-add a done to-do item
-
-If you marked a to-do item as done by mistake, you can re-add it from the **Done** tab:
-
-1. On the left sidebar, at the top, select **To-Do List** ({{< icon name="task-done" >}}).
-1. At the top, select **Done**.
-1. [Find the to-do item](#filter-the-to-do-list) you want to re-add.
-1. Next to this to-do item, select **Re-add this to-do item** {{< icon name="redo" >}}.
-
-The to-do item is now visible in the **To Do** tab of the To-Do List.
-
 ## Actions that mark a to-do item as done
 
 Various actions on the to-do item object (like issue, merge request, or epic) mark its
@@ -163,16 +153,16 @@ To-do items are marked as done if you:
 - Close the to-do item's object.
 - Create a comment.
 - Edit the description.
-- Resolve a [design discussion thread](project/issues/design_management.md#resolve-a-discussion-thread-on-a-design).
+- Resolve a design discussion thread.
 - Accept or deny a project or group membership request.
 
 To-do items are **not** marked as done if you:
 
-- Add a linked item (like a [linked issue](project/issues/related_issues.md)).
-- Add a child item (like [child epic](group/epics/manage_epics.md#multi-level-child-epics) or [task](tasks.md)).
-- Add a [time entry](project/time_tracking.md).
+- Add a linked item (like a linked issue).
+- Add a child item (like child epic or task).
+- Add time tracking.
 - Assign yourself.
-- Change the [health status](project/issues/managing_issues.md#health-status).
+- Change the health status of an issue.
 
 If someone else closes, merges, or takes action on an issue, merge request, or
 epic, your to-do item remains pending.
@@ -186,26 +176,17 @@ There are two ways to do this:
 - In the To-Do List, to the right of the to-do item, select **Mark as done** ({{< icon name="check" >}}).
 - In the upper-right corner of the resource (for example, issue or merge request), select **Mark as done** ({{< icon name="todo-done" >}}).
 
-### Bulk edit to-do items
+## Re-add a done to-do item
 
-{{< history >}}
+If you marked a to-do item as done by mistake, you can re-add it from the **Done** tab:
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16564) in GitLab 17.10.
+1. On the left sidebar, at the top, select **To-Do List** ({{< icon name="task-done" >}}).
+<!-- When the feature flag paneled_view is removed, refer only to the button icon -->
+1. At the top, select **Done**.
+1. Find the to-do item you want to re-add.
+1. Next to this to-do item, select **Undo** {{< icon name="redo" >}}.
 
-{{< /history >}}
-
-You can bulk edit your to-do items:
-
-- On the **To Do** tab: Mark to-do items as done or snooze them.
-- On the **Snoozed** tab: Mark to-do items as done or remove them.
-- On the **Done** tab: Restore to-do items.
-
-To bulk edit to-do items:
-
-1. In your To-Do List:
-   - To select individual items, to the left of each item you want to edit, select the checkbox.
-   - To select all items on the page, in the upper-left corner, select the **Select all** checkbox.
-1. In the upper-right corner, select the desired action.
+The to-do item is now visible in the **To Do** tab of the To-Do List.
 
 ## Snooze to-do items
 
@@ -249,6 +230,27 @@ From the Snoozed tab, you can:
 - Remove the snooze to immediately return an item to your main To-Do List.
 - Mark a snoozed to-do as done.
 
+## Bulk edit to-do items
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/16564) in GitLab 17.10.
+
+{{< /history >}}
+
+You can bulk edit your to-do items:
+
+- On the **To Do** tab: Mark to-do items as done or snooze them.
+- On the **Snoozed** tab: Mark to-do items as done or remove them.
+- On the **Done** tab: Restore to-do items.
+
+To bulk edit to-do items:
+
+1. In your To-Do List:
+   - To select individual items, to the left of each item you want to edit, select the checkbox.
+   - To select all items on the page, in the upper-left corner, select the **Select all** checkbox.
+1. In the upper-right corner, select the desired action.
+
 ## How a user's To-Do List is affected when their access changes
 
 For security reasons, GitLab deletes to-do items when a user no longer has access to a related resource.
@@ -257,3 +259,13 @@ GitLab deletes the related to-do items.
 
 This process occurs in the hour after their access changes. Deletion is delayed to
 prevent data loss, in case the user's access was accidentally revoked.
+
+## Related topics
+
+- [Issues](project/issues/_index.md)
+- [Merge requests](project/merge_requests/_index.md)
+- [Epics](group/epics/_index.md)
+- [Designs](project/issues/design_management.md)
+- [Incidents](../operations/incident_management/incidents.md)
+- [Objective or key results](okrs.md)
+- [Tasks](tasks.md)

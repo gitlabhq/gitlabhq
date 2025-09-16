@@ -121,7 +121,7 @@ is not used.
 **Supported values**: These keywords can have custom defaults:
 
 - [`after_script`](#after_script)
-- [`artifacts`](#artifacts)
+- [`artifacts`](#artifacts), though due to [issue 404563](https://gitlab.com/gitlab-org/gitlab/-/issues/404563), the nested keyword `artifacts:expire_in` has no effect.
 - [`before_script`](#before_script)
 - [`cache`](#cache)
 - [`hooks`](#hooks)
@@ -1166,6 +1166,9 @@ An input of `v1.A.B` does not match the regular expression and fails validation.
 - Do not enclose the regular expression with the `/` character. For example, use `regex.*`,
   not `/regex.*/`.
 - `inputs:regex` uses [RE2](https://github.com/google/re2/wiki/Syntax) to parse regular expressions.
+- Validation of the input against the regular expression happens before variable expansion.
+  If the input text includes a variable name, the raw value of the input (the variable name)
+  is validated, not the variable value.
 
 ---
 
@@ -1679,6 +1682,7 @@ job:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145206) in GitLab 16.11.
+- `maintainer` option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454398) in GitLab 18.4.
 
 {{< /history >}}
 
@@ -1694,6 +1698,7 @@ You cannot use [`artifacts:public`](#artifactspublic) and `artifacts:access` in 
 - `all` (default): Artifacts in a job in public pipelines are available for download by anyone,
   including anonymous, guest, and reporter users.
 - `developer`: Artifacts in the job are only available for download by users with the Developer role or higher.
+- `maintainer`: Artifacts in the job are only available for download by users with the Maintainer role or higher.
 - `none`: Artifacts in the job are not available for download by anyone.
 
 **Example of `artifacts:access`**:
@@ -1978,9 +1983,9 @@ cache-job:
 
 ##### `cache:key:files`
 
-Use the `cache:key:files` keyword to generate a new key when files matching either of the defined paths or patterns
-change. `cache:key:files` lets you reuse some caches, and rebuild them less often,
-which speeds up subsequent pipeline runs.
+Use `cache:key:files` to generate a new cache key when the content of the specified files change.
+If the content remains unchanged, the cache key remains consistent across branches and pipelines.
+You can reuse caches and rebuild them less often, which speeds up subsequent pipeline runs.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -2015,11 +2020,50 @@ use the new cache, instead of rebuilding the dependencies.
 
 **Additional details**:
 
-- The cache `key` is a SHA computed from the most recent commits
-  that changed each listed file.
-  If neither file is changed in any commits, the fallback key is `default`.
+- The cache `key` is a SHA computed from the content of the listed files. If a file doesn't exist, it's ignored in the key calculation.
+  If none of the specified files exist, the fallback key is `default`.
 - Wildcard patterns like `**/package.json` can be used. An [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/301161)
   exists to increase the number of paths or patterns allowed for a cache key.
+
+---
+
+##### `cache:key:files_commits`
+
+Use `cache:key:files_commits` to generate a new cache key when the latest commit changes
+for the specified files. `cache:key:files_commits` cache keys change whenever
+the specified files have a new commit, even if the file content remains identical.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Supported values**:
+
+- An array of up to two file paths or patterns.
+
+**Example of `cache:key:files_commits`**:
+
+```yaml
+cache-job:
+  script:
+    - echo "This job uses a commit-based cache."
+  cache:
+    key:
+      files_commits:
+        - package.json
+        - yarn.lock
+    paths:
+      - node_modules
+```
+
+This example creates a cache based on the commit history of `package.json` and `yarn.lock`.
+If the commit history changes for these files, a new cache key is computed and a new cache is created.
+
+**Additional details**:
+
+- The cache `key` is a SHA computed from the most recent commit for each specified file.
+- If a file doesn't exist, it's ignored in the key calculation.
+- If none of the specified files exist, the fallback key is `default`.
+- Cannot be used together with [`cache:key:files`](#cachekeyfiles) in the same cache configuration.
 
 ---
 
@@ -2618,20 +2662,27 @@ Some actions can be used to reset the scheduled stop time for the environment. F
 
 - `agent` keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467912) in GitLab 17.6.
 - `namespace` and `flux_resource_path` keywords [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/500164) in GitLab 17.7.
+- `namespace` and `flux_resource_path` keywords [deprecated](deprecated_keywords.md) in GitLab 18.4.
+- `dashboard:namespace` and `dashboard:flux_resource_path` keywords [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/515854) in GitLab 18.4.
 
 {{< /history >}}
 
 Use the `kubernetes` keyword to configure the [dashboard for Kubernetes](../environments/kubernetes_dashboard.md)
-for an environment.
+and [GitLab-managed Kubernetes resources](../../user/clusters/agent/managed_kubernetes_resources.md) for an environment.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
 **Supported values**:
 
 - `agent`: A string specifying the [GitLab agent for Kubernetes](../../user/clusters/agent/_index.md). The format is `path/to/agent/project:agent-name`. If the agent is connected to the project running the pipeline, use `$CI_PROJECT_PATH:agent-name`.
-- `namespace`: A string representing the Kubernetes namespace where the environment is deployed. The namespace must be set together with the `agent` keyword.
-- `flux_resource_path`: A string representing the full path to the Flux resource, such as a HelmRelease. The Flux resource must be set together with the
-  `agent` and `namespace` keywords.
+- `dashboard:namespace`: A string representing the Kubernetes namespace where the environment is deployed. The namespace must be set together with the `agent` keyword. `namespace` is [deprecated](deprecated_keywords.md#environmentkubernetesnamespace-and-environmentkubernetesflux_resource_path).
+- `dashboard:flux_resource_path`: A string representing the full path to the Flux resource, such as a `HelmRelease`. The Flux resource must be set together with the
+  `agent` and `dashboard:namespace` keywords. `flux_resource_path` is [deprecated](deprecated_keywords.md#environmentkubernetesnamespace-and-environmentkubernetesflux_resource_path).
+- `managed_resources`: A hash with the `enabled` keyword to configure the
+  [GitLab-managed Kubernetes resources](../../user/clusters/agent/managed_kubernetes_resources.md) for the environment.
+  - `managed_resources:enabled`: A boolean value indicating whether GitLab-managed Kubernetes resources are enabled for the environment.
+- `dashboard`: A hash with the `dashboard:namespace` and `dashboard:flux_resource_path` keywords to configure the
+  [dashboard for Kubernetes](../environments/kubernetes_dashboard.md) for the environment.
 
 **Example of `environment:kubernetes`**:
 
@@ -2643,8 +2694,26 @@ deploy:
     name: production
     kubernetes:
       agent: path/to/agent/project:agent-name
-      namespace: my-namespace
-      flux_resource_path: helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release-resource
+      dashboard:
+        namespace: my-namespace
+        flux_resource_path: helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release-resource
+```
+
+**Example of `environment:kubernetes`** when disabling managed resources:
+
+```yaml
+deploy:
+  stage: deploy
+  script: make deploy-app
+  environment:
+    name: production
+    kubernetes:
+      agent: path/to/agent/project:agent-name
+      managed_resources:
+        enabled: false
+      dashboard:
+        namespace: my-namespace
+        flux_resource_path: helm.toolkit.fluxcd.io/v2/namespaces/flux-system/helmreleases/helm-release-resource
 ```
 
 This configuration:
@@ -2907,7 +2976,7 @@ job_with_workload_identity:
 
 {{< /history >}}
 
-Use `id_tokens` to create [JSON web tokens (JWT)](https://www.rfc-editor.org/rfc/rfc7519) to authenticate with third party services. All
+Use `id_tokens` to create [ID tokens](../secrets/id_token_authentication.md) to authenticate with third party services. All
 JWTs created this way support OIDC authentication. The required `aud` sub-keyword is used to configure the `aud` claim for the JWT.
 
 **Supported values**:
@@ -4196,14 +4265,14 @@ deploystacks: [vultr, processing]
 
 Use `release` to create a [release](../../user/project/releases/_index.md).
 
-The release job must have access to the [`release-cli`](https://gitlab.com/gitlab-org/release-cli/-/tree/master/docs),
+The release job must have access to the [`glab` CLI](https://gitlab.com/gitlab-org/cli),
 which must be in the `$PATH`.
 
 If you use the [Docker executor](https://docs.gitlab.com/runner/executors/docker.html),
-you can use this image from the GitLab container registry: `registry.gitlab.com/gitlab-org/release-cli:latest`
+you can use this image from the GitLab container registry: `registry.gitlab.com/gitlab-org/cli:latest`
 
 If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell.html) or similar,
-[install `release-cli`](../../user/project/releases/release_cli.md) on the server where the runner is registered.
+[install `glab` CLI](https://gitlab.com/gitlab-org/cli#installation) on the server where the runner is registered.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -4223,7 +4292,7 @@ If you use the [Shell executor](https://docs.gitlab.com/runner/executors/shell.h
 ```yaml
 release_job:
   stage: release
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  image: registry.gitlab.com/gitlab-org/cli:latest
   rules:
     - if: $CI_COMMIT_TAG                  # Run this job when a tag is created manually
   script:
@@ -4231,7 +4300,7 @@ release_job:
   release:
     tag_name: $CI_COMMIT_TAG
     name: 'Release $CI_COMMIT_TAG'
-    description: 'Release created using the release-cli.'
+    description: 'Release created using the CLI.'
 ```
 
 This example creates a release:
@@ -4312,12 +4381,6 @@ job:
 
 #### `release:tag_message`
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363024) in GitLab 15.3. Supported by `release-cli` v0.12.0 or later.
-
-{{< /history >}}
-
 If the tag does not exist, the newly created tag is annotated with the message specified by `tag_message`.
 If omitted, a lightweight tag is created.
 
@@ -4386,7 +4449,7 @@ job:
 
 **Additional details**:
 
-- The `description` is evaluated by the shell that runs `release-cli`.
+- The `description` is evaluated by the shell that runs `glab`.
   You can use CI/CD variables to define the description, but some shells
   [use different syntax](../variables/job_scripts.md)
   to reference variables. Similarly, some shells might require special characters
@@ -4435,8 +4498,6 @@ released_at: '2021-03-15T08:00:00Z'
 #### `release:assets:links`
 
 Use `release:assets:links` to include [asset links](../../user/project/releases/release_fields.md#release-assets) in the release.
-
-Requires `release-cli` version v0.4.0 or later.
 
 **Example of `release:assets:links`**:
 
@@ -4817,6 +4878,8 @@ In this example:
 - You can use the `$` character for both variables and paths. For example, if the
   `$VAR` variable exists, its value is used. If it does not exist, the `$` is interpreted
   as being part of a path.
+- Do not use `./`, double slashes (`//`), or any other kind of relative path.
+  Paths are matched with exact string comparison, they are not evaluated like in a shell.
 
 **Related topics**:
 
@@ -6060,7 +6123,7 @@ trigger-multi-project-pipeline:
 - [CI/CD variables](#variables) defined in a top-level `variables` section (globally) or in the trigger job are forwarded
   to the downstream pipeline as [trigger variables](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline).
 - [Pipeline variables](../variables/_index.md#cicd-variable-precedence) are not passed
-  to downstream pipelines by default. Use [trigger:forward](#triggerforward) to forward
+  to downstream pipelines by default. Use [`trigger:forward`](#triggerforward) to forward
   these variables to downstream pipelines.
 - [Job-only variables](../variables/predefined_variables.md#variable-availability)
   are not available in trigger jobs.
@@ -6103,12 +6166,6 @@ trigger:
 Use `trigger:include` to declare that a job is a "trigger job" which starts a
 [child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines).
 
-Additionally, use:
-
-- `trigger:include:artifact` to trigger a [dynamic child pipeline](../pipelines/downstream_pipelines.md#dynamic-child-pipelines).
-- `trigger:include:inputs` to set the [inputs](../inputs/_index.md) when the downstream pipeline configuration
-  uses [`spec:inputs`](#specinputs).
-
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
 **Supported values**:
@@ -6122,6 +6179,31 @@ trigger-child-pipeline:
   trigger:
     include: path/to/child-pipeline.gitlab-ci.yml
 ```
+
+**Additional details**:
+
+Use:
+
+- `trigger:include:artifact` to trigger a [dynamic child pipeline](../pipelines/downstream_pipelines.md#dynamic-child-pipelines).
+- `trigger:include:inputs` to set the [inputs](../inputs/_index.md) when the downstream pipeline configuration
+  uses [`spec:inputs`](#specinputs).
+- `trigger:include:local` for a path to a child pipeline configuration file when:
+  - Combining [multiple child pipeline configuration files](../pipelines/downstream_pipelines.md#combine-multiple-child-pipeline-configuration-files).
+  - Combined with `trigger:include:inputs` to pass inputs to the child pipeline. For example:
+
+    ```yaml
+    staging-job:
+      trigger:
+        include:
+          - local: path/to/child-pipeline.yml
+            inputs:
+              environment: staging
+    ```
+
+- `trigger:include:project` to trigger a child pipeline [with a configuration file in a different project](../pipelines/downstream_pipelines.md#use-a-child-pipeline-configuration-file-in-a-different-project).
+  If the file contains additional [`include`](#include) entries, GitLab looks for the files
+  in the project running the pipeline, not the project hosting the file.
+- `trigger:include:template` to trigger a child pipeline with a CI/CD template.
 
 **Related topics**:
 
@@ -6412,6 +6494,7 @@ In this example, the script:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18906) in GitLab 17.1.
+- Support for environment stop jobs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/479318) in GitLab 18.3.
 
 {{< /history >}}
 
@@ -6463,8 +6546,8 @@ Variables can be [defined in a CI/CD job](#job-variables), or as a top-level (gl
 - YAML-defined variables are meant for non-sensitive project configuration. Store sensitive information
   in [protected variables](../variables/_index.md#protect-a-cicd-variable) or [CI/CD secrets](../secrets/_index.md).
 - [Manual pipeline variables](../variables/_index.md#use-pipeline-variables)
-  and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
-  are not passed to downstream pipelines by default. Use [trigger:forward](#triggerforward)
+  and [scheduled pipeline variables](../pipelines/schedules.md#create-a-pipeline-schedule)
+  are not passed to downstream pipelines by default. Use [`trigger:forward`](#triggerforward)
   to forward these variables to downstream pipelines.
 
 **Related topics**:

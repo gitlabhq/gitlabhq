@@ -2135,6 +2135,20 @@ module Gitlab
             ])
         end
 
+        it 'returns cache with files_commits' do
+          config = YAML.dump(
+            rspec: {
+              cache: { key: { files_commits: ['yarn.lock'] } },
+              script: 'rspec'
+            }
+          )
+
+          config_processor = described_class.new(config).execute
+          rspec_build = config_processor.builds.find { |build| build[:name] == 'rspec' }
+
+          expect(rspec_build[:cache].first[:key]).to eq({ files_commits: ['yarn.lock'] })
+        end
+
         it "overwrite cache when defined for a job and globally" do
           config = YAML.dump(
             {
@@ -3500,10 +3514,16 @@ module Gitlab
           it_behaves_like 'returns errors', 'jobs:rspec:cache:key:files config requires at least 1 item'
         end
 
+        context 'returns errors if job uses both cache:key:files and cache:key:files_commits' do
+          let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", cache: { key: { files: ['yarn.lock'], files_commits: ['package.json'] } } } }) }
+
+          it_behaves_like 'returns errors', 'jobs:rspec:cache:key config must use exactly one of these keys: files, files_commits'
+        end
+
         context 'returns errors if job defines only cache:key:prefix' do
           let(:config) { YAML.dump({ stages: %w[build test], rspec: { script: "test", cache: { key: { prefix: 'prefix-key' } } } }) }
 
-          it_behaves_like 'returns errors', 'jobs:rspec:cache:key config missing required keys: files'
+          it_behaves_like 'returns errors', 'jobs:rspec:cache:key config must use exactly one of these keys: files, files_commits'
         end
 
         context 'returns errors if job cache:key:prefix is not an a string' do

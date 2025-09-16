@@ -137,7 +137,7 @@ export default {
     cssClasses: {
       type: String,
       required: false,
-      default: 'sm:gl-ml-3',
+      default: '@sm/panel:gl-ml-3',
     },
     disabled: {
       type: Boolean,

@@ -10,4 +10,4 @@ milestone: '10.1'
 gitlab_schema: gitlab_main_user
 sharding_key:
   user_id: users
-table_size: small
+table_size: medium

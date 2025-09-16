@@ -1,0 +1,11 @@
+---
+table_name: cells_outstanding_leases
+classes:
+- Cells::OutstandingLease
+feature_categories:
+- cell
+description: Cells outstanding leases for claiming
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203567
+milestone: '18.4'
+gitlab_schema: gitlab_main_cell_local
+table_size: small

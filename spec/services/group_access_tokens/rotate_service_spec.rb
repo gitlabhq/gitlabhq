@@ -40,7 +40,7 @@ RSpec.describe GroupAccessTokens::RotateService, feature_category: :system_acces
         response
 
         expect(response).to be_error
-        expect(response.message).to eq('Not eligible to rotate token with access level higher than the user')
+        expect(response.message).to eq('Not eligible to rotate tokens with permissions not held by the user')
       end
     end
 

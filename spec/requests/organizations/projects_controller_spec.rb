@@ -39,7 +39,7 @@ RSpec.describe Organizations::ProjectsController, feature_category: :organizatio
           let_it_be(:user) { create(:admin) }
 
           it_behaves_like 'organization - successful response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
         end
 
         context 'as a project maintainer' do
@@ -48,12 +48,12 @@ RSpec.describe Organizations::ProjectsController, feature_category: :organizatio
           end
 
           it_behaves_like 'organization - successful response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
         end
 
         context 'as a user that is not a maintainer' do
           it_behaves_like 'organization - not found response'
-          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+          it_behaves_like 'organization - action disabled by ui_for_organizations_enabled?'
         end
       end
     end

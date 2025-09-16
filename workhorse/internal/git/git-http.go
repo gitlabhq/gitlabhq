@@ -21,6 +21,8 @@ const (
 	// We have to use a negative transfer.hideRefs since this is the only way
 	// to undo an already set parameter: https://www.spinics.net/lists/git/msg256772.html
 	GitConfigShowAllRefs = "transfer.hideRefs=!refs"
+	// XGitalyCorrelationID is the header name for Git operation correlation IDs
+	XGitalyCorrelationID = "X-Gitaly-Correlation-Id"
 )
 
 func ReceivePack(a *api.API) http.Handler {
@@ -85,6 +87,10 @@ func logGitMetadata(r *http.Request, ar *api.Response, count int64) {
 
 	if ar.RootNamespaceID != 0 {
 		fields["root_namespace_id"] = ar.RootNamespaceID
+	}
+
+	if correlationID := r.Header.Get(XGitalyCorrelationID); correlationID != "" {
+		fields["gitaly_correlation_id"] = correlationID
 	}
 
 	log.WithFields(fields).Info("git_traffic")

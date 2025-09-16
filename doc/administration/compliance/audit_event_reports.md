@@ -3,6 +3,7 @@ stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Audit events administration
+description: View, export, and manage audit events for the GitLab instance, including CSV encoding and user impersonation.
 ---
 
 In addition to [audit events](../../user/compliance/audit_events.md), as an administrator, you can access additional

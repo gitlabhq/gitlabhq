@@ -29,7 +29,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [InternalEvents.mixin()],
-  inject: ['isGroup', 'isSignedIn'],
+  inject: ['isGroup', 'isSignedIn', 'isGroupIssuesList'],
   i18n: {
     displayOptions: s__('WorkItems|Display options'),
     yourPreferences: s__('WorkItems|Your preferences'),
@@ -70,9 +70,10 @@ export default {
     },
     applicableMetadataPreferences() {
       return WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.filter((item) => {
-        return item.key === METADATA_KEYS.STATUS
-          ? !this.isEpicsList
-          : !this.isGroup || item.isPresentInGroup;
+        if (item.key === METADATA_KEYS.STATUS) {
+          return !this.isEpicsList;
+        }
+        return !this.isGroup || item.isPresentInGroup || this.isGroupIssuesList;
       });
     },
   },
@@ -217,7 +218,7 @@ export default {
     no-caret
     placement="bottom-end"
     :auto-close="false"
-    class="gl-mt-[10px] sm:gl-mt-0"
+    class="gl-mt-[10px] @sm/panel:gl-mt-0"
     @shown="showDropdown"
     @hidden="hideDropdown"
   >
@@ -242,7 +243,7 @@ export default {
         </template>
       </gl-disclosure-dropdown-item>
     </div>
-    <div class="border-top gl-mt-2 gl-pt-3">
+    <div class="!gl-border-t gl-mt-2 !gl-border-t-gray-300 gl-pt-3">
       <div>
         <span class="gl-pl-4 gl-text-sm gl-font-bold">{{ $options.i18n.yourPreferences }}</span>
         <help-popover icon="information-o">

@@ -20,6 +20,10 @@ RSpec.configure do |config|
 
     example.run
 
+    Gitlab::Database::LoadBalancing.base_models.each do |model|
+      model.load_balancer.disconnect!(timeout: 0)
+    end
+
     Gitlab::Database::LoadBalancing::SessionMap.clear_session
     redis_shared_state_cleanup!
 

@@ -133,6 +133,7 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching, fea
     it 'does not create a hook if project is not present' do
       integration.project = nil
       integration.instance = true
+      integration.organization = create(:organization)
 
       expect { integration.save! }.not_to change(ServiceHook, :count)
     end

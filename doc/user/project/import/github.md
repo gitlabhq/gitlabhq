@@ -88,8 +88,11 @@ GitHub Enterprise does not require a public email address, so you might have to 
 
 - GitHub pull request comments (known as diff notes in GitLab) created before 2017 are imported in separate threads.
   This occurs because of a limitation of the GitHub API that doesn't include `in_reply_to_id` for comments before 2017.
-- Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/424400), Markdown attachments from
-  repositories on GitHub Enterprise Server instances aren't imported.
+- [In GitLab 18.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/424400), Markdown attachments
+  from repositories on GitHub Enterprise Server instances are not imported.
+  [In GitLab 18.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/553386):
+  - Only video and image files in Markdown attachments are imported.
+  - Other file attachments are not imported.
 - Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/418800), when importing projects that used
   [GitHub auto-merge](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/automatically-merging-a-pull-request), the imported project in GitLab can have merge commits labeled `unverified` if the commit was signed with the GitHub internal GPG key.
 - GitLab [can't import](https://gitlab.com/gitlab-org/gitlab/-/issues/424046) GitHub Markdown image attachments that

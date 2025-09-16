@@ -18,7 +18,7 @@ export default {
       variables() {
         return {
           perPage: PER_PAGE,
-          ...this.variables,
+          ...this.mergeRequestQueryVariables,
         };
       },
       error() {
@@ -52,11 +52,27 @@ export default {
         return d.currentUser?.mergeRequests?.count;
       },
       variables() {
-        return this.variables;
+        return this.mergeRequestQueryVariables;
       },
       fetchPolicy: fetchPolicies.CACHE_ONLY,
       skip() {
         return this.hideCount;
+      },
+    },
+    draftsCount: {
+      fetchPolicy: fetchPolicies.NO_CACHE,
+      query() {
+        return QUERIES[this.query].countQuery;
+      },
+      update: (d) => d.currentUser?.mergeRequests?.count,
+      skip() {
+        return this.variables.draft == null || this.variables.draft === true;
+      },
+      variables() {
+        return {
+          ...this.variables,
+          draft: true,
+        };
       },
     },
   },
@@ -90,11 +106,21 @@ export default {
       currentMergeRequestIds: [],
       newMergeRequestIds: [],
       fromSubscription: false,
+      draftsCount: null,
     };
   },
   computed: {
     hasNextPage() {
       return this.mergeRequests?.pageInfo?.hasNextPage;
+    },
+    mergeRequestQueryVariables() {
+      const variables = { ...this.variables };
+
+      if (variables.draft) {
+        delete variables.draft;
+      }
+
+      return variables;
     },
   },
   watch: {
@@ -162,6 +188,7 @@ export default {
       loading: this.loading,
       error: this.error,
       resetNewMergeRequestIds: this.resetNewMergeRequestIds,
+      draftsCount: this.draftsCount,
     });
   },
 };

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'yaml'
 require_relative 'suggestor'
 
 module Tooling
@@ -142,6 +143,55 @@ module Tooling
               regex: /key_path/,
               comment_text: 'Key path is changed. This is an extremely dangerous action and can lead to data loss. See the [metrics lifecycle](https://docs.gitlab.com/development/internal_analytics/metrics/metrics_lifecycle/#change-an-existing-metric) for more information'
             )
+          end
+        end
+      end
+
+      def verify_fe_tracking_params
+        js_files = helper.all_changed_files.select { |filename| filename.end_with?(".js", ".vue") }
+
+        js_files.each do |filename|
+          changes = helper.changed_lines(filename)
+
+          # Join all added lines, remove + prefix and clean whitespace to simplify searching
+          added_content = changes
+            .select { |line| line.start_with?('+') }
+            .map { |line| line[1..] }
+            .join('')
+            .gsub(/\s+/, ' ')
+            .strip
+
+          # Find all trackEvent calls in the simplified content
+          added_content.scan(/trackEvent\(['"]([^'"]+)['"](?:,\s*\{([^}]+)\})?/) do |event_name, hash_content|
+            tracked_properties = hash_content ? hash_content.scan(/(\w+):/).flatten : []
+
+            # Find event definition file and extract additional_properties
+            def_folders = %w[config/events ee/config/events]
+            event_file_path = nil
+
+            def_folders.each do |folder|
+              potential_path = File.join(folder, "#{event_name}.yml")
+              if File.exist?(potential_path)
+                event_file_path = potential_path
+                break
+              end
+            end
+
+            if event_file_path
+              event_definition = YAML.load_file(event_file_path)
+              additional_properties = event_definition['additional_properties'] || {}
+
+              # Check if additional_properties contains all tracked_properties
+              additional_property_keys = additional_properties.keys
+              missing_keys = tracked_properties - additional_property_keys
+              unless missing_keys.empty?
+                add_suggestion(
+                  filename: filename,
+                  regex: /#{event_name}/,
+                  comment_text: "Tracked properties #{missing_keys} are not defined in additional_properties in #{event_file_path}\n Please add the missing properties to the event definition."
+                )
+              end
+            end
           end
         end
       end

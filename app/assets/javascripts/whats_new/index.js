@@ -4,10 +4,12 @@ import store from './store';
 
 let whatsNewApp;
 
-export default (versionDigest, withClose) => {
+export default (dataset = {}, withClose, updateHelpMenuUnreadBadge) => {
   if (whatsNewApp) {
     store.dispatch('openDrawer');
   } else {
+    const { versionDigest, initialReadArticles, markAsReadPath, mostRecentReleaseItemsCount } =
+      dataset;
     const el = document.createElement('div');
     document.body.append(el);
     whatsNewApp = new Vue({
@@ -17,7 +19,11 @@ export default (versionDigest, withClose) => {
         return createElement(WhatsNewApp, {
           props: {
             versionDigest,
+            initialReadArticles,
+            markAsReadPath,
+            mostRecentReleaseItemsCount,
             withClose,
+            updateHelpMenuUnreadBadge,
           },
         });
       },

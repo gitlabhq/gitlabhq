@@ -90,7 +90,7 @@ To allow the use of secret push protection in your GitLab instance:
 
 1. Sign in to your GitLab instance as an administrator.
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Security and compliance**.
+1. Select **Settings** > **Security and compliance**.
 1. Under **Secret detection**, select or clear **Allow secret push protection**.
 
 Secret push protection is allowed on the instance. To use this feature, you must enable it per project.
@@ -105,7 +105,7 @@ Prerequisites:
 To enable secret push protection in a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Secure > Security configuration**.
+1. On the left sidebar, select **Secure** > **Security configuration**.
 1. Turn on the **Secret push protection** toggle.
 
 You can also enable secret push protection for all projects in a group [with the API](../../../../api/group_security_settings.md#update-secret_push_protection_enabled-setting).
@@ -153,28 +153,28 @@ If a secret is already present in a file and not part of the changes, it is not 
 
 Secret push protection can identify various categories of secrets:
 
-- **API keys and tokens**: Service-specific authentication credentials
-- **Database connection strings**: URLs containing embedded credentials
-- **Private keys**: Cryptographic keys for authentication or encryption
-- **Generic high-entropy strings**: Patterns that appear to be randomly generated secrets
+- API keys and tokens: Service-specific authentication credentials
+- Database connection strings: URLs containing embedded credentials
+- Private keys: Cryptographic keys for authentication or encryption
+- Generic high-entropy strings: Patterns that appear to be randomly generated secrets
 
 When a push is blocked, secret push protection provides detailed information to help you locate and address the detected secrets:
 
-- **Commit ID**: The specific commit containing the secret. Useful for tracking changes in your Git history.
-- **File path and line number**: The exact location of the detected pattern for quick navigation.
-- **Secret type**: The classification of the detected pattern. For example, `GitLab Personal Access Token` or `AWS Access Key`.
+- Commit ID: The specific commit containing the secret. Useful for tracking changes in your Git history.
+- File path and line number: The exact location of the detected pattern for quick navigation.
+- Secret type: The classification of the detected pattern. For example, `GitLab Personal Access Token` or `AWS Access Key`.
 
 ### Common detection categories
 
 Not all detections require immediate action. Consider the following when evaluating results:
 
-- **True positives**: Legitimate secrets that should be rotated and removed. For example:
+- True positives: Legitimate secrets that should be rotated and removed. For example:
   - [Valid](../../vulnerabilities/validity_check.md) API keys or tokens
   - Production database credentials
   - Private cryptographic keys
   - Any credentials that could grant unauthorized access
 
-- **False positives**: Detected patterns that aren't actual secrets. For example:
+- False positives: Detected patterns that aren't actual secrets. For example:
   - Test data that resembles secrets but has no real-world value
   - Placeholder values in configuration templates
   - Example credentials in documentation
@@ -229,7 +229,7 @@ Successfully deploying secret push protection at scale requires careful planning
 
 You should run the pilot phase for two to four weeks to gather sufficient data and identify any workflow adjustments needed before broader deployment.
 
-Once you have completed the pilot, consider the next three phases for a scaled rollout:
+After you have completed the pilot, consider the following phases for a scaled rollout:
 
 1. Early adopters (weeks 3-6)
    - Enable on 10-20% of active projects, prioritizing security-sensitive repositories.
@@ -285,8 +285,8 @@ If the blocked secret appears earlier in your Git history:
 
 ### Skip secret push protection
 
-In some cases, it may be necessary to skip secret push protection. For example, a developer may need
-to commit a placeholder secret for testing, or a user may want to skip secret push protection due to
+In some cases, it might be necessary to skip secret push protection. For example, a developer might need
+to commit a placeholder secret for testing, or a user might want to skip secret push protection due to
 a Git operation timeout.
 
 [Audit events](../../../compliance/audit_event_types.md#secret-detection) are logged when
@@ -333,7 +333,7 @@ To skip secret push protection when using any Git client:
 
 ## Troubleshooting
 
-When working with secret push protection, you may encounter the following situations.
+When working with secret push protection, you might encounter the following situations.
 
 ### Push blocked unexpectedly
 

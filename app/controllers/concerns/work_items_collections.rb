@@ -6,18 +6,20 @@ module WorkItemsCollections
   include SortingHelper
   include SortingPreference
   include Gitlab::Utils::StrongMemoize
+  include PaginatedCollection
 
   private
 
   def work_items_for_rss
-    finder
+    base_collection = finder
       .execute
       .preload_namespace_routables
       .preload_routables
       .preload_for_rss
-      # TODO: Remove this limit and support pagination
-      # (see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201483#note_2689522423)
-      .limit(100)
+
+    pagination_result = paginate_for_collection(base_collection, row_count: finder.row_count)
+
+    pagination_result[:collection]
   end
 
   def work_items_for_calendar
@@ -53,6 +55,11 @@ module WorkItemsCollections
     if @project
       options[:project_id] = @project.id
       options[:attempt_project_search_optimizations] = true
+    elsif @group
+      options[:group_id] = @group.id
+      options[:include_descendants] = true
+      options[:exclude_group_work_items] = true
+      options[:attempt_group_search_optimizations] = true
     end
 
     work_items_collection_params.merge(options)

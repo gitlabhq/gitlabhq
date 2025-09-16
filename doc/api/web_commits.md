@@ -7,7 +7,7 @@ title: Web Commits API
 
 {{< details >}}
 
-- Tier: Free
+- Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -28,12 +28,12 @@ Get the GitLab public key for signing web commits.
 GET /web_commits/public_key
 ```
 
-If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following
-response attribute:
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following
+response attributes:
 
-| Attribute    | Type   | Description                                 |
-|--------------|--------|---------------------------------------------|
-| `public_key` | string | GitLab public key for signing web commits.  |
+| Attribute    | Type   | Description                                |
+|--------------|--------|--------------------------------------------|
+| `public_key` | string | GitLab public key for signing web commits. |
 
 Example request:
 
@@ -46,7 +46,7 @@ Example response:
 ```json
 [
   {
-    public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=\""
+    "public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
   }
 ]
 ```

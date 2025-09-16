@@ -353,7 +353,7 @@ Prerequisites:
 
 - [A NuGet package created with NuGet CLI](https://learn.microsoft.com/en-us/nuget/create-packages/creating-a-package).
 
-To publish a package, run the following command:`
+To publish a package, run the following command:
 
 ```shell
 nuget push <package_file> -Source <source_name>

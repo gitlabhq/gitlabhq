@@ -24,7 +24,8 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
     describe 'PUT /api/v4/jobs/:id' do
       let_it_be_with_reload(:job) do
         create(:ci_build, :pending, :trace_live, pipeline: pipeline, project: project, user: user,
-          runner_id: runner.id, runner_manager: runner_manager)
+          runner_id: runner.id, runner_manager: runner_manager,
+          options: { allow_failure_criteria: { exit_codes: [1] } })
       end
 
       before do
@@ -93,11 +94,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
         context 'when an exit_code is provided' do
           context 'when the exit_codes are acceptable' do
-            before do
-              job.options[:allow_failure_criteria] = { exit_codes: [1] }
-              job.save!
-            end
-
             it 'accepts an exit code' do
               update_job(state: 'failed', exit_code: 1)
 
@@ -107,9 +103,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             end
           end
 
-          context 'when the exit_codes are not defined' do
+          context 'when the exit_codes are not acceptable' do
             it 'ignore the exit code' do
-              update_job(state: 'failed', exit_code: 1)
+              update_job(state: 'failed', exit_code: 2)
 
               expect(job.reload).to be_failed
               expect(job.allow_failure).to be_falsy

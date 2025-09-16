@@ -82,7 +82,11 @@ class Group < Namespace
   with_options source: :shared_with_group do
     has_many :shared_with_groups, through: :shared_with_group_links
     has_many :shared_with_groups_of_ancestors, through: :shared_with_group_links_of_ancestors
-    has_many :shared_with_groups_of_ancestors_and_self, through: :shared_with_group_links_of_ancestors_and_self
+    has_many :shared_with_groups_of_ancestors_and_self, through: :shared_with_group_links_of_ancestors_and_self do
+      def with_developer_maintainer_owner_access
+        merge(GroupGroupLink.with_developer_maintainer_owner_access)
+      end
+    end
   end
 
   has_many :project_group_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -123,11 +127,9 @@ class Group < Namespace
   has_many :bulk_import_exports, class_name: 'BulkImports::Export', inverse_of: :group
   has_many :bulk_import_entities, class_name: 'BulkImports::Entity', foreign_key: :namespace_id, inverse_of: :group
 
-  has_many :group_deploy_keys_groups, inverse_of: :group
-  has_many :group_deploy_keys, through: :group_deploy_keys_groups
   has_many :group_deploy_tokens
   has_many :deploy_tokens, through: :group_deploy_tokens
-  has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :oauth_applications, class_name: 'Authn::OauthApplication', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_one :dependency_proxy_setting, class_name: 'DependencyProxy::GroupSetting'
   has_one :dependency_proxy_image_ttl_policy, class_name: 'DependencyProxy::ImageTtlGroupPolicy'
@@ -182,6 +184,8 @@ class Group < Namespace
     :require_dpop_for_manage_api_endpoints=,
     :seat_control,
     :setup_for_company,
+    :step_up_auth_required_oauth_provider,
+    :step_up_auth_required_oauth_provider=,
     to: :namespace_settings
   )
 
@@ -396,6 +400,26 @@ class Group < Namespace
     order.apply_cursor_conditions(reorder(order))
   end
 
+  scope :order_storage_size_keyset, ->(direction) do
+    order = Gitlab::Pagination::Keyset::Order.build([
+      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+        attribute_name: 'storage_size',
+        column_expression: Arel.sql('storage_size'),
+        order_expression: Arel.sql("storage_size #{direction == :desc ? 'DESC' : 'ASC'}"),
+        reversed_order_expression: Arel.sql("storage_size #{direction == :desc ? 'ASC' : 'DESC'}"),
+        nullable: direction == :desc ? :nulls_last : :nulls_first,
+        order_direction: direction,
+        add_to_projections: true
+      ),
+      Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+        attribute_name: 'id',
+        order_expression: direction == :desc ? Namespace.arel_table['id'].desc : Namespace.arel_table['id'].asc
+      )
+    ])
+
+    with_statistics.order(order)
+  end
+
   scope :order_path_asc, -> { reorder(self.arel_table['path'].asc) }
   scope :order_path_desc, -> { reorder(self.arel_table['path'].desc) }
   scope :in_organization, ->(organization) { where(organization: organization) }
@@ -404,6 +428,10 @@ class Group < Namespace
   class << self
     def sort_by_attribute(method)
       case method.to_s
+      when 'storage_size_keyset_asc'
+        order_storage_size_keyset(:asc)
+      when 'storage_size_keyset_desc'
+        order_storage_size_keyset(:desc)
       when 'storage_size_desc'
         # storage_size is a virtual column so we need to
         # pass a string to avoid AR adding the table name
@@ -1133,9 +1161,12 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items_project_issues_list, type: :beta)
   end
 
-  def work_item_status_feature_available?
-    feature_flag_enabled_for_self_or_ancestor?(:work_item_status_feature_flag, type: :beta) &&
-      licensed_feature_available?(:work_item_status)
+  def work_items_group_issues_list_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_items_group_issues_list, type: :beta)
+  end
+
+  def work_item_status_mvc2_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_item_status_mvc2, type: :wip)
   end
 
   def markdown_placeholders_feature_flag_enabled?
@@ -1357,9 +1388,9 @@ class Group < Namespace
   end
 
   # Overriding of Namespaces::AdjournedDeletable method
-  override :all_scheduled_for_deletion_in_hierarchy_chain
-  def all_scheduled_for_deletion_in_hierarchy_chain
-    self_and_ancestors(hierarchy_order: :asc).joins(:deletion_schedule)
+  override :ancestors_scheduled_for_deletion
+  def ancestors_scheduled_for_deletion
+    ancestors(hierarchy_order: :asc).joins(:deletion_schedule)
   end
 end
 

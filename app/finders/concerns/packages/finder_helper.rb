@@ -82,6 +82,9 @@ module Packages
     end
 
     def filter_by_package_type(packages)
+      # Only filter by package_type when using the base `Packages::Package` class
+      # Format-specific classes like `Packages::TerraformModule::Package` don't need this filter
+      return packages unless packages_class == ::Packages::Package
       return packages.without_package_type(:terraform_module) unless package_type
       raise InvalidPackageTypeError unless ::Packages::Package.package_types.key?(package_type)
 

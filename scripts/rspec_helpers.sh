@@ -407,9 +407,6 @@ function retry_failed_rspec_examples() {
     exit $previous_exit_status
   fi
 
-  # Job metrics for influxDB/Grafana
-  tooling/bin/update_job_metrics_tag rspec_retried_in_new_process "true" || true
-
   # Keep track of the tests that are retried, later consolidated in a single file by the `rspec:flaky-tests-report` job
   local failed_examples=$(grep " failed" ${RSPEC_LAST_RUN_RESULTS_FILE})
   echoinfo "RSPEC_RETRIED_TESTS_REPORT_PATH: ${RSPEC_RETRIED_TESTS_REPORT_PATH:-}"

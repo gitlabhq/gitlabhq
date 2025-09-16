@@ -194,7 +194,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
     end
 
     it 'displays new branch as selected after commiting on a new branch' do
-      find('#source-branch-field').set('new_branch', clear: :backspace)
+      find('#source-branch-field').set('new_branch')
 
       page.within('#source-editor-') do
         find('textarea').send_keys '123'
@@ -301,7 +301,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
 
     context 'when targetting any non-main branch' do
       before do
-        find('#source-branch-field').set('new_branch', clear: :backspace)
+        find('#source-branch-field').set('new_branch')
       end
 
       it 'shows the option to create a Merge request', :aggregate_failures do
@@ -311,8 +311,8 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
     end
 
     it 'is preserved when changing tabs' do
-      find('#commit-message').set('message', clear: :backspace)
-      find('#source-branch-field').set('new_branch', clear: :backspace)
+      find('#commit-message').set('message')
+      find('#source-branch-field').set('new_branch')
 
       click_link 'Validate'
       click_link 'Edit'

@@ -86,21 +86,6 @@ RSpec.describe Groups::GroupLinks::CreateService, '#execute', feature_category: 
 
           subject.execute
         end
-
-        context 'when project_authorizations_update_in_background_for_group_shares feature flag is disabled' do
-          before do
-            stub_feature_flags(project_authorizations_update_in_background_for_group_shares: false)
-          end
-
-          it 'is executed only for the direct members of the group' do
-            expect(shared_with_group)
-              .to receive(:refresh_members_authorized_projects)
-              .with(direct_members_only: true, priority: UserProjectAccessChangedService::MEDIUM_PRIORITY)
-              .once
-
-            subject.execute
-          end
-        end
       end
 
       context 'project authorizations' do

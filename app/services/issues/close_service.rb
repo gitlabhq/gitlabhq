@@ -2,9 +2,14 @@
 
 module Issues
   class CloseService < Issues::BaseService
+    include ::Gitlab::Loggable
+
     # Closes the supplied issue if the current user is able to do so.
     def execute(issue, commit: nil, notifications: true, system_note: true, skip_authorization: false, status: nil)
-      return issue unless can_close?(issue, skip_authorization: skip_authorization)
+      unless can_close?(issue, skip_authorization: skip_authorization)
+        log_failed_auth(issue, commit)
+        return issue
+      end
 
       close_issue(issue, closed_via: commit, notifications: notifications, system_note: system_note, status: status)
     end
@@ -27,6 +32,18 @@ module Issues
     end
 
     private
+
+    def log_failed_auth(issue, commit)
+      log_info = {
+        message: 'Unauthorized close issue',
+        issue_id: issue&.id,
+        current_user_id: current_user&.id
+      }
+      log_info[:commit] = commit.id if commit.is_a?(::Commit)
+      log_info[:merge_request_id] = commit.id if commit.is_a?(::MergeRequest)
+
+      ::Gitlab::AppLogger.info(build_structured_payload(**log_info))
+    end
 
     # overriden in EE
     def handle_closing_issue!(issue, current_user)

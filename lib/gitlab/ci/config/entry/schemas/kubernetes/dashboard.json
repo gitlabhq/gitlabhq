@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Kubernetes dashboard settings",
+  "type": "object",
+  "properties": {
+    "namespace": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 63,
+      "description": "The Kubernetes namespace where the dashboard connects."
+    },
+    "flux_resource_path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 255,
+      "description": "The path to the Flux resource."
+    }
+  },
+  "required": [
+    "namespace"
+  ],
+  "additionalProperties": false
+}

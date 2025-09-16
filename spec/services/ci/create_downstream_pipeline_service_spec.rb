@@ -26,13 +26,16 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
     }
   end
 
+  let(:yaml_variables) { nil }
+
   let(:bridge) do
     create(
       :ci_bridge,
       status: :pending,
       user: user,
       options: trigger,
-      pipeline: upstream_pipeline
+      pipeline: upstream_pipeline,
+      yaml_variables: yaml_variables
     )
   end
 
@@ -107,6 +110,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
     let(:stub_config) { true }
 
     before do
+      stub_feature_flags(ci_validate_config_options: false)
       downstream_project.add_developer(user)
       stub_ci_pipeline_yaml_file(YAML.dump(rspec: { script: 'rspec' })) if stub_config
     end
@@ -531,9 +535,9 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         end
 
         context 'when downstream project does not allow user-defined variables for child pipelines' do
-          before do
-            bridge.yaml_variables = [{ key: 'BRIDGE', value: '$PIPELINE_VARIABLE-var', public: true }]
+          let(:yaml_variables) { [{ key: 'BRIDGE', value: '$PIPELINE_VARIABLE-var', public: true }] }
 
+          before do
             upstream_pipeline.project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
           end
 
@@ -727,8 +731,9 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
     end
 
     context 'when bridge job has YAML variables defined' do
+      let(:yaml_variables) { [{ key: 'BRIDGE', value: 'var', public: true }] }
+
       before do
-        bridge.yaml_variables = [{ key: 'BRIDGE', value: 'var', public: true }]
         downstream_project.update!(ci_pipeline_variables_minimum_override_role: :developer)
       end
 
@@ -750,8 +755,9 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
       end
 
       context 'when using YAML variables interpolation' do
+        let(:yaml_variables) { [{ key: 'BRIDGE', value: '$PIPELINE_VARIABLE-var', public: true }] }
+
         before do
-          bridge.yaml_variables = [{ key: 'BRIDGE', value: '$PIPELINE_VARIABLE-var', public: true }]
           downstream_project.update!(ci_pipeline_variables_minimum_override_role: :developer)
         end
 
@@ -784,7 +790,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
 
             expect(bridge.reload).to be_failed
             expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
-            expect(bridge.options[:downstream_errors]).to eq(['Insufficient permissions to set pipeline variables'])
+            expect(bridge.downstream_errors).to eq(['Insufficient permissions to set pipeline variables'])
           end
         end
       end
@@ -858,11 +864,11 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
       it 'does not create a pipeline and drops the bridge' do
         expect { subject }.not_to change(downstream_project.ci_pipelines, :count)
         expect(subject).to be_error
-        expect(subject.message).to match_array(["Reference not found"])
+        expect(subject.message).to match_array(['Reference not found'])
 
         expect(bridge.reload).to be_failed
         expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
-        expect(bridge.options[:downstream_errors]).to eq(['Reference not found'])
+        expect(bridge.downstream_errors).to eq(['Reference not found'])
       end
     end
 
@@ -887,7 +893,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
 
         expect(bridge.reload).to be_failed
         expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
-        expect(bridge.options[:downstream_errors]).to match_array(
+        expect(bridge.downstream_errors).to match_array(
           [sanitize_message(Ci::Pipeline.rules_failure_message)])
       end
     end
@@ -914,7 +920,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
 
         expect(bridge.reload).to be_failed
         expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
-        expect(bridge.options[:downstream_errors]).to eq(
+        expect(bridge.downstream_errors).to eq(
           ['test job: chosen stage testx does not exist; available stages are .pre, build, test, deploy, .post']
         )
       end
@@ -938,9 +944,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
       end
 
       context 'when passing the required variable' do
-        before do
-          bridge.yaml_variables = [{ key: 'my_var', value: 'var', public: true }]
-        end
+        let(:yaml_variables) { [{ key: 'my_var', value: 'var', public: true }] }
 
         it 'creates the pipeline' do
           expect { subject }.to change(downstream_project.ci_pipelines, :count).by(1)

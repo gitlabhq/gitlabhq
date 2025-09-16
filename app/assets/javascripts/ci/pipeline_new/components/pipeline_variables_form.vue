@@ -11,7 +11,7 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
-import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import { reportToSentry } from '~/ci/utils';

@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe GpgKey do
+RSpec.describe GpgKey, feature_category: :source_code_management do
+  subject { build(:gpg_key) }
+
   describe "associations" do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to have_many(:subkeys) }

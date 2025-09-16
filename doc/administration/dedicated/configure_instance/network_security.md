@@ -80,11 +80,19 @@ restricted to private networks.
 
 ### Add your custom hostname
 
-To add a custom hostname to your existing GitLab Dedicated instance, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+To use a custom hostname with the [container registry](../../packages/container_registry.md) or the [GitLab agent server for Kubernetes](../../clusters/kas.md) on your existing GitLab Dedicated instance, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 
-## Custom certificates
+## Custom certificate authority
 
-Custom certificates establish trust between your GitLab Dedicated instance and certificates signed by non-public Certificate Authorities (CA). If you want to connect to a service that uses a certificate signed by a private or internal CA, you must first add that certificate to your GitLab Dedicated instance.
+If your GitLab Dedicated instance connects to external services with certificates from a private
+or internal certificate authority (CA), you must add that CA to your instance. By default, GitLab
+trusts only publicly recognized certificate authorities and rejects connections to services with
+certificates from untrusted sources.
+
+For example, you might need to add a certificate authority to connect to:
+
+- Internal webhook endpoints
+- Private container registries
 
 ### Add a custom certificate with Switchboard
 
@@ -105,6 +113,10 @@ If you are unable to use Switchboard to add a custom certificate, you can open a
 ### Inbound Private Link
 
 [AWS Private Link](https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html) allows users and applications in your VPC on AWS to securely connect to the GitLab Dedicated endpoint without network traffic going over the public internet.
+
+Consider the following:
+
+- You can only create private links within the same AWS region. Make sure your VPC is in the same region where your GitLab Dedicated instance is deployed.
 
 To enable the Inbound Private Link:
 
@@ -160,6 +172,63 @@ To enable KAS and registry through your private network:
 
 This configuration is robust to IP address changes because it uses the VPC endpoint interface rather than specific IP addresses.
 
+#### Troubleshooting
+
+##### Error: `Service name could not be verified`
+
+You might get an error that states `Service name could not be verified` when trying to create a VPC endpoint.
+
+This issue occurs when the custom IAM role provided in the support ticket does not have the proper permissions or trust policies configured in your AWS account.
+
+To resolve this issue:
+
+1. Confirm that you can assume the custom IAM role provided to GitLab in the support ticket.
+1. Verify the custom role has a trust policy that allows you to assume it. For example:
+
+   ```json
+   {
+       "Version": "2012-10-17",
+       "Statement": [
+           {
+               "Sid": "Statement1",
+               "Effect": "Allow",
+               "Principal": {
+                   "AWS": "arn:aws:iam::CONSUMER_ACCOUNT_ID:user/user-name"
+               },
+               "Action": "sts:AssumeRole"
+           }
+       ]
+   }
+   ```
+
+1. Verify the custom role has a permission policy that allows VPC endpoint and EC2 actions. For example:
+
+   ```json
+   {
+      "Version": "2012-10-17",
+      "Statement": [
+         {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "vpce:*",
+            "Resource": "*"
+         },
+         {
+            "Sid": "Statement1",
+            "Effect": "Allow",
+            "Action": [
+                  "ec2:CreateVpcEndpoint",
+                  "ec2:DescribeVpcEndpointServices",
+                  "ec2:DescribeVpcEndpoints"
+            ],
+            "Resource": "*"
+         }
+      ]
+   }
+   ```
+
+1. Using the custom role, retry creating the VPC endpoint in your AWS console or CLI.
+
 ### Outbound Private Link
 
 Outbound private links allow your GitLab Dedicated instance and the hosted runners for GitLab Dedicated to securely communicate with services running in your VPC on AWS without exposing any traffic to the public internet.
@@ -179,7 +248,7 @@ This type of connection allows GitLab functionality to access private services:
 
 Consider the following:
 
-- You can only establish private links between VPCs in the same region. Therefore, you can only establish a connection in the regions specified for your Dedicated instance.
+- You can only create private links within the same AWS region. Make sure your VPC is in the same region where your GitLab Dedicated instance is deployed.
 - The connection requires the [Availability Zone IDs (AZ IDs)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#az-ids) for the two Availability Zones (AZs) in the regions that you selected during onboarding.
 - If you did not specify any AZs during onboarding to Dedicated, GitLab randomly selects both AZ IDs. AZ IDs are displayed in Switchboard on the Overview page for both the Primary and Secondary regions.
 - GitLab Dedicated limits the number of outbound private link connections to 10.

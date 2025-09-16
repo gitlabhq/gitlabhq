@@ -3,6 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import Protection, { i18n } from '~/projects/settings/branch_rules/components/view/protection.vue';
 import ProtectionRow from '~/projects/settings/branch_rules/components/view/protection_row.vue';
+import GroupInheritancePopover from '~/projects/settings/branch_rules/components/view/group_inheritance_popover.vue';
 import {
   protectionPropsMock,
   protectionEmptyStatePropsMock,
@@ -22,7 +23,12 @@ describe('Branch rule protection', () => {
         emptyStateCopy: 'Nothing to show',
         ...props,
       },
-      stubs: { CrudComponent },
+      stubs: {
+        CrudComponent,
+        GroupInheritancePopover: {
+          template: '<div>Stubbed GroupInheritancePopover</div>',
+        },
+      },
       provide: { glFeatures },
     });
   };
@@ -36,7 +42,12 @@ describe('Branch rule protection', () => {
       slots: {
         [slotName]: slotContent,
       },
-      stubs: { CrudComponent },
+      stubs: {
+        CrudComponent,
+        GroupInheritancePopover: {
+          template: '<div>Stubbed GroupInheritancePopover</div>',
+        },
+      },
       provide: { glFeatures: { editBranchRules: true } },
     });
   };
@@ -104,6 +115,20 @@ describe('Branch rule protection', () => {
 
     it('renders `Edit` button', () => {
       expect(findEditButton().exists()).toBe(true);
+    });
+
+    it('does not render group inheritance popover', () => {
+      expect(findEditButton().props('disabled')).toBe(false);
+      expect(wrapper.findComponent(GroupInheritancePopover).exists()).toBe(false);
+    });
+
+    describe('when `isGroupLevel` is true', () => {
+      it('renders group inheritance popover and disabled `Edit` button, when protection is on', () => {
+        createComponent({ editBranchRules: true }, { isGroupLevel: true, isEditAvailable: true });
+
+        expect(findEditButton().props('disabled')).toBe(true);
+        expect(wrapper.findComponent(GroupInheritancePopover).exists()).toBe(true);
+      });
     });
   });
 

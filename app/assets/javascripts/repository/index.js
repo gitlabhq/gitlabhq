@@ -42,6 +42,7 @@ export default function setupVueRepositoryList() {
     explainCodeAvailable,
     targetBranch,
     refType,
+    hasRevsFile,
   } = dataset;
   const router = createRouter(projectPath, escapedRef, fullName);
   initFileTreeBrowser(router, { projectPath, ref, refType }, apolloProvider);
@@ -251,6 +252,7 @@ export default function setupVueRepositoryList() {
       targetBranch,
       explainCodeAvailable: parseBoolean(explainCodeAvailable),
       highlightWorker: new HighlightWorker(),
+      hasRevsFile: parseBoolean(hasRevsFile),
     },
     render(h) {
       return h(App);

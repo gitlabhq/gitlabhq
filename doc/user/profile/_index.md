@@ -250,7 +250,7 @@ To add links to other accounts:
 1. In the **Main settings** section, add your:
    - Discord [user ID](https://support.discord.com/hc/en-us/articles/206346498-Where-can-I-find-my-User-Server-Message-ID-).
    - LinkedIn profile name.
-   - Bluesky [did:plc identifier](https://atproto.com/specs/did). To find your identifier, [resolve your user handle](https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle=USER_HANDLE).
+   - BlueSky [`did:plc` identifier](https://atproto.com/specs/did). To find your identifier, [resolve your user handle](https://bsky.social/xrpc/com.atproto.identity.resolveHandle?handle=USER_HANDLE).
    - Mastodon handle. In GitLab 17.4 and later, you can use your [GitLab profile](#access-your-user-profile) to verify your Mastodon account.
    - Discord username.
    - X (formerly Twitter) @username.
@@ -345,6 +345,8 @@ To change your commit email:
 ## Change your primary email
 
 Your primary email is the default email address for your login, commit email, and notification email.
+If your primary email changes, your original primary email is added as a secondary email. This feature
+allows commits made with your original primary email to remain associated with your account.
 
 To change your primary email:
 

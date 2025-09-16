@@ -18,7 +18,7 @@ export default {
 <template>
   <header class="gl-my-5 gl-flex gl-flex-wrap gl-items-center gl-justify-between gl-gap-y-3">
     <div
-      class="gl-flex gl-w-full gl-flex-wrap gl-justify-between gl-gap-x-5 gl-gap-y-3 md:gl-flex-nowrap"
+      class="gl-flex gl-w-full gl-flex-wrap gl-justify-between gl-gap-x-5 gl-gap-y-3 @md/panel:gl-flex-nowrap"
     >
       <h1 class="gl-heading-1 !gl-m-0" data-testid="page-heading">
         <slot name="heading"></slot>
@@ -26,8 +26,8 @@ export default {
       </h1>
       <div
         v-if="$scopedSlots.actions"
-        class="page-heading-actions gl-flex gl-shrink-0 gl-flex-wrap gl-items-center gl-gap-3 md:gl-mt-1 lg:gl-mt-2"
-        :class="{ 'gl-w-full sm:gl-w-auto': !inlineActions, 'gl-w-auto': inlineActions }"
+        class="page-heading-actions gl-flex gl-shrink-0 gl-flex-wrap gl-items-center gl-gap-3 @md/panel:gl-mt-1 @lg/panel:gl-mt-2"
+        :class="{ 'gl-w-full @sm/panel:gl-w-auto': !inlineActions, 'gl-w-auto': inlineActions }"
         data-testid="page-heading-actions"
       >
         <slot name="actions"></slot>

@@ -60,7 +60,7 @@ fi
 
 if [ -z "${GITLAB_WORKSPACES_PROXY_HELM_CHART_VERSION}" ]; then
   echo "GITLAB_WORKSPACES_PROXY_HELM_CHART_VERSION is not explicitly set. Using default."
-  GITLAB_WORKSPACES_PROXY_HELM_CHART_VERSION="0.1.22"
+  GITLAB_WORKSPACES_PROXY_HELM_CHART_VERSION="0.1.23"
 fi
 
 if [ -z "${GITLAB_WORKSPACES_PROXY_HELM_RELEASE_NAMESPACE}" ]; then
@@ -343,6 +343,8 @@ helm repo add gitlab-workspaces-proxy \
 helm repo update
 
 helm --namespace "${GITLAB_WORKSPACES_PROXY_HELM_RELEASE_NAMESPACE}" uninstall "${GITLAB_WORKSPACES_PROXY_HELM_RELEASE_NAME}" --ignore-not-found --timeout=600s --wait
+
+echo "Installing GitLab Workspaces Proxy helm chart version ${GITLAB_WORKSPACES_PROXY_HELM_CHART_VERSION}..."
 
 # NOTE: We had to change default sshService.port from 22 to 30022 because of port 22 stopped working
 #       sometime around Jan 2025. Perhaps a MacOS update or Rancher change caused it, we don't know yet.

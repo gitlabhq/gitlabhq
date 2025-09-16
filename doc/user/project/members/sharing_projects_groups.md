@@ -222,6 +222,11 @@ When this setting is enabled:
 - It applies to all subgroups, unless overridden by a group Owner.
 - Groups already added to a project lose access to it.
 
+When this setting is disabled:
+
+- It applies to this group only, not to its subgroups.
+- To disable this setting for all subgroups, you must update each subgroup individually.
+
 {{< alert type="note" >}}
 
 After you [specify a user cap for the group](../../group/manage.md#specify-a-user-cap-for-a-group) or if you [turn on restricted access](../../group/manage.md#turn-on-restricted-access), you cannot disable this setting.

@@ -1,0 +1,11 @@
+query UserStatus {
+  currentUser {
+    id
+    status {
+      emoji
+      message
+      availability
+      clearStatusAt
+    }
+  }
+}

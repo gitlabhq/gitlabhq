@@ -1,7 +1,7 @@
 ARG MISE_DATA_DIR=/home/gdk/.local/share/mise
 ARG GDK_DIR=/home/gdk/gitlab-development-kit
 
-ARG GDK_SHA=ee1e28c9048d9adba0c575b78adf868eeb70e26f
+ARG GDK_SHA=af5acf0dfaddf838326a6ada8c35d1680ce16c34
 # Use tag prefix when running on 'stable' branch to make sure 'protected' image is used which is not deleted by registry cleanup
 ARG GDK_BASE_TAG_PREFIX
 
@@ -76,7 +76,7 @@ COPY --chown=gdk:gdk Gemfile Gemfile.lock .tool-versions ./gitlab/
 COPY --chown=gdk:gdk vendor/gems/ ./gitlab/vendor/gems/
 COPY --chown=gdk:gdk gems/ ./gitlab/gems/
 RUN set -eux; \
-    make gitlab-asdf-install \
+    make gitlab-tool-install \
     && make .gitlab-bundle \
     && rm -rf ${MISE_DATA_DIR}/installs/ruby/*/lib/ruby/gems/*/cache
 
