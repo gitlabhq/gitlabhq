@@ -72,7 +72,14 @@ func (r roundTripper) RoundTrip(req *http.Request) (res *http.Response, err erro
 			return nil, roundTripErr
 		}
 
+		body, err := io.ReadAll(roundTripRes.Body)
+		if err != nil {
+			log.WithError(err).Info("gobreaker: failed to read response body")
+			return nil, err
+		}
+
 		defer func() { _ = roundTripRes.Body.Close() }()
+		roundTripRes.Body = io.NopCloser(bytes.NewBuffer(body))
 
 		return roundTripRes, responseToError(roundTripRes)
 	})

@@ -120,13 +120,13 @@ title: GLQL table 🎉
 description: This view lists my open issues
 fields: title, state, health, epic, milestone, weight, updated
 limit: 5
-query: project = "gitlab-org/gitlab" AND assignee = currentUser() AND state = opened
+query: group = "gitlab-org" AND assignee = currentUser() AND state = opened
 ```
 ````
 
 This source should render a table like the one below:
 
-![A table listing issues assigned to the current user](img/glql_table_v17_10.png)
+![A table listing issues assigned to the current user](img/glql_table_v18_5.png)
 
 #### Presentation syntax
 
@@ -163,9 +163,13 @@ display: list
 fields: title, health, due
 limit: 5
 sort: due asc
-query: project = "gitlab-org/gitlab" AND assignee = currentUser() AND state = opened
+query: group = "gitlab-org" AND assignee = currentUser() AND state = opened
 ```
 ````
+
+This source should render a list like the one below:
+
+![An embedded view with a list of issues assigned to the current user](img/glql_list_v18_5.png)
 
 #### Pagination
 

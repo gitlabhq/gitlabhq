@@ -30,6 +30,12 @@ module Observability
       formatted_auth_tokens
     end
 
+    def url_with_path
+      return unless observability_setting&.o11y_service_url
+
+      ::URI.join(observability_setting.o11y_service_url, @path)
+    end
+
     def to_h
       {
         o11y_url: observability_setting&.o11y_service_url,

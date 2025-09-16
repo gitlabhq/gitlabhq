@@ -151,8 +151,6 @@ const initPerformanceBar = (el) => {
           store: this.store,
           env: this.env,
           requestId: this.requestId,
-          requestMethod: this.requestMethod,
-          peekUrl: this.peekUrl,
           statsUrl: this.statsUrl,
         },
         on: {

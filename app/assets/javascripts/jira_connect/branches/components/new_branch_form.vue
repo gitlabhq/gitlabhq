@@ -54,9 +54,6 @@ export default {
     };
   },
   computed: {
-    selectedProjectId() {
-      return this.selectedProject?.id;
-    },
     showAlert() {
       return Boolean(this.alertParams?.message);
     },

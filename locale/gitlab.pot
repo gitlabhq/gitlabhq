@@ -71581,6 +71581,9 @@ msgstr ""
 msgid "Visual Studio Code (SSH)"
 msgstr ""
 
+msgid "Volume's name must be less than %{character_limit} characters"
+msgstr ""
+
 msgid "VsdContributorCount|the ClickHouse data store is not available for this namespace"
 msgstr ""
 

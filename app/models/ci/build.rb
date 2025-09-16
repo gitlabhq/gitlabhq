@@ -248,7 +248,6 @@ module Ci
     after_commit :trigger_job_create_subscription, on: :create
     after_commit :track_ci_secrets_management_id_tokens_usage, on: :create, if: :id_tokens?
     after_commit :track_ci_build_created_event, on: :create
-    after_commit :trigger_job_status_change_subscription, if: :saved_change_to_status?
 
     class << self
       # This is needed for url_for to work,
@@ -402,6 +401,12 @@ module Ci
               Gitlab::AppLogger.error "Unable to auto-retry job #{build.id}: #{e}"
             end
           end
+        end
+      end
+
+      after_transition any => any do |build|
+        build.run_after_commit do
+          trigger_job_status_change_subscription
         end
       end
     end

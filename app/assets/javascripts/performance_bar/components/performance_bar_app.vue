@@ -32,14 +32,6 @@ export default {
       type: String,
       required: true,
     },
-    requestMethod: {
-      type: String,
-      required: true,
-    },
-    peekUrl: {
-      type: String,
-      required: true,
-    },
     statsUrl: {
       type: String,
       required: true,

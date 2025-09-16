@@ -19,18 +19,18 @@ Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /history >}}
 
-Project access tokens are similar to passwords, except you can [limit access to resources](#scopes-for-a-project-access-token),
+Project access tokens are similar to passwords, except you can limit access to resources,
 select a limited role, and provide an expiry date.
 
 {{< alert type="note" >}}
 
-Actual access to a project is controlled by a combination of [roles and permissions](../../permissions.md), and the [token scopes](#scopes-for-a-project-access-token).
+Access to a specific project is controlled by a combination of [roles and permissions](../../permissions.md) and token scopes.
 
 {{< /alert >}}
 
 Use a project access token to authenticate:
 
-- With the [GitLab API](../../../api/rest/authentication.md#personalprojectgroup-access-tokens).
+- With the GitLab API.
 - With Git, when using HTTP Basic Authentication, use:
   - Any non-blank value as a username.
   - The project access token as the password.
@@ -45,11 +45,11 @@ you have the Free tier, you can [restrict the creation of project access tokens]
 
 {{< /alert >}}
 
-Project access tokens are similar to [group access tokens](../../group/settings/group_access_tokens.md)
-and [personal access tokens](../../profile/personal_access_tokens.md), but are scoped only to the associated project.
-You cannot use project access tokens to access resources that belong to other projects.
+Project access tokens are similar to group access tokens and personal access tokens, but are
+scoped only to the associated project. You cannot use project access tokens to access resources
+that belong to other projects.
 
-On GitLab Self-Managed instances, project access tokens are subject to the same [maximum lifetime limits](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) as personal access tokens if the limit is set.
+On GitLab Self-Managed instances, project access tokens are subject to the same maximum lifetime limits as personal access tokens if the limit is set.
 
 You cannot use project access tokens to create other group, project, or personal access tokens.
 
@@ -91,19 +91,19 @@ To create a project access token:
 1. In **Expiration date**, enter an expiry date for the token.
    - The token expires on that date at midnight UTC. A token with the expiration date of 2024-01-01 expires at 00:00:00 UTC on 2024-01-01.
    - If you do not enter an expiry date, the expiry date is automatically set to 30 days later than the current date.
-   - By default, this date can be a maximum of 365 days later than the current date. In GitLab 17.6 or later, you can [extend this limit to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901).
-   - An instance-wide [maximum lifetime](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) setting can limit the maximum allowable lifetime in GitLab Self-Managed instances.
+   - By default, this date can be a maximum of 365 days later than the current date. In GitLab 17.6 or later, you can extend this limit to 400 days.
+   - An instance-wide maximum lifetime setting can limit the maximum allowable lifetime in GitLab Self-Managed instances.
 1. Select a role for the token.
-1. Select the [desired scopes](#scopes-for-a-project-access-token).
+1. Select the desired scopes.
 1. Select **Create project access token**.
 
 A project access token is displayed. Save the project access token somewhere safe. After you leave or refresh the page, you can't view it again.
 
 {{< alert type="warning" >}}
 
-Project access tokens are treated as [internal users](../../../administration/internal_users.md).
+Project access tokens are treated as internal users.
 If an internal user creates a project access token, that token is able to access
-all projects that have visibility level set to [Internal](../../public_access.md).
+all projects that have visibility level set to Internal.
 
 {{< /alert >}}
 
@@ -260,7 +260,7 @@ When the project access token is [revoked](#revoke-or-rotate-a-project-access-to
 - The bot user is retained as per [inactive token retention setting](#inactive-token-retention).
 - After 30 days the bot user is deleted. All records are moved to a system-wide user with the username [Ghost User](../../profile/account/delete_account.md#associated-records).
 
-See also [Bot users for groups](../../group/settings/group_access_tokens.md#bot-users-for-groups).
+For more information, see [bot users for groups](../../group/settings/group_access_tokens.md#bot-users-for-groups).
 
 ## Inactive token retention
 
@@ -284,4 +284,6 @@ More than one project access token is only available in paid subscriptions. In P
 
 ## Related topics
 
+- [Personal access tokens](../../profile/personal_access_tokens.md)
+- [Group access tokens](../../group/settings/group_access_tokens.md)
 - [Project access tokens API](../../../api/project_access_tokens.md)

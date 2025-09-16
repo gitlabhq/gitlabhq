@@ -29,7 +29,7 @@ $bottom-padding: $gl-spacing-scale-6;
 .repository-tree-list-responsive {
   width: var(--tree-width);
 
-  @include media-breakpoint-down(md) {
+  @include gl-container-width-down(lg) {
     width: 250px;
   }
 }
@@ -42,7 +42,7 @@ $bottom-padding: $gl-spacing-scale-6;
       margin-right: 15px;
     }
 
-    @include media-breakpoint-up(sm) {
+    @include gl-container-width-up(sm) {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
