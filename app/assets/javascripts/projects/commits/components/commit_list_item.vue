@@ -145,6 +145,7 @@ export default {
                   <signature-badge
                     v-if="commit.signature"
                     :signature="commit.signature"
+                    :aria-label="commit.signature.verificationStatus"
                     class="gl-my-2 !gl-ml-0 gl-h-6"
                   />
                   <div v-if="commit.pipelines.edges.length" class="gl-flex gl-items-center">

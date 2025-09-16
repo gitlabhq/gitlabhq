@@ -26,7 +26,8 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :gr
     sign_in(current_user)
   end
 
-  it 'show members from project and group', :aggregate_failures do
+  it 'show members from project and group', :aggregate_failures,
+    quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/560627' do
     visit_members_page
 
     expect(first_row).to have_content(group_owner.name)

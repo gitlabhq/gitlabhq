@@ -47303,6 +47303,9 @@ msgstr ""
 msgid "Pipeline status emails"
 msgstr ""
 
+msgid "Pipeline status: %{status}"
+msgstr ""
+
 msgid "Pipeline subscriptions"
 msgstr ""
 
@@ -48464,6 +48467,9 @@ msgid "Pipeline|Stages"
 msgstr ""
 
 msgid "Pipeline|Status"
+msgstr ""
+
+msgid "Pipeline|Status: %{status}"
 msgstr ""
 
 msgid "Pipeline|Stop pipeline"

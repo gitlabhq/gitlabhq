@@ -5,6 +5,7 @@ import WikiHeader from './components/wiki_header.vue';
 import WikiContent from './components/wiki_content.vue';
 import WikiEditForm from './components/wiki_form.vue';
 import WikiAlert from './components/wiki_alert.vue';
+import WikiNotesApp from './wiki_notes/components/wiki_notes_app.vue';
 
 export default {
   components: {
@@ -13,6 +14,7 @@ export default {
     WikiContent,
     WikiEditForm,
     WikiAlert,
+    WikiNotesApp,
   },
   inject: {
     isEditingPath: { default: null },
@@ -77,5 +79,6 @@ export default {
     <wiki-header v-if="!isEditing" @is-editing="setEditingMode" />
     <wiki-edit-form v-if="isEditingPath || isEditing" @is-editing="setEditingMode" />
     <wiki-content v-else :is-editing="isEditing" />
+    <wiki-notes-app />
   </div>
 </template>

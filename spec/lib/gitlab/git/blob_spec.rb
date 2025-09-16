@@ -13,8 +13,8 @@ RSpec.describe Gitlab::Git::Blob do
       expect(described_class).not_to receive(:gitlab_blob_size)
 
       expect(blob.name).to eq('test')
-      expect(blob.size).to eq(nil)
-      expect(blob.loaded_size).to eq(nil)
+      expect(blob.size).to be_nil
+      expect(blob.loaded_size).to be_nil
     end
 
     it 'records blob size' do
@@ -44,7 +44,7 @@ RSpec.describe Gitlab::Git::Blob do
     context 'nil path' do
       let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], nil) }
 
-      it { expect(blob).to eq(nil) }
+      it { expect(blob).to be_nil }
     end
 
     context 'utf-8 branch' do
@@ -56,7 +56,7 @@ RSpec.describe Gitlab::Git::Blob do
     context 'blank path' do
       let(:blob) { described_class.find(repository, TestEnv::BRANCH_SHA['master'], '') }
 
-      it { expect(blob).to eq(nil) }
+      it { expect(blob).to be_nil }
     end
 
     context 'file in subdir' do
@@ -444,7 +444,7 @@ RSpec.describe Gitlab::Git::Blob do
         )
       end
 
-      it { expect(blob.lfs_pointer?).to eq(true) }
+      it { expect(blob.lfs_pointer?).to be(true) }
       it { expect(blob.lfs_oid).to eq("96f74c6fe7a2979eefb9ec74a5dfc6888fb25543cf99b77586b79afea1da6f97") }
       it { expect(blob.lfs_size).to eq(1219696) }
       it { expect(blob.id).to eq("ff0ab3afd1616ff78d0331865d922df103b64cf0") }

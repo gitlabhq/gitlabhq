@@ -1,6 +1,6 @@
 <script>
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
-import { sprintf, __ } from '~/locale';
+import { sprintf, s__, __ } from '~/locale';
 
 /**
  * Renders CI icon based on API response shared between all places where it is used.
@@ -54,14 +54,15 @@ export default {
       return this.href ? 'a' : 'span';
     },
     title() {
-      if (this.showTooltip) {
-        // show tooltip only when not showing text already
-        return !this.showStatusText ? this.status?.text : null;
+      if (this.showTooltip && !this.showStatusText) {
+        // When text is not shown, show full pipeline status in tooltip
+        return sprintf(__('Pipeline status: %{status}'), { status: this.status?.text });
       }
+
       return null;
     },
     ariaLabel() {
-      return sprintf(__('Status: %{status}'), { status: this.status?.text });
+      return sprintf(s__('Pipeline|Status: %{status}'), { status: this.status?.text });
     },
     href() {
       // href can come from GraphQL (camelCase) or REST API (snake_case)

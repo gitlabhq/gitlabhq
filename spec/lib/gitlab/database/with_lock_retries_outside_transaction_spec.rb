@@ -35,7 +35,7 @@ RSpec.describe Gitlab::Database::WithLockRetriesOutsideTransaction, feature_cate
       end
     end
 
-    context 'when lock retry is enabled' do
+    context 'when lock retry is enabled', :delete do
       let(:lock_fiber) do
         Fiber.new do
           # Initiating a separate DB connection for the lock
@@ -210,6 +210,8 @@ RSpec.describe Gitlab::Database::WithLockRetriesOutsideTransaction, feature_cate
           end.to raise_error(ActiveRecord::StatementInvalid)
 
           expect(lock_acquired).to eq(false)
+        ensure
+          connection.execute("RESET statement_timeout")
         end
       end
     end

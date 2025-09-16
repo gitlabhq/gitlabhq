@@ -39,6 +39,7 @@ import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_wit
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
   CREATED_DESC,
+  ISSUE_REFERENCE,
   PARAM_FIRST_PAGE_SIZE,
   PARAM_LAST_PAGE_SIZE,
   PARAM_PAGE_AFTER,
@@ -457,13 +458,15 @@ export default {
     queryVariables() {
       const hasGroupFilter = Boolean(this.urlFilterParams.group_path);
       const singleWorkItemType = this.workItemType ? NAME_TO_ENUM_MAP[this.workItemType] : null;
+      const isIidSearch = ISSUE_REFERENCE.test(this.searchQuery);
       return {
         fullPath: this.rootPageFullPath,
         sort: this.sortKey,
         state: this.state,
         ...this.apiFilterParams,
         ...this.pageParams,
-        search: this.searchQuery,
+        iid: isIidSearch ? this.searchQuery.slice(1) : undefined,
+        search: isIidSearch ? undefined : this.searchQuery,
         excludeProjects: hasGroupFilter || this.isEpicsList,
         includeDescendants: !hasGroupFilter,
         types: this.apiFilterParams.types || singleWorkItemType || this.defaultWorkItemTypes,

@@ -787,7 +787,6 @@ RSpec/BeEq:
     - 'spec/lib/gitlab/fogbugz_import/project_creator_spec.rb'
     - 'spec/lib/gitlab/gfm/uploads_rewriter_spec.rb'
     - 'spec/lib/gitlab/git/attributes_parser_spec.rb'
-    - 'spec/lib/gitlab/git/blob_spec.rb'
     - 'spec/lib/gitlab/git/changed_path_spec.rb'
     - 'spec/lib/gitlab/git/compare_spec.rb'
     - 'spec/lib/gitlab/git/diff_collection_spec.rb'

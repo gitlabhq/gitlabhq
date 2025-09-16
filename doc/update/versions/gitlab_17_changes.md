@@ -21,7 +21,13 @@ Ensure you review these instructions for:
 For additional information for Helm chart installations, see
 [the Helm chart 8.0 upgrade notes](https://docs.gitlab.com/charts/releases/8_0.html).
 
-## Issues to be aware of when upgrading from 16.11
+## Issues to be aware of when upgrading
+
+When upgrading from certain GitLab versions, you should be aware of some issues that can affect your upgrade.
+
+### From GitLab 16.11
+
+When you upgrade from GitLab 16.11:
 
 - Background migration `AlterWebhookDeletedAuditEvent: audit_events` can take several hours to finish. You can read more in [merge request 161320](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161320).
 
@@ -99,7 +105,7 @@ For additional information for Helm chart installations, see
   this regression was resolved in the Git versions shipped with GitLab 17.2 so, for systems that see heavy peak loads,
   you should upgrade to GitLab 17.2.
 
-### Linux package installations
+#### Linux package installations
 
 Specific information applies to Linux package installations:
 
@@ -112,7 +118,7 @@ Specific information applies to Linux package installations:
 
   Ensure that your operating system has been upgraded to Ubuntu 20.04 or later before attempting to upgrade GitLab.
 
-### Non-expiring access tokens
+#### Non-expiring access tokens
 
 Access tokens that have no expiration date are valid indefinitely, which is a
 security risk if the access token is divulged.
@@ -133,7 +139,7 @@ For more information, see the:
 - [Deprecations and removals documentation](../deprecations.md#non-expiring-access-tokens).
 - [Deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369122).
 
-## Issues to be aware of when upgrading from 17.0 and earlier
+### From GitLab 17.0 and earlier
 
 For Linux package installations, before upgrading to GitLab 17.1 or later, you must remove references to the [now deprecated bundled Grafana](../deprecations.md#bundled-grafana-deprecated-and-disabled) key (`grafana[]`) from `/etc/gitlab/gitlab.rb`.
 After upgrading, any references to that key in `/etc/gitlab/gitlab.rb` might break features, [such as the merge request widget](https://support.gitlab.com/hc/en-us/articles/19677647414812-Error-after-upgrade-Unable-to-load-the-merge-request-widget).
@@ -143,110 +149,204 @@ For more information, see the following issues:
 - [Remove Grafana attribute and deprecation messages](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8200).
 - [Deprecate Grafana and disable it as a breaking change](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7772).
 
-## Issues to be aware of when upgrading from 17.1 and earlier
+### From GitLab 17.1 and earlier
 
-- If the customer is using GitLab Duo and upgrading to GitLab 17.2.3 or earlier, they must do both of the following:
-  - Resynchronize their license.
+When you upgrade from GitLab 17.1 and earlier:
+
+- If you are using GitLab Duo and upgrading to GitLab 17.2.3 or earlier, you must do both of the following:
+  - Resynchronize your license.
   - Restart the server after the upgrade.
-- If the customer is using GitLab Duo and upgrading to GitLab 17.2.4 or later, they must do either of the following:
-  - Resynchronize their license.
+- If you are using GitLab Duo and upgrading to GitLab 17.2.4 or later, you must do either of the following:
+  - Resynchronize your license.
   - Wait until the next scheduled license synchronization, which happens every 24 hours.
 
-After the customer has upgraded to GitLab 17.2.4 or later, these steps are not required for future upgrades.
+After you have upgraded to GitLab 17.2.4 or later, these steps are not required for future upgrades.
 
 For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/issues/480328).
 
-## Issues to be aware of when upgrading from 17.3
+### From GitLab 17.3
 
-- Migration failures when upgrading from GitLab 17.3.
+Migration failures when upgrading from GitLab 17.3.
 
-  When upgrading from 17.3 to 17.4, there is a slight chance of encountering an error. During the migration process, you might see an error message similar to the following:
+When upgrading from 17.3 to 17.4, there is a slight chance of encountering an error. During the migration process, you might see an error message similar to the following:
 
-  ```shell
-  main: == [advisory_lock_connection] object_id: 127900, pg_backend_pid: 76263
-  main: == 20240812040748 AddUniqueConstraintToRemoteDevelopmentAgentConfigs: migrating
-  main: -- transaction_open?(nil)
-  main:    -> 0.0000s
-  main: -- view_exists?(:postgres_partitions)
-  main:    -> 0.0181s
-  main: -- index_exists?(:remote_development_agent_configs, :cluster_agent_id, {:name=>"index_remote_development_agent_configs_on_unique_agent_id", :unique=>true, :algorithm=>:concurrently})
-  main:    -> 0.0026s
-  main: -- execute("SET statement_timeout TO 0")
-  main:    -> 0.0004s
-  main: -- add_index(:remote_development_agent_configs, :cluster_agent_id, {:name=>"index_remote_development_agent_configs_on_unique_agent_id", :unique=>true, :algorithm=>:concurrently})
-  main: -- execute("RESET statement_timeout")
-  main:    -> 0.0002s
-  main: == [advisory_lock_connection] object_id: 127900, pg_backend_pid: 76263
-  rake aborted!
-  StandardError: An error has occurred, all later migrations canceled:
+```shell
+main: == [advisory_lock_connection] object_id: 127900, pg_backend_pid: 76263
+main: == 20240812040748 AddUniqueConstraintToRemoteDevelopmentAgentConfigs: migrating
+main: -- transaction_open?(nil)
+main:    -> 0.0000s
+main: -- view_exists?(:postgres_partitions)
+main:    -> 0.0181s
+main: -- index_exists?(:remote_development_agent_configs, :cluster_agent_id, {:name=>"index_remote_development_agent_configs_on_unique_agent_id", :unique=>true, :algorithm=>:concurrently})
+main:    -> 0.0026s
+main: -- execute("SET statement_timeout TO 0")
+main:    -> 0.0004s
+main: -- add_index(:remote_development_agent_configs, :cluster_agent_id, {:name=>"index_remote_development_agent_configs_on_unique_agent_id", :unique=>true, :algorithm=>:concurrently})
+main: -- execute("RESET statement_timeout")
+main:    -> 0.0002s
+main: == [advisory_lock_connection] object_id: 127900, pg_backend_pid: 76263
+rake aborted!
+StandardError: An error has occurred, all later migrations canceled:
 
-  PG::UniqueViolation: ERROR:  could not create unique index "index_remote_development_agent_configs_on_unique_agent_id"
-  DETAIL:  Key (cluster_agent_id)=(1000141) is duplicated.
-  ```
+PG::UniqueViolation: ERROR:  could not create unique index "index_remote_development_agent_configs_on_unique_agent_id"
+DETAIL:  Key (cluster_agent_id)=(1000141) is duplicated.
+```
 
-  This error occurs because the migration adds a unique constraint on the `cluster_agent_id` column in the `remote_development_agent_configs` table, but there are still duplicate entries. The previous migration is supposed to remove these duplicates, but in rare cases, new duplicates may be inserted between the two migrations.
+This error occurs because the migration adds a unique constraint on the `cluster_agent_id` column in the `remote_development_agent_configs` table, but there are still duplicate entries. The previous migration is supposed to remove these duplicates, but in rare cases, new duplicates may be inserted between the two migrations.
 
-  To safely resolve this issue, follow these steps:
+To safely resolve this issue, follow these steps:
 
-  1. Open the Rails console where the migrations are being run.
-  1. Run the following script in the Rails console.
-  1. Re-run the migrations, and they should complete successfully.
+1. Open the Rails console where the migrations are being run.
+1. Run the following script in the Rails console.
+1. Re-run the migrations, and they should complete successfully.
 
-   ```Ruby
-   # Get the IDs to keep for each cluster_agent_id; if there are duplicates, only the row with the latest updated_at will be kept.
-   latest_ids = ::RemoteDevelopment::RemoteDevelopmentAgentConfig.select("DISTINCT ON (cluster_agent_id) id")
-     .order("cluster_agent_id, updated_at DESC")
-     .map(&:id)
+```Ruby
+# Get the IDs to keep for each cluster_agent_id; if there are duplicates, only the row with the latest updated_at will be kept.
+latest_ids = ::RemoteDevelopment::RemoteDevelopmentAgentConfig.select("DISTINCT ON (cluster_agent_id) id")
+  .order("cluster_agent_id, updated_at DESC")
+  .map(&:id)
 
-   # Get the list of remote_development_agent_configs to be removed.
-   agent_configs_to_remove = ::RemoteDevelopment::RemoteDevelopmentAgentConfig.where.not(id: latest_ids)
+# Get the list of remote_development_agent_configs to be removed.
+agent_configs_to_remove = ::RemoteDevelopment::RemoteDevelopmentAgentConfig.where.not(id: latest_ids)
 
-   # Delete all duplicated agent_configs.
-   agent_configs_to_remove.delete_all
-   ```
+# Delete all duplicated agent_configs.
+agent_configs_to_remove.delete_all
+```
 
-## Issues to be aware of when upgrading from 17.4
+### From GitLab 17.4
 
-- Background job migration failure when upgrading from 17.4 to 17.5
+Background job migration failure when upgrading from 17.4 to 17.5.
 
-  When upgrading from 17.4 to 17.5, you can see an error in Sidekiq jobs related to a removed background data migration. The error message looks like this; `uninitialized constant Gitlab::BackgroundMigration::SetProjectVulnerabilityCount`.
+When upgrading from 17.4 to 17.5, you can see an error in Sidekiq jobs related to a removed background data migration. The error message looks like this; `uninitialized constant Gitlab::BackgroundMigration::SetProjectVulnerabilityCount`.
 
-  This error will disappear on its own eventually but you can also execute the following script on Rails console to stop seeing the error;
+This error will disappear on its own eventually but you can also execute the following script on Rails console to stop seeing the error:
 
-  ```ruby
-  Gitlab::Database::BackgroundMigration::BatchedMigration.for_configuration(
-    :gitlab_main, 'SetProjectVulnerabilityCount', :project_settings, :project_id, []
-  ).delete_all
-  ```
+```ruby
+Gitlab::Database::BackgroundMigration::BatchedMigration.for_configuration(
+  :gitlab_main, 'SetProjectVulnerabilityCount', :project_settings, :project_id, []
+).delete_all
+```
 
-## Issues to be aware of when upgrading from 17.5
+### From GitLab 17.5
 
-- Migration failures when upgrading from GitLab 17.5.
+Migration failures when upgrading from GitLab 17.5.
 
-  When upgrading from 17.5 to 17.6, there is a slight chance of encountering an error. During the migration process, you might see an error message similar to the following:
+When upgrading from 17.5 to 17.6, there is a slight chance of encountering an error. During the migration process, you might see an error message similar to the following:
 
-  ```shell
-  rake aborted!
-  StandardError: An error has occurred, all later migrations canceled:
+```shell
+rake aborted!
+StandardError: An error has occurred, all later migrations canceled:
 
-  PG::CheckViolation: ERROR: new row for relation "ci_deleted_objects" violates check constraint "check_98f90d6c53"
-  ```
+PG::CheckViolation: ERROR: new row for relation "ci_deleted_objects" violates check constraint "check_98f90d6c53"
+```
 
-  This error occurs because the migration tries to update some of the rows from the `ci_deleted_objects` table so that they will be processed, but they could be old records with a missing value for a required check constraint.
+This error occurs because the migration tries to update some of the rows from the `ci_deleted_objects` table so that they will be processed, but they could be old records with a missing value for a required check constraint.
 
-  To safely resolve this issue, follow these steps:
+To safely resolve this issue, follow these steps:
 
-  1. Run only the following migration to fix the records affected by the check constraint.
-  1. Re-run the migrations, and they should complete successfully.
+1. Run only the following migration to fix the records affected by the check constraint.
+1. Re-run the migrations, and they should complete successfully.
 
    ```shell
    gitlab-rake db:migrate:up:ci VERSION=20241028085044
    ```
 
-## Issues to be aware of when upgrading to 17.8
+## Upgrades to 17.11.0
 
-- In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9).
-  If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
+- To avoid a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/537325) that causes a database migration to run for a long time and use excessive CPU,
+  update to GitLab 17.11.3 or later.
+
+### New encryption secrets
+
+In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9):
+
+- `active_record_encryption_primary_key`
+- `active_record_encryption_deterministic_key`
+- `active_record_encryption_key_derivation_salt`
+
+If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
+
+### Geo installations 17.11.0
+
+- GitLab versions 17.11 through 18.1 have a known issue where Git operations proxied from a secondary Geo site fail with HTTP 500 errors. To resolve this issue, upgrade to GitLab 17.11.5 or later.
+
+## Upgrades to 17.10.0
+
+- Runner tags missing when upgrading to GitLab 17.10, see [issue 524402](https://gitlab.com/gitlab-org/gitlab/-/issues/524402).
+  Upgrading first to GitLab 17.6 sidesteps the issue. The bug is fixed in GitLab 17.11.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 17.8                    |  17.8.0 - 17.8.6        | 17.8.7   |
+  | 17.9                    |  17.9.0 - 17.9.4        | 17.9.5   |
+  | 17.10                   |  17.10.0 - 17.10.4      | 17.10.5  |
+
+  When upgrading from 17.5 through a version older than the patch releases mentioned in the table,
+  there is a chance of the runner tags table becoming empty.
+
+  Run the following PostgreSQL query on the `ci` database to check the runner tags table to determine if you are
+  affected:
+
+  ```sql
+  SELECT 'OK, ci_runner_taggings is populated.' FROM ci_runner_taggings LIMIT 1;
+  ```
+
+  If the query returns an empty result instead of `OK, ci_runner_taggings is populated.`,
+  see the [workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/524402#workaround) in the related issue.
+
+### New encryption secrets
+
+In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9):
+
+- `active_record_encryption_primary_key`
+- `active_record_encryption_deterministic_key`
+- `active_record_encryption_key_derivation_salt`
+
+If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
+
+### Geo installations 17.10.0
+
+- GitLab versions 17.10 through 18.1 have a known issue where Git operations proxied from a secondary Geo site fail with HTTP 500 errors. To resolve this issue, upgrade to GitLab 17.11.5 or later.
+
+## Upgrades to 17.9.0
+
+- Runner tags missing when upgrading to GitLab 17.9, see [issue 524402](https://gitlab.com/gitlab-org/gitlab/-/issues/524402).
+  Upgrading first to GitLab 17.6 sidesteps the issue. The bug is fixed in GitLab 17.11.
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 17.8                    |  17.8.0 - 17.8.6        | 17.8.7   |
+  | 17.9                    |  17.9.0 - 17.9.4        | 17.9.5   |
+  | 17.10                   |  17.10.0 - 17.10.4      | 17.10.5  |
+
+  When upgrading from 17.5 through a version older than the patch releases mentioned in the table,
+  there is a chance of the runner tags table becoming empty.
+
+  Run the following PostgreSQL query on the `ci` database to check the runner tags table to determine if you are
+  affected:
+
+  ```sql
+  SELECT 'OK, ci_runner_taggings is populated.' FROM ci_runner_taggings LIMIT 1;
+  ```
+
+  If the query returns an empty result instead of `OK, ci_runner_taggings is populated.`,
+  see the [workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/524402#workaround) in the related issue.
+
+### New encryption secrets
+
+In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9):
+
+- `active_record_encryption_primary_key`
+- `active_record_encryption_deterministic_key`
+- `active_record_encryption_key_derivation_salt`
+
+If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
+
+## Upgrades to 17.8.0
 
 - Migration failures when upgrading to GitLab 17.8.
 
@@ -298,118 +398,6 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
   If the query returns an empty result instead of `OK, ci_runner_taggings is populated.`,
   see the [workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/524402#workaround) in the related issue.
 
-## Issues to be aware of when upgrading to 17.9
-
-- In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9).
-  If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
-
-- Runner tags missing when upgrading to GitLab 17.9, see [issue 524402](https://gitlab.com/gitlab-org/gitlab/-/issues/524402).
-  Upgrading first to GitLab 17.6 sidesteps the issue. The bug is fixed in GitLab 17.11.
-
-  **Affected releases**:
-
-  | Affected minor releases | Affected patch releases | Fixed in |
-  | ----------------------- | ----------------------- | -------- |
-  | 17.8                    |  17.8.0 - 17.8.6        | 17.8.7   |
-  | 17.9                    |  17.9.0 - 17.9.4        | 17.9.5   |
-  | 17.10                   |  17.10.0 - 17.10.4      | 17.10.5  |
-
-  When upgrading from 17.5 through a version older than the patch releases mentioned in the table,
-  there is a chance of the runner tags table becoming empty.
-
-  Run the following PostgreSQL query on the `ci` database to check the runner tags table to determine if you are
-  affected:
-
-  ```sql
-  SELECT 'OK, ci_runner_taggings is populated.' FROM ci_runner_taggings LIMIT 1;
-  ```
-
-  If the query returns an empty result instead of `OK, ci_runner_taggings is populated.`,
-  see the [workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/524402#workaround) in the related issue.
-
-## Issues to be aware of when upgrading to 17.10
-
-- In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9).
-  If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
-
-- Runner tags missing when upgrading to GitLab 17.10, see [issue 524402](https://gitlab.com/gitlab-org/gitlab/-/issues/524402).
-  Upgrading first to GitLab 17.6 sidesteps the issue. The bug is fixed in GitLab 17.11.
-
-  **Affected releases**:
-
-  | Affected minor releases | Affected patch releases | Fixed in |
-  | ----------------------- | ----------------------- | -------- |
-  | 17.8                    |  17.8.0 - 17.8.6        | 17.8.7   |
-  | 17.9                    |  17.9.0 - 17.9.4        | 17.9.5   |
-  | 17.10                   |  17.10.0 - 17.10.4      | 17.10.5  |
-
-  When upgrading from 17.5 through a version older than the patch releases mentioned in the table,
-  there is a chance of the runner tags table becoming empty.
-
-  Run the following PostgreSQL query on the `ci` database to check the runner tags table to determine if you are
-  affected:
-
-  ```sql
-  SELECT 'OK, ci_runner_taggings is populated.' FROM ci_runner_taggings LIMIT 1;
-  ```
-
-  If the query returns an empty result instead of `OK, ci_runner_taggings is populated.`,
-  see the [workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/524402#workaround) in the related issue.
-
-## Issues to be aware of when upgrading to 17.11
-
-- In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9).
-  If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
-
-## 17.11.0
-
-- To avoid a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/537325) that causes a database migration to run for a long time and use excessive CPU,
-  update to GitLab 17.11.3 or later.
-
-### New encryption secrets
-
-In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9):
-
-- `active_record_encryption_primary_key`
-- `active_record_encryption_deterministic_key`
-- `active_record_encryption_key_derivation_salt`
-
-If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
-
-### Geo installations 17.11.0
-
-- GitLab versions 17.11 through 18.1 have a known issue where Git operations proxied from a secondary Geo site fail with HTTP 500 errors. To resolve this issue, upgrade to GitLab 17.11.5 or later.
-
-## 17.10.0
-
-### New encryption secrets
-
-In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9):
-
-- `active_record_encryption_primary_key`
-- `active_record_encryption_deterministic_key`
-- `active_record_encryption_key_derivation_salt`
-
-If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
-
-### Geo installations 17.10.0
-
-- GitLab versions 17.10 through 18.1 have a known issue where Git operations proxied from a secondary Geo site fail with HTTP 500 errors. To resolve this issue, upgrade to GitLab 17.11.5 or later.
-
-## 17.9.0
-
-### New encryption secrets
-
-In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9):
-
-- `active_record_encryption_primary_key`
-- `active_record_encryption_deterministic_key`
-- `active_record_encryption_key_derivation_salt`
-
-If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
-
-## 17.8.0
-
 ### New encryption secrets
 
 In GitLab 17.8, three new secrets have been added to support the new encryption framework (started to be used in 17.9):
@@ -454,7 +442,7 @@ ensure that your proxy server does not alter or remove signed HTTP headers.
 
   To resolve this error, initialize the migration from the UI.
 
-## 17.7.0
+## Upgrades to 17.7.0
 
 - Git 2.47.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/self_compiled/_index.md#git).
 - FIPS Linux packages now use the system Libgcrypt, except FIPS Linux packages for AmazonLinux 2. Previous versions of the FIPS Linux packages used the
@@ -510,7 +498,7 @@ own configuration settings for the allowed cryptographic algorithms.
 Check the [GitLab documentation on securing your installation](../../security/_index.md)
 for more details.
 
-## 17.5.0
+## Upgrades to 17.5.0
 
 {{< alert type="note" >}}
 
@@ -528,7 +516,7 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
   [update their authentication configuration](../../administration/gitaly/configure_gitaly.md#configure-authentication)
   to avoid secrets mismatches.
 
-## 17.4.0
+## Upgrades to 17.4.0
 
 - Starting with GitLab 17.4, new GitLab installations have a different database schema regarding ID columns.
   - All previous integer (32 bits) ID columns (for example columns like `id`, `%_id`, `%_ids`) are now created as `bigint` (64 bits).
@@ -560,7 +548,7 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
   ALPN enforcement has been disabled again in [GitLab 17.5.5 and other versions](../../administration/gitaly/praefect/configure.md#alpn-enforcement).
   Upgrading to one of those versions removes the need to set `GRPC_ENFORCE_ALPN_ENABLED`.
 
-## 17.3.0
+## Upgrades to 17.3.0
 
 - Git 2.45.0 and later is required by Gitaly. For self-compiled installations, you should use the [Git version provided by Gitaly](../../install/self_compiled/_index.md#git).
 
@@ -578,7 +566,7 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
   | 17.2                    |  All                    | 17.2.5   |
   | 17.3                    |  All                    | 17.3.1   |
 
-## 17.2.1
+## Upgrades to 17.2.1
 
 - Upgrades to GitLab 17.2.1 can fail because of [unknown sequences in the database](https://gitlab.com/gitlab-org/gitlab/-/issues/474293). This issue has
   been fixed in GitLab 17.2.2.
@@ -638,7 +626,7 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
   | 17.2                    |  All                    | 17.2.5   |
   | 17.3                    |  All                    | 17.3.1   |
 
-## 17.1.0
+## Upgrades to 17.1.0
 
 - Bitbucket identities with untrusted `extern_uid` are deleted.
   For more information, see [issue 452426](https://gitlab.com/gitlab-org/gitlab/-/issues/452426).
@@ -740,7 +728,7 @@ Feedback about this conditional stop on the upgrade path can be provided [in the
   | 17.2                    |  All                    | 17.2.5   |
   | 17.3                    |  All                    | 17.3.1   |
 
-## 17.0.0
+## Upgrades to 17.0.0
 
 ### Geo installations 17.0.0
 
@@ -769,13 +757,15 @@ Feedback about this conditional stop on the upgrade path can be provided [in the
 
 ## Unify new encryption secrets
 
-[GitLab 17.8 introduced three new secrets](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175154) to support the new encryption framework, [which was introduced in GitLab 17.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179559):
+[GitLab 17.8 introduced three new secrets](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175154) to support the
+new encryption framework, [which was introduced in GitLab 17.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179559):
 
 - `active_record_encryption_primary_key`
 - `active_record_encryption_deterministic_key`
 - `active_record_encryption_key_derivation_salt`
 
-If you have a multi-node configuration, you must ensure these secrets are the same on all nodes. Otherwise, the application automatically generates the missing secrets at startup.
+If you have a multi-node configuration, you must ensure these secrets are the same on all nodes. Otherwise, the
+application automatically generates the missing secrets at startup.
 
 {{< tabs >}}
 

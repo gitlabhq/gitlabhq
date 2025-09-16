@@ -161,6 +161,13 @@ describe('CommitListItem', () => {
         expect(findSignatureBadge().exists()).toBe(false);
       });
 
+      it(`aria-label is set`, () => {
+        const signatureBadge = findSignatureBadge();
+        expect(signatureBadge.attributes('aria-label')).toBe(
+          mockCommit.signature.verificationStatus,
+        );
+      });
+
       it('renders signature badge when commit has signature', () => {
         const signatureBadge = findSignatureBadge();
         expect(signatureBadge.props('signature')).toBe(mockCommit.signature);

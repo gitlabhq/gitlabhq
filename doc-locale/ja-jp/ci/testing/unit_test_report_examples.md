@@ -2,21 +2,21 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: ユニットテストレポートの例
+title: 単体テストレポートの例
 ---
 
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 提供: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
-[ユニットテストレポート](unit_test_reports.md)は、多くの言語とパッケージに対して生成できます。これらの例をガイドラインとして使用して、リストされた言語とパッケージのユニットテストレポートを生成するようにパイプラインを構成します。使用している言語またはパッケージのバージョンに合わせて、例を編集する必要がある場合があります。
+[単体テストレポート](unit_test_reports.md)は、多くの言語とパッケージに対して生成できます。これらの例をガイドラインとして、リストされた言語とパッケージの単体テストレポートを生成するようにパイプラインを設定します。使用している言語またはパッケージのバージョンに合わせて、例を編集する必要がある場合があります。
 
-## Ruby
+## Ruby {#ruby}
 
-`.gitlab-ci.yml`で次のジョブを使用します。これには、ユニットテストレポートの出力ファイルへのリンクを提供する`artifacts:paths`キーワードが含まれています。
+`.gitlab-ci.yml`で次のジョブを使用します。これには、単体テストレポートの出力ファイルへのリンクを提供する`artifacts:paths`キーワードが含まれています。
 
 ```yaml
 ## Use https://github.com/sj26/rspec_junit_formatter to generate a JUnit report format XML file with rspec
@@ -36,7 +36,7 @@ ruby:
       junit: rspec.xml
 ```
 
-## Go
+## Go {#go}
 
 `.gitlab-ci.yml`で次のジョブを使用します。
 
@@ -53,13 +53,13 @@ golang:
       junit: report.xml
 ```
 
-## Java
+## Java {#java}
 
 Javaには、JUnitレポート形式のXMLファイルを生成できるツールがいくつかあります。
 
-### Gradle
+### Gradle {#gradle}
 
-次の例では、`gradle`を使用してテストレポートを生成します。複数のテストタスクが定義されている場合、`gradle`は`build/test-results/`の下に複数のディレクトリを生成します。その場合は、次のパスを定義して、globマッチングを利用できます: `build/test-results/test/**/TEST-*.xml`:
+次の例では、`gradle`を使用してテストレポートを生成します。複数のテストタスクが定義されている場合、`gradle`は`build/test-results/`の下に複数のディレクトリを生成します。その場合は、次のパスを定義して、globマッチングを利用できます: `build/test-results/test/**/TEST-*.xml`。
 
 ```yaml
 java:
@@ -72,9 +72,7 @@ java:
       junit: build/test-results/test/**/TEST-*.xml
 ```
 
-[GitLab Runner 13.0](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620)以降では、`**`を使用できます。
-
-### Maven
+### Maven {#maven}
 
 [Surefire](https://maven.apache.org/surefire/maven-surefire-plugin/)および[Failsafe](https://maven.apache.org/surefire/maven-failsafe-plugin/)テストレポートを解析するには、`.gitlab-ci.yml`で次のジョブを使用します。
 
@@ -91,9 +89,9 @@ java:
         - target/failsafe-reports/TEST-*.xml
 ```
 
-## Pythonの例
+## Pythonの例 {#python-example}
 
-この例では、`--junitxml=report.xml`フラグを指定したpytestを使用して、出力をJUnitレポートXML形式に整形します。
+この例では、`--junitxml=report.xml`フラグを指定したpytestを使用して、出力をJUnitレポートのXML形式に整形します。
 
 ```yaml
 pytest:
@@ -106,13 +104,13 @@ pytest:
       junit: report.xml
 ```
 
-## C/C++
+## C/C++ {#cc}
 
 C/C++には、JUnitレポート形式のXMLファイルを生成できるツールがいくつかあります。
 
-### GoogleTest
+### GoogleTest {#googletest}
 
-次の例では、`gtest`を使用してテストレポートを生成します。異なるアーキテクチャ(`x86`、`x64`、または`arm`)用に複数の`gtest`実行可能ファイルが作成されている場合は、一意のファイル名を指定して各テストを実行する必要があります。結果はその後、集約されます。
+次の例では、`gtest`を使用してテストレポートを生成します。異なるアーキテクチャ（`x86`、`x64`、または`arm`）用に複数の`gtest`実行可能ファイルが作成されている場合は、一意のファイル名を指定して各テストを実行する必要があります。結果はその後、集約されます。
 
 ```yaml
 cpp:
@@ -125,9 +123,9 @@ cpp:
       junit: report.xml
 ```
 
-### CUnit
+### CUnit {#cunit}
 
-[CUnit](https://cunity.gitlab.io/cunit/)は、次のように`CUnitCI.h` マクロを使用して実行すると、[JUnitレポート形式のXMLファイル](https://cunity.gitlab.io/cunit/group__CI.html)を自動的に生成するように設定できます。
+[CUnit](https://cunity.gitlab.io/cunit/)は、次のように`CUnitCI.h`マクロを使用して実行すると、[JUnitレポート形式のXMLファイル](https://cunity.gitlab.io/cunit/group__CI.html)を自動的に生成するように設定できます。
 
 ```yaml
 cunit:
@@ -140,9 +138,9 @@ cunit:
       junit: ./my-cunit-test.xml
 ```
 
-## .NET
+## .NET {#net}
 
-[JunitXML.TestLogger](https://www.nuget.org/packages/JunitXml.TestLogger/) NuGet パッケージは、.Net Frameworkおよび.Net Coreアプリケーション用のテストレポートを生成できます。次の例では、リポジトリのルートフォルダにソリューションがあり、サブフォルダに1つ以上のプロジェクトファイルがあることを想定しています。テストプロジェクトごとに1つの結果ファイルが生成され、各ファイルはアーティファクトフォルダーに配置されます。この例には、テストウィジェットのテストデータの可読性を向上させるオプションの書式設定引数が含まれています。完全な.Net Coreの例については、[こちら](https://gitlab.com/Siphonophora/dot-net-cicd-test-logging-demo)をご覧ください。
+[JunitXML.TestLogger](https://www.nuget.org/packages/JunitXml.TestLogger/) NuGetパッケージは、.Net Frameworkおよび.Net Coreアプリケーション用のテストレポートを生成できます。次の例では、リポジトリのルートフォルダーにソリューションがあり、サブフォルダーに1つ以上のプロジェクトファイルがあることを想定しています。テストプロジェクトごとに1つの結果ファイルが生成され、各ファイルはアーティファクトフォルダーに配置されます。この例には、テストウィジェットでのテストデータの可読性を向上させるオプションの書式設定引数が含まれています。完全な.Net Coreの例については、[こちら](https://gitlab.com/Siphonophora/dot-net-cicd-test-logging-demo)をご覧ください。
 
 ```yaml
 ## Source code and documentation are here: https://github.com/spekt/junit.testlogger/
@@ -160,11 +158,11 @@ Test:
         - ./**/*test-result.xml
 ```
 
-## JavaScript
+## JavaScript {#javascript}
 
 JavaScriptには、JUnitレポート形式のXMLファイルを生成できるツールがいくつかあります。
 
-### Jest
+### Jest {#jest}
 
 [jest-junit](https://github.com/jest-community/jest-junit) npmパッケージは、JavaScriptアプリケーションのテストレポートを生成できます。次の`.gitlab-ci.yml`の例では、`javascript`ジョブはJestを使用してテストレポートを生成しています。
 
@@ -184,9 +182,9 @@ javascript:
         - junit.xml
 ```
 
-ユニットテストを含む`.test.js`ファイルがない場合にジョブを渡すには、`script:`セクションの`jest`コマンドの最後に`--passWithNoTests`フラグを追加します。
+単体テストを含む`.test.js`ファイルがない場合でもジョブを成功させるには、`script:`セクションの`jest`コマンドの最後に`--passWithNoTests`フラグを追加します。
 
-### Karma
+### Karma {#karma}
 
 [Karma-junit-reporter](https://github.com/karma-runner/karma-junit-reporter) npmパッケージは、JavaScriptアプリケーションのテストレポートを生成できます。次の`.gitlab-ci.yml`の例では、`javascript`ジョブはKarmaを使用してテストレポートを生成しています。
 
@@ -202,9 +200,9 @@ javascript:
         - junit.xml
 ```
 
-### Mocha
+### Mocha {#mocha}
 
-[Mocha用JUnit Reporter](https://github.com/michaelleeallen/mocha-junit-reporter) NPMパッケージは、JavaScriptアプリケーションのテストレポートを生成できます。次の`.gitlab-ci.yml`の例では、`javascript`ジョブはMochaを使用してテストレポートを生成しています。
+[Mocha用JUnit Reporter](https://github.com/michaelleeallen/mocha-junit-reporter) npmパッケージは、JavaScriptアプリケーションのテストレポートを生成できます。次の`.gitlab-ci.yml`の例では、`javascript`ジョブはMochaを使用してテストレポートを生成しています。
 
 ```yaml
 javascript:
@@ -218,9 +216,9 @@ javascript:
         - junit.xml
 ```
 
-## FlutterまたはDart
+## FlutterまたはDart {#flutter-or-dart}
 
-この`.gitlab-ci.yml`ファイルは、`flutter test`出力を JUnit レポート XML形式に変換するために、[JUnit Report](https://pub.dev/packages/junitreport)パッケージを使用します。
+この例の`.gitlab-ci.yml`ファイルは、[JUnit Report](https://pub.dev/packages/junitreport)パッケージを使用して、`flutter test`出力をJUnitレポートのXML形式に変換します。
 
 ```yaml
 test:
@@ -234,9 +232,9 @@ test:
         - report.xml
 ```
 
-## PHP
+## PHP {#php}
 
-この例では、`--log-junit`フラグを指定した[PHPUnit](https://phpunit.de/index.html)を使用します。`phpunit.xml`設定ファイルで [XML](https://docs.phpunit.de/en/11.0/configuration.html#the-junit-element)を使用して、このオプションを追加することもできます。
+この例では、`--log-junit`フラグを指定した[PHPUnit](https://phpunit.de/index.html)を使用します。`phpunit.xml`設定ファイルで[XML](https://docs.phpunit.de/en/11.0/configuration.html#the-junit-element)を使用して、このオプションを追加することもできます。
 
 ```yaml
 phpunit:
@@ -250,7 +248,7 @@ phpunit:
       junit: report.xml
 ```
 
-## Rust
+## Rust {#rust}
 
 この例では、現在のディレクトリにインストールされている[cargo2junit](https://crates.io/crates/cargo2junit)を使用します。`cargo test`からJSON出力を取得するには、nightlyコンパイラを有効にする必要があります。
 
@@ -269,9 +267,9 @@ run unittests:
         - report.xml
 ```
 
-## Helm
+## Helm {#helm}
 
-この例では、`-t junit`フラグを指定した [Helm Unittest](https://github.com/helm-unittest/helm-unittest#docker-usage)プラグインを使用して、出力をXML形式のJUnit レポートに整形します。
+この例では、[Helm Unittest](https://github.com/helm-unittest/helm-unittest#docker-usage)プラグインを使用し、`-t junit`フラグを指定して、出力をJUnitレポートのXML形式に整形します。
 
 ```yaml
 helm:
@@ -284,7 +282,7 @@ helm:
       junit: report.xml
 ```
 
-`-f tests/*[._]test.yaml`フラグは、`helm-unittest`が`tests/`ディレクトリで次のいずれかで終わるファイルを検索するように設定します。
+`-f tests/*[._]test.yaml`フラグは、`tests/`ディレクトリ内の次のいずれかで終わるファイルを検索するように`helm-unittest`を設定します。
 
 - `.test.yaml`
 - `_test.yaml`

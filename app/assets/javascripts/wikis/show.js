@@ -5,11 +5,14 @@ import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_
 import csrf from '~/lib/utils/csrf';
 import { TYPENAME_PROJECT, TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import SidebarResizer from './components/sidebar_resizer.vue';
 import Wikis from './wikis';
 import WikiContentApp from './app.vue';
 import WikiSidebarEntries from './components/wiki_sidebar_entries.vue';
-import initNotesApp from './wiki_notes/index';
+import initCache from './wiki_notes/graphql/cache_init';
+import resolvers from './wiki_notes/graphql/resolvers';
+import typeDefs from './wiki_notes/graphql/typedefs.graphql';
 
 const mountSidebarResizer = () => {
   const resizer = document.querySelector('.js-wiki-sidebar-resizer');
@@ -23,8 +26,8 @@ const mountSidebarResizer = () => {
   }
 };
 
-const mountWikiContentApp = () => {
-  const el = document.querySelector('#js-vue-wiki-content-app');
+const mountWikiApp = () => {
+  const el = document.querySelector('#js-vue-wiki-app');
 
   if (!el) return false;
   const {
@@ -50,10 +53,24 @@ const mountWikiContentApp = () => {
     formatOptions,
     containerId,
     containerType,
+    registerPath,
+    signInPath,
+    currentUserData,
+    markdownPreviewPath,
+    noteableType,
+    isContainerArchived,
+    notesFilters,
+    reportAbusePath,
+    containerName,
+    pageAuthorEmail,
   } = el.dataset;
 
   Vue.use(VueApollo);
-  const apolloProvider = new VueApollo({ defaultClient: createApolloClient() });
+  const apolloProvider = new VueApollo({
+    defaultClient: createApolloClient(resolvers, { typeDefs }),
+  });
+
+  initCache(apolloProvider.defaultClient.cache);
 
   const pageInfoData = convertObjectPropsToCamelCase(JSON.parse(pageInfo));
   const queryVariables = {
@@ -94,6 +111,20 @@ const mountWikiContentApp = () => {
       templates: JSON.parse(templates),
       drawioUrl: gon.diagramsnet_url,
       pagePersisted: parseBoolean(pagePersisted),
+      containerId,
+      containerType,
+      markdownPreviewPath,
+      currentUserData: JSON.parse(currentUserData || {}),
+      reportAbusePath,
+      registerPath,
+      signInPath,
+      noteableType,
+      noteCount: 5,
+      markdownDocsPath: helpPagePath('user/markdown.md'),
+      notesFilters: JSON.parse(notesFilters || {}),
+      isContainerArchived: parseBoolean(isContainerArchived),
+      containerName,
+      pageAuthorEmail,
     },
     render(createElement) {
       return createElement(WikiContentApp);
@@ -122,9 +153,8 @@ export const mountWikiSidebarEntries = () => {
 };
 
 export const mountApplications = () => {
-  mountWikiContentApp();
+  mountWikiApp();
   mountSidebarResizer();
-  initNotesApp();
 
   new Wikis(); // eslint-disable-line no-new
 };

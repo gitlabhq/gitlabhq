@@ -1676,6 +1676,7 @@ describeSkipVue3(skipReason, () => {
       expect(defaultSlimQueryHandler).not.toHaveBeenCalled();
     });
   });
+
   describe('when "reorder" event is emitted by IssuableList', () => {
     beforeEach(async () => {
       mountComponent({
@@ -1770,6 +1771,40 @@ describeSkipVue3(skipReason, () => {
         'data-track-action': 'click_email_work_item_project_work_items_empty_list_page',
         'data-track-label': 'email_work_item_project_work_items_empty_list',
       });
+    });
+  });
+
+  describe('iid filter search', () => {
+    it('when user enters a number with #', async () => {
+      mountComponent();
+      await waitForPromises();
+
+      findIssuableList().vm.$emit('filter', [
+        { type: FILTERED_SEARCH_TERM, value: { data: '#23', operator: 'undefined' } },
+      ]);
+      await nextTick();
+
+      expect(defaultQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          iid: '23',
+        }),
+      );
+    });
+
+    it('when user enters a number without #', async () => {
+      mountComponent();
+      await waitForPromises();
+
+      findIssuableList().vm.$emit('filter', [
+        { type: FILTERED_SEARCH_TERM, value: { data: '23', operator: 'undefined' } },
+      ]);
+      await nextTick();
+
+      expect(defaultQueryHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          search: '23',
+        }),
+      );
     });
   });
 });

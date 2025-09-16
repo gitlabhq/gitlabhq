@@ -82,7 +82,7 @@ RSpec.shared_examples 'creating merge request approval policy with invalid prope
 
     click_button _('Configure with a merge request')
 
-    expect(page).to have_content("Invalid policy YAML")
+    expect(page).to have_content("Invalid policy")
     expect(page).to have_current_path(path_to_merge_request_approval_policy_editor)
   end
 
@@ -92,7 +92,7 @@ RSpec.shared_examples 'creating merge request approval policy with invalid prope
 
     click_button _('Configure with a merge request')
 
-    expect(page).to have_content("Invalid policy YAML")
+    expect(page).to have_content("Invalid policy")
     expect(page).to have_current_path(path_to_merge_request_approval_policy_editor)
   end
 end

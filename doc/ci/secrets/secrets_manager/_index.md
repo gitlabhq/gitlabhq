@@ -23,7 +23,7 @@ ignore_in_report: true
 {{< alert type="warning" >}}
 
 This feature is an [experiment](../../../policy/development_stages_support.md#experiment) and subject to change without
-notice. This feature is not ready for production use.
+notice. This feature is not ready for public testing or production use.
 
 {{< /alert >}}
 

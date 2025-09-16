@@ -18,11 +18,11 @@ RSpec.describe 'shared/wikis/show.html.haml', feature_category: :wiki do
     assign(:templates, [wiki_page])
   end
 
-  describe '#js-vue-wiki-notes-app' do
-    it 'renders wiki notes app' do
+  describe '#js-vue-wiki-app' do
+    it 'renders wiki app' do
       render
 
-      expect(rendered).to have_selector('#js-vue-wiki-notes-app')
+      expect(rendered).to have_selector('#js-vue-wiki-app')
     end
 
     context 'when container not archived' do

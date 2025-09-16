@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe InitializerConnections do
-  describe '.raise_if_new_database_connection', :reestablished_active_record_base do
+  describe '.raise_if_new_database_connection', :reestablished_active_record_base, :delete do
     before do
       ActiveRecord::Base.connection_handler.clear_active_connections!
       ActiveRecord::Base.connection_handler.flush_idle_connections!
