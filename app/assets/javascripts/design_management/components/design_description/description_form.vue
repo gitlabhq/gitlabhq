@@ -46,10 +46,6 @@ export default {
       type: String,
       required: true,
     },
-    designVariables: {
-      type: Object,
-      required: true,
-    },
   },
   data() {
     return {

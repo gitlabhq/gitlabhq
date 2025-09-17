@@ -8,7 +8,6 @@ import JobLogTopBar from '~/ci/job_details/components/job_log_top_bar.vue';
 import RootCauseAnalysisButton from 'ee_else_ce/ci/job_details/components/root_cause_analysis_button.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
-import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 import { __, sprintf } from '~/locale';
 import delayedJobMixin from '~/ci/mixins/delayed_job_mixin';
 import Log from '~/ci/job_details/components/log/log.vue';
@@ -102,7 +101,6 @@ export default {
       'shouldRenderSharedRunnerLimitWarning',
       'hasJobLog',
       'emptyStateIllustration',
-      'isScrollingDown',
       'emptyStateAction',
       'hasOfflineRunnersForProject',
       'fullScreenAPIAndContainerAvailable',
@@ -207,7 +205,6 @@ export default {
       'stopPollingJobLog',
       'stopPolling',
       'toggleScrollButtons',
-      'toggleScrollAnimation',
       'enterFullscreen',
       'exitFullscreen',
     ]),
@@ -225,12 +222,6 @@ export default {
       }
     },
     updateScroll() {
-      if (!isScrolledToBottom()) {
-        this.toggleScrollAnimation(false);
-      } else if (this.isScrollingDown) {
-        this.toggleScrollAnimation(true);
-      }
-
       this.throttleToggleScrollButtons();
     },
     setSearchResults(searchResults) {
@@ -314,7 +305,6 @@ export default {
             :is-scroll-bottom-disabled="isScrollBottomDisabled"
             :is-scroll-top-disabled="isScrollTopDisabled"
             :is-job-log-size-visible="isJobLogSizeVisible"
-            :is-scrolling-down="isScrollingDown"
             :is-complete="isJobLogComplete"
             :job-log="jobLog"
             :full-screen-mode-available="fullScreenAPIAndContainerAvailable"

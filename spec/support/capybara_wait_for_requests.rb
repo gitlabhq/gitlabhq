@@ -27,10 +27,10 @@ module Capybara
       include WaitForRequests
 
       module WaitForRequestsAfterClickButton
-        def click_button(locator = nil, **options)
-          super
+        def click_button(locator = nil, max_wait_time: 2 * Capybara.default_max_wait_time, **options)
+          super(locator, **options)
 
-          wait_for_requests
+          wait_for_requests(max_wait_time: max_wait_time)
         end
       end
 

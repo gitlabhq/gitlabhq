@@ -1,5 +1,4 @@
 import { isEmpty } from 'lodash';
-import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 import { checkJobHasLog } from './utils';
 
 export const hasForwardDeploymentFailure = (state) =>
@@ -34,8 +33,6 @@ export const shouldRenderSharedRunnerLimitWarning = (state) =>
   !isEmpty(state.job.runners) &&
   !isEmpty(state.job.runners.quota) &&
   state.job.runners.quota.used >= state.job.runners.quota.limit;
-
-export const isScrollingDown = (state) => isScrolledToBottom() && !state.isJobLogComplete;
 
 export const hasOfflineRunnersForProject = (state) =>
   state?.job?.runners?.available && !state?.job?.runners?.online;

@@ -14,10 +14,10 @@ module InternalEventsCli
       STEPS = [
         'New Metric',
         'Type',
-        'Events',
+        'Config',
         'Scope',
         'Description',
-        'Copy event',
+        'Defaults',
         'Group',
         'Categories',
         'URL',
@@ -36,15 +36,12 @@ module InternalEventsCli
 
       def run
         type = prompt_for_metric_type
-        prompt_for_events(type)
 
-        return unless @selected_event_paths.any?
-
-        prompt_for_metrics
+        prompt_for_configuration(type)
 
         return unless metric
 
-        prompt_for_event_filters
+        metric.milestone = MILESTONE
         prompt_for_description
         prompt_for_metric_name
         defaults = prompt_for_copying_event_properties
@@ -73,7 +70,7 @@ module InternalEventsCli
       # ----- Prompts -----------------------------
 
       def prompt_for_metric_type
-        return if @selected_event_paths.any?
+        return :event_metric if @selected_event_paths.any?
 
         new_page!(on_step: 'Type', steps: STEPS)
 
@@ -89,10 +86,42 @@ module InternalEventsCli
         end
       end
 
+      def prompt_for_configuration(type)
+        case type
+        # TODO: replace code blocks with event & db subflow classes https://gitlab.com/gitlab-org/gitlab/-/issues/464066
+        when :database_metric
+          # CLI doesn't load rails, so perform a simplified string <-> boolean check
+          if [nil, 'false', '0'].include? ENV['ENABLE_DATABASE_METRIC']
+            cli.error DATABASE_METRIC_NOTICE
+            cli.say feedback_notice
+            return
+          end
+
+          @metric = Metric.new
+          metric.data_source = 'database'
+
+          # TODO: replace hardcoded assignments https://gitlab.com/gitlab-org/gitlab/-/issues/464066
+          metric.instrumentation_class = 'CountIssuesMetric'
+          metric.time_frame = %w[7d 28d]
+          metric.key_path = 'issues_count'
+        when :event_metric, :aggregate_metric
+          prompt_for_events(type)
+
+          return unless @selected_event_paths.any?
+
+          prompt_for_metrics
+
+          return unless metric
+
+          metric.data_source = 'internal_events'
+          prompt_for_event_filters
+        end
+      end
+
       def prompt_for_events(type)
         return if @selected_event_paths.any?
 
-        new_page!(on_step: 'Events', steps: STEPS)
+        new_page!(on_step: 'Config', steps: STEPS)
 
         case type
         when :event_metric
@@ -113,9 +142,6 @@ module InternalEventsCli
             **multiselect_opts,
             **filter_opts(header_size: 7)
           )
-        when :database_metric
-          cli.error DATABASE_METRIC_NOTICE
-          cli.say feedback_notice
         end
       end
 
@@ -130,6 +156,7 @@ module InternalEventsCli
         end
 
         new_page!(on_step: 'Scope', steps: STEPS)
+
         cli.say format_info('SELECTED EVENTS')
         cli.say selected_events_filter_options.join
         cli.say "\n"
@@ -145,8 +172,7 @@ module InternalEventsCli
 
         assign_shared_attrs(:actions, :milestone) do
           {
-            actions: selected_events.map(&:action).sort,
-            milestone: MILESTONE
+            actions: selected_events.map(&:action).sort
           }
         end
       end
@@ -217,7 +243,7 @@ module InternalEventsCli
 
         return shared_values if defaults.none?
 
-        new_page!(on_step: 'Copy event', steps: STEPS)
+        new_page!(on_step: 'Defaults', steps: STEPS)
 
         cli.say <<~TEXT
           #{format_info('Convenient! We can copy these attributes from the event definition(s):')}
@@ -320,6 +346,7 @@ module InternalEventsCli
 
         outcome ||= '  No files saved.'
 
+        # TODO: change this message for database metrics https://gitlab.com/gitlab-org/gitlab/-/issues/464066
         cli.say <<~TEXT
           #{divider}
           #{format_info('Done with metric definitions!')}
@@ -337,18 +364,7 @@ module InternalEventsCli
 
         TEXT
 
-        actions = selected_events.map(&:action).join(', ')
-        next_step = cli.select("How would you like to proceed?", **select_opts) do |menu|
-          menu.enum "."
-
-          menu.choice "New Event -- define a new event", :new_event
-          menu.choice "New Metric -- define another metric for #{actions}", :new_metric_with_events
-          menu.choice "New Metric -- define another metric", :new_metric
-          choice = "View Usage -- look at code examples for event #{selected_events.first.action}"
-          menu.default choice
-          menu.choice choice, :view_usage
-          menu.choice 'Exit', :exit
-        end
+        next_step = get_next_step
 
         case next_step
         when :new_event
@@ -358,7 +374,9 @@ module InternalEventsCli
         when :new_metric
           MetricDefiner.new(cli).run
         when :view_usage
-          UsageViewer.new(cli, @selected_event_paths.first, selected_events.first).run
+          args = [cli]
+          args += [@selected_event_paths.first, selected_events.first] if metric.event_metric?
+          UsageViewer.new(*args).run
         when :exit
           cli.say feedback_notice
         end
@@ -479,7 +497,7 @@ module InternalEventsCli
         new_page!(on_step: 'Description', steps: STEPS)
 
         cli.say DESCRIPTION_INTRO
-        cli.say selected_event_descriptions.join
+        cli.say selected_event_descriptions.join if metric.event_metric?
 
         description_start = format_info("#{metric.description_prefix}...")
 
@@ -490,6 +508,8 @@ module InternalEventsCli
           #{format_info('Technical description:')} #{metric.technical_description}
 
         TEXT
+
+        # TODO: make the prompt more user friendly for db metrics https://gitlab.com/gitlab-org/gitlab/-/issues/464066
 
         description = prompt_for_text("  Finish the description: #{description_start}", multiline: true) do |q|
           q.required true
@@ -579,6 +599,34 @@ module InternalEventsCli
         defaults.delete(:product_categories) if defaults[:product_categories].empty?
 
         defaults
+      end
+
+      # Helper for #prompt_for_next_steps
+      def get_next_step
+        cli.select("How would you like to proceed?", **select_opts) do |menu|
+          menu.enum "."
+
+          menu.choice "New Event -- define a new event", :new_event
+
+          if metric.event_metric?
+            actions = selected_events.map(&:action).join(', ')
+            menu.choice "New Metric -- define another metric for #{actions}", :new_metric_with_events
+          end
+
+          menu.choice "New Metric -- define another metric", :new_metric
+
+          if metric.event_metric?
+            view_usage_message = "View Usage -- look at code examples for event #{selected_events.first.action}"
+            default = view_usage_message
+          else
+            view_usage_message = "View Usage -- look at code examples"
+            default = 'Exit'
+          end
+
+          menu.choice view_usage_message, :view_usage
+          menu.choice 'Exit', :exit
+          menu.default default
+        end
       end
 
       # ----- Shared Helpers ----------------------

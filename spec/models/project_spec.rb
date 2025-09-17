@@ -896,6 +896,29 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       it { is_expected.to contain_exactly(project_repository_check_success, project_repository_check_nil) }
     end
+
+    describe '.with_visibility_level_greater_than' do
+      let_it_be(:private_project) { create(:project, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+      let_it_be(:internal_project) { create(:project, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+      let_it_be(:public_project) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+
+      it 'returns projects with visibility level greater than private' do
+        result = described_class.with_visibility_level_greater_than(Gitlab::VisibilityLevel::PRIVATE)
+        expect(result).to include(internal_project, public_project)
+        expect(result).not_to include(private_project)
+      end
+
+      it 'returns projects with visibility level greater than internal' do
+        result = described_class.with_visibility_level_greater_than(Gitlab::VisibilityLevel::INTERNAL)
+        expect(result).to include(public_project)
+        expect(result).not_to include(private_project, internal_project)
+      end
+
+      it 'returns no projects when level is public' do
+        result = described_class.with_visibility_level_greater_than(Gitlab::VisibilityLevel::PUBLIC)
+        expect(result).not_to include(private_project, internal_project, public_project)
+      end
+    end
   end
 
   describe 'modules' do

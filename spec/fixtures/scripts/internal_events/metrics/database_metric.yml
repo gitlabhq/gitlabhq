@@ -1,0 +1,20 @@
+---
+key_path: issues_count
+description: " Count of issues"
+product_group: analytics_instrumentation
+product_categories:
+- service_ping
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '16.6'
+introduced_by_url: TODO
+time_frame:
+- 7d
+- 28d
+data_source: database
+data_category: optional
+tiers:
+- premium
+- ultimate
+instrumentation_class: CountIssuesMetric

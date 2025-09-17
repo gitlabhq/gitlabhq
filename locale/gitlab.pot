@@ -24416,10 +24416,16 @@ msgstr ""
 msgid "DuoAgentPlatform|%{linkStart}What are flows%{linkEnd}?"
 msgstr ""
 
-msgid "DuoAgentPlatform|%{pStart}Access GitLab Duo features throughout this instance by turning on GitLab Duo Core.%{pEnd} %{pStart}When you turn it on, GitLab Duo will process your code and project data. Also, you accept the %{termsStart}GitLab AI Functionality Terms%{linkEnd}, unless your organization has a separate agreement with GitLab governing AI feature usage.%{pEnd} %{pStart}Groups, subgroups, and projects can opt out as needed. Check the %{eligibilityStart}eligibility requirements%{linkEnd} for details.%{pEnd}"
+msgid "DuoAgentPlatform|%{pStart}%{firstLine}%{pEnd} %{pStart}When you turn it on, GitLab Duo will process your code and project data. Also, you accept the %{termsStart}GitLab AI Functionality Terms%{linkEnd}, unless your organization has a separate agreement with GitLab governing AI feature usage.%{pEnd} %{pStart}Groups, subgroups, and projects can opt out as needed. Check the %{eligibilityStart}eligibility requirements%{linkEnd} for details.%{pEnd}"
 msgstr ""
 
 msgid "DuoAgentPlatform|%{pStart}Get early access to new GitLab Duo features before they're generally available. Help improve your development workflow and get started now.%{pEnd} By turning on these features, you accept the %{termsStart}GitLab Testing Agreement%{linkEnd}."
+msgstr ""
+
+msgid "DuoAgentPlatform|Access GitLab Duo features throughout this group by turning on GitLab Duo Core."
+msgstr ""
+
+msgid "DuoAgentPlatform|Access GitLab Duo features throughout this instance by turning on GitLab Duo Core."
 msgstr ""
 
 msgid "DuoAgentPlatform|Access the latest GitLab Duo features"
@@ -58846,6 +58852,9 @@ msgstr ""
 msgid "SecurityOrchestration|In each pipeline, a %{boldStart}maximum of 1000%{boldEnd} vulnerabilities that are %{italicStart}no longer detected%{italicEnd} will be set to status %{italicStart}Resolved%{italicEnd} until all have been auto-resolved."
 msgstr ""
 
+msgid "SecurityOrchestration|In warn mode, project settings are checked and violations are reported, but fixes for the violations are not mandatory. %{linkStart}Learn more%{linkEnd}"
+msgstr ""
+
 msgid "SecurityOrchestration|Individual users"
 msgstr ""
 
@@ -59065,6 +59074,9 @@ msgid "SecurityOrchestration|Policy definition"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy editor"
+msgstr ""
+
+msgid "SecurityOrchestration|Policy enforcement"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy exceeds the maximum of %{limit} actions"
@@ -59355,6 +59367,9 @@ msgstr ""
 msgid "SecurityOrchestration|Status"
 msgstr ""
 
+msgid "SecurityOrchestration|Strictly enforced"
+msgstr ""
+
 msgid "SecurityOrchestration|Summary"
 msgstr ""
 
@@ -59446,6 +59461,9 @@ msgid "SecurityOrchestration|This policy is inherited from %{linkStart}namespace
 msgstr ""
 
 msgid "SecurityOrchestration|This policy is inherited from %{namespace}"
+msgstr ""
+
+msgid "SecurityOrchestration|This policy was previously in warn mode, which was an experimental feature. Due to changes in the feature, warn mode is now disabled. To enable the new warn mode setting, update this property."
 msgstr ""
 
 msgid "SecurityOrchestration|This project"
@@ -59569,6 +59587,9 @@ msgid "SecurityOrchestration|Vulnerability management policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Warn in merge request"
+msgstr ""
+
+msgid "SecurityOrchestration|Warn mode"
 msgstr ""
 
 msgid "SecurityOrchestration|Warn users with a bot comment and contact the following users as security consultants for support: %{approvers}"
@@ -68212,6 +68233,18 @@ msgid "TransferGroup|Transfer failed: %{error_message}"
 msgstr ""
 
 msgid "TransferGroup|You don't have enough permissions."
+msgstr ""
+
+msgid "TransferOrganization|Group is already in the target organization."
+msgstr ""
+
+msgid "TransferOrganization|Group organization transfer failed: %{error_message}"
+msgstr ""
+
+msgid "TransferOrganization|Only root groups can be transferred to a different organization."
+msgstr ""
+
+msgid "TransferOrganization|You must be an owner of both the group and new organization."
 msgstr ""
 
 msgid "TransferProject|Please select a new namespace for your project."

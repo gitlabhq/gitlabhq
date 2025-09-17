@@ -667,6 +667,7 @@ class Project < ApplicationRecord
   scope :not_hidden, -> { where(hidden: false) }
   scope :not_in_groups, ->(groups) { where.not(group: groups) }
   scope :by_not_in_root_id, ->(root_id) { joins(:project_namespace).where('namespaces.traversal_ids[1] NOT IN (?)', root_id) }
+  scope :with_visibility_level_greater_than, ->(level) { where("visibility_level > ?", level) }
 
   scope :aimed_for_deletion, -> { where.not(marked_for_deletion_at: nil).without_deleted }
   scope :self_or_ancestors_aimed_for_deletion, -> do

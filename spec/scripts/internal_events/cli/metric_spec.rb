@@ -10,6 +10,7 @@ RSpec.describe InternalEventsCli::NewMetric, :aggregate_failures, feature_catego
   let(:actions) { ['action_1'] }
   let(:filters) { nil }
   let(:operator) { 'unique_count' }
+  let(:data_source) { 'internal_events' }
 
   subject(:metric) do
     described_class.new(
@@ -17,7 +18,8 @@ RSpec.describe InternalEventsCli::NewMetric, :aggregate_failures, feature_catego
       identifier: identifier,
       actions: actions,
       filters: filters,
-      operator: operator
+      operator: operator,
+      data_source: data_source
     )
   end
 
@@ -109,6 +111,24 @@ RSpec.describe InternalEventsCli::NewMetric, :aggregate_failures, feature_catego
             "Weekly sum of all values for 'value' from the selected events occurrences"
           )
         end
+      end
+    end
+  end
+
+  context "with database metrics" do
+    let(:data_source) { 'database' }
+
+    it 'has expected description content' do
+      expect(metric.description_prefix).to eq('Weekly')
+      expect(metric.technical_description).to eq('Weekly')
+    end
+
+    context "with non-singular time frame" do
+      let(:time_frame) { %w[7d all] }
+
+      it 'has expected description content' do
+        expect(metric.description_prefix).to eq('')
+        expect(metric.technical_description).to eq('')
       end
     end
   end

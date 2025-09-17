@@ -169,7 +169,7 @@ module QA
       # @param [Boolean] permanent Permanently delete resources instead of marking for deletion. Defaults to true
       # @param [Boolean] skip_verification Skip verification of deletion for time constraint purposes. Defaults to false
       # @return [Array<Array<String, Hash>>] Array of deletion results
-      def delete_resources(
+      def delete_resources( # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity -- TODO: Break up this method
         resources_hash,
         delayed_verification = false,
         permanent = @permanently_delete,
@@ -192,13 +192,19 @@ module QA
             resource[:api_path] = resource_hash['api_path']
             resource[:type] = type
 
-            # When deleting immediately, don't skip resources already marked for deletion
+            # When deleting immediately, only skip resources whose parents are already marked for deletion
+            next if permanent && group_or_project?(resource) && parent_marked_for_deletion?(resource)
+            # When soft-deleting, skip resources already marked for deletion either by parent or self
             next if !permanent && group_or_project?(resource) && already_marked_for_deletion?(resource)
+            # Skip sandboxes already marked for deletion as these cannot be immediately deleted
+            next if resource[:type] == 'sandbox' && self_deletion_scheduled?(resource)
 
             result = if personal_resource?(key)
                        delete_personal_resource(resource, delayed_verification, permanent, skip_verification)
                      elsif type == 'user'
                        delete_resource(resource, true, permanent, skip_verification)
+                     elsif permanent && group_or_project?(resource) && self_deletion_scheduled?(resource)
+                       delete_permanently(resource)
                      else
                        delete_resource(resource, delayed_verification, permanent, skip_verification)
                      end
@@ -252,7 +258,7 @@ module QA
       #   and values are arrays of resource attribute hashes
       # @return [Hash<String, Array<Hash>>, nil] Filtered resources hash with unsafe resources
       #   removed, or nil if no deletable resources remain
-      def filter_resources(resources)
+      def filter_resources(resources) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity -- TODO: Break up this method
         logger.info('Filtering resources - Only keep deletable resources...')
 
         transformed_values = resources.transform_values! do |v|
@@ -265,7 +271,12 @@ module QA
               # Group resources are deleted when their group is deleted, so we don't need to delete them manually
               attributes['api_path'].match?(%r{\A/groups/\d+/.+\z}) ||
               # Project resources are deleted when their project is deleted, so we don't need to delete them manually
-              attributes['api_path'].match?(%r{\A/projects/\d+/.+\z})
+              attributes['api_path'].match?(%r{\A/projects/\d+/.+\z}) ||
+              # Only delete projects whose direct parent is a gitlab-e2e-sandbox-group
+              (attributes['api_path']&.start_with?('/projects/') &&
+                attributes['info']&.match(%r{\Awith full_path 'gitlab-e2e-sandbox-group-\d/[a-zA-Z0-9-]+/.*'\z})) ||
+              (attributes['api_path']&.start_with?('/projects/') &&
+                attributes['info']&.exclude?('gitlab-e2e-sandbox-group-'))
           end
         end
 
@@ -369,6 +380,10 @@ module QA
       rescue JSON::ParserError
         logger.error("Failed to read #{file} - Invalid format")
         nil
+      end
+
+      def parent_marked_for_deletion?(resource)
+        resource_path(resource).match?(%r{-deletion_scheduled-(?=.*/)})
       end
 
       def already_marked_for_deletion?(resource)

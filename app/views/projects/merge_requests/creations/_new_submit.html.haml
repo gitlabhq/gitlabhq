@@ -9,7 +9,7 @@
   - if params[:nav_source].present?
     = hidden_field_tag(:nav_source, params[:nav_source])
 
-.mr-compare.merge-request.js-merge-request-new-submit.gl-mt-5{ 'data-mr-submit-action': "#{j params[:tab].presence || 'new'}" }
+.merge-request.js-merge-request-new-submit.gl-mt-5{ 'data-mr-submit-action': "#{j params[:tab].presence || 'new'}" }
   - if @commits.empty?
     .merge-request-sticky-header-wrapper
       .merge-request-sticky-header.gl-border-b

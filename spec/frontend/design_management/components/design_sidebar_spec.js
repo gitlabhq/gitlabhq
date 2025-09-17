@@ -96,7 +96,6 @@ describe('Design management design sidebar component', () => {
       expect(findDescriptionForm().props()).toMatchObject({
         design,
         markdownPreviewPath: 'markdown/path',
-        designVariables: mockDesignVariables,
       });
     });
 

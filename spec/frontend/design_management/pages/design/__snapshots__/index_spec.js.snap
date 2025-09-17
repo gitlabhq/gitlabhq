@@ -49,7 +49,9 @@ exports[`Design management design index page when loaded renders design index 1`
           />
         </div>
       </div>
-      <div />
+      <div
+        design-variables="[object Object]"
+      />
     </div>
   </div>
 </div>

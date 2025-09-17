@@ -1,0 +1,17 @@
+- description: Create a weekly/monthly/total database metric
+  inputs:
+    keystrokes:
+    - "2\n" # Enum-select: New Metric   -- calculate how often one or more existing events occur over time
+    - "3\n" # Enum-select: Database Metric
+    - "Count of issues\n" # Input description
+    - "instrumentation" # Filters to the analytics instrumentation group
+    - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - " \n" # Select product category
+    - "\n" # Skip URL
+    - "2\n" # Select tiers: [premium, ultimate]
+    - "y\n" # Create file
+    - "4\n" # Exit
+  outputs:
+    files:
+    - path: ee/config/metrics/counts_all/issues_count.yml
+      content: spec/fixtures/scripts/internal_events/metrics/database_metric.yml

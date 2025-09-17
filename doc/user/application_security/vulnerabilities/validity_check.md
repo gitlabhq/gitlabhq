@@ -28,10 +28,6 @@ This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
-<i class="fa-youtube-play" aria-hidden="true"></i>
-For a demonstration, see [Validity Checks Demo](https://www.youtube.com/watch?v=h0jR0CGNOhI).
-<!-- Video published on 2025-05-20 -->
-
 GitLab validity checks determines whether a secret, like an access token, is active.
 A secret is active when:
 
@@ -76,15 +72,54 @@ Validity checks supports the following secret types:
 - GitLab feed tokens (v2)
 - GitLab pipeline trigger tokens
 
-## Secret status
+## Validity check workflow
 
-A secret has one of the following statuses:
+When the secret detection analyzer detects a potential secret, GitLab verifies the status of
+the secret with its vendor, and assigns the detection one of the following statuses:
 
-- **Possibly active** - GitLab couldn't verify the secret status, or the secret type is not supported by validity checks.
-- **Active** - The secret is not expired and can be used for authentication.
-- **Inactive** - The secret is expired or revoked and cannot be used for authentication.
+- Possibly active: GitLab couldn't verify the secret status, or the secret type is not supported by validity checks.
+- Active: The secret is not expired and can be used for authentication.
+- Inactive: The secret is expired or revoked and cannot be used for authentication.
 
-You should rotate **Active** and **Possibly active** detected secrets as soon as possible.
+You should rotate active and possibly active secrets as soon as possible.
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+
+flowchart TD
+    accTitle: Validity checks workflow
+    accDescr: Process flow for secret detection showing three possible outcomes.
+    A[Secret detection analyzer runs] --> B[Secret detected]
+    B --> C{Worker verifies<br>secret status}
+    
+    C -->|Cannot verify or unsupported type| D[Possibly active]
+    C -->|Valid and not expired| E[Active]
+    C -->|Expired or revoked| F[Inactive]
+```
+
+## Refresh secret status
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/537133) in GitLab 18.2 [with a flag](../../../api/feature_flags.md) named `secret_detection_validity_checks_refresh_token`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+After validity checks runs, the status of a token is not automatically updated, even if the token is revoked or expires.
+To update a token, you can manually refresh the status:
+
+1. On the vulnerability report, select the vulnerability you want to refresh.
+1. Next to the token status, select **Retry** ({{< icon name="retry">}}).
+
+Validity checks is re-run, and the token status is updated.
 
 ## Troubleshooting
 
@@ -92,7 +127,7 @@ When working with validity checks, you might encounter the following issues.
 
 ### Unexpected token status
 
-The **Possibly active** status appears when GitLab cannot definitively verify a secret's validity.
+A token has the possibly active status when GitLab cannot definitively verify its validity.
 This might be because:
 
 - The secret validation hasn't been run.

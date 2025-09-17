@@ -779,6 +779,29 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         is_expected.not_to include(non_archived_subgroup_with_archived_parent)
       end
     end
+
+    describe '.with_visibility_level_greater_than' do
+      let_it_be(:private_namespace) { create(:group, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+      let_it_be(:internal_namespace) { create(:group, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+      let_it_be(:public_namespace) { create(:group, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+
+      it 'returns namespaces with visibility level greater than private' do
+        result = described_class.with_visibility_level_greater_than(Gitlab::VisibilityLevel::PRIVATE)
+        expect(result).to include(internal_namespace, public_namespace)
+        expect(result).not_to include(private_namespace)
+      end
+
+      it 'returns namespaces with visibility level greater than internal' do
+        result = described_class.with_visibility_level_greater_than(Gitlab::VisibilityLevel::INTERNAL)
+        expect(result).to include(public_namespace)
+        expect(result).not_to include(private_namespace, internal_namespace)
+      end
+
+      it 'returns no namespaces when level is public' do
+        result = described_class.with_visibility_level_greater_than(Gitlab::VisibilityLevel::PUBLIC)
+        expect(result).not_to include(private_namespace, internal_namespace, public_namespace)
+      end
+    end
   end
 
   describe 'delegate' do

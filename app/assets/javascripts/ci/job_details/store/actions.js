@@ -202,14 +202,6 @@ export const disableScrollBottom = ({ commit }) => commit(types.DISABLE_SCROLL_B
 export const disableScrollTop = ({ commit }) => commit(types.DISABLE_SCROLL_TOP);
 export const enableScrollBottom = ({ commit }) => commit(types.ENABLE_SCROLL_BOTTOM);
 export const enableScrollTop = ({ commit }) => commit(types.ENABLE_SCROLL_TOP);
-
-/**
- * While the automatic scroll down is active,
- * we show the scroll down button with an animation
- */
-export const toggleScrollAnimation = ({ commit }, toggle) =>
-  commit(types.TOGGLE_SCROLL_ANIMATION, toggle);
-
 export const requestJobLog = ({ commit }) => commit(types.REQUEST_JOB_LOG);
 
 export const fetchJobLog = ({ commit, dispatch, state }) => {

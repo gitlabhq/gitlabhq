@@ -45,10 +45,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    isScrollingDown: {
-      type: Boolean,
-      required: true,
-    },
     isJobLogSizeVisible: {
       type: Boolean,
       required: true,
@@ -254,7 +250,6 @@ export default {
           :title="$options.i18n.scrollToNextFailureButtonLabel"
           :aria-label="$options.i18n.scrollToNextFailureButtonLabel"
           :disabled="shouldDisableJumpToFailures"
-          class="btn-scroll"
           data-testid="job-top-bar-scroll-to-failure"
           icon="soft-wrap"
           @click="handleScrollToNextFailure"
@@ -263,7 +258,6 @@ export default {
         <div v-gl-tooltip :title="$options.i18n.scrollToTopButtonLabel">
           <gl-button
             :disabled="isScrollTopDisabled"
-            class="btn-scroll"
             data-testid="job-top-bar-scroll-top"
             icon="scroll_up"
             :aria-label="$options.i18n.scrollToTopButtonLabel"
@@ -274,10 +268,8 @@ export default {
         <div v-gl-tooltip :title="$options.i18n.scrollToBottomButtonLabel">
           <gl-button
             :disabled="isScrollBottomDisabled"
-            class="js-scroll-bottom btn-scroll"
             data-testid="job-top-bar-scroll-bottom"
             icon="scroll_down"
-            :class="{ animate: isScrollingDown }"
             :aria-label="$options.i18n.scrollToBottomButtonLabel"
             @click="handleScrollToBottom"
           />
@@ -290,7 +282,6 @@ export default {
             :disabled="!fullScreenModeAvailable"
             :title="$options.i18n.enterFullscreen"
             :aria-label="$options.i18n.enterFullscreen"
-            class="btn-scroll"
             data-testid="job-top-bar-enter-fullscreen"
             icon="maximize"
             @click="handleFullscreenMode"
@@ -301,7 +292,6 @@ export default {
           v-if="fullScreenEnabled"
           :title="$options.i18n.exitFullScreen"
           :aria-label="$options.i18n.exitFullScreen"
-          class="btn-scroll"
           data-testid="job-top-bar-exit-fullscreen"
           icon="minimize"
           @click="handleExitFullscreenMode"

@@ -120,9 +120,6 @@ export default {
     hasSelectedDesigns() {
       return this.selectedDesigns.length > 0;
     },
-    canDeleteDesigns() {
-      return this.isLatestVersion && this.hasSelectedDesigns;
-    },
     projectQueryBody() {
       return {
         query: getDesignListQuery,

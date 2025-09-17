@@ -541,4 +541,90 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
       end
     end
   end
+
+  describe 'database metric' do
+    let(:enable_database_metrics) { 'true' }
+
+    before do
+      stub_env('ENABLE_DATABASE_METRIC', enable_database_metrics)
+    end
+
+    describe 'end-to-end behavior' do
+      fixture_path = 'spec/fixtures/scripts/internal_events/metric_definer_database_examples.yml'
+      YAML.safe_load(File.read(fixture_path)).each do |test_case|
+        it_behaves_like 'creates the right definition files', test_case['description'], test_case
+      end
+    end
+
+    context 'when succeeded in saving the file' do
+      it 'displays the metric trend dashboard paths based on the time frames' do
+        queue_cli_inputs([
+          - "2\n", # Enum-select: New Metric   -- calculate how often one or more existing events occur over time
+          - "3\n", # Enum-select: Database Metric
+          - "Count of issues\n", # Input description
+          - "instrumentation", # Filters to the analytics instrumentation group
+          - "\n", # Accept analytics:monitor:analytics_instrumentation
+          - " \n", # Select product category
+          - "\n", # Skip URL
+          - "2\n", # Select tiers: [premium, ultimate]
+          - "y\n", # Create file
+          - "4\n" # Exit
+        ])
+
+        expected_output = <<~TEXT.chomp
+          This would create 2 metrics with the following key paths:
+
+          weekly: issues_count_weekly
+          monthly: issues_count_monthly
+        TEXT
+
+        with_cli_thread do
+          expect { plain_last_lines }.to eventually_include_cli_text(expected_output)
+        end
+      end
+
+      it 'shows link to the metric dashboard' do
+        queue_cli_inputs([
+          - "2\n", # Enum-select: New Metric   -- calculate how often one or more existing events occur over time
+          - "3\n", # Enum-select: Database Metric
+          - "Count of issues\n", # Input description
+          - "instrumentation", # Filters to the analytics instrumentation group
+          - "\n", # Accept analytics:monitor:analytics_instrumentation
+          - " \n", # Select product category
+          - "\n", # Skip URL
+          - "2\n", # Select tiers: [premium, ultimate]
+          - "y\n", # Create file
+          - "4\n" # Exit
+        ])
+
+        expected_output = <<-TEXT.chomp # <<- used instead of <<~ to save indentation
+      - Metric trend dashboards:
+        - https://10az.online.tableau.com/#/site/gitlab/views/PDServicePingExplorationDashboard/MetricTrend?Metrics%20Path=issues_count_weekly
+        - https://10az.online.tableau.com/#/site/gitlab/views/PDServicePingExplorationDashboard/MetricTrend?Metrics%20Path=issues_count_monthly
+        TEXT
+
+        with_cli_thread do
+          expect { plain_last_lines }.to eventually_include_cli_text(expected_output)
+        end
+      end
+    end
+
+    context 'when database metric creation is disabled' do
+      let(:enable_database_metrics) { 'false' }
+
+      it "ends the flow by showing an informative message" do
+        queue_cli_inputs([
+          "2\n", # Enum-select: New Metric   -- calculate how often one or more existing events occur over time
+          "3\n" # Enum-select: Database metric
+        ])
+
+        expected_output = 'For more info on instrumenting database-backed metrics, ' \
+          'see https://docs.gitlab.com/ee/development/internal_analytics/metrics/metrics_instrumentation.html'
+
+        with_cli_thread do
+          expect { plain_last_lines }.to eventually_include_cli_text(expected_output)
+        end
+      end
+    end
+  end
 end

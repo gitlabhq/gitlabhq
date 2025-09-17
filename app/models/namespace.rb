@@ -235,6 +235,7 @@ class Namespace < ApplicationRecord
   scope :ordered_by_name, -> { order(:name) }
   scope :top_level, -> { by_parent(nil) }
   scope :with_project_statistics, -> { includes(projects: :statistics) }
+  scope :with_visibility_level_greater_than, ->(level) { where("visibility_level > ?", level) }
   scope :with_namespace_details, -> { preload(:namespace_details) }
 
   scope :archived, -> { joins(:namespace_settings).where(namespace_settings: { archived: true }) }

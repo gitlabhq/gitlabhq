@@ -26605,6 +26605,7 @@ Represents a ComplianceRequirementsControl associated with a ComplianceRequireme
 | <a id="compliancerequirementscontrolexternalurl"></a>`externalUrl` | [`String`](#string) | URL of the external control. |
 | <a id="compliancerequirementscontrolid"></a>`id` | [`ID!`](#id) | Compliance requirements control ID. |
 | <a id="compliancerequirementscontrolname"></a>`name` | [`String!`](#string) | Name of the compliance control. |
+| <a id="compliancerequirementscontrolpingenabled"></a>`pingEnabled` | [`Boolean!`](#boolean) | Whether ping is enabled for external controls. |
 
 ### `ComplianceStandardsAdherence`
 
@@ -54070,6 +54071,7 @@ Attributes for defining a CI/CD variable.
 | <a id="compliancerequirementscontrolinputexternalcontrolname"></a>`externalControlName` | [`String`](#string) | Name of the external control. |
 | <a id="compliancerequirementscontrolinputexternalurl"></a>`externalUrl` | [`String`](#string) | URL of the external control. |
 | <a id="compliancerequirementscontrolinputname"></a>`name` | [`String!`](#string) | New name for the compliance requirement control. |
+| <a id="compliancerequirementscontrolinputpingenabled"></a>`pingEnabled` | [`Boolean`](#boolean) | Whether ping is enabled for external controls. |
 | <a id="compliancerequirementscontrolinputsecrettoken"></a>`secretToken` | [`String`](#string) | Secret token for an external control. |
 
 ### `ComplianceStandardsAdherenceInput`

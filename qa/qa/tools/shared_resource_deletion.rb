@@ -338,7 +338,7 @@ module QA
       # @param [Hash] response
       # @return [Boolean]
       def deletion_successful?(response)
-        success?(response&.code) || response.include?("already marked for deletion")
+        success?(response&.code) || response.include?("already been marked for deletion")
       end
 
       # Handles successful deletion
