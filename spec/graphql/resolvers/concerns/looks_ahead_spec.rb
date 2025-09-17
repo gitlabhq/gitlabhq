@@ -61,15 +61,6 @@ RSpec.describe LooksAhead do
     end
   end
 
-  def query(doc = document)
-    GraphQL::Query.new(
-      schema,
-      document: doc,
-      context: { user_db: [the_user] },
-      variables: { username: the_user.username }
-    )
-  end
-
   let(:document) do
     GraphQL.parse <<-GRAPHQL
     query($username: String!){
@@ -90,6 +81,15 @@ RSpec.describe LooksAhead do
       }
     }
     GRAPHQL
+  end
+
+  def query(doc = document)
+    GraphQL::Query.new(
+      schema,
+      document: doc,
+      context: { user_db: [the_user] },
+      variables: { username: the_user.username }
+    )
   end
 
   def run_query(gql_query)

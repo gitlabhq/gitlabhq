@@ -6,7 +6,6 @@ RSpec.describe Gitlab::Auth::Saml::AuthHash, feature_category: :system_access do
   include LoginHelpers
 
   let(:raw_info_attr) { { 'groups' => %w[Developers Freelancers] } }
-  subject(:saml_auth_hash) { described_class.new(omniauth_auth_hash) }
 
   let(:info_hash) do
     {
@@ -23,6 +22,8 @@ RSpec.describe Gitlab::Auth::Saml::AuthHash, feature_category: :system_access do
       extra: { raw_info: OneLogin::RubySaml::Attributes.new(raw_info_attr) }
     )
   end
+
+  subject(:saml_auth_hash) { described_class.new(omniauth_auth_hash) }
 
   before do
     stub_saml_group_config(%w[Developers Freelancers Designers])

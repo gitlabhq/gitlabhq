@@ -2380,9 +2380,9 @@ module Gitlab
           }
         end
 
-        subject { described_class.new(YAML.dump(config)).execute }
-
         let(:builds) { subject.builds }
+
+        subject { described_class.new(YAML.dump(config)).execute }
 
         context 'when a production environment is specified' do
           let(:environment) { 'production' }
@@ -2490,9 +2490,9 @@ module Gitlab
           }
         end
 
-        subject { described_class.new(YAML.dump(config)).execute }
-
         let(:builds) { subject.builds }
+
+        subject { described_class.new(YAML.dump(config)).execute }
 
         context 'when no timeout was provided' do
           it 'does not include job_timeout' do

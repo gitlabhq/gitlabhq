@@ -15,13 +15,12 @@ RSpec.describe Resolvers::DesignManagement::VersionInCollectionResolver do
 
     let(:project) { issue.project }
     let(:params) { {} }
+    let(:appropriate_error) { ::Gitlab::Graphql::Errors::ArgumentError }
 
     before do
       enable_design_management
       project.add_developer(current_user)
     end
-
-    let(:appropriate_error) { ::Gitlab::Graphql::Errors::ArgumentError }
 
     subject(:result) { resolve_version(issue.design_collection) }
 

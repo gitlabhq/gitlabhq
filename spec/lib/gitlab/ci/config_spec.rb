@@ -8,14 +8,14 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
 
   let_it_be(:user) { create(:user) }
 
+  let(:config) do
+    described_class.new(yml, project: nil, pipeline: nil, sha: nil, user: nil)
+  end
+
   before do
     allow_next_instance_of(Gitlab::Ci::Config::External::Context) do |instance|
       allow(instance).to receive(:check_execution_time!)
     end
-  end
-
-  let(:config) do
-    described_class.new(yml, project: nil, pipeline: nil, sha: nil, user: nil)
   end
 
   context 'when config is valid' do

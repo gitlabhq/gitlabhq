@@ -138,14 +138,14 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
                     Gitlab::Ci::Config::External::Context.new(parent_pipeline: parent_pipeline, variables: variables)
                   end
 
+                  let(:expected_error) do
+                    'File `[MASKED]xxxx/generated.yml` is empty!'
+                  end
+
                   before do
                     allow_next_instance_of(Gitlab::Ci::ArtifactFileReader) do |reader|
                       allow(reader).to receive(:read).and_return(nil)
                     end
-                  end
-
-                  let(:expected_error) do
-                    'File `[MASKED]xxxx/generated.yml` is empty!'
                   end
 
                   it_behaves_like 'is invalid'
@@ -238,12 +238,6 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
       let!(:artifacts) { create(:ci_job_artifact, :archive, job: job) }
       let!(:metadata) { create(:ci_job_artifact, :metadata, job: job) }
 
-      before do
-        allow_next_instance_of(Gitlab::Ci::ArtifactFileReader) do |reader|
-          allow(reader).to receive(:read).and_return(template)
-        end
-      end
-
       let(:template) do
         <<~YAML
         spec:
@@ -256,6 +250,12 @@ RSpec.describe Gitlab::Ci::Config::External::File::Artifact, feature_category: :
       end
 
       let(:params) { { artifact: 'generated.yml', job: 'generator', inputs: { env: 'production' } } }
+
+      before do
+        allow_next_instance_of(Gitlab::Ci::ArtifactFileReader) do |reader|
+          allow(reader).to receive(:read).and_return(template)
+        end
+      end
 
       it 'correctly interpolates content' do
         expect(external_file.to_hash).to eq({ deploy: { script: 'deploy production' } })

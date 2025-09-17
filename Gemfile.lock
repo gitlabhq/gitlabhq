@@ -1660,7 +1660,7 @@ GEM
     retriable (3.1.2)
     reverse_markdown (3.0.0)
       nokogiri
-    rexml (3.4.2)
+    rexml (3.4.4)
     rinku (2.0.0)
     rotp (6.3.0)
     rouge (4.6.0)

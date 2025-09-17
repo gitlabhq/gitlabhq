@@ -110,7 +110,7 @@ In some cases, Semgrep vulnerabilities may still appear as duplicates if the [de
 
 GitLab Advanced SAST supports the following languages with cross-function and cross-file taint analysis:
 
-- C#
+- C# (up to and including 10.0)
 - Go
 - Java, including Java Server Pages (JSP)
 - JavaScript, TypeScript

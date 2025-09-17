@@ -8,13 +8,12 @@ RSpec.describe Resolvers::GroupMilestonesResolver, feature_category: :team_plann
 
   describe '#resolve' do
     let_it_be(:current_user) { create(:user) }
+    let_it_be(:now) { Time.now }
+    let_it_be(:group) { create(:group, :private) }
 
     def resolve_group_milestones(args: {}, context: { current_user: current_user }, arg_style: :internal)
       resolve(described_class, obj: group, args: args, ctx: context, arg_style: arg_style)
     end
-
-    let_it_be(:now) { Time.now }
-    let_it_be(:group) { create(:group, :private) }
 
     def args(**arguments)
       satisfy("contain only #{arguments.inspect}") do |passed|

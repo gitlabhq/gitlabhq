@@ -15,11 +15,11 @@ RSpec.describe Resolvers::Users::GroupsResolver do
     let_it_be(:public_maintainer_group) { create(:group, name: 'a public maintainer', path: 'a-public-maintainer') }
     let_it_be(:public_owner_group) { create(:group, name: 'a public owner', path: 'a-public-owner') }
 
-    subject(:resolved_items) { resolve_groups(args: group_arguments, current_user: current_user, obj: resolver_object) }
-
     let(:group_arguments) { {} }
     let(:current_user) { user }
     let(:resolver_object) { user }
+
+    subject(:resolved_items) { resolve_groups(args: group_arguments, current_user: current_user, obj: resolver_object) }
 
     before_all do
       guest_group.add_guest(user)

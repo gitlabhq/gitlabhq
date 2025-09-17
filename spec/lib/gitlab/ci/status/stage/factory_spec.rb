@@ -9,12 +9,12 @@ RSpec.describe Gitlab::Ci::Status::Stage::Factory, feature_category: :continuous
 
   let(:stage) { create(:ci_stage, pipeline: pipeline) }
 
-  subject do
-    described_class.new(stage, user)
-  end
-
   let(:status) do
     subject.fabricate!
+  end
+
+  subject do
+    described_class.new(stage, user)
   end
 
   before do

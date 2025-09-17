@@ -628,7 +628,7 @@
 {"name":"rest-client","version":"2.1.0","platform":"x86-mswin32","checksum":"a35a3bb8d16ca39d110a946a2c805267f98ce07a0ae890e4512a45eadea47a6e"},
 {"name":"retriable","version":"3.1.2","platform":"ruby","checksum":"0a5a5d0ca4ba61a76fb31a17ab8f7f80281beb040c329d34dfc137a1398688e0"},
 {"name":"reverse_markdown","version":"3.0.0","platform":"ruby","checksum":"ab228386765a0259835873cd07054b62939c40f620c77c247eafaaa3b23faca4"},
-{"name":"rexml","version":"3.4.2","platform":"ruby","checksum":"1384268554a37af5da5279431ca3f2f37d46f09ffdd6c95e17cc84c83ea7c417"},
+{"name":"rexml","version":"3.4.4","platform":"ruby","checksum":"19e0a2c3425dfbf2d4fc1189747bdb2f849b6c5e74180401b15734bc97b5d142"},
 {"name":"rinku","version":"2.0.0","platform":"ruby","checksum":"3e695aaf9f24baba3af45823b5c427b58a624582132f18482320e2737f9f8a85"},
 {"name":"rotp","version":"6.3.0","platform":"ruby","checksum":"75d40087e65ed0d8022c33055a6306c1c400d1c12261932533b5d6cbcd868854"},
 {"name":"rouge","version":"4.6.0","platform":"ruby","checksum":"10198622df0ef919796da5686a9cc116a49280805e1ed4b851c97ef677eddd7a"},

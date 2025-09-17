@@ -244,7 +244,7 @@ Note the following in relation to use of the Package Metadata Database:
 - The Package Metadata Database may contain links to third-party websites or resources. We provide these links only as a convenience and are not responsible for any third-party data, content, products, or services from those websites or resources or links displayed on such websites.
 - The Package Metadata Database is based in part on information made available by third parties, and GitLab is not responsible for the accuracy or completeness of content made available.
 
-Package metadata is stored in the following Google Cloud Provider (GCP) buckets:
+Package metadata is stored in the following Google Cloud Provider (GCP) buckets which are maintained and owned by GitLab:
 
 - License Scanning - `prod-export-license-bucket-1a6c642fc4de57d4`
 - Dependency Scanning - `prod-export-advisory-bucket-1a6c642fc4de57d4`

@@ -82,11 +82,6 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:group) { create(:group, :public) }
 
-    before do
-      project.add_maintainer(requested_project_bot)
-      group.add_maintainer(requested_group_bot)
-    end
-
     let(:username) { requested_user.username }
 
     let(:query) do
@@ -97,6 +92,11 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
           }
         }
       GQL
+    end
+
+    before do
+      project.add_maintainer(requested_project_bot)
+      group.add_maintainer(requested_group_bot)
     end
 
     subject(:user_name) do
