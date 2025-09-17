@@ -149,7 +149,7 @@ export default {
       required: false,
       default: false,
     },
-    canManageSecretManager: {
+    canManageSecretsManager: {
       type: Boolean,
       required: false,
       default: false,
@@ -1113,7 +1113,7 @@ export default {
       <ci-catalog-settings v-if="canAddCatalogResource" :full-path="confirmationPhrase" />
       <secret-manager-settings
         v-if="isSecretsManagerAvailable"
-        :can-manage-secrets-manager="canManageSecretManager"
+        :can-manage-secrets-manager="canManageSecretsManager"
         :project-id="projectId"
         :full-path="confirmationPhrase"
       />
