@@ -134,7 +134,8 @@ RSpec.describe SupplyChain::Slsa::ProvenanceStatement, feature_category: :artifa
         builder = run_details['builder']
         metadata = run_details['metadata']
 
-        expect(builder['id']).to start_with('http://localhost/groups/GitLab-Admin-Bot/-/runners/')
+        expected_url = "http://localhost/#{group.name}/#{project.path}/-/runners/#{runner.id}"
+        expect(builder['id']).to eq(expected_url)
 
         expect(metadata['invocationId']).to eq(build.id.to_s)
         expect(metadata['startedOn']).to eq(build.started_at.utc.try(:rfc3339))
@@ -165,6 +166,16 @@ RSpec.describe SupplyChain::Slsa::ProvenanceStatement, feature_category: :artifa
         it 'conforms to specification' do
           expect(errors).to eq([])
         end
+      end
+    end
+
+    context 'when runner does not have an owner' do
+      before do
+        allow(build.runner).to receive(:owner).and_return(nil)
+      end
+
+      it 'does not crash' do
+        expect { provenance_statement }.not_to raise_error
       end
     end
 

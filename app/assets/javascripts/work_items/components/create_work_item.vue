@@ -1084,6 +1084,7 @@ export default {
                 class="create-work-item-description"
                 edit-mode
                 is-create-flow
+                :is-group="isGroup"
                 :autofocus="false"
                 :description="description"
                 :full-path="selectedProjectFullPath"

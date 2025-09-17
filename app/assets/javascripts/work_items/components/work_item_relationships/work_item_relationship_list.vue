@@ -43,6 +43,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    isGroup: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     showLabels: {
       type: Boolean,
       required: false,
@@ -231,6 +236,7 @@ export default {
         <work-item-link-child-contents
           :child-item="linkedItem.workItem"
           :can-update="canUpdate"
+          :is-group="isGroup"
           :show-labels="showLabels"
           :work-item-full-path="workItemFullPath"
           :class="{

@@ -55,12 +55,14 @@ describe('Pipeline editor empty state', () => {
 
     it('renders correct title and illustration', () => {
       expect(findEmptyState().props('svgPath')).toBe(emptyStateIllustrationPath);
-      expect(findEmptyState().props('title')).toBe('Optimize your workflow with CI/CD Pipelines');
+      expect(findEmptyState().props('title')).toBe(
+        'Configure a pipeline to automate your builds, tests, and deployments',
+      );
     });
 
     it('renders the correct instructions', () => {
       expect(findEmptyState().text()).toContain(
-        'Create a new .gitlab-ci.yml file at the root of the repository to get started.',
+        'Create a .gitlab-ci.yml file in your repository to configure and run your first pipeline.',
       );
     });
 

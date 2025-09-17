@@ -8821,7 +8821,8 @@ CREATE TABLE abuse_report_assignees (
     user_id bigint NOT NULL,
     abuse_report_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    organization_id bigint DEFAULT 1 NOT NULL
 );
 
 CREATE SEQUENCE abuse_report_assignees_id_seq
@@ -36959,6 +36960,8 @@ CREATE INDEX index_abuse_events_on_user_id ON abuse_events USING btree (user_id)
 
 CREATE INDEX index_abuse_report_assignees_on_abuse_report_id ON abuse_report_assignees USING btree (abuse_report_id);
 
+CREATE INDEX index_abuse_report_assignees_on_organization_id ON abuse_report_assignees USING btree (organization_id);
+
 CREATE UNIQUE INDEX index_abuse_report_assignees_on_user_id_and_abuse_report_id ON abuse_report_assignees USING btree (user_id, abuse_report_id);
 
 CREATE INDEX index_abuse_report_events_on_abuse_report_id ON abuse_report_events USING btree (abuse_report_id);
@@ -46585,6 +46588,9 @@ ALTER TABLE ONLY packages_conan_file_metadata
 
 ALTER TABLE ONLY user_broadcast_message_dismissals
     ADD CONSTRAINT fk_5c0cfb74ce FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY abuse_report_assignees
+    ADD CONSTRAINT fk_5c33be07d3 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issue_email_participants
     ADD CONSTRAINT fk_5cb5a5b4f0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

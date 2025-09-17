@@ -50271,7 +50271,6 @@ Possible types of user.
 | <a id="usertypeghost"></a>`GHOST` | Ghost. |
 | <a id="usertypehuman"></a>`HUMAN` | Human. |
 | <a id="usertypeimport_user"></a>`IMPORT_USER` | Import user. |
-| <a id="usertypellm_bot"></a>`LLM_BOT` | Llm bot. |
 | <a id="usertypemigration_bot"></a>`MIGRATION_BOT` | Migration bot. |
 | <a id="usertypeplaceholder"></a>`PLACEHOLDER` | Placeholder. |
 | <a id="usertypeproject_bot"></a>`PROJECT_BOT` | Project bot. |

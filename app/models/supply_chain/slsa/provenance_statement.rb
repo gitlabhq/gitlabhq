@@ -83,7 +83,7 @@ module SupplyChain
 
         def self.from_build(build)
           builder = {
-            id: Gitlab::Routing.url_helpers.group_runner_url(build.runner.owner, build.runner),
+            id: Gitlab::Routing.url_helpers.project_runner_url(build.project, build.runner),
             version: {
               "gitlab-runner": build.runner_manager.revision
             }

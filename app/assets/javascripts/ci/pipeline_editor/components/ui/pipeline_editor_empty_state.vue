@@ -11,9 +11,9 @@ export default {
     PipelineEditorFileNav,
   },
   i18n: {
-    title: __('Optimize your workflow with CI/CD Pipelines'),
+    title: __('Configure a pipeline to automate your builds, tests, and deployments'),
     body: __(
-      'Create a new %{codeStart}.gitlab-ci.yml%{codeEnd} file at the root of the repository to get started.',
+      'Create a %{codeStart}.gitlab-ci.yml%{codeEnd} file in your repository to configure and run your first pipeline.',
     ),
     btnText: __('Configure pipeline'),
     externalCiNote: __("This project's pipeline configuration is located outside this repository"),

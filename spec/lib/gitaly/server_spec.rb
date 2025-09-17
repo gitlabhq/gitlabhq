@@ -163,7 +163,7 @@ RSpec.describe Gitaly::Server do
 
       it 'returns an error and no public_key' do
         expect(server.server_signature_public_key).to be_nil
-        expect(server.server_signature_error?).to eq(true)
+        expect(server.server_signature_error?).to be(true)
       end
     end
   end

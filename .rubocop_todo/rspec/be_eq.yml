@@ -655,7 +655,6 @@ RSpec/BeEq:
     - 'spec/lib/extracts_ref/ref_extractor_spec.rb'
     - 'spec/lib/feature/definition_spec.rb'
     - 'spec/lib/feature_spec.rb'
-    - 'spec/lib/gitaly/server_spec.rb'
     - 'spec/lib/gitlab/action_cable/request_store_callbacks_spec.rb'
     - 'spec/lib/gitlab/alert_management/payload/generic_spec.rb'
     - 'spec/lib/gitlab/analytics/cycle_analytics/average_spec.rb'

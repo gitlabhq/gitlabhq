@@ -128,11 +128,9 @@ describe('WorkItemDescription', () => {
         editMode,
         showButtonsBelowField,
         isCreateFlow,
+        isGroup,
         hideFullscreenMarkdownButton,
         uploadsPath: 'http://127.0.0.1:3000/test-project-path/uploads',
-      },
-      provide: {
-        isGroup,
       },
       mocks: {
         $route: {

@@ -86,6 +86,7 @@ describe('WorkItemLinkChild', () => {
       apolloProvider: mockApollo,
       propsData: {
         canUpdate,
+        isGroup: false,
         issuableGid,
         childItem,
         workItemType,
@@ -224,6 +225,7 @@ describe('WorkItemLinkChild', () => {
         expect(findWorkItemLinkChildContents().props()).toEqual({
           childItem: workItemObjectiveWithChild,
           canUpdate: true,
+          isGroup: false,
           showLabels: true,
           workItemFullPath,
           showWeight: true,

@@ -120,7 +120,11 @@ class SearchController < ApplicationController
   end
 
   def autocomplete
-    term = params.require(:term)
+    term = params[:term]
+    if term.blank?
+      render json: Gitlab::Json.dump([])
+      return
+    end
 
     @project = search_service.project
     @ref = params[:project_ref] if params[:project_ref].present?

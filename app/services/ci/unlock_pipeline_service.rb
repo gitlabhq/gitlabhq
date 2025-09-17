@@ -105,7 +105,7 @@ module Ci
     # Removes the partition_id filter from the query until we get more data in the
     # second partition.
     def builds_relation
-      if Feature.enabled?(:disable_ci_partition_pruning, pipeline.project, type: :wip)
+      if Feature.enabled?(:disable_ci_partition_pruning, pipeline.project)
         # CTE is used to force the query to use btree index starting with (commit_id, type)
         # e.g. p_ci_builds_commit_id_type_ref_idx
         # rubocop: disable CodeReuse/ActiveRecord -- custom CTE query

@@ -93,11 +93,11 @@ describe('WorkItemUserPreferences', () => {
         displaySettings: mockDisplaySettings,
         fullPath: 'gitlab-org/gitlab',
         isEpicsList: false,
+        isGroup: false,
         ...props,
       },
       provide: {
         isSignedIn: true,
-        isGroup: false,
         isGroupIssuesList: false,
         ...provide,
       },
@@ -216,7 +216,7 @@ describe('WorkItemUserPreferences', () => {
 
     describe('metadata field toggles', () => {
       it('renders toggles for group-applicable metadata fields in group context', () => {
-        createComponent({ provide: { isGroup: true } });
+        createComponent({ props: { isGroup: true } });
         const toggles = findToggles();
         const groupApplicableFields = WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.filter(
           (field) => field.isPresentInGroup,
@@ -268,7 +268,7 @@ describe('WorkItemUserPreferences', () => {
       });
 
       it('renders only group-applicable metadata fields in group context', () => {
-        createComponent({ mountFn: mount, provide: { isGroup: true } });
+        createComponent({ mountFn: mount, props: { isGroup: true } });
 
         const expectedGroupFields = WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.filter(
           (field) => field.isPresentInGroup,
@@ -300,8 +300,7 @@ describe('WorkItemUserPreferences', () => {
       it('does not render `Status` settings for epics listing', () => {
         createComponent({
           mountFn: mount,
-          provide: { isGroup: true },
-          props: { isEpicsList: true },
+          props: { isEpicsList: true, isGroup: true },
         });
 
         const firstMetadataItem = findDropdownItems().at(0);
@@ -310,7 +309,7 @@ describe('WorkItemUserPreferences', () => {
       });
 
       it('renders `Status` settings for group work item listing', () => {
-        createComponent({ mountFn: mount, provide: { isGroup: true } });
+        createComponent({ mountFn: mount, props: { isGroup: true } });
 
         const firstMetadataItem = findDropdownItems().at(0);
 

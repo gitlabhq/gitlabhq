@@ -72,10 +72,6 @@ class BasePolicy < DeclarativePolicy::Base
   with_options scope: :user, score: 0
   condition(:automation_bot) { @user&.automation_bot? }
 
-  desc "User is llm bot"
-  with_options scope: :user, score: 0
-  condition(:llm_bot) { @user&.llm_bot? }
-
   desc "User is placeholder"
   with_options scope: :user, score: 0
   condition(:placeholder_user) { @user.try(:placeholder?) || false }

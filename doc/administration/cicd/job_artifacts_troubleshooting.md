@@ -29,7 +29,7 @@ reasons are:
 - Artifact files might be left on disk and not deleted by housekeeping. Run the
   [Rake task for orphaned artifact files](../raketasks/cleanup.md#remove-orphan-artifact-files)
   to remove these. This script should always find work to do because it also removes empty directories (see the previous reason).
-- [Artifact housekeeping was changed significantly](#housekeeping-disabled-in-gitlab-150-to-152), and you might need to enable a feature flag to use the updated system.
+- Artifacts with `unknown` status might not be processed by automatic cleanup. You can [check for these artifacts](#check-for-artifacts-with-unknown-status) and clean them up to reclaim disk space.
 - The [keep latest artifacts from most recent success jobs](../../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs)
   feature is enabled.
 
@@ -42,41 +42,13 @@ space, and in some cases, manually delete job artifacts to reclaim disk space.
 Artifacts housekeeping is the process that identifies which artifacts are expired
 and can be deleted.
 
-#### Housekeeping disabled in GitLab 15.0 to 15.2
+#### Check for artifacts with `unknown` status
 
-Artifact housekeeping was significantly improved in GitLab 15.0, introduced behind [feature flags](../feature_flags/_index.md) disabled by default. The flags were enabled by default [in GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92931).
+Some artifacts have a status of `unknown` because the housekeeping system cannot 
+determine their correct lock status. These artifacts are not processed by automatic 
+cleanup even after they expire, and can contribute to excessive disk space usage.
 
-If artifacts housekeeping does not seem to be working in GitLab 15.0 to GitLab 15.2, you should check if the feature flags are enabled.
-
-To check if the feature flags are enabled:
-
-1. Start a [Rails console](../operations/rails_console.md#starting-a-rails-console-session).
-
-1. Check if the feature flags are enabled.
-
-   ```ruby
-   Feature.enabled?(:ci_detect_wrongly_expired_artifacts)
-   Feature.enabled?(:ci_update_unlocked_job_artifacts)
-   Feature.enabled?(:ci_job_artifacts_backlog_work)
-   ```
-
-1. If any of the feature flags are disabled, enable them:
-
-   ```ruby
-   Feature.enable(:ci_detect_wrongly_expired_artifacts)
-   Feature.enable(:ci_update_unlocked_job_artifacts)
-   Feature.enable(:ci_job_artifacts_backlog_work)
-   ```
-
-These changes include switching artifacts from `unlocked` to `locked` if
-they [should be retained](../../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
-
-#### Artifacts with `unknown` status
-
-Artifacts created before housekeeping was updated have a status of `unknown`. After they expire,
-these artifacts are not processed by the new housekeeping.
-
-You can check the database to confirm if your instance has artifacts with the `unknown` status:
+To check if your instance has artifacts with `unknown` status:
 
 1. Start a database console:
 
@@ -129,8 +101,8 @@ You can check the database to confirm if your instance has artifacts with the `u
    group by expire_at, file_type, locked having count(*) > 1;
    ```
 
-If records are returned, then there are artifacts which the housekeeping job
-is unable to process. For example:
+If records are returned with locked status `2`, these are `unknown` artifacts.
+For example:
 
 ```plaintext
            expire_at           | file_type | locked | count
@@ -142,35 +114,22 @@ is unable to process. For example:
  2021-06-21 22:00:00+00        |        12 |      2 |    163
 ```
 
-Artifacts with locked status `2` are `unknown`. Check
-[issue #346261](https://gitlab.com/gitlab-org/gitlab/-/issues/346261#note_1028871458)
-for more details.
+If you have `unknown` artifacts, you can [set shorter expiration times](#clean-up-unknown-artifacts) or manually remove them to reclaim disk space.
 
 #### Clean up `unknown` artifacts
 
-The Sidekiq worker that processes all `unknown` artifacts is enabled by default in
-GitLab 15.3 and later. It analyzes the artifacts returned by the previous database query and
-determines which should be `locked` or `unlocked`. Artifacts are then deleted
-by that worker if needed.
-
-The worker can be enabled on GitLab Self-Managed:
+To clean up `unknown` artifacts, you can set shorter expiration times,
+which allows the automatic cleanup process to handle them:
 
 1. Start a [Rails console](../operations/rails_console.md#starting-a-rails-console-session).
-
-1. Check if the feature is enabled.
-
-   ```ruby
-   Feature.enabled?(:ci_job_artifacts_backlog_work)
-   ```
-
-1. Enable the feature, if needed:
+1. Set the expiration to the current time for `unknown` artifacts:
 
    ```ruby
-   Feature.enable(:ci_job_artifacts_backlog_work)
+   # This marks unknown artifacts for immediate cleanup
+   Ci::JobArtifact.where(locked: 2).update_all(artifacts_expire_at: Time.current)
    ```
 
-The worker processes 10,000 `unknown` artifacts every seven minutes, or roughly two million
-in 24 hours.
+The automatic housekeeping process will then clean up these artifacts during its next run.
 
 #### `@final` artifacts not deleted from object store
 

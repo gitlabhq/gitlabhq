@@ -139,10 +139,6 @@ FactoryBot.define do
       user_type { :security_bot }
     end
 
-    trait :llm_bot do
-      user_type { :llm_bot }
-    end
-
     trait :duo_code_review_bot do
       user_type { :duo_code_review_bot }
     end

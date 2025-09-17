@@ -17956,6 +17956,9 @@ msgstr ""
 msgid "Configure Sentry integration for error tracking"
 msgstr ""
 
+msgid "Configure a pipeline to automate your builds, tests, and deployments"
+msgstr ""
+
 msgid "Configure advanced permissions"
 msgstr ""
 
@@ -19606,6 +19609,9 @@ msgstr ""
 msgid "Create %{workspace} label"
 msgstr ""
 
+msgid "Create a %{codeStart}.gitlab-ci.yml%{codeEnd} file in your repository to configure and run your first pipeline."
+msgstr ""
+
 msgid "Create a Kubernetes cluster"
 msgstr ""
 
@@ -19628,9 +19634,6 @@ msgid "Create a merge request for this change"
 msgstr ""
 
 msgid "Create a merge request, or edit your criteria and try again."
-msgstr ""
-
-msgid "Create a new %{codeStart}.gitlab-ci.yml%{codeEnd} file at the root of the repository to get started."
 msgstr ""
 
 msgid "Create a new fork"
@@ -45488,9 +45491,6 @@ msgid "Opt out of Project Studio"
 msgstr ""
 
 msgid "Optimize repository period"
-msgstr ""
-
-msgid "Optimize your workflow with CI/CD Pipelines"
 msgstr ""
 
 msgid "Optional"

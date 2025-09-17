@@ -232,12 +232,6 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       it { is_expected.to be_disallowed(:access_api) }
     end
 
-    context 'llm bot' do
-      let(:current_user) { llm_bot }
-
-      it { is_expected.to be_disallowed(:access_api) }
-    end
-
     context 'user blocked pending approval' do
       before do
         current_user.block_pending_approval
@@ -741,12 +735,6 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       it { is_expected.to be_disallowed(:log_in) }
     end
 
-    context 'llm bot' do
-      let(:current_user) { llm_bot }
-
-      it { is_expected.to be_disallowed(:log_in) }
-    end
-
     context 'user blocked pending approval' do
       before do
         current_user.block_pending_approval
@@ -783,12 +771,6 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
 
     context 'with security_bot' do
       let(:current_user) { security_bot }
-
-      it { is_expected.to be_disallowed(:create_instance_runners) }
-    end
-
-    context 'with llm_bot' do
-      let(:current_user) { llm_bot }
 
       it { is_expected.to be_disallowed(:create_instance_runners) }
     end

@@ -29,7 +29,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [InternalEvents.mixin()],
-  inject: ['isGroup', 'isSignedIn', 'isGroupIssuesList'],
+  inject: ['isSignedIn', 'isGroupIssuesList'],
   i18n: {
     displayOptions: s__('WorkItems|Display options'),
     yourPreferences: s__('WorkItems|Your preferences'),
@@ -47,6 +47,11 @@ export default {
       required: true,
     },
     isEpicsList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isGroup: {
       type: Boolean,
       required: false,
       default: false,

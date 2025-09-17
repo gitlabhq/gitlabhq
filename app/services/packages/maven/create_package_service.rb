@@ -3,7 +3,10 @@
 module Packages
   module Maven
     class CreatePackageService < ::Packages::CreatePackageService
+      ERROR_RESPONSE_UNAUTHORIZED = ServiceResponse.error(message: 'Unauthorized', reason: :unauthorized)
+
       def execute
+        return ERROR_RESPONSE_UNAUTHORIZED unless can_create_package?
         return ERROR_RESPONSE_PACKAGE_PROTECTED if package_protected?(package_name: params[:name], package_type: :maven)
 
         app_group, _, app_name = params[:name].rpartition('/')

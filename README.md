@@ -109,6 +109,10 @@ For upgrading information please see our [update page](https://about.gitlab.com/
 
 All documentation can be found on <https://docs.gitlab.com>.
 
+## Education
+
+Get up to speed quickly with comprehensive learning resources at [GitLab University](https://university.gitlab.com).
+
 ## Getting help
 
 Please see [Getting help for GitLab](https://about.gitlab.com/getting-help/) on our website for the many options to get help.

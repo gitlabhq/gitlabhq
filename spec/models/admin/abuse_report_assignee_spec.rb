@@ -6,7 +6,9 @@ RSpec.describe Admin::AbuseReportAssignee, feature_category: :insider_threat do
   let_it_be(:report) { create(:abuse_report) }
   let_it_be(:user) { create(:admin) }
 
-  subject(:abuse_report_assignee) { report.admin_abuse_report_assignees.build(assignee: user) }
+  subject(:abuse_report_assignee) do
+    report.admin_abuse_report_assignees.build(assignee: user, organization: user.organization)
+  end
 
   it { expect(abuse_report_assignee).to be_valid }
 
@@ -22,7 +24,12 @@ RSpec.describe Admin::AbuseReportAssignee, feature_category: :insider_threat do
   context 'with loose foreign key on abuse_report_assignees.user_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
       let_it_be(:parent) { user }
-      let_it_be(:report) { create(:abuse_report).tap { |r| r.update!(assignees: [parent]) } }
+      let_it_be(:report) do
+        create(:abuse_report).tap do |r|
+          r.admin_abuse_report_assignees.create!(assignee: parent, organization: parent.organization)
+        end
+      end
+
       let_it_be(:model) { report.admin_abuse_report_assignees.first }
     end
   end

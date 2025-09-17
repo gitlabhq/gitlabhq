@@ -62,7 +62,6 @@ export default {
       from: INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
       default: false,
     },
-    isGroup: {},
   },
   props: {
     childItem: {
@@ -72,6 +71,11 @@ export default {
     canUpdate: {
       type: Boolean,
       required: true,
+    },
+    isGroup: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     workItemFullPath: {
       type: String,

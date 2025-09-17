@@ -63,13 +63,11 @@ describe('WorkItemLinkChildContents', () => {
     wrapper = shallowMountExtended(WorkItemLinkChildContents, {
       propsData: {
         canUpdate,
+        isGroup,
         childItem,
         showLabels,
         workItemFullPath,
         contextualViewEnabled,
-      },
-      provide: {
-        isGroup,
       },
       mocks: {
         $router: {

@@ -593,10 +593,10 @@ RSpec.describe SearchController, feature_category: :global_search do
       it_behaves_like 'with external authorization service enabled', :autocomplete, { term: 'hello' }
       it_behaves_like 'support for active record query timeouts', :autocomplete, { term: 'hello' }, :project, :json
 
-      it 'raises an error if search term is missing' do
-        expect do
-          get :autocomplete
-        end.to raise_error(ActionController::ParameterMissing)
+      it 'returns an empty array when search term is missing' do
+        get :autocomplete
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_empty
       end
 
       it 'returns an empty array when given abusive search term' do
