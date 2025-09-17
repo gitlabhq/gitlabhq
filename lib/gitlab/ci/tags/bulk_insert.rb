@@ -96,10 +96,7 @@ module Gitlab
           attributes = { tag_id: tag.id }
           attributes.merge!(config.attributes_map(taggable))
 
-          join_model.new(attributes).tap do |record|
-            # Copy tag name for tagging if the model supports it
-            record.name = tag.name if record.respond_to?(:name=)
-          end
+          join_model.new(attributes)
         end
 
         def detect_missing_tags(tags, tag_records)

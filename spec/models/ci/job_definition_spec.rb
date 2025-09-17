@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
-  let_it_be(:job_definition) { create(:ci_job_definition, project: project) }
+  let_it_be_with_reload(:job_definition) { create(:ci_job_definition, project: project) }
 
   subject { job_definition }
 
@@ -53,6 +53,24 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
           :run_steps
         ])
       end
+    end
+  end
+
+  describe 'read only' do
+    let(:new_config_value) { { options: { script: 'new script' } } }
+
+    it 'does not allow a persisted record to be updated', :aggregate_failures do
+      job_definition.config = new_config_value
+      expect { job_definition.save! }.to raise_error(ActiveRecord::ReadOnlyRecord)
+
+      expect { job_definition.update!(config: new_config_value) }
+        .to raise_error(ActiveRecord::ReadOnlyRecord)
+
+      expect { job_definition.update_column(:config, new_config_value) }
+        .to raise_error(ActiveRecord::ReadOnlyRecord)
+
+      expect { job_definition.update_columns(config: new_config_value) }
+        .to raise_error(ActiveRecord::ReadOnlyRecord)
     end
   end
 

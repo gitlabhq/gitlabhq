@@ -112,6 +112,10 @@ The type of mapping for user memberships depends on the
   membership. Full support for mapping shared memberships is proposed in
   [issue 458345](https://gitlab.com/gitlab-org/gitlab/-/issues/458345).
 
+[In GitLab 18.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/559224), when you create
+direct memberships while importing a project directly into an existing group, the
+[**Users cannot be added to projects in this group** setting](../access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) is respected.
+
 When mapping [inherited and shared](../../project/members/_index.md#membership-types) memberships, if the user
 has an existing membership in the destination namespace with a [higher role](../../permissions.md#roles) than
 the one being mapped, the membership is mapped as a direct membership instead. This ensures the member does not get

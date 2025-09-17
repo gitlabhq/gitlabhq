@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Use merge trains to queue merge requests and prevent branch conflicts in GitLab CI/CD.
 title: Merge trains
 ---
 

@@ -299,12 +299,11 @@ RSpec.describe 'Database schema',
   let(:ignored_tables_with_too_many_indexes) do
     {
       approval_merge_request_rules: 17,
-      ci_runners: 16,
       deployments: 18,
       epics: 19,
       events: 16,
-      group_type_ci_runners: 17,
-      instance_type_ci_runners: 17,
+      group_type_ci_runners: 16,
+      instance_type_ci_runners: 16,
       issues: 32,
       members: 21, # Decrement by 2 after the removal of temporary indexes https://gitlab.com/gitlab-org/gitlab/-/work_items/520189
       merge_requests: 29,
@@ -314,7 +313,7 @@ RSpec.describe 'Database schema',
       p_ci_pipelines: 24,
       packages_package_files: 16,
       packages_packages: 27,
-      project_type_ci_runners: 17,
+      project_type_ci_runners: 16,
       projects: 55,
       sbom_occurrences: 25,
       users: 34, # Decrement by 1 after the removal of a temporary index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184848

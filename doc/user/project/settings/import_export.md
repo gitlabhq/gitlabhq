@@ -77,6 +77,9 @@ To ensure GitLab maps users and their contributions correctly:
 - Users must [set a public email in their profiles](../../profile/_index.md#set-your-public-email) on the source GitLab
   instance that matches their primary email address on the destination GitLab instance. You can also manually add users'
   public emails by [editing project export files](#edit-project-export-files).
+- [In GitLab 18.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/559224), when you create
+  direct memberships while importing a project directly into an existing group, the
+  [**Users cannot be added to projects in this group** setting](../../group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) is respected.
 
 When the email of an existing user matches the email of an imported user, that user is added as a
 [direct member](../members/_index.md) to the imported project.

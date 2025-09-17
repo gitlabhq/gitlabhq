@@ -227,6 +227,18 @@ export const contentTop = () => {
   }, 0);
 };
 
+export const findParentPanelScrollingEl = (element) => {
+  const staticPanel = element.closest('.js-static-panel');
+  if (staticPanel) {
+    return staticPanel.querySelector('.js-static-panel-inner');
+  }
+  const dynamicPanel = element.closest('.js-dynamic-panel');
+  if (dynamicPanel) {
+    return dynamicPanel.querySelector('.js-dynamic-panel-inner');
+  }
+  return null;
+};
+
 /**
  * Scrolls to the top of a particular element.
  *
@@ -245,6 +257,9 @@ export const scrollToElement = (element, options = {}) => {
     el = element[0];
   } else if (typeof el === 'string') {
     el = document.querySelector(element);
+  }
+  if (window.gon?.features?.projectStudioEnabled) {
+    scrollingEl = findParentPanelScrollingEl(el) || window;
   }
 
   if (el && el.getBoundingClientRect) {

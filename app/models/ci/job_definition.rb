@@ -66,5 +66,9 @@ module Ci
 
       [sanitized_config, checksum]
     end
+
+    def readonly?
+      persisted?
+    end
   end
 end

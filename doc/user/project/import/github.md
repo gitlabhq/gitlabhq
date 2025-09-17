@@ -215,6 +215,8 @@ You can choose to import these items, but this could significantly increase impo
 - **Import collaborators** (selected by default). Leaving it selected might result in new users using a seat in the group or namespace,
   and being granted permissions [as high as project owner](#collaborators-members). Only direct collaborators are imported.
   Outside collaborators are never imported.
+  [In GitLab 18.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/559224), when you import collaborators,
+  the [**Users cannot be added to projects in this group** setting](../../group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) is respected.
 
 ### Select which repositories to import
 

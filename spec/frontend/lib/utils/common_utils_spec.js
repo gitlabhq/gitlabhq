@@ -370,6 +370,62 @@ describe('common_utils', () => {
         });
       });
     });
+
+    describe('when project studio is enabled', () => {
+      beforeEach(() => {
+        window.gon = {
+          features: {
+            projectStudioEnabled: true,
+          },
+        };
+      });
+
+      it('scrolls the static panel', () => {
+        const staticPanelContainer = document.createElement('div');
+        staticPanelContainer.classList.add('js-static-panel');
+
+        const staticPanelScroller = document.createElement('div');
+        staticPanelScroller.classList.add('js-static-panel-inner');
+
+        staticPanelContainer.appendChild(staticPanelScroller);
+
+        staticPanelScroller.appendChild(elem);
+
+        document.body.appendChild(staticPanelContainer);
+
+        jest.spyOn(staticPanelScroller, 'scrollTo').mockImplementation(() => {});
+        jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: elemTop });
+
+        commonUtils.scrollToElement(elem);
+        expect(staticPanelScroller.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop,
+        });
+      });
+
+      it('scrolls the dynamic panel', () => {
+        const dynamicPanelContainer = document.createElement('div');
+        dynamicPanelContainer.classList.add('js-dynamic-panel');
+
+        const dynamicPanelScroller = document.createElement('div');
+        dynamicPanelScroller.classList.add('js-dynamic-panel-inner');
+
+        dynamicPanelContainer.appendChild(dynamicPanelScroller);
+
+        dynamicPanelScroller.appendChild(elem);
+
+        document.body.appendChild(dynamicPanelContainer);
+
+        jest.spyOn(dynamicPanelScroller, 'scrollTo').mockImplementation(() => {});
+        jest.spyOn(Element.prototype, 'getBoundingClientRect').mockReturnValue({ top: elemTop });
+
+        commonUtils.scrollToElement(elem);
+        expect(dynamicPanelScroller.scrollTo).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          top: elemTop,
+        });
+      });
+    });
   });
 
   describe('debounceByAnimationFrame', () => {

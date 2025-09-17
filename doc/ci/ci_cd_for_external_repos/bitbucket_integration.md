@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Connect your Bitbucket Cloud repository to GitLab CI/CD.
 title: Using GitLab CI/CD with a Bitbucket Cloud repository
 ---
 

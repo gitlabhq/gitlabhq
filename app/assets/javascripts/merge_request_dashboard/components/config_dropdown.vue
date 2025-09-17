@@ -154,6 +154,12 @@ export default {
       }
     },
   },
+  i18n: {
+    displayPreferencesPopoverContent: __(
+      `Group your merge requests by %{boldStart}workflow%{boldEnd} or your %{boldStart}role%{boldEnd}, and manage label visibility.`,
+    ),
+    showDraftsPopoverContent: __(`Show or hide draft merge requests in your merge requests list.`),
+  },
 };
 </script>
 
@@ -211,28 +217,40 @@ export default {
     </gl-collapsible-listbox>
     <user-callout-dismisser feature-name="merge_request_dashboard_display_preferences_popover">
       <template #default="{ shouldShowCallout, dismiss }">
-        <gl-popover
-          v-if="shouldShowCallout"
-          triggers="manual"
-          target="display-prefences-dropdown"
-          show
-          placement="bottomleft"
-          :title="__('Change display preferences')"
-          show-close-button
-          @hidden="dismiss"
-        >
-          <gl-sprintf
-            :message="
-              __(
-                `Group your merge requests by %{boldStart}workflow%{boldEnd} or your %{boldStart}role%{boldEnd}, and manage label visibility.`,
-              )
-            "
+        <user-callout-dismisser feature-name="merge_request_dashboard_show_drafts">
+          <template
+            #default="{ shouldShowCallout: shouldShowDraftCallout, dismiss: dismissDraftCallout }"
           >
-            <template #bold="{ content }">
-              <strong>{{ content }}</strong>
-            </template>
-          </gl-sprintf>
-        </gl-popover>
+            <gl-popover
+              v-if="
+                shouldShowCallout || (glFeatures.mrDashboardDraftsToggle && shouldShowDraftCallout)
+              "
+              triggers="manual"
+              target="display-prefences-dropdown"
+              show
+              placement="bottomleft"
+              :title="
+                shouldShowCallout
+                  ? __('Change display preferences')
+                  : __('Toggle drafts visibility')
+              "
+              show-close-button
+              @hidden="() => (shouldShowCallout ? dismiss() : dismissDraftCallout())"
+            >
+              <gl-sprintf
+                :message="
+                  shouldShowCallout
+                    ? $options.i18n.displayPreferencesPopoverContent
+                    : $options.i18n.showDraftsPopoverContent
+                "
+              >
+                <template #bold="{ content }">
+                  <strong>{{ content }}</strong>
+                </template>
+              </gl-sprintf>
+            </gl-popover>
+          </template>
+        </user-callout-dismisser>
       </template>
     </user-callout-dismisser>
   </div>

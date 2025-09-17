@@ -102,7 +102,7 @@ other groups, subgroups, and projects.
 
 Prerequisites:
 
-- You must have the Owner role for the group.
+- You must have the Owner or Maintainer role for the group.
 
 To change GitLab Duo availability for the top-level group:
 
@@ -119,7 +119,7 @@ GitLab Duo availability changes for all subgroups and projects.
 
 Prerequisites:
 
-- You must have the Owner role for the group.
+- You must have the Owner or Maintainer role for the group.
 
 To change GitLab Duo availability for a group or subgroup:
 
@@ -136,7 +136,7 @@ GitLab Duo availability changes for all subgroups and projects.
 
 Prerequisites:
 
-- You must have the Owner role for the project.
+- You must have the Owner or Maintainer role for the project.
 
 To change GitLab Duo availability for a project:
 
@@ -173,7 +173,7 @@ GitLab Duo availability changes for the entire instance.
 
 Prerequisites:
 
-- You must have the Owner role for the group or subgroup.
+- You must have the Owner or Maintainer role for the group or subgroup.
 
 To change GitLab Duo availability for a group or subgroup:
 
@@ -190,7 +190,7 @@ GitLab Duo availability changes for all subgroups and projects.
 
 Prerequisites:
 
-- You must have the Owner role for the project.
+- You must have the Owner or Maintainer role for the project.
 
 To change GitLab Duo availability for a project:
 

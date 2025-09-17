@@ -197,7 +197,11 @@ To add Google Cloud Logging streaming destinations to an instance:
 1. On the main area, select the **Streams** tab.
 1. Select **Add streaming destination** and select **Google Cloud Logging** to show the section for adding destinations.
 1. Enter a random string to use as a name for the new destination.
-1. Enter the Google project ID, Google client email, and Google private key from previously-created Google Cloud service account key to add to the new destination.
+1. Enter the Google project ID and Google client email from the previously-created
+   Google Cloud service account key.
+1. Enter the Google private key from the previously-created Google Cloud service account key.
+   It should be in PEM format, and start with `-----BEGIN PRIVATE KEY-----`.
+   Do not upload the entire JSON key.
 1. Enter a random string to use as a log ID for the new destination. You can use this later to filter log results in Google Cloud.
 1. Select **Add** to add the new streaming destination.
 

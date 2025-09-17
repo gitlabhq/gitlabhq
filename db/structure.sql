@@ -13373,7 +13373,6 @@ ALTER SEQUENCE ci_resources_id_seq OWNED BY ci_resources.id;
 CREATE TABLE ci_runner_machines (
     id bigint NOT NULL,
     runner_id bigint NOT NULL,
-    sharding_key_id bigint,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     contacted_at timestamp with time zone,
@@ -13446,11 +13445,8 @@ CREATE TABLE ci_runner_taggings (
     id bigint NOT NULL,
     tag_id bigint NOT NULL,
     runner_id bigint NOT NULL,
-    sharding_key_id bigint,
     runner_type smallint NOT NULL,
-    organization_id bigint,
-    name text,
-    CONSTRAINT ci_runner_taggings_name_length CHECK ((char_length(name) <= 1000))
+    organization_id bigint
 )
 PARTITION BY LIST (runner_type);
 
@@ -13458,11 +13454,8 @@ CREATE TABLE ci_runner_taggings_group_type (
     id bigint NOT NULL,
     tag_id bigint NOT NULL,
     runner_id bigint NOT NULL,
-    sharding_key_id bigint,
     runner_type smallint NOT NULL,
-    organization_id bigint,
-    name text,
-    CONSTRAINT ci_runner_taggings_name_length CHECK ((char_length(name) <= 1000))
+    organization_id bigint
 );
 
 CREATE SEQUENCE ci_runner_taggings_id_seq
@@ -13478,22 +13471,16 @@ CREATE TABLE ci_runner_taggings_instance_type (
     id bigint NOT NULL,
     tag_id bigint NOT NULL,
     runner_id bigint NOT NULL,
-    sharding_key_id bigint,
     runner_type smallint NOT NULL,
-    organization_id bigint,
-    name text,
-    CONSTRAINT ci_runner_taggings_name_length CHECK ((char_length(name) <= 1000))
+    organization_id bigint
 );
 
 CREATE TABLE ci_runner_taggings_project_type (
     id bigint NOT NULL,
     tag_id bigint NOT NULL,
     runner_id bigint NOT NULL,
-    sharding_key_id bigint,
     runner_type smallint NOT NULL,
-    organization_id bigint,
-    name text,
-    CONSTRAINT ci_runner_taggings_name_length CHECK ((char_length(name) <= 1000))
+    organization_id bigint
 );
 
 CREATE TABLE ci_runner_versions (
@@ -13505,7 +13492,6 @@ CREATE TABLE ci_runner_versions (
 CREATE TABLE ci_runners (
     id bigint NOT NULL,
     creator_id bigint,
-    sharding_key_id bigint,
     created_at timestamp with time zone,
     updated_at timestamp with time zone,
     contacted_at timestamp with time zone,
@@ -16848,7 +16834,6 @@ ALTER SEQUENCE group_ssh_certificates_id_seq OWNED BY group_ssh_certificates.id;
 CREATE TABLE group_type_ci_runner_machines (
     id bigint NOT NULL,
     runner_id bigint NOT NULL,
-    sharding_key_id bigint,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     contacted_at timestamp with time zone,
@@ -16876,7 +16861,6 @@ CREATE TABLE group_type_ci_runner_machines (
 CREATE TABLE group_type_ci_runners (
     id bigint NOT NULL,
     creator_id bigint,
-    sharding_key_id bigint,
     created_at timestamp with time zone,
     updated_at timestamp with time zone,
     contacted_at timestamp with time zone,
@@ -17541,7 +17525,6 @@ ALTER SEQUENCE instance_model_selection_feature_settings_id_seq OWNED BY instanc
 CREATE TABLE instance_type_ci_runner_machines (
     id bigint NOT NULL,
     runner_id bigint NOT NULL,
-    sharding_key_id bigint,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     contacted_at timestamp with time zone,
@@ -17569,7 +17552,6 @@ CREATE TABLE instance_type_ci_runner_machines (
 CREATE TABLE instance_type_ci_runners (
     id bigint NOT NULL,
     creator_id bigint,
-    sharding_key_id bigint,
     created_at timestamp with time zone,
     updated_at timestamp with time zone,
     contacted_at timestamp with time zone,
@@ -23456,7 +23438,6 @@ ALTER SEQUENCE project_topics_id_seq OWNED BY project_topics.id;
 CREATE TABLE project_type_ci_runner_machines (
     id bigint NOT NULL,
     runner_id bigint NOT NULL,
-    sharding_key_id bigint,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     contacted_at timestamp with time zone,
@@ -23484,7 +23465,6 @@ CREATE TABLE project_type_ci_runner_machines (
 CREATE TABLE project_type_ci_runners (
     id bigint NOT NULL,
     creator_id bigint,
-    sharding_key_id bigint,
     created_at timestamp with time zone,
     updated_at timestamp with time zone,
     contacted_at timestamp with time zone,
@@ -36503,10 +36483,6 @@ CREATE UNIQUE INDEX index_ci_runner_machines_on_runner_id_and_type_and_system_xi
 
 CREATE UNIQUE INDEX idx_group_type_ci_runner_machines_on_runner_id_type_system_xid ON group_type_ci_runner_machines USING btree (runner_id, runner_type, system_xid);
 
-CREATE INDEX index_ci_runner_machines_on_sharding_key_id_when_not_null ON ONLY ci_runner_machines USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
-
-CREATE INDEX idx_group_type_ci_runner_machines_on_sharding_key_when_not_null ON group_type_ci_runner_machines USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
-
 CREATE INDEX index_ci_runners_on_contacted_at_and_id_where_inactive ON ONLY ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
 
 CREATE INDEX idx_group_type_ci_runners_on_contacted_at_and_id_where_inactive ON group_type_ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
@@ -36514,10 +36490,6 @@ CREATE INDEX idx_group_type_ci_runners_on_contacted_at_and_id_where_inactive ON 
 CREATE INDEX index_ci_runners_on_locked ON ONLY ci_runners USING btree (locked);
 
 CREATE INDEX idx_group_type_ci_runners_on_locked ON group_type_ci_runners USING btree (locked);
-
-CREATE INDEX index_ci_runners_on_sharding_key_id_when_not_null ON ONLY ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
-
-CREATE INDEX idx_group_type_ci_runners_on_sharding_key_id_when_not_null ON group_type_ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
 
 CREATE INDEX index_ci_runners_on_token_expires_at_and_id_desc ON ONLY ci_runners USING btree (token_expires_at, id DESC);
 
@@ -36551,8 +36523,6 @@ CREATE INDEX idx_incident_management_pending_issue_esc_on_namespace_id ON ONLY i
 
 CREATE INDEX idx_incident_management_timeline_event_tag_links_on_project_id ON incident_management_timeline_event_tag_links USING btree (project_id);
 
-CREATE INDEX idx_inst_type_ci_runner_machines_on_sharding_key_when_not_null ON instance_type_ci_runner_machines USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
-
 CREATE INDEX idx_installable_conan_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id) WHERE ((package_type = 3) AND (status = ANY (ARRAY[0, 1])));
 
 CREATE INDEX idx_installable_helm_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id);
@@ -36578,8 +36548,6 @@ CREATE INDEX index_ci_runners_on_contacted_at_and_id_desc ON ONLY ci_runners USI
 CREATE INDEX idx_instance_type_ci_runners_on_contacted_at_and_id_desc ON instance_type_ci_runners USING btree (contacted_at, id DESC);
 
 CREATE INDEX idx_instance_type_ci_runners_on_contacted_at_id_where_inactive ON instance_type_ci_runners USING btree (contacted_at DESC, id DESC) WHERE (active = false);
-
-CREATE INDEX idx_instance_type_ci_runners_on_sharding_key_id_when_not_null ON instance_type_ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
 
 CREATE UNIQUE INDEX index_ci_runners_on_token_encrypted_and_runner_type ON ONLY ci_runners USING btree (token_encrypted, runner_type);
 
@@ -36755,8 +36723,6 @@ CREATE INDEX idx_proj_feat_usg_on_jira_dvcs_cloud_last_sync_at_and_proj_id ON pr
 
 CREATE INDEX idx_proj_feat_usg_on_jira_dvcs_server_last_sync_at_and_proj_id ON project_feature_usages USING btree (jira_dvcs_server_last_sync_at, project_id) WHERE (jira_dvcs_server_last_sync_at IS NOT NULL);
 
-CREATE INDEX idx_proj_type_ci_runner_machines_on_sharding_key_when_not_null ON project_type_ci_runner_machines USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
-
 CREATE INDEX idx_project_audit_events_on_author_id_created_at_id ON ONLY project_audit_events USING btree (author_id, created_at, id);
 
 CREATE INDEX idx_project_audit_events_on_project_created_at_id ON ONLY project_audit_events USING btree (project_id, created_at, id);
@@ -36798,8 +36764,6 @@ CREATE INDEX idx_project_type_ci_runners_on_created_at_and_id_where_inactive ON 
 CREATE INDEX index_ci_runners_on_created_at_desc_and_id_desc ON ONLY ci_runners USING btree (created_at DESC, id DESC);
 
 CREATE INDEX idx_project_type_ci_runners_on_created_at_desc_and_id_desc ON project_type_ci_runners USING btree (created_at DESC, id DESC);
-
-CREATE INDEX idx_project_type_ci_runners_on_sharding_key_id_when_not_null ON project_type_ci_runners USING btree (sharding_key_id) WHERE (sharding_key_id IS NOT NULL);
 
 CREATE UNIQUE INDEX idx_project_type_ci_runners_on_token_encrypted_and_runner_type ON project_type_ci_runners USING btree (token_encrypted, runner_type);
 
@@ -37841,19 +37805,11 @@ CREATE INDEX index_ci_runner_taggings_on_organization_id ON ONLY ci_runner_taggi
 
 CREATE INDEX index_ci_runner_taggings_group_type_on_organization_id ON ci_runner_taggings_group_type USING btree (organization_id);
 
-CREATE INDEX index_ci_runner_taggings_on_sharding_key_id ON ONLY ci_runner_taggings USING btree (sharding_key_id);
-
-CREATE INDEX index_ci_runner_taggings_group_type_on_sharding_key_id ON ci_runner_taggings_group_type USING btree (sharding_key_id);
-
 CREATE INDEX index_ci_runner_taggings_instance_type_on_organization_id ON ci_runner_taggings_instance_type USING btree (organization_id);
-
-CREATE INDEX index_ci_runner_taggings_instance_type_on_sharding_key_id ON ci_runner_taggings_instance_type USING btree (sharding_key_id);
 
 CREATE INDEX index_ci_runner_taggings_project_type_on_organization_id ON ci_runner_taggings_project_type USING btree (organization_id);
 
 CREATE INDEX index_ci_runner_taggings_project_type_on_runner_id_runner_type ON ci_runner_taggings_project_type USING btree (runner_id, runner_type);
-
-CREATE INDEX index_ci_runner_taggings_project_type_on_sharding_key_id ON ci_runner_taggings_project_type USING btree (sharding_key_id);
 
 CREATE UNIQUE INDEX index_ci_runner_versions_on_unique_status_and_version ON ci_runner_versions USING btree (status, version);
 
@@ -44697,19 +44653,13 @@ ALTER INDEX index_ci_runner_machines_on_contacted_at_desc_and_id_desc ATTACH PAR
 
 ALTER INDEX index_ci_runner_machines_on_runner_id_and_type_and_system_xid ATTACH PARTITION idx_group_type_ci_runner_machines_on_runner_id_type_system_xid;
 
-ALTER INDEX index_ci_runner_machines_on_sharding_key_id_when_not_null ATTACH PARTITION idx_group_type_ci_runner_machines_on_sharding_key_when_not_null;
-
 ALTER INDEX index_ci_runners_on_contacted_at_and_id_where_inactive ATTACH PARTITION idx_group_type_ci_runners_on_contacted_at_and_id_where_inactive;
 
 ALTER INDEX index_ci_runners_on_locked ATTACH PARTITION idx_group_type_ci_runners_on_locked;
 
-ALTER INDEX index_ci_runners_on_sharding_key_id_when_not_null ATTACH PARTITION idx_group_type_ci_runners_on_sharding_key_id_when_not_null;
-
 ALTER INDEX index_ci_runners_on_token_expires_at_and_id_desc ATTACH PARTITION idx_group_type_ci_runners_on_token_expires_at_and_id_desc;
 
 ALTER INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ATTACH PARTITION idx_group_type_ci_runners_on_token_expires_at_desc_and_id_desc;
-
-ALTER INDEX index_ci_runner_machines_on_sharding_key_id_when_not_null ATTACH PARTITION idx_inst_type_ci_runner_machines_on_sharding_key_when_not_null;
 
 ALTER INDEX index_ci_runner_machines_on_created_at_and_id_desc ATTACH PARTITION idx_instance_type_ci_runner_machines_on_created_at_and_id_desc;
 
@@ -44719,13 +44669,9 @@ ALTER INDEX index_ci_runners_on_contacted_at_and_id_desc ATTACH PARTITION idx_in
 
 ALTER INDEX index_ci_runners_on_contacted_at_and_id_where_inactive ATTACH PARTITION idx_instance_type_ci_runners_on_contacted_at_id_where_inactive;
 
-ALTER INDEX index_ci_runners_on_sharding_key_id_when_not_null ATTACH PARTITION idx_instance_type_ci_runners_on_sharding_key_id_when_not_null;
-
 ALTER INDEX index_ci_runners_on_token_encrypted_and_runner_type ATTACH PARTITION idx_instance_type_ci_runners_on_token_encrypted_and_runner_type;
 
 ALTER INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ATTACH PARTITION idx_instance_type_ci_runners_on_token_expires_at_desc_id_desc;
-
-ALTER INDEX index_ci_runner_machines_on_sharding_key_id_when_not_null ATTACH PARTITION idx_proj_type_ci_runner_machines_on_sharding_key_when_not_null;
 
 ALTER INDEX index_ci_runners_on_active_and_id ATTACH PARTITION idx_project_type_ci_runners_on_active_and_id;
 
@@ -44738,8 +44684,6 @@ ALTER INDEX index_ci_runners_on_contacted_at_and_id_where_inactive ATTACH PARTIT
 ALTER INDEX index_ci_runners_on_created_at_and_id_where_inactive ATTACH PARTITION idx_project_type_ci_runners_on_created_at_and_id_where_inactive;
 
 ALTER INDEX index_ci_runners_on_created_at_desc_and_id_desc ATTACH PARTITION idx_project_type_ci_runners_on_created_at_desc_and_id_desc;
-
-ALTER INDEX index_ci_runners_on_sharding_key_id_when_not_null ATTACH PARTITION idx_project_type_ci_runners_on_sharding_key_id_when_not_null;
 
 ALTER INDEX index_ci_runners_on_token_encrypted_and_runner_type ATTACH PARTITION idx_project_type_ci_runners_on_token_encrypted_and_runner_type;
 
@@ -44767,17 +44711,11 @@ ALTER INDEX index_uploads_9ba88c4165_on_uploader_and_path ATTACH PARTITION impor
 
 ALTER INDEX index_ci_runner_taggings_on_organization_id ATTACH PARTITION index_ci_runner_taggings_group_type_on_organization_id;
 
-ALTER INDEX index_ci_runner_taggings_on_sharding_key_id ATTACH PARTITION index_ci_runner_taggings_group_type_on_sharding_key_id;
-
 ALTER INDEX index_ci_runner_taggings_on_organization_id ATTACH PARTITION index_ci_runner_taggings_instance_type_on_organization_id;
-
-ALTER INDEX index_ci_runner_taggings_on_sharding_key_id ATTACH PARTITION index_ci_runner_taggings_instance_type_on_sharding_key_id;
 
 ALTER INDEX index_ci_runner_taggings_on_organization_id ATTACH PARTITION index_ci_runner_taggings_project_type_on_organization_id;
 
 ALTER INDEX index_ci_runner_taggings_on_runner_id_and_runner_type ATTACH PARTITION index_ci_runner_taggings_project_type_on_runner_id_runner_type;
-
-ALTER INDEX index_ci_runner_taggings_on_sharding_key_id ATTACH PARTITION index_ci_runner_taggings_project_type_on_sharding_key_id;
 
 ALTER INDEX index_ci_runner_machines_on_created_at_and_id_desc ATTACH PARTITION index_group_type_ci_runner_machines_on_created_at_and_id_desc;
 

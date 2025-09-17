@@ -57713,6 +57713,9 @@ msgstr ""
 msgid "Security Policy project already exists."
 msgstr ""
 
+msgid "Security Reports|Vulnerabilities average score"
+msgstr ""
+
 msgid "Security and compliance"
 msgstr ""
 
@@ -59853,6 +59856,9 @@ msgstr ""
 msgid "SecurityReports|%{rating} risk score"
 msgstr ""
 
+msgid "SecurityReports|%{riskFactor}x"
+msgstr ""
+
 msgid "SecurityReports|1 vulnerability attached to %{nrIssues} issues"
 msgstr ""
 
@@ -60112,6 +60118,9 @@ msgid "SecurityReports|Image"
 msgstr ""
 
 msgid "SecurityReports|Inactive secret"
+msgstr ""
+
+msgid "SecurityReports|Includes Severity, Age, Exploitation status, EPSS score, Reachability, and/or Secret validity"
 msgstr ""
 
 msgid "SecurityReports|Investigate this vulnerability by creating an issue"
@@ -61707,6 +61716,9 @@ msgid "Show one file at a time"
 msgstr ""
 
 msgid "Show open epics"
+msgstr ""
+
+msgid "Show or hide draft merge requests in your merge requests list."
 msgstr ""
 
 msgid "Show or hide sidebar"
@@ -67780,6 +67792,9 @@ msgstr ""
 msgid "Toggle commit list"
 msgstr ""
 
+msgid "Toggle drafts visibility"
+msgstr ""
+
 msgid "Toggle emoji reaction"
 msgstr ""
 
@@ -69218,6 +69233,9 @@ msgstr ""
 msgid "Usage trends"
 msgstr ""
 
+msgid "UsageBilling|Action"
+msgstr ""
+
 msgid "UsageBilling|Allocation used"
 msgstr ""
 
@@ -69242,6 +69260,9 @@ msgstr ""
 msgid "UsageBilling|Daily usage"
 msgstr ""
 
+msgid "UsageBilling|Date and time"
+msgstr ""
+
 msgid "UsageBilling|Export usage data"
 msgstr ""
 
@@ -69255,6 +69276,9 @@ msgid "UsageBilling|Last month"
 msgstr ""
 
 msgid "UsageBilling|Last updated:"
+msgstr ""
+
+msgid "UsageBilling|Location"
 msgstr ""
 
 msgid "UsageBilling|No user data available"
@@ -69282,6 +69306,9 @@ msgid "UsageBilling|Total units used"
 msgstr ""
 
 msgid "UsageBilling|Total users (active users)"
+msgstr ""
+
+msgid "UsageBilling|Unit amount"
 msgstr ""
 
 msgid "UsageBilling|Units used from pool this month"

@@ -30,7 +30,7 @@
   - if project_studio_enabled?
     .panels-container.gl-flex{ class: 'gl-h-[100vh] gl-gap-3' }
       .content-panels.gl-flex-1.gl-w-full.gl-flex.gl-gap-3.gl-relative{ class: 'gl-@container/content-panels' }
-        #static-panel-portal.static-panel.content-wrapper.gl-relative.paneled-view.gl-flex-1.gl-overflow-y-auto.gl-bg-default{ class: "#{@content_wrapper_class}" }
+        #static-panel-portal.js-static-panel.static-panel.content-wrapper.gl-relative.paneled-view.gl-flex-1.gl-overflow-y-auto.gl-bg-default{ class: "#{@content_wrapper_class}" }
           .panel-header
             -# Broadcast messages
             .broadcast-wrapper
@@ -58,7 +58,7 @@
             = render_if_exists "shared/footer/global_footer"
 
 
-        #contextual-panel-portal.paneled-view.contextual-panel{
+        #contextual-panel-portal.js-dynamic-panel.paneled-view.contextual-panel{
           class: 'gl-@container/panel !gl-absolute gl-shadow-lg @xl/content-panels:gl-w-1/2 @xl/content-panels:gl-shadow-none @xl/content-panels:!gl-relative'
         }
 
