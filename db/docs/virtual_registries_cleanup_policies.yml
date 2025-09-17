@@ -1,0 +1,13 @@
+---
+table_name: virtual_registries_cleanup_policies
+classes:
+- VirtualRegistries::Cleanup::Policy
+feature_categories:
+- virtual_registry
+description: Represents a cleanup policy for a virtual registry.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203532
+milestone: '18.5'
+gitlab_schema: gitlab_main_org
+sharding_key:
+  group_id: namespaces
+table_size: small

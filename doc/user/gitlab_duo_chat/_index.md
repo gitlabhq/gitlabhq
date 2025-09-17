@@ -75,7 +75,7 @@ Prerequisites:
 
 To use GitLab Duo Chat in the GitLab UI:
 
-1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
+1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}). A drawer opens on the right side of your screen.
 1. Enter your question in the message box and press <kbd>Enter</kbd> or select **Send**.
    - You can provide additional [context](../gitlab_duo/context.md#gitlab-duo-chat) for your chat.
    - It may take a few seconds for the interactive AI chat to produce an answer.
@@ -103,7 +103,7 @@ To view the history:
 
 In GitLab 17.10 and later, you can have an unlimited number of simultaneous conversations with Chat.
 
-1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
+1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}). A drawer opens on the right side of your screen.
 1. Enter your question in the message box and press <kbd>Enter</kbd> or select **Send**.
 1. Create a new conversation with Chat by selecting one of the following:
    - In the upper-right corner of the drawer, select **New chat** ({{< icon name="duo-chat-new" >}}).

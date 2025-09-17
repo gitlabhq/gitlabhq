@@ -75,9 +75,23 @@ describe('migrateMediaQueries', () => {
     ${'@include gl-media-breakpoint-down(md)'} | ${'@include gl-container-width-down(md, panel)'}
     ${'@media (min-width: $breakpoint-md)'}    | ${'@include gl-container-width-up(md, panel)'}
     ${'@media (max-width: $breakpoint-md)'}    | ${'@include gl-container-width-down(md, panel)'}
-    ${'@media (min-width: 420px)'}             | ${'@container panel (width >= 420px)'}
-    ${'@media (max-width: 420px)'}             | ${'@container panel (width <= 420px)'}
   `('rewrites $input to $output', ({ input, output }) => {
     expect(migrateMediaQueries(input)).toBe(output);
+  });
+
+  it.each`
+    input                                                     | warning
+    ${'@media (min-width: 420px) { \n somerule; \n }'}        | ${'@media (min-width: 420px) { '}
+    ${'@media (max-width: 100px) { \n somerule; \n }'}        | ${'@media (max-width: 100px) { '}
+    ${'@media (max-width: map.get($grid-breakpoints, lg)-1)'} | ${'@media (max-width: map.get($grid-breakpoints, lg)-1)'}
+  `('does not migrate and shows warning: "$warning"', ({ input, warning }) => {
+    const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    expect(migrateMediaQueries(input)).toBe(input);
+
+    expect(warn).toHaveBeenCalledWith(
+      "Detected a media query that can't be migrated automatically. Please review the following code and proceed to the migration manually if needed.",
+    );
+    expect(warn).toHaveBeenCalledWith([warning]);
   });
 });

@@ -164,6 +164,7 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
           .and_return(pipeline_bridges_response)
         allow(fake_helper).to receive(:mr_description).and_return(mr_description_response)
         allow(fake_helper).to receive(:mr_title).and_return(mr_title)
+        allow(stable_branch).to receive(:markdown)
       end
 
       # the stubbed behavior above is the success path
@@ -264,11 +265,22 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
           it_behaves_like 'bypassing when flaky test or docs only'
         end
 
+        context 'when targeting a patchable version' do
+          let(:target_branch) { '15-1-stable-ee' }
+
+          it 'shows the backport merger guidance message' do
+            expect(stable_branch).to receive(:markdown).with(described_class::BACKPORT_REVIEWER_GUIDANCE_MESSAGE)
+
+            subject
+          end
+        end
+
         context 'when not an applicable version' do
           let(:target_branch) { '14-10-stable-ee' }
 
           it 'warns about the test-on-omnibus pipeline and the version' do
             expect(stable_branch).to receive(:warn).with(described_class::WARN_PACKAGE_AND_TEST_MESSAGE)
+            expect(stable_branch).not_to receive(:markdown).with(described_class::BACKPORT_REVIEWER_GUIDANCE_MESSAGE)
             expect(stable_branch).to receive(:warn).with(described_class::VERSION_WARNING_MESSAGE)
 
             subject

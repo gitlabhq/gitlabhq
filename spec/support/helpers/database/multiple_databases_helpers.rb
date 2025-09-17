@@ -115,6 +115,16 @@ module Database
       yield
     ensure
       ActiveRecord::Base.connection_handler = original_handler
+
+      # Prevent connections from leaking by unpinning the connection before clearing.
+      # We also need to remove the pool from `@fixture_connection_pools` so that Rails
+      # does not try to unpin the connection again at the end of the test.
+      if @fixture_connection_pools
+        new_handler.each_connection_pool do |pool|
+          @fixture_connection_pools.delete(pool)&.unpin_connection!
+        end
+      end
+
       new_handler&.clear_all_connections!
     end
 

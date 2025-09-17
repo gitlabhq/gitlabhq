@@ -7,18 +7,14 @@
   ],
   "additionalProperties": false,
   "properties": {
-    "after_script": {
-      "$ref": "#/definitions/scriptArray"
-    },
+    "after_script": true,
     "allow_failure_criteria": {
       "$ref": "#/definitions/allowFailureCriteria"
     },
     "artifacts": {
       "$ref": "#/definitions/artifactsConfig"
     },
-    "before_script": {
-      "$ref": "#/definitions/scriptArray"
-    },
+    "before_script": true,
     "bridge_needs": {
       "$ref": "#/definitions/bridgeNeedsDefinition"
     },
@@ -34,15 +30,9 @@
     "dast_configuration": {
       "$ref": "#/definitions/dastConfigurationDefinition"
     },
-    "dependencies": {
-      "$ref": "#/definitions/stringArray"
-    },
-    "downstream_errors": {
-      "$ref": "#/definitions/stringArray"
-    },
-    "enqueue_immediately": {
-      "type": "boolean"
-    },
+    "dependencies": true,
+    "downstream_errors": true,
+    "enqueue_immediately": true,
     "environment": {
       "$ref": "#/definitions/environmentDefinition"
     },
@@ -61,19 +51,13 @@
     "hooks": {
       "$ref": "#/definitions/hooksDefinition"
     },
-    "identity": {
-      "type": "string"
-    },
+    "identity": true,
     "image": {
       "$ref": "#/definitions/imageDefinition"
     },
-    "instance": {
-      "type": "integer"
-    },
+    "instance": true,
     "job_timeout": true,
-    "manual_confirmation": {
-      "type": "string"
-    },
+    "manual_confirmation": true,
     "pages": {
       "$ref": "#/definitions/pagesDefinition"
     },
@@ -84,31 +68,16 @@
     "release": {
       "$ref": "#/definitions/releaseDefinition"
     },
-    "resource_group_key": {
-      "type": "string"
-    },
+    "resource_group_key": true,
     "retry": {
       "$ref": "#/definitions/retryDefinition"
     },
-    "scoped_user_id": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "integer"
-        }
-      ]
-    },
-    "script": {
-      "$ref": "#/definitions/scriptArray"
-    },
+    "scoped_user_id": true,
+    "script": true,
     "services": {
       "$ref": "#/definitions/servicesDefinition"
     },
-    "start_in": {
-      "type": "string"
-    },
+    "start_in": true,
     "trigger": {
       "$ref": "#/definitions/triggerDefinition"
     }
@@ -158,21 +127,9 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "coverage_format": {
-              "type": "string",
-              "enum": [
-                "cobertura",
-                "jacoco"
-              ]
-            },
-            "path": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "coverage_format",
-            "path"
-          ]
+            "coverage_format": true,
+            "path": true
+          }
         },
         "cyclonedx": {
           "$ref": "#/definitions/reportPath"
@@ -246,41 +203,21 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "pipeline": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "pipeline"
-      ]
+        "pipeline": true
+      }
     },
     "cacheConfigBase": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "fallback_keys": {
-          "$ref": "#/definitions/stringArray"
-        },
+        "fallback_keys": true,
         "key": {
           "$ref": "#/definitions/cacheKeyDefinition"
         },
-        "paths": {
-          "$ref": "#/definitions/stringArray"
-        },
-        "policy": {
-          "type": "string",
-          "enum": [
-            "pull",
-            "push",
-            "pull-push"
-          ]
-        },
-        "unprotect": {
-          "type": "boolean"
-        },
-        "untracked": {
-          "type": "boolean"
-        },
+        "paths": true,
+        "policy": true,
+        "unprotect": true,
+        "untracked": true,
         "when": true
       }
     },
@@ -307,16 +244,8 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "files": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "maxItems": 2
-            },
-            "prefix": {
-              "type": "string"
-            }
+            "files": true,
+            "prefix": true
           }
         }
       ]
@@ -325,21 +254,11 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "artifacts": {
-          "type": "boolean"
-        },
-        "job": {
-          "type": "string"
-        },
-        "pipeline": {
-          "type": "string"
-        },
-        "project": {
-          "type": "string"
-        },
-        "ref": {
-          "type": "string"
-        }
+        "artifacts": true,
+        "job": true,
+        "pipeline": true,
+        "project": true,
+        "ref": true
       }
     },
     "dastConfigurationDefinition": {
@@ -354,12 +273,8 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "platform": {
-          "type": "string"
-        },
-        "user": {
-          "type": "string"
-        }
+        "platform": true,
+        "user": true
       }
     },
     "environmentDefinition": {
@@ -371,78 +286,37 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "action": {
-              "type": "string",
-              "enum": [
-                "start",
-                "prepare",
-                "stop",
-                "verify",
-                "access"
-              ]
-            },
-            "auto_stop_in": {
-              "type": "string"
-            },
-            "deployment_tier": {
-              "type": "string",
-              "enum": [
-                "production",
-                "staging",
-                "testing",
-                "development",
-                "other"
-              ]
-            },
+            "action": true,
+            "auto_stop_in": true,
+            "deployment_tier": true,
             "kubernetes": {
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "agent": {
-                  "type": "string"
-                },
-                "flux_resource_path": {
-                  "type": "string"
-                },
-                "namespace": {
-                  "type": "string"
-                },
+                "agent": true,
+                "flux_resource_path": true,
+                "namespace": true,
                 "managed_resources": {
                   "type": "object",
                   "additionalProperties": false,
                   "properties": {
-                    "enabled": {
-                      "type": "boolean"
-                    }
+                    "enabled": true
                   }
                 },
                 "dashboard": {
                   "type": "object",
                   "additionalProperties": false,
                   "properties": {
-                    "namespace": {
-                      "type": "string"
-                    },
-                    "flux_resource_path": {
-                      "type": "string"
-                    }
+                    "namespace": true,
+                    "flux_resource_path": true
                   }
                 }
               }
             },
-            "name": {
-              "type": "string"
-            },
-            "on_stop": {
-              "type": "string"
-            },
-            "url": {
-              "type": "string"
-            }
-          },
-          "required": [
-            "name"
-          ]
+            "name": true,
+            "on_stop": true,
+            "url": true
+          }
         }
       ]
     },
@@ -450,21 +324,15 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "allowed": {
-          "type": "boolean"
-        },
-        "exceptions": {
-          "$ref": "#/definitions/stringArray"
-        }
+        "allowed": true,
+        "exceptions": true
       }
     },
     "hooksDefinition": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "pre_get_sources_script": {
-          "$ref": "#/definitions/stringArray"
-        }
+        "pre_get_sources_script": true
       }
     },
     "imageDefinition": {
@@ -476,9 +344,7 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "entrypoint": {
-              "type": "string"
-            },
+            "entrypoint": true,
             "executor_opts": {
               "type": "object",
               "additionalProperties": false,
@@ -491,9 +357,8 @@
                 }
               }
             },
-            "name": {
-              "type": "string"
-            },
+            "name": true,
+            "ports": true,
             "pull_policy": {
               "$ref": "#/definitions/pullPolicyOptions"
             }
@@ -521,16 +386,7 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "user": {
-          "oneOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "integer"
-            }
-          ]
-        }
+        "user": true
       }
     },
     "pagesDefinition": {
@@ -544,9 +400,7 @@
           "properties": {
             "expire_in": true,
             "path_prefix": true,
-            "publish": {
-              "type": "string"
-            }
+            "publish": true
           }
         }
       ]
@@ -568,37 +422,13 @@
                 "type": "object"
               }
             },
-            "number": {
-              "type": "integer"
-            },
-            "total": {
-              "type": "integer"
-            }
+            "number": true,
+            "total": true
           }
         }
       ]
     },
-    "pullPolicyEnum": {
-      "type": "string",
-      "enum": [
-        "always",
-        "if-not-present",
-        "never"
-      ]
-    },
-    "pullPolicyOptions": {
-      "oneOf": [
-        {
-          "$ref": "#/definitions/pullPolicyEnum"
-        },
-        {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/pullPolicyEnum"
-          }
-        }
-      ]
-    },
+    "pullPolicyOptions": true,
     "releaseDefinition": {
       "type": "object",
       "additionalProperties": false,
@@ -613,63 +443,25 @@
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                  "filepath": {
-                    "type": "string"
-                  },
-                  "link_type": {
-                    "type": "string",
-                    "enum": [
-                      "other",
-                      "runbook",
-                      "package",
-                      "image"
-                    ]
-                  },
-                  "name": {
-                    "type": "string"
-                  },
-                  "url": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "name",
-                  "url"
-                ]
+                  "filepath": true,
+                  "link_type": true,
+                  "name": true,
+                  "url": true
+                }
               }
             }
           }
         },
-        "description": {
-          "type": "string"
-        },
-        "milestones": {
-          "$ref": "#/definitions/stringArray"
-        },
-        "name": {
-          "type": "string"
-        },
-        "ref": {
-          "type": "string"
-        },
-        "released_at": {
-          "type": "string"
-        },
-        "tag_message": {
-          "type": "string"
-        },
-        "tag_name": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "tag_name",
-        "description"
-      ]
+        "description": true,
+        "milestones": true,
+        "name": true,
+        "ref": true,
+        "released_at": true,
+        "tag_message": true,
+        "tag_name": true
+      }
     },
-    "reportPath": {
-      "$ref": "#/definitions/stringOrArrayOfStrings"
-    },
+    "reportPath": true,
     "retryDefinition": {
       "oneOf": [
         {
@@ -681,32 +473,12 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "exit_codes": {
-              "$ref": "#/definitions/integerOrArrayOfIntegers"
-            },
-            "max": {
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 2
-            },
-            "when": {
-              "oneOf": [
-                true,
-                {
-                  "type": "array",
-                  "items": true
-                }
-              ]
-            }
-          },
-          "required": [
-            "max"
-          ]
+            "exit_codes": true,
+            "max": true,
+            "when": true
+          }
         }
       ]
-    },
-    "scriptArray": {
-      "$ref": "#/definitions/stringOrArrayOfStrings"
     },
     "serviceDefinition": {
       "oneOf": [
@@ -717,31 +489,33 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "alias": {
-              "type": "string"
-            },
-            "command": {
-              "$ref": "#/definitions/scriptArray"
-            },
+            "alias": true,
+            "command": true,
             "docker": {
               "$ref": "#/definitions/dockerOptions"
             },
-            "entrypoint": {
-              "type": "string"
+            "entrypoint": true,
+            "executor_opts": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "docker": {
+                  "$ref": "#/definitions/dockerOptions"
+                },
+                "kubernetes": {
+                  "$ref": "#/definitions/kubernetesOptions"
+                }
+              }
             },
             "kubernetes": {
               "$ref": "#/definitions/kubernetesOptions"
             },
-            "name": {
-              "type": "string"
-            },
+            "name": true,
+            "ports": true,
             "pull_policy": {
               "$ref": "#/definitions/pullPolicyOptions"
             }
-          },
-          "required": [
-            "name"
-          ]
+          }
         }
       ]
     },
@@ -763,16 +537,6 @@
         "type": "string"
       }
     },
-    "stringOrArrayOfStrings": {
-      "oneOf": [
-        {
-          "type": "string"
-        },
-        {
-          "$ref": "#/definitions/stringArray"
-        }
-      ]
-    },
     "triggerDefinition": {
       "oneOf": [
         {
@@ -782,26 +546,18 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "branch": {
-              "type": "string"
-            },
+            "branch": true,
             "forward": {
               "type": "object",
               "additionalProperties": false,
               "properties": {
-                "pipeline_variables": {
-                  "type": "boolean"
-                },
-                "yaml_variables": {
-                  "type": "boolean"
-                }
+                "pipeline_variables": true,
+                "yaml_variables": true
               }
             },
             "include": {
               "oneOf": [
-                {
-                  "type": "string"
-                },
+                true,
                 {
                   "type": "array",
                   "items": {
@@ -813,16 +569,8 @@
             "inputs": {
               "$ref": "#/definitions/stringMap"
             },
-            "project": {
-              "type": "string"
-            },
-            "strategy": {
-              "type": "string",
-              "enum": [
-                "depend",
-                "mirror"
-              ]
-            }
+            "project": true,
+            "strategy": true
           }
         }
       ]
@@ -836,27 +584,15 @@
           "type": "object",
           "additionalProperties": false,
           "properties": {
-            "artifact": {
-              "type": "string"
-            },
-            "file": {
-              "$ref": "#/definitions/stringOrArrayOfStrings"
-            },
+            "artifact": true,
+            "file": true,
             "inputs": {
               "$ref": "#/definitions/stringMap"
             },
-            "job": {
-              "type": "string"
-            },
-            "local": {
-              "type": "string"
-            },
-            "project": {
-              "type": "string"
-            },
-            "ref": {
-              "type": "string"
-            }
+            "job": true,
+            "local": true,
+            "project": true,
+            "ref": true
           }
         }
       ]

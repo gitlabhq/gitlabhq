@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Clusters::AgentToken, feature_category: :deployment_management do
+  include ::TokenAuthenticatableMatchers
+
   it { is_expected.to belong_to(:agent).class_name('Clusters::Agent').required }
   it { is_expected.to belong_to(:created_by_user).class_name('User').optional }
   it { is_expected.to validate_length_of(:description).is_at_most(1024) }
@@ -130,6 +132,55 @@ RSpec.describe Clusters::AgentToken, feature_category: :deployment_management do
 
         it_behaves_like 'has a prefix' do
           let(:expected_prefix) { described_class::TOKEN_PREFIX }
+        end
+      end
+    end
+
+    context 'with routable cluster agent token feature flag disabled' do
+      let(:agent_token) { create(:cluster_agent_token) }
+      let(:token_owner_record) { agent_token }
+      let(:expected_token_prefix) { described_class::TOKEN_PREFIX }
+      let(:devise_token) { 'devise-token' }
+
+      before do
+        stub_feature_flags(routable_cluster_agent_token: false)
+
+        allow(Devise).to receive(:friendly_token).and_return(devise_token)
+      end
+
+      subject(:token) { token_owner_record.token }
+
+      it_behaves_like 'an encrypted token' do
+        let(:expected_token) { token }
+        let(:expected_token_payload) { devise_token }
+        let(:expected_encrypted_token) { token_owner_record.token_encrypted }
+      end
+    end
+
+    context 'with routable cluster agent token feature flag enabled' do
+      before do
+        stub_feature_flags(routable_cluster_agent_token: true)
+      end
+
+      include_context "with token authenticatable routable token context"
+
+      describe "encrypted routable token" do
+        let(:agent_token) { create(:cluster_agent_token) }
+        let(:token_owner_record) { agent_token }
+        let(:expected_token_prefix) { described_class::TOKEN_PREFIX }
+
+        let(:expected_routing_payload) do
+          "c:1\n" \
+            "o:#{agent_token.agent.project.organization.id.to_s(36)}\n" \
+            "p:#{agent_token.project.id.to_s(36)}"
+        end
+
+        subject(:token) { token_owner_record.token }
+
+        it_behaves_like "an encrypted routable token" do
+          let(:expected_token) { token }
+          let(:expected_random_bytes) { random_bytes }
+          let(:expected_encrypted_token) { token_owner_record.token_encrypted }
         end
       end
     end

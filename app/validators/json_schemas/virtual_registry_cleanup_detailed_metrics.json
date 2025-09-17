@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Virtual registry cleanup detailed metrics",
+  "type": "object",
+  "properties": {
+    "maven": {
+      "type": "object",
+      "properties": {
+        "deleted_entries_count": {
+          "type": "integer"
+        },
+        "deleted_size": {
+          "type": "integer"
+        }
+      }
+    }
+  },
+  "required": [
+    "maven"
+  ],
+  "additionalProperties": false
+}

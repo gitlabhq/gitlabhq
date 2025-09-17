@@ -37,6 +37,8 @@
   - 1
 - - ai_active_context_code_saas_initial_indexing_event
   - 1
+- - ai_duo_workflows_update_workflow_status_event
+  - 1
 - - ai_knowledge_graph_indexing_task
   - 1
 - - ai_repository_xray_scan_dependencies
@@ -246,6 +248,8 @@
 - - ci_upstream_projects_subscriptions_cleanup
   - 1
 - - ci_user_cancel_pipeline
+  - 1
+- - ci_workloads_update_workload_status_event
   - 1
 - - click_house_buffer_sync
   - 1

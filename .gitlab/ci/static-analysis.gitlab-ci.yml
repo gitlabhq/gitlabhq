@@ -226,6 +226,10 @@ semgrep-appsec-custom-rules:
   stage: lint
   extends:
     - .semgrep-appsec-custom-rules:rules
+  rules:
+    - if: $CI_MERGE_REQUEST_DRAFT == "true"
+      when: never
+    - !reference [.semgrep-appsec-custom-rules:rules, rules]
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}returntocorp/semgrep:1.99.0
   needs: []
   script:
@@ -307,6 +311,10 @@ ping-appsec-for-sast-findings:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}alpine:latest
   extends:
     - .ping-appsec-for-sast-findings:rules
+  rules:
+    - if: $CI_MERGE_REQUEST_DRAFT == "true"
+      when: never
+    - !reference [.ping-appsec-for-sast-findings:rules, rules]
   variables:
     # Project Access Token bot ID for /gitlab-com/gl-security/product-security/appsec/sast-custom-rules
     BOT_USER_ID: 19650678

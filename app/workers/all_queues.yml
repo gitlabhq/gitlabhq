@@ -3569,6 +3569,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: ci_workloads_update_workload_status_event
+  :worker_name: Ci::Workloads::UpdateWorkloadStatusEventWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: counters_cleanup_refresh
   :worker_name: Counters::CleanupRefreshWorker
   :feature_category: :not_owned

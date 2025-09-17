@@ -5,10 +5,6 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Build::AutoRetry, feature_category: :pipeline_composition do
   let(:auto_retry) { described_class.new(build) }
 
-  before do
-    stub_feature_flags(ci_validate_config_options: false)
-  end
-
   describe '#allowed?' do
     using RSpec::Parameterized::TableSyntax
 

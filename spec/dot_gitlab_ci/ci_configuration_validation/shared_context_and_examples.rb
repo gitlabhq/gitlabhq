@@ -112,10 +112,6 @@ RSpec.shared_examples 'default branch pipeline' do
 end
 
 RSpec.shared_examples 'merge request pipeline' do
-  before do
-    stub_feature_flags(ci_validate_config_options: false)
-  end
-
   it "succeeds with expected job" do
     expect(pipeline.yaml_errors).to be_nil
     expect(pipeline.errors).to be_empty
@@ -125,10 +121,6 @@ RSpec.shared_examples 'merge request pipeline' do
 end
 
 RSpec.shared_examples 'merge train pipeline' do
-  before do
-    stub_feature_flags(ci_validate_config_options: false)
-  end
-
   let(:ci_merge_request_event_type) { 'merge_train' }
   let(:expected_job_names) do
     %w[

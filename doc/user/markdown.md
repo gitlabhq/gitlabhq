@@ -2004,6 +2004,14 @@ When rendered, the example looks similar to:
 
 {{< /history >}}
 
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
 Placeholders can be used to display certain types of changeable data, such as a project's title
 or latest tag. They are filled in each time the Markdown is rendered.
 

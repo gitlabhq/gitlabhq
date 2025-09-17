@@ -9,8 +9,14 @@ module Clusters
 
     add_authentication_token_field :token,
       encrypted: :required,
-      token_generator: -> { Devise.friendly_token(50) },
-      format_with_prefix: :glagent_prefix
+      format_with_prefix: :glagent_prefix,
+      routable_token: {
+        if: ->(token_owner_record) { Feature.enabled?(:routable_cluster_agent_token, token_owner_record.project) },
+        payload: {
+          o: ->(token_owner_record) { token_owner_record.agent.project.organization_id },
+          p: ->(token_owner_record) { token_owner_record.agent.project.id }
+        }
+      }
     cached_attr_reader :last_used_at
 
     self.table_name = 'cluster_agent_tokens'

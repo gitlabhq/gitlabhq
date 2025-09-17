@@ -6486,6 +6486,8 @@ Input type: `DismissPolicyViolationsInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdismisspolicyviolationsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdismisspolicyviolationscomment"></a>`comment` | [`String!`](#string) | Comment explaining the dismissal of the policy violations. |
+| <a id="mutationdismisspolicyviolationsdismissaltypes"></a>`dismissalTypes` | [`[DismissalType!]!`](#dismissaltype) | Type of dismissal for the policy violations. |
 | <a id="mutationdismisspolicyviolationsiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
 | <a id="mutationdismisspolicyviolationsprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
 | <a id="mutationdismisspolicyviolationssecuritypolicyids"></a>`securityPolicyIds` | [`[ID!]!`](#id) | IDs of warn mode policies with violations to dismiss. |
@@ -47950,6 +47952,17 @@ Type of file the position refers to.
 | <a id="diffpositiontypefile"></a>`file` | Unknown file type. |
 | <a id="diffpositiontypeimage"></a>`image` | An image. |
 | <a id="diffpositiontypetext"></a>`text` | Text file. |
+
+### `DismissalType`
+
+Represents the different dismissal types for security policy violations.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="dismissaltypeemergency_hot_fix"></a>`EMERGENCY_HOT_FIX` | Dismissal due to emergency hot fix. |
+| <a id="dismissaltypeother"></a>`OTHER` | Dismissal due to other reasons. |
+| <a id="dismissaltypepolicy_false_positive"></a>`POLICY_FALSE_POSITIVE` | Dismissal due to policy false positive. |
+| <a id="dismissaltypescanner_false_positive"></a>`SCANNER_FALSE_POSITIVE` | Dismissal due to scanner false positive. |
 
 ### `DoraMetricBucketingInterval`
 

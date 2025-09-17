@@ -16,7 +16,7 @@ a given prompt.
 ### 1. Add your action to the Cloud Connector feature list
 
 The Cloud Connector configuration stores the permissions needed to access your service, as well as additional metadata.
-If there's no entry for your feature, [add the feature as a Cloud Connector unit primitive](../cloud_connector/_index.md#register-new-feature-for-gitlab-self-managed-dedicated-and-gitlabcom-customers):
+If there's no entry for your feature, [add the feature as a Cloud Connector unit primitive](cloud_connector.md#tutorial-connect-a-new-feature-using-cloud-connector):
 
 For more information, see [Cloud Connector: Configuration](../cloud_connector/configuration.md).
 

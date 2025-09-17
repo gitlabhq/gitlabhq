@@ -41,6 +41,12 @@ module Gitlab
         # Add subscriptions here:
 
         store.subscribe ::MergeRequests::UpdateHeadPipelineWorker, to: ::Ci::PipelineCreatedEvent
+        # Currently it is used only for DuoWorkflows::Workflow. DuoWorkflows::Workflow, pipeline can never be in manual.
+        # That's why a constraint on manual is added. In future if this needs to be used at other places where manual
+        # needs to be considered, then remove the if block and just verify that DuoWorkflows::Workflow is working fine.
+        # Mostly it will be fine.
+        store.subscribe ::Ci::Workloads::UpdateWorkloadStatusEventWorker, to: ::Ci::PipelineFinishedEvent,
+          if: ->(event) { event.data[:status] != 'manual' }
         store.subscribe ::Namespaces::UpdateRootStatisticsWorker, to: ::Projects::ProjectDeletedEvent
 
         store.subscribe ::MergeRequests::ProcessAutoMergeFromEventWorker,

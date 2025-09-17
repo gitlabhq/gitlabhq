@@ -76,12 +76,12 @@ If you are on GitLab Self-Managed or GitLab Dedicated, you must
 ### AI model provider credentials
 
 To integrate your CLI agent with a third-party AI model provider, you must have access credentials.
-You can use an AI model provider API key or GitLab-managed credentials.
+You can use either an API key for that model provider or GitLab-managed credentials.
 
-#### AI model provider API key
+#### API keys
 
-To integrate your CLI agent with a third-party AI model provider, you need an API key
-for that model provider:
+To integrate your CLI agent with a third-party AI model provider,
+you can use an API key for that model provider:
 
 - For Anthropic Claude and Opencode, use an [Anthropic API key](https://docs.anthropic.com/en/api/admin-api/apikeys/get-api-key).
 - For OpenAI Codex, use an [OpenAI API key](https://platform.openai.com/docs/api-reference/authentication).

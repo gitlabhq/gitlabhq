@@ -1,0 +1,10 @@
+---
+name: routable_cluster_agent_token
+description: Makes the cluster agent tokens routable based on the organization and project.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/557002
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204550
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/570232
+milestone: '18.5'
+group: group::environments
+type: gitlab_com_derisk
+default_enabled: false

@@ -110,29 +110,18 @@ const MEDIA_QUERIES_REPLACEMENTS = [
       '@include gl-container-width-down($<breakpoint>, panel)',
     );
   },
-  (content) => {
-    return content.replace(
-      /@media \(min-width: (?<width>\d+px)\)/g,
-      '@container panel (width >= $<width>)',
-    );
-  },
-  (content) => {
-    return content.replace(
-      /@media \(max-width: (?<width>\d+px)\)/g,
-      '@container panel (width <= $<width>)',
-    );
-  },
   /**
    * This function doesn't do any replacements. It only serves as some sort of fallback
    * to warn about code that might need to be migrated but that this script doesn't know
    * how to handle.
    */
   (content) => {
-    if (content.match(/@media \((min|max)-width/)) {
+    const matches = content.match(/(@media \((min|max)-width.+)/g);
+    if (matches) {
       console.warn(
         "Detected a media query that can't be migrated automatically. Please review the following code and proceed to the migration manually if needed.",
       );
-      console.log(content);
+      console.warn(matches);
     }
     return content;
   },

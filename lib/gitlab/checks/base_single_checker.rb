@@ -32,7 +32,6 @@ module Gitlab
       # If a commit is created from Web and signed by GitLab, we can skip the committer check because it's equal to
       # GitLab <noreply@gitlab.com>
       def signed_by_gitlab?(commit)
-        return false unless ::Feature.enabled?(:skip_committer_email_check, project)
         return false unless updated_from_web? && commit.has_signature?
 
         commit_signatures[commit.id][:signer] == :SIGNER_SYSTEM

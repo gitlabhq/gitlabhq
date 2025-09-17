@@ -5136,6 +5136,7 @@ CREATE TABLE p_ci_workloads (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     branch_name text,
+    status smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_f2fe503728 CHECK ((char_length(branch_name) <= 255))
 )
 PARTITION BY LIST (partition_id);
@@ -26809,6 +26810,39 @@ CREATE SEQUENCE value_stream_dashboard_counts_id_seq
 
 ALTER SEQUENCE value_stream_dashboard_counts_id_seq OWNED BY value_stream_dashboard_counts.id;
 
+CREATE TABLE virtual_registries_cleanup_policies (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    next_run_at timestamp with time zone,
+    last_run_at timestamp with time zone,
+    last_run_deleted_size bigint DEFAULT 0,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    keep_n_days_after_download integer DEFAULT 30 NOT NULL,
+    last_run_deleted_entries_count integer DEFAULT 0,
+    status smallint DEFAULT 0 NOT NULL,
+    cadence smallint DEFAULT 7 NOT NULL,
+    enabled boolean DEFAULT false NOT NULL,
+    notify_on_success boolean DEFAULT false NOT NULL,
+    notify_on_failure boolean DEFAULT false NOT NULL,
+    failure_message text,
+    last_run_detailed_metrics jsonb DEFAULT '{}'::jsonb,
+    CONSTRAINT check_a29ff8b379 CHECK ((char_length(failure_message) <= 255)),
+    CONSTRAINT chk_rails_8c9cfeda41 CHECK ((last_run_deleted_size >= 0)),
+    CONSTRAINT chk_rails_d543512016 CHECK ((cadence = ANY (ARRAY[1, 7, 14, 30, 90]))),
+    CONSTRAINT chk_rails_f01e0249cb CHECK ((keep_n_days_after_download > 0)),
+    CONSTRAINT chk_rails_f0b5a893ae CHECK ((last_run_deleted_entries_count >= 0))
+);
+
+CREATE SEQUENCE virtual_registries_cleanup_policies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE virtual_registries_cleanup_policies_id_seq OWNED BY virtual_registries_cleanup_policies.id;
+
 CREATE TABLE virtual_registries_container_registries (
     id bigint NOT NULL,
     group_id bigint NOT NULL,
@@ -30648,6 +30682,8 @@ ALTER TABLE ONLY users_statistics ALTER COLUMN id SET DEFAULT nextval('users_sta
 
 ALTER TABLE ONLY value_stream_dashboard_counts ALTER COLUMN id SET DEFAULT nextval('value_stream_dashboard_counts_id_seq'::regclass);
 
+ALTER TABLE ONLY virtual_registries_cleanup_policies ALTER COLUMN id SET DEFAULT nextval('virtual_registries_cleanup_policies_id_seq'::regclass);
+
 ALTER TABLE ONLY virtual_registries_container_registries ALTER COLUMN id SET DEFAULT nextval('virtual_registries_container_registries_id_seq'::regclass);
 
 ALTER TABLE ONLY virtual_registries_container_registry_upstreams ALTER COLUMN id SET DEFAULT nextval('virtual_registries_container_registry_upstreams_id_seq'::regclass);
@@ -34211,6 +34247,9 @@ ALTER TABLE ONLY value_stream_dashboard_counts
 ALTER TABLE ONLY verification_codes
     ADD CONSTRAINT verification_codes_pkey PRIMARY KEY (created_at, visitor_id_code, code, phone);
 
+ALTER TABLE ONLY virtual_registries_cleanup_policies
+    ADD CONSTRAINT virtual_registries_cleanup_policies_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY virtual_registries_container_registries
     ADD CONSTRAINT virtual_registries_container_registries_pkey PRIMARY KEY (id);
 
@@ -36877,6 +36916,8 @@ CREATE INDEX idx_user_details_on_provisioned_by_group_id_user_id ON user_details
 CREATE INDEX idx_user_member_roles_on_member_role_id ON user_member_roles USING btree (member_role_id);
 
 CREATE UNIQUE INDEX idx_user_member_roles_on_user_id_unique ON user_member_roles USING btree (user_id);
+
+CREATE INDEX idx_vr_cleanup_policies_on_next_run_at_when_runnable ON virtual_registries_cleanup_policies USING btree (next_run_at) WHERE ((enabled = true) AND (status = ANY (ARRAY[0, 2])));
 
 CREATE INDEX idx_vreg_container_reg_upst_on_group ON virtual_registries_container_registry_upstreams USING btree (group_id);
 
@@ -41363,6 +41404,8 @@ COMMENT ON INDEX index_verification_codes_on_phone_and_visitor_id_code IS 'JiHu-
 CREATE INDEX index_virtual_reg_pkgs_maven_reg_upstreams_on_group_id ON virtual_registries_packages_maven_registry_upstreams USING btree (group_id);
 
 CREATE INDEX index_virtual_reg_pkgs_maven_upstreams_on_group_id ON virtual_registries_packages_maven_upstreams USING btree (group_id);
+
+CREATE UNIQUE INDEX index_virtual_registries_cleanup_policies_on_group_id ON virtual_registries_cleanup_policies USING btree (group_id);
 
 CREATE UNIQUE INDEX index_virtual_registries_settings_on_group_id ON virtual_registries_settings USING btree (group_id);
 
@@ -49029,6 +49072,9 @@ ALTER TABLE ONLY design_management_versions
 
 ALTER TABLE ONLY approval_merge_request_rules_approved_approvers
     ADD CONSTRAINT fk_rails_6577725edb FOREIGN KEY (approval_merge_request_rule_id) REFERENCES approval_merge_request_rules(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY virtual_registries_cleanup_policies
+    ADD CONSTRAINT fk_rails_65857a8907 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_relation_export_uploads
     ADD CONSTRAINT fk_rails_660ada90c9 FOREIGN KEY (project_relation_export_id) REFERENCES project_relation_exports(id) ON DELETE CASCADE;

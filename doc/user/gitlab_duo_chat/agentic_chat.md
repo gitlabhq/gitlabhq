@@ -84,7 +84,7 @@ Prerequisites:
 To use Chat in the GitLab UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
+1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}). A drawer opens on the right side of your screen.
 1. Under the chat text box, turn on the **Agentic mode (Beta)** toggle.
 1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**.
    It may take a few seconds to produce an answer.

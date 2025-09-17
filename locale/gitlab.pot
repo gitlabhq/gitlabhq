@@ -23011,7 +23011,13 @@ msgstr ""
 msgid "DeploymentApprovals|Maintainers"
 msgstr ""
 
+msgid "DeploymentApprovals|Private group"
+msgstr ""
+
 msgid "DeploymentApprovals|Set how approval rules are applied to deployments in protected environments."
+msgstr ""
+
+msgid "DeploymentApprovals|You do not have access to this group, but members of this group can approve this rule."
 msgstr ""
 
 msgid "DeploymentApproval|Approval options"

@@ -31,7 +31,7 @@
     @apply gl-rounded-l-lg #{!important};
   }
 
-  .input-group-append .btn {
+  .input-group-append .btn:not(.gl-rounded-full):not(.\!gl-rounded-full) {
     @apply gl-rounded-r-lg #{!important};
   }
 
