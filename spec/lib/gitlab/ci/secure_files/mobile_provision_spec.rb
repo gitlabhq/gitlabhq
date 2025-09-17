@@ -48,11 +48,13 @@ RSpec.describe Gitlab::Ci::SecureFiles::MobileProvision do
     describe '#properties' do
       it 'returns the property list of the decoded plist provided' do
         expect(subject.properties.class).to be(Hash)
-        expect(subject.properties.keys).to match_array(%w[AppIDName ApplicationIdentifierPrefix CreationDate
-                                                          Platform IsXcodeManaged DeveloperCertificates
-                                                          DER-Encoded-Profile PPQCheck Entitlements ExpirationDate
-                                                          Name ProvisionedDevices TeamIdentifier TeamName
-                                                          TimeToLive UUID Version])
+        expect(subject.properties.keys).to match_array(%w[
+          AppIDName ApplicationIdentifierPrefix CreationDate
+          Platform IsXcodeManaged DeveloperCertificates
+          DER-Encoded-Profile PPQCheck Entitlements ExpirationDate
+          Name ProvisionedDevices TeamIdentifier TeamName
+          TimeToLive UUID Version
+        ])
       end
 
       it 'returns nil if the property list fails to be parsed from the decoded plist' do
@@ -65,8 +67,8 @@ RSpec.describe Gitlab::Ci::SecureFiles::MobileProvision do
     describe '#metadata' do
       it 'returns a hash with the expected keys' do
         expect(subject.metadata.keys).to match_array([:id, :expires_at, :app_id, :app_id_prefix, :app_name,
-                                                      :certificate_ids, :devices, :entitlements, :platforms,
-                                                      :team_id, :team_name, :xcode_managed])
+          :certificate_ids, :devices, :entitlements, :platforms,
+          :team_id, :team_name, :xcode_managed])
       end
     end
 
@@ -126,11 +128,13 @@ RSpec.describe Gitlab::Ci::SecureFiles::MobileProvision do
 
     describe '#entitlements' do
       it 'returns the entitlements in the profile' do
-        expect(subject.metadata[:entitlements].keys).to match_array(['application-identifier',
-                                                                     'com.apple.developer.game-center',
-                                                                     'com.apple.developer.team-identifier',
-                                                                     'get-task-allow',
-                                                                     'keychain-access-groups'])
+        expect(subject.metadata[:entitlements].keys).to match_array([
+          'application-identifier',
+          'com.apple.developer.game-center',
+          'com.apple.developer.team-identifier',
+          'get-task-allow',
+          'keychain-access-groups'
+        ])
       end
     end
 

@@ -170,11 +170,23 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
 
     context 'with job:rules:[variables:]' do
       let(:attributes) do
-        { name: 'rspec',
+        {
+          name: 'rspec',
           ref: 'master',
-          job_variables: [{ key: 'VAR1', value: 'var 1' },
-                          { key: 'VAR2', value: 'var 2' }],
-          rules: [{ if: '$VAR == null', variables: { VAR1: 'new var 1', VAR3: 'var 3' } }] }
+          job_variables: [
+            { key: 'VAR1', value: 'var 1' },
+            { key: 'VAR2', value: 'var 2' }
+          ],
+          rules: [
+            {
+              if: '$VAR == null',
+              variables: {
+                VAR1: 'new var 1',
+                VAR3: 'var 3'
+              }
+            }
+          ]
+        }
       end
 
       # Remove when the FF `stop_writing_builds_metadata` is removed.
@@ -183,8 +195,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       it 'assigns options to job definition' do
         expect(seed_attributes[:temp_job_definition].config[:yaml_variables]).to match_array(
           [{ key: 'VAR1', value: 'new var 1' },
-           { key: 'VAR3', value: 'var 3' },
-           { key: 'VAR2', value: 'var 2' }]
+            { key: 'VAR3', value: 'var 3' },
+            { key: 'VAR2', value: 'var 2' }]
         )
       end
 
@@ -195,8 +207,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
 
         it do
           is_expected.to include(yaml_variables: [{ key: 'VAR1', value: 'new var 1' },
-                                                  { key: 'VAR3', value: 'var 3' },
-                                                  { key: 'VAR2', value: 'var 2' }])
+            { key: 'VAR3', value: 'var 3' },
+            { key: 'VAR2', value: 'var 2' }])
         end
       end
     end
@@ -208,10 +220,19 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         context 'when job has needs set' do
           context 'when rule evaluates to true' do
             let(:attributes) do
-              { name: 'rspec',
+              {
+                name: 'rspec',
                 ref: 'master',
                 needs_attributes: job_needs_attributes,
-                rules: [{ if: '$VAR == null', needs: { job: [{ name: 'build-job' }] } }] }
+                rules: [
+                  {
+                    if: '$VAR == null',
+                    needs: {
+                      job: [{ name: 'build-job' }]
+                    }
+                  }
+                ]
+              }
             end
 
             it 'overrides the job needs' do
@@ -221,10 +242,19 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
 
           context 'when rule evaluates to false' do
             let(:attributes) do
-              { name: 'rspec',
+              {
+                name: 'rspec',
                 ref: 'master',
                 needs_attributes: job_needs_attributes,
-                rules: [{ if: '$VAR == true', needs: { job: [{ name: 'build-job' }] } }] }
+                rules: [
+                  {
+                    if: '$VAR == true',
+                    needs: {
+                      job: [{ name: 'build-job' }]
+                    }
+                  }
+                ]
+              }
             end
 
             it 'keeps the job needs' do
@@ -234,19 +264,20 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
 
           context 'with subkeys: artifacts, optional' do
             let(:attributes) do
-              { name: 'rspec',
+              {
+                name: 'rspec',
                 ref: 'master',
-                rules:
-                [
-                  { if: '$VAR == null',
-                    needs: {
-                      job: [{
-                        name: 'build-job',
-                        optional: false,
-                        artifacts: true
-                      }]
-                    } }
-                ] }
+                rules: [{
+                  if: '$VAR == null',
+                  needs: {
+                    job: [{
+                      name: 'build-job',
+                      optional: false,
+                      artifacts: true
+                    }]
+                  }
+                }]
+              }
             end
 
             context 'when rule evaluates to true' do
@@ -264,14 +295,16 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         context 'with multiple rules' do
           context 'when a rule evaluates to true' do
             let(:attributes) do
-              { name: 'rspec',
+              {
+                name: 'rspec',
                 ref: 'master',
                 needs_attributes: job_needs_attributes,
                 rules: [
                   { if: '$VAR == true', needs: { job: [{ name: 'rspec-1' }] } },
                   { if: '$VAR2 == true', needs: { job: [{ name: 'rspec-2' }] } },
                   { if: '$VAR3 == null', needs: { job: [{ name: 'rspec' }, { name: 'lint' }] } }
-                ] }
+                ]
+              }
             end
 
             it 'overrides the job needs' do
@@ -281,14 +314,16 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
 
           context 'when all rules evaluates to false' do
             let(:attributes) do
-              { name: 'rspec',
+              {
+                name: 'rspec',
                 ref: 'master',
                 needs_attributes: job_needs_attributes,
                 rules: [
                   { if: '$VAR == true', needs: { job: [{ name: 'rspec-1' }] }  },
                   { if: '$VAR2 == true', needs: { job: [{ name: 'rspec-2' }] } },
                   { if: '$VAR3 == true', needs: { job: [{ name: 'rspec-3' }] } }
-                ] }
+                ]
+              }
             end
 
             it 'keeps the job needs' do
@@ -684,9 +719,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         { name: 'rspec',
           ref: 'master',
           yaml_variables: [{ key: 'VAR2', value: 'var 2' },
-                            { key: 'VAR3', value: 'var 3' }],
+            { key: 'VAR3', value: 'var 3' }],
           job_variables: [{ key: 'VAR2', value: 'var 2' },
-                          { key: 'VAR3', value: 'var 3' }],
+            { key: 'VAR3', value: 'var 3' }],
           root_variables_inheritance: root_variables_inheritance }
       end
 
@@ -832,7 +867,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         it 'recalculates the variables' do
           expect(seed_attributes[:temp_job_definition].config[:yaml_variables]).to match_array(
             [{ key: 'VAR1', value: 'overridden var 1' },
-             { key: 'VAR2', value: 'new var 2' }]
+              { key: 'VAR2', value: 'new var 2' }]
           )
         end
 
@@ -865,7 +900,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         it 'recalculates the variables' do
           expect(seed_attributes[:temp_job_definition].config[:yaml_variables]).to match_array(
             [{ key: 'VAR1', value: 'overridden var 1' },
-             { key: 'VAR2', value: 'overridden var 2' }]
+              { key: 'VAR2', value: 'overridden var 2' }]
           )
         end
 

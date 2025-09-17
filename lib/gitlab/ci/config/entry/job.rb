@@ -12,9 +12,9 @@ module Gitlab
 
           ALLOWED_WHEN = %w[on_success on_failure always manual delayed].freeze
           ALLOWED_KEYS = %i[tags script image services start_in artifacts
-                            cache dependencies before_script after_script hooks
-                            coverage retry parallel timeout
-                            release id_tokens publish pages manual_confirmation run].freeze
+            cache dependencies before_script after_script hooks
+            coverage retry parallel timeout
+            release id_tokens publish pages manual_confirmation run].freeze
 
           PUBLIC_DIR = 'public'
 

@@ -138,8 +138,10 @@ RSpec.describe Gitlab::Ci::Variables::Collection, feature_category: :pipeline_co
 
     it 'appends all elements from other collection' do
       collection = described_class.new([{ key: 'VAR_1', value: '1' }])
-      additional = described_class.new([{ key: 'VAR_2', value: '2' },
-                                        { key: 'VAR_3', value: '3' }])
+      additional = described_class.new([
+        { key: 'VAR_2', value: '2' },
+        { key: 'VAR_3', value: '3' }
+      ])
 
       collection.concat(additional)
 

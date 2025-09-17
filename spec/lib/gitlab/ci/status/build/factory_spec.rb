@@ -50,7 +50,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Factory do
     it 'matches correct extended statuses' do
       expect(factory.extended_statuses)
         .to eq [Gitlab::Ci::Status::Build::Erased,
-                Gitlab::Ci::Status::Build::Retryable]
+          Gitlab::Ci::Status::Build::Retryable]
     end
 
     it 'fabricates a retryable build status' do
@@ -78,7 +78,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Factory do
       it 'matches correct extended statuses' do
         expect(factory.extended_statuses)
           .to eq [Gitlab::Ci::Status::Build::Retryable,
-                  Gitlab::Ci::Status::Build::Failed]
+            Gitlab::Ci::Status::Build::Failed]
       end
 
       it 'fabricates a failed build status' do
@@ -106,8 +106,8 @@ RSpec.describe Gitlab::Ci::Status::Build::Factory do
       it 'matches correct extended statuses' do
         expect(factory.extended_statuses)
           .to eq [Gitlab::Ci::Status::Build::Retryable,
-                  Gitlab::Ci::Status::Build::Failed,
-                  Gitlab::Ci::Status::Build::FailedAllowed]
+            Gitlab::Ci::Status::Build::Failed,
+            Gitlab::Ci::Status::Build::FailedAllowed]
       end
 
       it 'fabricates a failed but allowed build status' do
@@ -136,7 +136,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Factory do
       it 'matches correct extended statuses' do
         expect(factory.extended_statuses)
           .to eq [Gitlab::Ci::Status::Build::Retryable,
-                  Gitlab::Ci::Status::Build::FailedUnmetPrerequisites]
+            Gitlab::Ci::Status::Build::FailedUnmetPrerequisites]
       end
 
       it 'fabricates a failed with unmet prerequisites build status' do
@@ -272,9 +272,11 @@ RSpec.describe Gitlab::Ci::Status::Build::Factory do
 
       it 'matches correct extended statuses' do
         expect(factory.extended_statuses)
-          .to eq [Gitlab::Ci::Status::Build::Manual,
-                  Gitlab::Ci::Status::Build::Play,
-                  Gitlab::Ci::Status::Build::Action]
+          .to eq [
+            Gitlab::Ci::Status::Build::Manual,
+            Gitlab::Ci::Status::Build::Play,
+            Gitlab::Ci::Status::Build::Action
+          ]
       end
 
       it 'fabricates action detailed status' do
@@ -320,9 +322,11 @@ RSpec.describe Gitlab::Ci::Status::Build::Factory do
 
       it 'matches correct extended statuses' do
         expect(factory.extended_statuses)
-          .to eq [Gitlab::Ci::Status::Build::Manual,
-                  Gitlab::Ci::Status::Build::Stop,
-                  Gitlab::Ci::Status::Build::Action]
+          .to eq [
+            Gitlab::Ci::Status::Build::Manual,
+            Gitlab::Ci::Status::Build::Stop,
+            Gitlab::Ci::Status::Build::Action
+          ]
       end
 
       it 'fabricates action detailed status' do
@@ -358,9 +362,11 @@ RSpec.describe Gitlab::Ci::Status::Build::Factory do
 
     it 'matches correct extended statuses' do
       expect(factory.extended_statuses)
-        .to eq [Gitlab::Ci::Status::Build::Scheduled,
-                Gitlab::Ci::Status::Build::Unschedule,
-                Gitlab::Ci::Status::Build::Action]
+        .to eq [
+          Gitlab::Ci::Status::Build::Scheduled,
+          Gitlab::Ci::Status::Build::Unschedule,
+          Gitlab::Ci::Status::Build::Action
+        ]
     end
 
     it 'fabricates action detailed status' do

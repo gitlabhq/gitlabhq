@@ -5,19 +5,25 @@ require 'fast_spec_helper'
 RSpec.describe Gitlab::Ci::Variables::Helpers do
   describe '.merge_variables' do
     let(:current_variables) do
-      [{ key: 'key1', value: 'value1' },
-       { key: 'key2', value: 'value2' }]
+      [
+        { key: 'key1', value: 'value1' },
+        { key: 'key2', value: 'value2' }
+      ]
     end
 
     let(:new_variables) do
-      [{ key: 'key2', value: 'value22' },
-       { key: 'key3', value: 'value3' }]
+      [
+        { key: 'key2', value: 'value22' },
+        { key: 'key3', value: 'value3' }
+      ]
     end
 
     let(:result) do
-      [{ key: 'key1', value: 'value1' },
-       { key: 'key2', value: 'value22' },
-       { key: 'key3', value: 'value3' }]
+      [
+        { key: 'key1', value: 'value1' },
+        { key: 'key2', value: 'value22' },
+        { key: 'key3', value: 'value3' }
+      ]
     end
 
     subject { described_class.merge_variables(current_variables, new_variables) }
@@ -43,8 +49,10 @@ RSpec.describe Gitlab::Ci::Variables::Helpers do
     context 'when new variables is nil' do
       let(:new_variables) {}
       let(:result) do
-        [{ key: 'key1', value: 'value1' },
-         { key: 'key2', value: 'value2' }]
+        [
+          { key: 'key1', value: 'value1' },
+          { key: 'key2', value: 'value2' }
+        ]
       end
 
       it { is_expected.to match_array(result) }
@@ -60,8 +68,10 @@ RSpec.describe Gitlab::Ci::Variables::Helpers do
       end
 
       let(:result) do
-        [{ key: 'key1', value: 'value1' },
-         { key: 'key2', value: 'value2' }]
+        [
+          { key: 'key1', value: 'value1' },
+          { key: 'key2', value: 'value2' }
+        ]
       end
 
       it { is_expected.to match_array(result) }
@@ -79,8 +89,10 @@ RSpec.describe Gitlab::Ci::Variables::Helpers do
       end
 
       let(:result) do
-        [{ key: 'key1', value: 'value1', description: 'var 1' },
-         { key: 'key2', value: 'value2' }]
+        [
+          { key: 'key1', value: 'value1', description: 'var 1' },
+          { key: 'key2', value: 'value2' }
+        ]
       end
 
       it { is_expected.to match_array(result) }
@@ -91,8 +103,10 @@ RSpec.describe Gitlab::Ci::Variables::Helpers do
         end
 
         let(:result) do
-          [{ key: 'key1', value: 'value1' },
-           { key: 'key2', value: 'value2' }]
+          [
+            { key: 'key1', value: 'value1' },
+            { key: 'key2', value: 'value2' }
+          ]
         end
 
         it 'ignores the key set with "key"' do
@@ -104,21 +118,27 @@ RSpec.describe Gitlab::Ci::Variables::Helpers do
 
   describe '.inherit_yaml_variables' do
     let(:from) do
-      [{ key: 'key1', value: 'value1' },
-       { key: 'key2', value: 'value2' }]
+      [
+        { key: 'key1', value: 'value1' },
+        { key: 'key2', value: 'value2' }
+      ]
     end
 
     let(:to) do
-      [{ key: 'key2', value: 'value22' },
-       { key: 'key3', value: 'value3' }]
+      [
+        { key: 'key2', value: 'value22' },
+        { key: 'key3', value: 'value3' }
+      ]
     end
 
     let(:inheritance) { true }
 
     let(:result) do
-      [{ key: 'key1', value: 'value1' },
-       { key: 'key2', value: 'value22' },
-       { key: 'key3', value: 'value3' }]
+      [
+        { key: 'key1', value: 'value1' },
+        { key: 'key2', value: 'value22' },
+        { key: 'key3', value: 'value3' }
+      ]
     end
 
     subject { described_class.inherit_yaml_variables(from: from, to: to, inheritance: inheritance) }
@@ -129,8 +149,10 @@ RSpec.describe Gitlab::Ci::Variables::Helpers do
       let(:inheritance) { false }
 
       let(:result) do
-        [{ key: 'key2', value: 'value22' },
-         { key: 'key3', value: 'value3' }]
+        [
+          { key: 'key2', value: 'value22' },
+          { key: 'key3', value: 'value3' }
+        ]
       end
 
       it { is_expected.to match_array(result) }
@@ -140,8 +162,10 @@ RSpec.describe Gitlab::Ci::Variables::Helpers do
       let(:inheritance) { ['key2'] }
 
       let(:result) do
-        [{ key: 'key2', value: 'value22' },
-         { key: 'key3', value: 'value3' }]
+        [
+          { key: 'key2', value: 'value22' },
+          { key: 'key3', value: 'value3' }
+        ]
       end
 
       it { is_expected.to match_array(result) }

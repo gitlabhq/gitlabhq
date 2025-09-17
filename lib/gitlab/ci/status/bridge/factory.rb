@@ -6,15 +6,17 @@ module Gitlab
       module Bridge
         class Factory < Status::Factory
           def self.extended_statuses
-            [[Status::Bridge::Retryable],
-             [Status::Bridge::Failed],
-             [Status::Bridge::Manual],
-             [Status::Bridge::WaitingForApproval],
-             [Status::Bridge::WaitingForResource],
-             [Status::Bridge::SuccessWarning],
-             [Status::Bridge::Play],
-             [Status::Bridge::Action],
-             [Status::Bridge::Retried]]
+            [
+              [Status::Bridge::Retryable],
+              [Status::Bridge::Failed],
+              [Status::Bridge::Manual],
+              [Status::Bridge::WaitingForApproval],
+              [Status::Bridge::WaitingForResource],
+              [Status::Bridge::SuccessWarning],
+              [Status::Bridge::Play],
+              [Status::Bridge::Action],
+              [Status::Bridge::Retried]
+            ]
           end
 
           def self.common_helpers

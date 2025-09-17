@@ -42,8 +42,10 @@ RSpec.describe Gitlab::Ci::Config::Entry::Ports do
 
       context 'have the same name' do
         let(:config) do
-          [{ number: 80, protocol: 'http', name: 'foobar' },
-           { number: 81, protocol: 'http', name: 'foobar' }]
+          [
+            { number: 80, protocol: 'http', name: 'foobar' },
+            { number: 81, protocol: 'http', name: 'foobar' }
+          ]
         end
 
         describe '#valid?' do
@@ -55,8 +57,10 @@ RSpec.describe Gitlab::Ci::Config::Entry::Ports do
 
       context 'have the same port' do
         let(:config) do
-          [{ number: 80, protocol: 'http', name: 'foobar' },
-           { number: 80, protocol: 'http', name: 'foobar1' }]
+          [
+            { number: 80, protocol: 'http', name: 'foobar' },
+            { number: 80, protocol: 'http', name: 'foobar1' }
+          ]
         end
 
         describe '#valid?' do

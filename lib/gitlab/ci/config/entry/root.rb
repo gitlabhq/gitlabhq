@@ -12,7 +12,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Configurable
 
           ALLOWED_KEYS = %i[default include before_script image services
-                            after_script variables stages cache workflow].freeze
+            after_script variables stages cache workflow].freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS

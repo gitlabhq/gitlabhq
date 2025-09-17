@@ -42,8 +42,10 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
 
     it 'matches correct extended statuses' do
       expect(factory.extended_statuses)
-        .to eq [Gitlab::Ci::Status::Bridge::Retryable,
-                Gitlab::Ci::Status::Bridge::Failed]
+        .to eq [
+          Gitlab::Ci::Status::Bridge::Retryable,
+          Gitlab::Ci::Status::Bridge::Failed
+        ]
     end
 
     it 'fabricates a failed bridge status' do
@@ -85,9 +87,11 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
 
     it 'matches correct extended statuses' do
       expect(factory.extended_statuses)
-        .to eq [Gitlab::Ci::Status::Bridge::Manual,
-                Gitlab::Ci::Status::Bridge::Play,
-                Gitlab::Ci::Status::Bridge::Action]
+        .to eq [
+          Gitlab::Ci::Status::Bridge::Manual,
+          Gitlab::Ci::Status::Bridge::Play,
+          Gitlab::Ci::Status::Bridge::Action
+        ]
     end
 
     it 'fabricates action detailed status' do
@@ -156,7 +160,10 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
 
     it 'matches correct extended statuses' do
       expect(factory.extended_statuses)
-        .to eq [Gitlab::Ci::Status::Bridge::Retryable, Gitlab::Ci::Status::Bridge::SuccessWarning]
+        .to eq [
+          Gitlab::Ci::Status::Bridge::Retryable,
+          Gitlab::Ci::Status::Bridge::SuccessWarning
+        ]
     end
 
     it 'fabricates status with correct details' do

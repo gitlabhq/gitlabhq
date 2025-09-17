@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Bridge, feature_category: :continuous_
     # as they do not have sense in context of Bridge
     let(:ignored_inheritable_columns) do
       %i[before_script after_script hooks image services cache timeout
-         retry tags artifacts id_tokens]
+        retry tags artifacts id_tokens]
     end
 
     before do
@@ -281,8 +281,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Bridge, feature_category: :continuous_
 
       context 'when parallel config is a matrix' do
         let(:parallel_config) do
-          { matrix: [{ PROVIDER: 'aws', STACK: %w[monitoring app1] },
-                     { PROVIDER: 'gcp', STACK: %w[data] }] }
+          {
+            matrix: [
+              { PROVIDER: 'aws', STACK: %w[monitoring app1] },
+              { PROVIDER: 'gcp', STACK: %w[data] }
+            ]
+          }
         end
 
         describe '#valid?' do
@@ -297,8 +301,12 @@ RSpec.describe Gitlab::Ci::Config::Entry::Bridge, feature_category: :continuous_
               ignore: false,
               stage: 'test',
               only: { refs: %w[branches tags] },
-              parallel: { matrix: [{ 'PROVIDER' => ['aws'], 'STACK' => %w[monitoring app1] },
-                                   { 'PROVIDER' => ['gcp'], 'STACK' => %w[data] }] },
+              parallel: {
+                matrix: [
+                  { 'PROVIDER' => ['aws'], 'STACK' => %w[monitoring app1] },
+                  { 'PROVIDER' => ['gcp'], 'STACK' => %w[data] }
+                ]
+              },
               job_variables: {},
               root_variables_inheritance: true,
               scheduling_type: :stage

@@ -19,8 +19,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Preloader do
       it 'preloads all commits once' do
         expect(Commit).to receive(:decorate).once.and_call_original
 
-        pipelines = [build_pipeline(ref: 'HEAD'),
-                     build_pipeline(ref: 'HEAD~1')]
+        pipelines = [
+          build_pipeline(ref: 'HEAD'),
+          build_pipeline(ref: 'HEAD~1')
+        ]
 
         described_class.preload!(pipelines)
       end

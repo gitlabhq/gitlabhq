@@ -31,10 +31,12 @@ RSpec.describe Gitlab::Ci::Reports::Security::AggregatedReport do
       let(:yesterday) { 1.day.ago }
 
       let(:reports) do
-        [build(:ci_reports_security_report, created_at: a_while_ago),
-         build(:ci_reports_security_report, created_at: a_long_time_ago),
-         build(:ci_reports_security_report, created_at: nil),
-         build(:ci_reports_security_report, created_at: yesterday)]
+        [
+          build(:ci_reports_security_report, created_at: a_while_ago),
+          build(:ci_reports_security_report, created_at: a_long_time_ago),
+          build(:ci_reports_security_report, created_at: nil),
+          build(:ci_reports_security_report, created_at: yesterday)
+        ]
       end
 
       it 'has oldest created date' do

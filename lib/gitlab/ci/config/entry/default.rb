@@ -14,7 +14,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Inheritable
 
           ALLOWED_KEYS = %i[before_script after_script hooks cache image services
-                            interruptible timeout retry tags artifacts id_tokens].freeze
+            interruptible timeout retry tags artifacts id_tokens].freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS

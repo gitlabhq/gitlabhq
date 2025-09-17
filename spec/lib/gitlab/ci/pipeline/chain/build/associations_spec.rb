@@ -11,8 +11,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
   let(:bridge) { nil }
 
   let(:variables_attributes) do
-    [{ key: 'first', secret_value: 'world' },
-     { key: 'second', secret_value: 'second_world' }]
+    [
+      { key: 'first', secret_value: 'world' },
+      { key: 'second', secret_value: 'second_world' }
+    ]
   end
 
   let(:source) { :push }
@@ -146,8 +148,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Build::Associations, feature_categor
 
   context 'with duplicate pipeline variables' do
     let(:variables_attributes) do
-      [{ key: 'first', secret_value: 'world' },
-       { key: 'first', secret_value: 'second_world' }]
+      [
+        { key: 'first', secret_value: 'world' },
+        { key: 'first', secret_value: 'second_world' }
+      ]
     end
 
     it_behaves_like 'breaks the chain'

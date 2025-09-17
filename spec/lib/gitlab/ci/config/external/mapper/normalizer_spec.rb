@@ -23,26 +23,30 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper::Normalizer, feature_categor
 
   describe '#process' do
     let(:locations) do
-      ['https://example.com/.gitlab-ci.yml',
-       'config/.gitlab-ci.yml',
-       { local: 'config/.gitlab-ci.yml' },
-       { remote: 'https://example.com/.gitlab-ci.yml' },
-       { template: 'Template.gitlab-ci.yml' },
-       '$VARIABLE1/.gitlab-ci.yml',
-       '$VARIABLE2/.gitlab-ci.yml']
+      [
+        'https://example.com/.gitlab-ci.yml',
+        'config/.gitlab-ci.yml',
+        { local: 'config/.gitlab-ci.yml' },
+        { remote: 'https://example.com/.gitlab-ci.yml' },
+        { template: 'Template.gitlab-ci.yml' },
+        '$VARIABLE1/.gitlab-ci.yml',
+        '$VARIABLE2/.gitlab-ci.yml'
+      ]
     end
 
     subject(:process) { normalizer.process(locations) }
 
     it 'converts locations to canonical form' do
       is_expected.to eq(
-        [{ remote: 'https://example.com/.gitlab-ci.yml' },
-         { local: 'config/.gitlab-ci.yml' },
-         { local: 'config/.gitlab-ci.yml' },
-         { remote: 'https://example.com/.gitlab-ci.yml' },
-         { template: 'Template.gitlab-ci.yml' },
-         { local: 'config/.gitlab-ci.yml' },
-         { remote: 'https://example.com/.gitlab-ci.yml' }]
+        [
+          { remote: 'https://example.com/.gitlab-ci.yml' },
+          { local: 'config/.gitlab-ci.yml' },
+          { local: 'config/.gitlab-ci.yml' },
+          { remote: 'https://example.com/.gitlab-ci.yml' },
+          { template: 'Template.gitlab-ci.yml' },
+          { local: 'config/.gitlab-ci.yml' },
+          { remote: 'https://example.com/.gitlab-ci.yml' }
+        ]
       )
     end
 

@@ -30,9 +30,9 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
 
       let(:result) do
         %i[before_script script after_script hooks stage cache
-           image services only except rules needs variables artifacts
-           coverage retry interruptible timeout release tags
-           inherit parallel]
+          image services only except rules needs variables artifacts
+          coverage retry interruptible timeout release tags
+          inherit parallel]
       end
 
       it { is_expected.to include(*result) }

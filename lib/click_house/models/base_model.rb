@@ -8,6 +8,8 @@ module ClickHouse
 
       def_delegators :@query_builder, :to_sql, :to_redacted_sql
 
+      attr_reader :query_builder
+
       def initialize(query_builder = ClickHouse::Client::QueryBuilder.new(self.class.table_name))
         @query_builder = query_builder
       end

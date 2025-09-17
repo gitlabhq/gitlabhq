@@ -35,8 +35,10 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
         hash = {
           image: 'image:1.0',
           rspec: {
-            script: ['gem install rspec',
-                     'rspec']
+            script: [
+              'gem install rspec',
+              'rspec'
+            ]
           }
         }
 

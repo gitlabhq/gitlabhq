@@ -6,8 +6,10 @@ module Gitlab
       module Stage
         class Factory < Status::Factory
           def self.extended_statuses
-            [[Status::SuccessWarning],
-             [Status::Stage::PlayManual]]
+            [
+              [Status::SuccessWarning],
+              [Status::Stage::PlayManual]
+            ]
           end
 
           def self.common_helpers

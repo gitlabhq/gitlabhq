@@ -5,6 +5,8 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
     module Ci
       # todo: rename base_model to base_finder: https://gitlab.com/gitlab-org/gitlab/-/issues/559016
       class FinishedBuildsFinder < ::ClickHouse::Models::BaseModel
+        include ActiveRecord::Sanitization::ClassMethods
+
         ALLOWED_TO_GROUP = %i[name stage_id].freeze
         ALLOWED_TO_SELECT = %i[name stage_id].freeze
         ALLOWED_AGGREGATIONS = %i[
@@ -20,12 +22,14 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
         ERROR_MESSAGES = {
           select: "Cannot select columns: %{columns}. Allowed: #{ALLOWED_TO_SELECT.join(', ')}",
+          aggregate: "Cannot aggregate columns: %{columns}. Allowed: #{ALLOWED_AGGREGATIONS.join(', ')}",
           group: "Cannot group by column: %{column}. Allowed: #{ALLOWED_TO_GROUP.join(', ')}",
           order: "Cannot order by column: %{column}. Allowed: #{ALLOWED_TO_ORDER.join(', ')}"
         }.freeze
 
         ALLOWED_COLUMNS_BY_OPERATION = {
           select: ALLOWED_TO_SELECT,
+          aggregate: ALLOWED_AGGREGATIONS,
           group: ALLOWED_TO_GROUP,
           order: ALLOWED_TO_ORDER
         }.freeze
@@ -54,6 +58,14 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
           query = super(*fields)
           aggregate ? query : query.group_by(*fields)
+        end
+
+        def select_aggregations(*aggregations)
+          validate_columns!(aggregations, :aggregate)
+
+          aggregations.reduce(self) do |query, aggregation|
+            query.method(aggregation).call
+          end
         end
 
         # Aggregation methods
@@ -104,6 +116,20 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           end
         end
 
+        def filter_by_job_name(term)
+          where(query_builder.table[:name].matches("%#{sanitize_sql_like(term.downcase)}%"))
+        end
+
+        def filter_by_pipeline_attrs(project:, from_time: nil, to_time: nil, source: nil, ref: nil)
+          pipelines = ::ClickHouse::Models::Ci::FinishedPipeline.for_container(project).within_dates(
+            from_time, to_time)
+
+          pipelines = pipelines.for_source(source) if source
+          pipelines = pipelines.for_ref(ref) if ref
+
+          where(pipeline_id: pipelines.select(:id).query_builder)
+        end
+
         private
 
         def validate_columns!(fields, operation, aggregate = false)
@@ -130,9 +156,15 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
             [@query_builder.table[:duration]]
           )
 
-          Arel::Nodes::Division.new(
-            duration_function,
-            Arel::Nodes.build_quoted(1000.0)
+          Arel::Nodes::NamedFunction.new(
+            'round',
+            [
+              Arel::Nodes::Division.new(
+                duration_function,
+                Arel::Nodes.build_quoted(1000.0)
+              ),
+              2
+            ]
           ).as(alias_name)
         end
 
@@ -149,9 +181,15 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
 
           total_count = Arel::Nodes::NamedFunction.new('count', [])
 
-          Arel::Nodes::Multiplication.new(
-            Arel::Nodes::Division.new(count_if, total_count),
-            Arel::Nodes.build_quoted(100)
+          Arel::Nodes::NamedFunction.new(
+            'round',
+            [
+              Arel::Nodes::Multiplication.new(
+                Arel::Nodes::Division.new(count_if, total_count),
+                Arel::Nodes.build_quoted(100)
+              ),
+              2
+            ]
           ).as("rate_of_#{status}")
         end
 
