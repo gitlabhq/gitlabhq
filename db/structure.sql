@@ -28480,7 +28480,7 @@ CREATE TABLE workspaces_agent_configs (
     project_id bigint NOT NULL,
     enabled boolean NOT NULL,
     network_policy_enabled boolean DEFAULT true NOT NULL,
-    dns_zone text NOT NULL,
+    dns_zone text DEFAULT ''::text NOT NULL,
     gitlab_workspaces_proxy_namespace text DEFAULT 'gitlab-workspaces'::text NOT NULL,
     network_policy_egress jsonb DEFAULT '[{"allow": "0.0.0.0/0", "except": ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]}]'::jsonb NOT NULL,
     default_resources_per_workspace_container jsonb DEFAULT '{}'::jsonb NOT NULL,

@@ -167,6 +167,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       showImportButton: parseBoolean(canImportWorkItems),
       canEdit: parseBoolean(canEdit),
       exportCsvPath,
+      showNewIssueLink: parseBoolean(showNewWorkItem),
     },
     mounted() {
       performanceMarkAndMeasure({

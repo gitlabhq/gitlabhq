@@ -10,14 +10,13 @@ title: Fix CI/CD pipeline
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Beta
+- Status: Experiment
 
 {{< /details >}}
 
 {{< history >}}
 
-- Introduced as [a beta](../../../policy/development_stages_support.md) in GitLab 18.4 [with a flag](../../../administration/feature_flags/_index.md) named `duo_workflow_in_ci`. Disabled by default, but can be enabled for the instance or a user.
-- The `duo_workflow` flag must also be enabled, but it is enabled by default.
+- Introduced as [an experiment](../../../policy/development_stages_support.md) in GitLab 18.4 [with flags](../../../administration/feature_flags/_index.md) named `duo_workflow_in_ci` and `ai_duo_agent_fix_pipeline_button`. `duo_workflow_in_ci` is enabled by default. `ai_duo_agent_fix_pipeline_button` is disabled by default. These flags can be enabled or disabled for the instance or project.
 
 {{< /history >}}
 
@@ -50,7 +49,10 @@ To use this flow, you must have:
 - An existing failed pipeline.
 - At least the Developer role in the project.
 - GitLab Duo [turned on and flows allowed to execute](../../gitlab_duo/turn_on_off.md).
-- Feature flags [`duo_workflow` and `duo_workflow_in_ci` enabled](../../../administration/feature_flags/_index.md).
+- Enabled the following [feature flags](../../../administration/feature_flags/_index.md):
+  - `duo_workflow`
+  - `duo_workflow_in_ci`
+  - `ai_duo_agent_fix_pipeline_button`
 
 ## Use the flow
 

@@ -168,7 +168,6 @@ export default {
           "
           name="information-o"
           class="gl-text-subtle"
-          :size="14"
         />
       </div>
 
@@ -239,8 +238,8 @@ export default {
 }
 
 ::v-deep .user-profile-activity svg {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
 }
 
 ::v-deep .user-profile-activity:not(:last-child)::before {

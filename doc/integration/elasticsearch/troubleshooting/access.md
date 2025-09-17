@@ -213,3 +213,16 @@ You must include the following permissions in the role:
   ]
 }
 ```
+
+## Accumulation of open TCP connections
+
+In GitLab 17.11 and later, you might notice an increase in
+open TCP connections from GitLab processes to external services.
+These connections accumulate over time and are not properly closed.
+
+This issue is related to the Faraday adapter switching from
+`net_http` to `typhoeus` for connection pooling in GitLab.
+For more information, see [issue 550805](https://gitlab.com/gitlab-org/gitlab/-/issues/550805).
+
+To resolve this issue, set
+[`elasticsearch_client_adapter`](../../../api/settings.md#available-settings) to `net_http`.

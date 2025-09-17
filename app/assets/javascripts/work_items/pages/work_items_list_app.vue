@@ -7,6 +7,9 @@ import {
   GlTooltipDirective,
   GlIcon,
   GlSkeletonLoader,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlModalDirective,
 } from '@gitlab/ui';
 import { isEmpty, unionBy } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
@@ -116,6 +119,7 @@ import WorkItemListHeading from '../components/work_item_list_heading.vue';
 import WorkItemUserPreferences from '../components/shared/work_item_user_preferences.vue';
 import WorkItemListActions from '../components/work_item_list_actions.vue';
 import WorkItemByEmail from '../components/work_item_by_email.vue';
+import WorkItemsCsvImportModal from '../components/work_items_csv_import_modal.vue';
 import {
   BASE_ALLOWED_CREATE_TYPES,
   CREATION_CONTEXT_LIST_ROUTE,
@@ -161,6 +165,7 @@ export default {
   CREATION_CONTEXT_LIST_ROUTE,
   issuableListTabs,
   searchProjectsQuery,
+  importModalId: 'work-item-import-modal',
   components: {
     GlLoadingIcon,
     GlButton,
@@ -181,9 +186,13 @@ export default {
     GlIcon,
     GlSkeletonLoader,
     NewResourceDropdown,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
+    WorkItemsCsvImportModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
+    GlModal: GlModalDirective,
   },
   mixins: [glFeatureFlagMixin()],
   provide() {
@@ -222,6 +231,8 @@ export default {
     'newWorkItemEmailAddress',
     'isGroupIssuesList',
     'groupId',
+    'canImportWorkItems',
+    'canEdit',
   ],
   props: {
     eeWorkItemUpdateCount: {
@@ -846,6 +857,20 @@ export default {
     },
     showCsvButtons() {
       return this.isProject && this.isSignedIn;
+    },
+    isJiraImportVisible() {
+      return Boolean(this.projectImportJiraPath) && this.canEdit;
+    },
+    importFromJira() {
+      return {
+        text: s__('WorkItem|Import from Jira'),
+        href: this.projectImportJiraPath,
+      };
+    },
+    importCsv() {
+      return {
+        text: s__('WorkItem|Import CSV'),
+      };
     },
   },
   watch: {
@@ -1527,10 +1552,7 @@ export default {
 
   <div v-else>
     <slot name="page-empty-state">
-      <empty-state-without-any-issues
-        :export-csv-path-with-query="exportCsvPathWithQuery"
-        :show-csv-buttons="showCsvButtons"
-      >
+      <empty-state-without-any-issues :export-csv-path-with-query="exportCsvPathWithQuery">
         <template #new-issue-button>
           <create-work-item-modal
             :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
@@ -1539,6 +1561,32 @@ export default {
             :preselected-work-item-type="preselectedWorkItemType"
             @workItemCreated="handleWorkItemCreated"
           />
+        </template>
+        <template #import-export-buttons
+          ><gl-disclosure-dropdown
+            v-if="showCsvButtons"
+            class="gl-mx-2 gl-mb-3"
+            :toggle-text="__('Import issues')"
+            data-testid="import-issues-dropdown"
+          >
+            <gl-disclosure-dropdown-item
+              v-if="isJiraImportVisible"
+              data-testid="import-from-jira-link"
+              :item="importFromJira"
+            />
+            <gl-disclosure-dropdown-item
+              v-if="canImportWorkItems"
+              v-gl-modal="$options.importModalId"
+              data-testid="import-csv-button"
+              :item="importCsv"
+            />
+
+            <work-items-csv-import-modal
+              v-if="canImportWorkItems"
+              :modal-id="$options.importModalId"
+              :full-path="rootPageFullPath"
+            />
+          </gl-disclosure-dropdown>
         </template>
       </empty-state-without-any-issues>
     </slot>

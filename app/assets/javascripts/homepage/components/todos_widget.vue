@@ -154,8 +154,7 @@ export default {
           v-gl-tooltip.hover
           :title="s__('Todos|Filter your to-do items to focus on what needs your attention.')"
           name="information-o"
-          class="gl-text-gray-400"
-          :size="14"
+          class="gl-text-subtle"
         />
       </div>
 

@@ -202,7 +202,6 @@ To show the sidebar again:
 
 {{< details >}}
 
-- Status: Beta
 - Offering: GitLab.com, GitLab Self-Managed
 
 {{< /details >}}
@@ -210,7 +209,7 @@ To show the sidebar again:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4231) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `work_items_beta`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/551805) in GitLab 18.2.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/551805) in GitLab 18.2. Moved from behind feature flag `work_items_beta`.
 
 {{< /history >}}
 

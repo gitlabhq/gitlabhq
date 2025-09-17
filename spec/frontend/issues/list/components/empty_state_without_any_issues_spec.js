@@ -37,7 +37,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
   const findNewIssueLink = () => wrapper.findByRole('link', { name: 'New issue' });
   const findNewProjectLink = () => wrapper.findByRole('link', { name: 'New project' });
 
-  const mountComponent = ({ props = {}, provide = {} } = {}) => {
+  const mountComponent = ({ props = {}, provide = {}, slots = {} } = {}) => {
     wrapper = mountExtended(EmptyStateWithoutAnyIssues, {
       propsData: {
         ...defaultProps,
@@ -49,6 +49,9 @@ describe('EmptyStateWithoutAnyIssues component', () => {
       },
       stubs: {
         NewResourceDropdown: true,
+      },
+      slots: {
+        ...slots,
       },
     });
   };
@@ -173,6 +176,16 @@ describe('EmptyStateWithoutAnyIssues component', () => {
               expect(findCsvImportExportDropdown().exists()).toBe(false);
               expect(findCsvImportExportButtons().exists()).toBe(false);
             });
+          });
+
+          it('does not render the default buttons when overriden using slot', () => {
+            mountComponent({
+              props: { showCsvButtons: true },
+              slots: { 'import-export-buttons': '<button></button>' },
+            });
+
+            expect(findCsvImportExportDropdown().exists()).toBe(false);
+            expect(findCsvImportExportButtons().exists()).toBe(false);
           });
         });
 

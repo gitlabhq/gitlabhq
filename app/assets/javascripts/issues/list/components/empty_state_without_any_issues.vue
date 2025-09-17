@@ -130,18 +130,19 @@ export default {
           >
             {{ __('New project') }}
           </gl-button>
-
-          <gl-disclosure-dropdown
-            v-if="showCsvButtons"
-            class="gl-mx-2 gl-mb-3"
-            :toggle-text="__('Import issues')"
-            data-testid="import-issues-dropdown"
-          >
-            <csv-import-export-buttons
-              :export-csv-path="exportCsvPathWithQuery"
-              :issuable-count="currentTabCount"
-            />
-          </gl-disclosure-dropdown>
+          <slot name="import-export-buttons">
+            <gl-disclosure-dropdown
+              v-if="showCsvButtons"
+              class="gl-mx-2 gl-mb-3"
+              :toggle-text="__('Import issues')"
+              data-testid="import-issues-dropdown"
+            >
+              <csv-import-export-buttons
+                :export-csv-path="exportCsvPathWithQuery"
+                :issuable-count="currentTabCount"
+              />
+            </gl-disclosure-dropdown>
+          </slot>
         </template>
       </gl-empty-state>
       <hr />

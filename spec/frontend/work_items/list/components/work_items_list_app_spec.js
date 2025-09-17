@@ -142,6 +142,9 @@ describeSkipVue3(skipReason, () => {
   const findChildItem2 = () => wrapper.findAllComponents(IssuableItem).at(1);
   const findSubChildIndicator = (item) =>
     item.find('[data-testid="sub-child-work-item-indicator"]');
+  const findImportIssuesButton = () => wrapper.findByTestId('import-issues-dropdown');
+  const findImportCSVButton = () => wrapper.findByTestId('import-csv-button');
+  const findImportJiraIssueButton = () => wrapper.findByTestId('import-from-jira-link');
 
   const mountComponent = ({
     provide = {},
@@ -214,6 +217,8 @@ describeSkipVue3(skipReason, () => {
         groupId: 'gid://gitlab/Group/1',
         isProject: false,
         exportCsvPath: '/export/csv',
+        canEdit: true,
+        canImportWorkItems: true,
         ...provide,
       },
       propsData: {
@@ -1405,41 +1410,120 @@ describeSkipVue3(skipReason, () => {
       it('passes correct props to empty state component for groups', () => {
         expect(findEmptyStateWithoutAnyIssues().props()).toMatchObject({
           exportCsvPathWithQuery: null,
-          showCsvButtons: false,
           showNewIssueDropdown: false,
         });
+      });
+
+      it('does not render the import issues dropdown', () => {
+        expect(findImportIssuesButton().exists()).toBe(false);
       });
     });
 
     describe('when there are no work items in project context', () => {
+      const projectEmptyCountsResponse = cloneDeep(groupWorkItemStateCountsQueryResponse);
+      projectEmptyCountsResponse.data.project = {
+        id: 'gid://gitlab/Project/1',
+        workItemStateCounts: {
+          all: 0,
+          closed: 0,
+          opened: 0,
+        },
+      };
+      const emptyStateConfig = {
+        queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
+        slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlimResponse),
+        countsQueryHandler: jest.fn().mockResolvedValue(projectEmptyCountsResponse),
+        provide: {
+          isGroup: false,
+          isProject: true,
+        },
+        stubs: {
+          EmptyStateWithoutAnyIssues: {
+            template: `<div><slot name="import-export-buttons"></slot></div>`,
+          },
+        },
+      };
+
       it('passes correct props to empty state component for projects', async () => {
-        const projectEmptyCountsResponse = cloneDeep(groupWorkItemStateCountsQueryResponse);
-        projectEmptyCountsResponse.data.project = {
-          id: 'gid://gitlab/Project/1',
-          workItemStateCounts: {
-            all: 0,
-            closed: 0,
-            opened: 0,
-          },
-        };
         mountComponent({
-          provide: {
-            isGroup: false,
-            isProject: true,
-            exportCsvPath: '/export/csv',
-          },
-          queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
-          slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlimResponse),
-          countsQueryHandler: jest.fn().mockResolvedValue(projectEmptyCountsResponse),
+          ...emptyStateConfig,
+          provide: { ...emptyStateConfig.provide, exportCsvPath: '/export/csv' },
+          stubs: {},
         });
 
         await waitForPromises();
 
         expect(findEmptyStateWithoutAnyIssues().props()).toMatchObject({
           exportCsvPathWithQuery: '/export/csv',
-          showCsvButtons: true,
           showNewIssueDropdown: false,
         });
+      });
+
+      it('renders the import issues buttons in the dropdown', async () => {
+        mountComponent({
+          ...emptyStateConfig,
+        });
+        await waitForPromises();
+
+        expect(findImportJiraIssueButton().props()).toEqual({
+          item: { text: 'Import from Jira', href: '/project/import/jira' },
+          variant: null,
+        });
+        expect(findImportCSVButton().props()).toEqual({
+          item: { text: 'Import CSV' },
+          variant: null,
+        });
+      });
+
+      it('does not render the import CSV option when user permission is false', async () => {
+        mountComponent({
+          ...emptyStateConfig,
+          provide: { ...emptyStateConfig.provide, canImportWorkItems: false },
+        });
+        await waitForPromises();
+
+        expect(findImportCSVButton().exists()).toBe(false);
+      });
+
+      it('does not render the jira import option when user permission is false', async () => {
+        mountComponent({
+          ...emptyStateConfig,
+          provide: { ...emptyStateConfig.provide, canEdit: false },
+        });
+        await waitForPromises();
+
+        expect(findImportJiraIssueButton().exists()).toBe(false);
+      });
+
+      it('does not render the jira import option when jira path is missing', async () => {
+        mountComponent({
+          ...emptyStateConfig,
+          provide: { ...emptyStateConfig.provide, projectImportJiraPath: null },
+        });
+        await waitForPromises();
+
+        expect(findImportJiraIssueButton().exists()).toBe(false);
+      });
+
+      it('does not render the import issues dropdown when user not signed in', async () => {
+        mountComponent({
+          queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
+          slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlimResponse),
+          countsQueryHandler: jest.fn().mockResolvedValue(projectEmptyCountsResponse),
+          provide: {
+            isGroup: false,
+            isProject: true,
+            isSignedIn: false,
+          },
+          stubs: {
+            EmptyStateWithoutAnyIssues: {
+              template: `<div><slot name="import-export-buttons"></slot></div>`,
+            },
+          },
+        });
+        await waitForPromises();
+
+        expect(findImportIssuesButton().exists()).toBe(false);
       });
     });
   });

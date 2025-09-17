@@ -500,6 +500,7 @@ globally or for individual jobs:
 - [`GIT_CHECKOUT`](#git-checkout)
 - [`GIT_CLEAN_FLAGS`](#git-clean-flags)
 - [`GIT_FETCH_EXTRA_FLAGS`](#git-fetch-extra-flags)
+- [`GIT_CLONE_EXTRA_FLAGS`](#git-clone-extra-flags)
 - [`GIT_SUBMODULE_UPDATE_FLAGS`](#git-submodule-update-flags)
 - [`GIT_SUBMODULE_FORCE_HTTPS`](#rewrite-submodule-urls-to-https)
 - [`GIT_DEPTH`](#shallow-cloning) (shallow cloning)
@@ -693,6 +694,34 @@ git fetch origin $REFSPECS --depth 20  --prune
 ```
 
 Where `$REFSPECS` is a value provided to the runner internally by GitLab.
+
+### Git clone extra flags
+
+Use the `GIT_CLONE_EXTRA_FLAGS` variable to pass extra arguments to the native `git clone` operation.
+You can set it globally or per-job in the [`variables`](../yaml/_index.md#variables) section.
+
+To use `GIT_CLONE_EXTRA_FLAGS`:
+
+- Set `FF_USE_GIT_NATIVE_CLONE` to `true` to enable the native `git clone` functionality.
+- Set `GIT_STRATEGY` to `clone` to use the clone strategy instead of fetch.
+- The Git client must be at least version 2.49. This condition is met automatically if the
+  [helper image](https://docs.gitlab.com/runner/configuration/advanced-configuration/#helper-image)
+  is a Linux-flavored image, version 18.1 or later.
+
+`GIT_CLONE_EXTRA_FLAGS` accepts all options of the `git clone` command. The flags are appended to the native
+`git clone` command to provide flexibility for advanced use cases, including referencing alternate repositories
+or optimizing clone performance.
+
+For example, you can optimize clone performance by using a reference repository:
+
+```yaml
+variables:
+  FF_USE_GIT_NATIVE_CLONE: true
+  GIT_STRATEGY: clone
+  GIT_CLONE_EXTRA_FLAGS: "--reference-if-available /tmp/test"
+```
+
+If `GIT_CLONE_EXTRA_FLAGS` is not specified, `git clone` uses only the default flags.
 
 ### Sync or exclude specific submodules from CI jobs
 

@@ -76848,6 +76848,9 @@ msgstr ""
 msgid "ciReport|Detects secrets and credentials vulnerabilities in your source code."
 msgstr ""
 
+msgid "ciReport|Diff-based"
+msgstr ""
+
 msgid "ciReport|Download Patch"
 msgstr ""
 
@@ -76885,6 +76888,12 @@ msgid "ciReport|Found %{issuesWithCount}"
 msgstr ""
 
 msgid "ciReport|Full report"
+msgstr ""
+
+msgid "ciReport|Full scan"
+msgstr ""
+
+msgid "ciReport|Full scan is not enabled for this project."
 msgstr ""
 
 msgid "ciReport|Generic Report"
@@ -76932,6 +76941,9 @@ msgid "ciReport|New vulnerabilities are vulnerabilities that the security scan d
 msgstr ""
 
 msgid "ciReport|No code quality issues found"
+msgstr ""
+
+msgid "ciReport|No new vulnerabilities were found."
 msgstr ""
 
 msgid "ciReport|Parsing schema failed. Check the validity of your .gitlab-ci.yml content."
@@ -76992,6 +77004,9 @@ msgid "ciReport|TTFB P95"
 msgstr ""
 
 msgid "ciReport|There was an error creating the merge request. Please try again."
+msgstr ""
+
+msgid "ciReport|This project uses diff-based scanning for GitLab Advanced SAST. For quicker results, GitLab scans only modified files. The results exclude any fixed findings. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "ciReport|This report contains all Code Quality issues in the source branch."
