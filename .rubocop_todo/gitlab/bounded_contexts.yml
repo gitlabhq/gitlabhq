@@ -3822,7 +3822,6 @@ Gitlab/BoundedContexts:
     - 'lib/google_api/auth.rb'
     - 'lib/google_api/cloud_platform/client.rb'
     - 'lib/grafana/client.rb'
-    - 'lib/grafana/validator.rb'
     - 'lib/initializer_connections.rb'
     - 'lib/json_web_token/hmac_token.rb'
     - 'lib/json_web_token/rsa_token.rb'

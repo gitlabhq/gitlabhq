@@ -3180,7 +3180,6 @@ Layout/LineLength:
     - 'spec/lib/gitlab/x509/signature_spec.rb'
     - 'spec/lib/gitlab_spec.rb'
     - 'spec/lib/google_api/cloud_platform/client_spec.rb'
-    - 'spec/lib/grafana/validator_spec.rb'
     - 'spec/lib/kramdown/kramdown_spec.rb'
     - 'spec/lib/kramdown/parser/atlassian_document_format_spec.rb'
     - 'spec/lib/mattermost/command_spec.rb'

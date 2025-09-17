@@ -5548,7 +5548,7 @@
 - './spec/lib/google_api/auth_spec.rb'
 - './spec/lib/google_api/cloud_platform/client_spec.rb'
 - './spec/lib/grafana/client_spec.rb'
-- './spec/lib/grafana/validator_spec.rb'
+- './spec/lib/grafana/time_window_spec.rb'
 - './spec/lib/initializer_connections_spec.rb'
 - './spec/lib/json_web_token/hmac_token_spec.rb'
 - './spec/lib/json_web_token/rsa_token_spec.rb'
