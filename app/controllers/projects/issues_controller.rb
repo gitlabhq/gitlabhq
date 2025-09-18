@@ -409,7 +409,7 @@ class Projects::IssuesController < Projects::ApplicationController
   private
 
   def disable_show_query_limit!
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/544875', new_threshold: 120)
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/544875', new_threshold: 130)
   end
 
   def disable_create_query_limit!
