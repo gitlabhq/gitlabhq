@@ -34,7 +34,7 @@ prepare-as-if-foss-branch:
     - git add -A
     # --allow-empty accounts for the edge case where FOSS matchess EE repository
     # and a merge request only contains EE related changes.
-    - git commit -m 'Update from merge request' --allow-empty  # TODO: Mark which SHA we add
+    - git commit -m 'Update from merge request [skip secret push protection]' --allow-empty  # TODO: Mark which SHA we add
     - git push -f "${FOSS_REPOSITORY}" "${AS_IF_FOSS_BRANCH}"
 
 prepare-as-if-foss-env:
