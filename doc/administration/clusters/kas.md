@@ -81,6 +81,10 @@ gitlab_kas['private_api_listen_address'] = 'A.B.C.D:8155' # Listen on a particul
 # gitlab_kas['private_api_listen_address'] = '0.0.0.0:8155' # Listen on all IPv4 interfaces.
 # gitlab_kas['private_api_listen_address'] = '[::]:8155' # Listen on all IPv6 interfaces.
 
+# Uncomment below to enable KAS to KAS TLS communication
+# gitlab_kas['private_api_certificate_file'] = '<path_to_kas_server_crt_file>'
+# gitlab_kas['private_api_key_file'] = '<path_to_kas_server_certificate_key>'
+
 gitlab_kas['env'] = {
   # 'OWN_PRIVATE_API_HOST' => '<server-name-from-cert>' # Add if you want to use TLS for KAS->KAS communication. This name is used to verify the TLS certificate host name instead of the host in the URL of the destination KAS.
   'SSL_CERT_DIR' => "/opt/gitlab/embedded/ssl/certs/",
@@ -220,6 +224,8 @@ gitlab_kas['env'] = {
 | `gitlab_kas['private_api_listen_address']`          | The address the KAS listens on. Set to `0.0.0.0:8155` or to an IP and port reachable by other nodes in the cluster. |
 | `gitlab_kas['api_secret_key']`                      | The shared secret used for authentication between KAS and GitLab. The value must be Base64-encoded and exactly 32 bytes long. |
 | `gitlab_kas['private_api_secret_key']`              | The shared secret used for authentication between different KAS instances. The value must be Base64-encoded and exactly 32 bytes long. |
+| `gitlab_kas['private_api_certificate_file']`        | Full path of the KAS server certificate file. Required when `OWN_PRIVATE_API_SCHEME` or `OWN_PRIVATE_API_URL` is `grpcs`. |
+| `gitlab_kas['private_api_key_file']`                | Full path of the KAS server certificate key file. Required when `OWN_PRIVATE_API_SCHEME` or `OWN_PRIVATE_API_URL` is `grpcs`. |
 | `OWN_PRIVATE_API_SCHEME`                            | Optional value used to specify what scheme to use when constructing `OWN_PRIVATE_API_URL`. Can be `grpc` or `grpcs`. |
 | `OWN_PRIVATE_API_URL`                               | The environment variable used by KAS for service discovery. Set to the hostname or IP address of the node you're configuring. The node must be reachable by other nodes in the cluster. |
 | `OWN_PRIVATE_API_HOST`                              | Optional value used to verify the TLS certificate hostname. <sup>1</sup> A client compares this value to the hostname in the server's TLS certificate file. |
