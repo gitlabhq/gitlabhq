@@ -70,6 +70,7 @@ export default {
       sidebarState,
       showPeekHint: false,
       isMouseover: false,
+      isAnimatable: false,
     };
   },
   computed: {
@@ -86,6 +87,7 @@ export default {
         'super-sidebar-has-peeked': this.sidebarState.hasPeeked,
         'super-sidebar-is-icon-only': this.isIconOnly,
         'super-sidebar-is-mobile': this.sidebarState.isMobile,
+        'super-sidebar-animatable': this.isAnimatable,
       };
     },
     isAdmin() {
@@ -125,6 +127,10 @@ export default {
   mounted() {
     this.setupFocusTrapListener();
     Mousetrap.bind(keysFor(TOGGLE_SUPER_SIDEBAR), this.toggleSidebar);
+
+    this.$nextTick(() => {
+      this.isAnimatable = true;
+    });
   },
   beforeDestroy() {
     document.removeEventListener('keydown', this.focusTrap);

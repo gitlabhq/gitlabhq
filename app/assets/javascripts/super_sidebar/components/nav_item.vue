@@ -241,7 +241,7 @@ export default {
       <div
         v-show="!isIconOnly"
         class="gl-grow gl-text-default gl-break-anywhere"
-        :class="{ 'gl-w-max': isFlyout }"
+        :class="{ 'gl-w-max': isFlyout, 'nav-item-link-label': !isFlyout }"
         data-testid="nav-item-link-label"
       >
         {{ item.title }}
@@ -252,7 +252,7 @@ export default {
       <slot name="actions"></slot>
       <span
         v-if="hasEndSpace && !isIconOnly"
-        class="gl-flex gl-min-w-6 gl-items-start gl-justify-end"
+        class="nav-item-link-badge gl-flex gl-min-w-6 gl-items-start gl-justify-end"
       >
         <gl-badge
           v-if="hasPill"

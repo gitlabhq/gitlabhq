@@ -49,19 +49,3 @@
     border: 1px solid var(--gl-status-neutral-icon-color);
   }
 }
-
-.stepper-content {
-  margin-top: 1rem;
-  margin-left: -2rem;
-  padding-left: 2rem;
-  border-left: 2px solid transparent;
-}
-
-// Transition animations
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-}

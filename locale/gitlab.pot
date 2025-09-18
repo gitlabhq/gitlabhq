@@ -28547,9 +28547,6 @@ msgstr ""
 msgid "Fingerprints"
 msgstr ""
 
-msgid "Finish"
-msgstr ""
-
 msgid "Finish editing this message first!"
 msgstr ""
 
@@ -60584,6 +60581,9 @@ msgstr ""
 msgid "Select a repository containing templates for common files."
 msgstr ""
 
+msgid "Select a status to use for each current status. Items using these statuses will automatically be updated to the new status."
+msgstr ""
+
 msgid "Select a template repository"
 msgstr ""
 
@@ -63372,9 +63372,6 @@ msgid "Step %{step}"
 msgstr ""
 
 msgid "Step 1."
-msgstr ""
-
-msgid "Step 2"
 msgstr ""
 
 msgid "Step 2."
@@ -73535,6 +73532,9 @@ msgstr ""
 msgid "WorkItem|All activity"
 msgstr ""
 
+msgid "WorkItem|All current statuses must be mapped to a new value."
+msgstr ""
+
 msgid "WorkItem|An error occurred while exporting issues."
 msgstr ""
 
@@ -73761,6 +73761,9 @@ msgid "WorkItem|Creating this %{workItemType} will resolve the thread in"
 msgstr ""
 
 msgid "WorkItem|Current lifecycle"
+msgstr ""
+
+msgid "WorkItem|Current status"
 msgstr ""
 
 msgid "WorkItem|Custom fields"
@@ -74094,6 +74097,9 @@ msgstr ""
 msgid "WorkItem|New related item"
 msgstr ""
 
+msgid "WorkItem|New status"
+msgstr ""
+
 msgid "WorkItem|New task"
 msgstr ""
 
@@ -74283,6 +74289,9 @@ msgstr ""
 msgid "WorkItem|Select a namespace"
 msgstr ""
 
+msgid "WorkItem|Select a new lifecycle to continue."
+msgstr ""
+
 msgid "WorkItem|Select a project"
 msgstr ""
 
@@ -74299,6 +74308,9 @@ msgid "WorkItem|Select lifecycle"
 msgstr ""
 
 msgid "WorkItem|Select new lifecycle"
+msgstr ""
+
+msgid "WorkItem|Select new status"
 msgstr ""
 
 msgid "WorkItem|Select parent"
@@ -74445,6 +74457,9 @@ msgstr ""
 msgid "WorkItem|Something went wrong while undoing child removal."
 msgstr ""
 
+msgid "WorkItem|Something went wrong while updating mappings."
+msgstr ""
+
 msgid "WorkItem|Something went wrong while updating the %{workItemType}. Please try again."
 msgstr ""
 
@@ -74575,6 +74590,9 @@ msgid "WorkItem|Type"
 msgstr ""
 
 msgid "WorkItem|Type changed."
+msgstr ""
+
+msgid "WorkItem|Type lifecycle updated."
 msgstr ""
 
 msgid "WorkItem|Unable to fetch destination projects."

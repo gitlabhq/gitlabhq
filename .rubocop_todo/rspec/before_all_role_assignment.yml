@@ -1041,7 +1041,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/requests/api/graphql/project/branch_rules_spec.rb'
     - 'spec/requests/api/graphql/project/ci_access_authorized_agents_spec.rb'
     - 'spec/requests/api/graphql/project/data_transfer_spec.rb'
-    - 'spec/requests/api/graphql/project/grafana_integration_spec.rb'
     - 'spec/requests/api/graphql/project/incident_management/timeline_events_spec.rb'
     - 'spec/requests/api/graphql/project/issue/design_collection/version_spec.rb'
     - 'spec/requests/api/graphql/project/issue/designs/notes_spec.rb'

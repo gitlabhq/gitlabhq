@@ -160,7 +160,7 @@ export default {
         </slot>
       </span>
 
-      <span v-show="!isIconOnly" class="gl-truncate-end gl-grow">
+      <span v-show="!isIconOnly" class="gl-truncate-end menu-section-button-label gl-grow">
         {{ item.title }}
       </span>
 

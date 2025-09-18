@@ -1186,7 +1186,6 @@ Layout/LineLength:
     - 'ee/spec/lib/gitlab/ci/parsers/security/dast_spec.rb'
     - 'ee/spec/lib/gitlab/ci/parsers/security/dependency_scanning_spec.rb'
     - 'ee/spec/lib/gitlab/ci/pipeline/chain/config/content_spec.rb'
-    - 'ee/spec/lib/gitlab/ci/pipeline/chain/create_cross_database_associations_spec.rb'
     - 'ee/spec/lib/gitlab/ci/reports/license_scanning/dependency_spec.rb'
     - 'ee/spec/lib/gitlab/ci/reports/security/finding_spec.rb'
     - 'ee/spec/lib/gitlab/code_owners/loader_spec.rb'

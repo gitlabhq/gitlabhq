@@ -4,24 +4,33 @@ module Gitlab
   module Auth
     module Saml
       class Config
-        DEFAULT_NICKNAME_ATTRS = %w[username nickname].freeze
+        DEFAULT_NICKNAME_ATTRS = %w[
+          username
+          nickname
+          urn:oid:0.9.2342.19200300.100.1.1
+        ].freeze
         DEFAULT_NAME_ATTRS = %w[
           http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name
           http://schemas.microsoft.com/ws/2008/06/identity/claims/name
+          urn:oid:2.16.840.1.113730.3.1.241
+          urn:oid:2.5.4.3
         ].freeze
         DEFAULT_EMAIL_ATTRS = %w[
           http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress
           http://schemas.microsoft.com/ws/2008/06/identity/claims/emailaddress
           http://schemas.xmlsoap.org/ws/2005/05/identity/claims/email
           http://schemas.microsoft.com/ws/2008/06/identity/claims/email
+          urn:oid:0.9.2342.19200300.100.1.3
         ].freeze
         DEFAULT_FIRST_NAME_ATTRS = %w[
           http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname
           http://schemas.microsoft.com/ws/2008/06/identity/claims/givenname
+          urn:oid:2.5.4.42
         ].freeze
         DEFAULT_LAST_NAME_ATTRS = %w[
           http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname
           http://schemas.microsoft.com/ws/2008/06/identity/claims/surname
+          urn:oid:2.5.4.4
         ].freeze
 
         class << self

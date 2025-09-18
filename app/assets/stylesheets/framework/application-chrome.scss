@@ -545,7 +545,7 @@
  * Themes
  */
 
- .application-chrome.page-with-panels {
+.application-chrome.page-with-panels {
   // Light mode
   &:not(.gl-dark) {
     // default color to mute the gradient
@@ -685,7 +685,7 @@
   .settings-sticky-footer {
     background-color: var(--theme-background-color) !important;
   }
- }
+}
 
 /*
  * Animations
@@ -698,6 +698,59 @@
 
     @starting-style {
       opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .super-sidebar-nav-item {
+      transition-duration: .2s;
+      transition-timing-function: $gl-easing-out-cubic;
+      transition-property: color, background-color;
+    }
+
+    .super-sidebar-animatable {
+      .nav-item-link-label,
+      .menu-section-button-label {
+        transition-duration: .15s;
+        transition-timing-function: $gl-easing-out-cubic;
+        transition-property: opacity, translate;
+
+        @starting-style {
+          opacity: 0;
+          translate: -30% 0;
+        }
+      }
+
+      .super-sidebar-context-header {
+        transition-duration: .15s;
+        transition-timing-function: $gl-easing-out-cubic;
+        transition-property: opacity, translate;
+
+        @starting-style {
+          opacity: 0;
+          translate: 0 -30%;
+        }
+      }
+
+      .nav-item-link-badge {
+        transition-duration: .15s;
+        transition-timing-function: $gl-easing-out-cubic;
+        transition-property: opacity;
+
+        @starting-style {
+          opacity: 0;
+        }
+      }
+    }
+  }
+
+  @supports (width: calc-size(auto, size)) {
+    .super-sidebar,
+    .panels-container {
+      width: calc-size(auto, size);
+      /* stylelint-disable-next-line property-no-unknown */
+      interpolate-size: allow-keywords;
+      transition: width .25s $gl-easing-out-cubic !important;
     }
   }
 }

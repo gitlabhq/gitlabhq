@@ -20,7 +20,6 @@ RSpec/ExampleWording:
     - 'ee/spec/requests/projects/security/scanned_resources_controller_spec.rb'
     - 'ee/spec/services/ci/minutes/update_project_and_namespace_usage_service_spec.rb'
     - 'ee/spec/services/ci/sync_reports_to_approval_rules_service_spec.rb'
-    - 'ee/spec/services/merge_requests/reset_approvals_service_spec.rb'
     - 'ee/spec/services/quick_actions/interpret_service_spec.rb'
     - 'ee/spec/services/security/ingestion/schedule_mark_dropped_as_resolved_service_spec.rb'
     - 'qa/spec/specs/helpers/context_selector_spec.rb'

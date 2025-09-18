@@ -1175,6 +1175,15 @@ Settings.gitlab_kas['client_timeout_seconds'] ||= 5
 # Settings.gitlab_kas['external_k8s_proxy_url'] ||= 'grpc://localhost:8154' # NOTE: Do not set a default until all distributions have been updated with a correct value
 
 #
+# Workspaces
+#
+Gitlab.ee do
+  Settings['workspaces'] ||= {}
+  Settings.workspaces['enabled'] ||= false
+  Settings.workspaces['host'] ||= nil
+end
+
+#
 # Suggested Reviewers
 #
 Gitlab.ee do
