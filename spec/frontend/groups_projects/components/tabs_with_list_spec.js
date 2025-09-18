@@ -29,6 +29,7 @@ import {
   SORT_DIRECTION_ASC,
   FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
   FILTERED_SEARCH_TOKEN_NAMESPACE,
+  FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED,
 } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
@@ -73,6 +74,7 @@ const defaultPropsData = {
     FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
     FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
     FILTERED_SEARCH_TOKEN_NAMESPACE,
+    FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED,
   ],
   filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
   filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
@@ -283,6 +285,7 @@ describe('TabsWithList', () => {
             [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ['50'],
             [FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL]: [VISIBILITY_LEVEL_PRIVATE_STRING],
             [FILTERED_SEARCH_TOKEN_NAMESPACE]: ['namespace'],
+            [FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED]: ['true'],
           });
           await waitForPromises();
         });
@@ -293,6 +296,7 @@ describe('TabsWithList', () => {
             programmingLanguageName: 'CSS',
             visibilityLevel: VISIBILITY_LEVEL_PRIVATE_STRING,
             namespacePath: 'namespace',
+            lastRepositoryCheckFailed: true,
             search: searchTerm,
             skipContributed: false,
             skipStarred: true,
@@ -300,6 +304,22 @@ describe('TabsWithList', () => {
             skipMember: true,
             skipInactive: true,
           });
+        });
+      });
+
+      describe(`when "${FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED}" value is 1`, () => {
+        beforeEach(async () => {
+          await mockApollo.defaultClient.clearStore();
+          findFilteredSearchAndSort().vm.$emit('filter', {
+            [FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED]: ['1'],
+          });
+          await waitForPromises();
+        });
+
+        it('casts the parameter as true', () => {
+          expect(successHandler).toHaveBeenCalledWith(
+            expect.objectContaining({ lastRepositoryCheckFailed: true }),
+          );
         });
       });
 
@@ -569,6 +589,7 @@ describe('TabsWithList', () => {
       [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ACCESS_LEVEL_OWNER_INTEGER,
       [FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL]: VISIBILITY_LEVEL_PRIVATE_STRING,
       [FILTERED_SEARCH_TOKEN_NAMESPACE]: 'namespace',
+      [FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED]: 'true',
       [QUERY_PARAM_END_CURSOR]: mockEndCursor,
       [QUERY_PARAM_START_CURSOR]: mockStartCursor,
     };
@@ -596,6 +617,8 @@ describe('TabsWithList', () => {
           [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: query[FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL],
           [FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL]: query[FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL],
           [FILTERED_SEARCH_TOKEN_NAMESPACE]: query[FILTERED_SEARCH_TOKEN_NAMESPACE],
+          [FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED]:
+            query[FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED],
         },
         filtersAsQueryVariables: {
           programmingLanguageName: 'CoffeeScript',

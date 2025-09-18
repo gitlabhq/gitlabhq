@@ -43079,6 +43079,9 @@ msgstr ""
 msgid "No groups or projects found"
 msgstr ""
 
+msgid "No issues"
+msgstr ""
+
 msgid "No issues found"
 msgstr ""
 

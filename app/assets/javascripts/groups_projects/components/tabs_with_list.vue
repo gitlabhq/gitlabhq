@@ -1,6 +1,6 @@
 <script>
-import { GlTabs, GlTab, GlBadge, GlFilteredSearchToken } from '@gitlab/ui';
-import { isEqual, pick, get } from 'lodash';
+import { GlBadge, GlFilteredSearchToken, GlTab, GlTabs } from '@gitlab/ui';
+import { get, isEqual, pick } from 'lodash';
 import { __ } from '~/locale';
 import { QUERY_PARAM_END_CURSOR, QUERY_PARAM_START_CURSOR } from '~/graphql_shared/constants';
 import { numberToMetricPrefix } from '~/lib/utils/number_utils';
@@ -14,22 +14,24 @@ import {
   ACCESS_LEVELS_INTEGER_TO_STRING,
 } from '~/access_level/constants';
 import {
+  VISIBILITY_LEVEL_INTERNAL_STRING,
   VISIBILITY_LEVEL_LABELS,
   VISIBILITY_LEVEL_PRIVATE_STRING,
-  VISIBILITY_LEVEL_INTERNAL_STRING,
   VISIBILITY_LEVEL_PUBLIC_STRING,
 } from '~/visibility_level/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { InternalEvents } from '~/tracking';
 import NamespaceToken from '~/vue_shared/components/filtered_search_bar/tokens/namespace_token.vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+  FILTERED_SEARCH_TOKEN_NAMESPACE,
+  FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED,
+  FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
+  QUERY_PARAM_PAGE,
   SORT_DIRECTION_ASC,
   SORT_DIRECTION_DESC,
-  QUERY_PARAM_PAGE,
-  FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
-  FILTERED_SEARCH_TOKEN_NAMESPACE,
 } from '../constants';
 import userPreferencesUpdateMutation from '../graphql/mutations/user_preferences_update.mutation.graphql';
 import TabView from './tab_view.vue';
@@ -211,6 +213,18 @@ export default {
           operators: OPERATORS_IS,
           recentSuggestionsStorageKey: 'tabs-with-list-namespace',
         },
+        {
+          type: FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED,
+          icon: 'check-circle',
+          title: __('Repository check'),
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: [
+            { value: 'true', title: __('Failed') },
+            { value: 'false', title: __('No issues') },
+          ],
+        },
       ].filter((filteredSearchToken) =>
         this.filteredSearchSupportedTokens.includes(filteredSearchToken.type),
       );
@@ -297,12 +311,22 @@ export default {
       const visibilityLevel = this.filters[FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL];
       return Array.isArray(visibilityLevel) ? visibilityLevel[0] : visibilityLevel;
     },
+    lastRepositoryCheckFailed() {
+      const rawFilter = this.filters[FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED];
+      const lastRepositoryCheckFailed = Array.isArray(rawFilter) ? rawFilter[0] : rawFilter;
+
+      return (
+        lastRepositoryCheckFailed === '1' || // Needed for backwards compatibility with the documentation
+        parseBoolean(lastRepositoryCheckFailed)
+      );
+    },
     filtersAsQueryVariables() {
       return {
         programmingLanguageName: this.programmingLanguageName,
         minAccessLevel: this.minAccessLevel,
         visibilityLevel: this.visibilityLevel,
         namespacePath: this.namespacePath,
+        lastRepositoryCheckFailed: this.lastRepositoryCheckFailed,
       };
     },
     timestampType() {

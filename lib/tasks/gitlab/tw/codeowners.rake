@@ -33,7 +33,7 @@ module TwCodeowners
     CodeOwnerRule.new('Composition Analysis', '@rdickenson'),
     CodeOwnerRule.new('Container Registry', '@z_painter'),
     CodeOwnerRule.new('Contributor Experience', '@eread'),
-    CodeOwnerRule.new('Custom Models', '@jglassman1'),
+    CodeOwnerRule.new('Custom Models', '@fneill'),
     # CodeOwnerRule.new('Database Frameworks', ''),
     # CodeOwnerRule.new('Database Operations', ''),
     # CodeOwnerRule.new('DataOps', ''),

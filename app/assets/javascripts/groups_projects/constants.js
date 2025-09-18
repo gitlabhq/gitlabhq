@@ -15,6 +15,7 @@ export const FILTERED_SEARCH_TOKEN_LANGUAGE = 'language';
 export const FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL = 'min_access_level';
 export const FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL = 'visibility_level';
 export const FILTERED_SEARCH_TOKEN_NAMESPACE = 'namespace_path';
+export const FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED = 'last_repository_check_failed';
 
 export const SORT_DIRECTION_ASC = 'asc';
 export const SORT_DIRECTION_DESC = 'desc';

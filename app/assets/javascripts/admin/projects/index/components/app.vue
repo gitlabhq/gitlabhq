@@ -5,6 +5,7 @@ import {
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
   FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
   FILTERED_SEARCH_TOKEN_NAMESPACE,
+  FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED,
 } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -37,6 +38,7 @@ export default {
     FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
     FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
     FILTERED_SEARCH_TOKEN_NAMESPACE,
+    FILTERED_SEARCH_TOKEN_REPOSITORY_CHECK_FAILED,
   ],
   timestampTypeMap: {
     [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,

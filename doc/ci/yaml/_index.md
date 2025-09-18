@@ -6295,8 +6295,8 @@ This setting makes your pipeline execution linear rather than parallel.
 **Supported values**:
 
 - `mirror`: Mirrors the status of the downstream pipeline exactly.
-- `depend`: The trigger job status shows **failed**, **success** or **running**,
-  depending on the downstream pipeline status. See additional details.
+- `depend`: Not recommended, use `mirror` instead. The trigger job status shows **failed**, **success**,
+  or **running**, depending on the downstream pipeline status. See additional details.
 
 **Example of `trigger:strategy`**:
 
@@ -6318,7 +6318,7 @@ successfully complete before starting.
 - By default, jobs in later stages do not start until the trigger job completes.
 - [Blocking manual jobs](../jobs/job_control.md#types-of-manual-jobs) in the downstream pipeline
   must run before the trigger job is marked as successful or failed.
-- When using `stratgy:depend`:
+- When using `strategy:depend` (no longer recommended, use `strategy:mirror` instead):
   - The trigger job shows **running** ({{< icon name="status_running" >}}) if the downstream pipeline status is
     **waiting for manual action** ({{< icon name="status_manual" >}}) due to manual jobs.
   - If the downstream pipeline has a failed job, but the job uses [`allow_failure: true`](#allow_failure),

@@ -381,7 +381,7 @@ as soon as one of its jobs fail.
 The parent pipeline only auto-cancels when a job in the child pipeline fails if:
 
 - The parent pipeline is also set up to auto-cancel on job failure.
-- The trigger job is configured with [`strategy: depend`](../yaml/_index.md#triggerstrategy).
+- The trigger job is configured with [`strategy: mirror`](../yaml/_index.md#triggerstrategy).
 
 For example:
 
@@ -395,7 +395,7 @@ For example:
   trigger_job:
     trigger:
       include: child-pipeline.yml
-      strategy: depend
+      strategy: mirror
 
   job3:
     script:
