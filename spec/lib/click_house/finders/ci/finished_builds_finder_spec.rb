@@ -3,47 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :freeze_time, feature_category: :fleet_visibility do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:project2) { create(:project) }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
-  let_it_be(:pipeline1) { create(:ci_pipeline, project: project2) }
-  let_it_be(:stage1) { create(:ci_stage, pipeline: pipeline, project: project, name: 'build') }
-  let_it_be(:stage2) { create(:ci_stage, pipeline: pipeline, project: project, name: 'test') }
-  let_it_be(:stage3) { create(:ci_stage, pipeline: pipeline1, project: project2, name: 'deploy') }
-  let_it_be(:base_time) { Time.current }
-
-  let_it_be(:successful_fast_builds) do
-    create_builds(count: 3, status: :success, stage: stage1, name: 'compile', duration_seconds: 1)
-  end
-
-  let_it_be(:successful_slow_builds) do
-    create_builds(count: 2, status: :success, stage: stage1, name: 'compile-slow', duration_seconds: 5)
-  end
-
-  let_it_be(:failed_builds) do
-    create_builds(count: 2, status: :failed, stage: stage2, name: 'rspec', duration_seconds: 3)
-  end
-
-  let_it_be(:canceled_builds) do
-    create_builds(count: 1, status: :canceled, stage: stage2, name: 'rspec', duration_seconds: 2)
-  end
-
-  let_it_be(:skipped_builds) do
-    create_builds(count: 1, status: :skipped, stage: stage2, name: 'lint', duration_seconds: 0.5)
-  end
-
-  let_it_be(:other_project_builds) do
-    create_builds(count: 2, status: :success, stage: stage3, name: 'deploy', duration_seconds: 10)
-  end
+  include_context 'with CI job analytics test data'
 
   let(:instance) { described_class.new }
-
-  before do
-    insert_ci_builds_to_click_house(
-      successful_fast_builds + successful_slow_builds + failed_builds +
-      canceled_builds + skipped_builds + other_project_builds
-    )
-  end
 
   describe '#for_project' do
     let(:result) { instance.for_project(project_id).execute }
@@ -52,7 +14,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
       let(:project_id) { project.id }
 
       it 'returns builds only for the specified project' do
-        expect(result.size).to eq(9) # All builds except other_project_builds
+        expect(result.size).to eq(13) # All builds except other_project_builds
         expect(result.pluck('project_id').uniq).to eq([project.id])
       end
     end
@@ -73,9 +35,9 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
       let(:selected_fields) { [:name] }
 
       it 'returns only the selected columns grouped appropriately' do
-        expect(result.size).to eq(4)
+        expect(result.size).to eq(6)
         expect(result.first.keys).to eq(['name'])
-        expect(result.pluck('name')).to match_array(%w[compile compile-slow lint rspec])
+        expect(result.pluck('name')).to match_array(%w[compile compile-slow lint rspec ref-build source-build])
       end
 
       context 'with multiple columns selection' do
@@ -106,7 +68,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
         let(:selected_fields) { [] }
 
         it 'loads *' do
-          expect(result.size).to eq(9)
+          expect(result.size).to eq(13)
           expect(result.first.keys).to include('name', 'stage_id', 'status', 'project_id')
         end
       end
@@ -115,7 +77,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
         let(:selected_fields) { nil }
 
         it 'loads *' do
-          expect(result.size).to eq(9)
+          expect(result.size).to eq(13)
           expect(result.first.keys).to include('name', 'stage_id', 'status', 'project_id')
         end
       end
@@ -124,7 +86,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
         let(:selected_fields) { [:name, :name] }
 
         it 'does not duplicate the fields' do
-          expect(result.size).to eq(4)
+          expect(result.size).to eq(6)
           expect(result.first.keys).to eq(['name'])
         end
       end
@@ -348,8 +310,8 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
         let(:selected_fields) { [:stage_id] }
 
         it 'groups by single column correctly' do
-          expect(result.size).to eq(2) # stage1 and stage2
-          expect(result.pluck('stage_id')).to match_array([stage1.id, stage2.id])
+          expect(result.size).to eq(4) # stage1, stage2, ref_stage, source_stage
+          expect(result.pluck('stage_id')).to match_array([stage1.id, stage2.id, ref_stage.id, source_stage.id])
         end
       end
 
@@ -357,7 +319,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
         let(:selected_fields) { [:name, :stage_id] }
 
         it 'groups by multiple columns correctly' do
-          expect(result.size).to eq(4) # Each unique name-stage combination
+          expect(result.size).to eq(6) # Each unique name-stage combination
         end
       end
 
@@ -366,7 +328,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
 
         it 'handles duplicates in grouping' do
           # Should group by name only once
-          expect(result.pluck('name')).to match_array(%w[compile compile-slow lint rspec])
+          expect(result.pluck('name')).to match_array(%w[compile compile-slow lint ref-build rspec source-build])
         end
       end
     end
@@ -445,11 +407,11 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
       result = instance.for_project(project.id).execute
 
       expect(result).to be_a(Array)
-      expect(result.size).to eq(9)
+      expect(result.size).to eq(13)
     end
 
     it 'returns empty array for queries with no matches' do
-      result = instance.for_project(999999).execute
+      result = instance.for_project(non_existing_record_id).execute
 
       expect(result).to be_a(Array)
       expect(result).to be_empty
@@ -522,32 +484,14 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
     end
   end
 
-  describe '#filter_by_pipeline_attrs' do
-    let_it_be(:ref_pipeline) { create(:ci_pipeline, project: project, ref: 'feature-branch', started_at: 6.hours.ago) }
-    let_it_be(:source_pipeline) { create(:ci_pipeline, project: project, source: 'web', started_at: 12.hours.ago) }
-    let_it_be(:ref_stage) { create(:ci_stage, pipeline: ref_pipeline, project: project, name: 'ref-stage') }
-    let_it_be(:source_stage) { create(:ci_stage, pipeline: source_pipeline, project: project, name: 'source-stage') }
-
-    let_it_be(:ref_builds) do
-      create_builds(count: 2, status: :success, stage: ref_stage, name: 'ref-build', duration_seconds: 1)
-    end
-
-    let_it_be(:source_builds) do
-      create_builds(count: 2, status: :success, stage: source_stage, name: 'source-build', duration_seconds: 1)
-    end
-
-    let(:filter_params) { {} }
-
-    before do
-      insert_ci_builds_to_click_house(ref_builds + source_builds)
-      insert_ci_pipelines_to_click_house([ref_pipeline, source_pipeline])
-    end
-
+  describe '#filter_by_pipeline_attrs', :freeze_time do
     subject(:filter_by_pipeline_attrs) do
-      instance.filter_by_pipeline_attrs(project: project, **filter_params).execute
+      instance.filter_by_pipeline_attrs(**attrs).execute
     end
 
     context 'with project only' do
+      let(:attrs) { { project: project } }
+
       it 'filters builds by pipeline project' do
         expect(filter_by_pipeline_attrs).not_to be_empty
         expect(filter_by_pipeline_attrs.pluck('pipeline_id')).to include(ref_pipeline.id, source_pipeline.id)
@@ -557,7 +501,13 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
     context 'with time range' do
       let(:from_time) { 1.day.ago }
       let(:to_time) { Time.current }
-      let(:filter_params) { { from_time: from_time, to_time: to_time } }
+      let(:attrs) do
+        {
+          project: project,
+          from_time: from_time,
+          to_time: to_time
+        }
+      end
 
       it 'filters builds by time range' do
         expect(filter_by_pipeline_attrs).not_to be_empty
@@ -566,7 +516,12 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
     end
 
     context 'with source' do
-      let(:filter_params) { { source: 'web' } }
+      let(:attrs) do
+        {
+          project: project,
+          source: 'web'
+        }
+      end
 
       it 'filters builds by pipeline source' do
         expect(filter_by_pipeline_attrs).not_to be_empty
@@ -575,7 +530,12 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
     end
 
     context 'with ref' do
-      let(:filter_params) { { ref: 'feature-branch' } }
+      let(:attrs) do
+        {
+          project: project,
+          ref: 'feature-branch'
+        }
+      end
 
       it 'filters builds by pipeline ref' do
         expect(filter_by_pipeline_attrs).not_to be_empty
@@ -584,8 +544,9 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
     end
 
     context 'with multiple filters' do
-      let(:filter_params) do
+      let(:attrs) do
         {
+          project: project,
           from_time: 1.day.ago,
           to_time: Time.current,
           source: 'push',
@@ -616,20 +577,7 @@ RSpec.describe ClickHouse::Finders::Ci::FinishedBuildsFinder, :click_house, :fre
                        .select(:name)
                        .execute
 
-      expect(result.pluck('name')).to match_array(%w[compile compile-slow])
+      expect(result.pluck('name')).to match_array(%w[compile compile-slow ref-build source-build])
     end
-  end
-
-  private
-
-  def create_builds(count:, status:, stage:, name:, duration_seconds:)
-    create_list(:ci_build, count, status,
-      project: stage.project,
-      pipeline: stage.pipeline,
-      ci_stage: stage,
-      name: name,
-      started_at: base_time,
-      finished_at: base_time + duration_seconds.seconds
-    )
   end
 end
