@@ -7,6 +7,12 @@ class JwksController < Doorkeeper::OpenidConnect::DiscoveryController
 
   DYNAMIC_REGISTRATION_PATH = '/oauth/register'
 
+  OAUTH_PATHS = [
+    '/.well-known/oauth-authorization-server',
+    '/.well-known/oauth-authorization-server/api/v4/mcp',
+    '/.well-known/openid-configuration/api/v4/mcp'
+  ].freeze
+
   def keys
     expires_in 24.hours, public: true, must_revalidate: true, 'no-transform': true
 
@@ -14,7 +20,7 @@ class JwksController < Doorkeeper::OpenidConnect::DiscoveryController
   end
 
   def provider
-    if request.path == '/.well-known/oauth-authorization-server'
+    if request.path.in?(OAUTH_PATHS)
       expires_in 24.hours, public: true, must_revalidate: true, 'no-transform': true
       response_hash = provider_response
       response_hash[:registration_endpoint] = "#{request.base_url}#{DYNAMIC_REGISTRATION_PATH}"

@@ -200,6 +200,11 @@ to send us feedback.
 
 ## Troubleshooting
 
+### Environment variable changes in `glab` 2.0.0
+
+In `glab` version 2.0.0 and later, all `glab` environment variables are prefixed with `GLAB_`.
+For more information about this deprecation, see [issue 7999](https://gitlab.com/gitlab-org/cli/-/issues/7999).
+
 ### `glab completion` commands fail when using the 1Password shell plugin
 
 The [1Password shell plugin](https://developer.1password.com/docs/cli/shell-plugins/gitlab/)

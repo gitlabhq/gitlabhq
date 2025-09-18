@@ -744,14 +744,6 @@ class Note < ApplicationRecord
     true
   end
 
-  # Use attributes.keys instead of attribute_names to filter out the fields that are skipped during export:
-  #
-  # - note_html
-  # - cached_markdown_version
-  def attribute_names_for_serialization
-    attributes.keys
-  end
-
   # TODO: Remove when sharding key NOT NULL constraint is validated
   # This should not happen often, and will only happen once for any record
   # https://gitlab.com/gitlab-org/gitlab/-/work_items/570340
@@ -769,6 +761,16 @@ class Note < ApplicationRecord
   end
 
   private
+
+  # Use attributes.keys instead of attribute_names to filter out the fields that are skipped during export:
+  #
+  # - note_html
+  # - cached_markdown_version
+  #
+  # Note: This method is an override of an existing private ActiveRecord method
+  def attribute_names_for_serialization
+    attributes.keys
+  end
 
   def sharding_key_columns
     %i[project_id namespace_id organization_id]

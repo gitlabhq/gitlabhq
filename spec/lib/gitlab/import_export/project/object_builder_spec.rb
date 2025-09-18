@@ -260,7 +260,6 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
         'sha' => 'abc123',
         'commit_author' => commit_author,
         'committer' => committer,
-        'trailers' => { 'foo' => 'bar' },
         'message' => 'This is a message',
         'authored_date' => Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
         'committed_date' => Time.zone.parse("2014-02-27T09:57:31.000+01:00")
@@ -468,7 +467,6 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
         expect(commits_metadata.sha).to eq(commit_attrs['sha'])
         expect(commits_metadata.commit_author).to eq(commit_attrs['commit_author'])
         expect(commits_metadata.committer).to eq(commit_attrs['committer'])
-        expect(commits_metadata.trailers).to eq(commit_attrs['trailers'])
         expect(commits_metadata.message).to eq(commit_attrs['message'])
         expect(commits_metadata.authored_date).to eq(commit_attrs['authored_date'])
         expect(commits_metadata.committed_date).to eq(commit_attrs['committed_date'])
@@ -540,7 +538,6 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
         'sha' => 'abc123',
         'commit_author' => commit_author,
         'committer' => committer,
-        'trailers' => { 'foo' => 'bar' },
         'message' => 'This is a message',
         'authored_date' => Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
         'committed_date' => Time.zone.parse("2014-02-27T09:57:31.000+01:00")

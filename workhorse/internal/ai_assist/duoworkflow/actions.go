@@ -15,7 +15,10 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 )
 
-const actionResponseBodyLimit = 1024 * 1024 // 1 megabyte
+// ActionResponseBodyLimit is the maximum size of response body that can be received.
+// It's calculated from the MaxMessageSize the maximum size of messages that can be sent or received (4MB).
+// With some extra space to wrap the body into a gRPC message.
+const ActionResponseBodyLimit = MaxMessageSize - 4096
 
 type runHTTPActionHandler struct {
 	rails       *api.API
@@ -63,7 +66,7 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, er
 	}
 	defer func() { _ = response.Body.Close() }()
 
-	body, err := io.ReadAll(io.LimitReader(response.Body, actionResponseBodyLimit))
+	body, err := io.ReadAll(io.LimitReader(response.Body, ActionResponseBodyLimit))
 	if err != nil {
 		return nil, err
 	}

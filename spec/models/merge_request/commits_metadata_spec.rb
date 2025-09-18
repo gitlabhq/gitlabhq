@@ -21,7 +21,6 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
         'sha' => 'abc123',
         'commit_author' => commit_author,
         'committer' => committer,
-        'trailers' => { 'foo' => 'bar' },
         'message' => 'This is a message',
         'authored_date' => Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
         'committed_date' => Time.zone.parse("2014-02-27T09:57:31.000+01:00")
@@ -36,7 +35,6 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
       expect(commits_metadata.sha).to eq(metadata['sha'])
       expect(commits_metadata.commit_author).to eq(metadata['commit_author'])
       expect(commits_metadata.committer).to eq(metadata['committer'])
-      expect(commits_metadata.trailers).to eq(metadata['trailers'])
       expect(commits_metadata.message).to eq(metadata['message'])
       expect(commits_metadata.authored_date).to eq(metadata['authored_date'])
       expect(commits_metadata.committed_date).to eq(metadata['committed_date'])
@@ -127,8 +125,7 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
           raw_sha: 'abc123',
           authored_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
           committed_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
-          message: 'First commit',
-          raw_trailers: { "Cc" => "Jane Doe <janedoe@gitlab.com>" }
+          message: 'First commit'
         },
         {
           commit_author_id: 1,
@@ -136,8 +133,7 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
           raw_sha: 'def456',
           authored_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
           committed_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
-          message: 'Second commit',
-          raw_trailers: { "Cc" => "Jane Doe <janedoe@gitlab.com>" }
+          message: 'Second commit'
         }
       ]
 
@@ -164,8 +160,7 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
           raw_sha: 'abc123',
           authored_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
           committed_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
-          message: 'First commit',
-          raw_trailers: { "Cc" => "Jane Doe <janedoe@gitlab.com>" }
+          message: 'First commit'
         },
         {
           commit_author_id: 1,
@@ -173,8 +168,7 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
           raw_sha: 'def456',
           authored_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
           committed_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
-          message: 'Second commit',
-          raw_trailers: { "Cc" => "Jane Doe <janedoe@gitlab.com>" }
+          message: 'Second commit'
         }
       ]
 
@@ -195,8 +189,7 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
           raw_sha: 'abc123',
           authored_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
           committed_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
-          message: 'First commit',
-          raw_trailers: { "Cc" => "Jane Doe <janedoe@gitlab.com>" }
+          message: 'First commit'
         }
       ]
 
@@ -214,8 +207,7 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
           raw_sha: 'abc123',
           authored_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
           committed_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
-          message: 'First commit',
-          raw_trailers: { "Cc" => "Jane Doe <janedoe@gitlab.com>" }
+          message: 'First commit'
         }
       ]
 
@@ -235,8 +227,7 @@ RSpec.describe MergeRequest::CommitsMetadata, feature_category: :code_review_wor
           raw_sha: 'abc123',
           authored_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
           committed_date: Time.zone.parse("2014-02-27T09:57:31.000+01:00"),
-          message: 'First commit',
-          raw_trailers: { "Cc" => "Jane Doe <janedoe@gitlab.com>" }
+          message: 'First commit'
         }
       ]
 

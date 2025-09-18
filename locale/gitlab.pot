@@ -48269,6 +48269,9 @@ msgstr ""
 msgid "Pipelines|Time"
 msgstr ""
 
+msgid "Pipelines|To enable automatic pipeline execution for composite identities, visit %{link_start}CI/CD Settings.%{link_end}"
+msgstr ""
+
 msgid "Pipelines|To run new jobs and pipelines in this namespace's projects, %{link_start}buy additional compute minutes%{link_end}."
 msgstr ""
 
@@ -48321,6 +48324,9 @@ msgid "Pipelines|Validate"
 msgstr ""
 
 msgid "Pipelines|Validating GitLab CI configuration…"
+msgstr ""
+
+msgid "Pipelines|Verify changes"
 msgstr ""
 
 msgid "Pipelines|View analytics"

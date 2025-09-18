@@ -96,7 +96,6 @@ module Gitlab
             'committer' => @attributes['committer'],
             'sha' => @attributes['sha'],
             'message' => @attributes['message'],
-            'trailers' => @attributes['trailers'],
             'authored_date' => @attributes['authored_date'],
             'committed_date' => @attributes['committed_date']
           }
@@ -134,7 +133,7 @@ module Gitlab
           merge_request_commits_metadata = row.delete('merge_request_commits_metadata')
 
           if diff_commits_dedup_enabled?
-            commit_metadata_attrs = row.slice('authored_date', 'committed_date', 'sha', 'message', 'trailers')
+            commit_metadata_attrs = row.slice('authored_date', 'committed_date', 'sha', 'message')
             commit_metadata_attrs['project_id'] = project.id
             commit_metadata_attrs['commit_author'] = row['commit_author']
             commit_metadata_attrs['committer'] = row['committer']

@@ -429,8 +429,6 @@ saved_change_to_path_or_parent?:
   file: app/models/namespace.rb
 normal_select:
   file: app/models/namespaces/traversal/linear_scopes.rb
-attribute_names_for_serialization:
-  file: app/models/note.rb
 user_admin?:
   file: app/models/personal_access_token.rb
 import_scheduled?:

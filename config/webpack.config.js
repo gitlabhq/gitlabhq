@@ -129,6 +129,12 @@ const alias = {
     'app/assets/javascripts/lib/utils/icons_path.js',
   ),
 
+  // override loader path for illustrations.svg so we do not duplicate this asset
+  '@gitlab/svgs/dist/illustrations.svg': path.join(
+    ROOT_PATH,
+    'app/assets/javascripts/lib/utils/illustrations_path.js',
+  ),
+
   // prevent loading of index.js to avoid duplicate instances of classes
   graphql: path.join(ROOT_PATH, 'node_modules/graphql/index.mjs'),
 

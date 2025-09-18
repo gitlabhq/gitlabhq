@@ -429,7 +429,6 @@ included_attributes:
   merge_request_commits_metadata:
     - :sha
     - :message
-    - :trailers
     - :authored_date
     - :committed_date
   merge_request_diff_commits:

@@ -45,8 +45,8 @@ You can also turn GitLab Duo Core (a subset of GitLab Duo features) on or off.
 - If you are an existing customer from GitLab 17.11 or earlier, you must turn on Web or IDE features to start using GitLab Duo Core.
 - If you are a new customer in GitLab 18.0 or later, GitLab Core is automatically turned on and no further action is needed.
 
-If you were an existing user with a Premium or Ultimate subscription before May 15, 2025,
-when you upgrade to GitLab 18.0 or later, you must turn on GitLab Duo Core.
+If you were an existing customer with a Premium or Ultimate subscription before May 15, 2025,
+when you upgrade to GitLab 18.0 or later, to use GitLab Duo Core, you must turn it on.
 
 ### On GitLab.com
 

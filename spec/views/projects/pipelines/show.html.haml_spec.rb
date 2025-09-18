@@ -17,37 +17,93 @@ RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_compositio
   end
 
   context 'when pipeline has errors' do
-    before do
-      create(:ci_pipeline_message, pipeline: pipeline, content: 'some errors', severity: :error)
+    context 'with composite_identity_forbidden error' do
+      before do
+        allow(pipeline).to receive(:read_attribute).with(:failure_reason).and_return('composite_identity_forbidden')
+        allow(pipeline).to receive(:failure_reason).and_return('Composite identity is forbidden')
+        create(:ci_pipeline_message, pipeline: pipeline, content: 'some errors', severity: :error)
+      end
+
+      it 'shows warning alert with correct message' do
+        render
+
+        expect(rendered).to have_content('Unable to create pipeline')
+        expect(rendered).to have_content('Composite identity is forbidden')
+        expect(rendered).to have_content(
+          'To enable automatic pipeline execution for composite identities, visit CI/CD Settings.'
+        )
+      end
+
+      context 'with merge request' do
+        let(:merge_request) { create(:merge_request, source_project: project) }
+
+        before do
+          allow(pipeline).to receive_messages(merge_request: merge_request, commit: project.repository.commit)
+        end
+
+        it 'links to merge request diffs' do
+          render
+
+          expect(rendered).to have_link('Verify changes',
+            href: diffs_project_merge_request_path(project, merge_request, commit_id: pipeline.commit.id))
+        end
+      end
+
+      context 'without merge request' do
+        before do
+          allow(pipeline).to receive_messages(merge_request: nil, commit: project.repository.commit)
+        end
+
+        it 'links to project commit' do
+          render
+
+          expect(rendered).to have_link('Verify changes',
+            href: project_commit_path(project, pipeline.commit))
+        end
+      end
+
+      it 'does not render the pipeline editor button' do
+        project.add_developer(user)
+
+        render
+
+        expect(rendered).not_to have_link('Go to the pipeline editor')
+      end
     end
 
-    it 'shows errors' do
-      render
+    context 'with other errors' do
+      before do
+        allow(pipeline).to receive(:read_attribute).with(:failure_reason).and_return('some_other_reason')
+        create(:ci_pipeline_message, pipeline: pipeline, content: 'some errors', severity: :error)
+      end
 
-      expect(rendered).to have_content('Unable to create pipeline')
-      expect(rendered).to have_content('some errors')
-    end
+      it 'shows danger alert with error messages' do
+        render
 
-    it 'does not render the pipeline tabs' do
-      render
+        expect(rendered).to have_content('Unable to create pipeline')
+        expect(rendered).to have_content('some errors')
+      end
 
-      expect(rendered).not_to have_selector('#js-pipeline-tabs')
-    end
+      it 'does not render the pipeline tabs' do
+        render
 
-    it 'renders the pipeline editor button with correct link for users who can view' do
-      project.add_developer(user)
+        expect(rendered).not_to have_selector('#js-pipeline-tabs')
+      end
 
-      render
+      it 'renders the pipeline editor button with correct link for users who can view' do
+        project.add_developer(user)
 
-      expect(rendered).to have_link s_('Go to the pipeline editor'),
-        href: project_ci_pipeline_editor_path(project, branch_name: pipeline.source_ref)
-    end
+        render
 
-    it 'renders the pipeline editor button with correct link for users who can not view' do
-      render
+        expect(rendered).to have_link('Go to the pipeline editor',
+          href: project_ci_pipeline_editor_path(project, branch_name: pipeline.source_ref))
+      end
 
-      expect(rendered).not_to have_link s_('Go to the pipeline editor'),
-        href: project_ci_pipeline_editor_path(project, branch_name: pipeline.source_ref)
+      it 'does not render the pipeline editor button for users who cannot view' do
+        render
+
+        expect(rendered).not_to have_link('Go to the pipeline editor')
+      end
     end
   end
 
