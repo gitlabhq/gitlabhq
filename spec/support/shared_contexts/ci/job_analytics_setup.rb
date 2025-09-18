@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_context 'with CI job analytics test data' do
+RSpec.shared_context 'with CI job analytics test data' do |with_pipelines: true|
   let_it_be(:project, freeze: true) { create(:project) }
   let_it_be(:project2, freeze: true) { create(:project) }
   let_it_be(:pipeline, freeze: true) { create(:ci_pipeline, project: project, started_at: 12.hours.ago) }
@@ -34,34 +34,43 @@ RSpec.shared_context 'with CI job analytics test data' do
     create_builds(count: 2, status: :success, stage: stage3, name: 'deploy', duration_seconds: 10)
   end
 
-  let_it_be(:ref_pipeline, freeze: true) do
-    create(:ci_pipeline, project: project, ref: 'feature-branch', started_at: 6.hours.ago)
-  end
+  if with_pipelines
 
-  let_it_be(:source_pipeline, freeze: true) do
-    create(:ci_pipeline, project: project, source: 'web', started_at: 12.hours.ago)
-  end
+    let_it_be(:ref_pipeline, freeze: true) do
+      create(:ci_pipeline, project: project, ref: 'feature-branch', started_at: 6.hours.ago)
+    end
 
-  let_it_be(:ref_stage, freeze: true) { create(:ci_stage, pipeline: ref_pipeline, project: project, name: 'ref-stage') }
-  let_it_be(:source_stage, freeze: true) do
-    create(:ci_stage, pipeline: source_pipeline, project: project, name: 'source-stage')
-  end
+    let_it_be(:source_pipeline, freeze: true) do
+      create(:ci_pipeline, project: project, source: 'web', started_at: 12.hours.ago)
+    end
 
-  let_it_be(:ref_builds, freeze: true) do
-    create_builds(count: 2, status: :success, stage: ref_stage, name: 'ref-build', duration_seconds: 1)
-  end
+    let_it_be(:ref_stage, freeze: true) do
+      create(:ci_stage, pipeline: ref_pipeline, project: project, name: 'ref-stage')
+    end
 
-  let_it_be(:source_builds, freeze: true) do
-    create_builds(count: 2, status: :success, stage: source_stage, name: 'source-build', duration_seconds: 1)
+    let_it_be(:source_stage, freeze: true) do
+      create(:ci_stage, pipeline: source_pipeline, project: project, name: 'source-stage')
+    end
+
+    let_it_be(:ref_builds, freeze: true) do
+      create_builds(count: 2, status: :success, stage: ref_stage, name: 'ref-build', duration_seconds: 1)
+    end
+
+    let_it_be(:source_builds, freeze: true) do
+      create_builds(count: 2, status: :success, stage: source_stage, name: 'source-build', duration_seconds: 1)
+    end
   end
 
   before do
     insert_ci_builds_to_click_house(
       successful_fast_builds + successful_slow_builds + failed_builds +
-      canceled_builds + skipped_builds + other_project_builds +
-      ref_builds + source_builds
+      canceled_builds + skipped_builds + other_project_builds
     )
-    insert_ci_pipelines_to_click_house([ref_pipeline, source_pipeline, pipeline, pipeline1])
+
+    if with_pipelines
+      insert_ci_builds_to_click_house(ref_builds + source_builds)
+      insert_ci_pipelines_to_click_house([ref_pipeline, source_pipeline, pipeline, pipeline1])
+    end
   end
 
   private

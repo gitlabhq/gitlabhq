@@ -90,6 +90,36 @@ describe('GroupsListItem', () => {
     axiosMock.restore();
   });
 
+  describe('when includeMicrodata prop is true', () => {
+    beforeEach(() => {
+      createComponent({ propsData: { includeMicrodata: true } });
+    });
+
+    it('adds microdata attributes to list element', () => {
+      expect(wrapper.attributes()).toMatchObject({
+        itemprop: 'subOrganization',
+        itemtype: 'https://schema.org/Organization',
+        itemscope: expect.any(String),
+      });
+    });
+
+    it('adds microdata attributes to avatar', () => {
+      const avatarLabeled = findAvatarLabeled();
+
+      expect(avatarLabeled.props()).toMatchObject({
+        labelLinkAttrs: { itemprop: 'name' },
+      });
+
+      expect(avatarLabeled.attributes()).toMatchObject({
+        itemprop: 'logo',
+      });
+    });
+
+    it('adds microdata to description', () => {
+      expect(findGroupDescription().attributes()).toMatchObject({ itemprop: 'description' });
+    });
+  });
+
   it('renders group avatar', () => {
     createComponent();
 

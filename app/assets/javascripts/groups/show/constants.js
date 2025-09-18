@@ -40,6 +40,9 @@ const baseTab = {
   paginationType: PAGINATION_TYPE_OFFSET,
   formatter: subgroupsAndProjectsFormatter,
   listComponent: NestedGroupsProjectsList,
+  listComponentProps: {
+    includeMicrodata: true,
+  },
   queryErrorMessage: __(
     "Your subgroups and projects couldn't be loaded. Refresh the page to try again.",
   ),

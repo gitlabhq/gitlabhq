@@ -2700,6 +2700,7 @@ Input type: `AiCatalogFlowUpdateInput`
 | <a id="mutationaicatalogflowupdatepublic"></a>`public` | [`Boolean`](#boolean) | Whether the flow is publicly visible in the catalog. |
 | <a id="mutationaicatalogflowupdaterelease"></a>`release` | [`Boolean`](#boolean) | Whether to release the latest version of the flow. |
 | <a id="mutationaicatalogflowupdatesteps"></a>`steps` | [`[AiCatalogFlowStepsInput!]`](#aicatalogflowstepsinput) | Steps for the flow. |
+| <a id="mutationaicatalogflowupdateversionbump"></a>`versionBump` | [`AiCatalogVersionBump`](#aicatalogversionbump) | Bump version, calculated from the last released version name. |
 
 #### Fields
 
@@ -11876,6 +11877,28 @@ Input type: `SecurityFindingDismissInput`
 | <a id="mutationsecurityfindingdismisserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationsecurityfindingdismisssecurityfinding"></a>`securityFinding` | [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding) | Dismissed finding. |
 | <a id="mutationsecurityfindingdismissuuid"></a>`uuid` | [`String`](#string) | UUID of dismissed finding. |
+
+### `Mutation.securityFindingExternalIssueLinkCreate`
+
+Input type: `SecurityFindingExternalIssueLinkCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityfindingexternalissuelinkcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityfindingexternalissuelinkcreateexternaltracker"></a>`externalTracker` | [`VulnerabilityExternalIssueLinkExternalTracker!`](#vulnerabilityexternalissuelinkexternaltracker) | External tracker type of the external issue link. |
+| <a id="mutationsecurityfindingexternalissuelinkcreatelinktype"></a>`linkType` | [`VulnerabilityExternalIssueLinkType!`](#vulnerabilityexternalissuelinktype) | Type of the external issue link. |
+| <a id="mutationsecurityfindingexternalissuelinkcreateproject"></a>`project` | [`ProjectID!`](#projectid) | ID of the project to attach the issue to. |
+| <a id="mutationsecurityfindingexternalissuelinkcreateuuid"></a>`uuid` | [`String!`](#string) | UUID of the security finding to be used to create an issue. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityfindingexternalissuelinkcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityfindingexternalissuelinkcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationsecurityfindingexternalissuelinkcreateexternalissuelink"></a>`externalIssueLink` | [`VulnerabilityExternalIssueLink`](#vulnerabilityexternalissuelink) | Created external issue link. |
 
 ### `Mutation.securityFindingRevertToDetected`
 

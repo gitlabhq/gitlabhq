@@ -74,6 +74,11 @@ export default {
         return TIMESTAMP_TYPES.includes(value);
       },
     },
+    includeMicrodata: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -106,6 +111,17 @@ export default {
     },
     groupIconName() {
       return this.group.parent ? 'subgroup' : 'group';
+    },
+    microdataAttributes() {
+      if (!this.includeMicrodata) return {};
+
+      return {
+        itemprop: 'subOrganization',
+        itemtype: 'https://schema.org/Organization',
+        itemscope: true,
+        avatarAttrs: { itemprop: 'logo', labelLinkAttrs: { itemprop: 'name' } },
+        descriptionAttrs: { itemprop: 'description' },
+      };
     },
     descendantGroupsCount() {
       return numberToMetricPrefix(this.group.descendantGroupsCount);
@@ -188,6 +204,7 @@ export default {
 
 <template>
   <list-item
+    v-bind="microdataAttributes"
     :resource="group"
     :show-icon="showGroupIcon"
     :icon-name="groupIconName"

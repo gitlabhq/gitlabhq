@@ -69,9 +69,12 @@ module Database
             config_model: base_model
           )
 
+          # Skip refreshing of attribute methods as we are inside a reconfigured DB connection
+          # and these models won't exist on all databases. We refresh later after migrating all DBs.
+          schema_migrate_up!(skip_refresh_attribute_methods: true)
+
           # Delete after migrating so that rows created during migration don't impact other
           # specs (for example, async foreign key creation rows)
-          schema_migrate_up!
           delete_from_all_tables!(except: deletion_except_tables)
         end
       end

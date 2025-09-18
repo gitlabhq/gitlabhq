@@ -75,6 +75,20 @@ export default {
       required: false,
       default: null,
     },
+    avatarAttrs: {
+      type: Object,
+      required: false,
+      default() {
+        return {};
+      },
+    },
+    descriptionAttrs: {
+      type: Object,
+      required: false,
+      default() {
+        return {};
+      },
+    },
   },
   computed: {
     avatarLabelLink() {
@@ -109,6 +123,7 @@ export default {
             <gl-icon variant="subtle" :name="iconName" />
           </div>
           <gl-avatar-labeled
+            v-bind="avatarAttrs"
             class="gl-break-anywhere"
             :entity-id="resource.id"
             :entity-name="resource.avatarLabel"
@@ -127,7 +142,7 @@ export default {
               </div>
             </template>
             <slot name="avatar-default">
-              <list-item-description :resource="resource" />
+              <list-item-description v-bind="descriptionAttrs" :resource="resource" />
             </slot>
           </gl-avatar-labeled>
         </div>

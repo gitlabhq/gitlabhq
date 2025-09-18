@@ -27,6 +27,11 @@ export default {
         return TIMESTAMP_TYPES.includes(value);
       },
     },
+    includeMicrodata: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     /**
      * Allows the parent component to override `isExpanded`.
      * This is needed when searching as we want the tree to be open after searching.
@@ -62,6 +67,7 @@ export default {
       const sharedProps = {
         listItemClass: this.item.hasChildren ? null : 'gl-pl-7',
         timestampType: this.timestampType,
+        includeMicrodata: this.includeMicrodata,
       };
 
       return this.item.type === LIST_ITEM_TYPE_PROJECT
@@ -140,6 +146,7 @@ export default {
         :id="nestedItemsContainerId"
         :items="nestedGroupsProjectsListItems"
         :timestamp-type="timestampType"
+        :include-microdata="includeMicrodata"
         :expanded-override="expandedOverride"
         :class="nestedItemsContainerClasses"
         @load-children="$emit('load-children', $event)"

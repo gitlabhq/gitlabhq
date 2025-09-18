@@ -1,0 +1,11 @@
+# This file contains exclusion patterns for file with media queries 
+# that should not be migrated to container queries.
+#
+# Lines beginning with a hash are ignored, like this one.
+#
+# This exclusion list accepts regex patterns
+_email.html.haml
+_email.text.erb
+app/assets/javascripts/super_sidebar/
+app/assets/stylesheets/framework/super_sidebar.scss
+app/assets/stylesheets/framework/application-chrome.scss

@@ -31,6 +31,11 @@ export default {
         return TIMESTAMP_TYPES.includes(value);
       },
     },
+    includeMicrodata: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 };
 </script>
@@ -44,6 +49,7 @@ export default {
       :show-project-icon="showProjectIcon"
       :list-item-class="listItemClass"
       :timestamp-type="timestampType"
+      :include-microdata="includeMicrodata"
       @refetch="$emit('refetch')"
       @hover-visibility="$emit('hover-visibility', $event)"
       @hover-stat="$emit('hover-stat', $event)"

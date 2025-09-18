@@ -31,6 +31,11 @@ export default {
         return TIMESTAMP_TYPES.includes(value);
       },
     },
+    includeMicrodata: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     /**
      * Allows the parent component to override `isExpanded`.
      * This is needed when searching as we want the tree to be open after searching.
@@ -52,6 +57,7 @@ export default {
       :key="`${item.type}-${item.id}`"
       :item="item"
       :timestamp-type="timestampType"
+      :include-microdata="includeMicrodata"
       :expanded-override="expandedOverride"
       @load-children="$emit('load-children', $event)"
       @refetch="$emit('refetch')"

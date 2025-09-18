@@ -1,6 +1,21 @@
+import { readFileSync } from 'node:fs';
+import { styleText } from 'node:util';
+import memoize from 'lodash/memoize.js';
 import { BOOTSTRAP_MIGRATIONS } from './bootstrap_tailwind_equivalents.mjs';
 
 const BREAKPOINTS = ['sm', 'md', 'lg', 'xl'];
+
+const getExclusionPatterns = memoize(() => {
+  const exclusions = readFileSync(
+    'scripts/frontend/lib/container_queries_migration_exclusions.txt',
+    'utf-8',
+  );
+  return exclusions
+    .split('\n')
+    .map((s) => s.split('#')[0])
+    .filter(Boolean)
+    .map((pattern) => new RegExp(pattern));
+});
 
 function addFromRegExps(rawMigrations) {
   const classChars = ['-', '\\w', '!', ':', 'gl-'].join('|');
@@ -115,19 +130,24 @@ const MEDIA_QUERIES_REPLACEMENTS = [
    * to warn about code that might need to be migrated but that this script doesn't know
    * how to handle.
    */
-  (content) => {
+  (content, file) => {
     const matches = content.match(/(@media \((min|max)-width.+)/g);
     if (matches) {
-      console.warn(
-        "Detected a media query that can't be migrated automatically. Please review the following code and proceed to the migration manually if needed.",
-      );
-      console.warn(matches);
+      console.warn(styleText('red', `\`${file}\`: contains media queries that can't be migrated automatically...`));
+      matches.forEach((m, index) => {
+        console.warn(styleText('red', `\`${file}\`:   query #${index}: \`${m}\``));
+      });
     }
     return content;
   },
 ];
 
-export function migrateCSSUtils(contents) {
+export function isFileExcluded(file) {
+  const exclusionPatterns = getExclusionPatterns();
+  return exclusionPatterns.some((pattern) => file.match(pattern));
+}
+
+export function migrateCSSUtils(file, contents) {
   let contentsCopy = contents;
   UTILS_REPLACEMENTS.forEach((replacer) => {
     contentsCopy = replacer(contentsCopy);
@@ -135,10 +155,10 @@ export function migrateCSSUtils(contents) {
   return contentsCopy;
 }
 
-export function migrateMediaQueries(contents) {
+export function migrateMediaQueries(file, contents) {
   let contentsCopy = contents;
   MEDIA_QUERIES_REPLACEMENTS.forEach((replacer) => {
-    contentsCopy = replacer(contentsCopy);
+    contentsCopy = replacer(contentsCopy, file);
   });
   return contentsCopy;
 }

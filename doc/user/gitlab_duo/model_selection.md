@@ -48,7 +48,8 @@ For more information, see the history.
 
 {{< /alert >}}
 
-On GitLab.com, you can select a model for top-level groups.
+On GitLab.com, you can select a model for a feature in a top-level group. The model that you select
+applies to that feature for all child groups and projects.
 
 Prerequisites:
 

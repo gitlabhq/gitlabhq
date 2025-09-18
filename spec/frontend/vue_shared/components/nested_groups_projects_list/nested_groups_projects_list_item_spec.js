@@ -44,6 +44,7 @@ describe('NestedGroupsProjectsListItem', () => {
         group: topLevelGroupA,
         listItemClass: null,
         timestampType: defaultPropsData.timestampType,
+        includeMicrodata: false,
       });
     });
 
@@ -55,6 +56,7 @@ describe('NestedGroupsProjectsListItem', () => {
       it('renders NestedGroupsProjectsList component with correct props and classes', () => {
         expect(findNestedGroupsProjectsList().props()).toMatchObject({
           timestampType: defaultPropsData.timestampType,
+          includeMicrodata: false,
           items: [],
           expandedOverride: false,
         });
@@ -104,6 +106,7 @@ describe('NestedGroupsProjectsListItem', () => {
         project: projectA,
         listItemClass: 'gl-pl-7',
         timestampType: defaultPropsData.timestampType,
+        includeMicrodata: false,
       });
     });
   });

@@ -1,15 +1,35 @@
 /* eslint-disable import/extensions */
 import {
+  isFileExcluded,
   migrateCSSUtils,
   migrateMediaQueries,
 } from '../../../../../scripts/frontend/lib/container_queries_migration.mjs';
 
+jest.mock('node:fs', () => ({
+  readFileSync: () => 'app/assets/javascripts/super_sidebar/\nfoo(bar|baz)',
+}));
+
+describe('isFileExcluded', () => {
+  it.each(['app/assets/javascripts/super_sidebar/components/counter.vue', 'foobar'])(
+    'returns true if the file "%s" matches an exclusion pattern',
+    (file) => {
+      expect(isFileExcluded(file)).toBe(true);
+    },
+  );
+
+  it('returns false if the file does not match any exclusion pattern', () => {
+    expect(isFileExcluded('migrate_me')).toBe(false);
+  });
+});
+
 describe('migrateCSSUtils', () => {
+  const file = 'file.scss';
+
   it('replaces Bootstrap responsive column utils with their container queries equivalent', () => {
     const input = 'col-12 col-sm-9 col-md-6 col-lg-3 col-xl-2';
     const output = 'gl-col-12 gl-col-sm-9 gl-col-md-6 gl-col-lg-3 gl-col-xl-2';
 
-    expect(migrateCSSUtils(input)).toBe(output);
+    expect(migrateCSSUtils(file, input)).toBe(output);
   });
 
   it.each`
@@ -24,21 +44,21 @@ describe('migrateCSSUtils', () => {
     ${'offset-sm-2'}   | ${'gl-offset-sm-2'}
     ${'no-gutters'}    | ${'gl-no-gutters'}
   `('replaces Bootstrap grid util $input with $output', ({ input, output }) => {
-    expect(migrateCSSUtils(input)).toBe(output);
+    expect(migrateCSSUtils(file, input)).toBe(output);
   });
 
   it('replaces Bootstrap utils with their Tailwind equivalent', () => {
     const input = 'visible flex-xl-nowrap';
     const output = 'visible @xl/panel:!gl-flex-nowrap';
 
-    expect(migrateCSSUtils(input)).toBe(output);
+    expect(migrateCSSUtils(file, input)).toBe(output);
   });
 
   it('replaces Tailwind media query utils with their container query equivalent', () => {
     const input = '<div class="sm:gl-max-w-6/12 lg:gl-hidden">';
     const output = '<div class="@sm/panel:gl-max-w-6/12 @lg/panel:gl-hidden">';
 
-    expect(migrateCSSUtils(input)).toBe(output);
+    expect(migrateCSSUtils(file, input)).toBe(output);
   });
 
   it('replaces Tailwind media query utils with important modifier', () => {
@@ -46,7 +66,7 @@ describe('migrateCSSUtils', () => {
     const output =
       '<div class="@sm/panel:!gl-flex-row @md/panel:!gl-items-center @lg/panel:gl-hidden">';
 
-    expect(migrateCSSUtils(input)).toBe(output);
+    expect(migrateCSSUtils(file, input)).toBe(output);
   });
 
   // These aren't very relevant anymore as we have disabled the related migrations for now.
@@ -55,18 +75,20 @@ describe('migrateCSSUtils', () => {
     '<my-component :invisible="true">',
     '<div class="custom-rounded">',
   ])("does not replace strings that aren't CSS utils (eg '%s')", (input) => {
-    expect(migrateCSSUtils(input)).toBe(input);
+    expect(migrateCSSUtils(file, input)).toBe(input);
   });
 
   it.each`
     input            | output
     ${'gl-border-1'} | ${'gl-border-1'}
   `('does not replace existing valid Tailwind classes', ({ input, output }) => {
-    expect(migrateCSSUtils(input)).toBe(output);
+    expect(migrateCSSUtils(file, input)).toBe(output);
   });
 });
 
 describe('migrateMediaQueries', () => {
+  const file = 'file.vue';
+
   it.each`
     input                                      | output
     ${'@include media-breakpoint-up(md)'}      | ${'@include gl-container-width-up(md, panel)'}
@@ -76,22 +98,26 @@ describe('migrateMediaQueries', () => {
     ${'@media (min-width: $breakpoint-md)'}    | ${'@include gl-container-width-up(md, panel)'}
     ${'@media (max-width: $breakpoint-md)'}    | ${'@include gl-container-width-down(md, panel)'}
   `('rewrites $input to $output', ({ input, output }) => {
-    expect(migrateMediaQueries(input)).toBe(output);
+    expect(migrateMediaQueries(file, input)).toBe(output);
   });
 
   it.each`
-    input                                                     | warning
+    input                                                     | query
     ${'@media (min-width: 420px) { \n somerule; \n }'}        | ${'@media (min-width: 420px) { '}
     ${'@media (max-width: 100px) { \n somerule; \n }'}        | ${'@media (max-width: 100px) { '}
     ${'@media (max-width: map.get($grid-breakpoints, lg)-1)'} | ${'@media (max-width: map.get($grid-breakpoints, lg)-1)'}
-  `('does not migrate and shows warning: "$warning"', ({ input, warning }) => {
+  `('does not migrate and shows warning with query "$query"', ({ input, query }) => {
     const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
-    expect(migrateMediaQueries(input)).toBe(input);
+    expect(migrateMediaQueries(file, input)).toBe(input);
 
     expect(warn).toHaveBeenCalledWith(
-      "Detected a media query that can't be migrated automatically. Please review the following code and proceed to the migration manually if needed.",
+      expect.stringContaining(
+        "`file.vue`: contains media queries that can't be migrated automatically...",
+      ),
     );
-    expect(warn).toHaveBeenCalledWith([warning]);
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining(`\`file.vue\`:   query #0: \`${query}\``),
+    );
   });
 });

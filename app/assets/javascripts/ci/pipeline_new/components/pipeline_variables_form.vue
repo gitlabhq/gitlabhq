@@ -1,6 +1,5 @@
 <script>
 import {
-  GlIcon,
   GlButton,
   GlCollapsibleListbox,
   GlFormGroup,
@@ -11,7 +10,6 @@ import {
   GlSprintf,
 } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
@@ -36,7 +34,6 @@ export default {
   }),
   userCalloutsFeatureName: 'pipeline_new_inputs_adoption_banner',
   components: {
-    GlIcon,
     GlButton,
     GlCollapsibleListbox,
     GlFormGroup,
@@ -117,15 +114,6 @@ export default {
     },
     isLoading() {
       return this.isFetchingCiConfigVariables;
-    },
-    isMobile() {
-      return ['sm', 'xs'].includes(GlBreakpointInstance.getBreakpointSize());
-    },
-    removeButtonCategory() {
-      return this.isMobile ? 'secondary' : 'tertiary';
-    },
-    removeButtonSize() {
-      return this.isMobile ? 'medium' : 'small';
     },
     variables() {
       return this.form[this.refParam]?.variables ?? [];
@@ -337,24 +325,31 @@ export default {
               :no-resize="false"
               data-testid="pipeline-form-ci-variable-value-field"
             />
+
             <template v-if="variables.length > 1">
               <gl-button
                 v-if="canRemove(index)"
-                class="gl-shrink-0"
-                data-testid="remove-ci-variable-row"
-                :size="removeButtonSize"
-                :category="removeButtonCategory"
-                :aria-label="s__('CiVariables|Remove variable')"
+                class="@md/panel:gl-hidden"
+                data-testid="remove-ci-variable-button"
+                size="medium"
+                category="secondary"
+                icon="remove"
                 @click="removeVariable(index)"
               >
-                <gl-icon class="!gl-mr-0" name="remove" />
-                <span class="@md/panel:gl-hidden">{{ s__('CiVariables|Remove variable') }}</span>
+                {{ s__('CiVariables|Remove variable') }}
               </gl-button>
+
+              <!-- for the last row, the button is rendered disabled + invisible so it takes space in the row -->
               <gl-button
-                v-else
-                class="gl-invisible gl-hidden gl-shrink-0 @md/panel:gl-block"
+                class="@max-md/panel:gl-hidden"
+                data-testid="remove-ci-variable-button-desktop"
+                size="medium"
+                category="tertiary"
                 icon="remove"
                 :aria-label="s__('CiVariables|Remove variable')"
+                :disabled="!canRemove(index)"
+                :class="{ 'gl-invisible': !canRemove(index) }"
+                @click="removeVariable(index)"
               />
             </template>
           </div>

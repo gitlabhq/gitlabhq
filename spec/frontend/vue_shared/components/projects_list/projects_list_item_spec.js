@@ -2,7 +2,6 @@ import { nextTick } from 'vue';
 import { GlAvatarLabeled, GlIcon, GlTooltip } from '@gitlab/ui';
 import { stubComponent } from 'helpers/stub_component';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import ListItemDescription from '~/vue_shared/components/resource_lists/list_item_description.vue';
 import ProjectListItemActions from '~/vue_shared/components/projects_list/project_list_item_actions.vue';
 import ListItemInactiveBadge from '~/vue_shared/components/resource_lists/list_item_inactive_badge.vue';
 import ProjectsListItem from '~/vue_shared/components/projects_list/projects_list_item.vue';
@@ -71,7 +70,7 @@ describe('ProjectsListItem', () => {
   const findAccessLevelBadge = () => wrapper.findByTestId('user-access-role');
   const findStorageSizeBadge = () => wrapper.findByTestId('storage-size');
   const findCiCatalogBadge = () => wrapper.findByTestId('ci-catalog-badge');
-  const findProjectDescription = () => wrapper.findComponent(ListItemDescription);
+  const findProjectDescription = () => wrapper.findByTestId('description');
   const findInactiveBadge = () => wrapper.findComponent(ListItemInactiveBadge);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findTopicBadges = () => wrapper.findComponent(TopicBadges);
@@ -95,6 +94,36 @@ describe('ProjectsListItem', () => {
 
     it('emits click-avatar event', () => {
       expect(wrapper.emitted('click-avatar')).toEqual([[]]);
+    });
+  });
+
+  describe('when includeMicrodata prop is true', () => {
+    beforeEach(() => {
+      createComponent({ propsData: { includeMicrodata: true } });
+    });
+
+    it('adds microdata attributes to list element', () => {
+      expect(wrapper.attributes()).toMatchObject({
+        itemtype: 'https://schema.org/SoftwareSourceCode',
+        itemprop: 'owns',
+        itemscope: expect.any(String),
+      });
+    });
+
+    it('adds microdata attributes to avatar', () => {
+      const avatarLabeled = findAvatarLabeled();
+
+      expect(avatarLabeled.props()).toMatchObject({
+        labelLinkAttrs: { itemprop: 'name' },
+      });
+
+      expect(avatarLabeled.attributes()).toMatchObject({
+        itemprop: 'image',
+      });
+    });
+
+    it('adds microdata to description', () => {
+      expect(findProjectDescription().attributes()).toMatchObject({ itemprop: 'description' });
     });
   });
 

@@ -1288,6 +1288,7 @@ vulnerability_finding:
   - finding_evidence
   - security_findings
   - finding_token_status
+  - finding_risk_score
 scanner:
   - findings
   - security_findings

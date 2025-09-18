@@ -4,7 +4,7 @@ class UserPreference < ApplicationRecord
   include SafelyChangeColumnDefault
   include IgnorableColumns
 
-  ignore_columns(:home_organization_id, remove_with: '18.5', remove_after: '2025-09-20')
+  ignore_columns :home_organization_id, remove_with: '18.6', remove_after: '2025-10-18'
 
   # We could use enums, but Rails 4 doesn't support multiple
   # enum options with same name for multiple fields, also it creates

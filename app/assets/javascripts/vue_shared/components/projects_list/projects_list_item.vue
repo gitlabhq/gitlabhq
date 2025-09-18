@@ -79,6 +79,11 @@ export default {
         return TIMESTAMP_TYPES.includes(value);
       },
     },
+    includeMicrodata: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -87,6 +92,16 @@ export default {
     };
   },
   computed: {
+    microdataAttributes() {
+      if (!this.includeMicrodata) return {};
+
+      return {
+        itemtype: 'https://schema.org/SoftwareSourceCode',
+        itemprop: 'owns',
+        itemscope: true,
+        avatarAttrs: { itemprop: 'image', labelLinkAttrs: { itemprop: 'name' } },
+      };
+    },
     visibility() {
       return this.project.visibility;
     },
@@ -259,6 +274,7 @@ export default {
 
 <template>
   <list-item
+    v-bind="microdataAttributes"
     :resource="project"
     :show-icon="showProjectIcon"
     icon-name="project"
@@ -289,7 +305,7 @@ export default {
     </template>
 
     <template #avatar-default>
-      <list-item-description :resource="project" />
+      <list-item-description itemprop="description" :resource="project" />
       <topic-badges
         v-if="hasTopics"
         :topics="project.topics"

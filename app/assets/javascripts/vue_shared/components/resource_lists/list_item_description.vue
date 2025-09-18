@@ -20,6 +20,7 @@ export default {
   directives: {
     SafeHtml,
   },
+  inheritAttrs: false,
   props: {
     resource: {
       type: Object,
@@ -63,6 +64,7 @@ export default {
   >
     <div
       v-safe-html="descriptionHtml"
+      v-bind="$attrs"
       class="md md-child-content-text-subtle gl-text-sm"
       data-testid="description"
     ></div>

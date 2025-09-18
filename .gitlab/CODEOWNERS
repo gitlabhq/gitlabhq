@@ -1773,6 +1773,13 @@ ee/lib/gitlab/llm/chain/utils/chat_authorizer.rb
 ee/lib/gitlab/llm/chain/utils/chat_conversation.rb
 ee/lib/gitlab/llm/completions/chat.rb
 
+[Category:MCP Server] @gitlab-org/ai-powered/mcp-tool-review-board
+lib/api/mcp/server.rb
+app/services/mcp/tools/
+
+^[Category:MCP Server] @gitlab-org/ai-powered/mcp-tool-review-board
+spec/services/mcp/tools/
+
 [Category:Code Suggestions] @gitlab-org/code-creation/engineers
 ee/lib/api/code_suggestions.rb
 ee/lib/ai/additional_context.rb

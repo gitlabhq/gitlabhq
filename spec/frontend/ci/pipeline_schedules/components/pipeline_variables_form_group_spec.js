@@ -1,5 +1,9 @@
 import { nextTick } from 'vue';
-import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
+import {
+  shallowMountExtended,
+  mountExtended,
+  extendedWrapper,
+} from 'helpers/vue_test_utils_helper';
 import InputsAdoptionBanner from '~/ci/common/pipeline_inputs/inputs_adoption_banner.vue';
 import PipelineVariablesFormGroup from '~/ci/pipeline_schedules/components/pipeline_variables_form_group.vue';
 import { VARIABLE_TYPE, FILE_TYPE } from '~/ci/pipeline_schedules/constants';
@@ -29,7 +33,10 @@ describe('Pipeline variables form group', () => {
   const findHiddenValueInputs = () =>
     wrapper.findAllByTestId('pipeline-form-ci-variable-hidden-value');
   const findVariableSecurityBtn = () => wrapper.findByTestId('variable-security-btn');
-  const findRemoveIcons = () => wrapper.findAllByTestId('remove-ci-variable-row');
+  const findRemoveButtonAt = (i) =>
+    extendedWrapper(findVariableRows().at(i)).findByTestId('remove-ci-variable-button');
+  const findRemoveButtonDesktopAt = (i) =>
+    extendedWrapper(findVariableRows().at(i)).findByTestId('remove-ci-variable-button-desktop');
 
   const addVariableToForm = async () => {
     const input = findKeyInputs().at(0);
@@ -112,14 +119,20 @@ describe('Pipeline variables form group', () => {
     it('does not display remove icon for last row', async () => {
       await addVariableToForm();
 
-      expect(findRemoveIcons()).toHaveLength(1);
+      expect(findRemoveButtonAt(0).exists()).toBe(true);
+      expect(findRemoveButtonDesktopAt(0).props('disabled')).toBe(false);
+      expect(findRemoveButtonDesktopAt(0).classes('gl-invisible')).toBe(false);
+
+      expect(findRemoveButtonAt(1).exists()).toBe(false);
+      expect(findRemoveButtonDesktopAt(1).props('disabled')).toBe(true);
+      expect(findRemoveButtonDesktopAt(1).classes('gl-invisible')).toBe(true);
     });
 
     it('removes ci variable row on remove icon button click', async () => {
       await addVariableToForm();
       expect(findVariableRows()).toHaveLength(2);
 
-      findRemoveIcons().at(0).trigger('click');
+      findRemoveButtonAt(0).trigger('click');
       await nextTick();
       expect(findVariableRows()).toHaveLength(1);
     });
@@ -141,7 +154,7 @@ describe('Pipeline variables form group', () => {
       await addVariableToForm();
 
       expect(wrapper.emitted('update-variables')).toHaveLength(2);
-      findRemoveIcons().at(0).trigger('click');
+      findRemoveButtonAt(0).trigger('click');
       await nextTick();
 
       expect(wrapper.emitted('update-variables')).toHaveLength(3);

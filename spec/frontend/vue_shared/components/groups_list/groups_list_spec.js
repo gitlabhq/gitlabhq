@@ -32,6 +32,7 @@ describe('GroupsList', () => {
         showGroupIcon: false,
         listItemClass: defaultPropsData.listItemClass,
         timestampType: TIMESTAMP_TYPE_CREATED_AT,
+        includeMicrodata: false,
       })),
     );
   });

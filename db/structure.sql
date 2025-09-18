@@ -26598,7 +26598,6 @@ CREATE TABLE user_preferences (
     enabled_zoekt boolean DEFAULT true NOT NULL,
     keyboard_shortcuts_enabled boolean DEFAULT true NOT NULL,
     time_display_format smallint DEFAULT 0 NOT NULL,
-    home_organization_id bigint,
     early_access_program_participant boolean DEFAULT false NOT NULL,
     early_access_program_tracking boolean DEFAULT false NOT NULL,
     extensions_marketplace_opt_in_status smallint DEFAULT 0 NOT NULL,
@@ -26615,6 +26614,7 @@ CREATE TABLE user_preferences (
     markdown_maintain_indentation boolean DEFAULT false NOT NULL,
     project_studio_enabled boolean DEFAULT false NOT NULL,
     merge_request_dashboard_show_drafts boolean DEFAULT true NOT NULL,
+    duo_default_namespace_id bigint,
     CONSTRAINT check_1d670edc68 CHECK ((time_display_relative IS NOT NULL)),
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_9b50d9f942 CHECK ((char_length(extensions_marketplace_opt_in_url) <= 512)),
@@ -27275,6 +27275,14 @@ CREATE SEQUENCE vulnerability_finding_links_id_seq
     CACHE 1;
 
 ALTER SEQUENCE vulnerability_finding_links_id_seq OWNED BY vulnerability_finding_links.id;
+
+CREATE TABLE vulnerability_finding_risk_scores (
+    finding_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    risk_score double precision DEFAULT 0.0 NOT NULL
+);
 
 CREATE TABLE vulnerability_finding_signatures (
     id bigint NOT NULL,
@@ -34293,6 +34301,9 @@ ALTER TABLE ONLY vulnerability_finding_evidences
 ALTER TABLE ONLY vulnerability_finding_links
     ADD CONSTRAINT vulnerability_finding_links_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY vulnerability_finding_risk_scores
+    ADD CONSTRAINT vulnerability_finding_risk_scores_pkey PRIMARY KEY (finding_id);
+
 ALTER TABLE ONLY vulnerability_finding_signatures
     ADD CONSTRAINT vulnerability_finding_signatures_pkey PRIMARY KEY (id);
 
@@ -40333,6 +40344,8 @@ CREATE INDEX index_project_statistics_on_storage_size_and_project_id ON project_
 
 CREATE INDEX index_project_statistics_on_wiki_size_and_project_id ON project_statistics USING btree (wiki_size, project_id);
 
+CREATE INDEX index_project_to_security_attributes_on_project_id_and_id ON project_to_security_attributes USING btree (project_id, id);
+
 CREATE INDEX index_project_to_security_attributes_on_security_attribute_id ON project_to_security_attributes USING btree (security_attribute_id);
 
 CREATE UNIQUE INDEX index_project_topics_on_project_id_and_topic_id ON project_topics USING btree (project_id, topic_id);
@@ -41273,9 +41286,9 @@ CREATE INDEX index_user_phone_number_validations_on_telesign_reference_xid ON us
 
 CREATE INDEX index_user_phone_validations_on_dial_code_phone_number ON user_phone_number_validations USING btree (international_dial_code, phone_number);
 
-CREATE INDEX index_user_preferences_on_gitpod_enabled ON user_preferences USING btree (gitpod_enabled);
+CREATE INDEX index_user_preferences_on_duo_default_namespace_id ON user_preferences USING btree (duo_default_namespace_id);
 
-CREATE INDEX index_user_preferences_on_home_organization_id ON user_preferences USING btree (home_organization_id);
+CREATE INDEX index_user_preferences_on_gitpod_enabled ON user_preferences USING btree (gitpod_enabled);
 
 CREATE UNIQUE INDEX index_user_preferences_on_user_id ON user_preferences USING btree (user_id);
 
@@ -41550,6 +41563,10 @@ CREATE INDEX index_vulnerability_reads_on_uuid_project_id_and_state ON vulnerabi
 CREATE UNIQUE INDEX index_vulnerability_reads_on_vulnerability_id ON vulnerability_reads USING btree (vulnerability_id);
 
 CREATE UNIQUE INDEX index_vulnerability_remediations_on_project_id_and_checksum ON vulnerability_remediations USING btree (project_id, checksum);
+
+CREATE UNIQUE INDEX index_vulnerability_risk_scores_on_vulnerability_finding ON vulnerability_finding_risk_scores USING btree (finding_id);
+
+CREATE INDEX index_vulnerability_risk_scores_on_vulnerability_project ON vulnerability_finding_risk_scores USING btree (project_id);
 
 CREATE UNIQUE INDEX index_vulnerability_scanners_on_project_id_and_external_id ON vulnerability_scanners USING btree (project_id, external_id);
 
@@ -46644,6 +46661,9 @@ ALTER TABLE ONLY deployment_approvals
 ALTER TABLE ONLY dast_profile_schedules
     ADD CONSTRAINT fk_61d52aa0e7 FOREIGN KEY (dast_profile_id) REFERENCES dast_profiles(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY user_preferences
+    ADD CONSTRAINT fk_61f4fd80d1 FOREIGN KEY (duo_default_namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY vulnerability_reads
     ADD CONSTRAINT fk_62736f638f FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
 
@@ -46721,6 +46741,9 @@ ALTER TABLE ONLY compliance_framework_security_policies
 
 ALTER TABLE ONLY organization_cluster_agent_mappings
     ADD CONSTRAINT fk_6d8bfa275e FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_finding_risk_scores
+    ADD CONSTRAINT fk_6d90dbcfdc FOREIGN KEY (finding_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY audit_events_streaming_instance_namespace_filters
     ADD CONSTRAINT fk_6e0be28087 FOREIGN KEY (external_streaming_destination_id) REFERENCES audit_events_instance_external_streaming_destinations(id) ON DELETE CASCADE;
@@ -47822,9 +47845,6 @@ ALTER TABLE ONLY packages_debian_project_component_files
 
 ALTER TABLE ONLY abuse_events
     ADD CONSTRAINT fk_e5ce49c215 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY user_preferences
-    ADD CONSTRAINT fk_e5e029c10b FOREIGN KEY (home_organization_id) REFERENCES organizations(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY duo_workflows_workloads
     ADD CONSTRAINT fk_e62ee9a85e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

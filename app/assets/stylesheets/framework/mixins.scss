@@ -190,21 +190,22 @@
   }
 }
 
-// Used in EE for Web Terminal
-@mixin build-log-bar($height) {
+@mixin job-log-top-bar {
   height: auto;
-  min-height: $height;
+  min-height: 50px;
   padding: $grid-size;
   @apply gl-bg-section gl-border gl-border-section gl-text-default;
   box-shadow: 0 -6px 0 0 var(--gl-background-color-default);
-}
-
-@mixin job-log-top-bar {
-  @include build-log-bar(50px);
   z-index: 2;
   position: sticky;
-  top: calc(#{$calc-application-header-height} - 1px);
   @apply gl-rounded-t-lg;
+
+  top: calc(#{$calc-application-header-height} - 1px);
+
+  .page-with-panels & {
+    // Project studio overrides, should become the default.
+    top: -1px;
+  }
 }
 
 /*

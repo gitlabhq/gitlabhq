@@ -575,9 +575,9 @@ export const spriteIcon = (icon, className = '', color = '') => {
  * @param {ConversionFunction} conversionFunction - Function to apply to each prop of the object.
  * @param {Object} obj - Object to be converted.
  * @param {Object} options - Object containing additional options.
- * @param {boolean} options.deep - FLag to allow deep object converting
- * @param {Array[]} options.dropKeys - List of properties to discard while building new object
- * @param {Array[]} options.ignoreKeyNames - List of properties to leave intact (as snake_case) while building new object
+ * @param {boolean} [options.deep] - Flag to allow deep object converting
+ * @param {Array[]} [options.dropKeys] - List of properties to discard while building new object
+ * @param {Array[]} [options.ignoreKeyNames] - List of properties to leave intact (as snake_case) while building new object
  */
 export const convertObjectProps = (conversionFunction, obj = {}, options = {}) => {
   if (!isFunction(conversionFunction) || obj === null) {
@@ -631,9 +631,9 @@ export const convertObjectProps = (conversionFunction, obj = {}, options = {}) =
  *
  * @param {Object} obj - Object to be converted.
  * @param {Object} options - Object containing additional options.
- * @param {boolean} options.deep - FLag to allow deep object converting
- * @param {Array[]} options.dropKeys - List of properties to discard while building new object
- * @param {Array[]} options.ignoreKeyNames - List of properties to leave intact (as snake_case) while building new object
+ * @param {boolean} [options.deep] - Flag to allow deep object converting
+ * @param {Array[]} [options.dropKeys] - List of properties to discard while building new object
+ * @param {Array[]} [options.ignoreKeyNames] - List of properties to leave intact (as snake_case) while building new object
  */
 export const convertObjectPropsToCamelCase = (obj = {}, options = {}) =>
   convertObjectProps(convertToCamelCase, obj, options);
@@ -648,9 +648,9 @@ export const convertObjectPropsToCamelCase = (obj = {}, options = {}) =>
  *
  * @param {Object} obj - Object to be converted.
  * @param {Object} options - Object containing additional options.
- * @param {boolean} options.deep - FLag to allow deep object converting
- * @param {Array[]} options.dropKeys - List of properties to discard while building new object
- * @param {Array[]} options.ignoreKeyNames - List of properties to leave intact while building new object
+ * @param {boolean} [options.deep] - Flag to allow deep object converting
+ * @param {Array[]} [options.dropKeys] - List of properties to discard while building new object
+ * @param {Array[]} [options.ignoreKeyNames] - List of properties to leave intact while building new object
  */
 export const convertObjectPropsToLowerCase = partial(convertObjectProps, toLower);
 
@@ -661,9 +661,9 @@ export const convertObjectPropsToLowerCase = partial(convertObjectProps, toLower
  *
  * @param {Object} obj - Object to be converted.
  * @param {Object} options - Object containing additional options.
- * @param {boolean} options.deep - FLag to allow deep object converting
- * @param {Array[]} options.dropKeys - List of properties to discard while building new object
- * @param {Array[]} options.ignoreKeyNames - List of properties to leave intact (as snake_case) while building new object
+ * @param {boolean} [options.deep] - Flag to allow deep object converting
+ * @param {Array[]} [options.dropKeys] - List of properties to discard while building new object
+ * @param {Array[]} [options.ignoreKeyNames] - List of properties to leave intact (as snake_case) while building new object
  */
 export const convertObjectPropsToSnakeCase = (obj = {}, options = {}) =>
   convertObjectProps(convertToSnakeCase, obj, options);

@@ -56,7 +56,22 @@ module Gitlab
               # the variables are provided from the outside and those should be guarded.
               return variables if @command.creates_child_pipeline?
 
-              if variables.present? && !can?(@command.current_user, :set_pipeline_variables, @command.project)
+              # If the trigger token belongs to a user that has permissions to set pipeline variables,
+              # we allow all other variables in the variables[]= REST API param, including TRIGGER_PAYLOAD if exists.
+              # If the trigger token belongs to a user that does NOT have permissions to set pipeline variables:
+              #   - if variables other than TRIGGER_PAYLOAD are specified, we return an error.
+              #   - if only TRIGGER_PAYLOAD is specified, we allow it.
+              # See https://gitlab.com/gitlab-org/gitlab/-/issues/557381
+              user_defined_variables = if @command.source.to_sym == :trigger
+                                         # This variable is defined by GitLab when triggering webhooks
+                                         # so it should be allowlisted.
+                                         variables.reject { |v| v[:key] == 'TRIGGER_PAYLOAD' }
+                                       else
+                                         variables
+                                       end
+
+              if user_defined_variables.present? && !can?(@command.current_user, :set_pipeline_variables,
+                @command.project)
                 error("Insufficient permissions to set pipeline variables")
                 variables = []
               end

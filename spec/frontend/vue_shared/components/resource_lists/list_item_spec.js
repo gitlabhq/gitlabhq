@@ -1,8 +1,7 @@
 import { GlAvatarLabeled, GlIcon } from '@gitlab/ui';
 import membershipProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/membership_projects.query.graphql.json';
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
-import ListItemDescription from '~/vue_shared/components/resource_lists/list_item_description.vue';
 import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
@@ -40,8 +39,13 @@ describe('ListItem', () => {
     resource: group,
   };
 
-  const createComponent = ({ propsData = {}, stubs = {}, scopedSlots = {} } = {}) => {
-    wrapper = shallowMountExtended(ListItem, {
+  const createComponent = ({
+    mountFn = shallowMountExtended,
+    propsData = {},
+    stubs = {},
+    scopedSlots = {},
+  } = {}) => {
+    wrapper = mountFn(ListItem, {
       propsData: { ...defaultPropsData, ...propsData },
       scopedSlots: {
         'avatar-meta': '<div data-testid="avatar-meta"></div>',
@@ -56,18 +60,23 @@ describe('ListItem', () => {
   };
 
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
-  const findDescription = () => wrapper.findComponent(ListItemDescription);
+  const findDescription = () => wrapper.findByTestId('description');
   const findListActions = () => wrapper.findComponent(ListActions);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
 
   it('renders avatar', () => {
-    createComponent();
+    createComponent({
+      propsData: {
+        avatarAttrs: { itemprop: 'image', labelLinkAttrs: { itemprop: 'name' } },
+      },
+    });
 
     const avatarLabeled = findAvatarLabeled();
 
     expect(avatarLabeled.props()).toMatchObject({
       label: group.avatarLabel,
       labelLink: group.relativeWebUrl,
+      labelLinkAttrs: { itemprop: 'name' },
     });
 
     expect(avatarLabeled.attributes()).toMatchObject({
@@ -75,6 +84,7 @@ describe('ListItem', () => {
       'entity-name': group.fullName,
       src: group.avatarUrl,
       shape: 'rect',
+      itemprop: 'image',
     });
   });
 
@@ -146,9 +156,22 @@ describe('ListItem', () => {
 
   describe('when avatar-default slot is not provided', () => {
     it('renders description', () => {
-      createComponent();
+      createComponent({ mountFn: mountExtended });
 
       expect(findDescription().exists()).toBe(true);
+    });
+
+    describe('when descriptionAttrs prop is provided', () => {
+      beforeEach(() => {
+        createComponent({
+          mountFn: mountExtended,
+          propsData: { descriptionAttrs: { itemprop: 'description' } },
+        });
+      });
+
+      it('adds attributes to description', () => {
+        expect(findDescription().attributes()).toMatchObject({ itemprop: 'description' });
+      });
     });
   });
 

@@ -250,7 +250,7 @@ To set up a fully isolated GitLab Duo Self-Hosted infrastructure:
    - GitLab provides a matrix of supported models with their specific features and hardware requirements. For more information,
    see the [supported models and hardware requirements documentation](supported_models_and_hardware_requirements.md).
 
-1. Install the AI gateway to access AI-native GitLab Duo features.
+1. [Install the AI gateway](../../install/install_ai_gateway.md) to access AI-native GitLab Duo features.
 
 1. [Configure your GitLab instance](configure_duo_features.md) for features to access self-hosted models.
 

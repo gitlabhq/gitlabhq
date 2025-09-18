@@ -87,6 +87,114 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '.preload_latest_diff_commit' do
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:merge_request) { create(:merge_request, :unique_branches, source_project: project, target_project: project) }
+    let_it_be(:commit_author) { create(:merge_request_diff_commit_user) }
+    let_it_be(:committer) { create(:merge_request_diff_commit_user) }
+
+    shared_examples 'preloads associations efficiently' do |with_metadata|
+      before do
+        if with_metadata
+          # (when dedup is enabled, create the metadata record first)
+          metadata = create(:merge_request_commits_metadata,
+            project: project,
+            commit_author: commit_author,
+            committer: committer,
+            sha: 'abc123',
+            message: 'Test commit'
+          )
+
+          create(:merge_request_diff_commit,
+            merge_request_diff: merge_request.merge_request_diff,
+            merge_request_commits_metadata: metadata,
+            commit_author: commit_author,
+            committer: committer,
+            relative_order: 0,
+            sha: 'abc123'
+          )
+        else
+          create(:merge_request_diff_commit,
+            merge_request_diff: merge_request.merge_request_diff,
+            commit_author: commit_author,
+            committer: committer,
+            relative_order: 0
+          )
+        end
+      end
+
+      it 'reduces database queries when accessing preloaded associations' do
+        merge_requests = described_class.preload_latest_diff_commit.where(id: merge_request.id)
+
+        expect do
+          merge_requests.each do |mr|
+            mr.latest_merge_request_diff.merge_request_diff_commits.each do |commit|
+              if with_metadata
+                commit.merge_request_commits_metadata&.commit_author
+                commit.merge_request_commits_metadata&.committer
+              else
+                commit.commit_author
+                commit.committer
+              end
+            end
+          end
+        end.not_to exceed_query_limit(7)
+      end
+
+      if with_metadata
+        it 'includes merge_request_commits_metadata in preloads' do
+          result = described_class.preload_latest_diff_commit.where(id: merge_request.id)
+          preload_hash = result.preload_values.first
+          diff_commits_preloads = preload_hash[:latest_merge_request_diff][:merge_request_diff_commits]
+
+          expect(diff_commits_preloads).to be_an(Array)
+          expect(diff_commits_preloads.first).to be_a(Hash)
+          expect(diff_commits_preloads.first).to have_key(:merge_request_commits_metadata)
+          expect(diff_commits_preloads.first[:merge_request_commits_metadata]).to include(:commit_author, :committer)
+        end
+      else
+        it 'excludes merge_request_commits_metadata from preloads' do
+          result = described_class.preload_latest_diff_commit.where(id: merge_request.id)
+          preload_hash = result.preload_values.first
+          diff_commits_preloads = preload_hash[:latest_merge_request_diff][:merge_request_diff_commits]
+
+          expect(diff_commits_preloads).to be_an(Array)
+          expect(diff_commits_preloads).to include(:commit_author, :committer)
+        end
+      end
+    end
+
+    context 'when feature flag is enabled' do
+      it_behaves_like 'preloads associations efficiently', true
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(merge_request_diff_commits_dedup: false)
+      end
+
+      it_behaves_like 'preloads associations efficiently', false
+    end
+
+    context 'edge cases' do
+      it 'handles merge requests without diffs gracefully' do
+        mr_without_diff = create(:merge_request, :unique_branches, source_project: project, target_project: project)
+        mr_without_diff.update_column(:latest_merge_request_diff_id, nil)
+
+        expect { described_class.preload_latest_diff_commit.where(id: mr_without_diff.id).to_a }.not_to raise_error
+      end
+
+      it 'handles empty commits collection' do
+        empty_mr = create(:merge_request, :unique_branches, source_project: project, target_project: project)
+        empty_mr.merge_request_diff.merge_request_diff_commits.delete_all
+
+        merge_requests = described_class.preload_latest_diff_commit.where(id: empty_mr.id)
+
+        expect { merge_requests.first.latest_merge_request_diff.merge_request_diff_commits.to_a }.not_to raise_error
+      end
+    end
+  end
+
   describe '.from_and_to_forks' do
     it 'returns only MRs from and to forks (with no internal MRs)' do
       project = create(:project)

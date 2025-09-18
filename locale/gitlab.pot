@@ -58603,6 +58603,9 @@ msgstr ""
 msgid "SecurityOrchestration|Choose exception branches"
 msgstr ""
 
+msgid "SecurityOrchestration|Choose from the options below based on how you would like to proceed."
+msgstr ""
+
 msgid "SecurityOrchestration|Choose optimization preset %{linkStart}Help me choose%{linkEnd}"
 msgstr ""
 
@@ -58772,6 +58775,9 @@ msgid "SecurityOrchestration|Except"
 msgstr ""
 
 msgid "SecurityOrchestration|Except for following users:"
+msgstr ""
+
+msgid "SecurityOrchestration|Exception Bypass (pre-approved)"
 msgstr ""
 
 msgid "SecurityOrchestration|Exception branches"
@@ -59430,6 +59436,9 @@ msgstr ""
 msgid "SecurityOrchestration|There was a problem creating the new security policy"
 msgstr ""
 
+msgid "SecurityOrchestration|These policies are configured in warn mode. This allows you to bypass violations with proper justification."
+msgstr ""
+
 msgid "SecurityOrchestration|This %{namespaceType} does not contain any security policies."
 msgstr ""
 
@@ -59607,6 +59616,9 @@ msgstr ""
 msgid "SecurityOrchestration|Warn mode"
 msgstr ""
 
+msgid "SecurityOrchestration|Warn mode (bypass eligible)"
+msgstr ""
+
 msgid "SecurityOrchestration|Warn users with a bot comment and contact the following users as security consultants for support: %{approvers}"
 msgstr ""
 
@@ -59662,6 +59674,12 @@ msgid "SecurityOrchestration|You do not have the permission required to edit pol
 msgstr ""
 
 msgid "SecurityOrchestration|You don't have any security policies yet"
+msgstr ""
+
+msgid "SecurityOrchestration|You have been granted bypass permissions for these policies based on organizational role or custom role assignments."
+msgstr ""
+
+msgid "SecurityOrchestration|You have permissions to bypass all checks in this merge request or selectively only bypass Warn Mode policies."
 msgstr ""
 
 msgid "SecurityOrchestration|You must edit the policy and replace the deprecated syntax (%{deprecatedProperties}). For details on its replacement, see the %{linkStart}policy documentation%{linkEnd}."

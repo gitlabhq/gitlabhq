@@ -473,7 +473,21 @@ class MergeRequest < ApplicationRecord
   scope :preload_approved_by_users, -> { preload(:approved_by_users) }
   scope :preload_metrics, ->(relation) { preload(metrics: relation) }
   scope :preload_project_and_latest_diff, -> { preload(:source_project, :latest_merge_request_diff) }
-  scope :preload_latest_diff_commit, -> { preload(latest_merge_request_diff: { merge_request_diff_commits: [:commit_author, :committer] }) }
+
+  scope :preload_latest_diff_commit, -> do
+    if Feature.enabled?(:merge_request_diff_commits_dedup)
+      preload(latest_merge_request_diff: {
+        merge_request_diff_commits: [{
+          merge_request_commits_metadata: [:commit_author, :committer]
+        }]
+      })
+    else
+      preload(latest_merge_request_diff: {
+        merge_request_diff_commits: [:commit_author, :committer]
+      })
+    end
+  end
+
   scope :preload_milestoneish_associations, -> { preload_routables.preload(:assignees, :labels) }
 
   scope :with_web_entity_associations, -> do
