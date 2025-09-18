@@ -103,7 +103,7 @@ export default {
             @updateBoard="$emit('updateBoard', $event)"
             @showBoardModal="setCurrentForm"
           />
-          <div class="gl-flex gl-items-center gl-gap-2 md:!gl-hidden">
+          <div class="gl-flex gl-items-center gl-gap-2 @md/panel:!gl-hidden">
             <board-options
               :show-epic-lane-option="swimlanesFeatureAvailable && isSignedIn"
               :is-swimlanes-on="isSwimlanesOn"

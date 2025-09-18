@@ -289,7 +289,7 @@ export default {
         :filters="filterParams"
         :highlighted-lists="highlightedLists"
         :data-draggable-item-type="$options.draggableItemTypes.list"
-        :class="{ '!gl-hidden sm:!gl-inline-block': addColumnFormVisible }"
+        :class="{ '!gl-hidden @sm/panel:!gl-inline-block': addColumnFormVisible }"
         :last="isLastList(index)"
         :list-query-variables="listQueryVariables"
         :lists="boardListsById"

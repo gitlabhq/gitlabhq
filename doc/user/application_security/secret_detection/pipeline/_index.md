@@ -135,7 +135,8 @@ To override the default behavior, use the [available CI/CD variables](configure.
 
 ### How the analyzer fetches commits
 
-When additional commits are needed beyond the initial clone, the analyzer automatically fetches them using optimized strategies:
+By default, when GitLab first clones a repository, it fetches only the most recent commits (a "shallow clone").
+When additional commits are needed beyond this initial clone, the analyzer automatically fetches them using optimized strategies:
 
 - For merge requests, the analyzer retrieves only changes committed after the merge base, which minimizes data transfer.
 - If log options are specified, like `--since` or `--max-count`, the analyzer fetches only the required commits.
@@ -427,16 +428,6 @@ ERRO[2020-11-18T18:05:52Z] object not found
 [ERRO] [secrets] [2020-11-18T18:05:52Z] ▶ Gitleaks analysis failed: exit status 2
 ```
 
-To resolve the issue, set the [`GIT_DEPTH` CI/CD variable](../../../../ci/runners/configure_runners.md#shallow-cloning)
-to a higher value. To apply this only to the pipeline secret detection job, the following can be added to
-your `.gitlab-ci.yml` file:
-
-```yaml
-secret_detection:
-  variables:
-    GIT_DEPTH: 100
-```
-
 To resolve this issue:
 
 - For most cases, no action is required. Let the analyzer handle fetching automatically.
@@ -507,16 +498,34 @@ The secret detection analyzer decides what to scan based on:
 - Branch context (default, new, existing)
 - Your configuration (`SECRET_DETECTION_LOG_OPTIONS`, `SECRET_DETECTION_HISTORIC_SCAN`)
 
-For example, to scan only 30 commits, use analyzer variables:
+For example, to scan only 30 commits:
 
 ```yaml
 secret_detection:
   variables:
-    # Scan only the last 30 commits
+    # Scan the last 30 commits
     SECRET_DETECTION_LOG_OPTIONS: "--max-count=30"
+```
+
+To scan only commits from the last two weeks:
+
+```yaml
+secret_detection:
+  variables:
+    # Scan commits made in the last two weeks
     SECRET_DETECTION_LOG_OPTIONS: "--since=2.weeks"
+```
+
+To scan only commits from `HEAD~10` to `HEAD`:
+
+```yaml
+secret_detection:
+  variables:
+    # Scan commits from HEAD~10 to HEAD
     SECRET_DETECTION_LOG_OPTIONS: "HEAD~10..HEAD"
 ```
+
+For a full list of options, see the [Git log options](https://git-scm.com/docs/git-log) documentation.
 
 #### Force push detection
 

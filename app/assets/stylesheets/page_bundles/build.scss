@@ -253,15 +253,7 @@
 }
 
 .rca-bar-component {
-  bottom: $calc-application-footer-height;
-  z-index: $zindex-dropdown-menu;
-  background: var(--gl-background-color-default);
-  border-top: 1px solid var(--gl-border-color-default);
-  @apply gl-transition-padding;
-
-  @media (prefers-reduced-motion: no-preference) {
-    @apply gl-transition-[width,left,right];
-  }
+  bottom: $calc-application-footer-height; // Note: this should be removed once paneled architecture is in GA
 }
 
 .rca-bar-component.rca-bar-component-fullscreen {

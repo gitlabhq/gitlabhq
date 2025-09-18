@@ -285,12 +285,12 @@ export default {
           />
           <sidebar-portal-target />
         </scroll-scrim>
-        <div v-if="showTrialWidget" class="gl-p-2">
+        <div v-if="showTrialWidget && !isIconOnly" class="gl-p-2">
           <trial-widget
             class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-base gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
           />
         </div>
-        <div v-if="showDuoAgentPlatformWidget" class="gl-p-2">
+        <div v-if="showDuoAgentPlatformWidget && !isIconOnly" class="gl-p-2">
           <duo-agent-platform-widget
             class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-base gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
           />

@@ -61,9 +61,9 @@ GitLab Dedicated always includes an Ultimate subscription.
 For add-ons, the possibilities are:
 
 ```markdown
-- Add-on: GitLab Duo Pro
-- Add-on: GitLab Duo Enterprise
+- Add-on: GitLab Duo Core, Pro, or Enterprise
 - Add-on: GitLab Duo Pro or Enterprise
+- Add-on: GitLab Duo Enterprise
 - Add-on: GitLab Duo with Amazon Q
 ```
 

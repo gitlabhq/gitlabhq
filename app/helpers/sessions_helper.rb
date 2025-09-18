@@ -2,6 +2,7 @@
 
 module SessionsHelper
   include Gitlab::Utils::StrongMemoize
+  include VerifiesWithEmailHelper
 
   def unconfirmed_email?
     flash[:alert] == t(:unconfirmed, scope: [:devise, :failure])
@@ -26,7 +27,8 @@ module SessionsHelper
       username: user.username,
       obfuscated_email: obfuscated_email(user.email),
       verify_path: session_path(:user),
-      resend_path: users_resend_verification_code_path
+      resend_path: users_resend_verification_code_path,
+      permitted_to_skip_email_otp_in_grace_period: permitted_to_skip_email_otp_in_grace_period?(user)
     }
   end
 end

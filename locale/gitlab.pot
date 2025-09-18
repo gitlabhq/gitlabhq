@@ -21192,6 +21192,9 @@ msgstr ""
 msgid "DastProfiles|Generate graph"
 msgstr ""
 
+msgid "DastProfiles|Grouped URLs"
+msgstr ""
+
 msgid "DastProfiles|Hide debug messages"
 msgstr ""
 
@@ -21433,6 +21436,9 @@ msgid "DastProfiles|Set to a comma-separated list of cookie names to specify whi
 msgstr ""
 
 msgid "DastProfiles|Set to a comma-separated list of request header names and values. The following headers are not supported: `content-length`, `cookie2`, `keep-alive`, `hosts`, `trailer`, `transfer-encoding`, and all headers with a `proxy-` prefix."
+msgstr ""
+
+msgid "DastProfiles|Set to a comma-separated list of wildcard URL patterns with at least one `*`. To reduce scan time, the scanner groups and analyzes only one matched URL per pattern."
 msgstr ""
 
 msgid "DastProfiles|Set to log protocol messages between DAST and the Chromium browser."

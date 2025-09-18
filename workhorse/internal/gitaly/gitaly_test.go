@@ -112,3 +112,54 @@ func TestWithOutgoingMetadata(t *testing.T) {
 		"remote_ip":          {"1.2.3.4"},
 	}, md)
 }
+
+func TestCorrelationIDPropagation(t *testing.T) {
+	correlationID := "test-correlation-123"
+
+	ctx := context.WithValue(context.Background(), GitalyCorrelationIDKey, correlationID)
+
+	server := api.GitalyServer{
+		Address: "tcp://example.com:9999",
+		Token:   "secret-token",
+		CallMetadata: map[string]string{
+			"user_id": "123",
+		},
+	}
+
+	resultCtx := withOutgoingMetadata(ctx, server)
+
+	md, ok := metadata.FromOutgoingContext(resultCtx)
+	require.True(t, ok, "outgoing metadata should be present")
+
+	correlationValues := md.Get("x-gitlab-correlation-id")
+	require.Len(t, correlationValues, 1, "should have exactly one correlation ID")
+	require.Equal(t, correlationID, correlationValues[0], "correlation ID should match")
+
+	userIDValues := md.Get("user_id")
+	require.Len(t, userIDValues, 1, "should preserve other metadata")
+	require.Equal(t, "123", userIDValues[0], "user_id should be preserved")
+}
+
+func TestCorrelationIDPropagationWithoutCorrelationID(t *testing.T) {
+	ctx := context.Background()
+
+	server := api.GitalyServer{
+		Address: "tcp://example.com:9999",
+		Token:   "secret-token",
+		CallMetadata: map[string]string{
+			"user_id": "123",
+		},
+	}
+
+	resultCtx := withOutgoingMetadata(ctx, server)
+
+	md, ok := metadata.FromOutgoingContext(resultCtx)
+	require.True(t, ok, "outgoing metadata should be present")
+
+	correlationValues := md.Get("x-gitlab-correlation-id")
+	require.Len(t, correlationValues, 0, "should have no correlation ID when none provided")
+
+	userIDValues := md.Get("user_id")
+	require.Len(t, userIDValues, 1, "should still preserve other metadata")
+	require.Equal(t, "123", userIDValues[0], "user_id should be preserved")
+}

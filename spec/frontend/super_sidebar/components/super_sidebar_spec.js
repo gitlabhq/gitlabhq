@@ -345,7 +345,11 @@ describe('SuperSidebar component', () => {
       describe('in icon-only mode', () => {
         beforeEach(() => {
           createWrapper({
-            provide: { projectStudioEnabled: true },
+            provide: {
+              projectStudioEnabled: true,
+              showTrialWidget: true,
+              showDuoAgentPlatformWidget: true,
+            },
             sidebarState: { isMobile: false, isIconOnly: true },
           });
         });
@@ -354,21 +358,35 @@ describe('SuperSidebar component', () => {
           expect(findIconOnlyToggle().exists()).toBe(true);
         });
 
-        it('does not render the context header text when in icon-only mode', () => {
+        it('does not render the context header text', () => {
           expect(findContextHeader().exists()).toBe(false);
+        });
+
+        it('does not render the any widgets', () => {
+          expect(findTrialWidget().exists()).toBe(false);
+          expect(findDapWidget().exists()).toBe(false);
         });
       });
 
       describe('in full mode', () => {
         beforeEach(() => {
           createWrapper({
-            provide: { projectStudioEnabled: true },
+            provide: {
+              projectStudioEnabled: true,
+              showTrialWidget: true,
+              showDuoAgentPlatformWidget: true,
+            },
             sidebarState: { isMobile: false, isIconOnly: false },
           });
         });
 
         it('renders the context header normally', () => {
           expect(findContextHeader().text()).toBe('Your work');
+        });
+
+        it('renders the widgets', () => {
+          expect(findTrialWidget().exists()).toBe(true);
+          expect(findDapWidget().exists()).toBe(true);
         });
       });
     });

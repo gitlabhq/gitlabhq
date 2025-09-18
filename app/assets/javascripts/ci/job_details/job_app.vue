@@ -321,7 +321,7 @@ export default {
           <nav
             v-if="displayStickyFooter"
             :class="[
-              'rca-bar-component gl-sticky gl-py-2',
+              'rca-bar-component gl-sticky gl-z-200 gl-bg-default gl-py-3',
               { 'rca-bar-component-fullscreen': fullScreenEnabled },
             ]"
             data-testid="rca-bar-component"
@@ -360,7 +360,6 @@ export default {
           :class="{
             'right-sidebar-expanded': isSidebarOpen,
             'right-sidebar-collapsed': !isSidebarOpen,
-            '!gl-bottom-8': displayStickyFooter,
           }"
           :artifact-help-url="artifactHelpUrl"
           data-testid="job-sidebar"

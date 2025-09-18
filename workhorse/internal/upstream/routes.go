@@ -88,8 +88,6 @@ var (
 	// from downloading it we configure static.ServeExisting to treat files
 	// under public/uploads/ as if they do not exist.
 	staticExclude = []string{"/uploads/"}
-	// XGitalyCorrelationID is the header name for Git operation correlation IDs
-	XGitalyCorrelationID = "X-Gitaly-Correlation-Id"
 )
 
 func newRoute(regexpStr, routeID string, backendID routeBackend) routeMetadata {
@@ -159,7 +157,7 @@ func (u *upstream) observabilityMiddlewares(handler http.Handler, method string,
 				fields["body_limit"] = opts.bodyLimit
 			}
 
-			if correlationID := r.Header.Get(XGitalyCorrelationID); correlationID != "" {
+			if correlationID := r.Header.Get(git.XGitalyCorrelationID); correlationID != "" {
 				fields["gitaly_correlation_id"] = correlationID
 			}
 

@@ -6,7 +6,7 @@
 module VerifiesWithEmail
   extend ActiveSupport::Concern
   include ActionView::Helpers::DateHelper
-  include SessionsHelper
+  include VerifiesWithEmailHelper
 
   VERIFICATION_REASON_UNTRUSTED_IP = 'sign in from untrusted IP address'
   VERIFICATION_REASON_NEW_TOKEN_NEEDED = 'new unlock token needed'
@@ -144,15 +144,6 @@ module VerifiesWithEmail
     treat_as_locked?(user) || !trusted_ip_address?(user) || require_email_based_otp?(user)
   end
 
-  def treat_as_locked?(user)
-    # A user can have #access_locked? return false, but we still want
-    # to treat as locked during sign in if they were sent an unlock
-    # token in the past.
-    # See https://docs.gitlab.com/security/unlock_user/#gitlabcom-users
-    # and https://gitlab.com/gitlab-org/gitlab/-/issues/560080.
-    user.access_locked? || user.unlock_token
-  end
-
   def verify_email(user)
     return true unless requires_verify_email?(user)
 
@@ -276,10 +267,6 @@ module VerifiesWithEmail
     log_audit_event(current_user, user, with: authentication_method)
     log_user_activity(user)
     verify_known_sign_in
-  end
-
-  def trusted_ip_address?(user)
-    AuthenticationEvent.initial_login_or_known_ip_address?(user, request.ip)
   end
 
   def prompt_for_email_verification(user)

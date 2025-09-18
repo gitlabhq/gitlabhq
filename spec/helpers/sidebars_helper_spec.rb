@@ -103,7 +103,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         is_admin: false,
         name: user.name,
         username: user.username,
-        admin_url: admin_root_url,
+        admin_url: admin_root_path,
         admin_mode: {
           admin_mode_feature_enabled: true,
           admin_mode_active: false,

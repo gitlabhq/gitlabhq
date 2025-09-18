@@ -595,13 +595,27 @@ RSpec.describe Note, feature_category: :team_planning do
   end
 
   describe '#refresh_markdown_cache!' do
-    it 'updates sharding key if at least one column is not present' do
+    let(:note) do
       note = create(:note_on_personal_snippet)
-      note.project_id = nil
-      note.namespace_id = nil
-      note.organization_id = nil
-      note.save!(validate: false)
+      note.update_columns(project_id: nil, namespace_id: nil, organization_id: nil)
 
+      note
+    end
+
+    before do
+      described_class.connection.execute(<<~SQL)
+        ALTER TABLE notes DROP CONSTRAINT IF EXISTS check_82f260979e
+      SQL
+
+      note
+
+      described_class.connection.execute(<<~SQL)
+        ALTER TABLE notes ADD CONSTRAINT check_82f260979e
+          CHECK ((num_nonnulls(namespace_id, organization_id, project_id) >= 1)) NOT VALID
+      SQL
+    end
+
+    it 'updates sharding key if at least one column is not present' do
       expect do
         note.refresh_markdown_cache!
       end.to change { [note.project_id, note.namespace_id, note.organization_id] }

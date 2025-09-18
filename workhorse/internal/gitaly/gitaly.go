@@ -38,6 +38,12 @@ import (
 	grpctracing "gitlab.com/gitlab-org/labkit/tracing/grpc"
 )
 
+// contextKey defines a custom type for context keys to avoid collisions
+type contextKey string
+
+// GitalyCorrelationIDKey is the context key for storing Git operation correlation IDs
+const GitalyCorrelationIDKey contextKey = "gitaly_correlation_id"
+
 type cacheKey struct {
 	address, token string
 }
@@ -93,6 +99,12 @@ func withOutgoingMetadata(ctx context.Context, gs api.GitalyServer) context.Cont
 			md.Set(k, v)
 		}
 	}
+
+	// Extract correlation ID from context and add to gRPC metadata
+	if correlationID, ok := ctx.Value(GitalyCorrelationIDKey).(string); ok && correlationID != "" {
+		md.Set("x-gitlab-correlation-id", correlationID)
+	}
+
 	return metadata.NewOutgoingContext(ctx, md)
 }
 
