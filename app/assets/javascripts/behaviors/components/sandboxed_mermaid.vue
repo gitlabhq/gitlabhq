@@ -18,7 +18,6 @@ export default {
   data() {
     return {
       iframeHeight: BUFFER_IFRAME_HEIGHT,
-      sandboxFrameSrc: getSandboxFrameSrc(),
     };
   },
 
@@ -37,8 +36,6 @@ export default {
   },
 
   methods: {
-    getSandboxFrameSrc,
-
     onPostMessage(event) {
       const container = this.$refs.diagramContainer;
 

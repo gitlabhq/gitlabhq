@@ -4,11 +4,11 @@ module Authz
   class Permission
     class << self
       def all
-        @permissions ||= load_definitions
+        @permissions ||= load_permissions
       end
 
       def get(name)
-        all[name]
+        all[name.to_sym]
       end
 
       def defined?(name)
@@ -17,22 +17,22 @@ module Authz
 
       private
 
-      def load_definitions
-        permission_defs = {}
+      def load_permissions
+        permissions = {}
 
         Dir.glob(permission_path).each do |file|
-          definition = load_from_file(file)
-          permission_defs[definition[:name].to_sym] = new(definition)
+          permission = load_from_file(file)
+          permissions[permission.name.to_sym] = permission
         end
 
-        permission_defs
+        permissions
       end
 
       def load_from_file(path)
-        definition = File.read(path)
-        definition = YAML.safe_load(definition)
+        definition_data = File.read(path)
+        definition = YAML.safe_load(definition_data)
         definition.deep_symbolize_keys!
-        definition
+        new(definition, path)
       end
 
       def permission_path
@@ -40,10 +40,11 @@ module Authz
       end
     end
 
-    attr_reader :definition
+    attr_reader :definition, :source_file
 
-    def initialize(definition)
+    def initialize(definition, source_file)
       @definition = definition
+      @source_file = source_file
     end
 
     def name

@@ -5,6 +5,7 @@ require 'spec_helper'
 
 RSpec.describe Authz::Permission, feature_category: :permissions do
   let(:scopes) { ['project'] }
+  let(:source_file) { 'config/authz/permissions/permission/test.yml' }
   let(:definition) do
     {
       name: 'test_permission',
@@ -14,7 +15,7 @@ RSpec.describe Authz::Permission, feature_category: :permissions do
     }
   end
 
-  subject(:permission) { described_class.new(definition) }
+  subject(:permission) { described_class.new(definition, source_file) }
 
   describe '.all' do
     it 'loads all permission definitions' do
@@ -89,6 +90,12 @@ RSpec.describe Authz::Permission, feature_category: :permissions do
       it 'returns an empty array' do
         expect(permission.scopes).to eq([])
       end
+    end
+  end
+
+  describe '#source_file' do
+    specify do
+      expect(permission.source_file).to eq(source_file)
     end
   end
 end

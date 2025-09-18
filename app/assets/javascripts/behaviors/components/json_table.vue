@@ -69,11 +69,6 @@ export default {
       return document.documentElement.innerText.trim();
     });
   },
-  methods: {
-    cellSlot(field) {
-      return `cell(${field.key})`;
-    },
-  },
   safeHtmlConfig: {
     ...defaultConfig,
     FORBID_ATTR: [...defaultConfig.FORBID_ATTR, 'class', 'style'],

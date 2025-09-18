@@ -4,8 +4,10 @@ module Tasks
   module Gitlab
     module Permissions
       class ValidateTask
-        PERMISSION_TODO_FILE = 'config/authz/permissions/definitions_todo.txt'
+        PERMISSION_DIR = 'config/authz/permissions'
+        PERMISSION_TODO_FILE = "#{PERMISSION_DIR}/definitions_todo.txt".freeze
         JSON_SCHEMA_FILE = 'config/authz/permissions/type_schema.json'
+        PERMISSION_NAME_REGEX = /\A[a-z]+_[a-z_]+[a-z]\z/
 
         DISALLOWED_ACTIONS = {
           admin: 'a granular action',
@@ -20,37 +22,45 @@ module Tasks
         }.freeze
 
         ERROR_MESSAGES = {
-          docs: "The following permissions are missing a documentation file." \
-            "\nRun bundle exec rails generate authz:permission <NAME> to generate documentation files.",
-          excluded: "The following permissions have a documentation file." \
+          definition: "The following permissions are missing a definition file." \
+            "\nRun bundle exec rails generate authz:permission <NAME> to generate definition files.",
+          excluded: "The following permissions have a definition file." \
             "\nRemove them from config/authz/permissions/definitions_todo.txt.",
           schema: "The following permissions failed schema validation.",
-          action: "The following permissions contain a disallowed action."
+          action: "The following permissions contain a disallowed action.",
+          name: "The following permissions have invalid names." \
+            "\nPermission name must be in the format action_resource[_subresource].",
+          file: "The following permission definitions do not exist at the expected path.",
+          unknown_permission: "The following permissions have a definition file but are not found in " \
+            "declarative policy.\nRemove the definition files for the unkonwn permissions."
         }.freeze
+
+        attr_reader :declarative_policy_permissions
 
         def initialize
           @violations = {
-            docs: [],
+            definition: [],
             excluded: [],
             schema: {},
-            action: {}
+            action: {},
+            name: [],
+            file: {},
+            unknown_permission: []
           }
-          @defined_permissions = []
+          @declarative_policy_permissions = load_declarative_policy_permissions
         end
 
         def run
-          declarative_policy_permissions.each { |permission| validate_permission(permission) }
+          validate!
 
-          abort_if_errors_found!
-
-          puts "Permissions documentation is up-to-date"
+          puts "Permission definitions are up-to-date"
         end
 
         private
 
-        attr_reader :defined_permissions, :violations
+        attr_reader :violations
 
-        def declarative_policy_permissions
+        def load_declarative_policy_permissions
           require_policy_files
 
           permissions = []
@@ -62,6 +72,13 @@ module Tasks
           permissions.sort.uniq
         end
 
+        def validate!
+          declarative_policy_permissions.each { |permission| validate_permission(permission) }
+          validate_unknown_permissions
+
+          abort_if_errors_found!
+        end
+
         def abort_if_errors_found!
           return if violations.all? { |_, v| v.empty? }
 
@@ -71,27 +88,29 @@ module Tasks
         end
 
         def print_errors
-          out = format_doc_errors
+          out = format_error_list(:definition)
+          out += format_error_list(:excluded)
           out += format_schema_errors
+          out += format_error_list(:name)
           out += format_action_errors
+          out += format_file_errors
+          out += format_error_list(:unknown_permission)
 
           puts "#######################################################################\n#"
           puts out.gsub(/^/, '#  ').gsub(/\s+$/, '')
           puts "#######################################################################"
         end
 
-        def format_doc_errors
-          out = ''
+        def format_error_list(kind)
+          return '' if violations[kind].empty?
 
-          %i[docs excluded].each do |kind|
-            next if violations[kind].empty?
+          out = "#{ERROR_MESSAGES[kind]}\n\n"
 
-            out += "#{ERROR_MESSAGES[kind]}\n\n"
-            violations[kind].each { |v| out += "  - #{v}\n" }
-            out += "\n"
+          violations[kind].each do |permission|
+            out += "  - #{permission}\n"
           end
 
-          out
+          "#{out}\n"
         end
 
         def format_schema_errors
@@ -122,6 +141,18 @@ module Tasks
           "#{out}\n"
         end
 
+        def format_file_errors
+          return '' if violations[:file].empty?
+
+          out = "#{ERROR_MESSAGES[:file]}\n"
+
+          violations[:file].each do |permission, expected_path|
+            out += "\n  - Name: #{permission}\n    Expected Path: #{expected_path}\n"
+          end
+
+          "#{out}\n"
+        end
+
         def require_policy_files
           Dir["./app/policies/**/*.rb"].each { |file| require file }
           Dir["./ee/app/policies/**/*.rb"].each { |file| require file }
@@ -131,25 +162,53 @@ module Tasks
           excluded = exclusion_list.include?(permission_name)
           permission = Authz::Permission.get(permission_name)
 
-          if permission.present?
-            violations[:excluded] << permission_name if excluded
-
-            errors = schema_validator.validate(permission.definition)
-            violations[:schema][permission_name] = errors if errors.any?
-
-            validate_action(permission_name)
-          else
-            violations[:docs] << permission_name unless excluded
+          unless permission.present?
+            violations[:definition] << permission_name unless excluded
+            return
           end
+
+          violations[:excluded] << permission_name if excluded
+          validate_schema(permission)
+          validate_name(permission)
+          validate_action(permission)
+          validate_file(permission)
         end
 
-        def validate_action(permission_name)
-          action = permission_name.to_s.split('_').first.to_sym
+        def validate_schema(permission)
+          errors = schema_validator.validate(permission.definition)
+          violations[:schema][permission.name] = errors if errors.any?
+        end
+
+        def validate_action(permission)
+          action = permission.name.to_s.split('_').first.to_sym
 
           preferred_action = DISALLOWED_ACTIONS[action]
           return unless preferred_action
 
-          violations[:action][permission_name] = action
+          violations[:action][permission.name] = action
+        end
+
+        def validate_name(permission)
+          return if PERMISSION_NAME_REGEX.match?(permission.name)
+
+          violations[:name] << permission.name
+        end
+
+        def validate_file(permission)
+          action, resource = permission.name.split('_', 2)
+
+          # No need to check the file path with an invalid name
+          return unless action && resource
+
+          expected_file = "#{PERMISSION_DIR}/#{resource}/#{action}.yml"
+          return if permission.source_file.ends_with?(expected_file)
+
+          violations[:file][permission.name] = expected_file
+        end
+
+        def validate_unknown_permissions
+          defined_permissions = ::Authz::Permission.all.keys.map(&:to_sym)
+          violations[:unknown_permission] = defined_permissions - declarative_policy_permissions
         end
 
         def exclusion_list

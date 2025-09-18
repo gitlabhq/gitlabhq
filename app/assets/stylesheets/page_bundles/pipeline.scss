@@ -220,6 +220,10 @@
     padding: $gl-padding;
   }
 
+  .media-body {
+    flex-direction: row;
+  }
+
   .report-block-container {
     height: auto !important;
   }

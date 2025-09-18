@@ -3,9 +3,6 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/behaviors/components/json_table.vue',
-    'app/assets/javascripts/behaviors/components/sandboxed_mermaid.vue',
-    'app/assets/javascripts/behaviors/shortcuts/shortcut.vue',
     'app/assets/javascripts/ci/jobs_page/components/job_cells/actions_cell.vue',
     'app/assets/javascripts/ci/jobs_page/components/job_cells/status_cell.vue',
     'app/assets/javascripts/ci/merge_requests/components/pipelines_table_wrapper.vue',

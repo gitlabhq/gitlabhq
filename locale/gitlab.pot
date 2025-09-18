@@ -29566,6 +29566,12 @@ msgstr ""
 msgid "Geo|Reverify all %{type}"
 msgstr ""
 
+msgid "Geo|Reverify all failed"
+msgstr ""
+
+msgid "Geo|Reverify all failed %{type}"
+msgstr ""
+
 msgid "Geo|Review replication status, and resynchronize and reverify items with the primary site."
 msgstr ""
 
@@ -29579,6 +29585,9 @@ msgid "Geo|Scheduled all %{replicableType} for reverification."
 msgstr ""
 
 msgid "Geo|Scheduled all %{replicableType} with a failed replication status for resynchronization."
+msgstr ""
+
+msgid "Geo|Scheduled all %{replicableType} with a failed verification status for reverification."
 msgstr ""
 
 msgid "Geo|Secondary"
@@ -29731,10 +29740,16 @@ msgstr ""
 msgid "Geo|There was an error scheduling all %{replicableType} with a failed replication status for resynchronization."
 msgstr ""
 
+msgid "Geo|There was an error scheduling all %{replicableType} with a failed verification status for reverification."
+msgstr ""
+
 msgid "Geo|There was an error updating the Geo Settings"
 msgstr ""
 
 msgid "Geo|This GitLab instance is subscribed to the %{insufficient_license} tier. Geo is only available for users who have at least a Premium subscription."
+msgstr ""
+
+msgid "Geo|This will schedule a future job to retry the secondary verification process for all %{type} that have a failed verification status. It may take some time to complete. Are you sure you want to continue?"
 msgstr ""
 
 msgid "Geo|This will schedule a future job to retry the secondary verification process for all %{type}. It may take some time to complete. Are you sure you want to continue?"

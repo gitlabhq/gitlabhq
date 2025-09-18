@@ -8,6 +8,7 @@ module Ci
     self.primary_key = :id
 
     ignore_column :sharding_key_id, remove_with: '18.6', remove_after: '2025-10-22'
+    ignore_column :name, remove_with: '18.7', remove_after: '2025-11-20'
 
     query_constraints :runner_id, :runner_type
 
