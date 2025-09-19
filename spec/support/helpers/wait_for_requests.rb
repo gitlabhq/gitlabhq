@@ -39,8 +39,8 @@ module WaitForRequests
   end
 
   # Wait for client-side AJAX requests
-  def wait_for_requests
-    wait_for('JS requests complete', max_wait_time: 2 * Capybara.default_max_wait_time) do
+  def wait_for_requests(max_wait_time: 2 * Capybara.default_max_wait_time)
+    wait_for('JS requests complete', max_wait_time: max_wait_time) do
       finished_all_js_requests?
     end
   end
