@@ -25992,6 +25992,12 @@ msgstr ""
 msgid "Enter a name for your comment template"
 msgstr ""
 
+msgid "Enter a name for your group."
+msgstr ""
+
+msgid "Enter a name for your project."
+msgstr ""
+
 msgid "Enter a number"
 msgstr ""
 
@@ -58455,6 +58461,9 @@ msgstr ""
 msgid "SecurityOrchestration|A consultant will show up in the bot comment and developers should ask them for help if needed."
 msgstr ""
 
+msgid "SecurityOrchestration|A formal exception record will be created and linked to this merge requests"
+msgstr ""
+
 msgid "SecurityOrchestration|A new project will be created to be used to store security policies. If a project already exists with security policies, link it via the policy list page."
 msgstr ""
 
@@ -58533,7 +58542,7 @@ msgstr ""
 msgid "SecurityOrchestration|All scanners"
 msgstr ""
 
-msgid "SecurityOrchestration|All selected policy requirements will be bypassed"
+msgid "SecurityOrchestration|All selected policy requirements will be bypassed."
 msgstr ""
 
 msgid "SecurityOrchestration|All sources"
@@ -58584,6 +58593,9 @@ msgstr ""
 msgid "SecurityOrchestration|At least one framework label should be selected"
 msgstr ""
 
+msgid "SecurityOrchestration|Authorized business risk acceptance"
+msgstr ""
+
 msgid "SecurityOrchestration|Automate %{strongStart}vulnerability management%{strongEnd} workflows."
 msgstr ""
 
@@ -58603,6 +58615,9 @@ msgid "SecurityOrchestration|Branch: %{boldStart}%{branchName}%{boldEnd} was not
 msgstr ""
 
 msgid "SecurityOrchestration|Bypass Policy Violation"
+msgstr ""
+
+msgid "SecurityOrchestration|Bypass policy violations"
 msgstr ""
 
 msgid "SecurityOrchestration|Bypassed as"
@@ -58695,6 +58710,9 @@ msgstr ""
 msgid "SecurityOrchestration|Create security policy"
 msgstr ""
 
+msgid "SecurityOrchestration|Critical business deadline"
+msgstr ""
+
 msgid "SecurityOrchestration|Custom"
 msgstr ""
 
@@ -58783,6 +58801,9 @@ msgid "SecurityOrchestration|Edit vulnerability management policy"
 msgstr ""
 
 msgid "SecurityOrchestration|Emergency hotfix"
+msgstr ""
+
+msgid "SecurityOrchestration|Emergency production issue"
 msgstr ""
 
 msgid "SecurityOrchestration|Empty policy name"
@@ -59093,6 +59114,9 @@ msgstr ""
 msgid "SecurityOrchestration|Override the following project settings:"
 msgstr ""
 
+msgid "SecurityOrchestration|Override this specific policy violation with documented justification. Only available to eligible users. This bypass impacts all policy gates on this MR."
+msgstr ""
+
 msgid "SecurityOrchestration|Pipeline execution"
 msgstr ""
 
@@ -59169,6 +59193,9 @@ msgid "SecurityOrchestration|Policy status"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy type"
+msgstr ""
+
+msgid "SecurityOrchestration|Policy violations have been bypassed"
 msgstr ""
 
 msgid "SecurityOrchestration|Prevent users from skipping pipelines"
@@ -59318,6 +59345,9 @@ msgstr ""
 msgid "SecurityOrchestration|Security scans to execute"
 msgstr ""
 
+msgid "SecurityOrchestration|Security teams will be notified of this exception"
+msgstr ""
+
 msgid "SecurityOrchestration|Select a cadence"
 msgstr ""
 
@@ -59435,10 +59465,16 @@ msgstr ""
 msgid "SecurityOrchestration|Summary of syntax changes:"
 msgstr ""
 
+msgid "SecurityOrchestration|Technical limitation"
+msgstr ""
+
 msgid "SecurityOrchestration|Template"
 msgstr ""
 
-msgid "SecurityOrchestration|The action will be logged in the audit log"
+msgid "SecurityOrchestration|The action will be logged in the audit log with your justification"
+msgstr ""
+
+msgid "SecurityOrchestration|The action will be logged in the audit log."
 msgstr ""
 
 msgid "SecurityOrchestration|The compliance pipeline will continue to override the new pipeline execution policy until it is removed from the compliance framework configuration."

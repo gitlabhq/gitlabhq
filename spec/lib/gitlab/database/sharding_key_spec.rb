@@ -12,7 +12,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'web_hook_logs_daily', # temporary copy of web_hook_logs
       'ci_gitlab_hosted_runner_monthly_usages', # https://gitlab.com/gitlab-org/gitlab/-/issues/553104
       'uploads_9ba88c4165', # https://gitlab.com/gitlab-org/gitlab/-/issues/398199
-      'merge_request_diff_files_99208b8fac' # has a desired sharding key instead
+      'merge_request_diff_files_99208b8fac', # has a desired sharding key instead
+      'notes_archived' # temp table: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191155
     ]
   end
 
@@ -305,7 +306,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "abuse_report_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553429",
       "abuse_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553427",
       "abuse_report_assignees" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553428",
-      "notes" => "https://gitlab.com/gitlab-org/gitlab/-/issues/569521"
+      "notes" => "https://gitlab.com/gitlab-org/gitlab/-/issues/569521",
+      "notes_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/569521"
     }
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }
 

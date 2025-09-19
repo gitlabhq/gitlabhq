@@ -218,6 +218,12 @@ For more information, see [Model selection](../../user/gitlab_duo/model_selectio
 
 ### GitLab.com AI gateway with default GitLab external vendor LLMs
 
+{{< details >}}
+
+- Add-on: GitLab Duo Core, Pro, or Enterprise
+
+{{< /details >}}
+
 If you do not meet the use case criteria for GitLab Duo Self-Hosted, you can use the
 GitLab.com AI gateway with default GitLab external vendor LLMs.
 
@@ -231,8 +237,6 @@ integrates with external vendor LLM providers, including:
 
 These LLMs communicate through the GitLab Cloud Connector,
 offering a ready-to-use AI solution without the need for on-premise infrastructure.
-
-For licensing, you must have a GitLab Premium or Ultimate subscription, and [GitLab Duo Enterprise](https://about.gitlab.com/solutions/gitlab-duo-pro/sales/?type=free-trial). To get access to your purchased subscription, request a license through the [Customers Portal](../../subscriptions/customers_portal.md)
 
 For more information, see the [GitLab.com AI gateway configuration diagram](configuration_types.md#gitlabcom-ai-gateway).
 

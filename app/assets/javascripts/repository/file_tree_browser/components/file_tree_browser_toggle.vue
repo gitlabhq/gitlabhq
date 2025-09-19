@@ -31,9 +31,9 @@ export default {
     };
   },
   computed: {
-    ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserVisible']),
+    ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserIsVisible']),
     toggleFileBrowserTitle() {
-      return this.fileTreeBrowserVisible
+      return this.fileTreeBrowserIsVisible
         ? __('Hide file tree browser')
         : __('Show file tree browser');
     },
@@ -42,12 +42,12 @@ export default {
     },
   },
   methods: {
-    ...mapActions(useFileTreeBrowserVisibility, ['toggleFileTreeVisibility']),
+    ...mapActions(useFileTreeBrowserVisibility, ['handleFileTreeBrowserToggleClick']),
     onClickToggle() {
-      this.toggleFileTreeVisibility();
+      this.handleFileTreeBrowserToggleClick();
 
       this.trackEvent(
-        this.fileTreeBrowserVisible
+        this.fileTreeBrowserIsVisible
           ? EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE
           : EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
         {

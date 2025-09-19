@@ -485,8 +485,6 @@ expire_avatar_cache:
   file: app/models/repository.rb
 blobs_metadata:
   file: app/models/repository.rb
-from_merge_request_author?:
-  file: app/models/review.rb
 owner_class_attribute_default:
   file: app/models/service_desk/custom_email_verification.rb
 valid_secret_token?:

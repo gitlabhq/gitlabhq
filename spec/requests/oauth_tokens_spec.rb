@@ -21,10 +21,6 @@ RSpec.describe 'OAuth Tokens requests', feature_category: :system_access do
       }
   end
 
-  def request_token_info(token, headers: {})
-    get '/oauth/token/info', params: {}, headers: { 'Authorization' => "Bearer #{token}" }.merge(headers)
-  end
-
   def generate_access_grant(user)
     create(:oauth_access_grant, application: application, resource_owner_id: user.id)
   end
@@ -53,11 +49,14 @@ RSpec.describe 'OAuth Tokens requests', feature_category: :system_access do
     end
 
     it 'allows cross origin for token info' do
-      request_token_info(existing_token.plaintext_token, headers: { 'Origin' => 'http://notgitlab.example.com' })
+      options '/oauth/token/info', params: {}, headers:
+        { 'Origin' => 'https://bar.example.com',
+          'Access-Control-Request-Method' => 'GET',
+          'Access-Control-Request-Headers' => 'x-gitlab-language-server-version,authorization' }
 
       expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
       expect(response.headers['Access-Control-Allow-Methods']).to eq 'GET, HEAD, OPTIONS'
-      expect(response.headers['Access-Control-Allow-Headers']).to be_nil
+      expect(response.headers['Access-Control-Allow-Headers']).to eq 'x-gitlab-language-server-version,authorization'
       expect(response.headers['Access-Control-Allow-Credentials']).to be_nil
     end
 

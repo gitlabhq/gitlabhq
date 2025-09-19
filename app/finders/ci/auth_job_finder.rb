@@ -60,6 +60,8 @@ module Ci
     end
 
     def validate_running_job!(job, allow_canceling)
+      return if job.waiting_for_runner_ack?
+
       raise NotRunningJobError, 'Job is not running' unless job.running? || (allow_canceling && job.canceling?)
     end
 

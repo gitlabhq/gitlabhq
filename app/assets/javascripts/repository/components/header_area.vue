@@ -138,8 +138,8 @@ export default {
     };
   },
   computed: {
-    ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserVisible']),
-    ...mapState(useViewport, ['isCompactViewport']),
+    ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserIsVisible']),
+    ...mapState(useViewport, ['isCompactSize']),
     isTreeView() {
       return this.$route.name !== 'blobPathDecoded';
     },
@@ -212,8 +212,8 @@ export default {
       return (
         this.glFeatures.repositoryFileTreeBrowser &&
         !this.isProjectOverview &&
-        !this.fileTreeBrowserVisible &&
-        !this.isCompactViewport
+        !this.fileTreeBrowserIsVisible &&
+        !this.isCompactSize
       );
     },
     toggleFileBrowserShortcutKey() {
@@ -225,7 +225,7 @@ export default {
   },
   mounted() {
     if (this.glFeatures.repositoryFileTreeBrowser) {
-      this.initFileTreeVisibility();
+      this.initializeFileTreeBrowser();
       this.bindShortcuts();
     }
   },
@@ -234,14 +234,14 @@ export default {
   },
   methods: {
     ...mapActions(useFileTreeBrowserVisibility, [
-      'initFileTreeVisibility',
-      'toggleFileTreeVisibility',
+      'initializeFileTreeBrowser',
+      'handleFileTreeBrowserToggleClick',
     ]),
     onShortcutToggle() {
-      this.toggleFileTreeVisibility();
+      this.handleFileTreeBrowserToggleClick();
 
       this.trackEvent(
-        this.fileTreeBrowserVisible
+        this.fileTreeBrowserIsVisible
           ? EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE
           : EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
         {

@@ -84,8 +84,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       group_saml_identities
       deployment_approvals
       smartcard_identities
-      group_scim_identities
-      instance_scim_identities
       scim_group_memberships
       board_preferences
       user_permission_export_uploads

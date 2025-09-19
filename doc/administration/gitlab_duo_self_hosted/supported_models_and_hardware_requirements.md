@@ -29,7 +29,7 @@ GitLab Duo Self-Hosted supports integration with industry-leading models from Mi
 
 You can choose from these [supported models](#supported-models) to match your specific performance needs and use cases.
 
-In GitLab 18.3 and later, you can also bring your own compatible model, giving you the flexibility to experiment with additional language models beyond the officially supported options.
+In GitLab 18.3 and later, you can also use your own compatible model, giving you the flexibility to experiment with additional language models beyond the officially supported options.
 
 ## Supported models
 
@@ -67,7 +67,7 @@ Support for the following GitLab-supported large language models (LLMs) is gener
 
 1. This model is scheduled for deprecation in GitLab 18.5. Mistral Small 24B Instruct 2506 is the recommended alternative.
 
-### Bring your own compatible model
+### Compatible models
 
 {{< details >}}
 
@@ -95,13 +95,13 @@ This feature is in beta and is therefore subject to change as we gather feedback
 | Model family | Model requirements | Supported platforms |
 |-------------|-------|---------------------|
 | General | Any model compatible with the [OpenAI API specification](https://platform.openai.com/docs/api-reference) | Any platform that provides OpenAI-compatible API endpoints |
-| CodeGemma      | [CodeGemma 2b](https://huggingface.co/google/codegemma-2b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | 
+| CodeGemma      | [CodeGemma 2b](https://huggingface.co/google/codegemma-2b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) |
 | CodeGemma      | [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) |
-| CodeGemma      | [CodeGemma 7b-code](https://huggingface.co/google/codegemma-7b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | 
-| Code Llama     | [Code-Llama 13b](https://huggingface.co/meta-llama/CodeLlama-13b-Instruct-hf) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | 
+| CodeGemma      | [CodeGemma 7b-code](https://huggingface.co/google/codegemma-7b) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) |
+| Code Llama     | [Code-Llama 13b](https://huggingface.co/meta-llama/CodeLlama-13b-Instruct-hf) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) |
 | DeepSeek Coder | [DeepSeek Coder 33b Instruct](https://huggingface.co/deepseek-ai/deepseek-coder-33b-instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) |
 | DeepSeek Coder | [DeepSeek Coder 33b Base](https://huggingface.co/deepseek-ai/deepseek-coder-33b-base) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) |
-| Mistral        | [Mistral 7B-it v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) <br> [AWS Bedrock](https://aws.amazon.com/bedrock/mistral/) | 
+| Mistral        | [Mistral 7B-it v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) <br> [AWS Bedrock](https://aws.amazon.com/bedrock/mistral/) |
 
 <!-- vale gitlab_base.Spelling = YES -->
 

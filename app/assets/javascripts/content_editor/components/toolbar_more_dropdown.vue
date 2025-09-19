@@ -33,17 +33,17 @@ export default {
         {
           text: __('Bullet list'),
           action: () => this.insertList('bulletList', 'listItem'),
-          wrapperClass: 'sm:!gl-hidden',
+          wrapperClass: '@sm/panel:!gl-hidden',
         },
         {
           text: __('Ordered list'),
           action: () => this.insertList('orderedList', 'listItem'),
-          wrapperClass: 'sm:!gl-hidden',
+          wrapperClass: '@sm/panel:!gl-hidden',
         },
         {
           text: __('Task list'),
           action: () => this.insertList('taskList', 'taskItem'),
-          wrapperClass: 'sm:!gl-hidden',
+          wrapperClass: '@sm/panel:!gl-hidden',
         },
         {
           text: __('Horizontal rule'),

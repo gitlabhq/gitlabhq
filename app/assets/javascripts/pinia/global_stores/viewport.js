@@ -33,12 +33,19 @@ export const useViewport = defineStore('viewportStore', () => {
     [breakpoints.narrow, isNarrowScreen],
   ].forEach(registerBreakpoint);
 
-  const updateIsNarrow = (matches) => {
-    isNarrowScreen.value = matches;
-  };
-
-  const updateIsCompact = (matches) => {
-    isCompactSize.value = matches;
+  const setViewportState = (state) => {
+    if (state.isNarrowScreen !== undefined) {
+      isNarrowScreen.value = state.isNarrowScreen;
+    }
+    if (state.isCompactSize !== undefined) {
+      isCompactSize.value = state.isCompactSize;
+    }
+    if (state.isIntermediateSize !== undefined) {
+      isIntermediateSize.value = state.isIntermediateSize;
+    }
+    if (state.isWideSize !== undefined) {
+      isWideSize.value = state.isWideSize;
+    }
   };
 
   const reset = () => {
@@ -50,16 +57,14 @@ export const useViewport = defineStore('viewportStore', () => {
 
   return {
     // used only for testing
-    updateIsNarrow,
-    // used only for testing
-    updateIsCompact,
+    setViewportState,
     // used only for testing
     reset,
 
     isNarrowScreen: computed(() => isNarrowScreen.value),
 
-    isCompactViewport: computed(() => isCompactSize.value),
-    isIntermediateViewport: computed(() => isIntermediateSize.value),
-    isWideViewport: computed(() => isWideSize.value),
+    isCompactSize: computed(() => isCompactSize.value),
+    isIntermediateSize: computed(() => isIntermediateSize.value),
+    isWideSize: computed(() => isWideSize.value),
   };
 });

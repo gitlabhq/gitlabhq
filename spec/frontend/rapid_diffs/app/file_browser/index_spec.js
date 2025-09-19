@@ -160,7 +160,7 @@ describe('Init file browser', () => {
     'when narrow screen is $isNarrowScreen',
     ({ isNarrowScreen, getBrowserElement, getBrowserToggleElement }) => {
       beforeEach(() => {
-        useViewport().updateIsNarrow(isNarrowScreen);
+        useViewport().setViewportState({ isNarrowScreen });
       });
 
       it('mounts the components', async () => {
@@ -204,7 +204,7 @@ describe('Init file browser', () => {
   });
 
   it('hides drawer toggle when app is hidden', async () => {
-    useViewport().updateIsNarrow(true);
+    useViewport().setViewportState({ isNarrowScreen: true });
     await init();
     useApp().appVisible = false;
     await nextTick();

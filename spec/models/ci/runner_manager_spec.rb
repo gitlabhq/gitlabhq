@@ -765,4 +765,102 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
       it { is_expected.to be true }
     end
   end
+
+  describe 'two_phase_job_commit runtime feature' do
+    let_it_be(:runner, freeze: true) { create(:ci_runner) }
+    let_it_be_with_reload(:runner_manager) { create(:ci_runner_machine, runner: runner) }
+
+    describe 'runtime_features validation' do
+      it 'accepts two_phase_job_commit as a valid runtime feature' do
+        runner_manager.runtime_features = { two_phase_job_commit: true }
+
+        expect(runner_manager).to be_valid
+      end
+
+      it 'accepts two_phase_job_commit set to false' do
+        runner_manager.runtime_features = { two_phase_job_commit: false }
+
+        expect(runner_manager).to be_valid
+      end
+
+      it 'accepts multiple runtime features including two_phase_job_commit' do
+        runner_manager.runtime_features = {
+          two_phase_job_commit: true,
+          cancel_gracefully: true,
+          other_feature: false
+        }
+
+        expect(runner_manager).to be_valid
+      end
+
+      it 'rejects non-boolean values for two_phase_job_commit' do
+        runner_manager.runtime_features = { two_phase_job_commit: 'yes' }
+
+        expect(runner_manager).not_to be_valid
+        expect(runner_manager.errors[:runtime_features]).to be_present
+      end
+    end
+
+    describe 'heartbeat with two_phase_job_commit feature' do
+      it 'updates runtime_features with two_phase_job_commit' do
+        values = {
+          version: '16.0.0',
+          runtime_features: { two_phase_job_commit: true }
+        }
+
+        expect { runner_manager.heartbeat(values) }
+          .to change { runner_manager.runtime_features }
+          .to('two_phase_job_commit' => true)
+      end
+
+      it 'preserves other runtime features when updating two_phase_job_commit' do
+        runner_manager.update!(runtime_features: { cancel_gracefully: true })
+
+        values = {
+          version: '16.0.0',
+          runtime_features: {
+            cancel_gracefully: true,
+            two_phase_job_commit: true
+          }
+        }
+
+        runner_manager.heartbeat(values)
+
+        expect(runner_manager.runtime_features).to eq(
+          'cancel_gracefully' => true,
+          'two_phase_job_commit' => true
+        )
+      end
+    end
+
+    describe 'querying runners with two_phase_job_commit support' do
+      let_it_be(:runner_with_feature) do
+        create(:ci_runner_machine, :two_phase_job_commit_feature, runner: runner)
+      end
+
+      let_it_be(:runner_without_feature) do
+        create(:ci_runner_machine, runner: create(:ci_runner), runtime_features: { other_feature: true })
+      end
+
+      let_it_be(:legacy_runner) do
+        create(:ci_runner_machine, runner: create(:ci_runner), runtime_features: {})
+      end
+
+      it 'can find runners with two_phase_job_commit support' do
+        runners_with_feature = described_class.where(
+          "runtime_features ->> 'two_phase_job_commit' = 'true'"
+        )
+
+        expect(runners_with_feature).to contain_exactly(runner_with_feature)
+      end
+
+      it 'can find runners without two_phase_job_commit support' do
+        runners_without_feature = described_class.where(
+          "runtime_features ->> 'two_phase_job_commit' IS NULL OR runtime_features ->> 'two_phase_job_commit' = 'false'"
+        )
+
+        expect(runners_without_feature).to contain_exactly(runner_manager, runner_without_feature, legacy_runner)
+      end
+    end
+  end
 end

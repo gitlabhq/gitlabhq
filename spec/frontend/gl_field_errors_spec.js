@@ -82,6 +82,7 @@ describe('GL Style Field Errors', () => {
     emailInputElement.val('not-a-valid-email').trigger('input');
 
     expect(emailInputElement).toHaveClass('gl-field-error-outline');
+    expect(emailInputElement.attr('aria-describedby')).not.toBeUndefined();
     expect(fieldState.empty).toBe(false);
     expect(fieldState.valid).toBe(false);
 
@@ -89,6 +90,7 @@ describe('GL Style Field Errors', () => {
     emailInputElement.val('email@gitlab.com').trigger('input');
 
     expect(emailInputElement).not.toHaveClass('gl-field-error-outline');
+    expect(emailInputElement.attr('aria-describedby')).toBeUndefined();
     expect(fieldState.empty).toBe(false);
     expect(fieldState.valid).toBe(true);
 

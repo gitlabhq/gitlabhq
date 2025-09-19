@@ -5,7 +5,6 @@ import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import sidebarEventHub from '~/super_sidebar/event_hub';
 import ScopeSidebarNavigation from '~/search/sidebar/components/scope_sidebar_navigation.vue';
 import NavItem from '~/super_sidebar/components/nav_item.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
@@ -79,7 +78,6 @@ describe('ScopeSidebarNavigation', () => {
 
   describe('when navigation render', () => {
     beforeEach(() => {
-      jest.spyOn(sidebarEventHub, '$emit');
       createComponent({ urlQuery: { ...MOCK_QUERY, search: 'test' } });
     });
 

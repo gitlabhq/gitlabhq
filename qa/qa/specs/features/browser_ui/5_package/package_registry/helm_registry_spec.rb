@@ -7,50 +7,32 @@ module QA
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
       include Support::Helpers::MaskToken
-      include_context 'packages registry qa scenario'
 
       let(:package_name) { "gitlab_qa_helm-#{SecureRandom.hex(8)}" }
       let(:package_version) { '1.3.7' }
       let(:package_type) { 'helm' }
 
       before do
-        Runtime::ApplicationSettings.set_application_settings(enforce_ci_inbound_job_token_scope_enabled: false)
+        Flow::Login.sign_in
+        package_project.visit!
       end
 
-      where(:case_name, :authentication_token_type, :testcase) do
-        'using personal access token' | :personal_access_token | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347586'
-        'using ci job token'          | :ci_job_token          | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347587'
-        'using project deploy token'  | :project_deploy_token  | 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347588'
-      end
+      context 'with ci deploy token' do
+        include_context 'packages registry qa scenario with runner'
 
-      with_them do
-        let(:username) do
-          case authentication_token_type
-          when :personal_access_token
-            Runtime::User::Store.test_user.username
-          when :ci_job_token
-            'gitlab-ci-token'
-          when :project_deploy_token
-            project_deploy_token.username
-          end
-        end
-
+        let(:username) { 'gitlab-ci-token' }
         let(:access_token) do
-          case authentication_token_type
-          when :personal_access_token
-            use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: package_project)
-            use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: client_project)
-          when :ci_job_token
-            package_project_inbound_job_token_disabled
-            client_project_inbound_job_token_disabled
-            '${CI_JOB_TOKEN}'
-          when :project_deploy_token
-            use_ci_variable(name: 'PROJECT_DEPLOY_TOKEN', value: project_deploy_token.token, project: package_project)
-            use_ci_variable(name: 'PROJECT_DEPLOY_TOKEN', value: project_deploy_token.token, project: client_project)
-          end
+          package_project_inbound_job_token_disabled
+          client_project_inbound_job_token_disabled
+          '${CI_JOB_TOKEN}'
         end
 
-        it "pushes and pulls a helm chart", testcase: params[:testcase] do
+        before do
+          Runtime::ApplicationSettings.set_application_settings(enforce_ci_inbound_job_token_scope_enabled: false)
+        end
+
+        it "pushes and pulls a helm chart",
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347587' do
           helm_upload_yaml = ERB.new(read_fixture('package_managers/helm',
             'helm_upload_package.yaml.erb')).result(binding)
           helm_chart_yaml = ERB.new(read_fixture('package_managers/helm', 'Chart.yaml.erb')).result(binding)
@@ -88,12 +70,74 @@ module QA
           ])
 
           client_project.visit!
+
           Flow::Pipeline.wait_for_pipeline_creation_via_api(project: client_project)
 
           client_project.visit_job('pull')
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 180)
           end
+        end
+      end
+
+      context 'with other token types' do
+        include_context 'packages registry qa scenario'
+
+        let(:gitlab_address_with_port) { Support::GitlabAddress.address_with_port }
+        let(:chart_yaml) do
+          {
+            file_path: 'Chart.yaml',
+            content: <<~YAML
+            apiVersion: v2
+            name: #{package_name}
+            version: #{package_version}
+            description: A Helm chart for Kubernetes
+            type: application
+            appVersion: 1.0.0
+            YAML
+          }
+        end
+
+        before do
+          with_fixtures([chart_yaml]) do |dir|
+            Service::DockerRun::Helm.new(
+              dir,
+              gitlab_address_with_port: gitlab_address_with_port,
+              package_project_id: package_project.id,
+              channel: 'stable',
+              package_name: package_name,
+              package_version: package_version,
+              username: username,
+              token: token
+            ).publish_and_install!
+          end
+        end
+
+        shared_examples 'using a docker container' do |testcase|
+          it 'pushes and pulls a helm chart', testcase: testcase do
+            package_project.visit!
+
+            Page::Project::Menu.perform(&:go_to_package_registry)
+            Page::Project::Packages::Index.perform do |index|
+              expect(index).to have_package(package_name)
+
+              index.click_package(package_name)
+            end
+          end
+        end
+
+        context 'with a personal access token' do
+          let(:username) { Runtime::User::Store.test_user.username }
+          let(:token) { Runtime::User::Store.default_api_client.personal_access_token }
+
+          it_behaves_like 'using a docker container', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347586'
+        end
+
+        context 'with a project deploy token' do
+          let(:username) { project_deploy_token.username }
+          let(:token) { project_deploy_token.token }
+
+          it_behaves_like 'using a docker container', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347588'
         end
       end
     end

@@ -77,7 +77,8 @@ for the status of features related to the container registry database.
 
 Prerequisites:
 
-- GitLab 17.5 or later, GitLab 18.3 recommended.
+- GitLab 17.5 is the minimum required version, but GitLab 18.3 or later
+  is recommended due to the added improvements and easier configuration.
 - PostgreSQL database [within version requirements](../../install/requirements.md#postgresql). It must be accessible from the registry node.
 
 Follow the instructions that match your situation:

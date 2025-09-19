@@ -36,6 +36,46 @@ to run local versions of GitLab, Duo Agent Platform Service, and Executor.
 
 This setup can be used as-is with the [publicly available version of the VS Code Extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
 
+#### Testing Agentic Duo Chat in Web UI
+
+To test Agentic Duo Chat in the Web UI of your local GitLab instance, follow these additional setup steps:
+
+1. **Configure Workhorse to disable origin check:**
+
+   In development, Rails and Workhorse origins are different, so you need to modify the WebSocket upgrader.
+
+   **Option A: Apply the following diff:**
+
+   ```diff
+   curl "https://gitlab.com/gitlab-org/gitlab/-/snippets/4889838/raw/main/workhorse.patch" | git apply
+   ```
+
+   **Option B: Manually edit the file:**
+
+   ```go
+   # workhorse/internal/ai_assist/duoworkflow/handler.go
+
+   var upgrader = websocket.Upgrader{
+       CheckOrigin: func(r *http.Request) bool {
+           return true
+       },
+   }
+   ```
+
+   **Important:** Remember not to commit these changes to version control.
+
+1. **Recompile Workhorse:**
+
+   ```shell
+   cd gitlab/workhorse && make && gdk restart gitlab-workhorse
+   ```
+
+   **Verification:** Check that Workhorse restarted successfully:
+
+   ```shell
+   gdk status gitlab-workhorse
+   ```
+
 ### Development Setup for Frontend Components
 
 There is no need to set up the backend components of the Agent Platform to test changes for the Agent Platform UI in the IDE.

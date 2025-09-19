@@ -2,7 +2,6 @@ import { setActivePinia } from 'pinia';
 import { nextTick } from 'vue';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import initFileTreeBrowser from '~/repository/file_tree_browser/index';
-import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
 import { useViewport } from '~/pinia/global_stores/viewport';
 import { pinia } from '~/pinia/instance';
 import createRouter from '~/repository/router';
@@ -29,7 +28,6 @@ describe('initFileTreeBrowser', () => {
   beforeEach(() => {
     setActivePinia(pinia);
     useViewport().reset();
-    useFileTreeBrowserVisibility().$reset();
 
     setHTMLFixture('<div id="js-file-browser"></div>');
   });
@@ -39,17 +37,15 @@ describe('initFileTreeBrowser', () => {
   });
 
   describe.each`
-    routeName            | isCompactViewport | fileTreeVisible | expectedVisible
-    ${'blobPathDecoded'} | ${false}          | ${true}         | ${true}
-    ${'blobPathDecoded'} | ${true}           | ${true}         | ${false}
-    ${'blobPathDecoded'} | ${false}          | ${false}        | ${false}
-    ${'projectRoot'}     | ${true}           | ${false}        | ${false}
+    routeName            | isCompactSize | expectedVisible
+    ${'blobPathDecoded'} | ${true}       | ${false}
+    ${'blobPathDecoded'} | ${false}      | ${true}
+    ${'projectRoot'}     | ${false}      | ${false}
   `(
-    'visibility logic when route is $routeName, compact screen: $isCompactViewport, file tree visible: $fileTreeVisible',
-    ({ routeName, isCompactViewport, fileTreeVisible, expectedVisible }) => {
+    'visibility logic when route is $routeName, compact screen: $isCompactSize',
+    ({ routeName, isCompactSize, expectedVisible }) => {
       beforeEach(() => {
-        useViewport().updateIsCompact(isCompactViewport);
-        useFileTreeBrowserVisibility().setFileTreeVisibility(fileTreeVisible);
+        useViewport().setViewportState({ isCompactSize });
       });
 
       it(`${expectedVisible ? 'shows' : 'hides'} file tree browser`, async () => {

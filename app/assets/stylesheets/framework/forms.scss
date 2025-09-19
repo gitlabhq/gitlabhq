@@ -161,6 +161,7 @@ label {
 .invalid-feedback {
   @apply gl-text-danger;
   font-size: $gl-font-size;
+  margin-top: 0.5rem; // Match Pajamas error message spacing
 }
 
 .gl-show-field-errors {
