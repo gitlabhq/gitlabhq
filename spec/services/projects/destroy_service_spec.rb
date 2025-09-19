@@ -210,26 +210,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       project.add_owner(user)
     end
 
-    it 'unsets the pending_delete on project' do
-      expect(destroy_project(project, user)).to be(false)
-
-      project.reload
-
-      expect(project.pending_delete).to be_falsey
-    end
-  end
-
-  context 'when the parent group has been marked for deletion and is being deleted' do
-    let_it_be(:parent_group) do
-      create(:group_with_deletion_schedule, deleted_at: Time.current)
-    end
-
-    let(:project) { create(:project, namespace: parent_group) }
-
-    before do
-      project.add_owner(user)
-    end
-
     it_behaves_like 'deleting the project'
   end
 

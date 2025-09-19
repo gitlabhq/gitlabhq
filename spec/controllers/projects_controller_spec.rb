@@ -1318,7 +1318,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           expect(project.reload.pending_delete).to eq(false)
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:edit)
-          expect(flash[:alert]).to include('Project has been already marked for deletion')
+          expect(flash[:alert]).to include('Project has already been marked for deletion')
         end
       end
     end

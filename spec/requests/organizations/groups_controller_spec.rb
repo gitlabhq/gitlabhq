@@ -339,7 +339,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
                 gitlab_request
 
                 expect(response).to have_gitlab_http_status(:unprocessable_entity)
-                expect(json_response['message']).to include "Group has been already marked for deletion"
+                expect(json_response['message']).to include "Group has already been marked for deletion"
               end
             end
           end

@@ -121,7 +121,37 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
 
     it 'returns error' do
       expect(result).to be_error
-      expect(result.message).to eq('Project has been already marked for deletion')
+      expect(result.message).to eq('Project has already been marked for deletion')
+    end
+  end
+
+  context 'when project ancestor is already marked for deletion' do
+    let(:deletion_date) { 3.days.ago }
+    let(:group_ancestor) do
+      create(:group_with_deletion_schedule, marked_for_deletion_on: deletion_date, deleting_user: user)
+    end
+
+    before do
+      project.update!(namespace: group_ancestor)
+    end
+
+    it 'does not change the attributes associated with delayed deletion' do
+      expect(result).to be_error
+      expect(project).not_to be_self_deletion_scheduled
+      expect(project.self_deletion_scheduled_deletion_created_on).to be_nil
+    end
+
+    it 'does not send notification' do
+      # eager-load service to avoid false positive NotificationService.new calls
+      service
+
+      expect(NotificationService).not_to receive(:new)
+      expect(result).to be_error
+    end
+
+    it 'returns error' do
+      expect(result).to be_error
+      expect(result.message).to eq('Project ancestor has already been marked for deletion')
     end
   end
 

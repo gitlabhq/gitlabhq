@@ -1043,13 +1043,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           let_it_be(:ancestor) { create(:group_with_deletion_schedule) }
           let_it_be(:project) { create(:project, group: ancestor) }
 
-          it { is_expected.to be_disallowed(:remove_project) }
-        end
-
-        context 'when project ancestor is marked for deletion and being deleted' do
-          let_it_be(:ancestor) { create(:group_with_deletion_schedule, deleted_at: Time.current) }
-          let_it_be(:project) { create(:project, group: ancestor) }
-
           it { is_expected.to be_allowed(:remove_project) }
         end
       end

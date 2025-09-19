@@ -31,6 +31,10 @@ module Namespaces
       self_deletion_scheduled_deletion_created_on.present?
     end
 
+    def ancestor_scheduled_for_deletion?
+      ancestors_scheduled_for_deletion.any?
+    end
+
     # Returns the first record that's scheduled for deletion in self's ancestors chain (including itself).
     def first_scheduled_for_deletion_in_hierarchy_chain
       return self if self_deletion_scheduled?

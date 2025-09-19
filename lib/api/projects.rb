@@ -101,15 +101,14 @@ module API
 
         if permanently_remove
           error = immediately_delete_project_error(user_project)
-
           return render_api_error!(error, 400) if error
-        end
 
-        if permanently_remove
           destroy_conditionally!(user_project) do
             ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
           end
 
+          return accepted!
+        elsif user_project.ancestor_scheduled_for_deletion?
           return accepted!
         end
 

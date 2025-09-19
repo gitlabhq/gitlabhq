@@ -47,12 +47,17 @@ module Namespaces
     def preconditions_checks
       return UnauthorizedError unless can?(current_user, remove_permission, resource)
       return already_marked_error if resource.self_deletion_scheduled?
+      return ancestor_already_marked_error if resource.ancestor_scheduled_for_deletion?
 
       ServiceResponse.success
     end
 
     def already_marked_error
-      ServiceResponse.error(message: "#{resource_name.titleize} has been already marked for deletion")
+      ServiceResponse.error(message: "#{resource_name.titleize} has already been marked for deletion")
+    end
+
+    def ancestor_already_marked_error
+      ServiceResponse.error(message: "#{resource_name.titleize} ancestor has already been marked for deletion")
     end
 
     # Can be overridden
