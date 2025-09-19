@@ -126,6 +126,7 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
       before do
         configurator.call(chain)
         stub_feature_flags("drop_sidekiq_jobs_#{worker_class.name}": false) # not dropping the job
+        stub_feature_flags("disable_sidekiq_concurrency_limit_middleware_#{worker_class.name}": false)
 
         # Apply concurrency limiting
         allow(::Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)

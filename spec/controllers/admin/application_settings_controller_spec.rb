@@ -428,6 +428,14 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
           expect(application_setting.max_terraform_state_size_bytes).to eq(123)
         end
       end
+
+      context 'terraform_state_encryption_enabled' do
+        it 'updates the terraform_state_encryption_enabled setting' do
+          put :update, params: { application_setting: { terraform_state_encryption_enabled: false } }
+
+          expect(response).to redirect_to(general_admin_application_settings_path)
+        end
+      end
     end
 
     context 'pipeline creation rate limiting' do

@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 
-cd $(dirname $0)/..
-app_root=$(pwd)
-sidekiq_workers=${SIDEKIQ_WORKERS:-1}
-sidekiq_queues=${SIDEKIQ_QUEUES:-*} # Queues to listen to; default to `*` (all)
+set -eo pipefail
+
+cd "$(dirname "$0")/.."
+app_root="$(pwd)"
+sidekiq_workers="${SIDEKIQ_WORKERS:-1}"
+sidekiq_queues="${SIDEKIQ_QUEUES:-*}" # Queues to listen to; default to `*` (all)
 sidekiq_pidfile="$app_root/tmp/pids/sidekiq-cluster.pid"
 sidekiq_logfile="$app_root/log/sidekiq.log"
-gitlab_user=$(ls -l config.ru | awk '{print $3}')
+
+RAILS_ENV="${RAILS_ENV:-development}"
 
 trap cleanup EXIT
 
@@ -17,26 +20,26 @@ warn()
 
 get_sidekiq_pid()
 {
-  if [ ! -f $sidekiq_pidfile ]; then
+  if [ ! -f "$sidekiq_pidfile" ]; then
     warn "No pidfile found at $sidekiq_pidfile; is Sidekiq running?"
     return
   fi
 
-  cat $sidekiq_pidfile
+  cat "$sidekiq_pidfile"
 }
 
 stop()
 {
   sidekiq_pid=$(get_sidekiq_pid)
 
-  if [ $sidekiq_pid ]; then
-    kill -TERM $sidekiq_pid
+  if [ "$sidekiq_pid" ]; then
+    kill -TERM "$sidekiq_pid" || true
   fi
 }
 
 restart()
 {
-  if [ -f $sidekiq_pidfile ]; then
+  if [ -f "$sidekiq_pidfile" ]; then
     stop
   fi
 
@@ -53,12 +56,12 @@ start_sidekiq()
   fi
 
   # sidekiq-cluster expects an argument per process.
-  for (( i=1; i<=$sidekiq_workers; i++ ))
+  for (( i=1; i<=sidekiq_workers; i++ ))
   do
     processes_args+=("${sidekiq_queues}")
   done
 
-  ${cmd} bin/sidekiq-cluster "${processes_args[@]}" -P $sidekiq_pidfile -e $RAILS_ENV "$@" 2>&1 | tee -a $sidekiq_logfile
+  ${cmd} bin/sidekiq-cluster "${processes_args[@]}" -P "$sidekiq_pidfile" -e "$RAILS_ENV" "$@" 2>&1 | tee -a "$sidekiq_logfile"
 }
 
 cleanup()
@@ -67,7 +70,7 @@ cleanup()
 }
 
 action="$1"
-shift
+shift || true
 
 case "$action" in
   stop)
@@ -84,4 +87,5 @@ case "$action" in
     ;;
   *)
     echo "Usage: RAILS_ENV=<env> SIDEKIQ_WORKERS=<n> $0 {stop|start|start_foreground|restart}"
+    ;;
 esac

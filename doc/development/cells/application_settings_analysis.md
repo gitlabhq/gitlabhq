@@ -452,6 +452,7 @@ title: Application Settings analysis
 | `telesign_api_key` | `true` | `bytea` | `` | `false` | `null` | `true` | `true`| `false` |
 | `telesign_customer_xid` | `true` | `bytea` | `` | `false` | `null` | `true` | `true`| `false` |
 | `terminal_max_session_time` | `false` | `integer` | `integer` | `true` | `0` | `false` | `false`| `true` |
+| `terraform_state_settings` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `throttle_authenticated_api_enabled` | `false` | `boolean` | `boolean` | `true` | `false` | `true` | `false`| `true` |
 | `throttle_authenticated_api_period_in_seconds` | `false` | `integer` | `integer` | `true` | `3600` | `true` | `false`| `true` |
 | `throttle_authenticated_api_requests_per_period` | `false` | `integer` | `integer` | `true` | `7200` | `true` | `false`| `true` |

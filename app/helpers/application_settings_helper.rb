@@ -450,6 +450,7 @@ module ApplicationSettingsHelper
       :spam_check_api_key,
       :terminal_max_session_time,
       :terms,
+      :terraform_state_encryption_enabled,
       :throttle_authenticated_api_enabled,
       :throttle_authenticated_api_period_in_seconds,
       :throttle_authenticated_api_requests_per_period,

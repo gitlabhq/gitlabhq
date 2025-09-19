@@ -254,6 +254,7 @@ module API
       end
       optional :enable_language_server_restrictions, type: Boolean, desc: 'Enables enforcing language server restrictions'
       optional :minimum_language_server_version, type: String, desc: 'The minimum language server version to accept requests from'
+      optional :terraform_state_encryption_enabled, type: Boolean, desc: 'Enable encryption for Terraform state files'
 
       Gitlab::SSHPublicKey.supported_types.each do |type|
         optional :"#{type}_key_restriction",

@@ -1021,6 +1021,12 @@ class ApplicationSetting < ApplicationRecord
   validates :editor_extensions,
     json_schema: { filename: 'application_setting_editor_extensions', detail_errors: true }
 
+  jsonb_accessor :terraform_state_settings,
+    terraform_state_encryption_enabled: [:boolean, { default: true }]
+
+  validates :terraform_state_settings,
+    json_schema: { filename: 'application_setting_terraform_state_settings', detail_errors: true }
+
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?
   before_validation :normalize_default_branch_name

@@ -43,6 +43,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
     Thread.current[:sidekiq_capsule] = Sidekiq::Capsule.new('test', Sidekiq.default_configuration)
     stub_const('TestConcurrencyLimitWorker', worker_class)
     stub_const('TestWithoutConcurrencyLimitWorker', worker_class_without_concurrency_limit)
+    stub_feature_flags(disable_sidekiq_concurrency_limit_middleware_TestConcurrencyLimitWorker: false)
+    stub_feature_flags(disable_sidekiq_concurrency_limit_middleware_TestWithoutConcurrencyLimitWorker: false)
   end
 
   after do
@@ -94,6 +96,22 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
         end
 
         it_behaves_like 'skip execution tracking'
+      end
+
+      context 'when per worker feature flag is enabled' do
+        before do
+          stub_feature_flags(disable_sidekiq_concurrency_limit_middleware_TestConcurrencyLimitWorker: true)
+        end
+
+        it 'executes the job' do
+          expect(TestConcurrencyLimitWorker).to receive(:work)
+          expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance).not_to receive(:deferred_log)
+          expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService).not_to receive(:add_to_queue!)
+
+          TestConcurrencyLimitWorker.perform_async('foo')
+        end
+
+        it_behaves_like 'track execution'
       end
 
       context 'when there are jobs in the queue' do

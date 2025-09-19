@@ -497,6 +497,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to allow_values([true, false]).for(:pages_unique_domain_default_enabled) }
     it { is_expected.not_to allow_value(nil).for(:pages_unique_domain_default_enabled) }
 
+    it { is_expected.to allow_values([true, false]).for(:terraform_state_encryption_enabled) }
+
     context 'for validating the group_settings jsonb_column`s atrributes' do
       it { is_expected.to allow_values([true, false]).for(:top_level_group_creation_enabled) }
     end
