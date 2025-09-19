@@ -69,31 +69,24 @@ module Tooling
       [engineer runbook](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/patch/engineers.md#backporting-a-bug-fix-in-the-gitlab-project)
       MSG
 
+      BACKPORT_REVIEWER_GUIDANCE_MESSAGE = <<~MSG
+      This merge request targets a stable branch within the maintenance policy. Following this [announcement](https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/21474), any maintainer of this repository can merge this MR.
+      **Recommended:** Use the same reviewer + maintainer as the original default branch MR since they have context from reviewing the default branch MR.
+
+      **Need help finding reviewers?** Check the default MR or use the [GitLab Review Workload Dashboard](https://gitlab-org.gitlab.io/gitlab-roulette/).
+      MSG
+
       def check!
         return unless valid_stable_branch?
 
-        fail NEEDS_STABLE_BRANCH_TEMPLATE_MESSAGE unless uses_stable_branch_template?
+        validate_template
+        validate_type_labels
+        handle_version_guidance
+        validate_title
 
-        fail FEATURE_ERROR_MESSAGE if has_feature_label?
-        fail BUG_MAINTENANCE_ERROR_MESSAGE unless stable_branch_fixes_only?
+        return if skip_pipeline_checks?
 
-        warn VERSION_WARNING_MESSAGE unless targeting_patchable_version?
-
-        fail NONDESCRIPTIVE_TITLE_MESSAGE if has_default_title?
-
-        return if has_flaky_failure_label? || allowed_backport_changes?
-
-        fail PIPELINE_EXPEDITED_ERROR_MESSAGE if has_pipeline_expedited_label?
-
-        return unless has_tier_3_label?
-
-        status = package_and_test_bridge_and_pipeline_status
-
-        if status.nil? || FAILING_PACKAGE_AND_TEST_STATUSES.include?(status) # rubocop:disable Style/GuardClause
-          fail NEEDS_PACKAGE_AND_TEST_MESSAGE
-        else
-          warn WARN_PACKAGE_AND_TEST_MESSAGE
-        end
+        validate_pipeline_requirements
       end
 
       def encourage_package_and_qa_execution?
@@ -225,6 +218,45 @@ module Tooling
         pattern = /\AMerge branch '([^']+)' into '([^']+)'\z/
 
         title.match?(pattern)
+      end
+
+      def validate_template
+        fail NEEDS_STABLE_BRANCH_TEMPLATE_MESSAGE unless uses_stable_branch_template?
+      end
+
+      def validate_type_labels
+        fail FEATURE_ERROR_MESSAGE if has_feature_label?
+        fail BUG_MAINTENANCE_ERROR_MESSAGE unless stable_branch_fixes_only?
+      end
+
+      def handle_version_guidance
+        if targeting_patchable_version?
+          markdown(BACKPORT_REVIEWER_GUIDANCE_MESSAGE)
+        else
+          warn VERSION_WARNING_MESSAGE
+        end
+      end
+
+      def validate_title
+        fail NONDESCRIPTIVE_TITLE_MESSAGE if has_default_title?
+      end
+
+      def skip_pipeline_checks?
+        has_flaky_failure_label? || allowed_backport_changes?
+      end
+
+      def validate_pipeline_requirements
+        fail PIPELINE_EXPEDITED_ERROR_MESSAGE if has_pipeline_expedited_label?
+
+        return unless has_tier_3_label?
+
+        status = package_and_test_bridge_and_pipeline_status
+
+        if status.nil? || FAILING_PACKAGE_AND_TEST_STATUSES.include?(status) # rubocop:disable Style/GuardClause
+          fail NEEDS_PACKAGE_AND_TEST_MESSAGE
+        else
+          warn WARN_PACKAGE_AND_TEST_MESSAGE
+        end
       end
     end
   end
