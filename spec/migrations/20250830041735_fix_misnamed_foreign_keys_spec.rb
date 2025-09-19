@@ -76,15 +76,16 @@ RSpec.describe FixMisnamedForeignKeys, feature_category: :database do
       sample_table = sample_data[:table]
       sample_old_name = sample_data[:old_name]
       sample_new_name = sample_data[:new_name]
+      temporary_name = "#{sample_old_name}_tmp"
 
-      if migration.foreign_key_exists?(sample_table, name: sample_old_name)
-        migration.remove_foreign_key(sample_table, name: sample_old_name)
-      end
+      migration.rename_constraint(sample_table, sample_old_name, temporary_name)
 
       expect { migrate! }.not_to raise_error
 
       expect(migration.foreign_key_exists?(sample_table, sample_new_name))
         .to be(false)
+
+      migration.rename_constraint(sample_table, temporary_name, sample_new_name)
     end
   end
 
