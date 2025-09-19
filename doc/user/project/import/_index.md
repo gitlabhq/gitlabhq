@@ -899,6 +899,6 @@ For GitLab.com (GitLab team members only):
 
 Check the information gathered in [Review logs](#review-logs) against the following common issues:
 
-- **Interrupted jobs**: If you see a high `interrupted_count` or `job_status` indicating failure, the import job may have been interrupted multiple times and placed in a dead queue.
-- **S3 connectivity**: For imports using S3, check for any S3-related error messages in the logs.
-- **Large repository**: If the repository is very large, the import might time out. Consider using [Direct transfer](../../group/import/_index.md) in this case.
+- Interrupted jobs: If you see a high `interrupted_count` or `job_status` indicating failure, the import job may have been interrupted multiple times and placed in a dead queue.
+- S3 connectivity: For imports using S3, check for any S3-related error messages in the logs.
+- Large repository: If the repository is very large, the import might time out. Consider using [Direct transfer](../../group/import/_index.md) in this case.

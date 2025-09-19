@@ -80,7 +80,7 @@ recreate it with the following steps:
    find credentials in the GitLab shared
    [1Password account](https://handbook.gitlab.com/handbook/security/password-guidelines/#1password-for-teams).)
 1. Sign in to Crowdin with the GitLab integration.
-1. Go to **Settings > Integrations > GitLab > Set Up Integration**.
+1. Go to **Settings** > **Integrations** > **GitLab** > **Set Up Integration**.
 1. Select the `gitlab-org/gitlab` repository.
 1. In **Select Branches for Translation**, select `master`.
 1. Ensure the **Service Branch Name** is `master-i18n`.

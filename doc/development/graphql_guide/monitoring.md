@@ -88,7 +88,7 @@ came from the GitLab frontend, otherwise as `graphql:unknown`. This filter be us
 The full request logs encompass log data for all [multiplexed queries](https://graphql-ruby.org/queries/multiplex.html)
 in the request, as well as data from time spent outside of `GraphQLController#execute`.
 
-To see the full request logs, do **not** apply the `json.subcomponent` [filter](#logs-of-each-graphql-query), and instead:
+To see the full request logs, do not apply the `json.subcomponent` [filter](#logs-of-each-graphql-query), and instead:
 
 1. Add a filter:
    1. Filter: `json.meta.caller_id`

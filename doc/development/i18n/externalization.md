@@ -371,7 +371,7 @@ use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make sure to
 
   If you need to use markup within the translation, use `sprintf` and stop it
   from escaping placeholder values by passing `false` as its third argument.
-  You **must** escape any interpolated dynamic values yourself, for instance
+  You must escape any interpolated dynamic values yourself, for instance
   using `escape` from `lodash`.
 
   ```javascript
@@ -711,12 +711,12 @@ This makes use of [`Intl.DateTimeFormat`](https://developer.mozilla.org/en-US/do
 
 - In Ruby/HAML, there are two ways of adding format to dates and times:
 
-  - **Using the `l` helper**: for example, `l(active_session.created_at, format: :short)`. We have
+  - Using the `l` helper: for example, `l(active_session.created_at, format: :short)`. We have
     some predefined formats for [dates](https://gitlab.com/gitlab-org/gitlab/-/blob/4ab54c2233e91f60a80e5b6fa2181e6899fdcc3e/config/locales/en.yml#L54)
     and [times](https://gitlab.com/gitlab-org/gitlab/-/blob/4ab54c2233e91f60a80e5b6fa2181e6899fdcc3e/config/locales/en.yml#L262).
     If you need to add a new format, because other parts of the code could benefit from it, add it
     to the file [`en.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/locales/en.yml).
-  - **Using `strftime`**: for example, `milestone.start_date.strftime('%b %-d')`. We use `strftime`
+  - Using `strftime`: for example, `milestone.start_date.strftime('%b %-d')`. We use `strftime`
     in case none of the formats defined in [`en.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/locales/en.yml)
     match the date/time specifications we need, and if there's no need to add it as a new format
     because it's very particular (for example, it's only used in a single view).
@@ -934,15 +934,15 @@ When text values are used in translatable strings as variables, special care mus
 
 When using variables to add text into translatable strings, several localization challenges can arise:
 
-- **Gender agreement**: Languages with grammatical gender may require different forms of articles, adjectives or pronouns depending on the gender of the inserted noun. For example, in French, articles, adjectives and some past participles must agree with the noun's gender and position in the sentence.
+- Gender agreement: Languages with grammatical gender may require different forms of articles, adjectives or pronouns depending on the gender of the inserted noun. For example, in French, articles, adjectives and some past participles must agree with the noun's gender and position in the sentence.
 
-- **Case and declension**: In languages with cases (like German), the inserted text may need different forms depending on its grammatical role in the sentence.
+- Case and declension: In languages with cases (like German), the inserted text may need different forms depending on its grammatical role in the sentence.
 
-- **Word order**: Different languages have different word order requirements, and inserted text may need to appear in different positions in the sentence for natural-sounding translations.
+- Word order: Different languages have different word order requirements, and inserted text may need to appear in different positions in the sentence for natural-sounding translations.
 
 #### Best practices
 
-1. **Avoid adding text as variables when possible**:
+1. Avoid adding text as variables when possible:
    - Instead of one string with a variable, create unique strings for each case. For example:
 
 ```ruby
@@ -954,7 +954,7 @@ When using variables to add text into translatable strings, several localization
     s_('WorkItem|Adds this incident as related to task')
 ```
 
-1. **Use topic-comment structure over sentence-like arrangement**:
+1. Use topic-comment structure over sentence-like arrangement:
    When variable use cannot be avoided, consider restructuring the message to use a topic-comment arrangement rather than a full sentence:
 
 ```ruby
@@ -980,7 +980,7 @@ For example:
 
 Different languages have different capitalization rules that may not match English. For example, in German all nouns are capitalized regardless of their position in the sentence. Avoid using `downcase` or `toLocaleLowerCase()` on translatable strings. Let translators control text.
 
-- **Context-dependent cases**
+- Context-dependent cases:
 
 While the `toLocaleLowerCase()` method is locale-aware, it cannot handle context-specific capitalization needs. For example:
 

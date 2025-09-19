@@ -20927,6 +20927,9 @@ msgstr ""
 msgid "DastProfiles|%{linkStart}Headers may appear in vulnerability reports%{linkEnd}."
 msgstr ""
 
+msgid "DastProfiles|(Experimental) Set to a comma-separated list of wildcard URL patterns with at least one `*`. To reduce scan time, the scanner groups and analyzes only one matched URL per pattern."
+msgstr ""
+
 msgid "DastProfiles|/graphql"
 msgstr ""
 
@@ -21435,9 +21438,6 @@ msgid "DastProfiles|Set to a comma-separated list of cookie names to specify whi
 msgstr ""
 
 msgid "DastProfiles|Set to a comma-separated list of request header names and values. The following headers are not supported: `content-length`, `cookie2`, `keep-alive`, `hosts`, `trailer`, `transfer-encoding`, and all headers with a `proxy-` prefix."
-msgstr ""
-
-msgid "DastProfiles|Set to a comma-separated list of wildcard URL patterns with at least one `*`. To reduce scan time, the scanner groups and analyzes only one matched URL per pattern."
 msgstr ""
 
 msgid "DastProfiles|Set to log protocol messages between DAST and the Chromium browser."
@@ -24874,6 +24874,9 @@ msgstr ""
 msgid "DuoCoreTrialDiscover|Eliminate bottlenecks while meeting security requirements with scalable repositories, advanced branching, granular access controls, and built-in compliance."
 msgstr ""
 
+msgid "DuoCoreTrialDiscover|Enterprise-grade AI-native capabilities to help you move faster while maintaining security and IP protection"
+msgstr ""
+
 msgid "DuoCoreTrialDiscover|Free up time to focus on building great software with streamlined code reviews, automated security checks, and compliance requirements."
 msgstr ""
 
@@ -24883,7 +24886,7 @@ msgstr ""
 msgid "DuoCoreTrialDiscover|Get real-time guidance across the entire software development lifecycle. Generate tests, explain code, refactor efficiently, and chat directly in your IDE or web interface."
 msgstr ""
 
-msgid "DuoCoreTrialDiscover|GitLab Premium, now with Duo – native AI Code Suggestions and Chat"
+msgid "DuoCoreTrialDiscover|GitLab Premium, now with native AI"
 msgstr ""
 
 msgid "DuoCoreTrialDiscover|Greater developer productivity, collaboration, and quality"
@@ -24892,7 +24895,7 @@ msgstr ""
 msgid "DuoCoreTrialDiscover|Native AI Benefits in Premium"
 msgstr ""
 
-msgid "DuoCoreTrialDiscover|New customers can now get access to GitLab Premium with Duo at a discount. Contact Sales to get started."
+msgid "DuoCoreTrialDiscover|Now featuring GitLab Duo"
 msgstr ""
 
 msgid "DuoCoreTrialDiscover|Prevent pipeline conflicts with merge trains and push rules, store build outputs with Artifact Registry, and reuse working templates across teams."
@@ -78388,6 +78391,9 @@ msgstr ""
 msgid "must be unique. This CA has already been configured for another namespace."
 msgstr ""
 
+msgid "must belong to either a project or an organization"
+msgstr ""
+
 msgid "must belong to same project of its requirement object."
 msgstr ""
 
@@ -78598,9 +78604,6 @@ msgid "past due"
 msgstr ""
 
 msgid "pending comment"
-msgstr ""
-
-msgid "per user/month"
 msgstr ""
 
 msgid "personal access token"

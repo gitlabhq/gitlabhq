@@ -24,11 +24,11 @@ In this document, we focus on the TFVC to Git migration.
 
 The main differences between TFVC and Git are:
 
-- **Git is distributed**: While TFVC is centralized using a client-server architecture,
+- Git is distributed: While TFVC is centralized using a client-server architecture,
   Git is distributed. This translates to Git having a more flexible workflow because
   you work with a copy of the entire repository. This allows you to quickly
   switch branches or merge, for example, without needing to communicate with a remote server.
-- **Storage**: Changes in a centralized version control system are per file (changeset),
+- Storage: Changes in a centralized version control system are per file (changeset),
   while in Git a committed file is stored in its entirety (snapshot). That means that it is
   very easy to revert or undo a whole change in Git.
 

@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillBulkImportTrackersShardingKey
+description: Backfill one of bulk_import_trackers#{ organization_id, namespace_id, project_id } to make up the table's sharding key
+feature_category: importers
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202296
+milestone: '18.5'
+queued_migration_version: 20250913204846
+finalized_by: # version of the migration that finalized this BBM

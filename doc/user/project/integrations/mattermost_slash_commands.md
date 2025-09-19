@@ -26,12 +26,12 @@ For a list of available slash commands, see [Slash commands](gitlab_slack_applic
 GitLab provides different ways to configure Mattermost slash commands. For any of these options,
 you must have Mattermost [3.4 or later](https://mattermost.com/blog/category/platform/releases/).
 
-- **Linux package installations**: Mattermost is bundled with
+- Linux package installations: Mattermost is bundled with
   [Linux package](https://docs.gitlab.com/omnibus/). To configure Mattermost for Linux package
   installations, read the [Linux package Mattermost documentation](../../../integration/mattermost/_index.md).
-- **If Mattermost is installed on the same server as GitLab**, use the
+- If Mattermost is installed on the same server as GitLab: Use the
   [automated configuration](#configure-automatically).
-- **For all other installations**, use the [manual configuration](#configure-manually).
+- For all other installations: Use the [manual configuration](#configure-manually).
 
 ## Configure automatically
 
@@ -92,9 +92,9 @@ To create a slash command in Mattermost:
 1. Provide a **Display Name** and **Description** for your new command.
 1. Provide a **Command Trigger Word** based on your application's configuration:
 
-   - **If you intend to only connect one project to your Mattermost team**, use
+   - If you intend to only connect one project to your Mattermost team, use
      `/gitlab` for your trigger word.
-   - **If you intend to connect multiple projects**, use a trigger word that relates
+   - If you intend to connect multiple projects, use a trigger word that relates
      to your project, such as `/project-name` or `/gitlab-project-name`.
 1. For **Request URL**, [paste the value you copied from GitLab](#get-configuration-values-from-gitlab).
 1. For all other values, you may use the suggestions from GitLab or your

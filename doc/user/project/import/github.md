@@ -135,7 +135,7 @@ these steps, sign out of your GitLab account and sign in again.
 
 To import your GitHub repository using a GitHub personal access token:
 
-1. Generate a GitHub personal access token. Only **classic** personal access tokens are supported.
+1. Generate a GitHub personal access token. Only classic personal access tokens are supported.
    1. Go to <https://github.com/settings/tokens/new>.
    1. In the **Note** field, enter a token description.
    1. Select the `repo` scope.
@@ -164,7 +164,7 @@ The REST API is limited to authenticating with GitLab personal access tokens.
 
 To import your GitHub repository using the GitLab REST API:
 
-1. Generate a GitHub personal access token. Only **classic** personal access tokens are supported.
+1. Generate a GitHub personal access token. Only classic personal access tokens are supported.
    1. Go to <https://github.com/settings/tokens/new>.
    1. In the **Note** field, enter a token description.
    1. Select the `repo` scope.
@@ -391,7 +391,7 @@ The following items of a project are imported:
 - Labels
 - Milestones
 - Pull request assigned reviewers
-- Pull request **merged by** information
+- Pull request merged by information
 - Pull request reviews
 - Pull request review comments
 - Pull request review replies to discussions
@@ -419,7 +419,7 @@ Imported GitHub branch protection rules are mapped to one of the following:
 | **Require signed commits** for the project's default branch                                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#require-signed-commits)                                                                                                                                                          |
 | **Allow force pushes - Everyone**                                                                   | **Allowed to force push** [branch protection setting](../repository/branches/protected.md#allow-force-push)                                                                                                                                               |
 | **Require a pull request before merging - Require review from Code Owners**                         | **Require approval from code owners** [branch protection setting](../repository/branches/protected.md#require-code-owner-approval)                                                                                                                        |
-| **Require a pull request before merging - Allow specified actors to bypass required pull requests** | List of users in the **Allowed to push and merge** [branch protection settings](../repository/branches/protected.md#protect-a-branch). Without a **Premium** subscription, the list of users that are allowed to push and merge is limited to roles. |
+| **Require a pull request before merging - Allow specified actors to bypass required pull requests** | List of users in the **Allowed to push and merge** [branch protection settings](../repository/branches/protected.md#protect-a-branch). Without a GitLab Premium subscription, the list of users that are allowed to push and merge is limited to roles. |
 
 The **Require status checks to pass before merging** GitHub rule is not imported.
 You can still create [external status checks](../merge_requests/status_checks.md) manually.

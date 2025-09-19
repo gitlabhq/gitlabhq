@@ -417,7 +417,7 @@ RSpec.describe Gitlab::Database, feature_category: :database do
     end
 
     it 'does return empty for non-adopted connections' do
-      new_connection = ActiveRecord::Base.postgresql_connection(
+      new_connection = ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.new(
         ActiveRecord::Base.connection_db_config.configuration_hash # rubocop:disable Database/MultipleDatabases
       )
 

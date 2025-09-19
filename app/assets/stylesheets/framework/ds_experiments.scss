@@ -192,3 +192,8 @@
   }
 
 }
+
+// Fix design management fullscreen display in panels
+.panel-content:has(.design-detail) {
+  @apply gl-fixed gl-inset-0 gl-overflow-visible gl-rounded-none gl-max-w-none #{!important};
+}

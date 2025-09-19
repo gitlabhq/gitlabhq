@@ -192,6 +192,21 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION bulk_import_trackers_sharding_key() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF num_nonnulls(NEW.namespace_id, NEW.organization_id, NEW.project_id) != 1 THEN
+    SELECT "organization_id", "namespace_id", "project_id"
+    INTO NEW."organization_id", NEW."namespace_id", NEW."project_id"
+    FROM "bulk_import_entities"
+    WHERE "bulk_import_entities"."id" = NEW."bulk_import_entity_id";
+  END IF;
+
+  RETURN NEW;
+END
+$$;
+
 CREATE FUNCTION delete_associated_project_namespace() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -32682,6 +32697,9 @@ ALTER TABLE push_event_payloads
 ALTER TABLE ONLY instance_type_ci_runners
     ADD CONSTRAINT check_5c34a3c1db UNIQUE (id);
 
+ALTER TABLE bulk_import_trackers
+    ADD CONSTRAINT check_5f034e7cad CHECK ((num_nonnulls(namespace_id, organization_id, project_id) = 1)) NOT VALID;
+
 ALTER TABLE ONLY project_type_ci_runners
     ADD CONSTRAINT check_619c71f3a2 UNIQUE (id);
 
@@ -46428,6 +46446,8 @@ CREATE TRIGGER trigger_b7abb8fc4cf0 BEFORE INSERT OR UPDATE ON work_item_progres
 CREATE TRIGGER trigger_b83b7e51e2f5 BEFORE INSERT OR UPDATE ON scan_result_policies FOR EACH ROW EXECUTE FUNCTION trigger_b83b7e51e2f5();
 
 CREATE TRIGGER trigger_b8eecea7f351 BEFORE INSERT OR UPDATE ON dependency_proxy_manifest_states FOR EACH ROW EXECUTE FUNCTION trigger_b8eecea7f351();
+
+CREATE TRIGGER trigger_bulk_import_trackers_sharding_key BEFORE INSERT OR UPDATE ON bulk_import_trackers FOR EACH ROW EXECUTE FUNCTION bulk_import_trackers_sharding_key();
 
 CREATE TRIGGER trigger_c17a166692a2 BEFORE INSERT OR UPDATE ON audit_events_streaming_headers FOR EACH ROW EXECUTE FUNCTION trigger_c17a166692a2();
 

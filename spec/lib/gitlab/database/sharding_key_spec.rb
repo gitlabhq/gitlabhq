@@ -24,6 +24,11 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       *['badges.project_id', 'badges.group_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/562439
       'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
       *['todos.project_id', 'todos.group_id'], # https://gitlab.com/gitlab-org/gitlab/-/issues/562437
+      *[
+        'bulk_import_trackers.organization_id',
+        'bulk_import_trackers.project_id',
+        'bulk_import_trackers.namespace_id'
+      ], # https://gitlab.com/gitlab-org/gitlab/-/issues/560846
       *uploads_and_partitions
     ]
   end
@@ -251,7 +256,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "oauth_access_grants" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "oauth_openid_requests" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
       "oauth_device_grants" => "https://gitlab.com/gitlab-org/gitlab/-/issues/496717",
-      "bulk_import_trackers" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517823",
       "ai_duo_chat_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/516140",
       "fork_networks" => "https://gitlab.com/gitlab-org/gitlab/-/issues/522958",
       "bulk_import_configurations" => "https://gitlab.com/gitlab-org/gitlab/-/issues/536521",

@@ -234,7 +234,7 @@ For a quick overview, items that are exported include:
 
 #### Project items that are not exported
 
-Items that are **not** exported include:
+Items that are not exported include:
 
 - [Child pipeline history](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
 - Pipeline triggers
@@ -439,7 +439,7 @@ Group items that are exported include:
 
 ### Group items that are not exported
 
-Items that are **not** exported include:
+Items that are not exported include:
 
 - Projects
 - Runner tokens

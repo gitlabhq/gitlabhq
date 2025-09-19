@@ -63,7 +63,7 @@ There are two different strategies:
 
 ### Sidekiq jobs execution hierarchy
 
-**On destination instance**
+On destination instance:
 
 ```mermaid
 flowchart TD
@@ -95,7 +95,7 @@ flowchart TD
   end
 ```
 
-**On source instance**
+On source instance:
 
 ```mermaid
 flowchart TD

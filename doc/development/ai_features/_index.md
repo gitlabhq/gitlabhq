@@ -70,6 +70,10 @@ After following the steps in the [setup](https://gitlab.com/gitlab-org/gitlab-de
 
 ### Run `gitlab:duo:setup` script
 
+Note: this task is idempotent and skips reseeding if the `gitlab-duo` group
+already exists. To force reseeding from this task, set `GITLAB_DUO_RESEED=1`.
+For details on the seeds used, see [Development seed files](../development_seed_files.md#seed-project-and-group-resources-for-gitlab-duo).
+
 This ensures that your instance or group has the correct licenses, settings, and feature flags to test Duo features locally. Below are several options. If you are unsure, use option 1.
 
 1. GitLab.com (SaaS) mode

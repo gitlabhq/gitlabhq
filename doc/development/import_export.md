@@ -293,13 +293,13 @@ Fixtures used in Import/Export specs live in `spec/fixtures/lib/gitlab/import_ex
 There are two versions of each of these fixtures:
 
 - A human readable single JSON file with all objects, called either `project.json` or `group.json`.
-- A folder named `tree`, containing a tree of files in `ndjson` format. **Do not edit files under this folder manually unless strictly necessary.**
+- A folder named `tree`, containing a tree of files in `ndjson` format. Do not edit files under this folder manually unless strictly necessary.
 
 The tools to generate the NDJSON tree from the human-readable JSON files live in the [`gitlab-org/cloud-connector-team/team-tools`](https://gitlab.com/gitlab-org/cloud-connector-team/team-tools/-/tree/master/import-export) project.
 
 ### Project
 
-**Use `legacy-project-json-to-ndjson.sh` to generate the NDJSON tree.**
+Use `legacy-project-json-to-ndjson.sh` to generate the NDJSON tree.
 
 The NDJSON tree looks like:
 
@@ -333,7 +333,7 @@ tree
 
 ### Group
 
-**Use `legacy-group-json-to-ndjson.rb` to generate the NDJSON tree.**
+Use `legacy-group-json-to-ndjson.rb` to generate the NDJSON tree.
 
 The NDJSON tree looks like this:
 

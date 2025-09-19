@@ -226,6 +226,10 @@ The user can stop a session.
 
 One or more AI agents can be part of a [**flow**](#flows), where they are orchestrated to work together on a problem.
 
+## AI Catalog
+
+Use title case for the **AI Catalog**. Do not use **catalog**.
+
 ## AI gateway
 
 Use lowercase for **AI gateway** and do not hyphenate.

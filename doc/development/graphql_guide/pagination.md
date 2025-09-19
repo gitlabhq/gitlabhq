@@ -22,7 +22,7 @@ and used across much of GitLab. You can recognize it by
 a list of page numbers near the bottom of a page, which, when selected,
 take you to that page of results.
 
-For example, when you select **Page 100**, we send `100` to the
+For example, when you select `Page 100`, we send `100` to the
 backend. For example, if each page has say 20 items, the
 backend calculates `20 * 100 = 2000`,
 and it queries the database by offsetting (skipping) the first 2000
@@ -142,7 +142,7 @@ We only support two ordering fields, and one of those fields needs to be the pri
 
 Here are two examples of pseudocode for the query:
 
-- **Two-condition query.** `X` represents the values from the cursor. `C` represents
+- Two-condition query. `X` represents the values from the cursor. `C` represents
   the columns in the database, sorted in ascending order, using an `:after` cursor, and with `NULL`
   values sorted last.
 
@@ -185,7 +185,7 @@ Here are two examples of pseudocode for the query:
       "issues"."id" > 500
   ```
 
-- **Three-condition query.** The example below is not complete, but shows the
+- Three-condition query. The example below is not complete, but shows the
   complexity of adding one more condition. `X` represents the values from the cursor. `C` represents
   the columns in the database, sorted in ascending order, using an `:after` cursor, and with `NULL`
   values sorted last.

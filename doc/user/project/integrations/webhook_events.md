@@ -43,7 +43,7 @@ Event type                                                                    | 
 [Project or group access token event](#project-and-group-access-token-events) | A project or group access token will expire in seven days.
 [Vulnerability event](#vulnerability-events)                                  | A vulnerability is created or updated.
 
-**Footnotes**:
+Footnotes:
 
 1. Comment events triggered when the comment is edited [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127169) in GitLab 16.11.
 
@@ -168,8 +168,8 @@ Tag events are triggered when you create or delete tags in the repository.
 
 This hook is not executed if a single push includes changes for more than three
 tags by default. This limit is controlled by the `push_event_hooks_limit` setting
-(default: `3`), which applies to both tags and branches. When exceeded, **no webhooks
-are triggered at all** for that push event.
+(default: `3`), which applies to both tags and branches. When exceeded,no webhooks
+are triggered at all for that push event.
 
 For GitLab Self-Managed instances, administrators can modify this limit using the
 [Application Settings API](../../../api/settings.md#available-settings).
