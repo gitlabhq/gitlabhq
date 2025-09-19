@@ -82,7 +82,7 @@ To view these commands:
 To remove the Harbor registry for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Harbor** under **Active integrations**.
 1. Under **Enable integration**, clear the **Active** checkbox.
 1. Select **Save changes**.

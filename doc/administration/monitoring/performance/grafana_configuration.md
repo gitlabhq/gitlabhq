@@ -29,7 +29,7 @@ After setting up Grafana, you can enable a link to access it from the
 GitLab sidebar:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Metrics and profiling**.
+1. Select **Settings** > **Metrics and profiling**.
 1. Expand **Metrics - Grafana**.
 1. Select the **Add a link to Grafana** checkbox.
 1. Configure the **Grafana URL**. Enter the full URL of the Grafana instance.

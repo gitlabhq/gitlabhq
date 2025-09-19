@@ -95,7 +95,7 @@ To restrict `/search` to authenticated users only, do one of the following:
 - Restrict access in the **Admin** area:
 
   1. On the left sidebar, at the bottom, select **Admin**.
-  1. Select **Settings > Search**.
+  1. Select **Settings** > **Search**.
   1. Expand **Advanced search**.
   1. Clear the **Allow unauthenticated users to use search** checkbox.
   1. Select **Save changes**.
@@ -103,7 +103,7 @@ To restrict `/search` to authenticated users only, do one of the following:
 To restrict global search to authenticated users only:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Search**.
+1. Select **Settings** > **Search**.
 1. Expand **Visibility and access controls**
 1. Select the **Restrict global search to authenticated users only** checkbox.
 1. Select **Save changes**.
@@ -134,7 +134,7 @@ All global search scopes are enabled by default on GitLab Self-Managed instances
 To disable one or more global search scopes:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Search**.
+1. Select **Settings** > **Search**.
 1. Expand **Visibility and access controls**.
 1. Clear the checkboxes for the scopes you want to disable.
 1. Select **Save changes**.

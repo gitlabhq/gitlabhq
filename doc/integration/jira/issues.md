@@ -66,7 +66,7 @@ With this integration, you can prevent merge requests from being merged if they 
 To enable this feature:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. In the **Merge checks** section, select **Require an associated issue from Jira**.
 1. Select **Save**.
 
@@ -104,7 +104,7 @@ The regex pattern must follow the [RE2 syntax](https://github.com/google/re2/wik
 To define a regex pattern for Jira issue keys:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Jira issues**.
 1. Go to the **Jira issue matching** section.
 1. In the **Jira issue regex** text box, enter a regex pattern.
@@ -128,7 +128,7 @@ GitLab matches `JIRA#ALPHA-1` rather than `ALPHA-1`.
 To define a prefix for Jira issue keys:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Jira issues**.
 1. Go to the **Jira issue matching** section.
 1. In the **Jira issue prefix** text box, enter a prefix.

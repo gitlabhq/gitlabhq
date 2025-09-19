@@ -281,7 +281,7 @@ These settings limit indexing to 2000 documents per minute.
 To adjust worker settings:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Search**.
+1. Select **Settings** > **Search**.
 1. Expand **Advanced search**.
 1. Select the **Requeue indexing workers** checkbox.
 1. In the **Number of shards for non-code indexing** text box, enter a value higher than `2`.

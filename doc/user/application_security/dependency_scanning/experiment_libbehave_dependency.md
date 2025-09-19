@@ -295,7 +295,7 @@ If the Libbehave job is not run, ensure your project is configured to run
 ### MR comment is not being added
 
 This is usually due to the `BEHAVE_TOKEN` not being set. Ensure the access token has Guest level
-access and the **Protect variable** option is unchecked in the **Settings > CI/CD** variables
+access and the **Protect variable** option is unchecked in the **Settings** > **CI/CD** variables
 settings.
 
 #### I'm getting error "{401 Permission Denied}"

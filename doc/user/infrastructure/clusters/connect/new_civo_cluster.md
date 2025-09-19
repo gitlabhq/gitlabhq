@@ -63,7 +63,7 @@ Use CI/CD environment variables to configure your project.
 
 **Required configuration**:
 
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Set the variable `CIVO_TOKEN` to the token from your Civo account.
 1. Set the variable `TF_VAR_agent_token` to the agent token you received in the previous task.

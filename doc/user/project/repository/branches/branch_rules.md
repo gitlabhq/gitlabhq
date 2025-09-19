@@ -51,7 +51,7 @@ Prerequisites:
 To view the branch rules overview list:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Branch rules** to view all branches with protections.
 
 ### View branch rule details
@@ -59,7 +59,7 @@ To view the branch rules overview list:
 To view branch rules and protections for a single branch:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Branch rules** to view all branches with protections.
 1. Identify the branch you want and select **View details**.
 
@@ -89,7 +89,7 @@ Prerequisites:
 To create a branch rule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Branch rules**.
 1. Select **Add branch rule**.
 1. Choose one of the following options:
@@ -114,7 +114,7 @@ Not available for `all branches`.
 To add protections to a new branch:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Branch rules**.
 1. Select **Add branch rule**.
 1. Select one of **All protected branches** or **Branch name or pattern**.
@@ -254,7 +254,7 @@ Prerequisites:
 To edit a branch rule target:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Branch rules** to view all branches with protections.
 1. Identify the branch you want and select **View details**.
 1. In the **Rule target** section, select **Edit**.
@@ -272,7 +272,7 @@ Not available for `all branches`.
 To edit branch rule protections:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Branch rules** to view all branches with protections.
 1. Identify the branch you want and select **View details**.
 1. From the **Protect branch** section, choose one of the following options:
@@ -324,7 +324,7 @@ Prerequisites:
 To delete a branch rule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Branch rules**.
 1. Next to a rule you want to delete, select **View details**.
 1. In the upper-right corner, select **Delete rule**.

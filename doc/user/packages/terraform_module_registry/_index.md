@@ -231,7 +231,7 @@ By default, the Terraform Module Registry enforces uniqueness for module names i
 To allow publishing duplicate module names:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Packages and registries**.
+1. Select **Settings** > **Packages and registries**.
 1. In the **Terraform module** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names of modules to allow.
 
@@ -374,7 +374,7 @@ which removes this menu item from the sidebar.
 
 You can also remove the Terraform Module Registry for a specific project:
 
-1. In your project, go to **Settings > General**.
+1. In your project, go to **Settings** > **General**.
 1. Expand the **Visibility, project features, permissions** section and toggle **Packages** off.
 1. Select **Save changes**.
 

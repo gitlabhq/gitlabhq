@@ -36,7 +36,7 @@ After this step, your GitLab group or project is connected to Google Cloud. You 
 Google Cloud resources without the need for service accounts keys and the associated risks using workload identity federation.
 
 1. On the left sidebar, select **Search or go to** and find your group or project. If you configure this on a group, settings apply to all projects within by default.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Google Cloud IAM**.
 1. Select **Guided setup** and follow the instructions.
 
@@ -45,7 +45,7 @@ Google Cloud resources without the need for service accounts keys and the associ
 Now that the Google IAM integration is set up, you can connect to a Google Artifact Registry repository.
 After this step, you can view your Google Cloud artifacts in GitLab.
 
-1. In your GitLab project, on the left sidebar, select **Settings > Integrations**.
+1. In your GitLab project, on the left sidebar, select **Settings** > **Integrations**.
 1. Select **Google Artifact Registry**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. Complete the fields:
@@ -68,7 +68,7 @@ You can set up GitLab Runner to run CI/CD jobs on Google Cloud.
 After this step, your GitLab project has an autoscaling fleet of runners, with
 a runner manager that creates temporary runners to execute multiple jobs simultaneously.
 
-1. In your GitLab project, on the left sidebar, select **Settings > CI/CD**.
+1. In your GitLab project, on the left sidebar, select **Settings** > **CI/CD**.
 1. Expand the **Runners** section.
 1. Select **New project runner**.
 1. Complete the fields.

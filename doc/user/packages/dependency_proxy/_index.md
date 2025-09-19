@@ -47,7 +47,7 @@ For a list of planned additions, view the
 To enable or turn off the dependency proxy for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Packages and registries**.
+1. Select **Settings** > **Packages and registries**.
 1. Expand the **Dependency Proxy** section.
 1. To enable the proxy, turn on **Enable Proxy**. To turn it off, turn the toggle off.
 
@@ -229,7 +229,7 @@ To authenticate with Docker Hub, you can use:
 To set Docker Hub credentials for the dependency proxy for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Packages and registries**.
+1. Select **Settings** > **Packages and registries**.
 1. Expand the **Dependency Proxy** section.
 1. Turn on **Enable Proxy**.
 1. Under **Docker Hub authentication**, enter your credentials:

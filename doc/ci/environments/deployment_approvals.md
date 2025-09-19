@@ -91,7 +91,7 @@ A GitLab administrator can approve or reject all deployments.
 To allow self-approval of a deployment job:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Protected environments**.
 1. From the **Approval options**, select the **Allow pipeline triggerer to approve deployment** checkbox.
 

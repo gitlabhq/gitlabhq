@@ -45,7 +45,7 @@ to control GitLab from Slack. Slash commands are configured separately.
 {{< /history >}}
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Slack notifications**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. In the **Trigger** section, select the checkboxes for each type of GitLab

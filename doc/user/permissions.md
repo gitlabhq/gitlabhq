@@ -861,7 +861,7 @@ to control access to groups and projects in the group hierarchy. You can set the
 Minimal Access for members automatically added to the top-level group through SSO.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > SAML SSO**.
+1. Select **Settings** > **SAML SSO**.
 1. From the **Default membership role** dropdown list, select **Minimal Access**.
 1. Select **Save changes**.
 

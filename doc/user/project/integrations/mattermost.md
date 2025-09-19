@@ -53,7 +53,7 @@ After the Mattermost instance has an incoming webhook set up, you can set up Git
 to send the notifications:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Mattermost notifications**.
 1. Select the GitLab events to generate notifications for. For each event you select, input the Mattermost channel
    to receive the notification. You do not need to add the hash sign (`#`).

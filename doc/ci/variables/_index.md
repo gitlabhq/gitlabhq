@@ -144,7 +144,7 @@ Prerequisites:
 To add or update variables in the project settings:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and fill in the details:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
@@ -172,7 +172,7 @@ Prerequisites:
 To add a group variable:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and fill in the details:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
@@ -199,7 +199,7 @@ are recursively inherited.
 To set a group CI/CD variable to only be available for certain environments:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. To the right of the variable, select **Edit** ({{< icon name="pencil" >}}).
 1. For **Environment scope**, select **All (default)** (`*`), a specific [environment](../environments/_index.md#types-of-environments),
@@ -223,7 +223,7 @@ Prerequisites:
 To add an instance variable:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and fill in the details:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
@@ -305,7 +305,7 @@ Prerequisites:
 
 To mask a variable:
 
-1. For the group, project, or in the **Admin** area, select **Settings > CI/CD**.
+1. For the group, project, or in the **Admin** area, select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Next to the variable you want to protect, select **Edit**.
 1. Under **Visibility**, select **Mask variable**.
@@ -364,7 +364,7 @@ Prerequisites:
 
 To set a variable as protected:
 
-1. For the project or group, go to **Settings > CI/CD**.
+1. For the project or group, go to **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Next to the variable you want to protect, select **Edit**.
 1. Select the **Protect variable** checkbox.
@@ -442,7 +442,7 @@ Prerequisites:
 
 To disable variable expansion for the variable:
 
-1. For the project or group, go to **Settings > CI/CD**.
+1. For the project or group, go to **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Next to the variable you want to do not want expanded, select **Edit**.
 1. Clear the **Expand variable** checkbox.
@@ -596,7 +596,7 @@ Prerequisites:
 To enable the pipeline variable restriction setting in projects in the group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. In the **Disable pipeline variables in projects that don't use them** section,
    select **Start migration**.

@@ -61,7 +61,7 @@ see [epic 3869](https://gitlab.com/groups/gitlab-org/-/epics/3869).
 By default, merge requests in projects can be merged even if external status checks fail. To block the merging of merge requests when external checks fail:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. Select the **Status checks must succeed** checkbox.
 1. Select **Save changes**.
 
@@ -97,7 +97,7 @@ using the API. You don't need to wait for a merge request webhook payload to be 
 To view a list of status check services added to a project from the merge request settings:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. Scroll down to **Status checks**. This list shows the service name, API URL, targeted branch,
    and HMAC authentication status.
 

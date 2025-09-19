@@ -57,7 +57,7 @@ the documentation on [deploy keys](../user/project/deploy_keys/_index.md) and
 ## General
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 
 Hardening adjustments can be made in 4 sections.
 
@@ -175,7 +175,7 @@ For more detailed information, see
 ## Integrations
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 
 In general, as long as administrators control and monitor usage, integrations
 are fine in a hardened environment. Be cautious about integrations that allow
@@ -186,7 +186,7 @@ process or authenticated user.
 ## Metrics and profiling
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Metrics and profiling**.
+1. Select **Settings** > **Metrics and profiling**.
 
 The main focus for hardening is **Usage statistics**:
 
@@ -201,7 +201,7 @@ The main focus for hardening is **Usage statistics**:
 ## Network
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Network**.
+1. Select **Settings** > **Network**.
 
 For any setting that enables rate limiting, make sure it is selected. Default values
 should be fine. Additionally there are numerous settings that enable access, and all

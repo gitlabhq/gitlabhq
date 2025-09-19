@@ -31,7 +31,7 @@ members with the **Owner** or **Maintainer** roles have the option to receive
 a single email notification for new alerts.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Monitor**.
+1. Select **Settings** > **Monitor**.
 1. Expand **Alerts**.
 1. On the **Alert settings** tab, select the
    **Send a single email notification to Owners and Maintainers for new alerts** checkbox.

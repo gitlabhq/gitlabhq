@@ -224,7 +224,7 @@ file and adds protection for release branches:
 
 1. On the left sidebar, select **Search or go to** and
    search for `Excelsior`. Select the project named `Excelsior`.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval rules**.
 1. Select **Add approval rule**.
 1. Create a rule named `Enforce CODEOWNERS`.
@@ -262,7 +262,7 @@ to protect multiple branches:
 
 1. On the left sidebar, select **Search or go to** and
    search for `Excelsior`. Select the project named `Excelsior`.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Protected branches**.
 1. From the **Branch** dropdown list, type `1.*`, and then select **Create wildcard `1.*`**.
 1. To require everyone to submit merge requests, rather than pushing commits directly:
@@ -297,7 +297,7 @@ The branch protections are now visible in the UI:
 
   ![List of branches, showing 1.0.0 is protected](img/branch_is_protected_v16_2.png)
 
-- On the left sidebar, select **Settings > Repository**, then expand **Branch rules**
+- On the left sidebar, select **Settings** > **Repository**, then expand **Branch rules**
   to see details about all protected branches:
 
   ![List of protected branches and their protections](img/protections_in_place_v16_2.png)

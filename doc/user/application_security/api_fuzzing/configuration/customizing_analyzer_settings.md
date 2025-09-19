@@ -30,7 +30,7 @@ is an authentication method built into the HTTP protocol and used in conjunction
 
 We recommended that you [create a CI/CD variable](../../../../ci/variables/_index.md#for-a-project)
 for the password (for example, `TEST_API_PASSWORD`), and set it to be masked. You can create CI/CD
-variables from the GitLab project's page at **Settings > CI/CD**, in the **Variables** section.
+variables from the GitLab project's page at **Settings** > **CI/CD**, in the **Variables** section.
 Because of the [limitations on masked variables](../../../../ci/variables/_index.md#mask-a-cicd-variable),
 you should Base64-encode the password before adding it as a variable.
 
@@ -79,7 +79,7 @@ Follow these steps to provide the bearer token with `FUZZAPI_OVERRIDES_ENV`:
 1. [Create a CI/CD variable](../../../../ci/variables/_index.md#for-a-project),
    for example `TEST_API_BEARERAUTH`, with the value
    `{"headers":{"Authorization":"Bearer dXNlcm5hbWU6cGFzc3dvcmQ="}}` (substitute your token). You
-   can create CI/CD variables from the GitLab projects page at **Settings > CI/CD**, in the
+   can create CI/CD variables from the GitLab projects page at **Settings** > **CI/CD**, in the
    **Variables** section.
 
 1. In your `.gitlab-ci.yml` file, set `FUZZAPI_OVERRIDES_ENV` to the variable you just created:

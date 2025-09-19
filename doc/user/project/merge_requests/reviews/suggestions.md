@@ -155,7 +155,7 @@ Prerequisites:
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. Scroll to **Merge suggestions**, and alter the text to meet your needs.
    See [Supported variables](#supported-variables) for a list of placeholders
    you can use in this message.

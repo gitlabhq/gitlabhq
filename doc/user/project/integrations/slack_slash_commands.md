@@ -34,7 +34,7 @@ For a list of available slash commands, see [Slash commands](gitlab_slack_applic
 Slack slash commands are scoped to a project. To configure Slack slash commands:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Slack slash commands** and leave this browser tab open.
 1. In a new browser tab, sign in to Slack and [add a new slash command](https://my.slack.com/services/new/slash-commands).
 1. Enter a trigger name for the slash command. You could use the project name.

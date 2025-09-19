@@ -146,7 +146,7 @@ Prerequisites:
 To enable this setting:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. Scroll to **Merge checks**, and select **Pipelines must succeed**.
    This setting also prevents merge requests from merging if there is no pipeline,
    which can [conflict with some rules](#merge-request-cant-merge-despite-no-failed-pipeline).
@@ -170,7 +170,7 @@ Prerequisites:
 To change this behavior:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. Under **Merge checks**:
    - Select **Pipelines must succeed**.
    - Select **Skipped pipelines are considered successful**.

@@ -64,7 +64,7 @@ Each issue creation counts as 1 run, and each issue resolution counts as 1 run.
 
 First, we need to create a GitLab project access token with the necessary permissions to create and update issues via the API.
 
-1. Navigate to your GitLab project where you want Jira issues to be replicated. From the sidebar, go to **Settings > Access Tokens**.
+1. Navigate to your GitLab project where you want Jira issues to be replicated. From the sidebar, go to **Settings** > **Access Tokens**.
 1. Click **Add new token**.
 1. Set the following configuration:
    - **Token name**: `Jira VSA Integration` (or any descriptive name)

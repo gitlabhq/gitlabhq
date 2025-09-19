@@ -178,7 +178,7 @@ This configuration automatically provides access to all packages across your org
 Next, we'll add a read-only deploy token. This token provides access to the packages stored in the subgroups and projects of the organization,
 so your teams can use them for development.
 
-1. In your top-level group, on the left sidebar, select **Settings > Repository**.
+1. In your top-level group, on the left sidebar, select **Settings** > **Repository**.
 1. Expand **Deploy tokens**.
 1. Select **Add token**.
 1. Complete the fields, and set the scope to `read_repository`.

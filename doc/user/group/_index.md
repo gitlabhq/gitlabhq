@@ -214,7 +214,7 @@ Prerequisites:
 To edit group details:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. In the **Group name** text box, enter your group name. See the [limitations on group names](../reserved_names.md).
 1. Optional. In the **Group description (optional)** text box, enter your group description.
    The description is limited to 500 characters.
@@ -252,7 +252,7 @@ To leave a group:
 To delete a group and its contents:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. In the **Delete group** section, select **Delete group**.
 1. On the confirmation dialog, type the group name and select **Confirm**.
@@ -322,7 +322,7 @@ Prerequisites:
 To immediately delete a group marked for deletion:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Permanently delete group** section, select **Delete group**.
 1. Confirm the action when asked to.
@@ -334,7 +334,7 @@ This action deletes the group, its subgroups, projects, and all related resource
 To restore a group that is marked for deletion:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. In the **Restore group** section, select **Restore group**.
 
@@ -535,7 +535,7 @@ By default, users with at least the:
 To specify which roles can create projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. From **Minimum role required to create projects**, select an option.
 1. Select **Save changes**.

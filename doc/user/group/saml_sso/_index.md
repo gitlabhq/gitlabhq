@@ -49,7 +49,7 @@ If you are having issues setting up your identity provider, see the
 To set up SSO with Azure as your identity provider:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > SAML SSO**.
+1. Select **Settings** > **SAML SSO**.
 1. Note the information on this page.
 1. Go to Azure, [create a non-gallery application](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/overview-application-gallery#create-your-own-application), and [configure SSO for an application](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/add-application-portal-setup-sso). The following GitLab settings correspond to the Azure fields.
 
@@ -82,7 +82,7 @@ For more information, see the [Azure configuration example](example_saml_config.
 To set up Google Workspace as your identity provider:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > SAML SSO**.
+1. Select **Settings** > **SAML SSO**.
 1. Note the information on this page.
 1. Follow the instructions for [setting up SSO with Google as your identity provider](https://support.google.com/a/answer/6087519?hl=en). The following GitLab settings correspond to the Google Workspace fields.
 
@@ -119,7 +119,7 @@ View a demo of [how to configure SAML with Google Workspaces and set up Group Sy
 To set up SSO with Okta as your identity provider:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > SAML SSO**.
+1. Select **Settings** > **SAML SSO**.
 1. Note the information on this page.
 1. Follow the instructions for [setting up a SAML application in Okta](https://developer.okta.com/docs/guides/build-sso-integration/saml2/main/).
 
@@ -158,7 +158,7 @@ OneLogin supports its own [GitLab (SaaS) application](https://onelogin.service-n
 To set up OneLogin as your identity provider:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > SAML SSO**.
+1. Select **Settings** > **SAML SSO**.
 1. Note the information on this page.
 1. If you use the OneLogin generic
    [SAML Test Connector (Advanced)](https://onelogin.service-now.com/support?id=kb_article&sys_id=b2c19353dbde7b8024c780c74b9619fb&kb_category=93e869b0db185340d5505eea4b961934),
@@ -186,7 +186,7 @@ For more information, see the [OneLogin configuration example](example_saml_conf
 To set up Keycloak as your identity provider:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > SAML SSO**.
+1. Select **Settings** > **SAML SSO**.
 1. Note the information on this page.
 1. Follow the instructions to [create a SAML client in Keycloack](https://www.keycloak.org/docs/latest/server_admin/index.html#_client-saml-configuration).
 
@@ -253,7 +253,7 @@ To configure some identity providers, you need a GitLab metadata URL.
 To find this URL:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > SAML SSO**.
+1. Select **Settings** > **SAML SSO**.
 1. Copy the provided **GitLab metadata URL**.
 1. Follow your identity provider's documentation and paste the metadata URL when it's requested.
 
@@ -297,7 +297,7 @@ If the **NameID** is configured with the email address, [change the **NameID** f
 After you set up your identity provider to work with GitLab, you must configure GitLab to use it for authentication:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > SAML SSO**.
+1. Select **Settings** > **SAML SSO**.
 1. Complete the fields:
    - In the **Identity provider single sign-on URL** field, enter the SSO URL from your identity provider.
    - In the **Certificate fingerprint** field, enter the fingerprint for the SAML token signing certificate.
@@ -356,7 +356,7 @@ To link SAML to your existing GitLab.com account:
 1. Sign in to your GitLab.com account. [Reset your password](https://gitlab.com/users/password/new)
    if necessary.
 1. Locate and visit the **GitLab single sign-on URL** for the group you're signing
-   in to. A group owner can find this on the group's **Settings > SAML SSO** page.
+   in to. A group owner can find this on the group's **Settings** > **SAML SSO** page.
    If the sign-in URL is configured, users can connect to the GitLab app from the identity provider.
 1. Optional. Select the **Remember me** checkbox to stay signed in to GitLab for 2 weeks.
    You may still be asked to re-authenticate with your SAML provider more frequently.
@@ -553,7 +553,7 @@ You can disable password authentication for all [enterprise users](../../enterpr
 To disable password authentication for enterprise users:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > SAML SSO**.
+1. Select **Settings** > **SAML SSO**.
 1. Under **Configuration**, select **Disable password authentication for enterprise users**.
 1. Select **Save changes**.
 

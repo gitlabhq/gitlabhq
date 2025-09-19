@@ -85,7 +85,7 @@ Prerequisites:
 - You must have the Owner role for the group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Usage quotas**.
+1. Select **Settings** > **Usage quotas**.
 1. To view all members, select the **Seats** tab.
 
 On this page, you can view and manage all members in your namespace. For example,

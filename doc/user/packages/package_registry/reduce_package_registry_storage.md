@@ -25,7 +25,7 @@ You should implement a regular cleanup strategy to reduce package registry bloat
 To review the storage **Usage breakdown**:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Usage quotas**.
+1. Select **Settings** > **Usage quotas**.
 1. From the **Usage quotas** page, review the **Usage breakdown** for packages.
 
 ## Delete a package
@@ -103,7 +103,7 @@ Prerequisites:
 By default, the packages cleanup policy is disabled. To enable it:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Packages and registries**.
+1. Select **Settings** > **Packages and registries**.
 1. Expand **Package registry**.
 1. Under **Manage storage used by package assets**, set the rules appropriately.
 

@@ -45,7 +45,7 @@ consumption of your instance. Keep this in mind when adjusting the maximum.
 To set maximum values for diff display in merge requests:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Diff limits**.
 1. Enter a value for the diff limit.
 1. Select **Save changes**.

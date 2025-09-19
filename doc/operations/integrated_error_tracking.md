@@ -33,7 +33,7 @@ Prerequisites:
 To enable error tracking with GitLab as the backend:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Go to **Settings > Monitor**.
+1. Go to **Settings** > **Monitor**.
 1. Expand **Error Tracking**.
 1. For **Enable error tracking**, select **Active**.
 1. For **Error tracking backend**, select **GitLab**.

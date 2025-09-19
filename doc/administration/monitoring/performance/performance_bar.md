@@ -118,7 +118,7 @@ for a given group:
 
 1. Sign in as a user with administrator access.
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Metrics and profiling**.
+1. Select **Settings** > **Metrics and profiling**.
 1. Expand **Profiling - Performance bar**.
 1. Select **Allow non-administrators access to the performance bar**.
 1. In the **Allow access to members of the following group** field, provide the full path of the

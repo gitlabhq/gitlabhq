@@ -84,7 +84,7 @@ Prerequisites:
 To make new users external by default:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Account and limit** section.
 1. Select the **Make new users external by default** checkbox.
 1. Optional. In the **Email exclusion pattern** field, enter a regular expression.

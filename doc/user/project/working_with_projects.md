@@ -249,7 +249,7 @@ Prerequisites:
 - You must have at least the Maintainer role for the project.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. In the **Project name** text box, enter your project name. See the [limitations on project names](../reserved_names.md).
 1. Optional. In the **Project description** text box, enter your project description. The description is limited to 2,000 characters.
 Components published in the CI/CD catalog require a project description.
@@ -274,7 +274,7 @@ For more information on redirect duration and its side-effects, see
 To rename a repository:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Change path** text box, edit the path.
 1. Select **Change path**.
@@ -320,7 +320,7 @@ Prerequisites:
 To upload an avatar in your project settings:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. In the **Project avatar** section, select **Choose file**.
 1. Select your avatar file.
 1. Select **Save changes**.
@@ -358,7 +358,7 @@ Prerequisites:
 To delete a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Delete project** section, select **Delete project**.
 1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
@@ -387,7 +387,7 @@ Prerequisites:
 To restore a project pending deletion:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Restore project** section, select **Restore project**.
 
@@ -417,7 +417,7 @@ Prerequisites:
 To archive a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Archive project** section, select **Archive**.
 
@@ -456,7 +456,7 @@ To unarchive a project:
    1. On the left sidebar, select **Search or go to**.
    1. Select **View all my projects**.
    1. In the **Inactive** tab, select your project.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings** > **General**.
 1. Under **Advanced**, select **Expand**.
 1. In the **Unarchive project** section, select **Unarchive**.
 
@@ -533,7 +533,7 @@ Prerequisites:
 To transfer a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. Under **Transfer project**, choose the namespace to transfer the project to.
 1. Select **Transfer project**.

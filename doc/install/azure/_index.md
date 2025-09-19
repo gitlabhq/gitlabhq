@@ -176,7 +176,7 @@ redirect you to the public IP.
 
 To set up the GitLab external URL:
 
-1. Connect to GitLab through SSH by going to **Settings > Connect** from the VM
+1. Connect to GitLab through SSH by going to **Settings** > **Connect** from the VM
    dashboard, and follow the instructions. Remember to sign in with the username
    and SSH key you specified when you [created the VM](#configure-the-basics-tab).
    The Azure VM domain name is the one you

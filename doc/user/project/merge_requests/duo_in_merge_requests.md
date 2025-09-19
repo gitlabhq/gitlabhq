@@ -129,7 +129,7 @@ Prerequisites:
 To enable `@GitLabDuo` to automatically review merge requests:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
 
@@ -167,7 +167,7 @@ Prerequisites:
 To enable automatic reviews for groups:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Merge requests** section.
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
@@ -175,7 +175,7 @@ To enable automatic reviews for groups:
 To enable automatic reviews for all projects:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
 

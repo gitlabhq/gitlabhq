@@ -205,7 +205,7 @@ Prerequisites:
 To configure the actions:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Monitor**.
+1. Select **Settings** > **Monitor**.
 1. Expand the **Alerts** section, then select the **Alert settings** tab.
 1. Select the **Create an incident** checkbox.
 1. Optional. To customize the incident, from the **Incident template**, select a template to be

@@ -48,7 +48,7 @@ To subscribe to GitLab.com:
 1. Create additional users and
    [add them to the group](../user/group/_index.md#add-users-to-a-group). The users in this group, its subgroups, and projects can use
    the features of your subscription tier, and they consume a seat in your subscription.
-1. On the left sidebar, select **Settings > Billing** and choose a tier. You are taken to the Customers Portal.
+1. On the left sidebar, select **Settings** > **Billing** and choose a tier. You are taken to the Customers Portal.
 1. Fill out the form to complete your purchase.
 
 ### For GitLab Self-Managed
@@ -92,7 +92,7 @@ Prerequisites:
 To see the status of your GitLab.com subscription:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Billing**.
+1. Select **Settings** > **Billing**.
 
 The following information is displayed:
 

@@ -28,6 +28,6 @@ example, `13.10.1`.
 You can configure **What's new** to display features based on the tier, or you can hide it. To configure it:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Preferences**.
+1. Select **Settings** > **Preferences**.
 1. Expand **What's new**, and choose the required option.
 1. Select **Save changes**.

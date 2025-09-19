@@ -122,7 +122,7 @@ Prerequisites:
 To set up a webhook with PagerDuty:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Monitor**
+1. Select **Settings** > **Monitor**
 1. Expand **Incidents**.
 1. Select the **PagerDuty integration** tab.
 1. Turn on the **Active** toggle.
@@ -280,7 +280,7 @@ Prerequisites:
 To configure the setting:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Monitor**.
+1. Select **Settings** > **Monitor**.
 1. Expand the **Incidents** section.
 1. Select the **Automatically close associated incident** checkbox.
 1. Select **Save changes**.

@@ -45,7 +45,7 @@ Prerequisites:
 
 To configure approval rules:
 
-1. Go to your project's **Settings > Merge requests**.
+1. Go to your project's **Settings** > **Merge requests**.
 1. Go to the **Merge request approvals** section.
 1. Set up your desired rules.
 

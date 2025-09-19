@@ -72,7 +72,7 @@ The service accounts page displays information about service accounts in your to
 To view service accounts for the entire instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Service accounts**.
+1. Select **Settings** > **Service accounts**.
 
 {{< /tab >}}
 
@@ -81,7 +81,7 @@ To view service accounts for the entire instance:
 To view service accounts for a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Service accounts**.
+1. Select **Settings** > **Service accounts**.
 
 {{< /tab >}}
 

@@ -69,7 +69,7 @@ To create a custom member role:
 1. On the left sidebar:
    - For GitLab.com, select **Search or go to** and find your group.
    - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**.
-1. Select **Settings > Roles and permissions**.
+1. Select **Settings** > **Roles and permissions**.
 1. Select **New role**.
 1. GitLab Self-Managed and GitLab Dedicated instances only. Select **Member role**.
 1. Enter a name and description for the custom role.
@@ -98,7 +98,7 @@ Prerequisites:
 To create a custom admin role:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Roles and permissions**.
+1. Select **Settings** > **Roles and permissions**.
 1. Select **New role**.
 1. Select **Admin role**.
 1. Enter a name and description for the custom role.
@@ -128,7 +128,7 @@ To edit a custom role:
 1. On the left sidebar:
    - For GitLab.com, select **Search or go to** and find your group.
    - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**.
-1. Select **Settings > Roles and permissions**.
+1. Select **Settings** > **Roles and permissions**.
 1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Edit role**.
 1. Modify the role.
 1. Select **Save role**.
@@ -154,7 +154,7 @@ To view details of a custom role:
 1. On the left sidebar:
    - For GitLab.com, select **Search or go to** and find your group.
    - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**.
-1. Select **Settings > Roles and permissions**.
+1. Select **Settings** > **Roles and permissions**.
 1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **View details**.
 
 ## Delete a custom role
@@ -171,7 +171,7 @@ To delete a custom role:
 1. On the left sidebar:
    - For GitLab.com, select **Search or go to** and find your group.
    - For GitLab Self-Managed and GitLab Dedicated, at the bottom, select **Admin**.
-1. Select **Settings > Roles and permissions**.
+1. Select **Settings** > **Roles and permissions**.
 1. Next to a custom role, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Delete role**.
 1. On the confirmation dialog, select **Delete role**.
 
@@ -301,7 +301,7 @@ Prerequisites:
 To link a custom admin role with an LDAP CN:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Roles and permissions**.
+1. Select **Settings** > **Roles and permissions**.
 1. On the **LDAP Synchronization** tab, select an **LDAP Server**.
 1. In the **Sync method** field, select `Group cn`.
 1. In the **Group cn** field, begin typing the CN of the group. A dropdown list appears with matching CNs in the configured `group_base`.
@@ -320,7 +320,7 @@ Prerequisites:
 To link a custom admin role with an LDAP filter:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Roles and permissions**.
+1. Select **Settings** > **Roles and permissions**.
 1. On the **LDAP Synchronization** tab, select an **LDAP Server**.
 1. In the **Sync method** field, select `User filter`.
 1. In **User filter** box, enter a filter. For details, see [Set up LDAP user filter](../../administration/auth/ldap/_index.md#set-up-ldap-user-filter).

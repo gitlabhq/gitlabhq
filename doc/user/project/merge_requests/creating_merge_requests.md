@@ -184,7 +184,7 @@ Prerequisites:
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. In the **Target project** section, select the option you want to use for
    your default target project.
 1. Select **Save changes**.

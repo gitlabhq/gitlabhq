@@ -39,7 +39,7 @@ Prerequisites:
 To connect a Google Artifact Registry repository to a GitLab project:
 
 1. In GitLab, on the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Google Artifact Management**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. Complete the fields:

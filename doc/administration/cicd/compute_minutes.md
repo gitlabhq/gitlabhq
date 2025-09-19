@@ -53,7 +53,7 @@ Prerequisites:
 To change the default quota that applies to all namespaces:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. In the **Compute quota** box, enter a limit.
 1. Select **Save changes**.

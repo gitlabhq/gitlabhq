@@ -81,7 +81,7 @@ You must have administrator access to use any of the following methods:
 
 - Through the **Admin** area:
   1. On the left sidebar, at the bottom, select **Admin**.
-  1. Select **Settings > Runners**.
+  1. Select **Settings** > **Runners**.
   1. Identify the runners you would like to pause.
   1. Select the `pause` button next to each runner you would like to pause.
   1. After the failover is complete, unpause the runners you paused in the previous step.

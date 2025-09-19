@@ -160,7 +160,7 @@ For existing projects, an administrator must
 To enable instance runners for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. Enable the **Turn on instance runners for this project** toggle.
 
@@ -169,7 +169,7 @@ To enable instance runners for a project:
 To enable instance runners for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. Enable the **Turn on instance runners for this group** toggle.
 
@@ -182,7 +182,7 @@ or group.
 To disable instance runners for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. In the **Instance runners** area, turn off the **Turn on runners for this project** toggle.
 
@@ -196,7 +196,7 @@ Instance runners are automatically disabled for a project:
 To disable instance runners for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. Turn off the **Enable instance runners for this group** toggle.
 1. Optional. To allow instance runners to be enabled for individual projects or subgroups,
@@ -436,7 +436,7 @@ You can clean up group runners that have been inactive for more than three month
 Group runners are those that were created in a specific group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. Turn on the **Enable stale runner cleanup** toggle.
 
@@ -522,7 +522,7 @@ authenticate with GitLab when it picks up jobs from the job queue.
 To create a project runner:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand the **Runners** section.
 1. Select **New project runner**.
 1. Select the operating system where GitLab Runner is installed.
@@ -573,7 +573,7 @@ To create a project runner:
 1. [Install GitLab Runner](https://docs.gitlab.com/runner/install/).
 1. On the left sidebar, select **Search or go to** and
    find the project where you want to use the runner.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. In the **Project runners** section, note the URL and token.
 1. [Register the runner](https://docs.gitlab.com/runner/register/#register-with-a-runner-registration-token-deprecated).
@@ -591,7 +591,7 @@ in the GitLab instance.
 
 1. On the left sidebar, select **Search or go to** and
    find the project where you want to enable the runner.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. In the **Assigned project runners** section, find the runner.
 1. To the right of the runner:
@@ -616,7 +616,7 @@ To prevent unnecessary API traffic, you must also
 
 1. On the left sidebar, select **Search or go to** and
    find the project where you want to enable the runner.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. In the **Assigned project runners** section, find the runner.
 1. To the right of the runner, select **Remove runner**.
@@ -637,7 +637,7 @@ To enable a project runner for a project:
 
 1. On the left sidebar, select **Search or go to** and
    find the project where you want to enable the runner.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. In the **Project runners** area, by the runner you want, select **Enable for this project**.
 
@@ -657,7 +657,7 @@ To lock or unlock a project runner:
 
 1. On the left sidebar, select **Search or go to** and
    find the project where you want to enable the runner.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. Find the project runner you want to lock or unlock. Make sure it's enabled. You cannot lock instance or group runners.
 1. Select **Edit** ({{< icon name="pencil" >}}).
@@ -776,7 +776,7 @@ To can find the IP address of a runner for a project,
 you must have the Owner role for the
 project.
 
-1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
+1. Go to the project's **Settings** > **CI/CD** and expand the **Runners** section.
 1. Select the runner name and find the **IP Address** row.
 
 ![Runner details page showing the IP address field for a project runner](img/project_runner_ip_address_v17_6.png)
@@ -831,6 +831,6 @@ Prerequisites:
 To enable the use of runner registration token in project and groups:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Runners**.
 1. Turn on the **Allow members of projects and groups to create runners with runner registration tokens** toggle.

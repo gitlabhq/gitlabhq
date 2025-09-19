@@ -101,7 +101,7 @@ Prerequisites:
 To create a webhook:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Webhooks**.
+1. Select **Settings** > **Webhooks**.
 1. Select **Add new webhook**.
 1. In **URL**, enter the URL of the webhook endpoint.
    Use percent-encoding for special characters.
@@ -123,7 +123,7 @@ are encrypted at rest in the database.
 To mask sensitive portions of a webhook URL:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Webhooks**.
+1. Select **Settings** > **Webhooks**.
 1. In **URL**, enter the full URL of the webhook.
 1. To define masked portions, select **Add URL masking**.
 1. In **Sensitive portion of URL**, enter the part of the URL you want to mask.
@@ -368,7 +368,7 @@ Prerequisites:
 To view the request history for a webhook:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Webhooks**.
+1. Select **Settings** > **Webhooks**.
 1. Select **Edit** for the webhook.
 1. Go to the **Recent events** section.
 
@@ -401,7 +401,7 @@ This page contains the body and headers of:
 To inspect the request and response details of a webhook event:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Webhooks**.
+1. Select **Settings** > **Webhooks**.
 1. Select **Edit** for the webhook.
 1. Go to the **Recent events** section.
 1. Select **View details** for the event.
@@ -423,7 +423,7 @@ Prerequisites:
 To test a webhook:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Webhooks**.
+1. Select **Settings** > **Webhooks**.
 1. In the list of configured webhooks, locate the webhook you want to test.
 1. From the **Test** dropdown list, select the type of event to test.
 
@@ -490,7 +490,7 @@ GitLab automatically disables project or group webhooks that fail four consecuti
 To view auto-disabled webhooks:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > Webhooks**.
+1. Select **Settings** > **Webhooks**.
 
 In the webhook list, auto-disabled webhooks display as:
 

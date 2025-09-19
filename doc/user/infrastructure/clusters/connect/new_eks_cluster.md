@@ -131,7 +131,7 @@ Use CI/CD environment variables to configure your project.
 
 **Required configuration**:
 
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Set the variable `AWS_ACCESS_KEY_ID` to your AWS access key ID.
 1. Set the variable `AWS_SECRET_ACCESS_KEY` to your AWS secret access key.

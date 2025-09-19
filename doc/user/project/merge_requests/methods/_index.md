@@ -36,7 +36,7 @@ gitGraph
 ## Configure a project's merge method
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. Select your desired **Merge method** from these options:
    - Merge commit
    - Merge commit with semi-linear history

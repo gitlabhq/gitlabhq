@@ -54,7 +54,7 @@ For GitLab Self-Managed, a GitLab administrator must:
 
 1. Enable the Gitpod integration in GitLab:
    1. On the left sidebar, at the bottom, select **Admin**.
-   1. On the left sidebar, select **Settings > General**.
+   1. On the left sidebar, select **Settings** > **General**.
    1. Expand the **Gitpod** configuration section.
    1. Select the **Enable Gitpod integration** checkbox.
    1. Enter the Gitpod instance URL (for example, `https://gitpod.example.com` or `https://gitpod.io`).

@@ -141,7 +141,7 @@ When you turn on this setting, users with the Developer role can view variable v
 To view manual pipeline variables:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Select **Display pipeline variables**.
 1. Go to **Build > Pipelines** and select a pipeline that was run manually.
 1. Select the **Manual Variables** tab.

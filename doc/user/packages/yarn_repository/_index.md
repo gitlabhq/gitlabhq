@@ -92,7 +92,7 @@ You can use pipeline variables when you publish with CI/CD.
 1. Optional. To use protected variables:
 
    1. Go to the repository that contains the Yarn package source code.
-   1. On the left sidebar, select **Settings > Repository**.
+   1. On the left sidebar, select **Settings** > **Repository**.
       - If you are building from branches with tags, select **Protected Tags** and add `v*` (wildcard) for semantic versioning.
       - If you are building from branches without tags, select **Protected Branches**.
 

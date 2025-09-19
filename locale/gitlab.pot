@@ -2736,10 +2736,7 @@ msgstr ""
 msgid "AICatalog|Test run executed successfully, see %{linkStart}Session %{formattedId}%{linkEnd}."
 msgstr ""
 
-msgid "AICatalog|The agent could not be added to the project. Try again. %{error}"
-msgstr ""
-
-msgid "AICatalog|The agent could not be added. Try again."
+msgid "AICatalog|The agent could not be added to the project. Check that the project meets the %{link_start}prerequisites%{link_end} and try again."
 msgstr ""
 
 msgid "AICatalog|The agent could not be updated. Try again."
@@ -60468,6 +60465,9 @@ msgid "SecurityReports|To widen your search, change or remove filters above"
 msgstr ""
 
 msgid "SecurityReports|Tool"
+msgstr ""
+
+msgid "SecurityReports|Total count of %{severity} vulnerabilities. Click View to see these vulnerabilities in the vulnerability report."
 msgstr ""
 
 msgid "SecurityReports|Unable to add %{invalidProjectsMessage}: %{errorMessage}"

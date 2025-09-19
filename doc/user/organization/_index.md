@@ -61,7 +61,7 @@ Support for only private organizations is proposed for [cells 1.0](https://gitla
 ## Edit an organization's name
 
 1. On the left sidebar, select **Organizations** and find the organization you want to edit.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. In the **Organization name** text box, edit the name.
 1. In the **Organization description** text box, edit the description. Supports a [limited subset of Markdown](#supported-markdown-for-organization-description).
 1. In the **Organization avatar** field, if an avatar is:
@@ -72,7 +72,7 @@ Support for only private organizations is proposed for [cells 1.0](https://gitla
 ## Change an organization's URL
 
 1. On the left sidebar, select **Organizations** and find the organization whose URL you want to change.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Advanced** section.
 1. In the **Organization URL** text box, edit the URL.
 1. Select **Change organization URL**.
@@ -86,7 +86,7 @@ Support for only private organizations is proposed for [cells 1.0](https://gitla
 {{< /alert >}}
 
 1. On the left sidebar, select **Organizations** and find your organization.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Visibility** section.
 
 ## Switch organizations

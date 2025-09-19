@@ -379,7 +379,7 @@ or **Accept Next Line Of Inline Suggestion**:
 
 To update your extension to the latest version:
 
-1. In Visual Studio Code, go to **Settings > Extensions**.
+1. In Visual Studio Code, go to **Settings** > **Extensions**.
 1. Search for **GitLab Workflow** published by **GitLab (`gitlab.com`)**.
 1. From **Extension: GitLab Workflow**, select **Update to {later version}**.
 1. Optional. To enable automatic updates in the future, select **Auto-Update**

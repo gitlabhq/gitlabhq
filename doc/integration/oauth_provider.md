@@ -60,7 +60,7 @@ To create a new application for your user:
 To create a new application for a group:
 
 1. Go to the desired group.
-1. On the left sidebar, select **Settings > Applications**.
+1. On the left sidebar, select **Settings** > **Applications**.
 1. Enter a **Name** and **Redirect URI**.
 1. Select OAuth 2 scopes as defined in [Authorized Applications](#view-all-authorized-applications).
 1. In the **Redirect URI**, enter the URL where users are sent after they authorize with GitLab.

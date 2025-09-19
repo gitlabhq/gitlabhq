@@ -36,7 +36,7 @@ To integrate Diffblue Cover into your pipeline:
 1. On the left sidebar, select **Search or go to** and find your project.
    - If you want to test the integration with a sample project, you can [import](../user/project/import/repo_by_url.md)
      the Diffblue [Spring PetClinic sample project](https://github.com/diffblue/demo-spring-petclinic).
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Find **Diffblue Cover** and select **Configure**.
 1. Complete the fields:
 

@@ -43,7 +43,7 @@ Prerequisites:
 To enable the secrets manager:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Turn on the **Secrets Manager** toggle and wait for the secrets manager to be provisioned.
 

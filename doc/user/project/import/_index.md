@@ -69,7 +69,7 @@ with a malicious `.gitlab-ci.yml` file could allow an attacker to exfiltrate gro
 GitLab Self-Managed administrators can reduce their attack surface by disabling import sources they don't need:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Import and export settings**.
 1. Scroll to **Import sources**.
 1. Clear checkboxes for importers that are not required.
@@ -350,7 +350,7 @@ To view your current placeholder user usage and limits:
 
 1. On the left sidebar, select **Search or go to** and
    find your group. This group must be at the top level.
-1. Select **Settings > Usage quotas**.
+1. Select **Settings** > **Usage quotas**.
 1. Select the **Import** tab.
 
 You cannot determine the number of placeholder users you need in advance.

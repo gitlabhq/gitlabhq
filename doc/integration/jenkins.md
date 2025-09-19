@@ -136,7 +136,7 @@ You should use this approach for Jenkins integrations if you can provide GitLab
 with your Jenkins server URL and authentication information.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Jenkins**.
 1. Select the **Active** checkbox.
 1. Select the events you want GitLab to trigger a Jenkins build for:

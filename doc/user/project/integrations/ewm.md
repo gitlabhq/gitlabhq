@@ -21,7 +21,7 @@ This IBM product was [formerly named Rational Team Concert (RTC)](https://jazz.n
 To enable the EWM integration, in a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **EWM**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. Fill in the required fields:

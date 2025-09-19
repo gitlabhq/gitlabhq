@@ -46,7 +46,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
    with `api` scope. The token is used to authenticate requests from the web
    hook that is created in Bitbucket to notify GitLab of new commits.
 
-1. In Bitbucket, from **Settings > Webhooks**, create a new webhook to notify
+1. In Bitbucket, from **Settings** > **Webhooks**, create a new webhook to notify
    GitLab of new commits.
 
    The webhook URL should be set to the GitLab API to trigger pull mirroring,

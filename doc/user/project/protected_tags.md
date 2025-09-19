@@ -38,7 +38,7 @@ Prerequisites:
 - You must have at least the Maintainer role for the project.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Protected tags**.
 1. Select **Add new**.
 1. To protect a single tag, select **Tag**, then choose your tag from the dropdown list.
@@ -64,7 +64,7 @@ The protected tag (or wildcard) displays in the **Protected tags** list.
 To set the members of a group or subgroup as Allowed to create protected tags:
 
 1. On the left sidebar, select **Search or go** to and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Protected tags**.
 1. Add groups to the following field:
 
@@ -184,7 +184,7 @@ Prerequisites:
 To allow a deploy key to create a protected tag:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Protected tags**.
 1. From the **Tag** dropdown list, select the tag you want to protect.
 1. From the **Allowed to create** list, select the deploy key.

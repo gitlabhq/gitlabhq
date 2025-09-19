@@ -679,7 +679,7 @@ If you convert an existing site to Geo, you should check that the clone method i
 On the primary site:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. If you use Git over SSH:
    1. Ensure **Enabled Git access protocols** is set to **Both SSH and HTTP(S)**.

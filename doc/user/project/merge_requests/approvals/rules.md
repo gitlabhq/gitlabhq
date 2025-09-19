@@ -48,7 +48,7 @@ Prerequisites:
 To add a merge request approval rule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, in the **Approval rules** section, select
    **Add approval rule**.
 1. On the right sidebar, complete the fields:
@@ -83,7 +83,7 @@ Prerequisites:
 To edit a merge request approval rule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, in the **Approval rules** section, next to the rule you want to edit, select **Edit**.
 1. On the right sidebar, edit the fields:
    - In **Approvals required**, a value of `0` makes
@@ -103,7 +103,7 @@ Prerequisites:
 To delete a merge request approval rule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, next to the rule you want to delete, select the trash can ({{< icon name="remove" >}}).
 1. Select **Remove approvers**.
 
@@ -183,7 +183,7 @@ Approval rules are often relevant only to specific branches, like your
 approval rule for certain branches:
 
 1. [Create an approval rule](#add-an-approval-rule).
-1. Go to your project and select **Settings > Merge requests**.
+1. Go to your project and select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, scroll to **Approval rules**.
 1. For **Target branch**:
    - To apply the rule to all protected branches, select **All protected branches**.
@@ -216,7 +216,7 @@ To enable approval permissions for these users without granting them push access
 1. [Share the project with your group](../../members/sharing_projects_groups.md#invite-a-group-to-a-project),
    with at least the Reporter role.
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, in the **Approval rules** section:
    - For a new rule, select **Add approval rule** and target the protected branch.
    - For an existing rule, select **Edit** and target the protected branch.
@@ -292,7 +292,7 @@ If you add [code owners](../../codeowners/_index.md) to your repository, the own
 become eligible approvers in the project. To enable this merge request approval rule:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. In the **Merge request approvals** section, in the **Approval rules** section, locate the **All eligible users** rule.
 1. In the **Approvals required** column, enter the number of approvals required.
 

@@ -178,7 +178,7 @@ Prerequisites:
 
 To control access to protected variables and runners:
 
-- Go to **Settings > CI/CD**.
+- Go to **Settings** > **CI/CD**.
 - Expand **Variables**
 - Under **Access protected resources in merge request pipelines**, select or clear
   the **Allow merge request pipelines to access protected variables and runners** option.

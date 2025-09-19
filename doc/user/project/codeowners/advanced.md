@@ -127,7 +127,7 @@ become valid in the future and cause unexpected behavior.
 To require multiple approvals from Code Owners:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Protected branches**.
 1. Next to the default branch, turn on the toggle under **Code owner approval**.
 1. Edit the `CODEOWNERS` file to add a rule for multiple approvals.

@@ -128,7 +128,7 @@ The container registry is enabled by default.
 You can, however, remove the container registry for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Visibility, project features, permissions** section
    and disable **Container registry**.
 1. Select **Save changes**.
@@ -144,7 +144,7 @@ For more information about the permissions that this setting grants to users,
 see [Container registry visibility permissions](#container-registry-visibility-permissions).
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the section **Visibility, project features, permissions**.
 1. Under **Container registry**, select an option from the dropdown list:
 

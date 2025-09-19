@@ -379,7 +379,7 @@ Prerequisites:
 To require email verification for locked accounts:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Sign-in restrictions**.
 1. Select the **Email verification for locked accounts** checkbox.
 1. Select **Save changes**.

@@ -58,7 +58,7 @@ To create a custom field:
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Settings > Issues**.
+1. Select **Settings** > **Issues**.
 1. Select **Create field**.
 1. Complete the fields:
    - In **Type**, select what type the field should be:
@@ -89,7 +89,7 @@ To edit a custom field:
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Settings > Issues**.
+1. Select **Settings** > **Issues**.
 1. Next to the field you want to edit, select **Edit `<field name>`** ({{< icon name="pencil" >}}).
 1. Make changes to any of the fields.
 1. Select **Update**.
@@ -107,7 +107,7 @@ To archive a custom field:
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Settings > Issues**.
+1. Select **Settings** > **Issues**.
 1. Next to the field you want to archive, select **Archive `<field name>`** ({{< icon name="archive" >}}).
 
 ### Unarchive a custom field
@@ -123,7 +123,7 @@ To unarchive a custom field:
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Settings > Issues**.
+1. Select **Settings** > **Issues**.
 1. Select the **Archived** tab to list archived fields.
 1. Next to the field you want to unarchive, select **Unarchive `<field name>`** ({{< icon name="redo" >}}).
 

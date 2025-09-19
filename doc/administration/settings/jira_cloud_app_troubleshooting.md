@@ -53,7 +53,7 @@ To resolve this issue, disable the **Jira Connect Proxy URL** setting.
 - In GitLab 15.8 and later:
 
   1. On the left sidebar, at the bottom, select **Admin**.
-  1. On the left sidebar, select **Settings > General**.
+  1. On the left sidebar, select **Settings** > **General**.
   1. Expand **GitLab for Jira App**.
   1. Clear the **Jira Connect Proxy URL** text box.
   1. Select **Save changes**.

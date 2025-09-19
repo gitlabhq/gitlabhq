@@ -434,7 +434,7 @@ You can disable group wikis from the [group settings](group.md#configure-group-w
 To add a link to an external wiki from a project's left sidebar:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **External wiki**.
 1. Add the URL to your external wiki.
 1. Optional. Select **Test settings**.
@@ -450,7 +450,7 @@ To hide the internal wiki from the sidebar, [disable the project's wiki](#disabl
 To hide the link to an external wiki:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **External wiki**.
 1. Under **Enable integration**, clear the **Active** checkbox.
 1. Select **Save changes**.
@@ -460,7 +460,7 @@ To hide the link to an external wiki:
 To disable a project's internal wiki:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Scroll down to find and turn off the **Wiki** toggle (in gray).
 1. Select **Save changes**.

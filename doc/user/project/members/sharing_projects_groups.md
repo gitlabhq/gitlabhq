@@ -212,7 +212,7 @@ which can be confusing and difficult to control.
 To prevent a project from being shared with other groups:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Projects in `<group_name>` cannot be shared with other groups**.
 1. Select **Save changes**.
@@ -370,7 +370,7 @@ If you prevent inviting groups outside the hierarchy for the **Animals** group:
 To prevent inviting groups outside of the group's hierarchy:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Select **Members cannot invite groups outside of `<group_name>` and its subgroups**.
 1. Select **Save changes**.

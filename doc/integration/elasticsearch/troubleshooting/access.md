@@ -94,7 +94,7 @@ To verify that your GitLab instance is using Elasticsearch:
 - When you perform a search, in the upper-right corner of the search results page,
   ensure **Advanced search is enabled** is displayed.
 
-- In the **Admin** area, under **Settings > Search**, check that the
+- In the **Admin** area, under **Settings** > **Search**, check that the
   advanced search settings are selected.
 
   Those same settings there can be obtained from the Rails console if necessary:

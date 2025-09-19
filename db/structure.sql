@@ -7555,6 +7555,466 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_31 (
     CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
+CREATE TABLE virtual_registries_container_cache_entries (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    downloads_count bigint DEFAULT 0 NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    CONSTRAINT check_0bd0ebf413 CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_0f76ce8cd8 CHECK ((char_length(upstream_etag) <= 255)),
+    CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
+)
+PARTITION BY HASH (relative_path);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries_00 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    downloads_count bigint DEFAULT 0 NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    CONSTRAINT check_0bd0ebf413 CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_0f76ce8cd8 CHECK ((char_length(upstream_etag) <= 255)),
+    CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries_01 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    downloads_count bigint DEFAULT 0 NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    CONSTRAINT check_0bd0ebf413 CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_0f76ce8cd8 CHECK ((char_length(upstream_etag) <= 255)),
+    CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries_02 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    downloads_count bigint DEFAULT 0 NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    CONSTRAINT check_0bd0ebf413 CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_0f76ce8cd8 CHECK ((char_length(upstream_etag) <= 255)),
+    CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries_03 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    downloads_count bigint DEFAULT 0 NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    CONSTRAINT check_0bd0ebf413 CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_0f76ce8cd8 CHECK ((char_length(upstream_etag) <= 255)),
+    CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries_04 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    downloads_count bigint DEFAULT 0 NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    CONSTRAINT check_0bd0ebf413 CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_0f76ce8cd8 CHECK ((char_length(upstream_etag) <= 255)),
+    CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries_05 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    downloads_count bigint DEFAULT 0 NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    CONSTRAINT check_0bd0ebf413 CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_0f76ce8cd8 CHECK ((char_length(upstream_etag) <= 255)),
+    CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries_06 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    downloads_count bigint DEFAULT 0 NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    CONSTRAINT check_0bd0ebf413 CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_0f76ce8cd8 CHECK ((char_length(upstream_etag) <= 255)),
+    CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries_07 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    downloads_count bigint DEFAULT 0 NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    CONSTRAINT check_0bd0ebf413 CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_0f76ce8cd8 CHECK ((char_length(upstream_etag) <= 255)),
+    CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries_08 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    downloads_count bigint DEFAULT 0 NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    CONSTRAINT check_0bd0ebf413 CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_0f76ce8cd8 CHECK ((char_length(upstream_etag) <= 255)),
+    CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries_09 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    downloads_count bigint DEFAULT 0 NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    CONSTRAINT check_0bd0ebf413 CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_0f76ce8cd8 CHECK ((char_length(upstream_etag) <= 255)),
+    CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries_10 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    downloads_count bigint DEFAULT 0 NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    CONSTRAINT check_0bd0ebf413 CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_0f76ce8cd8 CHECK ((char_length(upstream_etag) <= 255)),
+    CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries_11 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    downloads_count bigint DEFAULT 0 NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    CONSTRAINT check_0bd0ebf413 CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_0f76ce8cd8 CHECK ((char_length(upstream_etag) <= 255)),
+    CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries_12 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    downloads_count bigint DEFAULT 0 NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    CONSTRAINT check_0bd0ebf413 CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_0f76ce8cd8 CHECK ((char_length(upstream_etag) <= 255)),
+    CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries_13 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    downloads_count bigint DEFAULT 0 NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    CONSTRAINT check_0bd0ebf413 CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_0f76ce8cd8 CHECK ((char_length(upstream_etag) <= 255)),
+    CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries_14 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    downloads_count bigint DEFAULT 0 NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    CONSTRAINT check_0bd0ebf413 CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_0f76ce8cd8 CHECK ((char_length(upstream_etag) <= 255)),
+    CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
+);
+
+CREATE TABLE gitlab_partitions_static.virtual_registries_container_cache_entries_15 (
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    downloads_count bigint DEFAULT 0 NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    file_md5 bytea,
+    file_sha1 bytea NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    CONSTRAINT check_0bd0ebf413 CHECK ((char_length(object_storage_key) <= 1024)),
+    CONSTRAINT check_0f76ce8cd8 CHECK ((char_length(upstream_etag) <= 255)),
+    CONSTRAINT check_844f00a59d CHECK ((char_length(relative_path) <= 1024)),
+    CONSTRAINT check_be077e7ebe CHECK ((char_length(file) <= 1024)),
+    CONSTRAINT check_f776d05cc6 CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT chk_rails_a97edf3d51 CHECK (((file_md5 IS NULL) OR (octet_length(file_md5) = 16))),
+    CONSTRAINT chk_rails_cf0e2a2780 CHECK ((octet_length(file_sha1) = 20))
+);
+
 CREATE TABLE virtual_registries_packages_maven_cache_entries (
     group_id bigint NOT NULL,
     upstream_id bigint NOT NULL,
@@ -8978,7 +9438,8 @@ CREATE TABLE abuse_report_user_mentions (
     mentioned_users_ids bigint[],
     mentioned_projects_ids bigint[],
     mentioned_groups_ids bigint[],
-    organization_id bigint
+    organization_id bigint,
+    CONSTRAINT check_f0d6e86b14 CHECK ((organization_id IS NOT NULL))
 );
 
 CREATE SEQUENCE abuse_report_user_mentions_id_seq
@@ -29090,6 +29551,38 @@ ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static
 
 ALTER TABLE ONLY namespace_descendants ATTACH PARTITION gitlab_partitions_static.namespace_descendants_31 FOR VALUES WITH (modulus 32, remainder 31);
 
+ALTER TABLE ONLY virtual_registries_container_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_00 FOR VALUES WITH (modulus 16, remainder 0);
+
+ALTER TABLE ONLY virtual_registries_container_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_01 FOR VALUES WITH (modulus 16, remainder 1);
+
+ALTER TABLE ONLY virtual_registries_container_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_02 FOR VALUES WITH (modulus 16, remainder 2);
+
+ALTER TABLE ONLY virtual_registries_container_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_03 FOR VALUES WITH (modulus 16, remainder 3);
+
+ALTER TABLE ONLY virtual_registries_container_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_04 FOR VALUES WITH (modulus 16, remainder 4);
+
+ALTER TABLE ONLY virtual_registries_container_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_05 FOR VALUES WITH (modulus 16, remainder 5);
+
+ALTER TABLE ONLY virtual_registries_container_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_06 FOR VALUES WITH (modulus 16, remainder 6);
+
+ALTER TABLE ONLY virtual_registries_container_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_07 FOR VALUES WITH (modulus 16, remainder 7);
+
+ALTER TABLE ONLY virtual_registries_container_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_08 FOR VALUES WITH (modulus 16, remainder 8);
+
+ALTER TABLE ONLY virtual_registries_container_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_09 FOR VALUES WITH (modulus 16, remainder 9);
+
+ALTER TABLE ONLY virtual_registries_container_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_10 FOR VALUES WITH (modulus 16, remainder 10);
+
+ALTER TABLE ONLY virtual_registries_container_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_11 FOR VALUES WITH (modulus 16, remainder 11);
+
+ALTER TABLE ONLY virtual_registries_container_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_12 FOR VALUES WITH (modulus 16, remainder 12);
+
+ALTER TABLE ONLY virtual_registries_container_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_13 FOR VALUES WITH (modulus 16, remainder 13);
+
+ALTER TABLE ONLY virtual_registries_container_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_14 FOR VALUES WITH (modulus 16, remainder 14);
+
+ALTER TABLE ONLY virtual_registries_container_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_15 FOR VALUES WITH (modulus 16, remainder 15);
+
 ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_00 FOR VALUES WITH (modulus 16, remainder 0);
 
 ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_maven_cache_entries_01 FOR VALUES WITH (modulus 16, remainder 1);
@@ -31317,6 +31810,57 @@ ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_30
 
 ALTER TABLE ONLY gitlab_partitions_static.namespace_descendants_31
     ADD CONSTRAINT namespace_descendants_31_pkey PRIMARY KEY (namespace_id);
+
+ALTER TABLE ONLY virtual_registries_container_cache_entries
+    ADD CONSTRAINT virtual_registries_container_cache_entries_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_container_cache_entries_00
+    ADD CONSTRAINT virtual_registries_container_cache_entries_00_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_container_cache_entries_01
+    ADD CONSTRAINT virtual_registries_container_cache_entries_01_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_container_cache_entries_02
+    ADD CONSTRAINT virtual_registries_container_cache_entries_02_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_container_cache_entries_03
+    ADD CONSTRAINT virtual_registries_container_cache_entries_03_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_container_cache_entries_04
+    ADD CONSTRAINT virtual_registries_container_cache_entries_04_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_container_cache_entries_05
+    ADD CONSTRAINT virtual_registries_container_cache_entries_05_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_container_cache_entries_06
+    ADD CONSTRAINT virtual_registries_container_cache_entries_06_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_container_cache_entries_07
+    ADD CONSTRAINT virtual_registries_container_cache_entries_07_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_container_cache_entries_08
+    ADD CONSTRAINT virtual_registries_container_cache_entries_08_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_container_cache_entries_09
+    ADD CONSTRAINT virtual_registries_container_cache_entries_09_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_container_cache_entries_10
+    ADD CONSTRAINT virtual_registries_container_cache_entries_10_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_container_cache_entries_11
+    ADD CONSTRAINT virtual_registries_container_cache_entries_11_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_container_cache_entries_12
+    ADD CONSTRAINT virtual_registries_container_cache_entries_12_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_container_cache_entries_13
+    ADD CONSTRAINT virtual_registries_container_cache_entries_13_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_container_cache_entries_14
+    ADD CONSTRAINT virtual_registries_container_cache_entries_14_pkey PRIMARY KEY (upstream_id, relative_path, status);
+
+ALTER TABLE ONLY gitlab_partitions_static.virtual_registries_container_cache_entries_15
+    ADD CONSTRAINT virtual_registries_container_cache_entries_15_pkey PRIMARY KEY (upstream_id, relative_path, status);
 
 ALTER TABLE ONLY virtual_registries_packages_maven_cache_entries
     ADD CONSTRAINT virtual_registries_packages_maven_cache_entries_pkey PRIMARY KEY (upstream_id, relative_path, status);
@@ -35662,6 +36206,142 @@ CREATE INDEX namespace_descendants_29_namespace_id_idx ON gitlab_partitions_stat
 CREATE INDEX namespace_descendants_30_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_30 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
 
 CREATE INDEX namespace_descendants_31_namespace_id_idx ON gitlab_partitions_static.namespace_descendants_31 USING btree (namespace_id) WHERE (outdated_at IS NOT NULL);
+
+CREATE UNIQUE INDEX idx_vregs_container_cache_entries_on_uniq_object_storage_key ON ONLY virtual_registries_container_cache_entries USING btree (relative_path, object_storage_key);
+
+CREATE UNIQUE INDEX virtual_registries_container__relative_path_object_storage__idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_00 USING btree (relative_path, object_storage_key);
+
+CREATE UNIQUE INDEX virtual_registries_container__relative_path_object_storage_idx1 ON gitlab_partitions_static.virtual_registries_container_cache_entries_01 USING btree (relative_path, object_storage_key);
+
+CREATE UNIQUE INDEX virtual_registries_container__relative_path_object_storage_idx2 ON gitlab_partitions_static.virtual_registries_container_cache_entries_02 USING btree (relative_path, object_storage_key);
+
+CREATE UNIQUE INDEX virtual_registries_container__relative_path_object_storage_idx3 ON gitlab_partitions_static.virtual_registries_container_cache_entries_03 USING btree (relative_path, object_storage_key);
+
+CREATE UNIQUE INDEX virtual_registries_container__relative_path_object_storage_idx4 ON gitlab_partitions_static.virtual_registries_container_cache_entries_04 USING btree (relative_path, object_storage_key);
+
+CREATE UNIQUE INDEX virtual_registries_container__relative_path_object_storage_idx5 ON gitlab_partitions_static.virtual_registries_container_cache_entries_05 USING btree (relative_path, object_storage_key);
+
+CREATE UNIQUE INDEX virtual_registries_container__relative_path_object_storage_idx6 ON gitlab_partitions_static.virtual_registries_container_cache_entries_06 USING btree (relative_path, object_storage_key);
+
+CREATE UNIQUE INDEX virtual_registries_container__relative_path_object_storage_idx7 ON gitlab_partitions_static.virtual_registries_container_cache_entries_07 USING btree (relative_path, object_storage_key);
+
+CREATE UNIQUE INDEX virtual_registries_container__relative_path_object_storage_idx8 ON gitlab_partitions_static.virtual_registries_container_cache_entries_08 USING btree (relative_path, object_storage_key);
+
+CREATE UNIQUE INDEX virtual_registries_container__relative_path_object_storage_idx9 ON gitlab_partitions_static.virtual_registries_container_cache_entries_09 USING btree (relative_path, object_storage_key);
+
+CREATE INDEX idx_vregs_container_cache_entries_on_upt_id_relpath ON ONLY virtual_registries_container_cache_entries USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_container_ca_upstream_id_relative_path_idx10 ON gitlab_partitions_static.virtual_registries_container_cache_entries_10 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_container_ca_upstream_id_relative_path_idx11 ON gitlab_partitions_static.virtual_registries_container_cache_entries_11 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_container_ca_upstream_id_relative_path_idx12 ON gitlab_partitions_static.virtual_registries_container_cache_entries_12 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_container_ca_upstream_id_relative_path_idx13 ON gitlab_partitions_static.virtual_registries_container_cache_entries_13 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_container_ca_upstream_id_relative_path_idx14 ON gitlab_partitions_static.virtual_registries_container_cache_entries_14 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_container_ca_upstream_id_relative_path_idx15 ON gitlab_partitions_static.virtual_registries_container_cache_entries_15 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_container_cac_upstream_id_relative_path_idx1 ON gitlab_partitions_static.virtual_registries_container_cache_entries_01 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_container_cac_upstream_id_relative_path_idx2 ON gitlab_partitions_static.virtual_registries_container_cache_entries_02 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_container_cac_upstream_id_relative_path_idx3 ON gitlab_partitions_static.virtual_registries_container_cache_entries_03 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_container_cac_upstream_id_relative_path_idx4 ON gitlab_partitions_static.virtual_registries_container_cache_entries_04 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_container_cac_upstream_id_relative_path_idx5 ON gitlab_partitions_static.virtual_registries_container_cache_entries_05 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_container_cac_upstream_id_relative_path_idx6 ON gitlab_partitions_static.virtual_registries_container_cache_entries_06 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_container_cac_upstream_id_relative_path_idx7 ON gitlab_partitions_static.virtual_registries_container_cache_entries_07 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_container_cac_upstream_id_relative_path_idx8 ON gitlab_partitions_static.virtual_registries_container_cache_entries_08 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_container_cac_upstream_id_relative_path_idx9 ON gitlab_partitions_static.virtual_registries_container_cache_entries_09 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX virtual_registries_container_cach_upstream_id_relative_path_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_00 USING btree (upstream_id, relative_path) WHERE (status = 2);
+
+CREATE INDEX index_virtual_registries_container_cache_entries_on_group_id ON ONLY virtual_registries_container_cache_entries USING btree (group_id);
+
+CREATE INDEX virtual_registries_container_cache_entries_00_group_id_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_00 USING btree (group_id);
+
+CREATE INDEX idx_vregs_container_cache_entries_on_relative_path_trigram ON ONLY virtual_registries_container_cache_entries USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_container_cache_entries_00_relative_path_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_00 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_container_cache_entries_01_group_id_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_01 USING btree (group_id);
+
+CREATE INDEX virtual_registries_container_cache_entries_01_relative_path_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_01 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_container_cache_entries_02_group_id_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_02 USING btree (group_id);
+
+CREATE INDEX virtual_registries_container_cache_entries_02_relative_path_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_02 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_container_cache_entries_03_group_id_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_03 USING btree (group_id);
+
+CREATE INDEX virtual_registries_container_cache_entries_03_relative_path_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_03 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_container_cache_entries_04_group_id_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_04 USING btree (group_id);
+
+CREATE INDEX virtual_registries_container_cache_entries_04_relative_path_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_04 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_container_cache_entries_05_group_id_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_05 USING btree (group_id);
+
+CREATE INDEX virtual_registries_container_cache_entries_05_relative_path_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_05 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_container_cache_entries_06_group_id_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_06 USING btree (group_id);
+
+CREATE INDEX virtual_registries_container_cache_entries_06_relative_path_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_06 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_container_cache_entries_07_group_id_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_07 USING btree (group_id);
+
+CREATE INDEX virtual_registries_container_cache_entries_07_relative_path_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_07 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_container_cache_entries_08_group_id_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_08 USING btree (group_id);
+
+CREATE INDEX virtual_registries_container_cache_entries_08_relative_path_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_08 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_container_cache_entries_09_group_id_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_09 USING btree (group_id);
+
+CREATE INDEX virtual_registries_container_cache_entries_09_relative_path_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_09 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_container_cache_entries_10_group_id_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_10 USING btree (group_id);
+
+CREATE INDEX virtual_registries_container_cache_entries_10_relative_path_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_10 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_container_cache_entries_11_group_id_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_11 USING btree (group_id);
+
+CREATE INDEX virtual_registries_container_cache_entries_11_relative_path_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_11 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_container_cache_entries_12_group_id_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_12 USING btree (group_id);
+
+CREATE INDEX virtual_registries_container_cache_entries_12_relative_path_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_12 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_container_cache_entries_13_group_id_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_13 USING btree (group_id);
+
+CREATE INDEX virtual_registries_container_cache_entries_13_relative_path_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_13 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_container_cache_entries_14_group_id_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_14 USING btree (group_id);
+
+CREATE INDEX virtual_registries_container_cache_entries_14_relative_path_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_14 USING gin (relative_path gin_trgm_ops);
+
+CREATE INDEX virtual_registries_container_cache_entries_15_group_id_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_15 USING btree (group_id);
+
+CREATE INDEX virtual_registries_container_cache_entries_15_relative_path_idx ON gitlab_partitions_static.virtual_registries_container_cache_entries_15 USING gin (relative_path gin_trgm_ops);
+
+CREATE UNIQUE INDEX virtual_registries_container_relative_path_object_storage_idx10 ON gitlab_partitions_static.virtual_registries_container_cache_entries_10 USING btree (relative_path, object_storage_key);
+
+CREATE UNIQUE INDEX virtual_registries_container_relative_path_object_storage_idx11 ON gitlab_partitions_static.virtual_registries_container_cache_entries_11 USING btree (relative_path, object_storage_key);
+
+CREATE UNIQUE INDEX virtual_registries_container_relative_path_object_storage_idx12 ON gitlab_partitions_static.virtual_registries_container_cache_entries_12 USING btree (relative_path, object_storage_key);
+
+CREATE UNIQUE INDEX virtual_registries_container_relative_path_object_storage_idx13 ON gitlab_partitions_static.virtual_registries_container_cache_entries_13 USING btree (relative_path, object_storage_key);
+
+CREATE UNIQUE INDEX virtual_registries_container_relative_path_object_storage_idx14 ON gitlab_partitions_static.virtual_registries_container_cache_entries_14 USING btree (relative_path, object_storage_key);
+
+CREATE UNIQUE INDEX virtual_registries_container_relative_path_object_storage_idx15 ON gitlab_partitions_static.virtual_registries_container_cache_entries_15 USING btree (relative_path, object_storage_key);
 
 CREATE INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ON ONLY virtual_registries_packages_maven_cache_entries USING btree (upstream_id, relative_path) WHERE (status = 2);
 
@@ -43945,6 +44625,166 @@ ALTER INDEX index_on_namespace_descendants_outdated ATTACH PARTITION gitlab_part
 
 ALTER INDEX namespace_descendants_pkey ATTACH PARTITION gitlab_partitions_static.namespace_descendants_31_pkey;
 
+ALTER INDEX idx_vregs_container_cache_entries_on_uniq_object_storage_key ATTACH PARTITION gitlab_partitions_static.virtual_registries_container__relative_path_object_storage__idx;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_uniq_object_storage_key ATTACH PARTITION gitlab_partitions_static.virtual_registries_container__relative_path_object_storage_idx1;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_uniq_object_storage_key ATTACH PARTITION gitlab_partitions_static.virtual_registries_container__relative_path_object_storage_idx2;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_uniq_object_storage_key ATTACH PARTITION gitlab_partitions_static.virtual_registries_container__relative_path_object_storage_idx3;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_uniq_object_storage_key ATTACH PARTITION gitlab_partitions_static.virtual_registries_container__relative_path_object_storage_idx4;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_uniq_object_storage_key ATTACH PARTITION gitlab_partitions_static.virtual_registries_container__relative_path_object_storage_idx5;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_uniq_object_storage_key ATTACH PARTITION gitlab_partitions_static.virtual_registries_container__relative_path_object_storage_idx6;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_uniq_object_storage_key ATTACH PARTITION gitlab_partitions_static.virtual_registries_container__relative_path_object_storage_idx7;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_uniq_object_storage_key ATTACH PARTITION gitlab_partitions_static.virtual_registries_container__relative_path_object_storage_idx8;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_uniq_object_storage_key ATTACH PARTITION gitlab_partitions_static.virtual_registries_container__relative_path_object_storage_idx9;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_ca_upstream_id_relative_path_idx10;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_ca_upstream_id_relative_path_idx11;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_ca_upstream_id_relative_path_idx12;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_ca_upstream_id_relative_path_idx13;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_ca_upstream_id_relative_path_idx14;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_ca_upstream_id_relative_path_idx15;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cac_upstream_id_relative_path_idx1;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cac_upstream_id_relative_path_idx2;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cac_upstream_id_relative_path_idx3;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cac_upstream_id_relative_path_idx4;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cac_upstream_id_relative_path_idx5;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cac_upstream_id_relative_path_idx6;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cac_upstream_id_relative_path_idx7;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cac_upstream_id_relative_path_idx8;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cac_upstream_id_relative_path_idx9;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cach_upstream_id_relative_path_idx;
+
+ALTER INDEX index_virtual_registries_container_cache_entries_on_group_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_00_group_id_idx;
+
+ALTER INDEX virtual_registries_container_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_00_pkey;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_00_relative_path_idx;
+
+ALTER INDEX index_virtual_registries_container_cache_entries_on_group_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_01_group_id_idx;
+
+ALTER INDEX virtual_registries_container_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_01_pkey;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_01_relative_path_idx;
+
+ALTER INDEX index_virtual_registries_container_cache_entries_on_group_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_02_group_id_idx;
+
+ALTER INDEX virtual_registries_container_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_02_pkey;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_02_relative_path_idx;
+
+ALTER INDEX index_virtual_registries_container_cache_entries_on_group_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_03_group_id_idx;
+
+ALTER INDEX virtual_registries_container_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_03_pkey;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_03_relative_path_idx;
+
+ALTER INDEX index_virtual_registries_container_cache_entries_on_group_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_04_group_id_idx;
+
+ALTER INDEX virtual_registries_container_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_04_pkey;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_04_relative_path_idx;
+
+ALTER INDEX index_virtual_registries_container_cache_entries_on_group_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_05_group_id_idx;
+
+ALTER INDEX virtual_registries_container_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_05_pkey;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_05_relative_path_idx;
+
+ALTER INDEX index_virtual_registries_container_cache_entries_on_group_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_06_group_id_idx;
+
+ALTER INDEX virtual_registries_container_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_06_pkey;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_06_relative_path_idx;
+
+ALTER INDEX index_virtual_registries_container_cache_entries_on_group_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_07_group_id_idx;
+
+ALTER INDEX virtual_registries_container_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_07_pkey;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_07_relative_path_idx;
+
+ALTER INDEX index_virtual_registries_container_cache_entries_on_group_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_08_group_id_idx;
+
+ALTER INDEX virtual_registries_container_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_08_pkey;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_08_relative_path_idx;
+
+ALTER INDEX index_virtual_registries_container_cache_entries_on_group_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_09_group_id_idx;
+
+ALTER INDEX virtual_registries_container_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_09_pkey;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_09_relative_path_idx;
+
+ALTER INDEX index_virtual_registries_container_cache_entries_on_group_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_10_group_id_idx;
+
+ALTER INDEX virtual_registries_container_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_10_pkey;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_10_relative_path_idx;
+
+ALTER INDEX index_virtual_registries_container_cache_entries_on_group_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_11_group_id_idx;
+
+ALTER INDEX virtual_registries_container_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_11_pkey;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_11_relative_path_idx;
+
+ALTER INDEX index_virtual_registries_container_cache_entries_on_group_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_12_group_id_idx;
+
+ALTER INDEX virtual_registries_container_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_12_pkey;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_12_relative_path_idx;
+
+ALTER INDEX index_virtual_registries_container_cache_entries_on_group_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_13_group_id_idx;
+
+ALTER INDEX virtual_registries_container_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_13_pkey;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_13_relative_path_idx;
+
+ALTER INDEX index_virtual_registries_container_cache_entries_on_group_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_14_group_id_idx;
+
+ALTER INDEX virtual_registries_container_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_14_pkey;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_14_relative_path_idx;
+
+ALTER INDEX index_virtual_registries_container_cache_entries_on_group_id ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_15_group_id_idx;
+
+ALTER INDEX virtual_registries_container_cache_entries_pkey ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_15_pkey;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_relative_path_trigram ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_cache_entries_15_relative_path_idx;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_uniq_object_storage_key ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_relative_path_object_storage_idx10;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_uniq_object_storage_key ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_relative_path_object_storage_idx11;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_uniq_object_storage_key ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_relative_path_object_storage_idx12;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_uniq_object_storage_key ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_relative_path_object_storage_idx13;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_uniq_object_storage_key ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_relative_path_object_storage_idx14;
+
+ALTER INDEX idx_vregs_container_cache_entries_on_uniq_object_storage_key ATTACH PARTITION gitlab_partitions_static.virtual_registries_container_relative_path_object_storage_idx15;
+
 ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_mav_upstream_id_relative_path_idx10;
 
 ALTER INDEX idx_vregs_pkgs_mvn_cache_entries_on_pending_upt_id_relpath ATTACH PARTITION gitlab_partitions_static.virtual_registries_packages_mav_upstream_id_relative_path_idx11;
@@ -45674,6 +46514,8 @@ CREATE TRIGGER trigger_update_location_on_vulnerability_occurrences_update AFTER
 CREATE TRIGGER trigger_update_vulnerability_reads_on_vulnerability_update AFTER UPDATE ON vulnerabilities FOR EACH ROW WHEN (((old.present_on_default_branch IS TRUE) AND ((old.severity IS DISTINCT FROM new.severity) OR (old.state IS DISTINCT FROM new.state) OR (old.resolved_on_default_branch IS DISTINCT FROM new.resolved_on_default_branch)))) EXECUTE FUNCTION update_vulnerability_reads_from_vulnerability();
 
 CREATE TRIGGER users_loose_fk_trigger AFTER DELETE ON users REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
+CREATE TRIGGER virtual_registries_container_upstreams_loose_fk_trigger AFTER DELETE ON virtual_registries_container_upstreams REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER virtual_registries_packages_maven_upstreams_loose_fk_trigger AFTER DELETE ON virtual_registries_packages_maven_upstreams REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
@@ -48918,6 +49760,9 @@ ALTER TABLE p_ci_job_messages
 
 ALTER TABLE ONLY cluster_providers_gcp
     ADD CONSTRAINT fk_rails_5c2c3bc814 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
+
+ALTER TABLE virtual_registries_container_cache_entries
+    ADD CONSTRAINT fk_rails_5c3a01ae96 FOREIGN KEY (group_id) REFERENCES namespaces(id);
 
 ALTER TABLE ONLY insights
     ADD CONSTRAINT fk_rails_5c4391f60a FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

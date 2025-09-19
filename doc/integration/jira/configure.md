@@ -57,7 +57,7 @@ With this integration, your GitLab project can interact with all Jira projects o
 To configure your project settings in GitLab:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Jira issues**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. Provide connection details:
@@ -215,7 +215,7 @@ You can set up verification rules to ensure Jira issues referenced in commit mes
 To configure Jira verification:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Jira issues**.
 1. Go to the **Jira verification** section.
 1. Configure the following verification checks:

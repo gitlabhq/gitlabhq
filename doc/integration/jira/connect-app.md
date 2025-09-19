@@ -183,7 +183,7 @@ In Jira Service Management:
 In GitLab:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **GitLab for Jira Cloud app**. If the integration is disabled, first [link a GitLab group](#configure-the-gitlab-for-jira-cloud-app)
    which enables the GitLab for Jira Cloud app integration for the group, its subgroups, and projects.
 1. In the **Service ID** field, enter the service ID that you want to map into this project. To use multiple service IDs,
@@ -240,7 +240,7 @@ To enable deployment gating:
 - In GitLab:
 
   1. On the left sidebar, select **Search or go to** and find your project.
-  1. Select **Settings > Integrations**.
+  1. Select **Settings** > **Integrations**.
   1. Select **GitLab for Jira Cloud app**.
   1. Under **Deployment gating**, select the **Enable deployment gating** checkbox.
   1. In the **Environment tiers** text box, enter the names of the environments you want to enable deployment gating for.
@@ -258,7 +258,7 @@ To enable deployment gating:
 To add the service account to your protected environments in GitLab:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Protected environments** and select **Protect an environment**.
 1. From the **Select environment** dropdown list, select an environment to protect (for example, **staging**).
 1. From the **Allowed to deploy** dropdown list, select who can deploy to this environment (for example, **Developers + Maintainers**).

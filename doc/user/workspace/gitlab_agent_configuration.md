@@ -134,7 +134,7 @@ Prerequisites:
 To allow a cluster agent for workspaces on the instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Available agents for workspaces**.
 1. From the list of agents with workspaces enabled, find the agent you want to allow, and select the
    availability toggle.
@@ -154,7 +154,7 @@ Prerequisites:
 To remove an allowed cluster agent from the instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Available agents for workspaces**.
 1. From the list of allowed agents, find the agent you want to remove, and clear the availability toggle.
 

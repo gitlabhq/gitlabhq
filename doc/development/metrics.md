@@ -57,7 +57,7 @@ You must have at least the Maintainer role for the project.
 
 1. Create an access token:
    1. On the left sidebar, select **Search or go to** and find your project.
-   1. Select **Settings > Access tokens**.
+   1. Select **Settings** > **Access tokens**.
    1. Create an access token with the `api` scope and **Developer** role or greater.
       Save the access token value for later.
 1. To configure your application to send GitLab metrics, set the following environment variables:

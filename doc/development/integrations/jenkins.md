@@ -24,7 +24,7 @@ GitLab does not allow requests to localhost or the local network by default. Whe
 
 1. Sign in to your GitLab instance as an administrator.
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Network**.
+1. Select **Settings** > **Network**.
 1. Expand **Outbound requests**, and select the following checkboxes:
 
    - **Allow requests to the local network from webhooks and integrations**

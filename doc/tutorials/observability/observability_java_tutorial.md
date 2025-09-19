@@ -32,7 +32,7 @@ First, create a GitLab project and a corresponding access token.
 1. Enter the project details.
    - In the **Project name** field, enter a name such as `test-spring-o11y`
 1. Select **Create project**.
-1. In the `test-sprint-o11y` project, on the left sidebar, select **Settings > Access tokens**.
+1. In the `test-sprint-o11y` project, on the left sidebar, select **Settings** > **Access tokens**.
 1. Create an access token with the `api` scope and Developer role. Store the token value somewhere safe.
    You'll need it later.
 

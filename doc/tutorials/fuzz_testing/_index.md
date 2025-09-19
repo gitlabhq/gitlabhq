@@ -57,7 +57,7 @@ project template:
 You have successfully forked the `fuzz-testing` project template. Before you can
 start fuzz testing, remove the relationship between the project template and the fork:
 
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Remove fork relationship** section, select **Remove fork relationship**.
    Enter the name of the project when prompted.

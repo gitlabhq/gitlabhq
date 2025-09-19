@@ -49,7 +49,7 @@ Prerequisites:
 To protect a branch:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
@@ -93,7 +93,7 @@ Prerequisites:
 To protect a branch for all the projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
 1. In the **Branch** text box, type the branch name or a [wildcard](#use-wildcard-rules) (`*`).
@@ -188,7 +188,7 @@ Prerequisites:
 To protect multiple branches at the same time:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
 1. From the **Branch** dropdown list, type the branch name and a wildcard (`*`).
@@ -218,7 +218,7 @@ You can force everyone to submit a merge request, rather than allowing them to
 check in directly to a protected branch:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
@@ -237,7 +237,7 @@ Alternatively, you can [create](branch_rules.md#create-a-branch-rule) or [edit](
 You can allow everyone with write access to push directly to the protected branch.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
@@ -256,7 +256,7 @@ To set the members of a group or subgroup as **Allowed to merge** or **Allowed t
 to a protected branch:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Protected branches**.
 1. Add groups to the following fields:
 
@@ -342,7 +342,7 @@ Prerequisites:
 To allow a deploy key to push to a protected branch:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
@@ -359,7 +359,7 @@ protected branches.
 To protect a new branch and enable force push:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
@@ -370,7 +370,7 @@ To protect a new branch and enable force push:
 To enable force pushes on branches that are already protected:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
 1. In the list of protected branches, next to the branch, turn on the **Allowed to force push** toggle.
@@ -397,7 +397,7 @@ the applicable rules have **Required approval from code owners** enabled.
 To protect a new branch and enable Code Owner's approval:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
 1. From the **Branch** dropdown list, select the branch you want to protect.
@@ -408,7 +408,7 @@ To protect a new branch and enable Code Owner's approval:
 To enable Code Owner's approval on branches that are already protected:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
 1. In the list of protected branches, next to the branch, turn on the **Code owner approval** toggle.

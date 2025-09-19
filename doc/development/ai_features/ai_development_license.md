@@ -97,7 +97,7 @@ When working in staging environments, you may need to set up Duo add-ons for you
 
 1. Have your account ready at <https://staging.gitlab.com>.
 1. [Create a new group](../../user/group/_index.md#create-a-group) or use an existing one as the namespace which will receive the Duo Pro access.
-1. Go to **Settings > Billing**.
+1. Go to **Settings** > **Billing**.
 1. Initiate the purchase flow for the Ultimate plan by clicking on `Upgrade to Ultimate`.
 1. After being redirected to <https://customers.staging.gitlab.com>, click on `Continue with your Gitlab.com account`.
 1. Purchase the SaaS Ultimate subscription using [a test credit card](https://gitlab.com/gitlab-org/customers-gitlab-com#testing-credit-card-information).

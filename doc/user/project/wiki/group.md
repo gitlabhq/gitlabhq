@@ -73,7 +73,7 @@ can enable or disable a group wiki through the group settings.
 To open group settings:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
 1. Scroll to **Wiki** and select one of these options:
    - **Enabled**: For public groups, everyone can access the wiki. For internal groups, only authenticated users can access the wiki.

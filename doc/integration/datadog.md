@@ -29,7 +29,7 @@ or for a specific project or group:
 1. *For integrations for the entire instance:*
    1. Sign in to GitLab as a user with administrator access.
    1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Scroll to **Add an integration**, and select **Datadog**.
 1. Select **Active** to enable the integration.
 1. Specify the [**Datadog site**](https://docs.datadoghq.com/getting_started/site/) to send data to.

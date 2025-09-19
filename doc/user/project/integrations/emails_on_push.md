@@ -22,7 +22,7 @@ With emails on push, you can specify a list of email addresses to receive commit
 To set up emails on push:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Emails on push**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. In **Recipients**, enter a list of email addresses separated by spaces or newlines.

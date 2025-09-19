@@ -103,7 +103,7 @@ Prerequisites:
 To enable Auto DevOps for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.
 1. Optional but recommended. Add the [base domain](requirements.md#auto-devops-base-domain).
@@ -132,7 +132,7 @@ Prerequisites:
 To enable Auto DevOps for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.
 1. Select **Save changes**.

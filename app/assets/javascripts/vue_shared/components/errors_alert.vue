@@ -1,10 +1,14 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 export default {
   name: 'ErrorsAlert',
   components: {
     GlAlert,
+  },
+  directives: {
+    SafeHtml,
   },
   props: {
     title: {
@@ -63,13 +67,9 @@ export default {
     variant="danger"
     @dismiss="$emit('dismiss')"
   >
-    <span v-if="errors.length === 1">
-      {{ errors[0] }}
-    </span>
+    <span v-if="errors.length === 1" v-safe-html="errors[0]"></span>
     <ul v-else class="!gl-mb-0 gl-pl-5">
-      <li v-for="(error, index) in errors" :key="index">
-        {{ error }}
-      </li>
+      <li v-for="(error, index) in errors" :key="index" v-safe-html="errors"></li>
     </ul>
   </gl-alert>
 </template>

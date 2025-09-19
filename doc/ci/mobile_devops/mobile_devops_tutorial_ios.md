@@ -123,7 +123,7 @@ To create an iOS distribution with the Apple Store integration and fastlane:
 1. Generate an API Key for App Store Connect API. In the Apple App Store Connect portal, [generate a new private key for your project](https://developer.apple.com/documentation/appstoreconnectapi/creating_api_keys_for_app_store_connect_api).
 1. Enable the Apple App Store Connect integration:
    1. On the left sidebar, select **Search or go to** and find your project.
-   1. Select **Settings > Integrations**.
+   1. Select **Settings** > **Integrations**.
    1. Select **Apple App Store Connect**.
    1. Under **Enable integration**, select the **Active** checkbox.
    1. Provide the Apple App Store Connect configuration information:

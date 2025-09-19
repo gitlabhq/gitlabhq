@@ -101,7 +101,7 @@ see [GitLab package registry administration](../../../administration/packages/_i
 
 You can also remove the package registry for your project specifically:
 
-1. In your project, go to **Settings > General**.
+1. In your project, go to **Settings** > **General**.
 1. Expand the **Visibility, project features, permissions** section and disable the
    **Packages** feature.
 1. Select **Save changes**.
@@ -144,7 +144,7 @@ registry** toggle turns off all package registry operations.
 To allow anyone to pull from the package registry, regardless of project visibility:
 
 1. On the left sidebar, select **Search or go to** and find your private or internal project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility, project features, permissions**.
 1. Turn on the **Allow anyone to pull from package registry** toggle.
 1. Select **Save changes**.

@@ -191,7 +191,7 @@ version of the product:
    only if the project namespace's plan includes the feature.
 
    1. On the left sidebar, at the bottom, select **Admin**.
-   1. On the left sidebar, select **Settings > General**.
+   1. On the left sidebar, select **Settings** > **General**.
    1. Expand **Account and limit**.
    1. Select the **Allow use of licensed EE features** checkbox.
    1. Select **Save changes**.

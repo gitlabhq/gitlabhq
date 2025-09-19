@@ -621,7 +621,7 @@ and should only be disabled in an environment where all users with Developer rol
 To use the same cache for all branches:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Clear the **Use separate caches for protected branches** checkbox.
 1. Select **Save changes**.

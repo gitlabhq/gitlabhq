@@ -21,7 +21,7 @@ Pipeline notifications triggered by blocked users are not delivered.
 
 To enable pipeline status emails:
 
-1. In your project or group, on the left sidebar, select **Settings > Integrations**.
+1. In your project or group, on the left sidebar, select **Settings** > **Integrations**.
 1. Select **Pipeline status emails**.
 1. Ensure the **Active** checkbox is selected.
 1. In **Recipients**, enter a comma-separated list of email addresses.

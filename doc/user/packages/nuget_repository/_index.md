@@ -572,7 +572,7 @@ You can publish multiple packages with the same name and version.
 To prevent group members and users from publishing duplicate NuGet packages, turn off the **Allow duplicates** setting:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Packages and registries**.
+1. Select **Settings** > **Packages and registries**.
 1. In the **NuGet** row of the **Duplicate packages** table, turn off the **Allow duplicates** toggle.
 1. Optional. In the **Exceptions** text box, enter a regular expression that matches the names and versions of packages to allow.
 

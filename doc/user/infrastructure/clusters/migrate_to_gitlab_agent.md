@@ -176,7 +176,7 @@ Prerequisites
 To migrate from Auto DevOps:
 
 1. In GitLab, go to the project where you use Auto DevOps.
-1. Add three variables. On the left sidebar, select **Settings > CI/CD** and expand **Variables**.
+1. Add three variables. On the left sidebar, select **Settings** > **CI/CD** and expand **Variables**.
    - Add a key called `KUBE_INGRESS_BASE_DOMAIN` with the application deployment domain as the value.
    - Add a key called `KUBE_CONTEXT` with a value like `path/to/agent/project:agent-name`.
      Select the environment scope of your choice.

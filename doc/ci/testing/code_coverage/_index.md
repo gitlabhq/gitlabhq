@@ -212,7 +212,7 @@ Prerequisites:
 
 To add a `Coverage-Check` approval rule:
 
-1. Go to your project and select **Settings > Merge requests**.
+1. Go to your project and select **Settings** > **Merge requests**.
 1. Under **Merge request approvals**, do one of the following:
    - Next to the `Coverage-Check` approval rule, select **Enable**.
    - For manual setup, select **Add approval rule**, then enter `Coverage-Check` as the **Rule name**.

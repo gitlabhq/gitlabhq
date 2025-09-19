@@ -40,7 +40,7 @@ that immediately publishes your changes to the Pages site.
 If you want to contribute to the project you forked from,
 you can keep the forked relationship. Otherwise:
 
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Advanced settings**.
 1. Select **Remove fork relationship**.
 
@@ -51,7 +51,7 @@ If your Pages site is hosted on GitLab.com,
 you can rename it to `<namespace>.gitlab.io`, where `<namespace>` is your GitLab namespace
 (the one you chose when you forked the project).
 
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In **Change path**, update the path to `<namespace>.gitlab.io`.
 

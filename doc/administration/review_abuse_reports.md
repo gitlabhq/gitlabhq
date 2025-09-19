@@ -23,7 +23,7 @@ reports in the **Admin** area.
 To receive notifications of new abuse reports by email:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Reporting**.
+1. Select **Settings** > **Reporting**.
 1. Expand the **Abuse reports** section.
 1. Provide an email address and select **Save changes**.
 

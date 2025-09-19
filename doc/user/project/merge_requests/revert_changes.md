@@ -37,7 +37,7 @@ Prerequisites:
 - You must have a role for the project that allows you to edit merge requests, and add
   code to the repository.
 - Your project must use the [merge method](methods/_index.md#fast-forward-merge) **Merge Commit**,
-  set in your project's **Settings > Merge requests**.
+  set in your project's **Settings** > **Merge requests**.
 
   [In GitLab 16.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22236), you can revert
   fast-forwarded commits from the GitLab UI if either:
@@ -167,7 +167,7 @@ Prerequisites:
 To redact text from your repository:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Repository maintenance**.
 1. Select **Redact text**.
 1. On the drawer, enter the text to redact.
@@ -175,7 +175,7 @@ To redact text from your repository:
 1. Select **Redact matching strings**.
 1. On the confirmation dialog, enter your project path.
 1. Select **Yes, redact matching strings**.
-1. On the left sidebar, select **Settings > General**.
+1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Advanced**.
 1. Select **Run housekeeping**. Wait at least 30 minutes for the operation to complete.
 1. In the same **Settings > General > Advanced** section, select **Prune unreachable objects**.

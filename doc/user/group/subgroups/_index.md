@@ -110,7 +110,7 @@ To change who can create subgroups on a group:
 
 - As a user with the Owner role on the group:
   1. On the left sidebar, select **Search or go to** and find your group.
-  1. Select **Settings > General**.
+  1. Select **Settings** > **General**.
   1. Expand **Permissions and group features**.
   1. From **Roles allowed to create subgroups**, select an option.
   1. Select **Save changes**.

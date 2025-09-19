@@ -64,7 +64,7 @@ CRM features must also be enabled for the subgroup.
 To enable customer relations management in a group or subgroup:
 
 1. On the left sidebar, select **Search or go to** and find your group or subgroup.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Customer relations is enabled**.
 1. Select **Save changes**.
@@ -85,7 +85,7 @@ unless they have a contact source configured.
 To configure the contact source for a group or subgroup:
 
 1. On the left sidebar, select **Search or go to** and find your group or subgroup.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
 1. Select **Contact source > Search for a group**.
 1. Select the group from which you wish to source contacts.

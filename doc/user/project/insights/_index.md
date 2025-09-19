@@ -548,6 +548,6 @@ Prerequisites:
 To configure group insights:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Analytics**.
+1. Select **Settings** > **Analytics**.
 1. In the **Insights** section, select a project that contains the `.gitlab/insights.yml` configuration file.
 1. Select **Save changes**.

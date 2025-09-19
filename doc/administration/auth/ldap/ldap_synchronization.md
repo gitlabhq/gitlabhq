@@ -492,7 +492,7 @@ To enable global group memberships lock:
 
 1. [Configure LDAP](_index.md#configure-ldap).
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. Ensure the **Lock memberships to LDAP synchronization** checkbox is selected.
 
@@ -504,7 +504,7 @@ GitLab administrators can remove this permission from group Owners:
 
 1. [Configure LDAP](_index.md#configure-ldap).
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Visibility and access controls**.
 1. Ensure the **Allow group owners to manage LDAP-related settings** checkbox is not checked.
 

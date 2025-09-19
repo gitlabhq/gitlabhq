@@ -60,7 +60,7 @@ Use CI/CD environment variables to configure your project.
 
 **Required configuration**:
 
-1. On the left sidebar, select **Settings > CI/CD**.
+1. On the left sidebar, select **Settings** > **CI/CD**.
 1. Expand **Variables**.
 1. Set the variable `ARM_CLIENT_ID` to your Azure client ID.
 1. Set the variable `ARM_CLIENT_SECRET` to your Azure client secret.

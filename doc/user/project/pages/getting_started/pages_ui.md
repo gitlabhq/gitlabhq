@@ -38,7 +38,7 @@ This guide explains how to use the Pages UI to deploy a static site or framework
     like [Eleventy](https://www.11ty.dev), [Astro](https://astro.build), or [Jekyll](https://jekyllrb.com).
   - Contains a framework configured for static output, such as [Next.js](https://nextjs.org),
     [Nuxt](https://nuxt.com), or [SvelteKit](https://kit.svelte.dev).
-- GitLab Pages must be enabled for the project. (To enable, go to **Settings > General**,
+- GitLab Pages must be enabled for the project. (To enable, go to **Settings** > **General**,
   expand **Visibility, project features, permissions**, and turn on the **Pages** toggle.)
 
 ## Create the Pages deployment

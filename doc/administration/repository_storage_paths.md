@@ -321,7 +321,7 @@ LFS objects are also [S3-compatible](lfs/_index.md#storing-lfs-objects-in-remote
 After you [configure multiple repository storages](https://docs.gitlab.com/omnibus/settings/configuration.html#store-git-data-in-an-alternative-directory), you can choose where new repositories are stored:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Repository storage**.
 1. Enter values in the **Storage nodes for new repositories** fields.
 1. Select **Save changes**.

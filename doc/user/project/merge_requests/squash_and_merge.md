@@ -78,7 +78,7 @@ Prerequisites:
 To configure the default squashing behavior for all merge requests in your project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
+1. Select **Settings** > **Merge requests**.
 1. In the **Squash commits when merging** section, select your desired behavior:
    - **Do not allow**: Squashing is never performed, and the option is not displayed.
    - **Allow**: Squashing is allowed, but cleared by default.

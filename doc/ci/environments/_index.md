@@ -865,7 +865,7 @@ Limitations of GitLab Auto Rollback:
 GitLab Auto Rollback is turned off by default. To turn it on:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **Automatic deployment rollbacks**.
 1. Select the checkbox for **Enable automatic rollbacks**.
 1. Select **Save changes**.

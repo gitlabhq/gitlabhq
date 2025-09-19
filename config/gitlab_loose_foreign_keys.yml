@@ -825,6 +825,12 @@ user_details:
   - table: namespaces
     column: enterprise_group_id
     on_delete: async_nullify
+virtual_registries_container_cache_entries:
+  - table: virtual_registries_container_upstreams
+    column: upstream_id
+    on_delete: update_column_to
+    target_column: status
+    target_value: 2
 virtual_registries_packages_maven_cache_entries:
   - table: virtual_registries_packages_maven_upstreams
     column: upstream_id

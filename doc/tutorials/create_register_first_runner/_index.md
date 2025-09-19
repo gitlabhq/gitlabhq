@@ -87,7 +87,7 @@ to GitLab so that it can pick up jobs from the project pipeline.
 To create a project runner:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand the **Runners** section.
 1. Select **New project runner**.
 1. Select your operating system.

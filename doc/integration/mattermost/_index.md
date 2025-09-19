@@ -141,12 +141,12 @@ By default GitLab Mattermost requires all users to sign up with GitLab and disab
 ### Reauthorize GitLab Mattermost
 
 To reauthorize GitLab Mattermost, you first need to revoke the existing
-authorization. This can be done in the **Settings > Applications** area of GitLab. Then follow the steps
+authorization. This can be done in the **Settings** > **Applications** area of GitLab. Then follow the steps
 in the following section to complete authorization.
 
 ### Authorize GitLab Mattermost
 
-Go to the **Settings > Applications** area in GitLab. Create a new application and for the **Redirect URI** use the following (replace `http` with `https` if you use HTTPS):
+Go to the **Settings** > **Applications** area in GitLab. Create a new application and for the **Redirect URI** use the following (replace `http` with `https` if you use HTTPS):
 
 ```plaintext
 http://mattermost.example.com/signup/gitlab/complete

@@ -39,7 +39,7 @@ Throttling of protected paths is enabled by default and can be disabled or
 customized.
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Network**.
+1. Select **Settings** > **Network**.
 1. Expand **Protected paths**.
 
 Requests that exceed the rate limit are logged in `auth.log`.

@@ -190,7 +190,7 @@ To restore the fork relationship, [use the API](../../../api/project_forks.md#cr
 To remove a fork relationship:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
+1. Select **Settings** > **General**.
 1. Expand **Advanced**.
 1. In the **Remove fork relationship** section, select **Remove fork relationship**.
 1. To confirm, enter the project path and select **Confirm**.

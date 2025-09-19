@@ -9,9 +9,7 @@ module AntiAbuse
       belongs_to :note, optional: false
       belongs_to :organization, class_name: 'Organizations::Organization'
 
-      validates :organization_id, presence: true, if: -> {
-        Feature.enabled?(:abuse_report_populate_organization, :instance)
-      }
+      validates :organization_id, presence: true
     end
   end
 end

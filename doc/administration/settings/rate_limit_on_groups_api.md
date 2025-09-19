@@ -30,7 +30,7 @@ You can configure the per minute rate limit per IP address and per user for requ
 To change the rate limit:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Network**.
+1. Select **Settings** > **Network**.
 1. Expand **Groups API rate limits**.
 1. Change the value of any rate limit. The rate limits are per minute per user for authenticated requests and per IP address unauthenticated requests.
    Set to `0` to disable a rate limit.

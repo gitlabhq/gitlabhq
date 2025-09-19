@@ -97,7 +97,7 @@ In the following table, you can see:
 
 1. Sign in as a user with administrator access.
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Metrics and profiling**.
+1. Select **Settings** > **Metrics and profiling**.
 1. Expand the **Usage statistics** section.
 1. If not enabled, select the **Enable Service Ping** checkbox.
 1. Select the **Enable Registration Features** checkbox.
@@ -119,7 +119,7 @@ for all authenticated users, and on the **Admin** area pages. The statuses are:
 ### Enable or disable version check
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Metrics and profiling**.
+1. Select **Settings** > **Metrics and profiling**.
 1. Expand **Usage statistics**.
 1. Select or clear the **Enable version check** checkbox.
 1. Select **Save changes**.
@@ -161,7 +161,7 @@ The payload is available in the [Metrics and profiling](#manually-upload-service
 To enable or disable Service Ping:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Metrics and profiling**.
+1. Select **Settings** > **Metrics and profiling**.
 1. Expand **Usage statistics**.
 1. Select or clear the **Enable Service Ping** checkbox.
 1. Select **Save changes**.
@@ -220,7 +220,7 @@ Service Ping Generation controls whether Service Ping data is automatically gene
 To enable or disable Service Ping Generation:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Metrics and profiling**.
+1. Select **Settings** > **Metrics and profiling**.
 1. Expand **Usage statistics**.
 1. Select or clear the **Enable Service Ping Generation** checkbox.
    - If **Enable Service Ping** is selected, this setting is automatically enabled and disabled from interaction.
@@ -288,7 +288,7 @@ The **Include optional data in Service Ping** option is available only if either
 To enable or disable optional data in Service Ping:
 
 1. In the left sidebar, at the bottom, select **Admin**.
-1. Go to **Settings > Metrics and Profiling**.
+1. Go to **Settings** > **Metrics and Profiling**.
 1. Expand the **Usage Statistics** section.
 1. Ensure that the checkbox for either **Enable Service Ping** or **Enable Service Ping Generation** is selected.
 1. To enable optional data, select the **Include optional data in Service Ping** checkbox. To disable it, clear the box.

@@ -47,7 +47,7 @@ Prerequisites:
 To update the default branch for an individual [project](../../_index.md):
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Branch defaults**. For **Default branch**, select a new default branch.
 1. Optional. Select the **Auto-close referenced issues on default branch** checkbox to close
    issues when a merge request
@@ -71,7 +71,7 @@ customize the initial branch for projects hosted on that instance. Individual
 groups and subgroups can override the instance default for their projects.
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Default branch**.
 1. For **Initial default branch name**, select a new default branch.
 1. Select **Save changes**.
@@ -89,7 +89,7 @@ Prerequisites:
 To change the default branch name for new projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Default branch**.
 1. For **Initial default branch name**, select a new default branch.
 1. Select **Save changes**.
@@ -151,7 +151,7 @@ Administrators of GitLab Self-Managed instances can customize the initial defaul
 groups and subgroups can override the instance default setting for their projects.
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Default branch**.
 1. Select [**Initial default branch protection**](#protect-initial-default-branches).
 1. To allow group owners to override the instance's default branch protection, select
@@ -173,7 +173,7 @@ on a per-group basis. In
 disable this privilege for group owners, enforcing the protection rule set for the instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand the **Default branch** section.
 1. Clear the **Allow owners to manage default branch protection per group** checkbox.
 1. Select **Save changes**.
@@ -200,7 +200,7 @@ on a per-group basis. In
 which locks this setting for group owners.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Default branch**.
 1. Select [**Initial default branch protection**](#protect-initial-default-branches).
 1. Select **Save changes**.

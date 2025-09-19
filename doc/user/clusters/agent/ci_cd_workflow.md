@@ -156,7 +156,7 @@ To allow agents to be configured to authorize all projects in your GitLab instan
 
 {{< tab title="Using the UI" >}}
 
-1. In the **Admin** area, select **Settings > General**, and expand the **GitLab agent for Kubernetes** section.
+1. In the **Admin** area, select **Settings** > **General**, and expand the **GitLab agent for Kubernetes** section.
 1. Select **Enable instance level authorization**.
 1. Select **Save changes**.
 

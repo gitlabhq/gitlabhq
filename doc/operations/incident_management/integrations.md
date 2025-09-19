@@ -18,7 +18,7 @@ can [trigger paging](paging.md#paging) for on-call rotations or be used to [crea
 ## Integrations list
 
 With at least the Maintainer role, you can view the list of configured
-alerting integrations by navigating to **Settings > Monitor**
+alerting integrations by navigating to **Settings** > **Monitor**
 in your project's sidebar menu, and expanding the **Alerts** section. The list displays
 the integration name, type, and status (enabled or disabled):
 
@@ -36,7 +36,7 @@ receive alert payloads in JSON format. You can always
 
 1. Sign in to GitLab as a user with the Maintainer role
    for a project.
-1. Go to **Settings > Monitor** in your project.
+1. Go to **Settings** > **Monitor** in your project.
 1. Expand the **Alerts** section, and in the **Select integration type** dropdown list,
    select **Prometheus** for alerts from Prometheus, or **HTTP Endpoint** for any other monitoring tool.
 1. Toggle the **Active** alert setting. The URL and Authorization Key for the webhook configuration
@@ -58,7 +58,7 @@ and you can [customize the payload](#customize-the-alert-payload-outside-of-gitl
 
 1. Sign in to GitLab as a user with the Maintainer role
    for a project.
-1. Go to **Settings > Monitor** in your project.
+1. Go to **Settings** > **Monitor** in your project.
 1. Expand the **Alerts** section.
 1. For each endpoint you want to create:
 
@@ -380,7 +380,7 @@ configures an integration, you can trigger a test
 alert to confirm your integration works properly.
 
 1. Sign in as a user with at least the Developer role.
-1. Go to **Settings > Monitor** in your project.
+1. Go to **Settings** > **Monitor** in your project.
 1. Select **Alerts** to expand the section.
 1. Select the {{< icon name="settings" >}} settings icon on the right side of the integration in [the list](#integrations-list).
 1. Select the **Send test alert** tab to open it.

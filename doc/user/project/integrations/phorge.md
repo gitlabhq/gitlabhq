@@ -25,7 +25,7 @@ You can use [Phorge](https://we.phorge.it/) as an external issue tracker in GitL
 To configure Phorge in a GitLab project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Integrations**.
+1. Select **Settings** > **Integrations**.
 1. Select **Phorge**.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. In **Project URL**, enter the URL to the Phorge project.

@@ -99,7 +99,7 @@ Prerequisites:
 To configure custom statuses:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Issues**.
+1. Select **Settings** > **Issues**.
 1. In the **Statuses** section, select **Edit statuses**.
 1. Add, edit, or reorder statuses for the namespace.
 1. Select **Close**.

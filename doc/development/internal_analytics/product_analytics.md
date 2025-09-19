@@ -163,7 +163,7 @@ and cascade to all projects by default.
 To enable product analytics on your instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > Analytics**.
+1. Select **Settings** > **Analytics**.
 1. Enter the configuration values.
 1. Select **Save changes**.
 
@@ -178,7 +178,7 @@ Prerequisites:
 - The project must be in a group namespace.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Analytics**.
+1. Select **Settings** > **Analytics**.
 1. Expand **Data sources** and enter the configuration values.
 1. Select **Save changes**.
 
@@ -356,7 +356,7 @@ Product analytics usage quota is calculated from the number of events received f
 To view product analytics usage quota:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Usage quota**.
+1. Select **Settings** > **Usage quota**.
 1. Select the **Product analytics** tab.
 
 The tab displays the monthly totals for the group and a breakdown of usage per project.
