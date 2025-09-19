@@ -432,8 +432,8 @@ such files as a tag that appears with no name in the GitLab UI and API. For more
 To fix this you can do one of two things:
 
 - Use the AWS CLI [`rm`](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/s3/rm.html)
-  command to remove the empty objects from the root of **each** affected repository. Pay special
-  attention to the trailing `/` and make sure **not** to use the `--recursive` option:
+  command to remove the empty objects from the root of each affected repository. Pay special
+  attention to the trailing `/` and make sure not to use the `--recursive` option:
 
   ```shell
   aws s3 rm s3://<bucket>/docker/registry/v2/repositories/<path to repository>/

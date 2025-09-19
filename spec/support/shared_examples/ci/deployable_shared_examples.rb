@@ -289,10 +289,6 @@ RSpec.shared_examples 'a deployable job' do
   end
 
   describe '#environment_tier_from_options' do
-    before do
-      stub_feature_flags(ci_validate_config_options: false)
-    end
-
     subject { job.environment_tier_from_options }
 
     let(:job) { create(factory_type, options: options) }
@@ -403,10 +399,6 @@ RSpec.shared_examples 'a deployable job' do
   end
 
   describe '#environment_tier' do
-    before do
-      stub_feature_flags(ci_validate_config_options: false)
-    end
-
     subject { job.environment_tier }
 
     let(:options) { { environment: { deployment_tier: 'production' } } }
@@ -441,7 +433,6 @@ RSpec.shared_examples 'a deployable job' do
       let(:options) { { environment: { url: nil } } }
 
       before do
-        stub_feature_flags(ci_validate_config_options: false)
         allow(job).to receive(:options).and_return(options)
         job.persisted_environment.update!(external_url: 'http://prd.example.com/$CI_JOB_NAME')
       end
@@ -480,10 +471,6 @@ RSpec.shared_examples 'a deployable job' do
   end
 
   describe 'environment' do
-    before do
-      stub_feature_flags(ci_validate_config_options: false)
-    end
-
     describe '#has_environment_keyword?' do
       subject { job.has_environment_keyword? }
 

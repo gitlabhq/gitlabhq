@@ -22,10 +22,6 @@ RSpec.describe Ci::Workloads::WorkloadDefinition, feature_category: :continuous_
   end
 
   describe '#to_job_hash' do
-    before do
-      stub_feature_flags(ci_validate_config_options: false)
-    end
-
     it 'builds a workload_definition' do
       expect(definition.to_job_hash).to eq({
         image: image,

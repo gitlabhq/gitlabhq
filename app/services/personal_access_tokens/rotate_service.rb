@@ -110,8 +110,6 @@ module PersonalAccessTokens
 
     def create_token_params
       { name: token.name,
-        user_type: token.user_type,
-        group_id: token.group_id,
         description: token.description,
         previous_personal_access_token_id: token.id,
         impersonation: token.impersonation,

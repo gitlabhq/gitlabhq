@@ -60,7 +60,7 @@ for the entire GitLab instance.
 To view the dependency proxy for container images:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Operate > Dependency Proxy**.
+1. Select **Operate** > **Dependency Proxy**.
 
 The dependency proxy is not available for projects.
 
@@ -287,7 +287,7 @@ If authentication is successful, you'll see activity in your [Docker Hub Usage d
 To store a Docker image in dependency proxy storage:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Operate > Dependency Proxy**.
+1. Select **Operate** > **Dependency Proxy**.
 1. Copy the **Dependency Proxy image prefix**.
 1. Use one of these commands. In these examples, the image is `alpine:latest`.
 1. You can also pull images by digest to specify exactly which version of an image to pull.

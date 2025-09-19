@@ -1,0 +1,47 @@
+- name: "GitLab Duo Model Selection now generally available"
+  description: |  # Do not modify this line, instead modify the lines below.
+      GitLab Duo Model Selection is now generally available, giving organizations greater control over which AI models power their development workflows.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/gitlab_duo/model_selection/
+  image_url: https://about.gitlab.com/images/18_4/model_selection_gtm.png
+  published_at: 2025-09-18
+  release: 18.4
+
+- name: "GitLab Knowledge Graph"
+  description: |  # Do not modify this line, instead modify the lines below.
+      The GitLab Knowledge Graph provides rich code intelligence across your codebase. Developers can understand, navigate, and visually explore their codebases using the knowledge graph. This helps developers plan changes to a codebase, perform impact analysis, and work with GitLab Duo agents to accelerate development tasks.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://gitlab-org.gitlab.io/rust/knowledge-graph/
+  image_url: https://about.gitlab.com/images/18_4/KnowledgeGraph.png
+  published_at: 2025-09-18
+  release: 18.4
+
+- name: "End user model selection now available with GitLab Duo"
+  description: |  # Do not modify this line, instead modify the lines below.
+      GitLab Duo model selection for end-users is now in public beta on GitLab.com. Users can now select their preferred model for GitLab Duo Agentic Chat directly in the GitLab UI, giving developers personalized control over their AI assistance experience.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/user/gitlab_duo/model_selection/
+  image_url: https://about.gitlab.com/images/18_4/end_user_model_selection.png
+  published_at: 2025-09-18
+  release: 18.4
+
+- name: "CI/CD job tokens can authenticate Git push requests"
+  description: |  # Do not modify this line, instead modify the lines below.
+      You can now allow CI/CD job tokens generated in your project to authenticate Git push requests to the project’s repository. Enable this with the Job token permissions settings in the UI, or alternatively with the [`ci_push_repository_for_job_token_allowed`](https://docs.gitlab.com/api/projects/#edit-a-project) parameter in the project's REST API endpoint.
+  stage: software_supply_chain_security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ci/jobs/ci_job_token/#allow-git-push-requests-to-your-project-repository
+  image_url: https://about.gitlab.com/images/18_4/job_token_push.png
+  published_at: 2025-09-18
+  release: 18.4

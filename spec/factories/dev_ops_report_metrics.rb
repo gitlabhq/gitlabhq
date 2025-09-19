@@ -34,10 +34,6 @@ FactoryBot.define do
     instance_deployments { 0.771 }
     percentage_deployments { 64.25 }
 
-    leader_projects_prometheus_active { 0.111 }
-    instance_projects_prometheus_active { 0.109 }
-    percentage_projects_prometheus_active { 98.198 }
-
     leader_service_desk_issues { 15.891 }
     instance_service_desk_issues { 13.345 }
     percentage_service_desk_issues { 83.978 }

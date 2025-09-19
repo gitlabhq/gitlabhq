@@ -40,7 +40,7 @@ Prerequisites:
 To delete a package:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Deploy > Package registry**.
+1. Select **Deploy** > **Package registry**.
 1. From the **Package registry** page, select the package you want to delete.
    - Or, from the **Package registry** page,
    select the vertical ellipsis ({{< icon name="ellipsis_v" >}})
@@ -70,7 +70,7 @@ Prerequisites:
 To delete package assets:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Deploy > Package registry**.
+1. Select **Deploy** > **Package registry**.
 1. From the **Package registry** page, select a package to view additional details.
 1. From the **Assets** table, find the name of the assets you want to delete.
 1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) and select **Delete asset**.

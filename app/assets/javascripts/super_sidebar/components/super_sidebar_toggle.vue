@@ -20,6 +20,11 @@ export default {
       required: false,
       default: 'expand',
     },
+    icon: {
+      type: String,
+      required: false,
+      default: 'sidebar',
+    },
   },
   i18n: {
     primaryNavigationSidebar: __('Primary navigation sidebar'),
@@ -74,7 +79,7 @@ export default {
         if (!this.isTypeExpand) {
           document.querySelector(`.${JS_TOGGLE_EXPAND_CLASS}`).focus();
         } else {
-          document.querySelector(`.${JS_TOGGLE_COLLAPSE_CLASS}`).focus();
+          document.querySelector(`.${JS_TOGGLE_COLLAPSE_CLASS}`)?.focus();
         }
       });
     },
@@ -100,7 +105,7 @@ export default {
     aria-controls="super-sidebar"
     :aria-expanded="ariaExpanded"
     :aria-label="$options.i18n.primaryNavigationSidebar"
-    icon="sidebar"
+    :icon="icon"
     category="tertiary"
     @click="toggle"
   />

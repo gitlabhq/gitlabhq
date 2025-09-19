@@ -871,6 +871,11 @@ msgid_plural "%{count} vulnerabilities set to %{severity} severity"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{days} day remaining"
+msgid_plural "%{days} days remaining"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{days} days until tags are automatically removed"
 msgstr ""
 
@@ -30301,7 +30306,7 @@ msgstr ""
 msgid "GitLabPages|Pages"
 msgstr ""
 
-msgid "GitLabPages|Pages access control"
+msgid "GitLabPages|Pages public access"
 msgstr ""
 
 msgid "GitLabPages|Primary domain"
@@ -30319,7 +30324,7 @@ msgstr ""
 msgid "GitLabPages|Remove pages"
 msgstr ""
 
-msgid "GitLabPages|Restrict access to only project members on all group projects"
+msgid "GitLabPages|Remove public access"
 msgstr ""
 
 msgid "GitLabPages|Save changes"
@@ -30355,7 +30360,7 @@ msgstr ""
 msgid "GitLabPages|When enabled, all access to domains will use HTTPS with %{redirect_code} redirects. Requires valid certificates for all domains. %{docs_link_start}How does HTTPS redirection work?%{link_end}"
 msgstr ""
 
-msgid "GitLabPages|When enabled, all projects in the group and its subgroups become visible only to members."
+msgid "GitLabPages|When enabled, public access is removed for all projects in the group and its subgroups. Pages still follow each project's visibility settings."
 msgstr ""
 
 msgid "GitLabPages|When using Pages under the general domain of a GitLab instance (%{pages_host}), you cannot use HTTPS with subdomains of subdomains. If your namespace or groupname contains a dot, it does not work. This is a limitation of the HTTP Over TLS protocol. HTTP pages work if you don't redirect HTTP to HTTPS. %{docs_link_start}Learn more.%{link_end}"
@@ -38221,9 +38226,6 @@ msgstr ""
 msgid "Learn what Duo Chat can do."
 msgstr ""
 
-msgid "LearnGitLab|%{percentage}%{percentSymbol} completed"
-msgstr ""
-
 msgid "LearnGitLab|10 best practices for using GitLab Duo"
 msgstr ""
 
@@ -40649,10 +40651,16 @@ msgstr ""
 msgid "MergeRequestAnalytics|Merge Request"
 msgstr ""
 
+msgid "MergeRequestAnalytics|Merge request analytics is moving"
+msgstr ""
+
 msgid "MergeRequestAnalytics|Milestone"
 msgstr ""
 
 msgid "MergeRequestAnalytics|Pipelines"
+msgstr ""
+
+msgid "MergeRequestAnalytics|This page will move to %{dashboardsListLinkStart}Analytics dashboards%{dashboardsListLinkEnd} &gt; %{mrDashboardLinkStart}Merge request analytics%{mrDashboardLinkEnd} in GitLab 18.6."
 msgstr ""
 
 msgid "MergeRequestAnalytics|Time to merge"
@@ -69332,6 +69340,14 @@ msgstr ""
 msgid "Usage trends"
 msgstr ""
 
+msgid "UsageBilling|%{percentage}%{percentSymbol} utilized"
+msgstr ""
+
+msgid "UsageBilling|%{poolTokensRemaining} pool unit remaining"
+msgid_plural "UsageBilling|%{poolTokensRemaining} pool units remaining"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "UsageBilling|Action"
 msgstr ""
 
@@ -69348,6 +69364,9 @@ msgid "UsageBilling|Current month"
 msgstr ""
 
 msgid "UsageBilling|Current month usage"
+msgstr ""
+
+msgid "UsageBilling|Current overage"
 msgstr ""
 
 msgid "UsageBilling|Custom dates"

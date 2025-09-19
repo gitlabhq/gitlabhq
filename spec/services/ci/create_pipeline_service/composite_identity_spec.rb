@@ -14,7 +14,6 @@ RSpec.describe Ci::CreatePipelineService, feature_category: :continuous_integrat
   describe 'composite identity', :request_store do
     before do
       stub_ci_pipeline_yaml_file(config)
-      stub_feature_flags(ci_validate_config_options: false)
     end
 
     context 'when job does not generate options' do

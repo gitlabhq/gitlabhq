@@ -69,8 +69,8 @@ PUT /projects/:id/packages/terraform/modules/:module-name/:module-system/:module
 | Attribute          | Type            | Required | Description                                                                                                                      |
 | -------------------| --------------- | ---------| -------------------------------------------------------------------------------------------------------------------------------- |
 | `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/rest/_index.md#namespaced-paths).                                    |
-| `module-name`      | string          | yes      | The module name. **Supported syntax**: 1 to 64 ASCII characters, including lowercase letters (a-z) and digits (0-9). |
-| `module-system`    | string          | yes      | The module system. **Supported syntax**: 1 to 64 ASCII characters, including lowercase letters (a-z) and digits (0-9). For more information, see [Module Registry Protocol](https://opentofu.org/docs/internals/module-registry-protocol/). |
+| `module-name`      | string          | yes      | The module name. Supported syntax: 1 to 64 ASCII characters, including lowercase letters (a-z) and digits (0-9). |
+| `module-system`    | string          | yes      | The module system. Supported syntax: 1 to 64 ASCII characters, including lowercase letters (a-z) and digits (0-9). For more information, see [Module Registry Protocol](https://opentofu.org/docs/internals/module-registry-protocol/). |
 | `module-version`   | string          | yes      | The module version. Should follow the [semantic versioning specification](https://semver.org/). |
 
 Provide the file content in the request body.
@@ -267,7 +267,7 @@ For more information on module resolution, see [module resolution workflow](#mod
 To view Terraform modules in your project or group:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Operate > Terraform modules**.
+1. Select **Operate** > **Terraform modules**.
 
 You can search, sort, and filter modules on this page.
 
@@ -345,7 +345,7 @@ If there are [duplicate module names](#allow-duplicate-terraform-modules) in the
 
 To download a Terraform module:
 
-1. On the left sidebar, select **Operate > Terraform modules**.
+1. On the left sidebar, select **Operate** > **Terraform modules**.
 1. Select the name of the module you want to download.
 1. From the **Assets** table, select the module you want to download.
 
@@ -358,7 +358,7 @@ You can delete modules by using [the packages API](../../../api/packages.md#dele
 
 To delete a module in the UI, from your project:
 
-1. On the left sidebar, select **Operate > Terraform modules**.
+1. On the left sidebar, select **Operate** > **Terraform modules**.
 1. Find the name of the package you want to delete.
 1. Select **Delete**.
 

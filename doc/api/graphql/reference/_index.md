@@ -23574,7 +23574,7 @@ Self-hosted LLM servers.
 
 ### `AiUsageData`
 
-Usage data for events stored in the default PostgreSQL database. Data retained for three months. Requires a personal access token. Endpoint works only on the top-level group. Ultimate with GitLab Duo Enterprise only.
+Usage data for events stored in the default PostgreSQL database. Data retained for three months. Requires a personal access token. Endpoint works only on the top-level group. Premium and Ultimate with GitLab Duo Enterprise only.
 
 #### Fields with arguments
 

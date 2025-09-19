@@ -23,9 +23,9 @@ If you're familiar with the GitLab package registry, you might wonder what the d
 
 | Differences   | Dependency list                                               | SBOM |
 |---------------|---------------------------------------------------------------|------|
-| **Scope**     | Shows dependencies for individual projects or groups.         | Creates an inventory of all packages published across your group. |
-| **Direction** | Tracks what your projects depend on (incoming dependencies).  | Tracks what your group publishes (outgoing packages). |
-| **Coverage**  | Based on package manifests, like `package.json` or `pom.xml`. | Covers actual published artifacts in your package registry. |
+| Scope     | Shows dependencies for individual projects or groups.         | Creates an inventory of all packages published across your group. |
+| Direction | Tracks what your projects depend on (incoming dependencies).  | Tracks what your group publishes (outgoing packages). |
+| Coverage  | Based on package manifests, like `package.json` or `pom.xml`. | Covers actual published artifacts in your package registry. |
 
 ## What is CycloneDX?
 
@@ -424,7 +424,7 @@ When the pipeline completes, it generates these files:
 
 To access the generated files:
 
-1. In your project, select **Deploy > Package registry**.
+1. In your project, select **Deploy** > **Package registry**.
 1. Find the package named `sbom`.
 1. Download the SBOM and statistics files.
 
@@ -484,13 +484,13 @@ If you frequently update your package registry, you should update your SBOM acco
 
 Consider the following recommendations:
 
-- **Daily updates**: Recommended if you publish packages frequently or need up-to-date reports
-- **Weekly updates**: Suitable for most teams with moderate package publishing activity
-- **Monthly updates**: Sufficient for groups with infrequent package updates
+- Daily updates: Recommended if you publish packages frequently or need up-to-date reports
+- Weekly updates: Suitable for most teams with moderate package publishing activity
+- Monthly updates: Sufficient for groups with infrequent package updates
 
 To schedule the pipeline:
 
-1. In your project, go to **Build > Pipeline schedules**.
+1. In your project, go to **Build** > **Pipeline schedules**.
 1. Select **Create a new pipeline schedule** and fill in the form:
    - From the **Cron timezone** dropdown list, select a timezone.
    - Select an **Interval Pattern**, or add a **Custom** pattern using [cron syntax](../../../ci/pipelines/schedules.md).

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DevOpsReport::MetricPresenter do
+RSpec.describe DevOpsReport::MetricPresenter, feature_category: :devops_reports do
   subject { described_class.new(metric) }
 
   let(:metric) { build(:dev_ops_report_metric) }
@@ -33,7 +33,7 @@ RSpec.describe DevOpsReport::MetricPresenter do
 
   describe '#average_percentage_score' do
     it 'calculates an average value across all the features' do
-      expect(subject.average_percentage_score).to be_within(0.1).of(55.8)
+      expect(subject.average_percentage_score).to be_within(0.1).of(51.1)
     end
   end
 end

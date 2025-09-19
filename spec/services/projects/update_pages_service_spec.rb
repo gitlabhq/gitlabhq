@@ -102,10 +102,6 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
   end
 
   context 'for new artifacts' do
-    before do
-      stub_feature_flags(ci_validate_config_options: false)
-    end
-
     context "for a valid job" do
       let!(:artifacts_archive) { create(:ci_job_artifact, :correct_checksum, file: file, job: build) }
 

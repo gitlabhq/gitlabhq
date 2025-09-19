@@ -23,10 +23,6 @@ RSpec.describe Ci::Workloads::RunWorkloadService, feature_category: :continuous_
   let(:source_branch) { nil }
 
   describe '#execute' do
-    before do
-      stub_feature_flags(ci_validate_config_options: false)
-    end
-
     subject(:execute) do
       described_class
         .new(

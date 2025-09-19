@@ -51,6 +51,9 @@ class PersonalAccessToken < ApplicationRecord
   after_initialize :set_default_scopes, if: :persisted?
   before_save :ensure_token
 
+  before_create :set_user_type
+  before_create :set_group_id
+
   scope :active, -> { not_revoked.not_expired }
   # this scope must use a string condition, otherwise Postgres will not use the correct indices
   scope :expiring_and_not_notified, ->(date) { where(["revoked = false AND expire_notification_delivered = false AND seven_days_notification_sent_at IS NULL AND expires_at >= CURRENT_DATE AND expires_at <= ?", date]) }
@@ -159,6 +162,16 @@ class PersonalAccessToken < ApplicationRecord
   end
 
   protected
+
+  def set_user_type
+    self.user_type = user.user_type
+  end
+
+  def set_group_id
+    if user.project_bot? && user.bot_namespace&.root_ancestor.is_a?(Group)
+      self.group_id = user.bot_namespace.root_ancestor.id
+    end
+  end
 
   def validate_scopes
     unless revoked || scopes.all? { |scope| Gitlab::Auth.all_available_scopes.include?(scope.to_sym) }

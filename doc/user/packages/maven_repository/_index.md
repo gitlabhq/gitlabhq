@@ -291,9 +291,9 @@ You can use one of three endpoints to install a Maven package. You must publish 
 
 The three endpoints are:
 
-- **Project-level**: Use when you have a few Maven packages and they are not in the same GitLab group.
-- **Group-level**: Use when you want to install packages from many different projects in the same GitLab group. GitLab does not guarantee the uniqueness of package names within the group. You can have two projects with the same package name and package version. As a result, GitLab serves whichever one is more recent.
-- **Instance-level**: Use when you have many packages in different GitLab groups or in their own namespace.
+- Project: Use when you have a few Maven packages and they are not in the same GitLab group.
+- Group: Use when you want to install packages from many different projects in the same GitLab group. GitLab does not guarantee the uniqueness of package names within the group. You can have two projects with the same package name and package version. As a result, GitLab serves whichever one is more recent.
+- Instance: Use when you have many packages in different GitLab groups or in their own namespace.
 
 For the instance-level endpoint, ensure the relevant section of your `pom.xml` in Maven looks like this:
 
@@ -302,7 +302,7 @@ For the instance-level endpoint, ensure the relevant section of your `pom.xml` i
   <artifactId>project-slug</artifactId>
 ```
 
-**Only packages that have the same path as the project** are exposed by the instance-level endpoint.
+Only packages that have the same path as the project are exposed by the instance-level endpoint.
 
 | Project             | Package                          | Instance-level endpoint available |
 | ------------------- | -------------------------------- | --------------------------------- |

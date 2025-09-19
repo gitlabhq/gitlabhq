@@ -6,10 +6,6 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
   let_it_be_with_refind(:pipeline) { create(:ci_pipeline, project: project) }
 
-  before do
-    stub_feature_flags(ci_validate_config_options: false)
-  end
-
   describe 'associations' do
     it { is_expected.to have_one(:trigger).through(:pipeline) }
     it { is_expected.to have_one(:job_environment).class_name('Environments::Job').inverse_of(:job) }

@@ -28,7 +28,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   before do
     stub_application_setting(allow_runner_registration_token: allow_runner_registration_token)
-    stub_feature_flags(ci_validate_config_options: false)
   end
 
   it { is_expected.to belong_to(:runner) }

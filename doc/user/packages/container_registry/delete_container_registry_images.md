@@ -51,8 +51,8 @@ To delete container images using the GitLab UI:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. For:
-   - A group, select **Operate > Container Registry**.
-   - A project, select **Deploy > Container Registry**.
+   - A group, select **Operate** > **Container Registry**.
+   - A project, select **Deploy** > **Container Registry**.
 1. From the **Container Registry** page, you can select what you want to delete,
    by either:
 

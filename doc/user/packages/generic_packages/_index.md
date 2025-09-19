@@ -174,13 +174,13 @@ To publish multiple files or an entire directory, you must make one API call for
 
 You should follow these best practices when you publish multiple files to the repository:
 
-- **Versioning**: Use a consistent versioning scheme for your package. This could be based on your project's version, build number, or date.
-- **File organization**: Consider how you want to structure your files within the package. You might want to include a manifest file that lists all the included files and their purposes.
-- **Automation**: Whenever possible, automate the publishing process through CI/CD pipelines. This ensures consistency and reduces manual errors.
-- **Error handling**: Implement error checking in your scripts. For example, check the HTTP response code from cURL to ensure each file was uploaded successfully.
-- **Logging**: Maintain logs of what files were uploaded, when, and by whom. This can be crucial for troubleshooting and auditing.
-- **Compression**: For large directories, consider compressing the contents into a single file before uploading. This can simplify the upload process and reduce the number of API calls.
-- **Checksums**: Generate and store checksums (MD5, SHA256) for your files. This allows users to verify the integrity of downloaded files.
+- Versioning: Use a consistent versioning scheme for your package. This could be based on your project's version, build number, or date.
+- File organization: Consider how you want to structure your files within the package. You might want to include a manifest file that lists all the included files and their purposes.
+- Automation: Whenever possible, automate the publishing process through CI/CD pipelines. This ensures consistency and reduces manual errors.
+- Error handling: Implement error checking in your scripts. For example, check the HTTP response code from cURL to ensure each file was uploaded successfully.
+- Logging: Maintain logs of what files were uploaded, when, and by whom. This can be crucial for troubleshooting and auditing.
+- Compression: For large directories, consider compressing the contents into a single file before uploading. This can simplify the upload process and reduce the number of API calls.
+- Checksums: Generate and store checksums (MD5, SHA256) for your files. This allows users to verify the integrity of downloaded files.
 
 For example:
 
@@ -389,14 +389,14 @@ To download multiple files or an entire directory, you must make one API call fo
 
 You should follow these best practices when you download multiple files from the repository:
 
-- **Versioning**: Always specify the exact version of the package you want to download to ensure consistency.
-- **Directory structure**: When downloading, maintain the original directory structure of the package to preserve file organization.
-- **Automation**: Integrate package downloads into your CI/CD pipelines or build scripts for automated workflows.
-- **Error handling**: Implement checks to ensure all files are downloaded successfully. You can verify the HTTP status code or check file existence after download.
-- **Caching**: For frequently used packages, consider implementing a caching mechanism to reduce network usage and improve build times.
-- **Parallel downloads**: For large packages with many files, you might want to implement parallel downloads to speed up the process.
-- **Checksums**: If available, verify the integrity of downloaded files using checksums provided by the package publisher.
-- **Incremental downloads**: For large packages that change frequently, consider implementing a mechanism to download only the files that have changed since the last download.
+- Versioning: Always specify the exact version of the package you want to download to ensure consistency.
+- Directory structure: When downloading, maintain the original directory structure of the package to preserve file organization.
+- Automation: Integrate package downloads into your CI/CD pipelines or build scripts for automated workflows.
+- Error handling: Implement checks to ensure all files are downloaded successfully. You can verify the HTTP status code or check file existence after download.
+- Caching: For frequently used packages, consider implementing a caching mechanism to reduce network usage and improve build times.
+- Parallel downloads: For large packages with many files, you might want to implement parallel downloads to speed up the process.
+- Checksums: If available, verify the integrity of downloaded files using checksums provided by the package publisher.
+- Incremental downloads: For large packages that change frequently, consider implementing a mechanism to download only the files that have changed since the last download.
 
 For example:
 

@@ -35,18 +35,12 @@ module PersonalAccessTokens
     def personal_access_token_params
       {
         name: params[:name],
-        user_type: target_user.user_type,
-        group_id: group_id,
         impersonation: params[:impersonation] || false,
         scopes: params[:scopes],
         expires_at: pat_expiration,
         organization_id: organization_id,
         description: params[:description]
       }
-    end
-
-    def group_id
-      # overridden in EE
     end
 
     def pat_expiration

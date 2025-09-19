@@ -12,6 +12,7 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
 
     shared_examples_for 'rotates token successfully' do
       it "rotates user's own token", :freeze_time do
+        expect(token.user_type).not_to be_nil
         expect(response).to be_success
 
         new_token = response.payload[:personal_access_token]
@@ -19,6 +20,8 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
         expect(new_token.token).not_to eq(token.token)
         expect(new_token.expires_at).to eq(1.week.from_now.to_date)
         expect(new_token.user).to eq(token.user)
+        expect(new_token.user_type).to eq(token.user_type)
+        expect(new_token.group).to eq(token.group)
       end
 
       it_behaves_like 'internal event tracking' do

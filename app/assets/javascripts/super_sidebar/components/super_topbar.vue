@@ -3,6 +3,7 @@ import { GlBadge, GlButton, GlIcon, GlModalDirective } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
+import SuperSidebarToggle from './super_sidebar_toggle.vue';
 import CreateMenu from './create_menu.vue';
 import UserMenu from './user_menu.vue';
 import UserCounts from './user_counts.vue';
@@ -19,6 +20,7 @@ export default {
     GlButton,
     GlIcon,
     BrandLogo,
+    SuperSidebarToggle,
     CreateMenu,
     UserCounts,
     UserMenu,
@@ -77,6 +79,8 @@ export default {
         >
           {{ $options.NEXT_LABEL }}
         </gl-badge>
+
+        <super-sidebar-toggle icon="hamburger" type="expand" class="xl:gl-hidden" />
 
         <promo-menu v-if="!isLoggedIn" :pricing-url="sidebarData.compare_plans_url" />
       </div>

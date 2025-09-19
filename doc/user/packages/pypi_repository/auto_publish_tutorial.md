@@ -37,7 +37,7 @@ the stages are:
 To create a `.gitlab-ci.yml` file:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Repository**.
+1. Select **Code** > **Repository**.
 1. Above the file list, select the branch you want to commit to.
 1. Select **Create new** ({{< icon name="plus" >}}) and **New file**.
 1. Name the file `.gitlab-ci.yml`. In the larger window, paste this sample configuration:
@@ -102,7 +102,7 @@ Here's a quick explanation of the code we committed:
 To authenticate with the package registry, the example configuration uses the `CI_JOB_TOKEN`, which is automatically provided by GitLab CI/CD.
 To publish to external PyPI registries, you must configure a secret variable in your project settings:
 
-1. On the left sidebar, select **Settings > CI/CD > Variables**.
+1. On the left sidebar, select **Settings** > **CI/CD** > **Variables**.
 1. Add a new variable named `PYPI_TOKEN` with your PyPI API token as the value.
 1. In your `.gitlab-ci.yml` file, replace the `publish:script` with:
 
@@ -115,7 +115,7 @@ To publish to external PyPI registries, you must configure a secret variable in 
 
 When you commit your changes, you should check to make sure the pipeline runs correctly:
 
-- On the left sidebar, select **Build > Pipelines**. The most recent pipeline should have the three stages we defined earlier.
+- On the left sidebar, select **Build** > **Pipelines**. The most recent pipeline should have the three stages we defined earlier.
 
 If the pipeline hasn't run, manually run a fresh pipeline and make sure it completes successfully.
 

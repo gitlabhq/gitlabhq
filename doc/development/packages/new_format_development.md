@@ -132,22 +132,22 @@ necessary endpoints and services necessary to support basic usage. Instead:
 
 During this phase, the idea is to collect as much information as possible about the API used by the package system. Here some aspects that can be useful to include:
 
-- **Authentication**: What authentication mechanisms are available (OAuth, Basic
+- Authentication: What authentication mechanisms are available (OAuth, Basic
   Authorization, other). Keep in mind that GitLab users often want to use their
   [personal access tokens](../../user/profile/personal_access_tokens.md).
   Although not needed for the MVC first iteration, the [CI/CD job tokens](../../ci/jobs/ci_job_token.md)
   have to be supported at some point in the future.
-- **Requests**: Which requests are needed to have a working MVC. Ideally, produce
+- Requests: Which requests are needed to have a working MVC. Ideally, produce
   a list of all the requests needed for the MVC (including required actions). Further
   investigation could provide an example for each request with the request and the response bodies.
-- **Upload**: Carefully analyze how the upload process works. This request is likely the most
+- Upload: Carefully analyze how the upload process works. This request is likely the most
   complex to implement. A detailed analysis is desired here as uploads can be
   encoded in different ways (body or multipart) and can even be in a totally different
   format (for example, a JSON structure where the package file is a Base64 value of
   a particular field). These different encodings lead to slightly different implementations
   on GitLab and GitLab Workhorse. For more detailed information, review [file uploads](#file-uploads).
-- **Endpoints**: Suggest a list of endpoint URLs to implement in GitLab.
-- **Split work**: Suggest a list of changes to do to incrementally build the MVC.
+- Endpoints: Suggest a list of endpoint URLs to implement in GitLab.
+- Split work: Suggest a list of changes to do to incrementally build the MVC.
   This gives a good idea of how much work there is to be done. Here is an example
   list that must be adapted on a case by case basis:
   1. Empty file structure (API file, base service for this package)
@@ -160,7 +160,7 @@ During this phase, the idea is to collect as much information as possible about 
 
 The analysis usually takes a full milestone to complete, though it's not impossible to start the implementation in the same milestone.
 
-In particular, the upload request can have some [requirements in the GitLab Workhorse project](#file-uploads). This project has a different release cycle than the rails backend. It's **strongly** recommended that you open an issue there as soon as the upload request analysis is done. This way GitLab Workhorse is already ready when the upload request is implemented on the rails backend.
+In particular, the upload request can have some [requirements in the GitLab Workhorse project](#file-uploads). This project has a different release cycle than the rails backend. It's strongly recommended that you open an issue there as soon as the upload request analysis is done. This way GitLab Workhorse is already ready when the upload request is implemented on the rails backend.
 
 ### Implementation
 

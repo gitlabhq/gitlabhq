@@ -29,10 +29,6 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
   context 'for local dependencies' do
     subject { described_class.new(job).all }
 
-    before do
-      stub_feature_flags(ci_validate_config_options: false)
-    end
-
     describe 'jobs from previous stages' do
       context 'when job is in the first stage' do
         let(:job) { build }

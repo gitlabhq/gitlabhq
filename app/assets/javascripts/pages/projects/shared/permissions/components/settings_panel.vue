@@ -371,18 +371,15 @@ export default {
     pagesFeatureAccessLevelOptions() {
       const options = [featureAccessLevelMembers];
 
-      if (this.pagesAccessControlForced) {
-        if (this.visibilityLevel === VISIBILITY_LEVEL_INTERNAL_INTEGER) {
-          options.push(featureAccessLevelEveryone);
-        }
-      } else {
-        if (this.visibilityLevel !== VISIBILITY_LEVEL_PRIVATE_INTEGER) {
-          options.push(featureAccessLevelEveryone);
-        }
+      if (this.visibilityLevel !== VISIBILITY_LEVEL_PRIVATE_INTEGER) {
+        options.push(featureAccessLevelEveryone);
+      }
 
-        if (this.visibilityLevel !== VISIBILITY_LEVEL_PUBLIC_INTEGER) {
-          options.push(FEATURE_ACCESS_LEVEL_ANONYMOUS);
-        }
+      if (
+        this.visibilityLevel !== VISIBILITY_LEVEL_PUBLIC_INTEGER &&
+        !this.pagesAccessControlForced
+      ) {
+        options.push(FEATURE_ACCESS_LEVEL_ANONYMOUS);
       }
       return options;
     },
@@ -937,7 +934,6 @@ export default {
           id="pages_access_level"
           v-model="pagesAccessLevel"
           :label="$options.i18n.pagesLabel"
-          :access-control-forced="pagesAccessControlForced"
           :options="pagesFeatureAccessLevelOptions"
           name="project[project_feature_attributes][pages_access_level]"
         />

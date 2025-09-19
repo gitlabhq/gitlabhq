@@ -147,4 +147,16 @@ describe('SuperSidebarToggle component', () => {
       });
     });
   });
+
+  describe('icon', () => {
+    it('uses "sidebar" as default', () => {
+      createWrapper();
+      expect(findButton().props('icon')).toBe('sidebar');
+    });
+
+    it('uses icon from prop if given', () => {
+      createWrapper({ icon: 'hamburger' });
+      expect(findButton().props('icon')).toBe('hamburger');
+    });
+  });
 });

@@ -435,10 +435,6 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
   end
 
   describe '#debug_trace_enabled?' do
-    before do
-      stub_feature_flags(ci_validate_config_options: false)
-    end
-
     subject(:debug_trace_enabled?) { processable.debug_trace_enabled? }
 
     shared_examples 'when job debug_trace_enabled is nil' do

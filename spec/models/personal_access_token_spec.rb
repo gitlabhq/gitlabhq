@@ -33,6 +33,96 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
   end
 
+  describe 'before_save' do
+    context 'for set_user_type' do
+      let(:personal_access_token) { build(:personal_access_token) }
+
+      it 'sets user_type' do
+        personal_access_token.user_type = nil
+
+        personal_access_token.save!
+
+        expect(personal_access_token.user_type).to eq(personal_access_token.user.user_type)
+      end
+    end
+
+    context 'for set_group_id' do
+      context 'for project_bot user' do
+        let(:personal_access_token) { build(:personal_access_token, user: project_bot) }
+
+        context 'when resource access token within top-level group' do
+          let(:project_bot) { create(:user, :project_bot, bot_namespace: resource) }
+          let_it_be(:top_level_group) { create(:group) }
+          let_it_be(:subgroup) { create(:group, parent: top_level_group) }
+          let_it_be(:project) { create(:project, namespace: subgroup) }
+
+          context 'when resource is top-level group' do
+            let_it_be(:resource) { top_level_group }
+
+            it 'sets group_id to top-level group id' do
+              expect(personal_access_token.group_id).to be_nil
+
+              personal_access_token.save!
+
+              expect(personal_access_token.group_id).to eq(top_level_group.id)
+            end
+          end
+
+          context 'when resource is subgroup' do
+            let_it_be(:resource) { subgroup }
+
+            it 'sets group_id to top-level group id' do
+              expect(personal_access_token.group_id).to be_nil
+
+              personal_access_token.save!
+
+              expect(personal_access_token.group_id).to eq(top_level_group.id)
+            end
+          end
+
+          context 'when resource is project' do
+            let_it_be(:resource) { project.project_namespace }
+
+            it 'sets group_id to top-level group id' do
+              expect(personal_access_token.group_id).to be_nil
+
+              personal_access_token.save!
+
+              expect(personal_access_token.group_id).to eq(top_level_group.id)
+            end
+          end
+        end
+
+        context 'when resource access token within user namespace' do
+          let_it_be(:user_namespace) { create(:user, :with_namespace).namespace }
+          let_it_be(:project) { create(:project, namespace: user_namespace) }
+
+          let(:project_bot) { create(:user, :project_bot, bot_namespace: project.project_namespace) }
+
+          it 'does not set group_id' do
+            expect(personal_access_token.group_id).to be_nil
+
+            personal_access_token.save!
+
+            expect(personal_access_token.group_id).to be_nil
+          end
+        end
+
+        context 'for legacy project bot users without bot_namespace' do
+          let(:project_bot) { create(:user, :project_bot, bot_namespace: nil) }
+
+          it 'does not set group_id' do
+            expect(personal_access_token.group_id).to be_nil
+
+            personal_access_token.save!
+
+            expect(personal_access_token.group_id).to be_nil
+          end
+        end
+      end
+    end
+  end
+
   describe 'associations' do
     subject(:project_access_token) { create(:personal_access_token) }
 

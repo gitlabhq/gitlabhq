@@ -55,6 +55,7 @@
     "image": {
       "$ref": "#/definitions/imageDefinition"
     },
+    "inputs": true,
     "instance": true,
     "job_timeout": true,
     "manual_confirmation": true,
@@ -84,12 +85,9 @@
   },
   "definitions": {
     "allowFailureCriteria": {
-      "type": "object",
       "additionalProperties": false,
       "properties": {
-        "exit_codes": {
-          "$ref": "#/definitions/integerOrArrayOfIntegers"
-        }
+        "exit_codes": true
       }
     },
     "artifactReports": {
@@ -105,7 +103,13 @@
         "api_fuzzing": {
           "$ref": "#/definitions/reportPath"
         },
+        "archive": {
+          "$ref": "#/definitions/reportPath"
+        },
         "browser_performance": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "cluster_applications": {
           "$ref": "#/definitions/reportPath"
         },
         "cluster_image_scanning": {
@@ -143,6 +147,12 @@
         "dotenv": {
           "$ref": "#/definitions/reportPath"
         },
+        "file": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "jacoco": {
+          "$ref": "#/definitions/reportPath"
+        },
         "junit": {
           "$ref": "#/definitions/reportPath"
         },
@@ -155,7 +165,16 @@
         "lsif": {
           "$ref": "#/definitions/reportPath"
         },
+        "metadata": {
+          "$ref": "#/definitions/reportPath"
+        },
         "metrics": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "metrics_referee": {
+          "$ref": "#/definitions/reportPath"
+        },
+        "network_referee": {
           "$ref": "#/definitions/reportPath"
         },
         "performance": {
@@ -178,6 +197,9 @@
         },
         "terraform": {
           "$ref": "#/definitions/reportPath"
+        },
+        "trace": {
+          "$ref": "#/definitions/reportPath"
         }
       }
     },
@@ -189,6 +211,7 @@
         "exclude": true,
         "expire_in": true,
         "expose_as": true,
+        "file": true,
         "name": true,
         "paths": true,
         "public": true,
@@ -369,19 +392,6 @@
         }
       ]
     },
-    "integerOrArrayOfIntegers": {
-      "oneOf": [
-        {
-          "type": "integer"
-        },
-        {
-          "type": "array",
-          "items": {
-            "type": "integer"
-          }
-        }
-      ]
-    },
     "kubernetesOptions": {
       "type": "object",
       "additionalProperties": false,
@@ -465,9 +475,7 @@
     "retryDefinition": {
       "oneOf": [
         {
-          "type": "integer",
-          "minimum": 0,
-          "maximum": 2
+          "type": "integer"
         },
         {
           "type": "object",
@@ -514,7 +522,8 @@
             "ports": true,
             "pull_policy": {
               "$ref": "#/definitions/pullPolicyOptions"
-            }
+            },
+            "variables": true
           }
         }
       ]
@@ -523,12 +532,6 @@
       "type": "array",
       "items": {
         "$ref": "#/definitions/serviceDefinition"
-      }
-    },
-    "stringArray": {
-      "type": "array",
-      "items": {
-        "type": "string"
       }
     },
     "stringMap": {
@@ -547,6 +550,7 @@
           "additionalProperties": false,
           "properties": {
             "branch": true,
+            "file": true,
             "forward": {
               "type": "object",
               "additionalProperties": false,
@@ -557,7 +561,9 @@
             },
             "include": {
               "oneOf": [
-                true,
+                {
+                  "$ref": "#/definitions/triggerIncludeItem"
+                },
                 {
                   "type": "array",
                   "items": {

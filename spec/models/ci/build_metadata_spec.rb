@@ -74,16 +74,6 @@ RSpec.describe Ci::BuildMetadata, feature_category: :continuous_integration do
           }
           expect(metadata).to be_invalid
         end
-
-        it 'rejects allow_failure_criteria with wrong exit_codes type' do
-          metadata.config_options = {
-            script: ['echo'],
-            allow_failure_criteria: {
-              exit_codes: 'not-an-integer-or-array'
-            }
-          }
-          expect(metadata).to be_invalid
-        end
       end
 
       context 'when ci_validate_config_options feature flag is disabled' do

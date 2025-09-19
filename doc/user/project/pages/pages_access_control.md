@@ -59,7 +59,7 @@ can access the website.
 When [SAML SSO](../../group/saml_sso/_index.md) is configured for the associated group
 and the access control is enabled, users must authenticate using SSO before accessing the website.
 
-## Restrict Pages access to project members for the group and its subgroups
+## Remove public access for group Pages
 
 {{< history >}}
 
@@ -67,8 +67,9 @@ and the access control is enabled, users must authenticate using SSO before acce
 
 {{< /history >}}
 
-You can configure a setting for the group to restrict Pages access to only project members.
-When enabled, all projects in the group and its subgroups become visible only to members.
+Configure a setting for the group to remove the public visibility option for Pages.
+When enabled, all projects in the group and its subgroups lose the ability to use the "Everyone" visibility
+level and are restricted to project members or everyone with access, depending on the project's visibility setting.
 
 Prerequisites
 
@@ -80,8 +81,7 @@ To do this:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings** > **General**.
 1. Expand **Permissions and group features**.
-1. Under **Pages access control**, select
-   **Restrict access to only project members on all group projects**.
+1. Under **Pages public access**, select the **Remove public access** checkbox.
 1. Select **Save changes**.
 
 GitLab Pages uses a cache for efficiency. Changes to access settings typically take effect within one minute when the cache updates.

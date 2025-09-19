@@ -51,7 +51,7 @@ To view storage usage for a project:
 1. Do one of the following:
    - To view total storage usage, select **Settings** > **Usage quotas**.
     Under **Namespace entities**, select **Container Registry** to view individual repositories.
-   - To view storage usage by repository directly, select **Deploy > Container Registry**.
+   - To view storage usage by repository directly, select **Deploy** > **Container Registry**.
 
 You can also use:
 
@@ -128,7 +128,7 @@ To enable maintainers of these namespaces to see their usage, there is a delayed
 See [epic 9413](https://gitlab.com/groups/gitlab-org/-/epics/9413) for more details.
 
 If the usage for a namespace cannot be calculated with precision, GitLab falls back to the delayed method.
-In the delayed method, the displayed usage size is the sum of **all** unique image layers
+In the delayed method, the displayed usage size is the sum of all unique image layers
 in the namespace. Untagged image layers are not ignored. As a result,
 the displayed usage size might not change significantly after deleting tags. Instead,
 the size value only changes when:
@@ -236,14 +236,14 @@ And a container repository with these tags:
 In this example, the tags that would be deleted in the next cleanup run are `dev-v42`, `v43`, and `v42`.
 You can interpret the rules as applying with this precedence:
 
-1. The keep rules have highest precedence. Tags must be kept when they match **any** rule.
+1. The keep rules have highest precedence. Tags must be kept when they match any rule.
    - The `latest` tag must be kept, because `latest` tags are always kept.
    - The `production-v44`, `production-v43`, and `production-v42` tags must be kept,
      because they match the **Keep tags matching** rule.
    - The `v44` tag must be kept because it's the most recent, matching the **Keep the most recent** rule.
-1. The remove rules have lower precedence, and tags are only deleted if **all** rules match.
+1. The remove rules have lower precedence, and tags are only deleted if all rules match.
    For the tags not matching any keep rules (`dev-44`, `dev-v43`, `dev-v42`, `v43`, and `v42`):
-   - `dev-44` and `dev-43` do **not** match the **Remove tags older than**, and are kept.
+   - `dev-44` and `dev-43` do not match the **Remove tags older than**, and are kept.
    - `dev-v42`, `v43`, and `v42` match both **Remove tags older than** and **Remove tags matching**
      rules, so these three tags can be deleted.
 

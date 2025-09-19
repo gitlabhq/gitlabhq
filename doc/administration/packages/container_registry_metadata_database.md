@@ -96,7 +96,7 @@ Follow the instructions that match your situation:
 - [Offline garbage collection](container_registry.md#container-registry-garbage-collection) is no longer required.
   The garbage collection command included with GitLab will safely exit when the database is enabled, but third-party
   commands, such as the one provided by the upstream registry, will delete data associated with tagged images.
-- Verify you have not automated offline garbage collection: **especially with a third-party command.**
+- Verify you have not automated offline garbage collection: especially with a third-party command.
 - You can first [reduce the storage of your registry](../../user/packages/container_registry/reduce_container_registry_storage.md)
   to speed up the process.
 - Back up [your container registry data](../backup_restore/backup_gitlab.md#container-registry)
@@ -133,7 +133,7 @@ Prerequisites:
 
 To enable the database:
 
-1. Edit `/etc/gitlab/gitlab.rb` by adding your database connection details, but start with the metadata database **disabled**:
+1. Edit `/etc/gitlab/gitlab.rb` by adding your database connection details, but start with the metadata database disabled:
 
    ```ruby
    registry['database'] = {
@@ -185,10 +185,10 @@ A few factors affect the duration of the import:
 - The number of registry instances running.
 - Network latency between the registry, PostgreSQL and your configured Object Storage.
 
-You **do not** need to do the following in preparation before importing:
+You do not need to do the following in preparation before importing:
 
-- **Allocate extra object storage space**: The import makes no significant writes to object storage.
-- **Run offline garbage collection**: While not harmful, offline garbage collection does not shorten the
+- Allocate extra object storage space: The import makes no significant writes to object storage.
+- Run offline garbage collection: While not harmful, offline garbage collection does not shorten the
 import enough to recoup the time spent running this command.
 
 {{< alert type="note" >}}
@@ -225,7 +225,7 @@ Otherwise, data written during the import becomes inaccessible or leads to incon
 
 {{< tab title="GitLab 18.3 and later" >}}
 
-1. Ensure the database is **disabled** in the `registry['database']` section of your `/etc/gitlab/gitlab.rb` file:
+1. Ensure the database is disabled in the `registry['database']` section of your `/etc/gitlab/gitlab.rb` file:
 
    ```ruby
    registry['database'] = {
@@ -295,7 +295,7 @@ Prerequisites:
 
 - Create an [external database](../postgresql/external.md#container-registry-metadata-database).
 
-1. Add the `database` section to your `/etc/gitlab/gitlab.rb` file, but start with the metadata database **disabled**:
+1. Add the `database` section to your `/etc/gitlab/gitlab.rb` file, but start with the metadata database disabled:
 
    ```ruby
    registry['database'] = {
@@ -391,13 +391,14 @@ trying to minimize downtime while completing the import.
 
 Users have reported step one import completed at [rates of 2 to 4 TB per hour](https://gitlab.com/gitlab-org/gitlab/-/issues/423459).
 At the slower speed, registries with over 100TB of data could take longer than 48 hours.
-**You may continue to use the registry as normal while step one is being completed.**
+
+You may continue to use the registry as normal while step one is being completed.
 
 {{< tabs >}}
 
 {{< tab title="GitLab 18.3 and later" >}}
 
-1. Ensure the database is **disabled** in the `database` section to your `/etc/gitlab/gitlab.rb` file:
+1. Ensure the database is disabled in the `database` section to your `/etc/gitlab/gitlab.rb` file:
 
    ```ruby
    registry['database'] = {
@@ -421,7 +422,7 @@ Prerequisites:
 
 - Create an [external database](../postgresql/external.md#container-registry-metadata-database).
 
-1. Add the `database` section to your `/etc/gitlab/gitlab.rb` file, but start with the metadata database **disabled**:
+1. Add the `database` section to your `/etc/gitlab/gitlab.rb` file, but start with the metadata database disabled:
 
    ```ruby
    registry['database'] = {
@@ -599,7 +600,8 @@ You can now use the metadata database for all operations!
 Even though the registry is now fully using the database for its metadata, it
 does not yet have access to any potentially unused layer blobs, preventing these
 blobs from being removed by the online garbage collector.
-**You may continue to use the registry as normal while step three is being completed.**
+
+You may continue to use the registry as normal while step three is being completed.
 
 To complete the process, run the final step of the migration:
 
@@ -633,13 +635,13 @@ After that command exists successfully, registry metadata is now fully imported 
 
 {{< /history >}}
 
-Skip repositories that you pre-imported within the last 72 hours to resume 
+Skip repositories that you pre-imported within the last 72 hours to resume
 interrupted imports. Repositories are pre-imported either:
 
 - By completing step one of the three-step import process
 - By completing the one-step import process
 
-To restore interrupted imports, configure the `--pre-import-skip-recent` flag. Defaults to 72 hours. 
+To restore interrupted imports, configure the `--pre-import-skip-recent` flag. Defaults to 72 hours.
 
 For example:
 
@@ -665,9 +667,9 @@ to see how to monitor the progress and health of the online garbage collector.
 
 The container registry supports two types of migrations:
 
-- **Regular schema migrations**: Changes to the database structure that must run before deploying new application code, also known as pre-deployment migrations. These should be fast (no more than a few minutes) to avoid deployment delays.
+- Regular schema migrations: Changes to the database structure that must run before deploying new application code, also known as pre-deployment migrations. These should be fast (no more than a few minutes) to avoid deployment delays.
 
-- **Post-deployment migrations**: Changes to the database structure that can run while the application is running. Used for longer operations like creating indexes on large tables, avoiding startup delays and extended upgrade downtime.
+- Post-deployment migrations: Changes to the database structure that can run while the application is running. Used for longer operations like creating indexes on large tables, avoiding startup delays and extended upgrade downtime.
 
 By default, the registry applies both regular schema and post-deployment migrations simultaneously.
 To reduce downtime during upgrades, you can skip post-deployment migrations and apply them manually after the application starts.
@@ -1034,7 +1036,7 @@ which can happen if you:
 To resolve this issue, you must delete the existing entries in the tags table.
 You must truncate the table manually on your PostgreSQL instance:
 
-1. Edit `/etc/gitlab/gitlab.rb` and ensure the metadata database is **disabled**:
+1. Edit `/etc/gitlab/gitlab.rb` and ensure the metadata database is disabled:
 
    ```ruby
    registry['database'] = {

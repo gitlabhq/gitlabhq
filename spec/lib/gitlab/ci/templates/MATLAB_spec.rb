@@ -17,7 +17,6 @@ RSpec.describe 'MATLAB.gitlab-ci.yml' do
 
     before do
       stub_ci_pipeline_yaml_file(template.content)
-      stub_feature_flags(ci_validate_config_options: false)
     end
 
     it 'creates all jobs' do

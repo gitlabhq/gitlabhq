@@ -17,10 +17,10 @@ By the end, you'll learn how to:
 
 Package signing provides several crucial security benefits:
 
-- **Authenticity**: Users can verify that packages come from trusted sources.
-- **Data integrity**: If a package is tampered with during distribution, it will be detected.
-- **Non-repudiation**: The origin of a package can be cryptographically proven.
-- **Supply chain security**: Package signing protects against supply chain attacks and compromised repositories.
+- Authenticity: Users can verify that packages come from trusted sources.
+- Data integrity: If a package is tampered with during distribution, it will be detected.
+- Non-repudiation: The origin of a package can be cryptographically proven.
+- Supply chain security: Package signing protects against supply chain attacks and compromised repositories.
 
 ## Before you begin
 

@@ -39,8 +39,8 @@ achieve. For more information, review the [guidance on tokens](../package_regist
 
 You can use either a project or group endpoint to interact with the GitLab package registry:
 
-- **Project endpoint**: Use when you have a few NuGet packages that are not in the same group.
-- **Group endpoint**: Use when you have many NuGet packages in different projects under the same group.
+- Project endpoint: Use when you have a few NuGet packages that are not in the same group.
+- Group endpoint: Use when you have many NuGet packages in different projects under the same group.
 
 Some actions, like publishing a package, are only available on the project endpoint.
 
@@ -140,7 +140,7 @@ choco source add -n=gitlab -s "'https://gitlab.example.com/api/v4/projects/10/pa
 To add the package registry as a source with Visual Studio:
 
 1. Open [Visual Studio](https://visualstudio.microsoft.com/vs/).
-1. In Windows, select **Tools > Options**. On macOS, select **Visual Studio > Preferences**.
+1. In Windows, select **Tools** > **Options**. On macOS, select **Visual Studio** > **Preferences**.
 1. In the **NuGet** section, select **Sources** to view a list of all your NuGet sources.
 1. Select **Add**.
 1. Complete the following fields:
@@ -266,7 +266,7 @@ The Chocolatey CLI is only compatible with the [project endpoint](#with-the-proj
 To add the package registry as a source with Visual Studio:
 
 1. Open [Visual Studio](https://visualstudio.microsoft.com/vs/).
-1. In Windows, select **Tools > Options**. On macOS, select **Visual Studio > Preferences**.
+1. In Windows, select **Tools** > **Options**. On macOS, select **Visual Studio** > **Preferences**.
 1. In the **NuGet** section, select **Sources** to view a list of all your NuGet sources.
 1. Select **Add**.
 1. Complete the following fields:
@@ -760,7 +760,7 @@ nuget push My.Package.snupkg -Source <source_name>
 GitLab package registry provides a special `symbolfiles` endpoint that you can configure
 with your project or group endpoint:
 
-- **Project endpoint**:
+- Project endpoint:
 
   ```plaintext
   https://gitlab.example.com/api/v4/projects/<project_id>/packages/nuget/symbolfiles
@@ -768,7 +768,7 @@ with your project or group endpoint:
 
   - Replace `<project_id>` with the project ID.
 
-- **Group endpoint**:
+- Group endpoint:
 
   ```plaintext
   https://gitlab.example.com/api/v4/groups/<group_id>/-/packages/nuget/symbolfiles
@@ -788,8 +788,8 @@ To use the symbol server:
 
 For example, to configure Visual Studio as your debugger:
 
-1. Select **Tools > Preferences**.
-1. Select **Debugger > Symbol sources**.
+1. Select **Tools** > **Preferences**.
+1. Select **Debugger** > **Symbol sources**.
 1. Select **Add**.
 1. Enter the symbol server URL.
 1. Select **Add Source**.

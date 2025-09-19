@@ -242,7 +242,7 @@ For more information, see how to use the
 
 ### Migrate packages between object storage and local storage
 
-After configuring object storage, you can use the following tasks to migrate packages between local and remote storage. The processing is done in a background worker and requires **no downtime**.
+After configuring object storage, you can use the following tasks to migrate packages between local and remote storage. The processing is done in a background worker and requires no downtime.
 
 #### Migrate to object storage
 

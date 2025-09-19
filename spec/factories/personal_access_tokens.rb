@@ -11,10 +11,6 @@ FactoryBot.define do
     scopes { ['api'] }
     impersonation { false }
 
-    after(:build) do |token|
-      token.user_type = token.user.user_type
-    end
-
     trait :impersonation do
       impersonation { true }
     end
@@ -76,6 +72,11 @@ FactoryBot.define do
       rotated_at { 6.months.ago }
       resource { create(:group) } # rubocop:disable RSpec/FactoryBot/InlineAssociation -- this is not direct association of the factory created here
       access_level { Gitlab::Access::DEVELOPER }
+    end
+
+    before(:create) do |token, evaluator|
+      bot_namespace = evaluator.resource.is_a?(Group) ? evaluator.resource : evaluator.resource.project_namespace
+      token.user.update!(bot_namespace: bot_namespace)
     end
 
     after(:create) do |token, evaluator|

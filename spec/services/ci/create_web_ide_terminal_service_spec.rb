@@ -84,10 +84,6 @@ RSpec.describe Ci::CreateWebIdeTerminalService, feature_category: :continuous_in
             EOS
           end
 
-          before do
-            stub_feature_flags(ci_validate_config_options: false)
-          end
-
           it_behaves_like 'be successful'
         end
 

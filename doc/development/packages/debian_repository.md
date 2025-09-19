@@ -15,8 +15,8 @@ This guide explains:
 
 There are two types of [Debian packages](https://www.debian.org/doc/manuals/debian-faq/pkg-basics.en.html): binary and source.
 
-- **Binary** - These are usually `.deb` files and contain executables, config files, and other data. A binary package must match your OS or architecture since it is already compiled. These are usually installed using `dpkg`. Dependencies must already exist on the system when installing a binary package.
-- **Source** - These are usually made up of `.dsc` files and compressed `.tar` files. A source package may be compiled on your system.
+- Binary - These are usually `.deb` files and contain executables, config files, and other data. A binary package must match your OS or architecture since it is already compiled. These are usually installed using `dpkg`. Dependencies must already exist on the system when installing a binary package.
+- Source - These are usually made up of `.dsc` files and compressed `.tar` files. A source package may be compiled on your system.
 
 Packages are fetched with [`apt`](https://manpages.debian.org/bullseye/apt/apt.8.en.html) and installed with `dpkg`. When you use `apt`, it also fetches and installs any dependencies.
 
@@ -41,11 +41,11 @@ When it comes to Debian, packages don't exist on their own. They belong to a _di
 ## What does a Debian Repository look like?
 
 - A [Debian repository](https://wiki.debian.org/DebianRepository) is made up of many releases.
-- Each release is given a stable **codename**. For the public Debian repository, these are names like "bullseye" and "jessie".
-  - There is also the concept of **suites** which are essentially aliases of codenames synonymous with release channels like "stable" and "edge". Over time they change and point to different _codenames_.
-- Each release has many **components**. In the public repository, these are "main", "contrib", and "non-free".
-- Each release has many **architectures** such as "amd64", "arm64", or "i386".
-- Each release has a signed **Release** file (see below about [GPG signing](#what-are-gpg-keys-and-what-are-signed-releases))
+- Each release is given a stable codename. For the public Debian repository, these are names like "bullseye" and "jessie".
+  - There is also the concept of suites which are essentially aliases of codenames synonymous with release channels like "stable" and "edge". Over time they change and point to different _codenames_.
+- Each release has many components. In the public repository, these are "main", "contrib", and "non-free".
+- Each release has many architectures such as "amd64", "arm64", or "i386".
+- Each release has a signed Release file (see below about [GPG signing](#what-are-gpg-keys-and-what-are-signed-releases))
 
 A standard directory-based Debian repository would be organized as:
 

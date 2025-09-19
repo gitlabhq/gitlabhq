@@ -1,6 +1,7 @@
 import { GlBadge } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import SuperTopbar from '~/super_sidebar/components/super_topbar.vue';
+import SuperSidebarToggle from '~/super_sidebar/components/super_sidebar_toggle.vue';
 import BrandLogo from 'jh_else_ce/super_sidebar/components/brand_logo.vue';
 import CreateMenu from '~/super_sidebar/components/create_menu.vue';
 import OrganizationSwitcher from '~/super_sidebar/components/organization_switcher.vue';
@@ -23,6 +24,7 @@ describe('SuperTopbar', () => {
   const findSigninButton = () => wrapper.findByTestId('topbar-signin-button');
   const findSignupButton = () => wrapper.findByTestId('topbar-signup-button');
   const findBrandLogo = () => wrapper.findComponent(BrandLogo);
+  const findSidebarToggle = () => wrapper.findComponent(SuperSidebarToggle);
   const findCreateMenu = () => wrapper.findComponent(CreateMenu);
   const findNextBadge = () => wrapper.findComponent(GlBadge);
   const findOrganizationSwitcher = () => wrapper.findComponent(OrganizationSwitcherStub);
@@ -56,6 +58,16 @@ describe('SuperTopbar', () => {
 
     it('renders the header element with correct `super-topbar` class', () => {
       expect(wrapper.find('header').classes()).toContain('super-topbar');
+    });
+
+    describe('Mobile sidebar toggle', () => {
+      it('has the correct class', () => {
+        expect(findSidebarToggle().props('icon')).toBe('hamburger');
+      });
+
+      it('is not shown on large screens', () => {
+        expect(findSidebarToggle().classes()).toContain('xl:gl-hidden');
+      });
     });
 
     describe('Organization switcher', () => {

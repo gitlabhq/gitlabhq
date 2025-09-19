@@ -12,7 +12,6 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
   let(:ref_name) { 'refs/heads/master' }
 
   before do
-    stub_feature_flags(ci_validate_config_options: false)
     project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
     stub_ci_pipeline_to_return_yaml_file
   end

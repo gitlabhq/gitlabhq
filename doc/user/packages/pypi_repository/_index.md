@@ -46,7 +46,7 @@ To turn off package request forwarding:
 1. Select **Settings** > **Packages and registries**.
 1. Under **Package forwarding**, clear the **Forward PyPI package requests** checkbox.
 
-For information on how to turn off package forwarding in the **Admin area**, see [Control package forwarding](../../../administration/settings/continuous_integration.md#control-package-forwarding).
+For information on how to turn off package forwarding in the **Admin** area, see [Control package forwarding](../../../administration/settings/continuous_integration.md#control-package-forwarding).
 
 ## Authenticate with the GitLab package registry
 

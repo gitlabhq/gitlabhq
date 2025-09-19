@@ -10,7 +10,7 @@ RSpec.describe DevOpsReportHelper do
   describe '#devops_score_metrics' do
     let(:devops_score_metrics) { helper.devops_score_metrics(subject) }
 
-    it { expect(devops_score_metrics[:averageScore]).to eq({ scoreLevel: { icon: "status-alert", label: "Moderate", variant: "warning" }, value: "55.9" }) }
+    it { expect(devops_score_metrics[:averageScore]).to eq({ scoreLevel: { icon: "status-alert", label: "Moderate", variant: "warning" }, value: "51.1" }) }
 
     it { expect(devops_score_metrics[:cards].first).to eq({ leadInstance: "9.3", score: "13.3", scoreLevel: { label: "Low", variant: "neutral" }, title: "Issues created per active user", usage: "1.2" }) }
     it { expect(devops_score_metrics[:cards].second).to eq({ leadInstance: "30.3", score: "92.7", scoreLevel: { label: "High", variant: "success" }, title: "Comments created per active user", usage: "28.1" }) }

@@ -1177,10 +1177,6 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe '#target_ref' do
-    before do
-      stub_feature_flags(ci_validate_config_options: false)
-    end
-
     context 'when trigger is defined' do
       it 'returns a ref name' do
         expect(bridge.target_ref).to eq 'master'
@@ -1362,10 +1358,6 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
       end
 
       context 'does not inherit needs with artifacts variables that are public' do
-        before do
-          stub_feature_flags(ci_validate_config_options: false)
-        end
-
         let(:accessibility) { 'private' }
 
         it { expect(subject.to_hash).not_to eq(job_variable_1.key => job_variable_1.value) }
@@ -1375,7 +1367,6 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
   describe 'metadata partitioning' do
     before do
-      stub_feature_flags(ci_validate_config_options: false)
       stub_feature_flags(stop_writing_builds_metadata: false)
     end
 

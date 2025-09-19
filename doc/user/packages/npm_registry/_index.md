@@ -300,9 +300,9 @@ Depending on how the package is installed, you might need to adhere to the namin
 
 You can use one of three API endpoints to install packages:
 
-- **Instance**: Use when you have many npm packages in different GitLab groups or in their own namespace.
-- **Group**: Use when you have many npm packages in different projects under the same group or subgroup.
-- **Project**: Use when you have few npm packages and they are not in the same GitLab group.
+- Instance: Use when you have many npm packages in different GitLab groups or in their own namespace.
+- Group: Use when you have many npm packages in different projects under the same group or subgroup.
+- Project: Use when you have few npm packages and they are not in the same GitLab group.
 
 If you plan to install a package from a [project](#install-from-a-project) or [group](#install-from-a-group),
 then you do not have to adhere to the naming convention.
@@ -383,9 +383,9 @@ If multiple packages have the same name and version, when you install a package,
 
 You can install a package from a GitLab project, group, or instance:
 
-- **Instance**: Use when you have many npm packages in different GitLab groups or in their own namespace.
-- **Group**: Use when you have many npm packages in different projects in the same GitLab group.
-- **Project**: Use when you have few npm packages and they are not in the same GitLab group.
+- Instance: Use when you have many npm packages in different GitLab groups or in their own namespace.
+- Group: Use when you have many npm packages in different projects in the same GitLab group.
+- Project: Use when you have few npm packages and they are not in the same GitLab group.
 
 ### Install from an instance
 
