@@ -66,7 +66,7 @@ You have to invite them to your project, so that they get access to all the file
 
 To invite a user to the `My website` project:
 
-1. In the project, select **Manage > Members**.
+1. In the project, select **Manage** > **Members**.
 1. Select **Invite members**.
 1. Enter the user's **username**.
 1. From the **Role** dropdown list, select the **Developer** role or higher.
@@ -86,7 +86,7 @@ For example, for a website project like this one, the labels `feature request` a
 
 To create a project label, in the `My website` project:
 
-1. Select **Manage > Labels**.
+1. Select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter `feature request`.
 1. Optional. In the **Description** field, enter additional information about how and when to use this label.

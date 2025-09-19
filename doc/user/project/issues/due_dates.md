@@ -49,7 +49,7 @@ Issue dates in the past are shown with a red icon ({{< icon name="calendar-overd
 To view and sort issues containing due dates in your project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Issues**.
+1. Select **Plan** > **Issues**.
 1. To sort by due date, select the current sort method, then select **Due date**.
 1. Optional. To reverse the sort order, select **Sort direction** ({{< icon name="sort-lowest" >}}).
 
@@ -73,7 +73,7 @@ Prerequisites:
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Issues**, then select the title of your issue to view it.
+1. Select **Plan** > **Issues**, then select the title of your issue to view it.
 1. On the right sidebar, next to **Due date**, select **Edit** to display a calendar.
 1. Select your desired date, then select again, outside the calendar, to save your changes.
 

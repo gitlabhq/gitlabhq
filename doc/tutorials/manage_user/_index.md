@@ -159,7 +159,7 @@ You can give users access to all projects in a group by adding them to that grou
 First, you will add all the users to the parent group, Development.
 
 1. On the left sidebar, select **Search or go to** and find the **Development** group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select **Invite members**.
 1. Complete the fields for the product manager, Alex Smith.
    - Give Alex the **Owner** role. The role applies to all subgroups projects
@@ -220,7 +220,7 @@ them from the parent group.
 Go back to the parent group and remove everyone except Alex Smith:
 
 1. On the left sidebar, select **Search or go to** and find the parent group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. On the member row you want to remove, select the vertical ellipsis ({{< icon name="ellipsis_v" >}})
    and then select **Remove member**.
 1. In the **Remove member** confirmation box, select the
@@ -410,7 +410,7 @@ add different users to that project.
 
 You have now created a project in the parent group.
 
-In this project, go to **Manage > Members**.
+In this project, go to **Manage** > **Members**.
 
 The existing members of the parent group (you and Alex) are already members of
 this project because when your project belongs to a group, project members inherit
@@ -422,7 +422,7 @@ directly to the project.
 ## Add users to the project and parent group
 
 1. On the left sidebar, select **Search or go to** and find the **Release 2.0** project.
-1. On the left sidebar, select **Manage > Members**.
+1. On the left sidebar, select **Manage** > **Members**.
 1. Select **Invite members**. Invite the following users:
 
    | User           | Role       | Access expiration date |

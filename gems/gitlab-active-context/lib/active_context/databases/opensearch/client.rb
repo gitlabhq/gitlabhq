@@ -13,7 +13,6 @@ module ActiveContext
 
         OPEN_TIMEOUT = 5
         NO_RETRY = 0
-        DEFAULT_ADAPTER = :typhoeus
 
         def initialize(options)
           @options = options
@@ -52,7 +51,7 @@ module ActiveContext
 
         def opensearch_config
           {
-            adapter: options[:client_adapter] || DEFAULT_ADAPTER,
+            adapter: :typhoeus,
             urls: options[:url],
             transport_options: {
               request: {

@@ -67,7 +67,6 @@ Gitlab/StrongMemoizeAttr:
     - 'app/models/concerns/cascading_namespace_setting_attribute.rb'
     - 'app/models/concerns/ci/contextable.rb'
     - 'app/models/concerns/discussion_on_diff.rb'
-    - 'app/models/concerns/has_repository.rb'
     - 'app/models/concerns/has_wiki.rb'
     - 'app/models/concerns/redis_cacheable.rb'
     - 'app/models/concerns/resolvable_discussion.rb'

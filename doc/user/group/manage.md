@@ -44,12 +44,12 @@ member with the Owner role.
 
 - As an administrator:
   1. On the left sidebar, select **Search or go to** and find your group.
-  1. Select **Manage > Members**.
+  1. Select **Manage** > **Members**.
   1. Give a different member the Owner role.
   1. Refresh the page. You can now remove the Owner role from the original Owner.
 - As the current group's Owner:
   1. On the left sidebar, select **Search or go to** and find your group.
-  1. Select **Manage > Members**.
+  1. Select **Manage** > **Members**.
   1. Give a different member the Owner role.
   1. Have the new Owner sign in and remove the Owner role from you.
 
@@ -374,7 +374,7 @@ To prevent invitations to a group:
 You can export a list of members in a group or subgroup as a CSV.
 
 1. On the left sidebar, select **Search or go to** and find your group or subgroup.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select **Export as CSV**.
 1. After the CSV file has been generated, it is emailed as an attachment to the user that requested it.
 
@@ -704,7 +704,7 @@ Changes to [group wikis](../project/wiki/group.md) do not appear in group activi
 You can view the most recent actions taken in a group, either in your browser or in an RSS feed:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Activity**.
+1. Select **Manage** > **Activity**.
 
 To view the activity feed in Atom format, select the
 **RSS** ({{< icon name="rss" >}}) icon.

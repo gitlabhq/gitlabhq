@@ -192,7 +192,7 @@ Prerequisites:
 To assign a custom member role to an existing user:
 
 1. On the left sidebar, select **Search or go to** and find your group or project.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. In the **Role** column, select the role for an existing member. The **Role details** drawer opens.
 1. From the **Role** dropdown list, select a role to assign to the member.
 1. Select **Update role** to assign the role.

@@ -252,7 +252,7 @@ To view placeholder users created during imports to a top-level group and its su
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 
 #### Filter for placeholder users
@@ -511,7 +511,7 @@ To request reassignment of contributions and memberships:
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. For each placeholder, review information in table columns **Placeholder user** and **Source**.
@@ -561,7 +561,7 @@ All other rows are skipped.
 To request reassignment of contributions and memberships by using a CSV file:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Select **Reassign with CSV**.
 1. Download the prefilled CSV template.
@@ -618,7 +618,7 @@ To keep placeholder users one at a time:
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. Find placeholder user you want to keep by reviewing **Placeholder user** and **Source** columns.
@@ -629,7 +629,7 @@ To keep placeholder users in bulk:
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Above the list, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Keep all as placeholders**.
 1. On the confirmation dialog, select **Confirm**.
@@ -640,7 +640,7 @@ Before a user accepts a reassignment request, you can cancel the request:
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. Select **Cancel** in the correct row.
@@ -651,7 +651,7 @@ If a user is not acting on a reassignment request, you can prompt them again by 
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. Select **Notify** in the correct row.
@@ -662,7 +662,7 @@ To view the reassignment status of all placeholder users:
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Awaiting reassignment** sub-tab, where placeholders are listed in a table.
 1. See the status of each placeholder user in **Reassignment status** column.

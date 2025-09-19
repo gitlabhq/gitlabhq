@@ -25,11 +25,9 @@ const subgroupsAndProjectsFormatter = (items) =>
   formatGraphQLGroupsAndProjects(
     items,
     (group) => ({
-      editPath: group.editPath,
       avatarLabel: group.name,
     }),
     (project) => ({
-      editPath: project.editPath,
       avatarLabel: project.name,
     }),
   );

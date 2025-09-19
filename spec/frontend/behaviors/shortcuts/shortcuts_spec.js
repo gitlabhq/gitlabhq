@@ -156,46 +156,61 @@ describe('Shortcuts', () => {
     beforeEach(() => {
       jest.spyOn(mockSearchInput, 'dispatchEvent');
       event = new KeyboardEvent('keydown', { cancelable: true });
+    });
+
+    it('does not trigger find file shortcut on none project pages', () => {
+      document.body.dataset.page = 'dashboard:merge_requests';
+
       Shortcuts.focusSearchFile(event);
+
+      expect(mockSearchInput.dispatchEvent).not.toHaveBeenCalled();
     });
 
-    it('clicks the super sidebar search button', () => {
-      expect(HTMLElement.prototype.click).toHaveBeenCalled();
-      expect(HTMLElement.prototype.click.mock.contexts[0].id).toBe('super-sidebar-search');
-    });
+    describe('on project page', () => {
+      beforeEach(() => {
+        document.body.dataset.page = 'projects:merge_requests';
 
-    it('cancels the default behavior of the event', () => {
-      expect(event.defaultPrevented).toBe(true);
-    });
+        Shortcuts.focusSearchFile(event);
+      });
 
-    it('waits for the input to become available in the DOM', () => {
-      expect(waitForElement).toHaveBeenCalledWith('#super-sidebar-search-modal #search');
-    });
+      it('clicks the super sidebar search button', () => {
+        expect(HTMLElement.prototype.click).toHaveBeenCalled();
+        expect(HTMLElement.prototype.click.mock.contexts[0].id).toBe('super-sidebar-search');
+      });
 
-    it('sets the value of the search input', () => {
-      expect(mockSearchInput.value).toBe('~');
-    });
+      it('cancels the default behavior of the event', () => {
+        expect(event.defaultPrevented).toBe(true);
+      });
 
-    it('dispatches an `input` event on the search input', () => {
-      expect(mockSearchInput.dispatchEvent).toHaveBeenCalledWith(new Event('input'));
-    });
+      it('waits for the input to become available in the DOM', () => {
+        expect(waitForElement).toHaveBeenCalledWith('#super-sidebar-search-modal #search');
+      });
 
-    it('triggers internal_event tracking', () => {
-      jest.spyOn(mockSearchInput, 'dispatchEvent');
-      event = new KeyboardEvent('keydown', { key: 't' }, { cancelable: true });
-      Shortcuts.focusSearchFile(event);
-      const { trackEventSpy } = bindInternalEventDocument(document.body);
+      it('sets the value of the search input', () => {
+        expect(mockSearchInput.value).toBe('~');
+      });
 
-      expect(trackEventSpy).toHaveBeenCalledWith('click_go_to_file_shortcut');
-    });
+      it('dispatches an `input` event on the search input', () => {
+        expect(mockSearchInput.dispatchEvent).toHaveBeenCalledWith(new Event('input'));
+      });
 
-    it('prefils current path from breadcrumbs', async () => {
-      setHTMLFixture('<div class="js-repo-breadcrumbs" data-current-path="files/test"></div>');
+      it('triggers internal_event tracking', () => {
+        jest.spyOn(mockSearchInput, 'dispatchEvent');
+        event = new KeyboardEvent('keydown', { key: 't' }, { cancelable: true });
+        Shortcuts.focusSearchFile(event);
+        const { trackEventSpy } = bindInternalEventDocument(document.body);
 
-      event = new KeyboardEvent('keydown', { cancelable: true });
-      await Shortcuts.focusSearchFile(event);
+        expect(trackEventSpy).toHaveBeenCalledWith('click_go_to_file_shortcut');
+      });
 
-      expect(mockSearchInput.value).toBe('~files/test/');
+      it('prefils current path from breadcrumbs', async () => {
+        setHTMLFixture('<div class="js-repo-breadcrumbs" data-current-path="files/test"></div>');
+
+        event = new KeyboardEvent('keydown', { cancelable: true });
+        await Shortcuts.focusSearchFile(event);
+
+        expect(mockSearchInput.value).toBe('~files/test/');
+      });
     });
   });
 

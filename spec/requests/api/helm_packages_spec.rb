@@ -109,18 +109,6 @@ RSpec.describe API::HelmPackages, feature_category: :package_registry do
         end
       end
 
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(packages_helm_metadata_cache: false)
-        end
-
-        it 'does not take response from metadata cache' do
-          expect(metadata_cache).not_to receive(:file)
-
-          api_request
-        end
-      end
-
       context 'when file is stored in object storage' do
         let(:channel) { 'test' }
         let(:metadata_cache) { create(:helm_metadata_cache, :object_storage, project: project, channel: channel) }

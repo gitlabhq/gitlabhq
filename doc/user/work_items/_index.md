@@ -60,10 +60,10 @@ This view helps you understand the full scope of work, and prioritize effectivel
 
 When you enable this feature, it:
 
-- Removes **Plan > Issues** and **Plan > Epics** from the left sidebar in groups and projects.
-- Adds **Plan > Work items** to the left sidebar.
+- Removes **Plan** > **Issues** and **Plan** > **Epics** from the left sidebar in groups and projects.
+- Adds **Plan** > **Work items** to the left sidebar.
 - Pins **Work items** on the left sidebar for projects and groups, if you had previously pinned
-  **Plan > Issues** or **Plan > Epics**.
+  **Plan** > **Issues** or **Plan** > **Epics**.
 
 Prerequisites:
 
@@ -73,7 +73,7 @@ Prerequisites:
 To view work items for a project or group:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Plan > Work items**.
+1. Select **Plan** > **Work items**.
 
 ### Filter work items
 

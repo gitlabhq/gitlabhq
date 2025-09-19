@@ -69,14 +69,12 @@ module API
           project = authorized_user_project(action: :read_package)
           authorize_read_package!(project)
 
-          if Feature.enabled?(:packages_helm_metadata_cache, project)
-            helm_metadata_cache = find_metadata_cache(project.id)
-            if helm_metadata_cache
-              helm_metadata_cache.touch_last_downloaded_at
-              present_carrierwave_file!(helm_metadata_cache.file)
+          helm_metadata_cache = find_metadata_cache(project.id)
+          if helm_metadata_cache
+            helm_metadata_cache.touch_last_downloaded_at
+            present_carrierwave_file!(helm_metadata_cache.file)
 
-              break
-            end
+            break
           end
 
           packages = ::Packages::Helm::PackagesFinder.new(project, params[:channel]).execute

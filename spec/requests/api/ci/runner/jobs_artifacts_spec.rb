@@ -11,9 +11,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
   let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
   let_it_be_with_reload(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
 
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
-  let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
-  let_it_be(:user) { create(:user, developer_of: project) }
+  let_it_be(:pipeline, freeze: true) { create(:ci_pipeline, project: project, ref: 'master') }
+  let_it_be(:runner, freeze: true) { create(:ci_runner, :project, projects: [project]) }
+  let_it_be(:user, freeze: true) { create(:user, developer_of: project) }
 
   let(:job) { create(:ci_build, :pending, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
   let(:jwt) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
@@ -105,6 +105,12 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
     end
 
     describe 'POST /api/v4/jobs/:id/artifacts/authorize' do
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_api do
+        def request
+          authorize_artifacts_with_token_in_params(filesize: 100.megabytes.to_i)
+        end
+      end
+
       context 'when using token as parameter' do
         context 'and the artifact is too large' do
           it_behaves_like 'rejecting artifacts that are too large' do
@@ -278,6 +284,12 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
       it_behaves_like 'runner migrations backoff' do
         let(:request) { upload_artifacts(file_upload, headers_with_token) }
+      end
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_api do
+        def request
+          upload_artifacts(fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif'), headers_with_token)
+        end
       end
 
       it "doesn't update runner info" do
@@ -917,6 +929,14 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
       it_behaves_like 'runner migrations backoff' do
         let(:request) { download_artifact }
+      end
+
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_api do
+        let(:current_user) { user }
+
+        def request
+          download_artifact
+        end
       end
 
       it "doesn't update runner info" do

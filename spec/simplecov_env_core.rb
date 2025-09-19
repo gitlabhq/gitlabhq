@@ -10,14 +10,7 @@ module SimpleCovEnvCore
   def configure_formatter
     SimpleCov::Formatter::LcovFormatter.config.report_with_single_file = true
 
-    SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new(
-      [
-        SimpleCov::Formatter::SimpleFormatter,
-        SimpleCov::Formatter::HTMLFormatter,
-        SimpleCov::Formatter::CoberturaFormatter,
-        SimpleCov::Formatter::LcovFormatter
-      ]
-    )
+    SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new(formatters)
   end
 
   def configure_profile
@@ -61,5 +54,21 @@ module SimpleCovEnvCore
 
       merge_timeout 365 * 24 * 3600
     end
+  end
+
+  private
+
+  def formatters
+    formatters = [
+      SimpleCov::Formatter::SimpleFormatter,
+      SimpleCov::Formatter::CoberturaFormatter,
+      SimpleCov::Formatter::LcovFormatter
+    ]
+
+    # Skip HTMLFormatter in MRs for performance.
+    is_merge_request_ci = ENV['CI_PIPELINE_SOURCE'] == 'merge_request_event'
+    formatters << SimpleCov::Formatter::HTMLFormatter unless is_merge_request_ci
+
+    formatters
   end
 end

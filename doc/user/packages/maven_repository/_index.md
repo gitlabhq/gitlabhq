@@ -539,9 +539,6 @@ group, or namespace.
 If multiple packages have the same name and version, when you install
 a package, the most recently-published package is retrieved.
 
-In case there are not enough permissions to read the most recently-published
-package than `403 Forbidden` is returning.
-
 {{< tabs >}}
 
 {{< tab title="`mvn`" >}}

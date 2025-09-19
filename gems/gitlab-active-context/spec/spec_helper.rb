@@ -7,13 +7,12 @@ end
 
 require 'active_context'
 require 'active_support/all'
-require 'aws-sdk-core'
-require 'byebug'
-require 'faraday/typhoeus'
-require 'elasticsearch'
 require 'logger'
+require 'elasticsearch'
 require 'opensearch'
+require 'aws-sdk-core'
 require 'redis'
+require 'byebug'
 
 Dir[File.join(__dir__, 'support/**/*.rb')].each { |f| require f }
 

@@ -119,7 +119,7 @@ However, they aren't mutually exclusive.
 To create each label:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Manage > Labels**.
+1. Select **Manage** > **Labels**.
 1. Select **New label**.
 1. In the **Title** field, enter the name of the label. Start with `type::bug`.
 1. Optional. Select a color by selecting from the available colors, or enter a hex color value for
@@ -170,7 +170,7 @@ To set up your issue board:
    severity to issues.
 1. On the left sidebar, select **Search or go to** and find your
    **Issue triage tutorial** project.
-1. Select **Plan > Issue boards**.
+1. Select **Plan** > **Issue boards**.
 1. In the upper-left corner of the issue board page, select the dropdown list with the current board name.
 1. Select **Create new board**.
 1. In the **Title** field, enter `Issue triage (by severity)`.

@@ -142,7 +142,7 @@ You can enable Jira issues for a specific group or project, but you can view the
 To view issues from one or more Jira projects in a GitLab project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Jira issues**.
+1. Select **Plan** > **Jira issues**.
 
 By default, the issues are sorted by **Created date**.
 The most recently created issues appear at the top.

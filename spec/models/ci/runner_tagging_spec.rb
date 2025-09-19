@@ -10,6 +10,8 @@ RSpec.describe Ci::RunnerTagging, feature_category: :runner do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:runner_type) }
+    it { is_expected.to validate_presence_of(:tag_name).on([:create, :update]) }
+    it { is_expected.to validate_length_of(:tag_name).is_at_most(described_class::MAX_NAME_LENGTH) }
     it { is_expected.to validate_presence_of(:organization_id).on([:create, :update]) }
 
     describe 'organization_id' do
@@ -40,6 +42,65 @@ RSpec.describe Ci::RunnerTagging, feature_category: :runner do
           end
 
           it { is_expected.to be_invalid }
+        end
+      end
+    end
+
+    describe 'tag_name' do
+      subject(:runner_tagging) { runner.taggings.first }
+
+      let_it_be(:runner) { create(:ci_runner, :instance, tag_list: ['postgres']) }
+
+      it 'sets tag_name to tag name' do
+        expect(runner_tagging).to be_valid
+        expect(runner_tagging.tag_name).to eq('postgres')
+      end
+
+      it 'updates existing tag_name' do
+        runner_tagging.tag_name = 'new-name'
+        runner_tagging.validate!
+        expect(runner_tagging.tag_name).to eq('new-name')
+      end
+
+      context 'when tag is missing' do
+        let_it_be(:runner) { create(:ci_runner, tag_list: ['missing-tag']) }
+
+        before do
+          runner_tagging.tag.destroy!
+        end
+
+        it 'handles missing tag gracefully' do
+          expect do
+            runner_tagging.validate!
+          end.not_to change { runner_tagging.tag_name }.from('missing-tag')
+        end
+      end
+
+      context 'when tag name is different from existing tagging name' do
+        let_it_be(:runner) { create(:ci_runner, :group, groups: [group], tag_list: ['ruby']) }
+
+        before do
+          runner_tagging.tag.update!(name: 'golang')
+        end
+
+        it 'does not update tag_name to tag name on validation' do
+          expect { runner_tagging.validate! }
+            .not_to change { runner_tagging.tag_name }.from('ruby')
+        end
+      end
+
+      context "when tag name exceeds #{described_class::MAX_NAME_LENGTH} characters" do
+        let(:long_tag_name) { 'a' * (described_class::MAX_NAME_LENGTH + 20) }
+        let(:tag) { create(:ci_tag, name: 'a') }
+        let(:runner_tagging) { build(:ci_runner_tagging, runner: runner, tag: tag, tag_name: nil) }
+
+        before do
+          tag.update_columns(name: long_tag_name)
+        end
+
+        it 'makes tagging invalid' do
+          expect(tag).not_to be_valid
+          expect(runner_tagging).not_to be_valid
         end
       end
     end

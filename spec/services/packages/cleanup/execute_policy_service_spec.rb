@@ -35,8 +35,13 @@ RSpec.describe Packages::Cleanup::ExecutePolicyService, feature_category: :packa
 
       let_it_be(:package_file3_1) { create(:package_file, package: package3, file_name: 'file_name_test') }
 
-      let_it_be(:package_file4_1) { create(:package_file, package: package4, file_name: 'file_name1') }
-      let_it_be(:package_file4_2) { create(:package_file, package: package4, file_name: 'file_name1') }
+      let_it_be(:package_file4_1) do
+        create(:package_file, :pending_destruction, package: package4, file_name: 'file_name1')
+      end
+
+      let_it_be(:package_file4_2) do
+        create(:package_file, :pending_destruction, package: package4, file_name: 'file_name1')
+      end
 
       let(:package_files_1) { package1.package_files.installable }
       let(:package_files_2) { package2.package_files.installable }

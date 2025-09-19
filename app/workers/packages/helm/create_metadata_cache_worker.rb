@@ -16,8 +16,6 @@ module Packages
       idempotent!
 
       def perform(project_id, channel)
-        return unless Feature.enabled?(:packages_helm_metadata_cache, Project.actor_from_id(project_id))
-
         project = Project.find_by_id(project_id)
         return unless project
 

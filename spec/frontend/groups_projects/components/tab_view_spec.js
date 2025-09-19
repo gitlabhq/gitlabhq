@@ -12,7 +12,7 @@ import dashboardGroupsWithChildrenResponse from 'test_fixtures/groups/dashboard/
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
 import TabView from '~/groups_projects/components/tab_view.vue';
-import { formatProjects } from '~/projects/your_work/utils';
+import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
 import ResourceListsEmptyState from '~/vue_shared/components/resource_lists/empty_state.vue';
 import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
@@ -159,7 +159,7 @@ describe('TabView', () => {
         });
 
         it('passes items to `ProjectsList` component', () => {
-          expect(findProjectsList().props('items')).toEqual(formatProjects(nodes));
+          expect(findProjectsList().props('items')).toEqual(formatGraphQLProjects(nodes));
         });
 
         it('passes `timestampType` prop to `ProjectsList` component', () => {

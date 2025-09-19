@@ -181,7 +181,7 @@ Group permissions for a member can be changed only by:
 To see if a member has inherited the permissions from a parent group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
    The member's inheritance is displayed in the **Source** column.
 
 Members list for an example subgroup **Four**:

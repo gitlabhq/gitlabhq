@@ -173,7 +173,7 @@ To view only the projects you are the owner of:
 To view the activity of a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Manage > Activity**.
+1. Select **Manage** > **Activity**.
 1. Optional. To filter activity by contribution type, select a tab:
 
    - **All**: All contributions by project members.

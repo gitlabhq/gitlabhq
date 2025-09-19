@@ -37,9 +37,7 @@ module Packages
       end
 
       def installable_package_files
-        ::Packages::PackageFile
-          .installable
-          .for_package_ids(project.packages.installable)
+        ::Packages::PackageFile.installable.for_projects(project)
       end
 
       def cleanup_duplicated_files_on(package_files)

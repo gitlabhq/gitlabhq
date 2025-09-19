@@ -108,6 +108,12 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         let(:request) { post api('/jobs/request') }
       end
 
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_request_api do
+        def request
+          request_job
+        end
+      end
+
       context 'when no token is provided' do
         it 'returns 400 error' do
           post api('/jobs/request')
@@ -1436,10 +1442,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             expect(response).to have_gitlab_http_status(:no_content)
           end
         end
+      end
 
-        def request_job(token = runner.token, **params)
-          post api('/jobs/request'), params: params.merge(token: token)
-        end
+      def request_job(token = runner.token, **params)
+        post api('/jobs/request'), params: params.merge(token: token)
       end
     end
   end

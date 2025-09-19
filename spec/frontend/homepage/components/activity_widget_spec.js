@@ -360,4 +360,71 @@ describe('ActivityWidget', () => {
       expect(filterOptions[2].scope).toBe(TRACKING_SCOPE_FOLLOWED_USERS);
     });
   });
+
+  describe('relative URL handling', () => {
+    beforeEach(() => {
+      mockAxios.onGet('*').reply(200, { html: '' });
+    });
+
+    it('prepends gon.relative_url_root to URLs when set', async () => {
+      gon.relative_url_root = '/gitlab';
+
+      createWrapper();
+      await waitForPromises();
+
+      expect(mockAxios.history.get[0].url).toBe(
+        '/gitlab/users/administrator/activity?limit=5&is_personal_homepage=1',
+      );
+
+      findActivityFeedSelector().vm.$emit('select', 'starred');
+      await waitForPromises();
+
+      expect(mockAxios.history.get[1].url).toBe(
+        '/gitlab/dashboard/activity?limit=5&offset=0&filter=starred',
+      );
+
+      findActivityFeedSelector().vm.$emit('select', 'followed');
+      await waitForPromises();
+
+      expect(mockAxios.history.get[2].url).toBe(
+        '/gitlab/dashboard/activity?limit=5&offset=0&filter=followed',
+      );
+    });
+
+    it('works correctly when gon.relative_url_root is empty', async () => {
+      gon.relative_url_root = '';
+
+      createWrapper();
+      await waitForPromises();
+
+      expect(mockAxios.history.get[0].url).toBe(
+        '/users/administrator/activity?limit=5&is_personal_homepage=1',
+      );
+
+      findActivityFeedSelector().vm.$emit('select', 'starred');
+      await waitForPromises();
+
+      expect(mockAxios.history.get[1].url).toBe(
+        '/dashboard/activity?limit=5&offset=0&filter=starred',
+      );
+    });
+
+    it('works correctly when gon.relative_url_root is undefined', async () => {
+      delete gon.relative_url_root;
+
+      createWrapper();
+      await waitForPromises();
+
+      expect(mockAxios.history.get[0].url).toBe(
+        '/users/administrator/activity?limit=5&is_personal_homepage=1',
+      );
+
+      findActivityFeedSelector().vm.$emit('select', 'starred');
+      await waitForPromises();
+
+      expect(mockAxios.history.get[1].url).toBe(
+        '/dashboard/activity?limit=5&offset=0&filter=starred',
+      );
+    });
+  });
 });

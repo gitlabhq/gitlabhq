@@ -4779,15 +4779,6 @@ msgstr ""
 msgid "AdminMode|Step-up authentication failed."
 msgstr ""
 
-msgid "AdminProjects| You’re about to permanently delete the project %{projectName}, its repository, and all related resources, including issues and merge requests. After you confirm and press %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered."
-msgstr ""
-
-msgid "AdminProjects|Delete"
-msgstr ""
-
-msgid "AdminProjects|Delete Project %{projectName}?"
-msgstr ""
-
 msgid "AdminSelfHostedModels|A unique and descriptive name for your deployment."
 msgstr ""
 
@@ -5905,9 +5896,6 @@ msgid "AdminUsers|This user's access level is managed with LDAP. Remove user's m
 msgstr ""
 
 msgid "AdminUsers|To confirm, type %{name}"
-msgstr ""
-
-msgid "AdminUsers|To confirm, type %{projectName}"
 msgstr ""
 
 msgid "AdminUsers|To confirm, type %{username}."
@@ -18007,7 +17995,7 @@ msgstr ""
 msgid "Configure repository storage."
 msgstr ""
 
-msgid "Configure runner version management and registration settings."
+msgid "Configure runner management and registration settings."
 msgstr ""
 
 msgid "Configure search access and visibility settings for search scopes."
@@ -20243,6 +20231,9 @@ msgid "CsvViewer|View raw data"
 msgstr ""
 
 msgid "Current"
+msgstr ""
+
+msgid "Current Chat"
 msgstr ""
 
 msgid "Current Project"
@@ -38635,6 +38626,12 @@ msgstr ""
 msgid "Limiting mode"
 msgstr ""
 
+msgid "Limits how many API requests a runner can make to jobs endpoints within a 1-minute window, per job token."
+msgstr ""
+
+msgid "Limits how many API requests a runner can make to request jobs within a 1-minute window."
+msgstr ""
+
 msgid "Limits how many API requests an IP address can make to artifact manager endpoints within a 15-second window."
 msgstr ""
 
@@ -42631,6 +42628,9 @@ msgid "New"
 msgstr ""
 
 msgid "New %{type} in %{project}"
+msgstr ""
+
+msgid "New Chat"
 msgstr ""
 
 msgid "New File"
@@ -55406,6 +55406,12 @@ msgstr ""
 msgid "Runners|Learn more in the %{linkStart}Google Cloud documentation%{linkEnd}."
 msgstr ""
 
+msgid "Runners|Limits how many API requests a runner can make to jobs endpoints within a 1-minute window, per job token."
+msgstr ""
+
+msgid "Runners|Limits how many API requests a runner can make to request jobs within a 1-minute window."
+msgstr ""
+
 msgid "Runners|Loading"
 msgstr ""
 
@@ -55437,6 +55443,12 @@ msgid "Runners|Maximum amount of time the runner can run before it terminates. I
 msgstr ""
 
 msgid "Runners|Maximum job timeout"
+msgstr ""
+
+msgid "Runners|Maximum requests per minute to /jobs/request endpoint"
+msgstr ""
+
+msgid "Runners|Maximum requests per minute to other Runner Jobs API endpoints"
 msgstr ""
 
 msgid "Runners|Median"

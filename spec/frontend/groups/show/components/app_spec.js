@@ -178,6 +178,33 @@ describe('GroupsShowApp', () => {
       );
     });
 
+    describe('when user does not have permission to edit', () => {
+      beforeEach(async () => {
+        mockAxios.onGet(endpoint).replyOnce(200, [
+          { ...mockGroup, can_edit: false, children: [] },
+          { ...mockProject, can_edit: false },
+        ]);
+        await createComponent({ mountFn: mountExtended });
+        await waitForPromises();
+      });
+
+      it('does not render `Edit` action on project', async () => {
+        const listItem = findProjectsListItem(mockProject);
+
+        await listItem.findByRole('button', { name: 'Actions' }).trigger('click');
+
+        expect(listItem.findByRole('link', { name: 'Edit' }).exists()).toBe(false);
+      });
+
+      it('does not render `Edit` action on group', async () => {
+        const listItem = findGroupsListItem(mockGroup);
+
+        await listItem.findByRole('button', { name: 'Actions' }).trigger('click');
+
+        expect(listItem.findByRole('link', { name: 'Edit' }).exists()).toBe(false);
+      });
+    });
+
     it('uses offset pagination', async () => {
       mockAxios.onGet(endpoint).replyOnce(200, childrenResponse, {
         'X-PER-PAGE': 20,
@@ -251,6 +278,59 @@ describe('GroupsShowApp', () => {
       expect(wrapper.findByRole('link', { name: mockGroup.name }).exists()).toBe(true);
     });
 
+    it('correctly renders `Edit` action', async () => {
+      await createComponent({
+        mountFn: mountExtended,
+        route,
+        handlers: [[sharedGroupsQuery, jest.fn().mockResolvedValue(sharedGroupsResponse)]],
+      });
+      await waitForPromises();
+
+      await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
+
+      expect(wrapper.findByRole('link', { name: 'Edit' }).attributes('href')).toBe(
+        mockGroup.editPath,
+      );
+    });
+
+    describe('when user does not have permission to edit', () => {
+      beforeEach(async () => {
+        await createComponent({
+          mountFn: mountExtended,
+          route,
+          handlers: [
+            [
+              sharedGroupsQuery,
+              jest.fn().mockResolvedValue({
+                data: {
+                  group: {
+                    ...sharedGroupsResponse.data.group,
+                    sharedGroups: {
+                      ...sharedGroupsResponse.data.group.sharedGroups,
+                      nodes: [
+                        {
+                          ...mockGroup,
+                          userPermissions: { ...mockGroup.userPermissions, viewEditPage: false },
+                        },
+                      ],
+                    },
+                  },
+                },
+              }),
+            ],
+          ],
+        });
+
+        await waitForPromises();
+      });
+
+      it('does not render `Edit` action', async () => {
+        await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
+
+        expect(wrapper.findByRole('link', { name: 'Edit' }).exists()).toBe(false);
+      });
+    });
+
     it('transforms sort to uppercase', async () => {
       const handler = jest.fn().mockResolvedValue(sharedGroupsResponse);
 
@@ -317,6 +397,59 @@ describe('GroupsShowApp', () => {
       await waitForPromises();
 
       expect(wrapper.findByRole('link', { name: mockProject.name }).exists()).toBe(true);
+    });
+
+    it('correctly renders `Edit` action', async () => {
+      await createComponent({
+        mountFn: mountExtended,
+        route,
+        handlers: [[sharedProjectsQuery, jest.fn().mockResolvedValue(sharedProjectsResponse)]],
+      });
+      await waitForPromises();
+
+      await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
+
+      expect(wrapper.findByRole('link', { name: 'Edit' }).attributes('href')).toBe(
+        mockProject.editPath,
+      );
+    });
+
+    describe('when user does not have permission to edit', () => {
+      beforeEach(async () => {
+        await createComponent({
+          mountFn: mountExtended,
+          route,
+          handlers: [
+            [
+              sharedProjectsQuery,
+              jest.fn().mockResolvedValue({
+                data: {
+                  group: {
+                    ...sharedProjectsResponse.data.group,
+                    sharedProjects: {
+                      ...sharedProjectsResponse.data.group.sharedProjects,
+                      nodes: [
+                        {
+                          ...mockProject,
+                          userPermissions: { ...mockProject.userPermissions, viewEditPage: false },
+                        },
+                      ],
+                    },
+                  },
+                },
+              }),
+            ],
+          ],
+        });
+
+        await waitForPromises();
+      });
+
+      it('does not render `Edit` action', async () => {
+        await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
+
+        expect(wrapper.findByRole('link', { name: 'Edit' }).exists()).toBe(false);
+      });
     });
 
     it('transforms sort to uppercase', async () => {

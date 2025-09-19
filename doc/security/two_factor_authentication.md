@@ -254,7 +254,7 @@ Top-level group Owners can disable two-factor authentication (2FA) for enterpris
 To disable 2FA:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Find a user with the **Enterprise** and **2FA** badges.
 1. Select **More actions** ({{< icon name="ellipsis_v" >}}) and select **Disable two-factor authentication**.
 

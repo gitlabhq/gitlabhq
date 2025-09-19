@@ -32,7 +32,7 @@ To access a group wiki:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. To display the wiki, either:
-   - On the left sidebar, select **Plan > Wiki**.
+   - On the left sidebar, select **Plan** > **Wiki**.
    - On any page in the group, use the <kbd>g</kbd> + <kbd>w</kbd>
      [wiki keyboard shortcut](../../shortcuts.md).
 

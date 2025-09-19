@@ -40,7 +40,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     Gitlab::Database::LoadBalancing::SessionMap.clear_session
   end
 
-  shared_examples 'handling groups and subgroups for' do |shared_example_name, shared_example_args = {}, visibilities: { public: :redirect }|
+  shared_examples 'handling groups and subgroups for' do |shared_example_name, visibilities: { public: :redirect }|
     context 'within a group' do
       visibilities.each do |visibility, not_found_response|
         context "that is #{visibility}" do
@@ -48,7 +48,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
             group.update!(visibility_level: Gitlab::VisibilityLevel.level_value(visibility.to_s))
           end
 
-          it_behaves_like shared_example_name, not_found_response, shared_example_args
+          it_behaves_like shared_example_name, not_found_response
         end
       end
     end
@@ -67,7 +67,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
             group.update!(visibility_level: Gitlab::VisibilityLevel.level_value(visibility.to_s))
           end
 
-          it_behaves_like shared_example_name, not_found_response, shared_example_args
+          it_behaves_like shared_example_name, not_found_response
         end
       end
     end
@@ -574,15 +574,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
       it_behaves_like 'rejecting request with invalid params'
 
-      it_behaves_like 'handling groups and subgroups for', 'getting a file for a group', visibilities: { internal: :unauthorized, public: :unauthorized }
-
-      context 'when the FF maven_remove_permissions_check_from_finder disabled' do
-        before do
-          stub_feature_flags(maven_remove_permissions_check_from_finder: false)
-        end
-
-        it_behaves_like 'handling groups and subgroups for', 'getting a file for a group', visibilities: { internal: :unauthorized, public: :redirect }
-      end
+      it_behaves_like 'handling groups and subgroups for', 'getting a file for a group', visibilities: { internal: :unauthorized, public: :redirect }
     end
 
     context 'private project' do
@@ -592,7 +584,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
       subject { download_file_with_token(file_name: package_file.file_name) }
 
-      shared_examples 'getting a file for a group' do |not_found_response, download_denied_status: :forbidden|
+      shared_examples 'getting a file for a group' do |not_found_response|
         it_behaves_like 'tracking the file download event'
         it_behaves_like 'bumping the package last downloaded at field'
         it_behaves_like 'successfully returning the file'
@@ -607,7 +599,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
             subject
 
-            expect(response).to have_gitlab_http_status(download_denied_status)
+            expect(response).to have_gitlab_http_status(:redirect)
           end
         end
 
@@ -672,33 +664,13 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           end
 
           context 'when user does not have enough permission for the recent project' do
-            it 'tries to download the recent package' do
-              subject
-
-              expect(response).to have_gitlab_http_status(:forbidden)
-            end
-          end
-
-          context 'when the FF maven_remove_permissions_check_from_finder disabled' do
-            before do
-              stub_feature_flags(maven_remove_permissions_check_from_finder: false)
-            end
-
             it_behaves_like 'bumping the package last downloaded at field'
             it_behaves_like 'successfully returning the file'
           end
         end
       end
 
-      it_behaves_like 'handling groups and subgroups for', 'getting a file for a group', visibilities: { private: :unauthorized, internal: :unauthorized, public: :unauthorized }
-
-      context 'when the FF maven_remove_permissions_check_from_finder disabled' do
-        before do
-          stub_feature_flags(maven_remove_permissions_check_from_finder: false)
-        end
-
-        it_behaves_like 'handling groups and subgroups for', 'getting a file for a group', { download_denied_status: :redirect }, visibilities: { private: :unauthorized, internal: :unauthorized, public: :redirect }
-      end
+      it_behaves_like 'handling groups and subgroups for', 'getting a file for a group', visibilities: { private: :unauthorized, internal: :unauthorized, public: :redirect }
 
       context 'with a reporter from a subgroup accessing the root group' do
         let_it_be(:root_group) { create(:group, :private) }
@@ -725,7 +697,6 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
         before do
           project.project_feature.update!(package_registry_access_level: ::ProjectFeature::PUBLIC)
-          stub_feature_flags(maven_remove_permissions_check_from_finder: false)
         end
 
         it_behaves_like 'successfully returning the file'

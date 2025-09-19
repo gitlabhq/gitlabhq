@@ -74,5 +74,5 @@ going back to the original project:
 
 1. [Create a group](../../group/_index.md#create-a-group) containing all the upstream members.
 1. On the left sidebar, select **Search or go to** and find the forked project.
-1. Go to the **Manage > Members** page in the forked project and invite the newly-created
+1. Go to the **Manage** > **Members** page in the forked project and invite the newly-created
    group to the forked project.

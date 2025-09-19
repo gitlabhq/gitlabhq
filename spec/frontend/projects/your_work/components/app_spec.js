@@ -50,6 +50,16 @@ describe('YourWorkProjectsApp', () => {
     name: PROJECTS_DASHBOARD_ROUTE_NAME,
   };
 
+  const {
+    data: {
+      currentUser: {
+        contributedProjects: {
+          nodes: [mockProject],
+        },
+      },
+    },
+  } = contributedProjectsQueryResponse;
+
   const createComponent = async ({
     mountFn = shallowMountExtended,
     handlers = [],
@@ -111,6 +121,57 @@ describe('YourWorkProjectsApp', () => {
     });
   });
 
+  it('correctly renders `Edit` action', async () => {
+    await createComponent({
+      mountFn: mountExtended,
+      handlers: [
+        [userProjectsQuery, jest.fn().mockResolvedValue(contributedProjectsQueryResponse)],
+      ],
+    });
+    await waitForPromises();
+
+    await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
+
+    expect(wrapper.findByRole('link', { name: 'Edit' }).attributes('href')).toBe(
+      mockProject.editPath,
+    );
+  });
+
+  describe('when user does not have permission to edit', () => {
+    beforeEach(async () => {
+      await createComponent({
+        mountFn: mountExtended,
+        handlers: [
+          [
+            userProjectsQuery,
+            jest.fn().mockResolvedValue({
+              data: {
+                currentUser: {
+                  ...contributedProjectsQueryResponse.data.currentUser,
+                  contributedProjects: {
+                    ...contributedProjectsQueryResponse.data.currentUser.contributedProjects,
+                    nodes: [
+                      {
+                        ...mockProject,
+                        userPermissions: { ...mockProject.userPermissions, viewEditPage: false },
+                      },
+                    ],
+                  },
+                },
+              },
+            }),
+          ],
+        ],
+      });
+
+      await waitForPromises();
+    });
+
+    it('does not render `Edit` action', () => {
+      expect(wrapper.findByRole('button', { name: 'Actions' }).exists()).toBe(false);
+    });
+  });
+
   it('renders relative URL that supports relative_url_root', async () => {
     window.gon = { relative_url_root: '/gitlab' };
 
@@ -122,19 +183,9 @@ describe('YourWorkProjectsApp', () => {
     });
     await waitForPromises();
 
-    const {
-      data: {
-        currentUser: {
-          contributedProjects: {
-            nodes: [expectedProject],
-          },
-        },
-      },
-    } = contributedProjectsQueryResponse;
-
     expect(
-      wrapper.findByRole('link', { name: expectedProject.nameWithNamespace }).attributes('href'),
-    ).toBe(`/gitlab/${expectedProject.fullPath}`);
+      wrapper.findByRole('link', { name: mockProject.nameWithNamespace }).attributes('href'),
+    ).toBe(`/gitlab/${mockProject.fullPath}`);
   });
 
   it('uses keyset pagination', async () => {

@@ -673,6 +673,8 @@ class ApplicationSetting < ApplicationRecord
       :projects_api_limit,
       :projects_api_rate_limit_unauthenticated,
       :raw_blob_request_limit,
+      :runner_jobs_request_api_limit,
+      :runner_jobs_endpoints_api_limit,
       :search_rate_limit,
       :search_rate_limit_unauthenticated,
       :sidekiq_job_limiter_compression_threshold_bytes,
@@ -1162,6 +1164,8 @@ class ApplicationSetting < ApplicationRecord
       group_archive_unarchive_api_limit: [:integer, { default: 60 }],
       project_invited_groups_api_limit: [:integer, { default: 60 }],
       projects_api_limit: [:integer, { default: 2000 }],
+      runner_jobs_request_api_limit: [:integer, { default: 2000 }],
+      runner_jobs_endpoints_api_limit: [:integer, { default: 200 }],
       throttle_authenticated_git_http_enabled: [:boolean, { default: false }],
       throttle_authenticated_git_http_requests_per_period:
         [:integer, { default: DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT }],

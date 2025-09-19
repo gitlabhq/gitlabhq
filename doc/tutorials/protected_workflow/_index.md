@@ -85,7 +85,7 @@ Next, add the subgroup as a member of the `engineering` group:
 
 1. On the left sidebar, select **Search or go to**
    and search for `engineering`. Select the group named `Engineering`.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. In the upper right, select **Invite a group**.
 1. For **Select a group to invite**, select `Engineering / Managers`.
 1. When adding the subgroups select the role **Maintainer**.
@@ -115,7 +115,7 @@ To add a user to the `frontend` subgroup:
 
 1. On the left sidebar, select **Search or go to**
    and search for `frontend`. Select the `Frontend` group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select **Invite members**.
 1. Fill in the fields. Select the **Developer** role by default, increasing it
    to **Maintainer** if this user reviews the work of others.

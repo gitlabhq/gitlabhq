@@ -2,6 +2,7 @@
 
 fragment Group on Group {
   ...GroupInterface
+  editPath
   parent {
     id
   }

@@ -62,7 +62,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
       let(:rule_hashes) { [{ if: '$MY_VAR == "hello"' }] }
 
       context 'when the rule matches' do
-        let(:context) { double(variables_hash: { 'MY_VAR' => 'hello' }) }
+        let(:context) { double(variables_hash_expanded: { 'MY_VAR' => 'hello' }) }
 
         it { is_expected.to eq(true) }
 
@@ -70,7 +70,7 @@ RSpec.describe Gitlab::Ci::Config::External::Rules, feature_category: :pipeline_
       end
 
       context 'when the rule does not match' do
-        let(:context) { double(variables_hash: { 'MY_VAR' => 'invalid' }) }
+        let(:context) { double(variables_hash_expanded: { 'MY_VAR' => 'invalid' }) }
 
         it { is_expected.to eq(false) }
       end

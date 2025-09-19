@@ -45,7 +45,7 @@ In both scenarios, the process for creating labels is the same. [Create](../../u
 After you've created your labels, the next step is to create a Kanban board:
 
 1. On the left sidebar, select **Search or go to** and find your group or project.
-1. Select **Plan > Issue Boards**.
+1. Select **Plan** > **Issue Boards**.
 1. In the upper-left corner of the issue board, select the dropdown list with the current board name.
 1. Select **Create new board**.
 1. Enter the new board's name and then select **Create board**.

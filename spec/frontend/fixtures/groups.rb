@@ -115,8 +115,12 @@ RSpec.describe 'Groups (JavaScript fixtures)', feature_category: :groups_and_pro
     end
 
     describe 'shared groups' do
-      let_it_be(:shared_group) { create(:group, :private, name: "shared group 1 foo") }
-      let_it_be(:group_group_link) { create(:group_group_link, shared_group: shared_group, shared_with_group: group) }
+      let_it_be(:shared_group_2) { create(:group, :private, name: "shared group 2") }
+      let_it_be(:group_group_link) { create(:group_group_link, shared_group: shared_group_2, shared_with_group: group) }
+
+      before do
+        shared_group.add_owner(user)
+      end
 
       base_input_path = 'groups/show/graphql/queries/'
       base_output_path = 'graphql/groups/'
@@ -134,6 +138,10 @@ RSpec.describe 'Groups (JavaScript fixtures)', feature_category: :groups_and_pro
     describe 'shared projects' do
       let_it_be(:project) { create(:project) }
       let_it_be(:project_group_link) { create(:project_group_link, project: project, group: group) }
+
+      before do
+        project.add_owner(user)
+      end
 
       base_input_path = 'groups/show/graphql/queries/'
       base_output_path = 'graphql/projects/'

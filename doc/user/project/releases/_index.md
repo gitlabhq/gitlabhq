@@ -315,7 +315,7 @@ section, along with statistics about the issues in the milestones.
 
 ![A Release with one associated milestone](img/release_with_milestone_v12_9.png)
 
-Releases are also visible on the **Plan > Milestones** page, and when you select a milestone
+Releases are also visible on the **Plan** > **Milestones** page, and when you select a milestone
 on this page.
 
 Here is an example of milestones with no releases, one release, and two releases.

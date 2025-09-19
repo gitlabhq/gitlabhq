@@ -50,7 +50,7 @@ Prerequisites:
 
 To create a requirement:
 
-1. In a project, go to **Plan > Requirements**.
+1. In a project, go to **Plan** > **Requirements**.
 1. Select **New requirement**.
 1. Enter a title and description and select **New requirement**.
 
@@ -265,7 +265,7 @@ Before you import your file:
 
 To import requirements:
 
-1. In a project, go to **Plan > Requirements**.
+1. In a project, go to **Plan** > **Requirements**.
    - For a project with requirements, in the
      upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}),
      then select **Import requirements** ({{< icon name="import" >}}).
@@ -329,7 +329,7 @@ Prerequisites:
 
 To export requirements:
 
-1. In a project, go to **Plan > Requirements**.
+1. In a project, go to **Plan** > **Requirements**.
 1. In the upper-right corner, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}),
    then select **Export as CSV** ({{< icon name="export" >}}).
 

@@ -19,13 +19,13 @@ Any content you have in Confluence is not displayed in GitLab.
 
 When you turn on the integration:
 
-- A new menu item is added to the left sidebar: **Plan > Confluence**.
+- A new menu item is added to the left sidebar: **Plan** > **Confluence**.
   It links to your Confluence wiki.
-- The **Plan > Wiki** menu item is hidden.
+- The **Plan** > **Wiki** menu item is hidden.
 
   To access the GitLab wiki for the project, use its URL:
 `<example_project_URL>/-/wikis/home`.
-  To bring back the **Plan > Wiki** menu item, turn off this integration.
+  To bring back the **Plan** > **Wiki** menu item, turn off this integration.
 
 Creating a more comprehensive integration with Confluence Cloud is tracked in
 [epic 3629](https://gitlab.com/groups/gitlab-org/-/epics/3629).
@@ -84,5 +84,5 @@ Prerequisites:
 To access your Confluence Workspace from a GitLab project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Confluence**.
+1. Select **Plan** > **Confluence**.
 1. Select **Go to Confluence**.

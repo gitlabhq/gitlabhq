@@ -13909,7 +13909,9 @@ CREATE TABLE ci_runner_taggings (
     tag_id bigint NOT NULL,
     runner_id bigint NOT NULL,
     runner_type smallint NOT NULL,
-    organization_id bigint
+    organization_id bigint,
+    tag_name text,
+    CONSTRAINT ci_runner_taggings_tag_name_length CHECK ((char_length(tag_name) <= 1024))
 )
 PARTITION BY LIST (runner_type);
 
@@ -13918,7 +13920,9 @@ CREATE TABLE ci_runner_taggings_group_type (
     tag_id bigint NOT NULL,
     runner_id bigint NOT NULL,
     runner_type smallint NOT NULL,
-    organization_id bigint
+    organization_id bigint,
+    tag_name text,
+    CONSTRAINT ci_runner_taggings_tag_name_length CHECK ((char_length(tag_name) <= 1024))
 );
 
 CREATE SEQUENCE ci_runner_taggings_id_seq
@@ -13935,7 +13939,9 @@ CREATE TABLE ci_runner_taggings_instance_type (
     tag_id bigint NOT NULL,
     runner_id bigint NOT NULL,
     runner_type smallint NOT NULL,
-    organization_id bigint
+    organization_id bigint,
+    tag_name text,
+    CONSTRAINT ci_runner_taggings_tag_name_length CHECK ((char_length(tag_name) <= 1024))
 );
 
 CREATE TABLE ci_runner_taggings_project_type (
@@ -13943,7 +13949,9 @@ CREATE TABLE ci_runner_taggings_project_type (
     tag_id bigint NOT NULL,
     runner_id bigint NOT NULL,
     runner_type smallint NOT NULL,
-    organization_id bigint
+    organization_id bigint,
+    tag_name text,
+    CONSTRAINT ci_runner_taggings_tag_name_length CHECK ((char_length(tag_name) <= 1024))
 );
 
 CREATE TABLE ci_runner_versions (

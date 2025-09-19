@@ -14,9 +14,7 @@ module AntiAbuse
 
       validates :title, uniqueness: true
       validates :description, length: { maximum: 500 }
-      validates :organization_id, presence: true, on: :create, if: -> {
-        Feature.enabled?(:abuse_report_populate_organization, :instance)
-      }
+      validates :organization_id, presence: true, on: :create
     end
   end
 end

@@ -13,21 +13,6 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Adapter do
     adapter.search(query)
   end
 
-  describe '#adapter' do
-    it 'uses the default adapter if not specified' do
-      options = adapter.client.client.transport.options
-
-      expect(options).to include(adapter: ActiveContext::Databases::Elasticsearch::Client::DEFAULT_ADAPTER)
-    end
-
-    it 'uses the specified adapter' do
-      adapter = described_class.new(connection, options: options.merge(client_adapter: :net_http))
-      options = adapter.client.client.transport.options
-
-      expect(options).to include(adapter: :net_http)
-    end
-  end
-
   describe '#prefix' do
     it 'returns default prefix when not specified' do
       expect(adapter.prefix).to eq('gitlab_active_context')

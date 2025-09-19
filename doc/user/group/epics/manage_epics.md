@@ -236,7 +236,7 @@ Prerequisites:
 To change the assignee on an epic:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Epics**, then select your epic to view it.
+1. Select **Plan** > **Epics**, then select your epic to view it.
 1. On the right sidebar, in the **Assignees** section, select **Edit**.
 1. From the dropdown list, select the users to add as an assignee.
 1. Select any area outside the dropdown list.
@@ -291,7 +291,7 @@ Prerequisites:
 To change an epic's color:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Epics**.
+1. Select **Plan** > **Epics**.
 1. Select **New epic** or select an existing epic.
 1. On the right sidebar, in the **Color** section, select **Edit**.
 1. Select an existing color or enter an RGB or hex value.
@@ -382,7 +382,7 @@ Prerequisites:
 To view epics in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Epics**.
+1. Select **Plan** > **Epics**.
 
 ### Who can view an epic
 
@@ -478,7 +478,7 @@ To open an epic in the full page view:
 To configure how epics open on the Epics page:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Epics**.
+1. Select **Plan** > **Epics**.
 1. In the top right corner, select **Display options** ({{< icon name="preferences" >}}).
 1. Toggle **Open items in side panel**:
    - **On** (default): Epics open in a drawer overlay.
@@ -516,7 +516,7 @@ You can filter the list of epics by:
 To filter:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Epics**.
+1. Select **Plan** > **Epics**.
 1. Select the field **Search or filter results**.
 1. From the dropdown list, select the scope or enter plain text to search by epic title or description.
 1. Press <kbd>Enter</kbd> on your keyboard. The list is filtered.
@@ -686,7 +686,7 @@ Prerequisites:
 To change the health status of an epic:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Epics**.
+1. Select **Plan** > **Epics**.
 1. Select an epic.
 1. In the right sidebar, in the **Health status** section, select **Edit**.
 1. From the dropdown list, select a status.
@@ -875,7 +875,7 @@ Prerequisites:
 To add a parent epic:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Plan > Epics**.
+1. Select **Plan** > **Epics**.
 1. Select an epic.
 1. In the right sidebar, in the **Parent** section, select **Edit**.
 1. In the search box, enter part of the parent epic's title.

@@ -36,7 +36,7 @@ You can create an incident manually or automatically.
 To add an incident to an [iteration](../../user/group/iterations/_index.md):
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Issues** or **Monitor > Incidents**, then select your incident to view it.
+1. Select **Plan** > **Issues** or **Monitor > Incidents**, then select your incident to view it.
 1. On the right sidebar, in the **Iteration** section, select **Edit**.
 1. From the dropdown list, select the iteration to add this incident to.
 1. Select any area outside the dropdown list.
@@ -64,7 +64,7 @@ Prerequisites:
 To create an incident from the **Issues** page:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Issues**, and select **New issue**.
+1. Select **Plan** > **Issues**, and select **New issue**.
 1. From the **Type** dropdown list, select **Incident**. Only fields relevant to
    incidents are available on the page.
 1. Select **Create issue**.

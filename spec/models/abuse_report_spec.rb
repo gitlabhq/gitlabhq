@@ -48,14 +48,6 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     it { is_expected.to validate_presence_of(:category) }
     it { is_expected.to validate_presence_of(:organization_id).on(:create) }
 
-    context 'when abuse_report_populate_organization FF is disabled' do
-      before do
-        stub_feature_flags(abuse_report_populate_organization: false)
-      end
-
-      it { is_expected.not_to validate_presence_of(:organization_id).on(:create) }
-    end
-
     it do
       is_expected.to validate_uniqueness_of(:user_id)
         .scoped_to([:reporter_id, :category])

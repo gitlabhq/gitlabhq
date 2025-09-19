@@ -48,7 +48,7 @@ Prerequisites:
 - You must have at least the Guest role.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan > Issues**.
+1. Select **Plan** > **Issues**.
 1. Above the list of issues, select **Search or filter results**.
 1. In the dropdown list that appears, select the attributes to filter by.
    For more information about filter options, see

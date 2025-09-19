@@ -389,7 +389,7 @@ When you remove LDAP group syncing, the existing memberships and role assignment
 LDAP user permissions can be manually overridden by an administrator. To override a user's permissions:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**. If LDAP synchronization
+1. Select **Manage** > **Members**. If LDAP synchronization
    has granted a user a role with:
    - More permissions than the parent group membership, that user is displayed as having
      [direct membership](../project/members/_index.md#display-direct-members) of the group.

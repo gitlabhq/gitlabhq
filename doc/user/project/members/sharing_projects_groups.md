@@ -135,7 +135,7 @@ Prerequisites:
 To invite a group to a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select **Invite a group**.
 1. In the **Select a group to invite** list, select the group you want to invite.
 1. From the **Select maximum role** list, select the [role](../../permissions.md) the invited group's members can have in the project. Invited members receive the lower of:
@@ -309,7 +309,7 @@ Prerequisites:
 To invite a group to your group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select **Invite a group**.
 1. In the **Select a group to invite** list, select the group you want to invite.
 1. From the **Select maximum role** list, select the [role](../../permissions.md) the invited group's members can have in the group. Invited members receive the lower of:
@@ -327,7 +327,7 @@ To invite a group to your group:
 To remove an invited group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Groups** tab.
 1. To the right of the group you want to remove, select **Remove group** ({{< icon name="remove" >}}).
 

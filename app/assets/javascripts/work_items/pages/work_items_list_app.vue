@@ -482,6 +482,7 @@ export default {
         includeDescendants: !hasGroupFilter,
         types: this.apiFilterParams.types || singleWorkItemType || this.defaultWorkItemTypes,
         isGroup: this.isGroup,
+        excludeGroupWorkItems: this.isGroupIssuesList,
       };
     },
     csvExportQueryVariables() {

@@ -168,7 +168,7 @@ To find the Group ID:
 To view the activity of a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Activity**.
+1. Select **Manage** > **Activity**.
 1. Optional. To filter activity by contribution type, select a tab:
 
    - **All**: All contributions by group members in the group and group's projects.
@@ -360,7 +360,7 @@ If you change your mind before your request is approved, select
 To view members of a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 
 A table displays the member's:
 
@@ -398,7 +398,7 @@ In lists of group members, entries can display the following badges:
 - **Enterprise**, to indicate that the member of the top-level group is an [enterprise user](../enterprise_user/_index.md).
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Above the list of members, in the **Filter members** text box, enter your search criteria. To view:
    - Direct members of the group, select **Membership = Direct**.
    - Inherited, shared, and inherited shared members of the group, select **Membership = Indirect**.
@@ -410,7 +410,7 @@ In lists of group members, entries can display the following badges:
 You can search for members by name, username, or [public email](../profile/_index.md#set-your-public-email).
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Above the list of members, in the **Filter members** box, enter search criteria.
 1. To the right of the **Filter members** box, select the magnifying glass ({{< icon name="search" >}}).
 
@@ -419,7 +419,7 @@ You can search for members by name, username, or [public email](../profile/_inde
 You can sort members by **Account**, **Access granted**, **Role**, or **Last sign-in**.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Above the list of members, in the upper-right corner, from the **Account** list, select
    the criteria to filter by.
 1. To switch the sort between ascending and descending, to the right of the **Account** list, select the
@@ -445,7 +445,7 @@ Prerequisites:
   - If [administrator approval is enabled](../../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions), an administrator must approve the invitation.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select **Invite members**.
 1. If the user:
 
@@ -488,7 +488,7 @@ If [administrator approval for role promotions](../../administration/settings/si
 To view users pending promotion:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Role promotions** tab.
 
 If the **Role promotions** tab is not displayed, the group has no pending promotions.
@@ -505,7 +505,7 @@ Prerequisites:
 To remove a member from a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Next to the member you want to remove, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Remove member**.
 1. Optional. On the **Remove member** confirmation dialog, select one or both checkboxes:

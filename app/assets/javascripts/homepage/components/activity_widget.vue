@@ -130,8 +130,8 @@ export default {
          * a proper GraphQL endpoint here.
          */
         const url = this.filter
-          ? `/dashboard/activity?limit=${MAX_EVENTS}&offset=0&filter=${this.filter}`
-          : `/users/${encodeURIComponent(gon.current_username)}/activity?limit=${MAX_EVENTS}&is_personal_homepage=1`;
+          ? `${gon.relative_url_root || ''}/dashboard/activity?limit=${MAX_EVENTS}&offset=0&filter=${this.filter}`
+          : `${gon.relative_url_root || ''}/users/${encodeURIComponent(gon.current_username)}/activity?limit=${MAX_EVENTS}&is_personal_homepage=1`;
         const { data } = await axios.get(url);
         if (data?.html) {
           const parser = new DOMParser();

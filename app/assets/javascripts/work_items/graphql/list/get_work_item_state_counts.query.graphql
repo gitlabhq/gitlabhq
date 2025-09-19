@@ -1,5 +1,6 @@
 query getWorkItemStateCounts(
   $excludeProjects: Boolean = false
+  $excludeGroupWorkItems: Boolean = false
   $includeDescendants: Boolean = true
   $isGroup: Boolean = true
   $iid: String
@@ -39,6 +40,7 @@ query getWorkItemStateCounts(
     workItemStateCounts(
       iid: $iid
       excludeProjects: $excludeProjects
+      excludeGroupWorkItems: $excludeGroupWorkItems
       includeDescendants: $includeDescendants
       search: $search
       sort: $sort

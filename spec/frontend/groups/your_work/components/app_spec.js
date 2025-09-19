@@ -50,6 +50,7 @@ describe('YourWorkGroupsApp', () => {
   const defaultRoute = {
     name: GROUPS_DASHBOARD_ROUTE_NAME,
   };
+  const mockGroup = dashboardGroupsResponse[1];
 
   const createComponent = async ({
     mountFn = shallowMountExtended,
@@ -130,8 +131,22 @@ describe('YourWorkGroupsApp', () => {
     await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
 
     expect(wrapper.findByRole('link', { name: 'Edit' }).attributes('href')).toBe(
-      dashboardGroupsResponse[1].edit_path,
+      mockGroup.edit_path,
     );
+  });
+
+  describe('when user does not have permission to edit', () => {
+    beforeEach(async () => {
+      mockAxios.onGet(endpoint).replyOnce(200, [{ ...mockGroup, can_edit: false, children: [] }]);
+      await createComponent({ mountFn: mountExtended });
+      await waitForPromises();
+    });
+
+    it('does not render `Edit` action', async () => {
+      await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
+
+      expect(wrapper.findByRole('link', { name: 'Edit' }).exists()).toBe(false);
+    });
   });
 
   it('uses offset pagination', async () => {

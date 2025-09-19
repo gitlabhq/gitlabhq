@@ -1,8 +1,9 @@
 ---
 migration_job_name: BackfillEpicIssuesWorkItemParentLinkId
-description: Backfills any missing WorkItemParentLinkId foreign keys from EpicIssue records.
+description: Backfills any missing WorkItemParentLinkId foreign keys from EpicIssue
+  records.
 feature_category: team_planning
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195828
 milestone: '18.2'
 queued_migration_version: 20250626150904
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20250916232222'

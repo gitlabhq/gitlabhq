@@ -105,7 +105,7 @@ To switch organizations:
 ## Manage groups and projects
 
 1. On the left sidebar, select **Organizations** and find the organization you want to manage.
-1. Select **Manage > Groups and projects**.
+1. Select **Manage** > **Groups and projects**.
 1. Optional. Filter the results:
    - To search for specific groups or projects, in the search box enter your search term (minimum three characters).
    - To view only groups or projects, from the **Display** dropdown list select an option.
@@ -114,7 +114,7 @@ To switch organizations:
 ## Create a group in an organization
 
 1. On the left sidebar, select **Organizations** and find the organization you want to create a group in.
-1. Select **Manage > Groups and projects**.
+1. Select **Manage** > **Groups and projects**.
 1. Select **New group**.
 1. In the **Group name** text box, enter the name of the group. For a list of words that cannot be used as group names, see
    [reserved names](../reserved_names.md).
@@ -125,7 +125,7 @@ To switch organizations:
 ## View users
 
 1. On the left sidebar, select **Organizations** and find the organization you want to view.
-1. Select **Manage > Users**.
+1. Select **Manage** > **Users**.
 
 ## Change a user's role
 
@@ -136,7 +136,7 @@ Prerequisites:
 To change a user's role:
 
 1. On the left sidebar, select **Organizations** and find the organization you want to manage.
-1. Select **Manage > Users**.
+1. Select **Manage** > **Users**.
 1. Find the user whose role you want to update.
 1. From the **Organization role** dropdown list, select a role.
 

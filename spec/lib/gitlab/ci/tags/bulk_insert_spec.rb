@@ -75,6 +75,22 @@ RSpec.describe Gitlab::Ci::Tags::BulkInsert, feature_category: :continuous_integ
           expect(taggable_class.tagged_with('tag3')).to include(other_taggable)
         end
 
+        context 'when tagging class has name column' do
+          it 'sets names to tag names for runner taggings' do
+            next unless tagging_class == Ci::RunnerTagging
+
+            service.insert!
+
+            taggable.taggings.each do |tagging|
+              expect(tagging.tag_name).to eq(tagging.tag.name)
+            end
+
+            other_taggable.taggings.each do |tagging|
+              expect(tagging.tag_name).to eq(tagging.tag.name)
+            end
+          end
+        end
+
         it 'strips tags' do
           taggable.tag_list = ['       taga', 'tagb      ', '   tagc    ']
 

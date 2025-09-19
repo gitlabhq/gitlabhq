@@ -24,12 +24,11 @@ module HasRepository
   end
 
   def repo_exists?
-    strong_memoize(:repo_exists) do
-      repository.exists?
-    rescue StandardError
-      false
-    end
+    repository.exists?
+  rescue StandardError
+    false
   end
+  strong_memoize_attr :repo_exists?
 
   def repository_exists?
     !!repository.exists?

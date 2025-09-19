@@ -41,9 +41,7 @@ class AbuseReport < ApplicationRecord
 
   validates :reporter, presence: true, on: :create
   validates :user, presence: true, on: :create
-  validates :organization_id, presence: true, on: :create, if: -> {
-    Feature.enabled?(:abuse_report_populate_organization, :instance)
-  }
+  validates :organization_id, presence: true, on: :create
   validates :message, presence: true
   validates :category, presence: true
   validates :user_id,
