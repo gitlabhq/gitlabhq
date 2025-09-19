@@ -167,6 +167,89 @@ To import a compliance framework by using a JSON template:
 
 If the import is successful, the new compliance framework appears in the list. Any errors are displayed for correction.
 
+### JSON template structure and schema
+
+Compliance framework JSON templates follow a specific schema structure that defines the framework metadata, requirements, and associated controls. Understanding this structure helps you create custom templates or modify existing ones to meet your organization's specific compliance needs.
+
+#### Framework properties
+
+Each JSON template contains the following top-level properties:
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `name` | String | Yes | The display name of the compliance framework. |
+| `description` | String | Yes | A detailed description of the framework's purpose. |
+| `color` | String | Yes | Hexadecimal color code for the framework (for example, `#1f75cb`). |
+| `requirements` | Array | No | Array of requirement objects that define the compliance controls. |
+
+#### Requirements structure
+
+Each requirement in the `requirements` array contains:
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `name` | String | Yes | The name of the compliance requirement. |
+| `description` | String | Yes | Detailed description of what the requirement enforces. |
+| `controls` | Array | Yes | Array of control objects that implement the requirement. |
+
+#### Control structure
+
+Each control in the `controls` array defines a specific check:
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `name` | String | Yes | The GitLab control ID (for example, `scanner_sast_running`). |
+| `control_type` | String | Yes | Always `"internal"` for GitLab controls. |
+| `expression` | Object | Yes | Defines the evaluation logic for the control. |
+
+#### Expression object
+
+The `expression` object defines how the control is evaluated:
+
+| Property | Type | Required | Description |
+|----------|------|----------|-------------|
+| `field` | String | Yes | The field name to evaluate (matches the control name). |
+| `operator` | String | Yes | Comparison operator (`=`, `>=`, `<=`, `>`, `<`). |
+| `value` | Mixed | Yes | Expected value (boolean, number, or string). |
+
+#### Example JSON template structure
+
+Here's a simplified example that shows the complete structure:
+
+```json
+{
+  "name": "Example Compliance Framework",
+  "description": "Example framework demonstrating JSON structure",
+  "color": "#1f75cb",
+  "requirements": [
+    {
+      "name": "Security Scanning Requirement",
+      "description": "Ensure security scanning is enabled for all projects",
+      "controls": [
+        {
+          "name": "scanner_sast_running",
+          "control_type": "internal",
+          "expression": {
+            "field": "scanner_sast_running",
+            "operator": "=",
+            "value": true
+          }
+        },
+        {
+          "name": "minimum_approvals_required_2",
+          "control_type": "internal",
+          "expression": {
+            "field": "minimum_approvals_required",
+            "operator": ">=",
+            "value": 2
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
 ## Requirements
 
 {{< details >}}

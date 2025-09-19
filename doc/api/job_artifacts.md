@@ -107,7 +107,7 @@ Supported attributes:
 | ----------- | -------------- | -------- | ----------- |
 | `id`        | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job`       | string         | Yes      | The name of the job. |
-| `ref_name`  | string         | Yes      | Branch or tag name in repository. HEAD or SHA references are not supported. For merge request pipelines, use `ref/merge-requests/:iid/head` instead of the branch name. |
+| `ref_name`  | string         | Yes      | Branch or tag name in repository. HEAD or SHA references are not supported. For merge request pipelines, use `refs/merge-requests/:iid/head` instead of the branch name. |
 | `job_token` | string         | No       | CI/CD job token for multi-project pipelines. Premium and Ultimate only. |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and serves the artifacts file.
@@ -195,7 +195,7 @@ Supported attributes:
 | `artifact_path` | string         | Yes      | Path to a file inside the artifacts archive. |
 | `id`            | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `job`           | string         | Yes      | The name of the job. |
-| `ref_name`      | string         | Yes      | Branch or tag name in repository. `HEAD` or `SHA` references are not supported. For merge request pipelines, use `ref/merge-requests/:iid/head` instead of the branch name. |
+| `ref_name`      | string         | Yes      | Branch or tag name in repository. `HEAD` or `SHA` references are not supported. For merge request pipelines, use `refs/merge-requests/:iid/head` instead of the branch name. |
 | `job_token`     | string         | No       | CI/CD job token for multi-project pipelines. Premium and Ultimate only. |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and sends a single artifact file.
@@ -343,15 +343,18 @@ You might get a `404 Not Found` error when trying to download job artifacts usin
 This issue occurs because merge request pipelines use a different reference format than branch pipelines.
 Merge request pipelines run on `refs/merge-requests/:iid/head`, not directly on the source branch.
 
-To download job artifacts for a merge request pipeline, use `ref/merge-requests/:iid/head`
+To download job artifacts for a merge request pipeline, use `refs/merge-requests/:iid/head`
 as the `ref_name` instead of the branch name, where `:iid` is the merge request ID.
+In merge request pipelines the ID is available from the variable
+`$CI_MERGE_REQUEST_IID` and the full `ref_name` from the variable
+`$CI_MERGE_REQUEST_REF_PATH`.
 
 For example, for merge request `!123`:
 
 ```shell
 curl --location \
   --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/ref/merge-requests/123/head/raw/file.txt?job=test"
+  --url "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/refs/merge-requests/123/head/raw/file.txt?job=test"
 ```
 
 ### Downloading `artifacts:reports` files

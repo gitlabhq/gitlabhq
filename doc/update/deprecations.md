@@ -1185,14 +1185,14 @@ This change does not impact GitLab Helm chart installations.
 
 </div>
 
-<div class="deprecation breaking-change" data-milestone="18.6">
+<div class="deprecation " data-milestone="18.6">
 
 ### Replace compliance standards adherence dashboard with compliance status dashboard
 
 <div class="deprecation-notes">
 
 - Announced in GitLab <span class="milestone">17.11</span>
-- Removal in GitLab <span class="milestone">18.6</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- Removal in GitLab <span class="milestone">18.6</span>
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/470834).
 
 </div>

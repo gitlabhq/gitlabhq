@@ -57857,6 +57857,9 @@ msgstr ""
 msgid "SecurityAttributes|Limited edits allowed"
 msgstr ""
 
+msgid "SecurityAttributes|Manage security attributes"
+msgstr ""
+
 msgid "SecurityAttributes|Multiple selection"
 msgstr ""
 

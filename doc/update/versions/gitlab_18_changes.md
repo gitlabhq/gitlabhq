@@ -85,6 +85,13 @@ GitLab Duo seats nightly when LDAP is enabled. This was fixed in GitLab 18.4.0 a
 
 ## 18.0.0
 
+### Migrate Gitaly configuration from `git_data_dirs` to `storage`
+
+In GitLab 18.0 and later, you can no longer use the `git_data_dirs` setting to configure Gitaly storage locations.
+
+If you are still using `git_data_dirs`, you must
+[migrate your Gitaly configuration](https://docs.gitlab.com/omnibus/settings/configuration/#migrating-from-git_data_dirs) before upgrading to GitLab 18.0.
+
 ### Geo installations 18.0.0
 
 - If you deployed GitLab Enterprise Edition and then reverted to GitLab Community Edition,

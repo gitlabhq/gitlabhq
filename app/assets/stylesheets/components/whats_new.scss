@@ -12,6 +12,11 @@
     display: none;
   }
 
+  .gl-drawer-header {
+    position: sticky;
+    top: 0;
+  }
+
   .gl-tabs {
     overflow-y: auto;
   }
@@ -42,6 +47,16 @@
     margin-top: $gl-spacing-scale-3
   }
   /* stylelint-enable gitlab/no-gl-class */
+}
+
+.featured-carousel {
+  position: sticky;
+  top: 87px;
+}
+
+.other-updates {
+  height: calc(100vh - 300px);
+  overflow-y: hidden;
 }
 
 .whats-new-modal-backdrop {

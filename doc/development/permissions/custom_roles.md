@@ -197,7 +197,7 @@ before in a separate merge request, before completing the below.
 
 ### Step 3: Create a feature flag (optional)
 
-- If you would like to toggle the custom ability using a [feature flag](../feature_flags/_index.md), create a feature flag with name `custom_ability_<name>`. Such as, for ability `read_code`, the feature flag will be `custom_ability_read_code`. When this feature flag is disabled, the custom ability will be hidden when creating a new custom role, or when fetching custom abilities for a user.
+- If the ability is to be implemented in multiple MRs a `wip` [feature flag](../feature_flags/_index.md) should be used. The feature flag name should be in the format `custom_ability_<name>`. For example, if the new ability name is `read_code`, the feature flag will be `custom_ability_read_code`. The feature flag uses an `instance` actor on the backend check and when disabled, the custom ability will be treated as any other unknown ability. Once development is complete, the feature flag should be enabled globally and cleaned up. Due to the potential for inconsistent behavior with user access the feature flag should not be toggled on and off. If testing is needed, it should be completed in the staging environment before enabling in production.
 
 ### Step 4: Update policies
 

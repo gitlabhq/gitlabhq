@@ -40,12 +40,11 @@ This flow is available in the GitLab UI only.
 
 ## Prerequisites
 
-Before you can create a merge request from an issue, you must have:
+To create a merge request from an issue, you must:
 
-- An existing GitLab issue with clear requirements.
-- At least Developer role in the project.
-- GitLab Duo [turned on and flows allowed to execute](../../gitlab_duo/turn_on_off.md).
-- Feature flags [`duo_workflow` and `duo_workflow_in_ci` enabled](../../../administration/feature_flags/_index.md).
+- Have an existing GitLab issue with clear requirements.
+- Have at least the Developer role in the project.
+- Meet [the other prerequisites](../../duo_agent_platform/_index.md#prerequisites).
 
 ## Use the Issue to MR flow
 

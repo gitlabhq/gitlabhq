@@ -1,7 +1,7 @@
 - title: 'Replace compliance standards adherence dashboard with compliance status dashboard'
   removal_milestone: '18.6'
   announcement_milestone: '17.11'
-  breaking_change: true
+  breaking_change: false
   window: 1
   reporter: nrosandich
   stage: Software Supply Chain Security

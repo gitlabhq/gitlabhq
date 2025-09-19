@@ -44,15 +44,11 @@ This flow is available in the GitLab UI only.
 
 ## Prerequisites
 
-To use this flow, you must have:
+To use this flow, you must:
 
-- An existing failed pipeline.
-- At least the Developer role in the project.
-- GitLab Duo [turned on and flows allowed to execute](../../gitlab_duo/turn_on_off.md).
-- Enabled the following [feature flags](../../../administration/feature_flags/_index.md):
-  - `duo_workflow`
-  - `duo_workflow_in_ci`
-  - `ai_duo_agent_fix_pipeline_button`
+- Have an existing failed pipeline.
+- Have at least the Developer role in the project.
+- Meet [the other prerequisites](../../duo_agent_platform/_index.md#prerequisites).
 
 ## Use the flow
 

@@ -668,3 +668,73 @@ sudo -u git -H bundle exec rake "gitlab:gitaly:update_removed_storage_projects[d
 {{< /tab >}}
 
 {{< /tabs >}}
+
+## Error: `fatal: deflate error (0)\n` when downloading repository as ZIP file
+
+Because of a Git bug ([issue 575](https://gitlab.com/gitlab-org/git/-/issues/575)) that was fixed in Git
+version 2.51, in some cases downloading a repository as a ZIP archive
+results in an incomplete ZIP file. When this happens, the Gitaly logs show the following error:
+
+```plaintext
+  "msg": "fatal: deflate error (0)\n",
+```
+
+To resolve this issue, upgrade to a version of GitLab and Gitaly that use a fixed version of Git.
+If you can't upgrade, use these steps to work around the issue:
+
+{{< tabs >}}
+
+{{< tab title="Linux package installations" >}}
+
+1. Check the size of your blobs using [`git-sizer`](https://github.com/github/git-sizer#getting-started).
+1. Configure `core.bigFileThreshold` to be greater than the size of the largest blob (the default is `50m`):
+
+   ```ruby
+     gitaly['configuration'] = {
+      # ... your existing configuration ...
+      git: {
+        config: [
+          # ... any existing git config entries ...
+          {
+            key: 'core.bigFileThreshold',
+            value: '500m'
+          }
+        ]
+      }
+    }
+   ```
+
+1. Run `gitlab-ctl reconfigure`.
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+1. Check the size of your blobs using [`git-sizer`](https://github.com/github/git-sizer#getting-started).
+1. Configure `core.bigFileThreshold` in your `values.yml` file:
+
+   ```yaml
+   git:
+     config:
+       - key: "core.bigFileThreshold"
+         value: "500m"
+   ```
+
+1. To update the configuration, run `helm upgrade <gitlab_release> gitlab/gitlab -f values.yaml`.
+
+{{< /tab >}}
+
+{{< tab title="Self-compiled installations" >}}
+
+1. Check the size of your blobs using [`git-sizer`](https://github.com/github/git-sizer#getting-started).
+1. Configure `core.bigFileThreshold` in `/home/git/gitaly/config.toml`:
+
+   ```toml
+   # [[git.config]]
+   # key = core.bigFileThreshold
+   # value = 500m
+   ```
+
+{{< /tab >}}
+
+{{< /tabs >}}

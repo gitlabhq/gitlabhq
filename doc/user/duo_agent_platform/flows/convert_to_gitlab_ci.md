@@ -40,12 +40,11 @@ This flow is available in the GitLab UI only.
 
 ## Prerequisites
 
-Before you can convert a Jenkinsfile, you must have:
+To convert a Jenkinsfile, you must:
 
-- Access to your Jenkins pipeline configuration.
-- At least Developer role in the target GitLab project.
-- GitLab Duo [turned on and flows allowed to execute](../../gitlab_duo/turn_on_off.md).
-- Feature flags [`duo_workflow` and `duo_workflow_in_ci` enabled](../../../administration/feature_flags/_index.md).
+- Have access to your Jenkins pipeline configuration.
+- Have at least the Developer role in the target GitLab project.
+- Meet [the other prerequisites](../../duo_agent_platform/_index.md#prerequisites).
 
 ## Use the flow
 
