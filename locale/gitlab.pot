@@ -2469,6 +2469,9 @@ msgstr ""
 msgid "AICatalog|Agent deleted successfully."
 msgstr ""
 
+msgid "AICatalog|Agent does not exist"
+msgstr ""
+
 msgid "AICatalog|Agent not found."
 msgstr ""
 
@@ -2608,6 +2611,9 @@ msgid "AICatalog|Flow created successfully."
 msgstr ""
 
 msgid "AICatalog|Flow deleted successfully."
+msgstr ""
+
+msgid "AICatalog|Flow does not exist"
 msgstr ""
 
 msgid "AICatalog|Flow node"

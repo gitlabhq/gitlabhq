@@ -111,6 +111,4 @@ If you need to temporarily allow merging with `unknown` licenses:
 1. Add `unknown` to the list of allowed licenses.
 1. After addressing the issue, remember to remove `unknown` from the allowed licenses list to maintain proper license compliance.
 
-We are planning enhancements to allow for excluding licenses only for specific packages in [epic 10203](https://gitlab.com/groups/gitlab-org/-/epics/10203).
-
 Always consult with your legal team when dealing with license compliance issues, especially when handling `unknown` licenses.

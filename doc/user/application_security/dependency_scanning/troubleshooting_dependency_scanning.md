@@ -378,3 +378,24 @@ As we move forward with the rollout and ultimately replace the existing Gemnasiu
 ## Dependency list for project not being updated based on latest SBOM
 
 When a pipeline has a failing job that would generate an SBOM, the `DeleteNotPresentOccurrencesService` does not execute, which prevents the dependency list from being changed or updated. This can occur even if there are other successful jobs that upload an SBOM, and the pipeline overall is successful. This is designed to prevent accidentally removing dependencies from the dependency list when related security scanning jobs fail. If the project dependency list is not updating as expected, check for any SBOM-related jobs that may have failed in the pipeline, and fix them or remove them.
+
+## Dependency Scanning fails with `open /etc/ssl/certs/ca-certificates.crt: permission denied`
+
+This error typically indicates that the user running the container is not a part of the `root` group.
+Ensure that the user is a part of the group by running `id`.
+
+```shell
+$ id
+uid=1000(node) gid=0(root) groups=0(root),1000(node)
+```
+
+If you're running OpenShift or using the Kubernetes executor, ensure that you configure the runner to
+run using group ID (GID) 0.
+
+```toml
+[[runners]]
+[runners.kubernetes]
+    [runners.kubernetes.pod_security_context]
+    run_as_non_root = true
+    run_as_group = 0
+```
