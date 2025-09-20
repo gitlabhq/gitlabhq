@@ -24,7 +24,7 @@ Before attempting more advanced troubleshooting:
 On the **primary** site:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo > Sites**.
+1. Select **Geo** > **Sites**.
 
 We perform the following health checks on each **secondary** site
 to help identify if something is wrong:
@@ -299,7 +299,7 @@ sudo gitlab-rake gitlab:geo:check
   Checking Geo ... Finished
   ```
 
-  Ensure you have added the secondary site in the **Admin** area under **Geo > Sites** on the web interface for the **primary** site.
+  Ensure you have added the secondary site in the **Admin** area under **Geo** > **Sites** on the web interface for the **primary** site.
   Also ensure you entered the `gitlab_rails['geo_node_name']`
   when adding the secondary site in the **Admin** area of the **primary** site.
 
@@ -621,7 +621,7 @@ If you have updated the value of `external_url` in `/etc/gitlab/gitlab.rb` for t
 In this case, make sure to update the changed URL on all your sites:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo > Sites**.
+1. Select **Geo** > **Sites**.
 1. Change the URL and save the change.
 
 ### Message: `ERROR: canceling statement due to conflict with recovery` during backup

@@ -23,7 +23,7 @@ When using standalone Gitaly servers, you must make sure they are the same versi
 as GitLab to ensure full compatibility:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Gitaly servers**.
+1. Select **Overview** > **Gitaly servers**.
 1. Confirm all Gitaly servers indicate that they are up to date.
 
 ## Find storage resource details

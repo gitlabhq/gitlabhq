@@ -83,7 +83,7 @@ Administrators can look up a project's hashed path from its name or ID using:
 To look up a project's hash path in the **Admin** area:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Projects** and select the project.
+1. Select **Overview** > **Projects** and select the project.
 1. Locate the **Relative path** field. The value is similar to:
 
    ```plaintext

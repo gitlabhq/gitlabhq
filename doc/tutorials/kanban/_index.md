@@ -76,7 +76,7 @@ Next, we'll create a custom VSA report that matches your Kanban workflow.
 To visualize flow:
 
 1. On the left sidebar, select **Search or go to** and find your group or project.
-1. In the side navigation, select **Analyze > Value stream analytics**.
+1. In the side navigation, select **Analyze** > **Value stream analytics**.
 1. Select the **Value stream** drop down in the top-left of the page, then select **New Value Stream**.
 1. Enter the desired name for the VSA report, then select the **Create from a template** option.
 1. Enter **To do** for the stage name.

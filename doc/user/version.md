@@ -23,7 +23,7 @@ Prerequisites:
 
 To find the version of GitLab:
 
-- On the left sidebar, at the bottom, select **Help > Help**.
+- On the left sidebar, at the bottom, select **Help** > **Help**.
 
 The version is displayed at the top of the page.
 

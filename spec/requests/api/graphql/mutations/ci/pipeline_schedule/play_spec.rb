@@ -49,10 +49,12 @@ RSpec.describe 'PipelineSchedulePlay', feature_category: :continuous_integration
         post_graphql_mutation(mutation, current_user: current_user)
 
         expect(mutation_response['pipelineSchedule']['id']).to include(pipeline_schedule.id.to_s)
-        new_next_run_at = DateTime.parse(mutation_response['pipelineSchedule']['nextRunAt'])
-        expect(new_next_run_at).not_to eq(pipeline_schedule.next_run_at)
-        expect(new_next_run_at).to eq(pipeline_schedule.reset.next_run_at)
         expect(mutation_response['errors']).to eq([])
+      end
+
+      it 'does not change next_run_at' do
+        expect { post_graphql_mutation(mutation, current_user: current_user) }
+          .not_to change { pipeline_schedule.reload.next_run_at }
       end
     end
 

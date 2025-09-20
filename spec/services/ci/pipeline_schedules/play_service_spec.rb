@@ -18,8 +18,8 @@ RSpec.describe Ci::PipelineSchedules::PlayService, feature_category: :continuous
         allow(service).to receive(:can?).with(user, :play_pipeline_schedule, schedule).and_return(true)
       end
 
-      it 'schedules next run' do
-        expect(schedule).to receive(:schedule_next_run!)
+      it 'does not schedule next run' do
+        expect(schedule).not_to receive(:schedule_next_run!)
 
         execute_service
       end

@@ -93,7 +93,7 @@ To test the scan execution policy:
 1. On the left sidebar, select **Search or go to** and find the project named `go-example-a`.
 1. Go to **Code > Repository**.
 1. Select the `helloworld.go` file.
-1. Select **Edit > Edit single file**.
+1. Select **Edit** > **Edit single file**.
 1. Add the following line immediately after the `fmt.Println("hello world")` line:
 
    ```plaintext
@@ -170,7 +170,7 @@ To test the scan execution policy:
 1. On the left sidebar, select **Search or go to** and find the `go-example-b` project.
 1. Go to **Code > Repository**.
 1. Select the `helloworld.go` file.
-1. Select **Edit > Edit single file**.
+1. Select **Edit** > **Edit single file**.
 1. Add the following line immediately after the `fmt.Println("hello world")` line:
 
    ```plaintext

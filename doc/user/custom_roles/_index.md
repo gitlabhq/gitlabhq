@@ -216,7 +216,7 @@ Prerequisites:
 To assign a custom admin role to an existing user:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. Select **Edit** for a user.
 1. In the **Access** section, set the access level to either **Regular** or **Auditor**.
 1. From the **Admin area** dropdown list, select a custom admin role.

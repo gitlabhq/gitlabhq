@@ -45,7 +45,7 @@ You can access the Web IDE through several methods.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to your file.
-1. Select **Edit > Open in Web IDE**.
+1. Select **Edit** > **Open in Web IDE**.
 
 ### From a merge request
 
@@ -328,7 +328,7 @@ Prerequisites:
 
 To install an extension in the Web IDE:
 
-1. On the top menu bar, select **View > Extensions**,
+1. On the top menu bar, select **View** > **Extensions**,
    or press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>.
 1. In the search box, enter the extension name.
 1. Select the extension you want to install.
@@ -338,7 +338,7 @@ To install an extension in the Web IDE:
 
 To uninstall an extension in the Web IDE:
 
-1. On the top menu bar, select **View > Extensions**,
+1. On the top menu bar, select **View** > **Extensions**,
    or press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd>.
 1. From the list of installed extensions, select the extension you want to uninstall.
 1. Select **Uninstall**.

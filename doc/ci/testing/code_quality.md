@@ -167,7 +167,7 @@ that were found on the branch it was run on.
 
 {{< /history >}}
 
-The project quality view displays an overview of the code quality findings. The view can be found under **Analyze > CI/CD analytics**, and requires [`project_quality_summary_page`](../../administration/feature_flags/_index.md) feature flag to be enabled for this particular project.
+The project quality view displays an overview of the code quality findings. The view can be found under **Analyze** > **CI/CD analytics**, and requires [`project_quality_summary_page`](../../administration/feature_flags/_index.md) feature flag to be enabled for this particular project.
 
 ![Total number of issues, called violations, followed by the number of issues of each severity](img/code_quality_summary_v15_9.png)
 

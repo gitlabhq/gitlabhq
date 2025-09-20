@@ -277,7 +277,7 @@ Placeholder users are created on the destination instance while a group or proje
 To filter for placeholder users created during imports for an entire instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. In the search box, filter users by **type**.
 
 #### Creating placeholder users

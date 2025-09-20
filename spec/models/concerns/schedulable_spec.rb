@@ -4,8 +4,24 @@ require 'spec_helper'
 
 RSpec.describe Schedulable do
   shared_examples 'before_save callback' do
-    it 'updates next_run_at' do
-      expect { object.save! }.to change { object.next_run_at }
+    context 'when allow_next_run_at_update? is true' do
+      before do
+        allow(object).to receive(:allow_next_run_at_update?).and_return(true)
+      end
+
+      it 'updates next_run_at' do
+        expect { object.save! }.to change { object.next_run_at }
+      end
+    end
+
+    context 'when allow_next_run_at_update? is false' do
+      before do
+        allow(object).to receive(:allow_next_run_at_update?).and_return(false)
+      end
+
+      it 'does not update next_run_at' do
+        expect { object.save! }.not_to change { object.next_run_at }
+      end
     end
   end
 

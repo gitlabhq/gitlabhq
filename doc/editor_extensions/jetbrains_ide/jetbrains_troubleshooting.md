@@ -36,7 +36,7 @@ You can also [enable proxy authentication](../language_server/_index.md#enable-p
 To enable GitLab Language Server debug logs:
 
 1. In your IDE, on the top bar, select your IDE name, then select **Settings**.
-1. On the left sidebar, select **Tools > GitLab Duo**.
+1. On the left sidebar, select **Tools** > **GitLab Duo**.
 1. Select **GitLab Language Server** to expand the section.
 1. In **Logging > Log Level**, enter `debug`.
 1. Select **Apply**.
@@ -48,7 +48,7 @@ The debug logs are available in the `idea.log` log file. To view this file, eith
 
 <!-- vale gitlab_base.SubstitutionWarning = NO -->
 
-- In your IDE, go to **Help > Show Log in Finder**.
+- In your IDE, go to **Help** > **Show Log in Finder**.
 - Go to the directory `/Users/<user>/Library/Logs/JetBrains/IntelliJIdea<build_version>`, replacing
   `<user>` and `<build_version>` with the appropriate values.
 
@@ -64,7 +64,7 @@ about certificates, try enabling the option to pass a Certificate Authority (CA)
 To do this:
 
 1. On the bottom right corner of your IDE, select the GitLab icon.
-1. On the dialog, select **Show Settings**. This opens the **Settings** dialog to **Tools > GitLab Duo**.
+1. On the dialog, select **Show Settings**. This opens the **Settings** dialog to **Tools** > **GitLab Duo**.
 1. Select **GitLab Language Server** to expand the section.
 1. Select **HTTP Agent Options** to expand it.
 1. Either:
@@ -97,7 +97,7 @@ To do this:
 
 1. Refer to JetBrains documentation on [SSL certificates](https://www.jetbrains.com/help/idea/ssl-certificates.html).
 1. Go to your IDE's top menu bar and select **Settings**.
-1. On the left sidebar, select **Tools > GitLab Duo**.
+1. On the left sidebar, select **Tools** > **GitLab Duo**.
 1. Confirm your default browser trusts the **URL to GitLab instance** you're using.
 1. Enable the **Ignore certificate errors** option.
 1. Select **Verify setup**.
@@ -117,12 +117,12 @@ are running a supported version of PyCharm:
 
 If you experience issues with GitLab Duo Chat related to JCEF (Java Chromium Embedded Framework), you can try these steps:
 
-1. On the top bar, go to **Help > Find Action** and search for `Registry`.
+1. On the top bar, go to **Help** > **Find Action** and search for `Registry`.
 1. Find or search for `ide.browser.jcef.sandbox.enable`.
 1. Clear the checkbox to disable this setting.
 1. Close the Registry dialog.
 1. Restart your IDE.
-1. On the top bar, go to **Help > Find Action** and search for `Choose Boot Java Runtime for the IDE`.
+1. On the top bar, go to **Help** > **Find Action** and search for `Choose Boot Java Runtime for the IDE`.
 1. Select the boot java runtime version that's the same as your current IDE version, but with JCEF bundled:
    ![JCEF supporting runtime example](img/jcef_supporting_runtime_example_v17_3.png)
 1. Restart your IDE.

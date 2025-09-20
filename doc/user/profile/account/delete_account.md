@@ -92,7 +92,7 @@ Prerequisites:
 To delete a user:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. Select a user.
 1. Under the **Account** tab, select:
    - **Delete user** to delete only the user but maintain their [associated records](#associated-records). You can't use this option if

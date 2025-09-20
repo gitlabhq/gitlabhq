@@ -62,7 +62,7 @@ You might need to modify the system configuration of your container runtime (CPU
 {{< /alert >}}
 
 1. Start the container.
-1. In VS Code, select **Terminal > New terminal**, then run a `curl` command to add an SSH key to your local `~/.ssh/config`:
+1. In VS Code, select **Terminal** > **New terminal**, then run a `curl` command to add an SSH key to your local `~/.ssh/config`:
 
    ```shell
    curl "https://gitlab.com/gitlab-org/gitlab-development-kit/-/raw/main/support/gdk-in-a-box/setup-ssh-key" | bash
@@ -92,7 +92,7 @@ You might need to modify the system configuration of your container runtime (CPU
    To learn more about the script, you can examine the
    [`first_time_setup` code](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/support/gdk-in-a-box/first_time_setup).
 
-1. In VS Code, select **File > Open folder**, and go to: `/home/gdk/gitlab-development-kit/gitlab/`.
+1. In VS Code, select **File** > **Open folder**, and go to: `/home/gdk/gitlab-development-kit/gitlab/`.
 1. Open GitLab in your browser: `http://gdk.local:3000`.
    - If the page does not load, add `127.0.0.1 gdk.local` to your local machine's hosts file.
 1. Sign in with the username `root` and password `5iveL!fe`.
@@ -165,7 +165,7 @@ You might need to modify the system configuration (CPU cores and RAM) before sta
 {{< /alert >}}
 
 1. Start the VM (you can minimize UTM or VirtualBox).
-1. In VS Code, select **Terminal > New terminal**, then run a `curl` command to add an SSH key to your local `~/.ssh/config`:
+1. In VS Code, select **Terminal** > **New terminal**, then run a `curl` command to add an SSH key to your local `~/.ssh/config`:
 
    ```shell
    curl "https://gitlab.com/gitlab-org/gitlab-development-kit/-/raw/main/support/gdk-in-a-box/setup-ssh-key" | bash
@@ -197,7 +197,7 @@ You might need to modify the system configuration (CPU cores and RAM) before sta
    To learn more about the script, you can examine the
    [`first_time_setup` code](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/support/gdk-in-a-box/first_time_setup).
 
-1. In VS Code, select **File > Open folder**, and go to: `/home/debian/gitlab-development-kit/gitlab/`.
+1. In VS Code, select **File** > **Open folder**, and go to: `/home/debian/gitlab-development-kit/gitlab/`.
 1. Open GitLab in your browser: `http://gdk.local:3000`.
 1. Sign in with the username `root` and password `5iveL!fe`.
 1. Continue to [change the code with the GDK](contribute-gdk.md).

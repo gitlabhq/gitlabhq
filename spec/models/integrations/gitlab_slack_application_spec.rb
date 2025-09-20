@@ -373,5 +373,15 @@ RSpec.describe Integrations::GitlabSlackApplication, feature_category: :integrat
         expect(new_integration).not_to be_active
       end
     end
+
+    context 'when duplicating to instance level' do
+      let(:new_integration) { build(:gitlab_slack_application_integration, project: nil) }
+
+      it 'sets alias to instance default' do
+        initial_integration.after_build_from_integration(new_integration)
+
+        expect(new_integration.slack_integration.alias).to eq(SlackIntegration::INSTANCE_ALIAS)
+      end
+    end
   end
 end

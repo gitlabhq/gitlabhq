@@ -30,7 +30,7 @@ Prerequisites:
 To view insights for a project or group:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Analyze > Insights**.
+1. Select **Analyze** > **Insights**.
 1. To view a report, from the **Select report** dropdown list, select the report you want to view.
    To view annotations, hover over each bar in the chart.
 1. Optional. Filter the results:

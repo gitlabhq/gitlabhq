@@ -158,7 +158,7 @@ follow these steps to avoid unnecessary data loss:
          those with `geo` in the name to drop to 0.
          These queues contain work that has been submitted by your users; failing over
          before it is completed, causes the work to be lost.
-      1. On the left sidebar, select **Geo > Sites** and wait for the
+      1. On the left sidebar, select **Geo** > **Sites** and wait for the
          following conditions to be true of the **secondary** site you are failing over to:
 
          - All replication meters reach 100% replicated, 0% failures.

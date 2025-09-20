@@ -85,7 +85,7 @@ promote a Geo replica and perform a failover.
 On the **secondary** site:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo > Sites** to see its status.
+1. Select **Geo** > **Sites** to see its status.
    Replicated objects (shown in green) should be close to 100%,
    and there should be no failures (shown in red). If a large proportion of
    objects aren't replicated (shown in gray), consider giving the site more
@@ -129,7 +129,7 @@ follow these steps to avoid unnecessary data loss:
          those with `geo` in the name to drop to 0.
          These queues contain work that has been submitted by your users; failing over
          before it is completed, causes the work to be lost.
-      1. On the left sidebar, select **Geo > Sites** and wait for the
+      1. On the left sidebar, select **Geo** > **Sites** and wait for the
          following conditions to be true of the **secondary** site you are failing over to:
 
          - All replication meters reach 100% replicated, 0% failures.

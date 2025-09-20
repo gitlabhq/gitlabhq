@@ -57,14 +57,14 @@ When creating a support request, provide the following information:
 
 1. Your current GitLab for Eclipse plugin version.
    1. Open the `About Eclipse IDE` dialog.
-      - On Windows, in your IDE, select **Help > About Eclipse IDE**.
+      - On Windows, in your IDE, select **Help** > **About Eclipse IDE**.
       - On MacOS, in your IDE, select **Eclipse > About Eclipse IDE**.
    1. On the dialog, select **Installation details**.
    1. Locate **GitLab for Eclipse** and copy the **Version** value.
 
 1. Your Eclipse version.
    1. Open the `About Eclipse IDE` dialog.
-      - On Windows, in your IDE, select **Help > About Eclipse IDE**.
+      - On Windows, in your IDE, select **Help** > **About Eclipse IDE**.
       - On MacOS, in your IDE, select **Eclipse > About Eclipse IDE**.
 
 1. Your operating system.
@@ -87,7 +87,7 @@ about certificates, try enabling the option to pass a Certificate Authority (CA)
 To do this:
 
 1. On the bottom right corner of your IDE, select the GitLab icon.
-1. On the dialog, select **Show Settings**. This opens the **Settings** dialog to **Tools > GitLab Duo**.
+1. On the dialog, select **Show Settings**. This opens the **Settings** dialog to **Tools** > **GitLab Duo**.
 1. Select **GitLab Language Server** to expand the section.
 1. Select **HTTP Agent Options** to expand it.
 1. Either:
@@ -120,7 +120,7 @@ To do this:
 
 1. Refer to Eclipse documentation on SSL certificates.
 1. Go to your IDE's top menu bar and select **Settings**.
-1. On the left sidebar, select **Tools > GitLab Duo**.
+1. On the left sidebar, select **Tools** > **GitLab Duo**.
 1. Confirm your default browser trusts the **URL to GitLab instance** you're using.
 1. Enable the **Ignore certificate errors** option.
 1. Select **Verify setup**.

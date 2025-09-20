@@ -324,7 +324,7 @@ secondary site is a read-only copy.
 
 1. Go to the primary node GitLab instance:
    1. On the left sidebar, at the bottom, select **Admin**..
-   1. Select **Geo > Sites**.
+   1. Select **Geo** > **Sites**.
    1. Select **Add site**.
 
       ![Form to add a new secondary Geo site](img/adding_a_secondary_v15_8.png)
@@ -394,7 +394,7 @@ the primary site.
 After you sign in:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo > Sites**.
+1. Select **Geo** > **Sites**.
 1. Verify that the site is correctly identified as a secondary Geo site, and that
    Geo is enabled.
 

@@ -31,7 +31,7 @@ This feature is an [experiment](../../policy/development_stages_support.md).
 
 To update your version of the plugin:
 
-1. In your Eclipse IDE, go to **Help > Check for Updates**.
+1. In your Eclipse IDE, go to **Help** > **Check for Updates**.
 1. In the **Available Updates** dialog, ensure that **GitLab for Eclipse** is selected.
 1. Select **Next**, then **Finish**, to update the plugin.
 

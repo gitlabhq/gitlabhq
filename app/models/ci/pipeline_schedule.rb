@@ -99,6 +99,20 @@ module Ci
                            .execute(self, fallback_method: method(:calculate_next_run_at))
     end
 
+    # Don't depend on hooks to set the value of `next_run_at` as
+    # allow_next_run_at_update? will interfere with the process.
+    # Explicitly set the value here before each save operation instead.
+    override :schedule_next_run!
+    def schedule_next_run!
+      if Feature.enabled?(:resolve_pipeline_schedule_race_conditions, project)
+        return if cron_values_changed?
+
+        set_next_run_at
+      end
+
+      super
+    end
+
     def daily_limit
       project.actual_limits.limit_for(:ci_daily_pipeline_schedule_triggers)
     end
@@ -148,6 +162,21 @@ module Ci
       strong_memoize_with(:ambiguous_ref, ref) do
         project.repository.ambiguous_ref?(ref)
       end
+    end
+
+    def cron_values_changed?
+      cron_changed? || cron_timezone_changed?
+    end
+
+    # This method will block updates to next_run_at on simple record mutations
+    # that don't affect the cron or the cron_timezone.
+    # Operations that explicitly set the next_run_at should
+    # call schedule_next_run!
+    override :allow_next_run_at_update?
+    def allow_next_run_at_update?
+      return true unless Feature.enabled?(:resolve_pipeline_schedule_race_conditions, project)
+
+      cron_values_changed?
     end
   end
 end

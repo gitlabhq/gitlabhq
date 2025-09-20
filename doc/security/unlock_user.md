@@ -53,7 +53,7 @@ Prerequisites
 To unlock an account from the Admin area:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. Use the search bar to find the locked user.
 1. From the **User administration** dropdown list, select **Unlock**.
 

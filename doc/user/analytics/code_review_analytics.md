@@ -45,7 +45,7 @@ Prerequisites:
 To view code review analytics:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Analyze > Code review analytics**.
+1. Select **Analyze** > **Code review analytics**.
 1. Optional. Filter results:
    1. Select the filter bar.
    1. Select a parameter. You can filter merge requests by milestone and label.

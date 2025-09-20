@@ -39,7 +39,7 @@ An external user counts as a billable user and consumes a license seat.
 To create a new external user:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Users**.
+1. Select **Overview** > **Users**.
 1. Select **New user**.
 1. In the **Account** section, enter the required account information.
 1. Optional. In the **Access** section, configure any project limits or user type settings.

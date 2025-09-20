@@ -70,7 +70,7 @@ Prerequisites:
 To view a list of dashboards (both built-in and custom) for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Analyze > Analytics dashboards**.
+1. Select **Analyze** > **Analytics dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.
 
 ## View group dashboards
@@ -90,7 +90,7 @@ Prerequisites:
 To view a list of dashboards (both built-in and custom) for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Analyze > Analytics dashboards**.
+1. Select **Analyze** > **Analytics dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.
 
 ## Change the location of dashboards

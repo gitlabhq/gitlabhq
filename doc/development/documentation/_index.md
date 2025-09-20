@@ -27,7 +27,7 @@ To update the documentation:
 1. Find the documentation page you want to update. If you're not sure where the page is,
    look at the URL of the page on <https://docs.gitlab.com>.
    The path is listed there.
-1. In the upper right, select **Edit > Edit single file**.
+1. In the upper right, select **Edit** > **Edit single file**.
 1. Make your updates.
 1. When you're done, in the **Commit message** text box, enter a commit message.
    Use 3-5 words, start the first word with a capital letter, and do not end the phrase with a period.
@@ -95,7 +95,7 @@ rather than using the GitLab community fork.
 
 1. On <https://docs.gitlab.com>, scroll to the bottom of the page you want to edit.
 1. Select **View page source**.
-1. In the upper-right corner, select **Edit > Edit single file**.
+1. In the upper-right corner, select **Edit** > **Edit single file**.
 1. Make your updates.
 1. When you're done, in the **Commit message** text box, enter a commit message.
    Use 3-5 words, start the first word with a capital letter, and do not end the phrase with a period.

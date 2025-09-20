@@ -84,7 +84,7 @@ relatively quickly to work, and they take you to another page in the project.
 | <kbd>t</kbd>                | Open the project file search dialog. (**Code > Repository**, select **Find Files**). |
 | <kbd>g</kbd> + <kbd>c</kbd> | Go to the project **Commits** page (**Code > Commits**). |
 | <kbd>g</kbd> + <kbd>n</kbd> | Go to the [**Repository graph**](#repository-graph) page (**Code > Repository graph**). |
-| <kbd>g</kbd> + <kbd>d</kbd> | Go to the charts in the **Repository analytics** page (**Analyze > Repository analytics**). |
+| <kbd>g</kbd> + <kbd>d</kbd> | Go to the charts in the **Repository analytics** page (**Analyze** > **Repository analytics**). |
 | <kbd>g</kbd> + <kbd>i</kbd> | Go to the project **Issues** page (**Plan** > **Issues**). |
 | <kbd>i</kbd>                | Go to the **New Issue** page (**Plan** > **Issues**, select **New issue** ). |
 | <kbd>g</kbd> + <kbd>b</kbd> | Go to the project **Issue boards** page (**Plan** > **Issue boards**). |

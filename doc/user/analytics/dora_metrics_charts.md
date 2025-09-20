@@ -29,7 +29,7 @@ Prerequisites:
 To view CI/CD analytics for a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Analyze > CI/CD analytics**.
+1. Select **Analyze** > **CI/CD analytics**.
 
 The page displays metrics and charts for:
 
@@ -41,7 +41,7 @@ The page displays metrics and charts for:
 To view CI/CD analytics for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Analyze > CI/CD analytics**.
+1. Select **Analyze** > **CI/CD analytics**.
 
 The page displays metrics and charts for:
 

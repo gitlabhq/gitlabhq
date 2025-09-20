@@ -66,7 +66,7 @@ To collect events and view dashboards about your website usage, the project must
 
 To onboard your new project with product analytics:
 
-1. In the project, select **Analyze > Analytics dashboards**.
+1. In the project, select **Analyze** > **Analytics dashboards**.
 1. Find the **Product analytics** item and select **Set up**.
 1. Select **Set up product analytics**.
 1. Wait for your instance to finish creating.
@@ -142,7 +142,7 @@ These dashboards become available after your project has received some events.
 
 To view these dashboards:
 
-1. In the project, select **Analyze > Dashboards**.
+1. In the project, select **Analyze** > **Dashboards**.
 1. From the list of available dashboards, select **Audience** or **Behavior**.
 
 That was it! Now you have a website project with product analytics, which help you collect and visualize data to understand your users' behavior, and make your team work more efficiently.

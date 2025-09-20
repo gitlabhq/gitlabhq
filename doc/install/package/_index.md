@@ -80,7 +80,7 @@ and refer to the same architecture.
 | [Red Hat Enterprise Linux 8](almalinux.md)          | GitLab CE / GitLab EE 12.8.1   | `x86_64`, `arm64` <sup>1</sup>   | May 2029             | GitLab CE / GitLab EE 22.0.0  | [Red Hat Enterprise Linux details](https://access.redhat.com/support/policy/updates/errata/#Life_Cycle_Dates) |
 | [Red Hat Enterprise Linux 9](almalinux.md)          | GitLab CE / GitLab EE 16.0.0   | `x86_64`, `arm64` <sup>1</sup>   | May 2032             | GitLab CE / GitLab EE 25.0.0  | [Red Hat Enterprise Linux details](https://access.redhat.com/support/policy/updates/errata/#Life_Cycle_Dates) |
 | [Ubuntu 20.04](ubuntu.md)                           | GitLab CE / GitLab EE 13.2.0   | `amd64`, `arm64` <sup>1</sup>    | April 2025           | GitLab CE / GitLab EE 18.8.0  | [Ubuntu details](https://wiki.ubuntu.com/Releases)                                                            |
-| [Ubuntu 22.04](ubuntu.md)                           | GitLab CE / GitLab EE 15.5.0   | `amd64`, `arm64` <sup>1</sup>    | April 2027           | GitLab CE / GitLab EE 19.11.0 | [Ubuntu details](https://wiki.ubuntu.com/Releases)                                                            |
+| [Ubuntu 22.04](ubuntu.md)                           | GitLab CE / GitLab EE 15.5.0   | `amd64`, `arm64` <sup>1</sup>    | April 2027           | GitLab CE / GitLab EE 19.11.0 | [Ubuntu details](https://wiki.ubuntu.com/Releases). FIPS packages were added in GitLab 18.4. Before upgrading from Ubuntu 20.04, view the [upgrade notes](#ubuntu-2204-fips). |
 | [Ubuntu 24.04](ubuntu.md)                           | GitLab CE / GitLab EE 17.1.0   | `amd64`, `arm64` <sup>1</sup>    | April 2029           | GitLab CE / GitLab EE 21.11.0 | [Ubuntu details](https://wiki.ubuntu.com/Releases)                                                            |
 
 **Footnotes**:
@@ -237,3 +237,31 @@ database, configuration) or remove all of them:
    {{< /tab >}}
 
    {{< /tabs >}}
+
+### Ubuntu 22.04 FIPS
+
+In GitLab 18.4 and later, FIPS builds are available for Ubuntu 22.04.
+
+Before you upgrade:
+
+1. Verify password hash migration for all active users: In GitLab 17.11 and later,
+   user passwords are automatically rehashed with enhanced salt when users sign in.
+
+   Any users who haven't completed this hash migration will be unable to sign in to
+   Ubuntu 22 FIPS installations and will need to perform a password reset.
+
+   To find for users who have not migrated, use [this Rake task](../../administration/raketasks/password.md#check-password-salt-length)
+   before upgrading to Ubuntu 22.04.
+
+1. Check the GitLab secrets JSON: Rails now requires stronger active dispatch salts to
+   issue cookies. The Linux package uses static values with sufficient length by default on
+   Ubuntu 22.04. However, you can customize these salts by setting the following keys
+   in your Linux package configuration:
+
+   ```ruby
+   gitlab_rails['signed_cookie_salt'] = 'custom value'
+   gitlab_rails['authenticated_encrypted_cookie_salt'] = 'another custom value'
+   ```
+
+   The values are written to the `gitlab-secrets.json` and must be synchronized across
+   all Rails nodes.

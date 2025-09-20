@@ -198,7 +198,7 @@ version of the product:
 
 1. Ensure the group you want to test the EE feature for is actually using an EE plan:
    1. On the left sidebar, at the bottom, select **Admin**.
-   1. On the left sidebar, select **Overview > Groups**.
+   1. On the left sidebar, select **Overview** > **Groups**.
    1. Identify the group you want to modify, and select **Edit**.
    1. Scroll to **Permissions and group features**. For **Plan**, select `Ultimate`.
    1. Select **Save changes**.

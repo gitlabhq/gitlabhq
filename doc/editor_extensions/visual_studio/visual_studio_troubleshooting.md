@@ -18,9 +18,9 @@ see [Troubleshooting Code Suggestions](../../user/project/repository/code_sugges
 
 More logs are available in the **GitLab Extension Output** window:
 
-1. In Visual Studio, on the top bar, go to the **Tools > Options** menu.
+1. In Visual Studio, on the top bar, go to the **Tools** > **Options** menu.
 1. Find the **GitLab** option, and set **Log Level** to **Debug**.
-1. Go to **View > Output** to open the extension log. In the dropdown list, select **GitLab Extension** as the log filter.
+1. Go to **View** > **Output** to open the extension log. In the dropdown list, select **GitLab Extension** as the log filter.
 1. Verify that the debug log contains similar output:
 
    ```shell
@@ -53,10 +53,10 @@ Gather this information from affected users, and provide it in your bug report:
    1. [Enable debug logs](#view-more-logs).
    1. [Retrieve log files](#view-activity-log).
 1. Diagnostics output:
-   1. With Visual Studio open, on the top banner, select **Help > About Microsoft Visual Studio**.
+   1. With Visual Studio open, on the top banner, select **Help** > **About Microsoft Visual Studio**.
    1. On the dialog, select **Copy Info** to copy all the required information for this section to your clipboard.
 1. System details:
-   1. With Visual Studio open, on the top banner, select **Help > About Microsoft Visual Studio**.
+   1. With Visual Studio open, on the top banner, select **Help** > **About Microsoft Visual Studio**.
    1. On the dialog, select **System Info** to see more detailed information.
    1. For **OS type and version**: Copy the `OS Name` and `Version`.
    1. For **Machine specifications (CPU, RAM)**: copy the `Processor` and `Installed Physical Memory (RAM)` sections.

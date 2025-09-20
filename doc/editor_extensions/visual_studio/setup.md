@@ -79,6 +79,6 @@ default keyboard shortcuts to avoid conflicts with your existing Visual Studio c
 
 You can access the extension's custom commands with keyboard shortcuts, which you can customize:
 
-1. On the top bar, go to **Tools > Options**.
+1. On the top bar, go to **Tools** > **Options**.
 1. Go to **Environment > Keyboard**. Search for `GitLab.`.
 1. Select a command, and assign it a keyboard shortcut.

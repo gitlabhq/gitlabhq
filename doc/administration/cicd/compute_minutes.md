@@ -72,7 +72,7 @@ Prerequisites:
 To set a compute quota for a group or namespace:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Overview > Groups**.
+1. Select **Overview** > **Groups**.
 1. For the group you want to update, select **Edit**.
 1. In the **Compute quota** box, enter the maximum number of compute minutes.
 1. Select **Save changes**.
