@@ -20238,9 +20238,6 @@ msgstr ""
 msgid "Current"
 msgstr ""
 
-msgid "Current Chat"
-msgstr ""
-
 msgid "Current Project"
 msgstr ""
 
@@ -42645,9 +42642,6 @@ msgid "New"
 msgstr ""
 
 msgid "New %{type} in %{project}"
-msgstr ""
-
-msgid "New Chat"
 msgstr ""
 
 msgid "New File"
