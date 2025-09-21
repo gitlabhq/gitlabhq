@@ -141,6 +141,7 @@ export default {
     this.requestData = { page: this.page };
   },
   methods: {
+    // eslint-disable-next-line vue/no-unused-properties -- successCallback() is used by the `PipelinesMixin` mixin
     successCallback(resp) {
       // depending of the endpoint the response can either bring a `pipelines` key or not.
       const pipelines = resp.data.pipelines || resp.data;
