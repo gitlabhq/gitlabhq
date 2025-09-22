@@ -612,9 +612,11 @@ export default class MergeRequestTabs {
   }
 
   expandViewContainer() {
-    this.contentWrapper.classList.remove('container-limited');
-    this.contentWrapper.classList.remove('rd-page-container');
-    this.contentWrapper.classList.add('diffs-container-limited');
+    if (this.contentWrapper.classList.contains('container-limited')) {
+      this.contentWrapper.classList.remove('container-limited');
+      this.contentWrapper.classList.remove('rd-page-container');
+      this.contentWrapper.classList.add('diffs-container-limited');
+    }
   }
 
   resetViewContainer() {
