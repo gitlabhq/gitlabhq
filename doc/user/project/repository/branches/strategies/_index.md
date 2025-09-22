@@ -97,8 +97,11 @@ directly into `main`. This merge commit is highlighted with a square. Longer-liv
 When complete, `feature-2` merges into `main`, and release `1.1` is cut:
 
 ```mermaid
-%%{init: { 'gitGraph': {'mainBranchOrder':1}} }%%
+%%{init: { "gitGraph": { "mainBranchOrder" : 1 }, "fontFamily": "GitLab Sans" }}%%
 gitGraph
+    accTitle: Branching strategy for web services
+    accDescr: Feature work happens on separate branches that merge directly into the main branch with release tags.
+
     commit tag: "1.0" id: "release v1.0"
     branch "feature-1"
     commit id: "start feature-1"
@@ -141,8 +144,11 @@ as part of the development of `2.0`. After the addition of another feature (`fea
 branch is ready for production. It merges into `main`, and release `2.0` is cut:
 
 ```mermaid
-%%{init: { 'gitGraph': {'mainBranchOrder':2}} }%%
+%%{init: { "gitGraph": { "mainBranchOrder" : 2 }, "fontFamily": "GitLab Sans" }}%%
 gitGraph
+    accTitle: Branching strategy for long-lived releases
+    accDescr: Hotfixes merge into the main branch while features are developed on a separate long-lived release branch.
+
     commit tag: "1.0"
     branch hotfix  order: 1
     checkout main
@@ -195,7 +201,11 @@ Features continue to branch from and back into `main`, while the release candida
 the `test` and `UAT` environments. This process is repeated for each commit that is considered for release:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 gitGraph
+    accTitle: Branching strategy for environment isolation
+    accDescr: Feature work happens on separate branches while release candidates progress through test and UAT branches for validation.
+
     commit id: "start feature"
     branch feature-1
     checkout main

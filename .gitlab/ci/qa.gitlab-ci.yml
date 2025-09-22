@@ -244,45 +244,6 @@ e2e:perf-on-cng:
     PARENT_CI_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
   allow_failure: true
 
-e2e:code-suggestions-eval:
-  extends:
-    - .qa:rules:code-suggestions-eval
-  stage: qa
-  needs: ["build-gdk-image"]
-  variables:
-    CS_EVAL_DOWNSTREAM_BRANCH: main
-    GITLAB_SHA: $CI_COMMIT_SHA
-  trigger:
-    strategy: depend
-    forward:
-      yaml_variables: true
-      pipeline_variables: true
-    project: gitlab-com/create-stage/code-creation/code-suggestion-scenarios
-    branch: $CS_EVAL_DOWNSTREAM_BRANCH
-
-e2e:code-suggestions-eval-results:
-  extends:
-    - .default-retry
-    - .qa:rules:code-suggestions-eval-results
-  stage: post-qa
-  needs:
-    - e2e:code-suggestions-eval
-  variables:
-    TRIGGER_JOB_NAME: "e2e:code-suggestions-eval"
-    DOWNSTREAM_PROJECT: gitlab-com/create-stage/code-creation/code-suggestion-scenarios
-    DOWNSTREAM_JOB_NAME: run_scenarios
-    DOWNSTREAM_JOB_ARTIFACT_PATH: scores-DOWNSTREAM_JOB_ID.csv
-    OUTPUT_ARTIFACT_PATH: scores.csv
-  before_script:
-    - source scripts/utils.sh
-    - install_gitlab_gem
-  script:
-    - scripts/download-downstream-artifact.rb
-  artifacts:
-    expose_as: 'Code Suggestions evaluation results'
-    paths:
-      - scores.csv
-
 e2e:fulfillment-quarantine-report:
   extends:
     - .qa:rules:fulfillment-e2e-quarantine-report

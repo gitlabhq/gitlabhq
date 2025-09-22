@@ -237,7 +237,6 @@ Lint/UnusedMethodArgument:
     - 'ee/spec/lib/gitlab/analytics/cycle_analytics/data_collector_spec.rb'
     - 'ee/spec/services/ee/resource_events/merge_into_notes_service_spec.rb'
     - 'ee/spec/support/helpers/ee/geo_helpers.rb'
-    - 'ee/spec/support/helpers/ee/migrations_helpers.rb'
     - 'lib/api/entities/basic_project_details.rb'
     - 'lib/api/entities/entity_helpers.rb'
     - 'lib/api/entities/project.rb'

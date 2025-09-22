@@ -167,6 +167,42 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         expect(described_class.with_token_present).not_to include(old_build)
       end
     end
+
+    describe 'with_secure_reports_from_config_options' do
+      let_it_be(:pipeline) { create(:ci_empty_pipeline) }
+      let!(:job_definition) { create(:ci_job_definition, config: {}) }
+      let!(:build) { create(:ci_build, pipeline: pipeline, job_definition: job_definition) }
+      let(:job_types) { %w[sast secret_detection] }
+
+      subject(:query) { described_class.with_secure_reports_from_config_options(job_types) }
+
+      it { expect(query).to be_empty }
+
+      context 'when job definition has secure report options' do
+        let!(:job_definition) { create(:ci_job_definition, config: { options: { artifacts: { reports: ['sast'] } } }) }
+
+        it { expect(query).to contain_exactly(build) }
+      end
+    end
+
+    describe 'with_secure_reports_from_metadata_config_options' do
+      let_it_be(:pipeline) { create(:ci_empty_pipeline) }
+      let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
+      let_it_be_with_refind(:build_metadata) { build.metadata }
+      let(:job_types) { %w[sast secret_detection] }
+
+      subject(:query) { described_class.with_secure_reports_from_metadata_config_options(job_types) }
+
+      it { expect(query).to be_empty }
+
+      context 'when build metadata has secure report options' do
+        before do
+          build_metadata.update_columns(config_options: { artifacts: { reports: ['sast'] } })
+        end
+
+        it { expect(query).to contain_exactly(build) }
+      end
+    end
   end
 
   describe 'callbacks' do

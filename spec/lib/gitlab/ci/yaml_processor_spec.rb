@@ -3363,7 +3363,7 @@ module Gitlab
         context 'returns errors if services parameter is not an array' do
           let(:config) { YAML.dump({ services: "test", rspec: { script: "test" } }) }
 
-          it_behaves_like 'returns errors', 'services config should be a array'
+          it_behaves_like 'returns errors', 'services config should be an array'
         end
 
         context 'returns errors if services parameter is not an array of strings' do
@@ -3375,7 +3375,7 @@ module Gitlab
         context 'returns errors if job services parameter is not an array' do
           let(:config) { YAML.dump({ rspec: { script: "test", services: "test" } }) }
 
-          it_behaves_like 'returns errors', 'jobs:rspec:services config should be a array'
+          it_behaves_like 'returns errors', 'jobs:rspec:services config should be an array'
         end
 
         context 'returns errors if job services parameter is not an array of strings' do
@@ -3393,7 +3393,7 @@ module Gitlab
         context 'returns errors if services configuration is not correct' do
           let(:config) { YAML.dump({ extra: { script: 'rspec', services: "test" } }) }
 
-          it_behaves_like 'returns errors', 'jobs:extra:services config should be a array'
+          it_behaves_like 'returns errors', 'jobs:extra:services config should be an array'
         end
 
         context 'returns errors if there are no jobs defined' do

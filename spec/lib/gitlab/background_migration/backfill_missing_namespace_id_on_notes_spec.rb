@@ -15,7 +15,6 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillMissingNamespaceIdOnNotes, f
   let(:epics) { table(:epics) }
   let(:snippets) { table(:snippets) }
   let(:wiki_page_meta) { table(:wiki_page_meta) }
-  let(:work_item_types) { table(:work_item_types) }
 
   # Seed data
   let(:organization) do
@@ -61,20 +60,12 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillMissingNamespaceIdOnNotes, f
   end
 
   # Helpers
-  def create_work_item_type(name: "Type #{SecureRandom.hex}", id: nil)
-    work_item_types.create!(
-      id: id || SecureRandom.random_number(1_000_000),
-      name: name
-    )
-  end
-
   def create_issue(title:, namespace:, author: user_1)
-    work_item_type = create_work_item_type
     issues.create!(
       title: title,
       author_id: author.id,
       namespace_id: namespace.id,
-      work_item_type_id: work_item_type.id
+      work_item_type_id: 1
     )
   end
 

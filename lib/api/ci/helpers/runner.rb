@@ -153,7 +153,7 @@ module API
           # return a generic auth error with no build details.
 
           return unless current_job
-          return unless current_job == ::Ci::AuthJobFinder.new(token: job_token).execute!(allow_canceling: true)
+          return unless current_job == ::Ci::AuthJobFinder.new(token: job_token).execute!
 
           current_job
         end

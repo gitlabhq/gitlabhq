@@ -48,6 +48,14 @@ RSpec.describe Packages::GroupPackagesFinder, feature_category: :package_registr
 
       it { is_expected.to match_array([package1, package2]) }
 
+      context 'when packages_refactor_group_packages_finder is disabled' do
+        before do
+          stub_feature_flags(packages_refactor_group_packages_finder: false)
+        end
+
+        it { is_expected.to match_array([package1, package2]) }
+      end
+
       context 'subgroup has packages' do
         let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
         let_it_be_with_reload(:subproject) { create(:project, namespace: subgroup, builds_access_level: ProjectFeature::PRIVATE, merge_requests_access_level: ProjectFeature::PRIVATE) }
@@ -281,6 +289,14 @@ RSpec.describe Packages::GroupPackagesFinder, feature_category: :package_registr
         let_it_be("package_#{type}") { create("#{type}_package", project: project) }
 
         it_behaves_like 'with package type', type
+
+        context 'when packages_refactor_group_packages_finder is disabled' do
+          before do
+            stub_feature_flags(packages_refactor_group_packages_finder: false)
+          end
+
+          it_behaves_like 'with package type', type
+        end
       end
     end
 
@@ -300,21 +316,44 @@ RSpec.describe Packages::GroupPackagesFinder, feature_category: :package_registr
       subject { described_class.new(user, group, package_type: nil).execute }
 
       it { is_expected.to match_array([package1]) }
+
+      context 'when packages_refactor_group_packages_finder is disabled' do
+        before do
+          stub_feature_flags(packages_refactor_group_packages_finder: false)
+        end
+
+        it { is_expected.to match_array([package1]) }
+      end
     end
 
     context 'with invalid package_type' do
-      let(:params) { { package_type: 'invalid_type' } }
+      let(:package_type) { 'invalid_type' }
+      let(:params) { { package_type: } }
 
-      it { expect { subject }.to raise_exception(described_class::InvalidPackageTypeError) }
+      it { expect { subject }.to raise_exception(ArgumentError, "'#{package_type}' is not a valid package_type") }
+
+      context 'when packages_refactor_group_packages_finder is disabled' do
+        before do
+          stub_feature_flags(packages_refactor_group_packages_finder: false)
+        end
+
+        it { expect { subject }.to raise_exception(described_class::InvalidPackageTypeError) }
+      end
     end
 
     context 'when packages_class is not Packages::Package' do
       let(:params) { { packages_class: ::Packages::TerraformModule::Package, package_type: :terraform_module } }
 
-      it 'does not call filter_by_package_type' do
-        expect(Packages::Package).not_to receive(:with_package_type)
+      context 'when packages_refactor_group_packages_finder is disabled' do
+        before do
+          stub_feature_flags(packages_refactor_group_packages_finder: false)
+        end
 
-        subject
+        it 'does not call filter_by_package_type' do
+          expect(Packages::Package).not_to receive(:with_package_type)
+
+          subject
+        end
       end
     end
   end

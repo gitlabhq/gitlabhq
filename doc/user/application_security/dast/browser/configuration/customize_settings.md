@@ -204,6 +204,9 @@ The following chart illustrates the sequence timeouts used when crawling a page:
   }
 }}%%
 gantt
+    accTitle: DAST timeout sequence during page load
+    accDescr: Timeline showing when DAST timeout configurations apply during the two phases of page loading.
+
     dateFormat YYYY-MM-DD
     axisFormat
     section       Document load

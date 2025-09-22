@@ -6,7 +6,7 @@ module Gitlab
       module Interpolation
         class Inputs
           def initialize(specs, params)
-            @spec_inputs = ::Ci::PipelineCreation::Inputs::SpecInputs.new(specs)
+            @spec_inputs = ::Ci::Inputs::Builder.new(specs)
             @params = params.to_h
             @params_errors = []
 

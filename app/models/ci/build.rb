@@ -209,6 +209,16 @@ module Ci
     end
 
     scope :with_secure_reports_from_config_options, ->(job_types) do
+      where_exists(
+        Ci::JobDefinitionInstance
+          .joins(:job_definition)
+          .scoped_job
+          .where("config -> 'options' -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
+      )
+    end
+
+    # TODO: remove this scope with FF `read_from_new_ci_destinations`
+    scope :with_secure_reports_from_metadata_config_options, ->(job_types) do
       joins(:metadata).where("#{Ci::BuildMetadata.quoted_table_name}.config_options -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
     end
 
@@ -443,6 +453,11 @@ module Ci
     def self.keep_artifacts!
       update_all(artifacts_expire_at: nil)
       Ci::JobArtifact.where(job: self.select(:id)).update_all(expire_at: nil)
+    end
+
+    # TODO: remove this method with FF `read_from_new_ci_destinations`
+    def self.has_any_job_definition?
+      left_joins(:job_definition_instance).limit(1).pick(:job_id).present?
     end
 
     def needs_maintainer_role_for_artifact_access?

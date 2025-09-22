@@ -111,53 +111,17 @@ To select a default namespace:
 1. From the **Default GitLab Duo namespace** dropdown list, select the namespace to set as your default.
 1. Select **Save changes**.
 
-#### Select a model to use in GitLab Duo Agentic Chat
-
-{{< details >}}
-
-- Status: Beta
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19251) in GitLab 18.4 as a [beta](../../policy/development_stages_support.md#beta) feature with a [flag](../../administration/feature_flags/_index.md) called `ai_user_model_switching`. Disabled by default.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-On GitLab.com, in the GitLab Duo Agentic Chat panel, you can select the model to use for conversations with Agentic Chat in the GitLab UI. Model selection in the IDE is not supported.
-
-If you open a previous chat from the chat history and continue the conversation, the model currently selected in Agentic Chat is used.
-
-Prerequisites:
-
-- No model has been selected for the GitLab Duo Agent Platform feature by the top-level group Owner. If a model is already selected for the group, you cannot change the model for Agentic Chat.
-
-To select a model:
-
-1. In the upper-right corner, select **Open GitLab Duo Chat** ({{< icon name="duo-chat" >}}). A drawer opens on the right side of your screen.
-1. Turn on the **Agentic mode (Beta)** toggle.
-1. Select a model from the dropdown list.
-
 ### On GitLab Self-Managed
 
 {{< details >}}
 
 - Add-on: GitLab Duo Enterprise
-- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19144) in GitLab 18.4 with a [flag](../../administration/feature_flags/_index.md) named `instance_level_model_selection`. Set to beta and disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19144) in GitLab 18.4 with a [flag](../../administration/feature_flags/_index.md) named `instance_level_model_selection`. Enabled by default.
 
 {{< /history >}}
 

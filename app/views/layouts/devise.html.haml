@@ -13,16 +13,18 @@
         .content
           = render "layouts/flash"
           - if custom_text.present?
-            .row.gl-mt-5.gl-gap-y-5
+            .row.gl-mt-5.gl-gap-y-6
               .col-md.order-12
                 .col-sm-12
-                  %h1.gl-mb-5.gl-text-size-h2
+                  %h1.gl-mb-5.gl-text-size-h2.gl-hidden.md:gl-block
                     = brand_title
                   #js-custom-sign-in-description= custom_text
               .col-md.order-md-12
                 .col-sm-12.bar
                   .gl-text-center.gl-mb-5
                     = brand_image
+                    %h1.gl-mb-3.gl-text-size-h2.md:gl-hidden
+                      = brand_title
                   = yield
           - else
             .gl-my-5

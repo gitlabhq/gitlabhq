@@ -65,7 +65,10 @@
     display: inline-block;
     line-height: 28px;
     white-space: normal;
-    width: 100%;
+
+    @include gl-container-width-down(sm, panel) {
+      width: 100%;
+    }
   }
 
   .nav-links {
@@ -187,7 +190,11 @@
   &.adjust {
     .nav-text,
     .nav-controls {
-      width: 100%;
+      width: auto;
+
+      @include gl-container-width-down(sm, panel) {
+        width: 100%;
+      }
     }
   }
 
@@ -320,9 +327,13 @@
 
   &.activities {
     @apply gl-border-b;
+    display: flex;
     align-items: center;
-    display: block;
-    overflow: visible;
+
+    @include gl-container-width-down(sm, panel) {
+      display: block;
+      overflow: visible;
+    }
 
     .nav-links {
       border-bottom: 0;

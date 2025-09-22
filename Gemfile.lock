@@ -27,8 +27,11 @@ PATH
     gitlab-active-context (0.0.1)
       activerecord
       activesupport
+      aws-sdk-core
       connection_pool
       elasticsearch
+      faraday-typhoeus
+      faraday_middleware-aws-sigv4
       opensearch-ruby
       pg
       zeitwerk
@@ -1122,7 +1125,7 @@ GEM
     language_server-protocol (3.17.0.3)
     launchy (2.5.2)
       addressable (~> 2.8)
-    lefthook (1.12.3)
+    lefthook (1.13.0)
     letter_opener (1.10.0)
       launchy (>= 2.2, < 4)
     letter_opener_web (3.0.0)
@@ -2250,7 +2253,7 @@ DEPENDENCIES
   knapsack (~> 4.0.0)
   kramdown (~> 2.5.0)
   kubeclient (~> 4.12.0)
-  lefthook (~> 1.12.0)
+  lefthook (~> 1.13.0)
   letter_opener_web (~> 3.0.0)
   license_finder (~> 7.0)
   licensee (~> 9.16)

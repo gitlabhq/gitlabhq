@@ -65,6 +65,9 @@ export default {
     previousCard() {
       this.currentCard -= 1;
     },
+    handleCardFocus(cardIndex) {
+      this.currentCard = cardIndex;
+    },
   },
   i18n: {
     featuredUpdates: s__('FeaturedUpdate|Featured updates'),
@@ -121,7 +124,7 @@ export default {
         class="gl-flex gl-transition-transform"
         :style="{ transform: `translateX(-${currentCard * 100}%)` }"
       >
-        <div class="gl-w-full gl-flex-shrink-0">
+        <div class="gl-w-full gl-flex-shrink-0 gl-p-2" @focusin="handleCardFocus(0)">
           <featured-card
             :title="firstCard.title"
             :description="firstCard.description"
@@ -131,7 +134,7 @@ export default {
             :variant="firstCard.variant"
           />
         </div>
-        <div class="gl-w-full gl-flex-shrink-0">
+        <div class="gl-w-full gl-flex-shrink-0 gl-p-2" @focusin="handleCardFocus(1)">
           <featured-card
             :title="secondCard.title"
             :description="secondCard.description"

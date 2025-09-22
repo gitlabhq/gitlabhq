@@ -20506,6 +20506,24 @@ CREATE SEQUENCE notification_settings_id_seq
 
 ALTER SEQUENCE notification_settings_id_seq OWNED BY notification_settings.id;
 
+CREATE TABLE oauth_access_grant_archived_records (
+    id bigint NOT NULL,
+    resource_owner_id bigint NOT NULL,
+    application_id bigint NOT NULL,
+    token character varying NOT NULL,
+    expires_in integer NOT NULL,
+    redirect_uri text NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    revoked_at timestamp without time zone,
+    scopes character varying,
+    code_challenge text,
+    code_challenge_method text,
+    organization_id bigint NOT NULL,
+    archived_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT check_bc69cc7ce0 CHECK ((char_length(code_challenge) <= 128)),
+    CONSTRAINT check_ce125f5bae CHECK ((char_length(code_challenge_method) <= 5))
+);
+
 CREATE TABLE oauth_access_grants (
     id bigint NOT NULL,
     resource_owner_id bigint NOT NULL,
@@ -25177,7 +25195,8 @@ CREATE TABLE secret_detection_token_statuses (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    status smallint DEFAULT 0 NOT NULL
+    status smallint DEFAULT 0 NOT NULL,
+    last_verified_at timestamp with time zone
 );
 
 CREATE TABLE secret_rotation_infos (
@@ -25255,6 +25274,7 @@ CREATE TABLE security_finding_token_statuses (
     updated_at timestamp with time zone NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
     raw_source_code_extract text,
+    last_verified_at timestamp with time zone,
     CONSTRAINT raw_source_code_extract_not_longer_than_2048 CHECK ((char_length(raw_source_code_extract) <= 2048))
 );
 
@@ -33830,6 +33850,9 @@ ALTER TABLE ONLY notes
 ALTER TABLE ONLY notification_settings
     ADD CONSTRAINT notification_settings_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY oauth_access_grant_archived_records
+    ADD CONSTRAINT oauth_access_grant_archived_records_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY oauth_access_grants
     ADD CONSTRAINT oauth_access_grants_pkey PRIMARY KEY (id);
 
@@ -40395,6 +40418,8 @@ CREATE UNIQUE INDEX index_npm_metadata_caches_on_package_name_project_id_unique 
 CREATE INDEX index_ns_root_stor_stats_on_registry_size_estimated ON namespace_root_storage_statistics USING btree (registry_size_estimated);
 
 CREATE UNIQUE INDEX index_ns_user_callouts_feature ON user_namespace_callouts USING btree (user_id, feature_name, namespace_id);
+
+CREATE INDEX index_oauth_access_grant_archived_records_on_organization_id ON oauth_access_grant_archived_records USING btree (organization_id);
 
 CREATE INDEX index_oauth_access_grants_on_application_id ON oauth_access_grants USING btree (application_id);
 
@@ -49323,6 +49348,9 @@ ALTER TABLE ONLY incident_management_oncall_schedules
 
 ALTER TABLE ONLY vulnerability_user_mentions
     ADD CONSTRAINT fk_rails_1a41c485cd FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY oauth_access_grant_archived_records
+    ADD CONSTRAINT fk_rails_1a50d006fe FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ai_usage_events
     ADD CONSTRAINT fk_rails_1a85bb845c FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;

@@ -1,6 +1,6 @@
 <script>
 import { computed } from 'vue';
-import { GlCollapsibleListbox, GlTooltipDirective, GlSkeletonLoader, GlIcon } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
 import emptyTodosAllDoneSvg from '@gitlab/svgs/dist/illustrations/status/status-success-sm.svg';
 import emptyTodosFilteredSvg from '@gitlab/svgs/dist/illustrations/search-sm.svg';
 import { s__ } from '~/locale';
@@ -30,34 +30,34 @@ const N_TODOS_FETCH = 15;
 const FILTER_OPTIONS = [
   {
     value: null,
-    text: s__('Todos|All'),
+    text: s__('Todos|Everything'),
     description: s__('Todos|All your pending to-do items across GitLab.'),
   },
   {
     value: TODO_ACTION_TYPE_ASSIGNED,
-    text: s__('Todos|Assigned'),
+    text: s__('Todos|Assignments'),
     description: s__('Todos|Items assigned to you.'),
   },
   {
     value: `${TODO_ACTION_TYPE_MENTIONED};${TODO_ACTION_TYPE_DIRECTLY_ADDRESSED}`,
-    text: s__('Todos|Mentioned'),
+    text: s__('Todos|Mentions'),
     description: s__('Todos|Items where you were mentioned (@username).'),
   },
   {
     value: TODO_ACTION_TYPE_BUILD_FAILED,
-    text: s__('Todos|Build failed'),
+    text: s__('Todos|Failed builds'),
     description: s__('Todos|Merge requests with failed pipelines.'),
   },
   {
     value: TODO_ACTION_TYPE_UNMERGEABLE,
-    text: s__('Todos|Unmergeable'),
+    text: s__('Todos|Unmergeable changes'),
     description: s__(
       'Todos|Merge requests that cannot be merged due to conflicts or other issues.',
     ),
   },
   {
     value: TODO_ACTION_TYPE_REVIEW_REQUESTED,
-    text: s__('Todos|Review requested'),
+    text: s__('Todos|Requested reviews'),
     description: s__('Todos|Merge requests that require your review or approval.'),
   },
 ];
@@ -68,7 +68,6 @@ export default {
     GlCollapsibleListbox,
     GlSkeletonLoader,
     BaseWidget,
-    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -149,13 +148,7 @@ export default {
   <base-widget @visible="reload">
     <div class="gl-mb-2 gl-flex gl-items-center gl-justify-between gl-gap-2">
       <div class="gl-flex gl-items-center gl-gap-2">
-        <h2 class="gl-heading-4 gl-m-0 gl-grow">{{ __('To-do items') }}</h2>
-        <gl-icon
-          v-gl-tooltip.hover
-          :title="s__('Todos|Filter your to-do items to focus on what needs your attention.')"
-          name="information-o"
-          class="gl-text-subtle"
-        />
+        <h2 class="gl-heading-4 gl-m-0 gl-grow">{{ __('Items that need your attention') }}</h2>
       </div>
 
       <gl-collapsible-listbox
@@ -219,7 +212,7 @@ export default {
         />
       </ol>
 
-      <div class="gl-px-5 gl-pt-3">
+      <div class="gl-pt-3">
         <a href="/dashboard/todos" @click="handleViewAllClick">{{ __('All to-do items') }}</a>
       </div>
     </template>

@@ -26,7 +26,7 @@ module Ci
 
         # The project config may not exist if the project is using a policy.
         # We currently don't support inputs for policies.
-        return success_response(Ci::PipelineCreation::Inputs::SpecInputs.new([])) unless project_config.exists?
+        return success_response(Ci::Inputs::Builder.new([])) unless project_config.exists?
 
         # Since CI Config path is configurable (local, other project, URL) we translate
         # all supported config types into an `include: {...}` statement.
@@ -39,7 +39,7 @@ module Ci
           yaml_result = yaml_result_of_internal_include(yaml_content)
           return error_response(s_('Pipelines|Invalid YAML syntax')) unless yaml_result&.valid?
 
-          spec_inputs = Ci::PipelineCreation::Inputs::SpecInputs.new(yaml_result.spec[:inputs])
+          spec_inputs = Ci::Inputs::Builder.new(yaml_result.spec[:inputs])
           return error_response(spec_inputs.errors.join(', ')) if spec_inputs.errors.any?
 
           success_response(spec_inputs)

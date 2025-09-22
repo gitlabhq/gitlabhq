@@ -148,9 +148,6 @@
 .if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
 
-.if-merge-request-labels-run-cs-evaluation: &if-merge-request-labels-run-cs-evaluation
-  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-CS-evaluation/'
-
 .if-merge-request-labels-skip-rspec-fail-fast: &if-merge-request-labels-skip-rspec-fail-fast
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-rspec-fail-fast/'
 
@@ -1178,7 +1175,6 @@
     - <<: *if-dot-com-gitlab-org-schedule
     - <<: *if-default-branch-refs
     - <<: *if-merge-request-labels-run-all-e2e
-    - <<: *if-merge-request-labels-run-cs-evaluation
     - <<: *if-force-ci
       when: manual
     # The rest is included to be consistent with .qa:rules:e2e:test-on-gdk
@@ -1880,32 +1876,6 @@
     - !reference [".qa:rules:e2e-schedule-nightly", rules]
     - <<: *if-dot-com-gitlab-org-schedule
       variables: *qa-e2e-test-schedule-variables
-
-.qa:rules:code-suggestions-eval-base:
-  rules:
-    - !reference [".strict-ee-only-rules", rules]
-    - !reference [".qa:rules:e2e-test-never-run", rules]
-    - <<: *if-fork-merge-request
-      when: never
-    - <<: *if-merge-request-targeting-stable-branch
-      when: never
-    - <<: *if-merge-request-labels-run-cs-evaluation
-    # Otherwise, only run in pipeline::tier-2 and above
-    - !reference [".prevent-tier-1", rules]
-
-.qa:rules:code-suggestions-eval:
-  rules:
-    - !reference [".qa:rules:code-suggestions-eval-base", rules]
-    - <<: *if-merge-request
-      changes: *code-patterns
-      when: manual
-      allow_failure: true
-
-.qa:rules:code-suggestions-eval-results:
-  rules:
-    - !reference [".qa:rules:code-suggestions-eval-base", rules]
-    - <<: *if-merge-request
-      changes: *code-patterns
 
 # test-on-omnibus-ee rules, these tests are executed in following cases:
 # * for dependency changes to validate omnibus build

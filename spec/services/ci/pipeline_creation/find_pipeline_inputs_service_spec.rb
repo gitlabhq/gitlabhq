@@ -42,7 +42,7 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
         expect(result).to be_success
 
         spec_inputs = result.payload.fetch(:inputs)
-        expect(spec_inputs).to be_a(::Ci::PipelineCreation::Inputs::SpecInputs)
+        expect(spec_inputs).to be_a(::Ci::Inputs::Builder)
         expect(spec_inputs.errors).to be_empty
         expect(spec_inputs.all_inputs).to be_empty
       end
@@ -55,12 +55,12 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
         expect(result).to be_success
 
         spec_inputs = result.payload.fetch(:inputs)
-        expect(spec_inputs).to be_a(::Ci::PipelineCreation::Inputs::SpecInputs)
+        expect(spec_inputs).to be_a(::Ci::Inputs::Builder)
         expect(spec_inputs.errors).to be_empty
 
         input = spec_inputs.all_inputs.first
         expect(input.name).to eq(:foo)
-        expect(input).to be_a(::Ci::PipelineCreation::Inputs::StringInput)
+        expect(input).to be_a(::Ci::Inputs::StringInput)
         expect(input.default).to eq('bar')
       end
     end

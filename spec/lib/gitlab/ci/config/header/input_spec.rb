@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Input, feature_category: :pipeline_co
   end
 
   context 'when given a valid type' do
-    where(:input_type) { ::Ci::PipelineCreation::Inputs::SpecInputs.input_types }
+    where(:input_type) { ::Ci::Inputs::Builder.input_types }
 
     with_them do
       let(:input_hash) { { type: input_type } }

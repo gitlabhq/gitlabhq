@@ -7,7 +7,7 @@ module Types
         graphql_name 'CiInputsType'
         description 'Available input types'
 
-        ::Ci::PipelineCreation::Inputs::SpecInputs.input_types.each do |input_type|
+        ::Ci::Inputs::Builder.input_types.each do |input_type|
           value input_type.upcase, description: "#{input_type.capitalize} input", value: input_type
         end
       end

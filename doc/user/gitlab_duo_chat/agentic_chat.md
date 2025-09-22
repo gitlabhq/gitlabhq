@@ -255,6 +255,43 @@ Conversations that existed before you created any custom rules do not follow tho
 
 For more information, see the [Custom rules in GitLab Duo Agentic Chat blog](https://about.gitlab.com/blog/custom-rules-duo-agentic-chat-deep-dive/).
 
+### Select a model
+
+{{< details >}}
+
+- Offering: GitLab.com
+- Status: Beta
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19251) in GitLab 18.4 as a [beta](../../policy/development_stages_support.md#beta) feature with a [flag](../../administration/feature_flags/_index.md) called `ai_user_model_switching`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+When you use Chat in the GitLab UI, you can select the model to use for conversations. If you open a previous chat from the chat history and continue the conversation,
+Chat uses the currently selected model.
+
+Model selection in the IDE is not supported.
+
+Prerequisites:
+
+- No model has been selected for the GitLab Duo Agent Platform feature by the Owner of the top-level group.
+If a model has been selected for the group, you cannot change the model for Chat.
+
+To select a model:
+
+1. Under the chat text box, turn on the **Agentic mode (Beta)** toggle.
+1. Select a model from the dropdown list.
+
 ## GitLab Duo Chat capabilities
 
 GitLab Duo Chat (Agentic) extends GitLab Duo Chat (Classic) capabilities with the following features:

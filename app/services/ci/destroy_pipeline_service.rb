@@ -12,9 +12,16 @@ module Ci
     # starting with the read queries, because we want to use the database
     # replica for as long as possible.
     # It is unsafe because the caller needs to ensure proper permissions check.
-    def unsafe_execute(pipelines)
+    #
+    # @param [<Array>Ci::Pipeline] pipelines
+    # @param [Boolean] skip_cancel - skips canceling the pipeline before destroy.
+    #   Only to be used when deleting old pipelines and  we don't care about
+    #   triggering side effects like, counting CI minutes, email notifications, etc.
+    #   It should not be used with `execute` because for user-triggered deletions
+    #   we always want side effects to be triggered.
+    def unsafe_execute(pipelines, skip_cancel: false)
       expire_cache(pipelines)
-      cancel_jobs(pipelines)
+      cancel_jobs(pipelines) unless skip_cancel
       reload_and_destroy(pipelines)
 
       ServiceResponse.success(message: 'Pipeline not found')

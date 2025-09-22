@@ -73,7 +73,11 @@ External status checks have an **asynchronous** workflow. Merge requests emit a 
 - Code is pushed to the source branch of the merge request.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+    accTitle: Workflow for external status checks
+    accDescr: Merge request sends payload to external service and receives status check response
+
     Merge request->>+External service: Merge request payload
     External service-->>-Merge request: Status check response
     Note over External service,Merge request: Response includes SHA at HEAD

@@ -162,6 +162,8 @@ RSpec.describe Packages::Package, feature_category: :package_registry do
     end
   end
 
+  # TODO: Remove with the rollout of the FF packages_refactor_group_packages_finder
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/568923
   describe '.with_package_type' do
     let!(:package1) { create(:terraform_module_package) }
     let!(:package2) { create(:npm_package) }

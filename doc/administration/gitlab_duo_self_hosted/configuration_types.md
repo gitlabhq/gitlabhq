@@ -37,6 +37,9 @@ In this configuration, your GitLab instance depends on and sends requests to the
 ```mermaid
 %%{init: { "theme": "default", "fontFamily": "GitLab Sans", "sequence": { "actorFontSize": 12, "participantFontSize": 12, "messageFontSize": 12 } }}%%
 sequenceDiagram
+    accTitle: GitLab.com AI gateway flow
+    accDescr: User requests are processed through a self-hosted GitLab instance, external AI gateway, and AI vendor.
+
     actor User as User
     participant SelfHostedGitLab as Self-hosted GitLab (Your Instance)
     participant GitLabAIGateway as GitLab AI gateway (External)
@@ -58,6 +61,9 @@ In this configuration, the entire system is isolated within the enterprise, ensu
 ```mermaid
 %%{init: { "theme": "default", "fontFamily": "GitLab Sans", "sequence": { "actorFontSize": 12, "participantFontSize": 12, "messageFontSize": 12 } }}%%
 sequenceDiagram
+    accTitle: Self-hosted AI gateway flow
+    accDescr: User requests are processed entirely within self-hosted infrastructure using an AI gateway and model.
+
     actor User as User
     participant SelfHostedGitLab as Self-hosted GitLab
     participant SelfHostedAIGateway as Self-hosted AI gateway
@@ -93,24 +99,26 @@ As illustrated in the following diagram:
 
 ```mermaid
 %%{init: { "theme": "default", "fontFamily": "GitLab Sans", "sequence": { "actorFontSize": 12, "participantFontSize": 12, "messageFontSize": 12 } }}%%
-   sequenceDiagram
-      participant User as User
-      participant GitLab as GitLab Instance
-      participant AI gateway as AI gateway
-      participant AIModel as AI Model
+sequenceDiagram
+    accTitle: GitLab Duo authentication flow
+    accDescr: Authentication tokens are minted, verified, and used to secure AI model requests.
 
-      User->>GitLab: Configure Model
-      User->>GitLab: Request Access
-      GitLab->>GitLab: Mint Token
-      GitLab->>User: Send Token
-      User->>GitLab: Forward Minted Token
-      GitLab->>AI gateway: Verify Token
-      AI gateway->>GitLab: Token Validated
-      GitLab->>AI gateway: Send Request to Model
-      AI gateway->>AIModel: Send Request to Model
-      AIModel->>AIModel: Authenticate using API Key
-      AIModel->>AI gateway: Process Request
-      AI gateway->>GitLab: Send Result to GitLab
-      GitLab->>User: Send Response
+    participant User as User
+    participant GitLab as GitLab Instance
+    participant AI gateway as AI gateway
+    participant AIModel as AI Model
 
+    User->>GitLab: Configure Model
+    User->>GitLab: Request Access
+    GitLab->>GitLab: Mint Token
+    GitLab->>User: Send Token
+    User->>GitLab: Forward Minted Token
+    GitLab->>AI gateway: Verify Token
+    AI gateway->>GitLab: Token Validated
+    GitLab->>AI gateway: Send Request to Model
+    AI gateway->>AIModel: Send Request to Model
+    AIModel->>AIModel: Authenticate using API Key
+    AIModel->>AI gateway: Process Request
+    AI gateway->>GitLab: Send Result to GitLab
+    GitLab->>User: Send Response
 ```

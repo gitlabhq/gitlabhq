@@ -328,7 +328,8 @@ module Gitlab
             raise unless type.is_a?(Class)
 
             unless value.is_a?(type)
-              message = options[:message] || "should be a #{type.name}"
+              article = type.name.match?(/\A[aeiou]/i) ? 'an' : 'a'
+              message = options[:message] || "should be #{article} #{type.name.downcase}"
               record.errors.add(attribute, message)
             end
           end

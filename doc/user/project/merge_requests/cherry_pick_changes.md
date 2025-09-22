@@ -30,7 +30,11 @@ Commit `B` is cherry-picked from the `develop` branch after commit `E` in the `m
 Commit `G` is added after the cherry-pick:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 gitGraph
+    accTitle: Example of cherry-picking a commit
+    accDescr: Commit B is copied from the develop branch to the main branch while leaving the original branch unchanged.
+
  commit id: "A"
  branch develop
  commit id:"B"

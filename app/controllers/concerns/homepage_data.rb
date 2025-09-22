@@ -28,6 +28,7 @@ module HomepageData
     return unless last_push_event
 
     event_data = {
+      id: last_push_event.id,
       created_at: last_push_event.created_at,
       ref_name: last_push_event.ref_name,
       branch_name: last_push_event.branch_name,

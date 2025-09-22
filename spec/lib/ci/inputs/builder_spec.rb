@@ -2,9 +2,9 @@
 
 require 'fast_spec_helper'
 require 'oj'
-require_relative Rails.root.join('lib/ci/pipeline_creation/inputs/spec_inputs.rb')
+require_relative Rails.root.join('lib/ci/inputs/builder.rb')
 
-RSpec.describe Ci::PipelineCreation::Inputs::SpecInputs, feature_category: :pipeline_composition do
+RSpec.describe Ci::Inputs::Builder, feature_category: :pipeline_composition do
   subject(:spec_inputs) { described_class.new(specs) }
 
   let(:string_input_spec) { { type: 'string', default: 'test' } }
@@ -99,16 +99,16 @@ RSpec.describe Ci::PipelineCreation::Inputs::SpecInputs, feature_category: :pipe
         inputs = described_class.new(specs).all_inputs
 
         expect(inputs.map(&:name)).to eq(specs.keys)
-        expect(inputs[0]).to be_an_instance_of(Ci::PipelineCreation::Inputs::StringInput)
+        expect(inputs[0]).to be_an_instance_of(Ci::Inputs::StringInput)
         expect(inputs[0].default).to eq('test')
 
-        expect(inputs[1]).to be_an_instance_of(Ci::PipelineCreation::Inputs::NumberInput)
+        expect(inputs[1]).to be_an_instance_of(Ci::Inputs::NumberInput)
         expect(inputs[1].default).to eq(42)
 
-        expect(inputs[2]).to be_an_instance_of(Ci::PipelineCreation::Inputs::BooleanInput)
+        expect(inputs[2]).to be_an_instance_of(Ci::Inputs::BooleanInput)
         expect(inputs[2].default).to be(true)
 
-        expect(inputs[3]).to be_an_instance_of(Ci::PipelineCreation::Inputs::ArrayInput)
+        expect(inputs[3]).to be_an_instance_of(Ci::Inputs::ArrayInput)
         expect(inputs[3].default).to eq(['item1'])
       end
     end

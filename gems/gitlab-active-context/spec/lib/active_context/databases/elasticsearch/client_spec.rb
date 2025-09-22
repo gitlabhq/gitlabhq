@@ -35,12 +35,12 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Client do
 
     it 'includes all expected keys with correct values' do
       expect(elasticsearch_config).to include(
-        adapter: :typhoeus,
+        adapter: described_class::DEFAULT_ADAPTER,
         urls: 'http://localhost:9200',
         transport_options: {
           request: {
             timeout: 30,
-            open_timeout: 5
+            open_timeout: described_class::OPEN_TIMEOUT
           }
         },
         randomize_hosts: true,
@@ -48,6 +48,26 @@ RSpec.describe ActiveContext::Databases::Elasticsearch::Client do
         log: true,
         debug: true
       )
+    end
+
+    context 'when adapter is set in elasticsearch_config' do
+      let(:options) { { url: 'http://localhost:9200', client_request_timeout: 30, client_adapter: 'net_http' } }
+
+      it 'uses the adapter from elasticsearch_config' do
+        options = client.client.transport.options
+
+        expect(options).to include(adapter: :net_http)
+      end
+    end
+
+    context 'when client_adapter in elasticsearch_config is null' do
+      let(:options) { { url: 'http://localhost:9200', client_request_timeout: 30, client_adapter: nil } }
+
+      it 'falls back to the DEFAULT_ADAPTER' do
+        options = client.client.transport.options
+
+        expect(options).to include(adapter: described_class::DEFAULT_ADAPTER)
+      end
     end
   end
 end

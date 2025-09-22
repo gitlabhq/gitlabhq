@@ -32,17 +32,45 @@ RSpec.describe ActiveContext::Databases::Opensearch::Client do
   end
 
   describe '#opensearch_config' do
-    it 'returns correct configuration hash' do
+    let(:options) { { url: 'http://localhost:9200', client_request_timeout: 45, retry_on_failure: 5, debug: true } }
+
+    it 'returns expected configuration hash' do
       config = client.send(:opensearch_config)
 
       expect(config).to include(
+        adapter: described_class::DEFAULT_ADAPTER,
         urls: options[:url],
-        randomize_hosts: true
+        transport_options: {
+          request: {
+            timeout: 45,
+            open_timeout: described_class::OPEN_TIMEOUT
+          }
+        },
+        randomize_hosts: true,
+        retry_on_failure: 5,
+        log: true,
+        debug: true
       )
-      expect(config[:transport_options][:request]).to include(
-        timeout: options[:client_request_timeout],
-        open_timeout: described_class::OPEN_TIMEOUT
-      )
+    end
+
+    context 'when adapter is set in elasticsearch_config' do
+      let(:options) { { url: 'http://localhost:9200', client_request_timeout: 30, client_adapter: 'net_http' } }
+
+      it 'uses the adapter from elasticsearch_config' do
+        options = client.client.transport.transport.options
+
+        expect(options).to include(adapter: :net_http)
+      end
+    end
+
+    context 'when client_adapter in elasticsearch_config is null' do
+      let(:options) { { url: 'http://localhost:9200', client_request_timeout: 30, client_adapter: nil } }
+
+      it 'falls back to the DEFAULT_ADAPTER' do
+        options = client.client.transport.transport.options
+
+        expect(options).to include(adapter: described_class::DEFAULT_ADAPTER)
+      end
     end
   end
 

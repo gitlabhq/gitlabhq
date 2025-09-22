@@ -877,7 +877,11 @@ Each Geo site requires a separate, site-specific:
 This diagram illustrates the data flow and basic architecture:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TB
+    accTitle: Geo architecture for the container registry metadata database
+    accDescr: The primary site sends events to the secondary site through the GitLab Rails notification system for Geo replication.
+
     subgraph "Primary site"
         P_Rails[GitLab Rails]
         P_Reg[Container registry]

@@ -98,7 +98,11 @@ module Gitlab
 
           # Build nested OR conditions for stable ordering
           or_conditions.reduce do |accumulated, condition|
-            Arel::Nodes::Or.new(accumulated, condition)
+            if Gitlab.next_rails?
+              Arel::Nodes::Or.new([accumulated, condition])
+            else
+              Arel::Nodes::Or.new(accumulated, condition)
+            end
           end
         end
 

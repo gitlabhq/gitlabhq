@@ -244,7 +244,6 @@ and included in `rules` definitions via [YAML anchors](../../ci/yaml/yaml_optimi
 | `if-merge-request-title-as-if-foss`         | Matches if the pipeline is for a merge request and the MR has label `~"pipeline:run-as-if-foss"`. | |
 | `if-merge-request-title-update-caches`      | Matches if the pipeline is for a merge request and the MR has label `~"pipeline:update-cache"`. | |
 | `if-merge-request-labels-run-all-rspec`     | Matches if the pipeline is for a merge request and the MR has label `~"pipeline:run-all-rspec"`. | |
-| `if-merge-request-labels-run-cs-evaluation` | Matches if the pipeline is for a merge request and the MR has label `~"pipeline:run-CS-evaluation"`. | |
 | `if-security-merge-request`                 | Matches if the pipeline is for a security merge request. | |
 | `if-security-schedule`                      | Matches if the pipeline is for a security scheduled pipeline. | |
 | `if-nightly-master-schedule`                | Matches if the pipeline is for a `master` scheduled pipeline with `$NIGHTLY` set. | |

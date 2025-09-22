@@ -53,9 +53,10 @@ Group owners and administrators can control which cluster agents host workspaces
 For example, if the path to your workspace project is `top-level-group/subgroup-1/subgroup-2/workspace-project`, you can use any configured agent for either `top-level-group`, `subgroup-1` or `subgroup-2` group.
 
 ```mermaid
-%%{init: {'theme':'neutral'}}%%
-
-graph TD;
+%%{init: { "theme": "neutral", "fontFamily": "GitLab Sans" }}%%
+graph TD
+    accTitle: Agent authorization hierarchy for workspaces
+    accDescr: Workspace projects inherit access to agents from all parent groups in the hierarchy.
 
     classDef active fill:lightgreen, stroke:#green, color:green, stroke-width:1px;
 

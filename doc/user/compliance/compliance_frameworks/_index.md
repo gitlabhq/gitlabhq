@@ -293,7 +293,7 @@ Combine GitLab compliance controls to help you meet
 | Author approved merge request is forbidden               | `merge_request_prevent_author_approval`                    | Ensures that the author of a merge request [cannot approve their own changes](../../project/merge_requests/approvals/_index.md). |
 | Branch deletion disabled                                 | `branch_deletion_disabled`                                 | Ensures that [branches can't be deleted](../../project/repository/branches/protected.md). |
 | CI/CD job token scope enabled                            | `cicd_job_token_scope_enabled`                             | Ensures that [CI/CD job token](../../../ci/jobs/ci_job_token.md) scope restrictions are enabled. |
-| Code changes requires code owners                        | `code_changes_requires_code_owners`                        | Ensures that code changes require approval from [code owners](../../project/codeowners/_index.md). |
+| Code changes require code owners                         | `code_changes_requires_code_owners`                        | Ensures that code changes require approval from [code owners](../../project/codeowners/_index.md). |
 | Code owner approval required                             | `code_owner_approval_required`                             | Ensures that [code owners file](../../project/codeowners/_index.md) is configured. |
 | Code quality running                                     | `scanner_code_quality_running`                             | Ensures that [code quality scanning](../../../ci/testing/code_quality.md) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
 | Committers approved merge request is forbidden           | `merge_request_prevent_committers_approval`                | Ensures that users who have [committed to a merge request cannot approve it](../../project/merge_requests/approvals/_index.md). |
@@ -315,7 +315,7 @@ Combine GitLab compliance controls to help you meet
 | Internal visibility is forbidden                         | `project_visibility_not_internal`                          | Ensures that projects are not set to [internal visibility](../../public_access.md). |
 | Issue tracking enabled                                   | `issue_tracking_enabled`                                   | Ensures that [issue tracking](../../project/issues/_index.md) is enabled for the project. |
 | License compliance running                               | `scanner_license_compliance_running`                       | Ensures that [license compliance scanning](../license_approval_policies.md) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
-| Merge request commit reset approvals                     | `merge_request_commit_reset_approvals`                     | Ensures that [new commits to merge requests reset approvals](../../project/merge_requests/approvals/settings.md). |
+| Merge request commit resets approvals                    | `merge_request_commit_reset_approvals`                     | Ensures that [new commits to merge requests reset approvals](../../project/merge_requests/approvals/settings.md). |
 | Merge requests approval rules prevent editing            | `merge_requests_approval_rules_prevent_editing`            | Ensures that [merge request approval rules](../../project/merge_requests/approvals/settings.md) can't be edited. |
 | Merge requests require code owner approval               | `merge_requests_require_code_owner_approval`               | Ensures that merge requests require approval from [code owners](../../project/codeowners/_index.md). |
 | More members than admins                                 | `more_members_than_admins`                                 | Ensures fewer [administrators](../../project/members/_index.md) are assigned to the project than total members. |
@@ -387,7 +387,11 @@ To add an external control when creating or editing a framework:
 External controls have an **asynchronous** workflow. [Compliance scans](../compliance_center/compliance_status_report.md#scan-timing-and-triggers) emit a payload to an external service whenever.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+    accTitle: Workflow for external compliance controls
+    accDescr: GitLab sends a requirement payload to an external service and receives a control response for compliance validation.
+
     GitLab->>+External service: Requirement payload
     External service-->>-GitLab: Control response
     Note over External service,GitLab: Response includes SHA at HEAD

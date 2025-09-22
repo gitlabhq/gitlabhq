@@ -1,5 +1,5 @@
 <script>
-import { GlSkeletonLoader, GlCollapsibleListbox, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { GlSkeletonLoader, GlCollapsibleListbox, GlTooltipDirective } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -43,7 +43,6 @@ export default {
     GlSkeletonLoader,
     GlCollapsibleListbox,
     BaseWidget,
-    GlIcon,
   },
   directives: {
     SafeHtml,
@@ -158,17 +157,7 @@ export default {
   <base-widget @visible="reload">
     <div class="gl-flex gl-items-center gl-justify-between gl-gap-2">
       <div class="gl-flex gl-items-center gl-gap-2">
-        <h2 class="gl-heading-4 gl-m-0">{{ __('Activity') }}</h2>
-        <gl-icon
-          v-gl-tooltip.hover
-          :title="
-            s__(
-              'HomepageActivityWidget|Filter your activity feed to see different types of events.',
-            )
-          "
-          name="information-o"
-          class="gl-text-subtle"
-        />
+        <h2 class="gl-heading-4 gl-m-0">{{ __('Follow the latest updates') }}</h2>
       </div>
 
       <gl-collapsible-listbox

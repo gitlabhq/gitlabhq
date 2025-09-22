@@ -4,6 +4,8 @@ module Packages
   class GroupPackagesFinder
     include ::Packages::FinderHelper
 
+    # TODO: Remove `packages_class` with the rollout of the FF packages_refactor_group_packages_finder
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/568923
     def initialize(
       current_user, group, params = { exclude_subgroups: false,
                                       exact_name: false,
@@ -35,7 +37,17 @@ module Packages
       packages = packages.preload_pipelines if preload_pipelines
 
       packages = filter_with_version(packages)
-      packages = filter_by_package_type(packages)
+
+      packages = if Feature.enabled?(:packages_refactor_group_packages_finder, group)
+                   if package_type
+                     packages
+                   else
+                     packages.without_package_type(:terraform_module)
+                   end
+                 else
+                   filter_by_package_type(packages)
+                 end
+
       packages = (params[:exact_name] ? filter_by_exact_package_name(packages) : filter_by_package_name(packages))
       packages = filter_by_package_version(packages)
       installable_only ? packages.installable : filter_by_status(packages)
@@ -92,7 +104,19 @@ module Packages
     end
 
     def packages_class
-      params.fetch(:packages_class, ::Packages::Package)
+      if group && Feature.enabled?(:packages_refactor_group_packages_finder, group)
+        return ::Packages::Package unless package_type
+
+        klass = ::Packages::Package.inheritance_column_to_class_map[package_type.to_sym]
+        raise ArgumentError, "'#{package_type}' is not a valid package_type" unless klass
+
+        klass.constantize
+      else
+        # TODO: Always use `::Packages::Package` as `packages_class` when no group
+        # with the rollout of the FF packages_refactor_group_packages_finder
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/568923
+        params.fetch(:packages_class, ::Packages::Package)
+      end
     end
   end
 end

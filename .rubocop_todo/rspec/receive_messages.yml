@@ -397,7 +397,6 @@ RSpec/ReceiveMessages:
     - 'spec/rubocop/migration_helpers_spec.rb'
     - 'spec/scripts/api/get_test_on_omnibus_job_spec.rb'
     - 'spec/scripts/database/schema_validator_spec.rb'
-    - 'spec/scripts/download_downstream_artifact_spec.rb'
     - 'spec/scripts/generate_message_to_run_e2e_pipeline_spec.rb'
     - 'spec/scripts/pipeline_test_report_builder_spec.rb'
     - 'spec/scripts/setup/find-jh-branch_spec.rb'

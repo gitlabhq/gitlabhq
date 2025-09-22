@@ -407,7 +407,6 @@ Layout/ClassStructure:
     - 'rubocop/cop_todo.rb'
     - 'rubocop/formatter/graceful_formatter.rb'
     - 'rubocop/formatter/todo_formatter.rb'
-    - 'scripts/download-downstream-artifact.rb'
     - 'scripts/static-analysis'
     - 'scripts/trigger-build.rb'
     - 'spec/support/helpers/database/duplicate_indexes.rb'

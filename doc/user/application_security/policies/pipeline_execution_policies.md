@@ -635,6 +635,8 @@ The following diagram illustrates how variables defined at the project and polic
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
+    accTitle: Variable precedence in pipeline execution policies
+    accDescr: Policy variables take precedence over project variables when jobs are combined into the resulting pipeline.
 
 classDef yaml text-align:left
 

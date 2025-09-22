@@ -3247,7 +3247,6 @@ RSpec/FeatureCategory:
     - 'spec/presenters/commit_status_presenter_spec.rb'
     - 'spec/presenters/deploy_key_presenter_spec.rb'
     - 'spec/presenters/deployments/deployment_presenter_spec.rb'
-    - 'spec/presenters/dev_ops_report/metric_presenter_spec.rb'
     - 'spec/presenters/event_presenter_spec.rb'
     - 'spec/presenters/gitlab/blame_presenter_spec.rb'
     - 'spec/presenters/group_member_presenter_spec.rb'

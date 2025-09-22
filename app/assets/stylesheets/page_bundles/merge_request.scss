@@ -73,9 +73,13 @@ $merge-request-sticky-header-height: 45px;
 .merge-request-select {
   padding-left: 5px;
   padding-right: 5px;
-  margin-bottom: 0;
-  float: left;
-  width: 50%;
+  margin-bottom: 10px;
+
+  @include gl-container-width-up(sm, panel) {
+    float: left;
+    width: 50%;
+    margin-bottom: 0;
+  }
 
   &:last-child {
     margin-bottom: 0;

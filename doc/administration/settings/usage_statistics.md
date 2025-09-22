@@ -130,11 +130,15 @@ The following example shows a basic request/response flow between your
 instance and the GitLab Version Application:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+    accTitle: Version check process
+    accDescr: The GitLab instance queries the version application for updates and receives a status response as an image file.
+
     participant GitLab instance
-    participant Version Application
-    GitLab instance->>Version Application: Is there a version update?
-    Version Application->>GitLab instance: Response (PNG/SVG)
+    participant Version application
+    GitLab instance->>Version application: Is there a version update?
+    Version application->>GitLab instance: Response (PNG/SVG)
 ```
 
 ## Configure your network

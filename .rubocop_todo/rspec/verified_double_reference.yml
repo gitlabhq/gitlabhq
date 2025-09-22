@@ -10,7 +10,6 @@ RSpec/VerifiedDoubleReference:
     - 'ee/spec/helpers/vulnerabilities_helper_spec.rb'
     - 'ee/spec/lib/ai/context/dependencies/config_files/base_spec.rb'
     - 'ee/spec/lib/ai/duo_workflow/duo_workflow_service/client_spec.rb'
-    - 'ee/spec/lib/cloud_connector/self_signed/available_service_data_spec.rb'
     - 'ee/spec/lib/ee/gitlab/gon_helper_spec.rb'
     - 'ee/spec/lib/gitlab/ci/minutes/pipeline_consumption_spec.rb'
     - 'ee/spec/lib/gitlab/duo/chat/agent_event_parser_spec.rb'

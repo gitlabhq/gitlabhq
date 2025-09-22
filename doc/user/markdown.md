@@ -1460,7 +1460,11 @@ To generate a diagram or flowchart, write your text inside the `mermaid` block:
 
 ````markdown
 ```mermaid
-graph TD;
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+graph TD
+    accTitle: Basic Mermaid diagram example
+    accDescr: Simple flowchart showing nodes A, B, C, and D with connections between them.
+
   A-->B;
   A-->C;
   B-->D;
@@ -1471,7 +1475,11 @@ graph TD;
 When rendered, the example looks similar to:
 
 ```mermaid
-graph TD;
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+graph TD
+    accTitle: Basic Mermaid diagram example
+    accDescr: Simple flowchart showing nodes A, B, C, and D with connections between them.
+
   A-->B;
   A-->C;
   B-->D;
@@ -1482,7 +1490,11 @@ You can also include subgraphs:
 
 ````markdown
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
+    accTitle: Mermaid diagram with subgraphs
+    accDescr: Flowchart showing main graph with two subgraphs containing nodes and decision flows.
+
   SubGraph1 --> SubGraph1Flow
 
   subgraph "SubGraph 1 Flow"
@@ -1502,7 +1514,11 @@ graph TB
 When rendered, the example looks similar to:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
+    accTitle: Mermaid diagram with subgraphs rendered
+    accDescr: Flowchart showing main graph with two subgraphs containing nodes and decision flows as rendered.
+
   SubGraph1 --> SubGraph1Flow
 
   subgraph "SubGraph 1 Flow"

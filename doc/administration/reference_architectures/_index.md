@@ -266,8 +266,11 @@ For more information, see the [recommended cloud providers and services](#recomm
 Read through the guidance documented previously in full first before you refer to the following decision tree.
 
 ```mermaid
-%%{init: { 'theme': 'base' } }%%
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
+    accTitle: Decision tree for reference architecture selection
+    accDescr: Key considerations for selecting architecture including expected load, HA requirements, and additional workload factors.
+
    L0A(<b>What Reference Architecture should I use?</b>)
    L1A(<b>What is your <a href=#expected-load-rps--user-count>expected load</a>?</b>)
 

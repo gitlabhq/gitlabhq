@@ -13,8 +13,14 @@
     }
   }
 
-  // Application chrome background
+  // Fix height
+  &, body {
+    @apply gl-h-full;
+  }
+
   body {
+    @apply gl-flex gl-flex-col;
+    // Application chrome background
     background-color: var(--super-sidebar-bg);
   }
 
@@ -32,7 +38,7 @@
 
   // Super topbar
   .super-topbar {
-    @apply gl-fixed gl-w-full gl-left-0 gl-py-0 gl-pl-4 gl-pr-5 sm:gl-pr-3;
+    @apply gl-fixed gl-w-full gl-left-0 gl-shrink-0 gl-py-0 gl-pl-4 gl-pr-5 sm:gl-pr-3;
     top: $calc-system-headers-height;
     height: var(--header-height);
 
@@ -154,6 +160,10 @@
   &:not(.gl-dark) .super-topbar .organization-switcher-button.gl-button:not(:hover):not(:focus):not(:active) {
     @apply gl-bg-alpha-dark-6 gl-border-default;
   }
+
+  .panel-content-inner:has(.issue-boards-content) {
+    @apply gl-mx-0;
+  }
 }
 
 /*
@@ -169,8 +179,11 @@
 
   // Layout
   &.page-with-panels .layout-page {
-    @apply gl-flex gl-gap-0 lg:gl-gap-3 gl-items-stretch gl-justify-start lg:gl-justify-center gl-flex-col lg:gl-flex-row gl-pl-3 lg:gl-pl-0 gl-pt-3 lg:gl-pb-3 gl-pr-3;
-    height: calc(100vh - var(--system-header-height) - var(--performance-bar-height) - var(--header-height) - var(--ai-panel-height));
+    @apply gl-flex gl-gap-0 lg:gl-gap-3 gl-items-stretch gl-justify-start lg:gl-justify-center gl-flex-col lg:gl-flex-row gl-pl-3 lg:gl-pl-0 gl-pt-3 lg:gl-pb-3 gl-pr-3 gl-h-full;
+
+    @include media-breakpoint-up(lg) {
+      height: calc(100% - var(--system-header-height) - var(--performance-bar-height) - var(--header-height) - var(--ai-panel-height));
+    }
 
     // Temporarily solution to hide empty AI Chat divs
     // empty:gl-hidden and :empty doesn't work because these empty divs have comment blocks
@@ -211,7 +224,6 @@
   // Panels container
   .panels-container {
     @apply gl-relative gl-grow gl-flex gl-pr-0 gl-pb-0;
-    @apply gl-min-h-full lg:gl-h-full #{!important};
 
     .panel-content-inner,
     .vue-portal-target .work-item-drawer-content {

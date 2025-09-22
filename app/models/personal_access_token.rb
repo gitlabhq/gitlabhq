@@ -94,6 +94,8 @@ class PersonalAccessToken < ApplicationRecord
   delegate :permitted_for_boundary?, to: :granular_scopes
 
   def revoke!
+    return true if revoked?
+
     if persisted?
       update_columns(revoked: true, updated_at: Time.zone.now)
     else

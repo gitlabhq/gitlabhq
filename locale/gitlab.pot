@@ -6443,6 +6443,9 @@ msgstr ""
 msgid "AiPowered|Explore GitLab Duo Core"
 msgstr ""
 
+msgid "AiPowered|Explore usage metrics and performance insights for GitLab Duo AI assistant features across your organization."
+msgstr ""
+
 msgid "AiPowered|Failed to disable GitLab Duo Agent Platform."
 msgstr ""
 
@@ -6546,6 +6549,12 @@ msgid "AiPowered|Participate in the Early Access Program and help make GitLab be
 msgstr ""
 
 msgid "AiPowered|Purchase Duo Pro seats"
+msgstr ""
+
+msgid "AiPowered|See GitLab usage analytics"
+msgstr ""
+
+msgid "AiPowered|See dashboard"
 msgstr ""
 
 msgid "AiPowered|Self-hosted beta models and features"
@@ -16869,7 +16878,7 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Checks"
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|Code changes requires code owners"
+msgid "ComplianceStandardsAdherence|Code changes require code owners"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Code owner approval required"
@@ -17388,7 +17397,7 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|Merge request approval rules"
 msgstr ""
 
-msgid "ComplianceStandardsAdherence|Merge request commit reset approvals"
+msgid "ComplianceStandardsAdherence|Merge request commit resets approvals"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Merge requests approval rules prevent editing"
@@ -28642,6 +28651,9 @@ msgstr ""
 msgid "Follow"
 msgstr ""
 
+msgid "Follow the latest updates"
+msgstr ""
+
 msgid "Followed Users' Activity"
 msgstr ""
 
@@ -33184,9 +33196,6 @@ msgstr ""
 msgid "HomepageActivityWidget|Activity in projects you have starred."
 msgstr ""
 
-msgid "HomepageActivityWidget|Filter your activity feed to see different types of events."
-msgstr ""
-
 msgid "HomepageActivityWidget|Followed users"
 msgstr ""
 
@@ -36064,6 +36073,9 @@ msgid "Items are already linked"
 msgstr ""
 
 msgid "Items below are excluded from the active count"
+msgstr ""
+
+msgid "Items that need your attention"
 msgstr ""
 
 msgid "Iteration"
@@ -60281,6 +60293,9 @@ msgstr ""
 msgid "SecurityReports|Manage and track vulnerabilities identified in your selected projects. Vulnerabilities for selected projects are shown here when security testing is configured and a pipeline has been run on the default branch."
 msgstr ""
 
+msgid "SecurityReports|Max project limit reached"
+msgstr ""
+
 msgid "SecurityReports|Maximum selected projects limit reached"
 msgstr ""
 
@@ -60336,6 +60351,9 @@ msgid "SecurityReports|OWASP Top 10 2017"
 msgstr ""
 
 msgid "SecurityReports|OWASP Top 10 2021"
+msgstr ""
+
+msgid "SecurityReports|Only %{count} projects with the highest risk scores are shown. Use the filter at the top of the dashboard to narrow down your results."
 msgstr ""
 
 msgid "SecurityReports|Oops, something doesn't seem right."
@@ -67523,9 +67541,6 @@ msgstr ""
 msgid "To-Do List"
 msgstr ""
 
-msgid "To-do items"
-msgstr ""
-
 msgid "Today"
 msgstr ""
 
@@ -67567,6 +67582,9 @@ msgstr ""
 msgid "Todos|Assigned"
 msgstr ""
 
+msgid "Todos|Assignments"
+msgstr ""
+
 msgid "Todos|At"
 msgstr ""
 
@@ -67594,7 +67612,13 @@ msgstr ""
 msgid "Todos|Due today"
 msgstr ""
 
+msgid "Todos|Everything"
+msgstr ""
+
 msgid "Todos|Failed adding todo. Try again later."
+msgstr ""
+
+msgid "Todos|Failed builds"
 msgstr ""
 
 msgid "Todos|Failed to snooze todo. Try again later."
@@ -67604,9 +67628,6 @@ msgid "Todos|Failed to un-snooze todo. Try again later."
 msgstr ""
 
 msgid "Todos|Filter to-do items"
-msgstr ""
-
-msgid "Todos|Filter your to-do items to focus on what needs your attention."
 msgstr ""
 
 msgid "Todos|For one hour"
@@ -67674,6 +67695,9 @@ msgstr ""
 msgid "Todos|Mentioned"
 msgstr ""
 
+msgid "Todos|Mentions"
+msgstr ""
+
 msgid "Todos|Merge request"
 msgstr ""
 
@@ -67726,6 +67750,9 @@ msgid "Todos|Removed snooze from 1 to-do"
 msgid_plural "Todos|Removed snooze from %d to-dos"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Todos|Requested reviews"
+msgstr ""
 
 msgid "Todos|Restored 1 to-do"
 msgid_plural "Todos|Restored %d to-dos"
@@ -67822,6 +67849,9 @@ msgid "Todos|Undo"
 msgstr ""
 
 msgid "Todos|Unmergeable"
+msgstr ""
+
+msgid "Todos|Unmergeable changes"
 msgstr ""
 
 msgid "Todos|Until a specific time and date"

@@ -137,5 +137,17 @@ describe('FeaturedCarousel', () => {
         expect(findCounter().text()).toBe('1 / 2');
       });
     });
+
+    it('sets current card on focus', () => {
+      const cards = findFeaturedCards();
+
+      expect(wrapper.vm.currentCard).toBe(0);
+
+      cards.at(1).trigger('focusin');
+      expect(wrapper.vm.currentCard).toBe(1);
+
+      cards.at(0).trigger('focusin');
+      expect(wrapper.vm.currentCard).toBe(0);
+    });
   });
 });

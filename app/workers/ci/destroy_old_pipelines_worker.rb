@@ -15,7 +15,7 @@ module Ci
     CONCURRENCY = 10
 
     def perform_work(*)
-      Project.find_by_id(fetch_next_project_id).try do |project|
+      Project.find_by_id(cleanup_queue.fetch_next_project_id!).try do |project|
         with_context(project: project) do
           timestamp = project.ci_delete_pipelines_in_seconds.seconds.ago
           pipelines = Ci::Pipeline.for_project(project.id).created_before(timestamp)
@@ -24,7 +24,14 @@ module Ci
 
           pipelines = pipelines.limit(LIMIT).to_a
 
-          Ci::DestroyPipelineService.new(project, nil).unsafe_execute(pipelines)
+          if use_improved_logic?(project)
+            Ci::DestroyPipelineService.new(project, nil).unsafe_execute(pipelines, skip_cancel: true)
+
+            # Requeue project if there are more pipelines to remove
+            cleanup_queue.enqueue!(project) if pipelines.size == LIMIT
+          else
+            Ci::DestroyPipelineService.new(project, nil).unsafe_execute(pipelines)
+          end
 
           log_extra_metadata_on_done(:removed_count, pipelines.size)
           log_extra_metadata_on_done(:project, project.full_path)
@@ -37,21 +44,13 @@ module Ci
     end
 
     def remaining_work_count(*)
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.llen(queue_key)
-      end
+      cleanup_queue.size
     end
 
     private
 
-    def fetch_next_project_id
-      Gitlab::Redis::SharedState.with do |redis|
-        redis.lpop(queue_key)
-      end
-    end
-
-    def queue_key
-      Ci::ScheduleOldPipelinesRemovalCronWorker::QUEUE_KEY
+    def cleanup_queue
+      @cleanup_queue ||= Ci::RetentionPolicies::ProjectsCleanupQueue.instance
     end
 
     def skip_protected_pipelines?(project)
@@ -60,6 +59,10 @@ module Ci
 
     def skip_locked_pipelines?(project)
       Feature.enabled?(:ci_skip_locked_pipelines, project.root_namespace, type: :wip)
+    end
+
+    def use_improved_logic?(project)
+      Feature.enabled?(:ci_improved_destroy_old_pipelines_worker, project.root_namespace)
     end
   end
 end

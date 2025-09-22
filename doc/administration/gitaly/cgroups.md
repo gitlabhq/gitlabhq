@@ -78,7 +78,11 @@ If the Gitaly storage serves:
 - More than the number of repository cgroups, multiple repositories are assigned to the same group in a consistent manner.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TB
+    accTitle: Gitaly cgroups structure
+    accDescr: Hierarchical cgroup structure with three repository cgroups under a parent cgroup.
+
  parent
  repos-1
  repos-2

@@ -34,9 +34,9 @@ project.
 Prerequisites:
 
 - Ensure the project uses [supported languages and package managers](#supported-languages-and-package-managers).
-- [Dependency Scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning)
+- [Dependency scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning)
   version 0.32.0 and later.
-- Enable [Dependency Scanning by using SBOM](dependency_scanning_sbom/_index.md#getting-started).
+- Enable [Dependency scanning by using SBOM](dependency_scanning_sbom/_index.md#getting-started).
   [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) analyzers are not
   supported.
 - Language-specific prerequisites:
@@ -45,10 +45,10 @@ Prerequisites:
     related instructions for dependency scanning using SBOM. You can also use any other Python package
     manager that is
     [supported](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning#supported-files)
-    by the DS analyzer.
+    by the dependency scanning analyzer.
   - For JavaScript and TypeScript, ensure your repository has lock files
     [supported](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning#supported-files)
-    by the DS analyzer.
+    by the dependency scanning analyzer.
 
 Exclusions:
 
@@ -67,7 +67,7 @@ To enable SRA:
     DS_STATIC_REACHABILITY_ENABLED: true
   ```
 
-  If you're using the [Dependency Scanning component](https://gitlab.com/components/dependency-scanning),
+  If you're using the [dependency scanning component](https://gitlab.com/components/dependency-scanning),
   add the following (ensuring there is only one `include:` line.):
 
   ```yaml
@@ -103,8 +103,8 @@ dismissing it, as SRA cannot always definitively determine package usage.
 Not Available
 : SRA was not executed, so no reachability data exists.
 
-When a direct dependency is marked as **in use**, all its transitive dependencies are also marked as
-**in use**.
+When a direct dependency is marked as in use, all its transitive dependencies are also marked as
+in use.
 
 ## Supported languages and package managers
 
@@ -122,7 +122,7 @@ dependencies are marked as [not found](#understanding-the-results).
 
 **Footnotes**:
 
-1. When using Dependency Scanning with `pipdeptree`,
+1. When using dependency scanning with `pipdeptree`,
   [optional dependencies](https://setuptools.pypa.io/en/latest/userguide/dependency_management.html#optional-dependencies)
    are marked as direct dependencies instead of as transitive dependencies. Static reachability
    analysis might not identify those packages as in use. For example, requiring `passlib[bcrypt]`

@@ -367,6 +367,19 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
         expect(active_personal_access_token.updated_at).to eq(timestamp_of_token_revocation)
       end
+
+      context 'when already revoked' do
+        before do
+          travel_to(3.days.ago.change(usec: 0)) do
+            active_personal_access_token.revoke!
+          end
+        end
+
+        it 'is idempotent' do
+          expect(active_personal_access_token).to be_revoked
+          expect { active_personal_access_token.revoke! }.not_to change { active_personal_access_token.reload.updated_at }
+        end
+      end
     end
 
     context 'when the token is not persisted (before scheduled revocation after DEFAULT_LEASE_TIMEOUT)' do

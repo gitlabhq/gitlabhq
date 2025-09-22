@@ -46,9 +46,12 @@ module API
             end
             strong_memoize_attr :module_namespace
 
+            # TODO: Remove `packages_class` with the rollout of the FF packages_refactor_group_packages_finder
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/568923
             def finder_params
               {
                 packages_class: ::Packages::TerraformModule::Package,
+                package_type: :terraform_module,
                 package_name: "#{params[:module_name]}/#{params[:module_system]}",
                 package_version: params[:module_version],
                 exact_name: true,

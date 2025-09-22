@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
-require_relative Rails.root.join('lib/ci/pipeline_creation/inputs/base_input.rb')
+require_relative Rails.root.join('lib/ci/inputs/base_input.rb')
 
-RSpec.describe Ci::PipelineCreation::Inputs::BaseInput, feature_category: :pipeline_composition do
+RSpec.describe Ci::Inputs::BaseInput, feature_category: :pipeline_composition do
   describe '.matches?' do
     context 'when given is a hash' do
       before do
@@ -39,6 +39,16 @@ RSpec.describe Ci::PipelineCreation::Inputs::BaseInput, feature_category: :pipel
   describe '.type_name' do
     it 'is not implemented' do
       expect { described_class.type_name }.to raise_error(NotImplementedError)
+    end
+  end
+
+  describe '#validate_param!' do
+    context 'when BaseInput is used directly with a default value' do
+      let(:input) { described_class.new(name: :test_input, spec: { default: 'test' }) }
+
+      it 'raises NotImplementedError when validating the default value' do
+        expect { input.validate_param!(nil) }.to raise_error(NotImplementedError)
+      end
     end
   end
 

@@ -10,7 +10,6 @@ Style/RedundantParentheses:
     - 'config/initializers/8_devise.rb'
     - 'config/initializers/zz_metrics.rb'
     - 'ee/app/controllers/groups/billings_controller.rb'
-    - 'ee/app/services/concerns/approval_rules/updater.rb'
     - 'ee/app/services/merge_trains/refresh_service.rb'
     - 'ee/lib/ee/gitlab/git_access.rb'
     - 'ee/spec/requests/lfs_locks_api_spec.rb'
