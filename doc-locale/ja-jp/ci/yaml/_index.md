@@ -3,37 +3,41 @@ stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: CI/CD YAML構文リファレンス
+description: パイプライン設定キーワード、構文、例、インプット。
 ---
 
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
-このドキュメントでは、GitLab `.gitlab-ci.yml`ファイルの設定オプションについて説明します。このファイルでは、パイプラインを構成するCI/CDジョブを定義します。
+このドキュメントでは、GitLabの`.gitlab-ci.yml`ファイルの設定オプションについて説明します。このファイルでは、パイプラインを構成するCI/CDジョブを定義します。
 
-- [基本的なCI/CDの概念](../_index.md)をすでにご存知の場合は、[単純](../quick_start/_index.md)または[複雑な](../quick_start/tutorial.md)パイプラインを示すチュートリアルに従って、独自の`.gitlab-ci.yml`ファイルを作成してみてください。
-- 例のまとめについては、[GitLab CI/CDの例](../examples/_index.md)を参照してください。
-- エンタープライズで使用される大きな`.gitlab-ci.yml`ファイルを確認するには、[`gitlab`の`.gitlab-ci.yml`ファイル](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml)を参照してください。
+- [基本的なCI/CDの概念](../_index.md)をすでに理解している方は、[シンプル](../quick_start/_index.md)または[複雑](../quick_start/tutorial.md)なパイプラインの構築手順を示すチュートリアルに沿って、独自の`.gitlab-ci.yml`ファイルを作成してみてください。
+- さまざまな例については、[GitLab CI/CDの例](../examples/_index.md)を参照してください。
+- エンタープライズで使用される大規模な`.gitlab-ci.yml`ファイルを確認するには、[`gitlab`の`.gitlab-ci.yml`ファイル](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab-ci.yml)を参照してください。
 
-`.gitlab-ci.yml`ファイルを編集するときには、[CI Lint](lint.md)ツールでこのファイルを検証できます。
+`.gitlab-ci.yml`ファイルを編集しているときは、[CI Lint](lint.md)ツールでこのファイルを検証できます。
 
-このページのコンテンツを編集する場合は、[キーワードをドキュメント化する手順](../../development/cicd/cicd_reference_documentation_guide.md)に従ってください。
+<!--
+If you are editing content on this page, follow the instructions for documenting keywords:
+https://docs.gitlab.com/development/cicd/cicd_reference_documentation_guide/
+-->
 
-## キーワード
+## キーワード {#keywords}
 
-GitLab CI/CDパイプラインの設定には次のものが含まれます。
+GitLab CI/CDパイプラインの設定には、次の要素が含まれます。
 
-- パイプラインの動作を設定する[グローバルキーワード](#global-keywords)
+- パイプラインの動作を設定する[グローバルキーワード](#global-keywords):
 
-  | キーワード                   | 説明 |
-  |---------------------------|:------------|
-  | [`default`](#default)     | ジョブキーワードのカスタムデフォルト値。 |
-  | [`include`](#include)     | 他のYAMLファイルから設定をインポートします。 |
-  | [`stages`](#stages)       | パイプラインステージの名前と順序。 |
-  | [`workflow`](#workflow)   | 実行するパイプラインのタイプを制御します。 |
+  | キーワード                 | 説明 |
+  |-------------------------|:------------|
+  | [`default`](#default)   | ジョブキーワードに対するカスタムデフォルト値。 |
+  | [`include`](#include)   | 他のYAMLファイルから設定をインポートします。 |
+  | [`stages`](#stages)     | パイプラインステージの名前と順序。 |
+  | [`workflow`](#workflow) | 実行するパイプラインのタイプを制御します。 |
 
 - [ヘッダーキーワード](#header-keywords)
 
@@ -41,41 +45,41 @@ GitLab CI/CDパイプラインの設定には次のものが含まれます。
   |-----------------|:------------|
   | [`spec`](#spec) | 外部設定ファイルの仕様を定義します。 |
 
-- [ジョブキーワード](#job-keywords)を使用して設定された[ジョブ](../jobs/_index.md)
+- [ジョブキーワード](#job-keywords)を使用して設定される[ジョブ](../jobs/_index.md):
 
-  | キーワード                                       | 説明                                                                                                 |
-  |:----------------------------------------------|:------------------------------------------------------------------------------------------------------------|
-  | [`after_script`](#after_script)               | ジョブの後に実行される一連のコマンドをオーバーライドします。                                                     |
-  | [`allow_failure`](#allow_failure)             | ジョブの失敗を許容します。ジョブの失敗が原因でパイプラインが失敗することはありません。                                        |
-  | [`artifacts`](#artifacts)                     | 成功時にジョブに添付されるファイルとディレクトリのリスト。                                                |
-  | [`before_script`](#before_script)             | ジョブの前に実行される一連のコマンドをオーバーライドします。                                                    |
-  | [`cache`](#cache)                             | 後続の実行間でキャッシュされるファイルのリスト。                                                |
-  | [`coverage`](#coverage)                       | 特定のジョブのコードカバレッジ設定。                                                                     |
-  | [`dast_configuration`](#dast_configuration)   | ジョブレベルでDASTプロファイルの設定を使用します。                                                        |
-  | [`dependencies`](#dependencies)               | アーティファクトのフェッチ元のジョブのリストを指定することで、特定のジョブに渡されるアーティファクトを制限します。  |
-  | [`environment`](#environment)                 | ジョブのデプロイ先の環境の名前。                                                            |
-  | [`extends`](#extends)                         | このジョブが継承する設定エントリ。                                                          |
-  | [`identity`](#identity)                       | アイデンティティフェデレーションを使用したサードパーティのサービスの認証を行います。                                           |
-  | [`image`](#image)                             | Dockerイメージを使用します。                                                                                          |
-  | [`inherit`](#inherit)                         | すべてのジョブが継承するグローバルデフォルトを選択します。                                                              |
-  | [`interruptible`](#interruptible)             | 新しい実行によってジョブが冗長になった場合にジョブをキャンセルできるかどうかを定義します。                                        |
-  | [`manual_confirmation`](#manual_confirmation) | マニュアルジョブのカスタム確認メッセージを定義します。 |
-  | [`needs`](#needs)                             | ステージの順序よりも早い時点でジョブを実行します。                                                               |
-  | [`pages`](#pages)                             | GitLab Pagesで使用するためにジョブの結果をアップロードします。                                                        |
-  | [`parallel`](#parallel)                       | 並列実行するジョブインスタンスの数。                                                      |
-  | [`release`](#release)                         | [リリース](../../user/project/releases/_index.md)オブジェクトを生成するようにRunnerに指示します。                  |
-  | [`resource_group`](#resource_group)           | ジョブの並行処理を制限します。                                                                                      |
-  | [`retry`](#retry)                             | ジョブが失敗した場合に、ジョブを自動的に再試行できるタイミングと回数。                                     |
-  | [`rules`](#rules)                             | ジョブで選択された属性を評価し、ジョブが作成されるかどうかを決定する条件のリスト。 |
-  | [`script`](#script)                           | Runnerが実行するShellスクリプト。                                                                  |
-  | [`run`](#run)                                 | Runnerが実行する実行設定。                                                             |
-  | [`secrets`](#secrets)                         | ジョブに必要なCI/CDシークレット。                                                                            |
-  | [`services`](#services)                       | Dockerサービスイメージを使用します。                                                                                 |
-  | [`stage`](#stage)                             | ジョブステージを定義します。                                                                                        |
-  | [`tags`](#tags)                               | Runnerを選択するために使用されるタグのリスト。                                                              |
-  | [`timeout`](#timeout)                         | プロジェクト全体の設定よりも優先されるカスタムジョブレベルのタイムアウトを定義します。                      |
-  | [`trigger`](#trigger)                         | ダウンストリームパイプラインのトリガーを定義します。                                                                      |
-  | [`when`](#when)                               | ジョブを実行するタイミング。                                                                                            |
+  | キーワード                                       | 説明 |
+  |:----------------------------------------------|:------------|
+  | [`after_script`](#after_script)               | ジョブの後に実行される一連のコマンドをオーバーライドします。 |
+  | [`allow_failure`](#allow_failure)             | ジョブの失敗を許容します。ジョブが失敗してもパイプライン全体の失敗とはなりません。 |
+  | [`artifacts`](#artifacts)                     | 成功時にジョブに添付されるファイルとディレクトリのリスト。 |
+  | [`before_script`](#before_script)             | ジョブの前に実行される一連のコマンドをオーバーライドします。 |
+  | [`cache`](#cache)                             | 後続の実行間でキャッシュされるファイルのリスト。 |
+  | [`coverage`](#coverage)                       | 指定されたジョブのコードカバレッジ設定。 |
+  | [`dast_configuration`](#dast_configuration)   | ジョブレベルでDASTプロファイルの設定を使用します。 |
+  | [`dependencies`](#dependencies)               | アーティファクトのフェッチ元のジョブのリストを指定することで、特定のジョブに渡されるアーティファクトを制限します。 |
+  | [`environment`](#environment)                 | ジョブのデプロイ先の環境の名前。 |
+  | [`extends`](#extends)                         | このジョブが継承する設定エントリ。 |
+  | [`identity`](#identity)                       | アイデンティティフェデレーションを使用したサードパーティサービスの認証を行います。 |
+  | [`image`](#image)                             | Dockerイメージを使用します。 |
+  | [`inherit`](#inherit)                         | すべてのジョブが継承するグローバルデフォルトを選択します。 |
+  | [`interruptible`](#interruptible)             | より新しい実行によってジョブが冗長になった場合に、ジョブをキャンセルできるかどうかを定義します。 |
+  | [`manual_confirmation`](#manual_confirmation) | 手動ジョブのカスタム確認メッセージを定義します。 |
+  | [`needs`](#needs)                             | ステージの順序よりも早い時点でジョブを実行します。 |
+  | [`pages`](#pages)                             | GitLab Pagesで使用するためにジョブの結果をアップロードします。 |
+  | [`parallel`](#parallel)                       | 並列実行するジョブインスタンスの数。 |
+  | [`release`](#release)                         | [リリース](../../user/project/releases/_index.md)オブジェクトを生成するようにRunnerに指示します。 |
+  | [`resource_group`](#resource_group)           | ジョブの並行処理を制限します。 |
+  | [`retry`](#retry)                             | ジョブが失敗した場合に、ジョブを自動的に再試行できる条件と回数。 |
+  | [`rules`](#rules)                             | ジョブの一部の属性を評価し、そのジョブが作成されるかどうかを決定する条件のリスト。 |
+  | [`script`](#script)                           | Runnerが実行するShellスクリプト。 |
+  | [`run`](#run)                                 | Runnerが実行する実行設定。 |
+  | [`secrets`](#secrets)                         | ジョブに必要なCI/CDシークレット。 |
+  | [`services`](#services)                       | Dockerサービスイメージを使用します。 |
+  | [`stage`](#stage)                             | ジョブステージを定義します。 |
+  | [`tags`](#tags)                               | Runnerを選択するために使用されるタグのリスト。 |
+  | [`timeout`](#timeout)                         | プロジェクト全体の設定よりも優先される、カスタムのジョブレベルのタイムアウトを定義します。 |
+  | [`trigger`](#trigger)                         | ダウンストリームパイプライントリガーを定義します。 |
+  | [`when`](#when)                               | ジョブを実行するタイミング。 |
 
 - [CI/CD変数](#variables)
 
@@ -84,23 +88,25 @@ GitLab CI/CDパイプラインの設定には次のものが含まれます。
   | [デフォルト`variables`](#default-variables) | パイプラインのすべてのジョブのデフォルトCI/CD変数を定義します。 |
   | [ジョブ`variables`](#job-variables)         | 個々のジョブのCI/CD変数を定義します。 |
 
-## グローバルキーワード
+- 現在は使用が推奨されていない[非推奨のキーワード](deprecated_keywords.md)。
+
+## グローバルキーワード {#global-keywords}
 
 一部のキーワードはジョブでは定義されません。これらのキーワードは、パイプラインの動作を制御するか、追加のパイプライン設定をインポートします。
 
-### `default`
+### `default` {#default}
 
 {{< history >}}
 
-- GitLab 16.4で`id_tokens`のサポートが[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/419750)。
+- `id_tokens`のサポートは、GitLab 16.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/419750)されました。
 
 {{< /history >}}
 
-一部のキーワードではグローバルデフォルトを設定できます。各デフォルトキーワードは、キーワードが定義されていないすべてのジョブにコピーされます。すでにジョブにキーワードが定義されている場合、そのデフォルトは使用されません。
+一部のキーワードではグローバルデフォルトを設定できます。各デフォルトキーワードは、まだそのキーワードが定義されていないすべてのジョブにコピーされます。ジョブですでにそのキーワードが定義されている場合、デフォルトは使用されません。
 
 **キーワードのタイプ**: グローバルキーワード。
 
-**サポートされている値**: これらのキーワードにはカスタムデフォルトを設定できます。
+**サポートされている値**: 以下のキーワードにはカスタムデフォルトを設定できます。
 
 - [`after_script`](#after_script)
 - [`artifacts`](#artifacts)
@@ -115,7 +121,7 @@ GitLab CI/CDパイプラインの設定には次のものが含まれます。
 - [`tags`](#tags)
 - [`timeout`](#timeout)。ただし、[イシュー213634](https://gitlab.com/gitlab-org/gitlab/-/issues/213634)のためこのキーワードには効果がありません。
 
-**`default`の例**
+**`default`の例**:
 
 ```yaml
 default:
@@ -130,26 +136,26 @@ rspec 2.7:
   script: bundle exec rspec
 ```
 
-この例では次のようになります。
+この例では:
 
 - `image: ruby:3.0`と`retry: 2`は、パイプラインのすべてのジョブのデフォルトキーワードです。
 - `rspec`ジョブでは`image`と`retry`が定義されていないため、デフォルトの`image: ruby:3.0`と`retry: 2`が使用されます。
-- `rspec 2.7`ジョブでは`retry`が定義されていませんが、`image`が明示的に定義されています。デフォルトの`retry: 2`が使用されますが、デフォルトの`image`は無視され、ジョブで定義されている`image: ruby:2.7`が使用されます。
+- `rspec 2.7`ジョブでは`retry`が定義されていませんが、`image`が明示的に定義されています。そのため、デフォルトの`retry: 2`が使用されますが、デフォルトの`image`は無視され、ジョブで定義されている`image: ruby:2.7`が使用されます。
 
-**追加の詳細情報**
+**補足情報**:
 
-- [`inherit:default`](#inheritdefault)を使用して、ジョブ内のデフォルトキーワードの継承を制御します。
-- グローバルデフォルトは[ダウンストリームパイプライン](../pipelines/downstream_pipelines.md)に渡されません。ダウンストリームパイプラインは、ダウンストリームパイプラインをトリガーしたアップストリームパイプラインから独立して実行されます。
+- [`inherit:default`](#inheritdefault)を使用することで、ジョブごとにデフォルトキーワードの継承を制御できます。
+- グローバルデフォルトは[ダウンストリームパイプライン](../pipelines/downstream_pipelines.md)には引き継がれません。ダウンストリームパイプラインは、それをトリガーしたアップストリームパイプラインとは独立して実行されます。
 
-### `include`
+### `include` {#include}
 
-外部YAMLファイルをCI/CD設定にインクルードする場合に`include`を使用します。1つの長い`.gitlab-ci.yml`ファイルを複数のファイルに分割することで読みやすさを向上させたり、複数の場所で同じ設定が重複する状況を減らしたりすることができます。
+`include`を使用して、外部のYAMLファイルをCI/CD設定にインクルードすることができます。1つの長い`.gitlab-ci.yml`ファイルを複数のファイルに分割することで読みやすさを向上させたり、複数の場所で同じ設定が重複する状況を減らしたりすることができます。
 
 テンプレートファイルを中央のリポジトリに保存し、プロジェクトにインクルードすることもできます。
 
 `include`ファイルは次のように処理されます。
 
-- `.gitlab-ci.yml`ファイル内のファイルとマージされます。
+- `.gitlab-ci.yml`ファイルの内容とマージされます。
 - `include`キーワードの位置に関係なく、常に最初に評価され、`.gitlab-ci.yml`ファイルの内容とマージされます。
 
 すべてのファイルを解決するための制限時間は30秒です。
@@ -164,26 +170,26 @@ rspec 2.7:
 - [`include:remote`](#includeremote)
 - [`include:template`](#includetemplate)
 
-オプション
+オプションで使用可能:
 
 - [`include:inputs`](#includeinputs)
 - [`include:rules`](#includerules)
 - [`include:integrity`](#includeintegrity)
 
-**追加の詳細情報**
+**補足情報**:
 
 - `include`キーワードでは[特定のCI/CD変数](includes.md#use-variables-with-include)のみを使用できます。
-- マージを使用して、インクルードされるCI/CD設定をローカルでカスタマイズおよびオーバーライドします。
-- インクルードされる設定をオーバーライドするには、`.gitlab-ci.yml`ファイルに同じジョブ名またはグローバルキーワードを指定します。2つの設定がマージされます。`.gitlab-ci.yml`ファイル内の設定が、インクルードされる設定よりも優先されます。
-- 以下を再実行する場合は次のようになります。
-  - ジョブ: `include`ファイルは再度フェッチされません。パイプラインのすべてのジョブは、パイプラインの作成時にフェッチされた設定を使用します。ソース`include`ファイルへの変更は、ジョブの再実行には影響しません。
-  - パイプライン: `include`ファイルが再度フェッチされます。最後のパイプラインの実行後にこれらのファイルが変更された場合、新しいパイプラインは変更された設定を使用します。
-- デフォルトでは、[ネストされたインクルード](includes.md#use-nested-includes)を含めて、パイプラインごとに最大150個のインクルードを使用できます。その他にも以下のように操作できます。
-  - [GitLab 16.0以降](https://gitlab.com/gitlab-org/gitlab/-/issues/207270)では、GitLab Self-Managedのユーザーは[最大インクルード](../../administration/settings/continuous_integration.md#maximum-includes)の値を変更できます。
-  - [GitLab 15.10以降](https://gitlab.com/gitlab-org/gitlab/-/issues/367150)では、最大150個のインクルードを設定できます。ネストされたインクルードでは、同じファイルを複数回インクルードできますが、重複したインクルードはこの最大数にカウントされます。
+- マージを使用して、インクルードされるCI/CD設定をローカルでカスタマイズおよびオーバーライドできます。
+- インクルードされる設定をオーバーライドするには、`.gitlab-ci.yml`ファイルに同じジョブ名またはグローバルキーワードを指定します。2つの設定がマージされ、インクルードされる設定よりも`.gitlab-ci.yml`ファイル内の設定が優先されます。
+- 再実行する場合:
+  - ジョブを再実行すると、`include`ファイルは再度フェッチされません。パイプラインのすべてのジョブは、パイプラインの作成時にフェッチされた設定を使用します。そのため、ソース`include`ファイルが変更されても、ジョブの再実行には影響しません。
+  - パイプラインを再実行すると、`include`ファイルが再度フェッチされます。前回のパイプライン実行後にこれらのファイルが変更されていた場合、新しいパイプラインは変更された設定を使用します。
+- デフォルトでは、[ネストされたインクルード](includes.md#use-nested-includes)を含めて、パイプラインごとに最大150個のインクルードを使用できます。補足情報を以下に示します。
+  - [GitLab 16.0以降](https://gitlab.com/gitlab-org/gitlab/-/issues/207270)、GitLab Self-Managedのユーザーは、[最大インクルード数](../../administration/settings/continuous_integration.md#set-maximum-includes)の値を変更できるようになりました。
+  - [GitLab 15.10以降](https://gitlab.com/gitlab-org/gitlab/-/issues/367150)、最大150個のインクルードを設定できます。ネストされたインクルードでは、同じファイルを複数回インクルードできますが、重複したインクルードもカウントの対象になります。
   - [GitLab 14.9からGitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/28987)では、最大100個のインクルードを使用できます。ネストされたインクルードでは同じファイルを複数回インクルードできますが、重複は無視されます。
 
-#### `include:component`
+#### `include:component` {#includecomponent}
 
 `include:component`を使用して、[CI/CDコンポーネント](../components/_index.md)をパイプライン設定に追加します。
 
@@ -191,18 +197,18 @@ rspec 2.7:
 
 **サポートされている値**: CI/CDコンポーネントの完全なアドレス（形式: `<fully-qualified-domain-name>/<project-path>/<component-name>@<specific-version>`）。
 
-**`include:component`の例**
+**`include:component`の例**:
 
 ```yaml
 include:
   - component: $CI_SERVER_FQDN/my-org/security-components/secret-detection@1.0
 ```
 
-**関連トピック**
+**関連トピック**:
 
 - [CI/CDコンポーネントを使用する](../components/_index.md#use-a-component)。
 
-#### `include:local`
+#### `include:local` {#includelocal}
 
 `include:local`を使用して、`include`キーワードを含む設定ファイルと同じリポジトリおよびブランチにあるファイルをインクルードします。シンボリックリンクの代わりに`include:local`を使用します。
 
@@ -210,45 +216,45 @@ include:
 
 **サポートされている値**: 
 
-ルートディレクトリ（`/`）を基準にしたフルパス。
+ルートディレクトリ（`/`）を基準にしたフルパス:
 
 - YAMLファイルの拡張子は、`.yml`または`.yaml`である必要があります。
 - [ファイルパスではワイルドカード`*`と`**`を使用](includes.md#use-includelocal-with-wildcard-file-paths)できます。
 - [特定のCI/CD変数](includes.md#use-variables-with-include)を使用できます。
 
-**`include:local`の例**
+**`include:local`の例**:
 
 ```yaml
 include:
   - local: '/templates/.gitlab-ci-template.yml'
 ```
 
-短い構文を使用してパスを定義することもできます。
+短縮構文を使用してパスを定義することもできます。
 
 ```yaml
 include: '.gitlab-ci-production.yml'
 ```
 
-**追加の詳細情報**
+**補足情報**:
 
 - `.gitlab-ci.yml`ファイルとローカルファイルは、同じブランチに存在している必要があります。
 - Gitサブモジュールパスを使用してローカルファイルをインクルードすることはできません。
-- `include`設定は、パイプラインを実行しているプロジェクトではなく、`include`キーワードを含むファイルの場所に基づいて常に評価されます。[ネストされた`include`](includes.md#use-nested-includes)が別のプロジェクトの設定ファイルにある場合、`include: local`はそのプロジェクトでファイルを確認します
+- `include`設定は常に、パイプラインを実行しているプロジェクトではなく、`include`キーワードを含むファイルの場所を基準に評価されます。そのため、[ネストされた`include`](includes.md#use-nested-includes)が別のプロジェクトの設定ファイル内にある場合、`include: local`はその別のプロジェクト内でファイルを確認します。
 
-#### `include:project`
+#### `include:project` {#includeproject}
 
-同じGitLabインスタンス上の別のプライベートプロジェクトからファイルを含めるには、`include:project`と`include:file`を使用します。
+同じGitLabインスタンス上の別の非公開プロジェクトからファイルをインクルードするには、`include:project`と`include:file`を使用します。
 
 **キーワードのタイプ**: グローバルキーワード。
 
 **サポートされている値**: 
 
 - `include:project`: GitLabプロジェクトのフルパス。
-- `include:file`ルートディレクトリ（`/`）を基準にしたファイルのフルパス、またはファイルパスの配列。YAMLファイルの拡張子は`.yml`または`.yaml`でなければなりません。
-- `include:ref`: オプション。ファイルの取得元のrefです。指定しない場合、デフォルトはプロジェクトの`HEAD`です。
+- `include:file`: ルートディレクトリ（`/`）を基準にしたファイルのフルパス、またはファイルパスの配列。YAMLファイルの拡張子は`.yml`または`.yaml`でなければなりません。
+- `include:ref`: オプション: ファイルの取得元のref。指定しない場合、デフォルトはプロジェクトの`HEAD`です。
 - [特定のCI/CD変数](includes.md#use-variables-with-include)を使用できます。
 
-**`include:project`の例**
+**`include:project`の例**:
 
 ```yaml
 include:
@@ -275,42 +281,42 @@ include:
     file: '/templates/.gitlab-ci-template.yml'
 ```
 
-**追加の詳細情報**
+**補足情報**:
 
-- `include`設定は、パイプラインを実行しているプロジェクトではなく、`include`キーワードを含むファイルの場所に基づいて常に評価されます。[ネストされた`include`](includes.md#use-nested-includes)が別のプロジェクトの設定ファイルにある場合、`include: local`はそのプロジェクトでファイルを確認します
-- パイプラインの開始時に、すべてのメソッドによってインクルードされる`.gitlab-ci.yml`ファイルの設定が評価されます。設定は特定の時点でのスナップショットであり、データベースに保持されます。GitLabは、次のパイプラインが開始されるまでは、参照されている`.gitlab-ci.yml`ファイル設定に対する変更を反映しません。
-- 別のプライベートプロジェクトのYAMLファイルをインクルードする場合、パイプラインを実行するユーザーは両方のプロジェクトのメンバーであり、パイプラインを実行するための適切な権限を持っている必要があります。ユーザーがインクルードファイルにアクセスできない場合、`not found or access denied`エラーが表示されることがあります。
-- 別のプロジェクトのCI/CD設定ファイルをインクルードする場合は注意してください。CI/CD設定ファイルが変更されても、パイプラインや通知はトリガーされません。セキュリティの観点からは、これはサードパーティの依存関係をプルすることと似ています。`ref`については以下を検討してください。
-  - 特定のSHAハッシュを使用する。これはもっとも安定したオプションです。目的のコミットが参照されるように、完全な40文字のSHAハッシュを使用する。これは、`ref`に短いSHAハッシュを使用するとあいまいになる可能性があるためです。
-  - 他のプロジェクトの`ref`に、[保護ブランチ](../../user/project/repository/branches/protected.md)と[保護タグ](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches)の両方のルールを適用する。保護タグと保護ブランチは、変更される前に変更管理を通過する可能性が高くなります。
+- `include`設定は常に、パイプラインを実行しているプロジェクトではなく、`include`キーワードを含むファイルの場所を基準に評価されます。そのため、[ネストされた`include`](includes.md#use-nested-includes)が別のプロジェクトの設定ファイル内にある場合、`include: local`はその別のプロジェクト内でファイルを確認します。
+- パイプラインが開始されると、すべての方法によってインクルードされた`.gitlab-ci.yml`ファイルの設定が評価されます。この設定はその時点でのスナップショットであり、データベースに保持されます。GitLabは、参照先の`.gitlab-ci.yml`ファイルの設定が変更されても、次のパイプラインが開始されるまではその変更を反映しません。
+- 別の非公開プロジェクトのYAMLファイルをインクルードする場合、パイプラインを実行するユーザーは両方のプロジェクトのメンバーであり、パイプラインを実行するための適切な権限を持っている必要があります。ユーザーがインクルード対象のファイルにアクセスできない場合、`not found or access denied`エラーが表示されることがあります。
+- 別のプロジェクトのCI/CD設定ファイルをインクルードする場合は注意してください。CI/CD設定ファイルが変更されても、パイプラインや通知はトリガーされません。セキュリティの観点では、これはサードパーティの依存関係をプルすることと似ています。`ref`については以下を検討してください。
+  - 特定のSHAハッシュを使用する。これはもっとも安定したオプションです。目的のコミットが確実に参照されるように、40文字の完全なSHAハッシュを使用してください。`ref`に短いSHAハッシュを使用すると、あいまいになる可能性があるためです。
+  - 他のプロジェクトの`ref`に対して、[保護ブランチ](../../user/project/repository/branches/protected.md)と[保護タグ](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches)の両方のルールを適用する。保護タグと保護ブランチは、変更される前に変更管理を通過する可能性が高くなります。
 
-#### `include:remote`
+#### `include:remote` {#includeremote}
 
-`include:remote`と完全なURLを使用して、別の場所のファイルをインクルードします。
+`include:remote`と完全なURLを使用して、別の場所にあるファイルをインクルードします。
 
 **キーワードのタイプ**: グローバルキーワード。
 
 **サポートされている値**: 
 
-HTTP/HTTPS `GET`リクエストでアクセス可能なパブリックURL。
+HTTP/HTTPS `GET`リクエストでアクセス可能な公開URL:
 
 - リモートURLの認証はサポートされていません。
 - YAMLファイルの拡張子は、`.yml`または`.yaml`である必要があります。
 - [特定のCI/CD変数](includes.md#use-variables-with-include)を使用できます。
 
-**`include:remote`の例**
+**`include:remote`の例**:
 
 ```yaml
 include:
   - remote: 'https://gitlab.com/example-project/-/raw/main/.gitlab-ci.yml'
 ```
 
-**追加の詳細情報**
+**補足情報**:
 
-- [ネストされたインクルード](includes.md#use-nested-includes)はすべて、パブリックユーザーとしてコンテキストなしで実行されるため、パブリックプロジェクトまたはテンプレートのみをインクルードできます。ネストされたインクルードの`include`セクションでは、変数は使用できません。
-- 別のプロジェクトのCI/CD設定ファイルをインクルードする場合は注意してください。他のプロジェクトのファイルが変更されても、パイプラインや通知はトリガーされません。セキュリティの観点からは、これはサードパーティの依存関係をプルすることと似ています。インクルードファイルの整合性を検証するには、[`integrity`](#includeintegrity)キーワードを使用することを検討してください。所有している別のGitLabプロジェクトにリンクする場合は、[保護ブランチ](../../user/project/repository/branches/protected.md)と[保護タグ](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches)の両方を使用して変更管理ルールを適用することを検討してください。
+- すべての[ネストされたインクルード](includes.md#use-nested-includes)は、公開ユーザーとしてコンテキストなしで実行されるため、公開プロジェクトまたはテンプレートのみをインクルードできます。ネストされたインクルードの`include`セクションでは、変数は使用できません。
+- 別のプロジェクトのCI/CD設定ファイルをインクルードする場合は注意してください。他のプロジェクトのファイルが変更されても、パイプラインや通知はトリガーされません。セキュリティの観点では、これはサードパーティの依存関係をプルすることと似ています。インクルードするファイルの整合性を検証するには、[`integrity`キーワード](#includeintegrity)を使用することを検討してください。所有している別のGitLabプロジェクトにリンクする場合は、[保護ブランチ](../../user/project/repository/branches/protected.md)と[保護タグ](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches)の両方を使用して変更管理ルールを適用することを検討してください。
 
-#### `include:template`
+#### `include:template` {#includetemplate}
 
 `include:template`を使用して、[`.gitlab-ci.yml`テンプレート](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates)をインクルードします。
 
@@ -318,12 +324,12 @@ include:
 
 **サポートされている値**: 
 
-[CI/CDテンプレート](../examples/_index.md#cicd-templates)。
+[CI/CDテンプレート](../examples/_index.md#cicd-templates):
 
-- すべてのテンプレートは、[`lib/gitlab/ci/templates`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates)で確認できます。すべてのテンプレートが`include:template`で使用するように設計されているわけではないため、使用する前にテンプレートのコメントを確認してください。
+- すべてのテンプレートは、[`lib/gitlab/ci/templates`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates)で確認できます。すべてのテンプレートが`include:template`での使用を前提として設計されているわけではないため、使用する前にテンプレートのコメントを確認してください。
 - [特定のCI/CD変数](includes.md#use-variables-with-include)を使用できます。
 
-**`include:template`の例**
+**`include:template`の例**:
 
 ```yaml
 # File sourced from the GitLab template collection
@@ -331,7 +337,7 @@ include:
   - template: Auto-DevOps.gitlab-ci.yml
 ```
 
-複数の`include:template`ファイル
+複数の`include:template`ファイル:
 
 ```yaml
 include:
@@ -339,26 +345,26 @@ include:
   - template: Auto-DevOps.gitlab-ci.yml
 ```
 
-**追加の詳細情報**
+**補足情報**:
 
-- [ネストされたインクルード](includes.md#use-nested-includes)はすべて、パブリックユーザーとしてコンテキストなしで実行されるため、パブリックプロジェクトまたはテンプレートのみをインクルードできます。ネストされたインクルードの`include`セクションでは、変数は使用できません。
+- すべての[ネストされたインクルード](includes.md#use-nested-includes)は、公開ユーザーとしてコンテキストなしで実行されるため、公開プロジェクトまたはテンプレートのみをインクルードできます。ネストされたインクルードの`include`セクションでは、変数は使用できません。
 
-#### `include:inputs`
+#### `include:inputs` {#includeinputs}
 
 {{< history >}}
 
-- GitLab 15.11でベータ機能として[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/391331)。
+- GitLab 15.11でベータ機能として[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/391331)されました。
 - GitLab 17.0で[一般提供](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/134062)になりました。
 
 {{< /history >}}
 
-インクルードされた設定が[`spec:inputs`](#specinputs)を使用しており、この設定がパイプラインに追加されるときのインプットパラメーターの値を設定するには、`include:inputs`を使用します。
+インクルードされる設定が[`spec:inputs`](#specinputs)を使用している場合、この設定をパイプラインに追加する際のインプットパラメータの値を設定するには、`include:inputs`を使用します。
 
 **キーワードのタイプ**: グローバルキーワード。
 
 **サポートされている値**: 文字列、数値、またはブール値。
 
-**`include:inputs`の例**
+**`include:inputs`の例**:
 
 ```yaml
 include:
@@ -367,26 +373,26 @@ include:
       website: "My website"
 ```
 
-この例では次のようになります。
+この例では:
 
-- `custom_configuration.yml`に含まれる設定がパイプラインに追加され、インクルードされる設定の`website`インプットが値`My website`に設定されます。
+- `custom_configuration.yml`に含まれる設定がパイプラインに追加され、インクルードされる設定の`website`インプットには`My website`という値が設定されます。
 
-**追加の詳細情報**
+**補足情報**:
 
 - インクルードされる設定ファイルが[`spec:inputs:type`](#specinputstype)を使用している場合、インプット値は定義された型と一致している必要があります。
 - インクルードされる設定ファイルが[`spec:inputs:options`](#specinputsoptions)を使用している場合、インプット値はリストされているオプションのいずれかと一致している必要があります。
 
-**関連トピック**
+**関連トピック**:
 
-- [`include`を使用する場合のインプット値を設定する](../inputs/_index.md#set-input-values-when-using-include)。
+- [`include`の使用時にインプット値を設定する](../inputs/_index.md#for-configuration-added-with-include)。
 
-#### `include:rules`
+#### `include:rules` {#includerules}
 
 [`rules`](#rules)と`include`を組み合わせて使用すると、他の設定ファイルを条件付きでインクルードできます。
 
 **キーワードのタイプ**: グローバルキーワード。
 
-**サポートされている値**: 次の`rules`サブキー。
+**サポートされている値**: 次の`rules`サブキー:
 
 - [`rules:if`](#rulesif)。
 - [`rules:exists`](#rulesexists)。
@@ -394,7 +400,7 @@ include:
 
 一部の[CI/CD変数がサポートされています](includes.md#use-variables-with-include)。
 
-**`include:rules`の例**
+**`include:rules`の例**:
 
 ```yaml
 include:
@@ -407,33 +413,33 @@ test-job:
   script: echo "This is a test job"
 ```
 
-この例では、`INCLUDE_BUILDS`変数により次のようになります。
+この例では、`INCLUDE_BUILDS`変数の値に応じて次のようになります。
 
-- `true`に設定されている場合、`build_jobs.yml`設定がパイプラインにインクルードされます。
-- `true`に設定されていない場合、または存在しない場合は、`build_jobs.yml`設定はパイプラインにインクルードされません。
+- `true`の場合、`build_jobs.yml`の設定がパイプラインにインクルードされます。
+- `true`ではない場合、または変数が存在しない場合は、`build_jobs.yml`の設定はパイプラインにインクルードされません。
 
-**関連トピック**
+**関連トピック**:
 
-- `include`を使用した例
+- `include`を使用した例:
   - [`rules:if`](includes.md#include-with-rulesif)。
   - [`rules:changes`](includes.md#include-with-ruleschanges)。
   - [`rules:exists`](includes.md#include-with-rulesexists)。
 
-#### `include:integrity`
+#### `include:integrity` {#includeintegrity}
 
 {{< history >}}
 
-- GitLab 17.9で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178593)。
+- GitLab 17.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178593)されました。
 
 {{< /history >}}
 
-`integrity`を`include:remote`と組み合わせて使用して、インクルードされるリモートファイルのSHA256ハッシュを指定します。`integrity`が実際のコンテンツと一致しない場合、リモートファイルは処理されず、パイプラインは失敗します。
+`integrity`を`include:remote`と組み合わせて使用して、インクルードされるリモートファイルのSHA256ハッシュを指定します。`integrity`の値が実際の内容と一致しない場合、そのリモートファイルは処理されず、パイプラインは失敗します。
 
 **キーワードのタイプ**: グローバルキーワード。
 
-**サポートされている値**: インクルードされたコンテンツのBase64でエンコードされたSHA256ハッシュ。
+**サポートされている値**: インクルードされるコンテンツのBase64エンコードされたSHA256ハッシュ。
 
-**`include:integrity`の例**
+**`include:integrity`の例**:
 
 ```yaml
 include:
@@ -441,17 +447,17 @@ include:
     integrity: 'sha256-L3/GAoKaw0Arw6hDCKeKQlV1QPEgHYxGBHsH4zG1IY8='
 ```
 
-### `stages`
+### `stages` {#stages}
 
 {{< history >}}
 
-- 文字列のネストされた配列のサポートがGitLab 16.9で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/439451)。
+- 文字列のネストされた配列のサポートは、GitLab 16.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/439451)されました。
 
 {{< /history >}}
 
-`stages`を使用して、ジョブのグループを含むステージを定義します。特定のステージで実行するようにジョブを設定するには、そのジョブで[`stage`](#stage)を使用します。
+`stages`を使用して、ジョブのグループを含むステージを定義します。ジョブに[`stage`](#stage)を指定することで、そのジョブを特定のステージで実行するように設定できます。
 
-`stages`が`.gitlab-ci.yml`ファイルで定義されていない場合のデフォルトのパイプラインステージは次のとおりです。
+`.gitlab-ci.yml`ファイルで`stages`が定義されていない場合、デフォルトのパイプラインステージは次のとおりです。
 
 - [`.pre`](#stage-pre)
 - `build`
@@ -459,16 +465,16 @@ include:
 - `deploy`
 - [`.post`](#stage-post)
 
-`stages`内の項目の順序によって、ジョブの実行順序が定義されます。
+`stages`に列挙された項目の順序によって、ジョブの実行順序が決まります。
 
 - 同じステージ内のジョブは並列実行されます。
 - 次のステージのジョブは、前のステージのジョブが正常に完了した後に実行されます。
 
-パイプラインに`.pre`ステージまたは`.post`ステージのジョブのみが含まれている場合、パイプラインは実行されません。別のステージに少なくとも1つのジョブが必要です。
+パイプラインに`.pre`ステージまたは`.post`ステージのジョブしか含まれていない場合、そのパイプラインは実行されません。これら以外のステージに少なくとも1つのジョブが必要です。
 
 **キーワードのタイプ**: グローバルキーワード。
 
-**`stages`の例**
+**`stages`の例**:
 
 ```yaml
 stages:
@@ -477,56 +483,56 @@ stages:
   - deploy
 ```
 
-この例では次のようになります。
+この例では:
 
 1. `build`内のすべてのジョブは並列実行されます。
-1. `build`内のすべてのジョブが成功すると、`test`のジョブが並列実行されます。
-1. `test`内のすべてのジョブが成功すると、`deploy`のジョブが並列実行されます。
+1. `build`内のすべてのジョブが成功すると、`test`内のジョブが並列実行されます。
+1. `test`内のすべてのジョブが成功すると、`deploy`内のジョブが並列実行されます。
 1. `deploy`内のすべてのジョブが成功すると、パイプラインは`passed`としてマークされます。
 
-いずれかのジョブが失敗すると、パイプラインは`failed`としてマークされ、後のステージのジョブは開始されません。現在のステージのジョブは停止されず、引き続き実行されます。
+いずれかのジョブが失敗すると、パイプラインは`failed`としてマークされ、後続ステージのジョブは開始されません。現在のステージのジョブは停止されず、引き続き実行されます。
 
-**追加の詳細情報**
+**補足情報**:
 
-- ジョブで[`stage`](#stage)を指定しない場合、ジョブには`test`ステージが割り当てられます。
-- ステージが定義されていても、ステージをジョブが使用していない場合、そのステージはパイプラインに表示されません。これは、[コンプライアンスパイプライン設定](../../user/compliance/compliance_pipelines.md)に役立ちます。
-  - コンプライアンス設定でステージを定義できますが、使用しない場合は非表示のままになります。
+- ジョブに[`stage`](#stage)が指定されていない場合、そのジョブには`test`ステージが割り当てられます。
+- ステージが定義されていても、そのステージを使用するジョブが存在しない場合、パイプラインには表示されません。これは、[コンプライアンスパイプライン設定](../../user/compliance/compliance_pipelines.md)に役立ちます。
+  - ステージはコンプライアンス設定で定義できますが、使用されなければ非表示のままになります。
   - 定義されたステージをデベロッパーがジョブ定義で使用すると、これらのステージが表示されます。
 
-**関連トピック**
+**関連トピック**:
 
-- ジョブをより早い時点で開始し、ステージの順序を無視するには、[`needs`](#needs)キーワードを使用する。
+- ジョブをより早い時点で開始し、ステージの順序を無視するには、[`needs`キーワード](#needs)を使用する。
 
-### `workflow`
+### `workflow` {#workflow}
 
 [`workflow`](workflow.md)を使用して、パイプラインの動作を制御します。
 
-一部の[定義済みCI/CD変数](../variables/predefined_variables.md)は`workflow`設定で使用できますが、ジョブの開始時にのみ定義される変数は使用できません。
+`workflow`の設定では、一部の[定義済みCI/CD変数](../variables/predefined_variables.md)を使用できますが、ジョブの開始時にのみ定義される変数は使用できません。
 
-**関連トピック**
+**関連トピック**:
 
 - [`workflow: rules`の例](workflow.md#workflow-rules-examples)
 - [ブランチパイプラインとマージリクエストパイプラインを切り替える](workflow.md#switch-between-branch-pipelines-and-merge-request-pipelines)
 
-#### `workflow:auto_cancel:on_new_commit`
+#### `workflow:auto_cancel:on_new_commit` {#workflowauto_cancelon_new_commit}
 
 {{< history >}}
 
-- GitLab 16.8で`ci_workflow_auto_cancel_on_new_commit`[フラグとともに](../../administration/feature_flags.md)[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/412473)。デフォルトで無効になっています。
-- GitLab 16.9で、[GitLab.comおよびGitLab Self-Managedで有効になりました](https://gitlab.com/gitlab-org/gitlab/-/issues/434676)。
-- GitLab 16.10で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/434676)になりました。機能フラグ`ci_workflow_auto_cancel_on_new_commit`が削除されました。
+- GitLab 16.8で`ci_workflow_auto_cancel_on_new_commit`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/412473)されました。デフォルトでは無効になっています。
+- GitLab 16.9の[GitLab.comおよびGitLab Self-Managedで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/434676)になりました。
+- GitLab 16.10で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/434676)になりました。機能フラグ`ci_workflow_auto_cancel_on_new_commit`は削除されました。
 
 {{< /history >}}
 
-`workflow:auto_cancel:on_new_commit`を使用して、[冗長なパイプラインの自動キャンセル](../pipelines/settings.md#auto-cancel-redundant-pipelines)機能の動作を設定します。
+`workflow:auto_cancel:on_new_commit`を使用して、[冗長なパイプラインを自動キャンセル](../pipelines/settings.md#auto-cancel-redundant-pipelines)機能の動作を設定します。
 
 **サポートされている値**: 
 
-- `conservative`: パイプラインをキャンセルします。ただし、`interruptible: false`が設定されているジョブがまだ開始されていない場合に限ります。定義されていない場合のデフォルト。
-- `interruptible`: `interruptible: true`が設定されているジョブのみをキャンセルします。
-- `none`: ジョブを自動キャンセルしません。
+- `conservative`: パイプラインをキャンセルします。ただし、`interruptible: false`が設定されたジョブがまだ開始されていない場合に限ります。定義されていない場合は、この値がデフォルトです。
+- `interruptible`: `interruptible: true`が設定されたジョブのみをキャンセルします。
+- `none`: ジョブは自動キャンセルされません。
 
-**`workflow:auto_cancel:on_new_commit`の例**
+**`workflow:auto_cancel:on_new_commit`の例**:
 
 ```yaml
 workflow:
@@ -542,17 +548,17 @@ job2:
   script: sleep 60
 ```
 
-この例では次のようになります。
+この例では:
 
 - 新しいコミットがブランチにプッシュされると、GitLabは新しいパイプラインを作成し、`job1`と`job2`が開始されます。
 - ジョブが完了する前に新しいコミットがブランチにプッシュされると、`job1`のみがキャンセルされます。
 
-#### `workflow:auto_cancel:on_job_failure`
+#### `workflow:auto_cancel:on_job_failure` {#workflowauto_cancelon_job_failure}
 
 {{< history >}}
 
-- GitLab 16.10で`auto_cancel_pipeline_on_job_failure`[フラグとともに](../../administration/feature_flags.md)[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/23605)。デフォルトで無効になっています。
-- GitLab 16.11で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/433163)になりました。機能フラグ`auto_cancel_pipeline_on_job_failure`が削除されました。
+- GitLab 16.10で`auto_cancel_pipeline_on_job_failure`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/23605)されました。デフォルトでは無効になっています。
+- GitLab 16.11で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/433163)になりました。機能フラグ`auto_cancel_pipeline_on_job_failure`は削除されました。
 
 {{< /history >}}
 
@@ -561,9 +567,9 @@ job2:
 **サポートされている値**: 
 
 - `all`: いずれかのジョブが失敗すると、パイプラインと実行中のすべてのジョブが直ちにキャンセルされます。
-- `none`: ジョブを自動キャンセルしません。
+- `none`: ジョブは自動キャンセルされません。
 
-**`workflow:auto_cancel:on_job_failure`の例**
+**`workflow:auto_cancel:on_job_failure`の例**:
 
 ```yaml
 stages: [stage_a, stage_b]
@@ -588,19 +594,19 @@ job3:
     - sleep 30
 ```
 
-この例では、`job2`が失敗したが`job1`がまだ実行中であり、`job3`が開始されていない場合、`job1`はキャンセルされます。
+この例では、`job2`が失敗した場合、`job1`がまだ実行中であればキャンセルされ、`job3`は開始されません。
 
-**関連トピック**
+**関連トピック**:
 
 - [ダウンストリームパイプラインから親パイプラインを自動キャンセルする](../pipelines/downstream_pipelines.md#auto-cancel-the-parent-pipeline-from-a-downstream-pipeline)
 
-#### `workflow:name`
+#### `workflow:name` {#workflowname}
 
 {{< history >}}
 
-- GitLab 15.5で`pipeline_name`[フラグとともに](../../administration/feature_flags.md)[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/372538)。デフォルトで無効になっています。
-- GitLab 15.7で、[GitLab.comおよびGitLab Self-Managedで有効になりました](https://gitlab.com/gitlab-org/gitlab/-/issues/376095)。
-- GitLab 15.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/376095)になりました。機能フラグ`pipeline_name`が削除されました。
+- GitLab 15.5で`pipeline_name`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/372538)されました。デフォルトでは無効になっています。
+- GitLab 15.7の[GitLab.comおよびGitLab Self-Managedで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/376095)になりました。
+- GitLab 15.8で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/376095)になりました。機能フラグ`pipeline_name`は削除されました。
 
 {{< /history >}}
 
@@ -614,16 +620,16 @@ job3:
 - [CI/CD変数](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)。
 - 両方の組み合わせ。
 
-**`workflow:name`の例**
+**`workflow:name`の例**:
 
-定義済み変数を使用した単純なパイプライン名
+定義済み変数を使用した単純なパイプライン名:
 
 ```yaml
 workflow:
   name: 'Pipeline for branch: $CI_COMMIT_BRANCH'
 ```
 
-パイプラインの条件に応じてパイプライン名が異なる設定
+パイプラインの条件に応じてパイプライン名が異なる設定:
 
 ```yaml
 variables:
@@ -641,20 +647,20 @@ workflow:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH  # For default branch pipelines, use the default name
 ```
 
-**追加の詳細情報**
+**補足情報**:
 
-- 名前が空の文字列の場合、パイプラインには名前が割り当てられません。CI/CD変数のみからなる名前は、それらの変数もすべて空の場合には空の文字列と評価される可能性があります。
-- `workflow:rules:variables`は、変数をダウンストリームパイプラインに転送する[`trigger`](#trigger)ジョブを含む、すべてのジョブで使用できる[デフォルト変数](#default-variables)になります。デフォルトでは、ダウンストリームパイプラインが同じ変数を使用する場合、アップストリーム変数の値によって[変数が上書きされます](../variables/_index.md#cicd-variable-precedence)。次のいずれかを実行してください。
-  - すべてのプロジェクトのパイプライン設定で一意の変数名を使用します（例: `PROJECT1_PIPELINE_NAME`）。
-  - トリガージョブで[`inherit:variables`](#inheritvariables)を使用し、ダウンストリームパイプラインに転送する正確な変数をリストします。
+- 名前が空の文字列の場合、パイプラインには名前が割り当てられません。CI/CD変数のみで構成された名前は、それらの変数もすべて空の場合、空の文字列と評価される可能性があります。
+- `workflow:rules:variables`で定義された変数は、すべてのジョブで使用できる[デフォルト変数](#default-variables)になります。これには、デフォルトで変数をダウンストリームパイプラインに転送する[`trigger`](#trigger)ジョブも含まれます。ダウンストリームパイプラインが同じ変数を使用する場合、アップストリーム変数の値によって[変数が上書きされます](../variables/_index.md#cicd-variable-precedence)。そのため、次のいずれかを必ず実施してください。
+  - 各プロジェクトのパイプライン設定で一意の変数名を使用する（例: `PROJECT1_PIPELINE_NAME`）。
+  - トリガージョブで[`inherit:variables`](#inheritvariables)を使用し、ダウンストリームパイプラインに転送する正確な変数をリストする。
 
-#### `workflow:rules`
+#### `workflow:rules` {#workflowrules}
 
-`workflow`の`rules`キーワードは、[ジョブで定義される`rules`](#rules)に似ていますが、パイプライン全体を作成するかどうかを制御します。
+`workflow`における`rules`キーワードは、[ジョブで定義される`rules`](#rules)に似ていますが、パイプライン全体を作成するかどうかを制御します。
 
 trueと評価されるルールがない場合、パイプラインは実行されません。
 
-**サポートされている値**: ジョブレベルの[`rules`](#rules)と同じ一部のキーワードを使用できます。
+**サポートされている値**: ジョブレベルの[`rules`](#rules)と同じキーワードの一部を使用できます。
 
 - [`rules: if`](#rulesif)。
 - [`rules: changes`](#ruleschanges)。
@@ -662,7 +668,7 @@ trueと評価されるルールがない場合、パイプラインは実行さ�
 - [`when`](#when)。`workflow`とともに使用する場合は`always`または`never`のみ指定できます。
 - [`variables`](#workflowrulesvariables)。
 
-**`workflow:rules`の例**
+**`workflow:rules`の例**:
 
 ```yaml
 workflow:
@@ -673,35 +679,35 @@ workflow:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
-この例でパイプラインが実行されるのは、コミットタイトル（コミットメッセージの最初の行）が`-draft`以外で終わっており、パイプラインが次のいずれかである場合です。
+この例では、パイプラインが実行されるのは、コミットタイトル（コミットメッセージの1行目）が`-draft`で終わっておらず、パイプラインが次のいずれかに該当する場合です。
 
-- マージリクエスト
-- デフォルトブランチ
+- マージリクエスト。
+- デフォルトブランチ。
 
-**追加の詳細情報**
+**補足情報**:
 
-- ルールがブランチパイプライン（デフォルトブランチ以外）とマージリクエストパイプラインの両方に一致する場合、[重複するパイプライン](../jobs/job_rules.md#avoid-duplicate-pipelines)が発生する可能性があります。
-- `start_in`、`allow_failure`、`needs`は`workflow:rules`ではサポートされていませんが、構文違反にはなりません。効果はありませんが、`workflow:rules`では使用しないでください。このように使用すると、将来構文エラーとなる可能性があります。詳細については、[イシュー436473](https://gitlab.com/gitlab-org/gitlab/-/issues/436473)を参照してください。
+- ルールがブランチパイプライン（デフォルトブランチ以外）とマージリクエストパイプラインの両方に一致する場合、[パイプラインが重複](../jobs/job_rules.md#avoid-duplicate-pipelines)して作成される可能性があります。
+- `start_in`、`allow_failure`、`needs`は、`workflow:rules`でサポートされていませんが、構文違反にはなりません。効果はありませんが、将来的に構文エラーを引き起こす可能性があるため、`workflow:rules`では使用しないでください。詳細については、[イシュー436473](https://gitlab.com/gitlab-org/gitlab/-/issues/436473)を参照してください。
 
-**関連トピック**
+**関連トピック**:
 
 - [`workflow:rules`の一般的な`if`句](workflow.md#common-if-clauses-for-workflowrules)。
 - [`rules`を使用してマージリクエストパイプラインを実行する](../pipelines/merge_request_pipelines.md#add-jobs-to-merge-request-pipelines)。
 
-#### `workflow:rules:variables`
+#### `workflow:rules:variables` {#workflowrulesvariables}
 
 `workflow:rules`で[`variables`](#variables)を使用して、特定のパイプライン条件の変数を定義します。
 
-条件が一致すると変数が作成されます。この変数は、パイプライン内のすべてのジョブで使用できます。変数がデフォルト変数としてトップレベルですでに定義されている場合、`workflow`変数が優先され、デフォルト変数をオーバーライドします。
+条件が一致すると変数が作成されます。この変数は、パイプライン内のすべてのジョブで使用できます。すでにその変数がデフォルト変数としてトップレベルで定義されている場合でも、`workflow`変数が優先され、デフォルト変数はオーバーライドされます。
 
 **キーワードのタイプ**: グローバルキーワード。
 
-**サポートされている値**: 変数名と値のペア。
+**サポートされている値**: 変数名と値のペア:
 
-- 名前には数字、文字、アンダースコア（`_`）のみを使用できます。
+- 名前には数字、英字、アンダースコア（`_`）のみを使用できます。
 - 値は文字列でなければなりません。
 
-**`workflow:rules:variables`の例**
+**`workflow:rules:variables`の例**:
 
 ```yaml
 variables:
@@ -735,36 +741,36 @@ job2:
     - echo "Run another script if $IS_A_FEATURE exists"
 ```
 
-ブランチがデフォルトブランチの場合
+ブランチがデフォルトブランチの場合:
 
 - job1の`DEPLOY_VARIABLE`は`job1-deploy-production`です。
 - job2の`DEPLOY_VARIABLE`は`deploy-production`です。
 
-ブランチが`feature`の場合
+ブランチが`feature`の場合:
 
 - job1の`DEPLOY_VARIABLE`は`job1-default-deploy`であり、`IS_A_FEATURE`は`true`です。
 - job2の`DEPLOY_VARIABLE`は`default-deploy`であり、`IS_A_FEATURE`は`true`です。
 
-ブランチがそれ以外のものである場合
+ブランチがそれ以外の場合:
 
 - job1の`DEPLOY_VARIABLE`は`job1-default-deploy`です。
 - job2の`DEPLOY_VARIABLE`は`default-deploy`です。
 
-**追加の詳細情報**
+**補足情報**:
 
-- `workflow:rules:variables`は、変数をダウンストリームパイプラインに転送する[`trigger`](#trigger)ジョブを含む、すべてのジョブで使用できる[デフォルト変数](#variables)になります。デフォルトでは、ダウンストリームパイプラインが同じ変数を使用する場合、アップストリーム変数の値によって[変数が上書きされます](../variables/_index.md#cicd-variable-precedence)。次のいずれかを実行してください。
-  - すべてのプロジェクトのパイプライン設定で一意の変数名を使用します（例: `PROJECT1_VARIABLE_NAME`）。
-  - トリガージョブで[`inherit:variables`](#inheritvariables)を使用し、ダウンストリームパイプラインに転送する正確な変数をリストします。
+- `workflow:rules:variables`で定義された変数は、すべてのジョブで使用できる[デフォルト変数](#variables)になります。これには、デフォルトで変数をダウンストリームパイプラインに転送する[`trigger`](#trigger)ジョブも含まれます。ダウンストリームパイプラインが同じ変数を使用する場合、アップストリーム変数の値によって[変数が上書きされます](../variables/_index.md#cicd-variable-precedence)。そのため、次のいずれかを必ず実施してください。
+  - 各プロジェクトのパイプライン設定で一意の変数名を使用する（例: `PROJECT1_VARIABLE_NAME`）。
+  - トリガージョブで[`inherit:variables`](#inheritvariables)を使用し、ダウンストリームパイプラインに転送する正確な変数をリストする。
 
-#### `workflow:rules:auto_cancel`
+#### `workflow:rules:auto_cancel` {#workflowrulesauto_cancel}
 
 {{< history >}}
 
-- GitLab 16.8で`ci_workflow_auto_cancel_on_new_commit`[フラグとともに](../../administration/feature_flags.md)[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/436467)。デフォルトで無効になっています。
-- GitLab 16.9で、[GitLab.comおよびGitLab Self-Managedで有効になりました](https://gitlab.com/gitlab-org/gitlab/-/issues/434676)。
-- GitLab 16.10で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/434676)になりました。機能フラグ`ci_workflow_auto_cancel_on_new_commit`が削除されました。
-- GitLab 16.10で、`workflow:rules`の`on_job_failure`オプションが`auto_cancel_pipeline_on_job_failure`[フラグとともに](../../administration/feature_flags.md)[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/23605)デフォルトで無効になっています。
-- `workflow:rules`の`on_job_failure`オプションは、GitLab 16.11で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/433163)になりました。機能フラグ`auto_cancel_pipeline_on_job_failure`が削除されました。
+- GitLab 16.8で`ci_workflow_auto_cancel_on_new_commit`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/436467)されました。デフォルトでは無効になっています。
+- GitLab 16.9の[GitLab.comおよびGitLab Self-Managedで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/434676)になりました。
+- GitLab 16.10で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/434676)になりました。機能フラグ`ci_workflow_auto_cancel_on_new_commit`は削除されました。
+- `workflow:rules`の`on_job_failure`オプションは、GitLab 16.10で`auto_cancel_pipeline_on_job_failure`[フラグ](../../administration/feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/23605)されました。デフォルトでは無効になっています。
+- `workflow:rules`の`on_job_failure`オプションは、GitLab 16.11で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/433163)になりました。機能フラグ`auto_cancel_pipeline_on_job_failure`は削除されました。
 
 {{< /history >}}
 
@@ -775,7 +781,7 @@ job2:
 - `on_new_commit`: [`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit)
 - `on_job_failure`: [`workflow:auto_cancel:on_job_failure`](#workflowauto_cancelon_job_failure)
 
-**`workflow:rules:auto_cancel`の例**
+**`workflow:rules:auto_cancel`の例**:
 
 ```yaml
 workflow:
@@ -798,38 +804,38 @@ test-job2:
   interruptible: true
 ```
 
-この例では、デフォルトですべてのジョブの[`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit)が`interruptible`に設定され、[`workflow:auto_cancel:on_job_failure`](#workflowauto_cancelon_job_failure)が`all`に設定されます。ただし、保護ブランチに対してパイプラインが実行される場合、ルールはデフォルトを`on_new_commit: none`と`on_job_failure: none`でオーバーライドします。たとえば、パイプラインが次のものに対して実行される場合は、以下のようになります。
+この例では、デフォルトですべてのジョブの[`workflow:auto_cancel:on_new_commit`](#workflowauto_cancelon_new_commit)が`interruptible`に設定され、[`workflow:auto_cancel:on_job_failure`](#workflowauto_cancelon_job_failure)が`all`に設定されます。ただし、保護ブランチに対してパイプラインが実行される場合、ルールはデフォルトを`on_new_commit: none`と`on_job_failure: none`でオーバーライドします。たとえば、パイプラインの実行対象によって、動作は次のように変わります。
 
 - 保護されていないブランチに対して実行される場合、新しいコミットがプッシュされると、`test-job1`の実行が継続され、`test-job2`はキャンセルされます。
 - 保護ブランチに対して実行される場合、新しいコミットがプッシュされると、`test-job1`と`test-job2`の両方の実行が継続されます。
 
-## ヘッダーキーワード
+## ヘッダーキーワード {#header-keywords}
 
-いくつかのキーワードは、YAML設定ファイルのヘッダーセクションで定義する必要があります。ヘッダーはファイルの先頭に配置し、`---`で設定の他の部分と区切る必要があります。
+いくつかのキーワードは、YAML設定ファイルのヘッダーセクションで定義する必要があります。ヘッダーはファイルの先頭に配置し、設定の他の部分と`---`で区切る必要があります。
 
-### `spec`
+### `spec` {#spec}
 
 {{< history >}}
 
-- GitLab 15.11でベータ機能として[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/391331)。
+- GitLab 15.11でベータ機能として[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/391331)されました。
 
 {{< /history >}}
 
-`include`キーワードを使用して設定がパイプラインに追加されたときのパイプラインの動作を設定するには、YAMLファイルのヘッダーに`spec`セクションを追加します。
+YAMLファイルのヘッダーに`spec`セクションを追加すると、`include`キーワードを使用して設定がパイプラインに追加されたときのパイプラインの動作を設定できます。
 
-#### `spec:inputs`
+仕様は設定ファイルの先頭にあるヘッダーセクションで宣言する必要があります。このセクションは、設定の他の部分と`---`で区切られています。
 
-`include`を使用してパイプラインに追加するCI/CD設定のインプットパラメーターを定義するには、`spec:inputs`を使用できます。パイプラインの実行時に使用する値を定義するには、`include:inputs`を使用します。
+#### `spec:inputs` {#specinputs}
 
-インプットを使用して、CI/CD設定にこの設定が含まれている場合のこの設定の動作をカスタマイズします。
+`spec:inputs`を使用して、CI/CD設定に対する[インプット](inputs.md)を定義できます。
 
-ヘッダーセクションの外部の値を参照するには、補間形式`$[[ inputs.input-id ]]`を使用します。インプットの評価と補間は、パイプラインの作成中に、設定が`.gitlab-ci.yml`ファイルの内容とマージされる前の段階で設定がフェッチされるときに行われます。
+ヘッダーセクションの外部でその値を参照するには、補間形式`$[[ inputs.input-id ]]`を使用します。インプットは、パイプラインの作成時に設定がフェッチされるときに評価および補間されます。`inputs`を使用すると、設定が`.gitlab-ci.yml`ファイルの内容とマージされる前に補間が完了します。
 
 **キーワードのタイプ**: ヘッダーキーワード。`spec`は、設定ファイルの先頭にあるヘッダーセクションで宣言する必要があります。
 
 **サポートされている値**: 予期されるインプットを表す文字列のハッシュ。
 
-**`spec:inputs`の例**
+**`spec:inputs`の例**:
 
 ```yaml
 spec:
@@ -843,26 +849,27 @@ scan-website:
   script: ./scan-website $[[ inputs.environment ]]
 ```
 
-**追加の詳細情報**
+**補足情報**:
 
-- [`spec:inputs:default`](#specinputsdefault)を使用してデフォルト値を設定する場合を除き、インプットは必須です。
-- [`spec:inputs:type`](#specinputstype)を使用して異なるインプットタイプを設定する場合を除き、インプットでは文字列が想定されます。
+- [`spec:inputs:default`](#specinputsdefault)を使用してデフォルト値を設定しない限り、インプットは必須です。[`include:inputs`](#includeinputs)と組み合わせてインプットを使用する場合を除き、インプットを必須にするのは避けることをおすすめします。
+- インプットは文字列を想定しています。ただし、[`spec:inputs:type`](#specinputstype)を使用して別の型を指定する場合を除きます。
 - 補間ブロックを含む文字列は、1 MB以下にする必要があります。
 - 補間ブロック内の文字列は、1 KB以下にする必要があります。
+- インプット値は[新しいパイプラインの実行時](../inputs/_index.md#for-a-pipeline)に定義できます。
 
-**関連トピック**
+**関連トピック**:
 
-- [`spec:inputs`を使用してインプットパラメーターを定義する](../inputs/_index.md#define-input-parameters-with-specinputs)。
+- [`spec:inputs`でインプットパラメータを定義する](../inputs/_index.md#define-input-parameters-with-specinputs)。
 
-##### `spec:inputs:default`
+##### `spec:inputs:default` {#specinputsdefault}
 
 {{< history >}}
 
-- GitLab 15.11でベータ機能として[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/391331)。
+- GitLab 15.11でベータ機能として[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/391331)されました。
 
 {{< /history >}}
 
-`spec:inputs:default`でデフォルト値を設定する場合を除き、インクルードされている場合にはインプットは必須です。
+`spec:inputs:default`を使用してデフォルト値を設定しない限り、仕様に含まれるインプットはすべて必須になります。
 
 デフォルト値を設定しない場合は`default: ''`を使用します。
 
@@ -870,7 +877,7 @@ scan-website:
 
 **サポートされている値**: デフォルト値を表す文字列、または`''`。
 
-**`spec:inputs:default`の例**
+**`spec:inputs:default`の例**:
 
 ```yaml
 spec:
@@ -884,34 +891,34 @@ title: The pipeline configuration would follow...
 ---
 ```
 
-この例では次のようになります。
+この例では:
 
 - `website`は必須であり、定義する必要があります。
-- `user`はオプションです。定義されていない場合、値は`test-user`です。
+- `user`はオプションです。定義されていない場合、値は`test-user`になります。
 - `flags`はオプションです。定義されていない場合、値はありません。
 
-**追加の詳細情報**
+**補足情報**:
 
 - インプットが次の条件に該当する場合、パイプラインは検証エラーで失敗します。
-  - `default`と[`options`](#specinputsoptions)の両方を使用しているが、デフォルト値がリストされているオプションのいずれでもない。
+  - `default`と[`options`](#specinputsoptions)の両方を使用しているが、デフォルト値が、リストされているオプションのいずれでもない。
   - `default`と`regex`の両方を使用しているが、デフォルト値が正規表現と一致しない。
   - 値が[`type`](#specinputstype)と一致しない。
 
-##### `spec:inputs:description`
+##### `spec:inputs:description` {#specinputsdescription}
 
 {{< history >}}
 
-- GitLab 16.5で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/415637)。
+- GitLab 16.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/415637)されました。
 
 {{< /history >}}
 
-`description`を使用して、特定のインプットの説明を指定します。説明はインプットの動作に影響を与えません。ファイルのユーザーがインプットを理解できるようにする目的でのみ使用されます。
+`description`を使用して、特定のインプットに説明を付けます。説明はインプットの動作に影響を与えません。ファイルのユーザーがインプットを理解できるようにする目的でのみ使用されます。
 
 **キーワードのタイプ**: ヘッダーキーワード。`spec`は、設定ファイルの先頭にあるヘッダーセクションで宣言する必要があります。
 
 **サポートされている値**: 説明を表す文字列。
 
-**`spec:inputs:description`の例**
+**`spec:inputs:description`の例**:
 
 ```yaml
 spec:
@@ -922,21 +929,21 @@ title: The pipeline configuration would follow...
 ---
 ```
 
-##### `spec:inputs:options`
+##### `spec:inputs:options` {#specinputsoptions}
 
 {{< history >}}
 
-- GitLab 16.6で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/393401)。
+- GitLab 16.6で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/393401)されました。
 
 {{< /history >}}
 
-インプットで`options`を使用して、インプットに使用できる値のリストを指定できます。オプションの数の上限は、インプットあたり50個です。
+インプットで`options`を使用して、インプットに許可される値のリストを指定できます。各インプットに指定できるオプションの数は、最大50個までです。
 
 **キーワードのタイプ**: ヘッダーキーワード。`spec`は、設定ファイルの先頭にあるヘッダーセクションで宣言する必要があります。
 
 **サポートされている値**: インプットオプションの配列。
 
-**`spec:inputs:options`の例**
+**`spec:inputs:options`の例**:
 
 ```yaml
 spec:
@@ -950,21 +957,21 @@ title: The pipeline configuration would follow...
 ---
 ```
 
-この例では次のようになります。
+この例では:
 
 - `environment`は必須であり、リスト内のいずれかの値で定義する必要があります。
 
-**追加の詳細情報**
+**補足情報**:
 
 - 次の場合、パイプラインは検証エラーで失敗します。
-  - インプットで`options`と[`default`](#specinputsdefault)の両方が使用されているが、デフォルト値が、リストされているオプションのいずれでもない。
-  - いずれかのインプットオプションが[`type`](#specinputstype)と一致していない。[`type`](#specinputstype)は`string`または`number`であるが、`options`を使用する場合は`boolean`ではない。
+  - インプットで`options`と[`default`](#specinputsdefault)の両方を使用しているが、デフォルト値が、リストされているオプションのいずれでもない。
+  - いずれかのインプットオプションが[`type`](#specinputstype)と一致していない。`options`を使用する場合は`string`または`number`を指定する必要があり、`boolean`は使用できない。
 
-##### `spec:inputs:regex`
+##### `spec:inputs:regex` {#specinputsregex}
 
 {{< history >}}
 
-- GitLab 16.5で[導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/410836)。
+- GitLab 16.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/410836)されました。
 
 {{< /history >}}
 
@@ -974,39 +981,39 @@ title: The pipeline configuration would follow...
 
 **サポートされている値**: 正規表現である必要があります。
 
-**`spec:inputs:regex`の例**
+**`spec:inputs:regex`の例**:
 
 ```yaml
 spec:
   inputs:
     version:
-      regex: ^v\d\.\d+(\.\d+)$
+      regex: ^v\d\.\d+(\.\d+)?$
 title: The pipeline configuration would follow...
 ---
 ```
 
 この例では、`v1.0`または`v1.2.3`のインプットは正規表現に一致し、検証に合格します。`v1.A.B`のインプットは正規表現と一致せず、検証に失敗します。
 
-**追加の詳細情報**
+**補足情報**:
 
 - `inputs:regex`は、[`type`](#specinputstype)が`string`の場合にのみ使用できます。`number`または`boolean`の場合は使用できません。
 - `/`文字で正規表現を囲まないでください。たとえば、`/regex.*/`ではなく`regex.*`を使用します。
 - `inputs:regex`は[RE2](https://github.com/google/re2/wiki/Syntax)を使用して正規表現を解析します。
 
-##### `spec:inputs:type`
+##### `spec:inputs:type` {#specinputstype}
 
-デフォルトでは、インプットは文字列を想定します。インプットに必要な異なる型を設定するには、`spec:inputs:type`を使用します。
+デフォルトでは、インプットは文字列を想定しています。`spec:inputs:type`を使用すると、インプットに必要な別の型を指定できます。
 
 **キーワードのタイプ**: ヘッダーキーワード。`spec`は、設定ファイルの先頭にあるヘッダーセクションで宣言する必要があります。
 
 **サポートされている値**: 次のいずれかです。
 
 - `array`: インプットの[配列](../inputs/_index.md#array-type)を受け入れます。
-- `string`: 文字列インプットを受け入れます（定義されていない場合はデフォルト）。
+- `string`: 文字列のインプットを受け入れます（定義されていない場合のデフォルト）。
 - `number`: 数値のインプットのみを受け入れます。
 - `boolean`: `true`または`false`のインプットのみを受け入れます。
 
-**`spec:inputs:type`の例**
+**`spec:inputs:type`の例**:
 
 ```yaml
 spec:
@@ -1024,34 +1031,34 @@ title: The pipeline configuration would follow...
 ---
 ```
 
-## ジョブキーワード
+## ジョブキーワード {#job-keywords}
 
 以降のトピックでは、キーワードを使用してCI/CDパイプラインを設定する方法について説明します。
 
-### `after_script`
+### `after_script` {#after_script}
 
 {{< history >}}
 
-- キャンセルされたジョブに対する`after_script`コマンドの実行が、GitLab 17.0で[導入されました](https://gitlab.com/groups/gitlab-org/-/epics/10158)。
+- キャンセルされたジョブに対する`after_script`コマンドの実行は、GitLab 17.0で[導入](https://gitlab.com/groups/gitlab-org/-/epics/10158)されました。
 
 {{< /history >}}
 
-`after_script`を使用して、ジョブの`before_script`セクションと`script`セクションの完了後に最後に実行するコマンドの配列を定義します。次の条件に該当する場合は、`after_script`のコマンドも実行されます。
+`after_script`を使用して、ジョブの`before_script`セクションと`script`セクションの完了後に最後に実行するコマンドの配列を定義します。`after_script`のコマンドは、次の条件に該当する場合にも実行されます。
 
-- `before_script`セクションまたは`script`セクションの実行中にジョブがキャンセルされる。
-- ジョブが失敗タイプ`script_failure`で失敗したが、[他の失敗タイプ](#retrywhen)では失敗していない。
+- `before_script`セクションまたは`script`セクションの実行中に、ジョブがキャンセルされた場合。
+- ジョブで`script_failure`という種類の失敗が発生した場合（ただし、[それ以外の種類の失敗](#retrywhen)では実行されません）。
 
-**キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用するか、または[`default`セクション](#default)で使用することができます。
+**キーワードのタイプ**: ジョブキーワード。ジョブの一部として、または[`default`セクション](#default)でのみ使用できます。
 
 **サポートされている値**: 次の内容を含む配列。
 
-- 単一行コマンド。
+- 1行のコマンド。
 - [複数行に分割された](script.md#split-long-commands)長いコマンド。
 - [YAMLアンカー](yaml_optimization.md#yaml-anchors-for-scripts)。
 
 CI/CD変数が[サポートされています](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)。
 
-**`after_script`の例**
+**`after_script`の例**:
 
 ```yaml
 job:
@@ -1061,51 +1068,51 @@ job:
     - echo "Execute this command after the `script` section completes."
 ```
 
-**追加の詳細情報**
+**補足情報**:
 
-`after_script`で指定するスクリプトは、`before_script`コマンドまたは`script`コマンドとは別の新しいShellで実行されます。その結果、スクリプトは次のようになります。
+`after_script`で指定するスクリプトは、`before_script`コマンドまたは`script`コマンドとは別のShellで実行されます。その結果、スクリプトは次のようになります。
 
-- （[RunnerがGitリクエストを処理する方法を定義する変数](../runners/configure_runners.md#configure-runner-behavior-with-variables)に従って）現在のワーキングディレクトリがデフォルトにリセットされます。
-- 以下のものを含め、`before_script`または`script`で定義されたコマンドによる変更にはアクセスできません。
+- 現在のワーキングディレクトリがデフォルトにリセットされます（デフォルト値は、[RunnerがGitリクエストをどのように処理するかを定義する変数](../runners/configure_runners.md#configure-runner-behavior-with-variables)に基づいて決まります）。
+- `before_script`または`script`で定義されたコマンドによる変更にはアクセスできません。これには以下が含まれます。
   - `script`スクリプトでエクスポートされたコマンドエイリアスと変数。
-  - `before_script`スクリプトまたは`script`スクリプトによってインストールされたソフトウェアなど、ワークツリー外部の変更（Runnerのexecutorに応じて異なります）。
+  - ワークツリー外の変更（Runnerのexecutorによってアクセス可否が異なります）。たとえば、`before_script`または`script`スクリプトによってインストールされたソフトウェアなどが該当します。
 - 個別のタイムアウトが設定されます。GitLab Runner 16.4以降では、デフォルトは5分で、[`RUNNER_AFTER_SCRIPT_TIMEOUT`](../runners/configure_runners.md#set-script-and-after_script-timeouts)変数で設定できます。GitLab 16.3以前では、タイムアウトは5分にハードコードされています。
-- ジョブの終了コードには影響しません。`script`セクションが成功し、`after_script`がタイムアウトになるかまたは失敗した場合、ジョブはコード`0`（`Job Succeeded`）で終了します。
-- `after_script`で[CI/CDジョブトークン](../jobs/ci_job_token.md)を使用する場合の既知の問題があります。`after_script`コマンドでの認証にジョブトークンを使用できますが、ジョブがキャンセルされるとトークンは即時に無効になります。詳細については、[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/473376)を参照してください。
+- ジョブの終了コードには影響しません。`script`セクションが成功し、`after_script`がタイムアウトになるか失敗した場合、ジョブはコード`0`（`Job Succeeded`）で終了します。
+- `after_script`で[CI/CDジョブトークン](../jobs/ci_job_token.md)を使用する場合の既知の問題があります。`after_script`コマンドでの認証にジョブトークンを使用することはできますが、ジョブがキャンセルされるとそのトークンは直ちに無効になります。詳細については、[イシュー](https://gitlab.com/gitlab-org/gitlab/-/issues/473376)を参照してください。
 
-タイムアウトしたジョブの場合
+ジョブがタイムアウトした場合:
 
 - `after_script`コマンドはデフォルトでは実行されません。
-- [タイムアウト値を設定](../runners/configure_runners.md#ensuring-after_script-execution)して、`after_script`が確実に実行されるようにすることができます。このためには、ジョブのタイムアウトを超えない適切な`RUNNER_SCRIPT_TIMEOUT`値と`RUNNER_AFTER_SCRIPT_TIMEOUT`値を設定します。
+- [タイムアウト値を設定](../runners/configure_runners.md#ensuring-after_script-execution)することで、`after_script`を確実に実行させることができます。そのためには、ジョブのタイムアウトを超えないように、`RUNNER_SCRIPT_TIMEOUT`と`RUNNER_AFTER_SCRIPT_TIMEOUT`に適切な値を設定します。
 
-**関連トピック**
+**関連トピック**:
 
-- [`default`で`after_script`を使用する](script.md#set-a-default-before_script-or-after_script-for-all-jobs)と、すべてのジョブの後に実行されるデフォルトのコマンド配列を定義できます。
+- [`after_script`を`default`と組み合わせて使用する](script.md#set-a-default-before_script-or-after_script-for-all-jobs)と、すべてのジョブの後に実行されるコマンドのデフォルト配列を定義できます。
 - ジョブがキャンセルされた場合に[`after_script`コマンドをスキップ](script.md#skip-after_script-commands-if-a-job-is-canceled)するようにジョブを設定できます。
 - [ゼロ以外の終了コードを無視](script.md#ignore-non-zero-exit-codes)できます。
 - [`after_script`でカラーコードを使用する](script.md#add-color-codes-to-script-output)と、ジョブログのレビューが容易になります。
 - [カスタムの折りたたみ可能なセクションを作成](../jobs/job_logs.md#custom-collapsible-sections)して、ジョブログ出力をシンプルにできます。
 - [`after_script`のエラーを無視](../runners/configure_runners.md#ignore-errors-in-after_script)できます。
 
-### `allow_failure`
+### `allow_failure` {#allow_failure}
 
 `allow_failure`を使用して、ジョブが失敗した場合にパイプラインの実行を継続するかどうかを決定します。
 
-- パイプラインで後続のジョブの実行を継続できるようにするには、`allow_failure: true`を使用します。
-- パイプラインで後続のジョブを実行しないようにするには、`allow_failure: false`を使用します。
+- パイプラインで後続のジョブを継続して実行させるには、`allow_failure: true`を使用します。
+- パイプラインで後続のジョブの実行を停止させるには、`allow_failure: false`を使用します。
 
-ジョブの失敗が許容されている場合（`allow_failure: true`）、オレンジ色の警告（{{< icon name="status_warning" >}}）はジョブが失敗したことを示します。ただしパイプラインは成功し、関連するコミットは警告なしで合格としてマークされます。
+ジョブの失敗が許容されている場合（`allow_failure: true`）、オレンジ色の警告（{{< icon name="status_warning" >}}）はジョブが失敗したことを示します。ただしパイプラインは成功し、関連するコミットは警告なしで成功としてマークされます。
 
-この同じ警告は、次の場合に表示されます。
+このような警告は、次の場合に表示されます。
 
 - ステージ内の他のすべてのジョブが成功した場合。
 - パイプライン内の他のすべてのジョブが成功した場合。
 
 `allow_failure`のデフォルト値は次のとおりです。
 
-- `true`: [マニュアルジョブ](../jobs/job_control.md#create-a-job-that-must-be-run-manually)の場合。
-- `false`: [`rules`](#rules)内で`when: manual`を使用するジョブの場合。
-- `false`: その他のすべての場合。
+- [手動ジョブ](../jobs/job_control.md#create-a-job-that-must-be-run-manually): `true`。
+- [`rules`](#rules)内で`when: manual`を使用しているジョブ: `false`。
+- その他すべてのケース: `false`。
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
 
@@ -1113,7 +1120,7 @@ job:
 
 - `true`または`false`。
 
-**`allow_failure`の例**
+**`allow_failure`の例**:
 
 ```yaml
 job1:
@@ -1139,15 +1146,15 @@ job3:
 - `job1`が失敗した場合、`deploy`ステージのジョブは開始されません。
 - `job2`が失敗した場合、`deploy`ステージのジョブは開始できます。
 
-**追加の詳細情報**
+**補足情報**:
 
 - `allow_failure`を[`rules`](#rulesallow_failure)のサブキーとして使用できます。
-- `allow_failure: true`が設定されている場合、ジョブは常に成功と見なされ、[`when: on_failure`](#when)が設定されているこれよりも後のジョブは、このジョブが失敗した場合は開始されません。
-- マニュアルジョブで`allow_failure: false`を使用して、[ブロックマニュアルジョブ](../jobs/job_control.md#types-of-manual-jobs)を作成できます。ブロックされたパイプラインでは、マニュアルジョブが開始され、正常に完了するまでは、後のステージのジョブは実行されません。
+- `allow_failure: true`が設定されている場合、そのジョブは常に成功と見なされます。そのため、そのジョブが失敗しても、[`when: on_failure`](#when)が設定された後続のジョブは開始されません。
+- 手動ジョブに`allow_failure: false`を設定することで、[ブロック手動ジョブ](../jobs/job_control.md#types-of-manual-jobs)を作成できます。ブロックされたパイプラインは、その手動ジョブが開始されて正常に完了するまで、後続ステージのジョブを実行しません。
 
-#### `allow_failure:exit_codes`
+#### `allow_failure:exit_codes` {#allow_failureexit_codes}
 
-`allow_failure:exit_codes`を使用して、ジョブの失敗を許可するタイミングを制御します。ジョブはリストされる終了コードのいずれかに対して`allow_failure: true`であり、他の終了コードに対して`allow_failure`です。
+`allow_failure:exit_codes`を使用して、ジョブの失敗を許容する条件を制御します。ジョブは、リストされた終了コードのいずれかの場合は`allow_failure: true`、それ以外の終了コードに対しては`allow_failure`がfalseとなります。
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
 
@@ -1156,7 +1163,7 @@ job3:
 - 1つの終了コード。
 - 終了コードの配列。
 
-**`allow_failure`の例**
+**`allow_failure`の例**:
 
 ```yaml
 test_job_1:

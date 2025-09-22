@@ -82,7 +82,7 @@ When you run your application, the OpenTelemetry exporter sends metrics to GitLa
 You can view the metrics for a given project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Monitor > Metrics**.
+1. Select **Monitor** > **Metrics**.
 
 A list of metrics is displayed.
 Select a metric to view its details.
@@ -133,7 +133,7 @@ GitLab has a retention limit of 30 days for all ingested metrics.
 You can create an issue to track any action taken to resolve or investigate a metric. To create an issue for a metric:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Monitor > Metrics**.
+1. Select **Monitor** > **Metrics**.
 1. From the list of metrics, select a metric.
 1. Select **Create issue**.
 
@@ -143,7 +143,7 @@ You can edit the issue title and description.
 ### View issues related to a metric
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Monitor > Metrics**.
+1. Select **Monitor** > **Metrics**.
 1. From the list of metrics, select a metric.
 1. Scroll to **Related issues**.
 1. Optional. To view the issue details, select an issue.

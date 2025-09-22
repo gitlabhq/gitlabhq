@@ -43,7 +43,7 @@ The development workflow for branches is:
 To view and manage your branches in the GitLab user interface:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Code > Branches**.
+1. On the left sidebar, select **Code** > **Branches**.
 
 On this page, you can:
 
@@ -71,7 +71,7 @@ Prerequisites:
 To create a new branch from the GitLab UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Branches**.
+1. Select **Code** > **Branches**.
 1. In the upper-right corner, select **New branch**.
 1. Enter a **Branch name**.
 1. In **Create from**, select the base of your branch: an existing branch, an existing
@@ -249,7 +249,7 @@ ensure your branches receive oversight and quality checks from their creation to
 To compare branches in a repository:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Compare revisions**.
+1. Select **Code** > **Compare revisions**.
 1. Select the **Source** branch to search for your desired branch. Exact matches are
    shown first. You can refine your search with operators:
    - `^` matches the beginning of the branch name: `^feat` matches `feat/user-authentication`.
@@ -354,7 +354,7 @@ Prerequisites:
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Branches**.
+1. Select **Code** > **Branches**.
 1. In the upper right corner of the page, select **More** {{< icon name="ellipsis_v" >}}.
 1. Select **Delete merged branches**.
 1. In the dialog, enter the word `delete` to confirm, then select **Delete merged branches**.
@@ -505,7 +505,7 @@ Error: Could not set the default branch. Do you have a branch named 'HEAD' in yo
 To fix this problem:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Branches**.
+1. Select **Code** > **Branches**.
 1. Search for a branch named `HEAD`.
 1. Make sure the branch has no uncommitted changes.
 1. Select **Delete branch**, then **Yes, delete branch**.

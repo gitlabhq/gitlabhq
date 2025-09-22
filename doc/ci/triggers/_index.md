@@ -230,7 +230,7 @@ You can see which pipeline trigger token caused a job to run by visiting the sin
 A part of the trigger token displays on the right sidebar, under **Job details**.
 
 In pipelines triggered with a trigger token, jobs are labeled as `triggered` in
-**Build > Jobs**.
+**Build** > **Jobs**.
 
 ## Troubleshooting
 

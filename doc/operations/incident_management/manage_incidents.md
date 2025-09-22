@@ -36,7 +36,7 @@ You can create an incident manually or automatically.
 To add an incident to an [iteration](../../user/group/iterations/_index.md):
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Plan** > **Issues** or **Monitor > Incidents**, then select your incident to view it.
+1. Select **Plan** > **Issues** or **Monitor** > **Incidents**, then select your incident to view it.
 1. On the right sidebar, in the **Iteration** section, select **Edit**.
 1. From the dropdown list, select the iteration to add this incident to.
 1. Select any area outside the dropdown list.
@@ -52,7 +52,7 @@ Prerequisites:
 To create an incident from the **Incidents** page:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Monitor > Incidents**.
+1. Select **Monitor** > **Incidents**.
 1. Select **Create incident**.
 
 ### From the Issues page
@@ -81,7 +81,7 @@ Prerequisites:
 To create an incident from an alert:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Monitor > Alerts**.
+1. Select **Monitor** > **Alerts**.
 1. Select your desired alert.
 1. Select **Create incident**.
 
@@ -138,7 +138,7 @@ check if a GitLab incident is created from the incident.
 To view a list of the [incidents](incidents.md#incidents-list):
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Monitor > Incidents**.
+1. Select **Monitor** > **Incidents**.
 
 To view an incident's [details page](incidents.md#incident-details), select it from the list.
 

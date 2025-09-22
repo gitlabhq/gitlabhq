@@ -77,7 +77,7 @@ To do this when pushing from the command line, use the `merge_request.merge_when
 To do this from the GitLab user interface:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests**.
+1. Select **Code** > **Merge requests**.
 1. Select the merge request to edit.
 1. Scroll to the merge request reports section.
 1. Optional. Select your desired merge options, such as **Delete source branch**,
@@ -105,7 +105,7 @@ Prerequisites:
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests**.
+1. Select **Code** > **Merge requests**.
 1. Select the merge request to edit.
 1. Scroll to the merge request reports section.
 1. Select **Cancel auto-merge**.
@@ -195,7 +195,7 @@ Prerequisites:
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests**.
+1. Select **Code** > **Merge requests**.
 1. Select the merge request to edit.
 1. Select **Edit**.
 1. From the **Merge can start** dropdown list, select `After scheduled date`, then select a date and time.

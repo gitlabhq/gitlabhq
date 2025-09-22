@@ -66,7 +66,7 @@ configuration reusable and easier to maintain.
 To create the scan execution policy:
 
 1. On the left sidebar, select **Search or go to** and search for the `go-example-a` project.
-1. Go to **Secure > Policies**.
+1. Go to **Secure** > **Policies**.
 1. Select **New policy**.
 1. In the **Scan execution policy** section, select **Select policy**.
 1. Complete the fields.
@@ -81,7 +81,7 @@ To create the scan execution policy:
 1. Optional. Review the generated policy YAML in the merge request's **Changes** tab.
 1. Go to the **Overview** tab and select **Merge**.
 1. On the left sidebar, select **Search or go to** and search for the `go-example-a` project.
-1. Go to **Secure > Policies**.
+1. Go to **Secure** > **Policies**.
 
 You now have a scan execution policy that runs a secret detection scan on every MR, for any branch.
 Test the policy by creating a merge request in project A.
@@ -91,7 +91,7 @@ Test the policy by creating a merge request in project A.
 To test the scan execution policy:
 
 1. On the left sidebar, select **Search or go to** and find the project named `go-example-a`.
-1. Go to **Code > Repository**.
+1. Go to **Code** > **Repository**.
 1. Select the `helloworld.go` file.
 1. Select **Edit** > **Edit single file**.
 1. Add the following line immediately after the `fmt.Println("hello world")` line:
@@ -153,7 +153,7 @@ Now that you have another project, you link it to the same policy project.
 To link project B to the security policy project:
 
 1. On the left sidebar, select **Search or go to** and find the `go-example-b` project.
-1. Go to **Secure > Policies**.
+1. Go to **Secure** > **Policies**.
 1. Select **Edit policy project**.
 1. Select the dropdown list, then search for the security policy project created at the start of
    this tutorial.
@@ -168,7 +168,7 @@ policy by creating an MR in project B.
 To test the scan execution policy:
 
 1. On the left sidebar, select **Search or go to** and find the `go-example-b` project.
-1. Go to **Code > Repository**.
+1. Go to **Code** > **Repository**.
 1. Select the `helloworld.go` file.
 1. Select **Edit** > **Edit single file**.
 1. Add the following line immediately after the `fmt.Println("hello world")` line:

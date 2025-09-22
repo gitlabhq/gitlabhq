@@ -45,7 +45,7 @@ Prerequisites:
 To view the runner fleet dashboard for groups:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Build > Runners**.
+1. Select **Build** > **Runners**.
 1. Select **Fleet dashboard**.
 
 For GitLab Self-Managed, most of the dashboard metrics work without any additional configuration.

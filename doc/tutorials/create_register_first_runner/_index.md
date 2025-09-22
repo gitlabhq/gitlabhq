@@ -132,7 +132,7 @@ Here's what your `config.toml` should look like after you register and start the
 Next, trigger a pipeline in your project so you can view your runner execute a job.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
+1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. Select a job to view the job log. The output should look similar to this example, which shows
    your runner successfully executing the job:

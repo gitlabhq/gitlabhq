@@ -60,7 +60,7 @@ Prerequisites:
 To define an exclusion:
 
 1. In the left sidebar, select **Search or go to** and go to your project or group.
-1. Select **Secure > Security configuration**.
+1. Select **Secure** > **Security configuration**.
 1. Scroll down to **Secret push protection**.
 1. Turn on the **Secret push protection** toggle.
 1. Select **Configure Secret Detection** ({{< icon name="settings" >}}).

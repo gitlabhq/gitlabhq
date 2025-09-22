@@ -89,7 +89,7 @@ To enable DAST in a project:
 You can review vulnerabilities in a pipeline:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, select **Build > Pipelines**.
+1. On the left sidebar, select **Build** > **Pipelines**.
 1. Select the pipeline.
 1. Select the **Security** tab.
 1. Select a vulnerability to view its details, including:

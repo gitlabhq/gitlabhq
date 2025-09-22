@@ -146,7 +146,7 @@ To override approvers of a merge request:
    and add or remove your desired approval rules before selecting **Create merge request**.
 1. When viewing an existing merge request:
    1. On the left sidebar, select **Search or go to** and find your project.
-   1. Select **Code > Merge requests** and find your merge request.
+   1. Select **Code** > **Merge requests** and find your merge request.
    1. Select **Edit**.
    1. Scroll to the **Approval Rules** section.
    1. Add or remove your desired approval rules.

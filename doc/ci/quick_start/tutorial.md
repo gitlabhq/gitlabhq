@@ -117,7 +117,7 @@ test-job:
 
 Commit and push this change to GitLab, then:
 
-1. Go to **Build > Pipelines** and make sure a pipeline runs in GitLab with this single job.
+1. Go to **Build** > **Pipelines** and make sure a pipeline runs in GitLab with this single job.
 1. Select the pipeline, then select the job to view the job's log and see the `This is my first job!` message
    followed by the date.
 

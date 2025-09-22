@@ -114,7 +114,7 @@ To view exported traces:
 
 1. Start the `animals` application again.
 1. Visit `http://localhost:8080/animals` and perform some actions in the application.
-1. In the `animals` project, on the left sidebar, select **Monitor > Traces**.
+1. In the `animals` project, on the left sidebar, select **Monitor** > **Traces**.
    If everything is working correctly, you should see a trace for each controller action.
 
    ![Metrics UI](img/rails_metrics_ui_v17_3.png)

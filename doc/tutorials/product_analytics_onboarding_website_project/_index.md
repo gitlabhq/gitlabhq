@@ -82,8 +82,8 @@ For this example website, we use the Browser SDK.
 
 To instrument your new website:
 
-1. In the project, select **Code > Repository**.
-1. Select **Code > Web IDE**.
+1. In the project, select **Code** > **Repository**.
+1. Select **Code** > **Web IDE**.
 1. In the left Web IDE toolbar, select **File Explorer** and open the `public/index.html` file.
 1. In the `public/index.html` file, before the closing `</body>` tag, paste the snippet you copied in the previous section.
 
@@ -124,7 +124,7 @@ To instrument your new website:
 1. In the left Web IDE toolbar, select **Source Control**.
 1. Enter a commit message, such as `Add GitLab product analytics tracking snippet`.
 1. Select **Commit**, and if prompted to create a new branch or continue, select **Continue**. You can then close the Web IDE.
-1. In the project, select **Build > Pipelines**.
+1. In the project, select **Build** > **Pipelines**.
    A pipeline is triggered from your recent commit. Wait for it to finish running and deploying your updated website.
 
 ## Collect usage data

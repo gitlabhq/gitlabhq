@@ -4306,7 +4306,7 @@ release_job:
 This example creates a release:
 
 - When you push a Git tag.
-- When you add a Git tag in the UI at **Code > Tags**.
+- When you add a Git tag in the UI at **Code** > **Tags**.
 
 **Additional details**:
 

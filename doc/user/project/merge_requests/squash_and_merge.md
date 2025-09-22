@@ -51,7 +51,7 @@ Prerequisites:
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Select **Edit**.
 1. Select or clear the **Squash commits when merge request is accepted** checkbox.
 1. Select **Save changes**.
@@ -62,7 +62,7 @@ If your project allows you to select squashing options for merge requests, to
 squash the commits as part of the merge process:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. In the merge request widget, ensure the **Squash commits** checkbox is selected. This checkbox doesn't display
    if the project's squashing option is set to either **Do not allow** or **Require**.
 1. Optional. To modify either the squash commit message or the merge commit message

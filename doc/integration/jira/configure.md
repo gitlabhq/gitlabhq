@@ -287,7 +287,7 @@ You can create a Jira issue from GitLab to track any action taken to resolve or 
 To create a Jira issue for a vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
+1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. Select **Create Jira issue**.
 

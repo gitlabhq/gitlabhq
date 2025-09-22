@@ -168,7 +168,7 @@ To set up a mirror from GitLab to AWS CodeCommit:
 
 1. Copy or download the special Git HTTPS user ID and password.
 1. In the AWS CodeCommit console, create a new repository to mirror from your GitLab repository.
-1. Open your new repository, in the upper-right corner, select **Code > Clone HTTPS** (not **Clone HTTPS (GRC)**).
+1. Open your new repository, in the upper-right corner, select **Code** > **Clone HTTPS** (not **Clone HTTPS (GRC)**).
 1. In GitLab, open the repository to be push-mirrored.
 1. Select **Settings** > **Repository**, and then expand **Mirroring repositories**.
 1. Fill in the **Git repository URL** field using this format, replacing

@@ -79,7 +79,7 @@ Prerequisites:
 To explain the vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
+1. Select **Secure** > **Vulnerability report**.
 1. Optional. To remove the default filters, select **Clear** ({{< icon name="clear" >}}).
 1. Above the list of vulnerabilities, select the filter bar.
 1. In the dropdown list that appears, select **Tool**, then select all the values in the **SAST** category.
@@ -152,7 +152,7 @@ Learn more about [how to enable all GitLab Duo features](../../gitlab_duo/turn_o
 To resolve the vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
+1. Select **Secure** > **Vulnerability report**.
 1. Optional. To remove the default filters, select **Clear** ({{< icon name="clear" >}}).
 1. Above the list of vulnerabilities, select the filter bar.
 1. In the dropdown list that appears, select **Activity**, then select **Vulnerability Resolution available** in the **GitLab Duo (AI)** category.
@@ -409,7 +409,7 @@ Prerequisites:
 To change a vulnerability's status from its Vulnerability Page:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
+1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. Select **Change status**.
 1. From the **Status** dropdown list, select a status or a [dismissal reason](#vulnerability-dismissal-reasons)
@@ -425,7 +425,7 @@ You can create a GitLab issue to track any action taken to resolve or mitigate a
 To create a GitLab issue for a vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
+1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. Select **Create issue**.
 
@@ -448,7 +448,7 @@ Prerequisites:
 To link a vulnerability to existing GitLab issues:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
+1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. In the **Linked issues** section, select the plus icon ({{< icon name="plus" >}}).
 1. For each issue to be linked, either:
@@ -522,7 +522,7 @@ To resolve a vulnerability, you can either:
 To resolve the vulnerability with a merge request:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
+1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. From the **Resolve with merge request** dropdown list, select **Resolve with merge request**.
 
@@ -534,7 +534,7 @@ Process the merge request according to your standard workflow.
 To manually apply the patch that GitLab generated for a vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
+1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability's description.
 1. From the **Resolve with merge request** dropdown list, select **Download patch to resolve**.
 1. Ensure your local project has the same commit checked out that was used to generate the patch.
@@ -558,7 +558,7 @@ Security training helps your developers learn how to fix vulnerabilities. Develo
 To enable security training for vulnerabilities in your project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Security configuration**.
+1. Select **Secure** > **Security configuration**.
 1. On the tab bar, select **Vulnerability Management**.
 1. To enable a security training provider, turn on the toggle.
 
@@ -576,7 +576,7 @@ Vulnerabilities with a CWE are most likely to return a training result.
 To view the security training for a vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Vulnerability report**.
+1. Select **Secure** > **Vulnerability report**.
 1. Select the vulnerability for which you want to view security training.
 1. Select **View training**.
 

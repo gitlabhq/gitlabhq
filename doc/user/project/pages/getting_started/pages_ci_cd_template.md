@@ -30,7 +30,7 @@ these steps, you may have to do additional configuration for the Pages site to g
 
 If everything is configured correctly, the site can take approximately 30 minutes to deploy.
 
-To view the pipeline, go to **Build > Pipelines**.
+To view the pipeline, go to **Build** > **Pipelines**.
 
 When the pipeline is finished, go to **Deploy > Pages** to find the link to
 your Pages website.

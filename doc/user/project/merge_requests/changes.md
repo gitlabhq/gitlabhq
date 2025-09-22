@@ -54,7 +54,7 @@ The diff also includes navigation and comment aids to the left of the file, in t
 Use the file browser to view a list of files changed in a merge request:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the merge request title, select **Changes**.
 1. Select **Show file browser** ({{< icon name="file-tree" >}}) or press <kbd>F</kbd> to show
    the file tree.
@@ -66,7 +66,7 @@ Use the file browser to view a list of files changed in a merge request:
 To view the diff of changes included in a merge request:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the merge request title, select **Changes**.
 1. If the merge request changes many files, you can jump directly to a specific file:
    1. Select **Show file browser** ({{< icon name="file-tree" >}}) or press <kbd>F</kbd> to show the file tree.
@@ -96,7 +96,7 @@ When you share a merge request link with a team member, you might want to show a
 first in the list of changed files. To copy a merge request link that shows your desired file first:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the merge request title, select **Changes**.
 1. Find the file you want to show first. Right-click the name of the file to copy the link to it.
 1. When you visit that link, your chosen file is shown at the top of the list. The file browser
@@ -138,7 +138,7 @@ in your [`.gitattributes` file](../repository/files/git_attributes.md).
 ### View a collapsed file
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the merge request title, select **Changes**.
 1. Find the file you want to view, and select **Expand file**.
 
@@ -181,7 +181,7 @@ setting in a merge request, it updates your user settings as well.
 {{< tab title="In a merge request" >}}
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the merge request title, select **Changes**.
 
 1. Select **Preferences** ({{< icon name="preferences" >}}).
@@ -221,7 +221,7 @@ You can view the changes in a merge request either:
 To change how a merge request shows changed lines:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the title, select **Changes**.
 1. Select **Preferences** ({{< icon name="preferences" >}}). Select either **Side-by-side** or **Inline**.
    This example shows how GitLab renders the same change in both inline and side-by-side mode:
@@ -278,7 +278,7 @@ Prerequisites:
 To explain the code in a merge request:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests**, then select your merge request.
+1. Select **Code** > **Merge requests**, then select your merge request.
 1. Select **Changes**.
 1. On the file you would like explained, select the three dots ({{< icon name="ellipsis_v" >}}) and select **View File @ $SHA**.
 
@@ -305,7 +305,7 @@ You can also explain code in:
 When reviewing code changes, you can hide inline comments:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the title, select **Changes**.
 1. Scroll to the file that contains the comments you want to hide.
 1. Scroll to the line the comment is attached to. In the gutter margin, select **Collapse** ({{< icon name="collapse" >}}):
@@ -314,7 +314,7 @@ When reviewing code changes, you can hide inline comments:
 To expand inline comments and show them again:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the title, select **Changes**.
 1. Scroll to the file that contains the collapsed comments you want to show.
 1. Scroll to the line the comment is attached to. In the gutter margin, select the user avatar:
@@ -326,7 +326,7 @@ Whitespace changes can make it more difficult to see the substantive changes in
 a merge request. You can choose to hide or show whitespace changes:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the title, select **Changes**.
 1. Before the list of changed files, select **Preferences** ({{< icon name="preferences" >}}).
 1. Select or clear **Show whitespace changes**:
@@ -339,7 +339,7 @@ When reviewing a merge request with many files multiple times, you can ignore fi
 you've already reviewed. To hide files that haven't changed after your last review:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Below the title, select **Changes**.
 1. In the file's header, select the **Viewed** checkbox.
 
@@ -381,9 +381,9 @@ You can download the changes included in a merge request for use outside of GitL
 To download the changes as a diff:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the merge request.
-1. In the upper-right corner, select **Code > Plain diff**.
+1. In the upper-right corner, select **Code** > **Plain diff**.
 
 If you know the URL of the merge request, you can also download the diff from
 the command line by appending `.diff` to the URL. This example downloads the diff
@@ -404,9 +404,9 @@ curl "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.diff" | git a
 To download the changes as a patch file:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the merge request.
-1. In the upper-right corner, select **Code > Patches**.
+1. In the upper-right corner, select **Code** > **Patches**.
 
 If you know the URL of the merge request, you can also download the patch from
 the command line by appending `.patch` to the URL. This example downloads the patch
@@ -450,7 +450,7 @@ rebases and file changes.
 To add a comment to a merge request file:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Select **Changes**.
 1. In the header for the file you want to comment on, select **Comment on this file** ({{< icon name="comment" >}}).
 

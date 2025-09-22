@@ -93,7 +93,7 @@ When you mention a group in a comment, every member of the group gets a to-do it
 added to their to-do list.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. For merge requests, select **Code > Merge requests**, and find your merge request.
+1. For merge requests, select **Code** > **Merge requests**, and find your merge request.
 1. For issues, select **Plan** > **Issues**, and find your issue.
 1. In a comment, type `@` followed by the user, group, or subgroup namespace.
    For example, `@alex`, `@alex-team`, or `@alex-team/marketing`.
@@ -113,7 +113,7 @@ When you add comments to a merge request diff, these comments persist, even when
 To add a commit diff comment:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests**, and find your merge request.
+1. Select **Code** > **Merge requests**, and find your merge request.
 1. Select the **Commits** tab, then select the commit message.
 1. Start a comment:
    - To comment on an entire file, find the file you want to comment on and,
@@ -132,7 +132,7 @@ To add a commit diff comment:
 
 The comment displays on the merge request's **Overview** tab.
 
-The comment is not displayed on your project's **Code > Commits** page.
+The comment is not displayed on your project's **Code** > **Commits** page.
 
 {{< alert type="note" >}}
 
@@ -189,7 +189,7 @@ Prerequisites:
 To lock an issue or merge request:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. For merge requests, select **Code > Merge requests**, and find your merge request.
+1. For merge requests, select **Code** > **Merge requests**, and find your merge request.
 1. For issues, select **Plan** > **Issues**, and find your issue.
 1. In the upper-right corner, select **Merge request actions** or **Issue actions**
    ({{< icon name="ellipsis_v" >}}), then select **Lock discussion**.

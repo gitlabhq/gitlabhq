@@ -107,7 +107,7 @@ The changes were added to GitLab in your forked repository, in a branch with the
 Now, create a merge request. This merge request is how the changes from your branch
 are merged into the GitLab `master` branch.
 
-1. On the left sidebar, select **Code > Merge requests**.
+1. On the left sidebar, select **Code** > **Merge requests**.
 1. Select **New merge request**.
 1. For the source branch, select your fork and branch.
 1. For the target branch, select the [GitLab repository](https://gitlab.com/gitlab-org/gitlab) `master` branch.

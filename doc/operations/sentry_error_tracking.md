@@ -50,7 +50,7 @@ To enable the Sentry integration:
    1. From the **Project** list, choose a Sentry project to link to your GitLab project.
    1. Select **Save changes**.
 
-To view a list of Sentry errors, on your project's sidebar, go to **Monitor > Error Tracking**.
+To view a list of Sentry errors, on your project's sidebar, go to **Monitor** > **Error Tracking**.
 
 ## Enable Sentry's integration with GitLab
 

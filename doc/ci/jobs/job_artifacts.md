@@ -184,7 +184,7 @@ job:
 
 {{< /history >}}
 
-You can view all artifacts stored in a project from the **Build > Artifacts** page.
+You can view all artifacts stored in a project from the **Build** > **Artifacts** page.
 This list displays all jobs and their associated artifacts. Expand an entry to access
 all artifacts associated with a job, including:
 
@@ -330,7 +330,7 @@ You can also delete individual artifacts from the **Artifacts** page.
 You can delete multiple artifacts at the same time:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Artifacts**.
+1. Select **Build** > **Artifacts**.
 1. Select the checkboxes next to the artifacts you want to delete. You can select up to 50 artifacts.
 1. Select **Delete selected**.
 

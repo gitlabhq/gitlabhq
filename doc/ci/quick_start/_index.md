@@ -80,7 +80,7 @@ In this file, you define:
 To create a `.gitlab-ci.yml` file in your project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Repository**.
+1. Select **Code** > **Repository**.
 1. Above the file list, select the branch you want to commit to.
    If you're not sure, leave `master` or `main`.
    Then select the plus icon ({{< icon name="plus" >}}) and **New file**:
@@ -129,7 +129,7 @@ The pipeline starts and runs the jobs you defined in the `.gitlab-ci.yml` file.
 
 Now take a look at your pipeline and the jobs within.
 
-1. Go to **Build > Pipelines**. A pipeline with three stages should be displayed:
+1. Go to **Build** > **Pipelines**. A pipeline with three stages should be displayed:
 
    ![The pipeline list shows a running pipeline with 3 stages](img/three_stages_v13_6.png)
 

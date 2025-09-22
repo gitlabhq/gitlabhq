@@ -58,7 +58,7 @@ Create a new description template as a Markdown (`.md`) file inside the `.gitlab
 To create a work item description template:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Repository**.
+1. Select **Code** > **Repository**.
 1. Next to the default branch, select {{< icon name="plus" >}}.
 1. Select **New file**.
 1. Next to the default branch, in the **File name** text box, enter `.gitlab/issue_templates/mytemplate.md`,
@@ -82,7 +82,7 @@ For more information, see [creating merge requests](merge_requests/creating_merg
 To create a merge request description template for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Repository**.
+1. Select **Code** > **Repository**.
 1. Next to the default branch, select {{< icon name="plus" >}}.
 1. Select **New file**.
 1. Next to the default branch, in the **File name** text box, enter `.gitlab/merge_request_templates/mytemplate.md`,

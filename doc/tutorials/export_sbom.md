@@ -102,6 +102,6 @@ Set up Dependency Scanning. For detailed instructions, follow [the Dependency Sc
 
    ```
 
-1. Go to **Build > Pipelines** and confirm that the latest pipeline completed successfully.
+1. Go to **Build** > **Pipelines** and confirm that the latest pipeline completed successfully.
 
 In the job artifacts, `gl-sbom-merged-<pipeline_id>.cdx.json` file should be present.

@@ -95,7 +95,7 @@ To view exported traces:
 
 1. Start the `nodejs-O11y-tutorial` application with instrumentation again.
 1. Visit `http://localhost:8080/` and perform some actions in the application.
-1. In the `nodejs-O11y-tutorial` project, on the left sidebar, select **Monitor > Traces**.
+1. In the `nodejs-O11y-tutorial` project, on the left sidebar, select **Monitor** > **Traces**.
    If everything is working correctly, you should see a trace for each request.
 
    ![Metrics UI](img/nodejs_metrics_ui_v17_3.png)

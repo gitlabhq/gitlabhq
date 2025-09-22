@@ -212,7 +212,7 @@ Gather this information from affected users, and provide it in your bug report:
       <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
    1. Run the command `GitLab: Diagnostics`, and note the extension version.
 1. System details:
-   - In VS Code, go to **Code > About Visual Studio Code** and find **OS**.
+   - In VS Code, go to **Code** > **About Visual Studio Code** and find **OS**.
    - Machine specifications (CPU, RAM): Provide these from your machine. They are not accessible in the IDE.
 1. Describe the scope of impact. How many users are affected?
 1. Describe how to reproduce the error. Include a screen recording, if possible.

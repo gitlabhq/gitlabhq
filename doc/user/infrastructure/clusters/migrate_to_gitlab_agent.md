@@ -218,7 +218,7 @@ To migrate from Auto DevOps:
      KUBE_NAMESPACE: "demo-agent"
    ```
 
-1. To test your pipeline, on the left sidebar, select **Build > Pipelines** and then **New pipeline**.
+1. To test your pipeline, on the left sidebar, select **Build** > **Pipelines** and then **New pipeline**.
 
 For an example, [view this project](https://gitlab.com/gitlab-examples/ops/gitops-demo/hello-world-service).
 

@@ -89,7 +89,7 @@ the necessary CI/CD variables to deploy the Status Page to AWS S3:
    - `AWS_DEFAULT_REGION` - The AWS region.
    - `AWS_ACCESS_KEY_ID` - The AWS access key ID.
    - `AWS_SECRET_ACCESS_KEY` - The AWS secret.
-1. On the left sidebar, select **Build > Pipelines**.
+1. On the left sidebar, select **Build** > **Pipelines**.
 1. To deploy the Status Page to S3, select **New pipeline**.
 
 {{< alert type="warning" >}}

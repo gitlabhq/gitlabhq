@@ -53,7 +53,7 @@ You can add secrets to the secrets manager so that it can be used for secure CI/
 and workflows.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Secrets manager**.
+1. Select **Secure** > **Secrets manager**.
 1. Select **Add secret** and fill in the details:
    - **Name**: Must be unique in the project.
    - **Value**: No limitations.

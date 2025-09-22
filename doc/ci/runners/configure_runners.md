@@ -53,7 +53,7 @@ Prerequisites:
 To set the maximum job timeout:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Build > Runners**.
+1. Select **Build** > **Runners**.
 1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. In the **Maximum job timeout** field, enter a value in seconds. The minimum value is 600 seconds (10 minutes).
 1. Select **Save changes**.
@@ -312,7 +312,7 @@ Prerequisites:
 - You must have the Owner role for the group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Build > Runners**.
+1. Select **Build** > **Runners**.
 1. To the right of the runner you want to protect, select **Edit** ({{< icon name="pencil" >}}).
 1. Select the **Protected** checkbox.
 1. Select **Save changes**.
@@ -364,7 +364,7 @@ Prerequisites:
 To control the jobs that a group runner can run:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Build > Runners**.
+1. Select **Build** > **Runners**.
 1. To the right of the runner you want to edit, select **Edit** ({{< icon name="pencil" >}}).
 1. Set the runner to run tagged or untagged jobs:
    - To run tagged jobs, in the **Tags** field, enter the job tags separated with a comma. For example, `macos`, `ruby`.

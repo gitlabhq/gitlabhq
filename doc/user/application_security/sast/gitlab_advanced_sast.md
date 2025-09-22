@@ -184,7 +184,7 @@ You can set this variable by:
 
 To enable GitLab Advanced SAST by using the pipeline editor:
 
-1. In your project, select **Build > Pipeline editor**.
+1. In your project, select **Build** > **Pipeline editor**.
 1. If no `.gitlab-ci.yml` file exists, select **Configure pipeline**, then delete the example
    content.
 1. Update the CI/CD configuration to:
@@ -304,7 +304,7 @@ expected, reach out to GitLab Support for further assistance with the following 
 To identify the GitLab Advanced SAST analyzer version:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Jobs**.
+1. Select **Build** > **Jobs**.
 1. Locate the `gitlab-advanced-sast` job.
 1. In the output of the job, search for the string `GitLab GitLab Advanced SAST analyzer`.
 

@@ -32,7 +32,7 @@ For more information, see [Name your branch](../repository/branches/_index.md#na
 You can create a merge request from the list of merge requests.
 
 1. On the left sidebar, select **Search or go to** and find your GitLab project.
-1. Select **Code > Merge requests**.
+1. Select **Code** > **Merge requests**.
 1. In the upper-right corner, select **New merge request**.
 1. Select a source and target branch, then select **Compare branches and continue**.
 1. Complete the fields on the **New merge request** page, then select **Create merge request**.
@@ -119,7 +119,7 @@ You can create merge requests with the [Web Editor](../repository/web_editor.md)
 You can create a merge request when you create a branch.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Branches**.
+1. Select **Code** > **Branches**.
 1. Type a branch name and select **New branch**.
 1. Above the file list, select **Create merge request**.
    A merge request is created. The default branch is the target.
@@ -130,7 +130,7 @@ You can create a merge request when you create a branch.
 You can create a merge request from your fork to contribute back to the main project.
 
 1. On the left sidebar, select **Search or go to** and find your fork.
-1. Select **Code > Merge requests**, and select **New merge request**.
+1. Select **Code** > **Merge requests**, and select **New merge request**.
 1. For **Source branch**, select the branch in your fork that contains your changes.
 1. For **Target branch**:
 
@@ -206,7 +206,7 @@ Prerequisites:
 To create a merge request by sending an email:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests**.
+1. Select **Code** > **Merge requests**.
 1. If the project contains any merge requests, select **Email a new merge request to this project**.
 1. In the dialog, copy the email address shown. Keep this address private. Anyone who
    has it can create issues or merge requests as if they were you.

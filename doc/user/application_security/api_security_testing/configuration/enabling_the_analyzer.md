@@ -810,7 +810,7 @@ Follow these steps to view details of a vulnerability:
 
 1. You can view vulnerabilities in a project, or a merge request:
 
-   - In a project, go to the project's **Secure > Vulnerability report**
+   - In a project, go to the project's **Secure** > **Vulnerability report**
      page. This page shows all vulnerabilities from the default branch only.
    - In a merge request, go the merge request's **Security** section and select the **Expand**
      button. API security testing vulnerabilities are available in a section labeled

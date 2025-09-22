@@ -212,7 +212,7 @@ Prerequisites:
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Tags**.
+1. Select **Code** > **Tags**.
 1. Next to the tag you want to delete, select **Delete** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, enter the tag name and select **Yes, delete protected tag**.
 

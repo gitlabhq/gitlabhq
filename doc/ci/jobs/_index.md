@@ -223,7 +223,7 @@ Selecting an individual job shows you its [job log](job_logs.md), and allows you
 To view jobs that ran in a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Jobs**.
+1. Select **Build** > **Jobs**.
 
 You can filter the list by job status, source, name, and kind.
 
@@ -390,7 +390,7 @@ To retry a job from the job log:
 To retry a job from a pipeline:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
+1. Select **Build** > **Pipelines**.
 1. Find the pipeline that contains the job you want to retry.
 1. From the pipeline graph, next to the job you want to retry, select **Run again** ({{< icon name="retry" >}}).
 
@@ -400,7 +400,7 @@ If a pipeline has multiple failed or canceled jobs, you can retry all of them at
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Do one of the following:
-   - Select **Build > Pipelines**.
+   - Select **Build** > **Pipelines**.
    - Go to a merge request and select the **Pipelines** tab.
 1. For the pipeline with failed or canceled jobs, select **Retry all failed or canceled jobs** ({{< icon name="retry" >}}).
 
@@ -462,7 +462,7 @@ To cancel a job from the job log:
 To cancel a job from a pipeline:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
+1. Select **Build** > **Pipelines**.
 1. Find the pipeline that contains the job you want to cancel.
 1. From the pipeline graph, next to the job you want to cancel, select **Cancel** ({{< icon name="cancel" >}}).
 
@@ -472,7 +472,7 @@ You can cancel all jobs in a running pipeline at once.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Do one of the following:
-   - Select **Build > Pipelines**.
+   - Select **Build** > **Pipelines**.
    - Go to a merge request and select the **Pipelines** tab.
 1. For the pipeline you want to cancel, select **Cancel the running pipeline** ({{< icon name="cancel" >}}).
 

@@ -90,7 +90,7 @@ Next, create the CI/CD configuration file that you want your pipeline execution 
 
 Next, add a pipeline execution policy to your test project:
 
-1. Select **Secure > Policies**.
+1. Select **Secure** > **Policies**.
 1. Select **New policy**.
 1. In **Pipeline execution policy**, select **Select policy**.
 1. Complete the fields.
@@ -128,7 +128,7 @@ Next, add a pipeline execution policy to your test project:
 
 1. On the left sidebar, select **Search or go to** and find the `my-pipeline-execution-policy` project.
 
-1. Select **Secure > Policies**.
+1. Select **Secure** > **Policies**.
 
    You can see the list of policies added in the previous steps.
 

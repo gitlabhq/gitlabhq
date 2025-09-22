@@ -42,7 +42,7 @@ Prerequisites:
 To compare diff versions:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests**.
+1. Select **Code** > **Merge requests**.
 1. Select a merge request.
 1. To view the current diff version for this merge request, select **Changes**.
 1. Next to **Compare** ({{< icon name="file-tree" >}}), select the pushes to compare. This example

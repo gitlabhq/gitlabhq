@@ -50,7 +50,7 @@ Prerequisites:
 To view the compliance standards adherence dashboard:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 
 You can filter the compliance standards adherence dashboard on:
 
@@ -154,7 +154,7 @@ Prerequisites:
 To export the compliance standards adherence report for projects in a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 1. In the top-right corner, select **Export**.
 1. Select **Export standards adherence report**.
 

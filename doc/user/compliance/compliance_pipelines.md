@@ -66,7 +66,7 @@ Existing compliance pipelines must be migrated. Customers should migrate from co
 To migrate an existing compliance framework to use the pipeline execution policy type:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Compliance center**.
+1. Select **Secure** > **Compliance center**.
 1. [Edit](compliance_frameworks/_index.md#create-edit-or-delete-a-compliance-framework) the existing compliance framework.
 1. In the banner than appears, select **Migrate pipeline to a policy** to create a new policy in the security policies.
 1. Edit the compliance framework again to remove the compliance pipeline.

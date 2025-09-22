@@ -453,7 +453,7 @@ active at the same time.
 To enable Opsgenie integration:
 
 1. Sign in as a user with at least the Maintainer role.
-1. Go to **Monitor > Alerts**.
+1. Go to **Monitor** > **Alerts**.
 1. In the **Integrations** select box, select **Opsgenie**.
 1. Select the **Active** toggle.
 1. In the **API URL** field, enter the base URL for your Opsgenie integration,
@@ -461,4 +461,4 @@ To enable Opsgenie integration:
 1. Select **Save changes**.
 
 After you enable the integration, go to the **Alerts** page at
-**Monitor > Alerts**, and then select **View alerts in Opsgenie**.
+**Monitor** > **Alerts**, and then select **View alerts in Opsgenie**.

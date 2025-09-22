@@ -206,7 +206,7 @@ When there are pending status checks, the widget polls for updates every few sec
 To retry a failed status check:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Scroll to the merge request reports section, and expand the dropdown list to show the list of external status checks.
 1. Select **Retry** ({{< icon name="retry" >}}) on the failed external status check row. The status check is put back into a pending state.
 

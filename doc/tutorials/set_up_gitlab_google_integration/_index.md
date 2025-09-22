@@ -105,7 +105,7 @@ in your pipeline.
 After this step, whenever a new container image is pushed to your GitLab container registry,
 it is also pushed to your Google Artifact Registry.
 
-1. In your GitLab project, on the left sidebar, select **Build > Pipeline editor**.
+1. In your GitLab project, on the left sidebar, select **Build** > **Pipeline editor**.
 1. In the existing configuration, add the component as follows.
    - Replace `<your_stage>` with the stage where this job runs.
      It must be after the image is built and pushed to the GitLab container registry.
@@ -121,7 +121,7 @@ it is also pushed to your Google Artifact Registry.
 
 1. Add a descriptive commit message. **Target branch** must be your default branch.
 1. Select **Commit changes**.
-1. Go to **Build > Pipelines** and make sure a new pipeline runs.
+1. Go to **Build** > **Pipelines** and make sure a new pipeline runs.
 1. After the pipeline finishes successfully, to view the container image that was copied to Google Artifact Registry,
    on the left sidebar, select **Deploy > Google Artifact Registry**.
 
@@ -130,12 +130,12 @@ it is also pushed to your Google Artifact Registry.
 To integrate your pipeline with Google Cloud Deploy, include the [CI/CD component from Google](https://gitlab.com/explore/catalog/google-gitlab-components/cloud-deploy) in your pipeline.
 After this step, your pipeline creates a Google Cloud Deploy release with your application.
 
-1. In your GitLab project, on the left sidebar, select **Build > Pipeline editor**.
+1. In your GitLab project, on the left sidebar, select **Build** > **Pipeline editor**.
 1. In the existing configuration, add the [Google Cloud Deploy component](https://gitlab.com/explore/catalog/google-gitlab-components/cloud-deploy).
 1. Edit the component `inputs`.
 1. Add a descriptive commit message. **Target branch** must be your default branch.
 1. Select **Commit changes**.
-1. Go to **Build > Pipelines** and make sure a new pipeline passes.
+1. Go to **Build** > **Pipelines** and make sure a new pipeline passes.
 1. After the pipeline finishes successfully, to view the release,
    see the [Google Cloud documentation](https://cloud.google.com/deploy/docs/view-release).
 

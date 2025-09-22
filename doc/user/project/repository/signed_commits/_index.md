@@ -46,9 +46,9 @@ To review commits for a merge request, or for an entire project, and verify they
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. To review commits:
-   - For a project, select **Code > Commits**.
+   - For a project, select **Code** > **Commits**.
    - For a merge request:
-     1. Select **Code > Merge requests**, then select your merge request.
+     1. Select **Code** > **Merge requests**, then select your merge request.
      1. Select **Commits**.
 1. Identify the commit you want to review. Depending on the verification status of the signature,
    signed commits display either a **Verified** or **Unverified** badge.

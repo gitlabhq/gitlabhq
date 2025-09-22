@@ -67,7 +67,7 @@ Prerequisites:
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests**, and find your merge request.
+1. Select **Code** > **Merge requests**, and find your merge request.
 1. Scroll to the merge request reports section, and find the **Merged by** report.
 1. In the upper-right corner of the report, select **Cherry-pick**:
 
@@ -85,7 +85,7 @@ You can cherry-pick a single commit from multiple locations in your GitLab proje
 To cherry-pick a commit from the list of all commits for a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Commits**.
+1. Select **Code** > **Commits**.
 1. Select the [title](https://git-scm.com/docs/git-commit#_discussion) of the commit you want to cherry-pick.
 1. In the upper-right corner, select **Options > Cherry-pick**.
 1. On the cherry-pick dialog, select the project and branch to cherry-pick into.
@@ -98,7 +98,7 @@ You can cherry-pick from the list of previous commits affecting an individual fi
 when you view that file in your project's Git repository:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Repository**.
+1. Select **Code** > **Repository**.
 1. Go to the file changed by the commit. In the last commit block, select **History**.
 1. Select the [title](https://git-scm.com/docs/git-commit#_discussion)
    of the commit you want to cherry-pick.

@@ -81,7 +81,7 @@ Data usage: The diff of changes between the source branch's head and the target 
 When your merge request is ready to be reviewed, use GitLab Duo Code Review to perform an initial review:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. In a comment box, enter the quick action `/assign_reviewer @GitLabDuo`, or assign GitLab Duo as reviewer.
 
 {{< alert type="note" >}}
@@ -300,7 +300,7 @@ The `instruction_name` value corresponds to the `name` property from your `.gitl
 When you've completed your review of a merge request and are ready to [submit your review](reviews/_index.md#submit-a-review), use GitLab Duo Code Review Summary to generate a summary of your comments.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find the merge request you want to review.
+1. Select **Code** > **Merge requests** and find the merge request you want to review.
 1. When you are ready to submit your review, select **Finish review**.
 1. Select **Add Summary**.
 
@@ -342,7 +342,7 @@ When preparing to merge your merge request, edit the proposed merge commit messa
 by using GitLab Duo Merge Commit Message Generation.
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Select the **Edit commit message** checkbox on the merge widget.
 1. Select **Generate commit message**.
 1. Review the commit message provided and choose **Insert** to add it to the commit.

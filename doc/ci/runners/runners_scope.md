@@ -268,7 +268,7 @@ The runner uses the token to authenticate with GitLab when it picks up jobs from
 To create a group runner:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Build > Runners**.
+1. Select **Build** > **Runners**.
 1. Select **New group runner**.
 1. In the **Tags** section, in the **Tags** field, enter the job tags to specify jobs the runner can run.
    If there are no job tags for this runner, select **Run untagged**.
@@ -322,7 +322,7 @@ To create a group runner:
 
 1. [Install GitLab Runner](https://docs.gitlab.com/runner/install/).
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Build > Runners**.
+1. Select **Build** > **Runners**.
 1. In the upper-right corner, select **Register a group runner**.
 1. Select **Show runner installation and registration instructions**.
    These instructions include the token, URL, and a command to register a runner.
@@ -346,7 +346,7 @@ You can view all runners for a group and its subgroups and projects.
 You can do this for GitLab Self-Managed or for GitLab.com.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Build > Runners**.
+1. Select **Build** > **Runners**.
 
 #### Filter group runners to show only inherited
 
@@ -366,7 +366,7 @@ To show all runners available in the instance, including instance runners and
 those in other groups:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Build > Runners**.
+1. Select **Build** > **Runners**.
 1. Above the list, turn off the **Show only inherited** toggle.
 
 ### Pause or resume a group runner
@@ -379,7 +379,7 @@ You can pause a runner so that it does not accept jobs from subgroups and projec
 instance. If you pause a group runner that is used by multiple projects, the runner pauses for all projects.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Build > Runners**.
+1. Select **Build** > **Runners**.
 1. In the search box, enter the runner description or filter the runner list.
 1. In the runner list, to the right of the runner:
    - To pause the runner, select **Pause** ({{< icon name="pause" >}}).
@@ -404,7 +404,7 @@ jobs, you can [pause](#pause-or-resume-a-group-runner) the runner instead.
 To delete a single or multiple group runners:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Build > Runners**.
+1. Select **Build** > **Runners**.
 1. In the search box, enter the runner description or filter the list of runners.
 1. Delete the group runner:
    - To delete a single runner, next to the runner, select **Delete runner** ({{< icon name="remove" >}}).
@@ -734,7 +734,7 @@ To determine which runners need to be upgraded:
 1. View the list of runners:
    - For a group:
      1. On the left sidebar, select **Search or go to** and find your group.
-     1. Select **Build > Runners**.
+     1. Select **Build** > **Runners**.
    - For the instance:
      1. On the left sidebar, at the bottom, select **Admin**.
      1. Select **CI/CD > Runners**.

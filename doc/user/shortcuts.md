@@ -79,21 +79,21 @@ relatively quickly to work, and they take you to another page in the project.
 |-----------------------------|-------------|
 | <kbd>g</kbd> + <kbd>o</kbd> | Go to the **Project overview** page. |
 | <kbd>g</kbd> + <kbd>v</kbd> | Go to the project **Activity** page (**Manage** > **Activity**). |
-| <kbd>g</kbd> + <kbd>r</kbd> | Go to the project **Releases** page (**Deploy > Releases**). |
-| <kbd>g</kbd> + <kbd>f</kbd> | Go to the [project files](#project-files) (**Code > Repository**). |
-| <kbd>t</kbd>                | Open the project file search dialog. (**Code > Repository**, select **Find Files**). |
-| <kbd>g</kbd> + <kbd>c</kbd> | Go to the project **Commits** page (**Code > Commits**). |
-| <kbd>g</kbd> + <kbd>n</kbd> | Go to the [**Repository graph**](#repository-graph) page (**Code > Repository graph**). |
+| <kbd>g</kbd> + <kbd>r</kbd> | Go to the project **Releases** page (**Deploy** > **Releases**). |
+| <kbd>g</kbd> + <kbd>f</kbd> | Go to the [project files](#project-files) (**Code** > **Repository**). |
+| <kbd>t</kbd>                | Open the project file search dialog. (**Code** > Repository**, select **Find Files**). |
+| <kbd>g</kbd> + <kbd>c</kbd> | Go to the project **Commits** page (**Code** > **Commits**). |
+| <kbd>g</kbd> + <kbd>n</kbd> | Go to the [**Repository graph**](#repository-graph) page (**Code** > **Repository graph**). |
 | <kbd>g</kbd> + <kbd>d</kbd> | Go to the charts in the **Repository analytics** page (**Analyze** > **Repository analytics**). |
 | <kbd>g</kbd> + <kbd>i</kbd> | Go to the project **Issues** page (**Plan** > **Issues**). |
 | <kbd>i</kbd>                | Go to the **New Issue** page (**Plan** > **Issues**, select **New issue** ). |
 | <kbd>g</kbd> + <kbd>b</kbd> | Go to the project **Issue boards** page (**Plan** > **Issue boards**). |
-| <kbd>g</kbd> + <kbd>m</kbd> | Go to the project **Merge requests** page (**Code > Merge requests**). |
-| <kbd>g</kbd> + <kbd>p</kbd> | Go to the CI/CD **Pipelines** page (**Build > Pipelines**). |
-| <kbd>g</kbd> + <kbd>j</kbd> | Go to the CI/CD **Jobs** page (**Build > Jobs**). |
-| <kbd>g</kbd> + <kbd>e</kbd> | Go to the project **Environments** page (**Operate > Environments**). |
-| <kbd>g</kbd> + <kbd>k</kbd> | Go to the project **Kubernetes clusters** integration page (**Operate > Kubernetes clusters**). You must have at least [`maintainer` permissions](permissions.md) to access this page. |
-| <kbd>g</kbd> + <kbd>s</kbd> | Go to the project **Snippets** page (**Code > Snippets**). |
+| <kbd>g</kbd> + <kbd>m</kbd> | Go to the project **Merge requests** page (**Code** > **Merge requests**). |
+| <kbd>g</kbd> + <kbd>p</kbd> | Go to the CI/CD **Pipelines** page (**Build** > **Pipelines**). |
+| <kbd>g</kbd> + <kbd>j</kbd> | Go to the CI/CD **Jobs** page (**Build** > **Jobs**). |
+| <kbd>g</kbd> + <kbd>e</kbd> | Go to the project **Environments** page (**Operate** > **Environments**). |
+| <kbd>g</kbd> + <kbd>k</kbd> | Go to the project **Kubernetes clusters** integration page (**Operate** > **Kubernetes clusters**). You must have at least [`maintainer` permissions](permissions.md) to access this page. |
+| <kbd>g</kbd> + <kbd>s</kbd> | Go to the project **Snippets** page (**Code** > **Snippets**). |
 | <kbd>g</kbd> + <kbd>w</kbd> | Go to the project wiki (**Plan** > **Wiki**), if enabled. |
 | <kbd>.</kbd>                | Open the Web IDE. |
 
@@ -139,21 +139,21 @@ These shortcuts are available when viewing [merge requests](project/merge_reques
 ### Project files
 
 These shortcuts are available when browsing the files in a project (go to
-**Code > Repository**):
+**Code** > **Repository**):
 
 | Keyboard shortcut | Description |
 |-------------------|-------------|
-| <kbd>↑</kbd>      | Move selection up (only while searching for files, **Code > Repository**, then select **Find File**). |
-| <kbd>↓</kbd>      | Move selection down (only while searching for files, **Code > Repository**, then select **Find File**). |
-| <kbd>Enter</kbd>  | Open selection (only while searching for files, **Code > Repository**, then select **Find File**). |
-| <kbd>Escape</kbd> | Go back to the **Find File** screen (only while searching for files, **Code > Repository**, then select **Find File**). |
+| <kbd>↑</kbd>      | Move selection up (only while searching for files, **Code** > **Repository**, then select **Find File**). |
+| <kbd>↓</kbd>      | Move selection down (only while searching for files, **Code** > **Repository**, then select **Find File**). |
+| <kbd>Enter</kbd>  | Open selection (only while searching for files, **Code** > **Repository**, then select **Find File**). |
+| <kbd>Escape</kbd> | Go back to the **Find File** screen (only while searching for files, **Code** > **Repository**, then select **Find File**). |
 | <kbd>y</kbd>      | Go to file permalink (only while viewing a file). |
 | <kbd>.</kbd>      | Open the Web IDE. |
 
 ### Repository graph
 
 These shortcuts are available when viewing the project [repository graph](project/repository/_index.md#repository-history-graph)
-page (go to **Code > Repository graph**):
+page (go to **Code** > **Repository graph**):
 
 | Keyboard shortcut                                                  | Description |
 |--------------------------------------------------------------------|-------------|

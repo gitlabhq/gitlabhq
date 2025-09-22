@@ -88,7 +88,7 @@ If your traces are exported successfully, you can see them in the project.
 To view the list of traces:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Monitor > Traces**.
+1. Select **Monitor** > **Traces**.
 1. Optional. To view the details of a trace, select it from the list.
 
    ![list of traces](img/tracing_list_v16_11.png)
@@ -106,7 +106,7 @@ To view the list of traces:
 You can create an issue to track any action taken to resolve or investigate a trace. To create an issue for a trace:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Monitor > Traces**.
+1. Select **Monitor** > **Traces**.
 1. From the list of traces, select a trace.
 1. Select **Create issue**.
 
@@ -116,7 +116,7 @@ You can edit the issue title and description.
 ## View issues related to a trace
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Monitor > Traces**.
+1. Select **Monitor** > **Traces**.
 1. From the list of traces, select a trace.
 1. Scroll to **Related issues**.
 1. Optional. To view the issue details, select an issue.

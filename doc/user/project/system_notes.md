@@ -57,7 +57,7 @@ Merge requests provide more granular filtering options.
 ### On a merge request
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. Go to **Activity**.
 1. For **Sort or filter**, select **Show all activity** to see all system notes.
    To narrow the types of system notes returned, select one or more of:
