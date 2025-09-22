@@ -9,6 +9,10 @@ title: Testing levels
 
 _This diagram demonstrates the relative priority of each test type we use. `e2e` stands for end-to-end._
 
+To achieve test coverage with stability and speed, we use the testing pyramid to guide test distribution. 
+
+Most of our tests should be at the unit level, with fewer tests as we move up each layer. End-to-end tests at the top are the most expensive to run and maintain. Because of this, they should make up the smallest portion of our total tests.
+
 As of 2025-02-03, we have the following estimated distribution of tests per level:
 
 | Test level                                                        | Community Edition | Enterprise Edition | Community + Enterprise Edition |

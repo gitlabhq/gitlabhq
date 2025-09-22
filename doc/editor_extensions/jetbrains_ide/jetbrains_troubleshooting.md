@@ -38,7 +38,7 @@ To enable GitLab Language Server debug logs:
 1. In your IDE, on the top bar, select your IDE name, then select **Settings**.
 1. On the left sidebar, select **Tools** > **GitLab Duo**.
 1. Select **GitLab Language Server** to expand the section.
-1. In **Logging > Log Level**, enter `debug`.
+1. In **Logging** > **Log Level**, enter `debug`.
 1. Select **Apply**.
 1. Below **Enable GitLab Language Server**, select **Restart Language Server**.
 
@@ -140,10 +140,10 @@ Gather this information from affected users, and provide it in your bug report:
    - [Debug logs](#enable-debug-mode).
    - [Language Server debug logs](#enable-gitlab-language-server-debug-logs).
    - [Logs output](#get-debug-logs)
-1. Diagnostics output. In your IntelliJ product, go to **Help > Diagnostics Tools > Collect Troubleshooting Information**.
+1. Diagnostics output. In your IntelliJ product, go to **Help** > **Diagnostics Tools** > **Collect Troubleshooting Information**.
    - In the **About** section, copy the **Build Version**.
    - For plugin-specific versions: in the **Plugins** section, copy the output.
-1. System details. In your IntelliJ product, go to **Help > Diagnostics Tools > Collect Troubleshooting Information**.
+1. System details. In your IntelliJ product, go to **Help** > **Diagnostics Tools** > **Collect Troubleshooting Information**.
    - For the operating system type and version: in the dialog, copy **Operating System**.
    - For the machine specifications, copy the `System` section.
 1. Describe the scope of impact. How many users are affected?

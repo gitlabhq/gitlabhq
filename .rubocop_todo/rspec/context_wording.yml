@@ -1485,7 +1485,6 @@ RSpec/ContextWording:
     - 'spec/lib/gitlab/daemon_spec.rb'
     - 'spec/lib/gitlab/data_builder/build_spec.rb'
     - 'spec/lib/gitlab/data_builder/pipeline_spec.rb'
-    - 'spec/lib/gitlab/database/background_migration/batch_optimizer_spec.rb'
     - 'spec/lib/gitlab/database/background_migration/batched_migration_runner_spec.rb'
     - 'spec/lib/gitlab/database/background_migration/batched_migration_spec.rb'
     - 'spec/lib/gitlab/database/batch_count_spec.rb'

@@ -50,6 +50,7 @@ module Gitlab
             association => {
               **::Ci::Pipeline::PROJECT_ROUTE_AND_NAMESPACE_ROUTE,
               runner: :tags,
+              job_environment: [],
               job_artifacts_archive: [],
               user: [],
               metadata: [],

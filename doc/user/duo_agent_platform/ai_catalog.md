@@ -35,7 +35,7 @@ Use the AI Catalog to:
 
 - Discover agents created by the GitLab team and community members.
 - Create agents and share them across projects.
-- Add agents to your projects and use them with GitLab Duo Agentic Chat.
+- Add agents to your projects and use them with GitLab Duo Chat (Agentic).
 
 ## View the AI Catalog
 

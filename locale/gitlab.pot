@@ -71606,6 +71606,12 @@ msgstr ""
 msgid "VirtualRegistry|Maven"
 msgstr ""
 
+msgid "VirtualRegistry|Maven registries"
+msgstr ""
+
+msgid "VirtualRegistry|Maven registries and upstreams"
+msgstr ""
+
 msgid "VirtualRegistry|Maven upstream"
 msgstr ""
 
@@ -71613,6 +71619,9 @@ msgid "VirtualRegistry|Maven upstream has been deleted."
 msgstr ""
 
 msgid "VirtualRegistry|Maven upstream has been updated."
+msgstr ""
+
+msgid "VirtualRegistry|Maven upstreams"
 msgstr ""
 
 msgid "VirtualRegistry|Maven virtual registries"

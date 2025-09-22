@@ -668,6 +668,10 @@ packages_package_file_build_infos:
   - table: p_ci_pipelines
     column: pipeline_id
     on_delete: async_nullify
+packages_package_file_states:
+  - table: packages_package_files
+    column: package_file_id
+    on_delete: async_delete
 pages_deployments:
   - table: p_ci_builds
     column: ci_build_id

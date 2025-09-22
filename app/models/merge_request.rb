@@ -1636,6 +1636,10 @@ class MergeRequest < ApplicationRecord
       .for_commit_id(commit_ids)
   end
 
+  def duo_code_review_progress_note
+    # Overridden in EE
+  end
+
   def mergeable_discussions_state?
     return true unless only_allow_merge_if_all_discussions_are_resolved?
 

@@ -1726,7 +1726,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/database/async_indexes/index_destructor_spec.rb'
     - 'spec/lib/gitlab/database/async_indexes/postgres_async_index_spec.rb'
     - 'spec/lib/gitlab/database/async_indexes_spec.rb'
-    - 'spec/lib/gitlab/database/background_migration/batch_optimizer_spec.rb'
     - 'spec/lib/gitlab/database/background_migration/batched_job_spec.rb'
     - 'spec/lib/gitlab/database/background_migration/batched_migration_spec.rb'
     - 'spec/lib/gitlab/database/batch_average_counter_spec.rb'

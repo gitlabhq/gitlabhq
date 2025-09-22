@@ -828,3 +828,18 @@
   }
 }
 
+.duo-agent-platform-sidebar-widget {
+  @apply gl-mt-3 gl-mx-3 gl-p-4 gl-bg-default gl-rounded-base;
+}
+
+:where(.application-chrome) {
+  .duo-agent-platform-sidebar-widget {
+    @apply gl-mt-4;
+
+    border: solid 2px transparent;
+    border-radius: 1rem;
+    background:
+      linear-gradient(var(--gl-background-color-default), var(--gl-background-color-default)) padding-box,
+      linear-gradient(200deg, var(--_shade-4), var(--_shade-3)) border-box;
+  }
+}

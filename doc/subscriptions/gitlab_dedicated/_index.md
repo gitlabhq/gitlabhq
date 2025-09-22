@@ -229,7 +229,6 @@ Limitations:
 - Single-region deployment only.
 - No SLA commitment.
 - Cannot run newer versions than production.
-- GitLab Duo Core is not available.
 
 ## Unavailable features
 
@@ -296,7 +295,7 @@ The following operational features are not available:
 - [Geo proxying](../../administration/geo/secondary_proxy/_index.md) and using a unified URL
 - Self-serve purchasing and configuration
 - Support for deploying to non-AWS cloud providers, such as GCP or Azure
-- Observability dashboard in Switchboard
+- Observability dashboards in Switchboard, such as Grafana and OpenSearch
 
 ### Features that require server access
 

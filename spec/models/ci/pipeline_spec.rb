@@ -4217,6 +4217,47 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
             expect(subject).to be_empty
           end
         end
+
+        context 'when the environment is linked via Environments::Job instead of CI metadata' do
+          before do
+            job.metadata.destroy!
+          end
+
+          it 'returns the environment' do
+            expect(subject).to contain_exactly(job.deployment.environment)
+          end
+
+          context 'when the environment_attributes_from_job_environment feature flag is disabled' do
+            before do
+              stub_feature_flags(environment_attributes_from_job_environment: false)
+            end
+
+            it { is_expected.to be_empty }
+          end
+        end
+
+        context 'when there are environments linked via both Environments::Job and CI metadata' do
+          let_it_be_with_refind(:staging_job) { create(factory_type, :with_deployment, :start_staging, pipeline: pipeline) }
+
+          before do
+            job.job_environment.destroy!
+            staging_job.metadata.destroy!
+          end
+
+          it 'includes environments from both sources' do
+            expect(subject).to contain_exactly(job.deployment.environment, staging_job.deployment.environment)
+          end
+
+          context 'when the environment_attributes_from_job_environment feature flag is disabled' do
+            before do
+              stub_feature_flags(environment_attributes_from_job_environment: false)
+            end
+
+            it 'includes only the environment fetched from metadata' do
+              expect(subject).to contain_exactly(job.deployment.environment)
+            end
+          end
+        end
       end
 
       context 'when an associated environment does not have deployments' do

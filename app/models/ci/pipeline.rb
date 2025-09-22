@@ -1096,7 +1096,15 @@ module Ci
                                       .limit(100)
                                       .pluck(:expanded_environment_name)
 
-      Environment.where(project: project, name: expanded_environment_names).with_deployment(sha, status: deployment_status)
+      if use_job_environment_for_environment_lookup?
+        expanded_environment_names += Environments::Job
+          .where(ci_pipeline_id: self_and_project_descendants.pluck(:id))
+          .limit(100)
+          .distinct
+          .pluck(:expanded_environment_name)
+      end
+
+      Environment.where(project: project, name: expanded_environment_names.uniq).with_deployment(sha, status: deployment_status)
     end
 
     # With multi-project and parent-child pipelines
@@ -1691,6 +1699,10 @@ module Ci
 
     rescue Repository::AmbiguousRefError
       false
+    end
+
+    def use_job_environment_for_environment_lookup?
+      Feature.enabled?(:environment_attributes_from_job_environment, project)
     end
   end
 end

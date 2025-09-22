@@ -172,6 +172,7 @@ Use the following database queries to see the state of the current batched backg
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60133) in GitLab 13.2 [with a flag](../administration/feature_flags/_index.md) named `optimize_batched_migrations`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204173) in GitLab 18.4. Feature flag `optimize_batched_migrations` removed.
 
 {{< /history >}}
 
@@ -179,13 +180,6 @@ Use the following database queries to see the state of the current batched backg
 
 There can be [risks when disabling released features](../administration/feature_flags/_index.md#risks-when-disabling-released-features).
 Refer to this feature's history for more details.
-
-{{< /alert >}}
-
-{{< alert type="flag" >}}
-
-On GitLab Self-Managed, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags/_index.md) named `optimize_batched_migrations`.
-On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 {{< /alert >}}
 

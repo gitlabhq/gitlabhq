@@ -303,6 +303,39 @@ RSpec.shared_examples 'a deployable job' do
     end
   end
 
+  describe '#environment_permanent_metadata' do
+    let_it_be(:environment) { create(:environment, name: 'production') }
+
+    let(:options) { { script: 'script', environment: { name: 'production', action: 'prepare' } } }
+    let(:job) { create(factory_type, project: project, environment: 'production', options: options) }
+
+    subject { job.environment_permanent_metadata }
+
+    it { is_expected.to eq(job.environment_options_for_permanent_storage) }
+
+    context 'when a job environment record is present' do
+      before do
+        job.link_to_environment(environment)
+
+        # Artificially change the stored options to prove the result comes from
+        # the correct source.
+        job.job_environment.update!(options: { deployment_tier: 'production' })
+      end
+
+      it 'returns options from the job environment' do
+        expect(subject).to eq(job.job_environment.options)
+      end
+
+      context 'when the environment_attributes_from_job_environment feature flag is disabled' do
+        before do
+          stub_feature_flags(environment_attributes_from_job_environment: false)
+        end
+
+        it { is_expected.to eq(job.environment_options_for_permanent_storage) }
+      end
+    end
+  end
+
   describe '#environment_options_for_permanent_storage' do
     subject { job.environment_options_for_permanent_storage }
 
@@ -560,6 +593,64 @@ RSpec.shared_examples 'a deployable job' do
         end
 
         it { is_expected.to eq('review/master') }
+      end
+
+      context 'when there is an associated job environment record' do
+        let(:job) do
+          create(
+            factory_type,
+            ref: 'example-feature',
+            environment: 'review/example-feature',
+            pipeline: pipeline
+          )
+        end
+
+        let!(:job_environment) do
+          create(:job_environment, project: project, pipeline: pipeline, job: job,
+            expanded_environment_name: 'name-from-job-env')
+        end
+
+        it { is_expected.to eq('name-from-job-env') }
+
+        context 'when the job metadata has the namespace persisted' do
+          before do
+            job.metadata.expanded_environment_name = 'name-from-metadata'
+          end
+
+          it { is_expected.to eq('name-from-job-env') }
+        end
+
+        context 'when the job metadata does not exist' do
+          before do
+            job.metadata.destroy!
+          end
+
+          it { is_expected.to eq('name-from-job-env') }
+        end
+
+        context 'when the environment_attributes_from_job_environment feature flag is disabled' do
+          before do
+            stub_feature_flags(environment_attributes_from_job_environment: false)
+          end
+
+          it { is_expected.to eq('review/example-feature') }
+
+          context 'when the job metadata has the namespace persisted' do
+            before do
+              job.metadata.expanded_environment_name = 'name-from-metadata'
+            end
+
+            it { is_expected.to eq('name-from-metadata') }
+          end
+
+          context 'when the job metadata does not exist' do
+            before do
+              job.metadata.destroy!
+            end
+
+            it { is_expected.to eq('review/example-feature') }
+          end
+        end
       end
     end
 

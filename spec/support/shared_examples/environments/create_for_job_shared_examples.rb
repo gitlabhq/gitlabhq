@@ -35,7 +35,7 @@ RSpec.shared_examples 'create environment for job' do
           environment: instance_of(Environment),
           pipeline: job.pipeline,
           expanded_environment_name: job.persisted_environment.name,
-          options: job.environment_options_for_permanent_storage.deep_stringify_keys
+          options: job.environment_options_for_permanent_storage
         )
       end
 
@@ -82,7 +82,7 @@ RSpec.shared_examples 'create environment for job' do
             environment: environment,
             pipeline: job.pipeline,
             expanded_environment_name: environment.name,
-            options: job.environment_options_for_permanent_storage.deep_stringify_keys
+            options: job.environment_options_for_permanent_storage
           )
         end
 

@@ -37,7 +37,7 @@ RSpec.describe ActiveContext::Preprocessors::ContentFetcher do
     allow(ActiveContext).to receive(:adapter).and_return(mock_adapter)
     allow(mock_adapter).to receive_message_chain(:client, :search).and_return(search_results)
     allow(ActiveContext::CollectionCache).to receive(:fetch).and_return(mock_collection)
-    allow(ActiveContext::Logger).to receive(:exception).and_return(nil)
+    allow(ActiveContext::Logger).to receive(:skippable_exception).and_return(nil)
   end
 
   describe '.fetch_content' do
@@ -74,11 +74,19 @@ RSpec.describe ActiveContext::Preprocessors::ContentFetcher do
         ]
       end
 
-      it 'adds the ref to the failed refs result', :aggregate_failures do
+      it 'does not add the ref to the failed refs result', :aggregate_failures do
+        expect(ActiveContext::Logger).to receive(:skippable_exception) do |e, kwargs|
+          expect(e).to be_a(ActiveContext::Preprocessors::ContentFetcher::ContentNotFoundError)
+          expect(e.message).to eq("content not found for chunk with id: id2")
+          expect(kwargs[:class]).to eq("Class")
+          expect(kwargs[:reference]).to match(/id2/)
+          expect(kwargs[:reference_id]).to eq("id2")
+        end
+
         result = process_refs
 
         expect(result[:successful]).to eq([reference_1])
-        expect(result[:failed]).to eq([reference_2])
+        expect(result[:failed]).to be_empty
       end
     end
   end

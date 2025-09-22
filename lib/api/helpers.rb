@@ -322,8 +322,8 @@ module API
     # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def find_project_merge_request(iid)
-      MergeRequestsFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
+    def find_project_merge_request(iid, project: user_project)
+      MergeRequestsFinder.new(current_user, project_id: project.id).find_by!(iid: iid)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

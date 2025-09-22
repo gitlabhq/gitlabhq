@@ -105,6 +105,10 @@ module Ci
       return {} unless options && options[:environment]
 
       environment_options = options[:environment].slice(:action, :deployment_tier)
+
+      # The Kubernetes namespace is required by the deprecated certificate-based
+      # cluster integration. Once this functionality is removed, the namespace does
+      # not need to be stored permanently and can be removed from this method.
       kubernetes_options = options.dig(:environment, :kubernetes)&.slice(:namespace)
 
       environment_options[:kubernetes] = kubernetes_options if kubernetes_options.present?
@@ -117,7 +121,9 @@ module Ci
       strong_memoize(:expanded_environment_name) do
         # We're using a persisted expanded environment name in order to avoid
         # variable expansion per request.
-        if metadata&.expanded_environment_name.present?
+        if use_job_environment_for_environment_options? && job_environment&.expanded_environment_name.present?
+          job_environment.expanded_environment_name
+        elsif metadata&.expanded_environment_name.present?
           metadata.expanded_environment_name
         else
           ExpandVariables.expand(environment, -> { simple_variables.sort_and_expand_all })
@@ -128,8 +134,12 @@ module Ci
     def expanded_kubernetes_namespace
       return unless has_environment_keyword?
 
-      namespace = options.dig(:environment, :kubernetes, :dashboard, :namespace) ||
-        options.dig(:environment, :kubernetes, :namespace)
+      # `kubernetes.namespace` is used by both the Kubernetes dashboard and the
+      # deprecated certificate-based cluster integration, and the latter relies
+      # on the namespace being stored permanently. When the certificate-based
+      # integration is removed, both of these will use #environment_processing_metadata.
+      namespace = environment_processing_metadata.dig(:kubernetes, :dashboard, :namespace) ||
+        environment_permanent_metadata.dig(:kubernetes, :namespace)
 
       return unless namespace.present?
 
@@ -139,7 +149,7 @@ module Ci
     end
 
     def environment_auto_stop_in
-      options.dig(:environment, :auto_stop_in) if options
+      environment_processing_metadata[:auto_stop_in]
     end
 
     def expanded_auto_stop_in
@@ -175,11 +185,11 @@ module Ci
     end
 
     def environment_action
-      options.fetch(:environment, {}).fetch(:action, 'start') if options
+      environment_permanent_metadata.fetch(:action, 'start')
     end
 
     def environment_tier_from_options
-      options.dig(:environment, :deployment_tier) if options
+      environment_permanent_metadata[:deployment_tier]
     end
 
     def environment_tier
@@ -187,7 +197,7 @@ module Ci
     end
 
     def environment_url
-      options&.dig(:environment, :url) || persisted_environment.try(:external_url)
+      environment_processing_metadata[:url] || persisted_environment.try(:external_url)
     end
 
     def environment_slug
@@ -202,11 +212,33 @@ module Ci
     strong_memoize_attr :environment_status
 
     def on_stop
-      options&.dig(:environment, :on_stop)
+      environment_processing_metadata[:on_stop]
     end
 
     def stop_action_successful?
       success?
+    end
+
+    def environment_permanent_metadata
+      if use_job_environment_for_environment_options? && job_environment.present?
+        job_environment.options
+      else
+        # TODO: This fallback can be removed when historical job environment
+        # records have been backfilled.
+        environment_options_for_permanent_storage
+      end
+    end
+
+    private
+
+    # Processing options are only available until a pipeline is archived. To
+    # retrieve options for historical jobs, use `#environment_permanent_metadata`.
+    def environment_processing_metadata
+      options&.fetch(:environment, {}) || {}
+    end
+
+    def use_job_environment_for_environment_options?
+      Feature.enabled?(:environment_attributes_from_job_environment, project)
     end
   end
 end

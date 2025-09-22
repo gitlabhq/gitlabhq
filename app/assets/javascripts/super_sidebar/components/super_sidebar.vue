@@ -290,11 +290,7 @@ export default {
             class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-base gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
           />
         </div>
-        <div v-if="showDuoAgentPlatformWidget && !isIconOnly" class="gl-p-2">
-          <duo-agent-platform-widget
-            class="gl-relative gl-mb-1 gl-flex gl-items-center gl-rounded-base gl-p-3 gl-leading-normal !gl-text-default !gl-no-underline"
-          />
-        </div>
+        <duo-agent-platform-widget v-if="showDuoAgentPlatformWidget && !isIconOnly" />
         <help-center
           v-if="canIconOnly"
           ref="helpCenter"

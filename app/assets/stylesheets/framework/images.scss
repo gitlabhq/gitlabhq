@@ -32,6 +32,10 @@
   }
 }
 
+svg:not([id*="-sm"], [id*="-md"], [id*="-lg"]) {
+  fill: currentColor;
+}
+
 .square,
 svg {
   $svg-sizes: 8 10 12 14 16 18 24 32 48 72;

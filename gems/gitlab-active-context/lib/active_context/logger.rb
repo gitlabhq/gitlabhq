@@ -45,6 +45,16 @@ module ActiveContext
         warn(**payload)
       end
 
+      def skippable_exception(exception, **kwargs)
+        payload = {
+          exception_class: exception.class.name,
+          exception_message: "Skippable Error occurred: #{exception.message}",
+          exception_backtrace: exception.backtrace
+        }.merge(kwargs)
+
+        warn(**payload)
+      end
+
       private
 
       def log(severity, **kwargs)

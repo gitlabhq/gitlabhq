@@ -4581,7 +4581,6 @@
 - './spec/lib/gitlab/database/background_migration/batched_migration_spec.rb'
 - './spec/lib/gitlab/database/background_migration/batched_migration_wrapper_spec.rb'
 - './spec/lib/gitlab/database/background_migration/batch_metrics_spec.rb'
-- './spec/lib/gitlab/database/background_migration/batch_optimizer_spec.rb'
 - './spec/lib/gitlab/database/background_migration/prometheus_metrics_spec.rb'
 - './spec/lib/gitlab/database/batch_count_spec.rb'
 - './spec/lib/gitlab/database/bulk_update_spec.rb'

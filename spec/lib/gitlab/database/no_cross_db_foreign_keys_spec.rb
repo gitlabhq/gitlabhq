@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'cross-database foreign keys', feature_category: :database do
-  # Pre-existing FK that needs to be convered to loose foreign keys
+  # Pre-existing FK that needs to be converted to loose foreign keys
   #
   # The issue corresponding to the loose foreign key conversion
   # should be added as a comment along with the name of the column.

@@ -2931,7 +2931,6 @@ Layout/LineLength:
     - 'spec/lib/gitlab/data_builder/build_spec.rb'
     - 'spec/lib/gitlab/data_builder/pipeline_spec.rb'
     - 'spec/lib/gitlab/data_builder/wiki_page_spec.rb'
-    - 'spec/lib/gitlab/database/background_migration/batch_optimizer_spec.rb'
     - 'spec/lib/gitlab/database/background_migration/batched_job_spec.rb'
     - 'spec/lib/gitlab/database/background_migration/batched_job_transition_log_spec.rb'
     - 'spec/lib/gitlab/database/background_migration/batched_migration_runner_spec.rb'
