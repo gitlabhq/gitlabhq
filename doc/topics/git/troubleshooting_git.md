@@ -357,24 +357,25 @@ This error might also occur with [Git for Windows](https://gitforwindows.org/)
 2.46.0 and later. When authenticating with a token, the username can be any value, but an empty value
 could trigger the authentication error.
 
-To resolve this, specify a username string. Use one of the following methods:
+To resolve this, specify a username string. Use one of the following methods, replacing
+`<USERNAME>` with your GitLab username:
 
 - When cloning a repository:
 
   ```shell
-  git clone https://username@gitlab.com/path/to/a/project.git
+  git clone https://<USERNAME>@gitlab.com/path/to/a/project.git
   ```
 
 - Update an existing remote URL:
 
   ```shell
-  git remote set-url origin https://username@gitlab.com/path/to/a/project.git
+  git remote set-url origin https://<USERNAME>@gitlab.com/path/to/a/project.git
   ```
 
 - Configure Git to always use a username for a specific host:
 
   ```shell
-  git config --global url."https://username@gitlab.com/".insteadOf "https://gitlab.com/"
+  git config --global url."https://<USERNAME>@gitlab.com/".insteadOf "https://gitlab.com/"
   ```
 
 ## `401` errors logged during successful `git clone`

@@ -373,15 +373,53 @@ only the items that are relevant to you.
 Your selection persists across all merge requests. You can also change the
 sort order by clicking the sort button on the right.
 
-## Resolve a thread
+## Manage comment threads
 
-When you want to finish a conversation in a merge request,
-[resolve a thread](../../discussions/_index.md#resolve-a-thread).
+Discussions in a merge request include single comments, and threads of comments. Open (unresolved)
+threads block the merge of a merge request, but single comments do not. When a thread's discussion
+is finished, [resolve the thread](../../discussions/_index.md#resolve-a-thread) to collapse its display.
+If a comment thread is important but should not block the merge request, move it to an issue to
+continue the discussion.
+
+### Expand all threads
 
 GitLab shows the number of open threads in the top right corner of a
-merge request, like this: `7 open threads`.
+merge request. This merge request has three open threads:
 
-### Move all open threads in a merge request to an issue
+![A merge request with three open threads, and the thread management options.](img/open_threads_v18_5.png)
+
+To see all comments in the collapsed threads, expand the threads:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code** > **Merge requests** and find your merge request.
+1. In the merge request, in the top right, find the **Open threads**
+   dropdown list, and select **Thread options** ({{< icon name="ellipsis_v" >}}).
+1. Select **Show all comments**.
+
+### Move open threads to an issue
+
+To move open threads to a new issue, and unblock a merge request:
+
+{{< tabs >}}
+
+{{< tab title="Move one thread" >}}
+
+If you have one specific open thread in a merge request, you can
+create an issue to resolve it separately:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests** and find your merge request.
+1. In the merge request, find the thread you want to move.
+1. Below the last reply to the thread, next to **Resolve thread**, select
+   **Create issue to resolve thread** ({{< icon name="issue-new" >}}).
+1. Fill out the fields in the new issue, and select **Create issue**.
+
+GitLab marks the thread as resolved, and adds a link from the merge request to
+the newly created issue.
+
+{{< /tab >}}
+
+{{< tab title="Move all open threads" >}}
 
 If you have multiple open threads in a merge request, you can
 create an issue to resolve them separately:
@@ -396,20 +434,9 @@ create an issue to resolve them separately:
 GitLab marks all threads as resolved, and adds a link from the merge request to
 the newly created issue.
 
-### Move one open thread in a merge request to an issue
+{{< /tab >}}
 
-If you have one specific open thread in a merge request, you can
-create an issue to resolve it separately:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code** > **Merge requests** and find your merge request.
-1. In the merge request, find the thread you want to move.
-1. Below the last reply to the thread, next to **Resolve thread**, select
-   **Create issue to resolve thread** ({{< icon name="issue-new" >}}).
-1. Fill out the fields in the new issue, and select **Create issue**.
-
-GitLab marks the thread as resolved, and adds a link from the merge request to
-the newly created issue.
+{{< /tabs >}}
 
 ### Prevent merge unless all threads are resolved
 

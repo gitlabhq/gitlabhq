@@ -104,8 +104,6 @@ module GraphqlTriggers
   end
 
   def self.user_merge_request_updated(user, merge_request)
-    return unless Feature.enabled?(:merge_request_dashboard, user, type: :beta)
-
     GitlabSchema.subscriptions.trigger(:user_merge_request_updated, { user_id: user.to_gid }, merge_request)
   end
 end

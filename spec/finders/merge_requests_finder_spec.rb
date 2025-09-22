@@ -771,22 +771,10 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
       end
 
       context 'assignee or reviewer filtering' do
-        let(:dashboard_flag_enabled) { true }
         let(:params) { { assigned_user_id: user.id } }
         let(:expected_mrs) { [merge_request1, merge_request2, merge_request3] }
 
         subject { described_class.new(user, params).execute }
-
-        before do
-          stub_feature_flags(merge_request_dashboard: dashboard_flag_enabled)
-        end
-
-        context 'when merge_request_dashboard feature flag is disabled' do
-          let(:dashboard_flag_enabled) { false }
-          let(:expected_mrs) { [merge_request1, merge_request2, merge_request3, merge_request4, merge_request5] }
-
-          it { is_expected.to contain_exactly(*expected_mrs) }
-        end
 
         it { is_expected.to contain_exactly(*expected_mrs) }
       end
@@ -798,8 +786,6 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         subject { described_class.new(user, params).execute }
 
         before do
-          stub_feature_flags(merge_request_dashboard: true)
-
           merge_request1.merge_request_reviewers.update_all(state: :reviewed)
         end
 
@@ -813,8 +799,6 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         subject { described_class.new(user2, params).execute }
 
         before do
-          stub_feature_flags(merge_request_dashboard: true)
-
           merge_request1.merge_request_reviewers.update_all(state: :reviewed)
         end
 
@@ -828,8 +812,6 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
         subject { described_class.new(user, params).execute }
 
         before do
-          stub_feature_flags(merge_request_dashboard: true)
-
           merge_request1.merge_request_reviewers.update_all(state: :requested_changes)
           merge_request3.merge_request_reviewers.update_all(state: :reviewed)
         end

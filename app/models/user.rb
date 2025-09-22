@@ -2223,21 +2223,21 @@ class User < ApplicationRecord
     end
   end
 
-  def merge_request_dashboard_enabled?
-    Feature.enabled?(:merge_request_dashboard, self, type: :beta)
-  end
-
   def assigned_open_merge_requests_count(force: false, cached_only: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD, skip_nil: true) do
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD, skip_nil: true) do
       return if cached_only # rubocop:disable Cop/AvoidReturnFromBlocks -- return from method to prevent caching nil when only reading cache
 
-      params = { state: 'opened', non_archived: true }
-
-      if merge_request_dashboard_enabled?
-        params = params.merge(include_assigned: true, author_id: id, or: { reviewer_wildcard: 'none', review_states: %w[reviewed requested_changes], only_reviewer_username: ::Users::Internal.duo_code_review_bot.username })
-      else
-        params[:assignee_id] = id
-      end
+      params = {
+        state: 'opened',
+        non_archived: true,
+        include_assigned: true,
+        author_id: id,
+        or: {
+          reviewer_wildcard: 'none',
+          review_states: %w[reviewed requested_changes],
+          only_reviewer_username: 'GitLabDuo'
+        }
+      }
 
       begin
         MergeRequestsFinder.new(self, params).execute.count
@@ -2256,11 +2256,10 @@ class User < ApplicationRecord
   end
 
   def review_requested_open_merge_requests_count(force: false, cached_only: false)
-    Rails.cache.fetch(['users', id, 'review_requested_open_merge_requests_count', merge_request_dashboard_enabled?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
+    Rails.cache.fetch(['users', id, 'review_requested_open_merge_requests_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD) do
       return if cached_only # rubocop:disable Cop/AvoidReturnFromBlocks -- return from method to prevent caching nil when only reading cache
 
-      params = { reviewer_id: id, state: 'opened', non_archived: true }
-      params[:review_states] = %w[unapproved unreviewed review_started] if merge_request_dashboard_enabled?
+      params = { reviewer_id: id, state: 'opened', non_archived: true, review_states: %w[unapproved unreviewed review_started] }
 
       MergeRequestsFinder.new(self, params).execute.count
     end
@@ -2301,8 +2300,8 @@ class User < ApplicationRecord
   end
 
   def invalidate_merge_request_cache_counts
-    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count', merge_request_dashboard_enabled?])
-    Rails.cache.delete(['users', id, 'review_requested_open_merge_requests_count', merge_request_dashboard_enabled?])
+    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
+    Rails.cache.delete(['users', id, 'review_requested_open_merge_requests_count'])
   end
 
   def invalidate_todos_cache_counts

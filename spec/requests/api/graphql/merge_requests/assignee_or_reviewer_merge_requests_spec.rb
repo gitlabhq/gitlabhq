@@ -39,64 +39,46 @@ RSpec.describe 'getting current users assigned or review requested merge request
     reviewer_change_requested.merge_request_reviewers[0].update!(state: :requested_changes)
   end
 
-  context 'when merge_request_dashboard feature flag is disabled' do
-    before do
-      stub_feature_flags(merge_request_dashboard: false)
-    end
+  it do
+    post_graphql(query, current_user: current_user)
 
+    expect(merge_requests).to contain_exactly(
+      a_hash_including('id' => merge_request_1.to_global_id.to_s),
+      a_hash_including('id' => reviewer_change_requested.to_global_id.to_s),
+      a_hash_including('id' => merge_request_3.to_global_id.to_s)
+    )
+  end
+
+  context 'when assigned_review_states argument is sent' do
     it do
-      post_graphql(query, current_user: current_user)
+      post_graphql(query({ assigned_review_states: [:REVIEWED] }), current_user: current_user)
 
-      expect(merge_requests).to be_nil
+      expect(merge_requests).to contain_exactly(
+        a_hash_including('id' => merge_request_1.to_global_id.to_s)
+      )
     end
   end
 
-  context 'when merge_request_dashboard feature flag is enabled' do
-    before do
-      stub_feature_flags(merge_request_dashboard: true)
-    end
-
+  context 'when reviewer_review_states argument is sent' do
     it do
-      post_graphql(query, current_user: current_user)
+      post_graphql(query({ reviewer_review_states: [:REQUESTED_CHANGES] }), current_user: current_user)
 
       expect(merge_requests).to contain_exactly(
-        a_hash_including('id' => merge_request_1.to_global_id.to_s),
         a_hash_including('id' => reviewer_change_requested.to_global_id.to_s),
         a_hash_including('id' => merge_request_3.to_global_id.to_s)
       )
     end
+  end
 
-    context 'when assigned_review_states argument is sent' do
-      it do
-        post_graphql(query({ assigned_review_states: [:REVIEWED] }), current_user: current_user)
+  context 'when reviewer_review_states and assigned_review_states arguments are sent' do
+    it do
+      post_graphql(query({ reviewer_review_states: [:UNREVIEWED], assigned_review_states: [:REQUESTED_CHANGES] }),
+        current_user: current_user)
 
-        expect(merge_requests).to contain_exactly(
-          a_hash_including('id' => merge_request_1.to_global_id.to_s)
-        )
-      end
-    end
-
-    context 'when reviewer_review_states argument is sent' do
-      it do
-        post_graphql(query({ reviewer_review_states: [:REQUESTED_CHANGES] }), current_user: current_user)
-
-        expect(merge_requests).to contain_exactly(
-          a_hash_including('id' => reviewer_change_requested.to_global_id.to_s),
-          a_hash_including('id' => merge_request_3.to_global_id.to_s)
-        )
-      end
-    end
-
-    context 'when reviewer_review_states and assigned_review_states arguments are sent' do
-      it do
-        post_graphql(query({ reviewer_review_states: [:UNREVIEWED], assigned_review_states: [:REQUESTED_CHANGES] }),
-          current_user: current_user)
-
-        expect(merge_requests).to contain_exactly(
-          a_hash_including('id' => merge_request_1.to_global_id.to_s),
-          a_hash_including('id' => reviewer_change_requested.to_global_id.to_s)
-        )
-      end
+      expect(merge_requests).to contain_exactly(
+        a_hash_including('id' => merge_request_1.to_global_id.to_s),
+        a_hash_including('id' => reviewer_change_requested.to_global_id.to_s)
+      )
     end
   end
 end

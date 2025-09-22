@@ -97,6 +97,7 @@ export default {
     'hasIssueDateFilterFeature',
     'hasIssueWeightsFeature',
     'hasOkrsFeature',
+    'hasStatusFeature',
     'hasQualityManagementFeature',
     'hasScopedLabelsFeature',
     'initialSort',
@@ -378,6 +379,7 @@ export default {
         hasBlockedIssuesFeature: this.hasBlockedIssuesFeature,
         hasIssuableHealthStatusFeature: this.hasIssuableHealthStatusFeature,
         hasIssueWeightsFeature: this.hasIssueWeightsFeature,
+        hasStatusFeature: this.hasStatusFeature,
         hasManualSort: false,
       });
     },

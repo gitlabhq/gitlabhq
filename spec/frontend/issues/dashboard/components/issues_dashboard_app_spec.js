@@ -69,6 +69,7 @@ describe('IssuesDashboardApp component', () => {
     hasIssuableHealthStatusFeature: true,
     hasIssueWeightsFeature: true,
     hasOkrsFeature: true,
+    hasStatusFeature: true,
     hasQualityManagementFeature: true,
     hasScopedLabelsFeature: true,
     initialSort: CREATED_DESC,
@@ -168,6 +169,7 @@ describe('IssuesDashboardApp component', () => {
             hasBlockedIssuesFeature: defaultProvide.hasBlockedIssuesFeature,
             hasIssuableHealthStatusFeature: defaultProvide.hasIssuableHealthStatusFeature,
             hasIssueWeightsFeature: defaultProvide.hasIssueWeightsFeature,
+            hasStatusFeature: defaultProvide.hasStatusFeature,
             hasManualSort: false,
           }),
         );

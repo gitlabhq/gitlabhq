@@ -295,10 +295,6 @@ module MergeRequestsHelper
     { identity_verification_required: 'false' }
   end
 
-  def merge_request_dashboard_enabled?(current_user)
-    current_user.merge_request_dashboard_enabled?
-  end
-
   def sticky_header_data(project, merge_request)
     data = {
       iid: merge_request.iid,
@@ -340,7 +336,6 @@ module MergeRequestsHelper
 
   def show_mr_dashboard_banner?
     request.query_string.present? &&
-      merge_request_dashboard_enabled?(current_user) &&
       current_page?(merge_requests_search_dashboard_path) &&
       show_new_mr_dashboard_banner?
   end

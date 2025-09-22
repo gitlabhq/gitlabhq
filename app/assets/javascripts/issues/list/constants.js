@@ -68,6 +68,8 @@ export const DUE_DATE_ASC = 'DUE_DATE_ASC';
 export const DUE_DATE_DESC = 'DUE_DATE_DESC';
 export const HEALTH_STATUS_ASC = 'HEALTH_STATUS_ASC';
 export const HEALTH_STATUS_DESC = 'HEALTH_STATUS_DESC';
+export const STATUS_ASC = 'STATUS_ASC';
+export const STATUS_DESC = 'STATUS_DESC';
 export const LABEL_PRIORITY_ASC = 'LABEL_PRIORITY_ASC';
 export const LABEL_PRIORITY_DESC = 'LABEL_PRIORITY_DESC';
 export const MILESTONE_DUE_ASC = 'MILESTONE_DUE_ASC';
@@ -142,6 +144,8 @@ export const urlSortParams = {
   [START_DATE_DESC]: 'start_date_desc',
   [HEALTH_STATUS_ASC]: 'health_status_asc',
   [HEALTH_STATUS_DESC]: 'health_status_desc',
+  [STATUS_ASC]: 'status_asc',
+  [STATUS_DESC]: 'status_desc',
   [WEIGHT_ASC]: 'weight',
   [WEIGHT_DESC]: 'weight_desc',
   [BLOCKING_ISSUES_ASC]: 'blocking_issues_asc',

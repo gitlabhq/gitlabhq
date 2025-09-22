@@ -111,11 +111,7 @@ module DraftNotes
     end
 
     def after_publish
-      merge_request.assignees.each do |assignee|
-        next unless assignee.merge_request_dashboard_enabled?
-
-        assignee.invalidate_merge_request_cache_counts
-      end
+      merge_request.assignees.each(&:invalidate_merge_request_cache_counts)
     end
 
     def handle_notifications(current_user, merge_request, review)

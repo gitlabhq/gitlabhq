@@ -35,8 +35,6 @@ RSpec.describe 'Action focused merge request dashboard', :js, feature_category: 
   end
 
   before do
-    stub_feature_flags(merge_request_dashboard: true)
-
     sign_in(current_user)
 
     visit merge_requests_dashboard_path

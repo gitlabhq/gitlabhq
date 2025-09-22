@@ -28,7 +28,7 @@ Comments support [Markdown](../markdown.md) and [quick actions](../project/quick
 Two types of comments are available:
 
 - A standard comment.
-- A comment in a thread, which you can [resolve](../project/merge_requests/_index.md#resolve-a-thread).
+- A comment in a thread, which you can [resolve](../project/merge_requests/_index.md#manage-comment-threads).
 
 You can [suggest code changes](../project/merge_requests/reviews/suggestions.md) in your commit diff comment,
 which the user can accept through the user interface.
@@ -355,7 +355,7 @@ To resolve a thread:
    - Below the last reply, in the **Reply** field, select **Resolve thread**.
    - Below the last reply, in the **Reply** field, enter text, select the **Resolve thread** checkbox, and select **Add comment now**.
 
-Additionally, in merge requests, you can [do more with threads](../project/merge_requests/_index.md#resolve-a-thread),
+Merge requests provide more flexible [thread management options](../project/merge_requests/_index.md#manage-comment-threads),
 such as:
 
 - Move open threads to a new issue.

@@ -368,8 +368,8 @@ The configuration variables for success and failure also work with authenticatio
 |--------|-------------|
 | `auth.successIfAtURL(url)` | Mark authentication as successful if at specified URL. |
 | `auth.successIfElementFound(path)` | Mark authentication as successful if element exists. |
-| `auth.failureIfAtURL(url)` | Mark authentication as failed if at specified URL. |
-| `auth.failureIfElementFound(path)` | Mark authentication as failed if element exists. |
+| `auth.failedIfAtURL(url)` | Mark authentication as failed if at specified URL. |
+| `auth.failedIfElementFound(path)` | Mark authentication as failed if element exists. |
 
 ### `auth.successIfElementFound(path)`
 
@@ -409,7 +409,7 @@ doc.actionLeftClick("css:button[type='submit']")
 auth.successIfElementFound("css:.dashboard-welcome")
 ```
 
-### `auth.failureIfAtURL(url)`
+### `auth.failedIfAtURL(url)`
 
 Marks authentication as failed if the browser is at the specified URL.
 
@@ -425,16 +425,16 @@ Example:
 
 ```javascript
 // Detect redirect back to login page
-auth.failureIfAtURL("https://app.example.com/login")
+auth.failedIfAtURL("https://app.example.com/login")
 
 // Check for error page
-auth.failureIfAtURL("https://app.example.com/auth/error")
+auth.failedIfAtURL("https://app.example.com/auth/error")
 
 // Look for access denied page
-auth.failureIfAtURL("https://app.example.com/access-denied")
+auth.failedIfAtURL("https://app.example.com/access-denied")
 
 // Account locked page
-auth.failureIfAtURL("https://app.example.com/account-locked")
+auth.failedIfAtURL("https://app.example.com/account-locked")
 
 // Complete example with failure detection
 doc.navigateURL("https://app.example.com/login")
@@ -443,7 +443,7 @@ doc.actionFormInput("id:password", process.env.PASSWORD)
 doc.actionLeftClick("css:button[type='submit']")
 ```
 
-### `auth.failureIfElementFound(path)`
+### `auth.failedIfElementFound(path)`
 
 Marks authentication as failed if the specified element exists on the current page.
 
@@ -459,25 +459,25 @@ Example:
 
 ```javascript
 // Look for error message
-auth.failureIfElementFound("css:.error-message")
+auth.failedIfElementFound("css:.error-message")
 
 // Check for invalid credentials message
-auth.failureIfElementFound("xpath://div[contains(text(), 'Invalid username or password')]")
+auth.failedIfElementFound("xpath://div[contains(text(), 'Invalid username or password')]")
 
 // Look for account locked warning
-auth.failureIfElementFound("id:account-locked-alert")
+auth.failedIfElementFound("id:account-locked-alert")
 
 // Comprehensive authentication with failure detection
 doc.navigateURL("https://app.example.com/login")
 doc.actionFormInput("id:email", process.env.USER_EMAIL)
 doc.actionFormInput("id:password", process.env.USER_PASSWORD)
 doc.actionLeftClick("id:submit-btn")
-auth.failureIfElementFound("css:.error-message")
+auth.failedIfElementFound("css:.error-message")
 
 // Multiple failure conditions
-auth.failureIfElementFound("css:.alert-danger")
-auth.failureIfElementFound("xpath://div[@class='error' and contains(text(), 'Login failed')]")
-auth.failureIfAtURL("https://app.example.com/login?error=1")
+auth.failedIfElementFound("css:.alert-danger")
+auth.failedIfElementFound("xpath://div[@class='error' and contains(text(), 'Login failed')]")
+auth.failedIfAtURL("https://app.example.com/login?error=1")
 ```
 
 ## One-time password methods

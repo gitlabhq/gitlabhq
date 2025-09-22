@@ -70,7 +70,6 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, er
 	if err != nil {
 		return nil, err
 	}
-	responseBody := string(body)
 
 	clientEvent := &pb.ClientEvent{
 		Response: &pb.ClientEvent_ActionResponse{
@@ -78,11 +77,10 @@ func (a *runHTTPActionHandler) Execute(ctx context.Context) (*pb.ClientEvent, er
 				RequestID: a.action.RequestID,
 				ResponseType: &pb.ActionResponse_HttpResponse{
 					HttpResponse: &pb.HttpResponse{
-						Body:       responseBody,
+						Body:       string(body),
 						StatusCode: int32(response.StatusCode),
 					},
 				},
-				Response: responseBody,
 			},
 		},
 	}

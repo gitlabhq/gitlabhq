@@ -1,7 +1,6 @@
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Counter from '~/super_sidebar/components/counter.vue';
-import MergeRequestMenu from '~/super_sidebar/components/merge_request_menu.vue';
 import UserCounts from '~/super_sidebar/components/user_counts.vue';
 import { userCounts, useCachedUserCounts } from '~/super_sidebar/user_counts_manager';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
@@ -19,7 +18,6 @@ describe('UserCounts component', () => {
   const findIssuesCounter = () => wrapper.findByTestId('issues-shortcut-button');
   const findMRsCounter = () => wrapper.findByTestId('merge-requests-shortcut-button');
   const findTodosCounter = () => wrapper.findByTestId('todos-shortcut-button');
-  const findMergeRequestMenu = () => wrapper.findComponent(MergeRequestMenu);
 
   const createWrapper = (props = {}) => {
     wrapper = shallowMountExtended(UserCounts, {
@@ -96,16 +94,6 @@ describe('UserCounts component', () => {
         expect(findTodosCounter().props('count')).toBe(1);
       });
     });
-
-    it('passes the "Merge request" menu groups to the merge_request_menu component', () => {
-      expect(findMergeRequestMenu().props('items')).toBe(mockSidebarData.merge_request_menu);
-    });
-  });
-
-  it('does not render merge request menu when merge_request_menu is null', () => {
-    createWrapper({ sidebarData: { ...mockSidebarData, merge_request_menu: null } });
-
-    expect(findMergeRequestMenu().exists()).toBe(false);
   });
 
   describe('merge request counts', () => {

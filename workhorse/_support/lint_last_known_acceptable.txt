@@ -24,7 +24,7 @@ internal/git/io_test.go:89:14: string `test data` has 3 occurrences, make it a c
 internal/git/error.go:38:4: singleCaseSwitch: should rewrite switch statement to if statement (gocritic)
 cmd/gitlab-workhorse/listener.go:26:16: G402: TLS MinVersion too low. (gosec)
 cmd/gitlab-workhorse/main.go:299:10: G112: Potential Slowloris Attack because ReadHeaderTimeout is not configured in the http.Server (gosec)
-internal/ai_assist/duoworkflow/actions.go:82:24: G115: integer overflow conversion int -> int32 (gosec)
+internal/ai_assist/duoworkflow/actions.go:81:24: G115: integer overflow conversion int -> int32 (gosec)
 internal/ai_assist/duoworkflow/client.go:56:73: G402: TLS MinVersion too low. (gosec)
 internal/api/channel_settings.go:57:28: G402: TLS MinVersion too low. (gosec)
 internal/config/config.go:268:18: G204: Subprocess launched with variable (gosec)

@@ -342,7 +342,6 @@ class MergeRequestsFinder < IssuableFinder
   end
 
   def by_assignee_or_reviewer(items)
-    return items unless current_user&.merge_request_dashboard_enabled?
     return items unless params.assigned_user
 
     items.assignee_or_reviewer(

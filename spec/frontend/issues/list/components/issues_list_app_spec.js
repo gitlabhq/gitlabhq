@@ -127,6 +127,7 @@ describe('CE IssuesListApp component', () => {
     hasIssuableHealthStatusFeature: true,
     hasIssueWeightsFeature: true,
     hasIterationsFeature: true,
+    hasStatusFeature: false,
     hasOkrsFeature: false,
     hasQualityManagementFeature: false,
     hasScopedLabelsFeature: true,
@@ -144,7 +145,6 @@ describe('CE IssuesListApp component', () => {
     signInPath: 'sign/in/path',
     groupId: '',
     timeTrackingLimitToHours: false,
-    hasStatusFeature: true,
   };
 
   let defaultQueryResponse = getIssuesQueryResponse;

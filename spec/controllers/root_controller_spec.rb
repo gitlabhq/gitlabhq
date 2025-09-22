@@ -204,48 +204,20 @@ RSpec.describe RootController, feature_category: :shared do
             expect { get :index }.not_to trigger_internal_events('user_views_homepage')
           end
 
-          context 'when the `merge_request_dashboard` feature flag is enabled' do
-            before do
-              stub_feature_flags(merge_request_dashboard: true)
-            end
+          it 'passes the correct data to the view' do
+            get :index
 
-            it 'passes the correct data to the view' do
-              get :index
-
-              expect(assigns[:homepage_app_data]).to eq({
-                review_requested_path: "/dashboard/merge_requests",
-                activity_path: "/dashboard/activity",
-                assigned_merge_requests_path: "/dashboard/merge_requests",
-                assigned_work_items_path: "/dashboard/issues?assignee_username=#{user.username}",
-                authored_work_items_path: "/dashboard/issues?author_username=#{user.username}",
-                duo_code_review_bot_username: duo_code_review_bot.username,
-                merge_requests_review_requested_title: "Review requested",
-                merge_requests_your_merge_requests_title: "Your merge requests",
-                last_push_event: nil
-              })
-            end
-          end
-
-          context 'when the `merge_request_dashboard` feature flag is disabled' do
-            before do
-              stub_feature_flags(merge_request_dashboard: false)
-            end
-
-            it 'passes the correct data to the view' do
-              get :index
-
-              expect(assigns[:homepage_app_data]).to eq({
-                review_requested_path: "/dashboard/merge_requests?reviewer_username=#{user.username}",
-                activity_path: "/dashboard/activity",
-                assigned_merge_requests_path: "/dashboard/merge_requests?assignee_username=#{user.username}",
-                assigned_work_items_path: "/dashboard/issues?assignee_username=#{user.username}",
-                authored_work_items_path: "/dashboard/issues?author_username=#{user.username}",
-                duo_code_review_bot_username: duo_code_review_bot.username,
-                merge_requests_review_requested_title: "Review requested",
-                merge_requests_your_merge_requests_title: "Your merge requests",
-                last_push_event: nil
-              })
-            end
+            expect(assigns[:homepage_app_data]).to eq({
+              review_requested_path: "/dashboard/merge_requests",
+              activity_path: "/dashboard/activity",
+              assigned_merge_requests_path: "/dashboard/merge_requests",
+              assigned_work_items_path: "/dashboard/issues?assignee_username=#{user.username}",
+              authored_work_items_path: "/dashboard/issues?author_username=#{user.username}",
+              duo_code_review_bot_username: duo_code_review_bot.username,
+              merge_requests_review_requested_title: "Review requested",
+              merge_requests_your_merge_requests_title: "Your merge requests",
+              last_push_event: nil
+            })
           end
         end
 

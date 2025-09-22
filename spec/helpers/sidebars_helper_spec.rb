@@ -287,50 +287,6 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       end
     end
 
-    it 'returns "Merge requests" menu', :use_clean_rails_memory_store_caching do
-      expect(subject[:merge_request_menu]).to eq([
-        {
-          name: _('Merge requests'),
-          items: [
-            {
-              text: _('Assigned'),
-              href: merge_requests_dashboard_path(assignee_username: user.username),
-              count: 4,
-              userCount: 'assigned_merge_requests',
-              extraAttrs: {
-                'data-track-action': 'click_link',
-                'data-track-label': 'merge_requests_assigned',
-                'data-track-property': 'nav_core_menu',
-                class: 'dashboard-shortcuts-merge_requests'
-              }
-            },
-            {
-              text: _('Review requests'),
-              href: merge_requests_dashboard_path(reviewer_username: user.username),
-              count: 0,
-              userCount: 'review_requested_merge_requests',
-              extraAttrs: {
-                'data-track-action': 'click_link',
-                'data-track-label': 'merge_requests_to_review',
-                'data-track-property': 'nav_core_menu',
-                class: 'dashboard-shortcuts-review_requests'
-              }
-            }
-          ]
-        }
-      ])
-    end
-
-    context 'when merge_request_dashboard feature flag is enabled' do
-      before do
-        stub_feature_flags(merge_request_dashboard: true)
-      end
-
-      it 'returns nil for merge_request_menu' do
-        expect(subject[:merge_request_menu]).to be_nil
-      end
-    end
-
     describe '"Create new" menu groups', :use_clean_rails_memory_store_caching do
       def menu_item(href:, text:, id:, component: nil)
         {

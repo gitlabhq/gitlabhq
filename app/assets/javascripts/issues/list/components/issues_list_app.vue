@@ -580,6 +580,7 @@ export default {
         hasBlockedIssuesFeature: this.hasBlockedIssuesFeature,
         hasIssuableHealthStatusFeature: this.hasIssuableHealthStatusFeature,
         hasIssueWeightsFeature: this.hasIssueWeightsFeature,
+        hasStatusFeature: this.hasStatusFeature,
       });
     },
     tabCounts() {

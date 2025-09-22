@@ -27337,12 +27337,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `CurrentUser.assigneeOrReviewerMergeRequests`
 
-{{< details >}}
-**Introduced** in GitLab 17.4.
-**Status**: Experiment.
-{{< /details >}}
-
-Merge requests the current user is an assignee or a reviewer of.Ignored if `merge_request_dashboard` feature flag is disabled.
+Merge requests the current user is an assignee or a reviewer of.
 
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 

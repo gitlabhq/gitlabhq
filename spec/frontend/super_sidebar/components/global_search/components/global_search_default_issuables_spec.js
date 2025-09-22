@@ -9,9 +9,6 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import {
   EVENT_CLICK_ISSUES_ASSIGNED_TO_ME_IN_COMMAND_PALETTE,
   EVENT_CLICK_ISSUES_I_CREATED_IN_COMMAND_PALETTE,
-  EVENT_CLICK_MERGE_REQUESTS_ASSIGNED_TO_ME_IN_COMMAND_PALETTE,
-  EVENT_CLICK_MERGE_REQUESTS_THAT_IM_A_REVIEWER_IN_COMMAND_PALETTE,
-  EVENT_CLICK_MERGE_REQUESTS_I_CREATED_IN_COMMAND_PALETTE,
 } from '~/super_sidebar/components/global_search/tracking_constants';
 import {
   MOCK_SEARCH_CONTEXT,
@@ -148,12 +145,9 @@ describe('GlobalSearchDefaultPlaces', () => {
     const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
     it.each`
-      eventTrigger                            | event
-      ${'Issues assigned to me'}              | ${EVENT_CLICK_ISSUES_ASSIGNED_TO_ME_IN_COMMAND_PALETTE}
-      ${"Issues I've created"}                | ${EVENT_CLICK_ISSUES_I_CREATED_IN_COMMAND_PALETTE}
-      ${'Merge requests assigned to me'}      | ${EVENT_CLICK_MERGE_REQUESTS_ASSIGNED_TO_ME_IN_COMMAND_PALETTE}
-      ${"Merge requests that I'm a reviewer"} | ${EVENT_CLICK_MERGE_REQUESTS_THAT_IM_A_REVIEWER_IN_COMMAND_PALETTE}
-      ${"Merge requests I've created"}        | ${EVENT_CLICK_MERGE_REQUESTS_I_CREATED_IN_COMMAND_PALETTE}
+      eventTrigger               | event
+      ${'Issues assigned to me'} | ${EVENT_CLICK_ISSUES_ASSIGNED_TO_ME_IN_COMMAND_PALETTE}
+      ${"Issues I've created"}   | ${EVENT_CLICK_ISSUES_I_CREATED_IN_COMMAND_PALETTE}
     `('triggers and tracks command dropdown $event', ({ eventTrigger, event }) => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
       // Update to emit the action event from each dropdown item rather than the group

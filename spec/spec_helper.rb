@@ -328,9 +328,6 @@ RSpec.configure do |config|
       # Disable suspending ClickHouse data ingestion workers
       stub_feature_flags(suspend_click_house_data_ingestion: false)
 
-      # Experimental merge request dashboard
-      stub_feature_flags(merge_request_dashboard: false)
-
       # This feature flag allows enabling self-hosted features on Staging Ref: https://gitlab.com/gitlab-org/gitlab/-/issues/497784
       stub_feature_flags(allow_self_hosted_features_for_com: false)
 

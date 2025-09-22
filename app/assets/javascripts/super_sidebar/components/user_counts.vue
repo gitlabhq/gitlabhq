@@ -9,13 +9,11 @@ import {
 } from '~/super_sidebar/user_counts_manager';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import Counter from './counter.vue';
-import MergeRequestMenu from './merge_request_menu.vue';
 
 export default {
   name: 'UserCounts',
   components: {
     Counter,
-    MergeRequestMenu,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -33,14 +31,10 @@ export default {
   },
   data() {
     return {
-      mrMenuShown: false,
       userCounts,
     };
   },
   computed: {
-    mergeRequestMenuComponent() {
-      return this.sidebarData.merge_request_menu ? 'merge-request-menu' : 'div';
-    },
     issuesTitle() {
       return n__('%d assigned issue', '%d assigned issues', this.userCounts.assigned_issues);
     },
@@ -66,14 +60,6 @@ export default {
   beforeDestroy() {
     destroyUserCountsManager();
   },
-  methods: {
-    onMergeRequestMenuShown() {
-      this.mrMenuShown = true;
-    },
-    onMergeRequestMenuHidden() {
-      this.mrMenuShown = false;
-    },
-  },
 };
 </script>
 
@@ -92,20 +78,11 @@ export default {
       data-track-label="issues_link"
       data-track-property="nav_core_menu"
     />
-    <component
-      :is="mergeRequestMenuComponent"
-      class="!gl-block gl-basis-1/3"
-      :items="sidebarData.merge_request_menu"
-      @shown="onMergeRequestMenuShown"
-      @hidden="onMergeRequestMenuHidden"
-    >
+    <div class="!gl-block gl-basis-1/3">
       <counter
-        v-gl-tooltip.bottom="mrMenuShown ? '' : mergeRequestsTitle"
-        class="gl-w-full"
-        :class="{
-          'js-merge-request-dashboard-shortcut': !sidebarData.merge_request_menu,
-          [counterClass]: true,
-        }"
+        v-gl-tooltip.bottom="mergeRequestsTitle"
+        class="js-merge-request-dashboard-shortcut gl-w-full"
+        :class="counterClass"
         icon="merge-request"
         :href="sidebarData.merge_request_dashboard_path"
         :count="userCounts.total_merge_requests"
@@ -115,7 +92,7 @@ export default {
         data-track-label="merge_requests_menu"
         data-track-property="nav_core_menu"
       />
-    </component>
+    </div>
     <counter
       v-gl-tooltip.bottom="toDoListTitle"
       class="shortcuts-todos js-todos-count gl-basis-1/3"

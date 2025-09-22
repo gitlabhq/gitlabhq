@@ -241,31 +241,43 @@ RSpec.describe Blob, feature_category: :source_code_management do
     end
   end
 
-  describe '#symlink?' do
-    it 'is true for symlinks' do
-      symlink_blob = fake_blob(path: 'file', mode: '120000')
+  describe 'mode inspection methods' do
+    let(:tree_blob) { fake_blob(path: 'tree', mode: '40000') }
+    let(:executable_blob) { fake_blob(path: 'file', mode: '100755') }
+    let(:non_executable_blob) { fake_blob(path: 'file', mode: '100655') }
+    let(:symlink_blob) { fake_blob(path: 'file', mode: '120000') }
 
-      expect(symlink_blob.symlink?).to eq true
+    where(:blob_type, :blob, :is_symlink, :is_executable, :is_tree) do
+      'tree' | ref(:tree_blob) | false | false | true
+      'executable' | ref(:executable_blob) | false | true | false
+      'non-executable' | ref(:non_executable_blob) | false | false | false
+      'symlink' | ref(:symlink_blob) | true | false | false
     end
 
-    it 'is false for non-symlinks' do
-      non_symlink_blob = fake_blob(path: 'file', mode: '100755')
+    with_them do
+      describe '#symlink?' do
+        let(:error) { "Expected #{blob_type} to #{'not ' unless is_symlink}be a symlink" }
 
-      expect(non_symlink_blob.symlink?).to eq false
-    end
-  end
+        subject { blob.symlink? }
 
-  describe '#executable?' do
-    it 'is true for executables' do
-      executable_blob = fake_blob(path: 'file', mode: '100755')
+        it { is_expected.to eq(is_symlink), error }
+      end
 
-      expect(executable_blob.executable?).to eq true
-    end
+      describe '#executable?' do
+        let(:error) { "Expected #{blob_type} to #{'not ' unless is_executable}be an executable" }
 
-    it 'is false for non-executables' do
-      non_executable_blob = fake_blob(path: 'file', mode: '100655')
+        subject { blob.executable? }
 
-      expect(non_executable_blob.executable?).to eq false
+        it { is_expected.to eq(is_executable), error }
+      end
+
+      describe '#tree?' do
+        let(:error) { "Expected #{blob_type} to #{'not ' unless is_tree}be a tree" }
+
+        subject { blob.tree? }
+
+        it { is_expected.to eq(is_tree), error }
+      end
     end
   end
 

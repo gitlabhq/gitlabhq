@@ -112,7 +112,7 @@ describe('ReportSection component', () => {
     it('should render provided data', () => {
       createComponent({ props: { hasIssues: true } });
 
-      expect(wrapper.find('.js-code-text').text()).toBe(
+      expect(wrapper.find('[data-testid="report-code-text"]').text()).toBe(
         'Code quality improved on 1 point and degraded on 1 point',
       );
       expect(wrapper.findAllComponents(ReportItem)).toHaveLength(resolvedIssues.length);

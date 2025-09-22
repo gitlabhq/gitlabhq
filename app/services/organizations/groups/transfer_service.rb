@@ -21,8 +21,7 @@ module Organizations
         return ServiceResponse.error(message: error) unless transfer_allowed?
 
         Group.transaction do
-          update_organization_id
-          update_visibility
+          update_namespaces_and_projects
         end
 
         log_transfer_success
@@ -33,29 +32,21 @@ module Organizations
 
       attr_reader :group, :new_organization, :old_organization, :current_user
 
-      # rubocop:disable CodeReuse/ActiveRecord -- Only .ids
-      def update_organization_id
-        # Get both Group and ProjectNamespace namespaces.
+      def update_namespaces_and_projects
+        # `skope: Namespace` ensures we get both Group and ProjectNamespace types
         descendant_ids = group.self_and_descendant_ids(skope: Namespace)
 
         descendant_ids.in_groups_of(BATCH_SIZE, false) do |batch_ids|
-          Namespace.id_in(batch_ids).update_all(organization_id: new_organization.id)
-          Project.in_namespace(batch_ids).update_all(organization_id: new_organization.id)
+          Namespace.id_in(batch_ids).update_all(
+            organization_id: new_organization.id,
+            visibility_level: Arel.sql('LEAST(?, visibility_level)', new_organization.visibility_level)
+          )
+          Project.in_namespace(batch_ids).update_all(
+            organization_id: new_organization.id,
+            visibility_level: Arel.sql('LEAST(?, visibility_level)', new_organization.visibility_level)
+          )
         end
       end
-
-      def update_visibility
-        # Get both Group and ProjectNamespace namespaces.
-        descendant_ids = group.self_and_descendants(skope: Namespace)
-                                  .with_visibility_level_greater_than(new_organization.visibility_level)
-                                  .ids
-
-        descendant_ids.in_groups_of(BATCH_SIZE, false) do |batch_ids|
-          Namespace.id_in(batch_ids).update_all(visibility_level: new_organization.visibility_level)
-          Project.in_namespace(batch_ids).update_all(visibility_level: new_organization.visibility_level)
-        end
-      end
-      # rubocop:enable CodeReuse/ActiveRecord
 
       def transfer_allowed?
         return true if transfer_validator.can_transfer?

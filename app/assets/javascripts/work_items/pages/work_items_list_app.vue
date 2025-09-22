@@ -769,6 +769,7 @@ export default {
         hasIssuableHealthStatusFeature: this.hasIssuableHealthStatusFeature,
         hasIssueWeightsFeature: this.hasIssueWeightsFeature,
         hasManualSort: !this.isEpicsList,
+        hasStatusFeature: this.hasStatusFeature && !this.isEpicsList,
         hasStartDate: true,
         hasPriority: !this.isEpicsList,
         hasMilestoneDueDate: true,

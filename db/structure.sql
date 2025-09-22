@@ -25589,10 +25589,11 @@ ALTER SEQUENCE security_training_providers_id_seq OWNED BY security_training_pro
 CREATE TABLE security_trainings (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
-    provider_id bigint NOT NULL,
+    provider_id bigint,
     is_primary boolean DEFAULT false NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    training_provider_id bigint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE security_trainings_id_seq

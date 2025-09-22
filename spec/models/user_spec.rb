@@ -6768,8 +6768,8 @@ RSpec.describe User, feature_category: :user_profile do
     it 'invalidates cache for merge request counters' do
       cache_mock = double
 
-      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count', false])
-      expect(cache_mock).to receive(:delete).with(['users', user.id, 'review_requested_open_merge_requests_count', false])
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count'])
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'review_requested_open_merge_requests_count'])
 
       allow(Rails).to receive(:cache).and_return(cache_mock)
 
@@ -6859,12 +6859,19 @@ RSpec.describe User, feature_category: :user_profile do
     let_it_be_with_refind(:archived_project) { create(:project, :public, :archived) }
     let(:cached_only) { false }
 
-    it 'returns number of open merge requests from non-archived projects' do
-      create(:merge_request, source_project: project, author: user, assignees: [user])
+    it 'returns number of open merge requests from non-archived projects where there are no reviewers' do
+      create(:merge_request, source_project: project, author: user, assignees: [user], reviewers: [user])
+      create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, assignees: [user])
       create(:merge_request, :closed, source_project: project, author: user, assignees: [user])
       create(:merge_request, source_project: archived_project, author: user, assignees: [user])
 
-      is_expected.to eq 1
+      mr = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
+      mr2 = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
+
+      mr.merge_request_reviewers.update_all(state: :reviewed)
+      mr2.merge_request_reviewers.update_all(state: :requested_changes)
+
+      is_expected.to eq 4
     end
 
     context 'when fetching only cached' do
@@ -6872,27 +6879,6 @@ RSpec.describe User, feature_category: :user_profile do
 
       it 'returns nil' do
         is_expected.to be_nil
-      end
-    end
-
-    context 'when merge_request_dashboard_author_or_assignee feature flag is enabled' do
-      before do
-        stub_feature_flags(merge_request_dashboard: true)
-      end
-
-      it 'returns number of open merge requests from non-archived projects where there are no reviewers' do
-        create(:merge_request, source_project: project, author: user, assignees: [user], reviewers: [user])
-        create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, assignees: [user])
-        create(:merge_request, :closed, source_project: project, author: user, assignees: [user])
-        create(:merge_request, source_project: archived_project, author: user, assignees: [user])
-
-        mr = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
-        mr2 = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
-
-        mr.merge_request_reviewers.update_all(state: :reviewed)
-        mr2.merge_request_reviewers.update_all(state: :requested_changes)
-
-        is_expected.to eq 3
       end
     end
 
@@ -6964,7 +6950,12 @@ RSpec.describe User, feature_category: :user_profile do
       create(:merge_request, source_project: archived_project, author: user, reviewers: [user])
     end
 
-    it 'returns number of open merge requests from non-archived projects' do
+    it 'returns number of open merge requests from non-archived projects where a reviewer has not reviewed' do
+      mr2 = create(:merge_request, :unique_branches, source_project: project, author: user, reviewers: [user])
+
+      mr.merge_request_reviewers.update_all(state: :unreviewed)
+      mr2.merge_request_reviewers.update_all(state: :requested_changes)
+
       is_expected.to eq 1
     end
 
@@ -6973,21 +6964,6 @@ RSpec.describe User, feature_category: :user_profile do
 
       it 'returns nil' do
         is_expected.to be_nil
-      end
-    end
-
-    context 'when merge_request_dashboard feature flag is enabled' do
-      before do
-        stub_feature_flags(merge_request_dashboard: true)
-      end
-
-      it 'returns number of open merge requests from non-archived projects where a reviewer has not reviewed' do
-        mr2 = create(:merge_request, :unique_branches, source_project: project, author: user, reviewers: [user])
-
-        mr.merge_request_reviewers.update_all(state: :unreviewed)
-        mr2.merge_request_reviewers.update_all(state: :requested_changes)
-
-        is_expected.to eq 1
       end
     end
   end

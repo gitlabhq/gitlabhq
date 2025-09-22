@@ -8,9 +8,7 @@ module Types
 
     field :assignee_or_reviewer_merge_requests,
       resolver: Resolvers::MergeRequests::AssigneeOrReviewerMergeRequestsResolver,
-      description: 'Merge requests the current user is an assignee or a reviewer of.' \
-        'Ignored if `merge_request_dashboard` feature flag is disabled.',
-      experiment: { milestone: '17.4' }
+      description: 'Merge requests the current user is an assignee or a reviewer of.'
 
     field :recently_viewed_issues,
       resolver: Resolvers::Users::RecentlyViewedIssuesResolver,

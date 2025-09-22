@@ -30,16 +30,10 @@ RSpec.describe 'Dashboard Merge Requests', :js, feature_category: :code_review_w
 
   describe 'sidebar' do
     it 'has nav items for assigned MRs and review requests' do
-      visit merge_requests_dashboard_path(assignee_username: user)
+      visit merge_requests_dashboard_path
 
       within('#super-sidebar') do
-        expect(page).to have_css("a[data-track-label='merge_requests_assigned'][aria-current='page']")
-      end
-
-      click_link 'Review requests'
-
-      within('#super-sidebar') do
-        expect(page).to have_css("a[data-track-label='merge_requests_to_review'][aria-current='page']")
+        expect(page).to have_css("a[data-track-label='merge_requests_menu'][aria-current='page']")
       end
     end
   end
@@ -189,11 +183,8 @@ RSpec.describe 'Dashboard Merge Requests', :js, feature_category: :code_review_w
       visit merge_requests_dashboard_path(assignee_username: current_user.username)
     end
 
-    it 'includes assigned and reviewers in badge' do
-      within('#merge-requests') do
-        expect(page).to have_css("a", text: 'Assigned 3')
-        expect(page).to have_css("a", text: 'Review requests 2')
-      end
+    it 'includes all merge requests count in badge' do
+      expect(page).to have_link('Merge requests 8')
     end
 
     it 'shows assigned merge requests' do

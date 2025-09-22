@@ -461,8 +461,9 @@ func TestRunner_handleAgentAction(t *testing.T) {
 			if tt.shouldCallWF {
 				require.Len(t, mockWf.sendEvents, 1, "Expected one workflow event to be sent")
 
-				response := mockWf.sendEvents[0].Response.(*pb.ClientEvent_ActionResponse).ActionResponse.Response
-				require.JSONEq(t, `[{"id": 123, "name": "test-project"}]`, response)
+				response := mockWf.sendEvents[0].Response.(*pb.ClientEvent_ActionResponse).ActionResponse
+				responseBody := response.ResponseType.(*pb.ActionResponse_HttpResponse).HttpResponse.Body
+				require.JSONEq(t, `[{"id": 123, "name": "test-project"}]`, responseBody)
 			} else {
 				require.Empty(t, mockWf.sendEvents)
 			}

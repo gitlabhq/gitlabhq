@@ -7,6 +7,7 @@ RSpec.shared_examples 'creating merge request approval policy with valid propert
 
   before do
     stub_licensed_features(security_orchestration_policies: true)
+    stub_feature_flags(security_policy_approval_warn_mode: false)
     visit(path_to_policy_editor)
     within_testid("approval_policy-card") do
       click_link _('Select policy')

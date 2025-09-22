@@ -22,10 +22,7 @@ module MergeRequests
       merge_request_activity_counter.track_users_assigned_to_mr(users: new_assignees)
       merge_request_activity_counter.track_assignees_changed_action(user: current_user)
 
-      if current_user.merge_request_dashboard_enabled?
-        invalidate_cache_counts(merge_request, users: merge_request.assignees)
-      end
-
+      invalidate_cache_counts(merge_request, users: merge_request.assignees)
       invalidate_cache_counts(merge_request, users: old_assignees)
 
       trigger_user_merge_request_updated(merge_request)
