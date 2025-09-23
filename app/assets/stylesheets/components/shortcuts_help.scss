@@ -6,7 +6,7 @@
 
   &-container {
     column-count: 1;
-    @include media-breakpoint-up(md) {
+    @include gl-container-width-up(md, panel) {
       column-count: 2;
     }
     column-gap: 1rem;

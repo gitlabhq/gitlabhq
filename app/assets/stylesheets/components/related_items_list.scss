@@ -156,13 +156,13 @@ $item-remove-button-space: 42px;
   }
 }
 
-@include media-breakpoint-down(xs) {
+@include gl-container-width-down(sm, panel) {
   .btn-sm.dropdown-toggle-split {
     max-width: 40px;
   }
 }
 
-@include media-breakpoint-up(sm) {
+@include gl-container-width-up(sm, panel) {
   .sortable-link {
     max-width: 90%;
   }
@@ -170,7 +170,7 @@ $item-remove-button-space: 42px;
 }
 
 /* Small devices (landscape phones, 768px and up) */
-@include media-breakpoint-up(md) {
+@include gl-container-width-up(md, panel) {
   .related-items-tree .item-contents,
   .item-body .item-title {
     max-width: 100%;
@@ -192,7 +192,7 @@ $item-remove-button-space: 42px;
 }
 
 /* Medium devices (desktops, 992px and up) */
-@include media-breakpoint-up(lg) {
+@include gl-container-width-up(lg, panel) {
   .item-body {
     .item-title {
       font-size: $gl-font-size;
@@ -205,7 +205,7 @@ $item-remove-button-space: 42px;
 }
 
 /* Large devices (large desktops, 1200px and up) */
-@include media-breakpoint-up(xl) {
+@include gl-container-width-up(xl, panel) {
   .item-body {
     .item-title {
       width: auto;

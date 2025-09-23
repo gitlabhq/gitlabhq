@@ -9,3 +9,6 @@ _email.text.erb
 app/assets/javascripts/super_sidebar/
 app/assets/stylesheets/framework/super_sidebar.scss
 app/assets/stylesheets/framework/application-chrome.scss
+app/assets/javascripts/work_items/components/design_management/design_preview/design_details.vue
+app/assets/javascripts/work_items/components/design_management/design_preview/design_presentation.vue
+app/assets/javascripts/work_items/components/design_management/design_preview/design_toolbar.vue

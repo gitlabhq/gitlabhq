@@ -55,7 +55,7 @@ $work-item-overview-gap-width: 2rem;
 }
 
 .work-item-overview:not(.sidebar-hidden) {
-  @include media-breakpoint-up(md) {
+  @include gl-container-width-up(md, panel) {
     display: grid;
     // allow the main content area to shrink
     // grid items have "max-width: auto" so without the minmax the content can
@@ -83,7 +83,7 @@ $work-item-overview-gap-width: 2rem;
 .create-work-item-description {
   .markdown-area,
   .rte-text-box {
-    @include media-breakpoint-up(sm) {
+    @include gl-container-width-up(sm, panel) {
       min-height: 38vh;
     }
   }
@@ -130,7 +130,7 @@ $work-item-overview-gap-width: 2rem;
 
 .editable-wi-title {
   width: 100%;
-  @include media-breakpoint-up(md) {
+  @include gl-container-width-up(md, panel) {
     width: calc(100% - #{$work-item-overview-right-sidebar-width} - #{$work-item-overview-gap-width});
   }
 }
@@ -148,7 +148,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 }
 
 .disclosure-hierarchy {
-  @include media-breakpoint-up(sm) {
+  @include gl-container-width-up(sm, panel) {
     margin-right: $gl-spacing-scale-7;
   }
 }
@@ -412,7 +412,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   .work-item-design-widget-container {
     container-type: unset;
 
-    @media (min-width: $breakpoint-sm) {
+    @include gl-container-width-up(sm, panel) {
       .work-item-design-grid {
         @apply gl-grid-cols-3;
       }
@@ -426,13 +426,13 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
       }
     }
 
-    @media (min-width: $breakpoint-md) {
+    @include gl-container-width-up(md, panel) {
       .work-item-design-grid {
         @apply gl-grid-cols-4;
       }
     }
 
-    @media (min-width: $breakpoint-xl) {
+    @include gl-container-width-up(xl, panel) {
       .work-item-design-grid {
         @apply gl-grid-cols-6;
       }
@@ -446,7 +446,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   .work-item-notes .note-container-query-wrapper {
     container-type: unset !important;
 
-    @media (max-width: $breakpoint-sm) {
+    @include gl-container-width-down(sm, panel) {
       .note-hidden-xs {
         @apply gl-hidden
       }

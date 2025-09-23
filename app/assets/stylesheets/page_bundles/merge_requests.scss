@@ -71,7 +71,7 @@
   overflow-y: auto;
   margin-bottom: 0;
 
-  @include media-breakpoint-up(sm) {
+  @include gl-container-width-up(sm, panel) {
     left: $gl-padding;
   }
 
@@ -255,7 +255,7 @@
 $diff-file-header-top: 11px;
 
 .diffs.tab-pane .files {
-  @include media-breakpoint-up(md) {
+  @include gl-container-width-up(md, panel) {
     // ensure consistent page height when selected file is loading
     // https://gitlab.com/gitlab-org/gitlab/-/issues/426250
     // also required for file browser to consume all available height
@@ -358,7 +358,7 @@ $diff-file-header-top: 11px;
   flex: 1;
   flex-direction: row;
 
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     align-items: initial;
     flex-direction: column;
   }
@@ -513,7 +513,7 @@ $diff-file-header-top: 11px;
     > li {
       padding: $gl-padding;
 
-      @include media-breakpoint-up(md) {
+      @include gl-container-width-up(md, panel) {
         margin-left: $gl-spacing-scale-7;
       }
     }
@@ -521,7 +521,7 @@ $diff-file-header-top: 11px;
 
   .mr-commit-dropdown {
     .dropdown-menu {
-      @include media-breakpoint-up(md) {
+      @include gl-container-width-up(md, panel) {
         width: 150%;
       }
     }
@@ -549,7 +549,7 @@ $diff-file-header-top: 11px;
     align-items: center;
     justify-content: space-between;
 
-    @include media-breakpoint-down(xs) {
+    @include gl-container-width-down(sm, panel) {
       flex-wrap: wrap;
     }
 
@@ -649,7 +649,7 @@ $diff-file-header-top: 11px;
       display: inline-block;
     }
 
-    @include media-breakpoint-down(xs) {
+    @include gl-container-width-down(sm, panel) {
       .btn-grouped {
         float: none;
         margin-right: 0;
@@ -685,7 +685,7 @@ $diff-file-header-top: 11px;
 }
 
 .mr-widget-body-ready-merge {
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     padding-top: $gl-spacing-scale-3;
     padding-bottom: $gl-spacing-scale-3;
     padding-right: $gl-spacing-scale-3;
@@ -806,7 +806,7 @@ $diff-file-header-top: 11px;
 }
 
 .merge-request-overview {
-  @include media-breakpoint-up(lg) {
+  @include gl-container-width-up(lg, panel) {
     $mr-overview-gap-width: 2rem;
     display: grid;
     grid-template-columns: calc(100% - #{$right-sidebar-width} - #{$mr-overview-gap-width}) auto;
@@ -910,7 +910,7 @@ $diff-file-header-top: 11px;
   }
 
   .state-container-action-buttons {
-    @include media-breakpoint-up(md) {
+    @include gl-container-width-up(md, panel) {
       flex-direction: row-reverse;
     }
   }

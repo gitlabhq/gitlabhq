@@ -196,6 +196,22 @@ docs-i18n-lint markdown:
     - install_gitlab_gem
     - scripts/i18n_lint_doc.sh
 
+# Japanese-specific Vale linting with language-specific rules
+docs-i18n-lint japanese-vale:
+  extends:
+    - .default-retry
+    - .docs:rules:docs-i18n-lint-japanese
+    - .docs-markdown-lint-image
+  stage: lint
+  needs: []
+  variables:
+    LANGUAGE_CODE: "ja-jp"
+    LANGUAGE_NAME: "Japanese"
+  script:
+    - source ./scripts/utils.sh
+    - install_gitlab_gem
+    - scripts/i18n_lint_language_vale.sh
+
 # Verify localized documentation files have corresponding English versions
 docs-i18n-lint paths:
   extends:

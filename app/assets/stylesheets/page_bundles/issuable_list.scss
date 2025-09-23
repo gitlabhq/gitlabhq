@@ -37,7 +37,7 @@
       }
     }
 
-    @include media-breakpoint-down(xs) {
+    @include gl-container-width-down(sm, panel) {
       .issuable-meta {
         .controls li {
           margin-right: 0;

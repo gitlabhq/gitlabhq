@@ -13,9 +13,9 @@ class LabelLink < ApplicationRecord
   belongs_to :own_label, foreign_key: :label_id, class_name: 'Label'
   # rubocop:enable Rails/InverseOf
 
-  validates :target, presence: true, unless: :skip_validate_import?
-  validates :label, presence: true, unless: :skip_validate_import?
-  validates :namespace, presence: true, unless: :skip_validate_import?
+  validates :target, presence: true
+  validates :label, presence: true
+  validates :namespace, presence: true
 
   before_validation :ensure_namespace_id
 
@@ -36,12 +36,6 @@ class LabelLink < ApplicationRecord
   end
 
   private
-
-  def skip_validate_import?
-    return false if Feature.enabled?(:validate_label_link_parent_presence_on_import, :instance)
-
-    importing?
-  end
 
   def ensure_namespace_id
     self.namespace_id = Gitlab::Issuable::NamespaceGetter.new(target, allow_nil: true).namespace_id

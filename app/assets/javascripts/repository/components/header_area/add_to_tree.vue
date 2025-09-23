@@ -2,12 +2,21 @@
 import { GlDisclosureDropdown, GlModalDirective } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { s__ } from '~/locale';
-import { joinPaths } from '~/lib/utils/url_utility';
+import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import permissionsQuery from 'shared_queries/repository/permissions.query.graphql';
 import projectPathQuery from '~/repository/queries/project_path.query.graphql';
 import UploadBlobModal from '~/repository/components/upload_blob_modal.vue';
 import NewDirectoryModal from '~/repository/components/new_directory_modal.vue';
+import { InternalEvents } from '~/tracking';
+import {
+  ADD_DROPDOWN_CLICK,
+  NEW_FILE_CLICK,
+  UPLOAD_FILE_CLICK,
+  NEW_DIRECTORY_CLICK,
+  NEW_BRANCH_CLICK,
+  NEW_TAG_CLICK,
+} from './constants';
 
 export default {
   components: {
@@ -18,6 +27,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     currentPath: {
       type: String,
@@ -133,21 +143,39 @@ export default {
         return [
           {
             text: s__('Repository|New file'),
-            href: joinPaths(
-              this.newBlobPath,
-              this.currentPath ? encodeURIComponent(this.currentPath) : '',
-            ),
+            action: async () => {
+              await this.trackEvent(NEW_FILE_CLICK);
+
+              visitUrl(
+                joinPaths(
+                  this.newBlobPath,
+                  this.currentPath ? encodeURIComponent(this.currentPath) : '',
+                ),
+              );
+            },
             extraAttrs: {
               'data-testid': 'new-file-menu-item',
             },
           },
           {
             text: s__('Repository|Upload file'),
-            action: () => this.$root.$emit(BV_SHOW_MODAL, this.uploadBlobModalId),
+            action: () => {
+              this.trackEvent(UPLOAD_FILE_CLICK);
+              this.$root.$emit(BV_SHOW_MODAL, this.uploadBlobModalId);
+            },
+            extraAttrs: {
+              'data-testid': 'upload-file-menu-item',
+            },
           },
           {
             text: s__('Repository|New directory'),
-            action: () => this.$root.$emit(BV_SHOW_MODAL, this.newDirectoryModalId),
+            action: () => {
+              this.trackEvent(NEW_DIRECTORY_CLICK);
+              this.$root.$emit(BV_SHOW_MODAL, this.newDirectoryModalId);
+            },
+            extraAttrs: {
+              'data-testid': 'new-directory-menu-item',
+            },
           },
         ];
       }
@@ -185,11 +213,23 @@ export default {
       return [
         {
           text: s__('Repository|New branch'),
-          href: this.newBranchPath,
+          action: async () => {
+            await this.trackEvent(NEW_BRANCH_CLICK);
+            visitUrl(this.newBranchPath);
+          },
+          extraAttrs: {
+            'data-testid': 'new-branch-menu-item',
+          },
         },
         {
           text: s__('Repository|New tag'),
-          href: this.newTagPath,
+          action: async () => {
+            await this.trackEvent(NEW_TAG_CLICK);
+            visitUrl(this.newTagPath);
+          },
+          extraAttrs: {
+            'data-testid': 'new-tag-menu-item',
+          },
         },
       ];
     },
@@ -219,6 +259,11 @@ export default {
       return joinPaths(this.newDirPath, this.currentPath);
     },
   },
+  methods: {
+    onDropdownShown() {
+      this.trackEvent(ADD_DROPDOWN_CLICK);
+    },
+  },
 };
 </script>
 
@@ -232,6 +277,7 @@ export default {
       text-sr-only
       icon="plus"
       :items="dropdownItems"
+      @shown="onDropdownShown"
     />
     <upload-blob-modal
       v-if="showUploadModal"

@@ -20,7 +20,7 @@
     }
   }
 
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     .input-group > div {
       &:last-child {
         margin-bottom: 0;
@@ -219,7 +219,7 @@
       }
     }
 
-    @include media-breakpoint-down(xs) {
+    @include gl-container-width-down(sm, panel) {
       .btn-template-icon {
         display: inline-block;
         height: 14px;
@@ -305,7 +305,7 @@
         line-height: $list-text-height;
         @apply gl-text-subtle;
 
-        @include media-breakpoint-down(xs) {
+        @include gl-container-width-down(sm, panel) {
           padding-top: $gl-padding-6;
         }
 
@@ -343,7 +343,7 @@
 
   &:not(.compact) {
     .controls {
-      @include media-breakpoint-up(lg) {
+      @include gl-container-width-up(lg, panel) {
         justify-content: flex-start;
         padding-right: $gl-spacing-scale-9;
       }
@@ -362,17 +362,17 @@
   }
 
   .controls {
-    @include media-breakpoint-up(sm) {
+    @include gl-container-width-up(sm, panel) {
       justify-content: flex-end;
     }
 
     .icon-wrapper {
-      @include media-breakpoint-down(md) {
+      @include gl-container-width-down(lg, panel) {
         margin-right: 0;
         margin-left: $gl-spacing-scale-3;
       }
 
-      @include media-breakpoint-down(xs) {
+      @include gl-container-width-down(sm, panel) {
         &:first-child {
           margin-left: 0;
         }
@@ -381,7 +381,7 @@
   }
 
   .icon-container {
-    @include media-breakpoint-up(lg) {
+    @include gl-container-width-up(lg, panel) {
       margin-right: $gl-spacing-scale-7;
     }
   }
@@ -404,7 +404,7 @@
     }
 
     .updated-note {
-      @include media-breakpoint-up(sm) {
+      @include gl-container-width-up(sm, panel) {
         margin-top: $gl-spacing-scale-2;
       }
     }
@@ -415,7 +415,7 @@
     }
   }
 
-  @include media-breakpoint-down(md) {
+  @include gl-container-width-down(lg, panel) {
     .updated-note {
       margin-top: $gl-spacing-scale-3;
       text-align: right;
@@ -428,7 +428,7 @@
     display: flex;
   }
 
-  @include media-breakpoint-down(md) {
+  @include gl-container-width-down(lg, panel) {
     &.explore {
       .pipeline-status,
       .updated-note {
@@ -437,7 +437,7 @@
     }
   }
 
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     .updated-note {
       margin-top: 0;
       text-align: left;
@@ -470,7 +470,7 @@
 }
 
 .compare-revision-cards {
-  @media (min-width: $breakpoint-lg) {
+  @include gl-container-width-up(lg, panel) {
     // stylelint-disable-next-line gitlab/no-gl-class
     .gl-card {
       width: calc(50% - 15px);
@@ -484,7 +484,7 @@
   }
 
   &.form-group {
-    @include media-breakpoint-up(sm) {
+    @include gl-container-width-up(sm, panel) {
       margin-bottom: 0;
     }
   }
@@ -507,12 +507,12 @@
 .project-feature {
   padding-top: 10px;
 
-  @include media-breakpoint-up(sm) {
+  @include gl-container-width-up(sm, panel) {
     padding-left: 45px;
   }
 
   &.nested {
-    @include media-breakpoint-up(sm) {
+    @include gl-container-width-up(sm, panel) {
       padding-left: 90px;
     }
   }

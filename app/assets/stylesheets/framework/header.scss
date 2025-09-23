@@ -48,10 +48,10 @@
 
 .nav-links > li > a {
   .badge.badge-pill {
-    @include media-breakpoint-down(xs) { display: none; }
+    @include gl-container-width-down(sm, panel) { display: none; }
   }
 
-  @include media-breakpoint-down(xs) { margin-right: 3px; }
+  @include gl-container-width-down(sm, panel) { margin-right: 3px; }
 }
 
 .header-logged-out {

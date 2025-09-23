@@ -73,7 +73,7 @@ describe('BranchRuleModal', () => {
   });
 
   it('renders listbox with branch names', async () => {
-    await nextTick();
+    await waitForPromises();
     expect(findBranchRuleListbox().exists()).toBe(true);
     expect(findBranchRuleListbox().props('items')).toHaveLength(3);
     expect(findBranchRuleListbox().props('toggleText')).toBe('Select Branch or create wildcard');

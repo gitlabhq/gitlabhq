@@ -10,7 +10,7 @@
     border-bottom-width: 0;
   }
 
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     .list-header {
       flex-direction: column-reverse;
     }

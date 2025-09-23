@@ -16,7 +16,7 @@ RSpec.describe 'Projects > Files > Project owner creates a license file', :js, f
   it 'project maintainer creates a license file manually from a template' do
     visit project_tree_path(project, project.repository.root_ref)
     find('.add-to-tree').click
-    click_link 'New file'
+    click_button 'New file'
 
     fill_in :file_name, with: 'LICENSE'
 

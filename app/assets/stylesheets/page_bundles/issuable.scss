@@ -45,7 +45,7 @@
 }
 
 .issuable-gutter-toggle {
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     margin-left: $btn-side-margin;
   }
 }
@@ -69,7 +69,7 @@
     width: 100%;
   }
 
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     margin-bottom: $gl-padding;
   }
 }
@@ -108,7 +108,7 @@
     align-items: flex-start;
   }
 
-  @include gl-media-breakpoint-up(sm) {
+  @include gl-container-width-up(sm, panel) {
     padding: 5rem 1rem 0;
   }
 

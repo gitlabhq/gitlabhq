@@ -736,12 +736,15 @@ To enable add-on seat management for groups, you must configure the `duo_add_on_
 This section outlines what LDAP queries are executed and what behavior you
 can expect from group sync.
 
-Group member access are downgraded from a higher level if their LDAP group
-membership changes. For example, if a user the Owner role in a group and the
+If a user's LDAP group membership changes, their group access level may be downgraded.
+For example, if a user has the Owner role in a group and the
 next group sync reveals they should only have the Developer role, their
 access is adjusted accordingly. The only exception is if the user is the
 last owner in a group. Groups need at least one owner to fulfill
-administrative duties.
+administrative duties. When seat control is set to restricted access and no
+subscription seats remain available, users are automatically assigned the Minimal
+Access role during group synchronization. This way, users can be synchronized
+without consuming a seat.
 
 #### Supported LDAP group types/attributes
 

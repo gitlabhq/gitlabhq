@@ -3,10 +3,34 @@ import { GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
 import { getHTTPProtocol } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import { GO_TO_PROJECT_WEBIDE, keysFor } from '~/behaviors/shortcuts/keybindings';
+import { InternalEvents } from '~/tracking';
 import CodeDropdownCloneItem from './code_dropdown_clone_item.vue';
 import CodeDropdownDownloadItems from './code_dropdown_download_items.vue';
 import CodeDropdownIdeItem from './code_dropdown_ide_item.vue';
-import { VSCODE_BASE_URL, JETBRAINS_BASE_URL } from './constants';
+import {
+  VSCODE_BASE_URL,
+  JETBRAINS_BASE_URL,
+  CODE_DROPDOWN_CLICK,
+  COPY_SSH_CLONE_URL,
+  COPY_HTTPS_CLONE_URL,
+  OPEN_VSCODE_SSH,
+  OPEN_VSCODE_HTTPS,
+  OPEN_INTELLIJ_SSH,
+  OPEN_INTELLIJ_HTTPS,
+  IDE_TYPE_VSCODE,
+  IDE_TYPE_INTELLIJ,
+} from './constants';
+
+const IDE_TRACKING_EVENTS = {
+  vscode: {
+    ssh: OPEN_VSCODE_SSH,
+    https: OPEN_VSCODE_HTTPS,
+  },
+  intellij: {
+    ssh: OPEN_INTELLIJ_SSH,
+    https: OPEN_INTELLIJ_HTTPS,
+  },
+};
 
 export default {
   name: 'CECompactCodeDropdown',
@@ -17,6 +41,7 @@ export default {
     CodeDropdownDownloadItems,
     CodeDropdownIdeItem,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     sshUrl: {
       type: String,
@@ -126,8 +151,12 @@ export default {
       if (this.showGitpodButton) actions.push(this.gitPodAction);
 
       if (this.httpUrl || this.sshUrl) {
-        actions.push(this.createIdeGroup(__('Visual Studio Code'), VSCODE_BASE_URL));
-        actions.push(this.createIdeGroup(__('IntelliJ IDEA'), JETBRAINS_BASE_URL));
+        actions.push(
+          this.createIdeGroup(__('Visual Studio Code'), VSCODE_BASE_URL, IDE_TYPE_VSCODE),
+        );
+        actions.push(
+          this.createIdeGroup(__('IntelliJ IDEA'), JETBRAINS_BASE_URL, IDE_TYPE_INTELLIJ),
+        );
       }
 
       if (this.xcodeUrl) {
@@ -184,12 +213,21 @@ export default {
         return acc;
       }, {});
     },
+    trackingData() {
+      return {
+        ssh: { action: COPY_SSH_CLONE_URL },
+        https: { action: COPY_HTTPS_CLONE_URL },
+      };
+    },
   },
   methods: {
+    onDropdownShown() {
+      this.trackEvent(CODE_DROPDOWN_CLICK);
+    },
     closeDropdown() {
       this.$refs.dropdown.close();
     },
-    createIdeGroup(name, baseUrl) {
+    createIdeGroup(name, baseUrl, ideType) {
       return {
         text: name,
         items: [
@@ -198,6 +236,7 @@ export default {
                 {
                   text: __('SSH'),
                   href: `${baseUrl}${this.sshUrlEncoded}`,
+                  tracking: { action: IDE_TRACKING_EVENTS[ideType].ssh },
                   extraAttrs: {
                     isUnsafeLink: true,
                   },
@@ -209,6 +248,7 @@ export default {
                 {
                   text: __('HTTPS'),
                   href: `${baseUrl}${this.httpUrlEncoded}`,
+                  tracking: { action: IDE_TRACKING_EVENTS[ideType].https },
                   extraAttrs: {
                     isUnsafeLink: true,
                   },
@@ -221,6 +261,7 @@ export default {
   },
 };
 </script>
+
 <template>
   <gl-disclosure-dropdown
     ref="dropdown"
@@ -231,6 +272,7 @@ export default {
     fluid-width
     :auto-close="false"
     data-testid="code-dropdown"
+    @shown="onDropdownShown"
   >
     <gl-disclosure-dropdown-group v-if="groups.sshUrl.show" :bordered="groups.sshUrl.bordered">
       <code-dropdown-clone-item
@@ -239,6 +281,7 @@ export default {
         name="ssh_project_clone"
         input-id="copy-ssh-url-input"
         test-id="copy-ssh-url-button"
+        :tracking="trackingData.ssh"
       />
     </gl-disclosure-dropdown-group>
 
@@ -249,6 +292,7 @@ export default {
         name="http_project_clone"
         input-id="copy-http-url-input"
         test-id="copy-http-url-button"
+        :tracking="trackingData.https"
       />
     </gl-disclosure-dropdown-group>
 
@@ -297,6 +341,7 @@ export default {
     <slot name="gl-ee-compact-code-dropdown"></slot>
   </gl-disclosure-dropdown>
 </template>
+
 <style>
 /* Temporary override until we have
    * widths available in GlDisclosureDropdown

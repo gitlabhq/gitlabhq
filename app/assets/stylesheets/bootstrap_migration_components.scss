@@ -30,7 +30,7 @@ input[type='file'] {
 .form-group.row > .col-form-label {
   // Bootstrap 4 aligns labels to the left
   // for horizontal forms
-  @include media-breakpoint-up(md) {
+  @include gl-container-width-up(md, panel) {
     text-align: right;
   }
 }

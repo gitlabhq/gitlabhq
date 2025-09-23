@@ -2,7 +2,7 @@
 @import 'components/content_editor';
 
 .wiki-page-header {
-  @include media-breakpoint-up(md) {
+  @include gl-container-width-up(md, panel) {
     &.has-sidebar-toggle {
       padding-right: 0;
     }
@@ -187,7 +187,7 @@ ul.wiki-pages-list.content-list {
 }
 
 .page-with-panels .paneled-view .wiki-overview {
-  @include media-breakpoint-up(lg) {
+  @include gl-container-width-up(lg, panel) {
     $overview-gap-width: 2rem;
     display: grid;
     grid-template-columns: 1fr auto;
@@ -205,7 +205,7 @@ ul.wiki-pages-list.content-list {
     max-width: 100%;
   }
 
-  @include media-breakpoint-up(lg) {
+  @include gl-container-width-up(lg, panel) {
     padding-right: 0 !important;
   }
 }

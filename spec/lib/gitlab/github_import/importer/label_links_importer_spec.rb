@@ -79,25 +79,6 @@ RSpec.describe Gitlab::GithubImport::Importer::LabelLinksImporter, feature_categ
 
         importer.create_labels
       end
-
-      context 'when the validate_label_link_parent_presence_on_import feature flag is disabled' do
-        before do
-          stub_feature_flags(validate_label_link_parent_presence_on_import: false)
-        end
-
-        it 'inserts the label links in bulk, even the ones with missing parents as we skip validation' do
-          expect(LabelLink).to receive(:bulk_insert!) do |*args, **kwargs|
-            bulk_items = args.first
-            expect(bulk_items).to contain_exactly(
-              have_attributes(label_id: persisted_label.id, target_id: persisted_issue.id),
-              have_attributes(label_id: deleted_label.id, target_id: persisted_issue.id)
-            )
-            expect(kwargs[:validate]).to be(true)
-          end
-
-          importer.create_labels
-        end
-      end
     end
 
     it 'does not insert label links for non-existing labels' do

@@ -6,7 +6,7 @@
  .discussion-actions {
   float: right;
 
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     width: 100%;
     margin: 0 0 $gl-padding-8;
   }

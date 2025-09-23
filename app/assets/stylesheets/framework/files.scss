@@ -43,7 +43,7 @@
     text-align: right;
     padding: 8px $gl-padding;
 
-    @include media-breakpoint-down(xs) {
+    @include gl-container-width-down(sm, panel) {
       text-align: left;
     }
 
@@ -121,7 +121,7 @@
     &.md {
       padding: $gl-padding;
 
-      @include media-breakpoint-up(md) {
+      @include gl-container-width-up(md, panel) {
         padding: $gl-padding * 2;
       }
     }
@@ -236,7 +236,7 @@ span.idiff {
     min-height: px-to-rem($file-header-height);
     border-radius: $gl-border-radius-base-inner $gl-border-radius-base-inner 0 0;
 
-    @include media-breakpoint-up(md) {
+    @include gl-container-width-up(md, panel) {
       flex-wrap: nowrap;
     }
   }
@@ -251,7 +251,7 @@ span.idiff {
 }
 
 .blob-content-holder .file-actions {
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     .btn {
       margin-bottom: $gl-padding-8;
     }

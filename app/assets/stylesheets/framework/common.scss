@@ -25,7 +25,7 @@
   --system-footer-height: #{$system-footer-height};
 }
 
-@include media-breakpoint-up(sm) {
+@include gl-container-width-up(sm, panel) {
   .right-sidebar-collapsed {
     --application-bar-right: #{$right-sidebar-collapsed-width};
 
@@ -44,7 +44,7 @@
   }
 }
 
-@include media-breakpoint-up(xl) {
+@include gl-container-width-up(xl, panel) {
   .page-with-super-sidebar {
     --application-bar-left: #{$super-sidebar-width};
   }
@@ -83,7 +83,7 @@
 
 .tab-content {
   overflow: visible;
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     isolation: isolate;
   }
 }
@@ -341,7 +341,7 @@ li.note {
 
 // Make buttons/dropdowns full-width on mobile
 .full-width-mobile {
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     width: 100%;
 
     > .dropdown-menu,

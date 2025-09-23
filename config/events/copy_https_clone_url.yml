@@ -1,0 +1,15 @@
+---
+description: User clicked copy HTTPS clone URL from the Code dropdown
+internal_events: true
+action: copy_https_clone_url
+identifiers:
+  - project
+  - user
+  - namespace
+product_group: activation
+milestone: "18.5"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201841
+tiers:
+  - free
+  - premium
+  - ultimate

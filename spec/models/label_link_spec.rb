@@ -26,14 +26,6 @@ RSpec.describe LabelLink do
         subject { build(:label_link, importing: true) }
 
         it { is_expected.to validate_presence_of(:label) }
-
-        context 'when validate_label_link_parent_presence_on_import feature flag is disabled' do
-          before do
-            stub_feature_flags(validate_label_link_parent_presence_on_import: false)
-          end
-
-          it { is_expected.not_to validate_presence_of(:label) }
-        end
       end
     end
 
@@ -44,14 +36,6 @@ RSpec.describe LabelLink do
         subject { build(:label_link, importing: true) }
 
         it { is_expected.to validate_presence_of(:target) }
-
-        context 'when validate_label_link_parent_presence_on_import feature flag is disabled' do
-          before do
-            stub_feature_flags(validate_label_link_parent_presence_on_import: false)
-          end
-
-          it { is_expected.not_to validate_presence_of(:target) }
-        end
       end
     end
 
@@ -64,14 +48,6 @@ RSpec.describe LabelLink do
         subject { build(:label_link, importing: true) }
 
         it { is_expected.to validate_presence_of(:namespace) }
-
-        context 'when validate_label_link_parent_presence_on_import feature flag is disabled' do
-          before do
-            stub_feature_flags(validate_label_link_parent_presence_on_import: false)
-          end
-
-          it { is_expected.not_to validate_presence_of(:namespace) }
-        end
       end
     end
   end

@@ -28,6 +28,19 @@ module Enums
       unknown: 999
     }.with_indifferent_access.freeze
 
+    # INTERNAL_PURL_TYPES are purl types that are used by GitLab internally for
+    # features. These types are not officially recognized, or even proposed, nor
+    # should they. For example, 'unknown' is the PURL type used to describe components
+    # for which we have no knowledge, and `'not_provided' is used for components`
+    # for which did not provide a PURL type. Outside of GitLab these are not usable,
+    # and should not be surfaced to customers outside of very specific contexts.
+    # A concrete example is the dependency list where customers would like to see
+    # components that have no PURL type, or have a PURL type that's not handled.
+    # In other contexts like in the Package Metadata Database admin configuration
+    # page, these don't make sense, so it's best to exclude (customers can't sync data
+    # for 'unknown' or 'not_provided' packages).
+    INTERNAL_PURL_TYPES = %w[unknown not_provided].freeze
+
     UNKNOWN = :unknown
     IN_USE = :in_use
     NOT_FOUND = :not_found

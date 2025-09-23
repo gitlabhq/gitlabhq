@@ -32,8 +32,12 @@
   }
 }
 
-svg:not([id*="-sm"], [id*="-md"], [id*="-lg"]) {
+svg {
   fill: currentColor;
+}
+
+svg:is([id*="-sm"], [id*="-md"], [id*="-lg"]) {
+  fill: none;
 }
 
 .square,

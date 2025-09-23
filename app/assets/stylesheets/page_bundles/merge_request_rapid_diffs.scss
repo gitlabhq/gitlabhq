@@ -17,7 +17,7 @@
   --rd-app-sticky-top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} - 1px);
 
   // merge request sticky header appears after sm breakpoint
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     --rd-app-sticky-top: calc(#{$calc-application-header-height});
   }
 }

@@ -131,7 +131,7 @@
   }
 
   .event-item-timestamp {
-    @include media-breakpoint-up(sm) {
+    @include gl-container-width-up(sm, panel) {
       float: right;
     }
   }

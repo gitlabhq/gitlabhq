@@ -62,7 +62,7 @@
     margin-left: -1px;
   }
 
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     flex-direction: column;
 
     .btn-group .btn + .btn {

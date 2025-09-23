@@ -10,7 +10,7 @@ $new-namespace-panel-height: 240px;
 .new-namespace-panel-wrapper {
   width: 50%;
 
-  @include media-breakpoint-down(lg) {
+  @include gl-container-width-down(xl, panel) {
     width: 100%;
   }
 }
@@ -23,7 +23,7 @@ $new-namespace-panel-height: 240px;
   color: var(--purple-700, $purple-700);
   min-height: $new-namespace-panel-height;
   text-align: center;
-  @include media-breakpoint-up(lg) {
+  @include gl-container-width-up(lg, panel) {
     text-align: left;
   }
 }

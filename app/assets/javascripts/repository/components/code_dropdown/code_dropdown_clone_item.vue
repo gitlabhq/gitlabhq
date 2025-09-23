@@ -9,6 +9,7 @@ import {
 } from '@gitlab/ui';
 import Vue from 'vue';
 import { __ } from '~/locale';
+import { InternalEvents } from '~/tracking';
 
 Vue.use(GlToast);
 export default {
@@ -21,6 +22,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [InternalEvents.mixin()],
   props: {
     label: {
       type: String,
@@ -44,10 +46,24 @@ export default {
       type: String,
       required: true,
     },
+    tracking: {
+      type: Object,
+      required: false,
+      default: () => ({ action: null }),
+    },
   },
   methods: {
     onCopyUrl() {
       this.$toast.show(__('Copied'));
+
+      this.trackCopyClick();
+    },
+
+    trackCopyClick() {
+      const { action } = this.tracking;
+      if (action) {
+        this.trackEvent(action);
+      }
     },
   },
   copyURLTooltip: __('Copy URL'),

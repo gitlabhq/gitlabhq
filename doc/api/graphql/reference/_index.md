@@ -38447,8 +38447,11 @@ Represents generic policy violation information.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="policyviolationinfodismissed"></a>`dismissed` | [`Boolean!`](#boolean) | Represents if a warn mode policy violation was dismissed. |
+| <a id="policyviolationinfoenforcementtype"></a>`enforcementType` | [`PolicyEnforcementType!`](#policyenforcementtype) | Represents the enforcement type of the violated policy. |
 | <a id="policyviolationinfoname"></a>`name` | [`String!`](#string) | Represents the name of the violated policy. |
 | <a id="policyviolationinforeporttype"></a>`reportType` | [`ApprovalReportType!`](#approvalreporttype) | Represents the report type. |
+| <a id="policyviolationinfosecuritypolicyid"></a>`securityPolicyId` | [`ID`](#id) | Represents the violated security policy id. |
 | <a id="policyviolationinfostatus"></a>`status` | [`PolicyViolationStatus`](#policyviolationstatus) | Represents the status of the violated policy. |
 
 ### `PreviewBillableUserChange`
@@ -49474,6 +49477,13 @@ Pipeline variables minimum override roles.
 | <a id="pipelinevariablesdefaultroletypemaintainer"></a>`MAINTAINER` | Maintainer. |
 | <a id="pipelinevariablesdefaultroletypeno_one_allowed"></a>`NO_ONE_ALLOWED` | No one allowed. |
 | <a id="pipelinevariablesdefaultroletypeowner"></a>`OWNER` | Owner. |
+
+### `PolicyEnforcementType`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="policyenforcementtypeenforce"></a>`ENFORCE` | Represents an enforced policy type. |
+| <a id="policyenforcementtypewarn"></a>`WARN` | Represents a warn mode policy type. |
 
 ### `PolicyProjectCreatedStatus`
 

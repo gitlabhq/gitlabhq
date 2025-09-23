@@ -10,7 +10,6 @@ import {
   START_SEARCH_PROJECT_FILE,
 } from '~/behaviors/shortcuts/keybindings';
 import { sanitize } from '~/lib/dompurify';
-import { InternalEvents } from '~/tracking';
 import { FIND_FILE_BUTTON_CLICK, REF_SELECTOR_CLICK } from '~/tracking/constants';
 import { visitUrl, joinPaths, webIDEUrl } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -33,6 +32,7 @@ import {
   EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
   EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
 } from '~/repository/constants';
+import { InternalEvents } from '~/tracking';
 
 export default {
   name: 'HeaderArea',

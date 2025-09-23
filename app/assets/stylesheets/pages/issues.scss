@@ -81,7 +81,7 @@ ul.related-merge-requests > li gl-emoji {
   }
 }
 
-@include media-breakpoint-down(xs) {
+@include gl-container-width-down(sm, panel) {
   .detail-page-header {
     .issuable-meta {
       line-height: 18px;
@@ -100,7 +100,7 @@ ul.related-merge-requests > li gl-emoji {
     }
   }
 
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     width: 100%;
 
     > div:not(:last-child) {
@@ -127,7 +127,7 @@ ul.related-merge-requests > li gl-emoji {
   .btn-group:not(.hidden) {
     display: flex;
 
-    @include media-breakpoint-down(xs) {
+    @include gl-container-width-down(sm, panel) {
       .btn.btn-confirm {
         justify-content: flex-start;
 
@@ -157,7 +157,7 @@ ul.related-merge-requests > li gl-emoji {
   display: block;
 }
 
-@include media-breakpoint-up(sm) {
+@include gl-container-width-up(sm, panel) {
   .emoji-block .row {
     display: flex;
 
@@ -174,7 +174,7 @@ ul.related-merge-requests > li gl-emoji {
   }
 }
 
-@include media-breakpoint-up(lg) {
+@include gl-container-width-up(lg, panel) {
   .new-branch-col {
     text-align: right;
   }
@@ -224,7 +224,7 @@ ul.related-merge-requests > li gl-emoji {
 .issue-sticky-header-text {
   padding: 0 $container-margin;
 
-  @include media-breakpoint-up(xl) {
+  @include gl-container-width-up(xl, panel) {
     padding: 0 $container-margin-xl;
   }
 }

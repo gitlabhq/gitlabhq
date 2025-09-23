@@ -25,8 +25,10 @@ export default {
     closeDropdown() {
       this.$emit('close-dropdown');
     },
-    trackAndClose({ action, label }) {
-      this.trackEvent(action, { label });
+    trackAndClose({ action, label } = {}) {
+      if (action) {
+        this.trackEvent(action, label && { label });
+      }
       this.closeDropdown();
     },
   },
@@ -48,7 +50,7 @@ export default {
         is-unsafe-link
         target="_blank"
         size="small"
-        @click="closeDropdown"
+        @click="trackAndClose(ideOption.tracking)"
       >
         {{ ideOption.text }}
       </gl-button>

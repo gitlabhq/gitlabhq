@@ -7,7 +7,7 @@
   --rd-app-sticky-top: calc(#{$calc-application-header-height} + #{mr.$merge-request-sticky-header-height});
 
   // MR tabs are hidden on small breakpoint
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     --rd-app-sticky-top: calc(#{$calc-application-header-height});
   }
 }

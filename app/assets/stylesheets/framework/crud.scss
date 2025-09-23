@@ -69,19 +69,19 @@ $crud-header-min-height: px-to-rem(49px);
   }
 
   table.gl-table.b-table.b-table-stacked-sm {
-    @include gl-media-breakpoint-down(sm) {
+    @include gl-container-width-down(sm, panel) {
       @include new-card-table-adjustments;
     }
   }
 
   table.gl-table.b-table.b-table-stacked-md {
-    @include gl-media-breakpoint-down(md) {
+    @include gl-container-width-down(md, panel) {
       @include new-card-table-adjustments;
     }
   }
 
   table.gl-table.b-table.b-table-stacked-lg {
-    @include gl-media-breakpoint-down(lg) {
+    @include gl-container-width-down(lg, panel) {
       @include new-card-table-adjustments;
     }
   }

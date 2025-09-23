@@ -7,7 +7,7 @@
 .gl-responsive-table-row-layout {
   width: 100%;
 
-  @include media-breakpoint-up(md) {
+  @include gl-container-width-up(md, panel) {
     display: flex;
     align-items: center;
 
@@ -31,7 +31,7 @@
     }
   }
 
-  @include media-breakpoint-up(md) {
+  @include gl-container-width-up(md, panel) {
     margin: 0;
     padding: $gl-padding 0;
     border: 0;
@@ -54,13 +54,13 @@
     &.section-#{$width} {
       flex: 0 0 #{$width + '%'};
 
-      @include media-breakpoint-up(md) {
+      @include gl-container-width-up(md, panel) {
         max-width: #{$width + '%'};
       }
     }
   }
 
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     display: flex;
     align-self: stretch;
     padding: 10px;
@@ -75,18 +75,18 @@
   &.section-wrap {
     white-space: normal;
 
-    @include media-breakpoint-down(sm) {
+    @include gl-container-width-down(md, panel) {
       flex-wrap: wrap;
     }
   }
 }
 
 .table-button-footer {
-  @include media-breakpoint-up(md) {
+  @include gl-container-width-up(md, panel) {
     text-align: right;
   }
 
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     display: block;
     align-self: stretch;
     min-height: 0;
@@ -128,7 +128,7 @@
 .table-row-header {
   font-size: 13px;
 
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     display: none;
   }
 }
@@ -138,13 +138,13 @@
   @apply gl-text-strong;
   text-align: left;
 
-  @include media-breakpoint-up(md) {
+  @include gl-container-width-up(md, panel) {
     display: none;
   }
 }
 
 .table-mobile-content {
-  @include media-breakpoint-down(sm) {
+  @include gl-container-width-down(md, panel) {
     @include flex-max-width(60);
     text-align: right;
   }
@@ -156,7 +156,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 
-  @include media-breakpoint-up(md) {
+  @include gl-container-width-up(md, panel) {
     flex: 0 0 85%;
   }
 

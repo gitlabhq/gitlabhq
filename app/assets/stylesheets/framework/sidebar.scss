@@ -7,7 +7,7 @@
     --container-padding-x: #{$container-margin};
     padding: 0 var(--container-padding-x);
 
-    @include media-breakpoint-up(xl) {
+    @include gl-container-width-up(xl, panel) {
       --container-padding-x: #{$container-margin-xl};
     }
 
@@ -27,7 +27,7 @@
   padding-right: 0;
 
   &:not(.is-merge-request) {
-    @include media-breakpoint-up(sm) {
+    @include gl-container-width-up(sm, panel) {
       @apply gl-border-l;
 
       &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
@@ -72,7 +72,7 @@
   &.right-sidebar-merge-requests {
     width: $right-sidebar-width;
 
-    @include media-breakpoint-up(md) {
+    @include gl-container-width-up(md, panel) {
       z-index: auto;
     }
 
@@ -88,7 +88,7 @@
   }
 
   &:not(.is-merge-request):not(.build-sidebar) {
-    @include media-breakpoint-up(md) {
+    @include gl-container-width-up(md, panel) {
       .content-wrapper {
         padding-right: $right-sidebar-width;
       }
@@ -96,7 +96,7 @@
   }
 
   &.build-sidebar {
-    @include media-breakpoint-up(lg) {
+    @include gl-container-width-up(lg, panel) {
       .content-wrapper {
         padding-right: $right-sidebar-width;
       }
@@ -110,7 +110,7 @@
   }
 
   &.right-sidebar-merge-requests {
-    @include media-breakpoint-up(lg) {
+    @include gl-container-width-up(lg, panel) {
       border-left: 0;
     }
   }
@@ -326,19 +326,19 @@
     @include right-sidebar;
     top: $calc-application-header-height;
 
-    @include media-breakpoint-down(md) {
+    @include gl-container-width-down(lg, panel) {
       z-index: 251;
     }
   }
 
   &.right-sidebar-merge-requests {
-    @include media-breakpoint-down(md) {
+    @include gl-container-width-down(lg, panel) {
       @include right-sidebar;
       top: $calc-application-bars-height;
       z-index: 251;
     }
 
-    @include media-breakpoint-down(sm) {
+    @include gl-container-width-down(md, panel) {
       top: $calc-application-header-height;
     }
   }
@@ -386,7 +386,7 @@
     }
 
     .block {
-      @include media-breakpoint-up(lg) {
+      @include gl-container-width-up(lg, panel) {
         padding: $gl-spacing-scale-4 0 $gl-spacing-scale-5;
       }
 
@@ -460,7 +460,7 @@
     }
 
     &.is-merge-request {
-      @include media-breakpoint-down(sm) {
+      @include gl-container-width-down(md, panel) {
         overflow-y: scroll;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
@@ -486,7 +486,7 @@
       padding: 0 20px;
 
       &.is-merge-request {
-        @include media-breakpoint-up(lg) {
+        @include gl-container-width-up(lg, panel) {
           padding: 0;
 
           .issuable-context-form {
@@ -543,13 +543,13 @@
     /* Small devices (tablets, 768px and up) */
 
     &:not(.right-sidebar-merge-requests) {
-      @include media-breakpoint-up(sm) {
+      @include gl-container-width-up(sm, panel) {
         display: block;
       }
     }
 
     &.right-sidebar-merge-requests {
-      @include media-breakpoint-up(lg) {
+      @include gl-container-width-up(lg, panel) {
         display: block;
       }
     }

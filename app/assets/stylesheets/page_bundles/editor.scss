@@ -79,7 +79,7 @@
 }
 
 
-@include media-breakpoint-down(md) {
+@include gl-container-width-down(lg, panel) {
   .file-editor {
     .file-title {
       display: block;
@@ -115,7 +115,7 @@
   }
 }
 
-@include media-breakpoint-down(sm) {
+@include gl-container-width-down(md, panel) {
   .file-editor .file-buttons {
     flex-direction: column;
     padding: $gl-padding-8 0 0;

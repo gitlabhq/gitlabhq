@@ -13,12 +13,13 @@ title: Troubleshooting repository mirroring
 
 {{< /details >}}
 
-When mirroring fails, project maintainers can see a link similar to {{< icon name="warning-solid" >}} **Pull mirroring failed 1 hour ago**.
-on the project details page. Select this link to go directly to the mirroring settings,
-where GitLab displays an **Error** badge for the mirrored repository. You can hover your mouse cursor
-over the badge to display the text of the error:
+When mirroring fails, GitLab displays a warning on the project details page. For example:
+{{< icon name="warning-solid" >}} **Pull mirroring failed 1 hour ago.**
+Select the warning text to go to the **Mirroring repositories** settings.
 
-![Error message shown on hover](img/mirror_error_v16_3.png)
+Next to the affected repository, GitLab displays an **Error** badge. To view the error message,
+hover over the badge. Error messages include specific details for common issues like authentication
+failures or divergent branches. Other errors might come directly from Git operations.
 
 ## Received RST_STREAM with error code 2 with GitHub
 

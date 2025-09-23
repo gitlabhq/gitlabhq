@@ -365,7 +365,7 @@ export default {
 
 <template>
   <div
-    class="design-detail js-design-detail fixed-top gl-flex gl-w-full gl-flex-col gl-justify-center gl-bg-subtle @lg/panel:gl-flex-row"
+    class="design-detail js-design-detail fixed-top gl-flex gl-w-full gl-flex-col gl-justify-center gl-bg-subtle lg:gl-flex-row"
   >
     <div class="gl-relative gl-flex gl-grow gl-flex-col gl-overflow-hidden">
       <design-toolbar
@@ -381,7 +381,7 @@ export default {
         @archive-design="onArchiveDesign"
         @todosUpdated="updateWorkItemDesignCurrentTodosWidgetCache"
       />
-      <div class="gl-relative gl-flex gl-grow gl-flex-col gl-overflow-hidden @lg/panel:gl-flex-row">
+      <div class="gl-relative gl-flex gl-grow gl-flex-col gl-overflow-hidden lg:gl-flex-row">
         <div class="gl-relative gl-flex gl-grow-2 gl-flex-col gl-overflow-hidden">
           <div v-if="errorMessage" class="gl-p-5">
             <gl-alert variant="danger" @dismiss="errorMessage = null">

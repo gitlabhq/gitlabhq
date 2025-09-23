@@ -1,0 +1,11 @@
+---
+name: locale_rules.ReferenceQuotationRemoval
+description: |
+  Remove quotation marks around reference links
+extends: existence
+message: "Check for quotation marks around reference links at '%s'"
+level: warning
+nonword: true
+scope: raw
+tokens:
+  - '「\[.+?\]\([^)]+\)」'

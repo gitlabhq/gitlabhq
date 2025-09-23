@@ -81,10 +81,6 @@ class PushEvent < Event
     !!(commit_from && commit_to)
   end
 
-  def valid_push?
-    push_event_payload.ref.present?
-  end
-
   def new_ref?
     push_event_payload.created?
   end

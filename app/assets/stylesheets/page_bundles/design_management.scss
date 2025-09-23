@@ -31,7 +31,7 @@ $design-pin-diameter-sm: 24px;
   min-width: 400px;
   flex-shrink: 4;
 
-  @media (min-width: $breakpoint-lg) {
+  @include gl-container-width-up(lg, panel) {
     width: 400px !important;
     flex-shrink: 0;
   }

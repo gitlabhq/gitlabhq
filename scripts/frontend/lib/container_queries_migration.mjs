@@ -58,7 +58,7 @@ const UTILS_REPLACEMENTS = [
   },
   (content) => {
     return content.replace(
-      /(?<!-|\w|!|:|gl-)(?<property>(col|order|offset|row-cols))-(?<breakpoint>sm|md|lg|xl)-(?<width>(\d{1,2}|auto))(?!-|\w|!|:|gl-)/g,
+      /(?<!-|\w|!|:|gl-)(?<property>(col|order|offset|row-cols))-(?<breakpoint>xs|sm|md|lg|xl)-(?<width>(\d{1,2}|auto))(?!-|\w|!|:|gl-)/g,
       'gl-$<property>-$<breakpoint>-$<width>',
     );
   },
@@ -71,7 +71,7 @@ const UTILS_REPLACEMENTS = [
   },
   (content) => {
     return content.replace(
-      /(?<prefix>[^@])(?<breakpoint>sm|md|lg|xl):(?<important>!?)gl-/g,
+      /(?<prefix>[^@])(?<breakpoint>xs|sm|md|lg|xl):(?<important>!?)gl-/g,
       '$<prefix>@$<breakpoint>/panel:$<important>gl-',
     );
   },
@@ -80,7 +80,7 @@ const UTILS_REPLACEMENTS = [
 const MEDIA_QUERIES_REPLACEMENTS = [
   (content) => {
     return content.replace(
-      /@include media-breakpoint-up\((?<breakpoint>sm|md|lg|xl)\)/g,
+      /@include media-breakpoint-up\((?<breakpoint>xs|sm|md|lg|xl)\)/g,
       '@include gl-container-width-up($<breakpoint>, panel)',
     );
   },
@@ -97,31 +97,31 @@ const MEDIA_QUERIES_REPLACEMENTS = [
     };
 
     return content.replace(
-      /@include media-breakpoint-down\((?<breakpoint>sm|md|lg|xl)\)/g,
+      /@include media-breakpoint-down\((?<breakpoint>xs|sm|md|lg|xl)\)/g,
       replacer,
     );
   },
   (content) => {
     return content.replace(
-      /@include gl-media-breakpoint-up\((?<breakpoint>sm|md|lg|xl)\)/g,
+      /@include gl-media-breakpoint-up\((?<breakpoint>xs|sm|md|lg|xl)\)/g,
       '@include gl-container-width-up($<breakpoint>, panel)',
     );
   },
   (content) => {
     return content.replace(
-      /@include gl-media-breakpoint-down\((?<breakpoint>sm|md|lg|xl)\)/g,
+      /@include gl-media-breakpoint-down\((?<breakpoint>xs|sm|md|lg|xl)\)/g,
       '@include gl-container-width-down($<breakpoint>, panel)',
     );
   },
   (content) => {
     return content.replace(
-      /@media \(min-width: \$breakpoint-(?<breakpoint>sm|md|lg|xl)\)/g,
+      /@media \(min-width: \$breakpoint-(?<breakpoint>xs|sm|md|lg|xl)\)/g,
       '@include gl-container-width-up($<breakpoint>, panel)',
     );
   },
   (content) => {
     return content.replace(
-      /@media \(max-width: \$breakpoint-(?<breakpoint>sm|md|lg|xl)\)/g,
+      /@media \(max-width: \$breakpoint-(?<breakpoint>xs|sm|md|lg|xl)\)/g,
       '@include gl-container-width-down($<breakpoint>, panel)',
     );
   },
@@ -133,7 +133,12 @@ const MEDIA_QUERIES_REPLACEMENTS = [
   (content, file) => {
     const matches = content.match(/(@media \((min|max)-width.+)/g);
     if (matches) {
-      console.warn(styleText('red', `\`${file}\`: contains media queries that can't be migrated automatically...`));
+      console.warn(
+        styleText(
+          'red',
+          `\`${file}\`: contains media queries that can't be migrated automatically...`,
+        ),
+      );
       matches.forEach((m, index) => {
         console.warn(styleText('red', `\`${file}\`:   query #${index}: \`${m}\``));
       });

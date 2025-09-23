@@ -118,7 +118,7 @@ $file-tree-browser-z-index: 500;
     }
   }
 
-  @include media-breakpoint-down(xs) {
+  @include gl-container-width-down(sm, panel) {
     .tree-ref-container {
       justify-content: space-between;
     }
