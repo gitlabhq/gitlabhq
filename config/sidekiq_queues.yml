@@ -231,8 +231,6 @@
   - 1
 - - ci_parse_secure_file_metadata
   - 1
-- - ci_retry_stuck_waiting_job
-  - 1
 - - ci_runners_export_usage_csv
   - 1
 - - ci_runners_process_runner_version_update

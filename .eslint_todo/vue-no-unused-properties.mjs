@@ -9,7 +9,6 @@ export default {
     'app/assets/javascripts/ci/pipeline_details/graph/components/job_item.vue',
     'app/assets/javascripts/ci/pipeline_details/graph/components/linked_pipeline.vue',
     'app/assets/javascripts/ci/pipeline_details/graph/components/stage_column_component.vue',
-    'app/assets/javascripts/contribution_events/components/contribution_event/contribution_event_closed.vue',
     'app/assets/javascripts/diffs/components/diff_file.vue',
     'app/assets/javascripts/diffs/components/diff_file_header.vue',
     'app/assets/javascripts/diffs/components/diff_line_note_form.vue',

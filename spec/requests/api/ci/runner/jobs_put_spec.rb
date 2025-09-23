@@ -40,12 +40,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         let(:request) { update_job(state: 'success') }
       end
 
-      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_api do
-        def request
-          update_job
-        end
-      end
-
       it 'updates runner info' do
         expect { update_job(state: 'success') }.to change { runner.reload.contacted_at }
                                                .and change { runner_manager.reload.contacted_at }

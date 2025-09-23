@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlDisclosureDropdown, GlBadge, GlPopover } from '@gitlab/ui';
+import { GlDisclosureDropdown, GlTooltip, GlBadge, GlPopover } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ToolbarMoreDropdown from '~/content_editor/components/toolbar_more_dropdown.vue';
 import Diagram from '~/content_editor/extensions/diagram';
@@ -36,7 +36,7 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
   };
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-
+  const findGlTooltip = () => wrapper.findComponent(GlTooltip);
   beforeEach(() => {
     buildEditor();
   });
@@ -93,6 +93,18 @@ describe('content_editor/components/toolbar_more_dropdown', () => {
         textSrOnly: true,
         toggleText: 'More options',
       });
+    });
+
+    it('hides tooltip when dropdown is open', async () => {
+      buildWrapper();
+
+      expect(findGlTooltip().text()).toBe('More options');
+
+      findDropdown().vm.$emit('shown');
+
+      await nextTick();
+
+      expect(findGlTooltip().exists()).toBe(false);
     });
   });
 

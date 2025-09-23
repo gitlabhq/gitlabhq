@@ -33,7 +33,7 @@
 
           = render Pajamas::AlertComponent.new(variant: :info, title: s_('Observability|What Happens Next'), dismissible: false, alert_options: { class: 'gl-mb-6' }) do |c|
             - c.with_body do
-              .gl-grid.gl-grid-cols-1.md:gl-grid-cols-3.gl-gap-6
+              .gl-grid.gl-grid-cols-1.gl-gap-6{ class: "@md/panel:gl-grid-cols-3" }
                 .gl-flex.gl-items-start.gl-gap-4
                   = sprite_icon('clock', css_class: 'gl-text-primary gl-mt-1', size: 16)
                   .gl-flex.gl-flex-col
@@ -60,7 +60,7 @@
 
           = render Pajamas::AlertComponent.new(variant: :success, title: s_('Observability|What You\'ll Get Access To'), dismissible: false, alert_options: { class: 'gl-mb-6' }) do |c|
             - c.with_body do
-              .gl-grid.gl-grid-cols-1.md:gl-grid-cols-2.gl-gap-6
+              .gl-grid.gl-grid-cols-1.gl-gap-6{ class: "@md/panel:gl-grid-cols-2" }
                 .gl-flex.gl-items-start.gl-gap-4
                   = sprite_icon('check', css_class: 'gl-text-success gl-mt-1', size: 16)
                   .gl-flex.gl-flex-col

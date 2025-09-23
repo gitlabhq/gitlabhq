@@ -16,7 +16,14 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'sets merge when pipeline succeeds', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347843' do
+      it 'sets merge when pipeline succeeds', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347843',
+        quarantine: {
+          only: {
+            job: /praefect|gitaly-reftables-backend/
+          },
+          issue: 'https://gitlab.com/gitlab-org/quality/e2e-test-issues/-/issues/1207',
+          type: :investigating
+        } do
         create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
           {
             action: 'create',

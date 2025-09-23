@@ -68,7 +68,7 @@
                         %li.gl-mt-2
                           = s_('Profiles|Default notification email')
                           .gl-text-subtle.gl-text-sm= notification_message.html_safe
-                  .gl-flex.sm:gl-justify-end.gl-items-end.gl-grow.gl-flex-wrap-reverse.gl-gap-3.-gl-m-2
+                  .gl-flex.gl-items-end.gl-grow.gl-flex-wrap-reverse.gl-gap-3.-gl-m-2{ class: "@sm/panel:gl-justify-end" }
                     - unless email.confirmed?
                       - confirm_title = "#{email.confirmation_sent_at ? s_('Profiles|Resend confirmation email') : s_('Profiles|Send confirmation email')}"
                       = render Pajamas::ButtonComponent.new(href: resend_confirmation_instructions_profile_email_path(email),

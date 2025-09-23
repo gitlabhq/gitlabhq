@@ -173,6 +173,9 @@ For example:
 
 Do not use title case for **GitLab Agent** or **GitLab Agent for Kubernetes**.
 
+Use **GitLab agent for Kubernetes** if **agent** on its own is not clear,
+or to distinguish it from other types of agents.
+
 When referring to the specific component in technical contexts, use `agentk` in backticks.
 
 ## agent for workspace
@@ -185,7 +188,9 @@ in a workspace and is used to access the workspace. Do not use title case for **
 
 When referring to the specific component in technical contexts, use `agentw` in backticks.
 
-Do not confuse with [agent for Kubernetes](#agent-for-kubernetes).
+Do not confuse with [agent for Kubernetes](#agent-for-kubernetes). 
+Use **agent for workspace** if **agent** on its own is not clear,
+or to distinguish it from other types of agents.
 
 ## agent access token
 
@@ -219,7 +224,8 @@ Use **AI**. Do not spell out **artificial intelligence**.
 
 When writing about AI, the **agent** is an entity that performs actions for the user.
 
-You can use **AI agent** if **agent** on its own is not clear.
+You can use **AI agent** if **agent** on its own is not clear,
+or to distinguish it from other types of agents.
 
 When you're interacting with an AI agent, a [**session**](#session) is running.
 The user can stop a session.

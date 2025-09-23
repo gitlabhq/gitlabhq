@@ -143,8 +143,6 @@ module API
       end
 
       resource :jobs do
-        helpers ::API::Helpers::RateLimiter
-
         before { set_application_context }
 
         desc 'Request a job' do
@@ -153,8 +151,7 @@ module API
             [204, 'No job for Runner'],
             [403, 'Forbidden'],
             [409, 'Conflict'],
-            [422, 'Runner is orphaned'],
-            [429, 'Too Many Requests']]
+            [422, 'Runner is orphaned']]
         end
         params do
           requires :token, type: String, desc: "Runner's authentication token"
@@ -194,8 +191,6 @@ module API
         parser :build_json, ::Grape::Parser::Json
 
         post '/request', urgency: :low, feature_category: :continuous_integration do
-          check_rate_limit!(:runner_jobs_request_api, scope: [params[:token]])
-
           authenticate_runner!(creation_state: :finished)
 
           unless current_runner.active?
@@ -235,14 +230,12 @@ module API
           http_codes [[200, 'Job was updated'],
             [202, 'Update accepted'],
             [400, 'Unknown parameters'],
-            [403, 'Forbidden'],
-            [409, 'Conflict'],
-            [429, 'Too Many Requests']]
+            [403, 'Forbidden']]
         end
         params do
           requires :token, type: String, desc: 'Job token'
           requires :id, type: Integer, desc: "Job's ID"
-          optional :state, type: String, desc: "Job's status: pending, running, success, failed"
+          optional :state, type: String, desc: "Job's status: success, failed"
           optional :checksum, type: String, desc: "Job's trace CRC32 checksum"
           optional :failure_reason, type: String, desc: "Job's failure_reason"
           optional :output, type: Hash, desc: 'Build log state' do
@@ -252,14 +245,12 @@ module API
           optional :exit_code, type: Integer, desc: "Job's exit code"
         end
         put '/:id', urgency: :low, feature_category: :continuous_integration do
-          check_rate_limit!(:runner_jobs_api, scope: [params[:token]])
-
           job = authenticate_job!(heartbeat_runner: true)
 
           Gitlab::Metrics.add_event(:update_build)
 
-          # Handle job state updates through the service (including two-phase commit workflow)
-          service = ::Ci::UpdateBuildStateService.new(job, declared_params(include_missing: false))
+          service = ::Ci::UpdateBuildStateService
+            .new(job, declared_params(include_missing: false))
 
           service.execute.then do |result|
             track_ci_minutes_usage!(job)
@@ -275,8 +266,7 @@ module API
           http_codes [[202, 'Trace was patched'],
             [400, 'Missing Content-Range header'],
             [403, 'Forbidden'],
-            [416, 'Range not satisfiable'],
-            [429, 'Too Many Requests']]
+            [416, 'Range not satisfiable']]
         end
         params do
           requires :id, type: Integer, desc: "Job's ID"
@@ -284,8 +274,6 @@ module API
           optional :debug_trace, type: Boolean, desc: 'Enable or Disable the debug trace'
         end
         patch '/:id/trace', urgency: :low, feature_category: :continuous_integration do
-          check_rate_limit!(:runner_jobs_api, scope: [params[:token]])
-
           job = authenticate_job!(heartbeat_runner: true)
 
           error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')
@@ -316,8 +304,7 @@ module API
           http_codes [[200, 'Upload allowed'],
             [403, 'Forbidden'],
             [405, 'Artifacts support not enabled'],
-            [413, 'File too large'],
-            [429, 'Too Many Requests']]
+            [413, 'File too large']]
         end
         params do
           requires :id, type: Integer, desc: "Job's ID"
@@ -333,8 +320,6 @@ module API
             default: 'archive', values: ::Ci::JobArtifact.file_types.keys
         end
         post '/:id/artifacts/authorize', feature_category: :job_artifacts, urgency: :low do
-          check_rate_limit!(:runner_jobs_api, scope: [params[:token]])
-
           not_allowed! unless Gitlab.config.artifacts.enabled
           require_gitlab_workhorse!
 
@@ -357,8 +342,7 @@ module API
             [400, 'Bad request'],
             [403, 'Forbidden'],
             [405, 'Artifacts support not enabled'],
-            [413, 'File too large'],
-            [429, 'Too Many Requests']]
+            [413, 'File too large']]
         end
         params do
           requires :id, type: Integer, desc: "Job's ID"
@@ -373,8 +357,6 @@ module API
           optional :accessibility, type: String, desc: 'Specify accessibility level of artifact private/public'
         end
         post '/:id/artifacts', feature_category: :job_artifacts, urgency: :low do
-          check_rate_limit!(:runner_jobs_api, scope: [params[:token]])
-
           not_allowed! unless Gitlab.config.artifacts.enabled
           require_gitlab_workhorse!
 
@@ -400,8 +382,7 @@ module API
             [302, 'Found'],
             [401, 'Unauthorized'],
             [403, 'Forbidden'],
-            [404, 'Artifact not found'],
-            [429, 'Too Many Requests']]
+            [404, 'Artifact not found']]
         end
         params do
           requires :id, type: Integer, desc: "Job's ID"
@@ -412,8 +393,6 @@ module API
         route_setting :authorization, job_token_policies: :read_jobs,
           allow_public_access_for_enabled_project_features: [:repository, :builds]
         get '/:id/artifacts', feature_category: :job_artifacts do
-          check_rate_limit!(:runner_jobs_api, scope: [params[:token]])
-
           authenticate_job_via_dependent_job!
           authorize_job_token_policies!(current_job.project)
 

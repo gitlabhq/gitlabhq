@@ -8,7 +8,7 @@
       .gl-min-w-6.gl-w-6
         = sprite_icon('status-success', variant: 'success', css_class: 'gl-mt-3')
     - else
-      .gl-hidden.md:gl-block.gl-w-6
+      .gl-hidden.gl-w-6{ class: "@md/panel:gl-block" }
 
     = render Pajamas::AvatarComponent.new(project, size: 32, avatar_options: { aria: { hidden: "true" } })
     .gl-grow.gl-self-center

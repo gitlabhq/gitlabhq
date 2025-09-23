@@ -1,7 +1,7 @@
 .footer-container.gl-w-full.gl-self-end
   %hr.gl-m-0
   .container.gl-py-5.gl-flex.gl-justify-between.gl-items-start
-    .gl-hidden.md:gl-flex.gl-gap-5.gl-flex-wrap
+    .gl-hidden.gl-gap-5.gl-flex-wrap{ class: "@md/panel:gl-flex" }
       - unless public_visibility_restricted?
         = link_to _("Explore"), explore_root_path
         = link_to _("Help"), help_path

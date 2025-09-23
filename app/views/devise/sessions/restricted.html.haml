@@ -4,7 +4,7 @@
 .gl-text-center.gl-max-w-100.gl-mx-auto
   .svg-content.svg-150
     = image_tag 'illustrations/empty-state/empty-access-md.svg'
-  .container.gl-flex.gl-text-left.gl-flex-wrap.md:gl-flex-nowrap
+  .container.gl-flex.gl-text-left.gl-flex-wrap{ class: "@md/panel:gl-flex-nowrap" }
     .container
       %h1.gl-mb-4
         It looks like you are visiting GitLab from Mainland China, Macau, or Hong Kong
@@ -22,7 +22,7 @@
         %p
           如果您属于GitLab.com现有的付费客户或用户组，请联系您的管理员以向您发送注册邀请
 
-  .gl-flex.gl-justify-center.sm:gl-flex-row.gl-flex-col.gl-gap-3
+  .gl-flex.gl-justify-center.gl-flex-col.gl-gap-3{ class: "@sm/panel:gl-flex-row" }
     = render Pajamas::ButtonComponent.new(variant: :confirm, href: 'https://gitlab.cn/saasmigration/') do
       Take me to JiHu (去极狐)
 

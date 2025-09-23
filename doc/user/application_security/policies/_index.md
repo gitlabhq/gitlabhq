@@ -119,7 +119,7 @@ Development teams:
 To enforce a security policy project on a group, subgroup, or project, you must have either:
 
 - The Owner role in that group, subgroup, or project.
-- A [custom role](../../custom_roles/_index.md) in that group, subgroup, or project with the `manage_security_policy_link` permission.
+- A custom role in that group, subgroup, or project with the `manage_security_policy_link` permission.
 
 The Owner role and custom roles with the `manage_security_policy_link` permission follow the standard hierarchy rules across groups, subgroups, and projects:
 
@@ -170,7 +170,7 @@ occurs:
 Branch name `update-policy-<timestamp>` does not follow the pattern `<branch_name_regex>`.
 ```
 
-In [GitLab 17.4 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/463064), security policy
+In GitLab 17.4 and later, security policy
 projects are excluded from push rules that enforce branch name validation.
 
 ### Security policy projects

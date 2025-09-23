@@ -60,9 +60,7 @@ Development guides that are specific to CI/CD are listed here:
   - [The CI configuration guide](configuration.md)
   - [The CI schema guide](schema.md)
 - If you are making a change to core CI/CD process such as linting or pipeline creation, refer to the
-  [CI/CD testing guide](testing.md)
-- If you are working with runner job execution workflows, see the [Two-phase commit for CI/CD jobs](two_phase_job_commit.md)
-  guide.
+    [CI/CD testing guide](testing.md)
 
 See the [CI/CD YAML reference documentation guide](cicd_reference_documentation_guide.md)
 to learn how to update the [CI/CD YAML syntax reference page](../../ci/yaml/_index.md).
@@ -140,19 +138,11 @@ connected to the GitLab instance. These can be instance runners, group runners, 
 The communication between runners and the Rails server occurs through a set of API endpoints, grouped as
 the `Runner API Gateway`.
 
-We can register, delete, and verify runners, which also causes read/write queries to the database. After a runner is
-connected, it keeps asking for the next job to execute.
-This invokes the [`RegisterJobService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/register_job_service.rb)
-which picks the next job and assigns it to the runner.
-
-**Job state transitions depend on runner capabilities:**
-
-- **If the runner supports `two_phase_job_commit` feature**: The job remains in `pending` state while the runner prepares,
-  then transitions to `running` when the runner signals readiness through `PUT /jobs/:id`.
-- **Otherwise**: The job transitions to a `running` state, which again triggers
-  `ProcessPipelineService` due to the status change.
-
-For more details, see [Job scheduling](#job-scheduling) and [Two-phase commit for CI/CD jobs](two_phase_job_commit.md).
+We can register, delete, and verify runners, which also causes read/write queries to the database. After a runner is connected,
+it keeps asking for the next job to execute. This invokes the [`RegisterJobService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/register_job_service.rb)
+which picks the next job and assigns it to the runner. At this point the job transitions to a
+`running` state, which again triggers `ProcessPipelineService` due to the status change.
+For more details read [Job scheduling](#job-scheduling)).
 
 While a job is being executed, the runner sends logs back to the server as well any possible artifacts
 that must be stored. Also, a job may depend on artifacts from previous jobs to run. In this
@@ -188,27 +178,6 @@ A job with the `created` state isn't seen by the runner yet. To make it possible
 
 When the runner is connected, it requests the next `pending` job to run by polling the server continuously.
 
-### Two-phase commit workflow
-
-Since 18.5, GitLab supports a two-phase commit workflow for job execution that improves timing accuracy and reliability.
-This feature allows runners to:
-
-1. **Request and receive a job** while keeping it in `pending` state during preparation.
-1. **Signal readiness** to transition the job to `running` state when actually ready to execute.
-
-For runners that support the two-phase commit feature (indicated by `two_phase_job_commit: true` in their capabilities),
-the job assignment process works as follows:
-
-- **Phase 1**: Runner requests a job → job assigned to runner but remains `pending`, removed from `ci_pending_builds`
-  and tracked in Redis cache.
-- **Phase 2**: Runner completes preparation → signals acceptance → job transitions to `running` state.
-
-For legacy runners, the traditional workflow continues unchanged: job assignment immediately transitions the job to
-`running` state.
-
-This two-phase approach ensures that only actual execution time is counted, improving compute minute accuracy and
-reducing issues with jobs getting stuck during runner preparation.
-
 {{< alert type="note" >}}
 
 API endpoints used by the runner to interact with GitLab are defined in [`lib/api/ci/runner.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/ci/runner.rb)
@@ -237,30 +206,9 @@ This API endpoint runs [`Ci::RegisterJobService`](https://gitlab.com/gitlab-org/
 1. Assigns it to the runner
 1. Presents it to the runner via the API response
 
-#### Job status updates
-
-Runners communicate job status changes using the `PUT /api/v4/jobs/:id` endpoint. This endpoint supports different
-workflows depending on runner capabilities:
-
-**For runners with two-phase commit support:**
-
-- `state=pending`: Keep-alive signal during preparation (returns `200 OK`).
-- `state=running`: Runner ready to start execution (transitions job to running, returns `200 OK`).
-- Other states: Regular job completion (`success`, `failed`, etc.)
-
-**Error responses:**
-
-- `409 Conflict`: Job not in expected state for the requested transition.
-- `400 Bad Request`: Invalid parameters or state.
-
-**For legacy runners:**
-
-- Job status updates work as before, with immediate state transitions.
-
 ### `Ci::RegisterJobService`
 
-This service uses 3 top level queries to gather the majority of the jobs and they are selected based on the level
-where the runner is registered to:
+There are 3 top level queries that this service uses to gather the majority of the jobs and they are selected based on the level where the runner is registered to:
 
 - Select jobs for instance runner (instance-wide)
   - Uses a fair scheduling algorithm which prioritizes projects with fewer running builds
@@ -281,26 +229,6 @@ Finally if the runner can only pick jobs that are tagged, all untagged jobs are 
 At this point we loop through remaining `pending` jobs and we try to assign the first job that the runner "can pick" based on additional policies. For example, runners marked as `protected` can only pick jobs that run against protected branches (such as production deployments).
 
 As we increase the number of runners in the pool we also increase the chances of conflicts which would arise if assigning the same job to different runners. To prevent that we gracefully rescue conflict errors and assign the next job in the list.
-
-#### Job assignment behavior
-
-The service handles job assignment differently based on runner capabilities:
-
-**For runners supporting two-phase commit** (indicated by `two_phase_job_commit: true` in runner features):
-
-1. Job is assigned to the runner but remains in `pending` state.
-1. Job is removed from `ci_pending_builds` table to prevent assignment to other runners.
-1. Job association with runner manager is stored in Redis cache.
-1. Runner can send keep-alive signals and eventually transition the job to `running`.
-
-**For legacy runners**:
-
-1. Job is assigned to the runner and immediately transitions to `running` state.
-1. Job is moved from `ci_pending_builds` to `ci_running_builds`.
-1. Traditional workflow continues unchanged.
-
-This dual approach ensures backward compatibility while enabling improved timing accuracy for runners that support the
-two-phase job commit feature.
 
 ### Dropping stuck builds
 

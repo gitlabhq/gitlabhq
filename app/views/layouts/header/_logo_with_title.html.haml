@@ -1,5 +1,5 @@
 %header.navbar.fixed-top.navbar-gitlab.justify-content-center
-  .gl-hidden.lg:gl-block
+  .gl-hidden{ class: "@lg/panel:gl-block" }
     = render partial: 'shared/logo_with_text', formats: :svg
-  .lg:gl-hidden
+  %div{ class: "@lg/panel:gl-hidden" }
     = render partial: 'shared/logo', formats: :svg

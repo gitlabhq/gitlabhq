@@ -92,7 +92,7 @@
             = updated_tooltip
         = render_if_exists 'shared/projects/actions', project: project
 
-  .project-cell.project-controls.gl-text-subtle{ class: "#{css_class} !gl-hidden sm:!gl-table-cell", data: { testid: 'project_controls'} }
+  .project-cell.project-controls.gl-text-subtle{ class: "#{css_class} !gl-hidden @sm/panel:!gl-table-cell", data: { testid: 'project_controls'} }
     .controls.gl-flex.gl-items-center.gl-mb-2.gl-gap-4{ class: "#{css_controls_class} !gl-pr-0 !gl-justify-end" }
       - if show_pipeline_status_icon && last_pipeline.present?
         - pipeline_path = pipelines_project_commit_path(project.pipeline_status.project, project.pipeline_status.sha, ref: project.pipeline_status.ref)

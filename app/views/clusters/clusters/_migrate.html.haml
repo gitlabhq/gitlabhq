@@ -50,7 +50,7 @@
       - user_id = @cluster.project.namespace.owner_id unless group_id
 
     = gitlab_ui_form_for cluster_migration, url: clusterable.create_cluster_migration_path(@cluster), html: { class: 'fieldset-form' }, data: { testid: 'cluster-migration-form' }, method: :post do |f|
-      .form-group{ class: 'md:gl-w-1/2' }
+      .form-group{ class: '@md/panel:gl-w-1/2' }
         .js-vue-project-select{ data: { label: s_('ClusterIntegration|Project name'),
             description: s_('ClusterIntegration|Select a project for the GitLab Agent.'),
             input_name: 'cluster_migration[configuration_project_id]',
@@ -63,7 +63,7 @@
             membership: true.to_s,
             selected: @cluster.management_project_id } }
 
-      .form-group.-gl-mt-2{ class: 'md:gl-w-1/2' }
+      .form-group.-gl-mt-2{ class: '@md/panel:gl-w-1/2' }
         = f.label :agent_name, s_('ClusterIntegration|Agent name'), class: 'label-bold'
         = f.text_field :agent_name, name: 'cluster_migration[agent_name]', class: 'form-control gl-form-input', placeholder: s_('ClusterIntegration|New agent name')
         .form-text.gl-text-subtle
@@ -99,7 +99,7 @@
 
   - else
     = gitlab_ui_form_for cluster_migration, url: clusterable.update_cluster_migration_path(@cluster), html: { class: 'fieldset-form' }, method: :put do |f|
-      .form-group.-gl-mt-2{ class: 'md:gl-w-1/2' }
+      .form-group.-gl-mt-2{ class: '@md/panel:gl-w-1/2' }
         = f.label :issue_url, s_('ClusterIntegration|Migration issue'), class: 'label-bold'
         = f.text_field :issue_url, name: 'cluster_migration[issue_url]', class: 'form-control gl-form-input', placeholder: s_('ClusterIntegration|Migration issue URL'), disabled: !agent.present?
         .form-text.gl-text-subtle

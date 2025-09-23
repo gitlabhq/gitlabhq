@@ -29,7 +29,7 @@
           - if @applications.any?
             .table-holder
               %table.table.b-table.gl-table.b-table-stacked-sm.-gl-mt-1.-gl-mb-2
-                %thead.gl-hidden.md:gl-table-header-group
+                %thead.gl-hidden{ class: "@md/panel:gl-table-header-group" }
                   %tr
                     %th= _('Name')
                     %th= _('Callback URL')
@@ -45,8 +45,8 @@
                           = uri
                       %td{ data: { label: _('Clients') } }
                         = application.access_tokens.count
-                      %td.gl-items-center{ class: '!gl-flex sm:!gl-table-cell !gl-py-3', data: { label: _('Actions') } }
-                        .sm:gl-justify-end.gl-gap-2{ class: '!gl-flex !gl-pl-0' }
+                      %td.gl-items-center{ class: '!gl-flex @sm/panel:!gl-table-cell !gl-py-3', data: { label: _('Actions') } }
+                        .gl-gap-2{ class: '!gl-flex !gl-pl-0 @sm/panel:gl-justify-end' }
                           = render Pajamas::ButtonComponent.new(category: :tertiary, href: edit_application_url.call(application), icon: 'pencil', button_options: { class: 'has-tooltip', 'title': _('Edit'), 'aria-label': _('Edit') })
                           = render 'shared/doorkeeper/applications/delete_form', path: application_url.call(application), small: true
           - else
@@ -68,7 +68,7 @@
           - if @authorized_tokens.any?
             .table-holder
               %table.table.b-table.gl-table.b-table-stacked-sm.-gl-mt-1.-gl-mb-2
-                %thead.gl-hidden.md:gl-table-header-group
+                %thead.gl-hidden{ class: "@md/panel:gl-table-header-group" }
                   %tr
                     %th= _('Name')
                     %th= _('Authorized At')
@@ -88,8 +88,8 @@
                         = token.created_at
                       %td{ data: { label: _('Scope') } }
                         = token.scopes
-                      %td.gl-items-center{ class: '!gl-flex sm:!gl-table-cell !gl-py-4', data: { label: _('Actions') } }
-                        .sm:gl-justify-end{ class: '!gl-flex !gl-pl-0' }
+                      %td.gl-items-center{ class: '!gl-flex @sm/panel:!gl-table-cell !gl-py-4', data: { label: _('Actions') } }
+                        %div{ class: '!gl-flex !gl-pl-0 @sm/panel:gl-justify-end' }
                           - if token.application
                             = render 'doorkeeper/authorized_applications/delete_form', application: token.application
                           - else

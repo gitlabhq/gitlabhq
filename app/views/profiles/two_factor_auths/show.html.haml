@@ -19,7 +19,7 @@
       %div
         = _("Increase your account's security by enabling two-factor authentication (2FA).")
       - if current_user.two_factor_enabled?
-        .gl-w-full.sm:gl-w-auto
+        .gl-w-full{ class: "@sm/panel:gl-w-auto" }
           .js-two-factor-action-confirm{ data: disable_two_factor_authentication_data(current_password_required?) }
   - c.with_body do
     %p

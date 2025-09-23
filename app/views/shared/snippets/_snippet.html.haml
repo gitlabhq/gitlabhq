@@ -1,12 +1,12 @@
 - link_project = local_assigns.fetch(:link_project, false)
 - notes_count = @noteable_meta_data[snippet.id].user_notes_count
 
-%li.gl-py-4.sm:gl-flex.gl-items-center.gl-justify-between.gl-border-b{ data: { testid: 'snippet-link', qa_snippet_title: snippet.title } }
+%li.gl-py-4.gl-items-center.gl-justify-between.gl-border-b{ class: "@sm/panel:gl-flex", data: { testid: 'snippet-link', qa_snippet_title: snippet.title } }
   - unless current_path?('users#snippets')
-    .gl-hidden.sm:gl-block.sm:gl-mr-3
+    .gl-hidden{ class: "@sm/panel:gl-block @sm/panel:gl-mr-3" }
       = render Pajamas::AvatarComponent.new(snippet.author, size: 32, alt: "")
 
-  .sm:gl-flex.gl-justify-between.gl-items-center.gl-grow
+  .gl-justify-between.gl-items-center.gl-grow{ class: "@sm/panel:gl-flex" }
     %div
       = link_to gitlab_snippet_path(snippet), class: "title gl-text-default gl-font-bold" do
         = snippet.title
@@ -25,7 +25,7 @@
           - else
             = _('created %{timeAgo} by %{author}').html_safe % { timeAgo: created_at, author: author }
 
-    .sm:gl-flex.gl-flex-col.gl-items-end{ data: { testid: 'snippet-file-count-content', qa_snippet_files: snippet.statistics&.file_count } }
+    .gl-flex-col.gl-items-end{ class: "@sm/panel:gl-flex", data: { testid: 'snippet-file-count-content', qa_snippet_files: snippet.statistics&.file_count } }
       .gl-flex.gl-gap-3.gl-items-center
         - if notes_count > 0
           = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'comments', button_options: { class: 'has-tooltip !gl-bg-transparent !gl-p-0', title: _('Comments'), aria: { label: _('Comments') } }) do

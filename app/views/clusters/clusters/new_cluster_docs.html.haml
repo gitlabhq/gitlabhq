@@ -4,8 +4,8 @@
 
 = render_gcp_signup_offer
 
-.md:gl-flex.gl-mt-3
-  .gl-w-full.gl-shrink-0.md:gl-mr-5{ class: 'sm:gl-w-1/4' }
+.gl-mt-3{ class: "@md/panel:gl-flex" }
+  .gl-w-full.gl-shrink-0{ class: '@sm/panel:gl-w-1/4 @md/panel:gl-mr-5' }
     = render 'sidebar', is_connect_page: false
   .gl-w-full
     = render 'clusters/clusters/cloud_providers/cloud_provider_selector'

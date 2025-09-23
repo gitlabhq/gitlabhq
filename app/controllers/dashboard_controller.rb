@@ -13,10 +13,6 @@ class DashboardController < Dashboard::ApplicationController
     push_frontend_feature_flag(:mr_dashboard_drafts_toggle, current_user, type: :beta)
   end
 
-  before_action only: :issues do
-    push_frontend_feature_flag(:work_item_status_mvc2, current_user)
-  end
-
   before_action :event_filter, only: :activity
   before_action :projects, only: [:issues, :merge_requests, :search_merge_requests]
   before_action :set_show_full_reference, only: [:issues, :merge_requests, :search_merge_requests]
@@ -137,3 +133,5 @@ class DashboardController < Dashboard::ApplicationController
     end
   end
 end
+
+DashboardController.prepend_mod_with('DashboardController')

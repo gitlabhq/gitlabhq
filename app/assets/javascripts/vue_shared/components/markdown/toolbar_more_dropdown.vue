@@ -22,6 +22,7 @@ export default {
   /* eslint-disable @gitlab/require-i18n-strings */
   data() {
     return {
+      isDropdownOpen: false,
       toggleId: uniqueId('dropdown-toggle-btn-'),
       items: [
         {
@@ -148,6 +149,8 @@ export default {
       :toggle-text="__('More options')"
       text-sr-only
       right
+      @shown="isDropdownOpen = true"
+      @hidden="isDropdownOpen = false"
     >
       <template #list-item="{ item }">
         <span class="gl-flex gl-items-center gl-justify-between">
@@ -158,6 +161,8 @@ export default {
         </span>
       </template>
     </gl-disclosure-dropdown>
-    <gl-tooltip :target="toggleId" placement="top">{{ __('More options') }}</gl-tooltip>
+    <gl-tooltip v-if="!isDropdownOpen" :target="toggleId" placement="top">
+      {{ __('More options') }}
+    </gl-tooltip>
   </div>
 </template>

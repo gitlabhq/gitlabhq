@@ -33,9 +33,7 @@ module Ci
     def pop(build, transition)
       raise InvalidQueueTransition unless transition.from == 'pending'
 
-      transition.within_transaction do
-        remove!(build).tap { build.cancel_wait_for_runner_ack }
-      end
+      transition.within_transaction { remove!(build) }
     end
 
     ##

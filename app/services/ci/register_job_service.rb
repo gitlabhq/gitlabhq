@@ -287,9 +287,11 @@ module Ci
       else
         @metrics.increment_queue_operation(:runner_pre_assign_checks_success)
 
-        return assign_job_to_waiting_state(build, runner_manager) if runner_supports_job_acknowledgment?(build, params)
+        @logger.instrument(:assign_runner_run) do
+          build.run!
+        end
 
-        assign_job_to_running_state(build, runner_manager)
+        build.runner_manager = runner_manager if runner_manager
       end
 
       !failure_reason
@@ -362,57 +364,6 @@ module Ci
         builds_disabled: ->(build, _) { !build.project.builds_enabled? },
         user_blocked: ->(build, _) { build.user&.blocked? }
       }
-    end
-
-    def runner_supports_job_acknowledgment?(build, params)
-      return if Feature.disabled?(:allow_runner_job_acknowledgement, build.project.root_namespace)
-
-      !!params.dig(:info, :features, :two_phase_job_commit)
-    end
-
-    def assign_job_to_waiting_state(build, runner_manager)
-      # The runner supports two-phase commit. Let's remove the build from the `ci_pending_builds` table so that it
-      # won't be assigned to other runners, while we wait for the runner to accept or decline the job.
-      # In the meantime, the build/runner manager association will live in Redis.
-      success = false
-      @logger.instrument(:assign_runner_waiting) do
-        # Add pending job to Redis
-        build.set_waiting_for_runner_ack(runner_manager.id)
-
-        # Save job and remove pending job from db queue
-        Ci::Build.transaction do
-          build.save!
-
-          Ci::UpdateBuildQueueService.new.remove!(build)
-        end
-
-        Ci::RetryStuckWaitingJobWorker.perform_in(Ci::Build::RUNNER_ACK_QUEUE_EXPIRY_TIME, build.id)
-
-        success = true
-      rescue ActiveRecord::ActiveRecordError
-        # If we didn't manage to remove pending job, let's roll back the Redis change
-        build.cancel_wait_for_runner_ack
-      rescue Redis::BaseError
-        break
-      end
-
-      @metrics.increment_queue_operation(:runner_assigned_waiting) if success
-
-      success
-    end
-
-    def assign_job_to_running_state(build, runner_manager)
-      # The runner does not support two-phase commit. Let's move the job to `running` state immediately.
-      @logger.instrument(:assign_runner_run) do
-        build.run!
-      end
-
-      # The runner_manager join record is created immediately, since it is marked as `autosave: true` to avoid race
-      # conditions when one runner manager is assigned the job, and others are competing for the same job,
-      # which would cause duplicate key constraint failures.
-      # By only assigning the runner manager once the job starts running, we avoid the problem.
-      build.runner_manager = runner_manager if runner_manager
-      @metrics.increment_queue_operation(:runner_assigned_run)
     end
   end
 end

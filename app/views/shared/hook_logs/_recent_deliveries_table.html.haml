@@ -2,7 +2,7 @@
   %thead
     %tr
       %th= _('Status')
-      %th.gl-hidden.sm:gl-table-cell= _('Trigger')
+      %th.gl-hidden{ class: "@sm/panel:gl-table-cell" }= _('Trigger')
       %th= _('Elapsed time')
       %th= _('Request time')
       %th
@@ -12,7 +12,7 @@
       %tr
         %td
           = render partial: 'shared/hook_logs/status_label', locals: { hook_log: hook_log }
-        %td.gl-hidden.sm:gl-table-cell
+        %td.gl-hidden{ class: "@sm/panel:gl-table-cell" }
           = gl_badge_tag hook_log.trigger.singularize.titleize
         %td
           #{number_with_precision(hook_log.execution_duration, precision: 2)} sec

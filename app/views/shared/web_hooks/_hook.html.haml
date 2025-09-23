@@ -2,7 +2,7 @@
 - sslBadgeText = _('SSL Verification:') + ' ' + sslStatus
 
 %li.gl-border-b
-  .gl-flex.gl-flex-wrap.sm:gl-flex-nowrap.gl-justify-between.gl-gap-x-5.gl-gap-y-3
+  .gl-flex.gl-flex-wrap.gl-justify-between.gl-gap-x-5.gl-gap-y-3{ class: "@sm/panel:gl-flex-nowrap" }
     .gl-basis-full.gl-flex.gl-flex-col
       - if hook.name?
         %p.gl-font-semibold.gl-mb-0

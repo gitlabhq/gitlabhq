@@ -49,9 +49,5 @@ FactoryBot.define do
     trait :cancel_gracefully_feature do
       runtime_features { { 'cancel_gracefully' => true } }
     end
-
-    trait :two_phase_job_commit_feature do
-      runtime_features { { 'two_phase_job_commit' => true } }
-    end
   end
 end

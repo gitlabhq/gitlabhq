@@ -34,7 +34,7 @@
         - c.with_footer do
           = paginate @user_group_members, param_name: 'groups_page', theme: 'gitlab'
 
-  .gl-grid.sm:gl-grid-cols-2.gl-gap-5
+  .gl-grid.gl-gap-5{ class: "@sm/panel:gl-grid-cols-2" }
     - if @personal_projects.present?
       = render 'admin/users/projects', projects: @personal_projects
     - if @joined_projects.present?

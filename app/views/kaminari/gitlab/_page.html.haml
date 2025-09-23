@@ -10,5 +10,5 @@
   ('sibling' if page.next? || page.prev?),
   ('js-first-button' if page.first?),
   ('js-last-button' if page.last?),
-  ('!gl-hidden md:!gl-block' if !page.current?)] }
+  ('!gl-hidden @md/panel:!gl-block' if !page.current?)] }
   = link_to page, url, { 'aria-current': page.current? ? 'page' : nil, remote: remote, rel: page.next? ? 'next' : page.prev? ? 'prev' : nil, class: ['gl-pagination-item', active_when(page.current?)], 'data-testid': 'kaminari-pagination-item' }

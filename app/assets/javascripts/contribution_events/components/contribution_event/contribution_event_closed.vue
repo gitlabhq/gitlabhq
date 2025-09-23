@@ -13,9 +13,6 @@ export default {
     },
   },
   computed: {
-    targetType() {
-      return this.event.target.type;
-    },
     message() {
       return getValueByEventTarget(EVENT_CLOSED_I18N, this.event);
     },

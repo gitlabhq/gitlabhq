@@ -9,7 +9,7 @@
   - c.with_body do
     - if @gitaly_servers.any?
       %table.table.b-table.gl-table.b-table-stacked-md
-        %thead.gl-hidden.md:gl-table-header-group
+        %thead.gl-hidden{ class: "@md/panel:gl-table-header-group" }
           %tr
             %th{ data: { label: _('Storage') } }= _("Storage")
             %th{ data: { label: s_('Gitaly|Address') } }= s_("Gitaly|Address")

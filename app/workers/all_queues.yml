@@ -3508,16 +3508,6 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
-- :name: ci_retry_stuck_waiting_job
-  :worker_name: Ci::RetryStuckWaitingJobWorker
-  :feature_category: :continuous_integration
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace:
 - :name: ci_runners_process_runner_version_update
   :worker_name: Ci::Runners::ProcessRunnerVersionUpdateWorker
   :feature_category: :fleet_visibility

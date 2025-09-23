@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { GlDisclosureDropdown, GlTooltip } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import Tracking from '~/tracking';
@@ -24,15 +25,14 @@ describe('ToolbarMoreDropdown', () => {
   const createWrapper = () => {
     wrapper = mountExtended(ToolbarMoreDropdown);
   };
-
+  const findGlDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findGlTooltip = () => wrapper.findComponent(GlTooltip);
   beforeEach(() => {
     createWrapper();
   });
 
   it('renders the dropdown with correct props', () => {
-    const dropdown = wrapper.findComponent(GlDisclosureDropdown);
-
-    expect(dropdown.props()).toMatchObject({
+    expect(findGlDisclosureDropdown().props()).toMatchObject({
       size: 'small',
       category: 'tertiary',
       icon: 'plus',
@@ -42,9 +42,18 @@ describe('ToolbarMoreDropdown', () => {
   });
 
   it('renders tooltip', () => {
-    const tooltip = wrapper.findComponent(GlTooltip);
+    expect(findGlTooltip().text()).toBe('More options');
+    expect(findGlTooltip().props('placement')).toBe('top');
+  });
 
-    expect(tooltip.props('placement')).toBe('top');
+  it('hides tooltip when dropdown is open', async () => {
+    expect(findGlTooltip().text()).toBe('More options');
+
+    findGlDisclosureDropdown().vm.$emit('shown');
+
+    await nextTick();
+
+    expect(findGlTooltip().exists()).toBe(false);
   });
 
   describe.each`
@@ -205,8 +214,7 @@ describe('ToolbarMoreDropdown', () => {
   });
 
   it('shows a "New" badge for the embedded view option', () => {
-    const embeddedViewItem = wrapper
-      .findComponent(GlDisclosureDropdown)
+    const embeddedViewItem = findGlDisclosureDropdown()
       .props()
       .items.find((item) => item.text === 'Embedded view');
 

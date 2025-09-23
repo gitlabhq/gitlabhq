@@ -1,6 +1,6 @@
 - position = local_assigns.fetch(:position, nil)
 
-.search-result-row.row.gl-flex.sm:gl-flex-row.gl-flex-col.gl-mt-5{ class: '!gl-pb-5 !gl-mb-0' }
+.search-result-row.row.gl-flex.gl-flex-col.gl-mt-5{ class: '!gl-pb-5 !gl-mb-0 @sm/panel:gl-flex-row' }
   .col-sm-9
     %span.gl-flex.gl-items-center
       = gl_badge_tag issuable_state_text(issuable), variant: issuable_state_to_badge_class(issuable)
@@ -24,7 +24,7 @@
         - presented_labels_sorted_by_title(issuable.labels, issuable.project).each do |label|
           = link_to_label(label)
 
-  .col-sm-3.gl-mt-3.sm:gl-mt-0.gl-text-right
+  .col-sm-3.gl-mt-3.gl-text-right{ class: "@sm/panel:gl-mt-0" }
     %li.gl-list-none
       - if issuable.respond_to?(:upvotes_count) && issuable.upvotes_count > 0
         %span.has-tooltip{ title: _('Upvotes') }

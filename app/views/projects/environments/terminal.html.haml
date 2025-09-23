@@ -4,7 +4,7 @@
 .top-area.gl-items-center.gl-pt-4
   = render ::Layouts::PageHeadingComponent.new("#{_("Terminal for environment")} #{@environment.name}")
 
-  .lg:gl-ml-auto.gl-flex-shrink-0
+  .gl-flex-shrink-0{ class: "@lg/panel:gl-ml-auto" }
     - if @environment.external_url.present?
       = link_button_to nil, @environment.external_url, target: '_blank', rel: 'noopener noreferrer nofollow', icon: 'external-link'
     = render 'projects/deployments/actions', deployment: @environment.last_deployment

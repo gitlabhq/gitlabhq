@@ -31,7 +31,7 @@
                       = sprite_icon('rocket-launch', css_class: 'gl-mr-2', size: 16)
                       = s_('Observability|Enable Observability')
 
-                .gl-grid.gl-grid-cols-1.md:gl-grid-cols-2.lg:gl-grid-cols-3.gl-gap-6.gl-mb-8
+                .gl-grid.gl-grid-cols-1.gl-gap-6.gl-mb-8{ class: "@md/panel:gl-grid-cols-2 @lg/panel:gl-grid-cols-3" }
                   .gl-bg-subtle.gl-rounded-lg.gl-p-6.gl-text-center
                     .gl-mb-4
                       = sprite_icon('tachometer', css_class: 'observability-performance-icon', size: 32)
@@ -82,7 +82,7 @@
 
           = render Pajamas::AlertComponent.new(variant: :info, title: s_('Observability|What You Get'), dismissible: false, alert_options: { class: 'gl-mb-8' }) do |c|
             - c.with_body do
-              .gl-grid.gl-grid-cols-1.md:gl-grid-cols-2.gl-gap-6
+              .gl-grid.gl-grid-cols-1.gl-gap-6{ class: "@md/panel:gl-grid-cols-2" }
                 .gl-flex.gl-items-start.gl-gap-4
                   = sprite_icon('check', css_class: 'gl-text-success gl-mt-1', size: 16)
                   .gl-flex.gl-flex-col
@@ -124,7 +124,7 @@
                 %p.gl-text-lg.gl-text-center.gl-text-subtle.gl-mb-8
                   = s_('Observability|Experience the power of GitLab Observability with real-time dashboards and comprehensive monitoring capabilities.')
 
-                .gl-grid.gl-grid-cols-1.lg:gl-grid-cols-2.gl-gap-8
+                .gl-grid.gl-grid-cols-1.gl-gap-8{ class: "@lg/panel:gl-grid-cols-2" }
                   .gl-text-center
                     .gl-bg-default.gl-border.gl-border-subtle.gl-rounded-lg.gl-p-4.gl-mb-4
                       = image_tag('observability/observability-dashboard-1.png',
@@ -149,7 +149,7 @@
 
           = render Pajamas::AlertComponent.new(variant: :warning, title: s_('Observability|Important Information'), dismissible: false) do |c|
             - c.with_body do
-              .gl-grid.gl-grid-cols-1.md:gl-grid-cols-3.gl-gap-6
+              .gl-grid.gl-grid-cols-1.gl-gap-6{ class: "@md/panel:gl-grid-cols-3" }
                 .gl-flex.gl-items-center.gl-gap-3
                   = sprite_icon('timer', css_class: 'observability-important-information-icon')
                   .gl-flex.gl-flex-col
