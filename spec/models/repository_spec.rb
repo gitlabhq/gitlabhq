@@ -447,6 +447,20 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
+  describe '#git_content_hash_for_path' do
+    subject { repository.git_content_hash_for_path(sample_commit.id, '.gitignore') }
+
+    it 'calls blob_at with limit: 0 to avoid loading content' do
+      expect(repository).to receive(:blob_at).with(sample_commit.id, '.gitignore', limit: 0).and_call_original
+      subject
+    end
+
+    it 'returns git content hash for a given path' do
+      expected_hash = repository.blob_at(sample_commit.id, '.gitignore')&.id
+      is_expected.to eq(expected_hash)
+    end
+  end
+
   describe '#commits' do
     let_it_be(:project) { create(:project, :repository) }
 

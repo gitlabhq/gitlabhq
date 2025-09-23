@@ -2912,7 +2912,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/models/scim_oauth_access_token.rb'
     - 'ee/app/models/scoped_label_set.rb'
     - 'ee/app/models/smartcard_identity.rb'
-    - 'ee/app/models/software_license.rb'
     - 'ee/app/models/software_license_policy.rb'
     - 'ee/app/models/storage_shard.rb'
     - 'ee/app/models/system_access/microsoft_application.rb'

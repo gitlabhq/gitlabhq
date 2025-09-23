@@ -141,7 +141,6 @@ module GroupsHelper
       new_subgroup_path: new_group_path(parent_id: group.id, anchor: 'create-group-pane'),
       new_project_path: new_project_path(namespace_id: group.id),
       empty_projects_illustration: image_path('illustrations/empty-state/empty-projects-md.svg'),
-      empty_subgroup_illustration: image_path('illustrations/empty-state/empty-projects-md.svg'),
       render_empty_state: 'true',
       can_create_subgroups: can?(current_user, :create_subgroup, group).to_s,
       can_create_projects: can?(current_user, :create_projects, group).to_s
@@ -152,7 +151,12 @@ module GroupsHelper
     {
       subgroups_and_projects_endpoint: group_children_path(group, format: :json),
       initial_sort: project_list_sort_by,
-      full_path: group.full_path
+      full_path: group.full_path,
+      new_subgroup_path: new_group_path(parent_id: group.id, anchor: 'create-group-pane'),
+      new_project_path: new_project_path(namespace_id: group.id),
+      can_create_subgroups: can?(current_user, :create_subgroup, group),
+      can_create_projects: can?(current_user, :create_projects, group),
+      empty_projects_illustration: image_path('illustrations/empty-state/empty-projects-md.svg')
     }.to_json
   end
 

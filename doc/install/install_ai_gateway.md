@@ -23,6 +23,15 @@ Prerequisites:
 - Use a valid hostname that is accessible in your network. Do not use `localhost`.
 - Ensure you have approximately 340 MB (compressed) for the `linux/amd64` architecture and
   a minimum of 512 MB of RAM.
+- Generate a JWT signing key for GitLab Duo Agent Platform functionality:
+
+  ```shell
+  openssl genrsa -out duo_workflow_jwt.key 2048
+  ```
+
+  {{< alert type="warning" >}}
+  Keep the `duo_workflow_jwt.key` file secure and do not share it publicly. This key is used for signing JWT tokens and must be treated as a sensitive credential.
+  {{< /alert >}}
 
 To ensure better performance, especially under heavy usage, consider allocating
 more disk space, memory, and resources than the minimum requirements.
@@ -65,6 +74,7 @@ Using the nightly version is **not recommended** because it can cause incompatib
    docker run -d -p 5052:5052 -p 50052:50052 \
     -e AIGW_GITLAB_URL=<your_gitlab_instance> \
     -e AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/ \
+    -e DUO_WORKFLOW_SELF_SIGNED_JWT__SIGNING_KEY="$(cat duo_workflow_jwt.key)" \
     registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:<ai-gateway-tag> \
    ```
 
@@ -197,6 +207,14 @@ Now set up an SSL certificate:
   [provides an automated way to implement Let's Encrypt certificates](https://phoenixnap.com/kb/letsencrypt-docker).
 - Alternatively, you can use the [Certbot manual installation](https://eff-certbot.readthedocs.io/en/stable/using.html#manual).
 
+### Create environment file
+
+Create a `.env` file to store the JWT signing key:
+
+```shell
+echo "DUO_WORKFLOW_SELF_SIGNED_JWT__SIGNING_KEY=\"$(cat duo_workflow_jwt.key)\"" > .env
+```
+
 ### Create Docker-compose file
 
 Now create a `docker-compose.yaml` file.
@@ -227,6 +245,8 @@ services:
     environment:
       - AIGW_GITLAB_URL=<your_gitlab_instance>
       - AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/
+    env_file:
+      - .env
     networks:
       - proxy-network
     restart: always
@@ -312,6 +332,8 @@ https://gitlab.com/api/v4/projects/gitlab-org%2fcharts%2fai-gateway-helm-chart/p
      --set "ingress.tls[0].secretName=ai-gateway-tls" \
      --set "ingress.tls[0].hosts[0]=<your_gateway_domain>" \
      --set="ingress.className=nginx" \
+     --set "extraEnvironmentVariables[0].name=DUO_WORKFLOW_SELF_SIGNED_JWT__SIGNING_KEY" \
+     --set "extraEnvironmentVariables[0].value=$(cat duo_workflow_jwt.key)" \
      --timeout=300s --wait --wait-for-jobs
    ```
 

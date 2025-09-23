@@ -13,7 +13,6 @@ export const userTypes = {
   automation_bot: 'AUTOMATION_BOT',
   security_policy_bot: 'SECURITY_POLICY_BOT',
   admin_bot: 'ADMIN_BOT',
-  suggested_reviewers_bot: 'SUGGESTED_REVIEWERS_BOT',
   service_account: 'SERVICE_ACCOUNT',
   llm_bot: 'LLM_BOT',
   placeholder: 'PLACEHOLDER',

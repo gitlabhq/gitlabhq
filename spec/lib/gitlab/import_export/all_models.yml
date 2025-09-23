@@ -842,7 +842,6 @@ project:
 - operations_feature_flags_client
 - operations_feature_flags_user_lists
 - software_license_policies
-- software_licenses
 - custom_software_licenses
 - project_registry
 - packages

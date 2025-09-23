@@ -36,6 +36,11 @@ export default {
       default: '',
       required: false,
     },
+    shouldPreloadBlame: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     showBlame: {
       type: Boolean,
       required: false,
@@ -130,6 +135,7 @@ export default {
         :rich-viewer="richViewer"
         :is-snippet="isSnippet"
         :is-raw-content="isRawContent"
+        :should-preload-blame="shouldPreloadBlame"
         :show-blame="showBlame"
         :file-name="blob.name"
         :blame-path="blob.blamePath"

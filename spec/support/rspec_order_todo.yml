@@ -1346,7 +1346,6 @@
 - './ee/spec/models/snippet_repository_spec.rb'
 - './ee/spec/models/snippet_spec.rb'
 - './ee/spec/models/software_license_policy_spec.rb'
-- './ee/spec/models/software_license_spec.rb'
 - './ee/spec/models/storage_shard_spec.rb'
 - './ee/spec/models/uploads/local_spec.rb'
 - './ee/spec/models/upload_spec.rb'

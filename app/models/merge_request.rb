@@ -863,6 +863,25 @@ class MergeRequest < ApplicationRecord
     Feature.enabled?(:unstick_locked_merge_requests_redis)
   end
 
+  def recent_commits(limit: MergeRequestDiff::COMMITS_SAFE_SIZE, load_from_gitaly: false, page: nil, preload_metadata: false)
+    if preload_metadata && Feature.enabled?(:merge_request_diff_commits_dedup, project) && !load_from_gitaly
+      preload_commits_metadata
+    end
+
+    commits(limit: limit, load_from_gitaly: load_from_gitaly, page: page)
+  end
+
+  def preload_commits_metadata
+    return unless merge_request_diff.persisted?
+
+    ActiveRecord::Associations::Preloader.new(
+      records: merge_request_diff.merge_request_diff_commits,
+      associations: {
+        merge_request_commits_metadata: [:commit_author, :committer]
+      }
+    ).call
+  end
+
   def committers(with_merge_commits: false, lazy: false, include_author_when_signed: false)
     strong_memoize_with(:committers, with_merge_commits, lazy, include_author_when_signed) do
       commits.committers(
@@ -914,10 +933,6 @@ class MergeRequest < ApplicationRecord
                   end
 
     CommitCollection.new(source_project, commits_arr, source_branch)
-  end
-
-  def recent_commits(limit: MergeRequestDiff::COMMITS_SAFE_SIZE, load_from_gitaly: false, page: nil)
-    commits(limit: limit, load_from_gitaly: load_from_gitaly, page: page)
   end
 
   def commits_count

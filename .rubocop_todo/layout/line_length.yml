@@ -1354,7 +1354,6 @@ Layout/LineLength:
     - 'ee/spec/models/security/scan_spec.rb'
     - 'ee/spec/models/security/training_provider_spec.rb'
     - 'ee/spec/models/software_license_policy_spec.rb'
-    - 'ee/spec/models/software_license_spec.rb'
     - 'ee/spec/models/upload_spec.rb'
     - 'ee/spec/models/visible_approvable_spec.rb'
     - 'ee/spec/models/vulnerabilities/external_issue_link_spec.rb'

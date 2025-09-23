@@ -321,7 +321,7 @@ GEM
     asciidoctor-plantuml (0.0.16)
       asciidoctor (>= 2.0.17, < 3.0.0)
     ast (2.4.2)
-    async (2.28.0)
+    async (2.32.0)
       console (~> 1.29)
       fiber-annotation
       io-event (~> 1.11)
@@ -1002,7 +1002,7 @@ GEM
     haml (5.2.2)
       temple (>= 0.8.0)
       tilt
-    haml_lint (0.64.0)
+    haml_lint (0.66.0)
       haml (>= 5.0)
       parallel (~> 1.10)
       rainbow
@@ -2083,7 +2083,7 @@ DEPENDENCIES
   asciidoctor-include-ext (~> 0.4.0)
   asciidoctor-kroki (~> 0.10.0)
   asciidoctor-plantuml (~> 0.0.16)
-  async (~> 2.28.0)
+  async (~> 2.32.0)
   atlassian-jwt (~> 0.2.1)
   attr_encrypted (~> 4.2)
   awesome_print

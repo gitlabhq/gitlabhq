@@ -8,7 +8,7 @@ import GroupFolderComponent from '~/groups/components/group_folder.vue';
 import SubgroupsAndProjectsEmptyState from '~/groups/components/empty_states/subgroups_and_projects_empty_state.vue';
 import SharedProjectsEmptyState from '~/groups/components/empty_states/shared_projects_empty_state.vue';
 import SharedGroupsEmptyState from '~/groups/components/empty_states/shared_groups_empty_state.vue';
-import InactiveProjectsEmptyState from '~/groups/components/empty_states/inactive_projects_empty_state.vue';
+import InactiveSubgroupsAndProjectsEmptyState from '~/groups/components/empty_states/inactive_subgroups_and_projects_empty_state.vue';
 import GroupsStore from '~/groups/store/groups_store';
 import GroupsService from '~/groups/service/groups_service';
 import SharedGroupsService from '~/groups/service/shared_groups_service';
@@ -45,7 +45,6 @@ describe('OverviewTabs', () => {
     newSubgroupPath: '/groups/new',
     newProjectPath: 'projects/new',
     emptyProjectsIllustration: '',
-    emptySubgroupIllustration: '',
     canCreateSubgroups: false,
     canCreateProjects: false,
     initialSort: 'name_asc',
@@ -199,7 +198,7 @@ describe('OverviewTabs', () => {
 
     await waitForPromises();
 
-    expect(wrapper.findComponent(InactiveProjectsEmptyState).exists()).toBe(true);
+    expect(wrapper.findComponent(InactiveSubgroupsAndProjectsEmptyState).exists()).toBe(true);
   });
 
   it('sets `lazy` prop to `false` for initially active tab and `true` for all other tabs', async () => {

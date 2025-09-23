@@ -51,7 +51,7 @@ describe('Source Viewer component', () => {
   const blameInfo =
     BLAME_DATA_QUERY_RESPONSE_MOCK.data.project.repository.blobs.nodes[0].blame.groups;
 
-  const createComponent = ({ showBlame = true, blob = {} } = {}) => {
+  const createComponent = ({ showBlame = true, shouldPreloadBlame = false, blob = {} } = {}) => {
     fakeApollo = createMockApollo([[blameDataQuery, blameDataQueryHandlerSuccess]]);
 
     wrapper = shallowMountExtended(SourceViewer, {
@@ -62,6 +62,7 @@ describe('Source Viewer component', () => {
         chunks: CHUNKS_MOCK,
         projectPath,
         currentRef,
+        shouldPreloadBlame,
         showBlame,
       },
     });
@@ -132,6 +133,19 @@ describe('Source Viewer component', () => {
 
         expect(findBlameComponents().at(0).exists()).toBe(true);
         expect(findBlameComponents().at(0).props()).toMatchObject({ blameInfo });
+      });
+
+      it('preloads blame data', async () => {
+        createComponent({ showBlame: false, shouldPreloadBlame: true });
+        await triggerChunkAppear();
+
+        expect(blameDataQueryHandlerSuccess).toHaveBeenCalledWith(
+          expect.objectContaining({
+            filePath: BLOB_DATA_MOCK.path,
+            fullPath: projectPath,
+            ref: currentRef,
+          }),
+        );
       });
 
       it('calls the blame data query', async () => {

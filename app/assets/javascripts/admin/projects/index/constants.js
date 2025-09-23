@@ -15,7 +15,7 @@ import {
   SORT_LABEL_UPDATED,
   PAGINATION_TYPE_KEYSET,
 } from '~/groups_projects/constants';
-import projectsQuery from './graphql/queries/projects.query.graphql';
+import projectsQuery from './graphql/queries/admin_projects.query.graphql';
 
 const baseTab = {
   listComponent: ProjectsList,

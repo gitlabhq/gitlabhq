@@ -32,6 +32,11 @@ export default {
       required: false,
       default: () => [],
     },
+    shouldPreloadBlame: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     showBlame: {
       type: Boolean,
       required: false,
@@ -71,6 +76,12 @@ export default {
     },
   },
   watch: {
+    shouldPreloadBlame: {
+      handler(shouldPreload) {
+        if (!shouldPreload) return;
+        this.requestBlameInfo(this.renderedChunks[0]);
+      },
+    },
     showBlame: {
       handler(isVisible) {
         toggleBlameClasses(this.blameData, isVisible);
@@ -116,7 +127,7 @@ export default {
     },
     async requestBlameInfo(chunkIndex) {
       const chunk = this.chunks[chunkIndex];
-      if (!this.showBlame || !chunk) return;
+      if ((!this.showBlame && !this.shouldPreloadBlame) || !chunk) return;
 
       const { data } = await this.$apollo.query({
         query: blameDataQuery,

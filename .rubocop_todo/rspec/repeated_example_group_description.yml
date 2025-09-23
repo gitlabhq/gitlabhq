@@ -13,7 +13,6 @@ RSpec/RepeatedExampleGroupDescription:
     - 'ee/spec/models/merge_requests/external_status_check_spec.rb'
     - 'ee/spec/models/release_highlight_spec.rb'
     - 'ee/spec/models/security/scan_spec.rb'
-    - 'ee/spec/models/software_license_spec.rb'
     - 'ee/spec/policies/app_sec/fuzzing/coverage/corpus_policy_spec.rb'
     - 'ee/spec/policies/group_policy_spec.rb'
     - 'ee/spec/requests/api/graphql/iteration_spec.rb'

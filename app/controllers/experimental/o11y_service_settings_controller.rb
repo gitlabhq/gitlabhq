@@ -10,6 +10,10 @@ module Experimental
     feature_category :observability
     urgency :low
 
+    def index
+      @o11y_service_settings = Observability::GroupO11ySetting.page(pagination_params[:page])
+    end
+
     def new
       @o11y_service_settings = Observability::GroupO11ySetting.new
     end

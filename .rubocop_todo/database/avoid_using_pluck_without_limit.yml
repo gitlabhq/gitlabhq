@@ -124,7 +124,6 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'ee/app/models/security/finding.rb'
     - 'ee/app/models/security/scan.rb'
     - 'ee/app/models/security/scan_result_policy_violation.rb'
-    - 'ee/app/models/software_license.rb'
     - 'ee/app/models/vulnerabilities/finding.rb'
     - 'ee/app/models/vulnerabilities/read.rb'
     - 'ee/app/services/analytics/cycle_analytics/consistency_check_service.rb'

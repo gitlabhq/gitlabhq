@@ -1,10 +1,12 @@
 <script>
 import { clamp } from 'lodash';
 import { fetchPolicies } from '~/lib/graphql';
+import { HTTP_STATUS_SERVICE_UNAVAILABLE } from '~/lib/utils/http_status';
 import { QUERIES } from '../constants';
 import eventHub from '../event_hub';
 
 const PER_PAGE = 20;
+const RETRY_COUNT = 3;
 
 export default {
   apollo: {
@@ -21,10 +23,19 @@ export default {
           ...this.mergeRequestQueryVariables,
         };
       },
-      error() {
-        this.error = true;
+      error(error) {
+        if (
+          error.networkError?.statusCode === HTTP_STATUS_SERVICE_UNAVAILABLE &&
+          this.retryCount <= RETRY_COUNT
+        ) {
+          this.retryCount += 1;
+
+          this.$apollo.queries.mergeRequests.refetch();
+        } else {
+          this.error = true;
+        }
       },
-      result({ data }) {
+      result({ data, error }) {
         if (this.fromSubscription) {
           this.newMergeRequestIds = data?.currentUser?.mergeRequests?.nodes.reduce(
             (acc, mergeRequest) => {
@@ -41,7 +52,13 @@ export default {
           this.updateCurrentMergeRequestIds();
         }
 
-        this.loading = false;
+        if (
+          (this.retryCount === RETRY_COUNT &&
+            error?.networkError?.statusCode === HTTP_STATUS_SERVICE_UNAVAILABLE) ||
+          !error
+        ) {
+          this.loading = false;
+        }
       },
     },
     count: {
@@ -107,6 +124,7 @@ export default {
       newMergeRequestIds: [],
       fromSubscription: false,
       draftsCount: null,
+      retryCount: 0,
     };
   },
   computed: {

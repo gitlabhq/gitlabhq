@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillGroupIdAndUserTypeForHumanUsersPersonalAccessTokens, migration: :gitlab_main, feature_category: :system_access do
+RSpec.describe RequeueBackfillGroupIdAndUserTypeForHumanUsersPersonalAccessTokens, migration: :gitlab_main, feature_category: :system_access do # rubocop:disable RSpec/SpecFilePathFormat -- 20250918155823_requeue_backfill_group_id_and_user_type_for_human_users_personal_access_tokens_spec.rb is too long
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

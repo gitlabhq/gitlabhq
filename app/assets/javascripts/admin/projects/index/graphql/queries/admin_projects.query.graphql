@@ -4,7 +4,7 @@
 #import "~/graphql_shared/fragments/project_interface.fragment.graphql"
 #import "~/admin/projects/index/graphql/fragments/admin_project.fragment.graphql"
 
-query getAdminProjectsNew(
+query getAdminProjects(
   $active: Boolean
   $first: Int
   $last: Int
@@ -16,6 +16,7 @@ query getAdminProjectsNew(
   $visibilityLevel: VisibilityLevelsEnum
   $programmingLanguageName: String
   $namespacePath: ID
+  $lastRepositoryCheckFailed: Boolean
 ) {
   projects: adminProjects(
     active: $active
@@ -29,6 +30,7 @@ query getAdminProjectsNew(
     programmingLanguageName: $programmingLanguageName
     visibilityLevel: $visibilityLevel
     namespacePath: $namespacePath
+    lastRepositoryCheckFailed: $lastRepositoryCheckFailed
   ) {
     count
     nodes {

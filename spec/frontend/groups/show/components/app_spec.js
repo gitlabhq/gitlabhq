@@ -12,6 +12,10 @@ import sharedGroupsQuery from '~/groups/show/graphql/queries/shared_groups.query
 import sharedProjectsQuery from '~/groups/show/graphql/queries/shared_projects.query.graphql';
 import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list.vue';
 import NestedGroupsProjectsListItem from '~/vue_shared/components/nested_groups_projects_list/nested_groups_projects_list_item.vue';
+import SubgroupsAndProjectsEmptyState from '~/groups/components/empty_states/subgroups_and_projects_empty_state.vue';
+import InactiveSubgroupsAndProjectsEmptyState from '~/groups/components/empty_states/inactive_subgroups_and_projects_empty_state.vue';
+import SharedGroupsEmptyState from '~/groups/components/empty_states/shared_groups_empty_state.vue';
+import SharedProjectsEmptyState from '~/groups/components/empty_states/shared_projects_empty_state.vue';
 import { createRouter } from '~/groups/show';
 import {
   SUBGROUPS_AND_PROJECTS_TAB,
@@ -57,6 +61,14 @@ describe('GroupsShowApp', () => {
     fullPath: 'foo/bar',
   };
 
+  const defaultProvide = {
+    newSubgroupPath: '/groups/new',
+    newProjectPath: 'projects/new',
+    emptyProjectsIllustration: '/assets/illustrations/empty-state/empty-projects-md.svg',
+    canCreateSubgroups: false,
+    canCreateProjects: false,
+  };
+
   const endpoint = '/dashboard/groups.json';
   const defaultRoute = {
     name: SUBGROUPS_AND_PROJECTS_TAB.value,
@@ -71,7 +83,12 @@ describe('GroupsShowApp', () => {
     router = createRouter();
     await router.push(route);
 
-    wrapper = mountFn(GroupsShowApp, { propsData: defaultPropsData, apolloProvider, router });
+    wrapper = mountFn(GroupsShowApp, {
+      propsData: defaultPropsData,
+      provide: defaultProvide,
+      apolloProvider,
+      router,
+    });
   };
 
   const findGroupsListItem = (group) =>
@@ -103,7 +120,7 @@ describe('GroupsShowApp', () => {
       filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
       filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
       filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_GROUPS,
-      filteredSearchInputPlaceholder: 'Search',
+      filteredSearchInputPlaceholder: 'Search (3 character minimum)',
       sortOptions: SORT_OPTIONS,
       defaultSortOption: SORT_OPTION_UPDATED,
       timestampTypeMap: {
@@ -219,6 +236,19 @@ describe('GroupsShowApp', () => {
 
       expect(wrapper.findComponent(GlPagination).exists()).toBe(true);
     });
+
+    describe('when there are no subgroups or projects', () => {
+      beforeEach(async () => {
+        mockAxios.onGet(endpoint).replyOnce(200, []);
+        await createComponent({ mountFn: mountExtended });
+
+        await waitForPromises();
+      });
+
+      it('renders empty state', () => {
+        expect(wrapper.findComponent(SubgroupsAndProjectsEmptyState).exists()).toBe(true);
+      });
+    });
   });
 
   describe('when on the Inactive tab', () => {
@@ -252,6 +282,19 @@ describe('GroupsShowApp', () => {
       await waitForPromises();
 
       expect(wrapper.findComponent(GlPagination).exists()).toBe(true);
+    });
+
+    describe('when there are no inactive subgroups or projects', () => {
+      beforeEach(async () => {
+        mockAxios.onGet(endpoint).replyOnce(200, []);
+        await createComponent({ mountFn: mountExtended, route });
+
+        await waitForPromises();
+      });
+
+      it('renders empty state', () => {
+        expect(wrapper.findComponent(InactiveSubgroupsAndProjectsEmptyState).exists()).toBe(true);
+      });
     });
   });
 
@@ -374,6 +417,37 @@ describe('GroupsShowApp', () => {
 
       expect(wrapper.findComponent(GlKeysetPagination).exists()).toBe(true);
     });
+
+    describe('when there are no shared groups', () => {
+      beforeEach(async () => {
+        await createComponent({
+          mountFn: mountExtended,
+          route,
+          handlers: [
+            [
+              sharedGroupsQuery,
+              jest.fn().mockResolvedValue({
+                data: {
+                  group: {
+                    ...sharedGroupsResponse.data.group,
+                    sharedGroups: {
+                      ...sharedGroupsResponse.data.group.sharedGroups,
+                      nodes: [],
+                    },
+                  },
+                },
+              }),
+            ],
+          ],
+        });
+
+        await waitForPromises();
+      });
+
+      it('renders empty state', () => {
+        expect(wrapper.findComponent(SharedGroupsEmptyState).exists()).toBe(true);
+      });
+    });
   });
 
   describe('when on the Shared projects tab', () => {
@@ -494,6 +568,37 @@ describe('GroupsShowApp', () => {
       await waitForPromises();
 
       expect(wrapper.findComponent(GlKeysetPagination).exists()).toBe(true);
+    });
+
+    describe('when there are no shared projects', () => {
+      beforeEach(async () => {
+        await createComponent({
+          mountFn: mountExtended,
+          route,
+          handlers: [
+            [
+              sharedProjectsQuery,
+              jest.fn().mockResolvedValue({
+                data: {
+                  group: {
+                    ...sharedProjectsResponse.data.group,
+                    sharedProjects: {
+                      ...sharedProjectsResponse.data.group.sharedProjects,
+                      nodes: [],
+                    },
+                  },
+                },
+              }),
+            ],
+          ],
+        });
+
+        await waitForPromises();
+      });
+
+      it('renders empty state', () => {
+        expect(wrapper.findComponent(SharedProjectsEmptyState).exists()).toBe(true);
+      });
     });
   });
 });

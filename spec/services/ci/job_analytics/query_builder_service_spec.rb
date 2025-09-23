@@ -8,11 +8,19 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
   let(:instance) { described_class.new(project, options) }
   let(:options) { {} }
 
+  let(:query_builder) { instance.execute.payload[:aggregate] }
+
+  subject(:query_result) { execute_query(query_builder) }
+
+  before do
+    stub_application_setting(use_clickhouse_for_analytics: true)
+  end
+
   describe '#initialize' do
     context 'with minimal parameters' do
       let(:options) { {} }
 
-      it 'sets default values correctly' do
+      it 'sets default values correctly', :aggregate_failures do
         expect(instance.project).to eq(project)
         expect(instance.select_fields).to eq([])
         expect(instance.aggregations).to eq([])
@@ -41,7 +49,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
         }
       end
 
-      it 'sets all values correctly' do
+      it 'sets all values correctly', :aggregate_failures do
         expect(instance.project).to eq(project)
         expect(instance.select_fields).to contain_exactly(:name, :stage_id)
         expect(instance.aggregations).to contain_exactly(:mean_duration_in_seconds)
@@ -69,31 +77,28 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
     context 'with basic configuration' do
       let(:options) { { select_fields: [:name] } }
 
-      it { is_expected.to be_a(ClickHouse::Client::QueryBuilder) }
+      it { is_expected.to be_a(ServiceResponse) }
+
+      it 'returns query builder in aggregate key of service response payload' do
+        expect(execute.payload[:aggregate]).to be_a(ClickHouse::Client::QueryBuilder)
+      end
 
       it 'returns executable query' do
-        result = execute_query(execute)
-
-        expect(result).to be_a(Array)
-        expect(result).not_to be_empty
+        expect(query_result).to be_a(Array)
+        expect(query_result).not_to be_empty
       end
     end
 
     context 'with select fields only' do
       let(:options) { { select_fields: [:name, :stage_id] } }
 
-      it 'builds query with select fields' do
-        executed_result = execute_query(execute)
-        expect(executed_result.first.keys).to contain_exactly('name', 'stage_id')
-      end
+      it { expect(query_result.first.keys).to contain_exactly('name', 'stage_id') }
     end
 
     context 'with aggregations only' do
       let(:options) { { aggregations: [:mean_duration_in_seconds] } }
 
-      it 'builds query with aggregations' do
-        expect { execute_query execute }.not_to raise_error
-      end
+      it { expect { query_result }.not_to raise_error }
     end
 
     context 'with sorting' do
@@ -106,9 +111,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
       end
 
       it 'builds query with sorting' do
-        result = execute_query execute
-
-        durations = result.pluck('mean_duration_in_seconds')
+        durations = query_result.pluck('mean_duration_in_seconds')
         expect(durations).to eq(durations.sort)
       end
     end
@@ -117,9 +120,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
       let(:options) { { select_fields: [:name], name_search: 'compile' } }
 
       it 'builds query with name filtering' do
-        result = execute_query execute
-
-        expect(result.pluck('name').uniq).to contain_exactly('compile', 'compile-slow')
+        expect(query_result.pluck('name').uniq).to contain_exactly('compile', 'compile-slow')
       end
     end
 
@@ -135,7 +136,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
       end
 
       it 'builds query with pipeline filtering' do
-        expect { execute_query execute }.not_to raise_error
+        expect { query_result }.not_to raise_error
       end
     end
 
@@ -154,11 +155,31 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
       end
 
       it 'builds complex query successfully', :aggregate_failures do
-        result = execute_query instance.execute
+        expect(query_result).to be_a(Array)
+        expect(query_result.first.keys).to include('name', 'mean_duration_in_seconds', 'rate_of_success')
+        expect(query_result.pluck('name').uniq).to contain_exactly('compile', 'compile-slow')
+      end
+    end
 
-        expect(result).to be_a(Array)
-        expect(result.first.keys).to include('name', 'mean_duration_in_seconds', 'rate_of_success')
-        expect(result.pluck('name').uniq).to contain_exactly('compile', 'compile-slow')
+    context 'when clickhouse is not configured' do
+      before do
+        allow(::Gitlab::ClickHouse).to receive(:configured?).and_return(false)
+      end
+
+      it 'returns error service response' do
+        expect(execute).to be_error
+        expect(execute.message).to eq('ClickHouse database is not configured')
+      end
+    end
+
+    context 'when clickhouse is not enabled for analytics' do
+      before do
+        stub_application_setting(use_clickhouse_for_analytics: false)
+      end
+
+      it 'returns error service response' do
+        expect(execute).to be_error
+        expect(execute.message).to eq('ClickHouse database is not configured')
       end
     end
   end
@@ -227,8 +248,6 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
     end
 
     it 'produces same results as direct FinishedBuildsFinder usage' do
-      service_result = execute_query instance.execute
-
       direct_finder_result = ClickHouse::Finders::Ci::FinishedBuildsFinder.new
                                                                           .for_project(project.id)
                                                                           .select(:name)
@@ -236,8 +255,8 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
                                                                           .filter_by_job_name('compile')
                                                                           .execute
 
-      expect(service_result.size).to eq(direct_finder_result.size)
-      expect(service_result.pluck('name')).to match_array(direct_finder_result.pluck('name'))
+      expect(query_result.size).to eq(direct_finder_result.size)
+      expect(query_result.pluck('name')).to match_array(direct_finder_result.pluck('name'))
     end
   end
 
@@ -250,7 +269,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
     end
 
     it 'generates valid SQL' do
-      sql = instance.execute.to_sql
+      sql = query_builder.to_sql
       expected_sql = <<~SQL.squish.lines(chomp: true).join(' ')
         SELECT `ci_finished_builds`.`name`, round(avg(`ci_finished_builds`.`duration`) / 1000.0, 2) AS mean_duration_in_seconds
         FROM `ci_finished_builds` WHERE `ci_finished_builds`.`project_id` = #{project.id} AND `ci_finished_builds`.`pipeline_id` IN
@@ -264,13 +283,11 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
 
   describe 'basic query building' do
     it 'returns query builder instance' do
-      result = instance.execute
-
-      expect(result).to respond_to(:to_sql)
+      expect(query_builder).to respond_to(:to_sql)
     end
 
     it 'can generate SQL' do
-      sql = instance.execute.to_sql
+      sql = query_builder.to_sql
 
       expect(sql).to include('SELECT')
       expect(sql).to include('ci_finished_builds')
@@ -282,10 +299,8 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
       let(:options) { { select_fields: [:name] } }
 
       it 'includes select fields in query' do
-        result = execute_query instance.execute
-
-        expect(result).not_to be_empty
-        expect(result.first.keys).to contain_exactly('name')
+        expect(query_result).not_to be_empty
+        expect(query_result.first.keys).to contain_exactly('name')
       end
     end
 
@@ -293,18 +308,16 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
       let(:options) { { select_fields: [:name, :stage_id] } }
 
       it 'includes multiple select fields' do
-        result = execute_query instance.execute
-
-        expect(result.first.keys).to contain_exactly('name', 'stage_id')
+        expect(query_result.first.keys).to contain_exactly('name', 'stage_id')
       end
     end
   end
 
   describe 'aggregations functionality' do
-    subject(:result) { execute_query(instance.execute) }
+    let(:options) { { aggregations: aggregations, select_fields: [:name] } }
 
     context 'with mean duration aggregation' do
-      let(:options) { { aggregations: [:mean_duration_in_seconds], select_fields: [:name] } }
+      let(:aggregations) { [:mean_duration_in_seconds] }
 
       it 'calculates mean duration correctly' do
         is_expected.to include(
@@ -314,12 +327,12 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
       end
 
       it 'rounds results to 2 decimal places' do
-        expect(result.all? { |r| r['mean_duration_in_seconds'].to_s.split('.').last.size <= 2 }).to be true
+        expect(query_result.map { |r| r['mean_duration_in_seconds'].to_s.split('.').last.size }).to all(be <= 2)
       end
     end
 
     context 'with success rate aggregation' do
-      let(:options) { { aggregations: [:rate_of_success], select_fields: [:name] } }
+      let(:aggregations) { [:rate_of_success] }
 
       it 'calculates success rate correctly' do
         is_expected.to include(
@@ -330,61 +343,48 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
     end
 
     context 'with multiple aggregations' do
-      let(:options) do
-        {
-          aggregations: [:mean_duration_in_seconds, :rate_of_success],
-          select_fields: [:name]
-        }
-      end
+      let(:aggregations) { [:mean_duration_in_seconds, :rate_of_success] }
 
       it 'applies multiple aggregations' do
-        expect(result.first.keys).to contain_exactly('name', 'mean_duration_in_seconds', 'rate_of_success')
+        expect(query_result.first.keys).to contain_exactly('name', 'mean_duration_in_seconds', 'rate_of_success')
       end
     end
   end
 
   describe 'sorting functionality' do
-    subject(:result) { execute_query instance.execute }
+    let(:options) do
+      {
+        select_fields: [:name],
+        aggregations: [:mean_duration_in_seconds],
+        sort: sort
+      }
+    end
 
     context 'with ascending sort' do
-      let(:options) do
-        {
-          select_fields: [:name],
-          aggregations: [:mean_duration_in_seconds],
-          sort: 'mean_duration_in_seconds_asc'
-        }
-      end
+      let(:sort) { 'mean_duration_in_seconds_asc' }
 
       it 'sorts results in ascending order' do
-        durations = result.pluck('mean_duration_in_seconds')
+        durations = query_result.pluck('mean_duration_in_seconds')
         expect(durations).to eq(durations.sort)
       end
     end
 
     context 'with descending sort' do
-      let(:options) do
-        {
-          select_fields: [:name],
-          aggregations: [:mean_duration_in_seconds],
-          sort: 'mean_duration_in_seconds_desc'
-        }
-      end
+      let(:sort) { 'mean_duration_in_seconds_desc' }
 
       it 'sorts results in descending order' do
-        durations = result.pluck('mean_duration_in_seconds')
+        durations = query_result.pluck('mean_duration_in_seconds')
         expect(durations).to eq(durations.sort.reverse)
       end
     end
   end
 
   describe 'name search functionality' do
-    subject(:result) { execute_query instance.execute }
-
     context 'with exact match' do
       let(:options) { { name_search: 'compile' } }
 
       it 'filters by exact name match' do
-        expect(result.pluck('name').uniq).to contain_exactly('compile', 'compile-slow')
+        expect(query_result.pluck('name').uniq).to contain_exactly('compile', 'compile-slow')
       end
     end
 
@@ -392,7 +392,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
       let(:options) { { name_search: 'comp' } }
 
       it 'filters by partial name match' do
-        expect(result.pluck('name').uniq).to contain_exactly('compile', 'compile-slow')
+        expect(query_result.pluck('name').uniq).to contain_exactly('compile', 'compile-slow')
       end
     end
 
@@ -400,7 +400,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
       let(:options) { { name_search: 'COMPILE' } }
 
       it 'filters regardless of case' do
-        expect(result.pluck('name').uniq).to contain_exactly('compile', 'compile-slow')
+        expect(query_result.pluck('name').uniq).to contain_exactly('compile', 'compile-slow')
       end
     end
 
@@ -408,14 +408,12 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
       let(:options) { { name_search: non_existing_project_hashed_path } }
 
       it 'returns empty result' do
-        expect(result).to be_empty
+        expect(query_result).to be_empty
       end
     end
   end
 
   describe 'pipeline attributes filtering' do
-    subject(:result) { execute_query instance.execute }
-
     context 'with time range' do
       let(:options) do
         {
@@ -427,7 +425,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
       it 'filters by time range' do
         expect(instance.from_time).to eq(Time.current - 1.day)
         expect(instance.to_time).to eq(Time.current)
-        expect(result).not_to be_empty
+        expect(query_result).not_to be_empty
       end
     end
 
@@ -435,7 +433,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
       let(:options) { { source: 'web' } }
 
       it 'filters by pipeline source' do
-        expect(result.pluck('pipeline_id')).to include(source_pipeline.id)
+        expect(query_result.pluck('pipeline_id')).to include(source_pipeline.id)
       end
     end
 
@@ -443,7 +441,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
       let(:options) { { ref: 'feature-branch' } }
 
       it 'filters by pipeline ref' do
-        expect(result.pluck('pipeline_id')).to include(ref_pipeline.id)
+        expect(query_result.pluck('pipeline_id')).to include(ref_pipeline.id)
       end
     end
 
@@ -458,7 +456,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
       end
 
       it 'combines all filters correctly' do
-        expect(result).not_to be_empty
+        expect(query_result).not_to be_empty
       end
     end
   end
@@ -494,17 +492,15 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
         }
       end
 
-      subject(:result) { execute_query instance.execute }
-
-      it 'combines all features correctly' do
-        expect(result).not_to be_empty
-        expect(result.first.keys).to contain_exactly(
+      it 'combines all features correctly', :aggregate_failures do
+        expect(query_result).not_to be_empty
+        expect(query_result.first.keys).to contain_exactly(
           'name', 'stage_id', 'mean_duration_in_seconds', 'rate_of_success'
         )
-        expect(result.pluck('name').uniq).to contain_exactly('compile', 'compile-slow')
+        expect(query_result.pluck('name').uniq).to contain_exactly('compile', 'compile-slow')
 
         # Assert sorting
-        durations = result.pluck('mean_duration_in_seconds')
+        durations = query_result.pluck('mean_duration_in_seconds')
         expect(durations).to eq(durations.sort.reverse)
       end
     end

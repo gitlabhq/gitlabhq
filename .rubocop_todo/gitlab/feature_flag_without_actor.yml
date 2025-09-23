@@ -77,7 +77,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'ee/app/views/projects/on_demand_scans/index.html.haml'
     - 'ee/app/views/projects/settings/merge_requests/_merge_trains_settings.html.haml'
     - 'ee/lib/api/code_suggestions.rb'
-    - 'ee/lib/api/internal/suggested_reviewers.rb'
     - 'ee/lib/ee/api/entities/application_setting.rb'
     - 'ee/lib/ee/api/geo.rb'
     - 'ee/lib/ee/api/internal/base.rb'

@@ -30,7 +30,11 @@ module Ci
       end
 
       def execute
-        build_finder.query_builder
+        unless ::Gitlab::ClickHouse.enabled_for_analytics?
+          return ServiceResponse.error(message: 'ClickHouse database is not configured')
+        end
+
+        ServiceResponse.success(payload: { aggregate: build_finder.query_builder })
       end
 
       private

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Experimental::O11yServiceSettings", feature_category: :observability do
+RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :observability do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
 
@@ -41,6 +41,95 @@ RSpec.describe "Experimental::O11yServiceSettings", feature_category: :observabi
     end
   end
 
+  shared_examples 'successful response' do |template|
+    it 'returns success and renders template' do
+      make_request
+
+      aggregate_failures do
+        expect(response).to have_gitlab_http_status(:success)
+        expect(response).to render_template(template)
+      end
+    end
+  end
+
+  shared_examples 'unprocessable entity response' do |template|
+    it 'renders template with unprocessable_entity status' do
+      make_request
+
+      aggregate_failures do
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(response).to render_template(template)
+      end
+    end
+  end
+
+  shared_context 'with feature flag enabled context' do
+    before do
+      stub_feature_flags(experimental_group_o11y_settings_access: user)
+    end
+  end
+
+  describe "GET experimental_o11y_service_settings_path" do
+    subject(:make_request) { get experimental_o11y_service_settings_path }
+
+    it_behaves_like 'requires authentication'
+    it_behaves_like 'requires experimental access'
+
+    context 'when experimental_group_o11y_settings_access feature flag is enabled' do
+      include_examples 'with feature flag enabled context'
+
+      context 'when no o11y service settings exist' do
+        it 'returns success and renders index template with empty collection' do
+          make_request
+
+          aggregate_failures do
+            expect(assigns(:o11y_service_settings)).to be_empty
+            expect(response).to have_gitlab_http_status(:success)
+            expect(response).to render_template(:index)
+          end
+        end
+      end
+
+      context 'when o11y service settings exist' do
+        let_it_be(:group1) { create(:group) }
+        let_it_be(:group2) { create(:group) }
+        let_it_be(:o11y_setting1) { create(:observability_group_o11y_setting, group: group1) }
+        let_it_be(:o11y_setting2) { create(:observability_group_o11y_setting, group: group2) }
+
+        it 'returns success and renders index template with paginated collection' do
+          make_request
+
+          aggregate_failures do
+            expect(assigns(:o11y_service_settings)).to include(o11y_setting1, o11y_setting2)
+            expect(response).to have_gitlab_http_status(:success)
+            expect(response).to render_template(:index)
+          end
+        end
+
+        context 'with pagination' do
+          before do
+            25.times do
+              group = create(:group)
+              create(:observability_group_o11y_setting, group: group)
+            end
+          end
+
+          it 'handles pagination correctly', :aggregate_failures do
+            get experimental_o11y_service_settings_path, params: { page: 1 }
+            expect(assigns(:o11y_service_settings).count).to eq(20)
+            expect(response).to have_gitlab_http_status(:success)
+            expect(response).to render_template(:index)
+
+            get experimental_o11y_service_settings_path, params: { page: 2 }
+            expect(assigns(:o11y_service_settings).count).to eq(7)
+            expect(response).to have_gitlab_http_status(:success)
+            expect(response).to render_template(:index)
+          end
+        end
+      end
+    end
+  end
+
   describe "GET experimental_o11y_service_setting_path" do
     subject(:make_request) { get new_experimental_o11y_service_setting_path }
 
@@ -48,9 +137,7 @@ RSpec.describe "Experimental::O11yServiceSettings", feature_category: :observabi
     it_behaves_like 'requires experimental access'
 
     context 'when experimental_group_o11y_settings_access feature flag is enabled' do
-      before do
-        stub_feature_flags(experimental_group_o11y_settings_access: user)
-      end
+      include_examples 'with feature flag enabled context'
 
       it 'returns success and renders new template' do
         make_request
@@ -88,9 +175,7 @@ RSpec.describe "Experimental::O11yServiceSettings", feature_category: :observabi
     it_behaves_like 'requires experimental access'
 
     context 'when experimental_group_o11y_settings_access feature flag is enabled' do
-      before do
-        stub_feature_flags(experimental_group_o11y_settings_access: user)
-      end
+      include_examples 'with feature flag enabled context'
 
       context 'with mocked service' do
         let(:mock_service) { instance_double(Observability::GroupO11ySettingsUpdateService) }
@@ -176,12 +261,7 @@ RSpec.describe "Experimental::O11yServiceSettings", feature_category: :observabi
             stub_o11y_setting_save(false)
           end
 
-          it 'renders new template with unprocessable_entity status' do
-            make_request
-
-            expect(response).to have_gitlab_http_status(:unprocessable_entity)
-            expect(response).to render_template(:new)
-          end
+          it_behaves_like 'unprocessable entity response', :new
         end
 
         context 'when group is not found' do

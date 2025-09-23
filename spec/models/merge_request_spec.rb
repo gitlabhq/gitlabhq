@@ -2695,6 +2695,128 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     it { is_expected.to eq(AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS) }
   end
 
+  describe '#preload_commits_metadata' do
+    let(:merge_request) { create(:merge_request) }
+
+    context 'when merge_request_diff is persisted' do
+      it 'preloads commit metadata associations' do
+        preloader = double('preloader')
+        expect(ActiveRecord::Associations::Preloader).to receive(:new).with(
+          hash_including(
+            records: merge_request.merge_request_diff.merge_request_diff_commits,
+            associations: {
+              merge_request_commits_metadata: [:commit_author, :committer]
+            })
+        ).and_return(preloader)
+
+        expect(preloader).to receive(:call)
+
+        merge_request.preload_commits_metadata
+      end
+    end
+
+    context 'when merge_request_diff is not persisted' do
+      before do
+        allow(merge_request.merge_request_diff).to receive(:persisted?).and_return(false)
+      end
+
+      it 'returns early without preloading' do
+        expect(ActiveRecord::Associations::Preloader).not_to receive(:new)
+
+        merge_request.preload_commits_metadata
+      end
+    end
+  end
+
+  describe '#recent_commits' do
+    let(:merge_request) { create(:merge_request) }
+
+    context 'with preload_metadata parameter' do
+      before do
+        stub_feature_flags(merge_request_diff_commits_dedup: true)
+      end
+
+      context 'when feature flag is enabled' do
+        it 'ensures no N+1 queries when preload_metadata is true and not loading from gitaly' do
+          merge_request = create(:merge_request)
+
+          existing_count = merge_request.merge_request_diff.merge_request_diff_commits.count
+
+          2.times do |i|
+            create(:merge_request_diff_commit,
+              merge_request_diff: merge_request.merge_request_diff,
+              commit_author: create(:merge_request_diff_commit_user),
+              committer: create(:merge_request_diff_commit_user),
+              relative_order: existing_count + i)
+          end
+
+          control = ActiveRecord::QueryRecorder.new do
+            commits = merge_request.recent_commits(preload_metadata: true, load_from_gitaly: false)
+            # force loading of associations
+            commits.each do |commit|
+              commit.author if commit.respond_to?(:author)
+              commit.committer if commit.respond_to?(:committer)
+            end
+          end
+
+          3.times do |i|
+            create(:merge_request_diff_commit,
+              merge_request_diff: merge_request.merge_request_diff,
+              commit_author: create(:merge_request_diff_commit_user),
+              committer: create(:merge_request_diff_commit_user),
+              relative_order: existing_count + 2 + i)
+          end
+
+          merge_request.reload
+
+          expect do
+            commits = merge_request.recent_commits(preload_metadata: true, load_from_gitaly: false)
+            commits.each do |commit|
+              commit.author if commit.respond_to?(:author)
+              commit.committer if commit.respond_to?(:committer)
+            end
+          end.not_to exceed_query_limit(control)
+        end
+
+        it 'does not preload metadata when loading from gitaly' do
+          expect(merge_request).not_to receive(:preload_commits_metadata)
+
+          merge_request.recent_commits(preload_metadata: true, load_from_gitaly: true)
+        end
+
+        it 'does not preload metadata when preload_metadata is false' do
+          expect(merge_request).not_to receive(:preload_commits_metadata)
+
+          merge_request.recent_commits(preload_metadata: false)
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(merge_request_diff_commits_dedup: false)
+        end
+
+        it 'does not preload metadata even when preload_metadata is true' do
+          expect(merge_request).not_to receive(:preload_commits_metadata)
+
+          merge_request.recent_commits(preload_metadata: true)
+        end
+      end
+
+      it 'passes through the limit parameter' do
+        expect(merge_request).to receive(:commits).with(limit: 5, load_from_gitaly: false, page: nil).and_call_original
+
+        merge_request.recent_commits(limit: 5)
+      end
+
+      it 'passes through the page parameter' do
+        expect(merge_request).to receive(:commits).with(limit: MergeRequestDiff::COMMITS_SAFE_SIZE, load_from_gitaly: false, page: 2).and_call_original
+
+        merge_request.recent_commits(page: 2)
+      end
+    end
+  end
+
   describe '#committers' do
     let(:commits) { double }
     let(:committers) { double }

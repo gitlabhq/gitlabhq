@@ -2,6 +2,7 @@ import { GlButtonGroup, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import BlobHeaderViewerSwitcher from '~/blob/components/blob_header_viewer_switcher.vue';
 import {
   RICH_BLOB_VIEWER,
@@ -17,12 +18,15 @@ describe('Blob Header Viewer Switcher', () => {
   function createComponent(propsData = { showViewerToggles: true }) {
     wrapper = mountExtended(BlobHeaderViewerSwitcher, {
       propsData,
+      directives: {
+        GlHoverLoad: createMockDirective('gl-hover-load'),
+      },
     });
   }
 
   const findSimpleViewerButton = () => wrapper.findComponent('[data-viewer="simple"]');
   const findRichViewerButton = () => wrapper.findComponent('[data-viewer="rich"]');
-  const findBlameButton = () => wrapper.findByText('Blame');
+  const findBlameButton = () => wrapper.findByTestId('blame-button');
 
   describe('initialization', () => {
     it('is initialized with simple viewer as active', () => {
@@ -98,6 +102,23 @@ describe('Blob Header Viewer Switcher', () => {
     await nextTick();
 
     expect(findBlameButton().exists()).toBe(false);
+  });
+
+  it('adds a hover directive to the Blame button', () => {
+    createComponent({ showBlameToggle: true });
+
+    const hoverLoadDirective = getBinding(findBlameButton().element, 'gl-hover-load');
+
+    expect(hoverLoadDirective).toBeDefined();
+    expect(hoverLoadDirective.value).toBeInstanceOf(Function);
+  });
+
+  it('emits preload-blame event on focus', () => {
+    createComponent({ showBlameToggle: true });
+
+    findBlameButton().vm.$emit('focus');
+
+    expect(wrapper.emitted('preload-blame')).toHaveLength(1);
   });
 
   it('emits an event when the Blame button is clicked', async () => {

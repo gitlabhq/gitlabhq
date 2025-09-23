@@ -50348,7 +50348,6 @@ Possible types of user.
 | <a id="usertypesecurity_policy_bot"></a>`SECURITY_POLICY_BOT` | Security policy bot. |
 | <a id="usertypeservice_account"></a>`SERVICE_ACCOUNT` | Service account. |
 | <a id="usertypeservice_user"></a>`SERVICE_USER` | Service user. |
-| <a id="usertypesuggested_reviewers_bot"></a>`SUGGESTED_REVIEWERS_BOT` | Suggested reviewers bot. |
 | <a id="usertypesupport_bot"></a>`SUPPORT_BOT` | Support bot. |
 | <a id="usertypevisual_review_bot"></a>`VISUAL_REVIEW_BOT` | Visual review bot. |
 

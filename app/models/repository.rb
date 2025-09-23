@@ -797,7 +797,7 @@ class Repository
     key = "git_content_hash_for_path:#{sha}:#{Digest::SHA1.hexdigest(path)}"
 
     cache.fetch(key) do
-      blob_at(sha, path)&.id
+      blob_at(sha, path, limit: 0)&.id
     end
   end
 

@@ -7,8 +7,10 @@ export default {
   components: { ResourceListsEmptyState },
   SEARCH_MINIMUM_LENGTH,
   i18n: {
-    title: s__('GroupsEmptyState|There are no inactive projects in this group'),
-    description: s__('GroupsEmptyState|Projects that are no longer used are displayed here.'),
+    title: s__('GroupsEmptyState|There are no inactive subgroups or projects in this group'),
+    description: s__(
+      'GroupsEmptyState|Subgroups and projects that are archived or pending deletion will appear here.',
+    ),
   },
   inject: ['emptyProjectsIllustration'],
   props: {

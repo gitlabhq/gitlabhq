@@ -32490,13 +32490,13 @@ msgstr ""
 msgid "GroupsEmptyState|Projects are where you can store your code, access issues, wiki, and other features of GitLab."
 msgstr ""
 
-msgid "GroupsEmptyState|Projects that are no longer used are displayed here."
-msgstr ""
-
 msgid "GroupsEmptyState|Projects this group has been %{linkStart}invited to%{linkEnd} will appear here."
 msgstr ""
 
-msgid "GroupsEmptyState|There are no inactive projects in this group"
+msgid "GroupsEmptyState|Subgroups and projects that are archived or pending deletion will appear here."
+msgstr ""
+
+msgid "GroupsEmptyState|There are no inactive subgroups or projects in this group"
 msgstr ""
 
 msgid "GroupsEmptyState|There are no subgroups or projects in this group"
@@ -44502,6 +44502,9 @@ msgstr ""
 msgid "Observability|Create issues from this page to view them as related items here."
 msgstr ""
 
+msgid "Observability|Created at"
+msgstr ""
+
 msgid "Observability|Creates alerts automatically for Observability-related errors."
 msgstr ""
 
@@ -44649,6 +44652,9 @@ msgstr ""
 msgid "Observability|Loading metrics..."
 msgstr ""
 
+msgid "Observability|Manage your o11y service connection settings."
+msgstr ""
+
 msgid "Observability|Message validation failed"
 msgstr ""
 
@@ -44658,6 +44664,9 @@ msgstr ""
 msgid "Observability|Native Kubernetes monitoring with pod-level metrics and cluster health insights"
 msgstr ""
 
+msgid "Observability|New O11y service setting"
+msgstr ""
+
 msgid "Observability|No Cost"
 msgstr ""
 
@@ -44665,6 +44674,9 @@ msgid "Observability|O11y Service Settings"
 msgstr ""
 
 msgid "Observability|O11y service configuration"
+msgstr ""
+
+msgid "Observability|O11y service configurations"
 msgstr ""
 
 msgid "Observability|O11y service settings"
@@ -73571,6 +73583,9 @@ msgid "WorkItems|Your preferences"
 msgstr ""
 
 msgid "WorkItem| %{workItemType}s closed"
+msgstr ""
+
+msgid "WorkItem|%{count} items currently use the status '%{status}'. Select a new status for these items."
 msgstr ""
 
 msgid "WorkItem|%{count} more assignees"

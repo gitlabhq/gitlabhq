@@ -1,5 +1,7 @@
 @import 'mixins_and_variables_and_functions';
 
+$focus-mode-z-index: 9000;
+
 .is-ghost {
   opacity: 0.3;
   pointer-events: none;
@@ -206,30 +208,48 @@
   isolation: isolate;
 }
 
-.issue-boards-content.is-focused {
-  $focus-mode-z-index: 9000;
+.issue-boards-content,
+.content-panels {
+  &.is-focused {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: $focus-mode-z-index;
+  }
+}
 
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
+// Legacy View Focus Mode
+.issue-boards-content.is-focused {
   background: var(--white, $white);
-  z-index: $focus-mode-z-index;
 
   @include gl-container-width-down(md, panel) {
     padding-top: 10px;
   }
 
+  // Use !important for these as top and z-index are set on style attribute
+  // in gitlab-ui; https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2737
+  ~#js-right-sidebar-portal .boards-sidebar {
+    top: 0 !important;
+    z-index: calc(#{$focus-mode-z-index} + 1) !important;
+  }
+
   .boards-app {
     height: 100vh;
   }
+}
 
-  // Use !important for these as top and z-index are set on style attribute
-  // in gitlab-ui; https://gitlab.com/gitlab-org/gitlab-services/design.gitlab.com/-/issues/2737
-  ~ #js-right-sidebar-portal .boards-sidebar {
-    top: 0 !important;
-    z-index: calc(#{$focus-mode-z-index} + 1) !important;
+// Paneled View (i.e. Project Studio) Focus Mode
+.content-panels.is-focused {
+  background: var(--super-sidebar-bg);
+
+  .panel-content .panel-content-inner {
+    @apply gl-mx-0;
+  }
+
+  .boards-app {
+    height: calc(100vh - 60px); // 60px offsets the header height and present vertical scrollbar
   }
 }
 

@@ -10,14 +10,14 @@ title: AI Catalog
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- Status: Beta
+- Status: Experiment
 - LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/549914) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `global_ai_catalog`. Disabled by default. This feature is in [beta](../../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/549914) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `global_ai_catalog`. Disabled by default. This feature is an [experiment](../../policy/development_stages_support.md).
 
 {{< /history >}}
 

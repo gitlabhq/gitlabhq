@@ -216,7 +216,10 @@ export default {
   methods: {
     setError,
     isFocusMode() {
-      return Boolean(document.querySelector('.content-wrapper > .js-focus-mode-board.is-focused'));
+      return Boolean(
+        document.querySelector('.content-wrapper > .js-focus-mode-board.is-focused') ||
+          document.querySelector('.js-content-panels.is-focused'),
+      );
     },
     cancel() {
       this.$emit('cancel');

@@ -27,7 +27,6 @@ export default {
     'newSubgroupPath',
     'newProjectPath',
     'emptyProjectsIllustration',
-    'emptySubgroupIllustration',
     'canCreateSubgroups',
     'canCreateProjects',
   ],
@@ -52,7 +51,7 @@ export default {
 <template>
   <resource-lists-empty-state
     :title="$options.i18n.title"
-    :svg-path="emptySubgroupIllustration"
+    :svg-path="emptyProjectsIllustration"
     :description="description"
     :search="search"
     :search-minimum-length="$options.SEARCH_MINIMUM_LENGTH"

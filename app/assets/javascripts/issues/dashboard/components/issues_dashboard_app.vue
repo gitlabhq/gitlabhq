@@ -6,6 +6,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import getIssuesCountsQuery from 'ee_else_ce/issues/dashboard/queries/get_issues_counts.query.graphql';
 import getIssuesQuery from 'ee_else_ce/issues/dashboard/queries/get_issues.query.graphql';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
@@ -57,7 +58,6 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
-import getIssuesCountsQuery from '../queries/get_issues_counts.query.graphql';
 import { AutocompleteCache } from '../utils';
 
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
@@ -70,6 +70,7 @@ const MilestoneToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
 
 export default {
+  name: 'IssuesDashboardApp',
   i18n,
   issuableListTabs,
   components: {
@@ -100,11 +101,19 @@ export default {
     'hasStatusFeature',
     'hasQualityManagementFeature',
     'hasScopedLabelsFeature',
+    'hasStatusFeature',
     'initialSort',
     'isPublicVisibilityRestricted',
     'isSignedIn',
     'rssPath',
   ],
+  props: {
+    eeSearchTokens: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+  },
   data() {
     const state = getParameterByName(PARAM_STATE);
 
@@ -162,7 +171,9 @@ export default {
   },
   computed: {
     apiFilterParams() {
-      return convertToApiParams(this.filterTokens);
+      return convertToApiParams(this.filterTokens, {
+        hasStatusFeature: this.hasStatusFeature,
+      });
     },
     defaultWorkItemTypes() {
       return getDefaultWorkItemTypes({
@@ -362,6 +373,10 @@ export default {
             operators: OPERATORS_AFTER_BEFORE,
           });
         }
+      }
+
+      if (this.eeSearchTokens.length) {
+        tokens.push(...this.eeSearchTokens);
       }
 
       tokens.sort((a, b) => a.title.localeCompare(b.title));

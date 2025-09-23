@@ -7,7 +7,7 @@ RSpec/ContextWording:
     - 'ee/spec/controllers/admin/push_rules_controller_spec.rb'
     - 'ee/spec/controllers/admin/users_controller_spec.rb'
     - 'ee/spec/controllers/autocomplete_controller_spec.rb'
-    - 'ee/spec/controllers/dashboard_controller_spec.rb'
+    - 'ee/spec/controllers/ee/dashboard_controller_spec.rb'
     - 'ee/spec/controllers/ee/groups/variables_controller_spec.rb'
     - 'ee/spec/controllers/ee/groups_controller_spec.rb'
     - 'ee/spec/controllers/ee/projects/jobs_controller_spec.rb'

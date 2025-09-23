@@ -559,26 +559,35 @@ variables:
   - GOOGLE_CLOUD_LOCATION
 ```
 
-## Configure a flow trigger
+## Create a flow trigger
+
+{{< history >}}
+
+- **Assign** event type [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/567787) in GitLab 18.5.
+
+{{< /history >}}
 
 Prerequisites:
 
-- You must have at least the Maintainer role in the project.
+- You must have at least the Maintainer role for the project.
 
 The flow trigger links the service account, the flow configuration file, and the
 action that the user takes to trigger the CLI agent.
+
+To create a flow trigger:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Automate** > **Flow triggers**.
 1. Select **Create flow trigger**.
 1. Complete the fields:
-   - **Description**: Enter a description for the flow trigger.
-   - **Event types**: Select one of the following event types:
-     - **Mention**.
-   - **Service account user**: From the **Service account user** dropdown list,
+   - In **Description**, enter a description for the flow trigger.
+   - From the **Event types** dropdown list, select one or more event types:
+     - **Mention**: when the service account user is mentioned in a comment on an issue or merge request.
+     - **Assign**: when the service account user is assigned to an issue or merge request.
+   - From the **Service account user** dropdown list,
      select the service account user.
-   - **Config Path**: Enter the location of the flow configuration file.
-     For example `.gitlab/duo/flows/claude.yaml`.
+   - In **Config path**, enter the location of the flow configuration file
+     (for example `.gitlab/duo/flows/claude.yaml`).
 1. Select **Create flow trigger**.
 
 You have created the flow trigger. Check that it appears in **Automate** > **Flow triggers**.

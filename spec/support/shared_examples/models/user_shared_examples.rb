@@ -106,7 +106,7 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
     ]
   end
 
-  let(:excluded_tables) do
+  let(:tables_with_known_missing_associations) do
     %w[
       abuse_report_events
       abuse_report_notes
@@ -122,7 +122,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       approval_project_rules_users
       board_group_recent_visits
       board_project_recent_visits
-      boards_epic_board_recent_visits
       boards_epic_list_user_preferences
       bulk_import_export_upload_uploads
       bulk_import_exports
@@ -136,12 +135,10 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       design_management_action_uploads
       group_deletion_schedules
       group_import_states
-      group_scim_identities
       import_export_upload_uploads
       import_export_uploads
       import_failures
       import_source_users
-      incident_management_oncall_participants
       issuable_metric_image_uploads
       jira_imports
       lists
@@ -164,14 +161,9 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       project_uploads
       protected_environment_approval_rules
       protected_environment_deploy_access_levels
-      requirements_management_test_reports
-      saved_replies
       security_orchestration_policy_rule_schedules
       snippet_uploads
-      subscription_user_add_on_assignments
-      user_group_callouts
       user_permission_export_upload_uploads
-      user_project_callouts
       user_uploads
       vulnerability_archive_export_uploads
       vulnerability_export_part_uploads
@@ -181,7 +173,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       agent_activity_events
       ai_settings
       ai_user_metrics
-      alert_management_alert_assignees
       authentication_events
       board_assignees
       catalog_resource_versions
@@ -191,10 +182,8 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       design_management_versions
       draft_notes
       duo_workflows_workflows
-      incident_management_escalation_rules
       incident_management_timeline_events
       lfs_file_locks
-      merge_request_metrics
       merge_trains
       ml_candidates
       ml_models
@@ -203,22 +192,14 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       resource_link_events
       resource_milestone_events
       resource_weight_events
-      scim_identities
       security_policy_dismissals
       service_desk_custom_email_verifications
-      smartcard_identities
       ssh_signatures
       targeted_message_dismissals
       terraform_state_versions
       terraform_states
-      user_broadcast_message_dismissals
-      user_callouts
-      user_custom_attributes
-      user_follow_users
-      user_synced_attributes_metadata
       user_namespace_callouts
       uploads_9ba88c4165
-      vs_code_settings
       work_item_custom_lifecycles
       work_item_custom_statuses
       work_item_type_user_preferences
@@ -250,36 +231,54 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
   end
 
   describe 'database foreign keys without model associations' do
-    it 'identifies tables with foreign keys to users that lack dependent associations', :aggregate_failures do
-      fk_query = <<-SQL
-       SELECT
-        cls.relname AS table_name,
-        att.attname AS column_name,
-        'users' AS foreign_table_name,
-        'id' AS foreign_column_name,
-        con.conname AS constraint_name
-      FROM
-        pg_constraint con
-        JOIN pg_class cls ON con.conrelid = cls.oid
-        JOIN pg_namespace nsp ON cls.relnamespace = nsp.oid
-        JOIN pg_attribute att ON att.attrelid = cls.oid AND att.attnum = ANY(con.conkey)
-      WHERE
-        con.contype = 'f'
-        AND con.confrelid = (SELECT oid FROM pg_class WHERE relname = 'users')
-        AND nsp.nspname = current_schema()
-        AND cls.relname NOT LIKE '%\\_p\\_%'
-        AND cls.relname NOT LIKE '%\\_p$'
-      ORDER BY
-        table_name;
+    let(:fk_query) do
+      <<-SQL
+        SELECT
+          cls.relname AS table_name,
+          att.attname AS column_name,
+          'users' AS foreign_table_name,
+          'id' AS foreign_column_name,
+          con.conname AS constraint_name
+        FROM
+          pg_constraint con
+          JOIN pg_class cls ON con.conrelid = cls.oid
+          JOIN pg_namespace nsp ON cls.relnamespace = nsp.oid
+          JOIN pg_attribute att ON att.attrelid = cls.oid AND att.attnum = ANY(con.conkey)
+        WHERE
+          con.contype = 'f'
+          AND con.confrelid = (SELECT oid FROM pg_class WHERE relname = 'users')
+          AND nsp.nspname = current_schema()
+          AND cls.relname NOT LIKE '%\\_p\\_%'
+          AND cls.relname NOT LIKE '%\\_p$'
+        ORDER BY
+          table_name;
       SQL
+    end
 
-      foreign_keys = ApplicationRecord.connection.execute(fk_query)
+    let(:foreign_keys) do
+      ApplicationRecord.connection.execute(fk_query)
+    end
 
+    let(:table_names_with_association) do
+      user_associations.map { |assoc| assoc.klass.table_name }
+    end
+
+    it 'checks that we have not excluded any tables with existing association' do
+      incorrectly_excluded = tables_with_known_missing_associations & table_names_with_association
+
+      expect(incorrectly_excluded).to be_empty,
+        "The following tables are excluded from the check but have dependent associations defined in the User model: " \
+          "#{incorrectly_excluded.join(', ')}.\n" \
+          "These should NOT be in tables_with_known_missing_associations since they already" \
+          "have proper dependent associations."
+    end
+
+    it 'identifies tables with foreign keys to users that lack dependent associations', :aggregate_failures do
       tables_with_fk_to_users = foreign_keys.pluck('table_name').uniq
-      tables_with_fk_to_users = tables_with_fk_to_users.reject { |table| excluded_tables.include?(table) }
 
-      table_names_with_association = user_associations.map { |assoc| assoc.klass.table_name }
-
+      tables_with_fk_to_users = tables_with_fk_to_users.reject do |table|
+        tables_with_known_missing_associations.include?(table)
+      end
       tables_without_associations = tables_with_fk_to_users.select do |table|
         table_names_with_association.exclude?(table)
       end

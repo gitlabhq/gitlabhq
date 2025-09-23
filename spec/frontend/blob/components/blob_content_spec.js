@@ -31,13 +31,15 @@ describe('Blob Content component', () => {
     });
   }
 
+  const findSimpleViewer = () => wrapper.findComponent(SimpleViewer);
+
   describe('rendering', () => {
     it('renders loader if `loading: true`', () => {
       createComponent({ loading: true });
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
       expect(wrapper.findComponent(BlobContentError).exists()).toBe(false);
       expect(wrapper.findComponent(RichViewer).exists()).toBe(false);
-      expect(wrapper.findComponent(SimpleViewer).exists()).toBe(false);
+      expect(findSimpleViewer().exists()).toBe(false);
     });
 
     it('renders error if there is any in the viewer', () => {
@@ -47,7 +49,7 @@ describe('Blob Content component', () => {
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
       expect(wrapper.findComponent(BlobContentError).exists()).toBe(true);
       expect(wrapper.findComponent(RichViewer).exists()).toBe(false);
-      expect(wrapper.findComponent(SimpleViewer).exists()).toBe(false);
+      expect(findSimpleViewer().exists()).toBe(false);
     });
 
     it('passes isSnippet prop to the viewer', () => {
@@ -86,9 +88,14 @@ describe('Blob Content component', () => {
       'renders correct amount of line numbers for the simple viewer',
       ({ content, lineNumbers }) => {
         createComponent({ blob: { ...Blob, rawTextBlob: content }, content });
-        expect(wrapper.findComponent(SimpleViewer).props('lineNumbers')).toBe(lineNumbers);
+        expect(findSimpleViewer().props('lineNumbers')).toBe(lineNumbers);
       },
     );
+
+    it('passes shouldPreloadBlame prop to the simple viewer', () => {
+      createComponent({ shouldPreloadBlame: true });
+      expect(findSimpleViewer().props('shouldPreloadBlame')).toBe(true);
+    });
   });
 
   describe('functionality', () => {
