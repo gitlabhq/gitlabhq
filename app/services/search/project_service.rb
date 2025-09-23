@@ -22,8 +22,7 @@ module Search
         repository_ref: params[:repository_ref],
         order_by: params[:order_by],
         sort: params[:sort],
-        filters: filters,
-        source: params[:source]
+        filters: filters
       )
     end
 

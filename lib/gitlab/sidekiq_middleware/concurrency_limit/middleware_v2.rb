@@ -44,6 +44,7 @@ module Gitlab
           yield
         ensure
           track_execution_end
+          cleanup_stale_trackers
         end
 
         private
@@ -85,6 +86,12 @@ module Gitlab
           return if Feature.disabled?(:sidekiq_concurrency_limit_middleware, Feature.current_request, type: :ops)
 
           concurrency_service.track_execution_end(worker_name)
+        end
+
+        def cleanup_stale_trackers
+          return if Feature.disabled?(:sidekiq_concurrency_limit_middleware, Feature.current_request, type: :ops)
+
+          concurrency_service.cleanup_stale_trackers(worker_name)
         end
 
         def worker_limit

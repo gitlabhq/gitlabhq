@@ -11,10 +11,6 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
   let_it_be(:issue) { create(:issue, project: project) }
 
   before_all do
-    # Ensure support bot user is created so creation doesn't count towards query limit
-    # and we don't try to obtain an exclusive lease within a transaction.
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
-    Users::Internal.support_bot_id
     project.add_developer(user)
   end
 

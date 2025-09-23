@@ -1,5 +1,5 @@
 import { memoize } from 'lodash';
-import { EXPLICIT_NEEDS_PROPERTY, NEEDS_PROPERTY } from '../constants';
+import { NEEDS_PROPERTY, PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY } from '../constants';
 import { createSankey } from './drawing_utils';
 import { createNodeDict } from './index';
 
@@ -115,8 +115,10 @@ export const getMaxNodes = (nodes) => {
 
 export const listByLayers = ({ stages }) => {
   const arrayOfJobs = stages.flatMap(({ groups }) => groups);
-  const parsedData = parseData(arrayOfJobs);
-  const explicitParsedData = parseData(arrayOfJobs, { needsKey: EXPLICIT_NEEDS_PROPERTY });
+  const needsOnlyParsedData = parseData(arrayOfJobs, { needsKey: NEEDS_PROPERTY });
+  const explicitParsedData = parseData(arrayOfJobs, {
+    needsKey: PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY,
+  });
   const dataWithLayers = createSankey()(explicitParsedData);
 
   const pipelineLayers = dataWithLayers.nodes.reduce((acc, { layer, name }) => {
@@ -132,7 +134,7 @@ export const listByLayers = ({ stages }) => {
   }, []);
 
   return {
-    linksData: parsedData.links,
+    linksData: needsOnlyParsedData.links,
     numGroups: arrayOfJobs.length,
     pipelineLayers,
   };

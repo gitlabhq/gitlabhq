@@ -190,9 +190,9 @@ module API
           requires :job_id, type: Integer, desc: 'The ID of a job'
         end
         delete ':id/jobs/:job_id/artifacts' do
-          authorize_destroy_artifacts!
+          authorize_delete_job_artifact!
           build = find_build!(params[:job_id])
-          authorize!(:destroy_artifacts, build)
+          authorize!(:delete_job_artifact, build)
 
           reject_if_build_artifacts_size_refreshing!(build.project)
 
@@ -210,7 +210,7 @@ module API
           ]
         end
         delete ':id/artifacts' do
-          authorize_destroy_artifacts!
+          authorize_delete_job_artifact!
 
           reject_if_build_artifacts_size_refreshing!(user_project)
 

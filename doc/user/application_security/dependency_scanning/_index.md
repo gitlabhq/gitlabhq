@@ -2,7 +2,7 @@
 stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Dependency Scanning
+title: Dependency scanning
 description: Vulnerabilities, remediation, configuration, analyzers, and reports.
 ---
 
@@ -52,14 +52,14 @@ table.no-vertical-table-lines tr {
 
 {{< alert type="warning" >}}
 
-The Dependency Scanning feature based on the Gemnasium analyzer is deprecated in GitLab 17.9 and is planned for removal in
-GitLab 19.0. It is being replaced with [Dependency Scanning using SBOM](dependency_scanning_sbom/_index.md)
-and the [new Dependency Scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning).
+The dependency scanning feature based on the Gemnasium analyzer is deprecated in GitLab 17.9 and is planned for removal in
+GitLab 19.0. It is being replaced with [dependency scanning using SBOM](dependency_scanning_sbom/_index.md)
+and the [new dependency scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning).
 For more information, see [epic 15961](https://gitlab.com/groups/gitlab-org/-/epics/15961).
 
 {{< /alert >}}
 
-Dependency Scanning identifies security vulnerabilities in your application's dependencies before
+Dependency scanning identifies security vulnerabilities in your application's dependencies before
 they reach production. This identification protects your application from potential exploits and data breaches that
 could damage user trust and your business reputation. When vulnerabilities are found during pipeline
 runs, they appear directly in your merge request, giving you immediate visibility of security issues
@@ -67,33 +67,33 @@ before code is committed.
 
 All dependencies in your code, including transitive (nested) dependencies, are automatically
 analyzed during pipelines. This analysis catches security issues that manual review processes might miss.
-Dependency Scanning integrates into your existing CI/CD workflow with minimal configuration changes,
+Dependency scanning integrates into your existing CI/CD workflow with minimal configuration changes,
 making it straightforward to implement secure development practices from day one.
 
 Vulnerabilities can also be identified outside a pipeline by
 [Continuous Vulnerability Scanning](../continuous_vulnerability_scanning/_index.md).
 
-GitLab offers both Dependency Scanning and [Container Scanning](../container_scanning/_index.md) to
+GitLab offers both dependency scanning and [container scanning](../container_scanning/_index.md) to
 ensure coverage for all of these dependency types. To cover as much of your risk area as possible,
 we encourage you to use all of our security scanners. For a comparison of these features, see
-[Dependency Scanning compared to Container Scanning](../comparison_dependency_and_container_scanning.md).
+[Dependency scanning compared to container scanning](../comparison_dependency_and_container_scanning.md).
 
 {{< alert type="warning" >}}
 
-Dependency Scanning does not support runtime installation of compilers and interpreters.
+Dependency scanning does not support runtime installation of compilers and interpreters.
 
 {{< /alert >}}
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
   For an overview, see [Dependency Scanning - Advanced Security Testing](https://www.youtube.com/watch?v=TBnfbGk4c4o)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-  For an interactive reading and how-to demo of this Dependency Scanning documentation, see [How to use dependency scanning tutorial hands-on GitLab Application Security part 3](https://youtu.be/ii05cMbJ4xQ?feature=shared)
+  For an interactive reading and how-to demo of this dependency scanning documentation, see [How to use dependency scanning tutorial hands-on GitLab Application Security part 3](https://youtu.be/ii05cMbJ4xQ?feature=shared)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
   For other interactive reading and how-to demos, see [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)
 
 ## Getting started
 
-To get started with Dependency Scanning the following steps show how to enable Dependency Scanning for your project.
+To get started with dependency scanning the following steps show how to enable it for your project.
 
 Prerequisites:
 
@@ -114,8 +114,8 @@ To enable the analyzer, either:
 
 ### Use a preconfigured merge request
 
-This method automatically prepares a merge request that includes the Dependency Scanning template
-in the `.gitlab-ci.yml` file. You then merge the merge request to enable Dependency Scanning.
+This method automatically prepares a merge request that includes the dependency scanning template
+in the `.gitlab-ci.yml` file. You then merge the merge request to enable dependency scanning.
 
 {{< alert type="note" >}}
 
@@ -125,7 +125,7 @@ might occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually
 
 {{< /alert >}}
 
-To enable Dependency Scanning:
+To enable dependency scanning:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
@@ -133,14 +133,14 @@ To enable Dependency Scanning:
 1. Select **Create merge request**.
 1. Review the merge request, then select **Merge**.
 
-Pipelines now include a Dependency Scanning job.
+Pipelines now include a dependency scanning job.
 
 ### Edit the `.gitlab-ci.yml` file manually
 
 This method requires you to manually edit the existing `.gitlab-ci.yml` file. Use this method if
 your GitLab CI/CD configuration file is complex.
 
-To enable Dependency Scanning:
+To enable dependency scanning:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build** > **Pipeline editor**.
@@ -165,7 +165,7 @@ To enable Dependency Scanning:
    merge request**.
 1. Review and edit the merge request according to your standard workflow, then select **Merge**.
 
-Pipelines now include a Dependency Scanning job.
+Pipelines now include a dependency scanning job.
 
 ### Use CI/CD components
 
@@ -176,7 +176,7 @@ Pipelines now include a Dependency Scanning job.
 
 {{< /history >}}
 
-Use [CI/CD components](../../../ci/components/_index.md) to perform Dependency Scanning of your
+Use [CI/CD components](../../../ci/components/_index.md) to perform dependency scanning of your
 application. For instructions, see the respective component's README file.
 
 #### Available CI/CD components
@@ -212,7 +212,7 @@ You can review vulnerabilities in a pipeline:
    - Links: Evidence of the vulnerability being cataloged in various advisory databases.
    - Identifiers: A list of references used to classify the vulnerability, such as CVE identifiers.
 
-Dependency Scanning produces the following output:
+Dependency scanning produces the following output:
 
 - **Dependency scanning report**: Contains details of all vulnerabilities detected in dependencies.
 - **CycloneDX Software Bill of Materials**: Software Bill of Materials (SBOM) for each supported
@@ -229,7 +229,7 @@ For more details of the dependency scanning report, see the
 
 ### CycloneDX Software Bill of Materials
 
-Dependency Scanning outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM)
+Dependency scanning outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM)
 for each supported lock or build file it detects.
 
 The CycloneDX SBOMs are:
@@ -305,14 +305,14 @@ merge cyclonedx sboms:
 
 ## Roll out
 
-After you are confident in the Dependency Scanning results for a single project, you can extend its implementation to additional projects:
+After you are confident in the dependency scanning results for a single project, you can extend its implementation to additional projects:
 
-- Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply Dependency Scanning settings across groups.
-- If you have unique requirements, Dependency Scanning with SBOM can be run in [offline environments](../offline_deployments/_index.md).
+- Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply dependency scanning settings across groups.
+- If you have unique requirements, dependency scanning with SBOM can be run in [offline environments](../offline_deployments/_index.md).
 
 ## Supported languages and package managers
 
-The following languages and dependency managers are supported by Dependency Scanning:
+The following languages and dependency managers are supported by dependency scanning:
 
 <!-- markdownlint-disable MD044 -->
 <table class="ds-table">
@@ -512,7 +512,7 @@ See [Use security scanning tools with merge request pipelines](../detect/securit
 
 ### Customizing analyzer behavior
 
-To customize Dependency Scanning, use [CI/CD variables](#available-cicd-variables).
+To customize dependency scanning, use [CI/CD variables](#available-cicd-variables).
 
 {{< alert type="warning" >}}
 
@@ -559,7 +559,7 @@ The following variables allow configuration of global dependency scanning settin
 | CI/CD variables             | Description |
 | ----------------------------|------------ |
 | `ADDITIONAL_CA_CERT_BUNDLE` | Bundle of CA certificates to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. For more details, see [Custom TLS certificate authority](#custom-tls-certificate-authority). |
-| `DS_EXCLUDED_ANALYZERS`     | Specify the analyzers (by name) to exclude from Dependency Scanning. For more information, see [Analyzers](#analyzers). |
+| `DS_EXCLUDED_ANALYZERS`     | Specify the analyzers (by name) to exclude from dependency scanning. For more information, see [Analyzers](#analyzers). |
 | `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. This is a pre-filter which is applied before the scan is executed. Default: `"spec, test, tests, tmp"`. |
 | `DS_IMAGE_SUFFIX`           | Suffix added to the image name. (GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/354796`). Automatically set to `"-fips"` when FIPS mode is enabled. |
 | `DS_MAX_DEPTH`              | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`. |
@@ -578,7 +578,7 @@ The following variables configure the behavior of specific dependency scanning a
 | `GEMNASIUM_IGNORED_SCOPES`           | `gemnasium`        |                              | Comma-separated list of Maven dependency scopes to ignore. For more details, see the [Maven dependency scope documentation](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope) |
 | `DS_REMEDIATE`                       | `gemnasium`        | `"true"`, `"false"` in FIPS mode | Enable automatic remediation of vulnerable dependencies. Not supported in FIPS mode. |
 | `DS_REMEDIATE_TIMEOUT`               | `gemnasium`        | `5m`                         | Timeout for auto-remediation. |
-| `GEMNASIUM_LIBRARY_SCAN_ENABLED`     | `gemnasium`        | `"true"`                     | Enable detecting vulnerabilities in vendored JavaScript libraries (libraries which are not managed by a package manager). This functionality requires a JavaScript lockfile to be present in a commit, otherwise Dependency Scanning is not executed and vendored files are not scanned.<br>Dependency scanning uses the [Retire.js](https://github.com/RetireJS/retire.js) scanner to detect a limited set of vulnerabilities. For details of which vulnerabilities are detected, see the [Retire.js repository](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json). |
+| `GEMNASIUM_LIBRARY_SCAN_ENABLED`     | `gemnasium`        | `"true"`                     | Enable detecting vulnerabilities in vendored JavaScript libraries (libraries which are not managed by a package manager). This functionality requires a JavaScript lockfile to be present in a commit, otherwise dependency scanning is not executed and vendored files are not scanned.<br>Dependency scanning uses the [Retire.js](https://github.com/RetireJS/retire.js) scanner to detect a limited set of vulnerabilities. For details of which vulnerabilities are detected, see the [Retire.js repository](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json). |
 | `DS_INCLUDE_DEV_DEPENDENCIES`        | `gemnasium`        | `"true"`                     | When set to `"false"`, development dependencies and their vulnerabilities are not reported. Only projects using Composer, Maven, npm, pnpm, Pipenv or Poetry are supported. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227861) in GitLab 15.1. |
 | `GOOS`                               | `gemnasium`        | `"linux"`                    | The operating system for which to compile Go code. |
 | `GOARCH`                             | `gemnasium`        | `"amd64"`                    | The architecture of the processor for which to compile Go code. |
@@ -601,7 +601,7 @@ The following variables configure the behavior of specific dependency scanning a
 
 The previous tables are not an exhaustive list of all variables that can be used. They contain all specific GitLab and analyzer variables we support and test. There are many variables, such as environment variables, that you can pass in and they do work. This is a large list, many of which we may be unaware of, and as such is not documented.
 
-For example, to pass the non-GitLab environment variable `HTTPS_PROXY` to all Dependency Scanning jobs,
+For example, to pass the non-GitLab environment variable `HTTPS_PROXY` to all dependency scanning jobs,
 set it as a [CI/CD variable in your `.gitlab-ci.yml`](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
 file like this:
 
@@ -616,7 +616,7 @@ Gradle projects require [an additional variable](#using-a-proxy-with-gradle-proj
 
 {{< /alert >}}
 
-Alternatively we may use it in specific jobs, like Dependency Scanning:
+Alternatively we may use it in specific jobs, like dependency scanning:
 
 ```yaml
 dependency_scanning:
@@ -631,7 +631,7 @@ or contributing to the code to enable it to be used.
 
 ### Custom TLS certificate authority
 
-Dependency Scanning allows for use of custom TLS certificates for SSL/TLS connections instead of the
+Dependency scanning allows for use of custom TLS certificates for SSL/TLS connections instead of the
 default shipped with the analyzer container image.
 
 Support for custom certificate authorities was introduced in the following versions.
@@ -915,7 +915,7 @@ project for an example of how this can be done.
 
 ## Dependency detection
 
-Dependency Scanning automatically detects the languages used in the repository. All analyzers
+Dependency scanning automatically detects the languages used in the repository. All analyzers
 matching the detected languages are run. There is usually no need to customize the selection of
 analyzers. We recommend not specifying the analyzers so you automatically use the full selection for
 best coverage, avoiding the need to make adjustments when there are deprecations or removals.
@@ -924,7 +924,7 @@ However, you can override the selection using the variable `DS_EXCLUDED_ANALYZER
 The language detection relies on CI job [`rules`](../../../ci/yaml/_index.md#rules) to detect
 [supported dependency file](#how-analyzers-are-triggered)
 
-For Java and Python, when a supported dependency file is detected, Dependency Scanning attempts to
+For Java and Python, when a supported dependency file is detected, dependency scanning attempts to
 build the project and execute some Java or Python commands to get the list of dependencies. For all
 other projects, the lock file is parsed to obtain the list of dependencies without needing to build
 the project first.
@@ -933,14 +933,14 @@ All direct and transitive dependencies are analyzed, without a limit to the dept
 
 ### Analyzers
 
-Dependency Scanning supports the following official
+Dependency scanning supports the following official
 [Gemnasium-based](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) analyzers:
 
 - `gemnasium`
 - `gemnasium-maven`
 - `gemnasium-python`
 
-The analyzers are published as Docker images, which Dependency Scanning uses to launch dedicated
+The analyzers are published as Docker images, which dependency scanning uses to launch dedicated
 containers for each analysis. You can also integrate a custom
 security scanner.
 
@@ -1251,7 +1251,7 @@ We recommend that you use the most recent version of all containers, and the mos
 
 ### Gradle projects
 
-Do not override the `reports.html.destination` or `reports.html.outputLocation` properties when generating an HTML dependency report for Gradle projects. Doing so prevents Dependency Scanning from functioning correctly.
+Do not override the `reports.html.destination` or `reports.html.outputLocation` properties when generating an HTML dependency report for Gradle projects. Doing so prevents dependency scanning from functioning correctly.
 
 ### Maven Projects
 

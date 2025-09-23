@@ -64,6 +64,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
         .to receive(:track_execution_start)
       expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
         .to receive(:track_execution_end)
+      expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+        .to receive(:cleanup_stale_trackers)
 
       worker_klass.perform_async('foo')
     end
@@ -75,6 +77,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::Server, feature_cate
         .not_to receive(:track_execution_start)
       expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
         .not_to receive(:track_execution_end)
+      expect(Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService)
+        .not_to receive(:cleanup_stale_trackers)
 
       worker_klass.perform_async('foo')
     end

@@ -20,6 +20,7 @@ module MergeRequests
         user.invalidate_merge_request_cache_counts
         current_user.invalidate_merge_request_cache_counts
         request_duo_code_review(merge_request) if user == duo_code_review_bot
+        execute_flow_triggers(merge_request, [user], :assign_reviewer)
 
         success
       end

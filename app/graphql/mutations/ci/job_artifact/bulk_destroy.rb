@@ -6,7 +6,7 @@ module Mutations
       class BulkDestroy < BaseMutation
         graphql_name 'BulkDestroyJobArtifacts'
 
-        authorize :destroy_artifacts
+        authorize :delete_job_artifact
 
         ArtifactId = ::Types::GlobalIDType[::Ci::JobArtifact]
         ProjectId = ::Types::GlobalIDType[::Project]

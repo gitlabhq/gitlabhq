@@ -6,7 +6,7 @@ module Mutations
       class ArtifactsDestroy < Base
         graphql_name 'JobArtifactsDestroy'
 
-        authorize :destroy_artifacts
+        authorize :delete_job_artifact
 
         field :job,
           Types::Ci::JobType,

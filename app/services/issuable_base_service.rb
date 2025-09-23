@@ -281,7 +281,11 @@ class IssuableBaseService < ::BaseContainerService
     handle_label_changes(issuable, old_associations[:labels])
   end
 
-  def execute_triggers(issuable, old_associations = {})
+  def execute_triggers(_issuable, _old_associations = {})
+    # This is overridden in EE
+  end
+
+  def execute_flow_triggers(_issuable, _users, _event_type)
     # This is overridden in EE
   end
 

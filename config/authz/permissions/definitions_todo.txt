@@ -288,7 +288,6 @@ delete_work_item
 destroy_alert_management_alert
 destroy_alert_management_metric_image
 destroy_approvers
-destroy_artifacts
 destroy_branch_rule
 destroy_build
 destroy_cluster

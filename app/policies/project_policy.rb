@@ -679,7 +679,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_cluster
     enable :create_environment_terminal
     enable :destroy_release
-    enable :destroy_artifacts
+    enable :delete_job_artifact
     enable :admin_operations
     enable :admin_sentry
     enable :read_deploy_token

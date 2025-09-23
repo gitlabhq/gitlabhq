@@ -90,6 +90,7 @@ module Issues
 
       create_assignee_note(issue, old_assignees)
       Gitlab::ResourceEvents::AssignmentEventRecorder.new(parent: issue, old_assignees: old_assignees).record
+      execute_flow_triggers(issue, issue.assignees, :assign)
     end
 
     def resolve_discussions_with_issue(issue)

@@ -17,7 +17,6 @@ module QA
 
             base.view 'app/assets/javascripts/members/placeholders/components/placeholders_table.vue' do
               element 'placeholder-status'
-              element 'placeholder-reassigned'
             end
           end
 
@@ -33,12 +32,6 @@ module QA
           def has_reassignment_status?(placeholder, status, wait: QA::Support::WaitForRequests::DEFAULT_MAX_WAIT_TIME)
             within_element(placeholder.to_s.to_sym) do
               has_element?('placeholder-status', text: status, wait: wait)
-            end
-          end
-
-          def has_reassigned_user?(placeholder, username, wait: QA::Support::WaitForRequests::DEFAULT_MAX_WAIT_TIME)
-            within_element(placeholder.to_s.to_sym) do
-              has_element?('placeholder-reassigned', text: username, wait: wait)
             end
           end
 

@@ -28,7 +28,7 @@ module MergeRequests
       trigger_user_merge_request_updated(merge_request)
 
       execute_assignees_hooks(merge_request, old_assignees) if options['execute_hooks']
-      execute_triggers(merge_request, { assignees: old_assignees })
+      execute_flow_triggers(merge_request, new_assignees, :assign)
     end
 
     private

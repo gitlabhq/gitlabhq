@@ -593,6 +593,12 @@ see [Group placeholder reassignments API](../../../api/group_placeholder_reassig
 
 #### Keep as placeholder
 
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/535431) in GitLab 18.5, the operation can be undone.
+
+{{< /history >}}
+
 You might not want to reassign contributions and memberships to users on the destination instance. For example, you
 might have former employees that contributed on the source instance, but they do not exist as users on the destination
 instance.
@@ -602,10 +608,6 @@ membership information because they [cannot be members of projects or groups](#p
 
 Because names and usernames of placeholder users resemble names and usernames of source users, you keep a lot of
 historical context.
-
-Remember that if you keep remaining placeholder users as placeholders, you cannot reassign their contributions to
-actual users later. Ensure all required reassignments are completed before keeping the remaining placeholder users as
-placeholders.
 
 You can keep contributions assigned to placeholder users either one at a time or in bulk.
 When you reassign contributions in bulk, the entire namespace and users with the following
@@ -633,6 +635,15 @@ To keep placeholder users in bulk:
 1. Select the **Placeholders** tab.
 1. Above the list, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Keep all as placeholders**.
 1. On the confirmation dialog, select **Confirm**.
+
+To undo the operation:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+   This group must be at the top level.
+1. Select **Manage > Members**.
+1. Select the **Placeholders** tab.
+1. Go to **Reassigned** sub-tab, where placeholders are listed in a table.
+1. Select **Undo** in the correct row.
 
 #### Cancel reassignment request
 

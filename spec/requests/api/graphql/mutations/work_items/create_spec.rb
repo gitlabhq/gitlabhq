@@ -24,13 +24,6 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
   let(:mutation_response) { graphql_mutation_response(:work_item_create) }
   let(:current_user) { developer }
 
-  before_all do
-    # Ensure support bot user is created so creation doesn't count towards query limit
-    # and we don't try to obtain an exclusive lease within a transaction.
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
-    Users::Internal.support_bot_id
-  end
-
   RSpec.shared_examples 'creates work item' do
     it 'creates the work item' do
       expect(work_item_type_gid.model_id.to_i).to eq(work_item_create_type.id)

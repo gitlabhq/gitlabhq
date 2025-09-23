@@ -360,7 +360,7 @@ describe('stage column component', () => {
                   name: 'build job',
                   kind: 'BUILD',
                   needs: [],
-                  previousStageJobsOrNeeds: [],
+                  previousStageJobs: [],
                   status: {
                     icon: 'status_success',
                     tooltip: 'passed',
@@ -384,7 +384,7 @@ describe('stage column component', () => {
                   name: 'build job [eu-region]',
                   kind: 'BUILD',
                   needs: [],
-                  previousStageJobsOrNeeds: [],
+                  previousStageJobs: [],
                   status: {
                     icon: 'status_success',
                     tooltip: 'passed',

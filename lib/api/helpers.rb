@@ -436,8 +436,8 @@ module API
       authorize! :read_job_artifacts, build
     end
 
-    def authorize_destroy_artifacts!
-      authorize! :destroy_artifacts, user_project
+    def authorize_delete_job_artifact!
+      authorize! :delete_job_artifact, user_project
     end
 
     def authorize_cancel_builds!

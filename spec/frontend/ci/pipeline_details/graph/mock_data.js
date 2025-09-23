@@ -209,7 +209,7 @@ export const wrappedPipelineReturn = {
                             __typename: 'CiBuildNeedConnection',
                             nodes: [],
                           },
-                          previousStageJobsOrNeeds: {
+                          previousStageJobs: {
                             __typename: 'CiJobConnection',
                             nodes: [],
                           },

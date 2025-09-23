@@ -66,6 +66,7 @@
       #duo-chat-panel
 
   - else
+    - @content_wrapper_class = "#{@content_wrapper_class || ""} gl-@container" if container_queries_enabled
     .content-wrapper{ class: "#{@content_wrapper_class}" }
       -# Broadcast messages
       .broadcast-wrapper

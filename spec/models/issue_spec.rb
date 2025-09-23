@@ -10,13 +10,6 @@ RSpec.describe Issue, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be_with_reload(:reusable_project) { create(:project) }
 
-  before_all do
-    # Ensure support bot user is created so creation doesn't count towards query limit
-    # and we don't try to obtain an exclusive lease within a transaction.
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
-    Users::Internal.support_bot_id
-  end
-
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
     it { is_expected.to belong_to(:project) }

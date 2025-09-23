@@ -31,10 +31,6 @@ RSpec.describe 'Bulk move work items', feature_category: :team_planning do
   before_all do
     group.add_developer(developer)
     target_group.add_developer(developer)
-    # Ensure support bot user is created so creation doesn't count towards query limit
-    # and we don't try to obtain an exclusive lease within a transaction.
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
-    Users::Internal.support_bot_id
   end
 
   context 'when user can move all work items' do

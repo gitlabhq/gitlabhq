@@ -74,6 +74,7 @@ module Issues
       notification_service.async.reassigned_issue(issue, current_user, old_assignees)
       todo_service.reassigned_assignable(issue, current_user, old_assignees)
       track_incident_action(current_user, issue, :incident_assigned)
+      execute_flow_triggers(issue, issue.assignees - old_assignees, :assign)
 
       GraphqlTriggers.issuable_assignees_updated(issue)
     end

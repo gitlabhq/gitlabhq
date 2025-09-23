@@ -21,13 +21,6 @@ RSpec.describe WorkItems::ExportCsvService, :with_license, feature_category: :te
     CSV.parse(subject.csv_data, headers: true)
   end
 
-  before_all do
-    # Ensure support bot user is created so creation doesn't count towards query limit,
-    # and we don't try to obtain an exclusive lease within a transaction.
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
-    Users::Internal.support_bot_id
-  end
-
   context 'when work_items_project_issues_list flag is not enabled' do
     before do
       stub_feature_flags(work_items_project_issues_list: false)

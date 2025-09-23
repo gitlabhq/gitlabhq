@@ -358,12 +358,12 @@ export default {
 
         <div
           v-if="projectStudioEnabled && hasEmoji"
-          class="gl-absolute -gl-bottom-1 -gl-right-1 gl-flex gl-h-5 gl-w-5 gl-cursor-pointer gl-items-center gl-rounded-full gl-bg-neutral-0 gl-text-sm gl-shadow-sm"
+          class="gl-absolute -gl-bottom-1 -gl-right-1 gl-flex gl-h-5 gl-w-5 gl-cursor-pointer gl-items-center gl-justify-center gl-rounded-full gl-bg-neutral-0 gl-text-sm gl-shadow-sm"
           :title="data.status.message"
         >
           <gl-emoji
             :data-name="data.status.emoji"
-            class="gl-pointer-events-none gl-ml-[0.09375rem] !gl-text-[1em]"
+            class="super-sidebar-status-emoji gl-pointer-events-none !gl-text-[1em]"
           />
         </div>
       </template>

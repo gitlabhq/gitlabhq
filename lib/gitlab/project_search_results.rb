@@ -4,12 +4,12 @@ module Gitlab
   class ProjectSearchResults < SearchResults
     attr_reader :project, :repository_ref
 
-    def initialize(current_user, query, project:, repository_ref: nil, order_by: nil, sort: nil, filters: {}, source: nil)
+    def initialize(current_user, query, project:, repository_ref: nil, order_by: nil, sort: nil, filters: {})
       @project = project
       @repository_ref = repository_ref.presence
 
       # use the default filter for project searches since we are already limiting by a single project
-      super(current_user, query, [project], order_by: order_by, sort: sort, filters: filters, default_project_filter: true, source: source)
+      super(current_user, query, [project], order_by: order_by, sort: sort, filters: filters, default_project_filter: true)
     end
 
     def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE, preload_method: nil)

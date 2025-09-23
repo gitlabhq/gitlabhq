@@ -470,7 +470,7 @@ export default {
           'gl-p-0': list.collapsed,
         }"
       >
-        <span class="gl-inline-flex" :class="{ 'gl-rotate-90': list.collapsed }">
+        <span class="gl-inline-flex gl-items-center" :class="{ 'gl-rotate-90': list.collapsed }">
           <gl-button
             ref="itemCount"
             v-gl-tooltip

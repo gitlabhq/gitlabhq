@@ -13,7 +13,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   before_action :authorize_read_build!
   before_action :authorize_read_build_trace!, only: [:download]
   before_action :authorize_read_job_artifacts!, only: [:download, :browse, :raw]
-  before_action :authorize_destroy_artifacts!, only: [:destroy]
+  before_action :authorize_delete_job_artifact!, only: [:destroy]
   before_action :extract_ref_name_and_path
   before_action :validate_artifacts!, except: [:index, :download, :raw, :destroy]
   before_action :entry, only: [:external_file, :file]

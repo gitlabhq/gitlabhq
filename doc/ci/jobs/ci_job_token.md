@@ -367,6 +367,8 @@ push to your project.
 When you use a job token to push to the project, no CI pipelines are triggered. The job token has
 the same access permissions as the user who started the job.
 
+If you use the tool semantic-release, with **Allow Git push requests to the repository** setting enabled, the tool gives precedence to CI_JOB_TOKEN embedded over a GitLab personal access token, if one is configured. There is an [open issue](https://github.com/semantic-release/gitlab/issues/891) that tracks resolution for this edge case.
+
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.

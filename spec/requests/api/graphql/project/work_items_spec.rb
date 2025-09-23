@@ -35,13 +35,6 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
   let(:items_data) { graphql_data['project']['workItems']['nodes'] }
   let(:item_filter_params) { {} }
 
-  before_all do
-    # Ensure support bot user is created so creation doesn't count towards query limit
-    # and we don't try to obtain an exclusive lease within a transaction.
-    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
-    Users::Internal.support_bot_id
-  end
-
   shared_examples 'work items resolver without N + 1 queries' do |threshold: 0|
     it 'avoids N+1 queries', :use_sql_query_cache do
       post_graphql(query, current_user: current_user) # warm-up

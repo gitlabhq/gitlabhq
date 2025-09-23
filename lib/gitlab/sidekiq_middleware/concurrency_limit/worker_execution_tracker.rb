@@ -4,6 +4,8 @@ module Gitlab
   module SidekiqMiddleware
     module ConcurrencyLimit
       class WorkerExecutionTracker
+        include ExclusiveLeaseGuard
+
         TRACKING_KEY_TTL = 600.seconds
 
         def initialize(worker_name:, prefix:)
@@ -30,14 +32,16 @@ module Gitlab
         end
 
         def cleanup_stale_trackers
-          executing_threads_hash = with_redis { |r| r.hgetall(worker_executing_hash_key) }
-          return if executing_threads_hash.empty?
+          try_obtain_lease do
+            executing_threads_hash = with_redis { |r| r.hgetall(worker_executing_hash_key) }
+            break if executing_threads_hash.empty?
 
-          dangling = executing_threads_hash.filter { |k, v| !still_executing?(k, v) }
-          return if dangling.empty?
+            dangling = executing_threads_hash.filter { |k, v| !still_executing?(k, v) }
+            break if dangling.empty?
 
-          with_redis do |r|
-            r.hdel(worker_executing_hash_key, dangling)
+            with_redis do |r|
+              r.hdel(worker_executing_hash_key, dangling)
+            end
           end
         end
 
@@ -48,6 +52,18 @@ module Gitlab
         private
 
         attr_reader :worker_name
+
+        def lease_timeout
+          TRACKING_KEY_TTL
+        end
+
+        def lease_key
+          "#{@prefix}:{#{worker_name.underscore}}"
+        end
+
+        def lease_release?
+          false
+        end
 
         def with_redis(&)
           Redis::QueuesMetadata.with(&) # rubocop:disable CodeReuse/ActiveRecord -- Not active record

@@ -20247,6 +20247,9 @@ msgstr ""
 msgid "Current"
 msgstr ""
 
+msgid "Current Chat"
+msgstr ""
+
 msgid "Current Project"
 msgstr ""
 
@@ -42648,6 +42651,9 @@ msgid "New"
 msgstr ""
 
 msgid "New %{type} in %{project}"
+msgstr ""
+
+msgid "New Chat"
 msgstr ""
 
 msgid "New File"
@@ -70286,6 +70292,9 @@ msgid "UserList|Delete %{name}?"
 msgstr ""
 
 msgid "UserList|created %{timeago}"
+msgstr ""
+
+msgid "UserMappingKeepAsPlaceholder|Status could not be changed."
 msgstr ""
 
 msgid "UserMapping|%{count} placeholder user was kept as a placeholder."
