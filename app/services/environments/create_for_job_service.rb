@@ -11,10 +11,8 @@ module Environments
       environment = to_resource(job)
 
       if environment.persisted?
-        if Feature.enabled?(:persisted_job_environment_relationship, job.project)
-          job.run_after_commit do
-            job.link_to_environment(environment)
-          end
+        job.run_after_commit do
+          job.link_to_environment(environment)
         end
 
         job.persisted_environment = environment

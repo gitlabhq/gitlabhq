@@ -9,7 +9,7 @@ title: GitLab plugin for JetBrains IDEs
 The [GitLab Duo plugin](https://plugins.jetbrains.com/plugin/22325-gitlab-duo) integrates GitLab Duo with JetBrains IDEs
 like IntelliJ, PyCharm, GoLand, Webstorm, and Rubymine.
 
-[Install and configure the extension](setup.md).
+To install and configure the extension, see [Install and set up](setup.md).
 
 ## Enable experimental or beta features
 

@@ -43,6 +43,7 @@ module Gitlab
             deployment_rejected: 'deployment rejected',
             ip_restriction_failure: 'IP address restriction failure',
             failed_outdated_deployment_job: 'failed outdated deployment job',
+            runner_provisioning_timeout: 'runner provisioning timeout',
             reached_downstream_pipeline_trigger_rate_limit: 'Too many downstream pipelines triggered in the last minute. Try again later.'
           }.freeze
           # rubocop: enable Layout/LineLength

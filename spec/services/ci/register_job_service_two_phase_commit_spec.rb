@@ -80,6 +80,9 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
         expect(build).to be_pending
         expect(build.runner_id).to be_nil
 
+        expect(::Ci::RetryStuckWaitingJobWorker).to receive(:perform_in)
+          .with(Ci::Build::RUNNER_ACK_QUEUE_EXPIRY_TIME, build.id)
+
         result = execute
 
         expect(result).to be_valid
@@ -150,6 +153,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
           end
 
           it 'rolls back runner assignment and Redis state' do
+            expect(Ci::RetryStuckWaitingJobWorker).not_to receive(:perform_in)
             allow_next_instance_of(Gitlab::Ci::Queue::Metrics) do |metrics|
               allow(metrics).to receive(:increment_queue_operation)
               expect(metrics).not_to receive(:increment_queue_operation).with(:runner_assigned_waiting)
@@ -170,6 +174,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
           end
 
           it 'rolls back runner assignment and Redis state' do
+            expect(Ci::RetryStuckWaitingJobWorker).not_to receive(:perform_in)
             allow_next_instance_of(Gitlab::Ci::Queue::Metrics) do |metrics|
               allow(metrics).to receive(:increment_queue_operation)
               expect(metrics).not_to receive(:increment_queue_operation).with(:runner_assigned_waiting)
@@ -186,6 +191,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
 
         context 'when queue removal fails' do
           it 'rolls back runner assignment and Redis state' do
+            expect(Ci::RetryStuckWaitingJobWorker).not_to receive(:perform_in)
             allow_next_instance_of(Gitlab::Ci::Queue::Metrics) do |metrics|
               allow(metrics).to receive(:increment_queue_operation)
               expect(metrics).not_to receive(:increment_queue_operation).with(:runner_assigned_waiting)
@@ -321,6 +327,9 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
       end
 
       it 'assigns job to waiting state' do
+        expect(Ci::RetryStuckWaitingJobWorker).to receive(:perform_in)
+          .with(Ci::Build::RUNNER_ACK_QUEUE_EXPIRY_TIME, pending_job.id)
+
         result = execute
 
         expect(result).to be_valid

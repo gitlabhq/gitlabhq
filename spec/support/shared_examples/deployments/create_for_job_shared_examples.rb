@@ -95,18 +95,6 @@ RSpec.shared_examples 'create deployment for job' do
 
           expect(job_environment.deployment_id).to eq(subject.id)
         end
-
-        context 'when the persisted_job_environment_relationship feature flag is disabled' do
-          before do
-            stub_feature_flags(persisted_job_environment_relationship: false)
-          end
-
-          it 'does not update the associated job environment record' do
-            subject
-
-            expect(job_environment.deployment_id).to be_nil
-          end
-        end
       end
 
       context 'when environment has deployment platform' do

@@ -386,6 +386,8 @@ module Ci
           Ci::UpdateBuildQueueService.new.remove!(build)
         end
 
+        Ci::RetryStuckWaitingJobWorker.perform_in(Ci::Build::RUNNER_ACK_QUEUE_EXPIRY_TIME, build.id)
+
         success = true
       rescue ActiveRecord::ActiveRecordError
         # If we didn't manage to remove pending job, let's roll back the Redis change

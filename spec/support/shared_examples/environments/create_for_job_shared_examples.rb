@@ -39,20 +39,6 @@ RSpec.shared_examples 'create environment for job' do
         )
       end
 
-      context 'when the persisted_job_environment_relationship feature flag is disabled' do
-        before do
-          stub_feature_flags(persisted_job_environment_relationship: false)
-        end
-
-        it 'does not create an associated job environment record' do
-          subject
-
-          job.save!
-
-          expect(job.job_environment).to be_nil
-        end
-      end
-
       context 'when environment has already existed' do
         let!(:environment) do
           create(:environment,
@@ -84,20 +70,6 @@ RSpec.shared_examples 'create environment for job' do
             expanded_environment_name: environment.name,
             options: job.environment_options_for_permanent_storage
           )
-        end
-
-        context 'when the persisted_job_environment_relationship feature flag is disabled' do
-          before do
-            stub_feature_flags(persisted_job_environment_relationship: false)
-          end
-
-          it 'does not create an associated job environment record' do
-            subject
-
-            job.save!
-
-            expect(job.job_environment).to be_nil
-          end
         end
 
         it_behaves_like 'internal event tracking' do

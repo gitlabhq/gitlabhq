@@ -33,6 +33,7 @@ module Gitlab
           :runner_pre_assign_checks_failed,
           :runner_pre_assign_checks_success,
           :runner_queue_tick,
+          :runner_queue_timeout,
           :runner_assigned_waiting,
           :runner_assigned_run,
           :shared_runner_build_new,

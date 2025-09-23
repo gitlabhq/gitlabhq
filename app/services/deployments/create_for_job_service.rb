@@ -18,9 +18,7 @@ module Deployments
 
       deployment.save!
 
-      if Feature.enabled?(:persisted_job_environment_relationship, job.project) && job.job_environment.present?
-        job.job_environment.update!(deployment: deployment)
-      end
+      job.job_environment.update!(deployment: deployment) if job.job_environment.present?
 
       job.association(:deployment).target = deployment
       job.association(:deployment).loaded!

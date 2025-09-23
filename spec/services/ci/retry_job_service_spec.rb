@@ -111,16 +111,6 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
             options: job.environment_options_for_permanent_storage
           )
         end
-
-        context 'when the persisted_job_environment_relationship feature flag is disabled' do
-          before do
-            stub_feature_flags(persisted_job_environment_relationship: false)
-          end
-
-          it 'does not link the cloned job to the environment' do
-            expect(new_job.reload_job_environment).to be_nil
-          end
-        end
       end
 
       it 'marks the old job as retried' do

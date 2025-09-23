@@ -469,6 +469,8 @@ RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :conti
     let_it_be(:runner) { create(:ci_runner) }
     let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner, system_xid: 'abc') }
 
+    let(:redis_klass) { Gitlab::Redis::SharedState }
+
     context 'when build is waiting for runner acknowledgment', :clean_gitlab_redis_cache do
       let(:build) do
         create(:ci_build, :waiting_for_runner_ack, pipeline: pipeline, runner: runner,
@@ -494,7 +496,7 @@ RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :conti
             expect { execute }.to not_change { build.reload.runner_manager }.from(nil)
           end
 
-          it 'updates runner heartbeat and reschedules worker' do
+          it 'updates runner manager heartbeat' do
             expect(build).to receive(:heartbeat_runner_ack_wait).with(runner_manager.id)
 
             execute
@@ -635,24 +637,6 @@ RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :conti
           end
         end
       end
-
-      private
-
-      def runner_build_ack_queue_key
-        build.send(:runner_build_ack_queue_key)
-      end
-
-      def redis_ttl(cache_key)
-        Gitlab::Redis::SharedState.with do |redis|
-          redis.ttl(cache_key)
-        end
-      end
-
-      def consume_redis_ttl(cache_key)
-        Gitlab::Redis::SharedState.with do |redis|
-          redis.set(cache_key, runner_manager.id, ex: Ci::Build::RUNNER_ACK_QUEUE_EXPIRY_TIME - 1, nx: false)
-        end
-      end
     end
 
     context 'when build is not waiting for runner acknowledgment' do
@@ -728,6 +712,24 @@ RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :conti
 
           expect(execute.status).to eq 200
         end
+      end
+    end
+
+    private
+
+    def runner_build_ack_queue_key
+      build.send(:runner_build_ack_queue_key)
+    end
+
+    def redis_ttl(cache_key)
+      redis_klass.with do |redis|
+        redis.ttl(cache_key)
+      end
+    end
+
+    def consume_redis_ttl(cache_key)
+      redis_klass.with do |redis|
+        redis.set(cache_key, runner_manager.id, ex: Ci::Build::RUNNER_ACK_QUEUE_EXPIRY_TIME - 1, nx: false)
       end
     end
   end
