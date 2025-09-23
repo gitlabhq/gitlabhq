@@ -38,13 +38,24 @@ module Gitlab
       end
 
       def predefined_claims
-        project_claims.merge(ci_claims)
+        project_claims.merge(job_project_claims).merge(ci_claims)
       end
 
+      # Claims for the source project of a merge request pipeline,
+      # or else claims of the project where the pipeline is running.
       def project_claims
-        ::JSONWebToken::ProjectTokenClaims
+        ::JSONWebToken::UserProjectTokenClaims
          .new(project: source_project, user: user)
          .generate
+      end
+
+      # Claims related to the project running the job.
+      # These claims match project_claims unless this is
+      # a merge request pipeline for a fork project.
+      def job_project_claims
+        ::JSONWebToken::UserProjectTokenClaims
+         .new(project: project, user: user)
+         .project_claims(key_prefix: 'job_')
       end
 
       def ci_claims
@@ -88,10 +99,8 @@ module Gitlab
         false # Overridden in EE
       end
 
-      # Only for Merge Request pipelines from forked projects, "source_project" is different from "project".
-      # In this case, the "project" is the target project of the merge request where the pipeline is created
-      # And "source_project" is the source project of the merge request.
-      # For all other cases "project" and "source_project" are one and the same
+      # Source project of a merge request pipeline,
+      # or else project where the pipeline is running.
       def source_project
         pipeline.merge_request_from_forked_project? ? pipeline.merge_request.source_project : project
       end

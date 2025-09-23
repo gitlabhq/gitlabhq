@@ -55,7 +55,7 @@ RSpec.describe Mutations::DesignManagement::Upload, feature_category: :api do
         let(:files) do
           ['dk.png', 'rails_sample.jpg', 'banana_sample.gif']
            .cycle
-           .take(Concurrent.processor_count * 2)
+           .take(6)
            .map { |f| RenameableUpload.unique_file(f) }
         end
 
@@ -67,7 +67,7 @@ RSpec.describe Mutations::DesignManagement::Upload, feature_category: :api do
           expect(DesignManagement::Design.count).to eq(prior_count + files.size)
         end
 
-        describe 'running requests in parallel' do
+        describe 'running requests in parallel', :delete do
           it 'does not cause errors' do
             # max_concurrency is set to be less than the LOCK_RETRY_COUNT to avoid
             # Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError.
@@ -85,7 +85,7 @@ RSpec.describe Mutations::DesignManagement::Upload, feature_category: :api do
           end
         end
 
-        describe 'running requests in parallel on different issues' do
+        describe 'running requests in parallel on different issues', :delete do
           it 'does not cause errors' do
             creates_designs do
               issues = create_list(:issue, files.size, author: current_user)
