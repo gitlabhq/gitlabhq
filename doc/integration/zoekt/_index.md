@@ -87,37 +87,113 @@ Prerequisites:
 Indexing performance depends on the CPU and memory limits on the Zoekt indexer nodes.
 To check indexing status:
 
-   {{< tabs >}}
+{{< tabs >}}
 
-   {{< tab title="GitLab 17.10 and later" >}}
+{{< tab title="GitLab 17.10 and later" >}}
 
-   Run this Rake task:
+Run this Rake task:
 
-   ```shell
-   gitlab-rake gitlab:zoekt:info
-   ```
+```shell
+gitlab-rake gitlab:zoekt:info
+```
 
-   To have the data refresh automatically every 10 seconds, run this task instead:
+To have the data refresh automatically every 10 seconds, run this task instead:
 
-   ```shell
-   gitlab-rake "gitlab:zoekt:info[10]"
-   ```
+```shell
+gitlab-rake "gitlab:zoekt:info[10]"
+```
 
-   {{< /tab >}}
+{{< /tab >}}
 
-   {{< tab title="GitLab 17.9 and earlier" >}}
+{{< tab title="GitLab 17.9 and earlier" >}}
 
-   In a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session), run these commands:
+In a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session), run these commands:
 
-   ```ruby
-   Search::Zoekt::Index.group(:state).count
-   Search::Zoekt::Repository.group(:state).count
-   Search::Zoekt::Task.group(:state).count
-   ```
+```ruby
+Search::Zoekt::Index.group(:state).count
+Search::Zoekt::Repository.group(:state).count
+Search::Zoekt::Task.group(:state).count
+```
 
-  {{< /tab >}}
+{{< /tab >}}
 
-   {{< /tabs >}}
+{{< /tabs >}}
+
+### Sample output
+
+The `gitlab:zoekt:info` Rake task returns an output similar to the following:
+
+```console
+Exact Code Search
+GitLab version:                           18.4.0
+Enable indexing:                          yes
+Enable searching:                         yes
+Pause indexing:                           no
+Index root namespaces automatically:      yes
+Cache search results for five minutes:    yes
+Indexing CPU to tasks multiplier:         1.0
+Number of parallel processes per indexing task: 1
+Number of namespaces per indexing rollout: 32
+Offline nodes automatically deleted after: 20m
+Indexing timeout per project:             30m
+Maximum number of files per project to be indexed: 500000
+Retry interval for failed namespaces:    1d
+
+Nodes
+# Number of Zoekt nodes and their status
+Node count:                               2 (online: 2, offline: 0)
+Last seen at:                             2025-09-15 22:58:09 UTC (less than a minute ago)
+Max schema_version:                       2531
+Storage reserved / usable:                71.1 MiB / 124 GiB (0.06%)
+Storage indexed / reserved:               42.7 MiB / 71.1 MiB (60.0%)
+Storage used / total:                     797 GiB / 921 GiB (86.54%)
+Online node watermark levels:            2
+  - low: 2
+
+Indexing status
+Group count:                              8
+# Number of enabled namespaces and their status 
+EnabledNamespace count:                   8 (without indices: 0, rollout blocked: 0, with search disabled: 0)
+Replicas count:                           8
+  - ready: 8
+Indices count:                            8
+  - ready: 8
+Indices watermark levels:                 8
+  - healthy: 8
+Repositories count:                       10
+  - ready: 10
+Tasks count:                              10
+  - done: 10
+Tasks pending/processing by type:         (none)
+
+Feature Flags (Non-Default Values)
+Feature flags:                            none
+
+Feature Flags (Default Values)
+- zoekt_cross_namespace_search:           disabled
+- zoekt_debug_delete_repo_logging:        disabled
+- zoekt_load_balancer:                    disabled
+- zoekt_rollout_worker:                   enabled
+- zoekt_search_meta_project_ids:          disabled
+- zoekt_traversal_id_queries:             disabled
+
+Node Details
+Node 1 - test-zoekt-hostname-1:
+  Status:                                 Online
+  Last seen at:                           2025-09-15 22:58:09 UTC (less than a minute ago)
+  Disk utilization:                       86.54%
+  Unclaimed storage:                      62 GiB
+  # Zoekt build version on the node. Must match GitLab version.
+  Zoekt version:                          2025.09.14-v1.4.4-30-g0e7414a
+  Schema version:                         2531
+Node 2 - test-zoekt-hostname-2:
+  Status:                                 Online
+  Last seen at:                           2025-09-15 22:58:09 UTC (less than a minute ago)
+  Disk utilization:                       86.54%
+  Unclaimed storage:                      62 GiB
+  Zoekt version:                          2025.09.14-v1.4.4-30-g0e7414a
+  Schema version:                         2531
+```
 
 ## Run a health check
 

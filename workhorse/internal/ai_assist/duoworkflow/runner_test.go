@@ -9,6 +9,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"testing"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/stretchr/testify/assert"
@@ -19,12 +20,15 @@ import (
 )
 
 type mockWebSocketConn struct {
-	readMessages  [][]byte
-	writeMessages [][]byte
-	readIndex     int
-	readError     error
-	writeError    error
-	blockCh       chan bool
+	readMessages      [][]byte
+	writeMessages     [][]byte
+	readIndex         int
+	readError         error
+	writeError        error
+	closeError        error
+	writeControlError error
+	setDeadlineError  error
+	blockCh           chan bool
 }
 
 func (m *mockWebSocketConn) ReadMessage() (int, []byte, error) {
@@ -49,6 +53,18 @@ func (m *mockWebSocketConn) WriteMessage(_ int, data []byte) error {
 	}
 	m.writeMessages = append(m.writeMessages, data)
 	return nil
+}
+
+func (m *mockWebSocketConn) Close() error {
+	return m.closeError
+}
+
+func (m *mockWebSocketConn) WriteControl(_ int, _ []byte, _ time.Time) error {
+	return m.writeControlError
+}
+
+func (m *mockWebSocketConn) SetReadDeadline(_ time.Time) error {
+	return m.setDeadlineError
 }
 
 type mockWorkflowStream struct {
@@ -466,6 +482,70 @@ func TestRunner_handleAgentAction(t *testing.T) {
 				require.JSONEq(t, `[{"id": 123, "name": "test-project"}]`, responseBody)
 			} else {
 				require.Empty(t, mockWf.sendEvents)
+			}
+		})
+	}
+}
+
+func TestRunner_closeWebSocketConnection(t *testing.T) {
+	tests := []struct {
+		name              string
+		writeControlError error
+		setDeadlineError  error
+		closeError        error
+		expectedErrMsg    string
+	}{
+		{
+			name:           "successful close",
+			expectedErrMsg: "",
+		},
+		{
+			name:              "write control error followed by successful close",
+			writeControlError: errors.New("write control failed"),
+			expectedErrMsg:    "failed to send close message: write control failed",
+		},
+		{
+			name:              "write control error followed by close error",
+			writeControlError: errors.New("write control failed"),
+			closeError:        errors.New("close failed"),
+			expectedErrMsg:    "failed to send close message and failed to close connection: close failed",
+		},
+		{
+			name:             "set deadline error followed by successful close",
+			setDeadlineError: errors.New("set deadline failed"),
+			expectedErrMsg:   "failed to set read deadline: set deadline failed",
+		},
+		{
+			name:             "set deadline error followed by close error",
+			setDeadlineError: errors.New("set deadline failed"),
+			closeError:       errors.New("close failed"),
+			expectedErrMsg:   "failed to set read deadline and failed to close connection: close failed",
+		},
+		{
+			name:           "close error after successful control operations",
+			closeError:     errors.New("close failed"),
+			expectedErrMsg: "failed to close connection: close failed",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mockConn := &mockWebSocketConn{
+				writeControlError: tt.writeControlError,
+				setDeadlineError:  tt.setDeadlineError,
+				closeError:        tt.closeError,
+			}
+
+			r := &runner{
+				conn: mockConn,
+			}
+
+			err := r.closeWebSocketConnection()
+
+			if tt.expectedErrMsg != "" {
+				require.EqualError(t, err, tt.expectedErrMsg)
+			} else {
+				require.NoError(t, err)
 			}
 		})
 	}

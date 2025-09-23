@@ -122,7 +122,7 @@ export default {
     class="discussions-counter gl-flex"
   >
     <div
-      class="gl-flex gl-min-h-7 gl-items-center gl-rounded-base gl-pl-4"
+      class="gl-flex gl-min-h-7 gl-items-center gl-rounded-lg gl-pl-4"
       :class="{
         'gl-bg-feedback-warning': blocksMerge && !allResolved,
         'gl-bg-strong': !blocksMerge || allResolved,
@@ -141,8 +141,8 @@ export default {
           :title="__('Thread options')"
           :toggle-text="__('Thread options')"
           text-sr-only
-          toggle-class="btn-icon"
-          class="gl-ml-3 gl-h-full !gl-rounded-base !gl-pt-0"
+          toggle-class="btn-icon !gl-rounded-l-none"
+          class="gl-ml-3 gl-h-full !gl-pt-0"
           :items="threadOptions"
         />
       </template>
@@ -153,7 +153,7 @@ export default {
             v-gl-tooltip.html="previousUnresolvedDiscussionTooltip"
             :aria-label="previousUnresolvedDiscussionTitle"
             :aria-keyshortcuts="previousUnresolvedDiscussionShortcutKey"
-            class="discussion-previous-btn !gl-rounded-base !gl-px-2"
+            class="discussion-previous-btn !gl-rounded-none !gl-px-2"
             data-track-action="click_button"
             data-track-label="mr_previous_unresolved_thread"
             data-track-property="click_previous_unresolved_thread_top"
@@ -165,7 +165,7 @@ export default {
             v-gl-tooltip.html="nextUnresolvedDiscussionTooltip"
             :aria-label="nextUnresolvedDiscussionTitle"
             :aria-keyshortcuts="nextUnresolvedDiscussionShortcutKey"
-            class="discussion-next-btn !gl-rounded-base !gl-px-2"
+            class="discussion-next-btn !gl-rounded-none !gl-px-2"
             data-track-action="click_button"
             data-track-label="mr_next_unresolved_thread"
             data-track-property="click_next_unresolved_thread_top"
@@ -184,7 +184,6 @@ export default {
             :toggle-text="__('Thread options')"
             text-sr-only
             toggle-class="btn-icon"
-            class="!gl-rounded-base !gl-pt-0"
             :items="threadOptions"
           />
         </gl-button-group>

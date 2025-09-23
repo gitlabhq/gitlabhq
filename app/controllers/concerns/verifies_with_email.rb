@@ -87,6 +87,32 @@ module VerifiesWithEmail
     render layout: 'minimal'
   end
 
+  def skip_verification_for_now
+    return unless user = find_verification_user
+    return unless permitted_to_skip_email_otp_in_grace_period?(user)
+
+    # remove verification_user_id from session to indicate that verification process is done for this user
+    session.delete(:verification_user_id)
+    sign_in(user)
+    # If an email-otp was set, e.g. by this or a concurrent sign in attempt,
+    # clear it since user chose to skip verification so the previous otp no longer applies.
+    # In rare cases if email otp failed to clear,
+    # we don't want to block the workflow as the email otp will be reset in the next user login.
+    # As a result we will just log the event and move on
+    if user.email_otp.present? && !user.update(email_otp: nil)
+      log_verification(
+        user,
+        :email_otp_clear_failed,
+        "Failed to clear email_otp: #{user.errors.full_messages.join(', ')}"
+      )
+    end
+
+    log_verification(user, :skipped, 'user chose to skip verification in grace period')
+    log_user_activity(user)
+
+    render json: { status: :success }
+  end
+
   private
 
   def skip_verify_with_email?
@@ -200,7 +226,7 @@ module VerifiesWithEmail
       # Devise::Confirmable
       user.last_sign_in_at.present? &&
       user.email_otp_required_after.present? &&
-      user.email_otp_required_after <= Time.zone.now
+      (user.email_otp_required_after <= Time.zone.now || in_email_otp_grace_period?(user))
   end
 
   def verify_token(user, token)

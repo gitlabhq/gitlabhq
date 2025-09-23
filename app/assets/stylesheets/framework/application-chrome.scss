@@ -487,6 +487,18 @@
     }
   }
 
+  // MR changes tab
+  .container-fluid:not(.container-limited),
+  .container-fluid.rd-page-container {
+    .detail-page-header,
+    .detail-page-description,
+    .merge-request-tabs-container {
+      &.is-merge-request {
+        max-width: $fixed-layout-width - ($gl-padding-12 * 2) !important;
+      }
+    }
+  }
+
   // Position fixed sidebar fix
   .right-sidebar:not(.right-sidebar-merge-requests):not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) {
     @apply gl-hidden #{!important};

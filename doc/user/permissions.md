@@ -110,6 +110,8 @@ Group permissions for [CI/CD](../ci/_index.md) features including runners, varia
 
 Group permissions for [compliance](compliance/_index.md) features including compliance center, audit events, compliance frameworks, and licenses.
 
+{{< footnote-table >}}
+
 | Action                                                                                 | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | -------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
 | View [audit events](compliance/audit_events.md) <sup>1</sup>                           |       |         |          |     ✓     |     ✓      |   ✓   |
@@ -119,13 +121,15 @@ Group permissions for [compliance](compliance/_index.md) features including comp
 | Assign [compliance frameworks](compliance/compliance_frameworks/_index.md) to projects |       |         |          |           |            |   ✓   |
 | Manage [audit streams](compliance/audit_event_streaming.md)                            |       |         |          |           |            |   ✓   |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-1. Users can view only events based on their individual actions. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites).
+{{< footnote 1 >}}Users can view events based on their individual actions only. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites).{{< /footnote >}}
 
 ### GitLab Duo group permissions
 
 Group permissions for [GitLab Duo](gitlab_duo/_index.md):
+
+{{< footnote-table >}}
 
 | Action                                                                                                     | Non-member | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ---------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: | :---: |
@@ -135,15 +139,15 @@ Group permissions for [GitLab Duo](gitlab_duo/_index.md):
 | Enable [beta and experimental features](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features)  |            |       |         |          |           |            |   ✓   |
 | Purchase [GitLab Duo seats](../subscriptions/subscription-add-ons.md#purchase-additional-gitlab-duo-seats) |            |       |         |          |           |            |   ✓   |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-1. If the user has GitLab Duo Pro or Enterprise, the
-   [user must be assigned a seat to gain access to that GitLab Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
-   If the user has GitLab Duo Core, there are no other requirements.
+{{< footnote 1 >}}For GitLab Duo Pro or Enterprise, the [user must be assigned a seat](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats). For GitLab Duo Core, there are no other requirements.{{< /footnote >}}
 
 ### Groups group permissions
 
 Group permissions for [group features](group/_index.md):
+
+{{< footnote-table >}}
 
 | Action                                                                                      | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
@@ -169,20 +173,16 @@ Group permissions for [group features](group/_index.md):
 | Disable notification emails                                                                 |       |         |          |           |            |   ✓   |
 | Import [project](project/settings/import_export.md)                                         |       |         |          |           |     ✓      |   ✓   |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-1. Developers and Maintainers can only view events based on their individual actions. For more
-   information, see the [prerequisites](compliance/audit_events.md#prerequisites).
-1. Developers, Maintainers and Owners: Only if the project creation role is set
-   [for the instance](../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects)
-    or [for the group](group/_index.md#specify-who-can-add-projects-to-a-group).
-   <br>Developers: Developers can push commits to the default branch of a new project only
-   if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group)
-   is set to "Partially protected" or "Not protected".
-1. Maintainers: Only if users with the Maintainer role [can create subgroups](group/subgroups/_index.md#change-who-can-create-subgroups).
-1. Does not apply to subgroups.
+{{< footnote 1 >}}Developers and Maintainers can view events based on their individual actions only. For more information, see the [prerequisites](compliance/audit_events.md#prerequisites).{{< /footnote >}}
+{{< footnote 2 >}}Developers, Maintainers and Owners: Only if a role is set to create a project [for the instance](../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects) or [for the group](group/_index.md#specify-who-can-add-projects-to-a-group). <br>Developers: Developers can push commits to the default branch of a new project only if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group) is partially or not protected.{{< /footnote >}}
+{{< footnote 3 >}}Maintainers: Only if users with the Maintainer role [can create subgroups](group/subgroups/_index.md#change-who-can-create-subgroups).{{< /footnote >}}
+{{< footnote 4 >}}Does not apply to subgroups.{{< /footnote >}}
 
 ### Project planning group permissions
+
+{{< footnote-table >}}
 
 | Action                                                                              | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ----------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
@@ -196,13 +196,15 @@ Group permissions for [group features](group/_index.md):
 | Manage [epic boards](group/epics/epic_boards.md)                                    |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Delete epics                                                                        |       |    ✓    |          |           |            |   ✓   |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-1. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic).
-1. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic) and edit the issue.
-1. You must have permission to [view](group/epics/manage_epics.md#who-can-view-an-epic) the parent and child epics.
+{{< footnote 1 >}}You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic).{{< /footnote >}}
+{{< footnote 2 >}}You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic) and edit the issue.{{< /footnote >}}
+{{< footnote 3 >}}You must have permission to [view](group/epics/manage_epics.md#who-can-view-an-epic) the parent and child epics.{{< /footnote >}}
 
 Group permissions for [wikis](project/wiki/group.md):
+
+{{< footnote-table >}}
 
 | Action                                              | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | --------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
@@ -212,14 +214,16 @@ Group permissions for [wikis](project/wiki/group.md):
 | Edit group wiki pages                               |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
 | Delete group wiki pages                             |       |    ✓    |          |     ✓     |     ✓      |   ✓   |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-1. Guests: In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.
-1. Guests: In addition, if your group is public or internal, all users who can see the group can also search group wiki pages.
+{{< footnote 1 >}}Guests: In addition, if your group is public or internal, all users who can view the group can also view group wiki pages.{{< /footnote >}}
+{{< footnote 2 >}}Guests: In addition, if your group is public or internal, all users who can view the group can also search group wiki pages.{{< /footnote >}}
 
 ### Packages and registries group permissions
 
 Group permissions for [container registry](packages/_index.md):
+
+{{< footnote-table >}}
 
 | Action                                          | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ----------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
@@ -227,9 +231,9 @@ Group permissions for [container registry](packages/_index.md):
 | Pull container images with the dependency proxy |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Delete container registry images                |       |         |          |     ✓     |     ✓      |   ✓   |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-1. Guests can only view events based on their individual actions.
+{{< footnote 1 >}}Guests can view events based on their individual actions only.{{< /footnote >}}
 
 Group permissions for [package registry](packages/_index.md):
 
@@ -315,6 +319,8 @@ Project permissions for [analytics](analytics/_index.md) features including valu
 
 Project permissions for [application security](application_security/secure_your_application.md) features including dependency management, security analyzers, security policies, and vulnerability management.
 
+{{< footnote-table >}}
+
 | Action                                                                                                                              | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ----------------------------------------------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
 | View [dependency list](application_security/dependency_list/_index.md)                                                              |       |         |          |     ✓     |     ✓      |   ✓   |
@@ -334,9 +340,9 @@ Project permissions for [application security](application_security/secure_your_
 | Assign [security policy project](application_security/policies/_index.md)                                                           |       |         |          |           |            |   ✓   |
 | Manage [security configurations](application_security/detect/security_configuration.md)                                             |       |         |          |           |     ✓      |   ✓   |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-1. The `admin_vulnerability` permission was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/412693) from the Developer role in GitLab 17.0.
+{{< footnote 1 >}}The `admin_vulnerability` permission was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/412693) from the Developer role in GitLab 17.0.{{< /footnote >}}
 
 ### CI/CD
 
@@ -345,9 +351,11 @@ Project permissions for [application security](application_security/secure_your_
 - [Project-based pipeline visibility](../ci/pipelines/settings.md#change-which-users-can-view-your-pipelines):
   When set to public, gives access to certain CI/CD features to Guest project members.
 - [Pipeline visibility](../ci/pipelines/settings.md#change-pipeline-visibility-for-non-project-members-in-public-projects):
-  When set to **Everyone with Access**, gives access to certain CI/CD "view" features to non-project members.
+  When set to **Everyone with Access**, gives access to non-project members to view certain CI/CD features.
 
 Project Owners can perform any listed action, and can delete pipelines:
+
+{{< footnote-table >}}
 
 | Action                                                                                                      | Non-member | Guest | Planner | Reporter | Developer | Maintainer |
 | ----------------------------------------------------------------------------------------------------------- | :--------: | :---: | :-----: | :------: | :-------: | :--------: |
@@ -391,35 +399,32 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Clear runner caches manually                                                                                |            |       |         |          |           |     ✓      |
 | Enable instance runners in project                                                                          |            |       |         |          |           |     ✓      |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
-<!-- markdownlint-disable MD029 -->
-
-1. Non-members and guests: Only if the project is public.
-2. Non-members: Only if the project is public and **Project-based pipeline visibility** is enabled.
-   <br>Guests: Only if **Project-based pipeline visibility** is enabled.
-3. Non-members: Only if the project is public, **Project-based pipeline visibility** is enabled,
+{{< footnote 1 >}}Non-members and guests: Only if the project is public.{{< /footnote >}}
+{{< footnote 2 >}}Non-members: Only if the project is public and **Project-based pipeline visibility** is turned on.
+   <br>Guests: Only if **Project-based pipeline visibility** is turned on.{{< /footnote >}}
+{{< footnote 3 >}}Non-members: Only if the project is public, **Project-based pipeline visibility** is turned on,
    and [`artifacts:public: false`](../ci/yaml/_index.md#artifactspublic) is not set on the job.
-   <br>Guests: Only if **Project-based pipeline visibility** is enabled and
+   <br>Guests: Only if **Project-based pipeline visibility** is turned on and
    `artifacts:public: false` is not set on the job.<br>Reporters: Only if `artifacts:public: false`
-   is not set on the job.
-4. Guests: Only if **Project-based pipeline visibility** is enabled.
-5. Reporters: Only if the user is [part of a group with access to the protected environment](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments).
-   <br>Developers and maintainers: Only if the user is [allowed to deploy to the protected environment](../ci/environments/protected_environments.md#protecting-environments).
-6. Developers and maintainers: Only if the user is [allowed to merge or push to the protected branch](../ci/pipelines/_index.md#pipeline-security-on-protected-branches).
-7. Developers: Only if the job was triggered by the user and runs for a non-protected branch.
-8. Cancellation permissions can be [restricted in the pipeline settings](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs).
-9. Maintainers: Must have the Maintainer role for a project associated with the runner.
-10. Maintainers: Must have the Maintainer role for [the owner project](../ci/runners/runners_scope.md#project-runner-ownership) (first project associated with runner).
-11. Maintainers: Must have the Maintainer role for the project being added and for a project already associated with the runner.
-
-<!-- markdownlint-enable MD029 -->
+   is not set on the job.{{< /footnote >}}
+{{< footnote 4 >}}Guests: Only if **Project-based pipeline visibility** is turned on.{{< /footnote >}}
+{{< footnote 5 >}}Reporters: Only if the user is [part of a group with access to the protected environment](../ci/environments/protected_environments.md#deployment-only-access-to-protected-environments).
+   <br>Developers and maintainers: Only if the user is [allowed to deploy to the protected environment](../ci/environments/protected_environments.md#protecting-environments).{{< /footnote >}}
+{{< footnote 6 >}}Developers and maintainers: Only if the user is [allowed to merge or push to the protected branch](../ci/pipelines/_index.md#pipeline-security-on-protected-branches).{{< /footnote >}}
+{{< footnote 7 >}}Developers: Only if the job was triggered by the user and runs for an unprotected branch.{{< /footnote >}}
+{{< footnote 8 >}}Cancellation permissions can be [restricted in the pipeline settings](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs).{{< /footnote >}}
+{{< footnote 9 >}}Maintainers: Must have the Maintainer role for a project associated with the runner.{{< /footnote >}}
+{{< footnote 10 >}}Maintainers: Must have the Maintainer role for [the owner project](../ci/runners/runners_scope.md#project-runner-ownership) (first project associated with runner).{{< /footnote >}}
+{{< footnote 11 >}}Maintainers: Must have the Maintainer role for the project being added and for a project already associated with the runner.{{< /footnote >}}
 
 This table shows granted privileges for jobs triggered by specific roles.
 
 Project Owners can do any listed action, but no users can push source and LFS together.
 Guest users and members with the Reporter role cannot do any of these actions.
+
+{{< footnote-table >}}
 
 | Action                                                    | Developer | Maintainer |
 | --------------------------------------------------------- | :-------: | :--------: |
@@ -433,15 +438,17 @@ Guest users and members with the Reporter role cannot do any of these actions.
 | Pull container images from private projects <sup>2</sup>  |     ✓     |     ✓      |
 | Push container images to current project <sup>3</sup>     |     ✓     |     ✓      |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-1. Developers and Maintainers: Only if the triggering user is not an external user.
-1. Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](https://docs.gitlab.com/runner/security/#usage-of-private-docker-images-with-if-not-present-pull-policy).
-1. You cannot push container images to other projects.
+{{< footnote 1 >}}Developers and Maintainers: Only if the triggering user is not an external user.{{< /footnote >}}
+{{< footnote 2 >}}Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](https://docs.gitlab.com/runner/security/#usage-of-private-docker-images-with-if-not-present-pull-policy).{{< /footnote >}}
+{{< footnote 3 >}}You cannot push container images to other projects.{{< /footnote >}}
 
 ### Compliance
 
 Project permissions for [compliance](compliance/_index.md) features including compliance center, audit events, compliance frameworks, and licenses.
+
+{{< footnote-table >}}
 
 | Action                                                                                                          | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | --------------------------------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
@@ -450,31 +457,31 @@ Project permissions for [compliance](compliance/_index.md) features including co
 | View licenses in [dependency list](application_security/dependency_list/_index.md)                              |       |         |          |     ✓     |     ✓      |   ✓   |
 | Manage [audit streams](compliance/audit_event_streaming.md)                                                     |       |         |          |           |            |   ✓   |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-1. On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
-   and internal projects (not on private projects). [External users](../administration/external_users.md)
-   must have at least the Reporter role, even if the project is internal. Users with the Guest
-   role on GitLab.com are able to perform this action only on public projects because internal
-   visibility is not available.
-1. Users can only view events based on their individual actions. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites).
+{{< footnote 1 >}}On GitLab Self-Managed, the Guest role cannot perform this action on private projects. [External users](../administration/external_users.md) must have at least the Reporter role, even if the project is internal. On GitLab.com, the Guest role can perform this action on public projects only, because internal visibility is not available.{{< /footnote >}}
+{{< footnote 2 >}}Users can only view events based on their individual actions. For more details, see the [prerequisites](compliance/audit_events.md#prerequisites).{{< /footnote >}}
 
 ### GitLab Duo
 
 Project permissions for [GitLab Duo](gitlab_duo/_index.md):
+
+{{< footnote-table >}}
 
 | Action                                                                               | Non-member | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ------------------------------------------------------------------------------------ | :--------: | :---: | :-----: | :------: | :-------: | :--------: | :---: |
 | Use GitLab Duo features <sup>1</sup>                                                 |            |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Configure [GitLab Duo feature availability](gitlab_duo/turn_on_off.md#for-a-project) |            |       |         |          |           |     ✓      |   ✓   |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-1. Code Suggestions requires a [user being assigned a seat to gain access to a GitLab Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).
+{{< footnote 1 >}}For access to Code Suggestions, [a user must be assigned a seat](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-seats).{{< /footnote >}}
 
 ### Machine learning model registry and experiment
 
 Project permissions for [model registry](project/ml/model_registry/_index.md) and [model experiments](project/ml/experiment_tracking/_index.md).
+
+{{< footnote-table >}}
 
 | Action                                                                          | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
@@ -487,14 +494,11 @@ Project permissions for [model registry](project/ml/model_registry/_index.md) an
 | Edit experiments and candidates                                                 |       |         |          |     ✓     |     ✓      |   ✓   |
 | Delete experiments and candidates                                               |       |         |          |     ✓     |     ✓      |   ✓   |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-1. Non-members can only view models and versions in public projects with the **Everyone with access**
-   visibility level. Non-members can't view internal projects, even if they're logged in.
-1. Non-members can only view model experiments in public projects with the **Everyone with access**
-   visibility level. Non-members can't view internal projects, even if they're logged in.
-1. You can also upload and download artifacts with the package registry API, which uses
-   a different set of permissions.
+{{< footnote 1 >}}Non-members can view models and versions in public projects with the **Everyone with access** visibility level only. Non-members cannot view internal projects, even if they're logged in.{{< /footnote >}}
+{{< footnote 2 >}}Non-members can view model experiments in public projects with the **Everyone with access** visibility level only. Non-members cannot view internal projects, even if they're logged in.{{< /footnote >}}
+{{< footnote 3 >}}You can also upload and download artifacts with the package registry API, which uses a different set of permissions.{{< /footnote >}}
 
 ### Monitoring
 
@@ -522,6 +526,8 @@ Project permissions for monitoring including [error tracking](../operations/erro
 
 Project permissions for [issues](project/issues/_index.md):
 
+{{< footnote-table >}}
+
 | Action                                                                            | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | --------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
 | View issues                                                                       |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
@@ -548,17 +554,16 @@ Project permissions for [issues](project/issues/_index.md):
 | Delete issues                                                                     |       |         |          |           |            |   ✓   |
 | Manage [Feature flags](../operations/feature_flags.md)                            |       |         |          |     ✓     |     ✓      |   ✓   |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-1. Metadata includes labels, assignees, milestones, epics, weight, confidentiality, time tracking,
-   and more. Guest users can only set metadata when creating an issue. They cannot change the
-   metadata on existing issues. Guest users can modify the title and description of issues that
-   they authored or are assigned to.
-1. Guest users can close and reopen issues that they authored or are assigned to.
-1. Guest users can archive and reopen issues that they authored or are assigned to.
-1. Guest users can modify the title and description that they authored or are assigned to.
+{{< footnote 1 >}}Metadata includes labels, assignees, milestones, epics, weight, confidentiality, time tracking, and more. Guest users can set metadata only when creating an issue. They cannot change the metadata on existing issues. Guest users can modify the title and description of issues that they authored or are assigned to.{{< /footnote >}}
+{{< footnote 2 >}}Guest users can close and reopen issues that they authored or are assigned to.{{< /footnote >}}
+{{< footnote 3 >}}Guest users can archive and reopen issues that they authored or are assigned to.{{< /footnote >}}
+{{< footnote 4 >}}Guest users can modify the title and description that they authored or are assigned to.{{< /footnote >}}
 
 Project permissions for [tasks](tasks.md):
+
+{{< footnote-table >}}
 
 | Action                                                                           | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | -------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
@@ -572,10 +577,10 @@ Project permissions for [tasks](tasks.md):
 | Add internal note                                                                |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Delete tasks <sup>2</sup>                                                        |       |    ✓    |          |           |            |   ✓   |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-1. Guest users can modify the title and description that they authored or are assigned to.
-1. Users who don't have the Planner or Owner role can delete the tasks they authored.
+{{< footnote 1 >}}Guest users can modify the title and description that they authored or are assigned to.{{< /footnote >}}
+{{< footnote 2 >}}Users who don't have the Planner or Owner role can delete the tasks they authored.{{< /footnote >}}
 
 Project permissions for [OKRs](okrs.md):
 
@@ -606,6 +611,8 @@ Project permissions for [wikis](project/wiki/_index.md):
 
 Project permissions for [container registry](packages/_index.md):
 
+{{< footnote-table >}}
+
 | Action                                                                                           | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ------------------------------------------------------------------------------------------------ | :---: | :-----: | :------: | :-------: | :--------: | :---: |
 | Pull container registry images <sup>1</sup>                                                      |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
@@ -615,11 +622,13 @@ Project permissions for [container registry](packages/_index.md):
 | Create [tag protection](packages/container_registry/protected_container_tags.md) rules           |       |         |          |           |     ✓      |   ✓   |
 | Create [immutable tag protection](packages/container_registry/immutable_container_tags.md) rules |       |         |          |           |            |   ✓   |
 
-**Footnotes**:
+{{< /footnote-table >}}
 
-1. Viewing the container registry and pulling images is controlled by [container registry visibility permissions](packages/container_registry/_index.md#container-registry-visibility-permissions). The Guest role does not have viewing or pulling permissions in private projects.
+{{< footnote 1 >}}Viewing the container registry and pulling images is controlled by [container registry visibility permissions](packages/container_registry/_index.md#container-registry-visibility-permissions). The Guest role does not have viewing or pulling permissions in private projects.{{< /footnote >}}
 
 Project permissions for [package registry](packages/_index.md):
+
+{{< footnote-table >}}
 
 | Action                                  | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | --------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
@@ -628,17 +637,15 @@ Project permissions for [package registry](packages/_index.md):
 | Delete packages                         |       |         |          |           |     ✓      |   ✓   |
 | Delete files associated with a package  |       |         |          |           |     ✓      |   ✓   |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-1. On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
-   and internal projects (not on private projects). [External users](../administration/external_users.md)
-   must be given explicit access (at least the **Reporter** role) even if the project is internal.
-   Users with the Guest role on GitLab.com are only able to perform this action on public projects
-   because internal visibility is not available.
+{{< footnote 1 >}}On GitLab Self-Managed, the Guest role cannot perform this action only on private projects. [External users](../administration/external_users.md) must have at least the **Reporter** role, even if the project is internal. On GitLab.com, the Guest role can perform this action on public projects only, because internal visibility is not available.{{< /footnote >}}
 
 ### Projects
 
 Project permissions for [project features](project/organize_work_with_projects.md):
+
+{{< footnote-table >}}
 
 | Action                                                                                 | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | -------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
@@ -674,28 +681,14 @@ Project permissions for [project features](project/organize_work_with_projects.m
 | Disable notification emails                                                            |       |         |          |           |            |   ✓   |
 | Transfer project                                                                       |       |         |          |           |            |   ✓   |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
-<!-- markdownlint-disable MD029 -->
-
-1. On GitLab Self-Managed, users with the Guest role are able to perform this action only on
-   public and internal projects (not on private projects). [External users](../administration/external_users.md)
-   must be given explicit access (at least the **Reporter** role) even if the project is internal.
-   Users with the Guest role on GitLab.com are only able to perform this action on public projects
-   because internal visibility is not available.
-2. Applies only to comments on [Design Management](project/issues/design_management.md) designs.
-3. Guest users can access GitLab [**Releases**](project/releases/_index.md) for downloading
-   assets but are not allowed to download the source code nor see
-   [repository information like commits and release evidence](project/releases/_index.md#view-a-release-and-download-assets).
-4. If the [tag is protected](project/protected_tags.md), this depends on the access given to
-   Developers and Maintainers.
-5. For GitLab Self-Managed, project access tokens are available in all tiers. For GitLab.com,
-   project access tokens are supported in the Premium and Ultimate tier (excluding [trial licenses](https://about.gitlab.com/free-trial/)).
-6. A Maintainer or Owner can't change project features visibility level if
-   [project visibility](public_access.md) is set to private.
-
-   <!-- markdownlint-enable MD029 -->
+{{< footnote 1 >}}On GitLab Self-Managed, the Guest role cannot perform this action on private projects. [External users](../administration/external_users.md) must have at least the **Reporter** role, even if the project is internal. On GitLab.com, the Guest role can perform this action on public projects only, because internal visibility is not available.{{< /footnote >}}
+{{< footnote 2 >}}Applies only to comments on [Design Management](project/issues/design_management.md) designs.{{< /footnote >}}
+{{< footnote 3 >}}Guest users can access GitLab [**Releases**](project/releases/_index.md) for downloading assets but are not allowed to download the source code nor see [repository information like commits and release evidence](project/releases/_index.md#view-a-release-and-download-assets).{{< /footnote >}}
+{{< footnote 4 >}}If the [tag is protected](project/protected_tags.md), this depends on the access given to Developers and Maintainers.{{< /footnote >}}
+{{< footnote 5 >}}On GitLab Self-Managed, project access tokens are available in all tiers. On GitLab.com, project access tokens are supported in the Premium and Ultimate tier (excluding [trial licenses](https://about.gitlab.com/free-trial/)).{{< /footnote >}}
+{{< footnote 6 >}}A Maintainer or Owner cannot change project features visibility level if [project visibility](public_access.md) is set to private.{{< /footnote >}}
 
 Project permissions for [GitLab Pages](project/pages/_index.md):
 
@@ -710,6 +703,8 @@ Project permissions for [GitLab Pages](project/pages/_index.md):
 
 Project permissions for [repository](project/repository/_index.md) features including source code, branches, push rules, and more:
 
+{{< footnote-table >}}
+
 | Action                                                                | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | --------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
 | View project code <sup>1</sup>                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
@@ -717,8 +712,8 @@ Project permissions for [repository](project/repository/_index.md) features incl
 | [Search](search/_index.md) commits and comments <sup>3</sup>          |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Pull project code <sup>4</sup>                                        |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | View commit status                                                    |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create commit status <sup>5</sup>                                     |       |         |          |     ✓     |     ✓      |   ✓   |
-| Update commit status <sup>5</sup>                                     |       |         |          |     ✓     |     ✓      |   ✓   |
+| Create commit status <sup>1</sup>                                     |       |         |          |     ✓     |     ✓      |   ✓   |
+| Update commit status <sup>1</sup>                                     |       |         |          |     ✓     |     ✓      |   ✓   |
 | Create [Git tags](project/repository/tags/_index.md)                  |       |         |          |     ✓     |     ✓      |   ✓   |
 | Delete [Git tags](project/repository/tags/_index.md)                  |       |         |          |     ✓     |     ✓      |   ✓   |
 | Create new [branches](project/repository/branches/_index.md)          |       |         |          |     ✓     |     ✓      |   ✓   |
@@ -726,59 +721,32 @@ Project permissions for [repository](project/repository/_index.md) features incl
 | Force push to non-protected branches                                  |       |         |          |     ✓     |     ✓      |   ✓   |
 | Delete non-protected branches                                         |       |         |          |     ✓     |     ✓      |   ✓   |
 | Manage [protected branches](project/repository/branches/protected.md) |       |         |          |           |     ✓      |   ✓   |
-| Push to protected branches <sup>5</sup>                               |       |         |          |           |     ✓      |   ✓   |
+| Push to protected branches <sup>1</sup>                               |       |         |          |           |     ✓      |   ✓   |
 | Delete protected branches                                             |       |         |          |           |     ✓      |   ✓   |
 | Manage [protected tags](project/protected_tags.md)                    |       |         |          |           |     ✓      |   ✓   |
 | Manage [push rules](project/repository/push_rules.md)                 |       |         |          |           |     ✓      |   ✓   |
 | Remove fork relationship                                              |       |         |          |           |            |   ✓   |
-| Force push to protected branches <sup>6</sup>                         |       |         |          |           |            |       |
+| Force push to protected branches <sup>5</sup>                         |       |         |          |           |            |       |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-<!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
-<!-- markdownlint-disable MD029 -->
-
-1. On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
-   and internal projects (not on private projects). [External users](../administration/external_users.md)
-   must be given explicit access (at least the **Reporter** role) even if the project is internal.
-   Users with the Guest role on GitLab.com are only able to perform this action on public projects because
-   internal visibility is not available. In GitLab 15.9 and later, users with the Guest role and an
-   Ultimate license can view private repository content if an administrator (on GitLab Self-Managed
-   or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator
-   or group owner can create a [custom role](custom_roles/_index.md) through the API or UI and assign
-   that role to the users.
-2. On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
-   and internal projects (not on private projects). [External users](../administration/external_users.md)
-   must be given explicit access (at least the **Reporter** role) even if the project is internal. Users
-   with the Guest role on GitLab.com are only able to perform this action on public projects because
-   internal visibility is not available. In GitLab 15.9 and later, users with the Guest role and an
-   Ultimate license can search private repository content if an administrator (on GitLab Self-Managed
-   or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator
-   or group owner can create a [custom role](custom_roles/_index.md) through the API or UI and assign
-   that role to the users.
-3. On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
-   and internal projects (not on private projects). [External users](../administration/external_users.md)
-   must be given explicit access (at least the **Reporter** role) even if the project is internal. Users
-   with the Guest role on GitLab.com are only able to perform this action on public projects because
-   internal visibility is not available.
-4. If the [branch is protected](project/repository/branches/protected.md), this depends on the
-   access given to Developers and Maintainers.
-5. On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
-   and internal projects (not on private projects). [External users](../administration/external_users.md)
-   must be given explicit access (at least the **Reporter** role) even if the project is internal. Users
-   with the Guest role on GitLab.com are only able to perform this action on public projects because
-   internal visibility is not available. In GitLab 15.9 and later, users with the Guest role and an
-   Ultimate license can view private repository content if an administrator (on GitLab Self-Managed
-   or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator
-   or group owner can create a [custom role](custom_roles/_index.md) through the API or UI and assign
-   that role to the users.
-6. Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/repository/branches/protected.md#allow-force-push).
-
-<!-- markdownlint-enable MD029 -->
+{{< footnote 1 >}}On GitLab Self-Managed, the Guest role cannot perform this action on private projects.
+[External users](../administration/external_users.md) must have at least the **Reporter** role, even if the project is internal. On GitLab.com, the Guest role can perform this action on public projects because internal visibility is not available.
+In GitLab 15.9 and later, with the Guest role and an Ultimate license, users can view private repository content if given permission.
+Users can also get a [custom role](custom_roles/_index.md) instead.{{< /footnote >}}
+{{< footnote 2 >}}On GitLab Self-Managed, the Guest role cannot perform this action on private projects.
+[External users](../administration/external_users.md) must have at least the **Reporter** role, even if the project is internal. On GitLab.com, the Guest role can perform this action on public projects because internal visibility is not available.
+In GitLab 15.9 and later, with the Guest role and an Ultimate license, users can search private repository content if given permission.
+Users can also get a [custom role](custom_roles/_index.md) instead.{{< /footnote >}}
+{{< footnote 3 >}}On GitLab Self-Managed, the Guest role cannot perform this action on private projects. [External users](../administration/external_users.md) must have at least the **Reporter** role, even if the project is internal. On GitLab.com, the Guest role can perform this action on public projects because internal visibility is not available.{{< /footnote >}}
+{{< footnote 4 >}}If the [branch is protected](project/repository/branches/protected.md), this depends on the access given to Developers and Maintainers.{{< /footnote >}}
+{{< footnote 5 >}}Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/repository/branches/protected.md#allow-force-push).{{< /footnote >}}
 
 ### Merge requests
 
 Project permissions for [merge requests](project/merge_requests/_index.md):
+
+{{< footnote-table >}}
 
 | Action                                                                                    | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ----------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
@@ -793,23 +761,17 @@ Project permissions for [merge requests](project/merge_requests/_index.md):
 | Manage [merge request approval rules](project/merge_requests/approvals/rules.md)          |       |         |          |           |     ✓      |   ✓   |
 | Delete merge request                                                                      |       |         |          |           |            |   ✓   |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-1. On GitLab Self-Managed, users with the Guest role are able to perform this action only on public
-   and internal projects (not on private projects). [External users](../administration/external_users.md)
-   must be given explicit access (at least the **Reporter** role) even if the project is internal. Users
-   with the Guest role on GitLab.com are only able to perform this action on public projects because
-   internal visibility is not available.
-1. In projects that accept contributions from external members, users can create, edit, and close their
-   own merge requests. For **private** projects, this excludes the Guest role as those users
-   [cannot clone private projects](public_access.md#private-projects-and-groups). For **internal**
-   projects, includes users with read-only access to the project, as
-   [they can clone internal projects](public_access.md#internal-projects-and-groups).
-1. For information on eligible approvers for merge requests, see [eligible approvers](project/merge_requests/approvals/rules.md#eligible-approvers).
+{{< footnote 1 >}}On GitLab Self-Managed, the Guest role cannot perform this action on private projects. [External users](../administration/external_users.md) must have at least the Reporter role, even if the project is internal. On GitLab.com, the Guest can perform this action on public projects only, because internal visibility is not available.{{< /footnote >}}
+{{< footnote 2 >}}In projects that accept contributions from external members, users can create, edit, and close their own merge requests. For private projects, this excludes the Guest role. Those users [cannot clone private projects](public_access.md#private-projects-and-groups). For internal projects, includes users with read-only access to the project. [They can clone internal projects](public_access.md#internal-projects-and-groups).{{< /footnote >}}
+{{< footnote 3 >}}For information on eligible approvers for merge requests, see [eligible approvers](project/merge_requests/approvals/rules.md#eligible-approvers).{{< /footnote >}}
 
 ### User management
 
 Project permissions for [user management](project/members/_index.md).
+
+{{< footnote-table >}}
 
 | Action                                                           | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ---------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
@@ -817,12 +779,10 @@ Project permissions for [user management](project/members/_index.md).
 | Manage [project members](project/members/_index.md) <sup>1</sup> |       |         |          |           |     ✓      |   ✓   |
 | Share (invite) projects with groups <sup>2</sup>                 |       |         |          |           |     ✓      |   ✓   |
 
-**Footnotes**
+{{< /footnote-table >}}
 
-1. Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role.
-   They also cannot approve Owner role access requests.
-1. When [Share Group Lock](project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups)
-   is enabled the project can't be shared with other groups. It does not affect group with group sharing.
+{{< footnote 1 >}}Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role. They also cannot approve Owner role access requests.{{< /footnote >}}
+{{< footnote 2 >}}When [Share Group Lock](project/members/sharing_projects_groups.md#prevent-a-project-from-being-shared-with-groups) is turned on, the project can't be shared with other groups. It does not affect group with group sharing.{{< /footnote >}}
 
 ## Subgroup permissions
 

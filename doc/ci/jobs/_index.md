@@ -216,6 +216,7 @@ Selecting an individual job shows you its [job log](job_logs.md), and allows you
 {{< history >}}
 
 - Job name filter [added](https://gitlab.com/gitlab-org/gitlab/-/issues/387547) as an [experiment](../../policy/development_stages_support.md) on GitLab.com and GitLab Self-Managed in GitLab 17.3 [with flags](../../administration/feature_flags/_index.md) named `populate_and_use_build_names_table` for the API and `fe_search_build_by_name` for the UI. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512149) in GitLab 18.5. Feature flags `populate_and_use_build_names_table` and `fe_search_build_by_name` removed.
 - Job kind filter [added](https://gitlab.com/gitlab-org/gitlab/-/issues/555434) in GitLab 18.3.
 
 {{< /history >}}

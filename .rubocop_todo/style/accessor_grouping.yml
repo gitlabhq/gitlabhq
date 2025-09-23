@@ -22,7 +22,6 @@ Style/AccessorGrouping:
     - 'app/services/note_summary.rb'
     - 'app/services/notification_recipients/builder/default.rb'
     - 'app/services/task_list_toggle_service.rb'
-    - 'ee/app/models/approval_wrapped_rule.rb'
     - 'ee/app/models/integrations/chat_message/vulnerability_message.rb'
     - 'ee/app/services/ci/pipeline_creation/drop_not_runnable_builds_service.rb'
     - 'ee/lib/gitlab/ci/reports/coverage_fuzzing/crash.rb'

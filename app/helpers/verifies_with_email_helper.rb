@@ -6,6 +6,7 @@ module VerifiesWithEmailHelper
   # Used by frontend to decide if we should render the "skip for now" button
   def permitted_to_skip_email_otp_in_grace_period?(user)
     Feature.enabled?(:email_based_mfa, user) &&
+      !user.two_factor_enabled? &&
       trusted_ip_address?(user) &&
       !treat_as_locked?(user) &&
       in_email_otp_grace_period?(user)

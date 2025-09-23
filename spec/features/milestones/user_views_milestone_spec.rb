@@ -31,7 +31,7 @@ RSpec.describe "User views milestone", feature_category: :team_planning do
 
     create(:labeled_issue, issue_params)
 
-    control = ActiveRecord::QueryRecorder.new { visit_milestone }
+    control = ActiveRecord::QueryRecorder.new(skip_cached: false) { visit_milestone }
 
     create(:labeled_issue, issue_params)
 

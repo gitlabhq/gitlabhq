@@ -38,7 +38,8 @@ RSpec.describe 'Email OTP enrollment callout', :js, feature_category: :system_ac
         expect(page).not_to have_content(expected_title)
       end
 
-      it 'allows dismissing the callout with the action button' do
+      it 'allows dismissing the callout with the action button',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/570553' do
         visit root_path
         click_link(s_('EmailOTP|Review email addresses'))
 

@@ -37155,9 +37155,6 @@ msgstr ""
 msgid "Jobs|Create CI/CD configuration file"
 msgstr ""
 
-msgid "Jobs|Filter jobs"
-msgstr ""
-
 msgid "Jobs|Finished"
 msgstr ""
 
@@ -57267,9 +57264,6 @@ msgid "Search for projects, issues, etc."
 msgstr ""
 
 msgid "Search for this text"
-msgstr ""
-
-msgid "Search for this text (experiment)"
 msgstr ""
 
 msgid "Search forks"

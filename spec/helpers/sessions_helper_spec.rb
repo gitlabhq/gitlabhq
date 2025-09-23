@@ -26,6 +26,7 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
         obfuscated_email: obfuscated_email(user.email),
         verify_path: helper.session_path(:user),
         resend_path: users_resend_verification_code_path,
+        skip_path: users_skip_verification_for_now_path,
         permitted_to_skip_email_otp_in_grace_period: permitted_to_skip_email_otp_in_grace_period?(user)
       })
     end

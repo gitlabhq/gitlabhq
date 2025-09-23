@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"sync"
+	"time"
 
 	pb "gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb/contract"
 
@@ -17,6 +18,8 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )
+
+const wsCloseTimeout = 5 * time.Second
 
 var marshaler = protojson.MarshalOptions{
 	UseProtoNames:   true,
@@ -30,6 +33,9 @@ var unmarshaler = protojson.UnmarshalOptions{
 type websocketConn interface {
 	ReadMessage() (int, []byte, error)
 	WriteMessage(int, []byte) error
+	WriteControl(int, []byte, time.Time) error
+	SetReadDeadline(time.Time) error
+	Close() error
 }
 
 type workflowStream interface {
@@ -107,7 +113,33 @@ func (r *runner) Close() error {
 	r.sendMu.Lock()
 	defer r.sendMu.Unlock()
 
-	return errors.Join(r.wf.CloseSend(), r.client.Close())
+	return errors.Join(r.wf.CloseSend(), r.client.Close(), r.closeWebSocketConnection())
+}
+
+func (r *runner) closeWebSocketConnection() error {
+	deadline := time.Now().Add(wsCloseTimeout)
+	if err := r.conn.WriteControl(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""), deadline); err != nil {
+		// If we can't send the close message, just close the connection
+		closeErr := r.conn.Close()
+		if closeErr != nil {
+			return fmt.Errorf("failed to send close message and failed to close connection: %w", closeErr)
+		}
+		return fmt.Errorf("failed to send close message: %w", err)
+	}
+
+	if err := r.conn.SetReadDeadline(deadline); err != nil {
+		closeErr := r.conn.Close()
+		if closeErr != nil {
+			return fmt.Errorf("failed to set read deadline and failed to close connection: %w", closeErr)
+		}
+		return fmt.Errorf("failed to set read deadline: %w", err)
+	}
+
+	if err := r.conn.Close(); err != nil {
+		return fmt.Errorf("failed to close connection: %w", err)
+	}
+
+	return nil
 }
 
 func (r *runner) handleWebSocketMessage() error {

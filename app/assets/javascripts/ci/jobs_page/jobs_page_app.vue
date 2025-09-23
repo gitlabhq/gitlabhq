@@ -1,7 +1,6 @@
 <script>
 import { GlAlert, GlKeysetPagination } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { createAlert } from '~/alert';
 import { setUrlParams, updateHistory, queryToObject } from '~/lib/utils/url_utility';
 import { reportToSentry } from '~/ci/utils';
 import JobsSkeletonLoader from '~/ci/admin/jobs_table/components/jobs_skeleton_loader.vue';
@@ -13,7 +12,7 @@ import GetJobsCount from './graphql/queries/get_jobs_count.query.graphql';
 import JobsTable from './components/jobs_table.vue';
 import JobsTableEmptyState from './components/jobs_table_empty_state.vue';
 import JobsTableTabs from './components/jobs_table_tabs.vue';
-import { RAW_TEXT_WARNING, DEFAULT_PAGINATION, JOBS_PER_PAGE, BUILD_KIND } from './constants';
+import { DEFAULT_PAGINATION, JOBS_PER_PAGE, BUILD_KIND } from './constants';
 
 export default {
   name: 'JobsPageApp',
@@ -155,11 +154,7 @@ export default {
   },
   methods: {
     resetRequestData() {
-      if (this.glFeatures.feSearchBuildByName) {
-        this.requestData = { statuses: null, sources: null, name: null, kind: BUILD_KIND };
-      } else {
-        this.requestData = { statuses: null, sources: null, kind: BUILD_KIND };
-      }
+      this.requestData = { statuses: null, sources: null, name: null, kind: BUILD_KIND };
     },
     resetPagination() {
       this.pagination = {
@@ -193,14 +188,7 @@ export default {
 
       filters.forEach((filter) => {
         if (!filter.type) {
-          if (this.glFeatures.feSearchBuildByName) {
-            this.requestData.name = filter;
-          } else {
-            createAlert({
-              message: RAW_TEXT_WARNING,
-              variant: 'warning',
-            });
-          }
+          this.requestData.name = filter;
         }
 
         if (filter.type === 'status') {

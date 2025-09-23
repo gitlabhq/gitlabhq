@@ -59,10 +59,6 @@ RSpec.describe Resolvers::ProjectJobsResolver, feature_category: :continuous_int
         context 'with name filter also present' do
           let(:args) { { name: "Three", sources: %w[scan_execution_policy] } }
 
-          before do
-            stub_feature_flags(populate_and_use_build_names_table: true)
-          end
-
           it 'filters only by name' do
             is_expected.to contain_exactly(failed_build, pending_build)
           end
@@ -94,16 +90,6 @@ RSpec.describe Resolvers::ProjectJobsResolver, feature_category: :continuous_int
         let(:args) { { name: 'Three' } }
 
         it { is_expected.to contain_exactly(failed_build, pending_build) }
-
-        context 'when FF is disabled' do
-          before do
-            stub_feature_flags(populate_and_use_build_names_table: false)
-          end
-
-          it 'does not filter by name' do
-            is_expected.to contain_exactly(successful_build, successful_build_two, failed_build, pending_build)
-          end
-        end
 
         context 'when given pagination params' do
           let(:cursor) { Base64.strict_encode64({ id: failed_build.id.to_s }.to_json) }

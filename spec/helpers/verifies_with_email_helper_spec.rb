@@ -83,6 +83,14 @@ RSpec.describe VerifiesWithEmailHelper, feature_category: :system_access do
       it { is_expected.to be false }
     end
 
+    context 'when user has two factor authentication enabled' do
+      before do
+        allow(user).to receive(:two_factor_enabled?).and_return(true)
+      end
+
+      it { is_expected.to be false }
+    end
+
     context 'when IP address is not trusted' do
       let(:trusted_ip) { false }
 

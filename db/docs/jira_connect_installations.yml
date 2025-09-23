@@ -7,6 +7,6 @@ feature_categories:
 description: GitLab for Jira Cloud app installation data, formerly Jira Connect App.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/9593
 milestone: '11.9'
-gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/524682
+gitlab_schema: gitlab_main_org
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/560334
 table_size: small

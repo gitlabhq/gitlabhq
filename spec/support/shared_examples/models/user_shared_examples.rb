@@ -27,7 +27,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       admin_abuse_report_assignees
       resolved_abuse_reports
       abuse_events
-      abuse_trust_scores
       builds
       pipelines
       pipeline_schedules
@@ -94,7 +93,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       dependency_list_exports
       created_namespace_cluster_agent_mappings
       created_organization_cluster_agent_mappings
-      country_access_logs
       pipl_user
       user_admin_role
       user_member_role

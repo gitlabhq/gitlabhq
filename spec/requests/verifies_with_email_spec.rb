@@ -765,4 +765,116 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
       expect(response.body).to include(root_path)
     end
   end
+
+  describe 'skip_verification_for_now' do
+    let(:permitted_to_skip_email_otp_in_grace_period) { true }
+
+    before do
+      stub_session(session_data: { verification_user_id: user.id })
+      allow_next_instance_of(SessionsController) do |controller|
+        allow(controller).to receive(
+          :permitted_to_skip_email_otp_in_grace_period?
+        ).with(user).and_return(permitted_to_skip_email_otp_in_grace_period)
+      end
+    end
+
+    context 'when user is permitted to skip email OTP in grace period' do
+      it 'removes verification_user_id session key and returns success status' do
+        post(users_skip_verification_for_now_path)
+
+        expect(request.session.has_key?(:verification_user_id)).to eq(false)
+        expect(json_response).to eq('status' => 'success')
+      end
+
+      context 'when user has email_otp set' do
+        before do
+          encrypted_token = Devise.token_generator.digest(User, user.email, 'token')
+          user.update!(email_otp: encrypted_token)
+          stub_session(session_data: { verification_user_id: user.id })
+        end
+
+        context 'when user.update succeeds' do
+          it 'clears the email_otp' do
+            expect { post(users_skip_verification_for_now_path) }
+              .to change { user.reload.email_otp }.to(nil)
+          end
+        end
+
+        context 'when user.update fails' do
+          before do
+            allow_next_instance_of(SessionsController) do |controller|
+              allow(controller).to receive(
+                :find_verification_user
+              ).and_return(user)
+
+              allow(controller).to receive(
+                :permitted_to_skip_email_otp_in_grace_period?
+              ).with(user).and_return(permitted_to_skip_email_otp_in_grace_period)
+            end
+
+            allow(user).to receive(:update).with(email_otp: nil).and_return(false)
+            allow(user).to receive(:errors).and_return(
+              instance_double(ActiveModel::Errors, full_messages: ['error message'])
+            )
+          end
+
+          it 'logs the failure event while still allowing the skip workflow to proceed' do
+            post(users_skip_verification_for_now_path)
+
+            expect(json_response).to eq('status' => 'success')
+            expect(Gitlab::AppLogger).to have_received(:info).with(
+              hash_including(
+                message: 'Email Verification',
+                event: 'Email Otp Clear Failed',
+                username: user.username,
+                reason: 'Failed to clear email_otp: error message',
+                ip: '127.0.0.1'
+              )
+            )
+          end
+        end
+      end
+
+      it 'logs the verification skip event' do
+        post(users_skip_verification_for_now_path)
+
+        expect(Gitlab::AppLogger).to have_received(:info).with(
+          hash_including(
+            message: 'Email Verification',
+            event: 'Skipped',
+            username: user.username,
+            reason: 'user chose to skip verification in grace period',
+            ip: '127.0.0.1'
+          )
+        )
+      end
+
+      it 'logs user activity', :freeze_time do
+        expect { post(users_skip_verification_for_now_path) }
+          .to change { user.reload.last_activity_on }.to(Date.today)
+      end
+    end
+
+    context 'when user is not permitted to skip email OTP in grace period' do
+      let(:permitted_to_skip_email_otp_in_grace_period) { false }
+
+      it 'does not remove verification_user_id session key or return any status' do
+        post(users_skip_verification_for_now_path)
+
+        expect(request.session[:verification_user_id]).to eq(user.id)
+        expect(response.body).to eq('')
+      end
+    end
+
+    context 'when no verification_user_id session variable exists' do
+      before do
+        stub_session(session_data: {})
+      end
+
+      it 'does not return any status' do
+        post(users_skip_verification_for_now_path)
+        expect(response.body).to eq('')
+      end
+    end
+  end
 end

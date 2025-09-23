@@ -5,7 +5,6 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
-import { createAlert } from '~/alert';
 import getJobsQuery from '~/ci/jobs_page/graphql/queries/get_jobs.query.graphql';
 import getJobsCountQuery from '~/ci/jobs_page/graphql/queries/get_jobs_count.query.graphql';
 import JobsTable from '~/ci/jobs_page/components/jobs_table.vue';
@@ -23,12 +22,11 @@ import {
   mockBridgeKindToken,
   mockBuildKindToken,
 } from 'jest/ci/jobs_mock_data';
-import { RAW_TEXT_WARNING, DEFAULT_PAGINATION, JOBS_PER_PAGE } from '~/ci/jobs_page/constants';
+import { DEFAULT_PAGINATION, JOBS_PER_PAGE } from '~/ci/jobs_page/constants';
 
 const projectPath = 'gitlab-org/gitlab';
 Vue.use(VueApollo);
 
-jest.mock('~/alert');
 jest.mock('~/graphql_shared/utils');
 
 const mockJobName = 'rspec-job';
@@ -64,14 +62,11 @@ describe('Job table app', () => {
     handler = successHandler,
     countHandler = countSuccessHandler,
     mountFn = shallowMount,
-    feSearchBuildByName = false,
   } = {}) => {
     wrapper = mountFn(JobsTableApp, {
       provide: {
         fullPath: projectPath,
-        glFeatures: {
-          feSearchBuildByName,
-        },
+        glFeatures: {},
       },
       apolloProvider: createMockApolloProvider(handler, countHandler),
     });
@@ -232,6 +227,7 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         statuses: 'FAILED',
         sources: null,
+        name: null,
         kind: 'BUILD',
         ...DEFAULT_PAGINATION,
       });
@@ -239,6 +235,7 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         statuses: 'FAILED',
         sources: null,
+        name: null,
         kind: 'BUILD',
       });
     });
@@ -263,17 +260,19 @@ describe('Job table app', () => {
       expect(countSuccessHandler).toHaveBeenCalledTimes(2);
     });
 
-    it('shows raw text warning when user inputs raw text', async () => {
-      const expectedWarning = {
-        message: RAW_TEXT_WARNING,
-        variant: 'warning',
-      };
-
+    it('filters jobs by name when user inputs raw text', async () => {
       createComponent();
 
-      await findFilteredSearch().vm.$emit('filterJobsBySearch', ['raw text']);
+      await findFilteredSearch().vm.$emit('filterJobsBySearch', ['rspec-job']);
 
-      expect(createAlert).toHaveBeenCalledWith(expectedWarning);
+      expect(successHandler).toHaveBeenCalledWith({
+        fullPath: 'gitlab-org/gitlab',
+        name: 'rspec-job',
+        statuses: null,
+        sources: null,
+        kind: 'BUILD',
+        ...DEFAULT_PAGINATION,
+      });
     });
 
     it('updates URL query string when filtering jobs by status', async () => {
@@ -302,6 +301,7 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         statuses: 'FAILED',
         sources: mockJobSource,
+        name: null,
         kind: 'BUILD',
         ...DEFAULT_PAGINATION,
       });
@@ -309,6 +309,7 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         statuses: 'FAILED',
         sources: mockJobSource,
+        name: null,
         kind: 'BUILD',
       });
       expect(urlUtils.updateHistory).toHaveBeenCalledWith({
@@ -325,6 +326,7 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         statuses: null,
         sources: null,
+        name: null,
         kind: 'BUILD',
         ...DEFAULT_PAGINATION,
       });
@@ -332,6 +334,7 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         statuses: null,
         sources: null,
+        name: null,
         kind: 'BUILD',
       });
     });
@@ -345,6 +348,7 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         sources: mockJobSource,
         statuses: null,
+        name: null,
         kind: 'BUILD',
         ...DEFAULT_PAGINATION,
       });
@@ -352,6 +356,7 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         sources: mockJobSource,
         statuses: null,
+        name: null,
         kind: 'BUILD',
       });
     });
@@ -368,6 +373,7 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         sources: mockJobSource,
         statuses: 'FAILED',
+        name: null,
         kind: 'BUILD',
         ...DEFAULT_PAGINATION,
       });
@@ -375,6 +381,7 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         sources: mockJobSource,
         statuses: 'FAILED',
+        name: null,
         kind: 'BUILD',
       });
 
@@ -384,6 +391,7 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         sources: mockJobSource,
         statuses: null,
+        name: null,
         kind: 'BUILD',
         ...DEFAULT_PAGINATION,
       });
@@ -391,6 +399,7 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         sources: mockJobSource,
         statuses: null,
+        name: null,
         kind: 'BUILD',
       });
     });
@@ -422,9 +431,9 @@ describe('Job table app', () => {
       });
     });
 
-    describe('with feature flag feSearchBuildByName enabled', () => {
+    describe('job name filtering', () => {
       beforeEach(() => {
-        createComponent({ feSearchBuildByName: true });
+        createComponent();
       });
 
       it('filters jobs by name', async () => {
@@ -578,6 +587,7 @@ describe('Job table app', () => {
           fullPath: 'gitlab-org/gitlab',
           statuses: null,
           sources: null,
+          name: null,
           kind: 'BRIDGE',
           ...DEFAULT_PAGINATION,
         });
@@ -585,6 +595,7 @@ describe('Job table app', () => {
           fullPath: 'gitlab-org/gitlab',
           statuses: null,
           sources: null,
+          name: null,
           kind: 'BRIDGE',
         });
         expect(urlUtils.updateHistory).toHaveBeenCalledWith({
@@ -601,6 +612,7 @@ describe('Job table app', () => {
           fullPath: 'gitlab-org/gitlab',
           statuses: null,
           sources: null,
+          name: null,
           kind: 'BUILD',
           ...DEFAULT_PAGINATION,
         });
@@ -608,6 +620,7 @@ describe('Job table app', () => {
           fullPath: 'gitlab-org/gitlab',
           statuses: null,
           sources: null,
+          name: null,
           kind: 'BUILD',
         });
         expect(urlUtils.updateHistory).toHaveBeenCalledWith({
@@ -716,6 +729,7 @@ describe('Job table app', () => {
         fullPath: 'gitlab-org/gitlab',
         statuses: 'FAILED',
         sources: null,
+        name: null,
         kind: 'BUILD',
         ...DEFAULT_PAGINATION,
       });
