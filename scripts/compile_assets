@@ -11,7 +11,7 @@ section_end "install-deps"
 
 section_start "assets-compile" "Compiling frontend assets"
 
-if [[ -f "${GLCI_GITLAB_ASSETS_HASH_FILE}" ]]; then
+if [[ -s "${GLCI_GITLAB_ASSETS_HASH_FILE}" ]]; then
   echo "Cached assets found, skipping asset compilation!"
 else
   bin/rake gitlab:assets:compile
