@@ -11,6 +11,13 @@ module Terraform
     # Use Lockbox to encrypt/decrypt the stored file (registers CarrierWave callbacks)
     encrypt(key: :key)
 
+    # On Cloud Native GitLab, /srv/gitlab/public/uploads/tmp is a shared mount.
+    # Use a subpath from that directory to ensure the gitlab-workhorse and webservice
+    # containers can both access this directory.
+    def self.workhorse_local_upload_path
+      Rails.root.join('public/uploads/tmp/terraform_state').to_s
+    end
+
     def filename
       # This check is required to maintain backwards compatibility with
       # states that were created prior to versioning being supported.
