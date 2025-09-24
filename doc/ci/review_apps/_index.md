@@ -131,7 +131,7 @@ GitLab provides a built-in template that's configured for merge request pipeline
 To use and customize this template:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select **Enable review apps**.
 1. From the **Enable Review Apps** dialog that appears, copy the YAML template:
 

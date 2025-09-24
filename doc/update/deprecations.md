@@ -865,19 +865,23 @@ The `Project.services` GraphQL field is deprecated. A `Project.integrations` fie
 
 </div>
 
-<div class="deprecation breaking-change" data-milestone="19.0">
+<div class="deprecation " data-milestone="19.0">
 
 ### The `ci_job_token_scope_enabled` projects API attribute is deprecated
 
 <div class="deprecation-notes">
 
 - Announced in GitLab <span class="milestone">16.4</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- Removal in GitLab <span class="milestone">19.0</span>
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423091).
 
 </div>
 
-GitLab 16.1 introduced [API endpoints for the job token scope](https://gitlab.com/gitlab-org/gitlab/-/issues/351740). In the [projects API](https://docs.gitlab.com/api/projects/), the `ci_job_token_scope_enabled` attribute is deprecated, and will be removed in 17.0. You should use the [job token scope APIs](https://docs.gitlab.com/api/project_job_token_scopes/) instead.
+The [Limit access from this project](https://docs.gitlab.com/update/deprecations/#cicd-job-token---limit-access-from-your-project-setting-removal)
+CI/CD job token project setting was removed in 18.0. The related `ci_job_token_scope_enabled` attribute
+in the [projects API](https://docs.gitlab.com/api/projects/) is now deprecated
+and always returns `false`, so it will be removed in 19.0. To control job token access,
+use the [CI/CD job token project settings](https://docs.gitlab.com/ci/jobs/ci_job_token/#control-job-token-access-to-your-project).
 
 </div>
 

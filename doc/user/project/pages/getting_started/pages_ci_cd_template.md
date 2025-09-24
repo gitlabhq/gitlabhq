@@ -32,7 +32,7 @@ If everything is configured correctly, the site can take approximately 30 minute
 
 To view the pipeline, go to **Build** > **Pipelines**.
 
-When the pipeline is finished, go to **Deploy > Pages** to find the link to
+When the pipeline is finished, go to **Deploy** > **Pages** to find the link to
 your Pages website.
 
 For every change pushed to your repository, GitLab CI/CD runs a new pipeline

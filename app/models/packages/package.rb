@@ -29,7 +29,8 @@ module Packages
       helm: 11,
       terraform_module: 12,
       rpm: 13,
-      ml_model: 14
+      ml_model: 14,
+      cargo: 15
     }
 
     enum :status, { default: 0, hidden: 1, processing: 2, error: 3, pending_destruction: 4, deprecated: 5 }
@@ -149,7 +150,8 @@ module Packages
         terraform_module: 'Packages::TerraformModule::Package',
         nuget: 'Packages::Nuget::Package',
         npm: 'Packages::Npm::Package',
-        maven: 'Packages::Maven::Package'
+        maven: 'Packages::Maven::Package',
+        cargo: 'Packages::Cargo::Package'
       }.freeze
     end
 

@@ -13279,6 +13279,9 @@ msgstr ""
 msgid "Choose an option"
 msgstr ""
 
+msgid "Choose emoji"
+msgstr ""
+
 msgid "Choose file…"
 msgstr ""
 
@@ -77796,6 +77799,9 @@ msgid "is one of"
 msgstr ""
 
 msgid "is read-only"
+msgstr ""
+
+msgid "is reserved and cannot be used"
 msgstr ""
 
 msgid "is too large. Maximum size allowed is %{size}"

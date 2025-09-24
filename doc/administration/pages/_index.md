@@ -1050,7 +1050,7 @@ Prerequisites:
 To set the maximum size of GitLab Pages site in a project, overriding the inherited setting:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Deploy > Pages**.
+1. Select **Deploy** > **Pages**.
 1. In **Maximum size of pages**, enter the size in MB.
 1. Select **Save changes**.
 

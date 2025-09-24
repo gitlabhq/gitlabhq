@@ -6768,7 +6768,7 @@ RSpec.describe User, feature_category: :user_profile do
     it 'invalidates cache for merge request counters' do
       cache_mock = double
 
-      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count'])
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count', false])
       expect(cache_mock).to receive(:delete).with(['users', user.id, 'review_requested_open_merge_requests_count'])
 
       allow(Rails).to receive(:cache).and_return(cache_mock)
@@ -6859,7 +6859,7 @@ RSpec.describe User, feature_category: :user_profile do
     let_it_be_with_refind(:archived_project) { create(:project, :public, :archived) }
     let(:cached_only) { false }
 
-    it 'returns number of open merge requests from non-archived projects where there are no reviewers' do
+    before do
       create(:merge_request, source_project: project, author: user, assignees: [user], reviewers: [user])
       create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, assignees: [user])
       create(:merge_request, :closed, source_project: project, author: user, assignees: [user])
@@ -6870,8 +6870,20 @@ RSpec.describe User, feature_category: :user_profile do
 
       mr.merge_request_reviewers.update_all(state: :reviewed)
       mr2.merge_request_reviewers.update_all(state: :requested_changes)
+    end
 
+    it 'returns number of open merge requests from non-archived projects where there are no reviewers' do
       is_expected.to eq 4
+    end
+
+    context 'when merge_request_dashboard_list_type is role_based' do
+      before do
+        user.user_preference.update!(merge_request_dashboard_list_type: 'role_based')
+      end
+
+      it 'returns number of open merge requests from non-archived projects' do
+        is_expected.to eq 4
+      end
     end
 
     context 'when fetching only cached' do

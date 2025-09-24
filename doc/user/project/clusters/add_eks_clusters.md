@@ -64,7 +64,7 @@ To create new a EKS cluster for your project, group, or instance, through
 cluster certificates:
 
 1. Go to your:
-   - Project's **Operate > Kubernetes clusters** page, for a project-level cluster.
+   - Project's **Operate** > **Kubernetes clusters** page, for a project-level cluster.
    - Group's **Kubernetes** page, for a group-level cluster.
    - The **Admin** area's **Kubernetes** page, for an instance-level cluster.
 1. Select **Integrate with a cluster certificate**.
@@ -224,7 +224,7 @@ Otherwise, the deployed app isn't externally available outside of the cluster.
 GitLab creates a new pipeline, which begins to build, test, and deploy the app.
 
 After the pipeline has finished, your app runs in EKS, and is available
-to users. Select **Operate > Environments**.
+to users. Select **Operate** > **Environments**.
 
 ![The deployed environment status and access options.](img/environment_v11_0.png)
 

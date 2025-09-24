@@ -21239,6 +21239,18 @@ CREATE SEQUENCE packages_build_infos_id_seq
 
 ALTER SEQUENCE packages_build_infos_id_seq OWNED BY packages_build_infos.id;
 
+CREATE TABLE packages_cargo_metadata (
+    package_id bigint NOT NULL,
+    index_content jsonb,
+    project_id bigint NOT NULL,
+    normalized_name text,
+    normalized_version text,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_245ce00e05 CHECK ((char_length(normalized_name) <= 64)),
+    CONSTRAINT check_de6f67d97b CHECK ((char_length(normalized_version) <= 255))
+);
+
 CREATE TABLE packages_cleanup_policies (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -22506,7 +22518,8 @@ CREATE TABLE plan_limits (
     import_placeholder_user_limit_tier_2 integer DEFAULT 0 NOT NULL,
     import_placeholder_user_limit_tier_3 integer DEFAULT 0 NOT NULL,
     import_placeholder_user_limit_tier_4 integer DEFAULT 0 NOT NULL,
-    ci_max_artifact_size_slsa_provenance_statement bigint DEFAULT 0 NOT NULL
+    ci_max_artifact_size_slsa_provenance_statement bigint DEFAULT 0 NOT NULL,
+    cargo_max_file_size bigint DEFAULT '5368709120'::bigint NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq
@@ -34065,6 +34078,9 @@ ALTER TABLE ONLY p_sent_notifications
 ALTER TABLE ONLY packages_build_infos
     ADD CONSTRAINT packages_build_infos_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY packages_cargo_metadata
+    ADD CONSTRAINT packages_cargo_metadata_pkey PRIMARY KEY (package_id);
+
 ALTER TABLE ONLY packages_cleanup_policies
     ADD CONSTRAINT packages_cleanup_policies_pkey PRIMARY KEY (project_id);
 
@@ -38441,6 +38457,8 @@ CREATE INDEX index_bulk_imports_on_user_id ON bulk_imports USING btree (user_id)
 
 CREATE INDEX index_ca_enabled_incomplete_aggregation_stages_on_last_run_at ON analytics_cycle_analytics_stage_aggregations USING btree (last_run_at NULLS FIRST) WHERE ((last_completed_at IS NULL) AND (enabled = true));
 
+CREATE UNIQUE INDEX index_cargo_metadata_on_project_normalized_name_version ON packages_cargo_metadata USING btree (project_id, normalized_name, normalized_version);
+
 CREATE INDEX index_catalog_resource_components_on_catalog_resource_id ON catalog_resource_components USING btree (catalog_resource_id);
 
 CREATE INDEX index_catalog_resource_components_on_project_id ON catalog_resource_components USING btree (project_id);
@@ -40716,6 +40734,8 @@ CREATE INDEX index_packages_build_infos_on_project_id ON packages_build_infos US
 CREATE INDEX index_packages_build_infos_package_id_id ON packages_build_infos USING btree (package_id, id);
 
 CREATE INDEX index_packages_build_infos_package_id_pipeline_id_id ON packages_build_infos USING btree (package_id, pipeline_id, id);
+
+CREATE INDEX index_packages_cargo_metadata_on_package_id ON packages_cargo_metadata USING btree (package_id);
 
 CREATE UNIQUE INDEX index_packages_composer_metadata_on_package_id_and_target_sha ON packages_composer_metadata USING btree (package_id, target_sha);
 
@@ -49433,6 +49453,9 @@ ALTER TABLE ONLY epic_user_mentions
 ALTER TABLE ONLY approver_groups
     ADD CONSTRAINT fk_rails_1cdcbd7723 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY packages_cargo_metadata
+    ADD CONSTRAINT fk_rails_1dd80bdb24 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY project_ci_feature_usages
     ADD CONSTRAINT fk_rails_1deedbf64b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -50242,6 +50265,9 @@ ALTER TABLE p_knowledge_graph_enabled_namespaces
 
 ALTER TABLE ONLY security_policies
     ADD CONSTRAINT fk_rails_802ceea0c8 FOREIGN KEY (security_orchestration_policy_configuration_id) REFERENCES security_orchestration_policy_configurations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_cargo_metadata
+    ADD CONSTRAINT fk_rails_804c0f995d FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
 ALTER TABLE incident_management_pending_issue_escalations
     ADD CONSTRAINT fk_rails_8069e80242 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

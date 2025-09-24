@@ -67,7 +67,7 @@ This project provides you with:
 
 To create a GitLab agent for Kubernetes:
 
-1. On the left sidebar, select **Operate > Kubernetes clusters**.
+1. On the left sidebar, select **Operate** > **Kubernetes clusters**.
 1. Select **Connect a cluster (agent)**.
 1. From the **Select an agent or enter a name to create new** dropdown list, choose your agent's name and select **Register**.
 1. GitLab generates a registration token for the agent. Securely store this secret token, as you will need it later.
@@ -150,13 +150,13 @@ After configuring your project, manually trigger the provisioning of your cluste
 When the pipeline finishes successfully, you can see your new cluster:
 
 - In GCP: on your [GCP console's Kubernetes list](https://console.cloud.google.com/kubernetes/list).
-- In GitLab: from your project's sidebar, select **Operate > Kubernetes clusters**.
+- In GitLab: from your project's sidebar, select **Operate** > **Kubernetes clusters**.
 
 ## Use your cluster
 
 After you provision the cluster, it is connected to GitLab and is ready for deployments. To check the connection:
 
-1. On the left sidebar, select **Operate > Kubernetes clusters**.
+1. On the left sidebar, select **Operate** > **Kubernetes clusters**.
 1. In the list, view the **Connection status** column.
 
 For more information about the capabilities of the connection, see [the GitLab agent for Kubernetes documentation](../_index.md).

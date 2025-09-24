@@ -298,6 +298,58 @@ RSpec.describe Gitlab::Database::LoadBalancing::LoadBalancer, :request_store, fe
     end
   end
 
+  describe '#connection_checked_out?' do
+    before do
+      lb.release_connections
+    end
+
+    context 'with replica connection' do
+      it 'returns true when connection is checked out' do
+        expect(lb.connection_checked_out?).to eq(false)
+
+        lb.read {}
+        expect(lb.connection_checked_out?).to eq(true)
+      end
+
+      it 'returns false after connection is released' do
+        expect(lb.connection_checked_out?).to eq(false)
+
+        lb.read {}
+        lb.release_host
+
+        expect(lb.connection_checked_out?).to eq(false)
+      end
+    end
+
+    context 'with primary connection' do
+      it 'returns true when connection is checked out' do
+        expect(lb.connection_checked_out?).to eq(false)
+
+        lb.read_write {}
+
+        expect(lb.connection_checked_out?).to eq(true)
+      end
+
+      it 'returns false after connection is released' do
+        expect(lb.connection_checked_out?).to eq(false)
+
+        lb.read_write {}
+        lb.release_primary_connection
+
+        expect(lb.connection_checked_out?).to eq(false)
+      end
+    end
+  end
+
+  describe '#release_connections' do
+    it 'releases both replica and primary connections' do
+      expect(lb).to receive(:release_host)
+      expect(lb).to receive(:release_primary_connection)
+
+      lb.release_connections
+    end
+  end
+
   describe '#release_host' do
     it 'releases the host and its connection' do
       host = lb.host

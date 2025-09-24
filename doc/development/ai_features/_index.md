@@ -76,6 +76,8 @@ For details on the seeds used, see [Development seed files](../development_seed_
 
 This ensures that your instance or group has the correct licenses, settings, and feature flags to test Duo features locally. Below are several options. If you are unsure, use option 1.
 
+Be sure to run the Rake task from the GitLab Rails root directory (typically `/path/to/gdk/gitlab`), not from the GDK root directory.
+
 1. GitLab.com (SaaS) mode
 
    ```shell

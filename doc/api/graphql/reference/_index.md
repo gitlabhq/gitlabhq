@@ -49312,6 +49312,7 @@ Values for sorting package.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="packagetypeenumcargo"></a>`CARGO` | Packages from the Cargo package manager. |
 | <a id="packagetypeenumcomposer"></a>`COMPOSER` | Packages from the Composer package manager. |
 | <a id="packagetypeenumconan"></a>`CONAN` | Packages from the Conan package manager. |
 | <a id="packagetypeenumdebian"></a>`DEBIAN` | Packages from the Debian package manager. |

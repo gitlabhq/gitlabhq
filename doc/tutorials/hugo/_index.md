@@ -155,7 +155,7 @@ From the left-hand navigation, select **Build** > **Pipelines**.
 
 You see that GitLab has run your `test` and `deploy-pages` jobs.
 
-To view your site, when the pipeline is finished, on the left-hand navigation, select **Deploy > Pages** to find the link to your Pages website.
+To view your site, when the pipeline is finished, on the left-hand navigation, select **Deploy** > **Pages** to find the link to your Pages website.
 
 ### Add your Hugo configuration options
 
@@ -167,7 +167,7 @@ When you first view your Hugo site, the stylesheet won't work. Don't worry, you 
 
 ### Find your GitLab Pages URL
 
-When the pipeline is finished, go to **Deploy > Pages** to find the link to your Pages website.
+When the pipeline is finished, go to **Deploy** > **Pages** to find the link to your Pages website.
 
 The `pages` job in your pipeline has deployed the contents of your `public` directory to GitLab Pages. Under **Access pages**, you should see the link in the format: `https://<your-namespace>.gitlab.io/<project-path>`.
 

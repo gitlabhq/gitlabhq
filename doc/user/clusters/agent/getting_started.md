@@ -136,7 +136,7 @@ The `glab cluster agent bootstrap` created an environment within GitLab and [con
 To view your dashboard:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select your environment. For example, `flux-system/gitlab-agent`.
 1. Select the **Kubernetes overview** tab.
 

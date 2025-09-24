@@ -58,7 +58,7 @@ After this step, you can view your Google Cloud artifacts in GitLab.
    Artifact Registry repository in your GitLab project.
 1. Select **Save changes**.
 1. To view your Google Cloud artifacts, on the left sidebar,
-   select **Deploy > Google Artifact Registry**.
+   select **Deploy** > **Google Artifact Registry**.
 
 In a later step, you will push your container images to Google Artifact Registry.
 
@@ -123,7 +123,7 @@ it is also pushed to your Google Artifact Registry.
 1. Select **Commit changes**.
 1. Go to **Build** > **Pipelines** and make sure a new pipeline runs.
 1. After the pipeline finishes successfully, to view the container image that was copied to Google Artifact Registry,
-   on the left sidebar, select **Deploy > Google Artifact Registry**.
+   on the left sidebar, select **Deploy** > **Google Artifact Registry**.
 
 ### Create a Google Cloud Deploy release
 

@@ -32,7 +32,11 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
 
   describe '#connection' do
     it 'returns a connection from the pool' do
-      expect(host.pool).to receive(:connection)
+      if Gitlab.next_rails?
+        expect(host.pool).to receive(:lease_connection)
+      else
+        expect(host.pool).to receive(:connection)
+      end
 
       host.connection
     end

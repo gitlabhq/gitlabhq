@@ -4,7 +4,7 @@ module DbCleaner
   def all_connection_classes
     ::ActiveRecord::Base.connection_handler
       .connection_pool_list(:writing)
-      .map { |pool| pool.connection.connection_class }
+      .map(&:connection_class)
       .uniq
   end
 

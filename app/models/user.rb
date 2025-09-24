@@ -2228,20 +2228,19 @@ class User < ApplicationRecord
   end
 
   def assigned_open_merge_requests_count(force: false, cached_only: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD, skip_nil: true) do
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', user_preference.role_based?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD, skip_nil: true) do
       return if cached_only # rubocop:disable Cop/AvoidReturnFromBlocks -- return from method to prevent caching nil when only reading cache
 
       params = {
         state: 'opened',
         non_archived: true,
         include_assigned: true,
-        author_id: id,
-        or: {
-          reviewer_wildcard: 'none',
-          review_states: %w[reviewed requested_changes],
-          only_reviewer_username: 'GitLabDuo'
-        }
+        author_id: id
       }
+
+      unless user_preference.role_based?
+        params[:or] = { reviewer_wildcard: 'none', review_states: %w[reviewed requested_changes], only_reviewer_username: 'GitLabDuo' }
+      end
 
       begin
         MergeRequestsFinder.new(self, params).execute.count
@@ -2304,7 +2303,7 @@ class User < ApplicationRecord
   end
 
   def invalidate_merge_request_cache_counts
-    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count'])
+    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count', user_preference.role_based?])
     Rails.cache.delete(['users', id, 'review_requested_open_merge_requests_count'])
   end
 

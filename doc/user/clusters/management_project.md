@@ -72,7 +72,7 @@ To associate a cluster management project with your cluster:
 
 1. Go to the appropriate configuration page. For a:
    - [Project-level cluster](../project/clusters/_index.md), go to your project's
-     **Operate > Kubernetes clusters** page.
+     **Operate** > **Kubernetes clusters** page.
    - [Group-level cluster](../group/clusters/_index.md), go to your group's **Kubernetes**
      page.
    - [Instance-level cluster](../instance/clusters/_index.md):

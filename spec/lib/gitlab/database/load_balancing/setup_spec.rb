@@ -60,9 +60,53 @@ RSpec.describe Gitlab::Database::LoadBalancing::Setup do
 
       setup.setup_connection_proxy
 
+      expect(model.connection).to be_an_instance_of(Gitlab::Database::LoadBalancing::ConnectionProxy)
       expect(model.load_balancer).to eq(lb)
       expect(model.sticking)
         .to be_an_instance_of(Gitlab::Database::LoadBalancing::Sticking)
+
+      if Gitlab.next_rails?
+        expect(model.lease_connection).to be_an_instance_of(Gitlab::Database::LoadBalancing::ConnectionProxy)
+      end
+    end
+  end
+
+  describe '#with_connection' do
+    let(:model) { Class.new(ActiveRecord::Base) }
+
+    before do
+      skip 'Skipping Rails 7.2 only tests' unless Gitlab.next_rails?
+
+      described_class.new(model).setup_connection_proxy
+      model.load_balancer.release_connections
+    end
+
+    it 'does not release connections if connection was overridden' do
+      allow(model).to receive(:connection).and_return(model.load_balancer.pool.lease_connection)
+
+      expect(model.load_balancer).not_to receive(:release_connections)
+
+      model.with_connection do |conn|
+        conn.execute('SELECT 1')
+      end
+    end
+
+    it 'does not release connections if a connection was already checked out' do
+      expect(model.load_balancer).not_to receive(:release_connections)
+
+      model.connection.execute('SELECT 1')
+
+      model.with_connection do |conn|
+        conn.execute('SELECT 1')
+      end
+    end
+
+    it 'releases connections if a connection has not been checked out' do
+      expect(model.load_balancer).to receive(:release_connections)
+
+      model.with_connection do |conn|
+        conn.execute('SELECT 1')
+      end
     end
   end
 

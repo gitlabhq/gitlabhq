@@ -191,7 +191,7 @@ deploy your website:
 
 1. Save and commit the `.gitlab-ci.yml` file.
 1. Go to **Build** > **Pipelines** to watch the pipeline.
-1. When the pipeline is finished, go to **Deploy > Pages** to find the link to
+1. When the pipeline is finished, go to **Deploy** > **Pages** to find the link to
    your Pages website.
 
 When this `pages` job completes successfully, a special `pages:deploy` job

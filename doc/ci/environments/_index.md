@@ -35,7 +35,7 @@ There are a few ways to view a list of environments for a given project:
 - On the project's overview page, if at least one environment is available (that is, not stopped).
    ![A project overview page displaying the number of available environments as an incremental counter.](img/environments_project_home_v15_9.png)
 
-- On the left sidebar, select **Operate > Environments**.
+- On the left sidebar, select **Operate** > **Environments**.
   The environments are displayed.
 
   ![A list of available environments in a GitLab project, showing environment names, statuses, and other relevant details.](img/environments_list_v14_8.png)
@@ -118,7 +118,7 @@ Prerequisites:
 To create a static environment in the UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select **Create an environment**.
 1. Complete the fields.
 1. Select **Save**.
@@ -370,7 +370,7 @@ GitLab validates the pipeline configuration at pipeline creation.
 To search environments by name:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. In the search bar, enter your search term.
    - The length of your **search term should be 3 or more characters**.
    - Matching applies from the beginning of the environment name.
@@ -420,7 +420,7 @@ Environments view, the stop and deploy jobs must be in the same
 To stop an environment in the GitLab UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Next to the environment you want to stop, select **Stop**.
 1. On the confirmation dialog, select **Stop environment**.
 
@@ -571,7 +571,7 @@ you can view its expiration date and time.
 To view an environment's expiration date and time:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select the name of the environment.
 
 The expiration date and time is displayed in the upper-left corner, next to the environment's name.
@@ -584,7 +584,7 @@ you can override its expiration.
 To override an environment's expiration in the UI:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select the environment name.
 1. in the upper-right corner, select the thumbtack ({{< icon name="thumbtack" >}}).
 
@@ -614,7 +614,7 @@ Prerequisites:
 To clean up stale environments:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select **Clean up environments**.
 1. Select the date to use for determining which environments to consider stale.
 1. Select **Clean up**.
@@ -759,7 +759,7 @@ Prerequisites:
 To delete an environment:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Operate > Environments**.
+1. Select **Operate** > **Environments**.
 1. Select the **Stopped** tab.
 1. Next to the environment you want to delete, select **Delete environment**.
 1. On the confirmation dialog, select **Delete environment**.

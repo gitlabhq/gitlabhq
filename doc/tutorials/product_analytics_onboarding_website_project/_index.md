@@ -131,7 +131,7 @@ To instrument your new website:
 
 After the instrumented website is deployed, events start being collected.
 
-1. In the project, select **Deploy > Pages**.
+1. In the project, select **Deploy** > **Pages**.
 1. To open the website, in **Access pages** select your unique URL.
 1. To collect some page view events, refresh the page a few times.
 

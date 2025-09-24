@@ -81,7 +81,7 @@ relatively quickly to work, and they take you to another page in the project.
 | <kbd>g</kbd> + <kbd>v</kbd> | Go to the project **Activity** page (**Manage** > **Activity**). |
 | <kbd>g</kbd> + <kbd>r</kbd> | Go to the project **Releases** page (**Deploy** > **Releases**). |
 | <kbd>g</kbd> + <kbd>f</kbd> | Go to the [project files](#project-files) (**Code** > **Repository**). |
-| <kbd>t</kbd>                | Open the project file search dialog. (**Code** > Repository**, select **Find Files**). |
+| <kbd>t</kbd>                | Open the project file search dialog. (**Code** > **Repository**, select **Find Files**). |
 | <kbd>g</kbd> + <kbd>c</kbd> | Go to the project **Commits** page (**Code** > **Commits**). |
 | <kbd>g</kbd> + <kbd>n</kbd> | Go to the [**Repository graph**](#repository-graph) page (**Code** > **Repository graph**). |
 | <kbd>g</kbd> + <kbd>d</kbd> | Go to the charts in the **Repository analytics** page (**Analyze** > **Repository analytics**). |
