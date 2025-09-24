@@ -143,7 +143,7 @@ You might get this error when using GitLab Duo Chat in the Web IDE.
 You might also see console errors about `Platform is missing!`
 
 This issue occurs when network connectivity to `cloud.gitlab.com` and
-`customers.gitlab.com` is blocked by GitLab Dedicated's network configuration.
+`customers.gitlab.com` is blocked by network configuration.
 
 To resolve this issue:
 
@@ -160,8 +160,7 @@ To resolve this issue:
 You might get this error when the Web IDE fails to load.
 Check browser logs for CORS errors: `failed to load because it violates the following Content Security policy`.
 
-This issue occurs when CORS policies block required resources in GitLab Dedicated's
-environment.
+This issue occurs when CORS policies block required resources.
 
 To resolve this issue:
 

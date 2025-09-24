@@ -19,6 +19,8 @@ security scanning tools:
 
 The following table summarizes which types of dependencies each scanning tool can detect:
 
+{{< footnote-table >}}
+
 | Feature                                                                                      | Dependency Scanning | Container Scanning              |
 |----------------------------------------------------------------------------------------------|---------------------|---------------------------------|
 | Identify the manifest, lock file, or static file that introduced the dependency              | {{< icon name="check-circle" >}}  | {{< icon name="dotted-circle" >}}             |
@@ -29,5 +31,7 @@ The following table summarizes which types of dependencies each scanning tool ca
 | Operating system dependencies                                                                | {{< icon name="dotted-circle" >}} | {{< icon name="check-circle" >}}              |
 | Language-specific dependencies installed on the operating system (not built by your project) | {{< icon name="dotted-circle" >}} | {{< icon name="check-circle" >}}              |
 
-1. Lock file must be present in the image to be detected.
-1. [Report language-specific findings](container_scanning/_index.md#report-language-specific-findings) must be enabled, and binaries must be present in the image to be detected.
+{{< /footnote-table >}}
+
+{{< footnote 1 >}}Lock file must be present in the image to be detected.{{< /footnote >}}
+{{< footnote 2 >}}[Report language-specific findings](container_scanning/_index.md#report-language-specific-findings) must be enabled, and binaries must be present in the image to be detected.{{< /footnote >}}

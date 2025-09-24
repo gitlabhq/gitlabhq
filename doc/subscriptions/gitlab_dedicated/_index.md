@@ -137,7 +137,8 @@ For more information about using a custom hostname for your GitLab Dedicated ins
 
 {{< alert type="note" >}}
 
-Custom hostnames for GitLab Pages are not supported. If you use GitLab Pages, the URL to access the Pages site for your GitLab Dedicated instance would be `tenant_name.gitlab-dedicated.site`.
+Custom hostnames for GitLab Pages are not supported. If you use GitLab Pages,
+the URL to access the Pages site for your GitLab Dedicated instance would be `tenant_name.gitlab-dedicated.site`.
 
 {{< /alert >}}
 
@@ -189,7 +190,7 @@ Control access to your website with:
 
 Your existing IP allowlists are applied to your Pages websites.
 
-In case of a Disaster Recovery and failover GitLab Pages continues to work from the secondary site.
+If failover occurs during disaster recovery, your site continues to work from the secondary region.
 
 #### Hosted runners
 
@@ -281,17 +282,17 @@ its own [release schedule](maintenance.md) for version deployments.
 
 ### GitLab Pages
 
-| Feature                | Description                                                     | Impact                                                                                                                                 |
-| ---------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| Custom domains         | Host GitLab Pages sites on custom domain names.                 | Pages sites accessible only using `tenant_name.gitlab-dedicated.site`.                                                                 |
+| Feature                | Description                                                     | Impact |
+| ---------------------- | --------------------------------------------------------------- | ------ |
+| Custom domains         | Host GitLab Pages sites on custom domain names.                 | Pages sites accessible only using `tenant_name.gitlab-dedicated.site`. |
 | PrivateLink access     | Private network access to GitLab Pages through AWS PrivateLink. | Pages sites are accessible over the public internet only. You can configure IP allowlists to restrict access to specific IP addresses. |
-| Namespaces in URL path | Organize Pages sites with namespace-based URL structure.        | Limited URL organization options.                                                                                                      |
+| Namespaces in URL path | Organize Pages sites with namespace-based URL structure.        | Limited URL organization options. |
 
 ### Operational features
 
 The following operational features are not available:
 
-- Multiple Geo secondaries (Geo replicas) beyond the secondary site included by default
+- Multiple secondary regions for Geo replication beyond the default secondary region
 - [Geo proxying](../../administration/geo/secondary_proxy/_index.md) and using a unified URL
 - Self-serve purchasing and configuration
 - Support for deploying to non-AWS cloud providers, such as GCP or Azure

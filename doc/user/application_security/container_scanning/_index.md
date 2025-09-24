@@ -925,6 +925,7 @@ Container Scanning for Registry populates the vulnerability report only when a n
 - The project being used must not be empty. If you are utilizing an empty project solely for storing container images, this feature won't function as intended. As a workaround, ensure the project contains an initial commit on the default branch.
 - By default there is a limit of `50` scans per project per day.
 - You must [configure container registry notifications](../../../administration/packages/container_registry.md#configure-container-registry-notifications).
+- You must [configure the Package Metadata Database](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync). This is configured by default on GitLab.com.
 
 ### Enabling Container Scanning for Registry
 

@@ -4127,6 +4127,7 @@ paths:
         - terraform_module
         - rpm
         - ml_model
+        - cargo
         required: false
       - in: query
         name: package_name
@@ -33629,6 +33630,7 @@ paths:
         - terraform_module
         - rpm
         - ml_model
+        - cargo
         required: false
       - in: query
         name: package_name
