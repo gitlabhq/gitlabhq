@@ -12,6 +12,8 @@ import {
   PROJECTS_DASHBOARD_ROUTE_NAME,
 } from '~/projects/your_work/constants';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
+import TabView from '~/groups_projects/components/tab_view.vue';
+import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
@@ -64,12 +66,18 @@ describe('YourWorkProjectsApp', () => {
     mountFn = shallowMountExtended,
     handlers = [],
     route = defaultRoute,
+    stubs = {},
   } = {}) => {
     const apolloProvider = createMockApollo(handlers);
     router = createRouter();
     await router.push(route);
 
-    wrapper = mountFn(YourWorkProjectsApp, { propsData: defaultPropsData, apolloProvider, router });
+    wrapper = mountFn(YourWorkProjectsApp, {
+      propsData: defaultPropsData,
+      apolloProvider,
+      router,
+      stubs,
+    });
   };
 
   afterEach(() => {
@@ -89,8 +97,6 @@ describe('YourWorkProjectsApp', () => {
       filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
       filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_PROJECTS,
       filteredSearchInputPlaceholder: 'Filter or search (3 character minimum)',
-      sortOptions: SORT_OPTIONS,
-      defaultSortOption: SORT_OPTION_UPDATED,
       timestampTypeMap: {
         [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
         [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
@@ -219,4 +225,20 @@ describe('YourWorkProjectsApp', () => {
 
     expect(wrapper.findComponent(GlKeysetPagination).exists()).toBe(true);
   });
+
+  it.each(PROJECT_DASHBOARD_TABS)(
+    'renders expected sort options and active sort option on $text tab',
+    async (tab) => {
+      await createComponent({
+        mountFn: mountExtended,
+        stubs: { TabView },
+        route: { name: tab.value },
+      });
+
+      expect(wrapper.findComponent(FilteredSearchAndSort).props()).toMatchObject({
+        sortOptions: SORT_OPTIONS,
+        activeSortOption: SORT_OPTION_CREATED,
+      });
+    },
+  );
 });

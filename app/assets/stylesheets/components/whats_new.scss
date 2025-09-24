@@ -2,8 +2,8 @@
   box-shadow: none;
   overflow-y: hidden;
 
-   // setting custom width above mobile breakpoint
-  @include gl-container-width-up(md, panel) {
+  // setting custom width above mobile breakpoint
+  @include gl-media-breakpoint-up(md) {
     width: 500px;
   }
 
@@ -64,7 +64,7 @@
 }
 
 .whats-new-article-drawer {
-  @include gl-container-width-up(md, panel) {
+  @include gl-media-breakpoint-up(md) {
     width: 500px;
   }
 }

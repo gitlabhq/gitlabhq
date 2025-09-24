@@ -3187,7 +3187,6 @@ RSpec/FeatureCategory:
     - 'spec/models/web_ide_terminal_spec.rb'
     - 'spec/models/webauthn_registration_spec.rb'
     - 'spec/models/wiki_directory_spec.rb'
-    - 'spec/models/work_items/hierarchy_restriction_spec.rb'
     - 'spec/models/work_items/widgets/assignees_spec.rb'
     - 'spec/models/work_items/widgets/base_spec.rb'
     - 'spec/models/work_items/widgets/description_spec.rb'

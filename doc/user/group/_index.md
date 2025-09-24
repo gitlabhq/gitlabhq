@@ -338,6 +338,29 @@ To restore a group that is marked for deletion:
 1. Expand the **Advanced** section.
 1. In the **Restore group** section, select **Restore group**.
 
+## Manage groups with the Actions menu
+
+You can view a list of all your groups
+and manage them with the **Actions** menu.
+
+Prerequisites:
+
+- All of the available actions, except leaving a group, require the Owner role.
+
+To access the **Actions** menu for groups:
+
+1. On the left sidebar, select **Search or go to** > **View all my groups**.
+1. On the **Groups** page, find your group and select the **Actions** menu ({{< icon name="ellipsis_v" >}}).
+1. Select an action.
+
+The following actions are available, depending on the state of the group:
+
+| Group state      | Actions available       |
+| ---------------- | ----------------------- |
+| Active           | **Edit**, **Archive**, **Transfer**, **Leave group**, **Delete** |
+| Archived         | **Unarchive**, **Leave group**, **Delete** |
+| Pending deletion | **Restore**, **Leave group** |
+
 ## Request access to a group
 
 As a user, you can request to be a member of a group, if an administrator allows it.

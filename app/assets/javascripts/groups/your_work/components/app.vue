@@ -8,7 +8,7 @@ import {
 import groupCountsQuery from '../graphql/queries/group_counts.query.graphql';
 import {
   GROUP_DASHBOARD_TABS,
-  SORT_OPTIONS,
+  FIRST_TAB_ROUTE_NAMES,
   SORT_OPTION_UPDATED,
   SORT_OPTION_CREATED,
   FILTERED_SEARCH_TERM_KEY,
@@ -17,8 +17,7 @@ import {
 
 export default {
   GROUP_DASHBOARD_TABS,
-  SORT_OPTIONS,
-  SORT_OPTION_UPDATED,
+  FIRST_TAB_ROUTE_NAMES,
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
   RECENT_SEARCHES_STORAGE_KEY_GROUPS,
@@ -53,9 +52,8 @@ export default {
     :filtered-search-namespace="$options.FILTERED_SEARCH_NAMESPACE"
     :filtered-search-recent-searches-storage-key="$options.RECENT_SEARCHES_STORAGE_KEY_GROUPS"
     :filtered-search-input-placeholder="__('Search')"
-    :sort-options="$options.SORT_OPTIONS"
-    :default-sort-option="$options.SORT_OPTION_UPDATED"
     :timestamp-type-map="$options.timestampTypeMap"
+    :first-tab-route-names="$options.FIRST_TAB_ROUTE_NAMES"
     :initial-sort="initialSort"
     :tab-counts-query="$options.tabCountsQuery"
     :tab-counts-query-error-message="__('An error occurred loading the group counts.')"

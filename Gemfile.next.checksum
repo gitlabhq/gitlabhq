@@ -249,7 +249,7 @@
 {"name":"google-apis-androidpublisher_v3","version":"0.86.0","platform":"ruby","checksum":"73a672a8326c1ab981f1e15e0ed5a66a09f218b2f695c041a2d9d26d57b87eaf"},
 {"name":"google-apis-bigquery_v2","version":"0.90.0","platform":"ruby","checksum":"8b622912b45fb7ab75f0600a062db17b7d25a057265366750512e574ec333d7b"},
 {"name":"google-apis-cloudbilling_v1","version":"0.22.0","platform":"ruby","checksum":"db2b72aebdc2664fd5095264a160cf757119ba3a83a036817b78d0d2ad7886fd"},
-{"name":"google-apis-cloudresourcemanager_v1","version":"0.31.0","platform":"ruby","checksum":"f0a472a228c0b9b592741380ce79ead2458ea0066a4b5a78635818b9b62efbbf"},
+{"name":"google-apis-cloudresourcemanager_v1","version":"0.44.0","platform":"ruby","checksum":"be96723ff28664407dd86724857f9cd7402bf6dd63ef4257cbd42002816705f8"},
 {"name":"google-apis-compute_v1","version":"0.129.0","platform":"ruby","checksum":"b767d4564519fc47fc86b10159ec27ad515292e92b979b10720b02fd3b06f5d3"},
 {"name":"google-apis-container_v1","version":"0.100.0","platform":"ruby","checksum":"5a5ae56036e384830263de6d48ed9b9f9ef26818b28b6b027206432e718d1853"},
 {"name":"google-apis-container_v1beta1","version":"0.91.0","platform":"ruby","checksum":"9639664bf4876059627b44e3feca67cf34bb48c3520d60fbdfc42f4f37f5c299"},

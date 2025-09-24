@@ -78,14 +78,6 @@ export default {
       required: false,
       default: __('Filter or search (3 character minimum)'),
     },
-    sortOptions: {
-      type: Array,
-      required: true,
-    },
-    defaultSortOption: {
-      type: Object,
-      required: true,
-    },
     timestampTypeMap: {
       type: Object,
       required: true,
@@ -229,6 +221,12 @@ export default {
         this.filteredSearchSupportedTokens.includes(filteredSearchToken.type),
       );
     },
+    sortOptions() {
+      return this.activeTab?.sortOptions || [];
+    },
+    defaultSortOption() {
+      return this.activeTab?.defaultSortOption;
+    },
     sortQuery() {
       return this.$route.query.sort;
     },
@@ -246,10 +244,14 @@ export default {
         return this.initialSort;
       }
 
+      if (!this.defaultSortOption?.value) {
+        return '';
+      }
+
       return `${this.defaultSortOption.value}_${SORT_DIRECTION_DESC}`;
     },
     activeSortOption() {
-      return this.sortOptions.find((sortItem) => this.sort.includes(sortItem.value));
+      return this.sortOptions.find((sortItem) => this.sort.includes(sortItem.value)) || {};
     },
     isAscending() {
       return this.sort.endsWith(SORT_DIRECTION_ASC);
@@ -330,6 +332,10 @@ export default {
       };
     },
     timestampType() {
+      if (!this.activeSortOption.value) {
+        return undefined;
+      }
+
       return this.timestampTypeMap[this.activeSortOption.value];
     },
     hasTabCountsQuery() {
@@ -387,6 +393,10 @@ export default {
       return tabCount === undefined ? '-' : numberToMetricPrefix(tabCount);
     },
     onSortDirectionChange(isAscending) {
+      if (!this.activeSortOption.value) {
+        return;
+      }
+
       const sort = this.createSortQuery({ sortBy: this.activeSortOption.value, isAscending });
 
       this.updateSort(sort);

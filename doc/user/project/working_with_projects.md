@@ -432,7 +432,7 @@ This action is also available on other list pages.
 
 ### Unarchive a project
 
-Unarchive a project to: 
+Unarchive a project to:
 
 - Remove read-only restrictions.
 - Return the project to the **Active** or **Member** tab in project lists.
@@ -553,6 +553,30 @@ When you transfer a project from a namespace licensed for GitLab.com Premium or 
 - [Project access tokens](settings/project_access_tokens.md) are revoked.
 - [Pipeline subscriptions](../../ci/pipelines/_index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated)
   and [test cases](../../ci/test_cases/_index.md) are deleted.
+
+## Manage projects with the Actions menu
+
+You can view a list of all your projects and
+manage them with the **Actions** menu.
+
+Prerequisites:
+
+- You must have the required [project permissions](../../user/permissions.md#projects) to perform the action.
+
+To manage projects with the **Actions** menu:
+
+1. On the left sidebar, select **Search or go to** > **View all my projects**.
+1. On the **Projects** page, find your project and select the **Actions** menu ({{< icon name="ellipsis_v" >}}).
+1. Select an action.
+
+The following actions are available
+depending on the state of your project:
+
+| Project state    | Actions available |
+|----------|-------------------------|
+| Active   | **Edit**, **Archive**, **Transfer**, **Leave project**, **Delete** |
+| Archived | **Unarchive**, **Leave project**, **Delete** |
+| Pending deletion | **Restore**, **Leave project** |
 
 ## Add a compliance framework to a project
 

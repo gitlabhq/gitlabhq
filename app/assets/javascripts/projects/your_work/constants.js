@@ -6,6 +6,7 @@ import ResourceListsEmptyState, {
 } from '~/vue_shared/components/resource_lists/empty_state.vue';
 import { formatGraphQLProjects } from '~/vue_shared/components/projects_list/formatter';
 import { PAGINATION_TYPE_KEYSET } from '~/groups_projects/constants';
+import { SORT_OPTIONS, SORT_OPTION_UPDATED } from '~/projects/filtered_search_and_sort/constants';
 import projectsQuery from './graphql/queries/projects.query.graphql';
 import userProjectsQuery from './graphql/queries/user_projects.query.graphql';
 
@@ -29,6 +30,8 @@ const baseTab = {
   },
   formatter: formatGraphQLProjects,
   queryErrorMessage: __("Your projects couldn't be loaded. Refresh the page to try again."),
+  sortOptions: SORT_OPTIONS,
+  defaultSortOption: SORT_OPTION_UPDATED,
 };
 
 export const CONTRIBUTED_TAB = {

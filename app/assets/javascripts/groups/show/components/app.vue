@@ -7,7 +7,6 @@ import {
 } from '~/vue_shared/components/resource_lists/constants';
 import {
   GROUPS_SHOW_TABS,
-  SORT_OPTIONS,
   SORT_OPTION_UPDATED,
   SORT_OPTION_CREATED,
   FILTERED_SEARCH_TERM_KEY,
@@ -18,8 +17,6 @@ import {
 
 export default {
   GROUPS_SHOW_TABS,
-  SORT_OPTIONS,
-  SORT_OPTION_UPDATED,
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
   RECENT_SEARCHES_STORAGE_KEY_GROUPS,

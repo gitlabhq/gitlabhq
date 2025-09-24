@@ -6,7 +6,6 @@ import {
 } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
-  SORT_OPTIONS,
   SORT_OPTION_UPDATED,
   SORT_OPTION_CREATED,
   FILTERED_SEARCH_TERM_KEY,
@@ -22,8 +21,6 @@ import { PROJECT_DASHBOARD_TABS, FIRST_TAB_ROUTE_NAMES } from '../constants';
 export default {
   PROJECT_DASHBOARD_TABS,
   FIRST_TAB_ROUTE_NAMES,
-  SORT_OPTIONS,
-  SORT_OPTION_UPDATED,
   RECENT_SEARCHES_STORAGE_KEY_PROJECTS,
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
@@ -76,8 +73,6 @@ export default {
     :filtered-search-term-key="$options.FILTERED_SEARCH_TERM_KEY"
     :filtered-search-namespace="$options.FILTERED_SEARCH_NAMESPACE"
     :filtered-search-recent-searches-storage-key="$options.RECENT_SEARCHES_STORAGE_KEY_PROJECTS"
-    :sort-options="$options.SORT_OPTIONS"
-    :default-sort-option="$options.SORT_OPTION_UPDATED"
     :timestamp-type-map="$options.timestampTypeMap"
     :first-tab-route-names="$options.FIRST_TAB_ROUTE_NAMES"
     :initial-sort="initialSort"

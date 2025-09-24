@@ -1557,7 +1557,7 @@ job:
 #### `artifacts:expose_as`
 
 Use the `artifacts:expose_as` keyword to
-[expose job artifacts in the merge request UI](../jobs/job_artifacts.md#link-to-job-artifacts-in-the-merge-request-ui).
+[expose artifacts in the merge request UI](../jobs/job_artifacts.md#link-to-job-artifacts-in-the-merge-request-ui).
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -1579,22 +1579,17 @@ test:
 
 **Additional details**:
 
-- Artifacts are saved, but do not display in the UI if the `artifacts:paths` values:
+- You can use `expose_as` only once per job, with a maximum of 10 jobs per merge request.
+- Glob patterns are not supported.
+- Artifacts are always sent to GitLab. They are displayed in the UI unless `artifacts:paths` values:
   - Use [CI/CD variables](../variables/_index.md).
   - Define a directory, but do not end with `/`. For example, `directory/` works with `artifacts:expose_as`,
     but `directory` does not.
-  - Start with `./`. For example, `file` works with `artifacts:expose_as`, but `./file` does not.
-- A maximum of 10 job artifacts per merge request can be exposed.
-- Glob patterns are unsupported.
-- If a directory is specified and there is more than one file in the directory,
-  the link is to the job [artifacts browser](../jobs/job_artifacts.md#download-job-artifacts).
-- If [GitLab Pages](../../administration/pages/_index.md) is enabled, GitLab automatically
-  renders the artifacts when the artifacts is a single file with one of these extensions:
-  - `.html` or `.htm`
-  - `.txt`
-  - `.json`
-  - `.xml`
-  - `.log`
+- If `artifacts:paths` only includes a single file, the link opens the file directly.
+  In all other cases, the link opens the [artifacts browser](../jobs/job_artifacts.md#download-job-artifacts).
+- Linked files are downloaded by default.
+  If [GitLab Pages](../../administration/pages/_index.md) is enabled, you can preview some artifacts file extensions directly in your browser.
+  See [Browse the contents of the artifacts archive](../jobs/job_artifacts.md#browse-the-contents-of-the-artifacts-archive) for details.
 
 **Related topics**:
 

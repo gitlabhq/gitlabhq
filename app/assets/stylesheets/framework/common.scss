@@ -44,7 +44,7 @@
   }
 }
 
-@include gl-container-width-up(xl, panel) {
+@include gl-media-breakpoint-up(xl) {
   .page-with-super-sidebar {
     --application-bar-left: #{$super-sidebar-width};
   }
@@ -83,9 +83,6 @@
 
 .tab-content {
   overflow: visible;
-  @include gl-container-width-down(md, panel) {
-    isolation: isolate;
-  }
 }
 
 pre {

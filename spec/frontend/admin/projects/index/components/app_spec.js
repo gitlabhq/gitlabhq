@@ -6,6 +6,8 @@ import adminProjectsGraphQlResponse from 'test_fixtures/graphql/admin/admin_proj
 import adminInactiveProjectsGraphQlResponse from 'test_fixtures/graphql/admin/inactive_admin_projects.query.graphql.json';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
+import TabView from '~/groups_projects/components/tab_view.vue';
+import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import AdminProjectsApp from '~/admin/projects/index/components/app.vue';
 import { programmingLanguages } from 'jest/groups_projects/components/mock_data';
 import { createRouter } from '~/admin/projects/index/index';
@@ -57,6 +59,8 @@ describe('AdminProjectsApp', () => {
     mountFn = shallowMountExtended,
     handlers = [],
     route = defaultRoute,
+    features = {},
+    stubs = {},
   } = {}) => {
     const apolloProvider = createMockApollo(handlers);
     const router = createRouter();
@@ -66,6 +70,8 @@ describe('AdminProjectsApp', () => {
       propsData: defaultPropsData,
       apolloProvider,
       router,
+      provide: { glFeatures: { customAbilityReadAdminProjects: false, ...features } },
+      stubs,
     });
   };
 
@@ -88,8 +94,6 @@ describe('AdminProjectsApp', () => {
       filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
       filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
       filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_PROJECTS,
-      sortOptions: SORT_OPTIONS,
-      defaultSortOption: SORT_OPTION_UPDATED,
       timestampTypeMap: {
         [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
         [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
@@ -165,4 +169,20 @@ describe('AdminProjectsApp', () => {
 
     expect(wrapper.findComponent(GlKeysetPagination).exists()).toBe(true);
   });
+
+  it.each(ADMIN_PROJECTS_TABS)(
+    'renders expected sort options and active sort option on $text tab',
+    async (tab) => {
+      await createComponent({
+        mountFn: mountExtended,
+        stubs: { TabView },
+        route: { name: tab.value },
+      });
+
+      expect(wrapper.findComponent(FilteredSearchAndSort).props()).toMatchObject({
+        sortOptions: SORT_OPTIONS,
+        activeSortOption: SORT_OPTION_UPDATED,
+      });
+    },
+  );
 });

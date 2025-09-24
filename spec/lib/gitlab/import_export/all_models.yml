@@ -1300,3 +1300,4 @@ latest_finding_pipeline: *pipeline_definition
 vulnerability_read:
   - vulnerability
   - scanner
+  - vulnerability_occurrence

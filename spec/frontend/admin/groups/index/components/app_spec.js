@@ -8,6 +8,8 @@ import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_help
 import AdminGroupsApp from '~/admin/groups/index/components/app.vue';
 import { createRouter } from '~/admin/groups/index/index';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
+import TabView from '~/groups_projects/components/tab_view.vue';
+import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import { RECENT_SEARCHES_STORAGE_KEY_GROUPS } from '~/filtered_search/recent_searches_storage_keys';
 import {
   SORT_OPTIONS,
@@ -50,6 +52,7 @@ describe('AdminGroupsApp', () => {
     handlers = [],
     route = defaultRoute,
     features = {},
+    stubs = {},
   } = {}) => {
     const apolloProvider = createMockApollo(handlers);
     const router = createRouter();
@@ -59,6 +62,7 @@ describe('AdminGroupsApp', () => {
       apolloProvider,
       router,
       provide: { glFeatures: { readAdminGroups: false, ...features } },
+      stubs,
     });
   };
 
@@ -80,8 +84,6 @@ describe('AdminGroupsApp', () => {
       filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
       filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_GROUPS,
       filteredSearchInputPlaceholder: 'Search (3 character minimum)',
-      sortOptions: SORT_OPTIONS,
-      defaultSortOption: SORT_OPTION_UPDATED,
       timestampTypeMap: {
         [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
         [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_UPDATED_AT,
@@ -206,4 +208,20 @@ describe('AdminGroupsApp', () => {
       });
     });
   });
+
+  it.each(ADMIN_GROUPS_TABS)(
+    'renders expected sort options and active sort option on $text tab',
+    async (tab) => {
+      await createComponent({
+        mountFn: mountExtended,
+        stubs: { TabView },
+        route: { name: tab.value },
+      });
+
+      expect(wrapper.findComponent(FilteredSearchAndSort).props()).toMatchObject({
+        sortOptions: SORT_OPTIONS,
+        activeSortOption: SORT_OPTION_UPDATED,
+      });
+    },
+  );
 });

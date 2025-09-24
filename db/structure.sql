@@ -25052,6 +25052,7 @@ CREATE TABLE sbom_occurrences_vulnerabilities (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     project_id bigint,
+    vulnerability_occurrence_id bigint,
     CONSTRAINT check_a02e48df9c CHECK ((project_id IS NOT NULL))
 );
 
@@ -27823,6 +27824,7 @@ CREATE TABLE vulnerability_external_issue_links (
     external_project_key text NOT NULL,
     external_issue_key text NOT NULL,
     project_id bigint,
+    vulnerability_occurrence_id bigint,
     CONSTRAINT check_3200604f5e CHECK ((char_length(external_issue_key) <= 255)),
     CONSTRAINT check_68cffd19b0 CHECK ((char_length(external_project_key) <= 255)),
     CONSTRAINT check_9bbcf5afdd CHECK ((project_id IS NOT NULL))
@@ -28035,6 +28037,7 @@ CREATE TABLE vulnerability_issue_links (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     project_id bigint,
+    vulnerability_occurrence_id bigint,
     CONSTRAINT check_55acc7b923 CHECK ((project_id IS NOT NULL))
 );
 
@@ -28074,6 +28077,7 @@ CREATE TABLE vulnerability_merge_request_links (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     project_id bigint,
+    vulnerability_occurrence_id bigint,
     CONSTRAINT check_341035683b CHECK ((project_id IS NOT NULL))
 );
 
@@ -28231,6 +28235,7 @@ CREATE TABLE vulnerability_reads (
     has_vulnerability_resolution boolean DEFAULT false,
     auto_resolved boolean DEFAULT false NOT NULL,
     security_project_tracked_context_id bigint,
+    vulnerability_occurrence_id bigint,
     CONSTRAINT check_380451bdbe CHECK ((char_length(location_image) <= 2048)),
     CONSTRAINT check_4b1a1bf5ea CHECK ((has_merge_request IS NOT NULL)),
     CONSTRAINT check_a105eb825a CHECK ((char_length(cluster_agent_id) <= 10)),
@@ -28296,7 +28301,8 @@ CREATE TABLE vulnerability_representation_information (
     updated_at timestamp with time zone NOT NULL,
     vulnerability_id bigint NOT NULL,
     project_id bigint NOT NULL,
-    resolved_in_commit_sha bytea
+    resolved_in_commit_sha bytea,
+    vulnerability_occurrence_id bigint
 );
 
 CREATE TABLE vulnerability_scanners (
@@ -28326,7 +28332,8 @@ CREATE TABLE vulnerability_severity_overrides (
     updated_at timestamp with time zone NOT NULL,
     project_id bigint NOT NULL,
     original_severity smallint NOT NULL,
-    new_severity smallint NOT NULL
+    new_severity smallint NOT NULL,
+    vulnerability_occurrence_id bigint
 );
 
 CREATE SEQUENCE vulnerability_severity_overrides_id_seq
@@ -28349,6 +28356,7 @@ CREATE TABLE vulnerability_state_transitions (
     comment text,
     dismissal_reason smallint,
     project_id bigint,
+    vulnerability_occurrence_id bigint,
     CONSTRAINT check_b6338547d4 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_fe2eb6a0f3 CHECK ((char_length(comment) <= 50000))
 );
@@ -28401,6 +28409,7 @@ CREATE TABLE vulnerability_user_mentions (
     mentioned_groups_ids bigint[],
     note_id bigint,
     project_id bigint,
+    vulnerability_occurrence_id bigint,
     CONSTRAINT check_0105942303 CHECK ((project_id IS NOT NULL))
 );
 
@@ -28743,23 +28752,6 @@ CREATE TABLE work_item_dates_sources (
     start_date_fixed date,
     due_date_fixed date
 );
-
-CREATE TABLE work_item_hierarchy_restrictions (
-    id bigint NOT NULL,
-    parent_type_id bigint NOT NULL,
-    child_type_id bigint NOT NULL,
-    maximum_depth smallint,
-    cross_hierarchy_enabled boolean DEFAULT false NOT NULL
-);
-
-CREATE SEQUENCE work_item_hierarchy_restrictions_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE work_item_hierarchy_restrictions_id_seq OWNED BY work_item_hierarchy_restrictions.id;
 
 CREATE TABLE work_item_number_field_values (
     id bigint NOT NULL,
@@ -31438,8 +31430,6 @@ ALTER TABLE ONLY work_item_custom_status_mappings ALTER COLUMN id SET DEFAULT ne
 ALTER TABLE ONLY work_item_custom_statuses ALTER COLUMN id SET DEFAULT nextval('work_item_custom_statuses_id_seq'::regclass);
 
 ALTER TABLE ONLY work_item_date_field_values ALTER COLUMN id SET DEFAULT nextval('work_item_date_field_values_id_seq'::regclass);
-
-ALTER TABLE ONLY work_item_hierarchy_restrictions ALTER COLUMN id SET DEFAULT nextval('work_item_hierarchy_restrictions_id_seq'::regclass);
 
 ALTER TABLE ONLY work_item_number_field_values ALTER COLUMN id SET DEFAULT nextval('work_item_number_field_values_id_seq'::regclass);
 
@@ -35156,9 +35146,6 @@ ALTER TABLE ONLY work_item_date_field_values
 
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT work_item_dates_sources_pkey PRIMARY KEY (issue_id);
-
-ALTER TABLE ONLY work_item_hierarchy_restrictions
-    ADD CONSTRAINT work_item_hierarchy_restrictions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY work_item_number_field_values
     ADD CONSTRAINT work_item_number_field_values_pkey PRIMARY KEY (id);
@@ -42617,12 +42604,6 @@ CREATE INDEX index_work_item_custom_statuses_on_updated_by_id ON work_item_custo
 CREATE INDEX index_work_item_date_field_values_on_custom_field_id ON work_item_date_field_values USING btree (custom_field_id);
 
 CREATE INDEX index_work_item_date_field_values_on_namespace_id ON work_item_date_field_values USING btree (namespace_id);
-
-CREATE INDEX index_work_item_hierarchy_restrictions_on_child_type_id ON work_item_hierarchy_restrictions USING btree (child_type_id);
-
-CREATE UNIQUE INDEX index_work_item_hierarchy_restrictions_on_parent_and_child ON work_item_hierarchy_restrictions USING btree (parent_type_id, child_type_id);
-
-CREATE INDEX index_work_item_hierarchy_restrictions_on_parent_type_id ON work_item_hierarchy_restrictions USING btree (parent_type_id);
 
 CREATE INDEX index_work_item_number_field_values_on_custom_field_id ON work_item_number_field_values USING btree (custom_field_id);
 
@@ -51458,12 +51439,6 @@ ALTER TABLE ONLY work_item_colors
 
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT fk_work_item_dates_sources_on_namespace_id FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY work_item_hierarchy_restrictions
-    ADD CONSTRAINT fk_work_item_hierarchy_restrictions_child_type_id FOREIGN KEY (child_type_id) REFERENCES work_item_types(id) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY work_item_hierarchy_restrictions
-    ADD CONSTRAINT fk_work_item_hierarchy_restrictions_parent_type_id FOREIGN KEY (parent_type_id) REFERENCES work_item_types(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY work_item_type_custom_fields
     ADD CONSTRAINT fk_work_item_type_custom_fields_on_work_item_type_id FOREIGN KEY (work_item_type_id) REFERENCES work_item_types(id) ON DELETE CASCADE;

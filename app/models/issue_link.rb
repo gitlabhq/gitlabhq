@@ -6,6 +6,7 @@ class IssueLink < ApplicationRecord
 
   belongs_to :source, class_name: 'Issue'
   belongs_to :target, class_name: 'Issue'
+  belongs_to :vulnerability_occurrence, optional: true, class_name: 'Vulnerabilities::Finding'
 
   class << self
     def issuable_type

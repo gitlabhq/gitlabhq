@@ -10,7 +10,6 @@ import adminGroupCountsQuery from '../graphql/queries/group_counts.query.graphql
 import adminGroupsQuery from '../graphql/queries/admin_groups.query.graphql';
 import {
   ADMIN_GROUPS_TABS,
-  SORT_OPTIONS,
   SORT_OPTION_UPDATED,
   SORT_OPTION_CREATED,
   FILTERED_SEARCH_TERM_KEY,
@@ -20,8 +19,6 @@ import {
 
 export default {
   ADMIN_GROUPS_TABS,
-  SORT_OPTIONS,
-  SORT_OPTION_UPDATED,
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
   RECENT_SEARCHES_STORAGE_KEY_GROUPS,
@@ -55,8 +52,6 @@ export default {
     :filtered-search-namespace="$options.FILTERED_SEARCH_NAMESPACE"
     :filtered-search-recent-searches-storage-key="$options.RECENT_SEARCHES_STORAGE_KEY_GROUPS"
     :filtered-search-input-placeholder="__('Search (3 character minimum)')"
-    :sort-options="$options.SORT_OPTIONS"
-    :default-sort-option="$options.SORT_OPTION_UPDATED"
     :timestamp-type-map="$options.timestampTypeMap"
     initial-sort=""
     :tab-counts-query="$options.tabCountsQuery"

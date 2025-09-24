@@ -336,7 +336,7 @@ You can delete multiple artifacts at the same time:
 
 ## Link to job artifacts in the merge request UI
 
-Use the `artifacts:expose_as` keyword to display a link to job artifacts in the merge request UI.
+Use the `artifacts:expose_as` keyword to provide direct access to artifacts from the merge request UI.
 
 For example, for an artifact with a single file:
 
@@ -348,8 +348,9 @@ test:
     paths: ['file.txt']
 ```
 
-With this configuration, GitLab adds **artifact 1** as a link to `file.txt` to the
-**View exposed artifact** section of the relevant merge request.
+With this configuration, the **View exposed artifact** section displays a link to `file.txt` labeled **artifact 1**.
+
+![A merge request widget that links to exposed artifacts.](img/mr_artifact_expose_v18_4.png)
 
 ## Keep artifacts from most recent successful jobs
 

@@ -10124,9 +10124,6 @@ msgstr ""
 msgid "Before inserting code, be sure to read the comment that separated each code group."
 msgstr ""
 
-msgid "Begin with the selected commit"
-msgstr ""
-
 msgid "Below are the fingerprints for the current instance SSH host keys."
 msgstr ""
 
@@ -29950,9 +29947,6 @@ msgid "Git local setup"
 msgstr ""
 
 msgid "Git repository URL"
-msgstr ""
-
-msgid "Git revision"
 msgstr ""
 
 msgid "Git shallow clone"
@@ -54367,6 +54361,21 @@ msgid "Repository usage recalculation started"
 msgstr ""
 
 msgid "Repository: %{counter_repositories} / Wikis: %{counter_wikis} / Build Artifacts: %{counter_build_artifacts} / Pipeline Artifacts: %{counter_pipeline_artifacts} / LFS: %{counter_lfs_objects} / Snippets: %{counter_snippets} / Packages: %{counter_packages} / Uploads: %{counter_uploads}"
+msgstr ""
+
+msgid "RepositoryGraph|Display full history"
+msgstr ""
+
+msgid "RepositoryGraph|Display up to revision"
+msgstr ""
+
+msgid "RepositoryGraph|Enter a Git revision..."
+msgstr ""
+
+msgid "RepositoryGraph|Search revision and rerender the graph"
+msgstr ""
+
+msgid "RepositoryGraph|Select display option"
 msgstr ""
 
 msgid "Repository|Filter files (*.vue, *.rb...)"

@@ -79,8 +79,6 @@ const defaultPropsData = {
   filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
   filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
   filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_PROJECTS,
-  sortOptions: SORT_OPTIONS,
-  defaultSortOption: SORT_OPTION_UPDATED,
   timestampTypeMap: {
     [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
     [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_LAST_ACTIVITY_AT,
@@ -366,9 +364,45 @@ describe('TabsWithList', () => {
         filteredSearchRecentSearchesStorageKey:
           defaultPropsData.filteredSearchRecentSearchesStorageKey,
         searchInputPlaceholder: 'Filter or search (3 character minimum)',
-        sortOptions: defaultPropsData.sortOptions,
+        sortOptions: SORT_OPTIONS,
         activeSortOption: SORT_OPTION_CREATED,
         isAscending: false,
+      });
+    });
+
+    describe('when initialSort prop is not set', () => {
+      it('renders filtered search bar activeTab.defaultSortOption as fallback for sort', async () => {
+        await createComponent({
+          propsData: {
+            filteredSearchSupportedTokens: [FILTERED_SEARCH_TOKEN_LANGUAGE],
+            initialSort: '',
+          },
+        });
+
+        expect(findFilteredSearchAndSort().props('activeSortOption')).toBe(SORT_OPTION_UPDATED);
+      });
+
+      describe('when sortOptions and defaultSortOption are not set', () => {
+        beforeEach(async () => {
+          await createComponent({
+            propsData: {
+              filteredSearchSupportedTokens: [FILTERED_SEARCH_TOKEN_LANGUAGE],
+              initialSort: '',
+              tabs: PROJECT_DASHBOARD_TABS.map((tab) => ({
+                ...tab,
+                sortOptions: undefined,
+                defaultSortOption: undefined,
+              })),
+            },
+          });
+        });
+
+        it('sets activeSortOption and sortOptions props as empty', () => {
+          expect(findFilteredSearchAndSort().props()).toMatchObject({
+            activeSortOption: {},
+            sortOptions: [],
+          });
+        });
       });
     });
 
@@ -667,7 +701,7 @@ describe('TabsWithList', () => {
 
     it('falls back to defaultSortOption prop descending order', () => {
       expect(findTabView().props()).toMatchObject({
-        sort: `${defaultPropsData.defaultSortOption.value}_${SORT_DIRECTION_DESC}`,
+        sort: `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_DESC}`,
       });
     });
   });

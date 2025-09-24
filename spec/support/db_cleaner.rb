@@ -16,7 +16,7 @@ module DbCleaner
 
   def deletion_except_tables
     %w[
-      work_item_types work_item_hierarchy_restrictions
+      work_item_types
       work_item_widget_definitions work_item_related_link_restrictions
     ]
   end

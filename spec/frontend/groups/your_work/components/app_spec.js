@@ -11,6 +11,7 @@ import { createRouter } from '~/groups/your_work';
 import groupCountsQuery from '~/groups/your_work/graphql/queries/group_counts.query.graphql';
 import {
   GROUP_DASHBOARD_TABS,
+  FIRST_TAB_ROUTE_NAMES,
   SORT_OPTIONS,
   SORT_OPTION_UPDATED,
   SORT_OPTION_CREATED,
@@ -19,6 +20,8 @@ import {
   GROUPS_DASHBOARD_ROUTE_NAME,
 } from '~/groups/your_work/constants';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
+import TabView from '~/groups_projects/components/tab_view.vue';
+import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import { RECENT_SEARCHES_STORAGE_KEY_GROUPS } from '~/filtered_search/recent_searches_storage_keys';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
@@ -56,12 +59,18 @@ describe('YourWorkGroupsApp', () => {
     mountFn = shallowMountExtended,
     handlers = [],
     route = defaultRoute,
+    stubs = {},
   } = {}) => {
     const apolloProvider = createMockApollo(handlers, resolvers(endpoint));
     router = createRouter();
     await router.push(route);
 
-    wrapper = mountFn(YourWorkGroupsApp, { propsData: defaultPropsData, apolloProvider, router });
+    wrapper = mountFn(YourWorkGroupsApp, {
+      propsData: defaultPropsData,
+      apolloProvider,
+      router,
+      stubs,
+    });
   };
 
   beforeEach(() => {
@@ -84,13 +93,11 @@ describe('YourWorkGroupsApp', () => {
       filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
       filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_GROUPS,
       filteredSearchInputPlaceholder: 'Search',
-      sortOptions: SORT_OPTIONS,
-      defaultSortOption: SORT_OPTION_UPDATED,
       timestampTypeMap: {
         [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
         [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_UPDATED_AT,
       },
-      firstTabRouteNames: [],
+      firstTabRouteNames: FIRST_TAB_ROUTE_NAMES,
       initialSort: defaultPropsData.initialSort,
       programmingLanguages: [],
       eventTracking: {
@@ -163,4 +170,20 @@ describe('YourWorkGroupsApp', () => {
 
     expect(wrapper.findComponent(GlPagination).exists()).toBe(true);
   });
+
+  it.each(GROUP_DASHBOARD_TABS)(
+    'renders expected sort options and active sort option on $text tab',
+    async (tab) => {
+      await createComponent({
+        mountFn: mountExtended,
+        stubs: { TabView },
+        route: { name: tab.value },
+      });
+
+      expect(wrapper.findComponent(FilteredSearchAndSort).props()).toMatchObject({
+        sortOptions: SORT_OPTIONS,
+        activeSortOption: SORT_OPTION_UPDATED,
+      });
+    },
+  );
 });

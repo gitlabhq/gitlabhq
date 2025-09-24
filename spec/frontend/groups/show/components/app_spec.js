@@ -20,6 +20,7 @@ import { createRouter } from '~/groups/show';
 import {
   SUBGROUPS_AND_PROJECTS_TAB,
   SORT_OPTIONS,
+  SORT_OPTIONS_WITH_STARS,
   SORT_OPTION_UPDATED,
   SORT_OPTION_CREATED,
   FILTERED_SEARCH_TERM_KEY,
@@ -29,6 +30,7 @@ import {
   SHARED_PROJECTS_TAB,
 } from '~/groups/show/constants';
 import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
+import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import { RECENT_SEARCHES_STORAGE_KEY_GROUPS } from '~/filtered_search/recent_searches_storage_keys';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
@@ -121,8 +123,6 @@ describe('GroupsShowApp', () => {
       filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
       filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_GROUPS,
       filteredSearchInputPlaceholder: 'Search (3 character minimum)',
-      sortOptions: SORT_OPTIONS,
-      defaultSortOption: SORT_OPTION_UPDATED,
       timestampTypeMap: {
         [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
         [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_UPDATED_AT,
@@ -249,6 +249,17 @@ describe('GroupsShowApp', () => {
         expect(wrapper.findComponent(SubgroupsAndProjectsEmptyState).exists()).toBe(true);
       });
     });
+
+    it('renders expected sort options and active sort option', async () => {
+      mockAxios.onGet(endpoint).replyOnce(200, childrenResponse);
+      await createComponent({ mountFn: mountExtended });
+      await waitForPromises();
+
+      expect(wrapper.findComponent(FilteredSearchAndSort).props()).toMatchObject({
+        sortOptions: SORT_OPTIONS_WITH_STARS,
+        activeSortOption: SORT_OPTION_UPDATED,
+      });
+    });
   });
 
   describe('when on the Inactive tab', () => {
@@ -294,6 +305,17 @@ describe('GroupsShowApp', () => {
 
       it('renders empty state', () => {
         expect(wrapper.findComponent(InactiveSubgroupsAndProjectsEmptyState).exists()).toBe(true);
+      });
+    });
+
+    it('renders expected sort options and active sort option', async () => {
+      mockAxios.onGet(endpoint).replyOnce(200, inactiveChildrenResponse);
+      await createComponent({ mountFn: mountExtended, route });
+      await waitForPromises();
+
+      expect(wrapper.findComponent(FilteredSearchAndSort).props()).toMatchObject({
+        sortOptions: SORT_OPTIONS_WITH_STARS,
+        activeSortOption: SORT_OPTION_UPDATED,
       });
     });
   });
@@ -448,6 +470,20 @@ describe('GroupsShowApp', () => {
         expect(wrapper.findComponent(SharedGroupsEmptyState).exists()).toBe(true);
       });
     });
+
+    it('renders expected sort options and active sort option', async () => {
+      await createComponent({
+        mountFn: mountExtended,
+        route,
+        handlers: [[sharedGroupsQuery, jest.fn().mockResolvedValue(sharedGroupsResponse)]],
+      });
+      await waitForPromises();
+
+      expect(wrapper.findComponent(FilteredSearchAndSort).props()).toMatchObject({
+        sortOptions: SORT_OPTIONS,
+        activeSortOption: SORT_OPTION_UPDATED,
+      });
+    });
   });
 
   describe('when on the Shared projects tab', () => {
@@ -598,6 +634,20 @@ describe('GroupsShowApp', () => {
 
       it('renders empty state', () => {
         expect(wrapper.findComponent(SharedProjectsEmptyState).exists()).toBe(true);
+      });
+    });
+
+    it('renders expected sort options and active sort option', async () => {
+      await createComponent({
+        mountFn: mountExtended,
+        route,
+        handlers: [[sharedProjectsQuery, jest.fn().mockResolvedValue(sharedProjectsResponse)]],
+      });
+      await waitForPromises();
+
+      expect(wrapper.findComponent(FilteredSearchAndSort).props()).toMatchObject({
+        sortOptions: SORT_OPTIONS,
+        activeSortOption: SORT_OPTION_UPDATED,
       });
     });
   });
