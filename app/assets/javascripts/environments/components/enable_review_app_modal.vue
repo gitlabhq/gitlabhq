@@ -100,7 +100,7 @@ export default {
               </gl-sprintf>
             </li>
             <li class="gl-list-none">
-              <div class="align-items-start gl-flex">
+              <div class="gl-flex !gl-items-start">
                 <pre
                   :id="modalInfoCopyId"
                   class="gl-w-full"
@@ -110,7 +110,7 @@ export default {
                 <modal-copy-button
                   :title="$options.i18n.copyToClipboardText"
                   :modal-id="modalId"
-                  css-classes="border-0"
+                  css-classes="!gl-border-0"
                   :target="`#${modalInfoCopyId}`"
                 />
               </div>

@@ -240,8 +240,8 @@ describe('Design management index page', () => {
       createComponent({ designs: mockDesigns, allVersions: [mockVersion] });
       expect(findDropzoneWrapper().classes()).toEqual([
         'gl-flex-col',
-        'col-md-6',
-        'col-lg-3',
+        'gl-col-md-6',
+        'gl-col-lg-3',
         'gl-mt-5',
       ]);
     });
@@ -262,7 +262,7 @@ describe('Design management index page', () => {
     });
 
     it('has correct classes applied to dropzone wrapper', () => {
-      expect(findDropzoneWrapper().classes()).toEqual(['col-12']);
+      expect(findDropzoneWrapper().classes()).toEqual(['gl-col-12']);
     });
 
     it('does not render a toolbar with buttons', async () => {

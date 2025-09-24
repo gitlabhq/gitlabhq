@@ -138,7 +138,7 @@ describe('Blob Header Default Actions', () => {
       createComponent();
 
       expect(wrapper.findComponent(GlButtonGroup).attributes('class')).toBe(
-        'gl-hidden sm:gl-inline-flex',
+        'gl-hidden @sm/panel:gl-inline-flex',
       );
     });
   });

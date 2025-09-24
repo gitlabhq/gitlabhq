@@ -162,10 +162,10 @@ export default {
       <gl-loading-icon
         v-if="group.isChildrenLoading"
         size="lg"
-        class="gl-mr-3 gl-hidden gl-shrink-0 sm:gl-inline-flex"
+        class="gl-mr-3 gl-hidden gl-shrink-0 @sm/panel:gl-inline-flex"
       />
       <a
-        :class="{ 'sm:gl-flex': !group.isChildrenLoading }"
+        :class="{ '@sm/panel:gl-flex': !group.isChildrenLoading }"
         class="gl-mr-3 gl-hidden !gl-no-underline"
         :href="group.relativePath"
         :aria-label="group.name"
@@ -247,8 +247,11 @@ export default {
         <div v-else-if="group.archived">
           <gl-badge variant="info">{{ __('Archived') }}</gl-badge>
         </div>
-        <div class="metadata gl-flex gl-shrink-0 gl-grow gl-flex-wrap md:gl-justify-between">
-          <item-stats :item="group" class="group-stats gl-hidden gl-items-center md:gl-flex" />
+        <div class="metadata gl-flex gl-shrink-0 gl-grow gl-flex-wrap @md/panel:gl-justify-between">
+          <item-stats
+            :item="group"
+            class="group-stats gl-hidden gl-items-center @md/panel:gl-flex"
+          />
           <item-actions
             v-if="showActionsMenu"
             :group="group"

@@ -87,7 +87,7 @@ export default {
       :illustration="setupIllustration"
       :jira-integration-path="jiraIntegrationPath"
     />
-    <gl-loading-icon v-else-if="$apollo.loading" size="lg" class="mt-3" />
+    <gl-loading-icon v-else-if="$apollo.loading" size="lg" class="!gl-mt-5" />
     <jira-import-progress
       v-else-if="jiraImportDetails.isInProgress"
       :illustration="setupIllustration"

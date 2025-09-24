@@ -323,7 +323,7 @@ export default {
     <template v-else-if="showContent">
       <div
         v-if="!showEmptyState"
-        class="gl-border-t gl-border-b gl-hidden lg:gl-flex"
+        class="gl-border-t gl-border-b gl-hidden @lg/panel:gl-flex"
         data-testid="environments-table-header"
       >
         <div class="gl-w-1/5 gl-p-4 gl-font-bold">{{ $options.i18n.name }}</div>

@@ -264,7 +264,7 @@ export default {
       <gl-badge
         v-if="signatures.length"
         v-gl-tooltip.d0="$options.i18n.SIGNATURE_BADGE_TOOLTIP"
-        class="sm:gl-ml-3"
+        class="@sm/panel:gl-ml-3"
         data-testid="signed-badge"
         variant="neutral"
       >

@@ -55,21 +55,21 @@ export default {
 
 <template>
   <div class="labels-select-contents-create">
-    <div class="dropdown-title pt-0 pb-2 gl-mb-0 gl-flex gl-items-center">
+    <div class="dropdown-title gl-mb-0 gl-flex gl-items-center !gl-pb-3 !gl-pt-0">
       <gl-button
         :aria-label="__('Go back')"
         category="tertiary"
         size="small"
-        class="js-btn-back dropdown-header-button p-0"
+        class="js-btn-back dropdown-header-button !gl-p-0"
         icon="arrow-left"
         @click="toggleDropdownContentsCreateView"
       />
-      <span class="flex-grow-1">{{ labelsCreateTitle }}</span>
+      <span class="!gl-grow">{{ labelsCreateTitle }}</span>
       <gl-button
         :aria-label="__('Close')"
         category="tertiary"
         size="small"
-        class="dropdown-header-button p-0"
+        class="dropdown-header-button !gl-p-0"
         icon="close"
         @click="toggleDropdownContents"
       />
@@ -82,8 +82,8 @@ export default {
         data-testid="label-title"
       />
     </div>
-    <div class="dropdown-content px-2">
-      <div class="suggest-colors suggest-colors-dropdown mt-0 mb-2">
+    <div class="dropdown-content !gl-px-3">
+      <div class="suggest-colors suggest-colors-dropdown !gl-mb-3 !gl-mt-0">
         <gl-link
           v-for="(color, index) in suggestedColors"
           :key="index"
@@ -109,16 +109,16 @@ export default {
         />
       </div>
     </div>
-    <div class="dropdown-actions clearfix pt-2 px-2">
+    <div class="dropdown-actions !gl-px-3 !gl-pt-3 gl-clearfix">
       <gl-button
         :disabled="disableCreate"
         category="primary"
         variant="confirm"
-        class="float-left gl-flex gl-items-center"
+        class="!gl-float-left gl-flex gl-items-center"
         data-testid="create-click"
         @click="handleCreateClick"
       >
-        <gl-loading-icon v-show="labelCreateInProgress" size="sm" :inline="true" class="mr-1" />
+        <gl-loading-icon v-show="labelCreateInProgress" size="sm" :inline="true" class="!gl-mr-2" />
         {{ __('Create') }}
       </gl-button>
       <gl-button

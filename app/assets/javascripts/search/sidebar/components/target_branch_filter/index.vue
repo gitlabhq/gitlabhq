@@ -115,7 +115,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-relative gl-pb-0 md:gl-pt-0">
+  <div class="gl-relative gl-pb-0 @md/panel:gl-pt-0">
     <div class="gl-mb-2 gl-text-sm gl-font-bold" data-testid="target-branch-filter-title">
       {{ s__('GlobalSearch|Target branch') }}
     </div>

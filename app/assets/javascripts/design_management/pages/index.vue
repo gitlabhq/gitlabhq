@@ -139,12 +139,12 @@ export default {
     },
     designDropzoneWrapperClass() {
       if (!this.isDesignListEmpty) {
-        return 'gl-flex-col col-md-6 col-lg-3 gl-mt-5';
+        return 'gl-flex-col gl-col-md-6 gl-col-lg-3 gl-mt-5';
       }
       if (this.showToolbar) {
-        return 'col-12 gl-mt-5';
+        return 'gl-col-12 gl-mt-5';
       }
-      return 'col-12';
+      return 'gl-col-12';
     },
   },
   mounted() {
@@ -463,7 +463,7 @@ export default {
           <li
             v-for="design in designs"
             :key="design.id"
-            class="col-sm-6 col-lg-3 js-design-tile gl-mt-5 gl-bg-transparent gl-shadow-none"
+            class="gl-col-sm-6 gl-col-lg-3 js-design-tile gl-mt-5 gl-bg-transparent gl-shadow-none"
           >
             <design-dropzone
               :display-as-card="hasDesigns"

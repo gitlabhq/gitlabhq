@@ -38,8 +38,8 @@ export default {
         {
           key: 'actions',
           label: '',
-          tdClass: 'lg:gl-w-px gl-whitespace-nowrap !gl-p-3 gl-text-right',
-          thClass: 'lg:gl-w-px gl-whitespace-nowrap',
+          tdClass: '@lg/panel:gl-w-px gl-whitespace-nowrap !gl-p-3 gl-text-right',
+          thClass: '@lg/panel:gl-w-px gl-whitespace-nowrap',
         },
       ];
     },
@@ -97,7 +97,7 @@ export default {
         :title="author.name"
         class="js-user-link !gl-text-subtle"
       >
-        <gl-avatar :src="author.avatarUrl" :size="16" :entity-name="author.name" class="mr-2" />
+        <gl-avatar :src="author.avatarUrl" :size="16" :entity-name="author.name" class="!gl-mr-3" />
         {{ author.name }}
       </gl-avatar-link>
     </template>

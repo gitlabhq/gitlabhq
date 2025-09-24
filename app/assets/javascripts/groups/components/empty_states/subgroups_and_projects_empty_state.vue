@@ -58,7 +58,7 @@ export default {
   >
     <template v-if="hasActions" #actions>
       <div
-        class="gl-mt-5 gl-flex gl-flex-col gl-justify-center gl-gap-4 gl-text-left md:gl-flex-row"
+        class="gl-mt-5 gl-flex gl-flex-col gl-justify-center gl-gap-4 gl-text-left @md/panel:gl-flex-row"
         data-testid="empty-subgroup-and-projects-actions"
       >
         <action-card

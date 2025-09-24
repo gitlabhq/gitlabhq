@@ -28,9 +28,9 @@ describe('Branch divergence graph bar component', () => {
 
   it.each`
     position   | textAlignmentClass
-    ${'left'}  | ${'text-right'}
-    ${'right'} | ${'text-left'}
-    ${'full'}  | ${'text-center'}
+    ${'left'}  | ${'gl-text-right'}
+    ${'right'} | ${'gl-text-left'}
+    ${'full'}  | ${'gl-text-center'}
   `(
     'sets text alignment class as $textAlignmentClass for position $position',
     ({ position, textAlignmentClass }) => {

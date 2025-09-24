@@ -76,7 +76,7 @@ export default {
         text: this.$options.i18n.close,
         href: this.closeUrl,
         extraAttrs: {
-          class: { 'sm:!gl-hidden': this.isDetailPage },
+          class: { '@sm/panel:!gl-hidden': this.isDetailPage },
           'data-testid': 'milestone-close-item',
           'data-method': 'put',
           rel: 'nofollow',
@@ -88,7 +88,7 @@ export default {
         text: this.$options.i18n.reopen,
         href: this.reopenUrl,
         extraAttrs: {
-          class: { 'sm:!gl-hidden': this.isDetailPage },
+          class: { '@sm/panel:!gl-hidden': this.isDetailPage },
           'data-testid': 'milestone-reopen-item',
           'data-method': 'put',
           rel: 'nofollow',
@@ -171,7 +171,7 @@ export default {
     no-caret
     :toggle-text="$options.i18n.actionsLabel"
     text-sr-only
-    class="gl-relative gl-w-full sm:gl-w-auto"
+    class="gl-relative gl-w-full @sm/panel:gl-w-auto"
     :class="widthClasses"
     :size="size"
     :data-testid="showTestIdIfNotDetailPage"
@@ -181,7 +181,7 @@ export default {
     <template v-if="isDetailPage" #toggle>
       <div class="gl-min-h-7">
         <gl-button
-          class="gl-new-dropdown-toggle gl-w-full sm:gl-w-auto md:!gl-hidden"
+          class="gl-new-dropdown-toggle gl-w-full @sm/panel:gl-w-auto @md/panel:!gl-hidden"
           button-text-classes="gl-w-full"
           category="secondary"
           :aria-label="$options.i18n.actionsLabel"
@@ -191,7 +191,7 @@ export default {
           <gl-icon class="dropdown-chevron" name="chevron-down" />
         </gl-button>
         <gl-button
-          class="gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret gl-hidden md:!gl-flex"
+          class="gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret gl-hidden @md/panel:!gl-flex"
           category="tertiary"
           icon="ellipsis_v"
           :aria-label="$options.i18n.actionsLabel"

@@ -103,7 +103,10 @@ export default {
 };
 </script>
 <template>
-  <gl-button-group class="gl-hidden sm:gl-inline-flex" data-testid="default-actions-container">
+  <gl-button-group
+    class="gl-hidden @sm/panel:gl-inline-flex"
+    data-testid="default-actions-container"
+  >
     <gl-button
       v-if="!isEmpty && showCopyButton"
       v-gl-tooltip.hover

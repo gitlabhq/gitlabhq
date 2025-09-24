@@ -367,7 +367,7 @@ export default {
           :search-input-placeholder="s__('UserMapping|Search placeholder users')"
           terms-as-tokens
           sync-filter-and-sort
-          class="row-content-block gl-grow gl-border-t-0 sm:gl-flex"
+          class="row-content-block gl-grow gl-border-t-0 @sm/panel:gl-flex"
           @onFilter="onFilter"
           @onSort="onSort"
         />
@@ -397,7 +397,7 @@ export default {
           :search-input-placeholder="s__('UserMapping|Search placeholder users')"
           terms-as-tokens
           sync-filter-and-sort
-          class="row-content-block gl-grow gl-border-t-0 sm:gl-flex"
+          class="row-content-block gl-grow gl-border-t-0 @sm/panel:gl-flex"
           @onFilter="onFilter"
           @onSort="onSort"
         />

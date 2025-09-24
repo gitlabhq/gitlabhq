@@ -25,7 +25,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-hidden gl-content-center sm:gl-flex" data-testid="work-item-feedback">
+  <div class="gl-hidden gl-content-center @sm/panel:gl-flex" data-testid="work-item-feedback">
     <gl-badge :id="$options.badgeId" variant="info" icon="information-o" href="#">{{
       badgeTitle
     }}</gl-badge>

@@ -16,7 +16,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mb-4 gl-flex gl-flex-col sm:gl-flex-row">
+  <div class="gl-mb-4 gl-flex gl-flex-col @sm/panel:gl-flex-row">
     <p class="gl-mb-0 gl-grow gl-basis-0 gl-font-bold">
       {{ label }}
     </p>

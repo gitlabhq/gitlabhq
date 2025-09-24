@@ -106,7 +106,7 @@ export default {
           ? __('Snippets with non-text files can only be edited via Git.')
           : undefined,
         extraAttrs: {
-          class: 'sm:!gl-hidden',
+          class: '@sm/panel:!gl-hidden',
         },
       };
     },
@@ -251,7 +251,7 @@ export default {
 </script>
 <template>
   <div data-testid="snippet-header">
-    <div class="gl-flex gl-flex-col gl-items-start gl-gap-3 gl-pt-3 sm:gl-flex-row">
+    <div class="gl-flex gl-flex-col gl-items-start gl-gap-3 gl-pt-3 @sm/panel:gl-flex-row">
       <span
         v-if="snippet.hidden"
         class="gl-mt-2 gl-h-6 gl-w-6 gl-rounded-base gl-bg-orange-50 gl-text-center gl-leading-24 gl-text-orange-600"
@@ -273,14 +273,14 @@ export default {
 
       <div
         v-if="hasPersonalSnippetActions"
-        class="gl-flex gl-w-full gl-flex-col gl-gap-3 gl-self-center sm:gl-w-auto sm:gl-flex-row"
+        class="gl-flex gl-w-full gl-flex-col gl-gap-3 gl-self-center @sm/panel:gl-w-auto @sm/panel:gl-flex-row"
       >
         <gl-button
           v-if="snippet.userPermissions.updateSnippet"
           :href="editItem.href"
           :title="editItem.title"
           :disabled="editItem.disabled"
-          class="gl-hidden sm:gl-inline-flex"
+          class="gl-hidden @sm/panel:gl-inline-flex"
           data-testid="snippet-action-button"
           :data-qa-action="editItem.text"
         >
@@ -306,7 +306,7 @@ export default {
           <template #toggle>
             <div class="gl-min-h-7 gl-w-full">
               <gl-button
-                class="gl-new-dropdown-toggle gl-w-full sm:!gl-hidden"
+                class="gl-new-dropdown-toggle gl-w-full @sm/panel:!gl-hidden"
                 button-text-classes="gl-flex gl-justify-between gl-w-full"
                 category="secondary"
                 tabindex="0"
@@ -316,7 +316,7 @@ export default {
               </gl-button>
               <gl-button
                 v-gl-tooltip="showDropdownTooltip"
-                class="gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret gl-hidden sm:!gl-flex"
+                class="gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret gl-hidden @sm/panel:!gl-flex"
                 category="tertiary"
                 icon="ellipsis_v"
                 :aria-label="$options.i18n.snippetAction"
@@ -341,7 +341,7 @@ export default {
       </div>
     </div>
 
-    <div class="detail-page-header gl-mb-5 gl-flex-col gl-p-0 md:gl-flex-row">
+    <div class="detail-page-header gl-mb-5 gl-flex-col gl-p-0 @md/panel:gl-flex-row">
       <div class="gl-flex gl-items-baseline">
         <div
           class="has-tooltip gl-mr-2 gl-mt-3 gl-flex gl-self-baseline"

@@ -58,7 +58,7 @@ export default {
       return {
         'gl-hidden': true,
         '!gl-flex': this.tagCount === 1,
-        'md:!gl-flex': this.tagCount > 1,
+        '@md/panel:!gl-flex': this.tagCount > 1,
         'gl-mr-2': index !== this.tagsToRender.length - 1,
         'gl-ml-3': !this.hideLabel && index === 0,
       };
@@ -89,7 +89,7 @@ export default {
       data-testid="moreBadge"
       variant="neutral"
       :title="moreTagsTooltip"
-      class="gl-ml-2 gl-hidden md:gl-flex"
+      class="gl-ml-2 gl-hidden @md/panel:gl-flex"
       ><gl-sprintf :message="__('+%{tags} more')">
         <template #tags>
           {{ moreTagsDisplay }}
@@ -101,7 +101,7 @@ export default {
       v-if="moreTagsDisplay && hideLabel"
       data-testid="moreBadge"
       variant="neutral"
-      class="gl-ml-2 md:gl-hidden"
+      class="gl-ml-2 @md/panel:gl-hidden"
       >{{ tagsDisplay }}</gl-badge
     >
   </div>

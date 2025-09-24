@@ -128,7 +128,7 @@ export default {
       </div>
       <gl-truncate
         v-else
-        class="gl-max-w-15 md:gl-max-w-26"
+        class="gl-max-w-15 @md/panel:gl-max-w-26"
         :text="packageEntity.version"
         :with-tooltip="true"
       />

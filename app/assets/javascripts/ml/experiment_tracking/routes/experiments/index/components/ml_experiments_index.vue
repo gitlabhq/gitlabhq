@@ -184,7 +184,7 @@ export default {
               :src="creator.avatarUrl"
               :size="16"
               :entity-name="creator.name"
-              class="mr-2"
+              class="!gl-mr-3"
             />
             {{ creator.name }}
           </gl-avatar-link>

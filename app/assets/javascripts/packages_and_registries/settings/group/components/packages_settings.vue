@@ -184,7 +184,7 @@ export default {
         :tbody-tr-attr="(item) => ({ 'data-testid': item.testid })"
       >
         <template #cell(packageFormat)="{ item }">
-          <span class="md:gl-pt-3">{{ item.format }}</span>
+          <span class="@md/panel:gl-pt-3">{{ item.format }}</span>
         </template>
         <template #cell(allowDuplicates)="{ item }">
           <gl-toggle
@@ -193,7 +193,7 @@ export default {
             :value="item.duplicatesAllowed"
             :disabled="isLoading"
             label-position="hidden"
-            class="gl-items-end sm:gl-items-start"
+            class="gl-items-end @sm/panel:gl-items-start"
             @change="update(item.modelNames.allowed, $event)"
           />
         </template>

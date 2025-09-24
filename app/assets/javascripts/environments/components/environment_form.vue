@@ -219,7 +219,7 @@ export default {
     <h1 class="page-title gl-text-size-h-display">
       {{ title }}
     </h1>
-    <div class="row col-12">
+    <div class="row gl-col-12">
       <h4 class="gl-mt-0">
         {{ $options.i18n.header }}
       </h4>

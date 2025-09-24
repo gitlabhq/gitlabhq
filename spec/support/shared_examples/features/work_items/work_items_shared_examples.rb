@@ -714,8 +714,8 @@ RSpec.shared_examples 'work items time tracking' do
 
   it 'adds and deletes time entries and view report', :aggregate_failures do
     add_time_entry('1d', 'First summary')
-
     add_time_entry('2d', 'Second summary')
+    wait_for_all_requests
 
     expect(page).to have_text 'Spent 3d'
     expect(page).to have_button '3d'

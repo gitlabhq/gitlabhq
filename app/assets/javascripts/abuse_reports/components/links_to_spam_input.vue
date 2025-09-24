@@ -36,7 +36,7 @@ export default {
   <div>
     <template v-for="(link, index) in links">
       <div :key="index" class="row">
-        <div class="col-lg-8">
+        <div class="gl-col-lg-8">
           <gl-form-group :label="$options.i18n.label" :label-for="`spam-link-${index}`">
             <gl-form-input
               :id="`spam-link-${index}`"
@@ -50,7 +50,7 @@ export default {
       </div>
     </template>
     <div class="row">
-      <div class="col-lg-8">
+      <div class="gl-col-lg-8">
         <gl-button variant="link" icon="plus" class="gl-float-right" @click="addAnotherInput">
           {{ $options.i18n.addAnotherText }}
         </gl-button>

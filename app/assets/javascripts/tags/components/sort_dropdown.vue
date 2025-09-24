@@ -55,7 +55,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-flex gl-flex-col gl-gap-3 md:gl-flex-row">
+  <div class="gl-flex gl-flex-col gl-gap-3 @md/panel:gl-flex-row">
     <gl-search-box-by-click
       v-model="searchTerm"
       :placeholder="$options.i18n.searchPlaceholder"

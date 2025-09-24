@@ -26,43 +26,44 @@ describe('migrateCSSUtils', () => {
   const file = 'file.scss';
 
   it('replaces Bootstrap responsive column utils with their container queries equivalent', () => {
-    const input = 'col-12 col-sm-9 col-md-6 col-lg-3 col-xl-2';
+    const input = 'gl-col-12 gl-col-sm-9 gl-col-md-6 gl-col-lg-3 gl-col-xl-2';
     const output = 'gl-col-12 gl-col-sm-9 gl-col-md-6 gl-col-lg-3 gl-col-xl-2';
 
     expect(migrateCSSUtils(file, input)).toBe(output);
   });
 
   it.each`
-    input              | output
-    ${'border-0'}      | ${'!gl-border-0'}
-    ${'order-1'}       | ${'gl-order-1'}
-    ${'order-md-1'}    | ${'gl-order-md-1'}
-    ${'col-lg-auto'}   | ${'gl-col-lg-auto'}
-    ${'row-cols-2'}    | ${'gl-row-cols-2'}
-    ${'row-cols-md-0'} | ${'gl-row-cols-md-0'}
-    ${'offset-2'}      | ${'gl-offset-2'}
-    ${'offset-sm-2'}   | ${'gl-offset-sm-2'}
-    ${'no-gutters'}    | ${'gl-no-gutters'}
+    input                 | output
+    ${'!gl-border-0'}     | ${'!gl-border-0'}
+    ${'gl-order-1'}       | ${'gl-order-1'}
+    ${'gl-order-md-1'}    | ${'gl-order-md-1'}
+    ${'gl-col-lg-auto'}   | ${'gl-col-lg-auto'}
+    ${'gl-row-cols-2'}    | ${'gl-row-cols-2'}
+    ${'gl-row-cols-md-0'} | ${'gl-row-cols-md-0'}
+    ${'gl-offset-2'}      | ${'gl-offset-2'}
+    ${'gl-offset-sm-2'}   | ${'gl-offset-sm-2'}
+    ${'gl-no-gutters'}    | ${'gl-no-gutters'}
   `('replaces Bootstrap grid util $input with $output', ({ input, output }) => {
     expect(migrateCSSUtils(file, input)).toBe(output);
   });
 
   it('replaces Bootstrap utils with their Tailwind equivalent', () => {
-    const input = 'visible flex-xl-nowrap';
+    const input = 'visible @xl/panel:!gl-flex-nowrap';
     const output = 'visible @xl/panel:!gl-flex-nowrap';
 
     expect(migrateCSSUtils(file, input)).toBe(output);
   });
 
   it('replaces Tailwind media query utils with their container query equivalent', () => {
-    const input = '<div class="sm:gl-max-w-6/12 lg:gl-hidden">';
+    const input = '<div class="@sm/panel:gl-max-w-6/12 @lg/panel:gl-hidden">';
     const output = '<div class="@sm/panel:gl-max-w-6/12 @lg/panel:gl-hidden">';
 
     expect(migrateCSSUtils(file, input)).toBe(output);
   });
 
   it('replaces Tailwind media query utils with important modifier', () => {
-    const input = '<div class="sm:!gl-flex-row md:!gl-items-center lg:gl-hidden">';
+    const input =
+      '<div class="@sm/panel:!gl-flex-row @md/panel:!gl-items-center @lg/panel:gl-hidden">';
     const output =
       '<div class="@sm/panel:!gl-flex-row @md/panel:!gl-items-center @lg/panel:gl-hidden">';
 

@@ -105,7 +105,7 @@ export default {
             :note-id="note.id"
             :note-url="note.url"
           >
-            <span v-if="note.createdAt" class="gl-hidden sm:gl-inline">&middot;</span>
+            <span v-if="note.createdAt" class="gl-hidden @sm/panel:gl-inline">&middot;</span>
           </note-header>
           <div class="gl-inline-flex">
             <abuse-report-note-actions

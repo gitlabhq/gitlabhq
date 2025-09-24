@@ -73,11 +73,11 @@ export default {
 <template>
   <div
     v-if="show"
-    class="align-items-lg-center justify-content-lg-end gl-flex gl-flex-col md:gl-flex-row"
+    class="gl-flex gl-flex-col @md/panel:gl-flex-row @lg/panel:!gl-items-center @lg/panel:!gl-justify-end"
   >
     <gl-daterange-picker
       v-model="dateRange"
-      class="gl-flex gl-flex-col gl-flex-wrap gl-justify-end !gl-gap-3 sm:gl-flex-row md:gl-flex-nowrap"
+      class="gl-flex gl-flex-col gl-flex-wrap gl-justify-end !gl-gap-3 @sm/panel:gl-flex-row @md/panel:gl-flex-nowrap"
       :default-start-date="startDate"
       :default-end-date="endDate"
       :default-min-date="minDate"
@@ -89,9 +89,9 @@ export default {
       :to-label="__('To')"
       theme="animate-picker"
       width="xl"
-      start-picker-class="js-daterange-picker-from gl-flex gl-flex-col md:gl-flex-row md:gl-items-center gl-grow"
-      end-picker-class="js-daterange-picker-to gl-flex gl-flex-col md:gl-flex-row md:gl-items-center gl-grow"
-      label-class="gl-mb-3 sm:gl-mb-0"
+      start-picker-class="js-daterange-picker-from gl-flex gl-flex-col @md/panel:gl-flex-row @md/panel:gl-items-center gl-grow"
+      end-picker-class="js-daterange-picker-to gl-flex gl-flex-col @md/panel:gl-flex-row @md/panel:gl-items-center gl-grow"
+      label-class="gl-mb-3 @sm/panel:gl-mb-0"
     >
       <template #default="{ daysSelected }">
         <div class="gl-text-right">

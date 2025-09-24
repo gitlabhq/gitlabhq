@@ -265,7 +265,7 @@ export default {
           :title="$options.i18n.alertTitle"
           :dismissible="false"
           variant="warning"
-          class="mb-3 mt-2"
+          class="!gl-mb-5 !gl-mt-3"
         >
           <gl-sprintf :message="$options.i18n.alertInfoMessage">
             <template #link="{ content }">

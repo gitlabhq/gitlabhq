@@ -64,12 +64,16 @@ export default {
 
 <template>
   <div class="gl-pt-6">
-    <div class="gl-flex gl-flex-col gl-items-center gl-justify-between gl-pb-3 sm:gl-flex-row">
+    <div
+      class="gl-flex gl-flex-col gl-items-center gl-justify-between gl-pb-3 @sm/panel:gl-flex-row"
+    >
       <h2 class="gl-mb-2 gl-mt-2 gl-text-size-h1">
         {{ $options.i18n.reportTypes[reportType] }}
       </h2>
 
-      <div class="gl-mt-3 gl-flex gl-flex-col gl-items-stretch sm:gl-mt-0 sm:gl-flex-row">
+      <div
+        class="gl-mt-3 gl-flex gl-flex-col gl-items-stretch @sm/panel:gl-mt-0 @sm/panel:gl-flex-row"
+      >
         <template v-if="report.screenshot">
           <gl-button data-testid="screenshot-button" @click="toggleScreenshotModal">
             {{ $options.i18n.viewScreenshot }}
@@ -91,7 +95,7 @@ export default {
           v-if="report.url"
           data-testid="report-url-button"
           :href="report.url"
-          class="gl-mt-3 sm:gl-ml-3 sm:gl-mt-0"
+          class="gl-mt-3 @sm/panel:gl-ml-3 @sm/panel:gl-mt-0"
         >
           {{ $options.i18n.goToType[reportType] }}
         </gl-button>
@@ -124,7 +128,7 @@ export default {
             </gl-link>
             <time-ago-tooltip
               :time="report.reportedAt"
-              class="gl-ml-3 gl-w-full gl-text-subtle sm:gl-w-auto"
+              class="gl-ml-3 gl-w-full gl-text-subtle @sm/panel:gl-w-auto"
             />
           </div>
         </div>

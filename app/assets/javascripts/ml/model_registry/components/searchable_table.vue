@@ -136,7 +136,7 @@ export default {
       :filters="filters"
       :sorting="sorting"
       :sortable-fields="sortableFields"
-      class="mt-2"
+      class="!gl-mt-3"
       @sorting:changed="updateSortingAndEmitUpdate"
       @filter:changed="updateFilters"
       @filter:submit="submitFilters"

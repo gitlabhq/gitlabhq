@@ -136,7 +136,7 @@ export default {
     <hr v-if="shouldShowFilterDropdowns" class="-gl-mx-5 gl-my-5" />
     <div
       v-if="shouldShowFilterDropdowns"
-      class="gl-flex gl-flex-col gl-gap-5 lg:gl-flex-row"
+      class="gl-flex gl-flex-col gl-gap-5 @lg/panel:gl-flex-row"
       data-testid="vsa-filter-dropdowns-container"
     >
       <projects-dropdown-filter
@@ -151,7 +151,7 @@ export default {
       />
       <div
         v-if="shouldShowDateRangeFilters"
-        class="gl-flex gl-flex-col gl-gap-3 lg:gl-flex-row"
+        class="gl-flex gl-flex-col gl-gap-3 @lg/panel:gl-flex-row"
         data-testid="vsa-date-range-filter-container"
       >
         <date-ranges-dropdown

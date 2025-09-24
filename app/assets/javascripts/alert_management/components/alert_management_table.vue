@@ -55,7 +55,7 @@ export default {
       variant: 'secondary',
       thClass: `gl-w-1/8`,
       thAttr: TH_TEST_ID,
-      tdClass: `${tdClass} rounded-top text-capitalize sortable-cell`,
+      tdClass: `${tdClass} !gl-rounded-t-base !gl-capitalize sortable-cell`,
       sortable: true,
     },
     {
@@ -96,7 +96,7 @@ export default {
       label: s__('AlertManagement|Status'),
       variant: 'secondary',
       thClass: `gl-w-3/20`,
-      tdClass: `${tdClass} rounded-bottom sortable-cell`,
+      tdClass: `${tdClass} !gl-rounded-b-base sortable-cell`,
       sortable: true,
     },
   ],
@@ -337,11 +337,11 @@ export default {
         >
           <template #cell(severity)="{ item }">
             <div
-              class="justify-content-between gl-inline-flex gl-items-center"
+              class="gl-inline-flex gl-items-center !gl-justify-between"
               data-testid="severityField"
             >
               <gl-icon
-                class="mr-2"
+                class="!gl-mr-3"
                 :size="12"
                 :name="`severity-${item.severity.toLowerCase()}`"
                 :class="`icon-${item.severity.toLowerCase()}`"
@@ -360,7 +360,7 @@ export default {
 
           <template #cell(alertLabel)="{ item }">
             <div
-              class="text-truncate gl-max-w-full"
+              class="gl-max-w-full gl-truncate"
               :title="`${item.iid} - ${item.title}`"
               data-testid="idField"
             >
@@ -427,7 +427,7 @@ export default {
           </template>
 
           <template #table-busy>
-            <gl-loading-icon size="lg" color="dark" class="mt-3" />
+            <gl-loading-icon size="lg" color="dark" class="!gl-mt-5" />
           </template>
         </gl-table>
       </template>

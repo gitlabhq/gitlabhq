@@ -303,7 +303,7 @@ export default {
 
 <template>
   <div
-    class="labels-select-wrapper position-relative"
+    class="labels-select-wrapper !gl-relative"
     :class="{
       'is-standalone': isDropdownVariantStandalone,
       'is-embedded': isDropdownVariantEmbedded,

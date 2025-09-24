@@ -50,7 +50,7 @@ export default {
         >{{
           s__('ImportProjects|The more information you select, the longer it will take to import.')
         }}
-        <p class="mb-0">
+        <p class="!gl-mb-0">
           <gl-sprintf
             :message="
               s__(

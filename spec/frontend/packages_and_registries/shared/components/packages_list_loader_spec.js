@@ -23,7 +23,7 @@ describe('PackagesListLoader', () => {
         'gl-mb-5',
         'gl-hidden',
         'gl-flex-col',
-        'sm:gl-flex',
+        '@sm/panel:gl-flex',
       ]);
     });
   });
@@ -34,7 +34,7 @@ describe('PackagesListLoader', () => {
     });
 
     it('has the correct classes', () => {
-      expect(findMobileShapes().classes()).toEqual(['gl-flex-col', 'sm:gl-hidden']);
+      expect(findMobileShapes().classes()).toEqual(['gl-flex-col', '@sm/panel:gl-hidden']);
     });
   });
 });

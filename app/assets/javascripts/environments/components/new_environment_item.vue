@@ -157,14 +157,15 @@ export default {
 </script>
 <template>
   <div
-    class="gl-border gl-mt-4 gl-flex gl-flex-col lg:gl-mt-0 lg:gl-flex-row lg:gl-border-x-0 lg:gl-border-t-0"
+    class="gl-border gl-mt-4 gl-flex gl-flex-col @lg/panel:gl-mt-0 @lg/panel:gl-flex-row @lg/panel:gl-border-x-0 @lg/panel:gl-border-t-0"
   >
     <div
-      class="gl-border-b gl-flex gl-shrink-0 gl-items-baseline gl-p-4 lg:gl-w-1/5 lg:gl-border-b-0"
+      class="gl-border-b gl-flex gl-shrink-0 gl-items-baseline gl-p-4 @lg/panel:gl-w-1/5 @lg/panel:gl-border-b-0"
     >
-      <strong class="gl-block gl-w-1/3 gl-flex-shrink-0 gl-pr-4 md:gl-w-1/4 lg:gl-hidden">{{
-        $options.i18n.name
-      }}</strong>
+      <strong
+        class="gl-block gl-w-1/3 gl-flex-shrink-0 gl-pr-4 @md/panel:gl-w-1/4 @lg/panel:gl-hidden"
+        >{{ $options.i18n.name }}</strong
+      >
       <gl-link v-gl-tooltip :href="environment.environmentPath" class="gl-truncate" :title="name">
         {{ displayName }}
       </gl-link>
@@ -177,13 +178,14 @@ export default {
       >
     </div>
     <div
-      class="issuable-discussion gl-border-b gl-flex gl-shrink-0 gl-flex-wrap gl-py-4 lg:gl-w-3/5 lg:gl-flex-col lg:gl-border-b-0"
+      class="issuable-discussion gl-border-b gl-flex gl-shrink-0 gl-flex-wrap gl-py-4 @lg/panel:gl-w-3/5 @lg/panel:gl-flex-col @lg/panel:gl-border-b-0"
     >
       <template v-if="hasDeployment">
-        <strong class="gl-block gl-w-1/3 gl-flex-shrink-0 gl-px-4 md:gl-w-1/4 lg:gl-hidden">{{
-          $options.i18n.deployments
-        }}</strong>
-        <ul class="main-notes-list timeline gl-relative -gl-ml-4 gl-w-2/3 lg:gl-w-full">
+        <strong
+          class="gl-block gl-w-1/3 gl-flex-shrink-0 gl-px-4 @md/panel:gl-w-1/4 @lg/panel:gl-hidden"
+          >{{ $options.i18n.deployments }}</strong
+        >
+        <ul class="main-notes-list timeline gl-relative -gl-ml-4 gl-w-2/3 @lg/panel:gl-w-full">
           <deployment
             v-for="deployment of deployments"
             :key="deployment.id"
@@ -215,9 +217,10 @@ export default {
       </div>
     </div>
     <div class="gl-flex gl-flex-grow gl-items-baseline gl-p-4">
-      <strong class="gl-block gl-w-1/3 gl-flex-shrink-0 gl-pr-4 md:gl-w-1/4 lg:gl-hidden">{{
-        $options.i18n.actions
-      }}</strong>
+      <strong
+        class="gl-block gl-w-1/3 gl-flex-shrink-0 gl-pr-4 @md/panel:gl-w-1/4 @lg/panel:gl-hidden"
+        >{{ $options.i18n.actions }}</strong
+      >
       <div class="gl-ml-auto">
         <div class="btn-group" role="group">
           <external-url

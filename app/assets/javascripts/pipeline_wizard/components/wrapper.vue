@@ -170,7 +170,7 @@ export default {
 
 <template>
   <div class="row gl-mt-8">
-    <main class="col-md-6 gl-pr-8">
+    <main class="gl-col-md-6 gl-pr-8">
       <header class="gl-mb-5">
         <h2 class="gl-mt-0" data-testid="step-count">
           {{ sprintf($options.i18n.stepNofN, { currentStep, stepCount }) }}
@@ -205,7 +205,7 @@ export default {
         />
       </section>
     </main>
-    <aside class="col-md-6 gl-pt-3">
+    <aside class="gl-col-md-6 gl-pt-3">
       <div class="gl-rounded-base gl-border-1 gl-border-solid gl-border-default gl-bg-subtle">
         <h6 class="gl-p-2 gl-px-4 gl-text-subtle" data-testid="editor-header">
           {{ sprintf($options.i18n.draft, { filename }) }}

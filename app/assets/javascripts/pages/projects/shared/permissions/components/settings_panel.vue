@@ -620,7 +620,7 @@ export default {
         />
         <project-setting-row
           v-if="requestCveAvailable"
-          class="gl-mt-4 gl-pl-5 md:gl-pl-7"
+          class="gl-mt-4 gl-pl-5 @md/panel:gl-pl-7"
           :help-path="cveIdRequestHelpPath"
           :help-text="$options.i18n.cve_request_toggle_label"
         >
@@ -650,7 +650,9 @@ export default {
           name="project[project_feature_attributes][repository_access_level]"
         />
       </project-setting-row>
-      <div class="project-feature-setting-group gl-flex gl-flex-col gl-gap-5 gl-pl-5 md:gl-pl-7">
+      <div
+        class="project-feature-setting-group gl-flex gl-flex-col gl-gap-5 gl-pl-5 @md/panel:gl-pl-7"
+      >
         <project-setting-row
           ref="merge-request-settings"
           :label="$options.i18n.mergeRequestsLabel"
@@ -863,7 +865,7 @@ export default {
         />
         <div
           v-if="packageRegistryApiForEveryoneEnabledShown"
-          class="project-feature-setting-group gl-my-3 gl-pl-5 md:gl-pl-7"
+          class="project-feature-setting-group gl-my-3 gl-pl-5 @md/panel:gl-pl-7"
         >
           <project-setting-row
             :label="$options.i18n.packageRegistryForEveryoneLabel"

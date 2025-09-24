@@ -82,10 +82,10 @@ export default class FilteredSearchVisualTokens {
 
     return `
       <div class="${canEdit ? 'selectable' : 'hidden'}" role="button">
-        <div class="${uppercaseTokenName ? 'text-uppercase' : ''} name"></div>
+        <div class="${uppercaseTokenName ? '!gl-uppercase' : ''} name"></div>
         ${hasOperator ? '<div class="operator"></div>' : ''}
         <div class="value-container">
-          <div class="${capitalizeTokenValue ? 'text-capitalize' : ''} value"></div>
+          <div class="${capitalizeTokenValue ? '!gl-capitalize' : ''} value"></div>
           <div class="remove-token" role="button" aria-label="${__('Remove search filter')}">
             ${spriteIcon('close', 's16 close-icon')}
           </div>
@@ -135,7 +135,7 @@ export default class FilteredSearchVisualTokens {
       });
       FilteredSearchVisualTokens.renderVisualTokenValue(li, name, value, operator);
     } else {
-      const nameHTML = `<div class="${uppercaseTokenName ? 'text-uppercase' : ''} name"></div>`;
+      const nameHTML = `<div class="${uppercaseTokenName ? '!gl-uppercase' : ''} name"></div>`;
       let operatorHTML = '';
 
       if (hasOperator) {
@@ -357,7 +357,7 @@ export default class FilteredSearchVisualTokens {
         operatorElement.textContent,
         null,
         {
-          uppercaseTokenName: nameElement.classList.contains('text-uppercase'),
+          uppercaseTokenName: nameElement.classList.contains('!gl-uppercase'),
         },
       );
 

@@ -165,7 +165,7 @@ describe('Blob controls component', () => {
     });
 
     it('does not render on mobile layout', () => {
-      expect(findFindButton().classes()).toContain('gl-hidden', 'sm:gl-inline-flex');
+      expect(findFindButton().classes()).toContain('gl-hidden', '@sm/panel:gl-inline-flex');
     });
 
     it('correctly formats tooltip', () => {
@@ -206,7 +206,7 @@ describe('Blob controls component', () => {
     });
 
     it('does not render on mobile layout', () => {
-      expect(findBlameButton().classes()).toContain('gl-hidden', 'sm:gl-inline-flex');
+      expect(findBlameButton().classes()).toContain('gl-hidden', '@sm/panel:gl-inline-flex');
     });
 
     it('does not render blame button when blobInfo.storedExternally is true', async () => {

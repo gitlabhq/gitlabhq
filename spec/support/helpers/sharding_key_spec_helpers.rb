@@ -17,9 +17,9 @@ module ShardingKeySpecHelpers
   end
 
   def has_null_check_constraint?(table_name, column_name)
-    # This is a heuristic query to look for all check constraints on the table and see if any of them contain a clause
-    # column IS NOT NULL. This is to match tables that will have multiple sharding keys where either of them can be not
-    # null. Such cases may look like:
+    # This is a heuristic query to look for all check constraints on the table and see if any of them contain a
+    # **validated** clause column IS NOT NULL. This is to match tables that will have multiple sharding keys where
+    # either of them can be not null. Such cases may look like:
     #    (project_id IS NOT NULL) OR (group_id IS NOT NULL)
     # It's possible that this will sometimes incorrectly find a check constraint that isn't exactly as strict as we want
     # but it should be pretty unlikely.
@@ -29,6 +29,7 @@ module ShardingKeySpecHelpers
     INNER JOIN pg_class ON pg_constraint.conrelid = pg_class.oid
     WHERE pg_class.relname = '#{table_name}'
     AND contype = 'c'
+    AND convalidated = true
     AND (
       pg_get_constraintdef(pg_constraint.oid) ILIKE '%#{column_name} IS NOT NULL%'
       OR
@@ -42,7 +43,7 @@ module ShardingKeySpecHelpers
   end
 
   def has_multi_column_null_check_constraint?(table_name, column_names)
-    # This regex searches for constraints that ensure at least one of a set of columns is NOT NULL.
+    # This regex searches for **validated** constraints that ensure at least one of a set of columns is NOT NULL.
     # It assumes the constraint was created using the #add_multi_column_not_null_constraint helper, which also
     # sorts the list of columns.
     #
@@ -63,6 +64,7 @@ module ShardingKeySpecHelpers
               "\\ACHECK \\(\\(num_nonnulls\\(#{column_names.sort.join(', ')}\\) = 1\\)\\) NOT VALID\\Z"
             end
 
+    # Match "> N", ">= N" (where N >= 1), or "= N" (where N >= 1)
     regex ||= "\\ACHECK \\(\\(num_nonnulls\\(#{column_names.sort.join(', ')}\\) (> [0-9]{1,}|>?= [1-9]{1,})\\)\\)\\Z"
 
     sql = <<~SQL
@@ -71,6 +73,7 @@ module ShardingKeySpecHelpers
     INNER JOIN pg_class ON pg_constraint.conrelid = pg_class.oid
     WHERE pg_class.relname = '#{table_name}'
     AND contype = 'c'
+    AND convalidated = true
     AND pg_get_constraintdef(pg_constraint.oid) ~ '#{regex}'
     SQL
 

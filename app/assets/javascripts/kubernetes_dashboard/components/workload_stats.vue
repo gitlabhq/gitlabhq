@@ -31,7 +31,7 @@ export default {
 </script>
 
 <template>
-  <div class="-gl-mx-3 gl-flex gl-flex-wrap sm:gl-flex-nowrap">
+  <div class="-gl-mx-3 gl-flex gl-flex-wrap @sm/panel:gl-flex-nowrap">
     <gl-single-stat
       v-for="(stat, index) in stats"
       :key="index"

@@ -30,7 +30,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-grid gl-gap-5 lg:gl-grid-cols-2">
+  <div class="gl-grid gl-gap-5 @lg/panel:gl-grid-cols-2">
     <div class="gl-border gl-rounded-base gl-border-section gl-bg-section gl-p-5">
       <gl-single-stat :title="s__('UserMapping|Placeholder user limit')" :value="statValue" />
       <p class="gl-mb-0 gl-px-2 gl-text-subtle">

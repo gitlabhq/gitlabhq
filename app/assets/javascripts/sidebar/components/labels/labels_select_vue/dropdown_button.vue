@@ -35,10 +35,10 @@ export default {
 
 <template>
   <gl-button
-    class="labels-select-dropdown-button js-dropdown-button text-left gl-w-full"
+    class="labels-select-dropdown-button js-dropdown-button gl-w-full !gl-text-left"
     @click="handleButtonClick"
   >
-    <span class="dropdown-toggle-text flex-fill gl-pointer-events-none">
+    <span class="dropdown-toggle-text gl-pointer-events-none !gl-flex-auto">
       {{ dropdownButtonText }}
     </span>
     <gl-icon name="chevron-down" class="gl-pointer-events-none gl-float-right" />

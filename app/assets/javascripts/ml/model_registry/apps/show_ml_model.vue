@@ -251,7 +251,7 @@ export default {
                     :href="model.author.webUrl"
                     :data-user-id="authorId"
                   >
-                    <span class="sm:gl-inline">{{ model.author.name }}</span>
+                    <span class="@sm/panel:gl-inline">{{ model.author.name }}</span>
                   </gl-link>
                 </template>
               </gl-sprintf>
@@ -283,8 +283,8 @@ export default {
           </template>
         </title-area>
 
-        <div class="gl-grid gl-gap-3 md:gl-grid-cols-4">
-          <div class="gl-pr-8 md:gl-col-span-3">
+        <div class="gl-grid gl-gap-3 @md/panel:gl-grid-cols-4">
+          <div class="gl-pr-8 @md/panel:gl-col-span-3">
             <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
               <gl-tabs :value="tabIndex">
                 <gl-tab
@@ -311,7 +311,7 @@ export default {
             </load-or-error-or-show>
           </div>
 
-          <div class="gl-flex gl-flex-col gl-gap-5 md:gl-col-span-1">
+          <div class="gl-flex gl-flex-col gl-gap-5 @md/panel:gl-col-span-1">
             <sidebar-item :title="$options.i18n.authorTitle" class="gl-border-t-0">
               <div class="gl-mt-2" data-testid="sidebar-author">
                 <gl-link

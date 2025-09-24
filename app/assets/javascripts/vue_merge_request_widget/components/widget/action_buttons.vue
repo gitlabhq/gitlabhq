@@ -90,7 +90,7 @@ export default {
       text-sr-only
       size="small"
       toggle-class="!gl-p-2"
-      class="gl-block md:!gl-hidden"
+      class="gl-block @md/panel:!gl-hidden"
     >
       <template #list-item="{ item }">
         <span class="gl-flex gl-items-center gl-justify-between">

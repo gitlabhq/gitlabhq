@@ -12,7 +12,11 @@ export const ACTIVE_DISCUSSION_SOURCE_TYPES = {
   url: 'url',
 };
 
-export const DESIGN_DETAIL_LAYOUT_CLASSLIST = ['design-detail-layout', 'overflow-hidden', 'm-0'];
+export const DESIGN_DETAIL_LAYOUT_CLASSLIST = [
+  'design-detail-layout',
+  '!gl-overflow-hidden',
+  '!gl-m-0',
+];
 
 export const MAXIMUM_FILE_UPLOAD_LIMIT = 10;
 

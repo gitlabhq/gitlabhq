@@ -192,10 +192,10 @@ describe('File row component', () => {
         ...file(),
       },
       level: 0,
-      fileClasses: 'font-weight-bold',
+      fileClasses: '!gl-font-bold',
     });
 
-    expect(wrapper.find('.file-row-name').classes()).toContain('font-weight-bold');
+    expect(wrapper.find('.file-row-name').classes()).toContain('!gl-font-bold');
   });
 
   it('renders submodule icon', () => {

@@ -301,7 +301,7 @@ export default {
       <page-size-selector
         v-if="packagesCount"
         :value="pageSize"
-        class="gl-relative gl-right-5 md:gl-absolute"
+        class="gl-relative gl-right-5 @md/panel:gl-absolute"
         @input="handlePageSizeChange"
       />
     </div>

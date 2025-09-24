@@ -37,7 +37,7 @@ describe('ServiceDeskRoot', () => {
   const createComponent = (customInject = {}) =>
     shallowMount(ServiceDeskRoot, {
       provide: { ...provideData, ...customInject },
-      stubs: { GlSprintf },
+      stubs: { GlSprintf, CustomEmailWrapper },
     });
 
   beforeEach(() => {

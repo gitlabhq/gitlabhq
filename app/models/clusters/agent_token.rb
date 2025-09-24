@@ -11,7 +11,6 @@ module Clusters
       encrypted: :required,
       format_with_prefix: :glagent_prefix,
       routable_token: {
-        if: ->(token_owner_record) { Feature.enabled?(:routable_cluster_agent_token, token_owner_record.project) },
         payload: {
           o: ->(token_owner_record) { token_owner_record.agent.project.organization_id },
           p: ->(token_owner_record) { token_owner_record.agent.project.id }

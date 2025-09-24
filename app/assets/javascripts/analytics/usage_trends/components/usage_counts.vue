@@ -63,13 +63,13 @@ export default {
 <template>
   <div>
     <page-heading :heading="$options.i18n.pageTitle" />
-    <div class="gl-my-6 gl-flex gl-flex-col gl-items-start md:gl-flex-row">
+    <div class="gl-my-6 gl-flex gl-flex-col gl-items-start @md/panel:gl-flex-row">
       <gl-skeleton-loader v-if="$apollo.queries.counts.loading" />
       <template v-else>
         <gl-single-stat
           v-for="count in counts"
           :key="count.key"
-          class="gl-my-4 gl-pr-9 md:gl-mb-0 md:gl-mt-0"
+          class="gl-my-4 gl-pr-9 @md/panel:gl-mb-0 @md/panel:gl-mt-0"
           :value="`${count.value}`"
           :title="count.label"
           :should-animate="true"

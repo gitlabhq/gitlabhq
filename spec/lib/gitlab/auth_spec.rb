@@ -10,8 +10,8 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
   let(:auth_failure) { { actor: nil, project: nil, type: nil, authentication_abilities: nil } }
   let(:gl_auth) { described_class }
 
-  let(:request) { instance_double(ActionDispatch::Request, ip: 'ip', path: path) }
   let(:path) { '/some_path/example' }
+  let(:request) { instance_double(ActionDispatch::Request, ip: 'ip', remote_ip: 'ip', path: path, request_method: 'method', filtered_path: path, user_agent: '') }
 
   describe 'constants' do
     it 'API_SCOPES contains all scopes for API access' do
@@ -900,7 +900,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
       context 'when #password_authentication_enabled_for_git? is false' do
         before do
-          allow(described_class).to receive(:find_with_user_password).with(ldap_username, password).and_return(user)
+          allow(described_class).to receive(:find_with_user_password).with(ldap_username, password, request: request).and_return(user)
           allow(Gitlab::CurrentSettings).to receive(:password_authentication_enabled_for_git?).and_return(false)
         end
 
@@ -929,7 +929,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
       context 'when #password_authentication_enabled_for_git? is true' do
         before do
-          allow(described_class).to receive(:find_with_user_password).with(ldap_username, password).and_return(user)
+          allow(described_class).to receive(:find_with_user_password).with(ldap_username, password, request: request).and_return(user)
           allow(Gitlab::CurrentSettings).to receive(:password_authentication_enabled_for_git?).and_return(true)
         end
 
@@ -1260,6 +1260,11 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
   describe 'find_with_user_password' do
     let!(:user) { create(:user, username: username) }
     let(:username) { 'John' } # username isn't lowercase, test this
+    let(:expected_log_message) { 'Gitlab::Auth find_with_user_password succeeded' }
+
+    before do
+      allow(Gitlab::AuthLogger).to receive(:info).and_call_original
+    end
 
     it "finds user by valid login/password" do
       expect(gl_auth.find_with_user_password(username, user.password)).to eql user
@@ -1316,6 +1321,48 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       user.block_pending_approval
 
       expect(gl_auth.find_with_user_password(username, user.password)).not_to eql user
+    end
+
+    context 'logging' do
+      it 'does not log when there is no request' do
+        expect(Gitlab::AuthLogger).not_to receive(:info).with(expected_log_message)
+        gl_auth.find_with_user_password(username, user.password)
+      end
+
+      it 'does not log on failed authentication' do
+        expect(Gitlab::AuthLogger).not_to receive(:info).with(expected_log_message)
+        gl_auth.find_with_user_password(username, 'wrong_password')
+      end
+
+      context 'when request context is provided' do
+        let(:request) { instance_double(ActionDispatch::Request, remote_ip: '127.0.0.1', request_method: 'POST', filtered_path: '/oauth/token', user_agent: 'Chrome') }
+
+        it 'logs successful authentication with request details' do
+          expect(Gitlab::AuthLogger).to receive(:info).with(
+            message: expected_log_message,
+            user_id: user.id,
+            username: username,
+            authenticator: "Gitlab::Auth::Database::Authentication",
+            remote_ip: '127.0.0.1',
+            request_method: 'POST',
+            path: '/oauth/token',
+            ua: 'Chrome'
+          )
+
+          gl_auth.find_with_user_password(username, user.password, request: request)
+        end
+
+        context 'when the Feature Flag is disabled' do
+          before do
+            stub_feature_flags(log_find_with_user_password: false)
+          end
+
+          it 'does not log when there is no request' do
+            expect(Gitlab::AuthLogger).not_to receive(:info).with(expected_log_message)
+            gl_auth.find_with_user_password(username, user.password, request: request)
+          end
+        end
+      end
     end
 
     context 'with increment_failed_attempts' do
@@ -1395,6 +1442,19 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         expect(Gitlab::Auth::Ldap::Authentication).to receive(:login).and_return(user)
 
         expect(gl_auth.find_with_user_password('ldap_user', 'password')).to eq(user)
+      end
+
+      it 'logs LDAP authenticator on success' do
+        expect(Gitlab::Auth::Ldap::Authentication).to receive(:login).and_return(user)
+        expect(Gitlab::AuthLogger).to receive(:info).with(
+          hash_including(
+            message: expected_log_message,
+            username: user.username,
+            authenticator: 'Gitlab::Auth::Ldap::Authentication'
+          )
+        )
+
+        gl_auth.find_with_user_password('ldap_user', 'password', request: request)
       end
 
       context 'for LDAP users' do
@@ -1548,7 +1608,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
     context 'when password is not a recognized token' do
       it 'calls find_with_user_password for regular passwords' do
-        expect(gl_auth).to receive(:find_with_user_password).with(user.username, user.password).and_return(user)
+        expect(gl_auth).to receive(:find_with_user_password).with(user.username, user.password, request: nil).and_return(user)
 
         result = gl_auth.send(:user_with_password_for_git, user.username, user.password)
         expect(result).to have_attributes(actor: user, type: :gitlab_or_ldap)

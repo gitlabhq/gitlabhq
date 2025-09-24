@@ -341,9 +341,9 @@ export default {
           @hidden="hideDropdown"
         >
           <template #toggle>
-            <div class="gl-mb-2 gl-min-h-7 sm:!gl-mb-0">
+            <div class="gl-mb-2 gl-min-h-7 @sm/panel:!gl-mb-0">
               <gl-button
-                class="gl-new-dropdown-toggle gl-w-full sm:!gl-hidden"
+                class="gl-new-dropdown-toggle gl-w-full @sm/panel:!gl-hidden"
                 button-text-classes="gl-flex gl-justify-between gl-w-full"
                 category="secondary"
                 :aria-label="$options.i18n.moreActionsTooltip"
@@ -352,7 +352,7 @@ export default {
                 <gl-icon class="dropdown-chevron" name="chevron-down" />
               </gl-button>
               <gl-button
-                class="gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret gl-hidden sm:!gl-flex"
+                class="gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret gl-hidden @sm/panel:!gl-flex"
                 category="tertiary"
                 icon="ellipsis_v"
                 :aria-label="$options.i18n.moreActionsTooltip"

@@ -37,7 +37,7 @@ import TimelineChart from './timeline_chart.vue';
 const isValidErrorId = (errorId) => {
   return /^[0-9]+$/.test(errorId);
 };
-export const tableDataClass = 'gl-flex md:gl-table-cell gl-items-center';
+export const tableDataClass = 'gl-flex @md/panel:gl-table-cell gl-items-center';
 export default {
   FIRST_PAGE: 1,
   PREV_PAGE: 1,
@@ -310,9 +310,9 @@ export default {
 
       <!-- Search / Filter Bar -->
       <div
-        class="gl-m-0 gl-flex gl-flex-col gl-gap-3 gl-bg-subtle gl-p-5 md:gl-flex-row md:gl-items-center"
+        class="gl-m-0 gl-flex gl-flex-col gl-gap-3 gl-bg-subtle gl-p-5 @md/panel:gl-flex-row @md/panel:gl-items-center"
       >
-        <div class="gl-mb-2 gl-flex gl-grow md:gl-mb-0">
+        <div class="gl-mb-2 gl-flex gl-grow @md/panel:gl-mb-0">
           <div class="gl-border gl-mb-0 gl-flex gl-grow gl-rounded-base gl-bg-default">
             <gl-dropdown
               icon="history"
@@ -411,7 +411,7 @@ export default {
 
       <!-- Results Table -->
       <template v-else>
-        <h4 class="gl-my-5 gl-block md:!gl-hidden">{{ __('Open errors') }}</h4>
+        <h4 class="gl-my-5 gl-block @md/panel:!gl-hidden">{{ __('Open errors') }}</h4>
 
         <gl-table
           :items="errors"
@@ -423,7 +423,7 @@ export default {
         >
           <!-- table head -->
           <template #head(error)>
-            <div class="gl-hidden md:gl-block">{{ __('Open errors') }}</div>
+            <div class="gl-hidden @md/panel:gl-block">{{ __('Open errors') }}</div>
           </template>
           <template #head(events)="data">
             {{ data.label }}

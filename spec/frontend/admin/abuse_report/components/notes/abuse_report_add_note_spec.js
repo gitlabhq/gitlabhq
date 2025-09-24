@@ -93,7 +93,7 @@ describe('Abuse Report Add Note', () => {
           'note-comment',
           'discussion-reply-holder',
           '!gl-border-t-0',
-          'clearfix',
+          'gl-clearfix',
         ]),
       );
 

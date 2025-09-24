@@ -176,7 +176,7 @@ export default {
 };
 </script>
 <template>
-  <div class="flex-column gl-flex">
+  <div class="gl-flex !gl-flex-col">
     <page-heading :heading="headingText">
       <template #description>
         <span class="js-subtitle-text">

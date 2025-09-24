@@ -224,7 +224,7 @@ export default {
       <div
         v-for="n in lastRowCount"
         :key="`skeleton-box-${n}`"
-        class="gl-border-1 gl-border-default gl-py-5 gl-border-t-solid md:gl-pl-7"
+        class="gl-border-1 gl-border-default gl-py-5 gl-border-t-solid @md/panel:gl-pl-7"
       >
         <gl-skeleton-loader :lines="2" />
       </div>

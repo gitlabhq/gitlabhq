@@ -108,7 +108,7 @@ export default {
       </template>
 
       <template #cell(actions)="{ item }">
-        <div class="gl-flex gl-items-center gl-justify-end gl-gap-4 lg:gl-justify-between">
+        <div class="gl-flex gl-items-center gl-justify-end gl-gap-4 @lg/panel:gl-justify-between">
           <pod-logs-button
             v-if="item.containers"
             :namespace="item.namespace"

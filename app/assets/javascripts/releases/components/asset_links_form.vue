@@ -102,7 +102,7 @@ export default {
 </script>
 
 <template>
-  <div class="flex-column release-assets-links-form gl-flex">
+  <div class="release-assets-links-form gl-flex !gl-flex-col">
     <h2 class="gl-heading-2 gl-mb-3">{{ __('Release assets') }}</h2>
     <p class="gl-text-subtle">
       <gl-sprintf
@@ -149,7 +149,7 @@ export default {
         <div
           v-for="(link, index) in release.assets.links"
           :key="link.id"
-          class="flex-column flex-sm-row align-items-stretch align-items-sm-start no-gutters gl-gap-5 sm:gl-flex"
+          class="gl-no-gutters !gl-flex-col !gl-items-stretch gl-gap-5 @sm/panel:gl-flex @sm/panel:!gl-flex-row @sm/panel:!gl-items-start"
         >
           <gl-form-group
             class="url-field form-group col"
@@ -233,7 +233,7 @@ export default {
             />
           </gl-form-group>
 
-          <div v-if="release.assets.links.length !== 1" class="gl-w-auto sm:gl-pt-6">
+          <div v-if="release.assets.links.length !== 1" class="gl-w-auto @sm/panel:gl-pt-6">
             <gl-button
               class="remove-button form-control gl-w-full"
               :aria-label="__('Remove asset link')"
@@ -242,8 +242,8 @@ export default {
               @click="onRemoveClicked(link.id)"
             >
               <div class="gl-flex">
-                <gl-icon class="mr-1 mr-sm-0" :size="16" name="remove" />
-                <span class="d-inline d-sm-none">{{ __('Remove asset link') }}</span>
+                <gl-icon class="!gl-mr-2 @sm/panel:!gl-mr-0" :size="16" name="remove" />
+                <span class="!gl-inline @sm/panel:!gl-hidden">{{ __('Remove asset link') }}</span>
               </div>
             </gl-button>
           </div>

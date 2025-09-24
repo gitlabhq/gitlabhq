@@ -80,7 +80,7 @@ export default {
             class="js-user-link gl-font-bold !gl-text-subtle"
             :href="info.authorWebUrl"
           >
-            <span class="sm:gl-inline">{{ authorInfo }}</span>
+            <span class="@sm/panel:gl-inline">{{ authorInfo }}</span>
           </gl-link>
         </div>
       </template>

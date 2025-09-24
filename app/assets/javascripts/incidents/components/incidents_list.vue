@@ -500,7 +500,7 @@ export default {
           </template>
 
           <template #table-busy>
-            <gl-loading-icon size="lg" color="dark" class="mt-3" />
+            <gl-loading-icon size="lg" color="dark" class="!gl-mt-5" />
           </template>
 
           <template v-if="errored" #empty>

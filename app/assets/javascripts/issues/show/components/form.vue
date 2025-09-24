@@ -173,16 +173,19 @@ export default {
       }}</gl-alert
     >
     <div class="row gl-mb-3">
-      <div class="col-12">
+      <div class="gl-col-12">
         <issuable-title-field ref="title" v-model="formData.title" @input="updateTitleDraft" />
       </div>
     </div>
     <div class="row gl-gap-3">
-      <div v-if="showTypeField" class="col-12 col-md-4 pr-md-0">
+      <div v-if="showTypeField" class="gl-col-12 gl-col-md-4 @md/panel:!gl-pr-0">
         <issuable-type-field ref="issue-type" />
       </div>
 
-      <div v-if="hasIssuableTemplates" class="col-12 col-md-4 md:gl-pl-0 md:gl-pr-0">
+      <div
+        v-if="hasIssuableTemplates"
+        class="gl-col-12 gl-col-md-4 @md/panel:gl-pl-0 @md/panel:gl-pr-0"
+      >
         <description-template-field
           v-model="formData.description"
           :issuable-templates="issuableTemplates"

@@ -266,7 +266,7 @@ export default {
           id="jira-project-select"
           v-model="selectedProject"
           data-testid="jira-project-dropdown"
-          class="mb-2"
+          class="!gl-mb-3"
           :options="jiraProjects"
           :state="selectState"
         />
@@ -280,7 +280,7 @@ export default {
       >
         <gl-label
           id="jira-project-label"
-          class="mb-2"
+          class="!gl-mb-3"
           background-color="#428BCA"
           :title="importLabel"
           scoped
@@ -338,7 +338,7 @@ export default {
         {{ __('Load more users') }}
       </gl-button>
 
-      <div class="footer-block row-content-block justify-content-between gl-flex">
+      <div class="footer-block row-content-block gl-flex !gl-justify-between">
         <gl-button
           type="submit"
           category="primary"

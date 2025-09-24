@@ -98,7 +98,7 @@ export default {
         <gl-icon
           :id="item.id + '-warning-icon'"
           name="warning"
-          class="gl-mt-2 lg:gl-ml-2 lg:gl-mt-0"
+          class="gl-mt-2 @lg/panel:gl-ml-2 @lg/panel:gl-mt-0"
           :data-testid="item.id + '-warning-icon'"
         />
         <gl-popover

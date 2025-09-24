@@ -64,7 +64,12 @@ export default {
         :title="creator.name"
         class="js-user-link !gl-text-subtle"
       >
-        <gl-avatar :src="creator.avatarUrl" :size="16" :entity-name="creator.name" class="mr-2" />
+        <gl-avatar
+          :src="creator.avatarUrl"
+          :size="16"
+          :entity-name="creator.name"
+          class="!gl-mr-3"
+        />
         {{ creator.name }}
       </gl-avatar-link>
     </template>

@@ -183,7 +183,7 @@ describe('~/deployments/components/deployment_aside.vue', () => {
       const button = findSidebarToggleButton();
 
       expect(button.exists()).toBe(true);
-      expect(button.classes()).toContain('lg:gl-hidden');
+      expect(button.classes()).toContain('@lg/panel:gl-hidden');
     });
 
     describe('on mobile', () => {

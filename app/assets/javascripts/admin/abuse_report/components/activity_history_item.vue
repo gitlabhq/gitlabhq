@@ -31,12 +31,12 @@ export default {
 
 <template>
   <history-item icon="warning">
-    <div class="gl-flex gl-flex-col sm:gl-flex-row">
+    <div class="gl-flex gl-flex-col @sm/panel:gl-flex-row">
       <gl-sprintf :message="$options.i18n.reportedByForCategory">
         <template #name>{{ reporterName }}</template>
         <template #category>{{ report.category }}</template>
       </gl-sprintf>
-      <time-ago-tooltip :time="report.reportedAt" class="gl-text-subtle sm:gl-ml-3" />
+      <time-ago-tooltip :time="report.reportedAt" class="gl-text-subtle @sm/panel:gl-ml-3" />
     </div>
   </history-item>
 </template>

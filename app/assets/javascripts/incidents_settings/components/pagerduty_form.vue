@@ -133,7 +133,7 @@ export default {
       </gl-sprintf>
     </p>
     <form ref="settingsForm">
-      <gl-form-group class="col-8 col-md-9 gl-p-0">
+      <gl-form-group class="gl-col-8 gl-col-md-9 gl-p-0">
         <gl-toggle
           id="active"
           v-model="active"
@@ -145,7 +145,7 @@ export default {
       </gl-form-group>
 
       <gl-form-group
-        class="col-8 col-md-9 gl-p-0"
+        class="gl-col-8 gl-col-md-9 gl-p-0"
         :label="$options.i18n.webhookUrl.label"
         label-for="url"
       >

@@ -50,7 +50,7 @@ export default {
           key: 'configuration',
           label: this.$options.i18n.configurationLabel,
           isRowHeader: true,
-          tdClass: `${tdClass} md:gl-w-4/5`,
+          tdClass: `${tdClass} @md/panel:gl-w-4/5`,
           thClass,
         },
         {

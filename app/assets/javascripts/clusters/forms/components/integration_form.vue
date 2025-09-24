@@ -97,7 +97,7 @@ export default {
         id="cluster_environment_scope"
         v-model="envScope"
         name="cluster[environment_scope]"
-        class="col-md-6"
+        class="gl-col-md-6"
         type="text"
       />
     </gl-form-group>
@@ -111,7 +111,7 @@ export default {
         id="cluster_base_domain"
         v-model="baseDomainField"
         name="cluster[base_domain]"
-        class="col-md-6"
+        class="gl-col-md-6"
         type="text"
       />
       <div class="form-text gl-inline-block gl-text-subtle">

@@ -134,7 +134,7 @@ export default {
     <template #cell(name)="{ item }">
       <div
         data-testid="terraform-states-table-name"
-        class="gl-align-center gl-flex gl-justify-end gl-gap-3 md:gl-justify-start"
+        class="gl-align-center gl-flex gl-justify-end gl-gap-3 @md/panel:gl-justify-start"
       >
         <p class="gl-m-0 gl-text-default">
           {{ item.name }}
@@ -177,7 +177,7 @@ export default {
     <template #cell(pipeline)="{ item }">
       <div
         data-testid="terraform-states-table-pipeline"
-        class="gl-flex gl-items-center gl-justify-end gl-gap-3 md:gl-justify-start"
+        class="gl-flex gl-items-center gl-justify-end gl-gap-3 @md/panel:gl-justify-start"
       >
         <gl-link v-if="pipelineID(item)" :href="pipelinePath(item)">
           #{{ pipelineID(item) }}

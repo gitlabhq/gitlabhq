@@ -173,7 +173,7 @@ describe('moreActionsDropdown', () => {
         },
       });
 
-      expect(findCloseItem().attributes('class')).toContain('sm:!gl-hidden');
+      expect(findCloseItem().attributes('class')).toContain('@sm/panel:!gl-hidden');
     });
   });
 
@@ -212,7 +212,7 @@ describe('moreActionsDropdown', () => {
         },
       });
 
-      expect(findReopenItem().attributes('class')).toContain('sm:!gl-hidden');
+      expect(findReopenItem().attributes('class')).toContain('@sm/panel:!gl-hidden');
     });
   });
 

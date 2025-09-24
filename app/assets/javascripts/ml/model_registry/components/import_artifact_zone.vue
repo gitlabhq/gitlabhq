@@ -271,25 +271,29 @@ export default {
       @change="changeFile"
     >
       <div v-if="uploads.length">
-        <div v-for="(upload, index) in uploads" :key="index" class="py-3 gl-border-b">
+        <div v-for="(upload, index) in uploads" :key="index" class="gl-border-b !gl-py-5">
           <div class="row">
-            <div :data-testid="`file-name-${index}`" class="col-md-4">{{ upload.fullPath }}</div>
+            <div :data-testid="`file-name-${index}`" class="gl-col-md-4">{{ upload.fullPath }}</div>
             <gl-progress-bar
               :data-testid="`progress-${index}`"
               :value="upload.progressPercentage()"
-              class="col-md-4 mt-3 px-0"
+              class="gl-col-md-4 !gl-mt-5 !gl-px-0"
             />
             <div
               v-if="upload.loading()"
               :data-testid="`formatted-progress-${index}`"
-              class="col-md-2 gl-text-right"
+              class="gl-col-md-2 gl-text-right"
             >
               {{ upload.formattedProgressLoaded() }}
             </div>
-            <div v-else :data-testid="`formatted-file-size-${index}`" class="col-md-2 text-right">
+            <div
+              v-else
+              :data-testid="`formatted-file-size-${index}`"
+              class="gl-col-md-2 !gl-text-right"
+            >
               {{ upload.formattedFileSize }}
             </div>
-            <div class="col-md-2 gl-text-right">
+            <div class="gl-col-md-2 gl-text-right">
               <gl-button
                 v-if="upload.isCancelable()"
                 :data-testid="`cancel-button-${index}`"
@@ -304,7 +308,11 @@ export default {
               <gl-icon v-if="upload.canceled()" name="status_canceled" variant="warning" />
             </div>
           </div>
-          <p v-if="errors[index]" :data-testid="`fb-${index}`" class="row m-0 p-0 gl-text-danger">
+          <p
+            v-if="errors[index]"
+            :data-testid="`fb-${index}`"
+            class="row !gl-m-0 !gl-p-0 gl-text-danger"
+          >
             {{ errors[index] }}
           </p>
         </div>

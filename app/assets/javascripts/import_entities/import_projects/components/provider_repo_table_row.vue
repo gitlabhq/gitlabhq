@@ -217,7 +217,7 @@ export default {
       </div>
     </td>
     <td data-testid="fullPath">
-      <div class="gl-flex sm:gl-flex-wrap">
+      <div class="gl-flex @sm/panel:gl-flex-wrap">
         <template v-if="repo.importSource.target">{{ repo.importSource.target }}</template>
         <template v-else-if="isImportNotStarted || isSelectedForReimport">
           <div class="gl-flex gl-w-full gl-items-stretch">

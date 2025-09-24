@@ -113,9 +113,9 @@ describe('LabelsSelectRoot', () => {
   });
 
   describe('template', () => {
-    it('renders component with classes `labels-select-wrapper position-relative`', () => {
+    it('renders component with classes `labels-select-wrapper !gl-relative`', () => {
       createComponent();
-      expect(wrapper.attributes('class')).toContain('labels-select-wrapper position-relative');
+      expect(wrapper.attributes('class')).toContain('labels-select-wrapper !gl-relative');
     });
 
     it.each`

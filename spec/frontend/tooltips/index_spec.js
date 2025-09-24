@@ -32,7 +32,7 @@ describe('tooltips/index.js', () => {
   };
 
   const buildTooltipsApp = () => {
-    tooltipsApp = initTooltips({ selector: '.has-tooltip' });
+    tooltipsApp = initTooltips({ selector: '.has-tooltip', triggers: 'hover focus click' });
   };
 
   const triggerEvent = (target, eventName = 'mouseenter') => {

@@ -140,7 +140,7 @@ export default {
         category="tertiary"
         text-sr-only
         size="small"
-        class="gl-block md:!gl-hidden"
+        class="gl-block @md/panel:!gl-hidden"
         @action="onClickAction"
       />
       <span v-for="(btn, index) in tertiaryButtons" :key="index">

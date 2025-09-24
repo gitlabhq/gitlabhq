@@ -30,7 +30,7 @@ exports[`packages_list_row renders 1`] = `
             data-testid="package-name"
           >
             <div
-              class="gl-gap-2 sm:gl-flex"
+              class="@sm/panel:gl-flex gl-gap-2"
             >
               <a
                 class="gl-break-all gl-min-w-0 gl-text-default"
@@ -49,7 +49,7 @@ exports[`packages_list_row renders 1`] = `
             data-testid="left-secondary-infos"
           >
             <gl-truncate-stub
-              class="gl-max-w-15 md:gl-max-w-26"
+              class="@md/panel:gl-max-w-26 gl-max-w-15"
               position="end"
               text="1.0.0"
               withtooltip="true"

@@ -48,7 +48,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-flex-col gl-items-start gl-gap-3 gl-pt-3 md:gl-flex-row">
+  <div class="gl-flex gl-flex-col gl-items-start gl-gap-3 gl-pt-3 @md/panel:gl-flex-row">
     <h1
       v-safe-html="titleHtml"
       :class="{

@@ -2,7 +2,7 @@
 
 exports[`Branch divergence graph component renders ahead and behind count 1`] = `
 <div
-  class="divergence-graph gl-hidden md:gl-block px-2"
+  class="!gl-px-3 @md/panel:gl-block divergence-graph gl-hidden"
   title="10 commits behind main, 10 commits ahead"
 >
   <graph-bar-stub
@@ -11,7 +11,7 @@ exports[`Branch divergence graph component renders ahead and behind count 1`] = 
     position="left"
   />
   <div
-    class="float-left graph-separator mt-1"
+    class="!gl-float-left !gl-mt-2 graph-separator"
   />
   <graph-bar-stub
     count="10"
@@ -23,7 +23,7 @@ exports[`Branch divergence graph component renders ahead and behind count 1`] = 
 
 exports[`Branch divergence graph component renders distance count 1`] = `
 <div
-  class="divergence-graph gl-hidden md:gl-block px-2"
+  class="!gl-px-3 @md/panel:gl-block divergence-graph gl-hidden"
   title="More than 900 commits different with main"
 >
   <graph-bar-stub

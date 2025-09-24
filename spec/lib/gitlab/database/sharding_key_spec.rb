@@ -29,7 +29,15 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
         'bulk_import_trackers.project_id',
         'bulk_import_trackers.namespace_id'
       ], # https://gitlab.com/gitlab-org/gitlab/-/issues/560846
-      *uploads_and_partitions
+      *uploads_and_partitions,
+      'ci_runner_taggings_group_type.organization_id', # NOT NULL constraint NOT VALID
+      'ci_runner_taggings_project_type.organization_id', # NOT NULL constraint NOT VALID
+      'group_type_ci_runner_machines.organization_id', # NOT NULL constraint NOT VALID
+      'group_type_ci_runners.organization_id', # NOT NULL constraint NOT VALID
+      'project_type_ci_runner_machines.organization_id', # NOT NULL constraint NOT VALID
+      'project_type_ci_runners.organization_id', # NOT NULL constraint NOT VALID
+      'security_scans.project_id', # NOT NULL constraint NOT VALID
+      *['labels.group_id', 'labels.project_id', 'labels.organization_id'] # NOT NULL constraint NOT VALID
     ]
   end
 
@@ -249,6 +257,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     work_in_progress = {
       "snippet_user_mentions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517825",
       "bulk_import_failures" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517824",
+      "bulk_import_trackers" => "https://gitlab.com/gitlab-org/gitlab/-/issues/560846",
       "organization_users" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476210',
       "push_rules" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476212',
       "topics" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/463254',
@@ -310,7 +319,10 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "abuse_report_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553429",
       "abuse_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553427",
       "abuse_report_assignees" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553428",
-      "notes_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/569521"
+      "labels" => "https://gitlab.com/gitlab-org/gitlab/-/issues/563889",
+      "notes" => "https://gitlab.com/gitlab-org/gitlab/-/issues/569521",
+      "notes_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/569521",
+      "jira_connect_installations" => "https://gitlab.com/gitlab-org/gitlab/-/issues/524682"
     }
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }
 

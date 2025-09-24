@@ -123,7 +123,7 @@ export default {
     <gl-button
       v-gl-tooltip.hover.left
       size="medium"
-      class="gl-ml-auto gl-flex lg:gl-hidden"
+      class="gl-ml-auto gl-flex @lg/panel:gl-hidden"
       data-testid="deployment-sidebar-toggle-button"
       :category="toggleCategory"
       :icon="toggleIcon"

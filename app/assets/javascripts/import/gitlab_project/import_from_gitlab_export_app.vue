@@ -178,10 +178,10 @@ export default {
           />
         </gl-form-group>
 
-        <div class="gl-flex gl-flex-col gl-gap-4 sm:gl-flex-row">
+        <div class="gl-flex gl-flex-col gl-gap-4 @sm/panel:gl-flex-row">
           <gl-form-group
             :label="s__('ProjectsNew|Choose a group')"
-            class="sm:gl-w-1/2"
+            class="@sm/panel:gl-w-1/2"
             label-for="namespace"
           >
             <new-project-destination-select
@@ -192,12 +192,12 @@ export default {
             />
           </gl-form-group>
 
-          <div class="gl-mt-2 gl-hidden gl-pt-6 sm:gl-block">{{ __('/') }}</div>
+          <div class="gl-mt-2 gl-hidden gl-pt-6 @sm/panel:gl-block">{{ __('/') }}</div>
 
           <gl-form-group
             :label="s__('ProjectsNew|Project slug')"
             label-for="path"
-            class="sm:gl-w-1/2"
+            class="@sm/panel:gl-w-1/2"
             :invalid-feedback="form.fields.path.feedback"
           >
             <gl-form-input

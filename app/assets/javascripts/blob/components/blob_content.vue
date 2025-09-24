@@ -114,7 +114,7 @@ export default {
 </script>
 <template>
   <div class="blob-viewer" :data-type="activeViewer.type" :data-loaded="isContentLoaded">
-    <gl-loading-icon v-if="loading" size="lg" color="dark" class="my-4 mx-auto" />
+    <gl-loading-icon v-if="loading" size="lg" color="dark" class="!gl-mx-auto !gl-my-6" />
 
     <template v-else>
       <blob-content-error

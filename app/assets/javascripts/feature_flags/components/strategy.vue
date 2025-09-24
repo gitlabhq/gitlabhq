@@ -134,8 +134,8 @@ export default {
     </gl-alert>
 
     <div class="gl-border-t-1 gl-border-t-default gl-py-6 gl-border-t-solid">
-      <div class="flex-md-wrap gl-flex gl-flex-col md:gl-flex-row">
-        <div class="mr-5">
+      <div class="gl-flex gl-flex-col @md/panel:gl-flex-row @md/panel:!gl-flex-wrap">
+        <div class="!gl-mr-7">
           <gl-form-group :label="$options.i18n.strategyTypeLabel" :label-for="strategyTypeId">
             <template #description>
               {{ $options.i18n.strategyTypeDescription }}
@@ -161,7 +161,7 @@ export default {
         </div>
 
         <div
-          class="align-self-end align-self-md-stretch order-first offset-md-0 order-md-0 gl-ml-auto"
+          class="order-first gl-offset-md-0 gl-order-md-0 gl-ml-auto !gl-self-end @md/panel:!gl-self-stretch"
         >
           <gl-button
             data-testid="delete-strategy-button"
@@ -177,20 +177,23 @@ export default {
         $options.i18n.environmentsLabel
       }}</label>
       <div class="gl-flex gl-flex-col">
-        <div class="gl-flex gl-flex-col md:gl-flex-row md:gl-items-center">
+        <div class="gl-flex gl-flex-col @md/panel:gl-flex-row @md/panel:gl-items-center">
           <new-environments-dropdown
             :id="environmentsDropdownId"
             class="gl-mr-3"
             @add="addEnvironment"
           />
-          <span v-if="appliesToAllEnvironments" class="mt-md-0 ml-md-3 gl-mt-3 gl-text-subtle">
+          <span
+            v-if="appliesToAllEnvironments"
+            class="gl-mt-3 gl-text-subtle @md/panel:!gl-ml-5 @md/panel:!gl-mt-0"
+          >
             {{ $options.i18n.allEnvironments }}
           </span>
           <div v-else class="gl-flex gl-flex-wrap gl-items-center">
             <gl-token
               v-for="environment in filteredEnvironments"
               :key="environment.id"
-              class="mt-md-0 mr-md-0 ml-md-2 rounded-pill gl-mb-3 gl-mr-3 gl-mt-3"
+              class="rounded-pill gl-mb-3 gl-mr-3 gl-mt-3 @md/panel:!gl-ml-3 @md/panel:!gl-mr-0 @md/panel:!gl-mt-0"
               @close="removeScope(environment)"
             >
               {{ environment.environmentScope }}

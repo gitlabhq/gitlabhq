@@ -189,7 +189,7 @@ export default {
       />
       <div
         v-if="amazonQAvailable"
-        class="project-feature-setting-group gl-flex gl-flex-col gl-gap-5 gl-pl-5 md:gl-pl-7"
+        class="project-feature-setting-group gl-flex gl-flex-col gl-gap-5 gl-pl-5 @md/panel:gl-pl-7"
       >
         <project-setting-row
           :label="s__('AI|Enable Auto Review')"
