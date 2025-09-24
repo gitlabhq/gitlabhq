@@ -28,7 +28,3 @@ Every sharding issue should have an assignee, an associated milestone, and shoul
 This helps us plan the work and estimate completion dates. It also ensures each issue names someone to contact in the case of problems or concerns. It also helps us to visualize the project work by highlighting blocker issues so we can help resolve them.
 
 Note that a blocker can be a dependency. For example, the `notes` table needs to be fully migrated before other tables can proceed. Any downstream issues should mark the related item as a blocker to help us understand these relationships.
-
-## Tables marked `exempt_from_sharding` should be sharded
-
-This section was moved to [another location](../_index.md#exempting-certain-tables-from-having-sharding-keys).

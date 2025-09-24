@@ -5301,8 +5301,7 @@ CREATE TABLE merge_request_commits_metadata (
     commit_author_id bigint NOT NULL,
     committer_id bigint NOT NULL,
     sha bytea NOT NULL,
-    message text,
-    trailers jsonb DEFAULT '{}'::jsonb NOT NULL
+    message text
 )
 PARTITION BY RANGE (project_id);
 

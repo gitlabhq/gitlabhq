@@ -110,6 +110,19 @@ RSpec.describe JiraConnect::EventsController, :with_current_organization, featur
         subject
       end
 
+      it 'passes current organization id to UpdateService' do
+        expect(JiraConnectInstallations::UpdateService)
+          .to receive(:execute)
+          .with(
+            installation,
+            ActionController::Parameters
+              .new(shared_secret: shared_secret, organization_id: current_organization.id, base_url: base_url)
+              .permit(:shared_secret, :base_url, :organization_id))
+          .and_call_original
+
+        subject
+      end
+
       context 'when parameters include a new shared secret and base_url' do
         let(:shared_secret) { 'new_secret' }
         let(:base_url) { 'https://new_test.atlassian.net' }

@@ -6,6 +6,7 @@ module Mutations
       graphql_name 'DestroyPackageFiles'
 
       include FindsProject
+      include Mutations::Packages::DeleteProtection
 
       MAXIMUM_FILES = 100
 
@@ -29,13 +30,19 @@ module Mutations
 
         ensure_file_access!(project, package_files)
 
-        result = ::Packages::MarkPackageFilesForDestructionService.new(package_files).execute
+        files_to_destroy, protection_errors = filter_protected_files(project, package_files)
+
+        # Create relation from filtered IDs
+        files_to_destroy_relation = package_files.id_in(files_to_destroy.map(&:id))
+
+        result = ::Packages::MarkPackageFilesForDestructionService.new(files_to_destroy_relation).execute
 
         sync_helm_metadata_caches(package_files, project) unless result.error?
 
-        errors = result.error? ? Array.wrap(result[:message]) : []
+        service_errors = result.error? ? Array.wrap(result[:message]) : []
+        all_errors = protection_errors + service_errors
 
-        { errors: errors }
+        { errors: all_errors }
       end
 
       private
@@ -66,6 +73,30 @@ module Mutations
           context_proc: ->(_) { { project: project, user: current_user } }
         )
         # rubocop:enable CodeReuse/Worker
+      end
+
+      def filter_protected_files(project, package_files)
+        files_to_destroy = []
+        protection_errors = []
+        protected_packages_cache = {}
+
+        # We can leverage the fact that a package file has a one-to-one relationship
+        # to package and project, so we can pass the project directly
+        package_files.preload_package.find_each do |package_file|
+          package = package_file.package
+
+          # Cache protection check results per package to avoid duplicate checks
+          protected_packages_cache[package.id] ||= protected_for_delete?(package, in_project: project)
+
+          if protected_packages_cache[package.id]
+            protection_errors << deletion_protected_error_message(package.name)
+          else
+            files_to_destroy << package_file
+          end
+        end
+
+        # Deduplicate error messages
+        [files_to_destroy, protection_errors.uniq]
       end
     end
   end

@@ -9093,6 +9093,35 @@ Input type: `MergeRequestAcceptInput`
 | <a id="mutationmergerequestaccepterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationmergerequestacceptmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
+### `Mutation.mergeRequestBypassSecurityPolicy`
+
+{{< details >}}
+**Introduced** in GitLab 18.5.
+**Status**: Experiment.
+{{< /details >}}
+
+Bypasses security policies for a merge request.
+
+Input type: `MergeRequestBypassSecurityPolicyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmergerequestbypasssecuritypolicyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmergerequestbypasssecuritypolicyiid"></a>`iid` | [`String!`](#string) | IID of the merge request to mutate. |
+| <a id="mutationmergerequestbypasssecuritypolicyprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the merge request to mutate is in. |
+| <a id="mutationmergerequestbypasssecuritypolicyreason"></a>`reason` | [`String!`](#string) | Reason for bypassing the security policy. |
+| <a id="mutationmergerequestbypasssecuritypolicysecuritypolicyids"></a>`securityPolicyIds` | [`[ID!]!`](#id) | ID of the security policy to bypass. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmergerequestbypasssecuritypolicyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmergerequestbypasssecuritypolicyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationmergerequestbypasssecuritypolicymergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
+
 ### `Mutation.mergeRequestCreate`
 
 Input type: `MergeRequestCreateInput`

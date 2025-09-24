@@ -105,7 +105,7 @@
 
     .notes-content {
       border: 0;
-      @apply gl-border-t;
+      @apply gl-border-t gl-bg-default;
     }
   }
 

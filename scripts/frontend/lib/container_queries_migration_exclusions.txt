@@ -13,3 +13,4 @@ app/assets/javascripts/work_items/components/design_management/design_preview/de
 app/assets/javascripts/work_items/components/design_management/design_preview/design_presentation.vue
 app/assets/javascripts/work_items/components/design_management/design_preview/design_toolbar.vue
 ee/app/assets/javascripts/ai/components/navigation_rail.vue
+app/assets/stylesheets/framework/modal.scss

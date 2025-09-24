@@ -80,7 +80,12 @@ export default {
           {{ $options.NEXT_LABEL }}
         </gl-badge>
 
-        <super-sidebar-toggle icon="hamburger" type="expand" class="xl:gl-hidden" />
+        <super-sidebar-toggle
+          v-if="sidebarData.current_menu_items.length"
+          icon="hamburger"
+          type="expand"
+          class="xl:gl-hidden"
+        />
 
         <promo-menu v-if="!isLoggedIn" :pricing-url="sidebarData.compare_plans_url" />
       </div>

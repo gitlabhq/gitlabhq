@@ -419,6 +419,17 @@ RSpec.describe Packages::Package, feature_category: :package_registry do
     end
   end
 
+  describe '.preload_project' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:package) { create_list(:npm_package, 2, project: project) }
+
+    subject(:packages) { described_class.preload_project }
+
+    it 'preloads project' do
+      expect(packages.first.association(:project)).to be_loaded
+    end
+  end
+
   describe '.preload_pipelines_with_user_project_namespace_route' do
     let_it_be(:project) { create(:project) }
 

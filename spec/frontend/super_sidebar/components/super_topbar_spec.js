@@ -68,6 +68,13 @@ describe('SuperTopbar', () => {
       it('is not shown on large screens', () => {
         expect(findSidebarToggle().classes()).toContain('xl:gl-hidden');
       });
+
+      it('is not shown when the sidebar has no menu items', () => {
+        createComponent({
+          sidebarData: { ...mockSidebarData, current_menu_items: [] },
+        });
+        expect(findSidebarToggle().exists()).toBe(false);
+      });
     });
 
     describe('Organization switcher', () => {
@@ -147,7 +154,7 @@ describe('SuperTopbar', () => {
     });
 
     it('does not render UserMenu when user is not logged in', () => {
-      createComponent({ sidebarData: { is_logged_in: false } });
+      createComponent({ sidebarData: { ...mockSidebarData, is_logged_in: false } });
 
       expect(findUserMenu().exists()).toBe(false);
     });
@@ -157,7 +164,7 @@ describe('SuperTopbar', () => {
     });
 
     it('does not render UserCounts when user is not logged in', () => {
-      createComponent({ sidebarData: { is_logged_in: false } });
+      createComponent({ sidebarData: { ...mockSidebarData, is_logged_in: false } });
 
       expect(findUserCounts().exists()).toBe(false);
     });

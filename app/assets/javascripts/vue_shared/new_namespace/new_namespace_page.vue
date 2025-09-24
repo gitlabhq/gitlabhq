@@ -158,7 +158,7 @@ export default {
     <component :is="wrapperComponentProps.is" v-bind="wrapperComponentProps">
       <div
         class="top-bar-fixed container-fluid"
-        :class="{ 'gl-border-b gl-mx-0 gl-w-full': isUsingPaneledView }"
+        :class="{ 'gl-border-b gl-top-0 gl-mx-0 gl-w-full': isUsingPaneledView }"
         data-testid="top-bar"
       >
         <div

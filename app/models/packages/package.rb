@@ -97,6 +97,7 @@ module Packages
     end
 
     scope :preload_tags, -> { preload(:tags) }
+    scope :preload_project, -> { preload(:project) }
     scope :limit_recent, ->(limit) { order_created_desc.limit(limit) }
     scope :select_distinct_name, -> { select(:name).distinct }
 

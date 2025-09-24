@@ -294,14 +294,12 @@ export default {
     data-testid="work-item-drawer"
     :header-height="getDrawerHeight"
     header-sticky
-    class="work-item-drawer gl-w-full gl-leading-reset @lg/panel:gl-w-[480px] @xl/panel:gl-w-[768px] min-[1440px]:gl-w-[912px]"
+    class="work-item-drawer gl-w-full gl-leading-reset lg:gl-w-[480px] xl:gl-w-[768px] min-[1440px]:gl-w-[912px]"
     @close="handleClose"
     @opened="$emit('opened')"
   >
     <template #title>
-      <div
-        class="work-item-drawer-header gl-flex gl-w-full gl-items-start gl-gap-x-2 @xl/panel:gl-px-4"
-      >
+      <div class="work-item-drawer-header gl-flex gl-w-full gl-items-start gl-gap-x-2 xl:gl-px-4">
         <div class="gl-flex gl-grow gl-items-center gl-gap-2">
           <gl-link
             ref="workItemUrl"
@@ -345,7 +343,7 @@ export default {
         :modal-is-group="modalIsGroup"
         :is-board="isBoard"
         is-drawer
-        class="work-item-drawer !gl-pt-0 @xl/panel:!gl-px-6"
+        class="work-item-drawer !gl-pt-0 xl:!gl-px-6"
         @deleteWorkItem="deleteWorkItem"
         @work-item-updated="handleWorkItemUpdated"
         @workItemTypeChanged="$emit('workItemTypeChanged', $event)"

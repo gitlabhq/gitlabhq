@@ -24997,12 +24997,6 @@ msgstr ""
 msgid "DuoEnterpriseDiscover|Your end-to-end AI partner"
 msgstr ""
 
-msgid "DuoEnterpriseTrial|Activate my trial"
-msgstr ""
-
-msgid "DuoEnterpriseTrial|Apply your GitLab Duo Enterprise trial to an existing group"
-msgstr ""
-
 msgid "DuoEnterpriseTrial|Enhance security and remediate vulnerabilities efficiently"
 msgstr ""
 
@@ -25021,19 +25015,10 @@ msgstr ""
 msgid "DuoEnterpriseTrial|Quickly remedy broken pipelines to deliver products faster"
 msgstr ""
 
-msgid "DuoEnterpriseTrial|Start your free Duo Enterprise trial"
-msgstr ""
-
 msgid "DuoEnterpriseTrial|Start your free GitLab Duo Enterprise trial"
 msgstr ""
 
-msgid "DuoEnterpriseTrial|Start your free GitLab Duo Enterprise trial on %{group_name}"
-msgstr ""
-
 msgid "DuoEnterpriseTrial|Stay on top of regulatory requirements with self-hosted model deployment"
-msgstr ""
-
-msgid "DuoEnterpriseTrial|We just need some additional information to activate your trial."
 msgstr ""
 
 msgid "DuoEnterpriseTrial|We need a few more details from you to activate your trial."
@@ -44553,6 +44538,12 @@ msgstr ""
 msgid "Observability|Dive deep into your data with comprehensive analytics, custom visualizations, and intelligent insights for better decision-making."
 msgstr ""
 
+msgid "Observability|Edit"
+msgstr ""
+
+msgid "Observability|Edit O11y service settings"
+msgstr ""
+
 msgid "Observability|Email Notification"
 msgstr ""
 
@@ -44604,6 +44595,9 @@ msgstr ""
 msgid "Observability|Failed to load related issues. Try reloading the page."
 msgstr ""
 
+msgid "Observability|Failed to update O11y service settings"
+msgstr ""
+
 msgid "Observability|Filter data by month:"
 msgstr ""
 
@@ -44623,6 +44617,9 @@ msgid "Observability|Group ID"
 msgstr ""
 
 msgid "Observability|Group is required"
+msgstr ""
+
+msgid "Observability|Group name"
 msgstr ""
 
 msgid "Observability|Group not found"
@@ -44730,6 +44727,9 @@ msgstr ""
 msgid "Observability|Observability settings for group ID %{group_id} created successfully."
 msgstr ""
 
+msgid "Observability|Observability settings for group ID %{group_id} updated successfully."
+msgstr ""
+
 msgid "Observability|OpenTelemetry Native"
 msgstr ""
 
@@ -44796,6 +44796,9 @@ msgstr ""
 msgid "Observability|The ID of the group for this o11y service configuration."
 msgstr ""
 
+msgid "Observability|The name of the group for this o11y service configuration."
+msgstr ""
+
 msgid "Observability|The name of your o11y service instance."
 msgstr ""
 
@@ -44812,6 +44815,9 @@ msgid "Observability|Unified Platform"
 msgstr ""
 
 msgid "Observability|Up to one business day"
+msgstr ""
+
+msgid "Observability|Update your o11y service connection settings."
 msgstr ""
 
 msgid "Observability|Usage by day"
@@ -58587,6 +58593,9 @@ msgstr ""
 msgid "SecurityOrchestration|An error occurred unassigning your security policy project"
 msgstr ""
 
+msgid "SecurityOrchestration|An error occurred while attempting to bypass policies. Please refresh the page and try again."
+msgstr ""
+
 msgid "SecurityOrchestration|An error occurred while fetching the scan result policies."
 msgstr ""
 
@@ -59166,6 +59175,9 @@ msgid "SecurityOrchestration|Policy Bypass Options"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy Type"
+msgstr ""
+
+msgid "SecurityOrchestration|Policy bypass failed"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy cannot be enabled for non-existing branches (%{branches})"

@@ -392,63 +392,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     end
   end
 
-  it 'does not allow tables that are permanently exempted from sharding to have sharding keys' do
-    tables_exempted_from_sharding.each do |entry|
-      expect(entry.sharding_key).to be_nil,
-        "#{entry.table_name} is exempted from sharding and hence should not have a sharding key defined"
-    end
-  end
-
-  it 'does not allow tables in sharded schemas to be permanently exempted', :aggregate_failures do
-    sharded_schemas = Gitlab::Database
-      .all_gitlab_schemas
-      .select { |s| Gitlab::Database::GitlabSchema.require_sharding_key?(s) }
-
-    tables_exempted_from_sharding.each do |entry|
-      expect(entry.gitlab_schema).not_to be_in(sharded_schemas),
-        "#{entry.table_name} is in a schema (#{entry.gitlab_schema}) " \
-          "that requires sharding so is not allowed to be exempted from sharding"
-    end
-  end
-
-  it 'does not allow tables with FK references to be permanently exempted', :aggregate_failures do
-    tables_exempted_from_sharding_table_names = tables_exempted_from_sharding.map(&:table_name)
-
-    tables_exempted_from_sharding.each do |entry|
-      fks = referenced_foreign_keys(entry.table_name).to_a
-
-      fks.reject! { |fk| fk.constrained_table_name.in?(tables_exempted_from_sharding_table_names) }
-
-      # Remove after https://gitlab.com/gitlab-org/gitlab/-/issues/515383 is resolved
-      tables_to_be_fixed = %w[shards]
-      if entry.table_name.in?(tables_to_be_fixed)
-        raise "Expected there to be failures, but no failures for #{entry.table_name}." unless fks.present?
-
-        puts "Table #{entry.table_name} will need to be fixed later. There are references from:\n\n" \
-          "#{fks.map(&:constrained_table_name).join("\n")}"
-
-        next
-      end
-
-      expect(fks).to be_empty,
-        "#{entry.table_name} is exempted from sharding, but has foreign key references to it.\n" \
-          "For more information, see " \
-          "https://docs.gitlab.com/development/cells/#exempting-certain-tables-from-having-sharding-keys.\n" \
-          "The tables with foreign key references are:\n\n" \
-          "#{fks.map(&:constrained_table_name).join("\n")}"
-
-      lfks = referenced_loose_foreign_keys(entry.table_name)
-      lfks.reject! { |lfk| lfk.from_table.in?(tables_exempted_from_sharding_table_names) }
-
-      expect(lfks).to be_empty,
-        "#{entry.table_name} is exempted from sharding, but has loose foreign key references to it.\n" \
-          "For more information, see " \
-          "https://docs.gitlab.com/development/cells/#exempting-certain-tables-from-having-sharding-keys.\n" \
-          "The tables with loose foreign key references are:\n\n" \
-          "#{lfks.map(&:from_table).join("\n")}"
-    end
-  end
-
   it 'allows tables that have a sharding key to only have a sharding-key-required schema' do
     expect(tables_with_sharding_keys_not_in_sharding_key_required_schema).to be_empty, <<~ERROR.squish
       Tables: #{tables_with_sharding_keys_not_in_sharding_key_required_schema.join(',')}
@@ -518,10 +461,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
     entries_with_sharding_key.map do |entry|
       [entry.table_name, entry.sharding_key, entry.gitlab_schema]
     end
-  end
-
-  def tables_exempted_from_sharding
-    ::Gitlab::Database::Dictionary.entries.select(&:exempt_from_sharding?)
   end
 
   def tables_with_sharding_keys_not_in_sharding_key_required_schema

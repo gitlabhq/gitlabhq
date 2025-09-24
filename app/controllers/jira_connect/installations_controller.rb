@@ -34,6 +34,9 @@ class JiraConnect::InstallationsController < JiraConnect::ApplicationController
   end
 
   def installation_params
-    params.require(:installation).permit(:instance_url)
+    params
+      .require(:installation)
+      .permit(:instance_url)
+      .merge(organization_id: Current.organization.id)
   end
 end

@@ -38,11 +38,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      showDescription: false,
-    };
-  },
   computed: {
     pipelines() {
       return this.packageEntity.pipelines || [];

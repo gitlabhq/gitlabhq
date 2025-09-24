@@ -11,7 +11,7 @@ module Experimental
     urgency :low
 
     def index
-      @o11y_service_settings = Observability::GroupO11ySetting.page(pagination_params[:page])
+      @o11y_service_settings = Observability::GroupO11ySetting.with_group.page(pagination_params[:page])
     end
 
     def new
@@ -37,7 +37,7 @@ module Experimental
 
       @o11y_service_settings = group.build_observability_group_o11y_setting
       result = ::Observability::GroupO11ySettingsUpdateService.new.execute(@o11y_service_settings,
-        o11y_service_settings_params)
+        o11y_service_settings_params.to_h)
 
       if result.success?
         flash[:success] = format(
@@ -51,14 +51,47 @@ module Experimental
       end
     end
 
+    def edit
+      @o11y_service_settings = find_o11y_service_setting
+      render_404 unless @o11y_service_settings
+    end
+
+    def update
+      @o11y_service_settings = find_o11y_service_setting
+      return render_404 unless @o11y_service_settings
+
+      result = ::Observability::GroupO11ySettingsUpdateService.new.execute(@o11y_service_settings,
+        o11y_service_settings_update_params.to_h)
+
+      if result.success?
+        flash[:success] = format(
+          s_('Observability|Observability settings for group ID %{group_id} updated successfully.'),
+          group_id: @o11y_service_settings.group.id
+        )
+        redirect_to experimental_o11y_service_settings_path
+      else
+        flash[:alert] = s_('Observability|Failed to update O11y service settings')
+        render :edit, status: :unprocessable_entity
+      end
+    end
+
     private
 
     def authorize_experimental_access!
       render_404 unless ::Feature.enabled?(:experimental_group_o11y_settings_access, current_user)
     end
 
+    def find_o11y_service_setting
+      Observability::GroupO11ySetting.find_by_id(params.permit(:id)[:id])
+    end
+
     def o11y_service_settings_params
       params.require(:observability_group_o11y_setting).permit(:group_id, :o11y_service_name, :o11y_service_user_email,
+        :o11y_service_password, :o11y_service_post_message_encryption_key)
+    end
+
+    def o11y_service_settings_update_params
+      params.require(:observability_group_o11y_setting).permit(:o11y_service_name, :o11y_service_user_email,
         :o11y_service_password, :o11y_service_post_message_encryption_key)
     end
   end

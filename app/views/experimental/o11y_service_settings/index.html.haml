@@ -17,16 +17,20 @@
         %thead
           %tr
             %th= s_('Observability|Group ID')
+            %th= s_('Observability|Group name')
             %th= s_('Observability|Service name')
             %th= s_('Observability|User email')
             %th= s_('Observability|Created at')
+            %th
         %tbody
           - @o11y_service_settings.each do |setting|
             %tr
               %td= setting.group_id
+              %td= setting.group.name
               %td= setting.o11y_service_name
               %td= setting.o11y_service_user_email
               %td= setting.created_at.strftime('%Y-%m-%d %H:%M')
+              %td= link_to s_('Observability|Edit'), edit_experimental_o11y_service_setting_path(setting)
 
       = paginate @o11y_service_settings, theme: 'gitlab'
 - else

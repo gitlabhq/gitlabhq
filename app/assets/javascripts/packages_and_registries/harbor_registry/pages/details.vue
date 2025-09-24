@@ -46,8 +46,6 @@ export default {
     return {
       artifactsList: [],
       pageInfo: {},
-      mutationLoading: false,
-      deleteAlertType: null,
       isLoading: true,
       filterString: '',
       sorting: null,

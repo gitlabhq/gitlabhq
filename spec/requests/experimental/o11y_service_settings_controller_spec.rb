@@ -315,6 +315,117 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
     end
   end
 
+  describe 'GET #edit' do
+    let_it_be(:o11y_setting) { create(:observability_group_o11y_setting, group: group) }
+    let(:make_request) { get edit_experimental_o11y_service_setting_path(o11y_setting) }
+
+    include_examples 'requires authentication'
+    include_examples 'requires experimental access'
+
+    context 'when user is authenticated and has experimental access' do
+      before do
+        stub_feature_flags(experimental_group_o11y_settings_access: user)
+      end
+
+      include_examples 'successful response', :edit
+
+      it 'assigns the correct o11y service setting' do
+        make_request
+        expect(assigns(:o11y_service_settings)).to eq(o11y_setting)
+      end
+    end
+
+    context 'when o11y service setting is not found' do
+      before do
+        stub_feature_flags(experimental_group_o11y_settings_access: user)
+      end
+
+      let(:make_request) { get edit_experimental_o11y_service_setting_path(999999) }
+
+      it 'returns 404' do
+        make_request
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  describe 'PATCH #update' do
+    let_it_be(:o11y_setting) { create(:observability_group_o11y_setting, group: group) }
+    let(:make_request) do
+      patch experimental_o11y_service_setting_path(o11y_setting),
+        params: { observability_group_o11y_setting: build_settings_params }
+    end
+
+    include_examples 'requires authentication'
+    include_examples 'requires experimental access'
+
+    context 'when user is authenticated and has experimental access' do
+      before do
+        stub_feature_flags(experimental_group_o11y_settings_access: user)
+      end
+
+      context 'when update is successful' do
+        before do
+          allow_next_instance_of(Observability::GroupO11ySettingsUpdateService) do |service|
+            allow(service).to receive(:execute).and_return(ServiceResponse.success)
+          end
+        end
+
+        it 'redirects to index with success message' do
+          make_request
+
+          aggregate_failures do
+            expect(response).to redirect_to(experimental_o11y_service_settings_path)
+            expect(flash[:success]).to include('updated successfully')
+          end
+        end
+
+        it 'calls the update service with correct parameters' do
+          expect_next_instance_of(Observability::GroupO11ySettingsUpdateService) do |service|
+            expect(service).to receive(:execute).with(o11y_setting,
+              expected_update_params_hash).and_return(ServiceResponse.success)
+          end
+
+          make_request
+        end
+      end
+
+      context 'when update fails' do
+        before do
+          allow_next_instance_of(Observability::GroupO11ySettingsUpdateService) do |service|
+            allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'Update failed'))
+          end
+        end
+
+        it 'renders edit template with error message' do
+          make_request
+
+          aggregate_failures do
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+            expect(response).to render_template(:edit)
+            expect(flash[:alert]).to eq('Failed to update O11y service settings')
+          end
+        end
+      end
+    end
+
+    context 'when o11y service setting is not found' do
+      before do
+        stub_feature_flags(experimental_group_o11y_settings_access: user)
+      end
+
+      let(:make_request) do
+        patch experimental_o11y_service_setting_path(999999),
+          params: { observability_group_o11y_setting: build_settings_params }
+      end
+
+      it 'returns 404' do
+        make_request
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   private
 
   def build_settings_params(**overrides)
@@ -330,6 +441,15 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
   def expected_params_hash
     {
       group_id: group.id.to_s,
+      o11y_service_name: TEST_SERVICE_NAME,
+      o11y_service_user_email: TEST_EMAIL,
+      o11y_service_password: TEST_PASSWORD,
+      o11y_service_post_message_encryption_key: TEST_ENCRYPTION_KEY
+    }
+  end
+
+  def expected_update_params_hash
+    {
       o11y_service_name: TEST_SERVICE_NAME,
       o11y_service_user_email: TEST_EMAIL,
       o11y_service_password: TEST_PASSWORD,

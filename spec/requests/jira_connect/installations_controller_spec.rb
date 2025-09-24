@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::InstallationsController, feature_category: :integrations do
+RSpec.describe JiraConnect::InstallationsController, :with_current_organization, feature_category: :integrations do
   let_it_be(:installation) { create(:jira_connect_installation) }
 
   describe 'GET /-/jira_connect/installations' do
@@ -71,6 +71,19 @@ RSpec.describe JiraConnect::InstallationsController, feature_category: :integrat
         do_request
 
         expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'passes current organization id to UpdateService' do
+        expect(JiraConnectInstallations::UpdateService)
+          .to receive(:execute)
+          .with(
+            installation,
+            ActionController::Parameters
+              .new(instance_url: nil, organization_id: current_organization.id)
+              .permit(:instance_url, :organization_id))
+          .and_call_original
+
+        do_request
       end
 
       context 'with instance_url param' do

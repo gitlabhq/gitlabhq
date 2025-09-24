@@ -99,7 +99,17 @@ For multi-node installations, multiply by the number of nodes running each compo
 Total connections = 2 × ((Puma × Rails nodes) + (Sidekiq × Sidekiq nodes) + (Geo × secondary Rails nodes))
 ```
 
-Multiplying by 2 accounts for the [dual database connections](https://docs.gitlab.com/omnibus/settings/database/#configuring-multiple-database-connections) in GitLab 16.0 and later.
+Multiplying by 2 accounts for the
+[dual database connections](https://docs.gitlab.com/omnibus/settings/database/#configuring-multiple-database-connections) in GitLab 16.0 and later.
+
+For Geo installations:
+
+- Primary site: Use `Geo = 0`. Geo Log Cursor doesn't run on primary sites.
+- Secondary sites: Calculate the Geo Log Cursor database connections for one secondary site, and
+  apply that same calculation to all secondary sites.
+- Each Geo site connects to its own database, so you don't need to sum connections across multiple Geo sites.
+- Set `max_connections` to the same value on both the primary PostgreSQL database and all replica databases,
+  using the highest connection requirement across all Geo sites.
 
 ### Examples
 
@@ -117,10 +127,34 @@ This example is based on the GitLab reference architecture for
 #### Multi-node installation
 
 This example is based on the GitLab reference architecture for
-[40 RPS or 2000 users](../reference_architectures/2k_users.md):
+[40 RPS (requests per second) or 2000 users](../reference_architectures/2k_users.md):
 
 | Component | Nodes | Configuration                      | Connections per component | Component total, dual database |
 |-----------|-------|------------------------------------|---------------------------|--------------------------------|
 | Puma      | 2     | 8 workers per node, 4 threads each | 14 per worker             | 448                            |
 | Sidekiq   | 1     | 4 processes, 20 concurrency each   | 31 per process            | 248                            |
 | Total     |       |                                    |                           | 696                            |
+
+#### Single node installation with Geo
+
+This example is based on the GitLab reference architecture for
+[20 RPS (requests per second) or 1000 users](../reference_architectures/1k_users.md).
+
+| Component per Geo site                | Nodes | Configuration             | Connections per component | Component total, dual database |
+|---------------------------------------|-------|---------------------------|---------------------------|--------------------------------|
+| Puma                                  | 1     | 8 workers, 4 threads each | 14 per worker             | 224                            |
+| Sidekiq                               | 1     | 1 process, 20 concurrency | 31 per process            | 62                             |
+| Geo Log Cursor (secondary sites only) | 1     | 1 process                 | 11 per process            | 22                             |
+| Total                                 |       |                           |                           | 308                            |
+
+#### Multi-node installation with Geo
+
+This example is based on the GitLab reference architecture for
+[40 RPS (requests per second) or 2000 users](../reference_architectures/2k_users.md):
+
+| Component per Geo site                | Nodes | Configuration                      | Connections per component | Component total, dual database |
+|---------------------------------------|-------|------------------------------------|---------------------------|--------------------------------|
+| Puma                                  | 2     | 8 workers per node, 4 threads each | 14 per worker             | 448                            |
+| Sidekiq                               | 1     | 4 processes, 20 concurrency each   | 31 per process            | 248                            |
+| Geo Log Cursor (secondary sites only) | 2     | 1 process per Rails node           | 11 per process            | 44                             |
+| Total                                 |       |                                    |                           | 740                            |

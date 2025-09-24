@@ -5,6 +5,8 @@ module Mutations
     class DestroyFile < ::Mutations::BaseMutation
       graphql_name 'DestroyPackageFile'
 
+      include Mutations::Packages::DeleteProtection
+
       authorize :destroy_package
 
       argument :id,
@@ -14,6 +16,9 @@ module Mutations
 
       def resolve(id:)
         package_file = authorized_find!(id: id)
+
+        package = package_file.package
+        return { errors: [deletion_protected_error_message] } if protected_for_delete?(package)
 
         if package_file.pending_destruction!
           sync_helm_metadata_cache(package_file)

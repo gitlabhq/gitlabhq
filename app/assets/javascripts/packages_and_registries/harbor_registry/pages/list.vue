@@ -73,7 +73,6 @@ export default {
       images: [],
       totalCount: 0,
       pageInfo: {},
-      filter: [],
       isLoading: true,
       sorting: null,
       name: null,

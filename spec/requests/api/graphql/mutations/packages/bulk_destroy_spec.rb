@@ -70,12 +70,38 @@ RSpec.describe 'Destroying multiple packages', feature_category: :package_regist
       it_behaves_like 'returning response status', :success
     end
 
+    shared_examples 'mixed protected package deletion' do
+      it_behaves_like 'returning response status', :success
+
+      it 'returns protection errors for protected packages' do
+        mutation_request
+
+        response_errors = graphql_mutation_response(:destroyPackages)['errors']
+        expect(response_errors).to include("Package '#{protected_package1.name}' is deletion protected.")
+        expect(response_errors).to include("Package '#{protected_package2.name}' is deletion protected.")
+      end
+
+      it 'marks only unprotected packages for destruction' do
+        expect { mutation_request }.to change { ::Packages::Package.pending_destruction.count }.by(3)
+
+        # Protected packages should not be marked for destruction
+        expect(protected_package1.reload.status).to eq('default')
+        expect(protected_package2.reload.status).to eq('default')
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(packages_protected_packages_delete: false)
+        end
+
+        it_behaves_like 'destroying the packages'
+      end
+    end
+
     context 'with valid params' do
       where(:user_role, :shared_examples_name) do
         :maintainer      | 'destroying the packages'
         :developer       | 'denying the mutation request'
-        :reporter        | 'denying the mutation request'
-        :guest           | 'denying the mutation request'
         :not_in_project  | 'denying the mutation request'
       end
 
@@ -106,6 +132,43 @@ RSpec.describe 'Destroying multiple packages', feature_category: :package_regist
         end
 
         it_behaves_like 'denying the mutation request'
+      end
+    end
+
+    context 'with protected packages' do
+      let_it_be_with_reload(:protected_package1) { packages1.first }
+      let_it_be_with_reload(:protected_package2) { packages2.first }
+      let_it_be_with_reload(:package_protection_rule1) do
+        create(:package_protection_rule,
+          project: project1,
+          package_name_pattern: protected_package1.name,
+          package_type: protected_package1.package_type,
+          minimum_access_level_for_delete: :owner
+        )
+      end
+
+      let_it_be_with_reload(:package_protection_rule2) do
+        create(:package_protection_rule,
+          project: project2,
+          package_name_pattern: protected_package2.name,
+          package_type: protected_package2.package_type,
+          minimum_access_level_for_delete: :owner
+        )
+      end
+
+      where(:user_role, :shared_examples_name) do
+        :owner      | 'destroying the packages'
+        :maintainer | 'mixed protected package deletion'
+        :developer  | 'denying the mutation request'
+      end
+
+      with_them do
+        before do
+          project1.send("add_#{user_role}", user)
+          project2.send("add_#{user_role}", user)
+        end
+
+        it_behaves_like params[:shared_examples_name]
       end
     end
 

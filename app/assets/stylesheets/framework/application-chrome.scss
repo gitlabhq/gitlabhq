@@ -573,6 +573,15 @@
     @apply gl-grow;
   }
 
+  // Vulnerability dashboard
+  .security-dashboard-filters {
+    top: 0 !important;
+  }
+  
+  .vulnerability-list thead {
+    top: var(--sticky-container-height) !important;
+  }
+
 }
 
 /*

@@ -24,6 +24,8 @@ module Observability
         message: 'is invalid'
       }
 
+    scope :with_group, -> { includes(:group) }
+
     attr_writer :o11y_service_name
 
     def self.human_attribute_name(attribute, *options)
