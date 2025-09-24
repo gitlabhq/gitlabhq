@@ -61,6 +61,9 @@ const findIssuableList = () => wrapper.findComponent(IssuableList);
 const findNewMrButton = () => wrapper.findByTestId('new-merge-request-button');
 const findBulkEditButton = () => wrapper.findByTestId('bulk-edit');
 
+const sourceBranchPath = 'source-branches';
+const targetBranchPath = 'target-branches';
+
 function createComponent({
   provide = {},
   response = getQueryResponse,
@@ -97,6 +100,8 @@ function createComponent({
   wrapper = mountFn(MergeRequestsListApp, {
     provide: {
       autocompleteAwardEmojisPath: 'pathy/pathface',
+      mergeRequestTargetBranchesPath: targetBranchPath,
+      mergeRequestSourceBranchesPath: sourceBranchPath,
       fullPath: 'gitlab-org/gitlab',
       hasAnyMergeRequests: true,
       hasScopedLabelsFeature: false,
@@ -173,8 +178,6 @@ describe('Merge requests list app', () => {
     const projectId = 1;
     const fullPath = 'gitlab-org/gitlab';
     const allBranchesPath = `/api/${apiVersion}/projects/${encodeURIComponent(fullPath)}/repository/branches`;
-    const sourceBranchPath = '/-/autocomplete/merge_request_source_branches.json';
-    const targetBranchPath = '/-/autocomplete/merge_request_target_branches.json';
     let axiosMock;
 
     beforeEach(() => {

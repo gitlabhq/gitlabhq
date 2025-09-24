@@ -244,6 +244,8 @@ module MergeRequestsHelper
   def common_merge_request_list_data(current_user)
     {
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
+      merge_request_target_branches_path: autocomplete_merge_request_target_branches_path,
+      merge_request_source_branches_path: autocomplete_merge_request_source_branches_path,
       initial_sort: default_merge_request_sort || current_user&.user_preference&.merge_requests_sort,
       is_public_visibility_restricted:
         Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,
