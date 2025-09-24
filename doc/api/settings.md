@@ -550,6 +550,7 @@ to configure other related settings. These requirements are
 | `elasticsearch_aws_region`               | string           | no                                   | The AWS region the Elasticsearch domain is configured. Premium and Ultimate only. |
 | `elasticsearch_aws_secret_access_key`    | string           | no                                   | AWS IAM secret access key. Premium and Ultimate only. |
 | `elasticsearch_aws`                      | boolean          | no                                   | Enable the use of AWS hosted Elasticsearch. Premium and Ultimate only. |
+| `elasticsearch_client_adapter`           | string           | no                                   | The Faraday adapter used by the Elasticsearch Ruby Client. Defaults to `typhoeus`. Possible values are `typhoeus` and `net_http`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/550805) in GitLab 18.2. Premium and Ultimate only. |
 | `elasticsearch_indexed_field_length_limit` | integer        | no                                   | Maximum size of text fields to index by Elasticsearch. 0 value means no limit. This does not apply to repository and wiki indexing. Premium and Ultimate only. |
 | `elasticsearch_indexed_file_size_limit_kb` | integer        | no                                   | Maximum size of repository and wiki files that are indexed by Elasticsearch. Premium and Ultimate only. |
 | `elasticsearch_indexing`                   | boolean        | no                                   | Enable Elasticsearch indexing. Premium and Ultimate only. |
