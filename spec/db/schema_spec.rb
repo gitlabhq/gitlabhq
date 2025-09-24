@@ -230,6 +230,7 @@ RSpec.describe 'Database schema',
       user_preferences: %w[dark_color_scheme_id],
       users_star_projects: %w[user_id],
       vulnerability_finding_links: %w[project_id],
+      vulnerability_flags: %w[project_id workflow_id],
       vulnerability_historical_statistics: %w[security_project_tracked_context_id], # cannot be a foreign key yet
       vulnerability_identifiers: %w[external_id],
       vulnerability_occurrences: %w[security_project_tracked_context_id], # cannot be a foreign key yet

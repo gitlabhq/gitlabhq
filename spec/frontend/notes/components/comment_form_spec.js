@@ -28,6 +28,7 @@ import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useBatchComments } from '~/batch_comments/store';
+import DiscussionLockedWidget from '~/notes/components/discussion_locked_widget.vue';
 import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
 
 jest.mock('autosize');
@@ -60,6 +61,7 @@ describe('issue_comment_form component', () => {
   const findCommentTypeDropdown = () => wrapper.findByTestId('comment-button');
   const findCommentButton = () => findCommentTypeDropdown().find('button');
   const findErrorAlerts = () => wrapper.findAllComponents(GlAlert).wrappers;
+  const findDiscussionLockedWidget = () => wrapper.findComponent(DiscussionLockedWidget);
 
   const createNotableDataMock = (data = {}) => {
     return {
@@ -810,6 +812,30 @@ describe('issue_comment_form component', () => {
       expect(findMarkdownEditor().exists()).toBe(false);
     });
   });
+
+  describe.each`
+    canCreateNote | discussionLocked | lockedWidgetVisible
+    ${true}       | ${true}          | ${false}
+    ${true}       | ${false}         | ${false}
+    ${false}      | ${false}         | ${false}
+    ${false}      | ${true}          | ${true}
+  `(
+    'when canCreateNote=$canCreateNote and discussionLocked=$discussionLocked',
+    ({ canCreateNote, discussionLocked, lockedWidgetVisible }) => {
+      beforeEach(() => {
+        mountComponent({
+          noteableData: createNotableDataMock({
+            discussion_locked: discussionLocked,
+            current_user: { can_create_note: canCreateNote },
+          }),
+        });
+      });
+
+      it(`${lockedWidgetVisible ? 'renders' : 'does not render'} discussion locked widget`, () => {
+        expect(findDiscussionLockedWidget().exists()).toBe(lockedWidgetVisible);
+      });
+    },
+  );
 
   describe('with batchComments in store', () => {
     describe('start review, add to review and comment now buttons', () => {

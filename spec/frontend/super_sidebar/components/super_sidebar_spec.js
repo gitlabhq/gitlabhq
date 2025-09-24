@@ -159,17 +159,13 @@ describe('SuperSidebar component', () => {
     });
 
     it('does not render SidebarMenu when items are empty', () => {
-      createWrapper();
+      createWrapper({ sidebarData: { ...mockSidebarData, current_menu_items: [] } });
       expect(findSidebarMenu().exists()).toBe(false);
     });
 
     it('renders SidebarMenu with menu items', () => {
-      const menuItems = [
-        { id: 1, title: 'Menu item 1' },
-        { id: 2, title: 'Menu item 2' },
-      ];
-      createWrapper({ sidebarData: { ...mockSidebarData, current_menu_items: menuItems } });
-      expect(findSidebarMenu().props('items')).toBe(menuItems);
+      createWrapper();
+      expect(findSidebarMenu().props('items')).toBe(mockSidebarData.current_menu_items);
     });
 
     it('renders SidebarPortalTarget', () => {
@@ -406,6 +402,14 @@ describe('SuperSidebar component', () => {
       it('sets the correct class', () => {
         expect(findSidebar().classes()).toContain('super-sidebar-is-mobile');
       });
+    });
+
+    it('does not render when items are empty', () => {
+      createWrapper({
+        provide: { projectStudioEnabled: true },
+        sidebarData: { ...mockSidebarData, current_menu_items: [] },
+      });
+      expect(findSidebar().exists()).toBe(false);
     });
   });
 

@@ -84,7 +84,7 @@
     @apply gl-bg-strong;
   }
 
-  .timeline-entry:not(.draft-note):last-child::before {
+  .timeline-entry:not(.timeline-entry .timeline-entry):last-child::before {
     @apply gl-bg-default;
 
     .modal-body, .work-item-drawer & {

@@ -939,6 +939,9 @@ vulnerability_flags:
   - table: projects
     column: project_id
     on_delete: async_delete
+  - table: duo_workflows_workflows
+    column: workflow_id
+    on_delete: async_nullify
 vulnerability_historical_statistics:
   - table: projects
     column: project_id

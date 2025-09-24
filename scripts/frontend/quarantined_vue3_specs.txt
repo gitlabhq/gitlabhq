@@ -30,7 +30,6 @@ spec/frontend/packages_and_registries/dependency_proxy/app_spec.js
 spec/frontend/performance_bar/index_spec.js
 spec/frontend/pipeline_wizard/components/step_spec.js
 spec/frontend/ref/init_ambiguous_ref_modal_spec.js
-spec/frontend/releases/components/asset_links_form_spec.js
 spec/frontend/sidebar/components/confidential/sidebar_confidentiality_widget_spec.js
 spec/frontend/vue_alerts_spec.js
 spec/frontend/vue_popovers_spec.js

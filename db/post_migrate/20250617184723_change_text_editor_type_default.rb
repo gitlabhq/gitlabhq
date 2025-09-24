@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-# See https://docs.gitlab.com/ee/development/migration_style_guide.html
-# for more information on how to write migrations for GitLab.
-
 # This migration changes the default text editor settings to use the rich text editor by default.
 # This is part of the effort to make the rich text editor the default experience for all users.
 # The change:

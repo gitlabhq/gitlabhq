@@ -239,7 +239,7 @@ describe('Release edit component', () => {
     const findNameValidationMessage = () => wrapper.find('.link-title-field .invalid-feedback');
 
     it('does not show any validation messages if there are no validation errors', () => {
-      factory();
+      factory({ mountFn: shallowMount });
 
       expect(findUrlValidationMessage().exists()).toBe(false);
       expect(findNameValidationMessage().exists()).toBe(false);

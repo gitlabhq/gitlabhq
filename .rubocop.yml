@@ -682,6 +682,10 @@ Gitlab/PolicyRuleBoolean:
     - 'app/policies/**/*'
     - 'ee/app/policies/**/*'
 
+Gitlab/PolicyConditionScope:
+  Include:
+    - '{,ee/,jh/}app/policies/**/*.rb'
+
 Cop/InjectEnterpriseEditionModule:
   Enabled: true
   Exclude:

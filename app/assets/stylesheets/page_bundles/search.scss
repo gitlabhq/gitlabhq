@@ -60,6 +60,10 @@ $black-divider: #666;
   }
 }
 
+.results .filters a[aria-current="page"] {
+  background-color: var(--gl-background-color-strong);
+}
+
 .language-filter-checkbox {
   .custom-control-label {
     flex-grow: 1;
@@ -380,4 +384,12 @@ input[type='search'] {
 
 .description.term p:last-child {
   @apply gl-m-0;
+}
+
+
+/* Hide sidebar toggle in new "Project Studio" layout where this page has no sidebar */
+.application-chrome {
+  .super-sidebar-toggle {
+    display: none;
+  }
 }

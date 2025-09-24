@@ -164,6 +164,7 @@ export default {
       return !this.discussionResolved ? this.discussion.resolve_with_issue_path : '';
     },
     canShowReplyActions() {
+      if (this.isLoggedIn && !this.userCanReply) return false;
       if (this.shouldRenderDiffs) {
         if (this.discussion.diff_file?.diff_refs) {
           return true;

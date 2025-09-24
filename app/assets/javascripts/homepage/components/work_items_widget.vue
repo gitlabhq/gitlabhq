@@ -3,6 +3,12 @@ import { GlIcon, GlLink } from '@gitlab/ui';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { InternalEvents } from '~/tracking';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import {
+  createUserCountsManager,
+  userCounts,
+  useCachedUserCounts,
+} from '~/super_sidebar/user_counts_manager';
+import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import workItemsWidgetMetadataQuery from '../graphql/queries/work_items_widget_metadata.query.graphql';
 import {
   EVENT_USER_FOLLOWS_LINK_ON_HOMEPAGE,
@@ -50,10 +56,6 @@ export default {
     },
   },
   computed: {
-    assignedCount() {
-      const count = this.metadata?.assigned?.count;
-      return count != null ? this.formatCount(count) : '-';
-    },
     assignedLastUpdatedAt() {
       return this.metadata?.assigned?.nodes?.[0]?.updatedAt ?? null;
     },
@@ -64,6 +66,18 @@ export default {
     authoredLastUpdatedAt() {
       return this.metadata?.authored?.nodes?.[0]?.updatedAt ?? null;
     },
+    assignedCount() {
+      const count = userCounts.assigned_issues;
+      return count != null ? this.formatCount(count) : '-';
+    },
+  },
+  created() {
+    createUserCountsManager();
+
+    if (userCounts.assigned_issues === null) {
+      useCachedUserCounts();
+      fetchUserCounts();
+    }
   },
   mounted() {
     document.addEventListener('visibilitychange', this.handleVisibilityChanged);

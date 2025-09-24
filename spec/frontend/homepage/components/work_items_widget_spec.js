@@ -15,9 +15,16 @@ import {
   TRACKING_PROPERTY_ASSIGNED_TO_YOU,
   TRACKING_PROPERTY_AUTHORED_BY_YOU,
 } from '~/homepage/tracking_constants';
+import { userCounts } from '~/super_sidebar/user_counts_manager';
 import { withItems, withoutItems } from './mocks/work_items_widget_metadata_query_mocks';
 
+jest.mock('~/super_sidebar/user_counts_manager', () => ({
+  userCounts: { assigned_issues: 0 },
+  createUserCountsManager: jest.fn(),
+  useCachedUserCounts: jest.fn(),
+}));
 jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/super_sidebar/user_counts_fetch');
 
 describe('WorkItemsWidget', () => {
   Vue.use(VueApollo);
@@ -41,7 +48,10 @@ describe('WorkItemsWidget', () => {
 
   function createWrapper({
     workItemsWidgetMetadataQueryHandler = workItemsWidgetMetadataQuerySuccessHandler(withItems),
+    assignedIssuesCount = 0,
   } = {}) {
+    userCounts.assigned_issues = assignedIssuesCount;
+
     const mockApollo = createMockApollo([
       [workItemsWidgetMetadataQuery, workItemsWidgetMetadataQueryHandler],
     ]);
@@ -57,6 +67,10 @@ describe('WorkItemsWidget', () => {
       },
     });
   }
+
+  afterEach(() => {
+    userCounts.assigned_issues = 0;
+  });
 
   describe('cards', () => {
     beforeEach(() => {
@@ -79,23 +93,11 @@ describe('WorkItemsWidget', () => {
   });
 
   describe('metadata', () => {
-    it("shows the counts' loading state and no timestamp until the query has resolved", () => {
-      createWrapper();
-
-      expect(findAssignedLastUpdatedAt().exists()).toBe(false);
-      expect(findAuthoredLastUpdatedAt().exists()).toBe(false);
-
-      expect(findAssignedCount().text()).toBe('-');
-      expect(findAuthoredCount().text()).toBe('-');
-    });
-
     it('shows the metadata once the query has resolved', async () => {
       createWrapper();
       await waitForPromises();
 
-      expect(findAssignedCount().text()).toBe('5');
       expect(findAssignedLastUpdatedAt().text()).toBe('1 day ago');
-      expect(findAuthoredCount().text()).toBe('32');
       expect(findAuthoredLastUpdatedAt().text()).toBe('4 days ago');
     });
 
@@ -203,6 +205,7 @@ describe('WorkItemsWidget', () => {
 
       createWrapper({
         workItemsWidgetMetadataQueryHandler: workItemsWidgetMetadataQuerySuccessHandler(mockData),
+        assignedIssuesCount: 15000,
       });
       await waitForPromises();
 

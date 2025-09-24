@@ -1,0 +1,5 @@
+---
+Gitlab/PolicyConditionScope:
+  Details: grace period
+  Exclude:
+    - 'ee/app/policies/ee/packages/policies/dependency_proxy/group_policy.rb'
