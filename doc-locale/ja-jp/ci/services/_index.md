@@ -8,13 +8,13 @@ title: サービス
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 提供: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
 CI/CDを設定する際、イメージを指定します。このイメージは、ジョブの実行場所となるコンテナの作成に使用されます。このイメージを指定するには、`image`キーワードを使用します。
 
-`services`キーワードを使用して、追加のイメージを指定できます。この追加イメージは、別のコンテナを作成するために使用されますが、最初のコンテナにも使用できます。2つのコンテナは相互にアクセスでき、ジョブの実行時に通信できます。
+`services`キーワードを使用して、追加のイメージを指定できます。この追加のイメージは、別のコンテナを作成するために使用されますが、最初のコンテナでも使用できます。2つのコンテナは相互にアクセスでき、ジョブの実行時に通信できます。
 
 サービスイメージは任意のアプリケーションを実行できますが、最も一般的なユースケースは、データベースコンテナの実行です。次に例を示します。
 
@@ -23,7 +23,7 @@ CI/CDを設定する際、イメージを指定します。このイメージは
 - [Redis](redis.md)
 - JSON APIを提供するマイクロサービスの一例としての[GitLab](gitlab.md)
 
-ストレージにデータベースを使用するコンテンツ管理システムを開発しているとします。アプリケーションのすべての機能をテストするには、データベースが必要です。サービスイメージとしてデータベースコンテナを実行することは、このシナリオでは良いユースケースです。
+ストレージにデータベースを使用するコンテンツ管理システムを開発しているとします。アプリケーションのすべての機能をテストするには、データベースが必要です。このようなシナリオでは、サービスイメージとしてデータベースコンテナを実行するのが推奨されるユースケースです。
 
 プロジェクトをビルドするたびに`mysql`をインストールする代わりに、既存のイメージを使用して追加のコンテナとして実行します。
 
@@ -33,44 +33,44 @@ CI/CDを設定する際、イメージを指定します。このイメージは
 
 サービスは、CIコンテナ自体と同じDNSサーバー、検索ドメイン、追加ホストを継承します。
 
-## サービスがジョブにリンクされる仕組み
+## サービスがジョブにリンクされる仕組み {#how-services-are-linked-to-the-job}
 
-コンテナのリンクの仕組みをより深く理解するには、[コンテナ間をリンクさせる](https://docs.docker.com/network/links/)をお読みください。
+コンテナのリンクの仕組みをより深く理解するには、[コンテナのリンクに関するページ](https://docs.docker.com/network/links/)をお読みください。
 
-アプリケーションに`mysql`をサービスとして追加すると、イメージはジョブコンテナにリンクされたコンテナの作成に使用されます。
+アプリケーションに`mysql`をサービスとして追加すると、そのイメージを基にジョブコンテナにリンクされたコンテナが作成されます。
 
-MySQLのサービスコンテナには、ホスト名`mysql`でアクセスできます。データベースサービスにアクセスするには、ソケットや`localhost`ではなく、`mysql`という名前のホストに接続します。詳細については、[サービスにアクセスする](#accessing-the-services)をお読みください。
+MySQLのサービスコンテナには、ホスト名`mysql`でアクセスできます。データベースサービスにアクセスするには、ソケットや`localhost`ではなく、`mysql`というホストに接続します。詳細については、[サービスにアクセスする](#accessing-the-services)を参照してください。
 
-## サービスのヘルスチェックの仕組み
+## サービスのヘルスチェックの仕組み {#how-the-health-check-of-services-works}
 
-サービスは、**ネットワーク経由でアクセスできる**追加機能を提供するようにデザインされています。MySQLやRedisのようなデータベースや、Docker-in-Docker（DinD）を使用できる`docker:dind`などです。CI/CDジョブの続行に必要なものであれば実質的に何でもよく、ネットワーク経由でアクセスします。
+サービスは、**ネットワーク経由でアクセスできる**追加機能を提供するようにデザインされています。MySQLやRedisのようなデータベース、またはDocker-in-Docker（DinD）を使用できるようにする`docker:dind`などがあります。実質的に、CI/CDジョブを進めるために必要で、ネットワーク経由でアクセスできるものであれば、なんでもサービスとして利用できます。
 
-これが確実に機能するように、runnerは以下を行います。
+これが確実に機能するように、Runnerは以下を行います。
 
 1. デフォルトでコンテナから公開されているポートをチェックします。
 1. これらのポートにアクセスできるようになるまで待機する特別なコンテナを起動します。
 
-チェックの第2段階が失敗した場合、警告`*** WARNING: Service XYZ probably didn't start properly`が表示されます。この問題は、次の場合に発生する可能性があります。
+チェックの第2段階が失敗した場合、次の警告が表示されます: `*** WARNING: Service XYZ probably didn't start properly`。この問題は、次の理由で発生する可能性があります。
 
-- サービスに開いているポートがない。
+- サービスで公開されているポートがない。
 - サービスがタイムアウト前に正常に開始されず、ポートが応答していない。
 
-ほとんどの場合、ジョブに影響しますが、その警告が表示されてもジョブが成功する場合があります。例は以下のとおりです。
+ほとんどの場合、この警告はジョブに影響しますが、警告が表示されてもジョブが成功する場合があります。次に例を示します。
 
-- 警告が表示された直後にサービスが開始され、ジョブがリンクされたサービスを最初から使用していない場合。その場合、ジョブがサービスにアクセスする必要があったときには、すでに接続を待機していた可能性があります。
-- サービスコンテナがネットワーキングサービスを何も提供しておらず、ジョブのディレクトリで何かを行っている場合（すべてのサービスには、ジョブディレクトリが`/builds`の下にボリュームとしてマウントされています）。その場合、サービスはジョブを実行し、ジョブはそれに接続しようとしないため、失敗しません。
+- 警告が出た直後にサービスが開始され、リンクされたサービスをジョブが最初から使用していない場合。この場合、ジョブがサービスにアクセスする必要が生じた時点では、サービスはすでに開始され接続を待機していた可能性があります。
+- サービスコンテナがネットワーキングサービスを何も提供しておらず、ジョブのディレクトリで何らかの処理を行っている場合（すべてのサービスには、`/builds`の下にジョブディレクトリがボリュームとしてマウントされています）。その場合、サービスが処理を担い、ジョブはサービスに接続しようとしないため、失敗しません。
 
-サービスが正常に開始された場合、[`before_script`](../yaml/_index.md#before_script)が実行される前に開始されます。これは、サービスにクエリを実行する`before_script`を記述できることを意味します。
+サービスが正常に開始された場合、[`before_script`](../yaml/_index.md#before_script)が実行される前に開始されます。これは、サービスに対してクエリを実行する`before_script`を記述できることを意味します。
 
-サービスは、ジョブが失敗した場合でも、ジョブの終了時に停止します。
+サービスはジョブの終了時に停止します。これは、ジョブが失敗した場合でも同様です。
 
-## サービスイメージが提供するソフトウェアを使用する
+## サービスイメージによって提供されるソフトウェアを使用する {#using-software-provided-by-a-service-image}
 
-`service`を指定すると、**ネットワーク経由でアクセス可能な**サービスが提供されます。データベースは、そのようなサービスの最も簡単な例です。
+`service`を指定すると、**ネットワーク経由でアクセス可能な**サービスが提供されます。データベースは、そのようなサービスの最も単純な例です。
 
-サービス機能は、定義された`services`イメージのソフトウェアをジョブのコンテナに追加しません。
+サービス機能は、定義された`services`イメージからジョブのコンテナにソフトウェアを追加するわけではありません。
 
-たとえば、ジョブで次の`services`が定義されている場合、`php`コマンド、`node`コマンド、`go`コマンドはスクリプトでは**使用できず**、ジョブは失敗します。
+たとえば、ジョブで次のように`services`を定義しても、`php`、`node`、`go`のコマンドはスクリプト内で**使用できず**、ジョブは失敗します。
 
 ```yaml
 job:
@@ -85,12 +85,12 @@ job:
     - go version
 ```
 
-スクリプトで`php`、`node`、`go`を使用できるようにする必要がある場合は、次のいずれかを行う必要があります。
+スクリプトで`php`、`node`、`go`を使用可能にする必要がある場合は、次のいずれかを行う必要があります。
 
-- 必要なツールがすべて含まれている既存のDockerイメージを選択します。
-- 必要なツールがすべて含まれた独自のDockerメージを作成し、それをジョブで使用します。
+- 必要なツールをすべて含む既存のDockerイメージを選択する。
+- 必要なツールをすべて含む独自のDockerイメージを作成し、それをジョブで使用する。
 
-## `.gitlab-ci.yml`ファイル内で`services`を定義する
+## `.gitlab-ci.yml`ファイル内で`services`を定義する {#define-services-in-the-gitlab-ciyml-file}
 
 ジョブごとに異なるイメージとサービスを定義することもできます。
 
@@ -114,7 +114,7 @@ test:2.7:
     - bundle exec rake spec
 ```
 
-または、`image`および`services`の[拡張設定オプション](../docker/using_docker_images.md#extended-docker-configuration-options)をいくつか渡すこともできます。
+または、`image`および`services`の[拡張設定オプション](../docker/using_docker_images.md#extended-docker-configuration-options)を渡すこともできます。
 
 ```yaml
 default:
@@ -134,9 +134,9 @@ test:
     - bundle exec rake spec
 ```
 
-## サービスにアクセスする
+## サービスにアクセスする {#accessing-the-services}
 
-アプリケーションとのAPIインテグレーションをテストするために、Wordpressインスタンスが必要だとします。その場合、たとえば、`.gitlab-ci.yml`ファイル内で[`tutum/wordpress`](https://hub.docker.com/r/tutum/wordpress/)イメージを使用できます。
+アプリケーションとのAPIインテグレーションをテストするためにWordpressインスタンスが必要な場合は、`.gitlab-ci.yml`ファイルで[`tutum/wordpress`](https://hub.docker.com/r/tutum/wordpress/)イメージを使用できます。
 
 ```yaml
 services:
@@ -154,15 +154,15 @@ services:
 
 - コロン（`:`）より後の部分はすべて削除されます。
 - スラッシュ（`/`）はダブルアンダースコア（`__`）に置き換えられ、プライマリエイリアスが作成されます。
-- スラッシュ（`/`）はシングルダッシュ（`-`）に置き換えられ、セカンダリエイリアスが作成されます（GitLab Runner v1.1.0以降が必要です）。
+- スラッシュ（`/`）はシングルダッシュ（`-`）に置き換えられ、セカンダリエイリアスが作成されます。
 
-デフォルトの動作を上書きするには、[1つ以上のサービスエイリアスを指定](#available-settings-for-services)します。
+デフォルトの動作をオーバーライドするには、[1つ以上のサービスエイリアスを指定](#available-settings-for-services)します。
 
-### サービスに接続する
+### サービスを接続する {#connecting-services}
 
-外部APIが独自のデータベースと通信する必要があるE2Eテストなど、複雑なジョブで相互依存サービスを使用できます。
+外部APIが独自のデータベースと通信する必要があるE2Eテストなど、複雑なジョブでは相互依存するサービスを使用できます。
 
-たとえば、APIを使用するフロントエンドアプリケーションのE2Eテストで、APIにデータベースが必要な場合、次のようになります。
+たとえば、APIを使用するフロントエンドアプリケーションのエンドツーエンドのテストで、そのAPIにデータベースが必要な場合、次のように設定します。
 
 ```yaml
 end-to-end-tests:
@@ -185,9 +185,9 @@ end-to-end-tests:
 
 このソリューションを機能させるには、[ジョブごとに新しいネットワークを作成するネットワーキングモード](https://docs.gitlab.com/runner/executors/docker.html#create-a-network-for-each-job)を使用する必要があります。
 
-## CI/CD変数をサービスに渡す
+## CI/CD変数をサービスに渡す {#passing-cicd-variables-to-services}
 
-また、カスタムCI/CD[変数](../variables/_index.md)を渡して、Dockerの`images`と`services`を`.gitlab-ci.yml`ファイル内で直接微調整することもできます。詳細については、[`.gitlab-ci.yml`で定義された変数](../variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)を参照してください。
+カスタムCI/CD[変数](../variables/_index.md)を渡して、Dockerの`images`と`services`を`.gitlab-ci.yml`ファイル内で直接微調整することもできます。詳細については、[`.gitlab-ci.yml`で定義された変数](../variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)を参照してください。
 
 ```yaml
 # The following variables are automatically passed down to the Postgres container
@@ -218,35 +218,18 @@ test:
     - bundle exec rake spec
 ```
 
-## `services`で使用可能な設定
+## `services`で使用可能な設定 {#available-settings-for-services}
 
-{{< history >}}
+| 設定       | 必須                             | GitLabバージョン | 説明 |
+| ------------- | ------------------------------------ | -------------- | ----------- |
+| `name`        | はい（他のオプションと組み合わせて使用​​する場合） | 9.4            | 使用するイメージのフルネーム。イメージのフルネームにレジストリホスト名が含まれる場合は、`alias`オプションを使用して、短いサービスアクセス名を定義します。詳細については、[サービスにアクセスする](#accessing-the-services)を参照してください。 |
+| `entrypoint`  | いいえ                                   | 9.4            | コンテナのエントリポイントとして実行するコマンドまたはスクリプト。コンテナの作成中に、Dockerの`--entrypoint`オプションに変換されます。構文は[`Dockerfile`の`ENTRYPOINT`](https://docs.docker.com/reference/dockerfile/#entrypoint)ディレクティブに似ており、各Shellトークンは配列内の個別の文字列となります。 |
+| `command`     | いいえ                                   | 9.4            | コンテナのコマンドとして使用されるコマンドまたはスクリプト。イメージ名の後に続く引数として解釈され、Dockerに渡されます。構文は[`Dockerfile`の`CMD`](https://docs.docker.com/reference/dockerfile/#cmd)ディレクティブに似ており、各Shellトークンは配列内の個別の文字列となります。 |
+| `alias`       | いいえ                                   | 9.4            | ジョブのコンテナからサービスにアクセスするための追加エイリアス。複数のエイリアスは、スペースまたはカンマで区切って指定できます。詳細については、[サービスにアクセスする](#accessing-the-services)を参照してください。Kubernetes executorのコンテナ名としてエイリアスを使用する機能は、GitLab Runner 17.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/421131)されました。詳細については、[Kubernetes executorを使用してサービスコンテナ名を設定する](#using-aliases-as-service-container-names-for-the-kubernetes-executor)を参照してください。 |
+| `variables`   | いいえ                                   | 14.5           | サービスのみに渡される追加の環境変数。構文は[ジョブ変数](../variables/_index.md)と同じです。サービス変数はそれ自体を参照できません。 |
+| `pull_policy` | いいえ                                   | 15.1          | ジョブの実行時にRunnerがDockerイメージをどのようにプルするかを指定します。有効な値は`always`、`if-not-present`、`never`です。デフォルトは`always`です。詳細については、[services:pull_policy](../yaml/_index.md#servicespull_policy)を参照してください。 |
 
-- GitLabおよびGitLab Runner 9.4で導入されました。
-
-{{< /history >}}
-
-| 設定                           | 必須                             | GitLabバージョン | 説明                                                                                                                                                                                                                                                                                                                         |
-|-----------------------------------|--------------------------------------|----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `name`                            | はい（他のオプションと組み合わせて使用​​する場合） | 9.4            | 使用するイメージのフルネーム。イメージのフルネームにレジストリホスト名が含まれる場合は、`alias`オプションを使用して、短いサービスアクセス名を定義します。詳細については、[サービスにアクセスする](#accessing-the-services)を参照してください。                                                                                                    |
-| `entrypoint`                      | いいえ                                   | 9.4            | コンテナのエントリポイントとして実行するコマンドまたはスクリプト。コンテナの作成中に、Dockerの`--entrypoint`オプションに変換されます。構文は、[`Dockerfile`の`ENTRYPOINT`](https://docs.docker.com/reference/dockerfile/#entrypoint)ディレクティブに似ており、各Shellトークンは配列内の個別の文字列です。 |
-| `command`                         | いいえ                                   | 9.4            | コンテナのコマンドとして使用されるコマンドまたはスクリプト。イメージ名の後にDockerに渡される引数に変換されます。構文は、[`Dockerfile`の`CMD`](https://docs.docker.com/reference/dockerfile/#cmd)ディレクティブに似ており、各Shellトークンは配列内の個別の文字列です。                     |
-| `alias` <sup>1</sup> <sup>3</sup> | いいえ                                   | 9.4            | ジョブのコンテナからサービスにアクセスするための追加のエイリアス。複数のエイリアスは、スペースまたはカンマで区切ることができます。詳細については、[サービスにアクセスする](#accessing-the-services)を参照してください。                                                                                                                              |
-| `variables` <sup>2</sup>          | いいえ                                   | 14.5           | サービスのみに渡される追加の環境変数。構文は[ジョブ変数](../variables/_index.md)と同じです。サービス変数はそれ自体を参照できません。                                                                                                                                      |
-
-**脚注:**
-
-1. Kubernetes executorのエイリアスサポートは、GitLab Runner 12.8で[導入](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2229)され、Kubernetesバージョン1.7以降でのみ使用できます。
-1. DockerおよびKubernetes executorのサービス変数サポートは、GitLab Runner 14.8で[導入](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3158)されました。
-1. Kubernetes executorのコンテナ名としてエイリアスを使用することは、GitLab Runner 17.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/421131)されました。詳細については、[Kubernetes executorを使用してサービスコンテナ名を設定する](#using-aliases-as-service-container-names-for-the-kubernetes-executor)を参照してください。
-
-## 同じイメージから複数のサービスを開始する
-
-{{< history >}}
-
-- GitLabおよびGitLab Runner 9.4で導入されました。[拡張設定オプション](../docker/using_docker_images.md#extended-docker-configuration-options)の詳細をお読みください。
-
-{{< /history >}}
+## 同じイメージから複数のサービスを開始する {#starting-multiple-services-from-the-same-image}
 
 新しい拡張Docker設定オプションが導入される前は、次の設定は正しく動作しませんでした。
 
@@ -256,9 +239,9 @@ services:
   - mysql:latest
 ```
 
-Runnerは、それぞれが`mysql:latest`イメージを使用する2つのコンテナを起動します。ただし、[デフォルトのホスト名命名](#accessing-the-services)に基づいて、2つのコンテナは`mysql`エイリアスでジョブのコンテナに追加されます。この場合、サービスの1つにアクセスできなくなります。
+Runnerは2つのコンテナを起動し、それぞれが`mysql:latest`イメージを使用します。ただし、[ホスト名のデフォルトの命名規則](#accessing-the-services)に基づき、両方のコンテナが`mysql`エイリアスでジョブのコンテナに追加されます。そのため、サービスの1つにアクセスできなくなります。
 
-新しい拡張Docker構成オプションの導入後は、上記の例は次のようになります。
+新しい拡張Docker設定オプションの導入後は、前述の例は次のようになります。
 
 ```yaml
 services:
@@ -268,39 +251,33 @@ services:
     alias: mysql-2
 ```
 
-Runnerは引き続き`mysql:latest`イメージを使用して2つのコンテナを起動しますが、それぞれのコンテナに`.gitlab-ci.yml`ファイルで設定されたエイリアスでアクセスできるようになりました。
+Runnerは引き続き`mysql:latest`イメージを使用して2つのコンテナを起動しますが、それぞれのコンテナに`.gitlab-ci.yml`ファイルで設定されたエイリアスでアクセスできるようになります。
 
-## サービスにコマンドを設定する
+## サービスにコマンドを設定する {#setting-a-command-for-the-service}
 
-{{< history >}}
-
-- GitLabおよびGitLab Runner 9.4で導入されました。[拡張設定オプション](../docker/using_docker_images.md#extended-docker-configuration-options)の詳細をお読みください。
-
-{{< /history >}}
-
-SQLデータベースを含む`super/sql:latest`イメージがあり、それをジョブのサービスとして使用したいと仮定します。また、このイメージはコンテナの起動中にデータベースプロセスを開始しないとします。ユーザーは、データベースを開始するためのコマンドとして`/usr/bin/super-sql run`を手動で使用する必要があります。
+SQLデータベースを含む`super/sql:latest`イメージがあり、それをジョブのサービスとして使用したいと仮定します。また、このイメージはコンテナの起動中にデータベースプロセスを開始しないとします。この場合ユーザーは、データベースを開始するために`/usr/bin/super-sql run`コマンドを手動で実行する必要があります。
 
 新しい拡張Docker設定オプションの導入前は、次のことを行う必要がありました。
 
 - `super/sql:latest`イメージに基づいて独自のイメージを作成する。
 - デフォルトコマンドを追加する。
-- ジョブの設定でイメージを使用する。
+- そのイメージをジョブの設定で使用する。
 
-  - `my-super-sql:latest`イメージのDockerfile:
+  - `my-super-sql:latest`イメージのDockerfileは次のようになります。
 
     ```dockerfile
     FROM super/sql:latest
     CMD ["/usr/bin/super-sql", "run"]
     ```
 
-  - `.gitlab-ci.yml`内のジョブでは次のようになります。
+  - `.gitlab-ci.yml`内のジョブで次のように指定します。
 
     ```yaml
     services:
       - my-super-sql:latest
     ```
 
-新しい拡張Docker構成オプションの導入後は、代わりに`.gitlab-ci.yml`ファイル内で`command`を設定できます。
+新しい拡張Docker設定オプションの導入後は、代わりに`.gitlab-ci.yml`ファイル内で`command`を設定できます。
 
 ```yaml
 services:
@@ -308,9 +285,9 @@ services:
     command: ["/usr/bin/super-sql", "run"]
 ```
 
-`command`の構文は、[Dockerfile`CMD`](https://docs.docker.com/reference/dockerfile/#cmd)と似ています。
+`command`の構文は、[Dockerfileの`CMD`](https://docs.docker.com/reference/dockerfile/#cmd)と同様です。
 
-## Kubernetes executorのサービスコンテナ名としてエイリアスを使用する
+## Kubernetes executorのサービスコンテナ名としてエイリアスを使用する {#using-aliases-as-service-container-names-for-the-kubernetes-executor}
 
 {{< history >}}
 
@@ -320,16 +297,16 @@ services:
 
 Kubernetes executorのサービスコンテナ名としてサービスエイリアスを使用できます。GitLab Runnerは、次の条件に基づいてコンテナに名前を付けます。
 
-- サービスに複数のエイリアスが設定されている場合、サービスコンテナには、次の条件を満たす最初のエイリアスの名前が付けられます。
+- サービスに複数のエイリアスが設定されている場合、次の条件を満たす最初のエイリアスがサービスコンテナ名として使用されます。
   - 別のサービスコンテナですでに使用されていない。
-  - [ラベル名のKubernetes制約](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-label-names)に従っている。
-- エイリアスを使用してサービスコンテナに名前を付けることができない場合、GitLab Runnerは`svc-i`パターンにフォールバックします。
+  - [Kubernetesのラベル名の制約](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-label-names)に従っている。
+- サービスコンテナ名にエイリアスを使用できない場合、GitLab Runnerは`svc-i`パターンにフォールバックします。
 
-次の例は、Kubernetes executorのサービスコンテナに名前を付けるためにエイリアスがどのように使用されるかを示しています。
+次の例は、Kubernetes executorにおいてサービスコンテナの名前付けにエイリアスがどのように使用されるかを示しています。
 
-### サービスにつき1つのエイリアス
+### サービスにつき1つのエイリアス {#one-alias-per-services}
 
-次の`.gitlab-ci.yml`ファイル内では、以下のようになります。
+次の`.gitlab-ci.yml`ファイルの場合:
 
 ```yaml
 job:
@@ -345,10 +322,10 @@ job:
 
 システムは、標準の`build`コンテナと`helper`コンテナに加えて、`alpine`および`mysql`という名前のコンテナを持つジョブポッドを作成します。これらのエイリアスが使用される理由は次のとおりです。
 
-- 別のサービスコンテナで使用されていない。
-- [ラベル名のKubernetes制約](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-label-names)に従っている。
+- 他のサービスコンテナで使用されていない。
+- [Kubernetesのラベル名の制約](https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-label-names)に従っている。
 
-ただし、次の`.gitlab-ci.yml`では、以下のようになります。
+一方、次の`.gitlab-ci.yml`ファイルの場合:
 
 ```yaml
 job:
@@ -362,11 +339,11 @@ job:
       alias: mysql
 ```
 
-システムは、`build`コンテナと`helper`コンテナに加えて、`mysql`および`svc-0`という名前のコンテナを2つ作成します。`mysql`コンテナは`mysql:lts`イメージに対応し、`svc-0`コンテナは`mysql:latest`イメージに対応します。
+システムは、`build`コンテナと`helper`コンテナに加えて、`mysql`および`svc-0`という名前の2つのコンテナを作成します。`mysql`コンテナは`mysql:lts`イメージに対応し、`svc-0`コンテナは`mysql:latest`イメージに対応します。
 
-### サービスにつき複数のエイリアス
+### サービスにつき複数のエイリアス {#multiple-aliases-per-services}
 
-次の`.gitlab-ci.yml`ファイル内では、以下のようになります。
+次の`.gitlab-ci.yml`ファイルの場合:
 
 ```yaml
 job:
@@ -382,12 +359,12 @@ job:
 
 システムは、`build`コンテナと`helper`コンテナに加えて、4つのコンテナを作成します。
 
-- `alpine:latest`イメージを持つコンテナに対応する`alpine`。
-- `alpine:edge`イメージを持つコンテナに対応する`alpine-edge`（`alpine`エイリアスは、前のコンテナですでに使用されています）。
+- `alpine`は、`alpine:latest`イメージに基づくコンテナに対応。
+- `alpine-edge`は、`alpine:edge`イメージに基づくコンテナに対応（`alpine`エイリアスは前のコンテナで使用済み）。
 
 この例では、エイリアス`alpine-latest`は使用されていません。
 
-ただし、次の`.gitlab-ci.yml`では、以下のようになります。
+一方、次の`.gitlab-ci.yml`ファイルの場合:
 
 ```yaml
 job:
@@ -405,27 +382,27 @@ job:
 
 `build`コンテナと`helper`コンテナに加えて、さらに6つのコンテナが作成されます。
 
-- `alpine`は、`alpine:latest`イメージを持つコンテナを参照します。
-- `alpine-edge`は、`alpine:edge`イメージを持つコンテナを参照します（`alpine`エイリアスは、前のコンテナですでに使用されています）。
-- `svc-0`は、`alpine:3.21`イメージを持つコンテナを参照します（`alpine`および`alpine-edge`エイリアスは、前のコンテナですでに使用されています）。
+- `alpine`は、`alpine:latest`イメージに基づくコンテナを指す。
+- `alpine-edge`は、`alpine:edge`イメージに基づくコンテナを指す（`alpine`エイリアスは前のコンテナで使用済み）。
+- `svc-0`は、`alpine:3.21`イメージに基づくコンテナを指す（`alpine`および`alpine-edge`エイリアスは前のコンテナで使用済み）。
 
-> - `svc-i`パターンの`i`は、提供されたリスト内のサービスの場所ではなく、使用可能なエイリアスが見つからない場合のサービスの場所を表しています。
->
-> - 無効なエイリアスが提供された場合（Kubernetes制約を満たしていない場合）、ジョブは次のエラーで失敗します（エイリアス`alpine_edge`を使用した例）。この障害は、エイリアスがジョブポッドにローカルDNSエントリを作成するためにも使用されるために発生します。
->
->   ```plaintext
->   ERROR: Job failed (system failure): prepare environment: setting up build pod: provided host alias
->   alpine_edge for service alpine:edge is invalid DNS. a lowercase RFC 1123 subdomain must consist of lower
->   case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g.
->   'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*').
->   Check https://docs.gitlab.com/runner/shells/index.html#shell-profile-loading for more information.
->   ```
+  - `svc-i`パターンの`i`は、指定されたリストにおけるサービスの位置ではなく、使用可能なエイリアスが見つからなかった場合にサービスに付与される番号を表しています。
 
-## `docker run`（Docker-in-Docker）と並行して`services`を使用する
+  - 無効なエイリアスが指定された場合（Kubernetesの制約を満たさない場合）、ジョブは次のエラーで失敗します（`alpine_edge`エイリアスの例）。この失敗は、ジョブポッドのローカルDNSエントリの作成時にもこのエイリアスが使用されるために発生します。
 
-`docker run`で起動されたコンテナは、GitLabが提供するサービスに接続することもできます。
+    ```plaintext
+    ERROR: Job failed (system failure): prepare environment: setting up build pod: provided host alias
+    alpine_edge for service alpine:edge is invalid DNS. a lowercase RFC 1123 subdomain must consist of lower
+    case alphanumeric characters, '-' or '.', and must start and end with an alphanumeric character (e.g.
+    'example.com', regex used for validation is '[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*').
+    Check https://docs.gitlab.com/runner/shells/index.html#shell-profile-loading for more information.
+    ```
 
-サービスの起動にコストや時間がかかる場合は、異なるクライアント環境からテストを実行でき、さらにテスト済みのサービスを1回だけ起動できます。
+## `docker run`（Docker-in-Docker）と並行して`services`を使用する {#using-services-with-docker-run-docker-in-docker-side-by-side}
+
+`docker run`で起動したコンテナも、GitLabが提供するサービスに接続できます。
+
+サービスの起動にコストや時間がかかる場合、テスト対象のサービスを1回だけ起動し、異なるクライアント環境からテストを実行できます。
 
 ```yaml
 access-service:
@@ -444,26 +421,26 @@ access-service:
       curlimages/curl:7.74.0 curl "http://tutum-wordpress"
 ```
 
-このソリューションを動作させるには、次のことを行う必要があります。
+このソリューションを動作させるには、次の条件を満たす必要があります。
 
-- [ジョブごとに新しいネットワークを作成するネットワーキングモード](https://docs.gitlab.com/runner/executors/docker.html#create-a-network-for-each-job)を使用します。
-- [DockerソケットバインディングでDocker executorを使用しないでください](../docker/using_docker_build.md#use-the-docker-executor-with-docker-socket-binding)。必要な場合は、上記の例で、`host`の代わりに、このジョブ用に作成された動的ネットワーク名を使用します。
+- [ジョブごとに新しいネットワークを作成するネットワーキングモード](https://docs.gitlab.com/runner/executors/docker.html#create-a-network-for-each-job)を使用すること。
+- [Dockerソケットバインディングを有効にしたDocker executorを使用しないこと](../docker/using_docker_build.md#use-docker-socket-binding)。使用する必要がある場合は、前述の例で、`host`の代わりにこのジョブ用に作成された動的ネットワーク名を使用します。
 
-## Dockerインテグレーションの仕組み
+## Dockerインテグレーションの仕組み {#how-docker-integration-works}
 
-以下は、ジョブの実行中にDockerが実行する手順の概要です。
+以下は、ジョブの実行中にDockerが実行するステップの概要です。
 
 1. サービスコンテナを作成します: `mysql`、`postgresql`、`mongodb`、`redis`。
-1. ビルドイメージの`config.toml`および`Dockerfile`で定義されているすべてのボリュームを保存するキャッシュコンテナを作成します（上記の例では`ruby:2.6`）。
-1. ビルドコンテナを作成し、サービスコンテナをビルドコンテナにリンクします。
+1. `config.toml`や、ビルドイメージ（前述の例では`ruby:2.6`）の`Dockerfile`で定義されたすべてのボリュームを格納するためのキャッシュコンテナを作成します。
+1. ビルドコンテナを作成し、すべてのサービスコンテナをビルドコンテナにリンクします。
 1. ビルドコンテナを起動し、ジョブスクリプトをコンテナに送信します。
 1. ジョブスクリプトを実行します。
 1. `/builds/group-name/project-name/`にコードをチェックアウトします。
 1. `.gitlab-ci.yml`で定義されたステップを実行します。
-1. ビルドスクリプトの終了状態を確認します。
+1. ビルドスクリプトの終了ステータスを確認します。
 1. ビルドコンテナと作成されたすべてのサービスコンテナを削除します。
 
-## サービスコンテナログをキャプチャする
+## サービスコンテナログをキャプチャする {#capturing-service-container-logs}
 
 {{< history >}}
 
@@ -471,11 +448,11 @@ access-service:
 
 {{< /history >}}
 
-サービスコンテナで実行されているアプリケーションによって生成されたログをキャプチャして、後で調査およびデバッグできます。サービスコンテナが正常に起動しても、予期しない動作が原因でジョブが失敗した場合は、サービスコンテナのログを表示します。ログで、コンテナ内のサービスの設定がされていないか、間違っていることがわかる場合があります。
+サービスコンテナで実行中のアプリケーションが生成したログをキャプチャし、後で調査やデバッグに利用できます。サービスコンテナが正常に起動しても、予期しない動作が原因でジョブが失敗した場合は、サービスコンテナのログを確認します。ログに、コンテナ内のサービス設定の不足や誤りが示される場合があります。
 
-`CI_DEBUG_SERVICES`は、サービスコンテナがアクティブにデバッグされている場合にのみ有効にしてください。サービスコンテナログをキャプチャすると、ストレージとパフォーマンスの両方に影響があるためです。
+`CI_DEBUG_SERVICES`は、サービスコンテナをアクティブにデバッグしている場合にのみ有効にしてください。サービスコンテナのログをキャプチャすると、ストレージとパフォーマンスの両方に影響があるためです。
 
-サービスログの生成を有効にするには、`CI_DEBUG_SERVICES`変数をプロジェクトの`.gitlab-ci.yml`ファイルに追加します。
+サービスログの生成を有効にするには、プロジェクトの`.gitlab-ci.yml`ファイルに`CI_DEBUG_SERVICES`変数を追加します。
 
 ```yaml
 variables:
@@ -493,21 +470,21 @@ variables:
 
 {{< alert type="note" >}}
 
-ジョブの失敗を診断するには、ログをキャプチャするサービスコンテナのログの生成レベルを調整します。デフォルトで設定されているログの生成レベルでは、十分なトラブルシューティング情報が得られない場合があります。
+ジョブの失敗を診断するには、ログをキャプチャするサービスコンテナのログの生成レベルを調整します。デフォルトのログの生成レベルでは、トラブルシューティングのために十分な情報が得られない場合があります。
 
 {{< /alert >}}
 
 {{< alert type="warning" >}}
 
-`CI_DEBUG_SERVICES`を有効にすると、マスクされた変数が明らかになる可能性があります。`CI_DEBUG_SERVICES`が有効になっている場合、サービスコンテナのログとCIジョブのログは、ジョブのトレースログに同時にストリーミングされます。これは、サービスコンテナのログがジョブのマスクされたログに挿入される可能性があるということです。これにより、変数マスキングメカニズムが阻止され、マスクされた変数が明らかになります。
+`CI_DEBUG_SERVICES`を有効にすると、マスクされた変数が表示される可能性があります。`CI_DEBUG_SERVICES`が有効な場合、サービスコンテナのログとCIジョブのログは、ジョブのトレースログに同時にストリーミングされます。その結果、サービスコンテナのログが、ジョブのマスクされたログに挿入される可能性があります。これにより、変数のマスキングの仕組みが阻害され、マスクされた変数が露出してしまいます。
 
 {{< /alert >}}
 
 [CI/CD変数をマスクする](../variables/_index.md#mask-a-cicd-variable)を参照してください。
 
-## ジョブをローカルでデバッグする
+## ジョブをローカルでデバッグする {#debug-a-job-locally}
 
-以下のコマンドは、ルート権限なしで実行します。ユーザーアカウントでDockerコマンドを実行できることを確認します。
+以下のコマンドは、ルート権限なしで実行します。ユーザーアカウントでDockerコマンドを実行できることを確認してください。
 
 まず、`build_script`という名前のファイルを作成します。
 
@@ -527,34 +504,34 @@ EOF
 docker run -d --name service-redis redis:latest
 ```
 
-上記のコマンドは、最新のRedisイメージを使用して、`service-redis`という名前のサービスコンテナを作成します。サービスコンテナはバックグラウンドで実行されます（`-d`）。
+前述のコマンドは、最新のRedisコンテナイメージを使用して、`service-redis`という名前のサービスコンテナを作成します。サービスコンテナはバックグラウンドで実行されます（`-d`）。
 
-最後に、以前作成した`build_script`ファイルを実行して、ビルドコンテナを作成します。
+最後に、先ほど作成した`build_script`ファイルを実行して、ビルドコンテナを作成します。
 
 ```shell
 docker run --name build -i --link=service-redis:redis golang:latest /bin/bash < build_script
 ```
 
-上記のコマンドは、`golang:latest`イメージから起動され、1つのサービスがリンクされている`build`という名前のコンテナを作成します。`build_script`は`stdin`を使用してbashインタープリターにパイプされ、bashインタープリターが`build`コンテナ内の`build_script`を実行します。
+前述のコマンドは、`golang:latest`イメージから起動され、1つのサービスがリンクされた`build`という名前のコンテナを作成します。`build_script`は`stdin`を使用してbashインタープリターにパイプされ、bashインタープリターが`build`コンテナ内で`build_script`を実行します。
 
-テスト完了後にコンテナを削除するには、次のコマンドを使用します。
+テストの完了後にコンテナを削除するには、次のコマンドを使用します。
 
 ```shell
 docker rm -f -v build service-redis
 ```
 
-これにより、`build`コンテナ、サービスコンテナ、コンテナの作成時に作成されたすべてのボリューム（`-v`）が強制的に（`-f`）削除されます。
+このコマンドは強制的に（`-f`）、`build`コンテナ、サービスコンテナ、およびコンテナの作成時に作成されたすべてのボリューム（`-v`）を削除します。
 
-## サービスコンテナ使用時のセキュリティ
+## サービスコンテナ使用時のセキュリティ {#security-when-using-services-containers}
 
 Docker特権モードはサービスに適用されます。これは、サービスイメージコンテナがホストシステムにアクセスできることを意味します。信頼できるソースからのコンテナイメージのみを使用する必要があります。
 
-## 共有`/builds`ディレクトリ
+## 共有`/builds`ディレクトリ {#shared-builds-directory}
 
-ビルドディレクトリは`/builds`の下にボリュームとしてマウントされ、ジョブとサービスの間で共有されます。ジョブは、サービスの実行後、プロジェクトを`/builds/$CI_PROJECT_PATH`にチェックアウトします。サービスがプロジェクトファイルにアクセスしたり、アーティファクトを保存したりする必要がある場合があります。その場合は、ディレクトリが存在し、`$CI_COMMIT_SHA`がチェックアウトされるまで待ちます。ジョブがチェックアウトプロセスを完了する前に行われた変更は、チェックアウトプロセスによって削除されます。
+ビルドディレクトリは`/builds`の下にボリュームとしてマウントされ、ジョブとサービスの間で共有されます。サービスが起動した後、ジョブはプロジェクトを`/builds/$CI_PROJECT_PATH`にチェックアウトします。サービスがプロジェクトファイルにアクセスしたり、アーティファクトを保存したりする必要がある場合は、そのディレクトリが存在し、`$CI_COMMIT_SHA`がチェックアウトされるまで待機しなくてはなりません。ジョブがチェックアウト処理を完了する前に行われた変更は、チェックアウト処理によって削除されます。
 
-サービスは、ジョブディレクトリが入力され、処理の準備ができたことを検出する必要があります。たとえば、特定のファイルが利用可能になるまで待ちます。
+サービスは、ジョブディレクトリにデータが格納され、処理の準備が整っていることを検出する必要があります。たとえば、特定のファイルが利用可能になるまで待機します。
 
-起動後にすぐに作業を開始するサービスは、ジョブデータがまだ利用できない可能性があるため、失敗する可能性があります。たとえば、コンテナは`docker build`コマンドを使用して、DinDサービスへのネットワーク接続を確立します。サービスは、APIにコンテナイメージのビルドを開始するように指示します。Docker Engineは、Dockerfileで参照しているファイルにアクセスできる必要があります。したがって、ユーザーはサービスの`CI_PROJECT_DIR`にアクセスする必要があります。ただし、Docker Engineは、ジョブで`docker build`コマンドが呼び出されるまでアクセスを試行しません。この時点で、`/builds`ディレクトリにはすでにデータが入力されています。`CI_PROJECT_DIR`の書き込みをサービス開始直後に試みると、`No such file or directory`エラーで失敗する可能性があります。
+起動直後に処理を開始するサービスは、ジョブデータがまだ利用できないために失敗する可能性があります。たとえば、コンテナは`docker build`コマンドを使用して、DinDサービスへのネットワーク接続を確立します。サービスはそのAPIに対して、コンテナイメージのビルドを開始するよう指示します。Docker Engineは、Dockerfileで参照しているファイルにアクセスできなければなりません。したがって、そのサービスから`CI_PROJECT_DIR`にアクセスできる必要があります。ただし、Docker Engineは、ジョブで`docker build`コマンドが呼び出されるまでアクセスを試行しません。この時点で、`/builds`ディレクトリにはすでにデータが格納されています。開始直後に`CI_PROJECT_DIR`への書き込みを試みるサービスは、`No such file or directory`エラーで失敗する可能性があります。
 
 ジョブデータとやり取りするサービスがジョブ自体によって制御されていないシナリオでは、[Docker executorワークフロー](https://docs.gitlab.com/runner/executors/docker.html#docker-executor-workflow)を検討してください。

@@ -46,6 +46,16 @@ class NotificationService
     @async ||= Async.new(self)
   end
 
+  def enabled_two_factor(user, type, options = {})
+    return unless user.can?(:receive_notifications)
+
+    if type == :webauthn
+      mailer.enabled_two_factor_webauthn_email(user, options[:device_name]).deliver_later
+    else
+      mailer.enabled_two_factor_otp_email(user).deliver_later
+    end
+  end
+
   def disabled_two_factor(user)
     return unless user.can?(:receive_notifications)
 

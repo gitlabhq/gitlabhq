@@ -263,7 +263,7 @@ context-aware code suggestions and generation.
 
 A [Ruby gem](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-active-context) that provides a unified interface for Retrieval Augmented Generation (RAG) across multiple vector databases within GitLab. The system abstracts away the differences between Elasticsearch, OpenSearch, and PostgreSQL with pgvector, enabling AI features to work regardless of the underlying storage solution.
 
-Key components include collections that define data schemas and reference classes that handle serialization, migrations for schema management, and preprocessors for chunking and embedding generation. The layer supports automatic model migration between different LLMs without downtime, asynchronous processing through Redis-backed queues, and permission-aware search with automatic redaction.
+Key components include collections that define data schemas and reference classes that handle serialization, migrations for schema management, and preprocessors for embedding generation. The layer supports automatic model migration between different LLMs without downtime, asynchronous processing through Redis-backed queues, and permission-aware search with automatic redaction.
 
 This [architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_context_abstraction_layer/) prevents vendor lock-in and enables GitLab customers without Elasticsearch to access RAG-powered features through pgvector.
 

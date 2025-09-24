@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Dockerコンテナで実行されているGitLabをバックアップする
 ---
@@ -32,9 +32,9 @@ GitLab設定をすべて`GITLAB_OMNIBUS_CONFIG`環境変数で提供している
 
 {{< /alert >}}
 
-## データベースのバックアップを作成する
+## データベースのバックアップを作成する {#create-a-database-backup}
 
-GitLabをアップグレードする前に、データベースのみのバックアップを作成します。GitLabのアップグレード中に問題が発生した場合、データベースのバックアップを復元して、アップグレードをロールバックできます。データベースのバックアップを作成するには、次のコマンドを実行します。
+GitLabをアップグレードする前に、データベースのみのバックアップを作成します。GitLabのアップグレード中にイシューが発生した場合、データベースのバックアップを復元して、アップグレードをロールバックできます。データベースのバックアップを作成するには、次のコマンドを実行します。
 
 ```shell
 docker exec -t <container name> gitlab-backup create SKIP=artifacts,repositories,registry,uploads,builds,pages,lfs,packages,terraform_state
@@ -42,4 +42,4 @@ docker exec -t <container name> gitlab-backup create SKIP=artifacts,repositories
 
 バックアップは`/var/opt/gitlab/backups`に書き込まれますが、これは[Dockerによってマウントされたボリューム](installation.md#create-a-directory-for-the-volumes)上にあるはずです。
 
-アップグレードをロールバックするためのバックアップの使用方法について詳しくは、[GitLabをダウングレードする](upgrade.md#downgrade-gitlab)をご覧ください。
+アップグレードをロールバックするためにバックアップを使用する方法について詳しくは、[roll back a Docker instance](../../update/package/downgrade.md#roll-back-a-docker-instance)（Dockerインスタンスのロールバック）を参照してください。

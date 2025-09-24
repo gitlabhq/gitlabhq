@@ -27,8 +27,9 @@ commit hash.
 
 Prerequisites:
 
-- The file type must be text-based. The GitLab UI does not display
-  `git blame` results for binary files.
+- The file must contain readable text content. The GitLab UI displays `git blame` results for text
+  files like `.rb`, `.js`, `.md`, `.txt`, `.yml`, and similar formats. Binary files, such as images
+  and PDFs, are not supported.
 
 To view the blame for a file:
 

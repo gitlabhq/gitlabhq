@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Agent Foundations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Fix CI/CD pipeline
+title: Fix CI/CD Pipeline flow
 ---
 
 {{< details >}}
@@ -27,7 +27,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-The **Fix CI/CD pipeline** flow helps you automatically diagnose and fix issues in your GitLab CI/CD pipeline. This flow:
+The Fix CI/CD pipeline flow helps you automatically diagnose and fix issues in your GitLab CI/CD pipeline. This flow:
 
 - Analyzes pipeline failure logs and error messages.
 - Identifies configuration issues and syntax errors.

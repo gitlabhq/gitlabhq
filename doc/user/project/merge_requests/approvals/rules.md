@@ -135,10 +135,12 @@ You can override the merge request approval rules for a project by either:
 
 Prerequisites:
 
-- You must have administrator access or all of the following must be true:
-  - You must have at least the Developer role or the project must accept contributions from external members.
-  - You must be the author of the merge request.
-  - The project setting [Prevent editing approval rules](settings.md#prevent-editing-approval-rules-in-merge-requests) is disabled.
+- The project setting [Prevent editing approval rules](settings.md#prevent-editing-approval-rules-in-merge-requests)
+  is disabled.
+- One of the following must be true:
+  - You have administrator access.
+  - You are the author of the merge request, and have at least the Developer role in the project.
+  - You have at least the Maintainer role for the project.
 
 To override approvers of a merge request:
 

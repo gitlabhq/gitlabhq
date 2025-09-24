@@ -244,6 +244,23 @@ module EmailsHelper
     end
   end
 
+  def manage_two_factor_authentication_text(format: nil)
+    url = profile_two_factor_auth_url
+
+    case format
+    when :html
+      settings_link_to = generate_link(_("two-factor authentication settings"), url).html_safe
+      s_("TwoFactorEmailNotification|To manage your two-factor authentication, visit the %{settings_link_to} page.")
+      .html_safe % {
+        settings_link_to: settings_link_to
+      }
+    else
+      s_("TwoFactorEmailNotification|To manage your two-factor authentication, visit %{two_factor_link}") % {
+        two_factor_link: url
+      }
+    end
+  end
+
   def new_email_address_added_text(email)
     _('A new email address has been added to your GitLab account: %{email}') % { email: email }
   end

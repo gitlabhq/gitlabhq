@@ -116,3 +116,4 @@ cache:assets-hash:
   artifacts:
     reports:
       dotenv: build.env
+  allow_failure: false

@@ -28,7 +28,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-The **Convert to GitLab CI/CD** flow helps you migrate your Jenkins pipelines to GitLab CI/CD. This flow:
+The Convert to GitLab CI/CD flow helps you migrate your Jenkins pipelines to GitLab CI/CD. This flow:
 
 - Analyzes your existing Jenkins pipeline configuration.
 - Converts Jenkins pipeline syntax to GitLab CI/CD YAML.

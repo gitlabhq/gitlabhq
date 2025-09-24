@@ -1937,6 +1937,9 @@ msgstr ""
 msgid "- Create, update, or delete a merge request."
 msgstr ""
 
+msgid "- Device name: %{device_name}"
+msgstr ""
+
 msgid "- Event"
 msgid_plural "- Events"
 msgstr[0] ""
@@ -2201,6 +2204,9 @@ msgstr ""
 msgid "A Let's Encrypt SSL certificate can not be obtained until your domain is verified."
 msgstr ""
 
+msgid "A WebAuthn device has been registered to your GitLab account."
+msgstr ""
+
 msgid "A basic folder structure and sample files for a CI/CD components project."
 msgstr ""
 
@@ -2283,6 +2289,9 @@ msgid "A non-confidential issue cannot have a confidential parent."
 msgstr ""
 
 msgid "A non-confidential work item cannot have a confidential parent."
+msgstr ""
+
+msgid "A one-time password (OTP) authenticator has been registered to your GitLab account."
 msgstr ""
 
 msgid "A parent must be provided when bulk updating issuables"
@@ -23604,6 +23613,9 @@ msgid "Devfile size (%{current_size}) exceeds the maximum allowed size of %{max_
 msgstr ""
 
 msgid "Device name"
+msgstr ""
+
+msgid "Device name: %{device_name}"
 msgstr ""
 
 msgid "DeviceAuth|Authorize"
@@ -68657,6 +68669,12 @@ msgstr ""
 msgid "Two-factor authentication disabled"
 msgstr ""
 
+msgid "Two-factor authentication enabled - OTP"
+msgstr ""
+
+msgid "Two-factor authentication enabled - WebAuthn"
+msgstr ""
+
 msgid "Two-factor authentication for admin mode"
 msgstr ""
 
@@ -68679,6 +68697,12 @@ msgid "Two-factor authentication is not enabled for this user"
 msgstr ""
 
 msgid "Two-factor grace period"
+msgstr ""
+
+msgid "TwoFactorEmailNotification|To manage your two-factor authentication, visit %{two_factor_link}"
+msgstr ""
+
+msgid "TwoFactorEmailNotification|To manage your two-factor authentication, visit the %{settings_link_to} page."
 msgstr ""
 
 msgid "Type"

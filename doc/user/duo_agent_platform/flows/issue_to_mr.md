@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Agent Foundations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Issue to MR flow
+title: Issue to Merge Request flow
 ---
 
 {{< details >}}
@@ -28,7 +28,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-The **Issue to MR** flow streamlines the process of converting issues into actionable merge requests. This flow:
+The Issue to Merge Request flow streamlines the process of converting issues into actionable merge requests. This flow:
 
 - Analyzes the issue description and requirements.
 - Opens a draft merge request that's linked to the original issue.
@@ -46,9 +46,9 @@ To create a merge request from an issue, you must:
 - Have at least the Developer role in the project.
 - Meet [the other prerequisites](../../duo_agent_platform/_index.md#prerequisites).
 
-## Use the Issue to MR flow
+## Use the flow
 
-To use the **Issue to MR** flow:
+To convert your issue to a merge request:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**.

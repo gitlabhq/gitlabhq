@@ -21,9 +21,9 @@ When developing the Workspaces feature:
 
 For a deeper technical understanding, see the following resources:
 
-- [Workspaces Handbook page](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/workspaces/)
+- [Workspaces Architecture Design Document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/workspaces/)
 - [Workspaces Architecture for Kubernetes setup](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/workspaces/architecture_kubernetes_setup/)
 - [Workspaces Rails domain developer documentation](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/remote_development/README.md)
 - [Workspaces examples](https://gitlab.com/gitlab-org/workspaces/examples)
 - [User documentation](../../user/workspace/_index.md)
-- [Development guide for Remote Development](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/remote_development/developing.md)
+- [Development guide for `remote_development` module of GitLab Agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/remote_development/developing.md)

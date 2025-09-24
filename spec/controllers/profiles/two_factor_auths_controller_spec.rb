@@ -212,11 +212,21 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
         expect(ActiveSession).to receive(:destroy_all_but_current)
         go
       end
+
+      it 'sends the user a notification email' do
+        expect_next_instance_of(NotificationService) do |notification|
+          expect(notification).to receive(:enabled_two_factor).with(user, :otp, {})
+        end
+
+        go
+      end
     end
 
     context 'with invalid pin' do
       before do
         expect(user).to receive(:validate_and_consume_otp!).with(pin).and_return(false)
+
+        allow(NotificationService).to receive(:new)
       end
 
       it 'assigns error' do
@@ -240,6 +250,11 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
       it 'renders show' do
         go
         expect(response).to render_template(:show)
+      end
+
+      it 'does not send a notification email' do
+        go
+        expect(NotificationService).not_to have_received(:new)
       end
     end
 
@@ -329,6 +344,25 @@ RSpec.describe Profiles::TwoFactorAuthsController, feature_category: :system_acc
         post :create_webauthn, params: params_with_password
         expect(response).to redirect_to(profile_two_factor_auth_path)
         expect(flash[:notice]).to match(/Your WebAuthn device was registered!/)
+      end
+
+      it 'sends the user a notification email' do
+        expect_next_instance_of(NotificationService) do |notification|
+          expect(notification).to receive(:enabled_two_factor).with(user, :webauthn, { device_name: 'touch id' })
+        end
+
+        post :create_webauthn, params: params_with_password
+      end
+    end
+
+    context 'when an invalid password is given' do
+      before do
+        allow(NotificationService).to receive(:new)
+      end
+
+      it 'does not send a notification email' do
+        post :create_webauthn, params: params
+        expect(NotificationService).not_to have_received(:new)
       end
     end
   end
