@@ -17,6 +17,7 @@ RSpec.describe Gitlab::Middleware::Multipart::Handler do
         ::JobArtifactUploader.workhorse_upload_path,
         ::LfsObjectUploader.workhorse_upload_path,
         ::DependencyProxy::FileUploader.workhorse_upload_path,
+        ::Terraform::StateUploader.workhorse_local_upload_path,
         File.join(Rails.root, 'public/uploads/tmp')
       ]
     end

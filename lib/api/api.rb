@@ -36,6 +36,7 @@ module API
       include: [
         Gitlab::GrapeLogging::Loggers::FilterParameters.new(LOG_FILTERS),
         Gitlab::GrapeLogging::Loggers::ClientEnvLogger.new,
+        Gitlab::GrapeLogging::Loggers::JsonMetadataLogger.new,
         Gitlab::GrapeLogging::Loggers::RouteLogger.new,
         Gitlab::GrapeLogging::Loggers::UserLogger.new,
         Gitlab::GrapeLogging::Loggers::TokenLogger.new,

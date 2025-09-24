@@ -340,6 +340,50 @@ You can change this limit by using the GitLab Rails console or use
  ApplicationSetting.update(max_http_response_size_limit: 60)
  ```
 
+## HTTP request limits
+
+By default, JSON parameters in requests are limited.
+
+{{< tabs >}}
+
+{{< tab title="Linux package (Omnibus)" >}}
+
+To disable this check:
+
+1. Set the `GITLAB_JSON_VALIDATION_MODE` environment variable on all nodes that run Puma:
+
+   ```shell
+   sudo -e /etc/gitlab/gitlab.rb
+   ```
+
+   ```ruby
+   gitlab_rails['env'] = { 'GITLAB_JSON_VALIDATION_MODE' => 'disabled' }
+   ```
+
+1. Reconfigure the updated nodes for the change to take effect:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+To disable this check, you can use `--set gitlab.webservice.extraEnv.GITLAB_JSON_VALIDATION_MODE="disabled"`, or
+specify the following in your values file:
+
+```yaml
+gitlab:
+  webservice:
+    extraEnv:
+      GITLAB_JSON_VALIDATION_MODE: "disabled"
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
+
 ## Webhook limits
 
 Also see [Webhook rate limits](#webhook-rate-limit).

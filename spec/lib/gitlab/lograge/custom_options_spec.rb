@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Lograge::CustomOptions do
+RSpec.describe Gitlab::Lograge::CustomOptions, feature_category: :observability do
   describe '.call' do
     let(:params) do
       {
@@ -25,7 +25,11 @@ RSpec.describe Gitlab::Lograge::CustomOptions do
         remote_ip: '192.168.1.2',
         ua: 'Nyxt',
         queue_duration_s: 0.2,
-        etag_route: '/etag'
+        etag_route: '/etag',
+        json_total_elements: 2,
+        json_max_array_count: 3,
+        json_max_hash_count: 4,
+        json_max_depth: 5
       }
     end
 
@@ -58,6 +62,30 @@ RSpec.describe Gitlab::Lograge::CustomOptions do
     it 'adds Cloudflare headers' do
       expect(subject[:cf_ray]).to eq(event.payload[:cf_ray])
       expect(subject[:cf_request_id]).to eq(event.payload[:cf_request_id])
+    end
+
+    it 'adds JSON metadata headers' do
+      expect(subject[:json_total_elements]).to eq(2)
+      expect(subject[:json_max_array_count]).to eq(3)
+      expect(subject[:json_max_hash_count]).to eq(4)
+      expect(subject[:json_max_depth]).to eq(5)
+    end
+
+    context 'when only some JSON metadata headers are present' do
+      let(:event_payload) do
+        {
+          params: params,
+          json_total_elements: 10,
+          json_max_depth: 3
+        }
+      end
+
+      it 'includes only the present JSON metadata headers' do
+        expect(subject[:json_total_elements]).to eq(10)
+        expect(subject[:json_max_depth]).to eq(3)
+        expect(subject).not_to have_key(:json_max_array_count)
+        expect(subject).not_to have_key(:json_max_hash_count)
+      end
     end
 
     it 'adds the metadata' do
