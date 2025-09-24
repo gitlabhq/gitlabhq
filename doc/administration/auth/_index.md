@@ -2,8 +2,8 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Third-party authentication providers.
-title: GitLab authentication and authorization
+description: Authentication methods such as LDAP, OmniAuth, SAML, SCIM, OIDC, and OAuth
+title: User identity
 ---
 
 {{< details >}}
@@ -13,20 +13,35 @@ title: GitLab authentication and authorization
 
 {{< /details >}}
 
-GitLab integrates with a number of [OmniAuth providers](../../integration/omniauth.md#supported-providers),
-and the following external authentication and authorization providers:
+GitLab integrates with a number of third party tools and protocols to better support authentication and authorization.
 
-- [LDAP](ldap/_index.md): Includes Active Directory, Apple Open Directory, OpenLDAP,
-  and 389 Server.
-  - [Google Secure LDAP](ldap/google_secure_ldap.md)
-- [SAML for GitLab.com groups](../../user/group/saml_sso/_index.md)
-- [Smart card](smartcard.md)
+Connect GitLab to your organization's existing identity infrastructure to centralize user
+management and enforce security policies. You can integrate with LDAP, SAML, OAuth, or SCIM
+identity providers and directory services for authentication and authorization.
 
-{{< alert type="note" >}}
+On GitLab Self-Managed and GitLab Dedicated, administrators can integrate with identity providers
+like Active Directory, Google Workspace, or Azure AD to automatically provision users, sync group
+memberships, and enable single sign-on. GitLab.com groups can also integrate with SAML identity
+providers for centralized authentication and user provisioning.
 
-UltraAuth has removed their software which supports OmniAuth integration. We have therefore removed all references to UltraAuth integration.
+Choose from multiple integration methods based on your organization's needs:
 
-{{< /alert >}}
+- LDAP for directory synchronization
+- SAML for single sign-on
+- OAuth for third-party authentication
+- SCIM for automated user provisioning and deprovisioning
+
+## Core concepts
+
+{{< cards >}}
+
+- [LDAP](ldap/_index.md)
+- [OmniAuth](../../integration/omniauth.md)
+- [SAML](../../integration/saml.md)
+- [SAML Group Sync](../../user/group/saml_sso/group_sync.md)
+- [SCIM](../../administration/settings/scim_setup.md)
+
+{{< /cards >}}
 
 ## GitLab.com compared to GitLab Self-Managed
 
@@ -44,7 +59,3 @@ For more information, see the links shown on this page for each external provide
 **Footnotes**:
 
 1. Using Just-In-Time (JIT) provisioning, user accounts are created when the user first signs in.
-
-## Test OIDC/OAuth in GitLab
-
-See [Test OIDC/OAuth in GitLab](test_oidc_oauth.md) to learn how to test OIDC/OAuth authentication in your GitLab instance using your client application.

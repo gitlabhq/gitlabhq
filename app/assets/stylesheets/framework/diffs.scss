@@ -46,7 +46,7 @@ $diff-file-header: 41px;
       z-index: $zindex-dropdown-menu;
     }
 
-    @media (max-width: map.get($grid-breakpoints, sm)-1) {
+    @include gl-container-width-down(sm, panel) {
       .file-header-content {
         width: 0;
         flex: 1;
@@ -57,7 +57,7 @@ $diff-file-header: 41px;
       }
     }
 
-    @media (min-width: map.get($grid-breakpoints, md)) {
+    @include gl-container-width-up(md, panel) {
       position: sticky;
       top: calc(#{$calc-application-header-height} + #{$mr-sticky-header-height} - #{$gl-border-size-1});
       z-index: 120;
@@ -71,6 +71,13 @@ $diff-file-header: 41px;
       &.is-wiki {
         top: calc(#{$calc-application-header-height});
         border-top: 0;
+      }
+    }
+
+    @include gl-container-width-up(md, panel, false) {
+      &,
+      &.is-wiki {
+        top: calc(#{$mr-sticky-header-height} - 2px);
       }
     }
 
@@ -88,6 +95,13 @@ $diff-file-header: 41px;
     &.conflict .file-title,
     &.conflict .file-title-flex-parent {
       top: $calc-application-header-height;
+    }
+  }
+
+  @include gl-container-width-up(md, panel, false) {
+    &.conflict .file-title,
+    &.conflict .file-title-flex-parent {
+      top: 0;
     }
   }
 
@@ -634,40 +648,6 @@ table.code {
   max-height: 50vh;
 }
 
-// Mobile
-@media (max-width: 480px) {
-  .diff-title {
-    margin: 0;
-
-    .file-mode {
-      display: none;
-    }
-  }
-
-  .diff-controls {
-    position: static;
-    text-align: center;
-  }
-}
-
-// Bigger screens
-@media (min-width: 481px) {
-  .diff-title {
-    margin-right: 200px;
-
-    .file-mode {
-      margin-left: 10px;
-    }
-  }
-
-  .diff-controls {
-    float: right;
-    position: absolute;
-    top: 5px;
-    right: 15px;
-  }
-}
-
 .diff-comments-more-count,
 .diff-notes-collapse,
 .inline-findings-collapse {
@@ -850,7 +830,7 @@ table.code {
   }
 }
 
-@media (max-width: map.get($grid-breakpoints, lg)-1) {
+@include gl-container-width-down(lg, panel) {
   .diffs .files {
     flex-direction: column;
   }

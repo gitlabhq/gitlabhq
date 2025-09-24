@@ -10,6 +10,8 @@ module Ci
 
     TRIGGER_TOKEN_PREFIX = 'glptt-'
 
+    EXPIRED_TOKEN_RETENTION = 30.days
+
     self.limit_name = 'pipeline_triggers'
     self.limit_scope = :project
 
@@ -58,6 +60,10 @@ module Ci
       else
         where(token: tokens)
       end
+    }
+
+    scope :ready_for_deletion, -> {
+      where(expires_at: ...EXPIRED_TOKEN_RETENTION.ago)
     }
 
     def self.prefix_for_trigger_token

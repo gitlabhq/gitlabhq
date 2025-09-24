@@ -1325,7 +1325,7 @@ Prerequisites:
 
 {{< alert type="note" >}}
 
-Retention policies in your object storage provider, such as Amazon S3 Lifecycle, may prevent
+Retention policies in an object storage provider, such as Amazon S3 Lifecycle, may prevent
 objects from being properly deleted.
 
 {{< /alert >}}
@@ -1352,7 +1352,7 @@ The `registry-garbage-collect` command shuts down the container registry prior t
 only starts it again after garbage collection completes. If you prefer to avoid downtime,
 you can manually set the container registry to [read-only mode and bypass `gitlab-ctl`](#performing-garbage-collection-without-downtime).
 
-This command proceeds only if the metadata is in object storage. This command does not proceed
+This command proceeds only if legacy metadata is in use. This command does not proceed
 if the [container registry metadata database](#container-registry-metadata-database) is enabled.
 
 {{< /alert >}}

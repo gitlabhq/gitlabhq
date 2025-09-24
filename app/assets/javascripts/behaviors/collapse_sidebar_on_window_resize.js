@@ -1,5 +1,5 @@
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import $ from 'jquery';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 
 /**
  * This behavior collapses the right sidebar
@@ -8,11 +8,11 @@ import $ from 'jquery';
  * @sentrify
  */
 export default () => {
-  let bootstrapBreakpoint = GlBreakpointInstance.getBreakpointSize();
+  let bootstrapBreakpoint = PanelBreakpointInstance.getBreakpointSize();
 
-  $(window).on('resize.app', () => {
+  PanelBreakpointInstance.addResizeListener(() => {
     const oldBootstrapBreakpoint = bootstrapBreakpoint;
-    bootstrapBreakpoint = GlBreakpointInstance.getBreakpointSize();
+    bootstrapBreakpoint = PanelBreakpointInstance.getBreakpointSize();
 
     if (bootstrapBreakpoint !== oldBootstrapBreakpoint) {
       const breakpointSizes = ['md', 'sm', 'xs'];

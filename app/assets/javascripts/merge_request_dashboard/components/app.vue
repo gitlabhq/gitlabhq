@@ -16,6 +16,7 @@ import MergeRequest from './merge_request.vue';
 import DraftsCount from './drafts_count.vue';
 
 export default {
+  name: 'MergeRequestDashboardRoot',
   apollo: {
     $subscribe: {
       // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties

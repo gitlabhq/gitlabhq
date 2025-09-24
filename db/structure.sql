@@ -503,6 +503,39 @@ BEGIN
 END
 $$;
 
+CREATE FUNCTION get_sharding_key_from_notes_table() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  note_organization_id BIGINT;
+  note_project_id BIGINT;
+  note_namespace_id BIGINT;
+BEGIN
+  IF NEW."note_id" IS NULL OR num_nonnulls(NEW."namespace_id", NEW."organization_id") = 1 THEN
+    RETURN NEW;
+  END IF;
+
+  SELECT "organization_id", "project_id", "namespace_id"
+  INTO note_organization_id, note_project_id, note_namespace_id
+  FROM "notes"
+  WHERE "id" = NEW."note_id";
+
+  IF note_organization_id IS NOT NULL THEN
+    NEW."organization_id" := note_organization_id;
+    NEW."namespace_id" := NULL;
+  ELSIF note_project_id IS NOT NULL THEN
+    SELECT "project_namespace_id" FROM "projects"
+    INTO NEW."namespace_id" WHERE "projects"."id" = note_project_id;
+    NEW."organization_id" := NULL;
+  ELSE
+    NEW."namespace_id" := note_namespace_id;
+    NEW."organization_id" := NULL;
+  END IF;
+
+  RETURN NEW;
+END
+$$;
+
 CREATE FUNCTION gitlab_schema_prevent_write() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -26438,7 +26471,9 @@ CREATE TABLE system_note_metadata (
     updated_at timestamp without time zone NOT NULL,
     description_version_id bigint,
     note_id bigint NOT NULL,
-    id bigint NOT NULL
+    id bigint NOT NULL,
+    namespace_id bigint,
+    organization_id bigint
 );
 
 CREATE SEQUENCE system_note_metadata_id_seq
@@ -32809,6 +32844,9 @@ ALTER TABLE sprints
 
 ALTER TABLE redirect_routes
     ADD CONSTRAINT check_e82ff70482 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
+
+ALTER TABLE system_note_metadata
+    ADD CONSTRAINT check_f2c4e04565 CHECK ((num_nonnulls(namespace_id, organization_id) = 1)) NOT VALID;
 
 ALTER TABLE notes_archived
     ADD CONSTRAINT check_notes_archived_has_parent CHECK ((num_nonnulls(namespace_id, organization_id, project_id) >= 1)) NOT VALID;
@@ -46292,6 +46330,8 @@ CREATE TRIGGER project_type_ci_runners_loose_fk_trigger AFTER DELETE ON project_
 CREATE TRIGGER projects_loose_fk_trigger AFTER DELETE ON projects REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER push_rules_loose_fk_trigger AFTER DELETE ON push_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
+CREATE TRIGGER set_sharding_key_for_system_note_metadata_on_insert BEFORE INSERT ON system_note_metadata FOR EACH ROW EXECUTE FUNCTION get_sharding_key_from_notes_table();
 
 CREATE TRIGGER sync_project_authorizations_to_migration AFTER INSERT OR DELETE OR UPDATE ON project_authorizations FOR EACH ROW EXECUTE FUNCTION sync_project_authorizations_to_migration_table();
 

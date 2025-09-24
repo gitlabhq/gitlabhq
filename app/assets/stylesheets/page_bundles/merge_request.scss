@@ -160,11 +160,13 @@ $merge-request-sticky-header-height: 45px;
         .detail-page-description {
           @apply gl-z-1;
         }
+      }
+    }
 
-        @include gl-container-width-down(lg, panel) {
-          .merge-request-tabs-actions {
-            @apply gl-hidden;
-          }
+    @include gl-container-width-down(lg, panel) {
+      @container sticky-header scroll-state(stuck: top) {
+        .merge-request-tabs-actions {
+          @apply gl-hidden;
         }
       }
     }
@@ -180,12 +182,6 @@ $merge-request-sticky-header-height: 45px;
 }
 
 .merge-request-tabs-container {
-  @include gl-container-width-down(sm, panel) {
-    .discussion-filter-container {
-      margin-bottom: $gl-padding-4;
-    }
-  }
-
   .discussion-filter-container {
     &:not(:only-child) {
       margin: $gl-padding-4;

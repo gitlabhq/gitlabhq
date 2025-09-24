@@ -214,6 +214,7 @@ RSpec.describe '1_settings', feature_category: :shared do
         database_monitor_locked_tables_cron_worker
         deactivated_pages_deployments_delete_cron_worker
         deactivate_expired_deployments_cron_worker
+        delete_expired_trigger_token_worker
         deploy_tokens_expiring_worker
         environments_auto_delete_cron_worker
         environments_auto_stop_cron_worker

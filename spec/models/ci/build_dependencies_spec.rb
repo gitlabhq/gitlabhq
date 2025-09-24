@@ -380,6 +380,86 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
     end
   end
 
+  describe '#invalid' do
+    subject { described_class.new(job).invalid }
+
+    let!(:job) { create(:ci_build, pipeline: pipeline, stage_idx: 3, ci_stage: deploy_stage) }
+
+    context 'with only local dependencies' do
+      let!(:valid_local_job) { create(:ci_build, :success, pipeline: pipeline, stage_idx: 0) }
+      let!(:invalid_local_job) { create(:ci_build, :success, :expired, pipeline: pipeline, stage_idx: 1) }
+
+      before do
+        pipeline.unlocked!
+      end
+
+      it 'returns invalid local dependencies' do
+        is_expected.to include(invalid_local_job)
+        is_expected.not_to include(valid_local_job)
+      end
+    end
+
+    context 'with cross-pipeline dependencies' do
+      let!(:parent_pipeline) { create(:ci_pipeline, project: project) }
+      let!(:child_pipeline) { create(:ci_pipeline, child_of: parent_pipeline, project: project) }
+      let!(:valid_cross_job) { create(:ci_build, :success, pipeline: parent_pipeline, name: 'valid_cross') }
+      let!(:invalid_cross_job) do
+        create(:ci_build, :success, :expired, pipeline: parent_pipeline, name: 'invalid_cross')
+      end
+
+      let!(:job_with_cross_deps) do
+        create(:ci_build, pipeline: child_pipeline, stage_idx: 1,
+          options: {
+            cross_dependencies: [
+              { pipeline: parent_pipeline.id.to_s, job: 'valid_cross', artifacts: true },
+              { pipeline: parent_pipeline.id.to_s, job: 'invalid_cross', artifacts: true }
+            ]
+          })
+      end
+
+      subject { described_class.new(job_with_cross_deps).invalid }
+
+      before do
+        parent_pipeline.unlocked!
+      end
+
+      it 'returns invalid cross-pipeline dependencies' do
+        is_expected.to include(invalid_cross_job)
+        is_expected.not_to include(valid_cross_job)
+      end
+    end
+
+    context 'with mixed dependency types' do
+      let!(:parent_pipeline) { create(:ci_pipeline, project: project) }
+      let!(:child_pipeline) { create(:ci_pipeline, child_of: parent_pipeline, project: project) }
+      let!(:invalid_local_job) { create(:ci_build, :success, :expired, pipeline: child_pipeline, stage_idx: 1) }
+      let!(:invalid_cross_job) do
+        create(:ci_build, :success, :expired, pipeline: parent_pipeline, name: 'invalid_cross')
+      end
+
+      let!(:job_with_mixed_deps) do
+        create(:ci_build, pipeline: child_pipeline, stage_idx: 2,
+          options: {
+            dependencies: [invalid_local_job.name],
+            cross_dependencies: [
+              { pipeline: parent_pipeline.id.to_s, job: 'invalid_cross', artifacts: true }
+            ]
+          })
+      end
+
+      subject { described_class.new(job_with_mixed_deps).invalid }
+
+      before do
+        child_pipeline.unlocked!
+        parent_pipeline.unlocked!
+      end
+
+      it 'returns invalid dependencies from all types' do
+        expect(subject).to match_array([invalid_local_job, invalid_cross_job])
+      end
+    end
+  end
+
   describe '#valid?' do
     subject { described_class.new(job).valid? }
 

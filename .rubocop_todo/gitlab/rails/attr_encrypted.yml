@@ -19,7 +19,6 @@ Gitlab/Rails/AttrEncrypted:
     - 'app/models/concerns/packages/debian/distribution_key.rb'
     - 'app/models/concerns/web_hooks/hook.rb'
     - 'app/models/error_tracking/project_error_tracking_setting.rb'
-    - 'app/models/grafana_integration.rb'
     - 'app/models/incident_management/project_incident_management_setting.rb'
     - 'app/models/integrations/issue_tracker_data.rb'
     - 'app/models/integrations/jira_tracker_data.rb'

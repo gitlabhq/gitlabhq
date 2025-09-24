@@ -25,15 +25,15 @@ that improve performance and add new features.
 The work on the GitLab Self-Managed release of the registry metadata database feature
 is tracked in [epic 5521](https://gitlab.com/groups/gitlab-org/-/epics/5521).
 
-By default, the container registry uses object storage to persist metadata
+By default, the container registry uses object storage or a local file system to persist metadata
 related to container images. This method to store metadata limits how efficiently
 the data can be accessed, especially data spanning multiple images, such as when listing tags.
 By using a database to store this data, many new features are possible, including
 [online garbage collection](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/gitlab/online-garbage-collection.md)
 which removes old data automatically with zero downtime.
 
-This database works in conjunction with the object storage already used by the registry, but does not replace object storage.
-You must continue to maintain an object storage solution even after performing a metadata import to the metadata database.
+This database works in conjunction with the storage already used by the registry, but does not replace object storage or a file system.
+You must continue to maintain a storage solution even after performing a metadata import to the metadata database.
 
 For Helm Charts installations, see [Manage the container registry metadata database](https://docs.gitlab.com/charts/charts/registry/metadata_database.html#create-the-database)
 in the Helm Charts documentation.
@@ -41,7 +41,7 @@ in the Helm Charts documentation.
 ## Enhancements
 
 The metadata database architecture supports performance improvements, bug fixes, and new features
-that are not available with the object storage metadata architecture. These enhancements include:
+that are not available with legacy metadata storage. These enhancements include:
 
 - Automatic [online garbage collection](../../user/packages/container_registry/delete_container_registry_images.md#garbage-collection)
 - [Storage usage visibility](../../user/packages/container_registry/reduce_container_registry_storage.md#view-container-registry-usage) for repositories, projects, and groups
@@ -53,7 +53,7 @@ that are not available with the object storage metadata architecture. These enha
 - Tracking and displaying tag publish timestamps (see [issue 290949](https://gitlab.com/gitlab-org/gitlab/-/issues/290949))
 - Sorting repository tags by additional attributes beyond name
 
-Due to technical constraints of the object storage metadata architecture, new features are only
+Due to technical constraints of legacy metadata storage, new features are only
 implemented for the metadata database version. Non-security bug fixes might be limited to the
 metadata database version.
 
@@ -184,11 +184,11 @@ A few factors affect the duration of the import:
 - The size of your existing registry data.
 - The specifications of your PostgreSQL instance.
 - The number of registry instances running.
-- Network latency between the registry, PostgreSQL and your configured Object Storage.
+- Network latency between the registry, PostgreSQL and your configured storage.
 
 You do not need to do the following in preparation before importing:
 
-- Allocate extra object storage space: The import makes no significant writes to object storage.
+- Allocate extra object storage or file system space: The import makes no significant writes to this storage.
 - Run offline garbage collection: While not harmful, offline garbage collection does not shorten the
 import enough to recoup the time spent running this command.
 

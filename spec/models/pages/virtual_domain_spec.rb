@@ -45,6 +45,28 @@ RSpec.describe Pages::VirtualDomain, feature_category: :pages do
     end
   end
 
+  describe '#root_namespace_id' do
+    let(:project) { project_a }
+
+    context 'when namespace is provided' do
+      subject(:virtual_domain) do
+        described_class.new(projects: [project], domain: domain, namespace: project.namespace)
+      end
+
+      it 'returns the namespace id' do
+        expect(virtual_domain.root_namespace_id).to eq(project.namespace.id)
+      end
+    end
+
+    context 'when namespace is not provided' do
+      subject(:virtual_domain) { described_class.new(projects: [project], domain: domain) }
+
+      it 'returns nil' do
+        expect(virtual_domain.root_namespace_id).to be_nil
+      end
+    end
+  end
+
   describe '#lookup_paths' do
     let(:project_list) { [project_a, project_b, project_c] }
 

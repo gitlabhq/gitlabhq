@@ -35,6 +35,14 @@ for details on which headers and token types are supported. Undocumented authent
 
 ## Download a chart index
 
+{{< alert type="note" >}}
+
+To ensure consistent chart download URLs, the `contextPath` field in `index.yaml` responses
+always uses the numeric project ID, whether you access the API with the project ID or the
+full project path.
+
+{{< /alert >}}
+
 Download a chart index:
 
 ```plaintext

@@ -1894,7 +1894,6 @@ RSpec/ContextWording:
     - 'spec/models/error_tracking/error_spec.rb'
     - 'spec/models/event_spec.rb'
     - 'spec/models/gpg_key_spec.rb'
-    - 'spec/models/grafana_integration_spec.rb'
     - 'spec/models/group_label_spec.rb'
     - 'spec/models/group_spec.rb'
     - 'spec/models/hooks/system_hook_spec.rb'

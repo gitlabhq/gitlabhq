@@ -5074,28 +5074,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   describe '#invalid_dependencies' do
-    let!(:pre_stage_job_valid) { create(:ci_build, :manual, pipeline: pipeline, name: 'test1', stage_idx: 0) }
-    let!(:pre_stage_job_invalid) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test2', stage_idx: 1) }
-    let!(:job) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 2, options: { dependencies: %w[test1 test2] }) }
+    it 'returns invalid dependencies' do
+      dependencies_double = instance_double(Ci::BuildDependencies)
+      allow(Ci::BuildDependencies).to receive(:new).with(build).and_return(dependencies_double)
+      expect(dependencies_double).to receive(:invalid).and_return(['invalid_job'])
 
-    context 'when pipeline is locked' do
-      before do
-        build.pipeline.unlocked!
-      end
-
-      it 'returns invalid dependencies when expired' do
-        expect(job.invalid_dependencies).to eq([pre_stage_job_invalid])
-      end
-    end
-
-    context 'when pipeline is not locked' do
-      before do
-        build.pipeline.artifacts_locked!
-      end
-
-      it 'returns no invalid dependencies when expired' do
-        expect(job.invalid_dependencies).to eq([])
-      end
+      expect(build.invalid_dependencies).to eq(['invalid_job'])
     end
   end
 

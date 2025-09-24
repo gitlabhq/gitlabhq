@@ -8,7 +8,8 @@ let prevWidth = 0;
  * It provides an implementation of `getBreakpointSize` to return the current container breakpoint
  * with a fallback to window, when panels are not used.
  */
-const MAIN_CONTAINER_SELECTOR = '.js-static-panel-inner #content-body';
+const MAIN_CONTAINER_SELECTOR =
+  '.js-static-panel-inner #content-body, .js-container-queries-enabled > *';
 
 const breakpoints = {
   xl: 1200,

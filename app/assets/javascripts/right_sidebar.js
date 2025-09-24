@@ -1,17 +1,13 @@
 /* eslint-disable func-names, consistent-return, no-param-reassign */
 
 import $ from 'jquery';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { setCookie } from '~/lib/utils/common_utils';
 import { hide, fixTitle } from '~/tooltips';
 import { __ } from './locale';
 
-const updateSidebarClasses = (layoutPage, rightSidebar, windowSize = window.innerWidth) => {
-  let scrollBarWidth = 0;
-
-  if (window.innerWidth && document?.documentElement?.clientWidth) {
-    scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
-  }
-  if (windowSize + scrollBarWidth >= 992) {
+const updateSidebarClasses = (layoutPage, rightSidebar) => {
+  if (PanelBreakpointInstance.isDesktop()) {
     layoutPage.classList.remove('right-sidebar-expanded', 'right-sidebar-collapsed');
     rightSidebar.classList.remove('right-sidebar-collapsed');
     rightSidebar.classList.add('right-sidebar-expanded');
@@ -65,12 +61,9 @@ Sidebar.prototype.addEventListeners = function () {
   if (rightSidebar.classList.contains('right-sidebar-merge-requests')) {
     updateSidebarClasses(layoutPage, rightSidebar);
 
-    const resizeHandler = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        updateSidebarClasses(layoutPage, rightSidebar, entry.contentRect.width);
-      }
+    PanelBreakpointInstance.addResizeListener(() => {
+      updateSidebarClasses(layoutPage, rightSidebar);
     });
-    resizeHandler.observe(document.querySelector('html'));
   }
 };
 

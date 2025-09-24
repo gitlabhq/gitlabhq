@@ -415,17 +415,6 @@
       height: calc(#{$calc-application-viewport-height} - 1.5rem);
     }
 
-    // MR file change header
-    .diff-file .file-title, .diff-file .file-title-flex-parent {
-      @media (min-width: map-get($grid-breakpoints, md)) {
-        top: calc(#{$mr-sticky-header-height} - 2px) !important;
-
-        &.is-wiki {
-          top: -1px;
-        }
-      }
-    }
-
     // MR sidebar
     .work-item-attributes-wrapper,
     .issuable-sidebar.is-merge-request .issuable-context-form {
@@ -497,7 +486,7 @@
       @apply gl-pr-0 #{!important};
     }
 
-    &:not(.wiki-sidebar):not(.build-sidebar) .panel-content-inner {
+    &:not(.wiki-sidebar):not(.build-sidebar):not(.is-merge-request) .panel-content-inner {
       @container content-panels (width >= #{map.get($breakpoints, 'sm')}) {
         padding-right: $right-sidebar-width;
       }
@@ -533,7 +522,7 @@
     @apply gl-border-l-0;
   }
 
-  :where(.right-sidebar-collapsed:not(.issuable-bulk-update-sidebar)) {
+  :where(.right-sidebar-collapsed:not(.issuable-bulk-update-sidebar, .is-merge-request)) {
     .content-wrapper {
       @apply gl-pr-0 #{!important};
     }

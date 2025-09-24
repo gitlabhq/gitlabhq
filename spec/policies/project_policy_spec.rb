@@ -1057,38 +1057,6 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
-  describe 'read_grafana', feature_category: :observability do
-    using RSpec::Parameterized::TableSyntax
-
-    let(:policy) { :read_grafana }
-
-    where(:project_visibility, :role, :allowed) do
-      :public   | :anonymous | false
-      :public   | :guest     | false
-      :public   | :planner   | false
-      :public   | :reporter  | true
-      :internal | :anonymous | false
-      :internal | :guest     | true
-      :internal | :planner   | true
-      :internal | :reporter  | true
-      :private  | :anonymous | false
-      :private  | :guest     | true
-      :private  | :planner   | true
-      :private  | :reporter  | true
-    end
-
-    with_them do
-      let(:current_user) { public_send(role) }
-      let(:project) { public_send("#{project_visibility}_project") }
-
-      if params[:allowed]
-        it { is_expected.to be_allowed(policy) }
-      else
-        it { is_expected.not_to be_allowed(policy) }
-      end
-    end
-  end
-
   describe 'read_prometheus', feature_category: :observability do
     using RSpec::Parameterized::TableSyntax
 

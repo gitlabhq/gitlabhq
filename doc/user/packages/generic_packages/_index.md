@@ -457,32 +457,63 @@ download_package:
 
 ### Download an entire package
 
-To download all files in a package, list the package contents using the GitLab API, then download each file:
+To download all files in a package, you must: 
+
+1. Get the package ID.
+1. List the package contents using the GitLab API.
+1. Download each file.
+
+Run the following command to download all files in a package:
 
 ```shell
 TOKEN="<access_token>"
 PROJECT_ID="24"
-PACKAGE_ID="1234"
 PACKAGE_NAME="my_package"
 PACKAGE_VERSION="1.0.0"
+GITLAB_URL="https://gitlab.example.com"
 OUTPUT_DIR="./downloaded_package"
 
 # Create output directory
 mkdir -p "$OUTPUT_DIR"
 
-# Get list of files in the package
-files=$(curl --location --header  "PRIVATE-TOKEN: $TOKEN" \
-     "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/packages/$PACKAGE_ID/package_files" \
+# Step 1: Get the package ID
+PACKAGE_ID=$(curl --location --header "PRIVATE-TOKEN: $TOKEN" \
+     "$GITLAB_URL/api/v4/projects/$PROJECT_ID/packages?package_type=generic&package_name=$PACKAGE_NAME&package_version=$PACKAGE_VERSION" \
+     | jq -r ".[] | select(.name==\"$PACKAGE_NAME\" and .version==\"$PACKAGE_VERSION\") | .id")
+
+if [ -z "$PACKAGE_ID" ] || [ "$PACKAGE_ID" = "null" ]; then
+    echo "Error: Package '$PACKAGE_NAME' version '$PACKAGE_VERSION' not found"
+    exit 1
+fi
+
+echo "Found package ID: $PACKAGE_ID"
+
+# Step 2: Get list of files in the package
+files=$(curl --location --header "PRIVATE-TOKEN: $TOKEN" \
+     "$GITLAB_URL/api/v4/projects/$PROJECT_ID/packages/$PACKAGE_ID/package_files" \
      | jq -r '.[].file_name')
 
-# Download each file
+if [ -z "$files" ]; then
+    echo "Error: No files found in package"
+    exit 1
+fi
+
+# Step 3: Download each file
 for file in $files; do
-    curl --location --header  "PRIVATE-TOKEN: $TOKEN" \
+    echo "Downloading: $file"
+    curl --location --header "PRIVATE-TOKEN: $TOKEN" \
          --output "$OUTPUT_DIR/$file" \
          --create-dirs \
-         "https://gitlab.example.com/api/v4/projects/$PROJECT_ID/packages/generic/$PACKAGE_NAME/$PACKAGE_VERSION/$file"
-    echo "Downloaded: $file"
+         "$GITLAB_URL/api/v4/projects/$PROJECT_ID/packages/generic/$PACKAGE_NAME/$PACKAGE_VERSION/$file"
+    # Check if download was successful
+    if [ $? -eq 0 ]; then
+        echo "✓ Downloaded: $file"
+    else
+        echo "✗ Failed to download: $file"
+    fi
 done
+
+echo "Package download complete"
 ```
 
 ## Disable publishing duplicate package names

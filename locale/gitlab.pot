@@ -4628,9 +4628,6 @@ msgstr ""
 msgid "AdminArea|Developer"
 msgstr ""
 
-msgid "AdminArea|Documentation"
-msgstr ""
-
 msgid "AdminArea|Edit OAuth configuration"
 msgstr ""
 
@@ -30873,13 +30870,13 @@ msgstr ""
 msgid "GlobalSearch|Project"
 msgstr ""
 
+msgid "GlobalSearch|Project repository data not indexed"
+msgstr ""
+
 msgid "GlobalSearch|Projects"
 msgstr ""
 
 msgid "GlobalSearch|Projects I'm a member of"
-msgstr ""
-
-msgid "GlobalSearch|Projects not indexed"
 msgstr ""
 
 msgid "GlobalSearch|Recent epics"
@@ -65535,7 +65532,16 @@ msgstr ""
 msgid "The number of direct members in the current group. Members in subgroups are not included. %{link_start}What is a direct member%{link_end}?"
 msgstr ""
 
+msgid "The number of documents waiting for full indexing. This includes new content, project imports, transfers, and search migrations that require complete reindexing."
+msgstr ""
+
+msgid "The number of documents waiting for updates to existing indexed content. These represent changes to previously indexed files, commits, or metadata."
+msgstr ""
+
 msgid "The number of merge requests merged by month."
+msgstr ""
+
+msgid "The number of projects that have no repository data indexed. A value of 0 means all projects have had repository data indexed at least once, though some may need updates. This metric tracks only projects completely missing repository data from the index, not those needing incremental updates."
 msgstr ""
 
 msgid "The number of times an upload record could not find its file"

@@ -322,7 +322,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "labels" => "https://gitlab.com/gitlab-org/gitlab/-/issues/563889",
       "notes" => "https://gitlab.com/gitlab-org/gitlab/-/issues/569521",
       "notes_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/569521",
-      "jira_connect_installations" => "https://gitlab.com/gitlab-org/gitlab/-/issues/524682"
+      "jira_connect_installations" => "https://gitlab.com/gitlab-org/gitlab/-/issues/524682",
+      "system_note_metadata" => "https://gitlab.com/gitlab-org/gitlab/-/issues/571215"
     }
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }
 

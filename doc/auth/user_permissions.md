@@ -22,6 +22,8 @@ custom roles with specific permissions tailored to your organizational needs.
 - [Auditor users](../administration/auditor_users.md)
 - [External users](../administration/external_users.md)
 - [Internal users](../administration/internal_users.md)
+- [Enterprise users](../user/enterprise_user/_index.md)
+- [Service accounts](../user/profile/service_accounts.md)
 
 {{< /cards >}}
 

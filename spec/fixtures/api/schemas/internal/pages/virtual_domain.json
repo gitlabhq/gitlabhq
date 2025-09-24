@@ -5,12 +5,34 @@
   ],
   "optional": [
     "certificate",
-    "key"
+    "key",
+    "root_namespace_id"
   ],
   "properties": {
-    "certificate": { "type": ["string", "null"] },
-    "key": { "type": ["string", "null"] },
-    "lookup_paths": { "type": "array", "items": { "$ref": "lookup_path.json" } }
+    "certificate": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "key": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "root_namespace_id": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "lookup_paths": {
+      "type": "array",
+      "items": {
+        "$ref": "lookup_path.json"
+      }
+    }
   },
   "additionalProperties": false
 }

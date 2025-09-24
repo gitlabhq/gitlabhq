@@ -6,7 +6,6 @@ RSpec.describe Gitlab::Doctor::Secrets, feature_category: :shared do
   let!(:user) { create(:user, otp_secret: "test") }
   let!(:group) { create(:group, :allow_runner_registration_token, runners_token: "test") }
   let!(:project) { create(:project) }
-  let!(:grafana_integration) { create(:grafana_integration, project: project, token: "test") }
   let!(:integration) { create(:integration, project: project, properties: { test_key: "test_value" }) }
   let!(:webhook) { create(:project_hook, project: project) }
   let(:logger) { instance_double(Logger).as_null_object }
@@ -102,14 +101,6 @@ RSpec.describe Gitlab::Doctor::Secrets, feature_category: :shared do
       expect(integration).to receive(:initialize_properties)
 
       integration.run_callbacks(:initialize)
-    end
-  end
-
-  context 'when GrafanaIntegration token is set via private method' do
-    it 'can access GrafanaIntegration token value' do
-      expect(logger).to receive(:info).with(/GrafanaIntegration failures: 0/)
-
-      doctor_secrets
     end
   end
 

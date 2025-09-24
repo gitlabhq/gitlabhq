@@ -330,7 +330,7 @@ $diff-file-header-top: 11px;
   height: var(--file-row-height);
 }
 
-@media (max-width: map.get($grid-breakpoints, lg)-1) {
+@include gl-container-width-down(lg, panel) {
   .diffs .files {
     .diff-tree-list {
       --tree-list-max-height: calc(var(--file-row-height) * 8);
@@ -338,7 +338,7 @@ $diff-file-header-top: 11px;
       // height is fully handled on the javascript side in narrow view
       min-height: 0;
       height: auto;
-      top: 0;
+      top: 0 !important;
       // !important is required to override inline styles of resizable sidebar
       width: 100% !important;
       // avoid sticky elements overlap header and other elements
@@ -823,6 +823,10 @@ $diff-file-header-top: 11px;
       margin-left: auto;
       margin-right: auto;
       max-width: $fixed-layout-width - ($container-margin-xl * 2);
+
+      .page-with-panels & {
+        max-width: $fixed-layout-width - $container-margin-xl;
+      }
     }
   }
 }

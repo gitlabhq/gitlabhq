@@ -14,8 +14,8 @@ module Ci
       (local + cross_pipeline + cross_project).uniq
     end
 
-    def invalid_local
-      local.reject(&:valid_dependency?)
+    def invalid
+      [local, cross_pipeline, cross_project].flat_map { |deps| deps.reject(&:valid_dependency?) }
     end
 
     def valid?

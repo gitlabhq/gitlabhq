@@ -71,7 +71,6 @@ Style/GuardClause:
     - 'app/models/environment.rb'
     - 'app/models/error_tracking/project_error_tracking_setting.rb'
     - 'app/models/generic_commit_status.rb'
-    - 'app/models/grafana_integration.rb'
     - 'app/models/integrations/datadog.rb'
     - 'app/models/internal_id.rb'
     - 'app/models/issue.rb'

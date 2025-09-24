@@ -2,6 +2,7 @@ import Vue, { nextTick } from 'vue';
 import { shallowMount } from '@vue/test-utils';
 import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import FileBrowserHeight from '~/diffs/components/file_browser_height.vue';
 import StickyViewportFillerHeight from '~/diffs/components/sticky_viewport_filler_height.vue';
 import { globalAccessorPlugin } from '~/pinia/plugins';
@@ -17,6 +18,7 @@ describe('FileBrowserHeight', () => {
   let wrapper;
   let pinia;
   let screenChangeCallback;
+  let mockBreakpointSize;
 
   const minHeight = 300;
   const topPadding = 16;
@@ -41,12 +43,12 @@ describe('FileBrowserHeight', () => {
     });
   };
   const mockMatchMedia = (matches = false) => {
-    jest.spyOn(window, 'matchMedia').mockReturnValue({
-      matches,
-      addEventListener: jest.fn((_, callback) => {
-        screenChangeCallback = callback;
-      }),
-      removeEventListener: jest.fn(),
+    mockBreakpointSize = matches ? 'sm' : 'lg';
+    jest
+      .spyOn(PanelBreakpointInstance, 'getBreakpointSize')
+      .mockImplementation(() => mockBreakpointSize);
+    jest.spyOn(PanelBreakpointInstance, 'addResizeListener').mockImplementation((callback) => {
+      screenChangeCallback = callback;
     });
   };
 
@@ -72,7 +74,8 @@ describe('FileBrowserHeight', () => {
     it('swaps to narrow view', async () => {
       createComponent();
       await nextTick();
-      screenChangeCallback({ matches: true });
+      mockBreakpointSize = 'sm';
+      screenChangeCallback();
       await nextTick();
       expect(wrapper.findComponent(StickyViewportFillerHeight).exists()).toBe(false);
       expect(findSlotContent().exists()).toBe(true);
@@ -103,7 +106,8 @@ describe('FileBrowserHeight', () => {
     it('swaps to widescreen view', async () => {
       createComponent();
       await nextTick();
-      screenChangeCallback({ matches: false });
+      mockBreakpointSize = 'lg';
+      screenChangeCallback();
       await nextTick();
       expect(wrapper.findComponent(StickyViewportFillerHeight).exists()).toBe(true);
       expect(findSlotContent().exists()).toBe(true);

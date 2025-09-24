@@ -121,24 +121,26 @@ You can access [application logs](../../administration/dedicated/monitor.md) for
 
 ### Bring your own domain
 
-You can use your own hostname to access your GitLab Dedicated instance. Instead of `tenant_name.gitlab-dedicated.com`, you can use a hostname for a domain that you own, like `gitlab.my-company.com`. Optionally, you can also provide a custom hostname for the bundled container registry and KAS services for your GitLab Dedicated instance. For example, `gitlab-registry.my-company.com` and `gitlab-kas.my-company.com`.
+You can use your own custom domain to access your GitLab Dedicated instance
+instead of the default `tenant_name.gitlab-dedicated.com` URL.
+For example, you could use `gitlab.company.com` to access your instance.
 
-Add a custom hostname to:
+Use a custom domain when you need to:
 
-- Increase control over branding
-- Avoid having to migrate away from an existing domain already configured for a GitLab Self-Managed instance
+- Migrate from an existing GitLab Self-Managed instance without changing URLs.
+- Maintain consistent branding across your organization's tools.
+- Integrate with existing certificate management or domain policies.
 
-When you add a custom hostname:
+You can configure a custom domain for your main GitLab instance and for the bundled
+container registry and GitLab agent server for Kubernetes.
 
-- The hostname is included in the external URL used to access your instance.
-- Any connections to your instance using the previous domain names are no longer available.
-
-For more information about using a custom hostname for your GitLab Dedicated instance, see [bring your own domain (BYOD)](../../administration/dedicated/configure_instance/network_security.md#bring-your-own-domain-byod).
+For more information, see [bring your own domain (BYOD)](../../administration/dedicated/configure_instance/network_security.md#bring-your-own-domain-byod).
 
 {{< alert type="note" >}}
 
-Custom hostnames for GitLab Pages are not supported. If you use GitLab Pages,
-the URL to access the Pages site for your GitLab Dedicated instance would be `tenant_name.gitlab-dedicated.site`.
+GitLab Pages does not support custom domains. Pages sites are accessible only at
+`tenant_name.gitlab-dedicated.site`, regardless of any custom domain configured for your
+GitLab Dedicated instance.
 
 {{< /alert >}}
 

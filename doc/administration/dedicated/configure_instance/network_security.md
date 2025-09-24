@@ -15,72 +15,78 @@ title: GitLab Dedicated network access and security
 
 ## Bring your own domain (BYOD)
 
-You can use a [custom hostname](../../../subscriptions/gitlab_dedicated/_index.md#bring-your-own-domain) to access your GitLab Dedicated instance. You can also provide a custom hostname for the bundled container registry and Kubernetes Agent Server (KAS) services.
+By default, your GitLab Dedicated instance is accessible at a URL like `your-tenant.gitlab-dedicated.com`.
+With bring your own domain (BYOD), you can use your own custom domain name to access your GitLab Dedicated instance and its services.
+For example, you could access your instance at `gitlab.company.com` instead of `your-tenant.gitlab-dedicated.com`.
 
-### Let's Encrypt certificates
+When you add a custom domain:
 
-GitLab Dedicated integrates with [Let's Encrypt](https://letsencrypt.org/), a free, automated, and open source certificate authority. When you use a custom hostname, Let's Encrypt automatically issues and renews SSL/TLS certificates for your domain.
+- The domain is included in the external URL used to access your instance.
+- Any connections to your instance using the default `tenant.gitlab-dedicated.com` domain are no longer available.
 
-This integration uses the [`http-01` challenge](https://letsencrypt.org/docs/challenge-types/#http-01-challenge) to obtain certificates through Let's Encrypt.
+GitLab automatically manages SSL/TLS certificates for your custom domain using [Let's Encrypt](https://letsencrypt.org/).
+Let's Encrypt uses the [HTTP-01 challenge](https://letsencrypt.org/docs/challenge-types/#http-01-challenge)
+to verify domain ownership, which requires:
 
-### Set up DNS records
+- The CNAME record to be publicly resolvable through DNS.
+- The same public validation process for automatic certificate renewal every 90 days.
 
-To use a custom hostname with GitLab Dedicated, you must update your domain's DNS records.
+For instances configured with private networking (such as AWS PrivateLink), public DNS resolution
+ensures certificate management works properly, even when all other access is restricted to private networks.
+
+### Configure DNS records
+
+To use a custom domain, first update your domain's DNS records.
 
 Prerequisites:
 
 - Access to your domain host's DNS settings.
 
-To set up DNS records for a custom hostname with GitLab Dedicated:
+To set up DNS records for a custom domain with GitLab Dedicated:
 
 1. Sign in to your domain host's website.
-
 1. Go to the DNS settings.
-
-1. Add a `CNAME` record that points your custom hostname to your GitLab Dedicated tenant. For example:
+1. Add a `CNAME` record that points your custom domain to your GitLab Dedicated tenant. For example:
 
    ```plaintext
-    gitlab.my-company.com.  CNAME  my-tenant.gitlab-dedicated.com
+   gitlab.my-company.com.  CNAME  my-tenant.gitlab-dedicated.com
    ```
 
-1. Optional. If your domain has an existing `CAA` record, update it to include [Let's Encrypt](https://letsencrypt.org/docs/caa/) as a valid certificate authority. If your domain does not have any `CAA` records, you can skip this step. For example:
+1. Optional. If your domain has an existing `CAA` record, update it to include
+   [Let's Encrypt](https://letsencrypt.org/docs/caa/) as a valid certificate authority.
+   If your domain does not have any `CAA` records, you can skip this step. For example:
 
    ```plaintext
    example.com.  IN  CAA 0 issue "pki.goog"
    example.com.  IN  CAA 0 issue "letsencrypt.org"
    ```
 
-   In this example, the `CAA` record defines Google Trust Services (`pki.goog`) and Let's Encrypt (`letsencrypt.org`) as certificate authorities that are allowed to issue certificates for your domain.
+   In this example, the `CAA` record defines Google Trust Services (`pki.goog`) and
+   Let's Encrypt (`letsencrypt.org`) as certificate authorities that are allowed to issue certificates for your domain.
 
 1. Save your changes and wait for the DNS changes to propagate.
 
+Keep these DNS records in place as long as you use a custom domain with your GitLab Dedicated instance.
+
 {{< alert type="note" >}}
 
-DNS records must stay in place as long as you use the BYOD feature.
+Your custom domain must be publicly resolvable through DNS for SSL certificate management,
+even if you access your instance through private networks.
 
 {{< /alert >}}
 
-### DNS requirements for Let's Encrypt certificates
+### Request a custom domain
 
-When using custom hostnames with GitLab Dedicated, your domain must be publicly resolvable
-through DNS, even if you plan to access your instance through private networks only.
+After you configure DNS records, submit a
+[support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650)
+to enable your custom domain.
 
-This public DNS requirement exists because:
+In your support ticket, specify:
 
-- Let's Encrypt uses the HTTP-01 challenge, which requires public internet access to verify
-  domain ownership.
-- The validation process must reach your custom hostname from the public internet through
-  the CNAME record that points to your GitLab Dedicated tenant.
-- Certificate renewal happens automatically every 90 days and uses the same public
-  validation process as the initial issuance.
-
-For instances configured with private networking (such as AWS PrivateLink), maintaining public
-DNS resolution ensures certificate renewal works properly, even when all other access is
-restricted to private networks.
-
-### Add your custom hostname
-
-To use a custom hostname with the [container registry](../../packages/container_registry.md) or the [GitLab agent server for Kubernetes](../../clusters/kas.md) on your existing GitLab Dedicated instance, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+- Your custom domain name.
+- Whether you need a custom domain for the bundled [container registry](../../packages/container_registry.md)
+  and [GitLab agent server for Kubernetes](../../clusters/kas.md).
+  For example, `registry.company.com` and `kas.company.com`.
 
 ## Custom certificate authority
 

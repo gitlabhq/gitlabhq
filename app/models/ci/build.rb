@@ -976,7 +976,7 @@ module Ci
     end
 
     def invalid_dependencies
-      dependencies.invalid_local
+      dependencies.invalid
     end
 
     def valid_dependency?

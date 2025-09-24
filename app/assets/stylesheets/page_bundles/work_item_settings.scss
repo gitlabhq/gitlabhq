@@ -2,16 +2,6 @@
 
 .workflow-container {
   position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 20px;
-    width: 2px;
-    height: calc(100% - 40px);
-    background-color: var(--gl-status-info-icon-color);
-    z-index: 1;
-  }
 }
 
 .workflow-step {
@@ -29,6 +19,27 @@
     border-radius: 50%;
     z-index: 2;
     transition: all 0.2s ease;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 18px;
+    width: 2px;
+    height: calc(100% + 2rem - 22px);
+    background-color: var(--gl-status-info-icon-color);
+    z-index: 2;
+    transition: all 0.2s ease;
+  }
+
+  // Hide line after the last step
+  &:last-child::after {
+    display: none;
+  }
+
+  &.active::after {
+    top: 20px;
   }
 
   // Active step (current step)

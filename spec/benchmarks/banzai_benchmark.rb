@@ -34,7 +34,6 @@ RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures, feature_categor
   let_it_be(:wiki_page)     { feature.wiki_page }
   let_it_be(:markdown_text) { feature.raw_markdown }
   let_it_be(:glfm_engine)   { Banzai::Filter::MarkdownFilter::GLFM_ENGINE }
-  let_it_be(:grafana_integration) { create(:grafana_integration, project: project) }
   let_it_be(:default_context) do
     {
       project: project,

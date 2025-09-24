@@ -1,6 +1,5 @@
 <script>
 import { GlLoadingIcon, GlPagination, GlSprintf, GlAlert } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { debounce, throttle } from 'lodash';
 import { mapState, mapActions } from 'pinia';
 import FindingsDrawer from 'ee_component/diffs/components/shared/findings_drawer.vue';
@@ -12,6 +11,7 @@ import {
   MR_COMMITS_PREVIOUS_COMMIT,
   MR_TOGGLE_REVIEW,
 } from '~/behaviors/shortcuts/keybindings';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { createAlert } from '~/alert';
 import { InternalEvents } from '~/tracking';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -396,6 +396,16 @@ export default {
     this.subscribeToVirtualScrollingEvents();
     window.addEventListener('hashchange', this.handleHashChange);
     window.addEventListener('scroll', this.hideTooltips);
+
+    if (document.querySelector('.js-static-panel-inner')) {
+      PanelBreakpointInstance.addResizeListener(() => {
+        if (!PanelBreakpointInstance.isDesktop()) {
+          this.setFileBrowserVisibility(false);
+        } else {
+          this.setTreeDisplay();
+        }
+      });
+    }
   },
   beforeCreate() {
     diffsApp.instrument();
@@ -689,7 +699,7 @@ export default {
         this.setFileBrowserVisibility(parseBoolean(hideBrowserPreference));
       } else {
         const shouldHide =
-          !GlBreakpointInstance.isDesktop() ||
+          !PanelBreakpointInstance.isDesktop() ||
           (!this.isBatchLoading && this.flatBlobsList.length <= 1);
         this.setFileBrowserVisibility(!shouldHide);
       }

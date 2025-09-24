@@ -130,6 +130,7 @@ export default {
       this.parentObserver = null;
     },
     disconnectViewport() {
+      this.throttledSampleRects.cancel();
       window.removeEventListener('scroll', this.throttledSampleRects);
       window.removeEventListener('resize', this.cacheViewportHeight);
     },
