@@ -917,8 +917,10 @@ describe('diffs/components/app', () => {
 
     it('fetches and displays the file', async () => {
       const linkedFile = getDiffFileMock();
-      store.diffFiles = [linkedFile];
-      store.linkedFilehash = linkedFile.file_hash;
+      linkedFile.file_hash = 'linked';
+      const regularFile = getDiffFileMock();
+      store.diffFiles = [regularFile, linkedFile];
+      store.linkedFileHash = linkedFile.file_hash;
       createComponent({ props: { linkedFileUrl } });
       await waitForPromises();
 
