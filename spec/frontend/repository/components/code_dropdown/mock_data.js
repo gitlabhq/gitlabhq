@@ -26,10 +26,16 @@ export const mockIdeItems = [
   {
     items: [
       {
+        extraAttrs: {
+          isUnsafeLink: true,
+        },
         href: 'vscode://vscode.git/clone?url=ssh%3A%2F%2Ffoo.bar',
         text: 'SSH',
       },
       {
+        extraAttrs: {
+          isUnsafeLink: true,
+        },
         href: 'vscode://vscode.git/clone?url=http%3A%2F%2Ffoo.bar',
         text: 'HTTPS',
       },
@@ -39,10 +45,16 @@ export const mockIdeItems = [
   {
     items: [
       {
+        extraAttrs: {
+          isUnsafeLink: true,
+        },
         href: 'jetbrains://idea/checkout/git?idea.required.plugins.id=Git4Idea&checkout.repo=ssh%3A%2F%2Ffoo.bar',
         text: 'SSH',
       },
       {
+        extraAttrs: {
+          isUnsafeLink: true,
+        },
         href: 'jetbrains://idea/checkout/git?idea.required.plugins.id=Git4Idea&checkout.repo=http%3A%2F%2Ffoo.bar',
         text: 'HTTPS',
       },
@@ -50,6 +62,9 @@ export const mockIdeItems = [
     text: 'IntelliJ IDEA',
   },
   {
+    extraAttrs: {
+      isUnsafeLink: true,
+    },
     href: 'xcode://foo.bar',
     text: 'Xcode',
   },

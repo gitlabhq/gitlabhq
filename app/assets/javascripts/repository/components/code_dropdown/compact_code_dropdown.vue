@@ -131,7 +131,11 @@ export default {
       }
 
       if (this.xcodeUrl) {
-        actions.push({ text: __('Xcode'), href: this.xcodeUrl });
+        actions.push({
+          text: __('Xcode'),
+          href: this.xcodeUrl,
+          extraAttrs: { isUnsafeLink: true },
+        });
       }
 
       return actions;
@@ -194,6 +198,9 @@ export default {
                 {
                   text: __('SSH'),
                   href: `${baseUrl}${this.sshUrlEncoded}`,
+                  extraAttrs: {
+                    isUnsafeLink: true,
+                  },
                 },
               ]
             : []),
@@ -202,6 +209,9 @@ export default {
                 {
                   text: __('HTTPS'),
                   href: `${baseUrl}${this.httpUrlEncoded}`,
+                  extraAttrs: {
+                    isUnsafeLink: true,
+                  },
                 },
               ]
             : []),
