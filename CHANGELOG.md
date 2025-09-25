@@ -2,6 +2,36 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.3.3 (2025-09-25)
+
+### Added (1 change)
+
+- [Add job project claims to CI ID Tokens](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f2fbc42345c2b907c7b3a8f9988972117199788f)
+
+### Fixed (7 changes)
+
+- [Use isUnsafeLink for xcode protocol](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cceeb02fd87dea5260935ca6dc485eb8de0b62c0)
+- [Optimize HandleMalformedStrings middleware for CPU and memory](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4082a4d613c73890bc28839bc60d1352067fd9a3)
+- [Merge branch 'tchu-fix-forbidden-causing-save-errors-in-search-admin' into 'master'](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fd9947e3073b242eaddcb29449345cb09a9bc47b) **GitLab Enterprise Edition**
+- [Fix the rendering when content is empty](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6b7548ccf491e17aac35ef501f0a67f98f7fc150) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202049))
+- [Exclude other report types from scan readiness check](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0d6684b6cff8dd9e323577276fb977b4d2f496a2) **GitLab Enterprise Edition**
+- [Fix security widget polling indefinitely when there are sboms](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4613a87bde04e9bf4cd506c70a4e011fa9df986b) **GitLab Enterprise Edition**
+- [Merge branch 'ngala/geo-secondary-deployment-filename' into 'master'](https://gitlab.com/gitlab-org/security/gitlab/-/commit/106eca44590cff62d0d4121660b91605b8043f5a)
+
+### Security (11 changes)
+
+- [Increase JSON validation limits on NPM endpoints](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4a9b696cdf821a88cab6664ab179ae46edb54f16) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5361))
+- [Addresses logical bug in the GraphQL base resolver](https://gitlab.com/gitlab-org/security/gitlab/-/commit/536a9c86c750c8dfb94fc18f1e75f6a4c6b5975f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5275))
+- [Escape text for wrapNodes utility](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4483cacb226a15a75ca690ff5c8e2795895d1597) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5307))
+- [Add the rate limit in BlobSearch GraphQL](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0def0dec4033082f8f15a601ef5129372dade734) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5251))
+- [Fix Identical Project Names via Move Issue Drop Down leads to Confusion](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d267a454c0eee30648c880c6f5ce17f1400a1c9e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5258))
+- [Prevent role assignment for custom roles in projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cdbd08c0d9e72b5ce925c0df3b0fad7c1de5c713) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5338))
+- [Only owners can invite groups](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bc2a782805997d9d7be4640d13d8a339020b3ab9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5310))
+- [Add limit to array fields in WorkItems API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0c67ed0d001cb492fbaf5fcac3419ad1349c5888) by @afrnz ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5262))
+- [Limit String => Integer conversions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6abe5b8d77c7085cf36253f012ba809cd9341654) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5276))
+- [Removes password field from maven upstream GraphQL type](https://gitlab.com/gitlab-org/security/gitlab/-/commit/811f03bc8c1b47ac9a97f32abbda5c57b6f0d61b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5315))
+- [Add JSON input streaming validator middleware](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f6991c93fc0d9264d4870efcf372c1347df3b421) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5350))
+
 ## 18.3.2 (2025-09-09)
 
 ### Added (1 change)

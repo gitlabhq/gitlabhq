@@ -164,18 +164,6 @@ RSpec.describe Resolvers::WorkItemsResolver, feature_category: :team_planning do
 
       context 'with parent_ids filter' do
         shared_examples 'a parent_id filter' do |param_builder|
-          context 'when filtering by more than 100 parent ids' do
-            let(:too_many_parent_ids) { (1..101).to_a }
-
-            it 'throws an error' do
-              params = param_builder.call(parent_ids: too_many_parent_ids)
-              response = batch_sync { resolve_items(params) }
-
-              expect(response).to be_a(GraphQL::ExecutionError)
-              expect(response.message).to eq('You can only provide up to 100 parentIds at once.')
-            end
-          end
-
           context 'when converting global ids to work item ids' do
             let_it_be(:work_item1) { create(:work_item) }
             let_it_be(:work_item2) { create(:work_item) }
@@ -266,34 +254,12 @@ RSpec.describe Resolvers::WorkItemsResolver, feature_category: :team_planning do
               end
             end
           end
-
-          context 'when filtering by more than 100 release_tag' do
-            let(:too_many_release_tag_ids) { (1..101).to_a }
-
-            it 'throws an error' do
-              response = batch_sync { resolve_items(release_tag: too_many_release_tag_ids) }
-
-              expect(response).to be_a(GraphQL::ExecutionError)
-              expect(response.message).to eq('You can only provide up to 100 releaseTag at once.')
-            end
-          end
         end
 
         describe 'filter by negated release_tag' do
           it 'returns all issues not associated with the specified tags' do
             expect(resolve_items(not: { release_tag: [release1.tag,
               release3.tag] })).to contain_exactly(release_work_item_issue2)
-          end
-
-          context 'when filtering by more than 100 excluding release_tag' do
-            let(:too_many_release_tag_ids) { (1..101).to_a }
-
-            it 'throws an error' do
-              response = batch_sync { resolve_items(not: { release_tag: too_many_release_tag_ids }) }
-
-              expect(response).to be_a(GraphQL::ExecutionError)
-              expect(response.message).to eq('You can only provide up to 100 releaseTag at once.')
-            end
           end
         end
 

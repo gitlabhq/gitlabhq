@@ -6,12 +6,8 @@ module Projects
       def execute(group_link, skip_authorization: false)
         return not_found! unless group_link
 
-        unless skip_authorization
-          return not_found! unless allowed_to_manage_destroy?(group_link)
-
-          unless allowed_to_destroy_link?(group_link)
-            return ServiceResponse.error(message: 'Forbidden', reason: :forbidden)
-          end
+        unless skip_authorization || allowed_to_destroy_link?(group_link)
+          return ServiceResponse.error(message: 'Forbidden', reason: :forbidden)
         end
 
         if group_link.project.private?
@@ -44,12 +40,9 @@ module Projects
         ServiceResponse.error(message: 'Not found', reason: :not_found)
       end
 
-      def allowed_to_manage_destroy?(group_link)
-        current_user.can?(:manage_destroy, group_link)
-      end
-
       def allowed_to_destroy_link?(group_link)
-        current_user.can?(:destroy_project_group_link, group_link)
+        Ability.allowed?(current_user, :delete_group_link, group_link) ||
+          Ability.allowed?(current_user, :delete_group_link, group_link.group)
       end
 
       def refresh_project_authorizations_asynchronously(project)

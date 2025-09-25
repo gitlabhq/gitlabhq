@@ -3,7 +3,6 @@
 class Projects::GroupLinksController < Projects::ApplicationController
   layout 'project_settings'
   before_action :authorize_admin_project!, except: [:destroy]
-  before_action :authorize_manage_destroy!, only: [:destroy]
   before_action :authorize_admin_project_member!, only: [:update]
 
   feature_category :groups_and_projects
@@ -34,9 +33,9 @@ class Projects::GroupLinksController < Projects::ApplicationController
           message = s_('InviteMembersModal|Group invite removed. ' \
             'It might take a few minutes for the changes to user access levels to take effect.')
 
-          if can?(current_user, :admin_group, group_link.group)
+          if can?(current_user, :delete_group_link, group_link.group)
             redirect_to group_path(group_link.group), status: :found, notice: message
-          elsif can?(current_user, :admin_project, group_link.project)
+          elsif can?(current_user, :delete_group_link, group_link.project)
             redirect_to project_project_members_path(project), status: :found, notice: message
           end
         end
@@ -57,10 +56,6 @@ class Projects::GroupLinksController < Projects::ApplicationController
   end
 
   protected
-
-  def authorize_manage_destroy!
-    render_404 unless can?(current_user, :manage_destroy, group_link)
-  end
 
   def group_link
     @project.project_group_links.find(params[:id])

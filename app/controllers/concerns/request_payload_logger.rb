@@ -3,6 +3,7 @@
 module RequestPayloadLogger
   extend ActiveSupport::Concern
   include Gitlab::Logging::CloudflareHelper
+  include Gitlab::Logging::JsonMetadataHelper
 
   def append_info_to_payload(payload)
     super
@@ -27,5 +28,6 @@ module RequestPayloadLogger
     payload[:queue_duration_s] = request.env[::Gitlab::Middleware::RailsQueueDuration::GITLAB_RAILS_QUEUE_DURATION_KEY]
 
     store_cloudflare_headers!(payload, request)
+    store_json_metadata_headers!(payload, request)
   end
 end

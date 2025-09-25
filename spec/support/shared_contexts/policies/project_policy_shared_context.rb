@@ -101,7 +101,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       archive_project change_namespace change_visibility_level destroy_issue
       destroy_merge_request manage_owners remove_fork_project remove_project
       set_issue_created_at set_issue_iid set_issue_updated_at
-      set_note_created_at
+      set_note_created_at create_group_link update_group_link delete_group_link
     ]
   end
 
