@@ -117,7 +117,7 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 	})
 
 	t.Run("successful request with limited body", func(t *testing.T) {
-		body := strings.Repeat("large body", 1024*1024)
+		body := strings.Repeat("large body", 5*1024*1024)
 
 		server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			assert.Equal(t, "/api/projects", r.URL.Path)
@@ -156,7 +156,7 @@ func TestRunHttpActionHandler_Execute(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, result)
 		require.Equal(t, "req-456", result.GetActionResponse().RequestID)
-		require.Equal(t, body[:actionResponseBodyLimit], result.GetActionResponse().GetHttpResponse().Body)
+		require.Equal(t, body[:ActionResponseBodyLimit], result.GetActionResponse().GetHttpResponse().Body)
 		require.Equal(t, int32(200), result.GetActionResponse().GetHttpResponse().StatusCode)
 	})
 
