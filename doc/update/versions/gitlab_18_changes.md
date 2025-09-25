@@ -47,12 +47,16 @@ For additional information for Helm chart installations, see
   Rails.cache.delete_matched("pipeline:*:create_persistent_ref_service")
   ```
 
+## 18.4.0
+
+- In secondary Geo sites, [a bug](https://gitlab.com/gitlab-org/gitlab/-/issues/571455) causes replication events to fail with the error message `no implicit conversion of String into Array (TypeError)`. Redundancies such as re-verification ensure eventual consistency, but RPO is significantly increased. The fix is in GitLab 18.5.0, and is being backported to GitLab 18.4.X.
+
 ## 18.3.0
 
 ### GitLab Duo
 
-A new worker `LdapAddOnSeatSyncWorker` was introduced, which could unintentionally remove all users from
-GitLab Duo seats nightly when LDAP is enabled. This was fixed in GitLab 18.4.0 and 18.3.2. See 
+- A new worker `LdapAddOnSeatSyncWorker` was introduced, which could unintentionally remove all users from
+GitLab Duo seats nightly when LDAP is enabled. This was fixed in GitLab 18.4.0 and 18.3.2. See
 [issue 565064](https://gitlab.com/gitlab-org/gitlab/-/issues/565064) for details.
 
 ### Geo installations 18.3.0

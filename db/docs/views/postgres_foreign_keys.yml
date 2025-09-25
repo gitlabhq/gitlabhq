@@ -1,6 +1,6 @@
 ---
 view_name: postgres_foreign_keys
-description: TODO
+description: Expose foreign key relationships between tables
 classes:
 - Gitlab::Database::PostgresForeignKey
 feature_categories:

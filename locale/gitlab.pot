@@ -6311,9 +6311,6 @@ msgstr ""
 msgid "AiImpactAnalytics|Monthly GitLab Duo Code Suggestions accepted / total Code Suggestions generated."
 msgstr ""
 
-msgid "AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors in the last 30 days. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
 msgid "AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors."
 msgstr ""
 
@@ -6321,6 +6318,9 @@ msgid "AiImpactAnalytics|Monthly user engagement with Duo Root Cause Analysis. P
 msgstr ""
 
 msgid "AiImpactAnalytics|Monthly user engagement with GitLab Duo Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors."
+msgstr ""
+
+msgid "AiImpactAnalytics|Percentage ratio of Duo seats assigned that interacted with Code Suggestions / total number of unique code contributors with Duo seats. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "AiImpactAnalytics|Percentage ratio of total Duo seats assigned / Duo seats assigned that interacted with Duo Chat. %{linkStart}Learn more%{linkEnd}."
@@ -77058,6 +77058,9 @@ msgid "cannot be enabled because parent group does not allow it"
 msgstr ""
 
 msgid "cannot be enabled because parent group has shared Runners disabled"
+msgstr ""
+
+msgid "cannot be enabled on Dedicated"
 msgstr ""
 
 msgid "cannot be enabled unless all domains have TLS certificates"

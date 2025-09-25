@@ -1689,6 +1689,23 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="querysecretpermissionsprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the secret permission belong to. |
 
+### `Query.securityPoliciesSyncStatus`
+
+{{< details >}}
+**Introduced** in GitLab 18.4.
+**Status**: Experiment.
+{{< /details >}}
+
+Get the current security policy synchronization status.
+
+Returns [`PoliciesSyncUpdated`](#policiessyncupdated).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querysecuritypoliciessyncstatuspolicyconfigurationid"></a>`policyConfigurationId` | [`SecurityOrchestrationPolicyConfigurationID!`](#securityorchestrationpolicyconfigurationid) | ID of the security orchestration policy configuration. |
+
 ### `Query.selfManagedAddOnEligibleUsers`
 
 {{< details >}}
@@ -38347,6 +38364,7 @@ Security policy state synchronization update. Returns `null` if the `security_po
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="policiessyncupdatedfailedprojects"></a>`failedProjects` | [`[String!]`](#string) | IDs of failed projects. |
+| <a id="policiessyncupdatedinprogress"></a>`inProgress` | [`Boolean`](#boolean) | Whether security policies are currently being synchronized. |
 | <a id="policiessyncupdatedmergerequestsprogress"></a>`mergeRequestsProgress` | [`Float`](#float) | Percentage of merge requests synced. |
 | <a id="policiessyncupdatedmergerequeststotal"></a>`mergeRequestsTotal` | [`Int`](#int) | Total number of merge requests synced. |
 | <a id="policiessyncupdatedprojectsprogress"></a>`projectsProgress` | [`Float`](#float) | Percentage of projects synced. |

@@ -863,7 +863,8 @@ class ApplicationSetting < ApplicationRecord
       :lock_pypi_package_requests_forwarding,
       :maven_package_requests_forwarding,
       :lock_maven_package_requests_forwarding,
-      :pages_unique_domain_default_enabled
+      :pages_unique_domain_default_enabled,
+      :allow_immediate_namespaces_deletion
     )
   end
 
@@ -972,6 +973,15 @@ class ApplicationSetting < ApplicationRecord
   validates :bulk_import_enabled,
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
+  jsonb_accessor :namespace_deletion_settings,
+    allow_immediate_namespaces_deletion: [:boolean, { default: true }]
+
+  validates :namespace_deletion_settings, json_schema: { filename: "application_setting_namespace_deletion_settings" }
+
+  validates :allow_immediate_namespaces_deletion,
+    inclusion: { in: [false], message: N_('cannot be enabled on Dedicated') },
+    if: :gitlab_dedicated_instance
 
   validates :allow_runner_registration_token,
     allow_nil: false,

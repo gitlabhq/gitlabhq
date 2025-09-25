@@ -143,7 +143,7 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
 
         context 'when instance is dedicated' do
           before do
-            Gitlab::CurrentSettings.update!(gitlab_dedicated_instance: true)
+            stub_application_setting(gitlab_dedicated_instance: true, allow_immediate_namespaces_deletion: false)
           end
 
           it 'does not disallow runner registration token' do

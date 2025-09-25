@@ -64,10 +64,12 @@ describe('Work item add note', () => {
     isWorkItemConfidential = false,
     parentId = null,
     hideFullscreenMarkdownButton = false,
+    archived = false,
   } = {}) => {
     const workItemResponse = workItemByIidResponseFactory({
       canCreateNote,
       emailParticipantsWidgetPresent,
+      archived,
     });
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
 
@@ -377,8 +379,23 @@ describe('Work item add note', () => {
     it('cannot add comment', async () => {
       await createComponent({ isEditing: false, canCreateNote: false });
 
-      expect(findWorkItemLockedComponent().exists()).toBe(true);
       expect(findCommentForm().exists()).toBe(false);
+    });
+
+    describe('when project is not archived', () => {
+      it('shows locked component', async () => {
+        await createComponent({ isEditing: false, canCreateNote: false, archived: false });
+
+        expect(findWorkItemLockedComponent().exists()).toBe(true);
+      });
+    });
+
+    describe('when project is archived', () => {
+      it('does not show locked component', async () => {
+        await createComponent({ isEditing: false, canCreateNote: false, archived: true });
+
+        expect(findWorkItemLockedComponent().exists()).toBe(false);
+      });
     });
   });
 

@@ -47,7 +47,7 @@
               = render 'layouts/alerts', alert_class: alert_class, context: context
 
               %div{ class: "#{container_class unless @no_container} #{@content_class}" }
-                %main.content{ id: "content-body", class: "gl-@container/panel", **page_itemtype }
+                %main#content-body.content{ class: "gl-@container/panel", **page_itemtype }
                   -# Sticky alerts
                   = render "layouts/flash" unless @hide_flash
                   = yield :after_flash_content

@@ -1,6 +1,6 @@
 ---
 view_name: postgres_autovacuum_activity
-description: TODO
+description: Track active autovacuum operations on a table
 classes:
 - Gitlab::Database::PostgresAutovacuumActivity
 feature_categories:

@@ -25,13 +25,13 @@ describe('Ci Group Variable wrapper', () => {
 
   const findCiShared = () => wrapper.findComponent(ciVariableShared);
 
-  const createComponent = ({ featureFlags } = {}) => {
+  const createComponent = ({ licensedFeatures } = {}) => {
     wrapper = shallowMount(ciGroupVariables, {
       provide: {
         ...mockProvide,
-        glFeatures: {
+        glLicensedFeatures: {
           groupScopedCiVariables: false,
-          ...featureFlags,
+          ...licensedFeatures,
         },
       },
     });
@@ -70,10 +70,10 @@ describe('Ci Group Variable wrapper', () => {
     });
   });
 
-  describe('groupScopedCiVariables feature flag', () => {
+  describe('groupScopedCiVariables licensed feature', () => {
     describe('When enabled', () => {
       beforeEach(() => {
-        createComponent({ featureFlags: { groupScopedCiVariables: true } });
+        createComponent({ licensedFeatures: { groupScopedCiVariables: true } });
       });
 
       it('Passes down `true` to variable shared component', () => {

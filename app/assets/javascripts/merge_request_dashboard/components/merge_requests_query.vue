@@ -2,6 +2,7 @@
 import { clamp } from 'lodash';
 import { fetchPolicies } from '~/lib/graphql';
 import { HTTP_STATUS_SERVICE_UNAVAILABLE } from '~/lib/utils/http_status';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { QUERIES } from '../constants';
 import eventHub from '../event_hub';
 
@@ -50,6 +51,29 @@ export default {
           this.fromSubscription = false;
         } else {
           this.updateCurrentMergeRequestIds();
+
+          if (!data?.currentUser?.mergeRequests?.pageInfo?.hasNextPage) {
+            const countWatcher = this.$watch(
+              'count',
+              () => {
+                if (this.count !== null) {
+                  if (this.count > this.mergeRequests?.nodes?.length) {
+                    // eslint-disable-next-line @gitlab/require-i18n-strings
+                    Sentry.captureException(new Error('Count mismatch - possible SAML issue'), {
+                      extra: {
+                        samlBannerVisible: Boolean(
+                          document.querySelector('.js-saml-reauth-notice'),
+                        ),
+                      },
+                    });
+                  }
+
+                  this.$nextTick(() => countWatcher());
+                }
+              },
+              { immediate: true },
+            );
+          }
         }
 
         if (
@@ -181,7 +205,7 @@ export default {
 
       await this.$apollo.queries.mergeRequests.fetchMore({
         variables: {
-          ...this.variables,
+          ...this.mergeRequestQueryVariables,
           perPage: PER_PAGE,
           afterCursor: this.mergeRequests?.pageInfo?.endCursor,
         },

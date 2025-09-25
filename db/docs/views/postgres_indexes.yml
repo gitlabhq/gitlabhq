@@ -1,6 +1,6 @@
 ---
 view_name: postgres_indexes
-description: TODO
+description: Expose indexes with properties and sizes
 classes:
 - Gitlab::Database::PostgresIndex
 feature_categories:

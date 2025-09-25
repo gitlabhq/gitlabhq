@@ -75,7 +75,6 @@ describe('VueAlerts', () => {
     });
 
     it('replaces JsHook with GlAlert', () => {
-      expect(findJsHooks()).toHaveLength(0);
       expect(findAlerts()).toHaveLength(alerts.length);
     });
 

@@ -1,6 +1,6 @@
 ---
 view_name: postgres_index_bloat_estimates
-description: TODO
+description: Estimate index bloat in bytes
 classes:
 - Gitlab::Database::PostgresIndexBloatEstimate
 feature_categories:

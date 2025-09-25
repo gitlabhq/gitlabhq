@@ -39,7 +39,7 @@ module Security
       end
 
       def prepare_existing_content
-        content = @existing_gitlab_ci_content.to_yaml
+        content = @existing_gitlab_ci_content.deep_stringify_keys.to_yaml
         content = remove_document_delimiter(content)
 
         content.prepend(comment)

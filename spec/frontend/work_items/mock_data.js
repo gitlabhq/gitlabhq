@@ -1781,13 +1781,14 @@ export const workItemResponseFactory = ({
   commentTemplatesPaths = null,
   hidden = false,
   imported = false,
+  archived = false,
 } = {}) => ({
   data: {
     workItem: {
       __typename: 'WorkItem',
       id,
       iid,
-      archived: false,
+      archived,
       hidden,
       imported,
       title: 'Updated _title_',

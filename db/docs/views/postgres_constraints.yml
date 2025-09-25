@@ -1,6 +1,6 @@
 ---
 view_name: postgres_constraints
-description: TODO
+description: List database constraints with their properties
 classes:
 - Gitlab::Database::PostgresConstraint
 feature_categories:

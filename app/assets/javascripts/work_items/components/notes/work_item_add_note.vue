@@ -229,6 +229,9 @@ export default {
     hasEmailParticipantsWidget() {
       return Boolean(findEmailParticipantsWidget(this.workItem));
     },
+    showLockedBanner() {
+      return !this.isLoading && !this.canCreateNote && !this.isProjectArchived;
+    },
   },
   watch: {
     autofocus: {
@@ -361,12 +364,8 @@ export default {
 <template>
   <li :class="timelineEntryClass">
     <work-item-note-signed-out v-if="!signedIn" />
-    <work-item-comment-locked
-      v-else-if="!isLoading && !canCreateNote"
-      :work-item-type="workItemType"
-      :is-project-archived="isProjectArchived"
-    />
-    <div v-else :class="timelineEntryInnerClass">
+    <work-item-comment-locked v-else-if="showLockedBanner" :work-item-type="workItemType" />
+    <div v-else-if="!isProjectArchived" :class="timelineEntryInnerClass">
       <div :class="timelineContentClass">
         <gl-alert
           v-if="messages"

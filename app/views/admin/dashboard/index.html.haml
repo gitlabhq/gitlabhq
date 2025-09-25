@@ -121,7 +121,7 @@
         - if show_version_check?
           .gl-min-h-9.gl-py-4.gl-border-b
             .js-gitlab-version-check-badge{ data: { "size": "lg", "actionable": "true", "version": gitlab_version_check.to_json } }
-            = link_to('CHANGELOG', 'https://gitlab.com/gitlab-org/gitlab/-/blob/master/CHANGELOG.md', target: 'blank', rel: 'noopener noreferrer', class: 'gl-float-right gl-font-monospace' )
+            = link_to('CHANGELOG', 'https://gitlab.com/gitlab-org/gitlab/-/raw/master/CHANGELOG.md', target: 'blank', rel: 'noopener noreferrer', class: 'gl-float-right gl-font-monospace' )
         %p.gl-py-4.gl-m-0.gl-border-b
           = _('GitLab version')
           %span.gl-float-right.gl-font-monospace

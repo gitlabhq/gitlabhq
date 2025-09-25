@@ -49,8 +49,8 @@ For an overview, see [GitLab Duo AI Impact Dashboard](https://youtu.be/FxSWX64aU
 
 - **Assigned Duo seat engagement**: Percentage of users that are assigned a Duo seat and used at least one AI feature in the last 30 days.
 It is calculated as the number of users with Duo seats that use AI features divided by the total number of assigned Duo seats.
-- **Code Suggestions: Usage**: Percentage of users that engage with Code Suggestions every month.
-It is calculated as the number of monthly unique Code Suggestions users divided by total monthly unique code contributors (users with `pushed` events).
+- **Code Suggestions: Usage**: Percentage of users with assigned Duo seats that used Code Suggestions in the last 30 days.
+It is calculated as the number of unique users with Duo seats that interact with Code Suggestions divided by the total number of unique code contributors (users with `pushed` events) with Duo seats.
 For calculating Code Suggestions metrics, GitLab collects data only from code editor extensions.
 - **Code Suggestions: Acceptance rate**: Percentage of code suggestions provided by GitLab Duo that have been accepted by code contributors in the last 30 days.
 It is calculated as the number of accepted code suggestions divided by the total number of generated code suggestions.

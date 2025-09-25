@@ -57,6 +57,21 @@ title: Example page title
 ---
 ```
 
+#### Unassigned pages
+
+Documents with no clear group owner are considered _unassigned_ and get this metadata:
+
+```yaml
+---
+stage: none
+group: unassigned
+info: For assistance with this Style Guide page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
+title: Example page title
+---
+```
+
+You can add additional information to `stage` and `group`, provided the metadata remains valid YAML.
+
 ## Title metadata
 
 The `title` metadata:
@@ -157,8 +172,14 @@ You can use a Rake task to [update the `CODEOWNERS` file](#update-the-codeowners
 
 When groups or [TW assignments](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments)
 change, you must update the `CODEOWNERS` file. To do this, you run the `codeowners.rake` Rake task.
-This task checks all files in the `doc` directory, reads the metadata, and uses the information in
-the `codeowners.rake` file to populate the `CODEOWNERS` file.
+
+This task:
+
+1. Checks all files in the `doc` directory.
+1. Reads the value of `group` from the metadata. Any value in `group` that
+   [isn't known to the Rake task](https://gitlab.com/gitlab-org/gitlab/-/blob/e89a2961e7da448089957514041f21e477eb774f/lib/tasks/gitlab/tw/codeowners.rake#L20)
+   causes the page to be treated as not assigned to a technical writer.
+1. Uses the information in the `codeowners.rake` file to populate the `CODEOWNERS` file.
 
 To update the `CODEOWNERS` file:
 

@@ -57,7 +57,7 @@ To fix your CI/CD pipeline:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code** > **Merge requests** and open your merge request.
 1. Select the **Pipelines** tab.
-1. Under the **Actions** column, for the failed pipeline you want to fix, select **Fix pipeline with Duo**.
+1. In the rightmost column, for the failed pipeline you want to fix, select **Fix pipeline with Duo**.
 1. To monitor progress, select **Automate** > **Agent sessions**.
 
    After the session is complete, go back to your merge request.
