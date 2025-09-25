@@ -173,7 +173,7 @@ export default {
         {{ title }}
       </header>
       <hr v-if="isIconOnly && title" class="-gl-mx-2 gl-my-2" />
-      <ul class="gl-min-w-20 gl-max-w-34 gl-list-none gl-p-0" @mouseenter="showSVG = false">
+      <ul class="gl-m-0 gl-min-w-20 gl-max-w-34 gl-list-none gl-p-0" @mouseenter="showSVG = false">
         <nav-item
           v-for="item of items"
           :key="item.id"

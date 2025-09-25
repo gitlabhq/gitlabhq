@@ -1650,7 +1650,7 @@ You can copy Git repository data using any method, as long as writes are prevent
    rsync -aR --delete --checksum source destination # be extra safe with the order as it will delete existing data if inverted
    ```
 
-1. Use a [`tar` pipe to copy the entire repository's directory to another server or location](../operations/moving_repositories.md#tar-pipe-to-another-server).
+1. Use a [`tar` pipe to copy the entire repository's directory to another server or location](../operations/moving_repositories.md#use-a-tar-pipe-to-another-server).
 
 1. Use `sftp`, `scp`, `cp`, or any other copying method.
 

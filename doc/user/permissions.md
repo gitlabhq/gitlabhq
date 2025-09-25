@@ -2,8 +2,8 @@
 stage: Software Supply Chain Security
 group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Learn about GitLab user permissions and what actions each role can take across groups, subgroups, and projects
 title: Roles and permissions
+description: Understand the permissions and capabilities available to each user role in GitLab.
 ---
 
 {{< details >}}

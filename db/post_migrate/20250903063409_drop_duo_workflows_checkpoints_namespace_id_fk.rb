@@ -8,7 +8,7 @@ class DropDuoWorkflowsCheckpointsNamespaceIdFk < Gitlab::Database::Migration[2.3
 
   def up
     with_lock_retries do
-      remove_foreign_key_if_exists :duo_workflows_checkpoints, :namespaaaces, column: :namespace_id, name: FK_NAME,
+      remove_foreign_key_if_exists :duo_workflows_checkpoints, :namespaces, column: :namespace_id, name: FK_NAME,
         reverse_lock_order: true
     end
   end

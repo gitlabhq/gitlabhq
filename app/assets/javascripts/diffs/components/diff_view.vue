@@ -72,7 +72,11 @@ export default {
       'coverageLoaded',
       'selectedCommentPosition',
     ]),
-    ...mapState(useNotes, ['selectedCommentPosition', 'selectedCommentPositionHover']),
+    ...mapState(useNotes, [
+      'selectedCommentPosition',
+      'selectedCommentPositionHover',
+      'userCanReply',
+    ]),
     diffLinesLength() {
       return this.diffLines.length;
     },
@@ -246,6 +250,7 @@ export default {
         :index="index"
         :file-line-coverage="fileLineCoverage"
         :coverage-loaded="coverageLoaded"
+        :user-can-reply="userCanReply"
         @showCommentForm="(code) => singleLineComment(code, line)"
         @setHighlightedRow="setHighlightedRow"
         @toggleLineDiscussions="

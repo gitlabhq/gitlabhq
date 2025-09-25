@@ -3,6 +3,7 @@ stage: Software Supply Chain Security
 group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Account email verification
+description: Confirm user identity with email verification.
 ---
 
 {{< details >}}

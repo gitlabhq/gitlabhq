@@ -269,8 +269,7 @@ Example response:
 ## Schedule repository storage moves for all snippets on a storage shard
 
 Schedules repository storage moves for each snippet repository stored on the source storage shard.
-This endpoint migrates all snippets at once. For more information, see
-[Move all snippets](../administration/operations/moving_repositories.md#move-all-snippets).
+This endpoint migrates all snippets at once.
 
 ```plaintext
 POST /snippet_repository_storage_moves
@@ -299,3 +298,7 @@ Example response:
   "message": "202 Accepted"
 }
 ```
+
+## Related topics
+
+- [Moving repositories managed by GitLab](../administration/operations/moving_repositories.md)

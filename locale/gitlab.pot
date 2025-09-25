@@ -71589,6 +71589,16 @@ msgid_plural "VirtualRegistry|%{count} artifacts"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "VirtualRegistry|%{count} registry"
+msgid_plural "VirtualRegistry|%{count} registries"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "VirtualRegistry|%{count} upstream"
+msgid_plural "VirtualRegistry|%{count} upstreams"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "VirtualRegistry|%{hours} hour"
 msgid_plural "VirtualRegistry|%{hours} hours"
 msgstr[0] ""
@@ -71630,6 +71640,12 @@ msgid "VirtualRegistry|Clear cache"
 msgstr ""
 
 msgid "VirtualRegistry|Clear cache for %{upstreamName}?"
+msgstr ""
+
+msgid "VirtualRegistry|Configure an upstream registry to manage Maven artifacts and cache entries."
+msgstr ""
+
+msgid "VirtualRegistry|Connect Maven virtual registry to an upstream"
 msgstr ""
 
 msgid "VirtualRegistry|Connection successful."
@@ -71785,6 +71801,9 @@ msgid "VirtualRegistry|Please provide a valid URL."
 msgstr ""
 
 msgid "VirtualRegistry|Position of the upstream has been updated successfully."
+msgstr ""
+
+msgid "VirtualRegistry|Registries"
 msgstr ""
 
 msgid "VirtualRegistry|Registry cache cleared successfully."

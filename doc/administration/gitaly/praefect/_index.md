@@ -405,9 +405,9 @@ To migrate to Gitaly Cluster (Praefect):
    [repository storage recommendations](configure.md#repository-storage-recommendations).
 1. Create and configure [Gitaly Cluster (Praefect)](configure.md).
 1. Configure the existing Gitaly instance [to use TCP](configure.md#use-tcp-for-existing-gitlab-instances), if not already configured that way.
-1. [Move the repositories](../../operations/moving_repositories.md#moving-repositories). To migrate to
-   Gitaly Cluster (Praefect), existing repositories stored outside Gitaly Cluster (Praefect) must be moved. There is no
-   automatic migration, but the moves can be scheduled with the GitLab API.
+1. [Move the repositories](../../operations/moving_repositories.md). To migrate to Gitaly Cluster (Praefect), existing
+   repositories stored outside Gitaly Cluster (Praefect) must be moved. There is no automatic migration, but the moves
+   can be scheduled with the GitLab API.
 
 Even if you don't use the `default` repository storage, you must ensure it is configured.
 [Read more about this limitation](../configure_gitaly.md#gitlab-requires-a-default-repository-storage).
@@ -418,7 +418,7 @@ If the limitations and tradeoffs of Gitaly Cluster (Praefect) are found to be no
 migrate off Gitaly Cluster (Praefect) to a sharded Gitaly instance:
 
 1. Create and configure a new [Gitaly server](../configure_gitaly.md#run-gitaly-on-its-own-server).
-1. [Move the repositories](../../operations/moving_repositories.md#moving-repositories) to the newly created storage. You can
+1. [Move the repositories](../../operations/moving_repositories.md) to the newly created storage. You can
    move them by shard or by group, which gives you the opportunity to spread them over multiple Gitaly servers.
 
 ## Before deploying Gitaly Cluster (Praefect)

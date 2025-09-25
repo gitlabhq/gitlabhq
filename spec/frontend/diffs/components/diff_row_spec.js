@@ -67,6 +67,7 @@ describe('DiffRow', () => {
       line: {},
       index: 0,
       isHighlighted: false,
+      userCanReply: true,
       fileLineCoverage: (file, line) => {
         const hits = coverageFileData[file]?.[line];
         if (hits) {
@@ -135,40 +136,51 @@ describe('DiffRow', () => {
         line = testLines[3];
       });
 
-      it('renders', () => {
-        wrapper = createWrapper({ props: { line, inline: false } });
-        expect(findRightCommentButton().attributes('draggable')).toBe('true');
-        expect(findLeftCommentButton().attributes('draggable')).toBe(
-          side === 'left' ? 'true' : 'false',
-        );
-        expect(getCommentButton(side).exists()).toBe(true);
+      describe('when user can reply', () => {
+        it('renders', () => {
+          wrapper = createWrapper({ props: { line, userCanReply: true, inline: false } });
+
+          expect(findRightCommentButton().attributes('draggable')).toBe('true');
+          expect(findLeftCommentButton().attributes('draggable')).toBe(
+            side === 'left' ? 'true' : 'false',
+          );
+          expect(getCommentButton(side).exists()).toBe(true);
+        });
+
+        it('responds to click and keyboard events', async () => {
+          wrapper = createWrapper({
+            props: { line, userCanReply: true, inline: false },
+          });
+
+          const commentButton = getCommentButton(side);
+
+          await commentButton.trigger('click');
+          await commentButton.trigger('keydown.enter');
+          await commentButton.trigger('keydown.space');
+
+          expect(showCommentForm).toHaveBeenCalledTimes(3);
+        });
+
+        it('ignores click and keyboard events when comments are disabled', async () => {
+          line[side].commentsDisabled = true;
+          wrapper = createWrapper({ props: { line, userCanReply: true, inline: false } });
+
+          const commentButton = getCommentButton(side);
+
+          await commentButton.trigger('click');
+          await commentButton.trigger('keydown.enter');
+          await commentButton.trigger('keydown.space');
+
+          expect(showCommentForm).not.toHaveBeenCalled();
+        });
       });
 
-      it('responds to click and keyboard events', async () => {
-        wrapper = createWrapper({
-          props: { line, inline: false },
+      describe('when user cannot reply', () => {
+        it('does not render', () => {
+          wrapper = createWrapper({ props: { line, userCanReply: false } });
+
+          expect(getCommentButton(side).exists()).toBe(false);
         });
-        const commentButton = getCommentButton(side);
-
-        await commentButton.trigger('click');
-        await commentButton.trigger('keydown.enter');
-        await commentButton.trigger('keydown.space');
-
-        expect(showCommentForm).toHaveBeenCalledTimes(3);
-      });
-
-      it('ignores click and keyboard events when comments are disabled', async () => {
-        line[side].commentsDisabled = true;
-        wrapper = createWrapper({
-          props: { line, inline: false },
-        });
-        const commentButton = getCommentButton(side);
-
-        await commentButton.trigger('click');
-        await commentButton.trigger('keydown.enter');
-        await commentButton.trigger('keydown.space');
-
-        expect(showCommentForm).not.toHaveBeenCalled();
       });
     });
 

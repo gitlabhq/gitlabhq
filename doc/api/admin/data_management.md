@@ -60,6 +60,14 @@ The `:model_name` parameter must be one of:
 - `terraform_state_version`
 - `upload`
 
+Supported attributes:
+
+| Attribute         | Type   | Required | Description                                                                                                                 |
+|-------------------|--------|----------|-----------------------------------------------------------------------------------------------------------------------------|
+| `model_name`      | string | Yes      | The name of the requested model. Must belong to the `:model_name` list above.                                               |
+| `checksum_state`  | string | No       | Search by checksum status. Allowed values: pending, started, succeeded, failed, disabled.                                   |
+| `identifiers`     | array  | No       | Filter results with an array of unique identifiers of the requested model, which can be integers or base64 encoded strings. |
+
 If successful, returns [`200`](../rest/troubleshooting.md#status-codes) and information about the model. It includes the following
 response attributes:
 
@@ -161,10 +169,10 @@ Example response:
 PUT /admin/data_management/:model_name/:record_identifier/checksum
 ```
 
-| Attribute           | Type    | Required | Description                                                                     |
-|---------------------|---------|----------|---------------------------------------------------------------------------------|
-| `model_name`        | string  | Yes      | The name of the requested model. Must belong to the `:model_name` list above.   |
-| `record_identifier` | integer | Yes      | Unique identifier of the record. Can be an integer or a base64 encoded string.  |
+| Attribute           | Type              | Required | Description                                                                                                               |
+|---------------------|-------------------|----------|---------------------------------------------------------------------------------------------------------------------------|
+| `model_name`        | string            | Yes      | The name of the requested model. Must belong to the `:model_name` list above.                                             |
+| `record_identifier` | string or integer | Yes      | Unique identifier of the record. Can be an integer or a base64 encoded string (taken from the response of the GET query). |
 
 If successful, returns [`200`](../rest/troubleshooting.md#status-codes) and information about the specific model record. The checksum value is a representation of the queried model hashed with the md5 or sha256 algorithm.
 

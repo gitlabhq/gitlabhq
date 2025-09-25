@@ -3,6 +3,7 @@ stage: Software Supply Chain Security
 group: Authorization
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Custom roles
+description: Create custom roles with tailored permissions to meet specific organizational needs.
 ---
 
 {{< details >}}
@@ -334,5 +335,5 @@ GitLab begins linking the role to any matching LDAP users. This process may take
 If a permission does not exist, you can:
 
 - Discuss individual custom role and permission requests in [issue 391760](https://gitlab.com/gitlab-org/gitlab/-/issues/391760).
-- Create an issue to request the permission with the [permission proposal issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Permission%2520Proposal).
+- Create an issue to request the permission with the [permission proposal issue template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Permission%20Proposal).
 - Contribute to GitLab and add the permission.

@@ -3,7 +3,7 @@ stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Use SSH keys to communicate with GitLab
-description: Understand how to use SSH keys with GitLab for secure authentication and repository access.
+description: Use SSH keys for secure authentication and communication with GitLab repositories.
 ---
 
 {{< details >}}

@@ -21,7 +21,7 @@ module Groups
 
           AuthorizedProjectUpdate::EnqueueGroupMembersRefreshAuthorizedProjectsWorker.perform_async(
             shared_with_group.id,
-            { 'priority' => priority_for_refresh, 'direct_members_only' => true }
+            { 'priority' => priority_for_refresh.to_s, 'direct_members_only' => true }
           )
         end
 

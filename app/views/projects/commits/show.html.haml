@@ -26,7 +26,7 @@
         #js-author-dropdown{ data: { 'commits_path': project_commits_path(@project), 'project_id': @project.id } }
         .tree-controls
           .control
-            = link_button_to _('Browse files'), path_to_browse_file_or_directory(@project, @ref, @path), class: 'gl-mt-3 @md/panel:gl-mt-0'
+            = link_button_to _('Browse files'), path_to_browse_file_or_directory(@project, @ref, @path), class: 'gl-mt-3 @sm/panel:gl-mt-0'
           - if @merge_request.present?
             .control.gl-hidden{ class: '@md/panel:gl-block' }
               = link_button_to _("View open merge request"), project_merge_request_path(@project, @merge_request)

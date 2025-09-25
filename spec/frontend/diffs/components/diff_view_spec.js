@@ -19,9 +19,9 @@ describe('DiffView', () => {
   let pinia;
 
   const DiffExpansionCell = { template: `<div/>` };
-  const DiffRow = { template: `<div/>` };
+  const DiffRow = { template: `<div/>`, props: ['userCanReply'] };
   const DiffCommentCell = { template: `<div/>` };
-  const getDiffRow = (wrapper) => wrapper.findComponent(DiffRow).vm;
+  const getDiffRow = (wrapper) => wrapper.findComponent(DiffRow);
   const findNotesHolder = (wrapper) => wrapper.find('[data-testid="notes-holder"]');
 
   const createWrapper = ({ props } = {}) => {
@@ -139,7 +139,7 @@ describe('DiffView', () => {
 
     it('does not call `setSelectedCommentPosition` on different chunks onDragOver', () => {
       const wrapper = createWrapper({ props: { diffLines: [{}] } });
-      const diffRow = getDiffRow(wrapper);
+      const diffRow = getDiffRow(wrapper).vm;
 
       diffRow.$emit('startdragging', { line: { chunk: 0 } });
       diffRow.$emit('enterdragging', { chunk: 1 });
@@ -156,7 +156,7 @@ describe('DiffView', () => {
       'calls `setSelectedCommentPosition` with correct `updatedLineRange`',
       ({ start, end, expectation }) => {
         const wrapper = createWrapper({ props: { diffLines: [{}] } });
-        const diffRow = getDiffRow(wrapper);
+        const diffRow = getDiffRow(wrapper).vm;
 
         diffRow.$emit('startdragging', { line: { chunk: 1, index: start } });
         diffRow.$emit('enterdragging', { chunk: 1, index: end });
@@ -167,7 +167,7 @@ describe('DiffView', () => {
 
     it('sets `dragStart` to null onStopDragging', () => {
       const wrapper = createWrapper({ props: { diffLines: [{}] } });
-      const diffRow = getDiffRow(wrapper);
+      const diffRow = getDiffRow(wrapper).vm;
 
       diffRow.$emit('startdragging', { line: { test: true } });
       expect(wrapper.vm.idState.dragStart).toEqual({ test: true });
@@ -180,7 +180,7 @@ describe('DiffView', () => {
     it('throttles multiple calls to enterdragging', () => {
       const wrapper = createWrapper({ props: { diffLines: [{}] } });
 
-      const diffRow = getDiffRow(wrapper);
+      const diffRow = getDiffRow(wrapper).vm;
 
       diffRow.$emit('startdragging', { line: { chunk: 1, index: 1 } });
       diffRow.$emit('enterdragging', { chunk: 1, index: 2 });
@@ -190,5 +190,13 @@ describe('DiffView', () => {
 
       expect(useNotes().setSelectedCommentPosition).toHaveBeenCalledTimes(1);
     });
+  });
+
+  it.each([true, false])('renders diff rows with correct props', (userCanReply) => {
+    useNotes().noteableData.current_user = { can_create_note: userCanReply };
+
+    const wrapper = createWrapper({ props: { diffLines: [{}] } });
+
+    expect(getDiffRow(wrapper).props('userCanReply')).toBe(userCanReply);
   });
 });

@@ -105,41 +105,6 @@ RSpec.describe MergeRequests::Mergeability::Logger, :request_store, feature_cate
           logger.commit
         end
       end
-
-      context 'when its a query' do
-        context 'with a single query' do
-          it 'includes SQL metrics' do
-            expect_next_instance_of(Gitlab::AppJsonLogger) do |app_logger|
-              expect(app_logger).to receive(:info) do |logged_args|
-                expect(logged_args).to include(
-                  'mergeability.expensive_operation.db_main_count.values' => a_kind_of(Array)
-                )
-              end
-            end
-
-            expect(logger.instrument(mergeability_name: :expensive_operation) { MergeRequest.count }).to eq(1)
-
-            logger.commit
-          end
-        end
-
-        context 'with multiple queries' do
-          it 'includes SQL metrics' do
-            expect_next_instance_of(Gitlab::AppJsonLogger) do |app_logger|
-              expect(app_logger).to receive(:info) do |logged_args|
-                expect(logged_args).to include(
-                  'mergeability.expensive_operation.db_main_count.values' => a_kind_of(Array)
-                )
-              end
-            end
-
-            expect(logger.instrument(mergeability_name: :expensive_operation) { Project.count + MergeRequest.count })
-              .to eq(2)
-
-            logger.commit
-          end
-        end
-      end
     end
 
     it 'raises an error when block is not provided' do

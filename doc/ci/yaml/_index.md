@@ -1268,11 +1268,45 @@ Scripts you specify in `after_script` execute in a new shell, separate from any
   You can use a job token for authentication in `after_script` commands, but the token
   immediately becomes invalid if the job is canceled. See [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/473376)
   for more details.
+- For jobs that time out:
+  - `after_script` commands do not execute by default.
+  - You can [configure timeout values](../runners/configure_runners.md#ensuring-after_script-execution) to ensure `after_script` runs by setting appropriate `RUNNER_SCRIPT_TIMEOUT` and `RUNNER_AFTER_SCRIPT_TIMEOUT` values that don't exceed the job's timeout.
 
-For jobs that time out:
+**Execution timing and file inclusion**:
 
-- `after_script` commands do not execute by default.
-- You can [configure timeout values](../runners/configure_runners.md#ensuring-after_script-execution) to ensure `after_script` runs by setting appropriate `RUNNER_SCRIPT_TIMEOUT` and `RUNNER_AFTER_SCRIPT_TIMEOUT` values that don't exceed the job's timeout.
+`after_script` commands execute before cache and artifact upload operations.
+
+- If you configured artifact collection:
+  - Files created or modified in `after_script` are included in artifacts.
+  - Changes made in `after_script` are included in cache uploads.
+- Any files that `after_script` creates or modifies in the specified cache or artifact paths are captured and uploaded. You can use this timing for scenarios like:
+  - Generating test reports or coverage data after the main script.
+  - Creating summary files or logs.
+  - Post-processing build outputs.
+
+In the following example, the only files that are not included are those created or modified after the artifact or cache upload stages:
+
+```yaml
+job:
+  script:
+    - echo "main" > output.txt
+    - build_something
+
+  after_script:
+    - echo "modified in after_script" >> output.txt  # This WILL be in the artifact
+    - generate_test_report > report.html            # This WILL be in the artifact
+
+  artifacts:
+    paths:
+      - output.txt
+      - report.html
+
+  cache:
+    paths:
+      - output.txt  # Will include the "modified in after_script" line
+```
+
+For more information, see [job execution flow](../jobs/job_execution.md).
 
 **Related topics**:
 
