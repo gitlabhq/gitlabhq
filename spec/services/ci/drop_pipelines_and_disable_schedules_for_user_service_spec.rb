@@ -158,22 +158,6 @@ RSpec.describe Ci::DropPipelinesAndDisableSchedulesForUserService, feature_categ
             .exactly(user_owned_schedules.count).times
           service
         end
-
-        context "when feautre flag disabled" do
-          before do
-            stub_feature_flags(notify_pipeline_schedule_owner_unavailable: false)
-            allow(NotificationService).to receive(:new)
-          end
-
-          it 'does not send nottifications and deactivates schedules' do
-            expect(NotificationService).not_to receive(:new)
-            expect { service }.to change {
-              user_owned_schedules.map(&:reload).map(&:active?).uniq
-            }
-                              .from([true])
-                              .to([false])
-          end
-        end
       end
 
       context 'when include_owned_projects_and_groups is true' do

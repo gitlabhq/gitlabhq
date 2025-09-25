@@ -36,8 +36,8 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feat
 
         options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
 
-        expect(options_menu_items[0]['text']).to eq('Edit in single-file editor')
-        expect(options_menu_items[0]['href']).to include("#{edit_path_base}#{merge_request.iid}")
+        expect(options_menu_items[1]['text']).to eq('Edit in single-file editor')
+        expect(options_menu_items[1]['href']).to include("#{edit_path_base}#{merge_request.iid}")
       end
     end
   end

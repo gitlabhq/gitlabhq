@@ -36,7 +36,12 @@ module RapidDiffs
     end
 
     def menu_items
-      @additional_menu_items.sort_by { |item| item[:position] || Float::INFINITY }
+      [
+        view_file_menu_item,
+        *@additional_menu_items
+      ]
+      .filter_map { |item| item unless item.nil? }
+      .sort_by { |item| item[:position] || Float::INFINITY }
     end
 
     def heading_id
@@ -68,6 +73,24 @@ module RapidDiffs
 
     def pretty_print_bytes(size)
       ActiveSupport::NumberHelper.number_to_human_size(size)
+    end
+
+    def view_file_menu_item
+      project = @diff_file.repository.project
+      file_path = @diff_file.new_path || @diff_file.old_path
+      commit_sha = @diff_file.content_sha
+
+      view_path = helpers.project_blob_path(project, helpers.tree_join(commit_sha, file_path))
+
+      {
+        text: helpers.safe_format(
+          s_('RapidDiffs|View file at %{commitId}'),
+          commitId: @diff_file.content_sha[0..7]
+        ),
+        href: view_path,
+        extraAttrs: { target: '_blank' },
+        position: 1
+      }
     end
   end
 end

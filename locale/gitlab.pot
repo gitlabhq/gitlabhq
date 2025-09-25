@@ -53142,6 +53142,9 @@ msgstr ""
 msgid "RapidDiffs|View controls"
 msgstr ""
 
+msgid "RapidDiffs|View file at %{commitId}"
+msgstr ""
+
 msgid "Rate Limits"
 msgstr ""
 

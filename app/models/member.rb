@@ -713,10 +713,10 @@ class Member < ApplicationRecord
   def post_update_hook
     if saved_change_to_access_level?
       run_after_commit { notification_service.updated_member_access_level(self) }
+    end
 
-      if Feature.enabled?(:notify_pipeline_schedule_owner_unavailable, user) && pipeline_schedule_ownership_revoked?
-        run_after_commit { notify_unavailable_owned_pipeline_schedules(user.id, source) }
-      end
+    if pipeline_schedule_ownership_revoked?
+      run_after_commit { notify_unavailable_owned_pipeline_schedules(user.id, source) }
     end
 
     if saved_change_to_expires_at?
@@ -727,7 +727,7 @@ class Member < ApplicationRecord
   end
 
   def post_destroy_member_hook
-    if Feature.enabled?(:notify_pipeline_schedule_owner_unavailable, user) && access_level&.>=(Gitlab::Access::DEVELOPER)
+    if access_level&.>=(Gitlab::Access::DEVELOPER)
       run_after_commit { notify_unavailable_owned_pipeline_schedules(user.id, source) }
     end
 

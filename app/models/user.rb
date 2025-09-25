@@ -611,9 +611,7 @@ class User < ApplicationRecord
 
     after_transition any => :deactivated do |user|
       user.run_after_commit do
-        if Feature.enabled?(:notify_pipeline_schedule_owner_unavailable, user)
-          notify_and_disable_all_pipeline_schedules_for_user(user.id)
-        end
+        notify_and_disable_all_pipeline_schedules_for_user(user.id)
 
         next unless Gitlab::CurrentSettings.user_deactivation_emails_enabled
 

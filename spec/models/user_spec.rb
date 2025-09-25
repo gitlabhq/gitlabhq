@@ -3424,23 +3424,6 @@ RSpec.describe User, feature_category: :user_profile do
                    pipeline_schedules.map(&:reload).map(&:active?).uniq
                  }.from([true]).to([false])
         end
-
-        context 'when feature flag disabled' do
-          before do
-            stub_feature_flags(notify_pipeline_schedule_owner_unavailable: false)
-            allow(NotificationService).to receive(:new).and_return(notification_service)
-            allow(notification_service).to receive(:pipeline_schedule_owner_unavailable)
-          end
-
-          it "does not send notifications" do
-            expect(notification_service).not_to receive(:pipeline_schedule_owner_unavailable)
-
-            expect do
-              user.deactivate
-              user.run_callbacks(:commit) if user.respond_to?(:run_callbacks)
-            end.not_to change { pipeline_schedules.map(&:reload).map(&:active?) }
-          end
-        end
       end
     end
 
