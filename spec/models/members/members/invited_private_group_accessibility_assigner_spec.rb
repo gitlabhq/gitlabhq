@@ -163,7 +163,7 @@ RSpec.describe Members::InvitedPrivateGroupAccessibilityAssigner, feature_catego
 
     context 'for project members' do
       let_it_be(:source_type) { 'project' }
-      let_it_be(:admin_member_access) { Gitlab::Access::MAINTAINER }
+      let_it_be(:admin_member_access) { Gitlab::Access::OWNER }
       let_it_be(:parent_key) { :group }
 
       it_behaves_like 'assigns is_source_accessible_to_current_user'

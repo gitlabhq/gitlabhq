@@ -377,6 +377,10 @@ class ProjectPolicy < BasePolicy
     enable :set_warn_about_potentially_unwanted_characters
     enable :manage_owners
 
+    enable :create_group_link
+    enable :update_group_link
+    enable :delete_group_link
+
     enable :add_catalog_resource
 
     enable :destroy_pipeline

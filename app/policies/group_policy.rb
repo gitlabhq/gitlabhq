@@ -337,8 +337,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :change_seat_control
     enable :change_visibility_level
     enable :create_deploy_token
+    enable :create_group_link
     enable :create_runners
     enable :create_subgroup
+    enable :delete_group_link
     enable :destroy_deploy_token
     enable :destroy_issue
     enable :edit_billing
@@ -354,6 +356,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :set_show_diff_preview_in_email
     enable :update_default_branch_protection
     enable :update_git_access_protocol
+    enable :update_group_link
     enable :update_runners_registration_token
   end
 

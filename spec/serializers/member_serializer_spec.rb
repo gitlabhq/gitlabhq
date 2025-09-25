@@ -132,7 +132,7 @@ RSpec.describe MemberSerializer, feature_category: :groups_and_projects do
 
     it_behaves_like 'shared source members' do
       let_it_be(:source_type) { :project }
-      let_it_be(:admin_member_access) { Gitlab::Access::MAINTAINER }
+      let_it_be(:admin_member_access) { Gitlab::Access::OWNER }
 
       def create_link(shared, invited)
         create(:project_group_link, project: shared, group: invited)

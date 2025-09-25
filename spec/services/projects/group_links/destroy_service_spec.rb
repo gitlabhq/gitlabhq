@@ -38,15 +38,15 @@ RSpec.describe Projects::GroupLinks::DestroyService, '#execute', feature_categor
         result = subject.execute(group_link)
 
         expect(result[:status]).to eq(:error)
-        expect(result[:reason]).to eq(:not_found)
+        expect(result[:reason]).to eq(:forbidden)
       end.not_to change { project.reload.project_group_links.count }
     end
   end
 
   context 'when the user has proper permissions to remove a group-link from a project' do
-    context 'when the user is a MAINTAINER in the project' do
+    context 'when the user is a OWNER in the project' do
       before do
-        project.add_maintainer(user)
+        project.add_owner(user)
       end
 
       it_behaves_like 'removes group from project'
@@ -137,9 +137,8 @@ RSpec.describe Projects::GroupLinks::DestroyService, '#execute', feature_categor
           expect do
             result = subject.execute(group_link)
 
-            expect(result[:status]).to eq(:error)
-            expect(result[:reason]).to eq(:forbidden)
-          end.not_to change { project.reload.project_group_links.count }
+            expect(result[:status]).to eq(:success)
+          end.to change { project.reload.project_group_links.count }
         end
 
         context 'if the user is an OWNER of the group' do

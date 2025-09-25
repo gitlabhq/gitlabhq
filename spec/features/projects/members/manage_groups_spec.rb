@@ -8,8 +8,20 @@ RSpec.describe 'Project > Members > Manage groups', :js, feature_category: :grou
   include Features::InviteMembersModalHelpers
 
   let_it_be(:maintainer) { create(:user) }
+  let_it_be(:owner) { create(:user) }
 
-  it 'displays the invite group button' do
+  it 'displays the invite group button for owners' do
+    project = create(:project, namespace: create(:group))
+
+    project.add_owner(owner)
+    sign_in(owner)
+
+    visit project_project_members_path(project)
+
+    expect(page).to have_selector(invite_group_selector)
+  end
+
+  it 'does not displays the invite group button for non owners' do
     project = create(:project, namespace: create(:group))
 
     project.add_maintainer(maintainer)
@@ -17,7 +29,7 @@ RSpec.describe 'Project > Members > Manage groups', :js, feature_category: :grou
 
     visit project_project_members_path(project)
 
-    expect(page).to have_selector(invite_group_selector)
+    expect(page).not_to have_selector(invite_group_selector)
   end
 
   it 'does not display the button when visiting the page not signed in' do
@@ -48,9 +60,9 @@ RSpec.describe 'Project > Members > Manage groups', :js, feature_category: :grou
       let(:project) { create(:project, namespace: create(:group)) }
 
       before do
-        project.add_maintainer(maintainer)
-        group_to_share_with.add_guest(maintainer)
-        sign_in(maintainer)
+        project.add_owner(owner)
+        group_to_share_with.add_guest(owner)
+        sign_in(owner)
       end
 
       context 'when the group has "Share with group lock" disabled' do
@@ -87,8 +99,8 @@ RSpec.describe 'Project > Members > Manage groups', :js, feature_category: :grou
       let(:project) { create(:project, namespace: subgroup) }
 
       before do
-        project.add_maintainer(maintainer)
-        sign_in(maintainer)
+        project.add_owner(owner)
+        sign_in(owner)
       end
 
       context 'when the root_group has "Share with group lock" disabled' do
@@ -136,9 +148,9 @@ RSpec.describe 'Project > Members > Manage groups', :js, feature_category: :grou
     end
 
     def setup
-      project.add_maintainer(maintainer)
-      group.add_guest(maintainer)
-      sign_in(maintainer)
+      project.add_owner(owner)
+      group.add_guest(owner)
+      sign_in(owner)
 
       visit project_project_members_path(project)
 
@@ -157,9 +169,9 @@ RSpec.describe 'Project > Members > Manage groups', :js, feature_category: :grou
     let_it_be(:parent_group) { create(:group, :public) }
     let_it_be(:project_group) { create(:group, :public, parent: parent_group) }
     let_it_be(:project) { create(:project, group: project_group) }
+    let_it_be(:user) { owner }
 
     it_behaves_like 'inviting groups search results' do
-      let_it_be(:user) { maintainer }
       let_it_be(:group) { parent_group }
       let_it_be(:group_within_hierarchy) { create(:group, parent: group) }
       let_it_be(:project_within_hierarchy) { create(:project, group: group_within_hierarchy) }
@@ -176,15 +188,15 @@ RSpec.describe 'Project > Members > Manage groups', :js, feature_category: :grou
       let_it_be(:project) { create(:project, group: project_group) }
 
       before do
-        private_membership_group.add_guest(maintainer)
-        public_membership_group.add_maintainer(maintainer)
+        private_membership_group.add_guest(user)
+        public_membership_group.add_owner(user)
 
-        sign_in(maintainer)
+        sign_in(user)
       end
 
       it 'does not show the groups inherited from projects' do
-        project.add_maintainer(maintainer)
-        public_sibbling_group.add_maintainer(maintainer)
+        project.add_owner(user)
+        public_sibbling_group.add_maintainer(user)
 
         visit project_project_members_path(project)
 
@@ -204,8 +216,8 @@ RSpec.describe 'Project > Members > Manage groups', :js, feature_category: :grou
         end
       end
 
-      it 'does not show the ancestors or project group', :aggregate_failures do
-        parent_group.add_maintainer(maintainer)
+      it 'does not show the ancestors or project group', :aggregate_failures, :request_store do
+        parent_group.add_owner(user)
 
         visit project_project_members_path(project)
 
