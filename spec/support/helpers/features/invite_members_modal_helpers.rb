@@ -59,7 +59,11 @@ module Features
       click_on 'Select a group'
       wait_for_requests
       find('[role="option"]', text: name).click
-      choose_options(role, expires_at, use_exact_text_match)
+
+      # Find the modal that contains the selected group and scope to that
+      within(page.find('[data-testid="invite-modal"], .js-invite-groups-modal', text: name)) do
+        choose_options(role, expires_at, use_exact_text_match)
+      end
 
       submit_invites
     end

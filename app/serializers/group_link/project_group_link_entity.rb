@@ -18,13 +18,12 @@ module GroupLink
 
     expose :can_update do |group_link, options|
       direct_member?(group_link, options) &&
-        can?(current_user, :admin_project_member, group_link.project) &&
-        can?(current_user, :manage_group_link_with_owner_access, group_link)
+        Ability.allowed?(current_user, :update_group_link, group_link)
     end
 
     expose :can_remove do |group_link, options|
       direct_member?(group_link, options) &&
-        can?(current_user, :destroy_project_group_link, group_link)
+        Ability.allowed?(current_user, :delete_group_link, group_link)
     end
   end
 end

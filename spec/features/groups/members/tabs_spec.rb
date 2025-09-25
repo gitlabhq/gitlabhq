@@ -56,7 +56,7 @@ RSpec.describe 'Groups > Members > Tabs', :js, feature_category: :groups_and_pro
     it_behaves_like 'active "Members" tab'
   end
 
-  context 'when searching "Pending invitations"' do
+  context 'when searching "Pending invitations"', :request_store do
     before do
       visit group_group_members_path(group)
 

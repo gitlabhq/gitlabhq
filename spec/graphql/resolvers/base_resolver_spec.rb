@@ -245,6 +245,14 @@ RSpec.describe Resolvers::BaseResolver, feature_category: :api do
       expect(field.complexity.call({}, { sort: 'foo', iid: 1 }, 1)).to eq 3
       expect(field.complexity.call({}, { sort: 'foo', iids: [1, 2, 3] }, 1)).to eq 3
     end
+
+    it 'does increase complexity when the number of iids present surpasses 100' do
+      field = Types::BaseField.new(name: 'test', type: GraphQL::Types::String.connection_type, resolver_class: described_class, null: false, max_page_size: 100)
+
+      expect(field.complexity.call({}, { sort: 'foo' }, 1)).to eq 6
+      iid_array = (1..1000).to_a.sample(1000)
+      expect(field.complexity.call({}, { sort: 'foo', iids: iid_array }, 1)).to eq 9
+    end
   end
 
   describe '#object' do

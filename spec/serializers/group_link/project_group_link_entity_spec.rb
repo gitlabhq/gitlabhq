@@ -19,47 +19,34 @@ RSpec.describe GroupLink::ProjectGroupLinkEntity, feature_category: :groups_and_
   context 'when current user is a direct member' do
     before do
       allow(entity).to receive(:direct_member?).and_return(true)
-      allow(entity).to receive(:can?).and_call_original
     end
 
     describe 'can_update' do
-      using RSpec::Parameterized::TableSyntax
-
-      where(
-        :can_admin_project_member,
-        :can_manage_group_link_with_owner_access,
-        :expected_can_update
-      ) do
-        false | false | false
-        true  | false | false
-        true  | true  | true
-      end
-
-      with_them do
+      context 'when current user has update_group_link ability' do
         before do
-          allow(entity)
-            .to receive(:can?)
-            .with(current_user, :admin_project_member, project_group_link.shared_from)
-            .and_return(can_admin_project_member)
-          allow(entity)
-            .to receive(:can?)
-            .with(current_user, :manage_group_link_with_owner_access, project_group_link)
-            .and_return(can_manage_group_link_with_owner_access)
+          stub_member_access_level(project_group_link.project, owner: current_user)
         end
 
-        it "exposes `can_update` as `#{params[:expected_can_update]}`" do
-          expect(entity.as_json[:can_update]).to be expected_can_update
+        it 'exposes can_update as true' do
+          expect(entity.as_json[:can_update]).to be true
+        end
+      end
+
+      context 'when current user does not have update_group_link ability' do
+        before do
+          stub_member_access_level(project_group_link.project, maintainer: current_user)
+        end
+
+        it 'exposes can_update as false' do
+          expect(entity.as_json[:can_update]).to be false
         end
       end
     end
 
     describe 'can_remove' do
-      context 'when current user has `destroy_project_group_link` ability' do
+      context 'when current user has `delete_group_link` ability' do
         before do
-          allow(entity)
-            .to receive(:can?)
-            .with(current_user, :destroy_project_group_link, project_group_link)
-            .and_return(true)
+          stub_member_access_level(project_group_link.project, owner: current_user)
         end
 
         it 'exposes `can_remove` as `true`' do
@@ -67,12 +54,9 @@ RSpec.describe GroupLink::ProjectGroupLinkEntity, feature_category: :groups_and_
         end
       end
 
-      context 'when current user does not have `destroy_project_group_link` ability' do
+      context 'when current user does not have `delete_group_link` ability' do
         before do
-          allow(entity)
-            .to receive(:can?)
-            .with(current_user, :destroy_project_group_link, project_group_link)
-            .and_return(false)
+          stub_member_access_level(project_group_link.project, maintainer: current_user)
         end
 
         it 'exposes `can_remove` as `false`' do

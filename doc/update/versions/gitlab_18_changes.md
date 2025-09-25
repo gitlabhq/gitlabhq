@@ -24,6 +24,12 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 - [PostgreSQL 14 is not supported starting from GitLab 18](../deprecations.md#postgresql-14-and-15-no-longer-supported). Upgrade PostgreSQL to at least version 16.8 before upgrading to GitLab 18.0 or later.
 
+## 18.2.7
+
+GitLab 18.4.1, 18.3.3, and 18.2.7 introduced limits on JSON inputs to prevent denial of service attacks.
+GitLab responds to HTTP requests that exceed these limits with a `400 Bad Request` status.
+For more information, see [HTTP request limits](../../administration/instance_limits.md#http-request-limits).
+
 ## 18.1.0
 
 ### Geo installations 18.1.0

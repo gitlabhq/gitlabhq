@@ -16,8 +16,8 @@ module Groups
       delegate :root_ancestor, to: :group
 
       def valid_to_create?
-        can?(current_user, :admin_group_member, group) &&
-          can?(current_user, :read_group, shared_with_group) &&
+        Ability.allowed?(current_user, :create_group_link, group) &&
+          Ability.allowed?(current_user, :read_group, shared_with_group) &&
           sharing_allowed?
       end
 

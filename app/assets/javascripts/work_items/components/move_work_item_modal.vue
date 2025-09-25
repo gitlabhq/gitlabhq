@@ -121,8 +121,7 @@ export default {
         }));
     },
     selectedProjectNamespace() {
-      return this.projects?.find((project) => project?.id === this.selectedProjectId)
-        ?.nameWithNamespace;
+      return this.projects?.find((project) => project?.id === this.selectedProjectId)?.fullPath;
     },
     actionPrimary() {
       return {

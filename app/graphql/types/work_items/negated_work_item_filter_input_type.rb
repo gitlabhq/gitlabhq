@@ -7,16 +7,24 @@ module Types
 
       argument :assignee_usernames, [GraphQL::Types::String],
         required: false,
-        description: 'Usernames of users not assigned to the work item.'
+        validates: { length: { maximum: ::WorkItems::SharedFilterArguments::MAX_FIELD_LIMIT } },
+        description: "Usernames of users not assigned to the work item " \
+          "(maximum is #{::WorkItems::SharedFilterArguments::MAX_FIELD_LIMIT} usernames)."
       argument :author_username, [GraphQL::Types::String],
         required: false,
-        description: "Username of a user who didn't author the work item."
+        validates: { length: { maximum: ::WorkItems::SharedFilterArguments::MAX_FIELD_LIMIT } },
+        description: "Username of a user who didn't author the work item " \
+          "(maximum is #{::WorkItems::SharedFilterArguments::MAX_FIELD_LIMIT} usernames)."
       argument :label_name, [GraphQL::Types::String],
         required: false,
-        description: 'Labels not applied to the work item.'
+        validates: { length: { maximum: ::WorkItems::SharedFilterArguments::MAX_FIELD_LIMIT } },
+        description: "Labels not applied to the work item " \
+          "(maximum is #{::WorkItems::SharedFilterArguments::MAX_FIELD_LIMIT} labels)."
       argument :milestone_title, [GraphQL::Types::String],
         required: false,
-        description: 'Milestone not applied to the work item.'
+        validates: { length: { maximum: ::WorkItems::SharedFilterArguments::MAX_FIELD_LIMIT } },
+        description: "Milestone not applied to the work item " \
+          "(maximum is #{::WorkItems::SharedFilterArguments::MAX_FIELD_LIMIT} milestones)."
       argument :milestone_wildcard_id, ::Types::NegatedMilestoneWildcardIdEnum,
         required: false,
         description: 'Filter by negated milestone wildcard values.'
@@ -25,7 +33,9 @@ module Types
         description: 'Filter by reaction emoji not applied by the current user.'
       argument :release_tag, [GraphQL::Types::String],
         required: false,
-        description: "Release tag not associated with the work items's milestone. Ignored when parent is a group."
+        validates: { length: { maximum: ::WorkItems::SharedFilterArguments::MAX_FIELD_LIMIT } },
+        description: "Release tag not associated with the work items's milestone " \
+          "(maximum is #{::WorkItems::SharedFilterArguments::MAX_FIELD_LIMIT} tags). Ignored when parent is a group."
       argument :types, [::Types::IssueTypeEnum], as: :issue_types,
         description: 'Filter out work items by the given types.',
         required: false
