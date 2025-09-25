@@ -3,12 +3,6 @@
 module Members
   module Groups
     class CreatorService < Members::CreatorService
-      class << self
-        def cannot_manage_owners?(source, current_user)
-          source.max_member_access_for_user(current_user) < Gitlab::Access::OWNER
-        end
-      end
-
       private
 
       def can_create_new_member?

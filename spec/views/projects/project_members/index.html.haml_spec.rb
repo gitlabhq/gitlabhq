@@ -14,7 +14,7 @@ RSpec.describe 'projects/project_members/index', :aggregate_failures, feature_ca
 
   context 'when user can invite members for the project' do
     before do
-      project.add_maintainer(user)
+      project.add_owner(user)
     end
 
     context 'when modal is enabled' do

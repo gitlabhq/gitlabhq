@@ -58,7 +58,7 @@ module Members
     end
 
     def check_member_validity(member)
-      return if member.valid?
+      return unless member.errors.any?
 
       errors[member.user.username] = member.errors.full_messages.to_sentence
     end

@@ -34834,6 +34834,9 @@ msgstr ""
 msgid "Insufficient permissions for dast_configuration keyword"
 msgstr ""
 
+msgid "Insufficient permissions to assign this member"
+msgstr ""
+
 msgid "Insufficient permissions to update relation"
 msgstr ""
 

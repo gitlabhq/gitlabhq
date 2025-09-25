@@ -121,11 +121,13 @@ export default {
         }));
     },
     selectedProjectNamespace() {
-      return this.projects?.find((project) => project?.id === this.selectedProjectId)
-        ?.nameWithNamespace;
+      return this.projects?.find((project) => project?.id === this.selectedProjectId);
     },
-    toggleText() {
-      return this.selectedProjectNamespace || s__('WorkItem|Select project');
+    namespaceNameText() {
+      return this.selectedProjectNamespace?.nameWithNamespace || s__('WorkItem|Select project');
+    },
+    namespaceFullPathText() {
+      return this.selectedProjectNamespace?.fullPath;
     },
     actionPrimary() {
       return {
@@ -238,7 +240,7 @@ export default {
       fluid-width
       searchable
       :searching="isLoadingProjects"
-      :toggle-text="toggleText"
+      :toggle-text="namespaceNameText"
       :no-results-text="noResultsText"
       :disabled="moveInProgress"
       @shown="onDropdownShown"
@@ -253,7 +255,7 @@ export default {
       class="gl-mt-2 gl-text-secondary"
       data-testid="selected-project-namespace"
     >
-      {{ selectedProjectNamespace }}
+      {{ namespaceFullPathText }}
     </p>
 
     <p v-if="showChildrenWarning" data-testid="child-items-warning">
