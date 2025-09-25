@@ -341,7 +341,7 @@ You can change this limit by using the GitLab Rails console or use
 
 ## HTTP request limits
 
-By default, JSON parameters in requests are limited.
+By default, JSON parameters in requests are limited. For more information, see [JSON validation limits by endpoint](#json-validation-limits-by-endpoint).
 
 {{< tabs >}}
 
@@ -349,14 +349,14 @@ By default, JSON parameters in requests are limited.
 
 To disable this check:
 
-1. Set the `GITLAB_JSON_VALIDATION_MODE` environment variable on all nodes that run Puma:
+1. Set the `GITLAB_JSON_GLOBAL_VALIDATION_MODE` environment variable on all nodes that run Puma:
 
    ```shell
    sudo -e /etc/gitlab/gitlab.rb
    ```
 
    ```ruby
-   gitlab_rails['env'] = { 'GITLAB_JSON_VALIDATION_MODE' => 'disabled' }
+   gitlab_rails['env'] = { 'GITLAB_JSON_GLOBAL_VALIDATION_MODE' => 'disabled' }
    ```
 
 1. Reconfigure the updated nodes for the change to take effect:
@@ -369,19 +369,66 @@ To disable this check:
 
 {{< tab title="Helm chart (Kubernetes)" >}}
 
-To disable this check, you can use `--set gitlab.webservice.extraEnv.GITLAB_JSON_VALIDATION_MODE="disabled"`, or
+To disable this check, you can use `--set gitlab.webservice.extraEnv.GITLAB_JSON_GLOBAL_VALIDATION_MODE="disabled"`, or
 specify the following in your values file:
 
 ```yaml
 gitlab:
   webservice:
     extraEnv:
-      GITLAB_JSON_VALIDATION_MODE: "disabled"
+      GITLAB_JSON_GLOBAL_VALIDATION_MODE: "disabled"
 ```
 
 {{< /tab >}}
 
 {{< /tabs >}}
+
+### JSON validation limits by endpoint
+
+Some API endpoints have specific JSON validation limits.
+
+| Endpoint                                                                       | Description          | Methods                   | Max depth | Max array size | Max hash size | Max total elements | Max JSON size | Mode                 |  |
+|:-------------------------------------------------------------------------------|:---------------------|:--------------------------|:----------|:---------------|:--------------|:-------------------|:--------------|:---------------------|:-|
+| All other paths                                                                | **Default**          | All                       | 32        | 50,000         | 50,000        | 100,000            | 0 (disabled)  | enforced             |  |
+| `/api/v4/projects/{id}/terraform/state/`                                       | **Terraform State**  | POST                      | 64        | 50,000         | 50,000        | 250,000            | 50 MB         | logging <sup>1</sup> |  |
+| `/api/v4/packages/npm/-/npm/v1/security/`<br/>`{advisories/bulk\               | audits/quick}`       | **NPM Instance Packages** | POST      | 32             | 50,000        | 50,000             | 250,000       | 50 MB                | enforced |
+| `/api/v4/groups/{id}/-/packages/npm/-/npm/v1/security/`<br/>`{advisories/bulk\ | audits/quick}`       | **NPM Group Packages**    | POST      | 32             | 50,000        | 50,000             | 250,000       | 50 MB                | enforced |
+| `/api/v4/projects/{id}/packages/npm/-/npm/v1/security/`<br/>`{advisories/bulk\ | audits/quick}`       | **NPM Project Packages**  | POST      | 32             | 50,000        | 50,000             | 250,000       | 50 MB                | enforced |
+| `/api/v4/internal/*`                                                           | **Internal API**     | POST                      | 32        | 50,000         | 50,000        | 0 (disabled)       | 10 MB         | enforced             |  |
+| `/api/v4/ai/duo_workflows/workflows/`                                          | **Duo Workflow API** | POST                      | 32        | 5,000          | 5,000         | 0 (disabled)       | 25 MB         | enforced             |  |
+
+**Footnotes**:
+
+1. The Terraform State max size limit can be set by using the [application settings API](../../doc/api/settings.md) to set `max_terraform_state_size_bytes.`
+
+### Environment variable configuration
+
+The following environment variables modify the default limits and the validation
+modes:
+
+| Environment variable                 | Purpose                     | Default      | Scope |
+|:-------------------------------------|:----------------------------|:-------------|:------|
+| `GITLAB_JSON_MAX_DEPTH`              | Default max nesting depth   | 32           | Default limits only |
+| `GITLAB_JSON_MAX_ARRAY_SIZE`         | Default max array elements  | 50,000       | Default limits only |
+| `GITLAB_JSON_MAX_HASH_SIZE`          | Default max hash keys       | 50,000       | Default limits only |
+| `GITLAB_JSON_MAX_TOTAL_ELEMENTS`     | Default max total elements  | 100,000      | Default limits only |
+| `GITLAB_JSON_MAX_JSON_SIZE_BYTES`    | Default max body size       | 0 (disabled) | Default limits only |
+| `GITLAB_JSON_VALIDATION_MODE`        | Default validation mode     | `enforced`   | Default limits only |
+| `GITLAB_JSON_GLOBAL_VALIDATION_MODE` | Override all endpoint modes | Not set      | All endpoints (global override) |
+
+The `GITLAB_JSON_GLOBAL_VALIDATION_MODE` environment variable can be set to one of these modes.
+
+| Mode       | Description |
+|:-----------|:------------|
+| `enforced` | Validates and blocks requests exceeding limits (returns HTTP 400). Used for production protection. |
+| `logging`  | Validates and logs violations but allows requests through. Used for monitoring and debugging. All endpoints log only, which overrides `enforced`. |
+| disabled   | Skips validation entirely. Used as an emergency bypass. |
+
+When using `GITLAB_JSON_GLOBAL_VALIDATION_MODE`:
+
+- Route-specific configurations override default limits but not the global validation mode.
+- When limits are exceeded in enforced mode, the response is HTTP 400 with a JSON error message.
+- Total elements count includes all elements in arrays and hashes throughout the entire JSON structure.
 
 ## Webhook limits
 

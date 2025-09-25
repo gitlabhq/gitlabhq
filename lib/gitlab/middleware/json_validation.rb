@@ -85,7 +85,7 @@ module Gitlab
             max_array_size: 50000,
             max_hash_size: 50000,
             max_total_elements: 250000,
-            max_json_size_bytes: 1.megabyte,
+            max_json_size_bytes: 50.megabytes,
             mode: :enforced
           }
         },
@@ -97,7 +97,7 @@ module Gitlab
             max_array_size: 50000,
             max_hash_size: 50000,
             max_total_elements: 250000,
-            max_json_size_bytes: 1.megabyte,
+            max_json_size_bytes: 50.megabytes,
             mode: :enforced
           }
         },
@@ -109,7 +109,7 @@ module Gitlab
             max_array_size: 50000,
             max_hash_size: 50000,
             max_total_elements: 250000,
-            max_json_size_bytes: 1.megabyte,
+            max_json_size_bytes: 50.megabytes,
             mode: :enforced
           }
         },
