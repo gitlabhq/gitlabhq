@@ -2,7 +2,7 @@
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Create HAR Files
+title: Create HAR files
 ---
 
 {{< details >}}
@@ -12,11 +12,11 @@ title: Create HAR Files
 
 {{< /details >}}
 
-HTTP Archive (HAR) format files are an industry standard for exchanging information about HTTP
+HTTP archive (HAR) format files are an industry standard for exchanging information about HTTP
 requests and HTTP responses. A HAR file's content is JSON formatted, containing browser interactions
 with a web site. The file extension `.har` is commonly used.
 
-The HAR files can be used to perform [web API Fuzz Testing](configuration/enabling_the_analyzer.md#http-archive-har) as part of
+The HAR files can be used to perform [web API fuzz testing](configuration/enabling_the_analyzer.md#http-archive-har) as part of
 your [GitLab CI/CD](../../../ci/_index.md) pipelines.
 
 {{< alert type="warning" >}}
@@ -54,7 +54,7 @@ repository.
 ### GitLab HAR Recorder
 
 [GitLab HAR Recorder](https://gitlab.com/gitlab-org/security-products/har-recorder) is a command
-line tool for recording HTTP messages and saving them to HTTP Archive (HAR) files. For more details
+line tool for recording HTTP messages and saving them to HAR files. For more details
 about the GitLab HAR Recorder, see the [homepage](https://gitlab.com/gitlab-org/security-products/har-recorder).
 
 #### Install GitLab HAR Recorder
@@ -88,9 +88,9 @@ To verify the HAR contains all requests, use an online HAR viewer, for example:
 
 [Insomnia API Client](https://insomnia.rest/) is an API design tool that among many uses, helps
 you to design, describe, and test your API. You can also use it to generate HAR files that can be
-used in [Web API Fuzz Testing](configuration/enabling_the_analyzer.md#http-archive-har).
+used in [web API fuzz testing](configuration/enabling_the_analyzer.md#http-archive-har).
 
-#### Create a HAR file with the Insomnia API Client
+#### Create a HAR file with the Insomnia API client
 
 1. Define or import your API.
    - Postman v2.
@@ -164,7 +164,7 @@ export it as a HAR file.
 1. Enter a filename and select **Save**.
 1. To append additional requests, select and save them to the same file.
 
-### Firefox Web Browser
+### Firefox web browser
 
 [Firefox](https://www.mozilla.org/en-US/firefox/new/) is a web browser maintained by Mozilla. As web
 development evolves, browsers support new capabilities. With Firefox you can explore network traffic
@@ -242,6 +242,6 @@ After editing the HAR file, open it in a HAR file viewer to verify its formattin
 intact.
 
 The following example demonstrates use of [Visual Studio Code](https://code.visualstudio.com/) text
-editor to edit an Authorization token found in a header.
+editor to edit an authorization token found in a header.
 
 ![Authorization token edited in Visual Studio Code](img/vscode_har_edit_auth_header_v13_12.png)

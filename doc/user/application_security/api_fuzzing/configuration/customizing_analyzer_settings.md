@@ -22,7 +22,7 @@ including a large number of false positives.
 Authentication is handled by providing the authentication token as a header or cookie. You can
 provide a script that performs an authentication flow or calculates the token.
 
-### HTTP Basic Authentication
+### HTTP basic authentication
 
 [HTTP basic authentication](https://en.wikipedia.org/wiki/Basic_access_authentication)
 is an authentication method built into the HTTP protocol and used in conjunction with
@@ -190,7 +190,7 @@ GitLab provides the configuration file
 It contains several testing profiles that perform a specific numbers of tests. The runtime of each
 profile increases as the number of tests increases.
 
-| Profile   | Fuzz Tests (per parameter) |
+| Profile   | Fuzz tests (per parameter) |
 |:----------|:---------------------------|
 | Quick-10  | 10 |
 | Medium-20 | 20 |
@@ -199,7 +199,7 @@ profile increases as the number of tests increases.
 
 ## Overrides
 
-API Fuzzing provides a method to add or override specific items in your request, for example:
+API fuzzing provides a method to add or override specific items in your request, for example:
 
 - Headers
 - Cookies
@@ -984,7 +984,7 @@ variables:
   FUZZAPI_EXCLUDE_URLS: https://target/api/v.*/user/create$
 ```
 
-## Header Fuzzing
+## Header fuzzing
 
 Header fuzzing is disabled by default due to the high number of false positives that occur with many
 technology stacks. When header fuzzing is enabled, you must specify a list of headers to include in

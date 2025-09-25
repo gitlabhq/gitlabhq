@@ -3,7 +3,7 @@ type: reference, howto
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Overriding API Fuzzing jobs
+title: Overriding API fuzzing jobs
 ---
 
 To override a job definition, (for example, change properties like `variables`, `dependencies`, or [`rules`](../../../../ci/yaml/_index.md#rules)),

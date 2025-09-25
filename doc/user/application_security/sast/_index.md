@@ -315,9 +315,9 @@ These languages are supported by standard analyzers (all tiers) but not by GitLa
 | Elixir (Phoenix)   | {{< icon name="check-circle-filled" >}} Yes: [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)               | None                         |
 | Groovy             | {{< icon name="check-circle-filled" >}} Yes: [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)<sup>3</sup> | None                         |
 | Kotlin<sup>4</sup> | {{< icon name="check-circle-filled" >}} Yes                                                                                             | [Epic 15173](https://gitlab.com/groups/gitlab-org/-/epics/15173) |
-| Objective-C (iOS)  | {{< icon name="check-circle-filled" >}} Yes                                                                                             | None                         |
+| Objective-C (iOS)  | {{< icon name="check-circle-filled" >}} Yes                                                                                             | [Epic 16318](https://gitlab.com/groups/gitlab-org/-/epics/16318) |
 | Scala              | {{< icon name="check-circle-filled" >}} Yes                                                                                             | [Epic 15174](https://gitlab.com/groups/gitlab-org/-/epics/15174) |
-| Swift (iOS)        | {{< icon name="check-circle-filled" >}} Yes                                                                                             | None                         |
+| Swift (iOS)        | {{< icon name="check-circle-filled" >}} Yes                                                                                             | [Epic 16318](https://gitlab.com/groups/gitlab-org/-/epics/16318) |
 
 **Footnotes**:
 

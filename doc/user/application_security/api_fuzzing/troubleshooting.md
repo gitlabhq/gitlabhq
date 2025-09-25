@@ -2,12 +2,12 @@
 stage: Application Security Testing
 group: Dynamic Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Troubleshooting API Fuzzing jobs
+title: Troubleshooting API fuzzing jobs
 ---
 
-## API Fuzzing job times out after N hours
+## API fuzzing job times out after N hours
 
-For larger repositories, the API Fuzzing job could time out on the [small hosted runner on Linux](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux---x86-64), which is set per default. If this happens in your jobs, you should scale up to a [larger runner](performance.md#using-a-larger-runner).
+For larger repositories, the API fuzzing job could time out on the [small hosted runner on Linux](../../../ci/runners/hosted_runners/linux.md#machine-types-available-for-linux---x86-64), which is set per default. If this happens in your jobs, you should scale up to a [larger runner](performance.md#using-a-larger-runner).
 
 See the following documentation sections for assistance:
 
@@ -16,13 +16,13 @@ See the following documentation sections for assistance:
 - [Excluding operations by path](configuration/customizing_analyzer_settings.md#exclude-paths)
 - [Excluding slow operations](performance.md#excluding-slow-operations)
 
-## API Fuzzing job takes too long to complete
+## API fuzzing job takes too long to complete
 
-See [Performance Tuning and Testing Speed](performance.md)
+See [performance tuning and testing speed](performance.md)
 
-## Error: `Error waiting for API Fuzzing 'http://127.0.0.1:5000' to become available`
+## Error: `Error waiting for API fuzzing 'http://127.0.0.1:5000' to become available`
 
-A bug exists in versions of the API Fuzzing analyzer prior to v1.6.196 that can cause a background process to fail under certain conditions. The solution is to update to a newer version of the API Fuzzing analyzer.
+A bug exists in versions of the API fuzzing analyzer prior to v1.6.196 that can cause a background process to fail under certain conditions. The solution is to update to a newer version of the API fuzzing analyzer.
 
 The version information can be found in the job details for the `apifuzzer_fuzz` job.
 
@@ -40,7 +40,7 @@ If the issue is occurring with versions v1.6.196 or greater, contact Support and
 
 ### `Failed to start session with scanner. Please retry, and if the problem persists reach out to support.`
 
-The API Fuzzing engine outputs an error message when it cannot establish a connection with the scanner application component. The error message is shown in the job output window of the `apifuzzer_fuzz` job. A common cause for this issue is that the background component cannot use the selected port as it's already in use. This error can occur intermittently if timing plays a part (race condition). This issue occurs most often with Kubernetes environments when other services are mapped into the container causing port conflicts.
+The API fuzzing engine outputs an error message when it cannot establish a connection with the scanner application component. The error message is shown in the job output window of the `apifuzzer_fuzz` job. A common cause for this issue is that the background component cannot use the selected port as it's already in use. This error can occur intermittently if timing plays a part (race condition). This issue occurs most often with Kubernetes environments when other services are mapped into the container causing port conflicts.
 
 Before proceeding with a solution, it is important to confirm that the error message was produced because the port was already taken. To confirm this was the cause:
 
@@ -77,7 +77,7 @@ Once you have confirmed the issue was produced because the port was already take
 
 ## Error: `Errors were found during validation of the document using the published OpenAPI schema`
 
-At the start of an API Fuzzing job the OpenAPI Specification is validated against the [published schema](https://github.com/OAI/OpenAPI-Specification/tree/master/schemas). This error is shown when the provided OpenAPI Specification has validation errors:
+At the start of an API fuzzing job the OpenAPI Specification is validated against the [published schema](https://github.com/OAI/OpenAPI-Specification/tree/master/schemas). This error is shown when the provided OpenAPI Specification has validation errors:
 
 ```plaintext
 Error, the OpenAPI document is not valid.
@@ -113,7 +113,7 @@ For OpenAPI Specifications that are generated automatically validation errors ar
 
 ## `Failed to start scanner session (version header not found)`
 
-The API Fuzzing engine outputs an error message when it cannot establish a connection with the scanner application component. The error message is shown in the job output window of the `apifuzzer_fuzz` job. A common cause of this issue is changing the `FUZZAPI_API` variable from its default.
+The API fuzzing engine outputs an error message when it cannot establish a connection with the scanner application component. The error message is shown in the job output window of the `apifuzzer_fuzz` job. A common cause of this issue is changing the `FUZZAPI_API` variable from its default.
 
 **Error message**
 
@@ -121,14 +121,14 @@ The API Fuzzing engine outputs an error message when it cannot establish a conne
 
 **Solution**
 
-- Remove the `FUZZAPI_API` variable from the `.gitlab-ci.yml` file. The value is inherited from the API Fuzzing CI/CD template. We recommend this method instead of manually setting a value.
-- If removing the variable is not possible, check to see if this value has changed in the latest version of the [API Fuzzing CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml). If so, update the value in the `.gitlab-ci.yml` file.
+- Remove the `FUZZAPI_API` variable from the `.gitlab-ci.yml` file. The value is inherited from the API fuzzing CI/CD template. We recommend this method instead of manually setting a value.
+- If removing the variable is not possible, check to see if this value has changed in the latest version of the [API fuzzing CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Fuzzing.gitlab-ci.yml). If so, update the value in the `.gitlab-ci.yml` file.
 
 ## `Application cannot determine the base URL for the target API`
 
-The API Fuzzing analyzer outputs an error message when it cannot determine the target API after inspecting the OpenAPI document. This error message is shown when the target API has not been set in the `.gitlab-ci.yml`file, it is not available in the `environment_url.txt` file, and it could not be computed using the OpenAPI document.
+The API fuzzing analyzer outputs an error message when it cannot determine the target API after inspecting the OpenAPI document. This error message is shown when the target API has not been set in the `.gitlab-ci.yml`file, it is not available in the `environment_url.txt` file, and it could not be computed using the OpenAPI document.
 
-There is an order of precedence in which the API Fuzzing analyzer tries to get the target API when checking the different sources. First, it tries to use the `FUZZAPI_TARGET_URL`. If the environment variable has not been set, then the API Fuzzing analyzer attempts to use the `environment_url.txt` file. If there is no file `environment_url.txt`, the API Fuzzing analyzer now uses the OpenAPI document contents and the URL provided in `FUZZAPI_OPENAPI` (if a URL is provided) to try to compute the target API.
+There is an order of precedence in which the API fuzzing analyzer tries to get the target API when checking the different sources. First, it tries to use the `FUZZAPI_TARGET_URL`. If the environment variable has not been set, then the API fuzzing analyzer attempts to use the `environment_url.txt` file. If there is no file `environment_url.txt`, the API fuzzing analyzer now uses the OpenAPI document contents and the URL provided in `FUZZAPI_OPENAPI` (if a URL is provided) to try to compute the target API.
 
 The best-suited solution depends on whether or not your target API changes for each deployment:
 
@@ -161,7 +161,7 @@ In a dynamic environment your target API changes for each different deployment. 
 
 **Use environment_url.txt**
 
-To support dynamic environments in which the target API URL changes during each pipeline, API Fuzzing supports the use of an `environment_url.txt` file that contains the URL to use. This file is not checked into the repository, instead it's created during the pipeline by the job that deploys the test target and collected as an artifact that can be used by later jobs in the pipeline. The job that creates the `environment_url.txt` file must run before the API Fuzzing job.
+To support dynamic environments in which the target API URL changes during each pipeline, API fuzzing supports the use of an `environment_url.txt` file that contains the URL to use. This file is not checked into the repository, instead it's created during the pipeline by the job that deploys the test target and collected as an artifact that can be used by later jobs in the pipeline. The job that creates the `environment_url.txt` file must run before the API fuzzing job.
 
 1. Modify the test target deployment job adding the base URL in an `environment_url.txt` file at the root of your project.
 1. Modify the test target deployment job collecting the `environment_url.txt` as an artifact.
@@ -182,7 +182,7 @@ deploy-test-target:
 
 ## Use OpenAPI with an invalid schema
 
-There are cases where the document is autogenerated with an invalid schema or cannot be edited manually in a timely manner. In those scenarios, the API Fuzzing is able to perform a relaxed validation by setting the variable `FUZZAPI_OPENAPI_RELAXED_VALIDATION`. We recommend providing a fully compliant OpenAPI document to prevent unexpected behaviors.
+There are cases where the document is autogenerated with an invalid schema or cannot be edited manually in a timely manner. In those scenarios, the API fuzzing is able to perform a relaxed validation by setting the variable `FUZZAPI_OPENAPI_RELAXED_VALIDATION`. We recommend providing a fully compliant OpenAPI document to prevent unexpected behaviors.
 
 ### Edit a non-compliant OpenAPI file
 
@@ -199,7 +199,7 @@ If your OpenAPI document is generated manually, load your document in the editor
 
 Relaxed validation is meant for cases when the OpenAPI document cannot meet OpenAPI specifications, but it still has enough content to be consumed by different tools. A validation is performed but less strictly in regards to document schema.
 
-API Fuzzing can still try to consume an OpenAPI document that does not fully comply with OpenAPI specifications. To instruct API Fuzzing analyzer to perform a relaxed validation, set the variable `FUZZAPI_OPENAPI_RELAXED_VALIDATION` to any value, for example:
+API fuzzing can still try to consume an OpenAPI document that does not fully comply with OpenAPI specifications. To instruct API fuzzing analyzer to perform a relaxed validation, set the variable `FUZZAPI_OPENAPI_RELAXED_VALIDATION` to any value, for example:
 
 ```yaml
 stages:
@@ -217,7 +217,7 @@ variables:
 
 ## `No operation in the OpenAPI document is consuming any supported media type`
 
-API Fuzzing uses the specified media types in the OpenAPI document to generate requests. If no request can be created due to the lack of supported media types, then an error is thrown.
+API fuzzing uses the specified media types in the OpenAPI document to generate requests. If no request can be created due to the lack of supported media types, then an error is thrown.
 
 **Error message**
 
@@ -407,7 +407,7 @@ This issue can be worked around in the following ways:
      USER gitlab
      ```
 
-  1. Build the new image and push it to your local container registry before the API Fuzzing job starts. The image should be removed after the `` job has been completed.
+  1. Build the new image and push it to your local container registry before the API fuzzing job starts. The image should be removed after the job has been completed.
 
      ```shell
      TARGET_NAME=apifuzz-$CI_COMMIT_SHA
@@ -432,9 +432,9 @@ This issue can be worked around in the following ways:
 
 - Change the GitLab Runner configuration, disabling the no-new-privileges flag. This could have security implications and should be discussed with your operations and security teams.
 
-## `Index was outside the bounds of the array.    at Peach.Web.Runner.Services.RunnerOptions.GetHeaders()`
+## `Index was outside the bounds of the array at Peach.Web.Runner.Services.RunnerOptions.GetHeaders()`
 
-This error message indicates that the API Fuzzing analyzer is unable to parse the value of the `FUZZAPI_REQUEST_HEADERS` or `FUZZAPI_REQUEST_HEADERS_BASE64` configuration variable.
+This error message indicates that the API fuzzing analyzer is unable to parse the value of the `FUZZAPI_REQUEST_HEADERS` or `FUZZAPI_REQUEST_HEADERS_BASE64` configuration variable.
 
 **Error message**
 

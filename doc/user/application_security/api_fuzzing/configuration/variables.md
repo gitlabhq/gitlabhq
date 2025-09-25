@@ -8,9 +8,9 @@ title: Available CI/CD variables
 | CI/CD variable                                              | Description |
 |-------------------------------------------------------------|-------------|
 | `SECURE_ANALYZERS_PREFIX`                                   | Specify the Docker registry base address from which to download the analyzer. |
-| `FUZZAPI_VERSION`                                           | Specify API Fuzzing container version. Defaults to `5`. |
+| `FUZZAPI_VERSION`                                           | Specify API fuzzing container version. Defaults to `5`. |
 | `FUZZAPI_IMAGE_SUFFIX`                                      | Specify a container image suffix. Defaults to none. |
-| `FUZZAPI_API_PORT`                                          | Specify the communication port number used by API Fuzzing engine. Defaults to `5500`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367734) in GitLab 15.5. |
+| `FUZZAPI_API_PORT`                                          | Specify the communication port number used by API fuzzing engine. Defaults to `5500`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367734) in GitLab 15.5. |
 | `FUZZAPI_TARGET_URL`                                        | Base URL of API testing target. |
 | `FUZZAPI_TARGET_CHECK_SKIP`                      | Disable waiting for target to become available. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442699) in GitLab 17.1. |
 | `FUZZAPI_TARGET_CHECK_STATUS_CODE`                   | Provide the expected status code for target availability check. If not provided, any non-500 status code is acceptable. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442699) in GitLab 17.1. |
