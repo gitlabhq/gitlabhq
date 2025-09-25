@@ -1,6 +1,4 @@
-import Vue from 'vue';
 import initAmbiguousRefModal from '~/ref/init_ambiguous_ref_modal';
-import AmbiguousRefModal from '~/ref/components/ambiguous_ref_modal.vue';
 import { setHTMLFixture } from 'helpers/fixtures';
 import setWindowLocation from 'helpers/set_window_location_helper';
 
@@ -8,17 +6,18 @@ const generateFixture = (isAmbiguous) => {
   return `<div id="js-ambiguous-ref-modal" data-ambiguous="${isAmbiguous}" data-ref="main"></div>`;
 };
 
+let modal;
+
 const init = ({ isAmbiguous, htmlFixture = generateFixture(isAmbiguous) }) => {
   setHTMLFixture(htmlFixture);
-  initAmbiguousRefModal();
+  modal = initAmbiguousRefModal();
 };
-
-beforeEach(() => jest.spyOn(Vue, 'extend'));
 
 describe('initAmbiguousRefModal', () => {
   it('inits a new AmbiguousRefModal Vue component', () => {
     init({ isAmbiguous: true });
-    expect(Vue.extend).toHaveBeenCalledWith(AmbiguousRefModal);
+
+    expect(Boolean(modal)).toBe(true);
   });
 
   it.each(['<div></div>', '', null])(
@@ -26,14 +25,14 @@ describe('initAmbiguousRefModal', () => {
     (htmlFixture) => {
       init({ isAmbiguous: true, htmlFixture });
 
-      expect(Vue.extend).not.toHaveBeenCalledWith(AmbiguousRefModal);
+      expect(Boolean(modal)).toBe(false);
     },
   );
 
   it('does not render a new AmbiguousRefModal Vue component "ambiguous" data attribute is "false"', () => {
     init({ isAmbiguous: false });
 
-    expect(Vue.extend).not.toHaveBeenCalledWith(AmbiguousRefModal);
+    expect(Boolean(modal)).toBe(false);
   });
 
   it.each(['tags', 'heads'])(
@@ -42,7 +41,7 @@ describe('initAmbiguousRefModal', () => {
       setWindowLocation(`?ref_type=${refType}`);
       init({ isAmbiguous: true });
 
-      expect(Vue.extend).not.toHaveBeenCalledWith(AmbiguousRefModal);
+      expect(Boolean(modal)).toBe(false);
     },
   );
 });

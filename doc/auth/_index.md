@@ -22,7 +22,7 @@ requirements with operational efficiency.
 - [User identity](../administration/auth/_index.md)
 - [User authentication](user_authentication.md)
 - [User permissions](user_permissions.md)
-- [Authentication best practices](auth_practices.md)
-- [Authentication glossary](auth_glossary.md)
+- [Authentication and authorization best practices](auth_practices.md)
+- [Authentication and authorization glossary](auth_glossary.md)
 
 {{< /cards >}}

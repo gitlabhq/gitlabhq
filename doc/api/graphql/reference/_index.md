@@ -42601,6 +42601,8 @@ Rotation configuration and status for a project secret.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="secretrotationinfocreatedat"></a>`createdAt` | [`Time!`](#time) | When the rotation configuration was created. |
+| <a id="secretrotationinfolastreminderat"></a>`lastReminderAt` | [`Time`](#time) | When the last rotation reminder was sent. |
+| <a id="secretrotationinfonextreminderat"></a>`nextReminderAt` | [`Time!`](#time) | When the next rotation reminder will be sent. |
 | <a id="secretrotationinforotationintervaldays"></a>`rotationIntervalDays` | [`Int!`](#int) | Number of days between rotation reminders. |
 | <a id="secretrotationinfostatus"></a>`status` | [`SecretRotationStatus!`](#secretrotationstatus) | Current rotation status. |
 | <a id="secretrotationinfoupdatedat"></a>`updatedAt` | [`Time!`](#time) | When the rotation configuration was last updated. |

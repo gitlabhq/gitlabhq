@@ -40,7 +40,15 @@ In addition, when an experiment runs, an event is tracked for
 the experiment `:assignment`. We cover more about events, tracking, and
 the client layer later.
 
-In local development, you can make the experiment active by using the feature flag
+## Testing experiments locally
+
+### Prerequisites
+
+- [Enable SaaS mode](../ee_features.md#simulate-a-saas-instance) in your local development environment
+
+### Running the experiment
+
+You can make the experiment active by using the feature flag
 interface. You can also target specific cases by providing the relevant experiment
 to the call to enable the feature flag:
 

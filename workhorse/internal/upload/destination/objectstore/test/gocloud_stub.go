@@ -43,5 +43,5 @@ func GoCloudObjectExists(t *testing.T, bucketDir string, objectName string) {
 
 	attr, err := bucket.Attributes(ctx, objectName)
 	require.NoError(t, err)
-	require.Equal(t, "", attr.ContentType)
+	require.Empty(t, attr.ContentType)
 }

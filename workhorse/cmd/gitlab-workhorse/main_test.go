@@ -221,7 +221,7 @@ func TestDeniedPublicUploadsFile(t *testing.T) {
 			defer resp.Body.Close()
 
 			require.Equal(t, 404, resp.StatusCode, "GET %q: status code", resource)
-			require.Equal(t, "", body, "GET %q: response body", resource)
+			require.Empty(t, body, "GET %q: response body", resource)
 			require.True(t, proxied, "GET %q: never made it to backend", resource)
 		})
 	}

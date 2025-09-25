@@ -27,6 +27,9 @@ To update the documentation:
 1. Find the documentation page you want to update. If you're not sure where the page is,
    look at the URL of the page on <https://docs.gitlab.com>.
    The path is listed there.
+
+   Alternatively, if you are already on the documentation page you would like to update, scroll to the bottom and on the footer, select **View page source**. This link takes you directly to the source file.
+
 1. In the upper right, select **Edit** > **Edit single file**.
 1. Make your updates.
 1. When you're done, in the **Commit message** text box, enter a commit message.

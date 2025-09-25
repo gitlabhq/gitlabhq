@@ -1065,6 +1065,9 @@ Gitlab.ee do
   Settings.cron_jobs['ai_duo_workflows_fail_stuck_workflows_worker'] ||= {}
   Settings.cron_jobs['ai_duo_workflows_fail_stuck_workflows_worker']['cron'] ||= '*/30 * * * *'
   Settings.cron_jobs['ai_duo_workflows_fail_stuck_workflows_worker']['job_class'] ||= 'Ai::DuoWorkflows::FailStuckWorkflowsWorker'
+  Settings.cron_jobs['secret_rotation_reminder_batch_worker'] ||= {}
+  Settings.cron_jobs['secret_rotation_reminder_batch_worker']['cron'] ||= '* * * * *'
+  Settings.cron_jobs['secret_rotation_reminder_batch_worker']['job_class'] = 'SecretsManagement::SecretRotationReminderBatchWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}

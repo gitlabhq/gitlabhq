@@ -12,10 +12,36 @@ exports[`Upload dropzone component correctly overrides description and drop mess
       class="gl-flex gl-flex-col gl-items-center gl-justify-center gl-text-center"
       data-testid="dropzone-area"
     >
-      <gl-animated-upload-icon-stub
-        class="gl-mb-3"
-        variant="current"
-      />
+      <svg
+        class="gl-animated-icon gl-animated-icon-current gl-animated-icon-off gl-mb-3"
+        fill="none"
+        height="16"
+        viewBox="0 0 16 16"
+        width="16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          class="gl-animated-upload-base"
+          d="M14.25 9.75V13C14.25 13.6904 13.6904 14.25 13 14.25L3 14.25C2.30964 14.25 1.75 13.6904 1.75 13L1.75 9.75"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <path
+          class="gl-animated-upload-line"
+          d="M8 11.25V2.5"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <path
+          class="gl-animated-upload-arrow"
+          d="M11.25 5.31066L8 2.06066L4.75 5.31066"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+      </svg>
       <p
         class="gl-mb-0"
         data-testid="upload-text"
@@ -67,10 +93,36 @@ exports[`Upload dropzone component when dragging renders correct template when d
       class="gl-flex gl-flex-col gl-items-center gl-justify-center gl-text-center"
       data-testid="dropzone-area"
     >
-      <gl-animated-upload-icon-stub
-        class="gl-mb-3"
-        variant="current"
-      />
+      <svg
+        class="gl-animated-icon gl-animated-icon-current gl-animated-icon-off gl-mb-3"
+        fill="none"
+        height="16"
+        viewBox="0 0 16 16"
+        width="16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          class="gl-animated-upload-base"
+          d="M14.25 9.75V13C14.25 13.6904 13.6904 14.25 13 14.25L3 14.25C2.30964 14.25 1.75 13.6904 1.75 13L1.75 9.75"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <path
+          class="gl-animated-upload-line"
+          d="M8 11.25V2.5"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <path
+          class="gl-animated-upload-arrow"
+          d="M11.25 5.31066L8 2.06066L4.75 5.31066"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+      </svg>
       <p
         class="gl-mb-0"
         data-testid="upload-text"
@@ -124,10 +176,36 @@ exports[`Upload dropzone component when dragging renders correct template when d
       class="gl-flex gl-flex-col gl-items-center gl-justify-center gl-text-center"
       data-testid="dropzone-area"
     >
-      <gl-animated-upload-icon-stub
-        class="gl-mb-3"
-        variant="current"
-      />
+      <svg
+        class="gl-animated-icon gl-animated-icon-current gl-animated-icon-off gl-mb-3"
+        fill="none"
+        height="16"
+        viewBox="0 0 16 16"
+        width="16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          class="gl-animated-upload-base"
+          d="M14.25 9.75V13C14.25 13.6904 13.6904 14.25 13 14.25L3 14.25C2.30964 14.25 1.75 13.6904 1.75 13L1.75 9.75"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <path
+          class="gl-animated-upload-line"
+          d="M8 11.25V2.5"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <path
+          class="gl-animated-upload-arrow"
+          d="M11.25 5.31066L8 2.06066L4.75 5.31066"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+      </svg>
       <p
         class="gl-mb-0"
         data-testid="upload-text"
@@ -181,10 +259,36 @@ exports[`Upload dropzone component when dragging renders correct template when d
       class="gl-flex gl-flex-col gl-items-center gl-justify-center gl-text-center"
       data-testid="dropzone-area"
     >
-      <gl-animated-upload-icon-stub
-        class="gl-mb-3"
-        variant="current"
-      />
+      <svg
+        class="gl-animated-icon gl-animated-icon-current gl-animated-icon-off gl-mb-3"
+        fill="none"
+        height="16"
+        viewBox="0 0 16 16"
+        width="16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          class="gl-animated-upload-base"
+          d="M14.25 9.75V13C14.25 13.6904 13.6904 14.25 13 14.25L3 14.25C2.30964 14.25 1.75 13.6904 1.75 13L1.75 9.75"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <path
+          class="gl-animated-upload-line"
+          d="M8 11.25V2.5"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <path
+          class="gl-animated-upload-arrow"
+          d="M11.25 5.31066L8 2.06066L4.75 5.31066"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+      </svg>
       <p
         class="gl-mb-0"
         data-testid="upload-text"
@@ -238,10 +342,36 @@ exports[`Upload dropzone component when dragging renders correct template when d
       class="gl-flex gl-flex-col gl-items-center gl-justify-center gl-text-center"
       data-testid="dropzone-area"
     >
-      <gl-animated-upload-icon-stub
-        class="gl-mb-3"
-        variant="current"
-      />
+      <svg
+        class="gl-animated-icon gl-animated-icon-current gl-animated-icon-off gl-mb-3"
+        fill="none"
+        height="16"
+        viewBox="0 0 16 16"
+        width="16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          class="gl-animated-upload-base"
+          d="M14.25 9.75V13C14.25 13.6904 13.6904 14.25 13 14.25L3 14.25C2.30964 14.25 1.75 13.6904 1.75 13L1.75 9.75"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <path
+          class="gl-animated-upload-line"
+          d="M8 11.25V2.5"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <path
+          class="gl-animated-upload-arrow"
+          d="M11.25 5.31066L8 2.06066L4.75 5.31066"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+      </svg>
       <p
         class="gl-mb-0"
         data-testid="upload-text"
@@ -295,10 +425,36 @@ exports[`Upload dropzone component when dragging renders correct template when d
       class="gl-flex gl-flex-col gl-items-center gl-justify-center gl-text-center"
       data-testid="dropzone-area"
     >
-      <gl-animated-upload-icon-stub
-        class="gl-mb-3"
-        variant="current"
-      />
+      <svg
+        class="gl-animated-icon gl-animated-icon-current gl-animated-icon-off gl-mb-3"
+        fill="none"
+        height="16"
+        viewBox="0 0 16 16"
+        width="16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          class="gl-animated-upload-base"
+          d="M14.25 9.75V13C14.25 13.6904 13.6904 14.25 13 14.25L3 14.25C2.30964 14.25 1.75 13.6904 1.75 13L1.75 9.75"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <path
+          class="gl-animated-upload-line"
+          d="M8 11.25V2.5"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <path
+          class="gl-animated-upload-arrow"
+          d="M11.25 5.31066L8 2.06066L4.75 5.31066"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+      </svg>
       <p
         class="gl-mb-0"
         data-testid="upload-text"
@@ -352,10 +508,36 @@ exports[`Upload dropzone component when dragging with design upload overlay enab
       class="gl-flex gl-flex-col gl-items-center gl-justify-center gl-text-center"
       data-testid="dropzone-area"
     >
-      <gl-animated-upload-icon-stub
-        class="gl-mb-3"
-        variant="current"
-      />
+      <svg
+        class="gl-animated-icon gl-animated-icon-current gl-animated-icon-off gl-mb-3"
+        fill="none"
+        height="16"
+        viewBox="0 0 16 16"
+        width="16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          class="gl-animated-upload-base"
+          d="M14.25 9.75V13C14.25 13.6904 13.6904 14.25 13 14.25L3 14.25C2.30964 14.25 1.75 13.6904 1.75 13L1.75 9.75"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <path
+          class="gl-animated-upload-line"
+          d="M8 11.25V2.5"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <path
+          class="gl-animated-upload-arrow"
+          d="M11.25 5.31066L8 2.06066L4.75 5.31066"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+      </svg>
       <p
         class="gl-mb-0"
         data-testid="upload-text"
@@ -386,11 +568,37 @@ exports[`Upload dropzone component when dragging with design upload overlay enab
         class="gl-absolute gl-bg-feedback-strong gl-bottom-6 gl-flex gl-items-center gl-px-3 gl-py-2 gl-rounded-base gl-shadow-sm gl-text-feedback-strong"
         data-testid="design-upload-overlay"
       >
-        <gl-animated-upload-icon-stub
-          ison="true"
+        <svg
+          class="gl-animated-icon gl-animated-icon-current gl-animated-icon-on"
+          fill="none"
+          height="16"
           name="upload"
-          variant="current"
-        />
+          viewBox="0 0 16 16"
+          width="16"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            class="gl-animated-upload-base"
+            d="M14.25 9.75V13C14.25 13.6904 13.6904 14.25 13 14.25L3 14.25C2.30964 14.25 1.75 13.6904 1.75 13L1.75 9.75"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-width="1.5"
+          />
+          <path
+            class="gl-animated-upload-line"
+            d="M8 11.25V2.5"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-width="1.5"
+          />
+          <path
+            class="gl-animated-upload-arrow"
+            d="M11.25 5.31066L8 2.06066L4.75 5.31066"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-width="1.5"
+          />
+        </svg>
         <span
           class="gl-ml-2"
         >
@@ -414,10 +622,36 @@ exports[`Upload dropzone component when no slot provided renders default dropzon
       class="gl-flex gl-flex-col gl-items-center gl-justify-center gl-text-center"
       data-testid="dropzone-area"
     >
-      <gl-animated-upload-icon-stub
-        class="gl-mb-3"
-        variant="current"
-      />
+      <svg
+        class="gl-animated-icon gl-animated-icon-current gl-animated-icon-off gl-mb-3"
+        fill="none"
+        height="16"
+        viewBox="0 0 16 16"
+        width="16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          class="gl-animated-upload-base"
+          d="M14.25 9.75V13C14.25 13.6904 13.6904 14.25 13 14.25L3 14.25C2.30964 14.25 1.75 13.6904 1.75 13L1.75 9.75"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <path
+          class="gl-animated-upload-line"
+          d="M8 11.25V2.5"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+        <path
+          class="gl-animated-upload-arrow"
+          d="M11.25 5.31066L8 2.06066L4.75 5.31066"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+      </svg>
       <p
         class="gl-mb-0"
         data-testid="upload-text"

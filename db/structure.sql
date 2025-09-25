@@ -19023,6 +19023,7 @@ CREATE TABLE member_roles (
     description text,
     occupies_seat boolean DEFAULT false NOT NULL,
     permissions jsonb DEFAULT '{}'::jsonb NOT NULL,
+    organization_id bigint,
     CONSTRAINT check_4364846f58 CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_9907916995 CHECK ((char_length(name) <= 255))
 );
@@ -25285,6 +25286,8 @@ CREATE TABLE secret_rotation_infos (
     rotation_interval_days integer NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
+    next_reminder_at timestamp with time zone NOT NULL,
+    last_reminder_at timestamp with time zone,
     CONSTRAINT check_c0fb39dc52 CHECK ((char_length(secret_name) <= 255))
 );
 
@@ -28475,6 +28478,7 @@ CREATE TABLE web_hooks (
     vulnerability_events boolean DEFAULT false NOT NULL,
     member_approval_events boolean DEFAULT false NOT NULL,
     milestone_events boolean DEFAULT false NOT NULL,
+    organization_id bigint,
     CONSTRAINT check_1e4d5cbdc5 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_23a96ad211 CHECK ((char_length(description) <= 2048)),
     CONSTRAINT check_69ef76ee0c CHECK ((char_length(custom_webhook_template) <= 4096))
@@ -40083,6 +40087,8 @@ CREATE UNIQUE INDEX index_member_roles_on_namespace_id_name_unique ON member_rol
 
 CREATE INDEX index_member_roles_on_occupies_seat ON member_roles USING btree (occupies_seat);
 
+CREATE INDEX index_member_roles_on_organization_id ON member_roles USING btree (organization_id);
+
 CREATE INDEX index_member_roles_on_permissions ON member_roles USING gin (permissions);
 
 CREATE INDEX index_members_deletion_schedules_on_scheduled_by_id ON members_deletion_schedules USING btree (scheduled_by_id);
@@ -40905,7 +40911,7 @@ CREATE INDEX index_packages_nuget_symbol_states_on_verification_state ON package
 
 CREATE INDEX index_packages_nuget_symbol_states_pending_verification ON packages_nuget_symbol_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
-CREATE UNIQUE INDEX index_packages_nuget_symbols_on_object_storage_key ON packages_nuget_symbols USING btree (object_storage_key);
+CREATE UNIQUE INDEX index_packages_nuget_symbols_on_object_storage_key_project_id ON packages_nuget_symbols USING btree (object_storage_key, project_id);
 
 CREATE INDEX index_packages_nuget_symbols_on_package_id ON packages_nuget_symbols USING btree (package_id);
 
@@ -41714,6 +41720,8 @@ CREATE UNIQUE INDEX index_scim_identities_on_lower_extern_uid_and_group_id ON sc
 CREATE UNIQUE INDEX index_scim_identities_on_user_id_and_group_id ON scim_identities USING btree (user_id, group_id);
 
 CREATE UNIQUE INDEX index_scim_oauth_access_tokens_on_group_id_and_token_encrypted ON scim_oauth_access_tokens USING btree (group_id, token_encrypted);
+
+CREATE INDEX index_secret_rotation_infos_on_next_reminder_at ON secret_rotation_infos USING btree (next_reminder_at);
 
 CREATE INDEX index_security_attributes_on_namespace_id ON security_attributes USING btree (namespace_id);
 
@@ -42532,6 +42540,8 @@ CREATE INDEX index_web_hook_logs_daily_part_on_created_at_and_web_hook_id ON ONL
 CREATE INDEX index_web_hooks_on_group_id ON web_hooks USING btree (group_id) WHERE ((type)::text = 'GroupHook'::text);
 
 CREATE INDEX index_web_hooks_on_integration_id ON web_hooks USING btree (integration_id);
+
+CREATE INDEX index_web_hooks_on_organization_id ON web_hooks USING btree (organization_id);
 
 CREATE INDEX index_web_hooks_on_project_id_and_id ON web_hooks USING btree (project_id, id) WHERE ((type)::text = 'ProjectHook'::text);
 
@@ -48969,6 +48979,9 @@ ALTER TABLE ONLY gitlab_subscriptions
 ALTER TABLE ONLY ml_candidate_metrics
     ADD CONSTRAINT fk_e2684c8ffc FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY web_hooks
+    ADD CONSTRAINT fk_e295b26646 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY approval_merge_request_rules
     ADD CONSTRAINT fk_e33a9aaf67 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -49223,6 +49236,9 @@ ALTER TABLE ONLY compliance_requirements_controls
 
 ALTER TABLE ONLY system_note_metadata
     ADD CONSTRAINT fk_fbd87415c9 FOREIGN KEY (description_version_id) REFERENCES description_versions(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY member_roles
+    ADD CONSTRAINT fk_fc154c5d30 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_compliance_violations_issues
     ADD CONSTRAINT fk_fc4630d30b FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;

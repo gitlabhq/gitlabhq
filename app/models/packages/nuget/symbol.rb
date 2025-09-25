@@ -17,7 +17,7 @@ module Packages
       update_project_statistics project_statistics_name: :packages_size
 
       validates :package, :project, :file, :file_path, :signature, :object_storage_key, :size, presence: true
-      validates :object_storage_key, uniqueness: true
+      validates :object_storage_key, uniqueness: { scope: :project_id }
 
       validate :unique_signature_and_file_path_when_installable_package, on: :create
 

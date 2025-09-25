@@ -47,6 +47,7 @@ class MergeRequestDiffCommit < ApplicationRecord
   def self.create_bulk(merge_request_diff_id, commits, project, skip_commit_data: false)
     organization_id = project.organization_id
     dedup_enabled = Feature.enabled?(:merge_request_diff_commits_dedup, project)
+    partition_enabled = Feature.enabled?(:merge_request_diff_commits_partition, project)
     commit_hashes, user_triples = prepare_commits_for_bulk_insert(commits, organization_id)
     users = MergeRequest::DiffCommitUser.bulk_find_or_create(user_triples)
 
@@ -83,6 +84,7 @@ class MergeRequestDiffCommit < ApplicationRecord
       # only need to do this when dedup is enabled.
       commit_hash[:raw_sha] = raw_sha if dedup_enabled
 
+      commit_hash[:project_id] = project.id if partition_enabled
       commit_hash = commit_hash.merge(message: '') if skip_commit_data
 
       commit_hash

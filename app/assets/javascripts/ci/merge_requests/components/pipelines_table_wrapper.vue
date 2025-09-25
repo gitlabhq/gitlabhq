@@ -4,7 +4,7 @@ import { createAlert } from '~/alert';
 import Api from '~/api';
 import { getQueryHeaders } from '~/ci/pipeline_details/graph/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import PipelinesTableComponent from '~/ci/common/pipelines_table.vue';
+import PipelinesTable from '~/ci/common/pipelines_table.vue';
 import { s__, __ } from '~/locale';
 import getMergeRequestPipelines from '~/ci/merge_requests/graphql/queries/get_merge_request_pipelines.query.graphql';
 import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
@@ -22,7 +22,7 @@ export default {
     GlLoadingIcon,
     GlModal,
     GlSprintf,
-    PipelinesTableComponent,
+    PipelinesTable,
   },
   inject: ['graphqlPath', 'mergeRequestId', 'targetProjectFullPath'],
   props: {
@@ -55,7 +55,6 @@ export default {
       hasError: false,
       isInitialLoading: true,
       isRunningMergeRequestPipeline: false,
-      page: 1,
       pageInfo: {},
       pipelines: [],
     };
@@ -342,7 +341,7 @@ export default {
         {{ $options.i18n.runPipelineText }}
       </gl-button>
 
-      <pipelines-table-component
+      <pipelines-table
         :pipelines="pipelines"
         :source-project-full-path="sourceProjectFullPath"
         @cancel-pipeline="cancelPipeline"
@@ -360,7 +359,7 @@ export default {
             </gl-button>
           </div>
         </template>
-      </pipelines-table-component>
+      </pipelines-table>
     </div>
 
     <gl-modal

@@ -121,8 +121,13 @@ module Gitlab
           committer = row.delete('committer')
 
           # We temporarily add 'project' to the attributes for DiffCommitUser processing,
-          # but MergeRequestDiffCommit doesn't have a project_id column, so we remove it
+          # but MergeRequestDiffCommit doesn't have a project association yet, so we remove it
           row.delete('project')
+
+          # We set project_id if the `merge_request_diff_commits_partition` feature flag
+          # is enabled. This will be used to partition the new `merge_request_diff_commits`
+          # table.
+          row['project_id'] = project.id if diff_commits_partition_enabled?
 
           row['commit_author'] = author ||
             find_or_create_diff_commit_user(aname, amail)
@@ -248,6 +253,11 @@ module Gitlab
           Feature.enabled?(:merge_request_diff_commits_dedup, project)
         end
         strong_memoize_attr :diff_commits_dedup_enabled?
+
+        def diff_commits_partition_enabled?
+          Feature.enabled?(:merge_request_diff_commits_partition, project)
+        end
+        strong_memoize_attr :diff_commits_partition_enabled?
       end
     end
   end

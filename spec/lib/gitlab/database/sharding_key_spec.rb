@@ -255,6 +255,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
 
     # Step 3: Check foreign keys using Rails schema introspection
     work_in_progress = {
+      "web_hooks" => "https://gitlab.com/gitlab-org/gitlab/-/issues/524812",
       "snippet_user_mentions" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517825",
       "bulk_import_failures" => "https://gitlab.com/gitlab-org/gitlab/-/issues/517824",
       "bulk_import_trackers" => "https://gitlab.com/gitlab-org/gitlab/-/issues/560846",
@@ -320,6 +321,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "abuse_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553427",
       "abuse_report_assignees" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553428",
       "labels" => "https://gitlab.com/gitlab-org/gitlab/-/issues/563889",
+      "member_roles" => "https://gitlab.com/gitlab-org/gitlab/-/issues/567738",
       "notes" => "https://gitlab.com/gitlab-org/gitlab/-/issues/569521",
       "notes_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/569521",
       "jira_connect_installations" => "https://gitlab.com/gitlab-org/gitlab/-/issues/524682",

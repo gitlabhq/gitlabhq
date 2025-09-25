@@ -5,7 +5,6 @@ export default {
   files: [
     'app/assets/javascripts/ci/jobs_page/components/job_cells/actions_cell.vue',
     'app/assets/javascripts/ci/jobs_page/components/job_cells/status_cell.vue',
-    'app/assets/javascripts/ci/merge_requests/components/pipelines_table_wrapper.vue',
     'app/assets/javascripts/ci/pipeline_details/graph/components/job_item.vue',
     'app/assets/javascripts/ci/pipeline_details/graph/components/linked_pipeline.vue',
     'app/assets/javascripts/ci/pipeline_details/graph/components/stage_column_component.vue',

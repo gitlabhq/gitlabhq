@@ -92,7 +92,8 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
           relative_order: 0,
           sha: Gitlab::Database::ShaAttribute.serialize("5937ac0a7beb003549fc5fd26fc247adbce4a52e"),
           trailers: {}.to_json,
-          merge_request_commits_metadata_id: an_instance_of(Integer)
+          merge_request_commits_metadata_id: an_instance_of(Integer),
+          project_id: an_instance_of(Integer)
         },
         {
           message: "Change some files\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
@@ -104,7 +105,8 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
           relative_order: 1,
           sha: Gitlab::Database::ShaAttribute.serialize("570e7b2abdd848b95f2f578043fc23bd6f6fd24d"),
           trailers: {}.to_json,
-          merge_request_commits_metadata_id: an_instance_of(Integer)
+          merge_request_commits_metadata_id: an_instance_of(Integer),
+          project_id: an_instance_of(Integer)
         }
       ]
     end
@@ -130,6 +132,21 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
       expect(commit_row.committer).to eq(commit_user_row)
     end
 
+    context 'when merge_request_diff_commits_partition is disabled' do
+      before do
+        stub_feature_flags(merge_request_diff_commits_partition: false)
+      end
+
+      it 'does not set `project_id` attribute' do
+        expected_attributes = rows.map { |row| row.except(:project_id) }
+
+        expect(ApplicationRecord).to receive(:legacy_bulk_insert)
+          .with(described_class.table_name, expected_attributes)
+
+        create_bulk(merge_request_diff_id)
+      end
+    end
+
     context 'for merge_request_commits_metadata' do
       let(:merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
       let(:merge_request_diff_id) { merge_request_diff.id }
@@ -151,6 +168,7 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
           expect(metadata.sha).to eq(commit.sha)
           expect(metadata.message).to eq(commit.message)
           expect(metadata.trailers).to eq({})
+          expect(metadata.project_id).to eq(project.id)
         end
       end
 
@@ -208,7 +226,8 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
           relative_order: 0,
           sha: Gitlab::Database::ShaAttribute.serialize("ba3343bc4fa403a8dfbfcab7fc1a8c29ee34bd69"),
           trailers: {}.to_json,
-          merge_request_commits_metadata_id: an_instance_of(Integer)
+          merge_request_commits_metadata_id: an_instance_of(Integer),
+          project_id: an_instance_of(Integer)
         }]
       end
 
@@ -233,7 +252,8 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
           committer_email: 'committer@test.com',
           authored_date: Time.current,
           committed_date: Time.current,
-          message: 'Test commit'
+          message: 'Test commit',
+          project_id: test_project.id
         })]
       end
 

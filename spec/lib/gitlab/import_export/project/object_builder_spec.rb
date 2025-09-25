@@ -315,6 +315,60 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
   end
 
   context 'merge request diff commits' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be(:merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
+    let_it_be(:commits_metadata) { create(:merge_request_commits_metadata, project: project) }
+    let_it_be(:commit_author) { create(:merge_request_diff_commit_user) }
+    let_it_be(:committer) { create(:merge_request_diff_commit_user) }
+
+    let(:diff_commit_object_attrs) do
+      {
+        'sha' => '123456',
+        'relative_order' => 0,
+        'committer' => committer,
+        'commit_author' => commit_author,
+        'project' => project,
+        'merge_request_diff' => merge_request_diff,
+        'merge_request_commits_metadata' => commits_metadata
+      }
+    end
+
+    it 'finds the existing diff commit' do
+      matching_commit = create(:merge_request_diff_commit, diff_commit_object_attrs.except('project'))
+      # non matching commit
+      create(:merge_request_diff_commit, merge_request_diff: merge_request_diff, sha: '6666666', relative_order: 1)
+      found = described_class.build(MergeRequestDiffCommit, diff_commit_object_attrs)
+
+      expect(found).to eq(matching_commit)
+    end
+
+    it 'creates a new diff commit with correct attributes' do
+      new_commit = described_class.build(MergeRequestDiffCommit, diff_commit_object_attrs)
+
+      expect(new_commit.attributes).to include({
+        'committer_id' => committer.id,
+        'commit_author_id' => commit_author.id,
+        'merge_request_diff_id' => merge_request_diff.id,
+        'merge_request_commits_metadata_id' => commits_metadata.id,
+        'sha' => '123456',
+        'relative_order' => 0,
+        'project_id' => project.id
+      })
+    end
+
+    context 'when merge_request_diff_commits_partition is disabled' do
+      before do
+        stub_feature_flags(merge_request_diff_commits_partition: false)
+      end
+
+      it 'does not set `project_id` attribute' do
+        new_commit = described_class.build(MergeRequestDiffCommit, diff_commit_object_attrs)
+
+        expect(new_commit.attributes['project_id']).to be_nil
+      end
+    end
+
     context 'when the "committer" object is present' do
       it 'uses this object as the committer' do
         user = MergeRequest::DiffCommitUser
@@ -398,11 +452,6 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
     end
 
     context 'when the "merge_request_commits_metadata" object is present' do
-      let_it_be(:project) { create(:project) }
-      let_it_be(:commit_author) { create(:merge_request_diff_commit_user) }
-      let_it_be(:committer) { create(:merge_request_diff_commit_user) }
-      let_it_be(:commits_metadata) { create(:merge_request_commits_metadata, project: project) }
-
       let(:commit_attrs) do
         {
           'project' => project,
@@ -438,9 +487,6 @@ RSpec.describe Gitlab::ImportExport::Project::ObjectBuilder do
     end
 
     context 'when the "merge_request_commits_metadata" object is missing' do
-      let_it_be(:commit_author) { create(:merge_request_diff_commit_user) }
-      let_it_be(:committer) { create(:merge_request_diff_commit_user) }
-
       let(:commit_attrs) do
         {
           'project' => project,

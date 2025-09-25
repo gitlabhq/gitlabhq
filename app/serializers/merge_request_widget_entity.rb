@@ -165,6 +165,10 @@ class MergeRequestWidgetEntity < Grape::Entity
     current_user&.gitpod_enabled || false
   end
 
+  expose :merge_request_path do |merge_request|
+    project_merge_request_path(merge_request.project, merge_request)
+  end
+
   private
 
   delegate :current_user, to: :request

@@ -54,6 +54,9 @@ export default {
     useFailedJobsWidget: {
       default: false,
     },
+    mergeRequestPath: {
+      default: null,
+    },
   },
   props: {
     isCreatingPipeline: {
@@ -178,25 +181,13 @@ export default {
       }
       return null;
     },
-    mergeRequestPath(item) {
-      if (item.merge_request?.path) {
-        return `${gon.gitlab_url}${item.merge_request.path}`;
-      }
-      return null;
-    },
     currentBranch(item) {
-      if (item.source === 'push') {
-        return item.ref?.name;
-      }
-      if (item.source === 'merge_request_event') {
-        return item.merge_request?.source_branch;
-      }
-      return null;
+      return item.merge_request?.source_branch || item.ref?.name || null;
     },
     showDuoWorkflowAction(item) {
       return (
         this.isFailed(item) &&
-        this.mergeRequestPath(item) &&
+        this.mergeRequestPath &&
         this.currentBranch(item) &&
         this.glFeatures.aiDuoAgentFixPipelineButton
       );
@@ -206,7 +197,7 @@ export default {
         {
           Category: 'agent_user_environment',
           Content: JSON.stringify({
-            merge_request_url: this.mergeRequestPath(item),
+            merge_request_url: this.mergeRequestPath,
             source_branch: this.currentBranch(item),
           }),
           Metadata: '{}',

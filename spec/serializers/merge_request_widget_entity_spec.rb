@@ -350,4 +350,11 @@ RSpec.describe MergeRequestWidgetEntity, feature_category: :code_review_workflow
       end
     end
   end
+
+  describe 'merge_request_path' do
+    it 'exposes the merge request URL' do
+      expected_path = "/#{resource.project.full_path}/-/merge_requests/#{resource.iid}"
+      expect(subject[:merge_request_path]).to eq(expected_path)
+    end
+  end
 end

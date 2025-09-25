@@ -26,6 +26,7 @@ describe('Upload dropzone component', () => {
       },
       stubs: {
         GlSprintf,
+        GlAnimatedUploadIcon,
       },
     });
   }
@@ -222,13 +223,14 @@ describe('Upload dropzone component', () => {
   it('applies correct classes when displaying as a standalone item', () => {
     createComponent({ props: { displayAsCard: false } });
     expect(findDropzoneArea().classes()).not.toContain('gl-flex-col');
-    expect(findIcon().classes()).toEqual(['gl-mr-3']);
+    expect(findIcon().attributes('class')).toContain('gl-mr-3');
   });
 
   it('applies correct classes when displaying in card mode', () => {
     createComponent({ props: { displayAsCard: true } });
     expect(findDropzoneArea().classes()).toContain('gl-flex-col');
-    expect(findIcon().classes()).toEqual(['gl-mb-3']);
+
+    expect(findIcon().attributes('class')).toContain('gl-mb-3');
   });
 
   it('animates icon on hover', async () => {
@@ -351,16 +353,27 @@ describe('Upload dropzone component', () => {
     // the files property is updated. This enforces following tests to know a
     // bit too much about the SUT internals See this thread for more details on
     // FileList in jsdom: https://github.com/jsdom/jsdom/issues/1272
-    function stubFileInputOnWrapper() {
-      const fakeFileInput = { files: [] };
-      wrapper.vm.$refs.fileUpload = fakeFileInput;
+
+    function stubFileInputOnWrapper(container) {
+      const inputEl = container.vm.$refs.fileUpload;
+
+      let files = [];
+      Object.defineProperty(inputEl, 'files', {
+        get: () => files,
+        set: (newFiles) => {
+          files = newFiles;
+        },
+        configurable: true,
+      });
+
+      return inputEl;
     }
 
     it('assigns dragged files to the input files property', async () => {
       const mockFile = { name: 'test', type: 'image/jpg' };
       const mockEvent = mockDragEvent({ files: [mockFile] });
       createComponent({ props: { shouldUpdateInputOnFileDrop: true } });
-      stubFileInputOnWrapper();
+      stubFileInputOnWrapper(wrapper);
 
       wrapper.trigger('dragenter', mockEvent);
       await nextTick();
@@ -374,7 +387,7 @@ describe('Upload dropzone component', () => {
       const mockFile = { name: 'test', type: 'image/jpg' };
       const mockEvent = mockDragEvent({ files: [mockFile, mockFile] });
       createComponent({ props: { shouldUpdateInputOnFileDrop: true, singleFileSelection: true } });
-      stubFileInputOnWrapper();
+      stubFileInputOnWrapper(wrapper);
 
       wrapper.trigger('dragenter', mockEvent);
       await nextTick();

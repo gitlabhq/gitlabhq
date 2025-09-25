@@ -47,7 +47,7 @@ func TestProxyRequest(t *testing.T) {
 
 		assert.Regexp(
 			t,
-			regexp.MustCompile(`\A1`),
+			`\A1`,
 			r.Header.Get("Gitlab-Workhorse-Proxy-Start"),
 			"expect Gitlab-Workhorse-Proxy-Start to start with 1",
 		)
@@ -125,7 +125,7 @@ func TestProxyError(t *testing.T) {
 	w := httptest.NewRecorder()
 	newProxy("http://localhost:655575/", nil).ServeHTTP(w, httpRequest)
 	require.Equal(t, 502, w.Code)
-	require.Regexp(t, regexp.MustCompile("dial tcp:.*invalid port.*"), w.Body.String(), "response body")
+	require.Regexp(t, "dial tcp:.*invalid port.*", w.Body.String(), "response body")
 }
 
 func TestProxyReadTimeout(t *testing.T) {

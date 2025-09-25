@@ -57630,6 +57630,24 @@ msgstr[1] ""
 msgid "SecretDetection|What are validity checks?"
 msgstr ""
 
+msgid "SecretRotation|Hi %{name}!"
+msgstr ""
+
+msgid "SecretRotation|Please change the secret value to maintain security."
+msgstr ""
+
+msgid "SecretRotation|Secret rotation reminder"
+msgstr ""
+
+msgid "SecretRotation|You can %{secret_link_start}update the secret%{secret_link_end} in your project settings."
+msgstr ""
+
+msgid "SecretRotation|You can update the secret at: %{target_url}!"
+msgstr ""
+
+msgid "SecretRotation|Your secret '%{secret_name}' in project %{project_name} requires rotation."
+msgstr ""
+
 msgid "Secrets"
 msgstr ""
 
@@ -66658,7 +66676,7 @@ msgstr ""
 msgid "This job is an out-of-date deployment to %{environmentLink}. View the %{deploymentLink}."
 msgstr ""
 
-msgid "This job is archived. Only the complete pipeline can be retried."
+msgid "This job is archived."
 msgstr ""
 
 msgid "This job is creating a deployment to %{environmentLink} using cluster %{clusterNameOrLink} and namespace %{kubernetesNamespace}."

@@ -136,7 +136,12 @@ To configure a self-hosted model:
 
        - The `AWS_REGION` is `ap-northeast-1`.
        - The cross-region inferencing prefix is `apac.`.
-       - The model identifier is `bedrock/apac.anthropic.claude-3-5-sonnet-20241022-v2:0`
+       - The model identifier is `bedrock/apac.anthropic.claude-3-5-sonnet-20241022-v2:0`.
+
+       Some regions are not supported by cross-region inferencing. For these regions, the model identifier should be specified without the region prefix. For example:
+
+       - The `AWS_REGION` is `eu-west-2`.
+       - The model identifier should be `bedrock/anthropic.claude-3-7-sonnet-20250219-v1:0`.
 
 1. Select **Create self-hosted model**.
 

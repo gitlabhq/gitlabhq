@@ -24,5 +24,5 @@ func TestAllowResponseBuffering(t *testing.T) {
 
 	AllowResponseBuffering(rw)
 
-	require.Equal(t, "", rw.Header().Get(ResponseBufferHeader))
+	require.Empty(t, rw.Header().Get(ResponseBufferHeader))
 }

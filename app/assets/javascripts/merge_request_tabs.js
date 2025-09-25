@@ -111,6 +111,9 @@ function mountPipelines() {
       mergeRequestId: mrWidgetData ? mrWidgetData.iid : null,
       sourceProjectFullPath: mrWidgetData?.source_project_full_path || '',
       useFailedJobsWidget: true,
+      mergeRequestPath: mrWidgetData?.merge_request_path
+        ? `${gon.gitlab_url}${mrWidgetData.merge_request_path}`
+        : null,
     },
     render(createElement) {
       return createElement('merge-request-pipelines-table', {

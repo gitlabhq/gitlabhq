@@ -157,7 +157,7 @@ func TestCorrelationIDPropagationWithoutCorrelationID(t *testing.T) {
 	require.True(t, ok, "outgoing metadata should be present")
 
 	correlationValues := md.Get("x-gitlab-correlation-id")
-	require.Len(t, correlationValues, 0, "should have no correlation ID when none provided")
+	require.Empty(t, correlationValues, "should have no correlation ID when none provided")
 
 	userIDValues := md.Get("user_id")
 	require.Len(t, userIDValues, 1, "should still preserve other metadata")

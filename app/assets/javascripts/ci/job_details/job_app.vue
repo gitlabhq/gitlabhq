@@ -291,7 +291,7 @@ export default {
           data-testid="archived-job"
         >
           <gl-icon name="lock" class="gl-align-bottom" />
-          {{ __('This job is archived. Only the complete pipeline can be retried.') }}
+          {{ __('This job is archived.') }}
         </div>
         <!-- job log -->
         <div v-if="hasJobLog && !showUpdateVariablesState" class="build-log-container gl-relative">

@@ -15,6 +15,10 @@ module QA
               include ConfirmModal
             end
 
+            base.view 'app/assets/javascripts/members/placeholders/components/placeholder_reassigned_actions.vue' do
+              element 'placeholder-reassigned'
+            end
+
             base.view 'app/assets/javascripts/members/placeholders/components/placeholders_table.vue' do
               element 'placeholder-status'
             end
@@ -32,6 +36,12 @@ module QA
           def has_reassignment_status?(placeholder, status, wait: QA::Support::WaitForRequests::DEFAULT_MAX_WAIT_TIME)
             within_element(placeholder.to_s.to_sym) do
               has_element?('placeholder-status', text: status, wait: wait)
+            end
+          end
+
+          def has_reassigned_user?(placeholder, username, wait: QA::Support::WaitForRequests::DEFAULT_MAX_WAIT_TIME)
+            within_element(placeholder.to_s.to_sym) do
+              has_element?('placeholder-reassigned', text: username, wait: wait)
             end
           end
 

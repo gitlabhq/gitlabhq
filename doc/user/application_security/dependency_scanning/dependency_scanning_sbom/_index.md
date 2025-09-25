@@ -17,9 +17,9 @@ title: Dependency scanning by using SBOM
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/395692) in GitLab 17.1 and officially released in GitLab 17.3 with a flag named `dependency_scanning_using_sbom_reports`.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/395692) in GitLab 17.5.
-- Released [lockfile-based Dependency Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/blob/main/README.md?ref_type=heads#supported-files) analyzer as an [Experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.4.
-- Released [Dependency Scanning CI/CD Component](https://gitlab.com/explore/catalog/components/dependency-scanning) version [`0.4.0`](https://gitlab.com/components/dependency-scanning/-/tags/0.4.0) in GitLab 17.5 with support for the [lockfile-based Dependency Scanning](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/blob/main/README.md?ref_type=heads#supported-files) analyzer.
-- [Enabled by default with the latest Dependency Scanning CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/issues/519597) for Cargo, Conda, Cocoapods, and Swift in GitLab 17.9.
+- Released [lockfile-based dependency scanning](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/blob/main/README.md?ref_type=heads#supported-files) analyzer as an [Experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 17.4.
+- Released [dependency scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) version [`0.4.0`](https://gitlab.com/components/dependency-scanning/-/tags/0.4.0) in GitLab 17.5 with support for the [lockfile-based dependency scanning](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/-/blob/main/README.md?ref_type=heads#supported-files) analyzer.
+- [Enabled by default with the latest dependency scanning CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/issues/519597) for Cargo, Conda, Cocoapods, and Swift in GitLab 17.9.
 - Feature flag `dependency_scanning_using_sbom_reports` removed in GitLab 17.10.
 
 {{< /history >}}
@@ -43,34 +43,34 @@ when new security advisories are published, independently from CI/CD pipelines.
 GitLab offers both dependency scanning and [container scanning](../../container_scanning/_index.md) to
 ensure coverage for all of these dependency types. To cover as much of your risk area as possible,
 we encourage you to use all of our security scanners. For a comparison of these features, see
-[Dependency Scanning compared to Container Scanning](../../comparison_dependency_and_container_scanning.md).
+[Dependency scanning compared to container scanning](../../comparison_dependency_and_container_scanning.md).
 
 ## Getting started
 
-Enable the Dependency Scanning using SBOM feature with one of the following options:
+Enable dependency scanning using SBOM feature with one of the following options:
 
-- Use the `latest` Dependency Scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml` to enable a GitLab provided analyzer.
+- Use the `latest` dependency scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml` to enable a GitLab provided analyzer.
   - The (deprecated) Gemnasium analyzer is used by default.
-  - To enable the new Dependency Scanning analyzer, set the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
+  - To enable the new dependency scanning analyzer, set the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
   - A [supported lock file, dependency graph](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files),
   or [trigger file](#trigger-files) must exist in the repository to create the `dependency-scanning` job in pipelines.
 - Use the [Scan Execution Policies](../../policies/scan_execution_policies.md) with the `latest` template to enable a GitLab provided analyzer.
   - The (deprecated) Gemnasium analyzer is used by default.
-  - To enable the new Dependency Scanning analyzer, set the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
+  - To enable the new dependency scanning analyzer, set the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
   - A [supported lock file, dependency graph](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files),
   or [trigger file](#trigger-files) must exist in the repository to create the `dependency-scanning` job in pipelines.
-- Use the [Dependency Scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) to enable the new Dependency Scanning analyzer.
+- Use the [dependency scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) to enable the new dependency scanning analyzer.
 - Provide your own CycloneDX SBOM document as [a CI/CD artifact report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) from a successful pipeline.
 
-You should use the new Dependency Scanning analyzer. For details, see [Enabling the analyzer](#enabling-the-analyzer).
-If instead you use the (deprecated) Gemnasium analyzer, refer to the enablement instructions for the [legacy Dependency Scanning feature](../_index.md#getting-started).
+You should use the new dependency scanning analyzer. For details, see [Enabling the analyzer](#enabling-the-analyzer).
+If instead you use the (deprecated) Gemnasium analyzer, refer to the enablement instructions for the [legacy dependency scanning feature](../_index.md#getting-started).
 
 ### Enabling the analyzer
 
-The Dependency Scanning analyzer produces a CycloneDX SBOM report compatible with GitLab. If your
+The dependency scanning analyzer produces a CycloneDX SBOM report compatible with GitLab. If your
 application can't generate such a report, you can use the GitLab analyzer to produce one.
 
-Share any feedback on the new Dependency Scanning analyzer in this [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523458).
+Share any feedback on the new dependency scanning analyzer in this [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523458).
 
 Prerequisites:
 
@@ -84,8 +84,8 @@ Prerequisites:
 
 To enable the analyzer, you must:
 
-- Use either the `latest` Dependency Scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml`
-and enforce the new Dependency Scanning analyzer by setting the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
+- Use either the `latest` dependency scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml`
+and enforce the new dependency scanning analyzer by setting the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
 
   ```yaml
   include:
@@ -95,8 +95,8 @@ and enforce the new Dependency Scanning analyzer by setting the CI/CD variable `
     DS_ENFORCE_NEW_ANALYZER: 'true'
   ```
 
-- Use the [Scan Execution Policies](../../policies/scan_execution_policies.md) with the `latest` template and enforce the new Dependency Scanning analyzer by setting the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
-- Use the [Dependency Scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning)
+- Use the [Scan Execution Policies](../../policies/scan_execution_policies.md) with the `latest` template and enforce the new dependency scanning analyzer by setting the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
+- Use the [dependency scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning)
 
   ```yaml
   include:
@@ -105,7 +105,7 @@ and enforce the new Dependency Scanning analyzer by setting the CI/CD variable `
 
 #### Trigger files
 
-Trigger files create a `dependency-scanning` CI/CD job when using the [latest Dependency Scanning CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.latest.gitlab-ci.yml).
+Trigger files create a `dependency-scanning` CI/CD job when using the [latest dependency scanning CI template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.latest.gitlab-ci.yml).
 The analyzer does not scan these files.
 Your project can be supported if you use a trigger file to [build](#language-specific-instructions) a [supported lock file](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files).
 
@@ -127,7 +127,7 @@ languages and package managers.
 
 ##### Go
 
-If your project provides only a `go.mod` file, the Dependency Scanning analyzer can still extract the list of components. However, [dependency path](../../dependency_list/_index.md#dependency-paths) information is not available. Additionally, you might encounter false positives if there are multiple versions of the same module.
+If your project provides only a `go.mod` file, the dependency scanning analyzer can still extract the list of components. However, [dependency path](../../dependency_list/_index.md#dependency-paths) information is not available. Additionally, you might encounter false positives if there are multiple versions of the same module.
 
 To benefit from improved component detection and feature coverage, you should provide a `go.graph` file generated using the [`go mod graph` command](https://go.dev/ref/mod#go-mod-graph) from the Go toolchain.
 
@@ -325,7 +325,7 @@ build:
 ##### pip
 
 If your project provides a `requirements.txt` lock file generated by the [pip-compile command line tool](https://pip-tools.readthedocs.io/en/latest/cli/pip-compile/),
-the Dependency Scanning analyzer can extract the list of components and the dependency graph information,
+the dependency scanning analyzer can extract the list of components and the dependency graph information,
 which provides support for the [dependency path](../../dependency_list/_index.md#dependency-paths) feature.
 
 Alternatively, your project can provide a `pipdeptree.json` dependency graph export generated by the [`pipdeptree --json` command line utility](https://pypi.org/project/pipdeptree/).
@@ -358,12 +358,12 @@ build:
 
 Because of a [known issue](https://github.com/tox-dev/pipdeptree/issues/107), `pipdeptree` does not mark
 [optional dependencies](https://setuptools.pypa.io/en/latest/userguide/dependency_management.html#optional-dependencies)
-as dependencies of the parent package. As a result, Dependency Scanning marks them as direct dependencies of the project,
+as dependencies of the parent package. As a result, dependency scanning marks them as direct dependencies of the project,
 instead of as transitive dependencies.
 
 ##### Pipenv
 
-If your project provides only a `Pipfile.lock` file, the Dependency Scanning analyzer can still extract the list of components. However, [dependency path](../../dependency_list/_index.md#dependency-paths) information is not available.
+If your project provides only a `Pipfile.lock` file, the dependency scanning analyzer can still extract the list of components. However, [dependency path](../../dependency_list/_index.md#dependency-paths) information is not available.
 
 To benefit from improved feature coverage, you should provide a `pipenv.graph.json` file generated by the [`pipenv graph` command](https://pipenv.pypa.io/en/latest/cli.html#graph).
 
@@ -508,7 +508,7 @@ merge cyclonedx sboms:
 
 ## Optimization
 
-To optimize Dependency Scanning with SBOM according to your requirements you can:
+To optimize dependency scanning with SBOM according to your requirements you can:
 
 - Exclude files and directories from the scan.
 - Define the max depth to look for files.
@@ -523,17 +523,17 @@ To optimize the analyzer behavior you may set a max depth value through the `DS_
 
 ## Roll out
 
-After you are confident in the Dependency Scanning with SBOM results for a single project, you can extend its implementation to additional projects:
+After you are confident in the dependency scanning with SBOM results for a single project, you can extend its implementation to additional projects:
 
-- Use [enforced scan execution](../../detect/security_configuration.md#create-a-shared-configuration) to apply Dependency Scanning with SBOM settings across groups.
-- If you have unique requirements, Dependency Scanning with SBOM can be run in [offline environments](../../offline_deployments/_index.md).
+- Use [enforced scan execution](../../detect/security_configuration.md#create-a-shared-configuration) to apply dependency scanning with SBOM settings across groups.
+- If you have unique requirements, dependency scanning with SBOM can be run in [offline environments](../../offline_deployments/_index.md).
 
 ## Supported package types
 
 For the security analysis to be effective, the components listed in your SBOM report must have corresponding
 entries in the [GitLab Advisory Database](../../gitlab_advisory_database/_index.md).
 
-The GitLab SBOM Vulnerability Scanner can report Dependency Scanning vulnerabilities for components with the
+The GitLab SBOM Vulnerability Scanner can report dependency scanning vulnerabilities for components with the
 following [PURL types](https://github.com/package-url/purl-spec/blob/346589846130317464b677bc4eab30bf5040183a/PURL-TYPES.rst):
 
 - `cargo`
@@ -586,7 +586,7 @@ positives.
 
 ### Customizing behavior with the CI/CD template
 
-When using the `latest` Dependency Scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml` or [Scan Execution Policies](../../policies/scan_execution_policies.md) use [CI/CD variables](#available-cicd-variables).
+When using the `latest` dependency scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml` or [Scan Execution Policies](../../policies/scan_execution_policies.md) use [CI/CD variables](#available-cicd-variables).
 
 #### Available CI/CD variables
 
@@ -594,7 +594,7 @@ The following variables allow configuration of global dependency scanning settin
 
 | CI/CD variables             | Description |
 | ----------------------------|------------ |
-| `DS_EXCLUDED_ANALYZERS`     | Specify the analyzers (by name) to exclude from Dependency Scanning. |
+| `DS_EXCLUDED_ANALYZERS`     | Specify the analyzers (by name) to exclude from dependency scanning. |
 | `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. This is a pre-filter which is applied before the scan is executed. Default: `"spec, test, tests, tmp"`. |
 | `DS_MAX_DEPTH`              | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`. |
 | `DS_INCLUDE_DEV_DEPENDENCIES` | When set to `"false"`, development dependencies are not reported. Only projects using Composer, Conda, Gradle, Maven, npm, pnpm, Pipenv, Poetry, or uv are supported. Default: `"true"` |
@@ -618,7 +618,7 @@ dependency-scanning:
 
 ### Customizing behavior with the CI/CD component
 
-When using the Dependency Scanning CI/CD component, the analyzer can be customized by configuring the [inputs](https://gitlab.com/explore/catalog/components/dependency-scanning).
+When using the dependency scanning CI/CD component, the analyzer can be customized by configuring the [inputs](https://gitlab.com/explore/catalog/components/dependency-scanning).
 
 ## How it scans an application
 
@@ -640,7 +640,7 @@ report types.
 Dependency scanning using SBOM requires the detected dependencies to be captured in a CycloneDX SBOM document.
 However, the modular aspect of this functionality allows you to select how this document is generated:
 
-- Using the Dependency Scanning analyzer provided by GitLab (recommended)
+- Using the dependency scanning analyzer provided by GitLab (recommended)
 - Using the (deprecated) Gemnasium analyzer provided by GitLab
 - Using a custom job with a 3rd party CycloneDX SBOM generator or a custom tool.
 
@@ -719,20 +719,20 @@ To use the dependency scanning analyzer:
 
 ## Security policies
 
-Use security policies to enforce Dependency Scanning across multiple projects.
+Use security policies to enforce dependency scanning across multiple projects.
 The appropriate policy type depends on whether your projects have scannable artifacts committed to their repositories.
 
 ### Scan execution policies
 
 [Scan execution policies](../../policies/scan_execution_policies.md) are supported for all projects that have scannable artifacts committed to their repositories. These artifacts include lockfiles, dependency graph files, and other files that can be directly analyzed to identify dependencies.
 
-For projects with these artifacts, scan execution policies provide the fastest and most straightforward way to enforce Dependency Scanning.
+For projects with these artifacts, scan execution policies provide the fastest and most straightforward way to enforce dependency scanning.
 
 ### Pipeline execution policies
 
 For projects that don't have scannable artifacts committed to their repositories,
 you must use [pipeline execution policies](../../policies/pipeline_execution_policies.md).
-These policies use a custom CI/CD job to generate scannable artifacts before invoking Dependency Scanning.
+These policies use a custom CI/CD job to generate scannable artifacts before invoking dependency scanning.
 
 Pipeline execution policies:
 
@@ -749,7 +749,7 @@ In the dedicated security policies project create or update the main policy file
 ```yaml
 pipeline_execution_policy:
 - name: Enforce Gradle dependency scanning with SBOM
-  description: Generate dependency artifact and run Dependency Scanning.
+  description: Generate dependency artifact and run dependency scanning.
   enabled: true
   pipeline_config_strategy: inject_policy
   content:
@@ -803,7 +803,7 @@ generate nebula lockfile:
 This approach ensures that:
 
 1. A pipeline run in the Gradle project generates the scannable artifacts.
-1. Dependency Scanning is enforced and has access to the scannable artifacts.
+1. Dependency scanning is enforced and has access to the scannable artifacts.
 1. All projects in the policy scope consistently follow the same dependency scanning approach.
 1. Configuration changes can be managed centrally and applied across multiple projects.
 

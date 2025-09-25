@@ -19,6 +19,10 @@ Pipeline notifications triggered by blocked users are not delivered.
 
 ## Enable pipeline status email notifications
 
+Prerequisites:
+
+- You must have at least the Maintainer role for the project or the Owner role for the group.
+
 To enable pipeline status emails:
 
 1. In your project or group, on the left sidebar, select **Settings** > **Integrations**.

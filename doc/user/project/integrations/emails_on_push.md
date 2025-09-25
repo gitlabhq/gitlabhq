@@ -19,6 +19,10 @@ With emails on push, you can specify a list of email addresses to receive commit
 
 ## Set up the integration
 
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+
 To set up emails on push:
 
 1. On the left sidebar, select **Search or go to** and find your project.
