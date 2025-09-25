@@ -139,6 +139,10 @@ $merge-request-sticky-header-height: 45px;
           @apply gl-block;
         }
 
+        .merge-request-tabs-container {
+          @apply gl-flex-row;
+        }
+
         .merge-request-tabs {
           @apply gl-h-auto;
         }
@@ -159,14 +163,6 @@ $merge-request-sticky-header-height: 45px;
         .merge-request-tabs-container,
         .detail-page-description {
           @apply gl-z-1;
-        }
-      }
-    }
-
-    @include gl-container-width-down(lg, panel) {
-      @container sticky-header scroll-state(stuck: top) {
-        .merge-request-tabs-actions {
-          @apply gl-hidden;
         }
       }
     }
@@ -199,7 +195,27 @@ $merge-request-sticky-header-height: 45px;
 // Wrap MR tabs/buttons so you don't have to scroll on desktop
 @include gl-container-width-down(lg, panel) {
   .merge-request-tabs-container {
-    flex-direction: column-reverse;
+    @apply gl-flex-row;
+  }
+}
+
+@include gl-container-width-down(md, panel) {
+  .merge-request-tabs-container {
+    @apply gl-flex-col-reverse;
+  }
+}
+
+// Hide actions on sticky header when right sidebar is expanded
+// and viewport is medium.
+.right-sidebar-expanded {
+  .merge-request-sticky-header {
+    @include gl-container-width-up(md, panel) {
+      @container sticky-header scroll-state(stuck: top) {
+        .merge-request-tabs-container .merge-request-tabs-actions {
+          @apply gl-hidden;
+        }
+      }
+    }
   }
 }
 

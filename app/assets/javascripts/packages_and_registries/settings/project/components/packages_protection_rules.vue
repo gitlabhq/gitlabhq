@@ -91,7 +91,6 @@ export default {
   },
   data() {
     return {
-      protectionRules: [],
       protectionRulesQueryPayload: { nodes: [], pageInfo: {} },
       protectionRulesQueryPaginationParams: { first: PAGINATION_DEFAULT_PER_PAGE },
       mutationInProgress: false,

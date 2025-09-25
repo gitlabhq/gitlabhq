@@ -54,7 +54,7 @@
 .top-area {
   @apply gl-flex gl-border-b;
 
-  @include gl-container-width-down(md, panel) {
+  @include gl-container-width-down(lg, panel) {
     flex-flow: column-reverse wrap;
   }
 
@@ -84,7 +84,7 @@
       float: left;
     }
 
-    @include gl-container-width-down(sm, panel) {
+    @include gl-container-width-down(md, panel) {
       width: 100%;
     }
   }
@@ -126,12 +126,12 @@
       align-items: center;
     }
 
-    @include gl-container-width-down(md, panel) {
+    @include gl-container-width-down(lg, panel) {
       flex: 0 0 100%;
       margin-top: $gl-padding-8;
     }
 
-    @include gl-container-width-down(sm, panel) {
+    @include gl-container-width-down(md, panel) {
       padding-bottom: 0;
       width: 100%;
 

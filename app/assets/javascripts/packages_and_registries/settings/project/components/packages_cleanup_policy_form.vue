@@ -45,6 +45,7 @@ export default {
   },
   data() {
     return {
+      // eslint-disable-next-line vue/no-unused-properties -- tracking() is required by Tracking mixin.
       tracking: {
         label: 'packages_cleanup_policies',
       },

@@ -40,6 +40,7 @@ export default {
         text: __('Cancel'),
       };
     },
+    // eslint-disable-next-line vue/no-unused-properties -- tracking() is required by Tracking mixin.
     tracking() {
       return {
         category: TRACK_CATEGORY,

@@ -1,4 +1,5 @@
 @use "sass:map";
+@import 'framework/variables';
 
 /*
  * Application chrome
@@ -164,6 +165,21 @@
   .panel-content-inner:has(.issue-boards-content) {
     @apply gl-mx-0;
   }
+
+  // work item drawer correct background colors
+  .work-item-drawer {
+    .description-more::before {
+      background: linear-gradient(180deg, transparent 0%, var(--gl-background-color-default) 100%) !important;
+    }
+
+    .show-all-btn {
+      background-color: var(--gl-background-color-default) !important;
+    }
+
+    .timeline-entry:not(.draft-note):last-child::before {
+      @apply gl-bg-default #{!important};
+    }
+  }
 }
 
 /*
@@ -237,11 +253,11 @@
       .dropdown-menu {
         background: var(--gl-background-color-overlap);
       }
-      
+
       .container-fluid {
         @apply gl-px-4 gl-pb-3;
       }
-      
+
       // Hide alert wrapper if it's empty
       > .alert-wrapper:not(:has(*)),
       > .alert-wrapper:not(:has(.container-fluid *)) {
@@ -293,7 +309,11 @@
   }
 
   .ai-panel-body {
-    max-height: calc(100vh - #{$header-height} - #{$gl-spacing-scale-3} - #{$top-bar-height} - #{$gl-spacing-scale-8});
+    max-height: calc(100vh - #{$header-height} - #{$gl-spacing-scale-3} - #{$performance-bar-height} - #{$top-bar-height} - #{-$gl-spacing-scale-7});
+  }
+
+  &.with-performance-bar .ai-panel-body {
+    max-height: calc(100vh - #{$header-height} - #{$gl-spacing-scale-3} - #{$top-bar-height} - #{$gl-spacing-scale-9});
   }
 
   .ai-panel-header-actions {

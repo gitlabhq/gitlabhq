@@ -69,7 +69,7 @@ export default {
   >
     <span v-if="errors.length === 1" v-safe-html="errors[0]"></span>
     <ul v-else class="!gl-mb-0 gl-pl-5">
-      <li v-for="(error, index) in errors" :key="index" v-safe-html="errors"></li>
+      <li v-for="(error, index) in errors" :key="index" v-safe-html="error"></li>
     </ul>
   </gl-alert>
 </template>

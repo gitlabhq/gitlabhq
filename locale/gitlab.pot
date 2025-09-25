@@ -29122,6 +29122,11 @@ msgid_plural "Geo|%d groups selected"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Geo|%d organization selected"
+msgid_plural "Geo|%d organizations selected"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Geo|%d shard selected"
 msgid_plural "Geo|%d shards selected"
 msgstr[0] ""
@@ -29205,7 +29210,10 @@ msgstr ""
 msgid "Geo|Checksummed"
 msgstr ""
 
-msgid "Geo|Choose specific groups or storage shards"
+msgid "Geo|Choose specific groups or storage shards."
+msgstr ""
+
+msgid "Geo|Choose specific groups, storage shards, or organizations."
 msgstr ""
 
 msgid "Geo|Comma-separated, e.g. '1.1.1.1, 2.2.2.0/24'"
@@ -29314,6 +29322,9 @@ msgid "Geo|Geo Settings"
 msgstr ""
 
 msgid "Geo|Geo allows you to choose specific groups or storage shards to replicate."
+msgstr ""
+
+msgid "Geo|Geo allows you to choose specific groups, storage shards, or organizations to replicate."
 msgstr ""
 
 msgid "Geo|Geo can replicate objects stored in Object Storage (AWS S3, or other compatible object storage)."
@@ -29458,6 +29469,9 @@ msgid "Geo|Object Storage replication"
 msgstr ""
 
 msgid "Geo|Offline"
+msgstr ""
+
+msgid "Geo|Organizations to synchronize"
 msgstr ""
 
 msgid "Geo|Package File"
@@ -29628,6 +29642,9 @@ msgstr ""
 msgid "Geo|Select groups to replicate"
 msgstr ""
 
+msgid "Geo|Select organizations to replicate"
+msgstr ""
+
 msgid "Geo|Select replicable type"
 msgstr ""
 
@@ -29746,6 +29763,9 @@ msgid "Geo|There was an error fetching the Geo Settings"
 msgstr ""
 
 msgid "Geo|There was an error fetching the Geo Sites"
+msgstr ""
+
+msgid "Geo|There was an error fetching the Site's Organizations"
 msgstr ""
 
 msgid "Geo|There was an error fetching the Sites's Groups"
@@ -58433,9 +58453,6 @@ msgid "SecurityOrchestration|%{branchName} (in %{codeStart}%{fullPath}%{codeEnd}
 msgstr ""
 
 msgid "SecurityOrchestration|%{cadence} on %{branches}%{timeWindowInfo}%{branchExceptionsString}"
-msgstr ""
-
-msgid "SecurityOrchestration|%{frameworkName} has %{projectLength} %{projects}"
 msgstr ""
 
 msgid "SecurityOrchestration|%{hours}"

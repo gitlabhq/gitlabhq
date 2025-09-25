@@ -18,7 +18,6 @@ import {
 import { createAlert } from '~/alert';
 import { TYPENAME_PACKAGES_PACKAGE } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import { packageTypeToTrackCategory } from '~/packages_and_registries/package_registry/utils';
@@ -99,8 +98,6 @@ export default {
   data() {
     return {
       deletePackageModalContent: DELETE_MODAL_CONTENT,
-      filesToDelete: [],
-      mutationLoading: false,
       versionsMutationLoading: false,
       packageEntity: {},
       groupSettings: {},
@@ -184,6 +181,7 @@ export default {
     isValidPackage() {
       return this.isLoading || Boolean(this.packageEntity.name);
     },
+    // eslint-disable-next-line vue/no-unused-properties -- tracking() is required by Tracking mixin.
     tracking() {
       return {
         category: packageTypeToTrackCategory(this.packageType),
@@ -243,9 +241,6 @@ export default {
     },
   },
   methods: {
-    formatSize(size) {
-      return numberToHumanSize(size);
-    },
     navigateToListWithSuccessModal() {
       const returnTo =
         !this.groupListUrl || document.referrer.includes(this.projectName)
