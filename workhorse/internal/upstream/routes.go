@@ -379,6 +379,13 @@ func configureRoutes(u *upstream) {
 		// whether they are accelerated by Workhorse or not.  See
 		// https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56731.
 
+		// Terraform State
+		u.route("POST",
+			newRoute(apiProjectPattern+`/terraform/state/[^/]+/lock`, "projects_api_terraform_state_lock", railsBackend), proxy),
+
+		u.route("POST",
+			newRoute(apiProjectPattern+`/terraform/state/.*`, "projects_api_terraform_state", railsBackend), requestBodyUploader),
+
 		// Maven Artifact Repository
 		u.route("PUT",
 			newRoute(apiProjectPattern+`/packages/maven/`, "projects_api_packages_maven", railsBackend), requestBodyUploader),

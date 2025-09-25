@@ -1,3 +1,4 @@
+import { escape } from 'lodash';
 import { sanitize } from '~/lib/dompurify';
 
 const TEXT_NODE = 3;
@@ -29,7 +30,9 @@ const wrapTextWithSpan = (el, text, classList, dataset) => {
 
 const wrapNodes = (text, classList, dataset) => {
   const wrapper = createSpan();
-  const unSafeHtml = wrapSpacesWithSpans(text);
+  // Escape HTML entities in the text before processing to prevent HTML injection
+  const escapedText = escape(text);
+  const unSafeHtml = wrapSpacesWithSpans(escapedText);
   wrapper.innerHTML = sanitize(unSafeHtml);
   wrapper.childNodes.forEach((el) => wrapTextWithSpan(el, text, classList, dataset));
   return wrapper.childNodes;

@@ -4,11 +4,14 @@ module Gitlab
   module Lograge
     module CustomOptions
       include ::Gitlab::Logging::CloudflareHelper
+      include ::Gitlab::Logging::JsonMetadataHelper
 
       LIMITED_ARRAY_SENTINEL = { key: 'truncated', value: '...' }.freeze
       IGNORE_PARAMS = Set.new(%w[controller action format]).freeze
       KNOWN_PAYLOAD_PARAMS = [:remote_ip, :user_id, :username, :ua, :queue_duration_s,
-                              :etag_route, :request_urgency, :target_duration_s] + CLOUDFLARE_CUSTOM_HEADERS.values
+                              :etag_route, :request_urgency, :target_duration_s] + \
+        CLOUDFLARE_CUSTOM_HEADERS.values + \
+        JSON_METADATA_HEADERS
 
       def self.call(event)
         params = event
@@ -22,6 +25,10 @@ module Gitlab
         payload.merge!(event.payload[:metadata]) if event.payload[:metadata]
         optional_payload_params = event.payload.slice(*KNOWN_PAYLOAD_PARAMS).compact
         payload.merge!(optional_payload_params)
+
+        # Add JSON metadata params (they have json_ prefix)
+        json_metadata_params = event.payload.select { |key, _| key.to_s.start_with?('json_') }
+        payload.merge!(json_metadata_params)
 
         ::Gitlab::InstrumentationHelper.add_instrumentation_data(payload)
 

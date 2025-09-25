@@ -56,6 +56,8 @@ class GroupGroupLink < ApplicationRecord
 
   scope :with_at_least_group_access, ->(group_access) { where(group_access: group_access..) }
 
+  alias_method :group, :shared_group
+
   alias_method :shared_from, :shared_group
 
   def self.search(query, **options)

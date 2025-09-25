@@ -935,5 +935,40 @@ RSpec.describe GraphqlController, :with_current_organization, feature_category: 
       expect(controller).to have_received(:append_info_to_payload)
       expect(log_payload[:exception_object]).to eq(exception)
     end
+
+    context 'when JSON metadata is present in request environment' do
+      let(:json_metadata) do
+        {
+          'max_depth' => 5,
+          'max_array_count' => 100,
+          'max_hash_count' => 50,
+          'total_elements' => 200
+        }
+      end
+
+      before do
+        # Simulate JSON validation middleware setting metadata in request environment
+        request.env[::Gitlab::Middleware::JsonValidation::RACK_ENV_METADATA_KEY] = json_metadata
+      end
+
+      it 'includes JSON metadata in the payload with json_ prefix' do
+        post :execute, params: { query: '{ __typename }' }
+
+        expect(controller).to have_received(:append_info_to_payload)
+        expect(log_payload[:json_max_depth]).to eq(5)
+        expect(log_payload[:json_max_array_count]).to eq(100)
+        expect(log_payload[:json_max_hash_count]).to eq(50)
+        expect(log_payload[:json_total_elements]).to eq(200)
+      end
+    end
+
+    context 'when JSON metadata is not present in request environment' do
+      it 'does not include JSON metadata in the payload' do
+        post :execute, params: { query: '{ __typename }' }
+
+        expect(controller).to have_received(:append_info_to_payload)
+        expect(log_payload.keys.grep(/^json_/)).to be_empty
+      end
+    end
   end
 end

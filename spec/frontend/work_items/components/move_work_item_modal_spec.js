@@ -192,7 +192,7 @@ describe('MoveWorkItemModal', () => {
       findDropdown().vm.$emit('select', mockProject1.id);
       await nextTick();
 
-      expect(findSelectedNamespace().text()).toBe(mockProject1.nameWithNamespace);
+      expect(findSelectedNamespace().text()).toBe(mockProject1.fullPath);
     });
 
     it('shows child items warning when project is selected if issue has children', async () => {

@@ -1693,6 +1693,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to delegate_method(:members).to(:team).with_prefix(true) }
     it { is_expected.to delegate_method(:has_user?).to(:team) }
     it { is_expected.to delegate_method(:member?).to(:team) }
+    it { is_expected.to delegate_method(:max_member_access_for_user).to(:team) }
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).allow_nil }
     it { is_expected.to delegate_method(:root_ancestor).to(:namespace).allow_nil }
     it { is_expected.to delegate_method(:certificate_based_clusters_enabled?).to(:namespace).allow_nil }
@@ -10438,6 +10439,52 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it 'creates new pool repository when none exists' do
       expect { project.ensure_pool_repository }.to change { PoolRepository.count }.by(1)
       expect(project.ensure_pool_repository).to be_a(PoolRepository)
+    end
+  end
+
+  describe '#assigning_role_too_high?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:member, reload: true) { create(:project_member, :reporter, project: project, user: user) }
+
+    subject(:assigning_role_too_high) { project.assigning_role_too_high?(user, access_level) }
+
+    context 'when the access_level is nil' do
+      let(:access_level) { nil }
+
+      it 'returns false' do
+        expect(assigning_role_too_high).to be_falsey
+      end
+    end
+
+    context 'when the role being assigned is lower than the role of current user' do
+      let(:access_level) { Gitlab::Access::GUEST }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the role being assigned is equal to the role of current user' do
+      let(:access_level) { Gitlab::Access::REPORTER }
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when the role being assigned is higher than the role of current user' do
+      let(:access_level) { Gitlab::Access::MAINTAINER }
+
+      it 'returns true' do
+        expect(assigning_role_too_high).to be_truthy
+      end
+
+      context 'when the current user is admin', :enable_admin_mode do
+        before do
+          user.update!(admin: true)
+        end
+
+        it 'returns false' do
+          expect(assigning_role_too_high).to be_falsey
+        end
+      end
     end
   end
 end

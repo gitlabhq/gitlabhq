@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.4.1 (2025-09-25)
+
+### Fixed (2 changes)
+
+- [Use isUnsafeLink for xcode protocol](https://gitlab.com/gitlab-org/security/gitlab/-/commit/199dbffae5d6ed7063d73b557b3b1d9d06d88968)
+- [Optimize HandleMalformedStrings middleware for CPU and memory](https://gitlab.com/gitlab-org/security/gitlab/-/commit/98da626e12117aff71d135ff2c9ca543a2e8b313)
+
+### Security (10 changes)
+
+- [Add JSON input streaming validator middleware](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e5df969d80cc69a5c3dc0fee932047f08c65a0c1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5349))
+- [Addresses logical bug in the GraphQL base resolver](https://gitlab.com/gitlab-org/security/gitlab/-/commit/48ac9ce9606c742ca94056b94da1d8ea641e8977) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5313))
+- [Escape text for wrapNodes utility](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4eb2db6fddf376e187e759871ccc1f5aed1b93d7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5326))
+- [Add the rate limit in BlobSearch GraphQL](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5d8dda684434da9b5f3e6aee195241cacea04cb5) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5335))
+- [Fix Identical Project Names via Move Issue Drop Down leads to Confusion](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5e84e7e063bb04404be193f7df4e8ae871716275) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5327))
+- [Prevent role assignment for custom roles in projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c377c525426063425a076c6cfcba86d9fa35638b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5337))
+- [Only owners can invite groups](https://gitlab.com/gitlab-org/security/gitlab/-/commit/068d6e200bf2ac6eaa2e68d2ef349228376d7539) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5334))
+- [Add limit to array fields in WorkItems API](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a7c51c9588bc2f8a87a57d85f871f2332c8bb312) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5325))
+- [Limit String => Integer conversions](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e2db8dad6d85dffbb9ca30bc8ecb42146b6a12d3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5324))
+- [Removes password field from maven upstream GraphQL type](https://gitlab.com/gitlab-org/security/gitlab/-/commit/27a5700b6152d22b08735480d7d118c77dee58de) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5330))
+
 ## 18.4.0 (2025-09-17)
 
 ### Added (149 changes)

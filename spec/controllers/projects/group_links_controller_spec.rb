@@ -146,8 +146,9 @@ RSpec.describe Projects::GroupLinksController, feature_category: :system_access 
     end
 
     context 'when user is not a group owner' do
-      context 'when user is a project maintainer' do
+      context 'when user is a project owner' do
         before do
+          project.add_owner(user)
           sign_in(user)
         end
 
@@ -175,16 +176,17 @@ RSpec.describe Projects::GroupLinksController, feature_category: :system_access 
         end
       end
 
-      context 'when user is not a project maintainer' do
+      context 'when user does not have permission to destroy the link' do
         before do
-          project.add_developer(user)
+          project.add_maintainer(user)
           sign_in(user)
         end
 
         it 'returns 404' do
           expect { destroy_link }.to not_change { project.reload.project_group_links.count }
 
-          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to redirect_to(project_project_members_path(project, tab: :groups))
+          expect(flash[:alert]).to include('The project-group link could not be removed.')
         end
       end
     end

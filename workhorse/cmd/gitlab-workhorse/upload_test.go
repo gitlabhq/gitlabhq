@@ -594,3 +594,18 @@ func TestPackageFilesUpload(t *testing.T) {
 		testPackageFileUpload(t, r.method, r.resource)
 	}
 }
+
+func TestTerraformStateUpload(t *testing.T) {
+	routes := []struct {
+		method   string
+		resource string
+	}{
+		{"POST", "/api/v4/projects/9001/terraform/state/mystate"},
+		{"POST", "/api/v4/projects/group%2Fproject/terraform/state/mystate"},
+		{"POST", "/api/v4/projects/group%2Fsubgroup%2Fproject/terraform/state/mystate"},
+	}
+
+	for _, r := range routes {
+		testPackageFileUpload(t, r.method, r.resource)
+	}
+}

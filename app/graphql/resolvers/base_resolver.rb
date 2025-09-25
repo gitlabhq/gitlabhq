@@ -125,14 +125,15 @@ module Resolvers
     end
 
     def self.complexity_multiplier(args)
-      # When fetching many items, additional complexity is added to the field
-      # depending on how many items is fetched. For each item we add 1% of the
-      # original complexity - this means that loading 100 items (our default
-      # max_page_size limit) doubles the original complexity.
-      #
-      # Complexity is not increased when searching by specific ID(s), because
-      # complexity difference is minimal in this case.
-      [args[:iid], args[:iids]].any? ? 0 : 0.01
+      # if the number of iids present in the args is of a sufficiently large
+      # size, we want to ensure that the complexity multiplier is applied
+      if args[:iid] || (args[:iids].present? && args[:iids].length <= 100)
+        0
+      elsif args[:iids].present? && args[:iids].length > 100
+        0.02
+      else
+        0.01
+      end
     end
 
     def self.before_connection_authorization(&block)
