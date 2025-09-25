@@ -44,6 +44,12 @@ For additional information for Helm chart installations, see
   Rails.cache.delete_matched("pipeline:*:create_persistent_ref_service")
   ```
 
+## 18.3.3
+
+GitLab 18.4.1, 18.3.3, and 18.2.7 introduced limits on JSON inputs to prevent denial of service attacks.
+GitLab responds to HTTP requests that exceed these limits with a `400 Bad Request` status.
+For more information, see [HTTP request limits](../../administration/instance_limits.md#http-request-limits).
+
 ## 18.3.0
 
 ### Geo installations 18.3.0
