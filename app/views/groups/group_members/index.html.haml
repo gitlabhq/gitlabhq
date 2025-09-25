@@ -12,8 +12,10 @@
         .gl-w-full.order-md-1
         = brand_member_guidelines
     - c.with_actions do
-      - if can_invite_group_member?(@group)
+      - if can?(current_user, :create_group_link, @group)
         .js-invite-group-trigger{ data: { classes: 'md:gl-w-auto gl-w-full', display_text: _('Invite a group') } }
+
+      - if can_invite_group_member?(@group)
         .js-invite-members-trigger{ data: { variant: 'confirm',
           classes: 'md:gl-w-auto gl-w-full',
           trigger_source: 'group_members_page',

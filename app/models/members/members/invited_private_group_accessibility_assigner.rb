@@ -28,7 +28,7 @@ module Members
       # 1. The current user can admin members then the user should be able to see the source of all memberships
       #    to enable management of group/project memberships.
       # 2. There are no members invited from a private group.
-      return if can_admin_members? || private_invited_group_members.nil?
+      return if can_manage_group_link? || private_invited_group_members.nil?
 
       private_invited_group_members.each do |member|
         member.is_source_accessible_to_current_user = authorized_groups.include?(member.source)
@@ -69,10 +69,10 @@ module Members
     end
     strong_memoize_attr(:source_traversal_ids)
 
-    def can_admin_members?
-      return can?(current_user, :admin_project_member, source) if source.is_a?(Project)
+    def can_manage_group_link?
+      permissions = %i[create_group_link update_group_link delete_group_link]
 
-      can?(current_user, :admin_group_member, source)
+      can_any?(current_user, permissions, source)
     end
   end
 end

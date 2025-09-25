@@ -5,6 +5,8 @@ module WorkItems
     extend ActiveSupport::Concern
     extend Gitlab::Utils::Override
 
+    MAX_FIELD_LIMIT = 100
+
     included do
       argument :author_username,
         GraphQL::Types::String,
@@ -17,16 +19,19 @@ module WorkItems
           'If `true`, returns only confidential work items.'
       argument :assignee_usernames, [GraphQL::Types::String],
         required: false,
-        description: 'Usernames of users assigned to the work item.'
+        validates: { length: { maximum: MAX_FIELD_LIMIT } },
+        description: "Usernames of users assigned to the work item (maximum is #{MAX_FIELD_LIMIT} usernames)."
       argument :assignee_wildcard_id, ::Types::AssigneeWildcardIdEnum,
         required: false,
         description: 'Filter by assignee wildcard. Incompatible with `assigneeUsernames`.'
       argument :label_name, [GraphQL::Types::String],
         required: false,
-        description: 'Labels applied to the work item.'
+        validates: { length: { maximum: MAX_FIELD_LIMIT } },
+        description: "Labels applied to the work item (maximum is #{MAX_FIELD_LIMIT} labels)."
       argument :milestone_title, [GraphQL::Types::String],
         required: false,
-        description: 'Milestone applied to the work item.'
+        validates: { length: { maximum: MAX_FIELD_LIMIT } },
+        description: "Milestone applied to the work item (maximum is #{MAX_FIELD_LIMIT} milestones)."
       argument :milestone_wildcard_id, ::Types::MilestoneWildcardIdEnum,
         required: false,
         description: 'Filter by milestone ID wildcard. Incompatible with `milestoneTitle`.'
@@ -37,7 +42,8 @@ module WorkItems
       argument :iids,
         [GraphQL::Types::String],
         required: false,
-        description: 'List of IIDs of work items. For example, `["1", "2"]`.'
+        validates: { length: { maximum: MAX_FIELD_LIMIT } },
+        description: "List of IIDs of work items. For example, `[\"1\", \"2\"]` (maximum is #{MAX_FIELD_LIMIT} IIDs)."
       argument :state,
         ::Types::IssuableStateEnum,
         required: false,
@@ -99,13 +105,16 @@ module WorkItems
         }
 
       argument :parent_ids, [::Types::GlobalIDType[::WorkItem]],
-        description: 'Filter work items by global IDs of their parent items (maximum is 100 items).',
+        description: "Filter work items by global IDs of their parent items (maximum is #{MAX_FIELD_LIMIT} IDs).",
         required: false,
+        validates: { length: { maximum: MAX_FIELD_LIMIT } },
         prepare: ->(global_ids, _ctx) { GitlabSchema.parse_gids(global_ids, expected_type: ::WorkItem).map(&:model_id) }
 
       argument :release_tag, [GraphQL::Types::String],
         required: false,
-        description: "Release tag associated with the work item's milestone. Ignored when parent is a group."
+        validates: { length: { maximum: MAX_FIELD_LIMIT } },
+        description: "Release tag associated with the work item's milestone (maximum is #{MAX_FIELD_LIMIT} tags). " \
+          "Ignored when parent is a group."
       argument :release_tag_wildcard_id, ::Types::ReleaseTagWildcardIdEnum,
         required: false,
         description: 'Filter by release tag wildcard.'
@@ -119,15 +128,6 @@ module WorkItems
       validates mutually_exclusive: [:assignee_usernames, :assignee_wildcard_id]
       validates mutually_exclusive: [:milestone_title, :milestone_wildcard_id]
       validates mutually_exclusive: [:release_tag, :release_tag_wildcard_id]
-    end
-
-    MAX_IDS_LIMIT = 100
-
-    def resolve(**args)
-      validate_field_limits(args, :parent_ids, :release_tag)
-      validate_field_limits(args[:not], :release_tag) if args[:not].present?
-
-      super
     end
 
     private
@@ -152,17 +152,6 @@ module WorkItems
 
     def rewrite_param_name(params, old_name, new_name)
       params[new_name] = params.delete(old_name) if params && params[old_name].present?
-    end
-
-    def validate_field_limits(params, *fields)
-      return unless params
-
-      fields.each do |field|
-        if Array(params[field]).size > MAX_IDS_LIMIT
-          raise GraphQL::ExecutionError,
-            "You can only provide up to #{MAX_IDS_LIMIT} #{field.to_s.camelize(:lower)} at once."
-        end
-      end
     end
   end
 end
