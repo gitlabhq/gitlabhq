@@ -110,7 +110,7 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
       end
 
       it 'merges arguments into routing args, sets request method, and executes route' do
-        result = api_tool.execute(request, params)
+        result = api_tool.execute(request: request, params: params)
 
         expect(request_env['grape.routing_args']).to include(param1: 'value1', param2: 42)
         expect(request_env[Rack::REQUEST_METHOD]).to eq('POST')
@@ -144,7 +144,7 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
       end
 
       it 'sets the correct request method in environment' do
-        api_tool.execute(request, params)
+        api_tool.execute(request: request, params: params)
 
         expect(request_env[Rack::REQUEST_METHOD]).to eq('GET')
       end
@@ -156,7 +156,7 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
       end
 
       it 'returns error response with parsed message' do
-        result = api_tool.execute(request, params)
+        result = api_tool.execute(request: request, params: params)
 
         expect(request_env[Rack::REQUEST_METHOD]).to eq('POST')
         expect(result).to eq(Mcp::Tools::Response.error('Bad request', { 'error' => 'Bad request' }))
@@ -169,7 +169,7 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
       end
 
       it 'uses message field for error' do
-        result = api_tool.execute(request, params)
+        result = api_tool.execute(request: request, params: params)
 
         expect(result).to eq(Mcp::Tools::Response.error('Validation failed', { 'message' => 'Validation failed' }))
       end
@@ -181,7 +181,7 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
       end
 
       it 'falls back to HTTP status message' do
-        result = api_tool.execute(request, params)
+        result = api_tool.execute(request: request, params: params)
 
         expect(result).to eq(Mcp::Tools::Response.error('HTTP 500', { 'details' => 'Internal error' }))
       end
@@ -193,7 +193,7 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
       end
 
       it 'returns JSON parsing error' do
-        result = api_tool.execute(request, params)
+        result = api_tool.execute(request: request, params: params)
 
         expect(result[:content][0][:text]).to eq('Invalid JSON response')
       end
@@ -207,8 +207,7 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
       end
 
       it 'handles nil arguments gracefully' do
-        result = api_tool.execute(request, params)
-
+        result = api_tool.execute(request: request, params: params)
         expect(request_env['grape.routing_args']).to eq({})
         expect(request_env[Rack::REQUEST_METHOD]).to eq('POST')
         expect(result).to eq({
@@ -232,7 +231,7 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
       end
 
       it 'only includes params specified in settings' do
-        api_tool.execute(request, params)
+        api_tool.execute(request: request, params: params)
 
         expect(request_env['grape.routing_args']).to eq(param1: 'value1', param2: 42)
         expect(request_env['grape.routing_args']).not_to have_key(:unauthorized_param)
@@ -284,7 +283,8 @@ RSpec.describe Mcp::Tools::ApiTool, feature_category: :ai_agents do
       end
 
       it 'does not rescue the exception' do
-        expect { api_tool.execute(request, params) }.to raise_error(StandardError, 'Route execution failed')
+        expect { api_tool.execute(request: request, params: params) }
+          .to raise_error(StandardError, 'Route execution failed')
       end
     end
 

@@ -5,9 +5,7 @@ import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import adminGroupCountsQuery from '../graphql/queries/group_counts.query.graphql';
-import adminGroupsQuery from '../graphql/queries/admin_groups.query.graphql';
 import {
   ADMIN_GROUPS_TABS,
   SORT_OPTION_UPDATED,
@@ -30,24 +28,12 @@ export default {
   tabCountsQuery: adminGroupCountsQuery,
   name: 'AdminGroupsApp',
   components: { TabsWithList },
-  mixins: [glFeatureFlagMixin()],
-  computed: {
-    tabs() {
-      const tabs = this.$options.ADMIN_GROUPS_TABS;
-
-      if (this.glFeatures.readAdminGroups) {
-        return tabs.map((tab) => ({ ...tab, query: adminGroupsQuery }));
-      }
-
-      return tabs;
-    },
-  },
 };
 </script>
 
 <template>
   <tabs-with-list
-    :tabs="tabs"
+    :tabs="$options.ADMIN_GROUPS_TABS"
     :filtered-search-term-key="$options.FILTERED_SEARCH_TERM_KEY"
     :filtered-search-namespace="$options.FILTERED_SEARCH_NAMESPACE"
     :filtered-search-recent-searches-storage-key="$options.RECENT_SEARCHES_STORAGE_KEY_GROUPS"

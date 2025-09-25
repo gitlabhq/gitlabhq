@@ -12,7 +12,7 @@ import {
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
 import { formatGraphQLGroups } from '~/vue_shared/components/groups_list/formatter';
 import ResourceListsEmptyState from '~/vue_shared/components/resource_lists/empty_state.vue';
-import adminGroupsQuery from './graphql/queries/groups.query.graphql';
+import adminGroupsQuery from './graphql/queries/admin_groups.query.graphql';
 
 export const SORT_OPTION_NAME = {
   value: 'name',

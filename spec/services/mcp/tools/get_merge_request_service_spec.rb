@@ -26,6 +26,10 @@ RSpec.describe Mcp::Tools::GetMergeRequestService, feature_category: :mcp_server
   describe '#execute' do
     let(:oauth_token) { 'token_123' }
 
+    before do
+      service.set_cred(access_token: oauth_token, current_user: nil)
+    end
+
     context 'with valid arguments' do
       let(:api_response) do
         instance_double(Gitlab::HTTP::Response, body: response_body, success?: success, code: response_code)
@@ -51,11 +55,11 @@ RSpec.describe Mcp::Tools::GetMergeRequestService, feature_category: :mcp_server
         end
 
         let(:arguments) do
-          { id: 'test-project', merge_request_iid: 10 }
+          { arguments: { id: 'test-project', merge_request_iid: 10 } }
         end
 
         it 'returns success response' do
-          result = service.execute(oauth_token, arguments)
+          result = service.execute(request: nil, params: arguments)
 
           expect(result).to eq({
             content: [{ type: 'text', text: 'https://gitlab.com/test-project/-/merge_requests/10' }],
@@ -73,7 +77,7 @@ RSpec.describe Mcp::Tools::GetMergeRequestService, feature_category: :mcp_server
         end
 
         it 'makes request with correct URL' do
-          service.execute(oauth_token, arguments)
+          service.execute(request: nil, params: arguments)
 
           expect(Gitlab::HTTP).to have_received(:get).with(
             "#{Gitlab.config.gitlab.url}/api/v4/projects/test-project/merge_requests/10",
@@ -90,11 +94,11 @@ RSpec.describe Mcp::Tools::GetMergeRequestService, feature_category: :mcp_server
         end
 
         let(:arguments) do
-          { id: 'gitlab-org/gitlab', merge_request_iid: 123456 }
+          { arguments: { id: 'gitlab-org/gitlab', merge_request_iid: 123456 } }
         end
 
         it 'URL encodes the project ID' do
-          service.execute(oauth_token, arguments)
+          service.execute(request: nil, params: arguments)
 
           expect(Gitlab::HTTP).to have_received(:get).with(
             "#{Gitlab.config.gitlab.url}/api/v4/projects/gitlab-org%2Fgitlab/merge_requests/123456",
@@ -106,11 +110,11 @@ RSpec.describe Mcp::Tools::GetMergeRequestService, feature_category: :mcp_server
 
     context 'with missing required field' do
       let(:arguments) do
-        { id: 'test-project' }
+        { arguments: { id: 'test-project' } }
       end
 
       it 'returns validation error' do
-        result = service.execute(oauth_token, arguments)
+        result = service.execute(request: nil, params: arguments)
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to include('merge_request_iid is missing')

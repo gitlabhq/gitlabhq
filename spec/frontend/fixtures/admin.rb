@@ -43,7 +43,7 @@ RSpec.describe 'Admin (GraphQL fixtures)', feature_category: :organization do
     describe 'groups' do
       base_input_path = 'admin/groups/index/graphql/queries/'
       base_output_path = 'graphql/admin/'
-      query_name = 'groups.query.graphql'
+      query_name = 'admin_groups.query.graphql'
 
       it "#{base_output_path}#{query_name}.json" do
         query = get_graphql_query_as_string("#{base_input_path}#{query_name}")

@@ -203,6 +203,37 @@ export default {
         },
       );
     },
+    indentButtonText() {
+      return sprintf(s__('MarkdownEditor|Indent line (%{modifierKey}])'), {
+        modifierKey: this.modifierKey,
+      });
+    },
+    outdentButtonText() {
+      return sprintf(s__('MarkdownEditor|Outdent line (%{modifierKey}[)'), {
+        modifierKey: this.modifierKey,
+      });
+    },
+    boldButtonText() {
+      return sprintf(s__('MarkdownEditor|Add bold text (%{modifierKey}B)'), {
+        modifierKey: this.modifierKey,
+      });
+    },
+    italicButtonText() {
+      return sprintf(s__('MarkdownEditor|Add italic text (%{modifierKey}I)'), {
+        modifierKey: this.modifierKey,
+      });
+    },
+    strikethroughButtonText() {
+      return sprintf(s__('MarkdownEditor|Add strikethrough text (%{modifierKey}%{shiftKey}X)'), {
+        modifierKey: this.modifierKey,
+        shiftKey: this.shiftKey,
+      });
+    },
+    linkButtonText() {
+      return sprintf(s__('MarkdownEditor|Add a link (%{modifierKey}K)'), {
+        modifierKey: this.modifierKey,
+      });
+    },
   },
   watch: {
     showSuggestPopover() {
@@ -571,7 +602,7 @@ export default {
                 ref="suggestButton"
                 :tag="mdSuggestion"
                 :prepend="true"
-                :button-title="__('Insert suggestion')"
+                :button-title="s__('MarkdownEditor|Insert suggestion')"
                 :cursor-offset="4"
                 :tag-content="lineContent"
                 tracking-property="codeSuggestion"
@@ -588,11 +619,11 @@ export default {
                 :show="suggestPopoverVisible"
                 triggers=""
               >
-                <strong>{{ __('New! Suggest changes directly') }}</strong>
+                <strong>{{ s__('MarkdownEditor|New! Suggest changes directly') }}</strong>
                 <p class="!gl-mb-3">
                   {{
-                    __(
-                      'Suggest code changes which can be immediately applied in one click. Try it out!',
+                    s__(
+                      'MarkdownEditor|Suggest code changes which can be immediately applied in one click. Try it out!',
                     )
                   }}
                 </p>
@@ -622,12 +653,7 @@ export default {
           <toolbar-button
             v-show="!previewMarkdown"
             tag="**"
-            :button-title="
-              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
-              sprintf(s__('MarkdownEditor|Add bold text (%{modifierKey}B)'), {
-                modifierKey,
-              }) /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */
-            "
+            :button-title="boldButtonText"
             :shortcuts="$options.shortcuts.bold"
             icon="bold"
             tracking-property="bold"
@@ -635,12 +661,7 @@ export default {
           <toolbar-button
             v-show="!previewMarkdown"
             tag="_"
-            :button-title="
-              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
-              sprintf(s__('MarkdownEditor|Add italic text (%{modifierKey}I)'), {
-                modifierKey,
-              }) /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */
-            "
+            :button-title="italicButtonText"
             :shortcuts="$options.shortcuts.italic"
             icon="italic"
             tracking-property="italic"
@@ -650,13 +671,7 @@ export default {
               v-if="!restrictedToolBarItems.includes('strikethrough')"
               v-show="!previewMarkdown"
               tag="~~"
-              :button-title="
-                /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
-                sprintf(s__('MarkdownEditor|Add strikethrough text (%{modifierKey}%{shiftKey}X)'), {
-                  modifierKey,
-                  shiftKey /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */,
-                })
-              "
+              :button-title="strikethroughButtonText"
               :shortcuts="$options.shortcuts.strikethrough"
               icon="strikethrough"
               tracking-property="strike"
@@ -668,7 +683,7 @@ export default {
             v-show="!previewMarkdown"
             :prepend="true"
             :tag="tag"
-            :button-title="__('Insert a quote')"
+            :button-title="s__('MarkdownEditor|Insert a quote')"
             icon="quote"
             tracking-property="blockquote"
             @click="handleQuote"
@@ -678,7 +693,7 @@ export default {
             v-show="!previewMarkdown"
             tag="`"
             tag-block="```"
-            :button-title="__('Insert code')"
+            :button-title="s__('MarkdownEditor|Insert code')"
             icon="code"
             tracking-property="code"
           />
@@ -686,12 +701,7 @@ export default {
             v-show="!previewMarkdown"
             tag="[{text}](url)"
             tag-select="url"
-            :button-title="
-              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
-              sprintf(s__('MarkdownEditor|Add a link (%{modifierKey}K)'), {
-                modifierKey,
-              }) /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */
-            "
+            :button-title="linkButtonText"
             :shortcuts="$options.shortcuts.link"
             icon="link"
             tracking-property="link"
@@ -701,7 +711,7 @@ export default {
             v-show="!previewMarkdown"
             :prepend="true"
             tag="- "
-            :button-title="__('Add a bullet list')"
+            :button-title="s__('MarkdownEditor|Add a bullet list')"
             icon="list-bulleted"
             tracking-property="bulletList"
           />
@@ -710,7 +720,7 @@ export default {
             v-show="!previewMarkdown"
             :prepend="true"
             tag="1. "
-            :button-title="__('Add a numbered list')"
+            :button-title="s__('MarkdownEditor|Add a numbered list')"
             icon="list-numbered"
             tracking-property="orderedList"
           />
@@ -719,7 +729,7 @@ export default {
             v-show="!previewMarkdown"
             :prepend="true"
             tag="- [ ] "
-            :button-title="__('Add a checklist')"
+            :button-title="s__('MarkdownEditor|Add a checklist')"
             icon="list-task"
             tracking-property="taskList"
           />
@@ -727,12 +737,7 @@ export default {
             v-if="!restrictedToolBarItems.includes('indent')"
             v-show="!previewMarkdown"
             class="gl-hidden"
-            :button-title="
-              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
-              sprintf(s__('MarkdownEditor|Indent line (%{modifierKey}])'), {
-                modifierKey /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */,
-              })
-            "
+            :button-title="indentButtonText"
             :shortcuts="$options.shortcuts.indent"
             command="indentLines"
             icon="list-indent"
@@ -742,12 +747,7 @@ export default {
             v-if="!restrictedToolBarItems.includes('outdent')"
             v-show="!previewMarkdown"
             class="gl-hidden"
-            :button-title="
-              /* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */
-              sprintf(s__('MarkdownEditor|Outdent line (%{modifierKey}[)'), {
-                modifierKey /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */,
-              })
-            "
+            :button-title="outdentButtonText"
             :shortcuts="$options.shortcuts.outdent"
             command="outdentLines"
             icon="list-outdent"
@@ -769,7 +769,7 @@ export default {
             v-show="!previewMarkdown && !restrictedToolBarItems.includes('attach-file')"
             data-testid="button-attach-file"
             data-button-type="attach-file"
-            :button-title="__('Attach a file or image')"
+            :button-title="s__('MarkdownEditor|Attach a file or image')"
             icon="paperclip"
             class="gl-mr-2"
             tracking-property="upload"
@@ -785,7 +785,7 @@ export default {
             v-show="!previewMarkdown"
             :prepend="true"
             tag="/"
-            :button-title="__('Add a quick action')"
+            :button-title="s__('MarkdownEditor|Add a quick action')"
             icon="quick-actions"
             tracking-property="quickAction"
           />
@@ -809,7 +809,7 @@ export default {
             v-if="!restrictedToolBarItems.includes('full-screen')"
             class="js-zen-enter !gl-mr-0"
             icon="maximize"
-            :button-title="__('Go full screen')"
+            :button-title="s__('MarkdownEditor|Go full screen')"
             :prepend="true"
             tracking-property="fullScreen"
           />
@@ -831,7 +831,7 @@ export default {
     >
       <gl-form-input
         v-model="findAndReplace.find"
-        :placeholder="__('Find')"
+        :placeholder="s__('MarkdownEditor|Find')"
         autofocus
         data-testid="find-btn"
         @keydown="findAndReplace_handleKeyDown"

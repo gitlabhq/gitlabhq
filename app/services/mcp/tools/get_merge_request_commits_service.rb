@@ -35,13 +35,13 @@ module Mcp
       protected
 
       override :perform
-      def perform(oauth_token, arguments = {}, query = {})
+      def perform(arguments = {}, query = {})
         project_id = CGI.escape(arguments[:id].to_s)
         merge_request_iid = arguments[:merge_request_iid]
         query[:page] = arguments[:page] if arguments[:page]
         query[:per_page] = arguments[:per_page] if arguments[:per_page]
 
-        http_get(oauth_token, "/api/v4/projects/#{project_id}/merge_requests/#{merge_request_iid}/commits", query)
+        http_get(access_token, "/api/v4/projects/#{project_id}/merge_requests/#{merge_request_iid}/commits", query)
       end
 
       private

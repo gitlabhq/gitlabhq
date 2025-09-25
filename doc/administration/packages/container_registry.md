@@ -511,22 +511,6 @@ To configure object storage for your container registry:
 
 The S3 storage driver integrates with Amazon S3 or any S3-compatible object storage service.
 
-<!--- start_remove The following content will be removed on remove_date: '2025-08-15' -->
-
-{{< alert type="warning" >}}
-
-The S3 storage driver that uses AWS SDK v1 was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/523095) in GitLab 17.10 and is planned for removal in GitLab 19.0.
-
-Use the `s3_v2` driver (in Beta) instead when it becomes available in May 2025. This driver offers improved performance, reliability, and compatibility with AWS authentication requirements. While this is a breaking change, the new driver has been thoroughly tested and is designed to be a drop-in replacement for most configurations.
-
-Make sure to test the new driver in non-production environments before deploying to production to ensure compatibility with your specific setup and usage patterns. This allows you to identify and address any edge cases unique to your environment.
-
-Report any issues or feedback using [issue 525855](https://gitlab.com/gitlab-org/gitlab/-/issues/525855).
-
-{{< /alert >}}
-
-<!--- end_remove -->
-
 The `s3_v2` driver (in Beta) uses AWS SDK v2 and only supports Signature Version 4 for authentication.
 This driver improves performance and reliability while ensuring compatibility with AWS authentication requirements,
 as support for older signature methods is deprecated. For more information, see [epic 16272](https://gitlab.com/groups/gitlab-org/-/epics/16272).

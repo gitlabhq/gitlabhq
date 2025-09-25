@@ -7,9 +7,14 @@ module Mcp
         @name = name
       end
 
-      def execute(access_token, arguments = {})
-        validate_arguments!(arguments)
-        perform(access_token, arguments)
+      def set_cred(**)
+        raise NoMethodError
+      end
+
+      def execute(request: nil, params: nil) # rubocop: disable Lint/UnusedMethodArgument -- request param to match Mcp::Tools::ApiTool
+        args = params[:arguments]
+        validate_arguments!(args)
+        perform(args)
       rescue ArgumentError => e
         Response.error("Validation error: #{e.message}")
       rescue StandardError => e
@@ -26,13 +31,13 @@ module Mcp
 
       protected
 
-      def perform(_access_token, _arguments, _query)
+      def perform(_arguments = {}, _query = {})
         raise NoMethodError
       end
 
       private
 
-      attr_reader :name
+      attr_reader :name, :current_user, :access_token
 
       def validate_arguments!(arguments)
         schemer = JSONSchemer.schema(input_schema)

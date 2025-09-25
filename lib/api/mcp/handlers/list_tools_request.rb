@@ -30,7 +30,9 @@ module API
         private
 
         def tools
-          TOOLS.map { |tool_name, tool_klass| tool_klass.new(name: tool_name).to_h }
+          TOOLS.map do |tool_name, tool_klass|
+            tool_klass.new(name: tool_name).to_h
+          end
         end
       end
     end

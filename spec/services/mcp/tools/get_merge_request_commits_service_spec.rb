@@ -30,6 +30,10 @@ RSpec.describe Mcp::Tools::GetMergeRequestCommitsService, feature_category: :mcp
   describe '#execute' do
     let(:oauth_token) { 'token_123' }
 
+    before do
+      service.set_cred(access_token: oauth_token, current_user: nil)
+    end
+
     context 'with valid arguments' do
       let(:api_response) do
         instance_double(Gitlab::HTTP::Response, body: response_body, success?: success, code: response_code)
@@ -74,11 +78,11 @@ RSpec.describe Mcp::Tools::GetMergeRequestCommitsService, feature_category: :mcp
         end
 
         let(:arguments) do
-          { id: 'test-project', merge_request_iid: 10 }
+          { arguments: { id: 'test-project', merge_request_iid: 10 } }
         end
 
         it 'returns success response' do
-          result = service.execute(oauth_token, arguments)
+          result = service.execute(request: nil, params: arguments)
           expect(result[:isError]).to be false
           expect(result[:content].first[:type]).to eq('text')
           expect(result[:content].first[:text]).to include('abc123def456')
@@ -93,7 +97,7 @@ RSpec.describe Mcp::Tools::GetMergeRequestCommitsService, feature_category: :mcp
         end
 
         it 'makes request with correct URL' do
-          service.execute(oauth_token, arguments)
+          service.execute(request: nil, params: arguments)
 
           expect(Gitlab::HTTP).to have_received(:get).with(
             "#{Gitlab.config.gitlab.url}/api/v4/projects/test-project/merge_requests/10/commits",
@@ -103,11 +107,11 @@ RSpec.describe Mcp::Tools::GetMergeRequestCommitsService, feature_category: :mcp
 
         context 'with pagination parameters' do
           let(:arguments) do
-            { id: 'test-project', merge_request_iid: 10, page: 2, per_page: 50 }
+            { arguments: { id: 'test-project', merge_request_iid: 10, page: 2, per_page: 50 } }
           end
 
           it 'includes pagination parameters in query' do
-            service.execute(oauth_token, arguments)
+            service.execute(request: nil, params: arguments)
 
             expect(Gitlab::HTTP).to have_received(:get).with(
               "#{Gitlab.config.gitlab.url}/api/v4/projects/test-project/merge_requests/10/commits",
@@ -122,11 +126,11 @@ RSpec.describe Mcp::Tools::GetMergeRequestCommitsService, feature_category: :mcp
 
         context 'with only page parameter' do
           let(:arguments) do
-            { id: 'test-project', merge_request_iid: 10, page: 3 }
+            { arguments: { id: 'test-project', merge_request_iid: 10, page: 3 } }
           end
 
           it 'includes only page parameter in query' do
-            service.execute(oauth_token, arguments)
+            service.execute(request: nil, params: arguments)
 
             expect(Gitlab::HTTP).to have_received(:get).with(
               "#{Gitlab.config.gitlab.url}/api/v4/projects/test-project/merge_requests/10/commits",
@@ -139,11 +143,11 @@ RSpec.describe Mcp::Tools::GetMergeRequestCommitsService, feature_category: :mcp
 
         context 'with only per_page parameter' do
           let(:arguments) do
-            { id: 'test-project', merge_request_iid: 10, per_page: 25 }
+            { arguments: { id: 'test-project', merge_request_iid: 10, per_page: 25 } }
           end
 
           it 'includes only per_page parameter in query' do
-            service.execute(oauth_token, arguments)
+            service.execute(request: nil, params: arguments)
 
             expect(Gitlab::HTTP).to have_received(:get).with(
               "#{Gitlab.config.gitlab.url}/api/v4/projects/test-project/merge_requests/10/commits",
@@ -160,11 +164,11 @@ RSpec.describe Mcp::Tools::GetMergeRequestCommitsService, feature_category: :mcp
         let(:response_code) { 200 }
         let(:response_body) { [].to_json }
         let(:arguments) do
-          { id: 'foo-bar/gitlab', merge_request_iid: 1 }
+          { arguments: { id: 'foo-bar/gitlab', merge_request_iid: 1 } }
         end
 
         it 'URL encodes the project ID' do
-          service.execute(oauth_token, arguments)
+          service.execute(request: nil, params: arguments)
 
           expect(Gitlab::HTTP).to have_received(:get).with(
             "#{Gitlab.config.gitlab.url}/api/v4/projects/foo-bar%2Fgitlab/merge_requests/1/commits",
@@ -178,11 +182,11 @@ RSpec.describe Mcp::Tools::GetMergeRequestCommitsService, feature_category: :mcp
         let(:response_code) { 200 }
         let(:response_body) { [].to_json }
         let(:arguments) do
-          { id: 'test-project', merge_request_iid: 10 }
+          { arguments: { id: 'test-project', merge_request_iid: 10 } }
         end
 
         it 'returns success response with empty array' do
-          result = service.execute(oauth_token, arguments)
+          result = service.execute(request: nil, params: arguments)
 
           expect(result[:isError]).to be false
           expect(result[:content]).to match_array([{ type: 'text', text: '' }])
@@ -193,11 +197,11 @@ RSpec.describe Mcp::Tools::GetMergeRequestCommitsService, feature_category: :mcp
 
     context 'with missing required field' do
       let(:arguments) do
-        { id: 'test-project' }
+        { arguments: { id: 'test-project' } }
       end
 
       it 'returns validation error' do
-        result = service.execute(oauth_token, arguments)
+        result = service.execute(request: nil, params: arguments)
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to include('merge_request_iid is missing')

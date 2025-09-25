@@ -51,7 +51,7 @@ module API
         def invoke_basic_handler
           method_name = params[:method]
           handler_class = JSONRPC_METHOD_HANDLERS[method_name] || method_not_found!(method_name)
-          handler = handler_class.new(params[:params] || {})
+          handler = handler_class.new(params[:params] || {}, oauth_access_token, current_user)
           handler.invoke
         end
 
@@ -78,11 +78,7 @@ module API
         end
 
         def create_handler(handler_class, handler_params)
-          if handler_class == Handlers::CallToolRequest
-            handler_class.new(handler_params, oauth_access_token)
-          else
-            handler_class.new(handler_params)
-          end
+          handler_class.new(handler_params, oauth_access_token, current_user)
         end
 
         def format_jsonrpc_response(result)
@@ -137,7 +133,7 @@ module API
             if Feature.enabled?(:mcp_server_new_implementation, current_user)
               case params[:method]
               when 'tools/call'
-                Handlers::CallTool.new(namespace_setting(:mcp_manager)).invoke(request, params[:params])
+                Handlers::CallTool.new(namespace_setting(:mcp_manager)).invoke(request, params[:params], current_user)
               when 'tools/list'
                 Handlers::ListTools.new(namespace_setting(:mcp_manager)).invoke
               else

@@ -135,6 +135,51 @@ module Gitlab
           swap_foreign_keys(partitioned_table.name, old_foreign_key, new_foreign_key)
         end
 
+        # Removes a foreign key from a partitioned table and all its partitions.
+        #
+        # This method handles the removal of foreign keys from partitioned tables properly.
+        # Unlike the regular remove_foreign_key method, this method removes the foreign key
+        # from the partitioned table first, then from each partition individually. This is
+        # necessary because PostgreSQL doesn't allow dropping inherited constraints from
+        # partitions while they still exist on the parent table.
+        #
+        # source - The source (partitioned) table containing the foreign key.
+        # target - The target table the key points to (optional if using name parameter).
+        # column - The name of the column with the foreign key (optional if using name parameter).
+        # name - The name of the foreign key constraint (optional if using column parameter).
+        # reverse_lock_order - Flag that controls whether we should attempt to acquire locks in the reverse
+        #                      order of the ALTER TABLE. This can be useful in situations where the foreign
+        #                      key removal could deadlock with another process.
+        #
+        # Example:
+        #
+        #     remove_partitioned_foreign_key :users, :projects, column: :project_id
+        #     remove_partitioned_foreign_key :users, name: 'fk_rails_123456'
+        #
+        def remove_partitioned_foreign_key(source, target = nil, column: nil, name: nil, reverse_lock_order: false)
+          assert_not_in_transaction_block(scope: ERROR_SCOPE)
+
+          # Determine the foreign key name if not provided
+          name = concurrent_partitioned_foreign_key_name(source, column) if name.nil? && column.present?
+
+          raise ArgumentError, 'Either name or column must be specified' if name.nil?
+
+          # Remove foreign key from the partitioned table first
+          # This is important because PostgreSQL doesn't allow dropping inherited constraints
+          # from partitions while they still exist on the parent table
+          with_lock_retries do
+            remove_foreign_key_if_exists(source, target, name: name, reverse_lock_order: reverse_lock_order)
+          end
+
+          # Remove foreign key from each partition (in case they have non-inherited constraints)
+          Gitlab::Database::PostgresPartitionedTable.each_partition(source) do |partition|
+            with_lock_retries do
+              remove_foreign_key_if_exists(partition.identifier, target,
+                name: name, reverse_lock_order: reverse_lock_order)
+            end
+          end
+        end
+
         private
 
         # Returns the name for a concurrent partitioned foreign key.

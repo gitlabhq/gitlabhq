@@ -30,6 +30,10 @@ RSpec.describe Mcp::Tools::GetPipelineJobsService, feature_category: :mcp_server
   describe '#execute' do
     let(:oauth_token) { 'token_123' }
 
+    before do
+      service.set_cred(access_token: oauth_token, current_user: nil)
+    end
+
     context 'with valid arguments' do
       let(:api_response) do
         instance_double(Gitlab::HTTP::Response, body: response_body, success?: success, code: response_code)
@@ -70,11 +74,11 @@ RSpec.describe Mcp::Tools::GetPipelineJobsService, feature_category: :mcp_server
         end
 
         let(:arguments) do
-          { id: 'test-project', pipeline_id: 456 }
+          { arguments: { id: 'test-project', pipeline_id: 456 } }
         end
 
         it 'returns success response' do
-          result = service.execute(oauth_token, arguments)
+          result = service.execute(request: nil, params: arguments)
           expect(result[:isError]).to be false
           expect(result[:content].first[:type]).to eq('text')
           expect(result[:content].first[:text]).to include('https://gitlab.com/test-project/-/jobs/123')
@@ -91,7 +95,7 @@ RSpec.describe Mcp::Tools::GetPipelineJobsService, feature_category: :mcp_server
         end
 
         it 'makes request with correct URL' do
-          service.execute(oauth_token, arguments)
+          service.execute(request: nil, params: arguments)
 
           expect(Gitlab::HTTP).to have_received(:get).with(
             "#{Gitlab.config.gitlab.url}/api/v4/projects/test-project/pipelines/456/jobs",
@@ -101,11 +105,11 @@ RSpec.describe Mcp::Tools::GetPipelineJobsService, feature_category: :mcp_server
 
         context 'with pagination parameters' do
           let(:arguments) do
-            { id: 'test-project', pipeline_id: 456, page: 2, per_page: 50 }
+            { arguments: { id: 'test-project', pipeline_id: 456, page: 2, per_page: 50 } }
           end
 
           it 'includes pagination parameters in query' do
-            service.execute(oauth_token, arguments)
+            service.execute(request: nil, params: arguments)
 
             expect(Gitlab::HTTP).to have_received(:get).with(
               "#{Gitlab.config.gitlab.url}/api/v4/projects/test-project/pipelines/456/jobs",
@@ -120,11 +124,11 @@ RSpec.describe Mcp::Tools::GetPipelineJobsService, feature_category: :mcp_server
 
         context 'with only page parameter' do
           let(:arguments) do
-            { id: 'test-project', pipeline_id: 456, page: 3 }
+            { arguments: { id: 'test-project', pipeline_id: 456, page: 3 } }
           end
 
           it 'includes only page parameter in query' do
-            service.execute(oauth_token, arguments)
+            service.execute(request: nil, params: arguments)
 
             expect(Gitlab::HTTP).to have_received(:get).with(
               "#{Gitlab.config.gitlab.url}/api/v4/projects/test-project/pipelines/456/jobs",
@@ -137,11 +141,11 @@ RSpec.describe Mcp::Tools::GetPipelineJobsService, feature_category: :mcp_server
 
         context 'with only per_page parameter' do
           let(:arguments) do
-            { id: 'test-project', pipeline_id: 456, per_page: 25 }
+            { arguments: { id: 'test-project', pipeline_id: 456, per_page: 25 } }
           end
 
           it 'includes only per_page parameter in query' do
-            service.execute(oauth_token, arguments)
+            service.execute(request: nil, params: arguments)
 
             expect(Gitlab::HTTP).to have_received(:get).with(
               "#{Gitlab.config.gitlab.url}/api/v4/projects/test-project/pipelines/456/jobs",
@@ -169,11 +173,11 @@ RSpec.describe Mcp::Tools::GetPipelineJobsService, feature_category: :mcp_server
         end
 
         let(:arguments) do
-          { id: 'test-project', pipeline_id: 456 }
+          { arguments: { id: 'test-project', pipeline_id: 456 } }
         end
 
         it 'returns single job response' do
-          result = service.execute(oauth_token, arguments)
+          result = service.execute(request: nil, params: arguments)
 
           expect(result[:isError]).to be false
           expect(result[:content]).to be_an(Array)
@@ -188,11 +192,11 @@ RSpec.describe Mcp::Tools::GetPipelineJobsService, feature_category: :mcp_server
         let(:response_code) { 200 }
         let(:response_body) { [].to_json }
         let(:arguments) do
-          { id: 'foo-bar/gitlab', pipeline_id: 789 }
+          { arguments: { id: 'foo-bar/gitlab', pipeline_id: 789 } }
         end
 
         it 'URL encodes the project ID' do
-          service.execute(oauth_token, arguments)
+          service.execute(request: nil, params: arguments)
 
           expect(Gitlab::HTTP).to have_received(:get).with(
             "#{Gitlab.config.gitlab.url}/api/v4/projects/foo-bar%2Fgitlab/pipelines/789/jobs",
@@ -206,11 +210,11 @@ RSpec.describe Mcp::Tools::GetPipelineJobsService, feature_category: :mcp_server
         let(:response_code) { 200 }
         let(:response_body) { [].to_json }
         let(:arguments) do
-          { id: 'test-project', pipeline_id: 456 }
+          { arguments: { id: 'test-project', pipeline_id: 456 } }
         end
 
         it 'returns success response with empty array' do
-          result = service.execute(oauth_token, arguments)
+          result = service.execute(request: nil, params: arguments)
           expect(result[:isError]).to be false
           expect(result[:content]).to match_array([{ text: '', type: 'text' }])
           expect(result[:structuredContent]).to eq({ items: [], metadata: { count: 0, has_more: false } })
@@ -225,11 +229,11 @@ RSpec.describe Mcp::Tools::GetPipelineJobsService, feature_category: :mcp_server
         end
 
         let(:arguments) do
-          { id: 'test-project', pipeline_id: 999 }
+          { arguments: { id: 'test-project', pipeline_id: 999 } }
         end
 
         it 'returns error response' do
-          result = service.execute(oauth_token, arguments)
+          result = service.execute(request: nil, params: arguments)
 
           expect(result[:isError]).to be true
           expect(result[:content].first[:text]).to eq('Pipeline not found')
@@ -239,11 +243,11 @@ RSpec.describe Mcp::Tools::GetPipelineJobsService, feature_category: :mcp_server
 
     context 'with missing required field' do
       let(:arguments) do
-        { id: 'test-project' }
+        { arguments: { id: 'test-project' } }
       end
 
       it 'returns validation error' do
-        result = service.execute(oauth_token, arguments)
+        result = service.execute(request: nil, params: arguments)
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to include('pipeline_id is missing')
@@ -252,11 +256,11 @@ RSpec.describe Mcp::Tools::GetPipelineJobsService, feature_category: :mcp_server
 
     context 'with missing project id' do
       let(:arguments) do
-        { pipeline_id: 456 }
+        { arguments: { pipeline_id: 456 } }
       end
 
       it 'returns validation error' do
-        result = service.execute(oauth_token, arguments)
+        result = service.execute(request: nil, params: arguments)
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to include('id is missing')

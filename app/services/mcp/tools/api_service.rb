@@ -3,6 +3,22 @@
 module Mcp
   module Tools
     class ApiService < BaseService
+      extend Gitlab::Utils::Override
+
+      override :set_cred
+      def set_cred(current_user: nil, access_token: nil)
+        @access_token = access_token
+        _ = current_user # current_user is not used in ApiService
+      end
+
+      def execute(request: nil, params: nil)
+        if access_token.present?
+          super
+        else
+          Response.error("ApiService: access token is not set")
+        end
+      end
+
       protected
 
       def http_get(oauth_token, path, query = {})

@@ -66,12 +66,12 @@ module Mcp
       protected
 
       override :perform
-      def perform(oauth_token, arguments = {}, _query = {})
+      def perform(arguments = {}, _query = {})
         project_id = CGI.escape(arguments[:id].to_s)
         path = "/api/v4/projects/#{project_id}/issues"
         body = arguments.except(:id)
 
-        http_post(oauth_token, path, body)
+        http_post(access_token, path, body)
       end
 
       private

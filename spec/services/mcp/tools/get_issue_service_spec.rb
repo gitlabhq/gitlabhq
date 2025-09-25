@@ -25,6 +25,10 @@ RSpec.describe Mcp::Tools::GetIssueService, feature_category: :mcp_server do
   describe '#execute' do
     let(:oauth_token) { 'test_token_123' }
 
+    before do
+      service.set_cred(access_token: oauth_token, current_user: nil)
+    end
+
     context 'with valid arguments' do
       let(:api_response) do
         instance_double(Gitlab::HTTP::Response, body: response_body, success?: success, code: response_code)
@@ -46,10 +50,10 @@ RSpec.describe Mcp::Tools::GetIssueService, feature_category: :mcp_server do
           }.to_json
         end
 
-        let(:arguments) { { id: 'test-project', iid: 5 } }
+        let(:arguments) { { arguments: { id: 'test-project', iid: 5 } } }
 
         it 'returns success response' do
-          result = service.execute(oauth_token, arguments)
+          result = service.execute(request: nil, params: arguments)
 
           expect(result).to eq({
             content: [{ type: 'text', text: 'https://gitlab.com/test-project/issues/5' }],
@@ -64,7 +68,7 @@ RSpec.describe Mcp::Tools::GetIssueService, feature_category: :mcp_server do
         end
 
         it 'makes request with correct URL' do
-          service.execute(oauth_token, arguments)
+          service.execute(request: nil, params: arguments)
 
           expect(Gitlab::HTTP).to have_received(:get).with(
             "#{Gitlab.config.gitlab.url}/api/v4/projects/test-project/issues/5",
@@ -77,10 +81,10 @@ RSpec.describe Mcp::Tools::GetIssueService, feature_category: :mcp_server do
         let(:success) { true }
         let(:response_code) { 200 }
         let(:response_body) { {}.to_json }
-        let(:arguments) { { id: 'gitlab-org/gitlab', iid: 10 } }
+        let(:arguments) { { arguments: { id: 'gitlab-org/gitlab', iid: 10 } } }
 
         it 'URL encodes the project ID' do
-          service.execute(oauth_token, arguments)
+          service.execute(request: nil, params: arguments)
 
           expect(Gitlab::HTTP).to have_received(:get).with(
             "#{Gitlab.config.gitlab.url}/api/v4/projects/gitlab-org%2Fgitlab/issues/10",
@@ -91,10 +95,10 @@ RSpec.describe Mcp::Tools::GetIssueService, feature_category: :mcp_server do
     end
 
     context 'with blank required field' do
-      let(:arguments) { { id: '', iid: 10 } }
+      let(:arguments) { { arguments: { id: '', iid: 10 } } }
 
       it 'returns validation error' do
-        result = service.execute(oauth_token, arguments)
+        result = service.execute(request: nil, params: arguments)
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to include('id is invalid')
@@ -102,10 +106,10 @@ RSpec.describe Mcp::Tools::GetIssueService, feature_category: :mcp_server do
     end
 
     context 'with missing required field' do
-      let(:arguments) { { id: 'test-project' } }
+      let(:arguments) { { arguments: { id: 'test-project' } } }
 
       it 'returns validation error' do
-        result = service.execute(oauth_token, arguments)
+        result = service.execute(request: nil, params: arguments)
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to include('iid is missing')
@@ -113,10 +117,10 @@ RSpec.describe Mcp::Tools::GetIssueService, feature_category: :mcp_server do
     end
 
     context 'with invalid path' do
-      let(:arguments) { { id: 'test-group/../admin/test-project', iid: 1 } }
+      let(:arguments) { { arguments: { id: 'test-group/../admin/test-project', iid: 1 } } }
 
       it 'returns validation error' do
-        result = service.execute(oauth_token, arguments)
+        result = service.execute(request: nil, params: arguments)
 
         expect(result[:isError]).to be true
         expect(result[:content].first[:text]).to include('Validation error: path is invalid')
