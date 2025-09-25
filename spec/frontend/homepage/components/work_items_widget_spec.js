@@ -6,6 +6,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import WorkItemsWidget from '~/homepage/components/work_items_widget.vue';
+import BaseWidget from '~/homepage/components/base_widget.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import workItemsWidgetMetadataQuery from '~/homepage/graphql/queries/work_items_widget_metadata.query.graphql';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
@@ -39,12 +40,17 @@ describe('WorkItemsWidget', () => {
 
   let wrapper;
 
+  const findBaseWidget = () => wrapper.findComponent(BaseWidget);
   const findAssignedCard = () => wrapper.findAllComponents(GlLink).at(0);
   const findAuthoredCard = () => wrapper.findAllComponents(GlLink).at(1);
   const findAssignedCount = () => wrapper.findByTestId('assigned-count');
   const findAssignedLastUpdatedAt = () => wrapper.findByTestId('assigned-last-updated-at');
   const findAuthoredCount = () => wrapper.findByTestId('authored-count');
   const findAuthoredLastUpdatedAt = () => wrapper.findByTestId('authored-last-updated-at');
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
   function createWrapper({
     workItemsWidgetMetadataQueryHandler = workItemsWidgetMetadataQuerySuccessHandler(withItems),
@@ -63,7 +69,7 @@ describe('WorkItemsWidget', () => {
       },
       stubs: {
         GlSprintf,
-        'visibility-change-detector': true,
+        BaseWidget,
       },
     });
   }
@@ -154,19 +160,31 @@ describe('WorkItemsWidget', () => {
     });
   });
 
-  describe('refresh functionality', () => {
-    it('refreshes on becoming visible again', async () => {
-      const reloadSpy = jest.spyOn(WorkItemsWidget.methods, 'reload').mockImplementation(() => {});
-
+  describe('BaseWidget integration', () => {
+    beforeEach(() => {
       createWrapper();
-      await waitForPromises();
-      reloadSpy.mockClear();
+    });
 
-      wrapper.vm.reload();
-      await waitForPromises();
+    it('renders BaseWidget without styling', () => {
+      const baseWidget = findBaseWidget();
 
-      expect(reloadSpy).toHaveBeenCalled();
-      reloadSpy.mockRestore();
+      expect(baseWidget.exists()).toBe(true);
+      expect(baseWidget.props('applyDefaultStyling')).toBe(false);
+    });
+
+    it('handles visible event from BaseWidget', async () => {
+      const workItemsWidgetMetadataQueryHandler =
+        workItemsWidgetMetadataQuerySuccessHandler(withItems);
+
+      createWrapper({ workItemsWidgetMetadataQueryHandler });
+      await waitForPromises();
+      expect(workItemsWidgetMetadataQueryHandler).toHaveBeenCalledTimes(1);
+
+      const baseWidget = findBaseWidget();
+      baseWidget.vm.$emit('visible');
+
+      await waitForPromises();
+      expect(workItemsWidgetMetadataQueryHandler).toHaveBeenCalledTimes(2);
     });
   });
 

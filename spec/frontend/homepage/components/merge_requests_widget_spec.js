@@ -7,6 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import MergeRequestsWidget from '~/homepage/components/merge_requests_widget.vue';
+import BaseWidget from '~/homepage/components/base_widget.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import mergeRequestsWidgetMetadataQuery from '~/homepage/graphql/queries/merge_requests_widget_metadata.query.graphql';
 import {
@@ -34,6 +35,7 @@ describe('MergeRequestsWidget', () => {
 
   let wrapper;
 
+  const findBaseWidget = () => wrapper.findComponent(BaseWidget);
   const findReviewRequestedCard = () => wrapper.findAllComponents(GlLink).at(0);
   const findAssignedToYouCard = () => wrapper.findAllComponents(GlLink).at(1);
   const findReviewRequestedCount = () => wrapper.findByTestId('review-requested-count');
@@ -41,6 +43,10 @@ describe('MergeRequestsWidget', () => {
     wrapper.findByTestId('review-requested-last-updated-at');
   const findAssignedCount = () => wrapper.findByTestId('assigned-count');
   const findAssignedLastUpdatedAt = () => wrapper.findByTestId('assigned-last-updated-at');
+
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
 
   function createWrapper({
     mergeRequestsWidgetMetadataQueryHandler = mergeRequestsWidgetMetadataQuerySuccessHandler(
@@ -61,7 +67,7 @@ describe('MergeRequestsWidget', () => {
       },
       stubs: {
         GlSprintf,
-        'visibility-change-detector': true,
+        BaseWidget,
       },
     });
   }
@@ -163,21 +169,35 @@ describe('MergeRequestsWidget', () => {
     });
   });
 
-  describe('refresh functionality', () => {
-    it('refreshes on becoming visible again', async () => {
-      const reloadSpy = jest
-        .spyOn(MergeRequestsWidget.methods, 'reload')
-        .mockImplementation(() => {});
-
+  describe('BaseWidget integration', () => {
+    beforeEach(() => {
       createWrapper();
-      await waitForPromises();
-      reloadSpy.mockClear();
+    });
 
-      wrapper.vm.reload();
+    it('renders BaseWidget without styling', () => {
+      const baseWidget = findBaseWidget();
+
+      expect(baseWidget.exists()).toBe(true);
+      expect(baseWidget.props('applyDefaultStyling')).toBe(false);
+    });
+
+    it('handles visible event from BaseWidget', async () => {
+      const mergeRequestsWidgetMetadataQueryHandler =
+        mergeRequestsWidgetMetadataQuerySuccessHandler(withItems);
+
+      createWrapper({ mergeRequestsWidgetMetadataQueryHandler });
       await waitForPromises();
 
-      expect(reloadSpy).toHaveBeenCalled();
-      reloadSpy.mockRestore();
+      // queried on initial mount
+      expect(mergeRequestsWidgetMetadataQueryHandler).toHaveBeenCalledTimes(1);
+
+      const baseWidget = findBaseWidget();
+      baseWidget.vm.$emit('visible');
+
+      await waitForPromises();
+
+      // queried after visibility change
+      expect(mergeRequestsWidgetMetadataQueryHandler).toHaveBeenCalledTimes(2);
     });
   });
 

@@ -99,7 +99,7 @@ To execute a pipeline manually:
 1. Select **Build** > **Pipelines**.
 1. Select **New pipeline**.
 1. In the **Run for branch name or tag** field, select the branch or tag to run the pipeline for.
-1. (Optional) Enter any:
+1. Optional. Enter any:
    - [Inputs](../inputs/_index.md) required for the pipeline to run. Default values for inputs are prefilled,
      but can be modified. Input values must follow the expected type.
    - [CI/CD variables](../variables/_index.md). You can configure variables to have their
@@ -564,7 +564,7 @@ This table lists the refspecs injected for each pipeline type:
 |-------------------------------------------------------------------|----------|
 | pipeline for branches                                             | `+<sha>:refs/pipelines/<id>` and `+refs/heads/<name>:refs/remotes/origin/<name>` |
 | pipeline for tags                                                 | `+<sha>:refs/pipelines/<id>` and `+refs/tags/<name>:refs/tags/<name>` |
-| [merge request pipeline](merge_request_pipelines.md) | `+refs/pipelines/<id>:refs/pipelines/<id>` |
+| [merge request pipeline](merge_request_pipelines.md)              | `+refs/pipelines/<id>:refs/pipelines/<id>` |
 
 The refs `refs/heads/<name>` and `refs/tags/<name>` exist in your
 project repository. GitLab generates the special ref `refs/pipelines/<id>` during a

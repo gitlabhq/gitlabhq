@@ -267,7 +267,7 @@ Prerequisites:
 To configure mutual TLS for webhooks:
 
 1. Prepare a client certificate in PEM format.
-1. Optional: Protect the certificate with a PEM passphrase.
+1. Optional. Protect the certificate with a PEM passphrase.
 1. Configure GitLab to use the certificate.
 
 {{< tabs >}}

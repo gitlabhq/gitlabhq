@@ -312,9 +312,8 @@ To integrate its output:
 
 1. Add the arguments to the command you use to run `golangci-lint`.
 
-   For v1 add  `--out-format code-climate:gl-code-quality-report.json,line-number`.
-
-   For v2 add  `--output.code-climate.path=gl-code-quality-report.json`.
+   - For v1 add `--out-format code-climate:gl-code-quality-report.json,line-number`.
+   - For v2 add `--output.code-climate.path=gl-code-quality-report.json`.
 
 1. Declare a [`codequality` report artifact](../yaml/artifacts_reports.md#artifactsreportscodequality) that points to the location of the report file.
 

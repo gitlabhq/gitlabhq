@@ -512,7 +512,7 @@ group :development, :test do
   gem 'pry-rails', '~> 0.3.9', feature_category: :shared
   gem 'pry-shell', '~> 0.6.4', feature_category: :shared
 
-  gem 'awesome_print', require: false, feature_category: :shared
+  gem 'amazing_print', require: false, feature_category: :shared
 
   gem 'database_cleaner-active_record', '~> 2.2.0', feature_category: :database
   gem 'rspec-rails', '~> 7.1.0', feature_category: :shared

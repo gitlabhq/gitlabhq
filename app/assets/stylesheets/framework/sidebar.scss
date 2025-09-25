@@ -94,14 +94,6 @@
       }
     }
   }
-
-  &.build-sidebar {
-    @include gl-container-width-up(lg, panel) {
-      .content-wrapper {
-        padding-right: $right-sidebar-width;
-      }
-    }
-  }
 }
 
 .right-sidebar {

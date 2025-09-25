@@ -11,9 +11,14 @@ title: AI Catalog
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed
 - Status: Experiment
-- LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
 
 {{< /details >}}
+
+{{< collapsible title="Model information" >}}
+
+- LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
+
+{{< /collapsible >}}
 
 {{< history >}}
 

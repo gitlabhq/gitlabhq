@@ -298,7 +298,6 @@ destroy_container_registry_protection_tag_rule
 destroy_deploy_token
 destroy_deployment
 destroy_design
-destroy_duo_workflow
 destroy_environment
 destroy_epic
 destroy_feature_flag

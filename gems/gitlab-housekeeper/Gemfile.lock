@@ -11,7 +11,7 @@ PATH
   specs:
     gitlab-housekeeper (0.1.0)
       activesupport
-      awesome_print
+      amazing_print
       httparty
       rubocop
 
@@ -55,8 +55,8 @@ GEM
       tzinfo (~> 2.0, >= 2.0.5)
     addressable (2.8.5)
       public_suffix (>= 2.0.2, < 6.0)
+    amazing_print (1.8.1)
     ast (2.4.2)
-    awesome_print (1.9.2)
     base64 (0.2.0)
     benchmark (0.4.0)
     bigdecimal (3.1.8)
@@ -270,8 +270,8 @@ CHECKSUMS
   activerecord (7.2.2.1) sha256=79a31f71c32d5138717c2104e0ff105f5d82922247c85bdca144f2720e67fab9
   activesupport (7.2.2.1) sha256=842bcbf8a92977f80fb4750661a237cf5dd4fdd442066b3c35e88afb488647f5
   addressable (2.8.5) sha256=63f0fbcde42edf116d6da98a9437f19dd1692152f1efa3fcc4741e443c772117
+  amazing_print (1.8.1) sha256=f53b4e1881f53f9663cb222840c7a027d0e61d46cc908366965739559c0d6d68
   ast (2.4.2) sha256=1e280232e6a33754cde542bc5ef85520b74db2aac73ec14acef453784447cc12
-  awesome_print (1.9.2) sha256=e99b32b704acff16d768b3468680793ced40bfdc4537eb07e06a4be11133786e
   base64 (0.2.0) sha256=0f25e9b21a02a0cc0cea8ef92b2041035d39350946e8789c562b2d1a3da01507
   benchmark (0.4.0) sha256=0f12f8c495545e3710c3e4f0480f63f06b4c842cc94cec7f33a956f5180e874a
   bigdecimal (3.1.8) sha256=a89467ed5a44f8ae01824af49cbc575871fa078332e8f77ea425725c1ffe27be

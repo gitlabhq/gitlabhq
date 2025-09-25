@@ -908,6 +908,16 @@ RSpec.describe ApplicationHelper do
     it 'fixes body scroll by default' do
       expect(helper.body_scroll_classes).to eq('body-fixed-scrollbar')
     end
+
+    context 'when `project studio` feature is enabled' do
+      before do
+        allow(helper).to receive(:project_studio_enabled?).and_return(true)
+      end
+
+      it 'does not fix body scroll' do
+        expect(helper.body_scroll_classes).to eq('')
+      end
+    end
   end
 
   describe '#dispensable_render' do

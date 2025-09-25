@@ -362,8 +362,10 @@ In addition to the previous, Rails is where the main database migrations need to
    1. Run the post-deployment migrations:
 
       ```shell
-      sudo gitlab-rake db:migrate
+      sudo gitlab-rake gitlab:db:configure
       ```
+
+      This task also runs ClickHouse migrations and configures the database based on its state by loading the schema. 
 
    1. Return the config back to normal by setting `gitlab_rails['auto_migrate'] = false` in the
       `/etc/gitlab/gitlab.rb` configuration file.
@@ -549,7 +551,7 @@ Finally, head back to the primary site and finish the upgrade by running the pos
    1. Run the post-deployment migrations:
 
       ```shell
-      sudo gitlab-rake db:migrate
+      sudo gitlab-rake gitlab:db:configure
       ```
 
    1. Verify Geo configuration and dependencies

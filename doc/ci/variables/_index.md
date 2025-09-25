@@ -116,8 +116,7 @@ job1:
 ## Define a CI/CD variable in the UI
 
 Sensitive variables like tokens or passwords should be stored in the settings in the UI,
-not [in the `.gitlab-ci.yml` file](#define-a-cicd-variable-in-the-gitlab-ciyml-file).
-Add CI/CD variables in the UI:
+not in the `.gitlab-ci.yml` file. Add CI/CD variables in the UI:
 
 - For a project [in the project's settings](#for-a-project).
 - For all projects in a group [in the group's setting](#for-a-group).
@@ -265,12 +264,8 @@ To help reduce the risk of accidentally leaking secrets through scripts like in 
 all variables containing sensitive information should always be [masked in job logs](#mask-a-cicd-variable).
 You can also [limit a variable to protected branches and tags only](#protect-a-cicd-variable).
 
-Alternatively, use one of the native GitLab integrations to connect with third party
-secrets manager providers to store and retrieve secrets:
-
-- [HashiCorp Vault](../secrets/_index.md)
-- [Azure Key Vault](../secrets/azure_key_vault.md)
-- [Google Secret Manager](../secrets/gcp_secret_manager.md)
+Alternatively, use one of the [native GitLab integrations](../secrets/_index.md)
+to connect with external secrets management providers to store and retrieve secrets.
 
 You can also use [OpenID Connect (OIDC) authentication](../secrets/id_token_authentication.md)
 for secrets managers which do not have a native integration.
@@ -356,7 +351,8 @@ You can configure a project, group, or instance CI/CD variable to be available
 only to pipelines that run on [protected branches](../../user/project/repository/branches/protected.md)
 or [protected tags](../../user/project/protected_tags.md).
 
-[Merged results pipelines](../pipelines/merged_results_pipelines.md) and [merge request pipelines](../pipelines/merge_request_pipelines.md) can optionally [access protected variables](../pipelines/merge_request_pipelines.md#control-access-to-protected-variables-and-runners).
+[Merged results pipelines](../pipelines/merged_results_pipelines.md) and [merge request pipelines](../pipelines/merge_request_pipelines.md)
+can optionally [access protected variables](../pipelines/merge_request_pipelines.md#control-access-to-protected-variables-and-runners).
 
 Prerequisites:
 

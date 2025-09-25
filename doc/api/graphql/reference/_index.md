@@ -1497,6 +1497,27 @@ Returns [`ProjectSecretsManager`](#projectsecretsmanager).
 | ---- | ---- | ----------- |
 | <a id="queryprojectsecretsmanagerprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the secrets manager. |
 
+### `Query.projectSecretsNeedingRotation`
+
+{{< details >}}
+**Introduced** in GitLab 18.5.
+**Status**: Experiment.
+{{< /details >}}
+
+List project secrets that need to be rotated.
+
+Returns [`ProjectSecretConnection`](#projectsecretconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryprojectsecretsneedingrotationprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the secrets belong to. |
+
 ### `Query.projects`
 
 Find projects visible to the current user.

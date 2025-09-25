@@ -10,11 +10,16 @@ title: GitLab Duo Chat (Classic)
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< collapsible title="Model information" >}}
+
 - LLMs: Anthropic Claude and Vertex AI Search. The LLM depends on the question asked.
 - LLM for Amazon Q: Amazon Q Developer
 - Available on [GitLab Duo with self-hosted models](../../administration/gitlab_duo_self_hosted/_index.md): Yes
 
-{{< /details >}}
+{{< /collapsible>}}
 
 {{< history >}}
 

@@ -14,10 +14,6 @@ title: Customize pipeline configuration
 
 You can customize how pipelines run for your project.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview of pipelines, watch the video [GitLab CI Pipeline, Artifacts, and Environments](https://www.youtube.com/watch?v=PCKDICEe10s).
-Watch also [GitLab CI pipeline tutorial for beginners](https://www.youtube.com/watch?v=Jav4vbUrqII).
-
 ## Change which users can view your pipelines
 
 For public and internal projects, you can change who can see your:

@@ -11,13 +11,18 @@ title: Agents
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com
 - Status: Experiment
-- LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
 
 {{< /details >}}
 
+{{< collapsible title="Model information" >}}
+
+- LLM: Anthropic [Claude Sonnet 4](https://www.anthropic.com/claude/sonnet)
+
+{{< /collapsible >}}
+
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/549914) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `global_ai_catalog`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/549914) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `global_ai_catalog`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 - Agent tools [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569043) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_agent_tools`. Disabled by default.
 
 {{< /history >}}
@@ -68,7 +73,8 @@ To create an agent:
    1. **Tools**: Optional. Select which built-in tools the agent can use.
       For example, select **Create issue** if you want the agent to be able to create issues automatically.
    1. **System prompt**: Enter guidelines to define the agent's personality or shape how it behaves.
-   1. **User prompt**: Enter any default instructions for the agent.
+   1. **User prompt**: Enter instructions or ask a question. When you execute a test run, this is the prompt the agent uses.
+      When you use an agent with GitLab Duo Chat (Agentic), the user prompt is ignored.
    1. **Visibility level**: Choose whether the agent is public or private.
 1. Select **Create agent**.
 
@@ -76,11 +82,11 @@ The agent is added to the AI Catalog.
 
 ## Add an agent to a project
 
-Add an agent to a project to use it with GitLab Duo Chat (Agentic).
+Add an agent to a project to use it with Chat.
 
 Prerequisites:
 
-- You must be a member of a project with a Premium or Ultimate subscription, and have at least the Maintainer role.
+- You must have at least the Maintainer role for the project.
 
 1. On the left sidebar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog** and find the agent you want to add.

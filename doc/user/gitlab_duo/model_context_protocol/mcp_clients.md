@@ -11,9 +11,14 @@ title: GitLab MCP clients
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
-- Available on GitLab Duo with self-hosted models: Not supported
 
 {{< /details >}}
+
+{{< collapsible title="Model information" >}}
+
+- Available on GitLab Duo with self-hosted models: Not supported
+
+{{< /collapsible >}}
 
 {{< history >}}
 
@@ -221,7 +226,7 @@ the feature can use that tool:
 
    - If you approve the tool, the feature connects to the tool and generates an answer.
 
-   - Optional: For Chat, if you deny the tool, the **Provide Rejection Reason**
+   - Optional. For Chat, if you deny the tool, the **Provide Rejection Reason**
      dialog appears. Enter a rejection reason into the text box, and select
      **Submit Rejection**.
 

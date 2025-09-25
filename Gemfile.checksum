@@ -18,6 +18,7 @@
 {"name":"akismet","version":"3.0.0","platform":"ruby","checksum":"74991b8e3d3257eeea996b47069abb8da2006c84a144255123e8dffd1c86b230"},
 {"name":"aliyun-sdk","version":"0.8.0","platform":"ruby","checksum":"65915d3f9b528082253d1f9ad0e4d13d6b552933fe49251c68c6915cd4d75b9d"},
 {"name":"amatch","version":"0.4.1","platform":"ruby","checksum":"d3ff15226a2e627c72802e94579db829e5e10c96cf89d329494caec5889145f7"},
+{"name":"amazing_print","version":"1.8.1","platform":"ruby","checksum":"f53b4e1881f53f9663cb222840c7a027d0e61d46cc908366965739559c0d6d68"},
 {"name":"android_key_attestation","version":"0.3.0","platform":"ruby","checksum":"467eb01a99d2bb48ef9cf24cc13712669d7056cba5a52d009554ff037560570b"},
 {"name":"apollo_upload_server","version":"2.1.6","platform":"ruby","checksum":"dcec4072258e6518b0b82e03b485efbddde946813543c14184fc81952d6bcdb2"},
 {"name":"app_store_connect","version":"0.38.0","platform":"ruby","checksum":"30f624109298ed009a36408edac264a5200d967d28d960f3e37f02e9cab25ce6"},

@@ -724,7 +724,7 @@ to read-only mode. On large instances, this may require the container registry
 to be in read-only mode for a while. During this time,
 you can pull from the container registry, but you cannot push.
 
-1. Optional: To reduce the amount of data to be migrated, run the [garbage collection tool without downtime](#performing-garbage-collection-without-downtime).
+1. Optional. To reduce the amount of data to be migrated, run the [garbage collection tool without downtime](#performing-garbage-collection-without-downtime).
 1. This example uses the `aws` CLI. If you haven't configured the
    CLI before, you have to configure your credentials by running `sudo aws configure`.
    Because a non-administrator user likely can't access the container registry folder,

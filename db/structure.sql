@@ -25851,6 +25851,9 @@ CREATE TABLE slsa_attestations (
     predicate_kind smallint DEFAULT 0 NOT NULL,
     predicate_type text NOT NULL,
     subject_digest text NOT NULL,
+    file text,
+    file_store smallint DEFAULT 1,
+    CONSTRAINT check_3575e9121e CHECK ((char_length(file) <= 255)),
     CONSTRAINT check_dec11b603a CHECK ((char_length(subject_digest) <= 255)),
     CONSTRAINT check_ea0d61030d CHECK ((char_length(predicate_type) <= 255))
 );

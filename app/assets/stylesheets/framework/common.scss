@@ -29,18 +29,13 @@
   .right-sidebar-collapsed {
     --application-bar-right: #{$right-sidebar-collapsed-width};
 
-    &.is-merge-request,
-    &.build-sidebar {
+    &.is-merge-request {
       --application-bar-right: 0px;
     }
   }
 
   .right-sidebar-expanded {
     --application-bar-right: #{$right-sidebar-width};
-  }
-
-  .build-sidebar {
-    --application-bar-right: 0px;
   }
 }
 

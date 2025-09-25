@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Security::SecurityJobsFinder, feature_category: :continuous_integration do
+RSpec.describe Security::SecurityJobsFinder, feature_category: :vulnerability_management do
   it_behaves_like ::Security::JobsFinder, described_class.allowed_job_types
 
   describe "#execute" do

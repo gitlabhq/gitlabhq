@@ -127,7 +127,7 @@ To cherry-pick a commit:
 1. In the upper-right corner, select **Options** and then **Cherry-pick**.
 1. In the dialog:
    - From the dropdown lists, select the target project and branch.
-   - Optional: Select **Start a new merge request** to create a merge request with the changes.
+   - Optional. Select **Start a new merge request** to create a merge request with the changes.
    - Select **Cherry-pick**.
 
 GitLab creates a new commit on the target branch with the cherry-picked changes.
@@ -150,7 +150,7 @@ To revert a commit:
 1. In the upper-right corner, select **Options** and then **Revert**.
 1. In the dialog:
    - Select the target branch for the revert commit.
-   - Optional: Select **Start a new merge request** to create a merge request.
+   - Optional. Select **Start a new merge request** to create a merge request.
    - Select **Revert**.
 
 GitLab creates a new commit that reverses the changes from the selected commit.

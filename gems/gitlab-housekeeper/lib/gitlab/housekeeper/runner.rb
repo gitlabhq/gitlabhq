@@ -10,7 +10,7 @@ require 'gitlab/housekeeper/git'
 require 'gitlab/housekeeper/change'
 require 'gitlab/housekeeper/substitutor'
 require 'gitlab/housekeeper/filter_identifiers'
-require 'awesome_print'
+require 'amazing_print'
 require 'digest'
 
 module Gitlab
@@ -105,7 +105,7 @@ module Gitlab
                                "Housekeeper created #{mr_count_string}."
                              end
 
-        @logger.puts completion_message.yellowish
+        @logger.puts AmazingPrint::Colors.yellowish(completion_message)
         @logger.puts
       end
 
@@ -122,7 +122,7 @@ module Gitlab
         end
 
         @logger.puts "Skipping change as it is marked aborted."
-        @logger.puts "Modified files have been committed to branch #{branch_name.yellowish}, " \
+        @logger.puts "Modified files have been committed to branch #{AmazingPrint::Colors.yellowish(branch_name)}, " \
                      "but will not be pushed."
         @logger.puts
         true
@@ -148,11 +148,11 @@ module Gitlab
                        "Squash commits enabled."
         base_message << " CI skipped." if change.push_options.ci_skip
 
-        @logger.puts base_message.yellowish
-        @logger.puts "=> #{change.identifiers.join(': ')}".purple
+        @logger.puts AmazingPrint::Colors.yellowish(base_message)
+        @logger.puts AmazingPrint::Colors.purple("=> #{change.identifiers.join(': ')}")
 
-        @logger.puts '=> Title:'.purple
-        @logger.puts change.title.purple
+        @logger.puts AmazingPrint::Colors.purple('=> Title:')
+        @logger.puts AmazingPrint::Colors.purple(change.title)
         @logger.puts
 
         @logger.puts '=> Description:'

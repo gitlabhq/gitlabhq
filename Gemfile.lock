@@ -67,7 +67,7 @@ PATH
   specs:
     gitlab-housekeeper (0.1.0)
       activesupport
-      awesome_print
+      amazing_print
       httparty
       rubocop
 
@@ -304,6 +304,7 @@ GEM
     amatch (0.4.1)
       mize
       tins (~> 1.0)
+    amazing_print (1.8.1)
     android_key_attestation (0.3.0)
     apollo_upload_server (2.1.6)
       actionpack (>= 6.1.6)
@@ -2076,6 +2077,7 @@ DEPENDENCIES
   activerecord-gitlab!
   addressable (~> 2.8)
   akismet (~> 3.0)
+  amazing_print
   apollo_upload_server (~> 2.1.6)
   app_store_connect
   arr-pm (~> 0.0.12)
@@ -2086,7 +2088,6 @@ DEPENDENCIES
   async (~> 2.32.0)
   atlassian-jwt (~> 0.2.1)
   attr_encrypted (~> 4.2)
-  awesome_print
   aws-sdk-cloudformation (~> 1)
   aws-sdk-core (~> 3.226.0)
   aws-sdk-s3 (~> 1.193.0)

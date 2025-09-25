@@ -285,7 +285,7 @@ change this behavior.
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. Optional: If you want to add another **secondary** site, the relevant setting would look like:
+1. Optional. If you want to add another **secondary** site, the relevant setting would look like:
 
    ```ruby
    postgresql['md5_auth_cidr_addresses'] = ['<primary_site_ip>/32', '<secondary_site_ip>/32', '<another_secondary_site_ip>/32']
@@ -857,7 +857,7 @@ Leader instance**:
    select pg_create_physical_replication_slot('geo_secondary')
    ```
 
-1. Optional: If primary does not have PgBouncer, but secondary does:
+1. Optional. If primary does not have PgBouncer, but secondary does:
 
    Configure the `pgbouncer` user on the primary site and add the necessary `pg_shadow_lookup` function for PgBouncer included with the Linux package. PgBouncer on the secondary server should still be able to connect to PostgreSQL nodes on the secondary site.
 

@@ -332,6 +332,7 @@ module ApplicationHelper
 
   def body_scroll_classes
     return '' if content_for(:disable_fixed_body_scroll).present?
+    return '' if project_studio_enabled?
 
     # Custom class is used instead of Tailwind so people can discover this, do not replace this with Tailwind analog
     'body-fixed-scrollbar'

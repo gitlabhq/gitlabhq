@@ -65,6 +65,8 @@
 
     .super-sidebar.super-sidebar-loading {
       position: relative;
+      left: 0;
+      top: 0;
 
       &:not(.super-sidebar-is-icon-only) {
         width: calc(#{$super-sidebar-width} - 8px);

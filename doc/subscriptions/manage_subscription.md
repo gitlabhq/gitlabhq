@@ -256,7 +256,7 @@ You can use the Customers Portal to turn on or turn off automatic subscription r
      automatically renew. To disable automatic renewal:
      1. In **Subscription actions** ({{< icon name="ellipsis_v" >}}), select **Cancel subscription**.
      1. Select a reason for canceling.
-     1. Optional: In **Would you like to add anything?**, enter any relevant information.
+     1. Optional. In **Would you like to add anything?**, enter any relevant information.
      1. Select **Cancel subscription**.
 
 ### Renew manually

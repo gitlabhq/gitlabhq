@@ -1,0 +1,33 @@
+{
+  "mediaType": "application/vnd.dev.sigstore.bundle.v0.3+json",
+  "verificationMaterial": {
+    "certificate": {
+      "rawBytes": "[example]"
+    },
+    "tlogEntries": [
+      {
+        "logIndex": "12345",
+        "logId": {
+          "keyId": "[example]"
+        },
+        "kindVersion": {
+          "kind": "dsse",
+          "version": "0.0.1"
+        },
+        "inclusionProof": {
+          "logIndex": "12345"
+        },
+        "canonicalizedBody": "[example]"
+      }
+    ]
+  },
+  "dsseEnvelope": {
+    "payload": "[example]",
+    "payloadType": "application/vnd.in-toto+json",
+    "signatures": [
+      {
+        "sig": "[signature]"
+      }
+    ]
+  }
+}

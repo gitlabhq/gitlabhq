@@ -13,6 +13,7 @@ module ConcurrencyLimit
     data_consistency :sticky
     idempotent!
     urgency :low
+    loggable_arguments 0
 
     # Do not defer jobs from ResumeWorker itself
     concurrency_limit -> { 0 }

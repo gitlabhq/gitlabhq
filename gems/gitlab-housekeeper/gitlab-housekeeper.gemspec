@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
   spec.executables   = ['gitlab-housekeeper']
 
   spec.add_runtime_dependency 'activesupport'
-  spec.add_runtime_dependency 'awesome_print'
+  spec.add_runtime_dependency 'amazing_print'
   spec.add_runtime_dependency 'httparty'
   spec.add_runtime_dependency 'rubocop'
 

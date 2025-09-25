@@ -51,10 +51,15 @@ To edit an issue:
 - Add-on: GitLab Duo Enterprise
 - Offering: GitLab.com
 - Status: Experiment
+
+{{< /details >}}
+
+{{< collapsible title="Model information" >}}
+
 - LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - Available on GitLab Duo with self-hosted models: Not supported
 
-{{< /details >}}
+{{< /collapsible >}}
 
 {{< history >}}
 

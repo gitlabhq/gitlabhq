@@ -227,6 +227,8 @@ When writing about AI, the **agent** is an entity that performs actions for the 
 You can use **AI agent** if **agent** on its own is not clear,
 or to distinguish it from other types of agents.
 
+Use lowercase for **agent** on its own. Use title case for the agent name, for example, **Code Review Agent**.
+
 When you're interacting with an AI agent, a [**session**](#session) is running.
 The user can stop a session.
 
@@ -1084,6 +1086,8 @@ Filtering is different from [searching](#search).
 ## flows
 
 GitLab provides multiple **flows** that are run by [agents](#ai-agent).
+
+Use lowercase for **flow** on its own. Use title case for the flow name, for example, **Issue to Merge Request Flow**.
 
 Do not use **agent flow**.
 

@@ -115,18 +115,13 @@
   }
 }
 
-// Project studio overrides, should become the default.
-.page-with-panels  {
-  .with-job-sidebar-expanded {
-    padding-right: 0;
-  }
+.with-job-sidebar-expanded {
+  padding-right: 0;
 }
 
 @include gl-container-width-up(lg, panel) {
-  &.page-with-panels {
-    .with-job-sidebar-expanded {
-      padding-right: $right-sidebar-width;
-    }
+  .with-job-sidebar-expanded {
+    padding-right: $right-sidebar-width;
   }
 }
 

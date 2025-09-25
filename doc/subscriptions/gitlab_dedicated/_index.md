@@ -144,6 +144,38 @@ GitLab Dedicated instance.
 
 {{< /alert >}}
 
+### Object storage downloads
+
+By default, GitLab Dedicated enables direct downloads from S3 for optimal performance (`proxy_download = false`). The object types that support direct downloads include:
+
+- [CI/CD job artifacts](../../administration/cicd/job_artifacts.md)
+- [Dependency Proxy files](../../administration/packages/dependency_proxy.md)
+- [Merge request diffs](../../administration/merge_request_diffs.md)
+- [Git Large File Storage (LFS) objects](../../administration/lfs/_index.md)
+- [Project packages (for example, PyPI, Maven, or NuGet)](../../administration/packages/_index.md)
+- [Container registry containers](../../administration/packages/container_registry.md)
+- [User uploads](../../administration/uploads.md)
+
+When you download one of the above object types, your browser or client connects directly to Amazon S3 rather than routing through GitLab infrastructure.
+
+If your network security policies prevent direct access to S3 endpoints, you can request proxied downloads through GitLab infrastructure. This configuration (`proxy_download = true`) ensures all downloads route through your GitLab Dedicated instance.
+
+#### Request proxied downloads
+
+To request proxied downloads:
+
+1. Contact your account executive with your use case details.
+1. Include information about your network security requirements.
+1. Specify which object types need proxied access.
+
+{{< alert type="note" >}}
+
+Proxied downloads impact performance compared to direct S3 access.
+
+{{< /alert >}}
+
+For more information, see [proxy download](../../administration/object_storage.md#proxy-download).
+
 ### Application
 
 GitLab Dedicated comes with the self-managed [Ultimate feature set](https://about.gitlab.com/pricing/feature-comparison/) with a small number of exceptions. For more information, see [Unavailable features](#unavailable-features).
