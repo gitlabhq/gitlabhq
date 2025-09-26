@@ -402,6 +402,8 @@
   - "babel.config.js"
   - "vite.config.js"
   - "config/webpack.config.js"
+  - "**/tsconfig*.json"
+  - "**/*.config.{js,ts,cjs}"
   - "config/**/*.js"
   - "{,ee/,jh/}app/assets/**/*"
   - "vendor/assets/**/*"
@@ -554,13 +556,26 @@
 # for the reasons why we only match those patterns.
 .frontend-predictive-patterns: &frontend-predictive-patterns
   - "{,ee/,jh/}{app/assets/javascripts,spec/frontend}/**/*"
+  - "ee/frontend_islands/apps/**/*"
 
 .frontend-code-patterns: &frontend-code-patterns
   - "**/{package.json,yarn.lock}"
-  - "**/*.{js,cjs,mjs,vue,graphql}"
+  - "**/*.{js,cjs,mjs,ts,tsx,vue,graphql}"
+  - "**/*.{css,scss,sass}"
+  - "**/*.html"
+  - "**/tsconfig*.json"
+  - "**/*.config.{js,ts,cjs}"
   - ".eslint_todo/*.mjs"
   # match the .rc config files like .browserslistrc, .stylelintrc etc.,
   - "{.,}*rc"
+
+.code-frontend-islands-patterns: &code-frontend-islands-patterns
+  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
+  - "ee/frontend_islands/apps/**/*/src/**/*.{js,cjs,mjs,ts,tsx,vue,graphql,css}"
+  - "ee/frontend_islands/apps/**/tsconfig*.json"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs}"
 
 # Code patterns + .ci-patterns
 .code-patterns: &code-patterns
@@ -1229,6 +1244,12 @@
       changes: *code-backstage-patterns
     - *if-as-if-foss-mr-refs
 
+.caching:rules:update-cache-on-frontend-islands-code-changes:
+  rules:
+    - <<: *if-default-refs
+      changes: *code-frontend-islands-patterns
+    - *if-as-if-foss-mr-refs
+
 # e2e runners are only available in .com and in gitlab-org grouped projects
 .caching:rules:e2e-gem-cache-e2e-runners:
   rules:
@@ -1250,6 +1271,15 @@
     - !reference [.build-images:rules:build-gdk-image, rules]
     - !reference [.frontend:rules:assets-shared, rules]
     - !reference [.releases:rules:canonical-dot-com-security-gitlab-stable-branch-only, rules]
+
+.caching:rules:frontend-islands-hash:
+  rules:
+    - <<: *if-default-refs
+      changes: *code-frontend-islands-patterns
+    - <<: *if-merge-request
+      changes: *code-frontend-islands-patterns
+    - <<: *if-tag
+    - <<: *if-sync-changes-on-stable-branches
 
 ######################
 # CI Templates Rules #
@@ -1576,6 +1606,26 @@
       changes:
         - '{,ee/}app/**/*.vue'
         - '{,ee/}app/**/*.stories.js'
+
+.frontend:rules:fe-islands:test:
+  rules:
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-fork-merge-request
+      when: never
+    - <<: *if-automated-merge-request
+      changes: *code-frontend-islands-patterns
+    - <<: *if-security-merge-request
+      changes: *code-frontend-islands-patterns
+    - <<: *if-merge-request-labels-run-all-jest
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
+      changes: *code-frontend-islands-patterns
+    - <<: *if-merge-request
+      changes: *code-frontend-islands-patterns
+    - <<: *if-merge-request
+      changes: [".gitlab/ci/frontend.gitlab-ci.yml"]
+    - <<: *if-default-refs
+      changes: *code-frontend-islands-patterns
 
 .frontend:rules:jest:
   rules:

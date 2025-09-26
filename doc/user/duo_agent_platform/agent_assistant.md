@@ -248,29 +248,18 @@ commands:
     Be thorough in your analysis and provide clear explanations.
 
     <important>
-    Please use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
+    Use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
 
-    If you are asked to summarise an MR or issue or asked to provide more information then please post back a note to the MR/Issue so that the user can see it.
+    When you complete your work create a new Git branch, if you aren't already working on a feature branch, with the format of 'feature/<short description of feature>' and check in/push code.
+
+    When you check in and push code, you will need to use the access token stored in GITLAB_TOKEN and the user ClaudeCode.
+    Lastly, after pushing the code, if a merge request doesn't already exist, create a new merge request for the branch and link it to the issue using:
+    `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
+
+    If you are asked to summarize a merge request or issue, or asked to provide more information, then please post back a note to the merge request / issue so that the user can see it.
+    
     </important>
-    "
-  - git checkout -b $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
-  - echo "Checking for git changes and pushing if any exist"
-  - |
-    if ! git diff --quiet || ! git diff --cached --quiet || [ --not "$(git ls-files --others --exclude-standard)" ]; then
-      echo "Git changes detected, adding and pushing..."
-      git add .
-      if git diff --cached --quiet; then
-        echo "No staged changes to commit"
-      else
-        echo "Committing changes to branch: $CI_WORKLOAD_REF"
-        git commit --message "Claude Code changes"
-        echo "Pushing changes up to $CI_WORKLOAD_REF"
-        git push https://gitlab-ci-token:$GITLAB_TOKEN@$GITLAB_HOST/<path_to_repo>/<repo_name> $CI_WORKLOAD_REF
-        echo "Changes successfully pushed"
-      fi
-    else
-      echo "No git changes detected, skipping push"
-    fi
+    "  
 variables:
   - GITLAB_TOKEN_CLAUDE
   - GITLAB_HOST
@@ -304,30 +293,18 @@ commands:
     Be thorough in your analysis and provide clear explanations.
 
     <important>
-    Please use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
+    Use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
 
-    If you are asked to summarise an MR or issue or asked to provide more information then please post back a note to the MR/Issue so that the user can see it.
-    You don't need to commit or push up changes, those will be done automatically based on the file changes you make.
+    When you complete your work create a new Git branch, if you aren't already working on a feature branch, with the format of 'feature/<short description of feature>' and check in/push code.
+
+    When you check in and push code, you will need to use the access token stored in GITLAB_TOKEN and the user ClaudeCode.
+    Lastly, after pushing the code, if a merge request doesn't already exist, create a new merge request for the branch and link it to the issue using:
+    `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
+
+    If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
+    
     </important>
     "
-  - git checkout -b $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
-  - echo "Checking for git changes and pushing if any exist"
-  - |
-    if ! git diff --quiet || ! git diff --cached --quiet || [ --not --zero "$(git ls-files --others --exclude-standard)" ]; then
-      echo "Git changes detected, adding and pushing..."
-      git add .
-      if git diff --cached --quiet; then
-        echo "No staged changes to commit"
-      else
-        echo "Committing changes to branch: $CI_WORKLOAD_REF"
-        git commit --message "Codex changes"
-        echo "Pushing changes up to $CI_WORKLOAD_REF"
-        git push https://gitlab-ci-token:$GITLAB_TOKEN@$GITLAB_HOST/<path_to_repo>/<repo_name> $CI_WORKLOAD_REF
-        echo "Changes successfully pushed"
-      fi
-    else
-      echo "No git changes detected, skipping push"
-    fi
 variables:
   - OPENAI_API_KEY
   - GITLAB_TOKEN_CODEX
@@ -367,30 +344,18 @@ commands:
     Be thorough in your analysis and provide clear explanations.
 
     <important>
-    Please use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
+    Use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
 
-    If you are asked to summarise an MR or issue or asked to provide more information then please post back a note to the MR/Issue so that the user can see it.
-    You don't need to commit or push up changes, those will be done automatically based on the file changes you make.
+    When you complete your work create a new Git branch, if you aren't already working on a feature branch, with the format of 'feature/<short description of feature>' and check in/push code.
+
+    When you check in and push code, you will need to use the access token stored in GITLAB_TOKEN and the user ClaudeCode.
+    Lastly, after pushing the code, if a merge request doesn't already exist, create a new merge request for the branch and link it to the issue using:
+    `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
+
+    If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
+    
     </important>
     "
-  - git checkout -b $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
-  - echo "Checking for git changes and pushing if any exist"
-  - |
-    if ! git diff --quiet || ! git diff --cached --quiet || [ --not --zero "$(git ls-files --others --exclude-standard)" ]; then
-      echo "Git changes detected, adding and pushing..."
-      git add .
-      if git diff --cached --quiet; then
-        echo "No staged changes to commit"
-      else
-        echo "Committing changes to branch: $CI_WORKLOAD_REF"
-        git commit --message "Codex changes"
-        echo "Pushing changes up to $CI_WORKLOAD_REF"
-        git push https://gitlab-ci-token:$GITLAB_TOKEN@$GITLAB_HOST/<path_to_repo>/<repo_name> $CI_WORKLOAD_REF
-        echo "Changes successfully pushed"
-      fi
-    else
-      echo "No git changes detected, skipping push"
-    fi
 variables:
   - ANTHROPIC_API_KEY
   - GITLAB_TOKEN_OPENCODE
@@ -461,7 +426,7 @@ commands:
   - echo "Running q"
   - |
     AMAZON_Q_SIGV4=1 q chat --trust-all-tools --no-interactive --verbose "
-    You are an AI assistant helping with GitLab operations.
+   You are an AI assistant helping with GitLab operations.
 
     Context: $AI_FLOW_CONTEXT
     Task: $AI_FLOW_INPUT
@@ -471,29 +436,18 @@ commands:
     Be thorough in your analysis and provide clear explanations.
 
     <important>
-    Please use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
+    Use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
 
-    If you are asked to summarise an MR or issue or asked to provide more information then please post back a note to the MR/Issue so that the user can see it.
+    When you complete your work create a new Git branch, if you aren't already working on a feature branch, with the format of 'feature/<short description of feature>' and check in/push code.
+
+    When you check in and push code you will need to use the access token stored in GITLAB_TOKEN and the user ClaudeCode.
+    Lastly, after pushing the code, if a MR doesn't already exist, create a new MR for the branch and link it to the issue using:
+    `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
+
+    If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
+    
     </important>
     "
-  - git checkout -b $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
-  - echo "Checking for git changes and pushing if any exist"
-  - |
-    if ! git diff --quiet || ! git diff --cached --quiet || [ --not --zero "$(git ls-files --others --exclude-standard)" ]; then
-      echo "Git changes detected, adding and pushing..."
-      git add .
-      if git diff --cached --quiet; then
-        echo "No staged changes to commit"
-      else
-        echo "Committing changes to branch: $CI_WORKLOAD_REF"
-        git commit --message "Amazon Q Code changes"
-        echo "Pushing changes up to $CI_WORKLOAD_REF"
-        git push https://gitlab-ci-token:$GITLAB_TOKEN_AMAZON_Q@$GITLAB_HOST/internal-test/q-words-demo.git $CI_WORKLOAD_REF
-        echo "Changes successfully pushed"
-      fi
-    else
-      echo "No git changes detected, skipping push"
-    fi
 variables:
   - GITLAB_TOKEN_AMAZON_Q
   - GITLAB_HOST
@@ -531,31 +485,18 @@ commands:
     Be thorough in your analysis and provide clear explanations.
 
     <important>
-    Please use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
+    Use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
 
-    If you are asked to summarise an MR or issue or asked to provide more information then please post back a note to the MR/Issue so that the user can see it.
+    When you complete your work create a new Git branch, if you aren't already working on a feature branch, with the format of 'feature/<short description of feature>' and check in/push code.
 
-    When generating the shell commands, avoid using $(), <(), or >(), so you don't raise: Error executing tool run_shell_command: Command substitution using $(), <(), or >() is not allowed for security reasons
+    When you check in and push code you will need to use the access token stored in GITLAB_TOKEN and the user ClaudeCode.
+    Lastly, after pushing the code, if a merge request doesn't already exist, create a new merge request for the branch and link it to the issue using:
+    `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
+
+    If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
+    
     </important>
     "
-  - git checkout -b $CI_WORKLOAD_REF origin/$CI_WORKLOAD_REF
-  - echo "Checking for git changes and pushing if any exist"
-  - |
-    if ! git diff --quiet || ! git diff --cached --quiet || [ --not --zero "$(git ls-files --others --exclude-standard)" ]; then
-      echo "Git changes detected, adding and pushing..."
-      git add .
-      if git diff --cached --quiet; then
-        echo "No staged changes to commit"
-      else
-        echo "Committing changes to branch: $CI_WORKLOAD_REF"
-        git commit --message "Gemini Code changes"
-        echo "Pushing changes up to $CI_WORKLOAD_REF"
-        git push https://gitlab-ci-token:$GITLAB_TOKEN@$GITLAB_HOST/<path_to_repo>/<repo_name> $CI_WORKLOAD_REF
-        echo "Changes successfully pushed"
-      fi
-    else
-      echo "No git changes detected, skipping push"
-    fi
 variables:
   - GITLAB_TOKEN_GEMINI
   - GITLAB_HOST

@@ -157,6 +157,7 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
         '.gitlab_kas_secret',
         '.gitlab_shell_secret',
         '.gitlab_workhorse_secret',
+        '.gitlab_suggested_reviewers_secret',
         '.gitlab/agents/review-apps/config.yaml',
         '.gitlab/changelog_config.yml',
         '.gitlab/CODEOWNERS',
@@ -175,6 +176,8 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
         '.test_license_encryption_key.pub',
         '.vale.ini',
         '.vscode/extensions.json',
+        'ee/frontend_islands/apps/duo_next/.vscode/extensions.json',
+        'ee/frontend_islands/apps/duo_next/.prettierignore',
         'ee/lib/ee/gitlab/background_migration/.rubocop.yml',
         'ee/LICENSE',
         'gems/error_tracking_open_api/.openapi-generator/FILES',
@@ -191,6 +194,7 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
         'storybook/.babelrc.json',
         'yarn-error.log'
       ] +
+      Dir.glob('.claude/**/*') +
       Dir.glob('.bundle/**/*') +
       Dir.glob('.github/*') +
       Dir.glob('.gitlab/duo/**/*') +
@@ -203,9 +207,10 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
       Dir.glob('{metrics_server,sidekiq_cluster}/*') +
       Dir.glob('{{,ee/}spec/fixtures,tmp}/**/*', File::FNM_DOTMATCH) +
       Dir.glob('*.md') +
+      Dir.glob('public/assets/vite/.vite/**/*') +
       Dir.glob('changelogs/*') +
       Dir.glob('doc/.{markdownlint,vale}/**/*', File::FNM_DOTMATCH) +
-      Dir.glob('node_modules/**/*', File::FNM_DOTMATCH) +
+      Dir.glob('**/node_modules/**/*', File::FNM_DOTMATCH) +
       Dir.glob('patches/*') +
       Dir.glob('public/assets/**/.*') +
       Dir.glob('qa/{,**/}.*') +
@@ -222,7 +227,10 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', :unlimited_max_formatted_output
       ] +
       Dir.glob('{auto_explain,crystalball,knapsack,rspec}/**/*') +
       Dir.glob('coverage/**/*', File::FNM_DOTMATCH) +
-      Dir.glob('vendor/ruby/**/*', File::FNM_DOTMATCH)
+      Dir.glob('coverage-frontend/**/*', File::FNM_DOTMATCH) +
+      Dir.glob('ee/frontend_islands/apps/**/coverage/**/*', File::FNM_DOTMATCH) +
+      Dir.glob('vendor/ruby/**/*', File::FNM_DOTMATCH) +
+      Dir.glob('builds/**/*', File::FNM_DOTMATCH)
     ).freeze
     all_files = Dir.glob('{,**/}*', File::FNM_DOTMATCH) -
       no_matching_needed_files -

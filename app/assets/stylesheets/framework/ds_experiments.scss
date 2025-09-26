@@ -18,6 +18,12 @@
     @apply gl-rounded-lg;
   }
 
+  // Remove input border radius if next to button
+  .input-group:not(.has-validation)>.form-control:not(:last-child) {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
+
   // Decrease spacing between buttons
   // to align with optical spacing
   .gl-gap-3:has(> .gl-button) {
@@ -33,6 +39,11 @@
 
   .input-group-append .btn:not(.gl-rounded-full):not(.\!gl-rounded-full) {
     @apply gl-rounded-r-lg #{!important};
+
+    // Only add border radius to last child in input/button group
+    &:not(:last-child) {
+      @apply gl-rounded-none #{!important};
+    }
   }
 
   // Increased border radii for GlModal

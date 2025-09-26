@@ -1351,6 +1351,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="querynamespacesecurityprojectsincludesubgroups"></a>`includeSubgroups` | [`Boolean`](#boolean) | Include also subgroup projects. |
 | <a id="querynamespacesecurityprojectsnamespaceid"></a>`namespaceId` | [`NamespaceID!`](#namespaceid) | Global ID of the namespace. |
 | <a id="querynamespacesecurityprojectssearch"></a>`search` | [`String`](#string) | Search projects by name. |
 | <a id="querynamespacesecurityprojectssecurityanalyzerfilters"></a>`securityAnalyzerFilters` | [`[AnalyzerFilterInput!]`](#analyzerfilterinput) | Filter projects by analyzer type and status. |
@@ -54885,8 +54886,8 @@ Input for mapping a removed status to a replacement status.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="statusmappinginputnewstatusid"></a>`newStatusId` | [`GlobalID!`](#globalid) | Global ID of the replacement status. |
-| <a id="statusmappinginputoldstatusid"></a>`oldStatusId` | [`GlobalID!`](#globalid) | Global ID of the status being removed/replaced. |
+| <a id="statusmappinginputnewstatusid"></a>`newStatusId` | [`WorkItemsStatusesStatusID!`](#workitemsstatusesstatusid) | Global ID of the replacement status. |
+| <a id="statusmappinginputoldstatusid"></a>`oldStatusId` | [`WorkItemsStatusesStatusID!`](#workitemsstatusesstatusid) | Global ID of the status being removed/replaced. |
 
 ### `Timeframe`
 

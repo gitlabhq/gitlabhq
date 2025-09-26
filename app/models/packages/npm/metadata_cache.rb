@@ -13,6 +13,7 @@ module Packages
 
       validates :file, :object_storage_key, :package_name, :project, :size, presence: true
       validates :package_name, uniqueness: { scope: :project_id }
+      validates :object_storage_key, uniqueness: { scope: :project_id }
       validates :package_name, format: { with: Gitlab::Regex.package_name_regex }
       validates :package_name, format: { with: Gitlab::Regex.npm_package_name_regex }
 

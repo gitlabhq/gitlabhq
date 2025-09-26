@@ -162,6 +162,7 @@ if (IS_EE) {
     ee_else_ce: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
     jh_else_ee: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
     any_else_ce: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
+    fe_islands: path.join(ROOT_PATH, 'ee/frontend_islands/apps'),
 
     // test-environment-only aliases duplicated from Jest config
     ee_else_ce_jest: path.join(ROOT_PATH, 'ee/spec/frontend'),

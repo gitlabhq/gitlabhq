@@ -13,6 +13,9 @@
     - .default-before_script
     - .assets-compile-cache
     - .with-ci-node-image
+  cache:
+    - !reference [.assets-compile-cache, cache]
+    - !reference [.frontend-islands-cache-pull]
   variables:
     SETUP_DB: "false"
     USE_BUNDLE_INSTALL: "false" # skip bundle install from default prepare_build script
@@ -24,7 +27,10 @@
   stage: prepare
   needs:
     - cache:assets-hash
+    - job: cache:frontend-islands-hash
+      optional: true
   script:
+    - scripts/build_frontend_islands
     - scripts/compile_assets
     - scripts/build_assets_image
 
@@ -110,6 +116,9 @@ gdk:compile-test-assets:
     - compile-test-assets
     - .assets-compile-cache-pull
     - .build-images:rules:build-gdk-image
+  before_script:
+    - !reference [.compile-assets-base, before_script]
+    - !reference [cache:frontend-islands, script]
 
 .frontend-fixtures-base:
   extends:
@@ -230,7 +239,6 @@ upload-graphql-schema-dump:
 .frontend-test-base:
   extends:
     - .default-retry
-    - .yarn-cache
     - .with-ci-node-image
   variables:
     # Disable warnings in browserslist which can break on backports
@@ -241,13 +249,19 @@ upload-graphql-schema-dump:
   before_script:
     - !reference [.default-before_script, before_script]
     - yarn_install_script
+    - scripts/build_frontend_islands
   stage: test-frontend
+  cache:
+    - !reference [.yarn-cache, cache]
+    - !reference [.frontend-islands-cache-pull]
+  needs:
+    - job: cache:frontend-islands-hash
+      optional: true
 
 jest-build-cache:
   extends:
     - .frontend-test-base
     - .frontend:rules:jest
-  needs: []
   artifacts:
     name: jest-cache
     expire_in: 12h
@@ -271,6 +285,23 @@ jest-build-cache:
     NODE_OPTIONS: --max-old-space-size=7680
   allow_failure: true
 
+test-fe-island:
+  extends:
+    - .frontend-test-base
+    - .frontend:rules:fe-islands:test
+  stage: test-frontend
+  artifacts:
+    name: coverage-frontend
+    expire_in: 31d
+    when: always
+    paths:
+      - ee/frontend_islands/apps/duo_next/coverage/
+      - ee/frontend_islands/apps/duo_next/junit_jest.xml
+    reports:
+      junit: junit_jest.xml
+  script:
+    - cd ee/frontend_islands/apps/duo_next && yarn run test
+
 .with-jest-build-cache-vue3-ensure-compilable-sfcs-needs:
   needs:
     - job: jest-build-cache-vue3-ensure-compilable-sfcs
@@ -290,6 +321,8 @@ jest:
     - .frontend:rules:jest
   needs:
     - job: jest-build-cache
+      optional: true
+    - job: cache:frontend-islands-hash
       optional: true
   artifacts:
     name: coverage-frontend
@@ -348,6 +381,8 @@ jest vue3 mr:
     - .frontend:rules:jest
     - .vue3
   needs:
+    - job: cache:frontend-islands-hash
+      optional: true
     - !reference [.with-jest-build-cache-vue3-ensure-compilable-sfcs-needs, needs]
   artifacts:
     name: vue3-mr-junit
@@ -492,6 +527,8 @@ jest-integration:
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
     - !reference [.with-graphql-schema-dump-needs, needs]
+    - job: cache:frontend-islands-hash
+      optional: true
 
 jest-snapshot-vue3:
   extends:
@@ -502,6 +539,8 @@ jest-snapshot-vue3:
     # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
+    - job: cache:frontend-islands-hash
+      optional: true
   variables:
     VUE_VERSION: 3
     JEST_REPORT: jest-test-report.json
@@ -536,7 +575,6 @@ jest-linters:
   extends:
     - .frontend-test-base
     - .frontend:rules:jest-linters
-  needs: []
   script:
     - yarn jest:eslint --ci
 
@@ -607,6 +645,8 @@ compile-storybook:
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
     - !reference [.with-graphql-schema-dump-needs, needs]
+    - job: cache:frontend-islands-hash
+      optional: true
   artifacts:
     name: storybook
     expire_in: 31d
@@ -629,6 +669,8 @@ test-storybook:
     - !reference [.repo-from-artifacts, needs]
     - !reference [.with-fixtures-needs, needs]
     - !reference [.with-graphql-schema-dump-needs, needs]
+    - job: cache:frontend-islands-hash
+      optional: true
   allow_failure: true
   timeout: 30m
   artifacts:

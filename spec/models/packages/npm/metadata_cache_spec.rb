@@ -24,9 +24,12 @@ RSpec.describe Packages::Npm::MetadataCache, type: :model, feature_category: :pa
   end
 
   describe 'validations' do
+    subject { create(:npm_metadata_cache) }
+
     it { is_expected.to validate_presence_of(:file) }
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:size) }
+    it { is_expected.to validate_uniqueness_of(:object_storage_key).case_insensitive.scoped_to(:project_id) }
 
     describe '#package_name' do
       let_it_be(:npm_metadata_cache) { create(:npm_metadata_cache, package_name: package_name, project: project) }
@@ -37,7 +40,10 @@ RSpec.describe Packages::Npm::MetadataCache, type: :model, feature_category: :pa
         it 'ensures the package name is unique within a given project' do
           expect do
             create(:npm_metadata_cache, package_name: package_name, project: project)
-          end.to raise_error(ActiveRecord::RecordInvalid, 'Validation failed: Package name has already been taken')
+          end.to raise_error(
+            ActiveRecord::RecordInvalid,
+            'Validation failed: Package name has already been taken, Object storage key has already been taken'
+          )
         end
 
         it 'allows duplicate file names in different projects' do

@@ -37679,6 +37679,8 @@ CREATE INDEX idx_pkgs_on_project_id_name_version_on_installable_terraform ON pac
 
 CREATE INDEX idx_pkgs_project_id_lower_name_when_nuget_installable_version ON packages_packages USING btree (project_id, lower((name)::text)) WHERE ((package_type = 4) AND (version IS NOT NULL) AND (status = ANY (ARRAY[0, 1])));
 
+CREATE UNIQUE INDEX idx_pks_npm_metadata_caches_on_object_storage_key_project_id ON packages_npm_metadata_caches USING btree (object_storage_key, project_id);
+
 CREATE INDEX idx_policy_violations_on_project_id_policy_rule_id_and_id ON scan_result_policy_violations USING btree (project_id, approval_policy_rule_id, id);
 
 CREATE UNIQUE INDEX idx_proj_comp_viol_issues_on_viol_id_issue_id ON project_compliance_violations_issues USING btree (project_compliance_violation_id, issue_id);
@@ -40940,8 +40942,6 @@ CREATE INDEX index_packages_maven_metadata_on_package_id_and_path ON packages_ma
 CREATE INDEX index_packages_maven_metadata_on_path ON packages_maven_metadata USING btree (path);
 
 CREATE INDEX index_packages_maven_metadata_on_project_id ON packages_maven_metadata USING btree (project_id);
-
-CREATE UNIQUE INDEX index_packages_npm_metadata_caches_on_object_storage_key ON packages_npm_metadata_caches USING btree (object_storage_key);
 
 CREATE INDEX index_packages_npm_metadata_caches_on_project_id_status ON packages_npm_metadata_caches USING btree (project_id, status);
 

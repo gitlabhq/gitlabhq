@@ -64,14 +64,20 @@ generate-apollo-graphql-schema:
 .eslint-base:
   extends:
     - .static-analysis-base
-    - .yarn-cache
-  needs: ['generate-apollo-graphql-schema']
+  needs:
+    - generate-apollo-graphql-schema
+    - job: cache:frontend-islands-hash
+      optional: true
   variables:
     USE_BUNDLE_INSTALL: "false"
     ESLINT_CODE_QUALITY_REPORT: "gl-code-quality-report.json"
   before_script:
     - !reference [.default-before_script, before_script]
     - yarn_install_script
+    - scripts/build_frontend_islands
+  cache:
+    - !reference [.yarn-cache, cache]
+    - !reference [.frontend-islands-cache-pull]
 
 eslint-changed-files:
   extends:
@@ -86,6 +92,27 @@ eslint:
     - .frontend:rules:eslint-default
   script:
     - yarn run lint:eslint:all --format gitlab
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+
+eslint:frontend-islands:
+  extends:
+    - .eslint-base
+    - .frontend:rules:fe-islands:test
+  needs:
+    - job: cache:frontend-islands-hash
+      optional: true
+  cache:
+    - !reference [.yarn-cache, cache]
+    - !reference [.frontend-islands-cache-pull]
+  before_script:
+    - !reference [.default-before_script, before_script]
+    - yarn_install_script
+    - scripts/build_frontend_islands
+  script:
+    - cd ee/frontend_islands/apps/duo_next
+    - yarn run lint --format gitlab
   artifacts:
     reports:
       codequality: gl-code-quality-report.json

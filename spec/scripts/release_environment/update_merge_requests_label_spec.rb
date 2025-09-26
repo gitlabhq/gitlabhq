@@ -71,10 +71,17 @@ RSpec.describe UpdateMergeRequestsLabel, feature_category: :delivery do
 
       before do
         allow(updater).to receive(:deployment_mrs).and_return([mr1])
-        allow(logger).to receive(:info).with("Found 1 merge requests for deployment #{deployment_id}.")
         allow(logger)
           .to receive(:info)
-                .with("Adding label 'workflow::release-environment' to merge request #{mr1.web_url} ...")
+                .with(
+                  "Adding label 'workflow::release-environment' to merge request.",
+                  merge_request_url: mr1.web_url
+                )
+        allow(logger).to receive(:info).with(
+          "Found merge requests for deployment.",
+          deployment_id: deployment_id,
+          merge_request_count: 1
+        )
       end
 
       it 'updates merge request with workflow::release-environment label' do
@@ -95,7 +102,9 @@ RSpec.describe UpdateMergeRequestsLabel, feature_category: :delivery do
         it 'logs error and continues processing other MRs' do
           expect(logger).to receive(:error).with(
             "Could not add label 'workflow::release-environment' to " \
-              "merge request #{mr1.web_url}.\n[ERROR]: API Error"
+              "merge request.",
+            merge_request_url: mr1.web_url,
+            error_message: "API Error"
           )
 
           updater.execute
@@ -121,7 +130,9 @@ RSpec.describe UpdateMergeRequestsLabel, feature_category: :delivery do
 
       it 'logs error and returns empty array' do
         expect(logger).to receive(:error).with(
-          "Could not retrieve merge requests for deployment #{deployment_id}.\n[ERROR]: Network Error"
+          "Could not retrieve merge requests for deployment.",
+          deployment_id: deployment_id,
+          error_message: "Network Error"
         )
 
         result = updater.send(:deployment_mrs)

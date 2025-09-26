@@ -83,6 +83,7 @@ bundle-size-review:
     SETUP_DB: "false"
   script:
     - yarn_install_script
+    - scripts/build_frontend_islands
     - scripts/bundle_size_review
   artifacts:
     when: always

@@ -235,12 +235,12 @@ Prerequisites:
 When a subscription is set to auto-renew, it renews automatically at midnight UTC on the expiration date without a gap in available service.
 You receive [email notifications](#renewal-notifications) before a subscription automatically renews.
 
+Seat counts do not decrease automatically at renewal time. If you have more billable users than your current subscription quantity at renewal time, your seat count increases automatically to match the current number of users in your
+[group](manage_users_and_seats.md#view-seat-usage) or [instance](manage_users_and_seats.md#view-users).
+To avoid unexpectedly renewing your subscription for more seats, learn how to [renew for fewer seats](#renew-for-fewer-seats).
+
 Subscriptions purchased through the Customers Portal are set to auto-renew by default,
 but you can [turn off automatic subscription renewal](#turn-on-or-turn-off-automatic-subscription-renewal).
-
-The number of user seats is adjusted to fit the number of billable users in your
-[group](manage_users_and_seats.md#view-seat-usage) or [instance](manage_users_and_seats.md#view-users)
-at the time of renewal, if that number is higher than the current subscription quantity.
 
 #### Turn on or turn off automatic subscription renewal
 

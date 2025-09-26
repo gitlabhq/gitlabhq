@@ -5,7 +5,7 @@
     "deps:check": "depcruise --config config/dependency_cruiser.js --no-ignore-known",
     "deps:check:all": "yarn run deps:check .",
     "clean": "rm -rf public/assets tmp/cache/webpack tmp/cache/vite",
-    "dev-server": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=5120}\" node scripts/frontend/webpack_dev_server.js",
+    "dev-server": "scripts/build_frontend_islands && NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=5120}\" node scripts/frontend/webpack_dev_server.js",
     "file-coverage": "scripts/frontend/file_test_coverage.js",
     "lint-docs": "scripts/lint-doc.sh",
     "internal:eslint": "eslint --cache --max-warnings 0 --report-unused-disable-directives",
@@ -47,10 +47,10 @@
     "storybook:start": "./scripts/frontend/start_storybook.sh",
     "storybook:start:skip-fixtures-update": "./scripts/frontend/start_storybook.sh --skip-fixtures-update",
     "swagger:validate": "swagger-cli validate",
-    "webpack": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=5120}\" webpack --config config/webpack.config.js",
+    "webpack": "scripts/build_frontend_islands && NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=5120}\" webpack --config config/webpack.config.js",
     "webpack-vendor": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=5120}\" webpack --config config/webpack.vendor.config.js",
-    "webpack-prod": "NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=5120}\" NODE_ENV=production webpack --config config/webpack.config.js",
-    "vite-prod": "yarn run tailwindcss:build && yarn run tailwindcss:cqs:build && NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=8000}\" NODE_ENV=production vite build"
+    "webpack-prod": "scripts/build_frontend_islands && NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=5120}\" NODE_ENV=production webpack --config config/webpack.config.js",
+    "vite-prod": "scripts/build_frontend_islands && yarn run tailwindcss:build && yarn run tailwindcss:cqs:build && NODE_OPTIONS=\"${NODE_OPTIONS:=--max-old-space-size=8000}\" NODE_ENV=production vite build"
   },
   "dependencies": {
     "@apollo/client": "^3.5.10",

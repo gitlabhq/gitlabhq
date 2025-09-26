@@ -14,4 +14,4 @@ Vue.use(GlFeatureFlagsPlugin);
 Vue.use(GlAbilitiesPlugin);
 Vue.use(Translate);
 
-Vue.config.ignoredElements = ['gl-emoji'];
+Vue.config.ignoredElements = ['gl-emoji', 'fe-island-duo-next'];
