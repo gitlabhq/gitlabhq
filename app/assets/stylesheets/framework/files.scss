@@ -21,6 +21,8 @@
   .file-title {
     position: relative;
     @apply gl-bg-subtle gl-border-b gl-border-b-section;
+    border-top-left-radius: inherit;
+    border-top-right-radius: inherit;
     margin: 0;
     text-align: left;
     padding: 10px $gl-padding;

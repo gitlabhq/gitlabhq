@@ -569,6 +569,47 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
     end
   end
 
+  describe 'event publishing' do
+    context 'when members are successfully created' do
+      let(:params) do
+        {
+          email: 'email1@example.org,email2@example.org',
+          user_id: [project_user.id, user_invited_by_id.id]
+        }
+      end
+
+      it 'publishes event with user IDs only from members with existing users' do
+        expect { expect_to_create_members(count: 4) }.to publish_event(Members::MembersAddedEvent).with(
+          source_id: project.id,
+          source_type: "Project",
+          invited_user_ids: match_array([be_an(Integer), be_an(Integer)])
+        )
+
+        expect(result[:status]).to eq(:success)
+      end
+    end
+
+    context 'when some invites fail validation' do
+      let(:params) do
+        {
+          email: 'valid@example.org,invalid-email',
+          user_id: project_user.id
+        }
+      end
+
+      it 'publishes event with user IDs from valid members and from members with existing users' do
+        expect { expect_to_create_members(count: 2) }.to publish_event(Members::MembersAddedEvent).with(
+          source_id: project.id,
+          source_type: "Project",
+          invited_user_ids: match_array(be_an(Integer))
+        )
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]['invalid-email']).to eq('Invite email is invalid')
+      end
+    end
+  end
+
   def expect_to_create_members(count:)
     expect { result }.to change(ProjectMember, :count).by(count)
   end

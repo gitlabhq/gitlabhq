@@ -42,7 +42,7 @@ module RuboCop
         end
 
         def cbased(node)
-          return unless node.location.expression.source_buffer.name.include?('/ee/')
+          return unless node.source_range.source_buffer.name.include?('/ee/')
 
           "::"
         end

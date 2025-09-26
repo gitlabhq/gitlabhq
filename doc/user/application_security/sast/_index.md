@@ -851,7 +851,7 @@ The following are Docker image-related CI/CD variables.
     </tr>
     <tr>
       <td>
-        <a href="gitlab_advanced_sast.md">GitLab Advanced SAST</a><sup><b><a href="#sast-excluded-paths-semgrep">2</a></b>,</sup><sup><b><a href="#sast-excluded-paths-all-other-sast-analyzers">3</a></b></sup>
+        <a href="https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast/">GitLab Advanced SAST</a><sup><b><a href="#sast-excluded-paths-semgrep">2</a></b>,</sup><sup><b><a href="#sast-excluded-paths-all-other-sast-analyzers">3</a></b></sup>
       </td>
     </tr>
     <tr>
@@ -903,7 +903,7 @@ The following are Docker image-related CI/CD variables.
     </tr>
     <tr>
       <td>
-        <a href="gitlab_advanced_sast.md">GitLab Advanced SAST</a>
+        <a href="https://docs.gitlab.com/user/application_security/sast/gitlab_advanced_sast/">GitLab Advanced SAST</a>
       </td>
     </tr>
     <tr>

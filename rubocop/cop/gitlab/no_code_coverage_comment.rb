@@ -55,7 +55,7 @@ module RuboCop
         end
 
         def comment_start(comment)
-          comment.loc.expression.begin_pos
+          comment.source_range.begin_pos
         end
 
         def token_indentation(comment, name)

@@ -1,4 +1,3 @@
-@use "sass:map";
 @import 'page_bundles/mixins_and_variables_and_functions';
 
 .file-editor {
@@ -37,7 +36,7 @@
     max-width: 250px;
     float: left;
 
-    @media(max-width: map.get($grid-breakpoints, lg)-1) {
+    @include gl-container-width-down(lg, panel) {
       width: 180px;
     }
 
@@ -52,7 +51,6 @@
 
   .soft-wrap-toggle {
     font-family: $regular-font;
-    margin-left: $gl-padding-8;
 
     .soft-wrap {
       display: inline-flex;
@@ -96,20 +94,12 @@
       display: flex;
       flex-direction: row;
       justify-content: space-between;
+      align-items: flex-start;
       width: 100%;
       padding: $gl-padding-8 0 0;
 
-      .md-header-toolbar {
-        margin-left: 0;
-      }
-
       .soft-wrap-toggle {
-        width: 100%;
         margin-left: 0;
-      }
-
-      @media(max-width: map.get($grid-breakpoints, md)-1) {
-        clear: both;
       }
     }
   }
@@ -118,11 +108,6 @@
 @include gl-container-width-down(md, panel) {
   .file-editor .file-buttons {
     flex-direction: column;
-    padding: $gl-padding-8 0 0;
-
-    .md-header-toolbar {
-      margin: $gl-padding-8 0;
-    }
   }
 }
 
@@ -132,7 +117,7 @@
   vertical-align: top;
   display: inline-block;
 
-  @media(max-width: map.get($grid-breakpoints, lg)-1) {
+  @include gl-container-width-down(lg, panel) {
     display: block;
     margin: 19px 0 12px;
   }
@@ -142,7 +127,7 @@
   display: flex;
   vertical-align: top;
 
-  @media(max-width: map.get($grid-breakpoints, lg)-1) {
+  @include gl-container-width-down(lg, panel) {
     display: inline-block;
     width: 100%;
     padding: 0;
@@ -154,7 +139,7 @@
   display: flex;
   vertical-align: top;
 
-  @media(max-width: map.get($grid-breakpoints, lg)-1) {
+  @include gl-container-width-down(lg, panel) {
     display: block;
     width: 100%;
     margin: 0 0 16px;

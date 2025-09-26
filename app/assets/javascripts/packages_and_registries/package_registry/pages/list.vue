@@ -13,7 +13,6 @@ import {
   DELETE_PACKAGE_SUCCESS_MESSAGE,
   EMPTY_LIST_HELP_URL,
   PACKAGE_ERROR_STATUS,
-  PACKAGE_HELP_URL,
 } from '~/packages_and_registries/package_registry/constants';
 import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
 import getGroupPackageSettings from '~/packages_and_registries/package_registry/graphql/queries/get_group_package_settings.query.graphql';
@@ -231,18 +230,13 @@ export default {
   },
   links: {
     EMPTY_LIST_HELP_URL,
-    PACKAGE_HELP_URL,
   },
 };
 </script>
 
 <template>
   <div>
-    <package-title
-      :help-url="$options.links.PACKAGE_HELP_URL"
-      :count="packagesCount"
-      :is-loading="isLoading"
-    >
+    <package-title :count="packagesCount" :is-loading="isLoading">
       <template v-if="settingsPath" #settings-link>
         <gl-button
           v-gl-tooltip="$options.i18n.settingsText"

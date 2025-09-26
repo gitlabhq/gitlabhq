@@ -386,17 +386,6 @@ export default {
           </template>
         </gl-disclosure-dropdown-item>
 
-        <gl-disclosure-dropdown-item
-          v-if="showTrialItem"
-          :item="trialItem"
-          data-testid="start-trial-item"
-        >
-          <template #list-item>
-            {{ trialItem.text }}
-            <gl-emoji data-name="rocket" />
-          </template>
-        </gl-disclosure-dropdown-item>
-
         <gl-disclosure-dropdown-item :item="editProfileItem" data-testid="edit-profile-item">
           <template #list-item>
             <gl-icon name="profile" variant="subtle" class="gl-mr-2" />
@@ -424,24 +413,6 @@ export default {
         </gl-disclosure-dropdown-item>
 
         <gl-disclosure-dropdown-item
-          v-if="addBuyPipelineMinutesMenuItem"
-          ref="buyPipelineMinutesNotificationCallout"
-          :item="buyPipelineMinutesItem"
-          data-testid="buy-pipeline-minutes-item"
-        >
-          <template #list-item>
-            <span class="gl-flex gl-flex-col">
-              <span>{{ buyPipelineMinutesItem.text }} <gl-emoji data-name="clock9" /></span>
-              <span
-                v-if="data.pipeline_minutes.show_with_subtext"
-                class="small gl-pt-2 gl-text-sm gl-text-orange-800"
-                >{{ buyPipelineMinutesItem.warningText }}</span
-              >
-            </span>
-          </template>
-        </gl-disclosure-dropdown-item>
-
-        <gl-disclosure-dropdown-item
           v-if="showEnterAdminModeItem"
           :item="enterAdminModeItem"
           data-testid="enter-admin-mode-item"
@@ -459,6 +430,38 @@ export default {
           <template #list-item>
             <gl-icon name="lock-open" variant="subtle" class="gl-mr-2" />
             <span>{{ $options.i18n.leaveAdminMode }}</span>
+          </template>
+        </gl-disclosure-dropdown-item>
+      </gl-disclosure-dropdown-group>
+
+      <gl-disclosure-dropdown-group v-if="showTrialItem || addBuyPipelineMinutesMenuItem" bordered>
+        <gl-disclosure-dropdown-item
+          v-if="showTrialItem"
+          :item="trialItem"
+          data-testid="start-trial-item"
+        >
+          <template #list-item>
+            <span class="hotspot-pulse gl-flex gl-items-center gl-gap-2">
+              <gl-icon name="license" variant="subtle" class="gl-mr-2" />
+              {{ trialItem.text }}
+            </span>
+          </template>
+        </gl-disclosure-dropdown-item>
+
+        <gl-disclosure-dropdown-item
+          v-if="addBuyPipelineMinutesMenuItem"
+          ref="buyPipelineMinutesNotificationCallout"
+          :item="buyPipelineMinutesItem"
+          data-testid="buy-pipeline-minutes-item"
+        >
+          <template #list-item>
+            <gl-icon name="credit-card" variant="subtle" class="gl-mr-2" />
+            <span>{{ buyPipelineMinutesItem.text }}</span>
+            <span
+              v-if="data.pipeline_minutes.show_with_subtext"
+              class="gl-block gl-pt-2 gl-text-sm gl-text-warning"
+              >{{ buyPipelineMinutesItem.warningText }}</span
+            >
           </template>
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown-group>

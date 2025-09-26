@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Agent Foundations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Convert to GitLab CI/CD flow
+title: Convert to GitLab CI/CD Flow
 ---
 
 {{< details >}}
@@ -28,7 +28,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-The Convert to GitLab CI/CD flow helps you migrate your Jenkins pipelines to GitLab CI/CD. This flow:
+The Convert to GitLab CI/CD Flow helps you migrate your Jenkins pipelines to GitLab CI/CD. This flow:
 
 - Analyzes your existing Jenkins pipeline configuration.
 - Converts Jenkins pipeline syntax to GitLab CI/CD YAML.

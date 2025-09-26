@@ -38,7 +38,7 @@ module RuboCop
         PATTERN
 
         def file_name(node)
-          node.location.expression.source_buffer.name
+          node.source_range.source_buffer.name
         end
 
         def in_haml_file?(node)

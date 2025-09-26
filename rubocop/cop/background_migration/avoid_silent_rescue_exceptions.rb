@@ -72,7 +72,7 @@ module RuboCop
           return unless batched_migration_job_class
 
           rescue_timeout_error(node) do |error|
-            range = error ? node.loc.keyword.join(error.loc.expression) : node.loc.keyword
+            range = error ? node.loc.keyword.join(error.source_range) : node.loc.keyword
             add_offense(range)
           end
         end

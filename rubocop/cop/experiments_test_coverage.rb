@@ -98,7 +98,7 @@ module RuboCop
       end
 
       def filepath(node)
-        node.location.expression.source_buffer.name
+        node.source_range.source_buffer.name
       end
 
       def stub_experiments_matcher

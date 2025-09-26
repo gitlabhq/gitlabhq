@@ -555,7 +555,6 @@ included_attributes:
     - :coverage
     - :commit_id
     - :name
-    - :options
     - :allow_failure
     - :stage_idx
     - :tag
@@ -567,7 +566,6 @@ included_attributes:
     - :erased_at
     - :artifacts_expire_at
     - :environment
-    - :yaml_variables
     - :queued_at
     - :lock_version
     - :coverage_regex
@@ -954,6 +952,8 @@ excluded_attributes:
     - :processed
     - :id_convert_to_bigint
     - :stage_id_convert_to_bigint
+    - :options
+    - :yaml_variables
   builds: *statuses_excluded_definition
   generic_commit_statuses: *statuses_excluded_definition
   bridges: *statuses_excluded_definition

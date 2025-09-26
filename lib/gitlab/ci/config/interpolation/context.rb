@@ -16,7 +16,7 @@ module Gitlab
 
           attr_reader :variables
 
-          def initialize(data, variables: [])
+          def initialize(data, variables:)
             @data = data
             @variables = Ci::Variables::Collection.fabricate(variables)
 

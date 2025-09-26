@@ -50,14 +50,14 @@ module RuboCop
           if expect_any_instance_of?(node)
             add_offense(node, message: MESSAGE_EXPECT) do |corrector|
               corrector.replace(
-                node.loc.expression,
+                node,
                 replacement_any_instance_of(node, 'expect')
               )
             end
           elsif allow_any_instance_of?(node)
             add_offense(node, message: MESSAGE_ALLOW) do |corrector|
               corrector.replace(
-                node.loc.expression,
+                node,
                 replacement_any_instance_of(node, 'allow')
               )
             end

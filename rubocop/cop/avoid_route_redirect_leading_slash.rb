@@ -28,7 +28,7 @@ module RuboCop
         return unless leading_slash_in_redirect?(node)
 
         add_offense(node) do |corrector|
-          corrector.replace(node.loc.expression, remove_leading_slash(node))
+          corrector.replace(node, remove_leading_slash(node))
         end
       end
 
@@ -37,7 +37,7 @@ module RuboCop
       end
 
       def in_routes?(node)
-        path = node.location.expression.source_buffer.name
+        path = node.source_range.source_buffer.name
         dirname = File.dirname(path)
         filename = File.basename(path)
         dirname.end_with?('config/routes') || filename.end_with?('routes.rb')

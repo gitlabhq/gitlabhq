@@ -41,8 +41,7 @@ module RuboCop
           return unless modifies_sidekiq_middleware?(node)
 
           add_offense(node) do |corrector|
-            corrector.replace(node.loc.expression,
-              'with_sidekiq_server_middleware')
+            corrector.replace(node, 'with_sidekiq_server_middleware')
           end
         end
       end

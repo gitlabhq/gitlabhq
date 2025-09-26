@@ -183,6 +183,7 @@ export default {
         first: GRAPHQL_PACKAGE_FILES_PAGE_SIZE,
       };
     },
+    // eslint-disable-next-line vue/no-unused-properties -- tracking() is required by Tracking mixin.
     tracking() {
       return {
         category: packageTypeToTrackCategory(this.packageType),

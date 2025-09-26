@@ -70,6 +70,7 @@ export default {
       text: __('Cancel'),
     },
   },
+  expose: ['show'],
   methods: {
     show() {
       this.$refs.deleteModal.show();

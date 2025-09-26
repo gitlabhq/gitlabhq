@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Agent Foundations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Issue to Merge Request flow
+title: Issue to Merge Request Flow
 ---
 
 {{< details >}}
@@ -28,7 +28,7 @@ For more information, see the history.
 
 {{< /alert >}}
 
-The Issue to Merge Request flow streamlines the process of converting issues into actionable merge requests. This flow:
+The Issue to Merge Request Flow streamlines the process of converting issues into actionable merge requests. This flow:
 
 - Analyzes the issue description and requirements.
 - Opens a draft merge request that's linked to the original issue.

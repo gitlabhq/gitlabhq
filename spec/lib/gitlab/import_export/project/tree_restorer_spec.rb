@@ -604,6 +604,11 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer, :clean_gitlab_redis_
               expect(pipeline.statuses.size).to eq(expected_status_size)
             end
           end
+
+          it 'does not restore jobs metadata' do
+            expect(Ci::Build.for_project(@project).count).to eq(7)
+            expect(Ci::BuildMetadata.count).to eq(0)
+          end
         end
 
         context 'when restoring hierarchy of pipeline, stages and jobs' do

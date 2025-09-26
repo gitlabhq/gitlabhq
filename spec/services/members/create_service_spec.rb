@@ -137,10 +137,11 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
       end
 
       it 'triggers a members added event' do
-        expect(Gitlab::EventStore)
-          .to receive(:publish)
-          .with(an_instance_of(Members::MembersAddedEvent))
-          .and_call_original
+        expect { execute_service }.to publish_event(Members::MembersAddedEvent).with(
+          source_id: source.id,
+          source_type: 'Group',
+          invited_user_ids: match_array(be_an(Integer))
+        )
 
         expect(execute_service[:status]).to eq(:success)
       end
@@ -166,10 +167,11 @@ RSpec.describe Members::CreateService, :aggregate_failures, :clean_gitlab_redis_
       end
 
       it 'triggers the members added event' do
-        expect(Gitlab::EventStore)
-          .to receive(:publish)
-          .with(an_instance_of(Members::MembersAddedEvent))
-          .and_call_original
+        expect { execute_service }.to publish_event(Members::MembersAddedEvent).with(
+          source_id: source.id,
+          source_type: 'Project',
+          invited_user_ids: match_array(be_an(Integer))
+        )
 
         expect(execute_service[:status]).to eq(:error)
         expect(execute_service[:message])

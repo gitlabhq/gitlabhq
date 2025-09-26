@@ -35,7 +35,7 @@ module RuboCop
 
           def bad_range(node, match)
             url_begin_pos, url_end_pos = match.offset(0)
-            begin_pos = node.loc.expression.begin_pos + url_begin_pos
+            begin_pos = node.source_range.begin_pos + url_begin_pos
 
             range_between(begin_pos, begin_pos + (url_end_pos - url_begin_pos))
           end

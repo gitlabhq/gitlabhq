@@ -9,7 +9,10 @@ module Members
         'properties' => {
           'source_id' => { 'type' => 'integer' },
           'source_type' => { 'type' => 'string' },
-          'invited_user_ids' => { 'type' => 'array' }
+          'invited_user_ids' => {
+            'type' => 'array',
+            'items' => { 'type' => 'integer' }
+          }
         }
       }
     end

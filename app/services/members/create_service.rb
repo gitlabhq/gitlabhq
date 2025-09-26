@@ -199,7 +199,7 @@ module Members
         Members::MembersAddedEvent.new(data: {
           source_id: source.id,
           source_type: source.class.name,
-          invited_user_ids: invites
+          invited_user_ids: @members.select { |m| m.errors.none? }.filter_map(&:user_id)
         })
       )
     end

@@ -49,7 +49,7 @@ module Gitlab
               key = value.to_sym
 
               unless memo.respond_to?(:key?) && memo.key?(key)
-                break @errors.push("unknown input name provided: `#{key}` in `#{@content}`")
+                break @errors.push("unknown interpolation provided: `#{key}` in `#{@content}`")
               end
 
               memo.fetch(key)

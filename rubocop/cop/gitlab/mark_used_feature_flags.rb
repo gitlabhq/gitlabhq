@@ -93,7 +93,7 @@ module RuboCop
         def puts_if_debug(node, text)
           return unless RuboCop::ConfigLoader.debug
 
-          warn "#{text} (call: `#{node.source}`, source: #{node.location.expression.source_buffer.name})"
+          warn "#{text} (call: `#{node.source}`, source: #{node.source_range.source_buffer.name})"
         end
 
         def save_used_feature_flag(feature_flag_name)

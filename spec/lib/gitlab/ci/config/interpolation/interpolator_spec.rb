@@ -6,8 +6,9 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
   let_it_be(:project) { create(:project) }
 
   let(:result) { ::Gitlab::Ci::Config::Yaml::Result.new(config: [header, content]) }
+  let(:yaml_context) { ::Gitlab::Ci::Config::Yaml::Context.new }
 
-  subject { described_class.new(result, arguments, []) }
+  subject { described_class.new(result, arguments, yaml_context) }
 
   context 'when input data is valid' do
     let(:header) do
@@ -144,8 +145,8 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
       subject.interpolate!
 
       expect(subject).not_to be_valid
-      expect(subject.errors).to include 'unknown input name provided: `abc` in `inputs.abc`'
-      expect(subject.error_message).to eq 'unknown input name provided: `abc` in `inputs.abc`'
+      expect(subject.errors).to include 'unknown interpolation provided: `abc` in `inputs.abc`'
+      expect(subject.error_message).to eq 'unknown interpolation provided: `abc` in `inputs.abc`'
     end
   end
 
@@ -167,7 +168,7 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
 
       expect(subject).not_to be_valid
       expect(subject.error_message)
-        .to eq 'unknown input name provided: `something` in `inputs.something.abc`'
+        .to eq 'unknown interpolation provided: `something` in `inputs.something.abc`'
     end
   end
 

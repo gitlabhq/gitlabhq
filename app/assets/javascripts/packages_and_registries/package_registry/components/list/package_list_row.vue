@@ -15,7 +15,6 @@ import {
   ERRORED_PACKAGE_TEXT,
   ERROR_PUBLISHING,
   PACKAGE_ERROR_STATUS,
-  PACKAGE_DEFAULT_STATUS,
   PACKAGE_DEPRECATED_STATUS,
   PACKAGE_TYPE_CONAN,
   WARNING_TEXT,
@@ -94,9 +93,6 @@ export default {
     },
     showDeprecatedBadge() {
       return this.packageEntity.status === PACKAGE_DEPRECATED_STATUS;
-    },
-    nonDefaultRow() {
-      return this.packageEntity.status && this.packageEntity.status !== PACKAGE_DEFAULT_STATUS;
     },
     errorPackageStyle() {
       return {

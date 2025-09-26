@@ -20,7 +20,6 @@ import PackageErrorsCount from '~/packages_and_registries/package_registry/compo
 import {
   GRAPHQL_PAGE_SIZE,
   EMPTY_LIST_HELP_URL,
-  PACKAGE_HELP_URL,
 } from '~/packages_and_registries/package_registry/constants';
 import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
@@ -224,7 +223,6 @@ describe('PackagesListApp', () => {
     expect(findPackageTitle().exists()).toBe(true);
     expect(findPackageTitle().props()).toMatchObject({
       count: 2,
-      helpUrl: PACKAGE_HELP_URL,
     });
   });
 

@@ -218,7 +218,7 @@ For a quick overview, items that are exported include:
 - Design management files and data
 - LFS objects
 - Issue boards
-- CI/CD pipelines
+- CI/CD pipelines (archived)
 - Pipeline schedules (inactive and assigned to the user who initiated the import)
 - Protected branches and tags
 - Push rules
@@ -238,7 +238,7 @@ Items that are not exported include:
 
 - [Child pipeline history](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
 - Pipeline triggers
-- Build traces and artifacts
+- CI/CD job traces and artifacts
 - Package and container registry images
 - CI/CD variables
 - CI/CD job token allowlist

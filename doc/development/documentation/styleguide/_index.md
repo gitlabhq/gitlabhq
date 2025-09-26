@@ -124,6 +124,10 @@ HTML is permitted if:
 - The content is reviewed and approved by a technical writer.
 - The need for a custom element is urgent and cannot wait for implementation by Technical Writing engineers.
 
+Any links created with HTML `<a>` tags must use absolute URLs as their
+`href` attributes. Unlike regular links, do not use relative links to
+Markdown files, as Hugo can only process and replace Markdown-formatted links.
+
 If you have an idea or request for a new element that would be useful on the Docs site,
 submit a [feature request](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/new?issuable_template=Default).
 

@@ -440,9 +440,9 @@ sudo -u git -H bundle exec rake gitlab:elastic:list_pending_migrations
 {{< /tabs >}}
 
 If you're on a long upgrade path and have many pending migrations, you might want to configure
-`Requeue indexing workers` and `Number of shards for non-code indexing` to speed up indexing.
+**Requeue indexing workers** and **Number of shards for non-code indexing** to speed up indexing.
 Another option is to ignore the pending migrations and [reindex the instance](../integration/advanced_search/elasticsearch.md#index-the-instance) after you upgrade GitLab to the target version.
-You can also disable advanced search during this process with the [`Search with Elasticsearch enabled`](../integration/advanced_search/elasticsearch.md#advanced-search-configuration) setting.
+You can also disable advanced search during this process with the [**Search with Elasticsearch enabled**](../integration/advanced_search/elasticsearch.md#advanced-search-configuration) setting.
 
 {{< alert type="warning" >}}
 

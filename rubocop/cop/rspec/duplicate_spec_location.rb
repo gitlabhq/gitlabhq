@@ -58,7 +58,7 @@ module RuboCop
         end
 
         def file_path_for_node(node)
-          node.location.expression.source_buffer.name
+          node.source_range.source_buffer.name
         end
 
         def rails_root

@@ -31,7 +31,7 @@ module RuboCop
         private
 
         def spec_filename(node)
-          source_name = node.location.expression.source_buffer.name
+          source_name = node.source_range.source_buffer.name
           path = Pathname.new(source_name).relative_path_from(rails_root)
           dirname = File.dirname(path)
             .sub(%r{db/(migrate|post_migrate)}, 'spec/migrations')

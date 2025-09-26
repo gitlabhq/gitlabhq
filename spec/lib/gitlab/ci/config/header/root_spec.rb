@@ -109,7 +109,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Root, feature_category: :pipeline_com
     it_behaves_like 'an invalid header'
   end
 
-  describe '#inputs_value' do
+  describe '#spec_inputs_value' do
     let(:header_hash) do
       {
         spec: {
@@ -124,7 +124,7 @@ RSpec.describe Gitlab::Ci::Config::Header::Root, feature_category: :pipeline_com
     end
 
     it 'returns the inputs' do
-      expect(config.inputs_value).to eq({
+      expect(config.spec_inputs_value).to eq({
         foo: {},
         bar: { default: 'baz' }
       })

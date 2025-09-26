@@ -22,7 +22,7 @@ RSpec.describe ::Gitlab::Ci::Config::Yaml::Context, feature_category: :pipeline_
     context 'without variables provided' do
       subject(:context) { described_class.new }
 
-      it 'defaults to empty hash' do
+      it 'defaults to empty array' do
         expect(context.variables).to eq([])
       end
     end

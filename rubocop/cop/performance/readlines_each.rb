@@ -35,7 +35,7 @@ module RuboCop
           return unless full_file_read_via_class?(node) || full_file_read_via_instance?(node)
 
           add_offense(node.loc.selector, message: MESSAGE) do |corrector|
-            corrector.replace(node.loc.expression, node.source.gsub('readlines.each', 'each_line'))
+            corrector.replace(node, node.source.gsub('readlines.each', 'each_line'))
           end
         end
       end

@@ -1916,6 +1916,16 @@ RSpec.describe Repository, feature_category: :source_code_management do
         end
       end
     end
+
+    context 'when raise_on_invalid_ref is true' do
+      let(:branch_name) { 'master/123' }
+
+      subject { repository.add_branch(user, branch_name, target, raise_on_invalid_ref: true) }
+
+      it 'raises invalid ref exception' do
+        expect { subject }.to raise_error(Gitlab::Git::Repository::InvalidRef)
+      end
+    end
   end
 
   shared_examples 'asymmetric cached method' do |method|

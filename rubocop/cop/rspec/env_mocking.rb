@@ -46,7 +46,7 @@ module RuboCop
         def on_send(node)
           env_mocking?(node) do |key, value|
             add_offense(node, message: MESSAGE) do |corrector|
-              corrector.replace(node.loc.expression, stub_env(key.source, value.source))
+              corrector.replace(node, stub_env(key.source, value.source))
             end
           end
         end
