@@ -71720,6 +71720,9 @@ msgstr ""
 msgid "VirtualRegistry|Edit upstream"
 msgstr ""
 
+msgid "VirtualRegistry|Enter a personal access token for GitLab-hosted upstreams."
+msgstr ""
+
 msgid "VirtualRegistry|Enter password"
 msgstr ""
 
@@ -71921,6 +71924,9 @@ msgid "VirtualRegistry|You are about to delete this upstream used by %{count} re
 msgid_plural "VirtualRegistry|You are about to delete this upstream used by %{count} registries:"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "VirtualRegistry|You can add GitLab-hosted repositories as upstreams. Use your GitLab username and a personal access token as the password."
+msgstr ""
 
 msgid "VirtualRegistry|last checked %{date}"
 msgstr ""

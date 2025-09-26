@@ -79,7 +79,7 @@ internal/git/io.go:115:7: QF1008: could remove embedded field "busyReader" from 
 internal/httprs/httprs_test.go:89:4: QF1012: Use fmt.Fprintf(...) instead of WriteString(fmt.Sprintf(...)) (staticcheck)
 internal/imageresizer/image_resizer.go:199:76: QF1008: could remove embedded field "Config" from selector (staticcheck)
 internal/lsif_transformer/parser/parser_test.go:64:33: QF1008: could remove embedded field "Reader" from selector (staticcheck)
-internal/proxy/proxy.go:142:14: SA6002: argument should be pointer-like to avoid allocations (staticcheck)
+internal/proxy/proxy.go:131:14: SA6002: argument should be pointer-like to avoid allocations (staticcheck)
 internal/testhelper/gitaly.go:77:4: QF1008: could remove embedded field "WaitGroup" from selector (staticcheck)
 internal/testhelper/gitaly.go:78:10: QF1008: could remove embedded field "WaitGroup" from selector (staticcheck)
 internal/testhelper/gitaly.go:107:4: QF1008: could remove embedded field "WaitGroup" from selector (staticcheck)
