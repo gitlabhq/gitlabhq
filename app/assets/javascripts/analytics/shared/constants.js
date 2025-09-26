@@ -393,7 +393,7 @@ export const VALUE_STREAM_METRIC_METADATA = {
   },
   [AI_METRICS.DUO_CHAT_USAGE_RATE]: {
     description: s__(
-      'AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors.',
+      'AiImpactAnalytics|Monthly user engagement with Duo Chat. Percentage ratio of monthly unique Duo Chat users / total Duo seats assigned.',
     ),
     groupLink: '',
     projectLink: '',
@@ -401,7 +401,7 @@ export const VALUE_STREAM_METRIC_METADATA = {
   },
   [AI_METRICS.DUO_RCA_USAGE_RATE]: {
     description: s__(
-      'AiImpactAnalytics|Monthly user engagement with Duo Root Cause Analysis. Percentage ratio calculated as total monthly unique Duo Root Cause Analysis users / monthly unique Duo Chat users.',
+      'AiImpactAnalytics|Monthly user engagement with Duo Root Cause Analysis. Percentage ratio of total monthly unique Duo Root Cause Analysis users / total Duo seats assigned.',
     ),
     groupLink: '',
     projectLink: '',

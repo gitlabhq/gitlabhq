@@ -6,7 +6,6 @@ Style/RedundantParentheses:
     - 'app/graphql/resolvers/tree_resolver.rb'
     - 'app/services/lfs/file_transformer.rb'
     - 'app/services/members/invite_service.rb'
-    - 'app/services/projects/lfs_pointers/lfs_object_download_list_service.rb'
     - 'config/initializers/8_devise.rb'
     - 'config/initializers/zz_metrics.rb'
     - 'ee/app/controllers/groups/billings_controller.rb'

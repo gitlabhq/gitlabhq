@@ -174,26 +174,3 @@
   }
 
 }
-
-// GlBadge within GlButton variants
-
-:where(.application-chrome) {
-
-  // Primary confirm variant
-
-  .gl-button.btn-confirm:not(.btn-confirm-secondary) .gl-badge {
-    @apply gl-text-default gl-bg-default;
-  }
-
-  // Secondary confirm variant
-
-  .gl-button.btn-confirm.btn-confirm-secondary .gl-badge {
-    @apply gl-text-default gl-bg-neutral-100 dark:gl-bg-neutral-800;
-  }
-
-}
-
-// Fix design management fullscreen display in panels
-.panel-content:has(.design-detail) {
-  @apply gl-fixed gl-inset-0 gl-overflow-visible gl-rounded-none gl-max-w-none #{!important};
-}

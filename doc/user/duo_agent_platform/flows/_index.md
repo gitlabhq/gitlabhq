@@ -54,7 +54,7 @@ The following flows are available:
   and its structure.
 
 For more focused pieces of work, like understanding selected code,
-use [GitLab Duo Agentic Chat](../../gitlab_duo_chat/agentic_chat.md).
+use [GitLab Duo Chat (Agentic)](../../gitlab_duo_chat/agentic_chat.md).
 
 ## Turn on flows
 

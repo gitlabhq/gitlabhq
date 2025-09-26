@@ -99,8 +99,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def show
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/571075', new_threshold: 110)
-
     show_merge_request
   end
 

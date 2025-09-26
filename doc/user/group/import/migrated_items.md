@@ -211,6 +211,7 @@ Some project items are excluded from migration because they:
   - Webhooks
 - Are not supported:
   - Agents
+  - [Child CI/CD pipelines](https://gitlab.com/gitlab-org/gitlab/-/issues/571159)
   - Container registry
   - Custom fields
   - Environments

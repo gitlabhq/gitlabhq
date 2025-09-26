@@ -6311,10 +6311,10 @@ msgstr ""
 msgid "AiImpactAnalytics|Monthly GitLab Duo Code Suggestions accepted / total Code Suggestions generated."
 msgstr ""
 
-msgid "AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors."
+msgid "AiImpactAnalytics|Monthly user engagement with Duo Chat. Percentage ratio of monthly unique Duo Chat users / total Duo seats assigned."
 msgstr ""
 
-msgid "AiImpactAnalytics|Monthly user engagement with Duo Root Cause Analysis. Percentage ratio calculated as total monthly unique Duo Root Cause Analysis users / monthly unique Duo Chat users."
+msgid "AiImpactAnalytics|Monthly user engagement with Duo Root Cause Analysis. Percentage ratio of total monthly unique Duo Root Cause Analysis users / total Duo seats assigned."
 msgstr ""
 
 msgid "AiImpactAnalytics|Monthly user engagement with GitLab Duo Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors."
@@ -6323,13 +6323,13 @@ msgstr ""
 msgid "AiImpactAnalytics|Percentage ratio of Duo seats assigned that interacted with Code Suggestions / total number of unique code contributors with Duo seats. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "AiImpactAnalytics|Percentage ratio of total Duo seats assigned / Duo seats assigned that interacted with Duo Chat. %{linkStart}Learn more%{linkEnd}."
+msgid "AiImpactAnalytics|Percentage ratio of Duo seats assigned that interacted with Duo Chat / total Duo seats assigned. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "AiImpactAnalytics|Percentage ratio of total Duo seats assigned / Duo seats assigned that used at least one Duo feature. %{linkStart}Learn more%{linkEnd}."
+msgid "AiImpactAnalytics|Percentage ratio of Duo seats assigned that used at least one Duo feature / total Duo seats assigned. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "AiImpactAnalytics|Percentage ratio of total number of code suggestions generated / code suggestions accepted. %{linkStart}Learn more%{linkEnd}."
+msgid "AiImpactAnalytics|Percentage ratio of total number of code suggestions accepted / code suggestions generated. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "AiImpactAnalytics|The usage data may be incomplete due to backend calculations starting after upgrade to GitLab 16.11. For more information, see %{linkStart}epic 12978%{linkEnd}."

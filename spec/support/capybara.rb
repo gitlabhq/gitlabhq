@@ -193,6 +193,14 @@ RSpec.configure do |config|
   config.around(:each, :js) do |example|
     Gitlab::ExclusiveLease.skipping_transaction_check { example.run }
   end
+
+  # Disable query limiting in feature specs because they can cause a lot of
+  # flaky tests. When transactional tests are enabled, the web server threads
+  # share the same query cache which can lead to unstable query counts.
+  config.around(:each, :js) do |example|
+    Gitlab::QueryLimiting.with_suppressed { example.run }
+  end
+
   # The :capybara_ignore_server_errors metadata means unhandled exceptions raised
   # by the application under test will not necessarily fail the server. This is
   # useful when testing conditions that are expected to raise a 500 error in

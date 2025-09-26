@@ -6,6 +6,8 @@ module Gitlab
     # certain amount of database queries.
     class SidekiqMiddleware
       def call(worker, _job, _queue)
+        return yield unless ::Gitlab::QueryLimiting.enabled?
+
         transaction, retval = ::Gitlab::QueryLimiting::Transaction.run do
           yield
         end

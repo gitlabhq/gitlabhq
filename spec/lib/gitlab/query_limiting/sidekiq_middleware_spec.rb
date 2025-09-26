@@ -44,5 +44,15 @@ RSpec.describe Gitlab::QueryLimiting::SidekiqMiddleware, feature_category: :data
 
       expect(return_value).to eq({ value: 11 })
     end
+
+    it 'skips query limiting when suppressed' do
+      expect(Gitlab::QueryLimiting::Transaction).not_to receive(:run)
+
+      Gitlab::QueryLimiting.with_suppressed do
+        middleware = described_class.new
+
+        expect { |b| middleware.call(worker, job, queue, &b) }.to yield_control.once
+      end
+    end
   end
 end

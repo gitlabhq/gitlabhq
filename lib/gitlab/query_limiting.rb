@@ -11,11 +11,21 @@ module Gitlab
     end
 
     def self.enabled?
-      enabled_for_env?
+      enabled_for_env? && !@suppressed
     end
 
     def self.threshold
       Gitlab::SafeRequestStore[:query_limiting_override_threshold]
+    end
+
+    # Skips the query limiting middleware for all requests within the block
+    def self.with_suppressed
+      prev_value = @suppressed
+      @suppressed = true
+
+      yield
+    ensure
+      @suppressed = prev_value
     end
 
     # Allows the current request to execute a higher number of SQL queries.

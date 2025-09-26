@@ -97,7 +97,7 @@ module Projects
       end
 
       def current_endpoint_uri
-        (lfsconfig_endpoint_uri || default_endpoint_uri)
+        lfsconfig_endpoint_uri || default_endpoint_uri
       end
 
       # The import url must end with '.git' here we ensure it is

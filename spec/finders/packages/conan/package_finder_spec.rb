@@ -16,6 +16,8 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
 
   let(:params) { { query: query } }
   let(:finder) { described_class.new(user, params) }
+  let(:non_existent_username) { 'non_existing' }
+  let(:non_existent_channel) { 'non_existing' }
 
   subject(:result) { finder.execute }
 
@@ -40,7 +42,7 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
   end
 
   describe '#execute' do
-    context 'without package username' do
+    context 'without package username and channel' do
       let(:query) { "#{conan_package.name[0, 3]}*" }
 
       it { is_expected.to eq([]) }
@@ -139,7 +141,7 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
       end
     end
 
-    context 'with package username' do
+    context 'with package username and channel' do
       let(:query) { conan_package.conan_recipe }
 
       context 'with a valid query and user with permissions' do
@@ -162,11 +164,27 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
         it { is_expected.to eq([]) }
       end
 
+      context 'with a non-existent username and channel' do
+        let(:query) do
+          "#{conan_package.name}/#{conan_package.version}@#{non_existent_username}/#{non_existent_channel}"
+        end
+
+        it { is_expected.to eq([]) }
+      end
+
       context 'with a specified project' do
         let(:query) { private_package.conan_recipe }
         let(:finder) { described_class.new(user, params, project: private_project) }
 
         it { is_expected.to match_array([private_package]) }
+
+        context 'with a non-existent username and channel' do
+          let(:query) do
+            "#{private_package.name}/#{private_package.version}@#{non_existent_username}/#{non_existent_channel}"
+          end
+
+          it { is_expected.to eq([]) }
+        end
       end
     end
   end

@@ -331,10 +331,6 @@ The `GITLAB_TOKEN` for the [@gl-service-dev-secure-analyzers-automation](https:/
 
       The `ci-templates` project requires the `GITLAB_TOKEN` to allow certain scripts to execute API calls. This step can be removed after [allow JOB-TOKEN access to CI/lint endpoint](https://gitlab.com/gitlab-org/gitlab/-/issues/438781) has been completed.
 
-   1. `GITLAB_TOKEN` CI/CD variable for the [`gitlab-org/secure/tools/security-triage-automation`](https://gitlab.com/gitlab-org/secure/tools/security-triage-automation) project.
-
-      This must be explicitly configured because the `security-triage-automation` project is not nested under the `gitlab-org/security-products/analyzers` namespace, and therefore _does not inherit_ the `GITLAB_TOKEN` value.
-
    1. `GITLAB_TOKEN` CI/CD variable for [`gitlab-org/security-products/license-db`](https://gitlab.com/groups/gitlab-org/security-products/license-db/-/settings/ci_cd#ci-variables) group.
 
       This must be explicitly configured because the `license-db` project is not nested under the `gitlab-org/security-products/analyzers` namespace, and therefore _does not inherit_ the `GITLAB_TOKEN` value.
