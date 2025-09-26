@@ -518,7 +518,6 @@ Layout/LineLength:
     - 'ee/app/helpers/ee/mirror_helper.rb'
     - 'ee/app/helpers/ee/notes_helper.rb'
     - 'ee/app/helpers/ee/profiles_helper.rb'
-    - 'ee/app/helpers/ee/subscribable_banner_helper.rb'
     - 'ee/app/helpers/gitlab_subscriptions/upcoming_reconciliation_helper.rb'
     - 'ee/app/helpers/projects/on_demand_scans_helper.rb'
     - 'ee/app/helpers/projects/security/api_fuzzing_configuration_helper.rb'

@@ -75,6 +75,8 @@ Some group items are excluded from migration because they:
   - Pending member invitations
   - Push rules
 
+In addition, users and any [personal access tokens](../../profile/personal_access_tokens.md) they create are excluded from migration.
+
 ## Migrated project items
 
 {{< history >}}
@@ -234,3 +236,5 @@ Some project items are excluded from migration because they:
 - Do not contain recoverable data:
   - Merge requests with no diff or source information
     (for more information, see [issue 537943](https://gitlab.com/gitlab-org/gitlab/-/issues/537943))
+
+In addition, users and any [personal access tokens](../../profile/personal_access_tokens.md) they create are excluded from migration.

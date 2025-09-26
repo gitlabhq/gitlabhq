@@ -28,7 +28,7 @@ Learn more about [Google Vertex AI Codey APIs Data Governance](https://cloud.goo
 
 ## Connect to GitLab
 
-After you download and install the extension, connect it to your GitLab account.
+After you install the extension, connect it to your GitLab account by creating a personal access token and authenticating with GitLab.
 
 ### Create a personal access token
 

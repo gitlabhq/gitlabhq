@@ -1,4 +1,13 @@
-import { unwrapGroups, unwrapNodesWithName } from '~/ci/pipeline_details/utils/unwrapping_utils';
+import {
+  unwrapGroups,
+  unwrapNodesWithName,
+  unwrapJobWithNeeds,
+} from '~/ci/pipeline_details/utils/unwrapping_utils';
+import {
+  NEEDS_PROPERTY,
+  PREVIOUS_STAGE_JOBS_PROPERTY,
+  PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY,
+} from '~/ci/pipeline_details/constants';
 
 const groupsArray = [
   {
@@ -65,7 +74,7 @@ const baseJobs = {
 const jobArrayWithNeeds = [
   {
     ...baseJobs,
-    needs: {
+    [NEEDS_PROPERTY]: {
       nodes: needArray,
     },
   },
@@ -74,7 +83,7 @@ const jobArrayWithNeeds = [
 const jobArrayWithElephant = [
   {
     ...baseJobs,
-    needs: {
+    [NEEDS_PROPERTY]: {
       nodes: elephantArray,
     },
   },
@@ -93,13 +102,95 @@ describe('Shared pipeline unwrapping utils', () => {
 
   describe('unwrapNodesWithName', () => {
     it('works with no field argument', () => {
-      expect(unwrapNodesWithName(jobArrayWithNeeds, 'needs')[0].needs).toEqual([needArray[0].name]);
+      expect(unwrapNodesWithName(jobArrayWithNeeds, 'needs')[0][NEEDS_PROPERTY]).toEqual([
+        needArray[0].name,
+      ]);
     });
 
     it('works with custom field argument', () => {
-      expect(unwrapNodesWithName(jobArrayWithElephant, 'needs', 'elephant')[0].needs).toEqual([
-        elephantArray[0].elephant,
-      ]);
+      expect(
+        unwrapNodesWithName(jobArrayWithElephant, 'needs', 'elephant')[0][NEEDS_PROPERTY],
+      ).toEqual([elephantArray[0].elephant]);
+    });
+  });
+
+  describe('unwrapJobWithNeeds', () => {
+    describe('PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY addition', () => {
+      it('correctly adds PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY to each job', () => {
+        const jobArray = [
+          {
+            name: 'job_a',
+            [PREVIOUS_STAGE_JOBS_PROPERTY]: { nodes: [{ name: 'dep_a' }] },
+            [NEEDS_PROPERTY]: { nodes: [{ name: 'dep_b' }] },
+          },
+          {
+            name: 'job_b',
+            [PREVIOUS_STAGE_JOBS_PROPERTY]: { nodes: [{ name: 'dep_c' }] },
+            [NEEDS_PROPERTY]: { nodes: [] },
+          },
+        ];
+
+        const result = unwrapJobWithNeeds(jobArray);
+
+        expect(result).toHaveLength(2);
+        expect(result[0]).toHaveProperty(PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY);
+        expect(result[1]).toHaveProperty(PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY);
+        expect(result[0][PREVIOUS_STAGE_JOBS_PROPERTY]).toEqual(['dep_a']);
+        expect(result[0][NEEDS_PROPERTY]).toEqual(['dep_b']);
+        expect(result[0][PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY]).toEqual(['dep_a', 'dep_b']);
+        expect(result[1][PREVIOUS_STAGE_JOBS_PROPERTY]).toEqual(['dep_c']);
+        expect(result[1][NEEDS_PROPERTY]).toEqual([]);
+        expect(result[1][PREVIOUS_STAGE_JOBS_UNION_NEEDS_PROPERTY]).toEqual(['dep_c']);
+      });
+    });
+
+    describe('data integrity through unwrapping process', () => {
+      it('preserves original job properties', () => {
+        const originalJob = {
+          name: 'complex_job',
+          id: '123',
+          status: { icon: 'status_success', label: 'passed' },
+          kind: 'BUILD',
+          customProperty: 'should_be_preserved',
+          [PREVIOUS_STAGE_JOBS_PROPERTY]: { nodes: [{ name: 'stage_dep' }] },
+          [NEEDS_PROPERTY]: { nodes: [{ name: 'explicit_dep' }] },
+        };
+
+        const result = unwrapJobWithNeeds([originalJob]);
+
+        expect(result[0].name).toBe('complex_job');
+        expect(result[0].id).toBe('123');
+        expect(result[0].status).toEqual({ icon: 'status_success', label: 'passed' });
+        expect(result[0].kind).toBe('BUILD');
+        expect(result[0].customProperty).toBe('should_be_preserved');
+      });
+
+      it('maintains job order', () => {
+        const jobArray = [
+          {
+            name: 'first_job',
+            [PREVIOUS_STAGE_JOBS_PROPERTY]: { nodes: [] },
+            [NEEDS_PROPERTY]: { nodes: [] },
+          },
+          {
+            name: 'second_job',
+            [PREVIOUS_STAGE_JOBS_PROPERTY]: { nodes: [] },
+            [NEEDS_PROPERTY]: { nodes: [] },
+          },
+          {
+            name: 'third_job',
+            [PREVIOUS_STAGE_JOBS_PROPERTY]: { nodes: [] },
+            [NEEDS_PROPERTY]: { nodes: [] },
+          },
+        ];
+
+        const result = unwrapJobWithNeeds(jobArray);
+
+        expect(result).toHaveLength(3);
+        expect(result[0].name).toBe('first_job');
+        expect(result[1].name).toBe('second_job');
+        expect(result[2].name).toBe('third_job');
+      });
     });
   });
 });

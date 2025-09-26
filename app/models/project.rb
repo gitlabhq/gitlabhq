@@ -546,7 +546,7 @@ class Project < ApplicationRecord
 
   with_options to: :team do
     delegate :members, prefix: true
-    delegate :add_member, :add_members, :member?
+    delegate :add_member, :add_members, :member?, :max_member_access_for_user
     delegate :add_guest, :add_planner, :add_reporter, :add_developer, :add_maintainer, :add_owner, :add_role
     delegate :has_user?
   end
@@ -1460,6 +1460,12 @@ class Project < ApplicationRecord
     group&.self_and_ancestors(hierarchy_order: hierarchy_order) || Group.none
   end
   alias_method :group_and_ancestors, :ancestors
+
+  def self_and_ancestors_ids
+    strong_memoize(:self_and_ancestors_ids) do
+      ancestors.pluck(:id) + [id]
+    end
+  end
 
   def ancestors_upto_ids(...)
     ancestors_upto(...).pluck(:id)
@@ -3665,6 +3671,15 @@ class Project < ApplicationRecord
   # Ensures project has a pool repository without exposing private creation logic
   def ensure_pool_repository
     pool_repository || create_new_pool_repository
+  end
+
+  def assigning_role_too_high?(current_user, access_level)
+    return false unless access_level
+    return false if current_user.can_admin_all_resources?
+
+    max_access_level = max_member_access_for_user(current_user)
+
+    !Authz::Role.access_level_encompasses?(current_access_level: max_access_level, level_to_assign: access_level)
   end
 
   private

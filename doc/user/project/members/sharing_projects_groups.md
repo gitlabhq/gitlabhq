@@ -18,6 +18,7 @@ description: Invitations, group inheritance, and project visibility.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) to display invited group members on the Members tab of the Members page in GitLab 16.10 [with a flag](../../../administration/feature_flags/_index.md) named `webui_members_inherited_users`. Disabled by default.
 - Feature flag `webui_members_inherited_users` was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/219230) in GitLab 17.0.
 - Feature flag `webui_members_inherited_users` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163627) in GitLab 17.4. Members of invited groups displayed by default.
+- In GitLab 18.0 group invites are limited to owners.
 
 {{< /history >}}
 
@@ -93,13 +94,12 @@ unless one of the following applies:
 
 - The invited group is public.
 - The current user is a member of the invited group.
-- The current user is an Owner of the current group or the Maintainer/Owner of the current project.
+- The current user is an Owner of the project.
 
 {{< alert type="note" >}}
 
 The invited group's name and membership source are masked from members who do not have access to the invited group.
-However, even if project Maintainers and Owners cannot access the private invited group, they can see the source of private invited group members.
-This behavior is intended to help project Maintainers and Owners to better manage the memberships of the projects they own.
+Project Owners can see the membership details of invited groups to help them manage access to their projects.
 
 {{< /alert >}}
 
@@ -128,7 +128,7 @@ For a project that was created by `Group 1`:
 
 Prerequisites:
 
-- You must have at least the Maintainer role.
+- You must have the Owner role for the project.
 - Sharing the project with other groups must not be prevented.
 - You must be a member of the invited group or subgroup.
 
@@ -274,7 +274,7 @@ unless one of the following applies:
 
 - The invited group is public.
 - The current user is a member of the invited group.
-- The current user is an Owner of the current group or the Maintainer/Owner of the current project.
+- The current user is an Owner of the project.
 
 {{< alert type="note" >}}
 
@@ -304,7 +304,8 @@ Similar to how you invite a group to a project, you can invite a group to anothe
 
 Prerequisites:
 
-- You must be a member of the invited and inviting groups.
+- You must have the Owner role for the group you want to invite others to.
+- You must be able to access the group you want to invite.
 
 To invite a group to your group:
 

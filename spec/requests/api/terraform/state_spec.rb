@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructure_as_code do
   include HttpBasicAuthHelpers
+  include WorkhorseHelpers
 
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
@@ -22,6 +23,17 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
   before do
     stub_terraform_state_object_storage
     stub_config(terraform_state: { enabled: true })
+  end
+
+  def temp_file(filename, content:)
+    upload_path = ::Terraform::StateUploader.workhorse_local_upload_path
+    file_path = "#{upload_path}/#{filename}"
+
+    FileUtils.mkdir_p(upload_path)
+    content ||= ""
+    File.write(file_path, content)
+
+    UploadedFile.new(file_path, filename: File.basename(file_path))
   end
 
   shared_examples 'endpoint with unique user tracking' do
@@ -185,10 +197,64 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
     end
   end
 
-  describe 'POST /projects/:id/terraform/state/:name' do
-    let(:params) { { instance: 'example-instance', serial: state.latest_version.version + 1 } }
+  describe 'POST /projects/:id/terraform/state/:name/authorize' do
+    include_context 'workhorse headers'
 
-    subject(:request) { post api(state_path), headers: auth_header, as: :json, params: params }
+    context 'with Workhorse headers' do
+      subject(:request) { post api("#{state_path}/authorize"), headers: workhorse_headers, as: :json }
+
+      it 'authorizes Terraform state upload', :aggregate_failures do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+        expect(json_response['TempPath']).to eq(Terraform::StateUploader.workhorse_local_upload_path)
+        expect(json_response['RemoteObject']).to be_nil
+        expect(json_response['MaximumSize']).to be_nil
+      end
+
+      context 'with max_terraform_state_size_bytes set' do
+        before do
+          stub_application_setting(max_terraform_state_size_bytes: 1024)
+        end
+
+        it 'authorizes Terraform state upload', :aggregate_failures do
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.media_type).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+          expect(json_response['TempPath']).to eq(Terraform::StateUploader.workhorse_local_upload_path)
+          expect(json_response['RemoteObject']).to be_nil
+          expect(json_response['MaximumSize']).to eq(1024)
+        end
+      end
+    end
+
+    context 'without Workhorse headers' do
+      subject(:request) { post api("#{state_path}/authorize"), headers: auth_header, as: :json }
+
+      it 'returns unauthorized', :aggregate_failures do
+        request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+        expect(json_response).to eq({ "message" => "403 Forbidden" })
+      end
+    end
+  end
+
+  describe 'POST /projects/:id/terraform/state/:name' do
+    let(:content) { { instance: 'example-instance', serial: state.latest_version.version + 1 }.to_json }
+    let(:params) { { file: temp_file('test-state', content: content) } }
+
+    subject(:request) do
+      workhorse_finalize(
+        api(state_path),
+        method: :post,
+        file_key: :file,
+        params: params,
+        headers: auth_header,
+        send_rewritten_field: true)
+    end
 
     it_behaves_like 'endpoint with unique user tracking'
     it_behaves_like 'it depends on value of the `terraform_state.enabled` config'
@@ -220,7 +286,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
         end
 
         context 'when serial already exists' do
-          let(:params) { { instance: 'example-instance', serial: state.latest_version.version } }
+          let(:content) { { instance: 'example-instance', serial: state.latest_version.version }.to_json }
 
           it 'returns unprocessable entity' do
             request
@@ -232,8 +298,18 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
         it_behaves_like 'cannot access a state that is scheduled for deletion'
       end
 
+      context 'with invalid JSON' do
+        let(:content) { '{' }
+
+        it 'returns unprocessable entity' do
+          request
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        end
+      end
+
       context 'without body' do
-        let(:params) { nil }
+        let(:content) { nil }
 
         it 'returns no content if no body is provided' do
           request
@@ -257,7 +333,15 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       let(:non_existing_state_name) { 'non-existing-state' }
       let(:non_existing_state_path) { "/projects/#{project_id}/terraform/state/#{non_existing_state_name}" }
 
-      subject(:request) { post api(non_existing_state_path), headers: auth_header, as: :json, params: params }
+      subject(:request) do
+        workhorse_finalize(
+          api(non_existing_state_path),
+          method: :post,
+          file_key: :file,
+          params: params,
+          headers: auth_header,
+          send_rewritten_field: true)
+      end
 
       context 'with maintainer permissions' do
         let(:current_user) { maintainer }
@@ -276,7 +360,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       end
 
       context 'without body' do
-        let(:params) { nil }
+        let(:content) { nil }
 
         it 'returns no content if no body is provided' do
           request
@@ -300,7 +384,15 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       let(:long_state_name) { 'a' * 256 }
       let(:long_state_path) { "/projects/#{project_id}/terraform/state/#{long_state_name}" }
 
-      subject(:request) { post api(long_state_path), headers: auth_header, as: :json, params: params }
+      subject(:request) do
+        workhorse_finalize(
+          api(long_state_path),
+          method: :post,
+          file_key: :file,
+          params: params,
+          headers: auth_header,
+          send_rewritten_field: true)
+      end
 
       it 'returns bad request' do
         request
@@ -365,7 +457,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       end
 
       context 'when the max allowed state size is less than the request state size' do
-        let(:max_allowed_state_size) { params.to_json.size - 1 }
+        let(:max_allowed_state_size) { content.size - 1 }
 
         it "returns a 'payload too large' response" do
           expect(response).to have_gitlab_http_status(:payload_too_large)

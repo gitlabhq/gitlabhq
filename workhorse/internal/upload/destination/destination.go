@@ -134,7 +134,7 @@ func Upload(ctx context.Context, reader io.Reader, size int64, name string, opts
 	var hlr *hardLimitReader
 	if opts.MaximumSize > 0 {
 		if size > opts.MaximumSize {
-			return nil, SizeError(fmt.Errorf("the upload size %d is over maximum of %d bytes", size, opts.MaximumSize))
+			return nil, fmt.Errorf("the upload size %d is over maximum of %d bytes: %w", size, opts.MaximumSize, ErrEntityTooLarge)
 		}
 
 		hlr = &hardLimitReader{r: reader, n: opts.MaximumSize}

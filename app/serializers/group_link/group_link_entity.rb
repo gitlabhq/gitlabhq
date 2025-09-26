@@ -50,7 +50,10 @@ module GroupLink
     private
 
     def can_read_shared_group?(group_link)
-      can?(current_user, :read_shared_with_group, group_link)
+      permissions = %i[create_group_link update_group_link delete_group_link]
+
+      can_any?(current_user, permissions, group_link) ||
+        can?(current_user, :read_group, group_link.shared_with_group)
     end
 
     def current_user

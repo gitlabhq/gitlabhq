@@ -70,6 +70,22 @@ RSpec.describe Gitlab::Seeder, feature_category: :shared do
 
       notification_service.new_note(note)
     end
+
+    it 'does not enable SafeRequestStore in production' do
+      allow(Rails.env).to receive(:development?).and_return(false)
+      expect(Gitlab::SafeRequestStore).not_to receive(:ensure_request_store)
+      described_class.quiet { 1 }
+    end
+
+    it 'enables the SafeRequestStore in development' do
+      allow(Rails.env).to receive(:development?).and_return(true)
+      expect(Gitlab::SafeRequestStore).to receive(:ensure_request_store).and_call_original
+      original_value = ENV['GITALY_DISABLE_REQUEST_LIMITS']
+      described_class.quiet do
+        expect(ENV['GITALY_DISABLE_REQUEST_LIMITS']).to eq('true')
+      end
+      expect(ENV['GITALY_DISABLE_REQUEST_LIMITS']).to eq(original_value)
+    end
   end
 
   describe '.log_message' do

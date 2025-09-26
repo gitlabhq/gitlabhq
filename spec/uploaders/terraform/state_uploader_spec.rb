@@ -11,6 +11,14 @@ RSpec.describe Terraform::StateUploader do
     stub_terraform_state_object_storage
   end
 
+  describe '.workhorse_local_upload_path' do
+    let(:expected_dir) { Rails.root.join('public/uploads/tmp/terraform_state').to_s }
+
+    it 'returns a directory based on public/uploads/tmp' do
+      expect(described_class.workhorse_local_upload_path).to eq(expected_dir)
+    end
+  end
+
   describe '#filename' do
     it 'contains the version of the terraform state record' do
       expect(subject.filename).to eq("#{state_version.version}.tfstate")

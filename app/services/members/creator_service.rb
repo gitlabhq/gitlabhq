@@ -5,6 +5,10 @@ module Members
   # All roads to add members should take this path.
   class CreatorService
     class << self
+      def cannot_manage_owners?(source, current_user)
+        source.max_member_access_for_user(current_user) < Gitlab::Access::OWNER
+      end
+
       def parsed_access_level(access_level)
         access_levels.fetch(access_level) { access_level.to_i }
       end
@@ -192,9 +196,11 @@ module Members
       end
     end
 
-    # overridden in EE:Members::Groups::CreatorService
     def member_role_too_high?
-      false
+      return false if skip_authorization?
+      return false if member_attributes[:access_level].blank?
+
+      member.prevent_role_assignement?(current_user, member_attributes)
     end
 
     def can_create_new_member?

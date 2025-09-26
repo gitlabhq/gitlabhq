@@ -13,17 +13,11 @@ module GroupLink
     end
 
     expose :can_update do |group_link, options|
-      can_admin_group_link?(group_link, options)
+      direct_member?(group_link, options) && Ability.allowed?(current_user, :update_group_link, group_link.shared_from)
     end
 
     expose :can_remove do |group_link, options|
-      can_admin_group_link?(group_link, options)
-    end
-
-    private
-
-    def can_admin_group_link?(group_link, options)
-      direct_member?(group_link, options) && can?(current_user, :admin_group_member, group_link.shared_from)
+      direct_member?(group_link, options) && Ability.allowed?(current_user, :delete_group_link, group_link.shared_from)
     end
   end
 end

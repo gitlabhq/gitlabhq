@@ -25,7 +25,7 @@
             project_name: @project.name,
             reload_page_on_submit: true.to_s }
             .merge(common_invite_modal_dataset(@project).slice(:users_limit_dataset, :add_seats_href)) }
-        - if @project.allowed_to_share_with_group?
+        - if @project.allowed_to_share_with_group? && can?(current_user, :create_group_link, @project)
           .js-invite-group-trigger{ data: { classes: "@md/panel:gl-w-auto gl-w-full", display_text: _('Invite a group') } }
           = render 'projects/invite_groups_modal', project: @project, reload_page_on_submit: true
         - if can?(current_user, :invite_member, @project)

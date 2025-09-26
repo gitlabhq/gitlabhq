@@ -94,7 +94,21 @@ module Gitlab
       without_database_logging do
         without_statement_timeout do
           without_new_note_notifications do
-            yield
+            # Request store benefits development seeders the most because it
+            # saves us about 30% of seeding time, and production seeds are minimal.
+            if Rails.env.development?
+              Gitlab::SafeRequestStore.ensure_request_store do
+                disable_request_limits = ENV['GITALY_DISABLE_REQUEST_LIMITS']
+                # We need this because seeders shouldn't be limited by Gitaly
+                # since we're not actually in a request-response environment.
+                ENV['GITALY_DISABLE_REQUEST_LIMITS'] = 'true'
+                yield
+              ensure
+                ENV['GITALY_DISABLE_REQUEST_LIMITS'] = disable_request_limits
+              end
+            else
+              yield
+            end
           end
         end
       end

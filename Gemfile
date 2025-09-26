@@ -634,7 +634,7 @@ gem 'sys-filesystem', '~> 1.4.3', feature_category: :shared
 gem 'net-ntp', feature_category: :shared
 
 # SSH keys support
-gem 'ssh_data', '~> 1.3', feature_category: :shared
+gem 'ssh_data', '~> 2.0', feature_category: :shared
 
 # Spamcheck GRPC protocol definitions
 gem 'spamcheck', '~> 1.3.0', feature_category: :insider_threat

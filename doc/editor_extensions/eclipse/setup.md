@@ -37,7 +37,7 @@ To install GitLab for Eclipse:
 1. On the plugin's page, select **Install**, and drag your mouse over to your Eclipse IDE.
 1. In the **Eclipse Marketplace** window, select the **GitLab For Eclipse** category.
 1. Select **Confirm >**, then select **Finish**.
-1. If the **Trust Authorities** window appears, select the **[`https://gitlab.com`](https://gitlab.com)** update site and select **Trust Selected**.
+1. If the **Trust Authorities** window appears, select the **`https://gitlab.com`** update site and select **Trust Selected**.
 1. Select **Restart Now**.
 
 If the Eclipse Marketplace is unavailable, follow the
@@ -47,7 +47,7 @@ for adding a new software site. For **Work with**, use
 
 ## Connect to GitLab
 
-After you install the extension, connect it to your GitLab account.
+After you install the extension, connect it to your GitLab account by creating a personal access token and authenticating with GitLab.
 
 ### Create a personal access token
 
