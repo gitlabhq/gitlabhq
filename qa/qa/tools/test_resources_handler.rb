@@ -345,23 +345,6 @@ module QA
         organized_resources
       end
 
-      # Returns the appropriate personal access token for API authentication
-      #
-      # Retrieves and memoizes a GitLab personal access token, prioritizing admin tokens
-      # when available. Admin tokens (GITLAB_QA_ADMIN_ACCESS_TOKEN) are preferred for
-      # environments that support admin scope operations, as they're required for
-      # cleaning up User resources and other admin-level operations.
-      #
-      # @return [String] Personal access token for GitLab API authentication
-      # @raise [SystemExit] Aborts program execution if neither token environment variable is set
-      def personal_access_token
-        if ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN'].blank? && ENV['GITLAB_QA_ACCESS_TOKEN'].blank?
-          abort("\nPlease provide either GITLAB_QA_ADMIN_ACCESS_TOKEN or GITLAB_QA_ACCESS_TOKEN")
-        end
-
-        @personal_access_token ||= ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN'] || ENV['GITLAB_QA_ACCESS_TOKEN']
-      end
-
       # Checks if a resource key is included in the PERSONAL_RESOURCES constant
       #
       # @param [String] key The resource key to check

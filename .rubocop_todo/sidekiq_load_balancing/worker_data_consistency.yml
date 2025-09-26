@@ -350,7 +350,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'ee/app/workers/status_page/publish_worker.rb'
     - 'ee/app/workers/sync_seat_link_request_worker.rb'
     - 'ee/app/workers/sync_seat_link_worker.rb'
-    - 'ee/app/workers/todos_destroyer/confidential_epic_worker.rb'
     - 'ee/app/workers/users/unconfirmed_users_deletion_cron_worker.rb'
     - 'ee/app/workers/vulnerabilities/statistics/adjustment_worker.rb'
     - 'ee/app/workers/vulnerabilities/statistics/schedule_worker.rb'

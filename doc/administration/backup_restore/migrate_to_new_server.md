@@ -91,15 +91,17 @@ To prepare the new server:
 
 1. Disable periodic background jobs:
    1. On the left sidebar, at the bottom, select **Admin**.
-   1. On the left sidebar, select **Monitoring** > **Background jobs**.
-   1. Under the Sidekiq dashboard, select **Cron** tab and then
-      **Disable All**.
+   1. On the left sidebar, select **Monitoring** > **Background jobs** to show the Sidekiq dashboard.
+   1. On the Sidekiq dashboard, on its top menu, select **Cron**.
+   1. On the Sidekiq dashboard, on its top right, select **Disable All**.
 1. Wait for the running CI/CD jobs to finish, or accept that jobs that have not completed may be lost.
-   To view jobs running, on the left sidebar, select **Overviews** > **Jobs**,
-   and then select **Running**.
+   To view all running jobs:
+   1. On the left sidebar, select **CI/CD** > **Jobs**.
+   1. In the filter bar, select **Status** > **Running**.
 1. Wait for Sidekiq jobs to finish:
    1. On the left sidebar, select **Monitoring** > **Background jobs**.
-   1. Under the Sidekiq dashboard, select **Queues** and then **Live Poll**.
+   1. On the Sidekiq dashboard, on its top menu, select **Queues**.
+   1. On the Sidekiq dashboard, on its top right, select **Live Poll**.
       Wait for **Busy** and **Enqueued** to drop to 0.
       These queues contain work that has been submitted by your users;
       shutting down before these jobs complete may cause the work to be lost.

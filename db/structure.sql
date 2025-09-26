@@ -1282,6 +1282,35 @@ $$;
 
 COMMENT ON FUNCTION table_sync_function_40ecbfb353() IS 'Partitioning migration: table sync for uploads table';
 
+CREATE FUNCTION table_sync_function_c237afdf68() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF (TG_OP = 'DELETE') THEN
+  DELETE FROM project_daily_statistics_b8088ecbd2 where "id" = OLD."id";
+ELSIF (TG_OP = 'UPDATE') THEN
+  UPDATE project_daily_statistics_b8088ecbd2
+  SET "project_id" = NEW."project_id",
+    "fetch_count" = NEW."fetch_count",
+    "date" = NEW."date"
+  WHERE project_daily_statistics_b8088ecbd2."id" = NEW."id";
+ELSIF (TG_OP = 'INSERT') THEN
+  INSERT INTO project_daily_statistics_b8088ecbd2 ("id",
+    "project_id",
+    "fetch_count",
+    "date")
+  VALUES (NEW."id",
+    NEW."project_id",
+    NEW."fetch_count",
+    NEW."date");
+END IF;
+RETURN NULL;
+
+END
+$$;
+
+COMMENT ON FUNCTION table_sync_function_c237afdf68() IS 'Partitioning migration: table sync for project_daily_statistics table';
+
 CREATE FUNCTION timestamp_coalesce(t1 timestamp with time zone, t2 anyelement) RETURNS timestamp without time zone
     LANGUAGE plpgsql IMMUTABLE
     AS $$
@@ -5527,6 +5556,14 @@ CREATE TABLE project_audit_events (
     CONSTRAINT project_audit_events_target_type_check CHECK ((char_length(target_type) <= 255))
 )
 PARTITION BY RANGE (created_at);
+
+CREATE TABLE project_daily_statistics_b8088ecbd2 (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    fetch_count integer NOT NULL,
+    date date NOT NULL
+)
+PARTITION BY RANGE (date);
 
 CREATE TABLE projects_visits (
     id bigint NOT NULL,
@@ -34368,6 +34405,9 @@ ALTER TABLE ONLY project_control_compliance_statuses
 ALTER TABLE ONLY project_custom_attributes
     ADD CONSTRAINT project_custom_attributes_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY project_daily_statistics_b8088ecbd2
+    ADD CONSTRAINT project_daily_statistics_b8088ecbd2_pkey PRIMARY KEY (id, date);
+
 ALTER TABLE ONLY project_daily_statistics
     ADD CONSTRAINT project_daily_statistics_pkey PRIMARY KEY (id);
 
@@ -37565,6 +37605,10 @@ CREATE INDEX idx_open_issues_on_project_and_confidential_and_author_and_id ON is
 CREATE INDEX idx_p_ai_active_context_code_repositories_enabled_namespace_id ON ONLY p_ai_active_context_code_repositories USING btree (enabled_namespace_id);
 
 CREATE INDEX idx_p_ci_finished_pipeline_ch_sync_evts_on_project_namespace_id ON ONLY p_ci_finished_pipeline_ch_sync_events USING btree (project_namespace_id);
+
+CREATE INDEX idx_p_project_daily_statistics_on_date_and_id ON ONLY project_daily_statistics_b8088ecbd2 USING btree (date, id);
+
+CREATE UNIQUE INDEX idx_p_project_daily_statistics_on_project_id_and_date ON ONLY project_daily_statistics_b8088ecbd2 USING btree (project_id, date DESC);
 
 CREATE INDEX idx_packages_debian_group_component_files_on_architecture_id ON packages_debian_group_component_files USING btree (architecture_id);
 
@@ -46330,6 +46374,8 @@ CREATE TRIGGER sync_project_authorizations_to_migration AFTER INSERT OR DELETE O
 
 CREATE TRIGGER sync_sent_notifications_to_part AFTER INSERT ON sent_notifications FOR EACH ROW EXECUTE FUNCTION sync_to_p_sent_notifications_table();
 
+CREATE TRIGGER table_sync_trigger_3104e56c7b AFTER INSERT OR DELETE OR UPDATE ON project_daily_statistics FOR EACH ROW EXECUTE FUNCTION table_sync_function_c237afdf68();
+
 CREATE TRIGGER table_sync_trigger_4ea4473e79 AFTER INSERT OR DELETE OR UPDATE ON uploads FOR EACH ROW EXECUTE FUNCTION table_sync_function_40ecbfb353();
 
 CREATE TRIGGER table_sync_trigger_cd362c20e2 AFTER INSERT OR DELETE OR UPDATE ON merge_request_diff_files FOR EACH ROW EXECUTE FUNCTION table_sync_function_3f39f64fc3();
@@ -49631,6 +49677,9 @@ ALTER TABLE ONLY group_push_rules
 
 ALTER TABLE ONLY incident_management_oncall_rotations
     ADD CONSTRAINT fk_rails_256e0bc604 FOREIGN KEY (oncall_schedule_id) REFERENCES incident_management_oncall_schedules(id) ON DELETE CASCADE;
+
+ALTER TABLE project_daily_statistics_b8088ecbd2
+    ADD CONSTRAINT fk_rails_2572a8ecfe FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_unit_test_failures
     ADD CONSTRAINT fk_rails_259da3e79c FOREIGN KEY (unit_test_id) REFERENCES ci_unit_tests(id) ON DELETE CASCADE;

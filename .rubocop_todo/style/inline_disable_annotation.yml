@@ -1324,7 +1324,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/workers/sync_seat_link_worker.rb'
     - 'ee/app/workers/system_access/base_global_group_sync_worker.rb'
     - 'ee/app/workers/system_access/base_saas_group_sync_worker.rb'
-    - 'ee/app/workers/todos_destroyer/confidential_epic_worker.rb'
     - 'ee/app/workers/update_all_mirrors_worker.rb'
     - 'ee/app/workers/users/unconfirmed_users_deletion_cron_worker.rb'
     - 'ee/app/workers/vulnerabilities/mark_dropped_as_resolved_worker.rb'

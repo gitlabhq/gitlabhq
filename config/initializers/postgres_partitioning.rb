@@ -118,13 +118,17 @@ end
 # Enable partition management for the backfill table during merge_request_diff_files
 # partitioning. This way new partitions will be created as the trigger syncs new
 # rows across to this table.
-#
 Gitlab::Database::Partitioning.register_tables(
   [
     {
       limit_connection_names: %i[main],
       table_name: 'merge_request_diff_files_99208b8fac',
       partitioned_column: :merge_request_diff_id, strategy: :int_range, partition_size: 200_000_000
+    },
+    {
+      limit_connection_names: %i[main],
+      table_name: 'project_daily_statistics_b8088ecbd2',
+      partitioned_column: :date, strategy: :monthly, retain_for: 3.months
     }
   ]
 )

@@ -478,7 +478,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'SyncSeatLinkRequestWorker' => 20,
         'SyncSeatLinkWorker' => 12,
         'SystemHookPushWorker' => 3,
-        'TodosDestroyer::ConfidentialEpicWorker' => 3,
         'TodosDestroyer::ConfidentialIssueWorker' => 3,
         'TodosDestroyer::DestroyedIssuableWorker' => 3,
         'TodosDestroyer::DestroyedDesignsWorker' => 3,

@@ -16,6 +16,11 @@
 module QA
   module Tools
     class DeleteTestSshKeys < DeleteResourceBase
+      USER_TOKENS = %w[GITLAB_QA_ADMIN_ACCESS_TOKEN
+        GITLAB_QA_ACCESS_TOKEN
+        GITLAB_QA_USER1_ACCESS_TOKEN
+        GITLAB_QA_USER2_ACCESS_TOKEN].freeze
+
       def initialize(title_portion: 'E2E test key:', dry_run: false)
         super(dry_run: dry_run)
         @title_portion = title_portion
@@ -23,9 +28,18 @@ module QA
       end
 
       def run
-        test_ssh_keys = fetch_test_ssh_keys
+        results = USER_TOKENS.flat_map do |token_name|
+          next unless ENV[token_name]
 
-        results = delete_ssh_keys(test_ssh_keys)
+          @user_api_client = user_api_client(ENV[token_name])
+          user = fetch_token_user(token_name, @user_api_client)
+          next if user[:id].nil?
+
+          logger.info("Running ssh key delete for user #{user[:username]} (#{user[:id]}) on #{ENV['GITLAB_ADDRESS']}..")
+
+          ssh_keys = fetch_test_ssh_keys
+          results = delete_ssh_keys(ssh_keys)
+        end.compact
 
         log_results(results, @dry_run)
       end
@@ -47,7 +61,7 @@ module QA
       end
 
       def fetch_test_ssh_keys
-        keys = fetch_resources("/user/keys")
+        keys = fetch_resources("/user/keys", @user_api_client)
 
         keys.select do |key|
           key[:title].include?(@title_portion)
@@ -55,7 +69,7 @@ module QA
       end
 
       def resource_request(key, **options)
-        Runtime::API::Request.new(api_client, "/user/keys/#{key[:id]}", **options).url
+        Runtime::API::Request.new(@user_api_client, "/user/keys/#{key[:id]}", **options).url
       end
 
       def resource_path(resource)

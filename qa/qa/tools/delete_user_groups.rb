@@ -25,11 +25,18 @@ module QA
         quality-e2e-tests-3
         quality-e2e-tests-4
         quality-e2e-tests-5
+        appsec-test-group
         gitlab-migration-large-import-test
         gitlab-qa-product-analytics
         gitlab-qa-product-analytics-2
+        import-export-testing-group
         qa-perf-testing
         remote-development].freeze
+
+      USER_TOKENS = %w[GITLAB_QA_ADMIN_ACCESS_TOKEN
+        GITLAB_QA_ACCESS_TOKEN
+        GITLAB_QA_USER1_ACCESS_TOKEN
+        GITLAB_QA_USER2_ACCESS_TOKEN].freeze
 
       # @example - delete user groups older than 24 hours
       #   GITLAB_ADDRESS=<address> \
@@ -55,11 +62,18 @@ module QA
       end
 
       def run
-        user_id, user_name = fetch_token_user_info
-        logger.info("Running group delete for user #{user_name} (#{user_id}) on #{ENV['GITLAB_ADDRESS']}...")
+        results = USER_TOKENS.flat_map do |token_name|
+          next unless ENV[token_name]
 
-        groups = fetch_user_groups
-        results = delete_user_groups(groups)
+          @user_api_client = user_api_client(ENV[token_name])
+          user = fetch_token_user(token_name, @user_api_client)
+          next if user[:id].nil?
+
+          logger.info("Running group delete for user #{user[:username]} (#{user[:id]}) on #{ENV['GITLAB_ADDRESS']}...")
+
+          groups = fetch_user_groups
+          results = delete_user_groups(groups)
+        end.compact
 
         log_results(results, @dry_run)
       end
@@ -81,41 +95,17 @@ module QA
       end
 
       def fetch_user_groups
-        groups = fetch_resources("groups?owned=true&top_level_only=true")
+        groups = fetch_resources("groups?owned=true&top_level_only=true", @user_api_client)
 
         groups.select do |group|
           # sandbox groups can't be deleted immediately so ignore ones already marked for deletion
-          group[:marked_for_deletion_on].nil? \
-          && @exclude_groups.exclude?(group[:path])
+          group[:marked_for_deletion_on].nil? &&
+            @exclude_groups.exclude?(group[:path])
         end
-      end
-
-      def fetch_token_user_info
-        logger.info("Fetching GITLAB_QA_ACCESS_TOKEN user ...")
-
-        user_response = get Runtime::API::Request.new(api_client, "/user").url
-
-        unless user_response.code == HTTP_STATUS_OK
-          logger.error("Request for user returned (#{user_response.code}): `#{user_response}` ")
-          exit 1 if fatal_response?(user_response.code)
-          return
-        end
-
-        parsed_response = parse_body(user_response)
-
-        if parsed_response.empty?
-          logger.error("User not found")
-          exit 1
-        end
-
-        [parsed_response[:id], parsed_response[:username]]
-      rescue StandardError => e
-        logger.error("Failed to fetch user for GITLAB_QA_ACCESS_TOKEN: #{e.message}")
-        exit 1
       end
 
       def resource_request(group, **options)
-        Runtime::API::Request.new(api_client, "/groups/#{group[:id]}", **options).url
+        Runtime::API::Request.new(@user_api_client, "/groups/#{group[:id]}", **options).url
       end
     end
   end

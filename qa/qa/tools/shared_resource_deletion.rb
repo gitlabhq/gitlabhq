@@ -204,6 +204,33 @@ module QA
         response.code == HTTP_STATUS_NOT_FOUND
       end
 
+      # Returns the appropriate personal access token for API authentication
+      #
+      # Retrieves and memoizes a GitLab personal access token, prioritizing admin tokens
+      # when available. Admin tokens (GITLAB_QA_ADMIN_ACCESS_TOKEN) are preferred for
+      # environments that support admin scope operations, as they're required for
+      # cleaning up User resources and other admin-level operations.
+      #
+      # Admin tokens will soon be required for resource cleanup
+      #
+      # @return [String] Personal access token for GitLab API authentication
+      # @raise [SystemExit] Aborts program execution if neither token environment variable is set
+      def personal_access_token
+        @personal_access_token ||= begin
+          admin_token = ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN']
+          user_token = ENV['GITLAB_QA_ACCESS_TOKEN']
+
+          if admin_token.blank? && user_token.blank?
+            abort("\nPlease provide either GITLAB_QA_ADMIN_ACCESS_TOKEN or GITLAB_QA_ACCESS_TOKEN")
+          end
+
+          token_type = admin_token.present? ? 'GITLAB_QA_ADMIN_ACCESS_TOKEN' : 'GITLAB_QA_ACCESS_TOKEN'
+          logger.info("Using #{token_type}...")
+
+          admin_token || user_token
+        end
+      end
+
       # Prints failed deletion attempts
       #
       # @param [Array<Hash{path=>String, response=>Hash}>] failed_deletions List of hashes of failed deletion attempts
