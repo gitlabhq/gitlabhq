@@ -219,8 +219,9 @@ class SearchController < ApplicationController
   end
 
   def search_type_valid?
-    search_type_errors = search_service.search_type_errors
+    return true if params[:search_type].nil?
 
+    search_type_errors = search_service.search_type_errors
     if search_type_errors
       flash[:alert] = search_type_errors
       return false
@@ -336,14 +337,14 @@ class SearchController < ApplicationController
   end
 
   def settings_for_project(project_id)
-    project = Project.find_by(id: project_id) # rubocop: disable CodeReuse/ActiveRecord -- Using `find` would raise 404s
+    project = Project.find_by_id(project_id)
     return [] unless project && current_user.can?(:admin_project, project)
 
     Search::ProjectSettings.new(project).all
   end
 
   def settings_for_group(group_id)
-    group = Group.find_by(id: group_id) # rubocop: disable CodeReuse/ActiveRecord -- Using `find` would raise 404s
+    group = Group.find_by_id(group_id)
     return [] unless group && current_user.can?(:admin_group, group)
 
     Search::GroupSettings.new(group).all

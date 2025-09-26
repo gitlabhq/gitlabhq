@@ -258,7 +258,8 @@ module GroupsHelper
   def groups_list_with_filtered_search_app_data(endpoint)
     {
       endpoint: endpoint,
-      initial_sort: project_list_sort_by
+      initial_sort: project_list_sort_by,
+      base_path: dashboard_groups_path
     }.to_json
   end
 

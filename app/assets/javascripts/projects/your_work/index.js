@@ -8,11 +8,11 @@ import YourWorkProjectsApp from './components/app.vue';
 
 Vue.use(VueRouter);
 
-export const createRouter = () => {
+export const createRouter = (basePath) => {
   const router = new VueRouter({
     routes,
     mode: 'history',
-    base: gon.relative_url_root || '/',
+    base: basePath,
   });
 
   return router;
@@ -27,7 +27,9 @@ export const initYourWorkProjects = () => {
     dataset: { appData },
   } = el;
 
-  const { initialSort, programmingLanguages } = convertObjectPropsToCamelCase(JSON.parse(appData));
+  const { initialSort, programmingLanguages, basePath } = convertObjectPropsToCamelCase(
+    JSON.parse(appData),
+  );
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(),
@@ -35,7 +37,7 @@ export const initYourWorkProjects = () => {
 
   return new Vue({
     el,
-    router: createRouter(),
+    router: createRouter(basePath),
     apolloProvider,
     name: 'YourWorkProjectsRoot',
     render(createElement) {

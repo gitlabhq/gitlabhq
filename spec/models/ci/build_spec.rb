@@ -2985,6 +2985,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         let(:options) { { environment: { name: 'production', deployment_tier: 'development' } } }
 
         it 'uses tier from options' do
+          build.clear_memoization(:expanded_deployment_tier)
+
           is_expected.to include({ key: 'CI_ENVIRONMENT_TIER', value: 'development', public: true, masked: false })
         end
       end

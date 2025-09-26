@@ -1,6 +1,6 @@
 name: gitlab_shared
 description:
-  Schema for all tables implementing shared features,
+  (Deprecated - use gitlab_shared_cell_local or gitlab_shared_org instead) Schema for all tables implementing shared features,
   ex. loose foreign keys, re-indexing, etc.
 allow_cross_joins:
   - gitlab_internal

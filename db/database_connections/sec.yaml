@@ -3,6 +3,8 @@ description: Cell-local GitLab database holding Security feature related tables.
 gitlab_schemas:
   - gitlab_internal
   - gitlab_shared
+  - gitlab_shared_org
+  - gitlab_shared_cell_local
   - gitlab_sec
 lock_gitlab_schemas:
   - gitlab_main

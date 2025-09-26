@@ -288,18 +288,57 @@ RSpec.shared_examples 'a deployable job' do
     end
   end
 
-  describe '#environment_tier_from_options' do
-    subject { job.environment_tier_from_options }
-
-    let(:job) { create(factory_type, options: options) }
-    let(:options) { { environment: { deployment_tier: 'production' } } }
-
-    it { is_expected.to eq('production') }
+  describe "#expanded_deployment_tier" do
+    subject { job.expanded_deployment_tier }
 
     context 'when options does not include deployment_tier' do
       let(:options) { { environment: { name: 'production' } } }
+      let(:job) { create(factory_type, options: options, pipeline: pipeline) }
 
       it { is_expected.to be_nil }
+    end
+
+    context 'when deployment_tier is a variable' do
+      let(:options) do
+        {
+          environment: {
+            name: 'production',
+            deployment_tier: '$DEPLOYMENT_TIER'
+          }
+        }
+      end
+
+      let(:job) { create(factory_type, environment: 'production', options: options, pipeline: pipeline, yaml_variables: yaml_variables) }
+
+      context 'when the value is valid' do
+        let(:yaml_variables) do
+          [
+            { key: 'DEPLOYMENT_TIER', value: 'production' }
+          ]
+        end
+
+        it 'returns the expanded value' do
+          is_expected.to eq('production')
+        end
+      end
+
+      context 'when the value is invalid' do
+        let(:yaml_variables) do
+          [
+            { key: 'DEPLOYMENT_TIER', value: 'invalid' }
+          ]
+        end
+
+        it 'returns the expanded value' do
+          is_expected.to eq('invalid')
+        end
+      end
+
+      context 'when the value is not set' do
+        let(:yaml_variables) { [] }
+
+        it { is_expected.to be_empty }
+      end
     end
   end
 
@@ -434,14 +473,41 @@ RSpec.shared_examples 'a deployable job' do
   describe '#environment_tier' do
     subject { job.environment_tier }
 
-    let(:options) { { environment: { deployment_tier: 'production' } } }
     let!(:environment) { create(:environment, name: 'production', tier: 'development', project: project) }
-    let(:job) { create(factory_type, options: options, environment: 'production', project: project) }
 
-    it { is_expected.to eq('production') }
+    context 'when options includes deployment_tier' do
+      let(:options) { { environment: { deployment_tier: 'production' } } }
+      let(:job) { create(factory_type, options: options, environment: 'production', project: project) }
+
+      it { is_expected.to eq('production') }
+    end
+
+    context 'when deployment_tier is a variable' do
+      let(:options) do
+        {
+          environment: {
+            name: 'production',
+            deployment_tier: '$DEPLOYMENT_TIER'
+          }
+        }
+      end
+
+      let(:yaml_variables) do
+        [
+          { key: 'DEPLOYMENT_TIER', value: 'production' }
+        ]
+      end
+
+      let(:job) { create(factory_type, options: options, environment: 'production', project: project, yaml_variables: yaml_variables) }
+
+      it 'returns the expanded value' do
+        is_expected.to eq('production')
+      end
+    end
 
     context 'when options does not include deployment_tier' do
       let(:options) { { environment: { name: 'production' } } }
+      let(:job) { described_class.new(options: options, environment: 'production', project: project) }
 
       it 'uses tier from environment' do
         is_expected.to eq('development')

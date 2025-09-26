@@ -3,11 +3,6 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/ci/jobs_page/components/job_cells/actions_cell.vue',
-    'app/assets/javascripts/ci/jobs_page/components/job_cells/status_cell.vue',
-    'app/assets/javascripts/ci/pipeline_details/graph/components/job_item.vue',
-    'app/assets/javascripts/ci/pipeline_details/graph/components/linked_pipeline.vue',
-    'app/assets/javascripts/ci/pipeline_details/graph/components/stage_column_component.vue',
     'app/assets/javascripts/diffs/components/diff_file.vue',
     'app/assets/javascripts/diffs/components/diff_file_header.vue',
     'app/assets/javascripts/diffs/components/diff_line_note_form.vue',

@@ -204,7 +204,6 @@ export default {
           <linked-pipeline
             :is-loading="isLoadingPipeline(pipeline.id)"
             :pipeline="pipeline"
-            :column-title="columnTitle"
             :type="type"
             :expanded="isExpanded(pipeline.id)"
             @downstreamHovered="onDownstreamHovered"

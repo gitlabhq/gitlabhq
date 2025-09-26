@@ -40700,6 +40700,8 @@ paths:
           description: Conflict
         '422':
           description: Runner is orphaned
+        '429':
+          description: Too Many Requests
       tags:
       - jobs
       operationId: postApiV4JobsRequest
@@ -40731,6 +40733,8 @@ paths:
           description: Unknown parameters
         '403':
           description: Forbidden
+        '429':
+          description: Too Many Requests
       tags:
       - jobs
       operationId: putApiV4JobsId
@@ -40762,6 +40766,8 @@ paths:
           description: Forbidden
         '416':
           description: Range not satisfiable
+        '429':
+          description: Too Many Requests
       tags:
       - jobs
       operationId: patchApiV4JobsIdTrace
@@ -40793,6 +40799,8 @@ paths:
           description: Artifacts support not enabled
         '413':
           description: File too large
+        '429':
+          description: Too Many Requests
       tags:
       - jobs
       operationId: postApiV4JobsIdArtifactsAuthorize
@@ -40826,6 +40834,8 @@ paths:
           description: Artifacts support not enabled
         '413':
           description: File too large
+        '429':
+          description: Too Many Requests
       tags:
       - jobs
       operationId: postApiV4JobsIdArtifacts
@@ -40863,6 +40873,8 @@ paths:
           description: Forbidden
         '404':
           description: Artifact not found
+        '429':
+          description: Too Many Requests
       tags:
       - jobs
       operationId: getApiV4JobsIdArtifacts
@@ -47826,6 +47838,10 @@ definitions:
         type: boolean
         description: Prevent sharing groups within this namespace with any groups
           outside the namespace. Only available on top-level groups.
+      step_up_auth_required_oauth_provider:
+        type: string
+        description: OAuth provider required for step-up authentication. Pass empty
+          string to disable.
       lock_math_rendering_limits_enabled:
         type: boolean
         description: Indicates if math rendering limits are locked for all descendent
@@ -48026,6 +48042,9 @@ definitions:
         type: string
       prevent_sharing_groups_outside_hierarchy:
         type: string
+      step_up_auth_required_oauth_provider:
+        type: string
+        description: OAuth provider required for step-up authentication.
       projects:
         "$ref": "#/definitions/API_Entities_Project"
       shared_projects:

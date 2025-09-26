@@ -12,18 +12,22 @@ scope(
   resources :projects, only: [:new, :create]
   resources :groups, only: [:new, :create]
 
-  scope path: :dashboard, module: :dashboard, as: :dashboard do
-    resources :projects, only: [:index] do
-      collection do
-        get :contributed, :starred, :personal, :member, :inactive, to: 'projects#index'
+  resource :dashboard, controller: 'dashboard', only: [] do
+    scope module: :dashboard do
+      resources :projects, only: [:index] do
+        collection do
+          get :contributed, :starred, :personal, :member, :inactive, to: 'projects#index'
+        end
+      end
+
+      resources :groups, only: [:index] do
+        collection do
+          get :member, :inactive, to: 'groups#index'
+        end
       end
     end
 
-    resources :groups, only: [:index] do
-      collection do
-        get :member, :inactive, to: 'groups#index'
-      end
-    end
+    root to: "dashboard/projects#index"
   end
 end
 

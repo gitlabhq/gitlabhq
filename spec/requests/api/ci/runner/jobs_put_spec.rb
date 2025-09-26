@@ -40,6 +40,41 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         let(:request) { update_job(state: 'success') }
       end
 
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_api, use_second_scope: true do
+        let(:job2) do
+          create(:ci_build, :pending, user: user, project: project, pipeline: pipeline, runner_id: runner.id)
+        end
+
+        def request
+          update_job
+        end
+
+        def request_with_second_scope
+          update_job(job2.id, job2.token)
+        end
+
+        context 'when enforce_runners_request_limit FF is disabled' do
+          before do
+            stub_feature_flags(enforce_runners_request_limit: false)
+          end
+
+          context 'when rate limiter enabled', :freeze_time, :clean_gitlab_redis_rate_limiting do
+            before do
+              allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:runner_jobs_api).and_return(1)
+            end
+
+            it 'logs request and accepts it when endpoint called more than the threshold' do
+              expect(Gitlab::AuthLogger).to receive(:error)
+
+              request
+              request
+
+              expect(response).not_to have_gitlab_http_status(:too_many_requests)
+            end
+          end
+        end
+      end
+
       it 'updates runner info' do
         expect { update_job(state: 'success') }.to change { runner.reload.contacted_at }
                                                .and change { runner_manager.reload.contacted_at }

@@ -47,5 +47,57 @@ RSpec.describe API::Entities::GroupDetail, feature_category: :groups_and_project
         end
       end
     end
+
+    describe '#step_up_auth_required_oauth_provider' do
+      let(:group) { root_group }
+      let(:options) { { user_can_admin_group: true } }
+
+      it { is_expected.to include(:step_up_auth_required_oauth_provider) }
+
+      context 'when user_can_admin_group is false' do
+        let(:options) { { user_can_admin_group: false } }
+
+        it { is_expected.not_to include(:step_up_auth_required_oauth_provider) }
+      end
+
+      context 'when namespace setting is blank' do
+        before do
+          allow(group).to receive(:namespace_settings).and_return(nil)
+        end
+
+        it { is_expected.not_to include(:step_up_auth_required_oauth_provider) }
+      end
+
+      context 'when step-up auth required oauth provider is set in namespace setting' do
+        let(:openid_connect_config) do
+          GitlabSettings::Options.new(
+            name: 'openid_connect',
+            step_up_auth: {
+              namespace: {
+                id_token: {
+                  required: { acr: 'gold' }
+                }
+              }
+            }
+          )
+        end
+
+        before do
+          stub_omniauth_setting(enabled: true, providers: [openid_connect_config])
+
+          group.namespace_settings.update!(step_up_auth_required_oauth_provider: 'openid_connect')
+        end
+
+        it { is_expected.to include step_up_auth_required_oauth_provider: 'openid_connect' }
+      end
+
+      context 'when feature flag :omniauth_step_up_auth_for_namespace is disabled' do
+        before do
+          stub_feature_flags(omniauth_step_up_auth_for_namespace: false)
+        end
+
+        it { is_expected.not_to include(:step_up_auth_required_oauth_provider) }
+      end
+    end
   end
 end

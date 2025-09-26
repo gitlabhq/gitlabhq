@@ -41,9 +41,6 @@ export default {
     durationFormatted() {
       return formatTime(this.duration * 1000);
     },
-    hasDurationAndFinishedTime() {
-      return this.finishedTime && this.duration;
-    },
   },
 };
 </script>

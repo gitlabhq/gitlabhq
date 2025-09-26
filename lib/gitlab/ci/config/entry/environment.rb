@@ -47,11 +47,7 @@ module Gitlab
                 inclusion: { in: %w[start stop prepare verify access], message: 'should be start, stop, prepare, verify, or access' },
                 allow_nil: true
 
-              validates :deployment_tier,
-                type: String,
-                inclusion: { in: ::Environment.tiers.keys, message: "must be one of #{::Environment.tiers.keys.join(', ')}" },
-                allow_nil: true
-
+              validates :deployment_tier, type: String, allow_nil: true
               validates :on_stop, type: String, allow_nil: true
               validates :kubernetes, type: Hash, allow_nil: true
               validates :auto_stop_in, type: String, allow_nil: true

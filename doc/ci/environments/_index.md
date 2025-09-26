@@ -1048,6 +1048,8 @@ To fix this, use one of the following solutions:
   even after the keyword removal.
 - Ensure the variable exists in the pipeline. Review the
   [limitation on supported variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- If you have `environment:deployment_tier` in your `.gitlab-ci.yml`, ensure the value is one of the
+  supported tiers: `production`, `staging`, `testing`, `development`, or `other`.
 
 #### If you get this error on review apps
 

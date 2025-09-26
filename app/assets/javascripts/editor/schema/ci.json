@@ -2334,14 +2334,7 @@
                 },
                 "deployment_tier": {
                   "type": "string",
-                  "description": "Explicitly specifies the tier of the deployment environment if non-standard environment name is used.",
-                  "enum": [
-                    "production",
-                    "staging",
-                    "testing",
-                    "development",
-                    "other"
-                  ]
+                  "description": "Explicitly specifies the tier of the deployment environment if non-standard environment name is used."
                 }
               },
               "required": [

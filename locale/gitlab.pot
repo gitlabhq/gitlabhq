@@ -1321,7 +1321,7 @@ msgstr[1] ""
 msgid "%{redirect_link_start} Click here to redirect to %{redirect_uri_val} %{redirect_link_end}"
 msgstr ""
 
-msgid "%{reference} %{author} %{stats} %{milestone} %{target}"
+msgid "%{reference} %{author} %{stats} %{milestone}"
 msgstr ""
 
 msgid "%{ref} cannot be added: %{error}"
@@ -2753,7 +2753,7 @@ msgstr ""
 msgid "AICatalog|Test run agents to see how they respond."
 msgstr ""
 
-msgid "AICatalog|Test run executed successfully, see %{linkStart}Session %{formattedId}%{linkEnd}."
+msgid "AICatalog|Test run executed successfully, see %{linkStart}Session %{workflowId}%{linkEnd}."
 msgstr ""
 
 msgid "AICatalog|The agent could not be added to the project. Check that the project meets the %{link_start}prerequisites%{link_end} and try again."
@@ -18027,7 +18027,7 @@ msgstr ""
 msgid "Configure repository storage."
 msgstr ""
 
-msgid "Configure runner version management and registration settings."
+msgid "Configure runner management and registration settings."
 msgstr ""
 
 msgid "Configure search access and visibility settings for search scopes."
@@ -55533,6 +55533,15 @@ msgstr ""
 msgid "Runners|Learn more in the %{linkStart}Google Cloud documentation%{linkEnd}."
 msgstr ""
 
+msgid "Runners|Limits how many API requests a runner can make to jobs endpoints within a 1-minute window, per job token."
+msgstr ""
+
+msgid "Runners|Limits how many API requests a runner can make to patch the job trace within a 1-minute window, per job token."
+msgstr ""
+
+msgid "Runners|Limits how many API requests a runner can make to request jobs within a 1-minute window."
+msgstr ""
+
 msgid "Runners|Loading"
 msgstr ""
 
@@ -55564,6 +55573,15 @@ msgid "Runners|Maximum amount of time the runner can run before it terminates. I
 msgstr ""
 
 msgid "Runners|Maximum job timeout"
+msgstr ""
+
+msgid "Runners|Maximum requests per minute to other Runner Jobs API endpoints"
+msgstr ""
+
+msgid "Runners|Maximum requests per minute to the PATCH /jobs/:id/trace endpoint"
+msgstr ""
+
+msgid "Runners|Maximum requests per minute to the POST /jobs/request endpoint"
 msgstr ""
 
 msgid "Runners|Median"
@@ -60660,6 +60678,9 @@ msgstr ""
 msgid "SecurityReports|Validity check"
 msgstr ""
 
+msgid "SecurityReports|Validity check couldn't confirm whether the secret is active or inactive."
+msgstr ""
+
 msgid "SecurityReports|Vulnerabilities over time"
 msgstr ""
 
@@ -64591,9 +64612,6 @@ msgid "Target branch"
 msgstr ""
 
 msgid "Target branch (%{branch}): %{pipelines}"
-msgstr ""
-
-msgid "Target branch: %{targetBranch}"
 msgstr ""
 
 msgid "Target branch: %{target_branch}"

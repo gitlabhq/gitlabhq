@@ -107,14 +107,6 @@ export default {
     authorId() {
       return getIdFromGraphQLId(this.mergeRequest.author.id);
     },
-    nonDefaultTarget() {
-      return this.mergeRequest.targetBranch !== this.mergeRequest.project.repository.rootRef;
-    },
-    targetBranchTooltip() {
-      return sprintf(__('Target branch: %{targetBranch}'), {
-        targetBranch: this.mergeRequest.targetBranch,
-      });
-    },
   },
   methods: {
     isScopedLabel,
@@ -135,7 +127,7 @@ export default {
         {{ mergeRequest.title }}
       </gl-link>
       <div class="gl-text-sm gl-text-subtle">
-        <gl-sprintf :message="__('%{reference} %{author} %{stats} %{milestone} %{target}')">
+        <gl-sprintf :message="__('%{reference} %{author} %{stats} %{milestone}')">
           <template #reference>{{ mergeRequest.reference }}</template>
           <template #author>
             <gl-link
@@ -159,17 +151,6 @@ export default {
               <gl-icon :size="16" name="milestone" />
               {{ mergeRequest.milestone.title }}
             </template>
-          </template>
-          <template #target>
-            <gl-link
-              v-if="nonDefaultTarget"
-              v-gl-tooltip
-              class="ref-name gl-ml-2 gl-inline-block gl-max-w-26 gl-truncate gl-align-bottom !gl-text-subtle hover:gl-text-default"
-              :href="mergeRequest.targetBranchPath"
-              :title="targetBranchTooltip"
-            >
-              <gl-icon :size="16" name="branch" class="gl-mr-1" />{{ mergeRequest.targetBranch }}
-            </gl-link>
           </template>
           <template #stats>
             <div class="gl-mr-2 gl-inline-flex">

@@ -107,6 +107,39 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         let(:request) { post api('/jobs/request') }
       end
 
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_request_api, use_second_scope: true do
+        let(:runner2) { create(:ci_runner, :project, projects: [project]) }
+
+        def request
+          request_job
+        end
+
+        def request_with_second_scope
+          request_job(runner2.token)
+        end
+
+        context 'when enforce_runners_request_limit FF is disabled' do
+          before do
+            stub_feature_flags(enforce_runners_request_limit: false)
+          end
+
+          context 'when rate limiter enabled', :freeze_time, :clean_gitlab_redis_rate_limiting do
+            before do
+              allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:runner_jobs_request_api).and_return(1)
+            end
+
+            it 'logs request and accepts it when endpoint called more than the threshold' do
+              expect(Gitlab::AuthLogger).to receive(:error)
+
+              request
+              request
+
+              expect(response).not_to have_gitlab_http_status(:too_many_requests)
+            end
+          end
+        end
+      end
+
       context 'when no token is provided' do
         it 'returns 400 error' do
           post api('/jobs/request')
@@ -1435,10 +1468,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             expect(response).to have_gitlab_http_status(:no_content)
           end
         end
+      end
 
-        def request_job(token = runner.token, **params)
-          post api('/jobs/request'), params: params.merge(token: token)
-        end
+      def request_job(token = runner.token, **params)
+        post api('/jobs/request'), params: params.merge(token: token)
       end
     end
   end

@@ -11,17 +11,7 @@ $file-tree-browser-z-index: 500;
   min-height: calc(100dvh - var(--application-header-height) - #{$bottom-padding});
 }
 
-.file-tree-browser-wrapper {
-  position: relative;
-}
-
 .file-tree-browser-overlay {
-  display: block;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
   @apply gl-bg-overlay;
   z-index: $file-tree-browser-z-index - 1;
 }
@@ -30,13 +20,10 @@ $file-tree-browser-z-index: 500;
   --file-row-level-padding: #{$gl-spacing-scale-5};
   --file-tree-min-height: 300px;
   --file-tree-bottom-padding: #{rem-to-px($bottom-padding)};
-  position: fixed;
   top: var(--application-header-height);
   bottom: $calc-application-footer-height;
-  left: 0;
   background: var(--gl-background-color-default);
   min-height: var(--file-tree-min-height);
-  flex: none;
   transform: translate3d(-100%, 0, 0);
   z-index: $file-tree-browser-z-index;
 
@@ -56,15 +43,11 @@ $file-tree-browser-z-index: 500;
     transform: translate3d(0, 0, 0);
   }
 
-  &.file-tree-browser-expanded {
-    position: sticky;
-  }
 
   &.file-tree-browser-peek {
     @apply gl-shadow;
     @apply gl-rounded-base;
     top: calc( var(--system-header-height) + var(--performance-bar-height));
-    left: 0;
   }
 }
 

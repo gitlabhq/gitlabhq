@@ -60,10 +60,10 @@ export default {
                   if (this.count > this.mergeRequests?.nodes?.length) {
                     // eslint-disable-next-line @gitlab/require-i18n-strings
                     Sentry.captureException(new Error('Count mismatch - possible SAML issue'), {
-                      extra: {
+                      tags: {
                         samlBannerVisible: Boolean(
                           document.querySelector('.js-saml-reauth-notice'),
-                        ),
+                        ).toString(),
                       },
                     });
                   }

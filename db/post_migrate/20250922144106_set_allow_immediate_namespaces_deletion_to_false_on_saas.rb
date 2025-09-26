@@ -4,30 +4,11 @@ class SetAllowImmediateNamespacesDeletionToFalseOnSaas < Gitlab::Database::Migra
   milestone '18.5'
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
-  class MigrationApplicationSetting < MigrationRecord
-    self.table_name = 'application_settings'
-
-    jsonb_accessor :namespace_deletion_settings,
-      allow_immediate_namespaces_deletion: [:boolean, { default: true }]
-  end
-
   def up
-    return unless should_run?
-
-    # On GitLab.com and Dedicated we don't allow bypassing deletion retention period
-    MigrationApplicationSetting.update_all(allow_immediate_namespaces_deletion: false)
+    # no-op - https://gitlab.com/gitlab-org/gitlab/-/issues/572480
   end
 
   def down
-    return unless should_run?
-
-    # Revert back to the default value
-    MigrationApplicationSetting.update_all(allow_immediate_namespaces_deletion: true)
-  end
-
-  private
-
-  def should_run?
-    Gitlab.com? || MigrationApplicationSetting.last&.gitlab_dedicated_instance
+    # no-op
   end
 end

@@ -233,6 +233,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         root_moved_permanently_redirection: false,
         ropc_without_client_credentials: true,
         rsa_key_restriction: 0,
+        runner_jobs_request_api_limit: 2000,
+        runner_jobs_patch_trace_api_limit: 2000,
+        runner_jobs_endpoints_api_limit: 200,
         search_rate_limit: 30,
         search_rate_limit_allowlist: [],
         search_rate_limit_unauthenticated: 10,
@@ -542,6 +545,9 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           projects_api_limit
           projects_api_rate_limit_unauthenticated
           raw_blob_request_limit
+          runner_jobs_request_api_limit
+          runner_jobs_patch_trace_api_limit
+          runner_jobs_endpoints_api_limit
           search_rate_limit
           search_rate_limit_unauthenticated
           sidekiq_job_limiter_compression_threshold_bytes

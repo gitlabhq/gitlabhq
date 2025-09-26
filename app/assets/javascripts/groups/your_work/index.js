@@ -11,11 +11,11 @@ import { resolvers } from './graphql/resolvers';
 
 Vue.use(VueRouter);
 
-export const createRouter = () => {
+export const createRouter = (basePath) => {
   const router = new VueRouter({
     routes,
     mode: 'history',
-    base: gon.relative_url_root || '/',
+    base: basePath,
   });
 
   return router;
@@ -30,7 +30,7 @@ export const initYourWorkGroups = () => {
     dataset: { appData },
   } = el;
 
-  const { initialSort, endpoint } = convertObjectPropsToCamelCase(JSON.parse(appData));
+  const { initialSort, endpoint, basePath } = convertObjectPropsToCamelCase(JSON.parse(appData));
 
   const apolloProvider = new VueApollo({
     defaultClient: createDefaultClient(resolvers(endpoint)),
@@ -43,7 +43,7 @@ export const initYourWorkGroups = () => {
 
   return new Vue({
     el,
-    router: createRouter(),
+    router: createRouter(basePath),
     apolloProvider,
     name: 'YourWorkGroupsRoot',
     render(createElement) {

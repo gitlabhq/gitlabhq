@@ -3,6 +3,8 @@ description: Main GitLab database holding all projects, issues, etc.
 gitlab_schemas:
   - gitlab_internal
   - gitlab_shared
+  - gitlab_shared_org
+  - gitlab_shared_cell_local
   - gitlab_main
   - gitlab_main_org
   - gitlab_main_cell

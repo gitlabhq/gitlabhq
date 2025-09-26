@@ -120,12 +120,24 @@ RSpec.describe SearchController, feature_category: :global_search do
       it_behaves_like 'support for active record query timeouts', :show, { search: 'hello' }, :search_objects, :html
       it_behaves_like 'metadata is set', :show
 
-      it 'verifies search type' do
-        expect_next_instance_of(SearchService) do |service|
-          expect(service).to receive(:search_type_errors).once
-        end
+      context 'when search_type is included in params' do
+        it 'verifies search type' do
+          expect_next_instance_of(SearchService) do |service|
+            expect(service).to receive(:search_type_errors).once.and_call_original
+          end
 
-        get :show, params: { search: 'hello', scope: 'blobs' }
+          get :show, params: { search: 'hello', scope: 'blobs', search_type: 'foobar' }
+        end
+      end
+
+      context 'when search_type is not included in params' do
+        it 'does not verifies search type' do
+          expect_next_instance_of(SearchService) do |service|
+            expect(service).not_to receive(:search_type_errors)
+          end
+
+          get :show, params: { search: 'hello', scope: 'blobs' }
+        end
       end
 
       it_behaves_like 'rate limit scope handling', :show, { search: 'hello' }

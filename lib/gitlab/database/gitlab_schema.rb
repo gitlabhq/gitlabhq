@@ -37,6 +37,8 @@ module Gitlab
         '_test_gitlab_embedding_' => :gitlab_embedding,
         '_test_gitlab_geo_' => :gitlab_geo,
         '_test_gitlab_pm_' => :gitlab_pm,
+        '_test_gitlab_shared_org_' => :gitlab_shared_org,
+        '_test_gitlab_shared_cell_local_' => :gitlab_shared_cell_local,
         '_test_' => :gitlab_shared,
         'pg_' => :gitlab_internal
       }.freeze

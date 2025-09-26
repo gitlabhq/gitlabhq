@@ -8,6 +8,8 @@ module Gitlab
 
       self.abstract_class = true
 
+      SHARED_SCHEMAS = %i[gitlab_shared gitlab_shared_org gitlab_shared_cell_local].freeze
+
       # if shared model is used, this allows to limit connections
       # on which this model is being shared
       class_attribute :limit_connection_names, default: nil
@@ -26,9 +28,9 @@ module Gitlab
           # in such cases it is fine to ignore such connections
           gitlab_schemas = Gitlab::Database.gitlab_schemas_for_connection(connection)
 
-          unless gitlab_schemas.nil? || gitlab_schemas.include?(:gitlab_shared)
+          unless gitlab_schemas.nil? || (gitlab_schemas & SHARED_SCHEMAS).present?
             raise "Cannot set `SharedModel` to connection from `#{Gitlab::Database.db_config_name(connection)}` " \
-              "since this connection does not include `:gitlab_shared` schema."
+              "since this connection does not include any of the shared gitlab_schema."
           end
 
           self.overriding_connection = connection

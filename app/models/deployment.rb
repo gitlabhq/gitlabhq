@@ -444,7 +444,7 @@ class Deployment < ApplicationRecord
   def tier_in_yaml
     return unless deployable
 
-    deployable.environment_tier_from_options
+    deployable.expanded_deployment_tier
   end
 
   # default tag limit is 100, 0 means no limit

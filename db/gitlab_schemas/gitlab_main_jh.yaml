@@ -2,6 +2,8 @@ name: gitlab_main_jh
 description: Schema for all Jihu-specific tables.
 allow_cross_joins:
   - gitlab_shared
+  - gitlab_shared_org
+  - gitlab_shared_cell_local
   - gitlab_main
   - gitlab_main_cell
   - gitlab_main_clusterwide
@@ -9,6 +11,8 @@ allow_cross_joins:
 allow_cross_transactions:
   - gitlab_internal
   - gitlab_shared
+  - gitlab_shared_org
+  - gitlab_shared_cell_local
   - gitlab_main
   - gitlab_main_cell
   - gitlab_main_clusterwide

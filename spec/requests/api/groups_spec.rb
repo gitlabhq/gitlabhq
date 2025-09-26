@@ -1037,6 +1037,73 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(response_groups).to contain_exactly(group1.id, group_with_deletion_on.id, group_without_deletion.id)
       end
     end
+
+    context 'step_up_auth_required_oauth_provider attribute' do
+      let(:ommiauth_provider_config) do
+        GitlabSettings::Options.new(
+          name: "openid_connect",
+          step_up_auth: {
+            namespace: {
+              id_token: {
+                required: {
+                  acr: 'gold'
+                }
+              }
+            }
+          }
+        )
+      end
+
+      before do
+        stub_omniauth_setting(enabled: true, providers: [ommiauth_provider_config])
+      end
+
+      context 'when user has admin_group permission' do
+        it 'includes step_up_auth_required_oauth_provider' do
+          group1.update!(step_up_auth_required_oauth_provider: 'openid_connect')
+
+          get api("/groups/#{group1.id}", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to include('step_up_auth_required_oauth_provider' => 'openid_connect')
+        end
+
+        it 'returns nil when not configured' do
+          get api("/groups/#{group1.id}", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to include('step_up_auth_required_oauth_provider' => nil)
+        end
+      end
+
+      context 'when user lacks admin_group permission' do
+        let(:guest) { create(:user, guest_of: group1) }
+
+        it 'excludes step_up_auth_required_oauth_provider' do
+          group1.update!(step_up_auth_required_oauth_provider: 'openid_connect')
+
+          get api("/groups/#{group1.id}", guest)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).not_to include('step_up_auth_required_oauth_provider')
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(omniauth_step_up_auth_for_namespace: false)
+        end
+
+        it 'excludes step_up_auth_required_oauth_provider' do
+          group1.update!(step_up_auth_required_oauth_provider: 'openid_connect')
+
+          get api("/groups/#{group1.id}", user1)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).not_to include('step_up_auth_required_oauth_provider')
+        end
+      end
+    end
   end
 
   describe 'PUT /groups/:id' do
@@ -1153,6 +1220,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response['avatar_url']).to end_with('dk.png')
         expect(json_response['math_rendering_limits_enabled']).to eq(false)
         expect(json_response['lock_math_rendering_limits_enabled']).to eq(true)
+        expect(json_response['step_up_auth_required_oauth_provider']).to be_nil
       end
 
       context 'when updating :emails_disabled' do
@@ -1299,6 +1367,82 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
               expect(response).to have_gitlab_http_status(:ok)
               expect(json_response['enabled_git_access_protocol']).to eq(protocol)
             end
+          end
+        end
+      end
+
+      context 'updating the `step_up_auth_required_oauth_provider` attribute' do
+        let(:ommiauth_provider_config) do
+          GitlabSettings::Options.new(
+            name: "openid_connect",
+            step_up_auth: {
+              namespace: {
+                id_token: {
+                  required: {
+                    acr: 'gold'
+                  }
+                }
+              }
+            }
+          )
+        end
+
+        before do
+          stub_omniauth_setting(enabled: true, providers: [ommiauth_provider_config])
+        end
+
+        context 'when user has admin_group permission' do
+          it 'updates step_up_auth_required_oauth_provider' do
+            put api("/groups/#{group1.id}", user1), params: {
+              step_up_auth_required_oauth_provider: 'openid_connect'
+            }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to include('step_up_auth_required_oauth_provider' => 'openid_connect')
+            expect(group1.reload.step_up_auth_required_oauth_provider).to eq('openid_connect')
+          end
+
+          it 'returns validation error for invalid provider' do
+            put api("/groups/#{group1.id}", user1), params: {
+              step_up_auth_required_oauth_provider: 'invalid_provider'
+            }
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']['namespace_settings.step_up_auth_required_oauth_provider'])
+              .to include('is not included in the list')
+          end
+        end
+
+        context 'when user lacks admin_group permission' do
+          let(:developer) { create(:user, developer_of: group1) }
+
+          before do
+            group1.add_developer(developer)
+          end
+
+          it 'returns forbidden' do
+            put api("/groups/#{group1.id}", developer), params: {
+              step_up_auth_required_oauth_provider: 'openid_connect'
+            }
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(omniauth_step_up_auth_for_namespace: false)
+          end
+
+          it 'ignores the parameter' do
+            put api("/groups/#{group1.id}", user1), params: {
+              step_up_auth_required_oauth_provider: 'openid_connect',
+              description: 'Updated description'
+            }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(group1.reload.step_up_auth_required_oauth_provider).to be_nil
+            expect(group1.description).to eq('Updated description')
           end
         end
       end

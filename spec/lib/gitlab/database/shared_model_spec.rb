@@ -3,10 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::SharedModel, feature_category: :database do
-  describe 'using an external connection' do
-    let!(:original_connection) { described_class.connection }
-    let(:new_connection) { double('connection') }
-
+  shared_examples 'shared model using the correct connection' do
     it 'overrides the connection for the duration of the block', :aggregate_failures do
       expect_original_connection_around do
         described_class.using_connection(new_connection) do
@@ -14,6 +11,13 @@ RSpec.describe Gitlab::Database::SharedModel, feature_category: :database do
         end
       end
     end
+  end
+
+  describe 'using an external connection' do
+    let!(:original_connection) { described_class.connection }
+    let(:new_connection) { double('connection') }
+
+    it_behaves_like 'shared model using the correct connection'
 
     it 'does not affect connections in other threads', :aggregate_failures do
       expect_original_connection_around do
@@ -27,7 +31,7 @@ RSpec.describe Gitlab::Database::SharedModel, feature_category: :database do
       end
     end
 
-    it 'raises an error if the connection does not include `:gitlab_shared` schema' do
+    it 'raises an error if the connection does not include shared gitlab_schema' do
       allow(Gitlab::Database)
         .to receive(:gitlab_schemas_for_connection)
         .with(new_connection)
@@ -38,6 +42,26 @@ RSpec.describe Gitlab::Database::SharedModel, feature_category: :database do
           described_class.using_connection(new_connection) {}
         end.to raise_error(/Cannot set `SharedModel` to connection/)
       end
+    end
+
+    context 'with connection including gitlab_shared_org' do
+      before do
+        allow(Gitlab::Database).to receive(:gitlab_schemas_for_connection)
+          .with(new_connection)
+          .and_return([:gitlab_shared_org])
+      end
+
+      it_behaves_like 'shared model using the correct connection'
+    end
+
+    context 'with connection including gitlab_shared_cell_local' do
+      before do
+        allow(Gitlab::Database).to receive(:gitlab_schemas_for_connection)
+          .with(new_connection)
+          .and_return([:gitlab_shared_cell_local])
+      end
+
+      it_behaves_like 'shared model using the correct connection'
     end
 
     context 'when multiple connection overrides are nested', :aggregate_failures do

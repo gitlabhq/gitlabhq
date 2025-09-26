@@ -43,8 +43,8 @@ export default {
     ]),
     visibilityClasses() {
       return {
-        'file-tree-browser-expanded': this.fileTreeBrowserIsExpanded,
-        'file-tree-browser-peek': this.fileTreeBrowserIsPeekOn,
+        'file-tree-browser-expanded gl-sticky': this.fileTreeBrowserIsExpanded,
+        'file-tree-browser-peek gl-left-0': this.fileTreeBrowserIsPeekOn,
       };
     },
   },
@@ -72,15 +72,15 @@ export default {
 </script>
 
 <template>
-  <div class="file-tree-browser-wrapper">
+  <div class="gl-relative">
     <div
       v-if="fileTreeBrowserIsPeekOn"
-      class="file-tree-browser-overlay"
+      class="gl-fixed gl-bottom-0 gl-left-0 gl-right-0 gl-top-0"
       data-testid="overlay"
     ></div>
     <file-browser-height
       :style="{ '--tree-width': `${treeWidth}px` }"
-      class="file-tree-browser file-tree-browser-responsive gl-p-4"
+      class="file-tree-browser file-tree-browser-responsive gl-fixed gl-left-0 gl-flex-none gl-p-4"
       :class="visibilityClasses"
     >
       <panel-resizer

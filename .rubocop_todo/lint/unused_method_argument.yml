@@ -378,7 +378,6 @@ Lint/UnusedMethodArgument:
     - 'lib/gitlab/metrics/subscribers/action_cable.rb'
     - 'lib/gitlab/optimistic_locking.rb'
     - 'lib/gitlab/otp_key_rotator.rb'
-    - 'lib/gitlab/project_search_results.rb'
     - 'lib/gitlab/quick_actions/issue_and_merge_request_actions.rb'
     - 'lib/gitlab/redis/multi_store.rb'
     - 'lib/gitlab/repository_cache.rb'

@@ -188,12 +188,16 @@ module Ci
       environment_permanent_metadata.fetch(:action, 'start')
     end
 
-    def environment_tier_from_options
-      environment_permanent_metadata[:deployment_tier]
+    def expanded_deployment_tier
+      deployment_tier = environment_permanent_metadata[:deployment_tier]
+      return unless deployment_tier.present?
+
+      ExpandVariables.expand(deployment_tier, -> { simple_variables })
     end
+    strong_memoize_attr :expanded_deployment_tier
 
     def environment_tier
-      environment_tier_from_options || persisted_environment.try(:tier)
+      expanded_deployment_tier || persisted_environment.try(:tier)
     end
 
     def environment_url

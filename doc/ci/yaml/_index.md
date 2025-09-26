@@ -2768,6 +2768,12 @@ the namespace `my-namespace` and the `flux_resource_path` set to
 
 #### `environment:deployment_tier`
 
+{{< history >}}
+
+- Support for CI/CD variables [added](https://gitlab.com/gitlab-org/gitlab/-/issues/365402) in GitLab 18.5.
+
+{{< /history >}}
+
 Use the `deployment_tier` keyword to specify the tier of the deployment environment.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
@@ -2779,6 +2785,9 @@ Use the `deployment_tier` keyword to specify the tier of the deployment environm
 - `testing`
 - `development`
 - `other`
+- [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file),
+  including predefined, project, group, instance, or variables defined in the
+  `.gitlab-ci.yml` file. You can't use variables defined in a `script` section.
 
 **Example of `environment:deployment_tier`**:
 

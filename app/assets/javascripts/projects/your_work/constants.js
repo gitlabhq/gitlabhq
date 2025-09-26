@@ -121,8 +121,7 @@ export const PROJECT_DASHBOARD_TABS = [
   INACTIVE_TAB,
 ];
 
-const organizationPath = gon?.current_organization?.full_path || '';
-export const BASE_ROUTE = `${organizationPath}/dashboard/projects`;
+export const BASE_ROUTE = '/dashboard/projects';
 
 export const ROOT_ROUTE_NAME = 'root';
 

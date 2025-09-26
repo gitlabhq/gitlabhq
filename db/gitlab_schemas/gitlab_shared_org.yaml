@@ -1,0 +1,10 @@
+name: gitlab_shared_org
+description:
+  Schema for all shared tables that require sharding.
+allow_cross_joins:
+  - gitlab_internal
+allow_cross_transactions:
+  - gitlab_internal
+require_sharding_key: true
+sharding_root_tables:
+  - organizations

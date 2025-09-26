@@ -1809,6 +1809,7 @@ PUT /groups/:id
 | `require_two_factor_authentication`                  | boolean           | no       | Require all users in this group to set up two-factor authentication. |
 | `shared_runners_setting`                             | string            | no       | See [Options for `shared_runners_setting`](#options-for-shared_runners_setting). Enable or disable instance runners for a group's subgroups and projects. |
 | `share_with_group_lock`                              | boolean           | no       | Prevent sharing a project with another group within this group. |
+| `step_up_auth_required_oauth_provider`               | string            | no       | OAuth provider required for step-up authentication. Pass empty string to disable. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556943) in GitLab 18.4. Available when `omniauth_step_up_auth_for_namespace` feature flag is enabled. |
 | `subgroup_creation_level`                            | string            | no       | Allowed to [create subgroups](../user/group/subgroups/_index.md#create-a-subgroup). Can be `owner` (users with the Owner role), or `maintainer` (users with the Maintainer role). |
 | `two_factor_grace_period`                            | integer           | no       | Time before Two-factor authentication is enforced (in hours). |
 | `visibility`                                         | string            | no       | The visibility level of the group. Can be `private`, `internal`, or `public`. |

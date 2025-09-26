@@ -37,19 +37,12 @@ module Gitlab
       @filters = filters
     end
 
-    def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE, without_count: true, preload_method: nil)
+    def objects(scope, page: nil, per_page: DEFAULT_PER_PAGE, preload_method: nil)
       should_preload = preload_method.present?
       collection = collection_for(scope)
-
-      if collection.nil?
-        should_preload = false
-        collection = Kaminari.paginate_array([])
-      end
-
       collection = collection.public_send(preload_method) if should_preload # rubocop:disable GitlabSecurity/PublicSend
       collection = collection.page(page).per(per_page)
-
-      without_count ? collection.without_count : collection
+      collection.without_count
     end
 
     def formatted_count(scope)
@@ -212,15 +205,10 @@ module Gitlab
       apply_sort(issues, scope: 'issues')
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def milestones
       milestones = Milestone.search(query)
-
-      milestones = filter_milestones_by_project(milestones)
-
-      milestones.reorder('updated_at DESC')
+      filter_milestones_by_project(milestones).order_updated_desc
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def merge_requests
       merge_requests = MergeRequestsFinder.new(current_user, issuable_params).execute

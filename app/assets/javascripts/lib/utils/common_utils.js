@@ -228,6 +228,7 @@ export const contentTop = () => {
 };
 
 export const findParentPanelScrollingEl = (element) => {
+  if (!element) return null;
   const staticPanel = element.closest('.js-static-panel');
   if (staticPanel) {
     return staticPanel.querySelector('.js-static-panel-inner');

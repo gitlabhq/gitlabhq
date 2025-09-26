@@ -767,12 +767,18 @@ describe('TabsWithList', () => {
     describe('when gon.relative_url_root is set', () => {
       beforeEach(async () => {
         gon.relative_url_root = '/gitlab';
-        await createComponent();
+        await createComponent({
+          propsData: {
+            tabs: GROUPS_SHOW_TABS,
+          },
+          createRouter: groupsShowCreateRouter,
+          route: { name: SUBGROUPS_AND_PROJECTS_TAB.value, params: { group: 'foo/bar/baz' } },
+        });
         router.push = jest.fn();
       });
 
       it('pushes new route correctly and respects relative url', async () => {
-        findGlTabs().vm.$emit('input', 3);
+        findGlTabs().vm.$emit('input', 1);
 
         await nextTick();
 
@@ -781,10 +787,10 @@ describe('TabsWithList', () => {
           expect(router.options.base).toBe('/gitlab');
         } else {
           // Vue router 4
-          expect(router.currentRoute.href).toBe('/gitlab/');
+          expect(router.currentRoute.href).toMatch(/^\/gitlab\//);
         }
 
-        expect(router.push).toHaveBeenCalledWith('/dashboard/projects/member');
+        expect(router.push).toHaveBeenCalledWith('/groups/foo/bar/baz/-/shared');
       });
     });
 

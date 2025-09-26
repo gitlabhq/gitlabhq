@@ -6,8 +6,6 @@ export function createMockMergeRequest(mergeRequest = {}) {
     webUrl: '/',
     draft: false,
     state: 'opened',
-    targetBranch: 'target',
-    targetBranchPath: 'target-path',
     author: {
       id: 1,
       avatarUrl: '/',
@@ -30,12 +28,6 @@ export function createMockMergeRequest(mergeRequest = {}) {
     },
     labels: {
       nodes: [],
-    },
-    project: {
-      id: 2,
-      repository: {
-        rootRef: 'main',
-      },
     },
     headPipeline: null,
     userNotesCount: 0,

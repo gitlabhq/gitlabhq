@@ -52,11 +52,6 @@ export default {
       required: false,
       default: false,
     },
-    jobHovered: {
-      type: String,
-      required: false,
-      default: '',
-    },
     pipelineExpanded: {
       type: Object,
       required: false,
@@ -80,7 +75,6 @@ export default {
   jobClasses: ['gl-w-full', 'gl-p-3', 'gl-border-0', '!gl-rounded-base', 'pipeline-job-action'],
   data() {
     return {
-      showConfirmationModal: false,
       shouldTriggerActionClick: false,
     };
   },
@@ -99,11 +93,6 @@ export default {
     },
     withConfirmationModal() {
       return this.action.confirmationMessage !== null;
-    },
-    confirmationTitle() {
-      return sprintf(this.$options.i18n.confirmationModal.title, {
-        stageName: this.name,
-      });
     },
     nonFailedJobs() {
       return this.groups.filter((group) => group.status?.group !== FAILED_STATUS);
@@ -139,9 +128,6 @@ export default {
       }
 
       return group.size === 1 && firstJobDefined;
-    },
-    showActionConfirmationModal() {
-      this.showConfirmationModal = true;
     },
     executePendingAction() {
       this.shouldTriggerActionClick = true;
@@ -230,7 +216,6 @@ export default {
             <job-item
               v-else-if="singleJobExists(group)"
               :job="group.jobs[0]"
-              :job-hovered="jobHovered"
               :skip-retry-modal="skipRetryModal"
               :source-job-hovered="sourceJobHovered"
               :pipeline-expanded="pipelineExpanded"
@@ -273,7 +258,6 @@ export default {
           <job-item
             v-else-if="singleJobExists(group)"
             :job="group.jobs[0]"
-            :job-hovered="jobHovered"
             :skip-retry-modal="skipRetryModal"
             :source-job-hovered="sourceJobHovered"
             :pipeline-expanded="pipelineExpanded"

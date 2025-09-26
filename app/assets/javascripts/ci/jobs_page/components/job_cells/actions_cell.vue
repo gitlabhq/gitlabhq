@@ -113,9 +113,6 @@ export default {
     scheduledAt() {
       return this.job.scheduledAt;
     },
-    currentJobActionPath() {
-      return this.job.detailedStatus?.action?.path;
-    },
     currentJobMethod() {
       return this.job.detailedStatus?.action?.method;
     },

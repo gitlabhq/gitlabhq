@@ -17,7 +17,8 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
         .values
 
       database_connections.permutation(2) do |db, other_db|
-        gitlab_schemas = db.gitlab_schemas - [:gitlab_shared, :gitlab_internal]
+        gitlab_schemas = db.gitlab_schemas -
+          [:gitlab_shared, :gitlab_internal, :gitlab_shared_org, :gitlab_shared_cell_local]
 
         expect(other_db.lock_gitlab_schemas).to include(*gitlab_schemas),
           "Expected `#{other_db.name}` lock_gitlab_schemas to include `#{db.name}` gitlab_schemas:"
@@ -42,6 +43,8 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
       '_test_gitlab_main_org_table'                  | :gitlab_main_org
       '_test_gitlab_pm_table'                        | :gitlab_pm
       '_test_gitlab_sec_table'                       | :gitlab_sec
+      '_test_gitlab_shared_org_table'                | :gitlab_shared_org
+      '_test_gitlab_shared_cell_local_table'         | :gitlab_shared_cell_local
       '_test_my_table'                               | :gitlab_shared
       'pg_attribute'                                 | :gitlab_internal
     end

@@ -11,8 +11,6 @@ fragment MergeRequestDashboardFragment on MergeRequest {
   webUrl
   draft
   state
-  targetBranch
-  targetBranchPath
   author {
     ...User
   }
@@ -41,12 +39,6 @@ fragment MergeRequestDashboardFragment on MergeRequest {
   labels {
     nodes {
       ...Label
-    }
-  }
-  project {
-    id
-    repository {
-      rootRef
     }
   }
   resolvedDiscussionsCount

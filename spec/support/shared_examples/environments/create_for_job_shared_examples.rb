@@ -141,16 +141,17 @@ RSpec.shared_examples 'create environment for job' do
     context 'when job has deployment tier attribute' do
       let(:attributes) do
         {
-          environment: 'customer-portal',
+          environment: environment_name,
           options: {
             environment: {
-              name: 'customer-portal',
+              name: environment_name,
               deployment_tier: deployment_tier
             }
           }
         }
       end
 
+      let(:environment_name) { 'customer-portal' }
       let(:deployment_tier) { 'production' }
 
       context 'when environment has not been created yet' do
@@ -169,8 +170,9 @@ RSpec.shared_examples 'create environment for job' do
         context 'when deployment tier is unknown' do
           let(:deployment_tier) { 'unknown' }
 
-          it 'raises an error' do
-            expect { subject }.to raise_error(ArgumentError, "'unknown' is not a valid tier")
+          it "is not a valid tier" do
+            is_expected.not_to be_valid
+            expect(subject.errors[:tier].first).to eq('is not included in the list')
           end
         end
       end

@@ -311,7 +311,9 @@
           "properties": {
             "action": true,
             "auto_stop_in": true,
-            "deployment_tier": true,
+            "deployment_tier": {
+              "type": "string"
+            },
             "kubernetes": {
               "type": "object",
               "additionalProperties": false,

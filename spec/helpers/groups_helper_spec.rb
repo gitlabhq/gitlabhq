@@ -834,7 +834,8 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
       expect(Gitlab::Json.parse(helper.groups_list_with_filtered_search_app_data(endpoint))).to eq(
         {
           'endpoint' => endpoint,
-          'initial_sort' => 'created_desc'
+          'initial_sort' => 'created_desc',
+          'base_path' => '/dashboard/groups'
         }
       )
     end

@@ -734,38 +734,6 @@ $scroll-scrim-height: 2.25rem;
   }
 }
 
-.super-sidebar,
-.super-topbar {
-  .notification-dot {
-    @apply gl-absolute gl-rounded-full;
-    width: 0.375rem;
-    height: 0.375rem;
-    top: 0.375rem;
-    right: 0.375rem;
-    background-color: var(--super-sidebar-user-bar-notification-dot);
-  }
-
-  .notification-dot-mask {
-    mask: linear-gradient(black 0 0) exclude,
-          radial-gradient(50% 50%, black 100%, transparent 100%) top -0.1875rem right -0.25rem / 0.625rem 0.625rem no-repeat;
-  }
-
-  .btn-with-notification {
-    position: relative;
-
-    .notification-dot-warning {
-      @include notification-dot(var(--gl-color-orange-300), 9px, 1px, 22px);
-    }
-
-    &:hover,
-    &:focus {
-      .notification {
-        background-color: var(--super-sidebar-user-bar-button-hover-bg);
-      }
-    }
-  }
-}
-
 .custom-gradient-progress .gl-progress {
   background: linear-gradient(90deg, #ffb177 0%, #936fff 100%);
 }

@@ -33,10 +33,6 @@ export default {
     GlSprintf,
   },
   props: {
-    columnTitle: {
-      type: String,
-      required: true,
-    },
     expanded: {
       type: Boolean,
       required: true,

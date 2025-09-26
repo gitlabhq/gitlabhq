@@ -12190,6 +12190,29 @@ Input type: `SetGroupSecretPushProtectionInput`
 | <a id="mutationsetgroupsecretpushprotectionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsetgroupsecretpushprotectionerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.setGroupValidityChecks`
+
+Enable or disable Validity Checks for a group.
+
+Input type: `SetGroupValidityChecksInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetgroupvaliditychecksclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetgroupvaliditychecksnamespacepath"></a>`namespacePath` | [`ID!`](#id) | Full path of the group. |
+| <a id="mutationsetgroupvaliditychecksprojectstoexclude"></a>`projectsToExclude` | [`[Int!]`](#int) | IDs of projects to exclude from validity checks configuration. |
+| <a id="mutationsetgroupvaliditychecksvaliditychecksenabled"></a>`validityChecksEnabled` | [`Boolean!`](#boolean) | Whether to enable validity checks for all projects in the group. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsetgroupvaliditychecksclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsetgroupvaliditycheckserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationsetgroupvaliditychecksvaliditychecksenabled"></a>`validityChecksEnabled` | [`Boolean!`](#boolean) | Indicates whether validity checks have been enabled for the group. |
+
 ### `Mutation.setLicenseConfigurationSource`
 
 Set the license information source for a given project.

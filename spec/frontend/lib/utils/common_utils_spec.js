@@ -254,6 +254,51 @@ describe('common_utils', () => {
     });
   });
 
+  describe('findParentPanelScrollingEl', () => {
+    afterEach(() => {
+      document.body.innerHTML = '';
+    });
+
+    it('handles null/undefined elements', () => {
+      expect(commonUtils.findParentPanelScrollingEl(null)).toBeNull();
+      expect(commonUtils.findParentPanelScrollingEl(undefined)).toBeNull();
+    });
+
+    describe('when element is inside a panel', () => {
+      it.each`
+        panelType    | panelClass            | innerClass
+        ${'static'}  | ${'js-static-panel'}  | ${'js-static-panel-inner'}
+        ${'dynamic'} | ${'js-dynamic-panel'} | ${'js-dynamic-panel-inner'}
+      `('returns $panelType panel inner element', ({ panelClass, innerClass }) => {
+        document.body.innerHTML = `
+        <div class="${panelClass}">
+          <div class="${innerClass}">
+            <div id="test" />
+          </div>
+        </div>
+      `;
+
+        const element = document.getElementById('test');
+        const inner = document.querySelector(`.${innerClass}`);
+
+        expect(commonUtils.findParentPanelScrollingEl(element)).toBe(inner);
+      });
+    });
+
+    describe('when element is not inside a proper panel', () => {
+      it.each`
+        scenario      | html
+        ${'no panel'} | ${'<div id="test" />'}
+        ${'no inner'} | ${'<div class="js-static-panel"><div id="test" /></div>'}
+      `('returns null for $scenario', ({ html }) => {
+        document.body.innerHTML = html;
+        const element = document.getElementById('test');
+
+        expect(commonUtils.findParentPanelScrollingEl(element)).toBeNull();
+      });
+    });
+  });
+
   describe('scrollToElement*', () => {
     let parentElem;
     let elem;

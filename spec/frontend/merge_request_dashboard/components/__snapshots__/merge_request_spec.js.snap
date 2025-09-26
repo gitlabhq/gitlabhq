@@ -25,7 +25,7 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
       class="gl-text-sm gl-text-subtle"
     >
       <gl-sprintf-stub
-        message="%{reference} %{author} %{stats} %{milestone} %{target}"
+        message="%{reference} %{author} %{stats} %{milestone}"
       />
     </div>
   </div>

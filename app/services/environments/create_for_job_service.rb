@@ -34,7 +34,7 @@ module Environments
                        .safe_find_or_create_by(name: job.expanded_environment_name) do |environment|
         # Initialize the attributes at creation
         environment.auto_stop_in = expanded_auto_stop_in(job)
-        environment.tier = job.environment_tier_from_options
+        environment.tier = job.expanded_deployment_tier
         environment.merge_request = job.pipeline.merge_request
       end
 

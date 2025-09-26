@@ -53,3 +53,7 @@ To view the AI Catalog:
 
 1. On the left sidebar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**.
+
+## Related topics
+
+- [Agents](agents/_index.md)
