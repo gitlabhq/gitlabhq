@@ -2898,6 +2898,7 @@ Input type: `AiFlowTriggerCreateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationaiflowtriggercreateaicatalogitemconsumerid"></a>`aiCatalogItemConsumerId` | [`AiCatalogItemConsumerID`](#aicatalogitemconsumerid) | AI catalog item consumer to use instead of config_path. |
 | <a id="mutationaiflowtriggercreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiflowtriggercreateconfigpath"></a>`configPath` | [`String`](#string) | Path to the configuration file for the AI flow trigger. |
 | <a id="mutationaiflowtriggercreatedescription"></a>`description` | [`String!`](#string) | Description of the AI flow trigger. |
@@ -2949,6 +2950,7 @@ Input type: `AiFlowTriggerUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationaiflowtriggerupdateaicatalogitemconsumerid"></a>`aiCatalogItemConsumerId` | [`AiCatalogItemConsumerID`](#aicatalogitemconsumerid) | AI catalog item consumer to use instead of config_path. |
 | <a id="mutationaiflowtriggerupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiflowtriggerupdateconfigpath"></a>`configPath` | [`String`](#string) | Path to the configuration file for the AI flow trigger. |
 | <a id="mutationaiflowtriggerupdatedescription"></a>`description` | [`String`](#string) | Description of the AI flow trigger. |
@@ -23542,6 +23544,7 @@ Represents an AI flow trigger.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="aiflowtriggertypeaicatalogitemconsumer"></a>`aiCatalogItemConsumer` | [`AiCatalogItemConsumer`](#aicatalogitemconsumer) | AI catalog item consumer associated with the trigger. |
 | <a id="aiflowtriggertypeconfigpath"></a>`configPath` | [`String`](#string) | Path to the configuration file for the trigger. |
 | <a id="aiflowtriggertypeconfigurl"></a>`configUrl` | [`String`](#string) | Web URL to the configuration file for the trigger. |
 | <a id="aiflowtriggertypecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the flow trigger was created. |
@@ -24617,6 +24620,7 @@ Available models for Duo Agentic Chat.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="availablemodelsdefaultmodel"></a>`defaultModel` | [`AiModelSelectionOfferedModel`](#aimodelselectionofferedmodel) | Default LLM for Duo Agentic Chat. |
+| <a id="availablemodelspinnedmodel"></a>`pinnedModel` | [`AiModelSelectionOfferedModel`](#aimodelselectionofferedmodel) | Pinned model for Duo Agentic Chat if set via feature settings. |
 | <a id="availablemodelsselectablemodels"></a>`selectableModels` | [`[AiModelSelectionOfferedModel!]`](#aimodelselectionofferedmodel) | LLMs compatible with Duo Agentic Chat. |
 
 ### `AwardEmoji`

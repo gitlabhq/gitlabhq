@@ -208,7 +208,7 @@ RSpec.shared_examples 'filters on each package_type' do |is_project: false|
   let_it_be(:package3) { create(:npm_package, project: project) }
   let_it_be(:package4) { create(:nuget_package, project: project) }
   let_it_be(:package5) { create(:pypi_package, project: project) }
-  let_it_be(:package6) { create(:composer_package, project: project) }
+  let_it_be(:package6) { create(:composer_package_sti, project: project) }
   let_it_be(:package7) { create(:generic_package, project: project) }
   let_it_be(:package8) { create(:golang_package, project: project) }
   let_it_be(:package9) { create(:debian_package, project: project) }

@@ -55,6 +55,15 @@ When a branch is protected, the default behavior enforces these restrictions:
 1. No one can delete a protected branch using Git commands, however, users with at least Maintainer
    role can [delete a protected branch](protected.md#delete-protected-branches) from the UI or API.
 
+When you configure these permissions, selecting a role grants access to users with that role and all
+higher roles. For example:
+
+- Selecting **Maintainers** grants access to users with the Maintainer and Owner roles.
+- Selecting **Developers + Maintainers** grants access to users with the Developer, Maintainer, and Owner roles.
+
+This behavior ensures that users with higher privileges retain access available to users with lower
+privileges.
+
 ## Force push permissions
 
 Force push permissions follow the same most permissive rule applies logic. For example, consider

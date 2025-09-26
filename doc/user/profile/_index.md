@@ -234,9 +234,9 @@ to match your username.
 
 {{< history >}}
 
-- Mastodon user account [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132892) in GitLab 16.6 [with a flag](../feature_flags.md) named `mastodon_social_ui`. Disabled by default.
+- Mastodon user account [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132892) in GitLab 16.6 [with a flag](../../administration/feature_flags/list.md) named `mastodon_social_ui`. Disabled by default.
 - Mastodon user account [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/428163) in GitLab 16.7. Feature flag `mastodon_social_ui` removed.
-- Ability to verify Mastodon account using your GitLab user profile [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433391) in GitLab 17.4 [with a flag](../feature_flags.md) named `verify_mastodon_user`. Disabled by default.
+- Ability to verify Mastodon account using your GitLab user profile [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433391) in GitLab 17.4 [with a flag](../../administration/feature_flags/list.md) named `verify_mastodon_user`. Disabled by default.
 
 {{< /history >}}
 
@@ -404,7 +404,7 @@ blocked users don't appear in the followers list on user profiles.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325558) in GitLab 16.0 [with a flag](../feature_flags.md) named `disable_follow_users`.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325558) in GitLab 16.0 [with a flag](../../administration/feature_flags/list.md) named `disable_follow_users`.
 - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/420620) in GitLab 16.3.
 
 {{< /history >}}

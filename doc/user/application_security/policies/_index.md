@@ -221,21 +221,15 @@ Use the policy editor to create, edit, and delete policies:
 
    The policy editor has two modes:
 
-   - The visual **Rule mode** allows you to construct and preview policy
-     rules using rule blocks and related controls.
+   Rule mode
+   : Construct and preview policy rules using rule blocks and related controls.
 
-     ![Policy Editor Rule Mode](img/policy_rule_mode_v15_9.png)
+   YAML mode
+   : Enter a policy definition in YAML format. Suitable for expert users and cases that the rule
+   mode doesn't support.
 
-   - **YAML mode** allows you to enter a policy definition in `.yaml` format
-     and is aimed at expert users and cases that the Rule mode doesn't
-     support.
-
-     ![Policy Editor YAML Mode](img/policy_yaml_mode_v15_9.png)
-
-     You can use both modes interchangeably and switch between them at any time. If a YAML resource
-     is incorrect or contains data not supported by the Rule mode, Rule mode is automatically
-     disabled. If the YAML is incorrect, you must use YAML mode to fix your policy before Rule mode
-     is available again.
+   You can switch between rule mode and YAML mode at any time. If your YAML has errors or
+   unsupported data, rule mode turns off automatically. Fix the YAML first to use rule mode again.
 
 1. Select **Configure with a merge request** to save and apply the changes.
 

@@ -10,7 +10,7 @@
     = yield :sessions_broadcast
     .gl-h-full.gl-flex.gl-flex-wrap
       .container.gl-self-center
-        .content
+        %main.content
           = render "layouts/flash"
           - if custom_text.present?
             .row.gl-mt-5.gl-gap-y-6
@@ -32,7 +32,7 @@
                 = brand_image
                 %h1.mb-3.gl-text-size-h2
                   = brand_title
-              .gl-w-full.gl-ml-auto.gl-mr-auto.bar{ class: '@sm/panel:gl-w-1/2' }
+              .gl-w-full.gl-ml-auto.gl-mr-auto.bar{ class: 'sm:gl-w-1/2' }
                 = yield
 
       = render 'devise/shared/footer'

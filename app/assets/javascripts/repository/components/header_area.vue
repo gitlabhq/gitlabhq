@@ -26,7 +26,7 @@ import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_
 import AddToTree from '~/repository/components/header_area/add_to_tree.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
-import { useViewport } from '~/pinia/global_stores/viewport';
+import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { Mousetrap } from '~/lib/mousetrap';
 import {
   EVENT_COLLAPSE_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE,
@@ -139,7 +139,7 @@ export default {
   },
   computed: {
     ...mapState(useFileTreeBrowserVisibility, ['fileTreeBrowserIsVisible']),
-    ...mapState(useViewport, ['isCompactSize']),
+    ...mapState(useMainContainer, ['isCompact']),
     isTreeView() {
       return this.$route.name !== 'blobPathDecoded';
     },
@@ -213,7 +213,7 @@ export default {
         this.glFeatures.repositoryFileTreeBrowser &&
         !this.isProjectOverview &&
         !this.fileTreeBrowserIsVisible &&
-        !this.isCompactSize
+        !this.isCompact
       );
     },
     toggleFileBrowserShortcutKey() {

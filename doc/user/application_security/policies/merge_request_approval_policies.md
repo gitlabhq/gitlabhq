@@ -447,6 +447,8 @@ The availability of support for pipeline execution policies is controlled by a f
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
 | `unblock_rules_using_execution_policies` | `boolean` | false    | `true`, `false` | When enabled, approval rules do not block merge requests when a scan is required by a scan execution policy or a pipeline execution policy but a required scan artifact is missing from the target branch. This option only works when the project or group has an existing scan execution policy or pipeline execution policy with matching scanners. |
 
+You can only exclude [license finding rules](#license_finding-rule-type) if they target newly detected states only (`license_states` is set to `newly_detected`).
+
 ### Examples
 
 #### Example of `policy_tuning` with a scan execution policy

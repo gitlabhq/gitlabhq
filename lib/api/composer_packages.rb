@@ -216,14 +216,21 @@ module API
                       .execute
                       .first
 
-          metadata = package&.composer_metadatum
+          not_found! unless package
 
-          not_found! unless metadata
+          if Feature.disabled?(:packages_composer_read_from_detached_table, Feature.current_request)
+            metadata = package.composer_metadatum
+
+            not_found! unless metadata
+          end
 
           track_package_event('pull_package', :composer, project: project, namespace: project.namespace)
-          package.touch_last_downloaded_at
 
-          send_git_archive project.repository, ref: metadata.target_sha, format: 'zip', append_sha: true
+          # For now we keep writing to the existing packages_packages table.
+          # It contains the trigger to sync the data with packages_composer_packages table.
+          ::Packages::Composer::Sti::Package.touch_last_downloaded_at(package.id)
+
+          send_git_archive project.repository, ref: package.target_sha, format: 'zip', append_sha: true
         end
       end
     end

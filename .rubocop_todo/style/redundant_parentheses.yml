@@ -13,7 +13,6 @@ Style/RedundantParentheses:
     - 'ee/lib/ee/gitlab/git_access.rb'
     - 'ee/spec/requests/lfs_locks_api_spec.rb'
     - 'lib/api/appearance.rb'
-    - 'lib/file_size_validator.rb'
     - 'lib/gitlab/database/query_analyzers/prevent_set_operator_mismatch/targets.rb'
     - 'lib/gitlab/favicon.rb'
     - 'lib/gitlab/github_import/importer/pull_requests/review_importer.rb'

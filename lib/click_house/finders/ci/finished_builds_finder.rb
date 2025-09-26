@@ -71,14 +71,18 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
         # Aggregation methods
         def mean_duration_in_seconds
           select(
-            build_duration_aggregate('avg', 'mean_duration_in_seconds'),
+            round(
+              ms_to_s(query_builder.avg(:duration))
+            ).as('mean_duration_in_seconds'),
             aggregate: true
           )
         end
 
         def p95_duration_in_seconds
           select(
-            build_duration_aggregate('quantile(0.95)', 'p95_duration_in_seconds'),
+            round(
+              ms_to_s(query_builder.quantile(0.95, :duration))
+            ).as('p95_duration_in_seconds'),
             aggregate: true
           )
         end
@@ -150,51 +154,28 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           raise ArgumentError, "Invalid status: #{status}. Must be one of: #{STATUS.join(', ')}"
         end
 
-        def build_duration_aggregate(function, alias_name)
-          duration_function = Arel::Nodes::NamedFunction.new(
-            function,
-            [@query_builder.table[:duration]]
-          )
-
-          Arel::Nodes::NamedFunction.new(
-            'round',
-            [
-              Arel::Nodes::Division.new(
-                duration_function,
-                Arel::Nodes.build_quoted(1000.0)
-              ),
-              2
-            ]
-          ).as(alias_name)
-        end
-
         def build_rate_aggregate(status)
-          count_if = Arel::Nodes::NamedFunction.new(
-            'countIf',
-            [
-              Arel::Nodes::Equality.new(
-                @query_builder.table[:status],
-                Arel::Nodes.build_quoted(status)
-              )
-            ]
+          builds_with_status = query_builder.count_if(
+            query_builder.equality(:status, Arel::Nodes.build_quoted(status))
           )
+          total_builds = query_builder.count
 
-          total_count = Arel::Nodes::NamedFunction.new('count', [])
+          percentage = query_builder.division(builds_with_status, total_builds)
+          percentage_value = query_builder.multiply(percentage, 100)
 
-          Arel::Nodes::NamedFunction.new(
-            'round',
-            [
-              Arel::Nodes::Multiplication.new(
-                Arel::Nodes::Division.new(count_if, total_count),
-                Arel::Nodes.build_quoted(100)
-              ),
-              2
-            ]
-          ).as("rate_of_#{status}")
+          round(percentage_value).as("rate_of_#{status}")
         end
 
         def aggregate?(field)
           ALLOWED_AGGREGATIONS.include?(field.to_sym)
+        end
+
+        def round(node, precision = 2)
+          Arel::Nodes::NamedFunction.new('round', [node, precision])
+        end
+
+        def ms_to_s(node)
+          query_builder.division(node, 1000.0)
         end
       end
     end

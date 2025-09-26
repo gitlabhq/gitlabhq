@@ -17,7 +17,7 @@ Upgrade a Linux package installation to a later version of GitLab.
 
 ## Upgrade the operating system (optional)
 
-If required, you should upgrade to a [supported operating system](../../administration/package_information/supported_os.md) before upgrading GitLab itself.
+If required, you should upgrade to a [supported operating system](../../install/package/_index.md) before upgrading GitLab itself.
 
 After upgrading the operating system, you might also need to update the GitLab package source URL in your package manager's configuration.
 If your package manager reports that no further updates are available, but you know that updates exist, repeat the instructions on the

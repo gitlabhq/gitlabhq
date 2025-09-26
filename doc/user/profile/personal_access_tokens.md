@@ -49,7 +49,7 @@ Use impersonation tokens to automate authentication as a specific user.
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/348660) in GitLab 15.3, default expiration of 30 days is populated in the UI.
 - Ability to create non-expiring personal access tokens [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/392855) in GitLab 16.0.
-- Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+- Maximum allowable lifetime limit [extended to 400 days](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) in GitLab 17.6 [with a flag](../../administration/feature_flags/list.md) named `buffered_token_expiration_limit`. Disabled by default.
 - Personal access token description [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443819) in GitLab 17.7.
 
 {{< /history >}}
@@ -304,7 +304,7 @@ If you enabled [external authorization](../../administration/settings/external_a
 
 {{< history >}}
 
-- Maximum token lifetime of 400 days [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241523) in GitLab 17.6 [with a flag](../feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+- Maximum token lifetime of 400 days [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241523) in GitLab 17.6 [with a flag](../../administration/feature_flags/list.md) named `buffered_token_expiration_limit`. Disabled by default.
 
 {{< /history >}}
 

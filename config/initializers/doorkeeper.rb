@@ -39,8 +39,7 @@ Doorkeeper.configure do
     next true unless grant_flow == 'password'
 
     if ::Gitlab::Saas.respond_to?(:feature_available?) &&
-        ::Gitlab::Saas.feature_available?(:disable_ropc_for_all_applications) &&
-        ::Feature.enabled?(:disable_ropc_for_all_applications, :instance)
+        ::Gitlab::Saas.feature_available?(:disable_ropc_for_all_applications)
       next false
     end
 

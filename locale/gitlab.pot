@@ -60657,7 +60657,7 @@ msgstr ""
 msgid "SecurityReports|Undo dismiss"
 msgstr ""
 
-msgid "SecurityReports|Validity Check"
+msgid "SecurityReports|Validity check"
 msgstr ""
 
 msgid "SecurityReports|Vulnerabilities over time"
@@ -73751,6 +73751,9 @@ msgid "WorkItems|Open items in side panel"
 msgstr ""
 
 msgid "WorkItems|Options applied to all views"
+msgstr ""
+
+msgid "WorkItems|Sort order rebalancing in progress. Reordering is temporarily disabled."
 msgstr ""
 
 msgid "WorkItems|Your preferences"

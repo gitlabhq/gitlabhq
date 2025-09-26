@@ -271,7 +271,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
     it 'generates valid SQL' do
       sql = query_builder.to_sql
       expected_sql = <<~SQL.squish.lines(chomp: true).join(' ')
-        SELECT `ci_finished_builds`.`name`, round(avg(`ci_finished_builds`.`duration`) / 1000.0, 2) AS mean_duration_in_seconds
+        SELECT `ci_finished_builds`.`name`, round((avg(`ci_finished_builds`.`duration`) / 1000.0), 2) AS mean_duration_in_seconds
         FROM `ci_finished_builds` WHERE `ci_finished_builds`.`project_id` = #{project.id} AND `ci_finished_builds`.`pipeline_id` IN
         (SELECT `ci_finished_pipelines`.`id` FROM `ci_finished_pipelines` WHERE `ci_finished_pipelines`.`path` = '#{project.project_namespace.traversal_path}'
         AND `ci_finished_pipelines`.`started_at` >= toDateTime64('#{7.days.ago.utc.strftime('%Y-%m-%d %H:%M:%S')}', 6, 'UTC'))

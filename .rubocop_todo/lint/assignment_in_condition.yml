@@ -125,7 +125,6 @@ Lint/AssignmentInCondition:
     - 'lib/banzai/filter/references/project_reference_filter.rb'
     - 'lib/banzai/filter/references/user_reference_filter.rb'
     - 'lib/feature/definition.rb'
-    - 'lib/file_size_validator.rb'
     - 'lib/gitlab/audit/type/definition.rb'
     - 'lib/gitlab/authorized_keys.rb'
     - 'lib/gitlab/background_migration/fix_projects_without_project_feature.rb'

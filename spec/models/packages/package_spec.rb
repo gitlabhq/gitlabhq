@@ -110,7 +110,7 @@ RSpec.describe Packages::Package, feature_category: :package_registry do
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:project_id, :version, :package_type) }
 
-    Packages::Package.package_types.keys.without('conan').each do |pt|
+    Packages::Package.package_types.keys.without('conan', 'composer').each do |pt|
       context "for project id, name, version and package type uniqueness for package type #{pt}" do
         let(:package) { create("#{pt}_package") }
 
@@ -125,6 +125,31 @@ RSpec.describe Packages::Package, feature_category: :package_registry do
 
           it "allows a #{pt} package with same project, name, version and package_type" do
             new_package = build("#{pt}_package", project: package.project, name: package.name, version: package.version)
+            expect(new_package).to be_valid
+          end
+        end
+      end
+    end
+
+    context 'when composer' do
+      context 'for project id, name, version and package type uniqueness for package composer type' do
+        let_it_be_with_reload(:package) { create(:composer_package_sti) }
+
+        let_it_be(:new_package) do
+          build(:composer_package_sti, project: package.project, name: package.name, version: package.version)
+        end
+
+        it 'does not allow a composer package with same project, name, version and package_type' do
+          expect(new_package).not_to be_valid
+          expect(new_package.errors.to_a).to include('Name has already been taken')
+        end
+
+        context 'with pending_destruction package' do
+          before_all do
+            package.pending_destruction!
+          end
+
+          it 'allows a composer package with same project, name, version and package_type' do
             expect(new_package).to be_valid
           end
         end
@@ -698,6 +723,7 @@ RSpec.describe Packages::Package, feature_category: :package_registry do
     described_class
       .package_types
       .keys
+      .without('composer')
       .map(&:to_sym)
       .each do |package_format|
       if described_class.inheritance_column_to_class_map[package_format].nil?
@@ -716,6 +742,14 @@ RSpec.describe Packages::Package, feature_category: :package_registry do
             is_expected.to eq(described_class.inheritance_column_to_class_map[package_format].constantize)
           end
         end
+      end
+    end
+
+    context 'when composer' do
+      let(:package) { create(:composer_package_sti, project: project) }
+
+      it 'maps to the correct class' do
+        is_expected.to eq(Packages::Composer::Sti::Package)
       end
     end
   end

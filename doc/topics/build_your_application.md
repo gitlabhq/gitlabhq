@@ -17,7 +17,7 @@ Use CI/CD to generate your application.
 - [Jobs](../ci/jobs/_index.md)
 - [CI/CD components](../ci/components/_index.md)
 - [CI/CD variables](../ci/variables/_index.md)
-- [Pipeline security](../ci/pipelines/pipeline_security.md)
+- [Pipeline security](../ci/pipeline_security/_index.md)
 - [Debugging](../ci/debugging.md)
 - [Auto DevOps](autodevops/_index.md)
 - [Testing](../ci/testing/_index.md)

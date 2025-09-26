@@ -2,7 +2,7 @@ import { setActivePinia } from 'pinia';
 import { nextTick } from 'vue';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import initFileTreeBrowser from '~/repository/file_tree_browser/index';
-import { useViewport } from '~/pinia/global_stores/viewport';
+import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { pinia } from '~/pinia/instance';
 import createRouter from '~/repository/router';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -21,15 +21,23 @@ jest.mock('~/repository/file_tree_browser/file_tree_browser.vue', () => ({
   },
 }));
 
+jest.mock('~/pinia/global_stores/main_container', () => ({ useMainContainer: jest.fn() }));
+
 describe('initFileTreeBrowser', () => {
+  let mockMainContainerStore;
   const getFileTreeBrowserComponent = () =>
     document.querySelector('[data-file-tree-browser-component]');
 
   beforeEach(() => {
     setActivePinia(pinia);
-    useViewport().reset();
-
     setHTMLFixture('<div id="js-file-browser"></div>');
+    mockMainContainerStore = {
+      isCompact: false,
+      isIntermediate: false,
+      isWide: true,
+    };
+
+    useMainContainer.mockReturnValue(mockMainContainerStore);
   });
 
   afterEach(() => {
@@ -44,11 +52,8 @@ describe('initFileTreeBrowser', () => {
   `(
     'visibility logic when route is $routeName, compact screen: $isCompactSize',
     ({ routeName, isCompactSize, expectedVisible }) => {
-      beforeEach(() => {
-        useViewport().setViewportState({ isCompactSize });
-      });
-
       it(`${expectedVisible ? 'shows' : 'hides'} file tree browser`, async () => {
+        mockMainContainerStore.isCompact = isCompactSize;
         const apolloProvider = createMockApollo([]);
 
         const options = {

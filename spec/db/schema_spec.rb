@@ -483,7 +483,8 @@ RSpec.describe 'Database schema',
         'ResourceLabelEvent' => %w[action],
         'User' => %w[layout dashboard project_view role],
         'Users::Callout' => %w[feature_name],
-        'Vulnerability' => %w[confidence] # this enum is in the process of being deprecated
+        'Vulnerability' => %w[confidence], # this enum is in the process of being deprecated
+        'Packages::Composer::Package' => %w[package_type] # temporary, until the packages_packages table is split
       }.freeze
     end
 

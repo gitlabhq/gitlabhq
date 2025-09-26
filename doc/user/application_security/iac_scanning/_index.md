@@ -95,7 +95,7 @@ You can also download the security scan results:
 
 - In the pipeline's **Security** tab, select **Download results**.
 
-For more details, see [Pipeline security report](../vulnerability_report/pipeline.md).
+For more details, see [Pipeline security report](../detect/security_scanning_results.md).
 
 {{< alert type="note" >}}
 

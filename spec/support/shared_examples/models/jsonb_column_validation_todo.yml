@@ -20,6 +20,7 @@
 - GitlabSubscriptions::UserAddOnAssignmentVersion#object
 - Operations::FeatureFlags::Strategy#parameters
 - Packages::Composer::Metadatum#composer_json
+- Packages::Composer::Package#composer_json
 - RawUsageData#payload
 - Releases::Evidence#summary
 - RemoteDevelopment::WorkspaceAgentkState#desired_config

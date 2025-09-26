@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :composer_package, class: 'Packages::Composer::Sti::Package', parent: :package do
+  factory :composer_package_sti, class: 'Packages::Composer::Sti::Package', parent: :package do
     sequence(:name) { |n| "composer-package-#{n}" }
     sequence(:version) { |n| "1.0.#{n}" }
     package_type { :composer }

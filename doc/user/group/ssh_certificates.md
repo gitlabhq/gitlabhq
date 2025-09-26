@@ -73,7 +73,7 @@ allowing repository access.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421915) in GitLab 16.4 [with a flag](../feature_flags.md) named `ssh_certificates_rest_endpoints`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421915) in GitLab 16.4 [with a flag](../../administration/feature_flags/list.md) named `ssh_certificates_rest_endpoints`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/424501) in GitLab 16.9.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/424501) in GitLab 17.7. Feature flag `ssh_certificates_rest_endpoints` removed.
 
@@ -122,7 +122,7 @@ The user certificates can only be used to access the projects in the top-level g
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421915) in GitLab 16.7 [with a flag](../feature_flags.md) named `enforce_ssh_certificates_via_settings`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421915) in GitLab 16.7 [with a flag](../../administration/feature_flags/list.md) named `enforce_ssh_certificates_via_settings`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/426235) in GitLab 16.9.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/488635) in GitLab 17.7. Feature flag `enforce_ssh_certificates_via_settings` removed.
 

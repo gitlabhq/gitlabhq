@@ -3,16 +3,16 @@
 require 'spec_helper'
 require_migration!
 
+# rubocop: disable Migration/Datetime -- wrong offense detection for the timestamp attribute
 RSpec.describe MigrateAiTroubleshootJobEventsToAiUsageEvents, migration: :gitlab_main, feature_category: :value_stream_management, migration_version: 20250721095854 do
   let(:migration) { described_class.new }
   let(:users) { table(:users) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:organizations) { table(:organizations) }
-  let(:troubleshoot_events) { table(:ai_troubleshoot_job_events) }
-  let(:usage_events) { table(:ai_usage_events) }
+  let(:troubleshoot_events) { partitioned_table(:ai_troubleshoot_job_events, by: :timestamp) }
+  let(:usage_events) { partitioned_table(:ai_usage_events, by: :timestamp) }
 
-  # rubocop: disable Migration/Datetime -- wrong offense detection for the timestamp attribute
   context 'with Gitlab.ee', if: Gitlab.ee? do
     describe '#up' do
       let(:organization) { organizations.create!(name: 'org', path: 'org') }
@@ -82,11 +82,6 @@ RSpec.describe MigrateAiTroubleshootJobEventsToAiUsageEvents, migration: :gitlab
 
         project1
         project2
-
-        # In some CI jobs partitions are not created yet.
-        stub_feature_flags(disallow_database_ddl_feature_flags: false)
-        Gitlab::Database::Partitioning.sync_partitions(Gitlab::Database::Partitioning.send(:registered_for_sync),
-          only_on: :main)
       end
 
       it 'migrates data from ai_troubleshoot_job_events table to ai_usage_events' do
@@ -146,7 +141,6 @@ RSpec.describe MigrateAiTroubleshootJobEventsToAiUsageEvents, migration: :gitlab
         expect(usage_events.count).to eq(3)
       end
     end
-    # rubocop: enable Migration/Datetime
 
     describe '#down' do
       it 'does nothing' do
@@ -170,3 +164,4 @@ RSpec.describe MigrateAiTroubleshootJobEventsToAiUsageEvents, migration: :gitlab
     end
   end
 end
+# rubocop: enable Migration/Datetime

@@ -16,6 +16,7 @@ import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_wit
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import waitForPromises from 'helpers/wait_for_promises';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import {
   setSortPreferenceMutationResponse,
   setSortPreferenceMutationResponseWithErrors,
@@ -28,6 +29,7 @@ import {
   UPDATED_DESC,
   urlSortParams,
   RELATIVE_POSITION_ASC,
+  RELATIVE_POSITION,
 } from '~/issues/list/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import getUserWorkItemsDisplaySettingsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
@@ -93,6 +95,7 @@ import {
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/lib/utils/url_utility');
+jest.mock('~/alert');
 
 const showToast = jest.fn();
 
@@ -159,6 +162,7 @@ describeSkipVue3(skipReason, () => {
     additionalHandlers = [],
     canReadCrmOrganization = true,
     canReadCrmContact = true,
+    isIssueRepositioningDisabled = false,
     stubs = {},
   } = {}) => {
     window.gon = {
@@ -219,6 +223,7 @@ describeSkipVue3(skipReason, () => {
         exportCsvPath: '/export/csv',
         canEdit: true,
         canImportWorkItems: true,
+        isIssueRepositioningDisabled,
         ...provide,
       },
       propsData: {
@@ -473,6 +478,41 @@ describeSkipVue3(skipReason, () => {
           expect.objectContaining({ title: 'Health' }),
           expect.objectContaining({ title: 'Blocking' }),
         ]);
+      });
+    });
+
+    describe('when sort is manual and issue repositioning is disabled', () => {
+      beforeEach(async () => {
+        mountComponent({
+          provide: { initialSort: RELATIVE_POSITION, isIssueRepositioningDisabled: true },
+        });
+        await waitForPromises();
+      });
+
+      it('changes the sort to the default of created descending', () => {
+        expect(findIssuableList().props('initialSortBy')).toBe(CREATED_DESC);
+      });
+
+      it('shows an alert to tell the user that manual reordering is disabled', () => {
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'Sort order rebalancing in progress. Reordering is temporarily disabled.',
+          variant: VARIANT_INFO,
+        });
+      });
+
+      it('shows alert when user tries to select manual sort after component mount', async () => {
+        mountComponent({
+          provide: { isIssueRepositioningDisabled: true },
+        });
+        await waitForPromises();
+
+        findIssuableList().vm.$emit('sort', RELATIVE_POSITION_ASC);
+        await nextTick();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'Sort order rebalancing in progress. Reordering is temporarily disabled.',
+          variant: VARIANT_INFO,
+        });
       });
     });
   });

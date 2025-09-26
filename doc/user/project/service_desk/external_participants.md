@@ -128,7 +128,7 @@ To see a list of all external participants:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a flag](../../feature_flags.md) named `issue_email_participants`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a flag](../../../administration/feature_flags/list.md) named `issue_email_participants`. Enabled by default.
 
 {{< /history >}}
 
@@ -165,7 +165,7 @@ You should see a success message and a new system note with the email address.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a flag](../../feature_flags.md) named `issue_email_participants`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350460) in GitLab 13.8 [with a flag](../../../administration/feature_flags/list.md) named `issue_email_participants`. Enabled by default.
 
 {{< /history >}}
 

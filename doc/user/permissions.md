@@ -290,6 +290,11 @@ Personal [namespace](namespace/_index.md) owners:
 - Are displayed as having the Maintainer role on projects in the namespace, but have the same permissions as a user with the Owner role.
 - For new projects in the namespace, are displayed as having the Owner role.
 
+When you configure [protected branch settings](project/repository/branches/protection_rules.md),
+selecting a role grants access to users with that role and all higher roles. For example, if you select
+**Maintainers** in the protected branch settings, users with both the Maintainer and Owner roles
+can perform the action.
+
 For more information about how to manage project members, see
 [members of a project](project/members/_index.md).
 

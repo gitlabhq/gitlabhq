@@ -57,7 +57,7 @@ The results of the scans are exported as JSON reports that must comply with the 
 After the data is available as a Report Artifact it can be processed by the GitLab Rails application to enable our security features, including:
 
 - [Security Dashboards](../../user/application_security/security_dashboard/_index.md), Merge Request widget, Pipeline view, and so on.
-- [Security scan results](../../user/application_security/detect/security_scan_results.md).
+- [Security scan results](../../user/application_security/detect/security_scanning_results.md).
 - [Approval rules](../../user/application_security/policies/merge_request_approval_policies.md).
 
 Depending on the context, the security reports may be stored either in the database or stay as Report Artifacts for on-demand access.

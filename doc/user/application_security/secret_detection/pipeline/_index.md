@@ -289,7 +289,7 @@ For more information, see the [report file schema](https://gitlab.com/gitlab-org
 Job results are also reported on the:
 
 - [Merge request widget](../../detect/security_scanning_results.md#merge-request-security-widget): shows new findings introduced in the merge request.
-- [Pipeline security report](../../vulnerability_report/pipeline.md): displays all findings from the latest pipeline run.
+- [Pipeline security report](../../detect/security_scanning_results.md): displays all findings from the latest pipeline run.
 - [Vulnerability report](../../vulnerability_report/_index.md): provides centralized management of all security findings.
 - Security dashboard: offers organization-wide visibility into all vulnerabilities across projects and groups.
 

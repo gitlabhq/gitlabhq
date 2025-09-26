@@ -370,7 +370,7 @@ To confirm that a mismatched UUID is the root cause, proceed with the following 
 1. Get the JWT token:
 
    ```ruby
-   token = CloudConnector::AvailableServices.find_by_name(:agent_quick_actions).access_token
+   token = CloudConnector::Tokens.get(unit_primitive: :agent_quick_actions, resource: :instance)
    JWT.decode(token, false, nil)
    ```
 

@@ -169,7 +169,7 @@ You can review vulnerabilities in a pipeline:
    - Links: Evidence of the vulnerability being cataloged in various advisory databases.
    - Identifiers: A list of references used to classify the vulnerability, such as CVE identifiers.
 
-For more details, see [Pipeline security report](../vulnerability_report/pipeline.md).
+For more details, see [Pipeline security report](../detect/security_scanning_results.md).
 
 Additional ways to see container scanning results:
 

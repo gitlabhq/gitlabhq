@@ -20,7 +20,7 @@ You should then create an upgrade plan that documents:
 - The steps to take to upgrade your instance, including your [upgrade path](upgrade_paths.md). Use the
   [upgrade path tool](upgrade_paths.md#upgrade-path-tool) to determine if your upgrade includes required upgrade stops.
   Upgrade stops might require you to perform multiple upgrades. If relevant, check
-  [OS compatibility with the target GitLab version](../administration/package_information/supported_os.md).
+  [OS compatibility with the target GitLab version](../install/package/_index.md).
 - The steps to take if the upgrade doesn't go smoothly.
 
 Your upgrade plan should include:

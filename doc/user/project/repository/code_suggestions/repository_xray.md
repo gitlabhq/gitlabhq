@@ -63,7 +63,7 @@ When a code generation request is made, a maximum of 300 libraries from the pars
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/476180) in GitLab 17.4 [with a flag](../../../feature_flags.md) named `ai_enable_internal_repository_xray_service`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/476180) in GitLab 17.4 [with a flag](../../../../administration/feature_flags/list.md) named `ai_enable_internal_repository_xray_service`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/483928) in GitLab 17.6. Feature flag `ai_enable_internal_repository_xray_service` removed.
 
 {{< /history >}}

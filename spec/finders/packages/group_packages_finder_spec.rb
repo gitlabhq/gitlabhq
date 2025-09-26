@@ -285,7 +285,7 @@ RSpec.describe Packages::GroupPackagesFinder, feature_category: :package_registr
     end
 
     context 'group has package of all types' do
-      package_types.each do |type| # rubocop:disable RSpec/UselessDynamicDefinition -- `type` used in `let`
+      package_types.without('composer').each do |type| # rubocop:disable RSpec/UselessDynamicDefinition -- `type` used in `let`
         let_it_be("package_#{type}") { create("#{type}_package", project: project) }
 
         it_behaves_like 'with package type', type
@@ -297,6 +297,12 @@ RSpec.describe Packages::GroupPackagesFinder, feature_category: :package_registr
 
           it_behaves_like 'with package type', type
         end
+      end
+
+      context 'with composer package' do
+        let_it_be(:package_composer) { create(:composer_package_sti, project: project) }
+
+        it_behaves_like 'with package type', :composer
       end
     end
 

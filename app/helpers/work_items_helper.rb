@@ -53,6 +53,7 @@ module WorkItemsHelper
       default_branch: resource_parent.is_a?(Project) ? resource_parent.default_branch_or_main : nil,
       initial_sort: current_user&.user_preference&.issues_sort,
       is_signed_in: current_user.present?.to_s,
+      is_issue_repositioning_disabled: issue_repositioning_disabled(resource_parent).to_s,
       show_new_work_item: can?(current_user, :create_work_item, resource_parent).to_s,
       can_create_projects: can?(current_user, :create_projects, group).to_s,
       new_project_path: new_project_path(namespace_id: group&.id),
@@ -89,6 +90,14 @@ module WorkItemsHelper
       group_work_items_path(resource_parent, format: :ics)
     else
       project_work_items_path(resource_parent, format: :ics)
+    end
+  end
+
+  def issue_repositioning_disabled(resource_parent)
+    if resource_parent.is_a?(Group)
+      resource_parent.root_ancestor.issue_repositioning_disabled?
+    elsif resource_parent.is_a?(Project)
+      resource_parent.root_namespace.issue_repositioning_disabled?
     end
   end
 end

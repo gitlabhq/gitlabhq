@@ -37,6 +37,14 @@ Each regular expression is limited to 511 characters.
 
 For custom push rules use [server hooks](../../../administration/server_hooks.md).
 
+{{< alert type="note" >}}
+
+Push rules are bypassed during fork synchronization.
+When you [update your fork](forking_workflow.md#update-your-fork) from its upstream project, changes
+are applied directly without validation against the fork's push rules.
+
+{{< /alert >}}
+
 ## Enable global push rules
 
 You can create push rules for all new projects to inherit, but they can be overridden

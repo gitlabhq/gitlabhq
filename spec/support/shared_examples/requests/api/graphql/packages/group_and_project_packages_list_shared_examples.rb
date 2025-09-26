@@ -6,7 +6,7 @@ RSpec.shared_examples 'group and project packages query' do
   let_it_be(:versionless_package) { create(:maven_package, project: project1, version: nil) }
   let_it_be(:maven_package) { create(:maven_package, project: project1, name: 'bab', version: '6.0.0', created_at: 1.day.ago) }
   let_it_be(:npm_package) { create(:npm_package, project: project1, name: 'cab', version: '7.0.0', created_at: 4.days.ago) }
-  let_it_be(:composer_package) { create(:composer_package, project: project2, name: 'dab', version: '4.0.0', created_at: 3.days.ago) }
+  let_it_be(:composer_package) { create(:composer_package_sti, project: project2, name: 'dab', version: '4.0.0', created_at: 3.days.ago) }
   let_it_be(:debian_package) { create(:debian_package, project: project2, name: 'aab', version: '5.0.0', created_at: 2.days.ago) }
   let_it_be(:composer_metadatum) do
     create(:composer_metadatum,

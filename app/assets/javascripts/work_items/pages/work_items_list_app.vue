@@ -13,6 +13,7 @@ import {
 } from '@gitlab/ui';
 import { isEmpty, unionBy } from 'lodash';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { createAlert, VARIANT_INFO } from '~/alert';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
@@ -50,6 +51,7 @@ import {
   PARAM_SORT,
   PARAM_STATE,
   urlSortParams,
+  UPDATED_DESC,
   RELATIVE_POSITION_ASC,
 } from '~/issues/list/constants';
 import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
@@ -233,6 +235,7 @@ export default {
     'groupId',
     'canImportWorkItems',
     'canEdit',
+    'isIssueRepositioningDisabled',
   ],
   props: {
     eeWorkItemUpdateCount: {
@@ -1051,8 +1054,21 @@ export default {
 
       this.$router.push({ query: this.urlParams });
     },
+    showIssueRepositioningMessage() {
+      createAlert({
+        message: s__(
+          'WorkItems|Sort order rebalancing in progress. Reordering is temporarily disabled.',
+        ),
+        variant: VARIANT_INFO,
+      });
+    },
     handleSort(sortKey) {
       if (this.sortKey === sortKey) {
+        return;
+      }
+
+      if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
+        this.showIssueRepositioningMessage();
         return;
       }
 
@@ -1110,6 +1126,13 @@ export default {
       const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
       const state = getParameterByName(PARAM_STATE);
 
+      let sortKey = deriveSortKey({ sort, state });
+
+      if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
+        this.showIssueRepositioningMessage();
+        sortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
+      }
+
       this.filterTokens = getFilterTokens(window.location.search, {
         includeStateToken: !this.withTabs,
         hasCustomFieldsFeature: this.hasCustomFieldsFeature,
@@ -1130,7 +1153,7 @@ export default {
 
       // Trigger pageSize UI component update based on URL changes
       this.pageSize = this.pageParams.firstPageSize;
-      this.sortKey = deriveSortKey({ sort });
+      this.sortKey = sortKey;
       this.state = state || STATUS_OPEN;
     },
     checkDrawerParams() {

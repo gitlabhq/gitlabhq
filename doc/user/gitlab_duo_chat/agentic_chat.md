@@ -297,6 +297,43 @@ To select a model:
 1. Under the chat text box, turn on the **Agentic mode (Beta)** toggle.
 1. Select a model from the dropdown list.
 
+### Select an agent
+
+{{< details >}}
+
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/562708) in GitLab 18.4 for the GitLab UI as an [experiment](../../policy/development_stages_support.md#experiment).
+
+{{< /history >}}
+
+When you use Chat in a project in the GitLab UI, you can select a specific agent for Chat to use.
+
+Prerequisites:
+
+- You must [add an agent to your project](../duo_agent_platform/agents/_index.md#add-an-agent-to-a-project)
+  from the AI catalog.
+
+To select an agent:
+
+1. In the GitLab UI, open GitLab Duo Chat.
+1. In the upper-right corner of the drawer, select **New chat**.
+1. In the dropdown list, select a custom agent. If you have not set up any custom
+   agents, there is no dropdown list, and Chat uses the default GitLab Duo agent.
+1. Enter your question and press <kbd>Enter</kbd> or select **Send**.
+
+After you create a conversation with a custom agent:
+
+- The conversation remembers the custom agent you selected.
+- If you use the chat history to go back to the same conversation, it uses the same agent.
+
+A bug exists with this functionality. For more information, see [issue 1457](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/1457).
+
 ## GitLab Duo Chat capabilities
 
 GitLab Duo Chat (Agentic) extends GitLab Duo Chat (Classic) capabilities with the following features:

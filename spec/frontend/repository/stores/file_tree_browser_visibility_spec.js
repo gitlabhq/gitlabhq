@@ -1,21 +1,29 @@
 import { createTestingPinia } from '@pinia/testing';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
-import { useViewport } from '~/pinia/global_stores/viewport';
+import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { FILE_TREE_BROWSER_VISIBILITY } from '~/repository/constants';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 
+jest.mock('~/pinia/global_stores/main_container', () => ({ useMainContainer: jest.fn() }));
+
 describe('useFileTreeBrowserVisibility', () => {
   let store;
-  let viewportStore;
+  let mockMainContainerStore;
 
   useLocalStorageSpy();
 
   beforeEach(() => {
+    mockMainContainerStore = {
+      isCompact: false,
+      isIntermediate: false,
+      isWide: true,
+    };
+
+    useMainContainer.mockReturnValue(mockMainContainerStore);
     createTestingPinia({
       stubActions: false,
     });
     store = useFileTreeBrowserVisibility();
-    viewportStore = useViewport();
   });
 
   afterEach(() => {
@@ -120,7 +128,7 @@ describe('useFileTreeBrowserVisibility', () => {
     `(
       'on $viewport viewport: toggles from $initialState to $expectedResult',
       ({ isIntermediateSize, initialState, expectedResult }) => {
-        viewportStore.setViewportState({ isIntermediateSize });
+        mockMainContainerStore.isIntermediate = isIntermediateSize;
         store.fileTreeBrowserIsPeekOn = initialState.peek;
         store.fileTreeBrowserIsExpanded = initialState.expanded;
 
@@ -139,7 +147,7 @@ describe('useFileTreeBrowserVisibility', () => {
       ${false}   | ${'true'}         | ${false}         | ${'does not load from localStorage on non-wide viewport'}
     `('$description', ({ isWideSize, localStorageValue, expectedExpanded }) => {
       localStorage.setItem(FILE_TREE_BROWSER_VISIBILITY, localStorageValue);
-      viewportStore.setViewportState({ isWideSize });
+      mockMainContainerStore.isWide = isWideSize;
 
       store.initializeFileTreeBrowser();
 

@@ -15,7 +15,7 @@ title: Audit event streaming for top-level groups
 {{< history >}}
 
 - [Subgroup events recording](https://gitlab.com/gitlab-org/gitlab/-/issues/366878) fixed in GitLab 15.2.
-- Custom HTTP headers UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361630) in GitLab 15.2 [with a flag](../feature_flags.md) named `custom_headers_streaming_audit_events_ui`. Disabled by default.
+- Custom HTTP headers UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/361630) in GitLab 15.2 [with a flag](../../administration/feature_flags/list.md) named `custom_headers_streaming_audit_events_ui`. Disabled by default.
 - Custom HTTP headers UI [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365259) in GitLab 15.3. [Feature flag `custom_headers_streaming_audit_events_ui`](https://gitlab.com/gitlab-org/gitlab/-/issues/365259) removed.
 - [Improved user experience](https://gitlab.com/gitlab-org/gitlab/-/issues/367963) in GitLab 15.3.
 - HTTP destination **Name** field [added](https://gitlab.com/gitlab-org/gitlab/-/issues/411357) in GitLab 16.3.
@@ -253,7 +253,7 @@ To update Google Cloud Logging streaming destinations to a top-level group:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132603) in GitLab 16.6 [with a flag](../feature_flags.md) named `allow_streaming_audit_events_to_amazon_s3`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132603) in GitLab 16.6 [with a flag](../../administration/feature_flags/list.md) named `allow_streaming_audit_events_to_amazon_s3`. Enabled by default.
 - [Feature flag `allow_streaming_audit_events_to_amazon_s3`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137391) removed in GitLab 16.7.
 
 {{< /history >}}

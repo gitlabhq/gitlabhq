@@ -14,16 +14,16 @@ RSpec.describe Packages::Composer::Sti::Package, feature_category: :package_regi
 
   describe 'validations' do
     describe '#valid_composer_global_name' do
-      let_it_be(:package) { create(:composer_package) }
+      let_it_be(:package) { create(:composer_package_sti) }
 
       context 'with different name and different project' do
-        let(:new_package) { build(:composer_package, name: 'different_name') }
+        let(:new_package) { build(:composer_package_sti, name: 'different_name') }
 
         it { expect(new_package).to be_valid }
       end
 
       context 'with same name and different project' do
-        let(:new_package) { build(:composer_package, name: package.name) }
+        let(:new_package) { build(:composer_package_sti, name: package.name) }
 
         it 'does not validate second package' do
           expect(new_package).not_to be_valid
@@ -31,7 +31,7 @@ RSpec.describe Packages::Composer::Sti::Package, feature_category: :package_regi
         end
 
         context 'with pending destruction package' do
-          let_it_be(:package) { create(:composer_package, :pending_destruction) }
+          let_it_be(:package) { create(:composer_package_sti, :pending_destruction) }
 
           it { expect(new_package).to be_valid }
         end
@@ -39,19 +39,22 @@ RSpec.describe Packages::Composer::Sti::Package, feature_category: :package_regi
     end
 
     describe '#version' do
-      it_behaves_like 'validating version to be SemVer compliant for', :composer_package
+      it_behaves_like 'validating version to be SemVer compliant for', :composer_package_sti
     end
 
     describe '#name' do
-      it_behaves_like 'validate package name format', :composer_package
+      it_behaves_like 'validate package name format', :composer_package_sti
     end
   end
 
   describe '.with_composer_target' do
     let_it_be(:sha) { OpenSSL::Digest.hexdigest('SHA256', 'foo') }
-    let_it_be(:package1) { create(:composer_package, :with_metadatum, sha: sha) }
-    let_it_be(:package2) { create(:composer_package, :with_metadatum, sha: sha) }
-    let_it_be(:package3) { create(:composer_package, :with_metadatum, sha: OpenSSL::Digest.hexdigest('SHA256', 'bar')) }
+    let_it_be(:package1) { create(:composer_package_sti, :with_metadatum, sha: sha) }
+    let_it_be(:package2) { create(:composer_package_sti, :with_metadatum, sha: sha) }
+
+    let_it_be(:package3) do
+      create(:composer_package_sti, :with_metadatum, sha: OpenSSL::Digest.hexdigest('SHA256', 'bar'))
+    end
 
     subject(:result) { described_class.with_composer_target(sha) }
 
@@ -63,12 +66,12 @@ RSpec.describe Packages::Composer::Sti::Package, feature_category: :package_regi
   end
 
   describe '.installable' do
-    it_behaves_like 'installable packages', :composer_package
+    it_behaves_like 'installable packages', :composer_package_sti
   end
 
   describe 'sync with packages_composer_packages table' do
     let_it_be_with_refind(:package) do
-      create(:composer_package, :with_metadatum, sha: OpenSSL::Digest.hexdigest('SHA256', 'foo'))
+      create(:composer_package_sti, :with_metadatum, sha: OpenSSL::Digest.hexdigest('SHA256', 'foo'))
     end
 
     let_it_be_with_reload(:metadatum) { package.composer_metadatum }

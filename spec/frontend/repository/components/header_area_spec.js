@@ -18,14 +18,16 @@ import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_
 import { headerAppInjected } from 'ee_else_ce_jest/repository/mock_data';
 import CompactCodeDropdown from 'ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue';
 import { useFileTreeBrowserVisibility } from '~/repository/stores/file_tree_browser_visibility';
-import { useViewport } from '~/pinia/global_stores/viewport';
+import { useMainContainer } from '~/pinia/global_stores/main_container';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { Mousetrap } from '~/lib/mousetrap';
 import { keysFor, TOGGLE_FILE_TREE_BROWSER_VISIBILITY } from '~/behaviors/shortcuts/keybindings';
 import { EVENT_EXPAND_FILE_TREE_BROWSER_ON_REPOSITORY_PAGE } from '~/repository/constants';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
+jest.mock('~/panel_breakpoint_instance');
 
 const defaultMockRoute = {
   params: {
@@ -48,6 +50,7 @@ describe('HeaderArea', () => {
   let wrapper;
   let pinia;
   let fileTreeBrowserStore;
+  let mainContainerStore;
 
   const findBreadcrumbs = () => wrapper.findComponent(Breadcrumbs);
   const findFileTreeToggle = () => wrapper.findComponent(FileTreeBrowserToggle);
@@ -106,7 +109,7 @@ describe('HeaderArea', () => {
 
   beforeEach(() => {
     pinia = createTestingPinia({ stubActions: false });
-    useViewport();
+    mainContainerStore = useMainContainer();
     fileTreeBrowserStore = useFileTreeBrowserVisibility();
     wrapper = createComponent();
   });
@@ -118,9 +121,7 @@ describe('HeaderArea', () => {
   describe('File tree browser toggle', () => {
     beforeEach(() => {
       // Reset stores to default state for each test
-      const viewportStore = useViewport();
-      // For composition API stores, we need to directly modify the internal refs
-      viewportStore.setViewportState({ isCompactSize: false });
+      mainContainerStore.$patch({ isCompact: false });
     });
 
     describe('when repositoryFileTreeBrowser is enabled', () => {
@@ -133,9 +134,11 @@ describe('HeaderArea', () => {
       `(
         'toggles file tree visibility',
         ({ fileTreeVisible, isCompactSize, isProjectOverview, expectedToggleVisible }) => {
-          const viewportStore = useViewport();
+          PanelBreakpointInstance.getBreakpointSize.mockReturnValue(isCompactSize ? 'xs' : 'xl');
+          pinia = createTestingPinia({ stubActions: false });
+          mainContainerStore = useMainContainer();
+          fileTreeBrowserStore = useFileTreeBrowserVisibility();
           fileTreeBrowserStore.setFileTreeBrowserIsExpanded(fileTreeVisible);
-          viewportStore.setViewportState({ isCompactSize });
 
           const route = isProjectOverview ? { name: 'projectRoot' } : { name: 'blobPathDecoded' };
           wrapper = createComponent({
@@ -226,9 +229,7 @@ describe('HeaderArea', () => {
 
   describe('when repositoryFileTreeBrowser is disabled', () => {
     it('does not render the toggle', () => {
-      const viewportStore = useViewport();
       fileTreeBrowserStore.setFileTreeBrowserIsExpanded(true);
-      viewportStore.setViewportState({ isWideSize: true });
 
       wrapper = createComponent({
         provided: {

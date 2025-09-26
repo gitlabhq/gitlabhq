@@ -93,6 +93,16 @@ or the command line. GitLab Premium and Ultimate tiers can also automate updates
 
 {{< /history >}}
 
+When you update a fork from the UI, the following repository protection settings on the fork are
+bypassed:
+
+- Push rules configured on the fork.
+- File locking applied to files in the fork.
+
+This behavior prevents synchronization failures when the upstream project and fork have different
+protection configurations. The synchronization process pulls changes from the upstream project and
+applies them directly to the fork.
+
 Prerequisites:
 
 - You must create your fork from an [unprotected branch](branches/protected.md) in upstream repository.

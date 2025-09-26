@@ -177,7 +177,7 @@ Developers can view security findings directly in pipeline results:
 1. In the pipeline details, select the **Security** tab to view detected vulnerabilities.
 
 For more details, see
-[View security scan results in pipelines](../vulnerability_report/pipeline.md).
+[View security scan results in pipelines](security_scanning_results.md).
 
 #### Merge request security widget
 
@@ -187,7 +187,7 @@ The security widget provides visibility into vulnerabilities detected in merge r
 1. Review the security widget to see detected vulnerabilities.
 1. Select **Expand** to see detailed findings.
 
-For more details, see [View security scan results in merge requests](security_scan_results.md).
+For more details, see [View security scan results in merge requests](security_scanning_results.md).
 
 #### VS Code integration with GitLab Workflow extension
 

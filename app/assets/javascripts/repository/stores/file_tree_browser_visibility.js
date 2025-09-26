@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { logError } from '~/lib/logger';
-import { useViewport } from '~/pinia/global_stores/viewport';
+import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { FILE_TREE_BROWSER_VISIBILITY } from '../constants';
 
 export const useFileTreeBrowserVisibility = defineStore('fileTreeVisibility', {
@@ -46,7 +46,7 @@ export const useFileTreeBrowserVisibility = defineStore('fileTreeVisibility', {
       }
     },
     handleFileTreeBrowserToggleClick() {
-      if (useViewport().isIntermediateSize) {
+      if (useMainContainer().isIntermediate) {
         this.toggleFileTreeBrowserIsPeek();
       } else {
         this.toggleFileTreeBrowserIsExpanded();
@@ -54,7 +54,7 @@ export const useFileTreeBrowserVisibility = defineStore('fileTreeVisibility', {
     },
     initializeFileTreeBrowser() {
       // Only load expanded state on wide screens
-      if (useViewport().isWideSize) {
+      if (useMainContainer().isWide) {
         this.loadFileTreeBrowserExpandedFromLocalStorage();
       }
     },

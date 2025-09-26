@@ -42,6 +42,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             default_branch: project.default_branch_or_main,
             initial_sort: current_user&.user_preference&.issues_sort,
             is_signed_in: current_user.present?.to_s,
+            is_issue_repositioning_disabled: 'false',
             time_tracking_limit_to_hours: "false",
             can_read_crm_organization: 'true',
             releases_path: project_releases_path(project, format: :json),
@@ -77,6 +78,32 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
           { new_trial_path: "subscription_portal_trial_url" }
         )
       end
+
+      describe 'issue repositioning disabled' do
+        context 'when project root namespace has issue repositioning disabled' do
+          before do
+            allow(project.root_namespace).to receive(:issue_repositioning_disabled?).and_return(true)
+          end
+
+          it 'returns is_issue_repositioning_disabled as true' do
+            expect(helper.work_items_data(project, current_user)).to include(
+              { is_issue_repositioning_disabled: 'true' }
+            )
+          end
+        end
+
+        context 'when project root namespace has issue repositioning enabled' do
+          before do
+            allow(project.root_namespace).to receive(:issue_repositioning_disabled?).and_return(false)
+          end
+
+          it 'returns is_issue_repositioning_disabled as false' do
+            expect(helper.work_items_data(project, current_user)).to include(
+              { is_issue_repositioning_disabled: 'false' }
+            )
+          end
+        end
+      end
     end
 
     context 'with group context' do
@@ -90,6 +117,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             labels_manage_path: group_labels_path(group),
             project_namespace_full_path: group.full_path,
             default_branch: nil,
+            is_issue_repositioning_disabled: 'false',
             rss_path: group_work_items_path(group, format: :atom),
             calendar_path: group_work_items_path(group, format: :ics)
           }
@@ -99,6 +127,32 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
       it 'does not include project-specific data' do
         expect(helper.work_items_data(group, current_user)).not_to have_key(:releases_path)
         expect(helper.work_items_data(group, current_user)).not_to have_key(:export_csv_path)
+      end
+
+      describe 'issue repositioning disabled' do
+        context 'when group root ancestor has issue repositioning disabled' do
+          before do
+            allow(group.root_ancestor).to receive(:issue_repositioning_disabled?).and_return(true)
+          end
+
+          it 'returns is_issue_repositioning_disabled as true' do
+            expect(helper.work_items_data(group, current_user)).to include(
+              { is_issue_repositioning_disabled: 'true' }
+            )
+          end
+        end
+
+        context 'when group root ancestor has issue repositioning enabled' do
+          before do
+            allow(group.root_ancestor).to receive(:issue_repositioning_disabled?).and_return(false)
+          end
+
+          it 'returns is_issue_repositioning_disabled as false' do
+            expect(helper.work_items_data(group, current_user)).to include(
+              { is_issue_repositioning_disabled: 'false' }
+            )
+          end
+        end
       end
     end
   end

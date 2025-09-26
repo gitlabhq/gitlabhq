@@ -472,7 +472,7 @@ If you do not want to maintain bastion hosts, you can set up [AWS Systems Manage
 
 1. Go to the EC2 Dashboard and select **Launch instance**.
 1. In the **Name and tags** section, set the **Name** to `Bastion Host A`.
-1. Select the latest **Ubuntu Server LTS (HVM)** AMI. Check the GitLab documentation for the [latest supported OS version](../../administration/package_information/supported_os.md).
+1. Select the latest **Ubuntu Server LTS (HVM)** AMI. Check the GitLab documentation for the [latest supported OS version](../../install/package/_index.md).
 1. Choose an instance type. We use a `t2.micro` as we only use the bastion host to SSH into our other instances.
 1. In the **Key pair** section, select **Create new key pair**.
    1. Give the key pair a name (we use `bastion-host-a`) and save the `bastion-host-a.pem` file for later use.
@@ -652,7 +652,7 @@ Let's create an EC2 instance where we install Gitaly:
 
 1. From the EC2 dashboard, select **Launch instance**.
 1. In the **Name and tags** section, set the **Name** to `Gitaly`.
-1. Choose an AMI. In this example, we select the latest **Ubuntu Server LTS (HVM), SSD Volume Type**. Check the GitLab documentation for the [latest supported OS version](../../administration/package_information/supported_os.md).
+1. Choose an AMI. In this example, we select the latest **Ubuntu Server LTS (HVM), SSD Volume Type**. Check the GitLab documentation for the [latest supported OS version](../../install/package/_index.md).
 1. Choose an instance type. We pick a `m5.xlarge`.
 1. In the **Key pair** section, select **Create new key pair**.
    1. Give the key pair a name (we use `gitaly`) and save the `gitaly.pem` file for later use.

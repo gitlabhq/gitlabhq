@@ -8,8 +8,10 @@ RSpec.describe Gitlab::Composer::VersionIndex, feature_category: :package_regist
   let_it_be(:group) { create(:group) }
   let_it_be(:files) { { 'composer.json' => json.to_json } }
   let_it_be_with_reload(:project) { create(:project, :public, :custom_repo, files: files, group: group) }
-  let_it_be_with_reload(:package1) { create(:composer_package, :with_metadatum, project: project, name: package_name, version: '1.0.0', json: json) }
-  let_it_be_with_reload(:package2) { create(:composer_package, :with_metadatum, project: project, name: package_name, version: '2.0.0', json: json) }
+  let_it_be_with_reload(:package1_sti) { create(:composer_package_sti, :with_metadatum, project: project, name: package_name, version: '1.0.0', json: json) }
+  let_it_be_with_reload(:package2_sti) { create(:composer_package_sti, :with_metadatum, project: project, name: package_name, version: '2.0.0', json: json) }
+  let_it_be_with_reload(:package1) { ::Packages::Composer::Package.find(package1_sti.id) }
+  let_it_be_with_reload(:package2) { ::Packages::Composer::Package.find(package2_sti.id) }
 
   let(:url) { "http://localhost/#{group.path}/#{project.path}.git" }
   let(:branch) { project.repository.find_branch('master') }
@@ -47,8 +49,8 @@ RSpec.describe Gitlab::Composer::VersionIndex, feature_category: :package_regist
       end
 
       it 'returns the packages json' do
-        expect(package_index['1.0.0']).to eq(expected_json(package1))
-        expect(package_index['2.0.0']).to eq(expected_json(package2))
+        expect(package_index['1.0.0']).to eq(expected_json(packages[0]))
+        expect(package_index['2.0.0']).to eq(expected_json(packages[1]))
       end
 
       context 'with an unordered list of packages' do
@@ -62,6 +64,14 @@ RSpec.describe Gitlab::Composer::VersionIndex, feature_category: :package_regist
 
     context 'with a public project' do
       it_behaves_like 'returns the packages json'
+
+      # TODO: Remove with the rollout of the FF packages_composer_read_from_detached_table
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/562123
+      context 'with Packages::Composer::Sti::Package instances' do
+        it_behaves_like 'returns the packages json' do
+          let(:packages) { [package1_sti, package2_sti] }
+        end
+      end
     end
 
     context 'with an internal project' do

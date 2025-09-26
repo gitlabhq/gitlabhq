@@ -27,7 +27,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
     subject { get api(url), headers: headers }
 
     context 'with valid project' do
-      let_it_be(:package) { create(:composer_package, :with_metadatum, project: project) }
+      let_it_be(:package) { create(:composer_package_sti, :with_metadatum, project: project) }
 
       context 'with a public group' do
         before do
@@ -94,6 +94,16 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
             end
           end
         end
+
+        context 'when packages_composer_read_from_detached_table is disabled' do
+          before do
+            stub_feature_flags(packages_composer_read_from_detached_table: false)
+          end
+
+          include_context 'Composer api project access', auth_method: :basic, project_visibility_level: 'PUBLIC', token_type: :user, valid_token: true do
+            it_behaves_like 'Composer package index', member_role: :developer, expected_status: :success, package_returned: true
+          end
+        end
       end
 
       context 'with a private group' do
@@ -157,7 +167,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
   describe 'GET /api/v4/group/:id/-/packages/composer/p/:sha.json' do
     let(:sha) { '123' }
     let(:url) { "/group/#{group.id}/-/packages/composer/p/#{sha}.json" }
-    let!(:package) { create(:composer_package, :with_metadatum, project: project) }
+    let_it_be(:package) { create(:composer_package_sti, :with_metadatum, project: project) }
 
     subject { get api(url), headers: headers }
 
@@ -224,6 +234,16 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
         end
       end
 
+      context 'when packages_composer_read_from_detached_table is disabled' do
+        before do
+          stub_feature_flags(packages_composer_read_from_detached_table: false)
+        end
+
+        include_context 'Composer api group access', auth_method: :basic, project_visibility_level: 'PUBLIC', token_type: :user, valid_token: true do
+          it_behaves_like 'Composer provider index', member_role: :developer, expected_status: :success
+        end
+      end
+
       it_behaves_like 'updating personal access token last used' do
         let(:headers) { build_token_auth_header(personal_access_token.token) }
       end
@@ -235,7 +255,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
   end
 
   describe 'GET /api/v4/group/:id/-/packages/composer/*package_name.json' do
-    let(:package_name) { 'foobar' }
+    let_it_be(:package_name) { 'foobar' }
     let(:sha) { '$1234' }
     let(:url) { "/group/#{group.id}/-/packages/composer/#{package_name}#{sha}.json" }
 
@@ -248,7 +268,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
     end
 
     context 'with valid project' do
-      let!(:package) { create(:composer_package, :with_metadatum, name: package_name, project: project) }
+      let_it_be(:package) { create(:composer_package_sti, :with_metadatum, name: package_name, project: project) }
 
       context 'with basic auth' do
         where(:project_visibility_level, :member_role, :token_type, :valid_token, :shared_examples_name, :expected_status) do
@@ -312,6 +332,16 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
         end
       end
 
+      context 'when packages_composer_read_from_detached_table is disabled' do
+        before do
+          stub_feature_flags(packages_composer_read_from_detached_table: false)
+        end
+
+        include_context 'Composer api group access', auth_method: :basic, project_visibility_level: 'PUBLIC', token_type: :user, valid_token: true do
+          it_behaves_like 'Composer package api request', member_role: :developer, expected_status: :success
+        end
+      end
+
       context 'without a sha' do
         let(:sha) { '' }
 
@@ -331,7 +361,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
   end
 
   describe 'GET /api/v4/group/:id/-/packages/composer/p2/*package_name.json' do
-    let(:package_name) { 'foobar' }
+    let_it_be(:package_name) { 'foobar' }
     let(:url) { "/group/#{group.id}/-/packages/composer/p2/#{package_name}.json" }
 
     subject { get api(url), headers: headers }
@@ -343,7 +373,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
     end
 
     context 'with valid project' do
-      let!(:package) { create(:composer_package, :with_metadatum, name: package_name, project: project) }
+      let_it_be(:package) { create(:composer_package_sti, :with_metadatum, name: package_name, project: project) }
 
       context 'with basic auth' do
         where(:project_visibility_level, :member_role, :token_type, :valid_token, :shared_examples_name, :expected_status) do
@@ -373,6 +403,16 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
           include_context 'Composer api group access', auth_method: :basic, project_visibility_level: params[:project_visibility_level], token_type: params[:token_type], valid_token: params[:valid_token] do
             it_behaves_like params[:shared_examples_name], member_role: params[:member_role], expected_status: params[:expected_status]
           end
+        end
+      end
+
+      context 'when packages_composer_read_from_detached_table is disabled' do
+        before do
+          stub_feature_flags(packages_composer_read_from_detached_table: false)
+        end
+
+        include_context 'Composer api group access', auth_method: :basic, project_visibility_level: 'PUBLIC', token_type: :user, valid_token: true do
+          it_behaves_like 'Composer package api request', member_role: :developer, expected_status: :success
         end
       end
 
@@ -472,7 +512,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
     context 'with existing package' do
       include_context 'Composer api project access', auth_method: :token, project_visibility_level: 'PRIVATE', token_type: :user
 
-      let_it_be_with_reload(:existing_package) { create(:composer_package, name: package_name, version: '1.2.99', project: project) }
+      let_it_be_with_reload(:existing_package) { create(:composer_package_sti, :with_metadatum, name: package_name, version: '1.2.99', project: project) }
 
       let(:params) { { tag: 'v1.2.99' } }
 
@@ -492,6 +532,19 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
           existing_package.pending_destruction!
           expect { subject }
             .to change { ::Packages::Composer::Sti::Package.for_projects(project).count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+
+      context 'when packages_composer_read_from_detached_table is disabled' do
+        before do
+          stub_feature_flags(packages_composer_read_from_detached_table: false)
+        end
+
+        it 'does not create a new package' do
+          expect { subject }
+            .not_to change { ::Packages::Composer::Sti::Package.for_projects(project).count }
 
           expect(response).to have_gitlab_http_status(:created)
         end
@@ -576,7 +629,7 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
     subject(:request) { get api(url), headers: headers, params: params }
 
     context 'with valid project' do
-      let!(:package) { create(:composer_package, :with_metadatum, name: package_name, project: project) }
+      let_it_be(:package) { create(:composer_package_sti, :with_metadatum, name: package_name, project: project) }
       let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
 
       before do
@@ -678,6 +731,16 @@ RSpec.describe API::ComposerPackages, feature_category: :package_registry do
                 it_behaves_like 'process Composer api request', member_role: params[:member_role], expected_status: params[:expected_status]
               end
             end
+          end
+        end
+
+        context 'when packages_composer_read_from_detached_table is disabled' do
+          before do
+            stub_feature_flags(packages_composer_read_from_detached_table: false)
+          end
+
+          include_context 'Composer api project access', auth_method: :basic, project_visibility_level: 'PUBLIC', token_type: :user, valid_token: true do
+            it_behaves_like 'process Composer api request', member_role: :developer, expected_status: :success
           end
         end
 

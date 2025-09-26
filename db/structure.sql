@@ -4651,51 +4651,6 @@ RETURN NULL;
 END
 $$;
 
-CREATE TABLE ai_code_suggestion_events (
-    id bigint NOT NULL,
-    "timestamp" timestamp with time zone NOT NULL,
-    user_id bigint NOT NULL,
-    organization_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    event smallint NOT NULL,
-    namespace_path text,
-    payload jsonb,
-    CONSTRAINT check_ba9ae3f258 CHECK ((char_length(namespace_path) <= 255))
-)
-PARTITION BY RANGE ("timestamp");
-
-CREATE TABLE ai_duo_chat_events (
-    id bigint NOT NULL,
-    "timestamp" timestamp with time zone NOT NULL,
-    user_id bigint NOT NULL,
-    personal_namespace_id bigint,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    event smallint NOT NULL,
-    namespace_path text,
-    payload jsonb,
-    organization_id bigint,
-    CONSTRAINT check_628cdfbf3f CHECK ((char_length(namespace_path) <= 255)),
-    CONSTRAINT check_f759f45177 CHECK ((organization_id IS NOT NULL))
-)
-PARTITION BY RANGE ("timestamp");
-
-CREATE TABLE ai_troubleshoot_job_events (
-    id bigint NOT NULL,
-    "timestamp" timestamp with time zone NOT NULL,
-    user_id bigint NOT NULL,
-    job_id bigint NOT NULL,
-    project_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    event smallint NOT NULL,
-    namespace_path text,
-    payload jsonb,
-    CONSTRAINT check_29d6dbc329 CHECK ((char_length(namespace_path) <= 255))
-)
-PARTITION BY RANGE ("timestamp");
-
 CREATE TABLE ai_usage_events (
     id bigint NOT NULL,
     "timestamp" timestamp with time zone NOT NULL,
@@ -10015,6 +9970,20 @@ CREATE SEQUENCE ai_catalog_items_id_seq
 
 ALTER SEQUENCE ai_catalog_items_id_seq OWNED BY ai_catalog_items.id;
 
+CREATE TABLE ai_code_suggestion_events (
+    id bigint NOT NULL,
+    "timestamp" timestamp with time zone NOT NULL,
+    user_id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    event smallint NOT NULL,
+    namespace_path text,
+    payload jsonb,
+    CONSTRAINT check_ba9ae3f258 CHECK ((char_length(namespace_path) <= 255))
+)
+PARTITION BY RANGE ("timestamp");
+
 CREATE SEQUENCE ai_code_suggestion_events_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -10073,6 +10042,22 @@ CREATE SEQUENCE ai_conversation_threads_id_seq
 
 ALTER SEQUENCE ai_conversation_threads_id_seq OWNED BY ai_conversation_threads.id;
 
+CREATE TABLE ai_duo_chat_events (
+    id bigint NOT NULL,
+    "timestamp" timestamp with time zone NOT NULL,
+    user_id bigint NOT NULL,
+    personal_namespace_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    event smallint NOT NULL,
+    namespace_path text,
+    payload jsonb,
+    organization_id bigint,
+    CONSTRAINT check_628cdfbf3f CHECK ((char_length(namespace_path) <= 255)),
+    CONSTRAINT check_f759f45177 CHECK ((organization_id IS NOT NULL))
+)
+PARTITION BY RANGE ("timestamp");
+
 CREATE SEQUENCE ai_duo_chat_events_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -10109,6 +10094,7 @@ CREATE TABLE ai_flow_triggers (
     event_types smallint[] DEFAULT '{}'::smallint[] NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
+    ai_catalog_item_consumer_id bigint,
     CONSTRAINT check_87b77d9d54 CHECK ((char_length(description) <= 255)),
     CONSTRAINT check_f3a5b0bd6e CHECK ((char_length(config_path) <= 255))
 );
@@ -10206,6 +10192,21 @@ CREATE TABLE ai_testing_terms_acceptances (
     user_email text NOT NULL,
     CONSTRAINT check_5efe98894e CHECK ((char_length(user_email) <= 255))
 );
+
+CREATE TABLE ai_troubleshoot_job_events (
+    id bigint NOT NULL,
+    "timestamp" timestamp with time zone NOT NULL,
+    user_id bigint NOT NULL,
+    job_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    event smallint NOT NULL,
+    namespace_path text,
+    payload jsonb,
+    CONSTRAINT check_29d6dbc329 CHECK ((char_length(namespace_path) <= 255))
+)
+PARTITION BY RANGE ("timestamp");
 
 CREATE SEQUENCE ai_troubleshoot_job_events_id_seq
     START WITH 1
@@ -37650,6 +37651,8 @@ CREATE INDEX idx_pipeline_execution_schedules_security_policy_id_and_id ON secur
 
 CREATE INDEX idx_pkgs_composer_pkgs_on_creator_id ON packages_composer_packages USING btree (creator_id);
 
+CREATE INDEX idx_pkgs_composer_pkgs_on_name_target_sha_status_project_id ON packages_composer_packages USING btree (name, target_sha, status, project_id);
+
 CREATE INDEX idx_pkgs_composer_pkgs_on_project_id ON packages_composer_packages USING btree (project_id);
 
 CREATE INDEX idx_pkgs_conan_file_metadata_on_pkg_file_id_when_recipe_file ON packages_conan_file_metadata USING btree (package_file_id) WHERE (conan_file_type = 1);
@@ -38111,6 +38114,8 @@ CREATE INDEX index_ai_duo_chat_events_on_user_id ON ONLY ai_duo_chat_events USIN
 CREATE INDEX index_ai_feature_settings_on_ai_self_hosted_model_id ON ai_feature_settings USING btree (ai_self_hosted_model_id);
 
 CREATE UNIQUE INDEX index_ai_feature_settings_on_feature ON ai_feature_settings USING btree (feature);
+
+CREATE INDEX index_ai_flow_triggers_on_ai_catalog_item_consumer_id ON ai_flow_triggers USING btree (ai_catalog_item_consumer_id);
 
 CREATE INDEX index_ai_flow_triggers_on_project_id ON ai_flow_triggers USING btree (project_id);
 
@@ -47979,6 +47984,9 @@ ALTER TABLE ONLY zentao_tracker_data
 
 ALTER TABLE ONLY work_item_number_field_values
     ADD CONSTRAINT fk_72d475d3cd FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_flow_triggers
+    ADD CONSTRAINT fk_72f713947b FOREIGN KEY (ai_catalog_item_consumer_id) REFERENCES ai_catalog_item_consumers(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_conan_metadata
     ADD CONSTRAINT fk_7302a29cd9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

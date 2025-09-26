@@ -662,7 +662,7 @@ If the SBOM report is declared by a CI/CD job on the default branch: vulnerabili
 and can be seen in the [vulnerability report](../../vulnerability_report/_index.md).
 
 If the SBOM report is declared by a CI/CD job on a non-default branch: security findings are created,
-and can be seen in the [security tab of the pipeline view](../../vulnerability_report/pipeline.md) and MR security widget.
+and can be seen in the [security tab of the pipeline view](../../detect/security_scanning_results.md) and MR security widget.
 This functionality is behind a feature flag and tracked in [Epic 14636](https://gitlab.com/groups/gitlab-org/-/epics/14636).
 
 ## Offline support
