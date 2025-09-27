@@ -33,14 +33,8 @@ describe('ErrorsAlert', () => {
 
     it('renders error alert with list for multiple errors', () => {
       createWrapper({ errors: [mockError1, mockError2] });
-
-      expect(findErrorAlert().findAll('li')).toHaveLength(2);
-    });
-
-    it('renders error alert with multiple errors; each list item is accurate', () => {
-      createWrapper({ errors: [mockError1, mockError2] });
-
       const foundErrors = findErrorAlert().findAll('li');
+      expect(foundErrors).toHaveLength(2);
       expect(foundErrors.at(0).text()).toBe(mockError1);
       expect(foundErrors.at(1).text()).toBe(mockError2);
     });
