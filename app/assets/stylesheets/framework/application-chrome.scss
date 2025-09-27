@@ -261,8 +261,7 @@
       }
 
       // Hide alert wrapper if it's empty
-      > .alert-wrapper:not(:has(*)),
-      > .alert-wrapper:not(:has(.container-fluid *)) {
+      > .alert-wrapper:not(:has(*)) {
         @apply gl-hidden;
       }
     }
@@ -604,7 +603,7 @@
   .security-dashboard-filters {
     top: 0 !important;
   }
-  
+
   .vulnerability-list thead {
     top: var(--sticky-container-height) !important;
   }

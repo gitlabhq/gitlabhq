@@ -6,7 +6,7 @@ RSpec.describe ::Authz::Boundary, feature_category: :permissions do
   let_it_be(:group) { build(:group) }
   let_it_be(:project) { build(:project) }
   let_it_be(:user) { build(:user, :with_namespace) }
-  let_it_be(:instance) { nil }
+  let_it_be(:instance) { :instance }
 
   describe '.declarative_policy_class' do
     subject { described_class::Base.declarative_policy_class }

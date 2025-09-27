@@ -245,6 +245,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
       it 'does not create a new environment' do
         expect { new_job }.not_to change { Environment.count }
+        expect(new_job.persisted_environment).to eq(job.persisted_environment)
       end
     end
 
@@ -269,6 +270,7 @@ RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_ca
 
       it 'does not create a new environment' do
         expect { new_job }.not_to change { Environment.count }
+        expect(new_job.persisted_environment).to eq(job.persisted_environment)
       end
     end
   end

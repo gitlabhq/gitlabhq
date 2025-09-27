@@ -63,6 +63,7 @@ module Ci
       artifacts_exposed_as.present?
     end
 
+    # Remove this method with FF `stop_writing_builds_metadata`
     def ensure_metadata
       metadata || build_metadata(project: project)
     end

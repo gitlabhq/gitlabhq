@@ -16,7 +16,10 @@ module Environments
         end
 
         job.persisted_environment = environment
-        job.assign_attributes(metadata_attributes: { expanded_environment_name: environment.name })
+
+        if Feature.disabled?(:stop_writing_builds_metadata, job.project)
+          job.assign_attributes(metadata_attributes: { expanded_environment_name: environment.name })
+        end
 
         track_environment_usage(job, environment)
       else

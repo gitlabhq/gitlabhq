@@ -505,6 +505,52 @@ variables:
   - GOOGLE_CLOUD_LOCATION
 ```
 
+#### Cursor CLI
+
+```yaml
+image: node:22-slim
+commands:
+  - echo "Installing Cursor"
+  - apt-get update --quiet && apt-get install --yes curl wget gnupg2 gpg git && rm --recursive --force /var/lib/apt/lists/*
+  - curl --silent --show-error --location "https://cursor.com/install" | bash
+  - echo "Installing glab"
+  - export GITLAB_TOKEN=$GITLAB_TOKEN_CURSOR
+  - curl --silent --show-error --location "https://raw.githubusercontent.com/upciti/wakemeops/main/assets/install_repository" | bash
+  - apt-get install --yes glab
+  - echo "Configuring Git"
+  - git config --global user.email "cursor@gitlab.com"
+  - git config --global user.name "Cursor"
+  - echo "Running Cursor"
+  - |
+    $HOME/.local/bin/cursor-agent -p --force --output-format stream-json "--prompt "
+    You are an AI assistant helping with GitLab operations.
+
+    Context: $AI_FLOW_CONTEXT
+    Task: $AI_FLOW_INPUT
+    Event: $AI_FLOW_EVENT
+
+    Please execute the requested task using the available GitLab tools.
+    Be thorough in your analysis and provide clear explanations.
+
+    <important>
+    Use the glab CLI to access data from GitLab. The glab CLI has already been authenticated. You can run the corresponding commands.
+
+    When you complete your work create a new Git branch, if you aren't already working on a feature branch, with the format of 'feature/<short description of feature>' and check in/push code.
+
+    When you check in and push code you will need to use the access token stored in GITLAB_TOKEN and the user Cursor.
+    Lastly, after pushing the code, if a merge request doesn't already exist, create a new merge request for the branch and link it to the issue using:
+    `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
+
+    If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
+    
+    </important>
+    "
+variables:
+  - GITLAB_TOKEN_CURSOR
+  - GITLAB_HOST
+  - CURSOR_API_KEY
+```
+
 ## Create a flow trigger
 
 {{< history >}}

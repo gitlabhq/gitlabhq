@@ -20,8 +20,8 @@ module Mutations
           required: false,
           description:
           <<-STR
-                    Cron time zone supported by ActiveSupport::TimeZone.
-                    For example: "Pacific Time (US & Canada)" (default: "UTC").
+                    Cron time zone supported by `ActiveSupport::TimeZone`.
+                    For example: `Pacific Time (US & Canada)` (default: `UTC`).
           STR
 
         argument :ref, GraphQL::Types::String,

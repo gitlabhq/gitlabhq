@@ -184,7 +184,8 @@ module API
           Gitlab::Auth::ImpersonationDisabled,
           Gitlab::Auth::InsufficientScopeError,
           Gitlab::Auth::RestrictedLanguageServerClientError,
-          Gitlab::Auth::DpopValidationError]
+          Gitlab::Auth::DpopValidationError,
+          Gitlab::Auth::GranularPermissionsError]
 
         base.__send__(:rescue_from, *error_classes, oauth2_bearer_token_error_handler) # rubocop:disable GitlabSecurity/PublicSend
       end
@@ -232,6 +233,11 @@ module API
             when Gitlab::Auth::RestrictedLanguageServerClientError
               Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
                 :restricted_language_server_client_error,
+                e)
+
+            when Gitlab::Auth::GranularPermissionsError
+              Rack::OAuth2::Server::Resource::Bearer::Forbidden.new(
+                :insufficient_granular_scope,
                 e)
             end
 

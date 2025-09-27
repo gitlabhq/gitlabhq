@@ -21,10 +21,22 @@ title: Gitaly on Kubernetes
 
 {{< /history >}}
 
+{{< alert type="disclaimer" />}}
+
 Running Gitaly on Kubernetes has availability trade-offs, so consider these trade-offs when planing a production environment and set expectations accordingly.
 This document describes and provides guidance on how to minimize, and plan for existing limitations.
 
-Gitaly Cluster (Praefect) is unsupported. For more information on running Gitaly on Kubernetes, see [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127).
+### Timeline
+
+Gitaly on Kubernetes has been evaluated by the Gitaly team and determined to be a safe
+way to deploy Gitaly. The rest of this document details best practices for doing
+so.
+
+Internally, we are in the process of dogfooding Gitaly on Kubernetes to ensure it can
+handle production level workloads before moving the feature to be [Generally Available (GA)](../../policy/development_stages_support.md#generally-available).
+
+We expect to finish dogfooding in FY26Q4, and move Gitaly on Kubernetes to GA in
+FY27Q1.
 
 ## Context
 

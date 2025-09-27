@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category: :permissions do
-  let_it_be(:boundary) { Authz::Boundary.for(nil) }
+  let_it_be(:boundary) { Authz::Boundary.for(:instance) }
   let_it_be(:granular_pat) { create(:granular_pat, namespace: boundary.namespace, permissions: :create_issue) }
   let_it_be(:token) { granular_pat }
   let_it_be(:permissions) { :create_issue }

@@ -37,6 +37,8 @@ module Ci
     end
 
     def add_environment_attributes!(attributes)
+      return if Feature.enabled?(:stop_writing_builds_metadata, job.project)
+
       attributes[:metadata_attributes] ||= {}
       attributes[:metadata_attributes][:expanded_environment_name] = expanded_environment_name
     end

@@ -87,7 +87,17 @@ module API
 
       sudo!
 
-      validate_and_save_access_token!(scopes: scopes_registered_for_endpoint) unless sudo?
+      unless sudo?
+        token = validate_and_save_access_token!(scopes: scopes_registered_for_endpoint)
+
+        if token
+          result = ::Authz::Tokens::AuthorizeGranularScopesService.new(
+            boundary: boundary_for_endpoint, permissions: permissions_for_endpoint, token: token
+          ).execute
+
+          raise Gitlab::Auth::GranularPermissionsError, result.message if result.error?
+        end
+      end
 
       save_current_user_in_env(@current_user) if @current_user
 
@@ -1079,6 +1089,34 @@ module API
 
       project_features.all? do |project_feature|
         project.project_feature.access_level(project_feature) >= ProjectFeature::ENABLED
+      end
+    end
+
+    def authorization_settings
+      (respond_to?(:route_setting) && route_setting(:authorization)) || {}
+    end
+
+    def permissions_for_endpoint
+      return unless access_token.try(:granular?)
+
+      Array(authorization_settings[:permissions])
+    end
+
+    def boundary_for_endpoint
+      return unless access_token.try(:granular?)
+
+      case authorization_settings[:boundary_type]
+      when :instance
+        ::Authz::Boundary.for(:instance)
+      when :group
+        group = find_group(params[:group_id] || params[:id])
+        ::Authz::Boundary.for(group) if group
+      when :project
+        project = find_project(params[:project_id] || params[:id])
+        ::Authz::Boundary.for(project) if project
+      when :user
+        user = find_user(params[:user_id] || params[:id])
+        ::Authz::Boundary.for(user) if user
       end
     end
   end

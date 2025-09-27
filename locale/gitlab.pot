@@ -40662,6 +40662,15 @@ msgstr ""
 msgid "MergeChecks|Bypass"
 msgstr ""
 
+msgid "MergeChecks|Bypass security policies"
+msgstr ""
+
+msgid "MergeChecks|Bypassed"
+msgstr ""
+
+msgid "MergeChecks|Dismissing a finding will create an audit event. If this finding is merged into the default branch, it will be marked as a policy violation in the vulnerability report."
+msgstr ""
+
 msgid "MergeChecks|Enable \"Pipelines must succeed\" first."
 msgstr ""
 
@@ -58751,9 +58760,6 @@ msgstr ""
 msgid "SecurityOrchestration|Bypass Policy Violation"
 msgstr ""
 
-msgid "SecurityOrchestration|Bypass policy violations"
-msgstr ""
-
 msgid "SecurityOrchestration|Bypassed as"
 msgstr ""
 
@@ -59251,9 +59257,6 @@ msgstr ""
 msgid "SecurityOrchestration|Override the following project settings:"
 msgstr ""
 
-msgid "SecurityOrchestration|Override this specific policy violation with documented justification. Only available to eligible users. This bypass impacts all policy gates on this MR."
-msgstr ""
-
 msgid "SecurityOrchestration|Pipeline execution"
 msgstr ""
 
@@ -59333,9 +59336,6 @@ msgid "SecurityOrchestration|Policy status"
 msgstr ""
 
 msgid "SecurityOrchestration|Policy type"
-msgstr ""
-
-msgid "SecurityOrchestration|Policy violations have been bypassed"
 msgstr ""
 
 msgid "SecurityOrchestration|Prevent users from skipping pipelines"

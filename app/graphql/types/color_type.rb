@@ -6,7 +6,7 @@ module Types
     description <<~DESC
       Color represented as a hex code or named color.
 
-      For example: "#fefefe".
+      For example: `#fefefe`.
     DESC
 
     def self.coerce_input(value, ctx)

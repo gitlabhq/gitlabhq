@@ -33,7 +33,7 @@ module Resolvers
 
     argument :programming_language_name, GraphQL::Types::String,
       required: false,
-      description: 'Filter projects by programming language name (case insensitive). For example: "css" or "ruby".'
+      description: 'Filter projects by programming language name (case insensitive). For example: `css` or `ruby`.'
 
     argument :trending, GraphQL::Types::Boolean,
       required: false,

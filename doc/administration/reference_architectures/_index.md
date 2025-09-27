@@ -624,13 +624,13 @@ While we try to have a good range of support for GitLab environment designs, cer
 
 #### Stateful components in Kubernetes
 
-[Running stateful components in Kubernetes, such as Gitaly Cluster (Praefect), is not supported](https://docs.gitlab.com/charts/installation/#configure-the-helm-chart-to-use-external-stateful-data).
+[Running stateful components in Kubernetes, such as Postgres and Redis, is not supported](https://docs.gitlab.com/charts/installation/#configure-the-helm-chart-to-use-external-stateful-data).
 
-Gitaly Cluster (Praefect) is only supported on conventional virtual machines. Kubernetes strictly limits memory usage. However, the memory usage of Git is unpredictable, which
-can cause sporadic out of memory (OOM) termination of Gitaly pods. The OOM termination leads to significant disruptions and potential data loss. Hence, Gitaly is not tested
-or supported in Kubernetes. For more information, see [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127).
+You can use other supported cloud provider services, unless specifically called out as unsupported.
 
-This applies to stateful components such as Postgres and Redis. You can use other supported cloud provider services, unless specifically called out as unsupported.
+Running Gitaly nodes on Kubernetes is in limited availability with [plans to go Generally Available](../gitaly/kubernetes.md#timeline).
+This means that in a Gitaly Cluster, the Postgres database cannot be
+deployed on Kubernetes but the individual Gitaly nodes can be.
 
 #### Autoscaling of stateful nodes
 

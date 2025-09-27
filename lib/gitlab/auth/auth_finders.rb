@@ -9,6 +9,7 @@ module Gitlab
     RevokedError = Class.new(AuthenticationError)
     ImpersonationDisabled = Class.new(AuthenticationError)
     UnauthorizedError = Class.new(AuthenticationError)
+    GranularPermissionsError = Class.new(AuthenticationError)
 
     class DpopValidationError < AuthenticationError
       def initialize(msg)
@@ -229,6 +230,7 @@ module Gitlab
         end
 
         save_current_token_in_env
+        access_token
       end
 
       def authentication_token_present?

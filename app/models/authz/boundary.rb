@@ -10,7 +10,7 @@ module Authz
                          ProjectBoundary
                        when ::User
                          UserBoundary
-                       when nil
+                       when :instance
                          InstanceBoundary
                        end
 
@@ -59,6 +59,10 @@ module Authz
     end
 
     class InstanceBoundary < Base
+      def namespace
+        nil
+      end
+
       def path
         'instance'
       end

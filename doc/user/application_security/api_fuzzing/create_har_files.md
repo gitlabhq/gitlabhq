@@ -16,8 +16,8 @@ HTTP archive (HAR) format files are an industry standard for exchanging informat
 requests and HTTP responses. A HAR file's content is JSON formatted, containing browser interactions
 with a web site. The file extension `.har` is commonly used.
 
-The HAR files can be used to perform [web API fuzz testing](configuration/enabling_the_analyzer.md#http-archive-har) as part of
-your [GitLab CI/CD](../../../ci/_index.md) pipelines.
+HAR files can be used to perform [web API fuzz testing](configuration/enabling_the_analyzer.md#http-archive-har)
+in CI/CD pipelines.
 
 {{< alert type="warning" >}}
 
@@ -36,57 +36,50 @@ tools do not expose sensitive information, and can be safely used.
 The following tools can be used generate a HAR file based on your network activity. They
 automatically record your network activity and generate the HAR file:
 
-1. [GitLab HAR Recorder](#gitlab-har-recorder).
-1. [Insomnia API Client](#insomnia-api-client).
-1. [Fiddler debugging proxy](#fiddler-debugging-proxy).
-1. [Safari web browser](#safari-web-browser).
-1. [Chrome web browser](#chrome-web-browser).
-1. [Firefox web browser](#firefox-web-browser).
+- GitLab HAR recorder
+- Insomnia API client
+- Fiddler debugging proxy
+- Safari web browser
+- Chrome web browser
+- Firefox web browser
 
 {{< alert type="warning" >}}
 
-HAR files may contain sensitive information such as authentication tokens, API keys, and
-session cookies. We recommend that you review the HAR file contents before adding them to a
-repository.
+HAR files may contain sensitive information such as authentication tokens, API keys, and session
+cookies. You should review the HAR file contents before adding them to a repository.
 
 {{< /alert >}}
 
-### GitLab HAR Recorder
+### GitLab HAR recorder
 
 [GitLab HAR Recorder](https://gitlab.com/gitlab-org/security-products/har-recorder) is a command
-line tool for recording HTTP messages and saving them to HAR files. For more details
-about the GitLab HAR Recorder, see the [homepage](https://gitlab.com/gitlab-org/security-products/har-recorder).
+line tool for recording HTTP messages and saving them to HAR files.
 
-#### Install GitLab HAR Recorder
+#### Install GitLab HAR recorder
 
 Prerequisites:
 
 - Install Python 3.6 or greater.
 - For Microsoft Windows, you must also install `Microsoft Visual C++ 14.0`. It's included with
-  *Build Tools for Visual Studio* from [Visual Studio Downloads page](https://visualstudio.microsoft.com/downloads/).
+  Build Tools for Visual Studio from the [Visual Studio Downloads page](https://visualstudio.microsoft.com/downloads/).
 - Install HAR Recorder.
 
-Install GitLab HAR Recorder:
+Install GitLab HAR recorder:
 
   ```shell
   pip install gitlab-har-recorder --extra-index-url https://gitlab.com/api/v4/projects/22441624/packages/pypi/simple
   ```
 
-#### Create a HAR file with GitLab HAR Recorder
+#### Create a HAR file with GitLab HAR recorder
 
 1. Start recorder with the proxy port and HAR filename.
 1. Complete the browser actions, using the proxy.
    1. Make sure proxy is used!
 1. Stop the recorder.
 
-To verify the HAR contains all requests, use an online HAR viewer, for example:
+### Insomnia API client
 
-- [HAR Viewer](http://www.softwareishard.com/har/viewer/)
-- [Google Admin Toolbox HAR Analyzer](https://toolbox.googleapps.com/apps/har_analyzer/)
-
-### Insomnia API Client
-
-[Insomnia API Client](https://insomnia.rest/) is an API design tool that among many uses, helps
+[Insomnia API client](https://insomnia.rest/) is an API design tool that among many uses, helps
 you to design, describe, and test your API. You can also use it to generate HAR files that can be
 used in [web API fuzz testing](configuration/enabling_the_analyzer.md#http-archive-har).
 
@@ -115,7 +108,7 @@ responses in HAR format.
 #### Create a HAR file with Fiddler
 
 1. Go to the [Fiddler home page](https://www.telerik.com/fiddler) and sign in. If you don't already
-   have an account, first create an account.
+   have an account, create an account.
 1. Browse pages that call an API. Fiddler automatically captures the requests.
 1. Select one or more requests, then from the context menu, select **Export > Selected Sessions**.
 1. In the **Choose Format** dropdown list select **HTTPArchive v1.2**.
@@ -240,8 +233,3 @@ HAR files are JSON files and can be edited in any text editor.
 
 After editing the HAR file, open it in a HAR file viewer to verify its formatting and structure are
 intact.
-
-The following example demonstrates use of [Visual Studio Code](https://code.visualstudio.com/) text
-editor to edit an authorization token found in a header.
-
-![Authorization token edited in Visual Studio Code](img/vscode_har_edit_auth_header_v13_12.png)

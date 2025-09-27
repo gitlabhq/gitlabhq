@@ -270,27 +270,50 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
         end
 
         it 'persists the expanded environment name' do
-          expect(new_job.metadata.expanded_environment_name).to eq('production')
+          expect(new_job.expanded_environment_name).to eq('production')
+        end
+
+        it 'does not write to ci_builds_metadata' do
+          expect { new_job }.to not_change { Ci::BuildMetadata.count }
+        end
+
+        context 'when FF `stop_writing_builds_metadata` is disabled' do
+          before do
+            stub_feature_flags(stop_writing_builds_metadata: false)
+          end
+
+          it 'persists the expanded environment name in metadata' do
+            expect { new_job }.to change { Ci::BuildMetadata.count }.by(1)
+            expect(new_job.metadata.expanded_environment_name).to eq('production')
+          end
         end
       end
 
-      context 'when it has a dynamic environment' do
-        let_it_be(:other_developer) { create(:user, developer_of: project) }
-
-        let(:environment_name) { 'review/$CI_COMMIT_REF_SLUG-$GITLAB_USER_ID' }
-
-        let!(:job) do
-          create(:ci_build, :with_deployment,
-            environment: environment_name,
-            options: { environment: { name: environment_name } },
-            pipeline: pipeline, stage_id: stage.id, project: project,
-            user: other_developer)
+      context 'when FF `stop_writing_builds_metadata` is disabled' do
+        # The responsibility of linking the new job to the existing persisted environment
+        # has been moved to Ci::RetryJobService using Ci::Deployable#link_to_environment.
+        before do
+          stub_feature_flags(stop_writing_builds_metadata: false)
         end
 
-        it 're-uses the previous persisted environment' do
-          expect(job.persisted_environment.name).to eq("review/#{job.ref}-#{other_developer.id}")
+        context 'when it has a dynamic environment' do
+          let_it_be(:other_developer) { create(:user, developer_of: project) }
 
-          expect(new_job.persisted_environment.name).to eq("review/#{job.ref}-#{other_developer.id}")
+          let(:environment_name) { 'review/$CI_COMMIT_REF_SLUG-$GITLAB_USER_ID' }
+
+          let!(:job) do
+            create(:ci_build, :with_deployment,
+              environment: environment_name,
+              options: { environment: { name: environment_name } },
+              pipeline: pipeline, stage_id: stage.id, project: project,
+              user: other_developer)
+          end
+
+          it 're-uses the previous persisted environment' do
+            expect(job.persisted_environment.name).to eq("review/#{job.ref}-#{other_developer.id}")
+
+            expect(new_job.persisted_environment.name).to eq("review/#{job.ref}-#{other_developer.id}")
+          end
         end
       end
 

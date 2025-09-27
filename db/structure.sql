@@ -27325,6 +27325,25 @@ CREATE SEQUENCE user_project_callouts_id_seq
 
 ALTER SEQUENCE user_project_callouts_id_seq OWNED BY user_project_callouts.id;
 
+CREATE TABLE user_project_member_roles (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    user_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    shared_with_group_id bigint,
+    member_role_id bigint NOT NULL
+);
+
+CREATE SEQUENCE user_project_member_roles_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE user_project_member_roles_id_seq OWNED BY user_project_member_roles.id;
+
 CREATE TABLE user_statuses (
     user_id bigint NOT NULL,
     cached_markdown_version integer,
@@ -31362,6 +31381,8 @@ ALTER TABLE ONLY user_preferences ALTER COLUMN id SET DEFAULT nextval('user_pref
 
 ALTER TABLE ONLY user_project_callouts ALTER COLUMN id SET DEFAULT nextval('user_project_callouts_id_seq'::regclass);
 
+ALTER TABLE ONLY user_project_member_roles ALTER COLUMN id SET DEFAULT nextval('user_project_member_roles_id_seq'::regclass);
+
 ALTER TABLE ONLY user_synced_attributes_metadata ALTER COLUMN id SET DEFAULT nextval('user_synced_attributes_metadata_id_seq'::regclass);
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
@@ -34981,6 +35002,9 @@ ALTER TABLE ONLY user_preferences
 
 ALTER TABLE ONLY user_project_callouts
     ADD CONSTRAINT user_project_callouts_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY user_project_member_roles
+    ADD CONSTRAINT user_project_member_roles_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY user_statuses
     ADD CONSTRAINT user_statuses_pkey PRIMARY KEY (user_id);
@@ -42281,6 +42305,14 @@ CREATE UNIQUE INDEX index_user_preferences_on_user_id ON user_preferences USING 
 
 CREATE INDEX index_user_project_callouts_on_project_id ON user_project_callouts USING btree (project_id);
 
+CREATE INDEX index_user_project_member_roles_on_member_role_id ON user_project_member_roles USING btree (member_role_id);
+
+CREATE INDEX index_user_project_member_roles_on_project_id ON user_project_member_roles USING btree (project_id);
+
+CREATE INDEX index_user_project_member_roles_on_shared_with_group_id ON user_project_member_roles USING btree (shared_with_group_id);
+
+CREATE INDEX index_user_project_member_roles_on_user_id ON user_project_member_roles USING btree (user_id);
+
 CREATE INDEX index_user_statuses_on_clear_status_at_not_null ON user_statuses USING btree (clear_status_at) WHERE (clear_status_at IS NOT NULL);
 
 CREATE INDEX index_user_statuses_on_user_id ON user_statuses USING btree (user_id);
@@ -46959,6 +46991,9 @@ ALTER TABLE ONLY clusters_managed_resources
 ALTER TABLE ONLY work_item_type_user_preferences
     ADD CONSTRAINT fk_0748f95f41 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY user_project_member_roles
+    ADD CONSTRAINT fk_079d0ac4c9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY sbom_occurrences_vulnerabilities
     ADD CONSTRAINT fk_07b81e3a81 FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
 
@@ -47433,6 +47468,9 @@ ALTER TABLE ONLY merge_request_approval_metrics
 ALTER TABLE ONLY protected_branch_unprotect_access_levels
     ADD CONSTRAINT fk_325cad614b FOREIGN KEY (protected_branch_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY user_project_member_roles
+    ADD CONSTRAINT fk_3264461772 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY bulk_import_entities
     ADD CONSTRAINT fk_32782a175e FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
@@ -47714,6 +47752,9 @@ ALTER TABLE ONLY import_failures
 
 ALTER TABLE ONLY status_check_responses
     ADD CONSTRAINT fk_55bd2abc83 FOREIGN KEY (external_status_check_id) REFERENCES external_status_checks(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_project_member_roles
+    ADD CONSTRAINT fk_56044c5711 FOREIGN KEY (shared_with_group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_56067dcb44 FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -51143,6 +51184,9 @@ ALTER TABLE ONLY packages_rpm_repository_files
 
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_rails_d739f46384_p FOREIGN KEY (partition_id, commit_id) REFERENCES p_ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_project_member_roles
+    ADD CONSTRAINT fk_rails_d75d0a70a8 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_rpm_metadata
     ADD CONSTRAINT fk_rails_d79f02264b FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;

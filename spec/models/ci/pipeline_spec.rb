@@ -4241,7 +4241,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
           before do
             job.job_environment.destroy!
-            staging_job.metadata.destroy!
+            job.metadata.update!(expanded_environment_name: job.expanded_environment_name)
           end
 
           it 'includes environments from both sources' do
@@ -4266,7 +4266,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         let_it_be(:environment) { create(:environment, project: pipeline.project) }
 
         before_all do
-          job.metadata.update!(expanded_environment_name: environment.name)
+          job.link_to_environment(environment)
         end
 
         it 'does not return environments' do

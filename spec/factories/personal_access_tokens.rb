@@ -53,6 +53,8 @@ FactoryBot.define do
     granular { true }
 
     after(:create) do |token, evaluator|
+      next unless evaluator.permissions.present?
+
       granular_scope = Authz::GranularScope.create!(
         namespace: evaluator.namespace,
         permissions: Array(evaluator.permissions),

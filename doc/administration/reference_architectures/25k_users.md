@@ -2310,12 +2310,7 @@ section assumes this.
 
 {{< /alert >}}
 
-{{< alert type="warning" >}}
-
-**Gitaly Cluster (Praefect) is not supported to be run in Kubernetes**.
-Refer to [epic 6127](https://gitlab.com/groups/gitlab-org/-/epics/6127) for more details.
-
-{{< /alert >}}
+For information about Gitaly on Kubernetes availability, see the [Timeline](../gitaly/kubernetes.md#timeline).
 
 ### Cluster topology
 

@@ -72,13 +72,13 @@ RSpec.describe Ci::CreatePipelineService, :aggregate_failures,
 
       expect(metadata_partition_ids).to eq([current_partition_id])
     end
-  end
 
-  it 'correctly assigns partition and environment' do
-    metadata = find_metadata('deploy')
+    it 'correctly assigns partition and environment' do
+      metadata = find_metadata('deploy')
 
-    expect(metadata.partition_id).to eq(current_partition_id)
-    expect(metadata.expanded_environment_name).to eq('review/deploy')
+      expect(metadata.partition_id).to eq(current_partition_id)
+      expect(metadata.expanded_environment_name).to eq('review/deploy')
+    end
   end
 
   context 'with pipeline variables' do

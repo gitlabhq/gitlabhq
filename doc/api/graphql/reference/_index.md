@@ -212,7 +212,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryadminprojectsnamespacepath"></a>`namespacePath` | [`ID`](#id) | Filter projects by their namespace's full path (group or user). |
 | <a id="queryadminprojectsnotaimedfordeletion"></a>`notAimedForDeletion` | [`Boolean`](#boolean) | Exclude projects that are marked for deletion. |
 | <a id="queryadminprojectspersonal"></a>`personal` | [`Boolean`](#boolean) | Return only personal projects. |
-| <a id="queryadminprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="queryadminprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="queryadminprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
 | <a id="queryadminprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
 | <a id="queryadminprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Defaults to `id_desc`, or `similarity` if search used. |
@@ -1546,7 +1546,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryprojectsnamespacepath"></a>`namespacePath` | [`ID`](#id) | Filter projects by their namespace's full path (group or user). |
 | <a id="queryprojectsnotaimedfordeletion"></a>`notAimedForDeletion` | [`Boolean`](#boolean) | Exclude projects that are marked for deletion. |
 | <a id="queryprojectspersonal"></a>`personal` | [`Boolean`](#boolean) | Return only personal projects. |
-| <a id="queryprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="queryprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="queryprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
 | <a id="queryprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
 | <a id="queryprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Defaults to `id_desc`, or `similarity` if search used. |
@@ -10167,7 +10167,7 @@ Input type: `PipelineScheduleCreateInput`
 | <a id="mutationpipelineschedulecreateactive"></a>`active` | [`Boolean`](#boolean) | Indicates if the pipeline schedule should be active or not. |
 | <a id="mutationpipelineschedulecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationpipelineschedulecreatecron"></a>`cron` | [`String!`](#string) | Cron expression of the pipeline schedule. |
-| <a id="mutationpipelineschedulecreatecrontimezone"></a>`cronTimezone` | [`String`](#string) | Cron time zone supported by ActiveSupport::TimeZone. For example: "Pacific Time (US & Canada)" (default: "UTC"). |
+| <a id="mutationpipelineschedulecreatecrontimezone"></a>`cronTimezone` | [`String`](#string) | Cron time zone supported by `ActiveSupport::TimeZone`. For example: `Pacific Time (US & Canada)` (default: `UTC`). |
 | <a id="mutationpipelineschedulecreatedescription"></a>`description` | [`String!`](#string) | Description of the pipeline schedule. |
 | <a id="mutationpipelineschedulecreateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInput!]`](#ciinputsinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.10. |
 | <a id="mutationpipelineschedulecreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the pipeline schedule is associated with. |
@@ -10249,7 +10249,7 @@ Input type: `PipelineScheduleUpdateInput`
 | <a id="mutationpipelinescheduleupdateactive"></a>`active` | [`Boolean`](#boolean) | Indicates if the pipeline schedule should be active or not. |
 | <a id="mutationpipelinescheduleupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationpipelinescheduleupdatecron"></a>`cron` | [`String`](#string) | Cron expression of the pipeline schedule. |
-| <a id="mutationpipelinescheduleupdatecrontimezone"></a>`cronTimezone` | [`String`](#string) | Cron time zone supported by ActiveSupport::TimeZone. For example: "Pacific Time (US & Canada)" (default: "UTC"). |
+| <a id="mutationpipelinescheduleupdatecrontimezone"></a>`cronTimezone` | [`String`](#string) | Cron time zone supported by `ActiveSupport::TimeZone`. For example: `Pacific Time (US & Canada)` (default: `UTC`). |
 | <a id="mutationpipelinescheduleupdatedescription"></a>`description` | [`String`](#string) | Description of the pipeline schedule. |
 | <a id="mutationpipelinescheduleupdateid"></a>`id` | [`CiPipelineScheduleID!`](#cipipelinescheduleid) | ID of the pipeline schedule to mutate. |
 | <a id="mutationpipelinescheduleupdateinputs"></a>`inputs` {{< icon name="warning-solid" >}} | [`[CiInputsInput!]`](#ciinputsinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 17.11. |
@@ -23052,7 +23052,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="addonusercontributedprojectsincludepersonal"></a>`includePersonal` | [`Boolean`](#boolean) | Include personal projects. |
 | <a id="addonusercontributedprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="addonusercontributedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="addonusercontributedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="addonusercontributedprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="addonusercontributedprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | Sort contributed projects. |
 
@@ -23198,7 +23198,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="addonuserstarredprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="addonuserstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="addonuserstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="addonuserstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="addonuserstarredprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | List starred projects by sort order. |
 
@@ -24386,7 +24386,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="autocompletedusercontributedprojectsincludepersonal"></a>`includePersonal` | [`Boolean`](#boolean) | Include personal projects. |
 | <a id="autocompletedusercontributedprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="autocompletedusercontributedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="autocompletedusercontributedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="autocompletedusercontributedprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="autocompletedusercontributedprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | Sort contributed projects. |
 
@@ -24544,7 +24544,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="autocompleteduserstarredprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="autocompleteduserstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="autocompleteduserstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="autocompleteduserstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="autocompleteduserstarredprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | List starred projects by sort order. |
 
@@ -27562,7 +27562,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="currentusercontributedprojectsincludepersonal"></a>`includePersonal` | [`Boolean`](#boolean) | Include personal projects. |
 | <a id="currentusercontributedprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="currentusercontributedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="currentusercontributedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="currentusercontributedprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="currentusercontributedprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | Sort contributed projects. |
 
@@ -27741,7 +27741,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="currentuserstarredprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="currentuserstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="currentuserstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="currentuserstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="currentuserstarredprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | List starred projects by sort order. |
 
@@ -32110,7 +32110,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="groupsharedprojectsactive"></a>`active` | [`Boolean`](#boolean) | Filters by projects that are not archived and not marked for deletion. |
 | <a id="groupsharedprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="groupsharedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="groupsharedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="groupsharedprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
 | <a id="groupsharedprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Defaults to `id_desc`, or `similarity` if search used. |
 
@@ -34475,7 +34475,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestassigneecontributedprojectsincludepersonal"></a>`includePersonal` | [`Boolean`](#boolean) | Include personal projects. |
 | <a id="mergerequestassigneecontributedprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="mergerequestassigneecontributedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="mergerequestassigneecontributedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="mergerequestassigneecontributedprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="mergerequestassigneecontributedprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | Sort contributed projects. |
 
@@ -34621,7 +34621,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestassigneestarredprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="mergerequestassigneestarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="mergerequestassigneestarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="mergerequestassigneestarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="mergerequestassigneestarredprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | List starred projects by sort order. |
 
@@ -34896,7 +34896,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestauthorcontributedprojectsincludepersonal"></a>`includePersonal` | [`Boolean`](#boolean) | Include personal projects. |
 | <a id="mergerequestauthorcontributedprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="mergerequestauthorcontributedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="mergerequestauthorcontributedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="mergerequestauthorcontributedprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="mergerequestauthorcontributedprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | Sort contributed projects. |
 
@@ -35042,7 +35042,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestauthorstarredprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="mergerequestauthorstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="mergerequestauthorstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="mergerequestauthorstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="mergerequestauthorstarredprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | List starred projects by sort order. |
 
@@ -35368,7 +35368,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestparticipantcontributedprojectsincludepersonal"></a>`includePersonal` | [`Boolean`](#boolean) | Include personal projects. |
 | <a id="mergerequestparticipantcontributedprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="mergerequestparticipantcontributedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="mergerequestparticipantcontributedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="mergerequestparticipantcontributedprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="mergerequestparticipantcontributedprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | Sort contributed projects. |
 
@@ -35514,7 +35514,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestparticipantstarredprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="mergerequestparticipantstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="mergerequestparticipantstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="mergerequestparticipantstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="mergerequestparticipantstarredprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | List starred projects by sort order. |
 
@@ -35808,7 +35808,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestreviewercontributedprojectsincludepersonal"></a>`includePersonal` | [`Boolean`](#boolean) | Include personal projects. |
 | <a id="mergerequestreviewercontributedprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="mergerequestreviewercontributedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="mergerequestreviewercontributedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="mergerequestreviewercontributedprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="mergerequestreviewercontributedprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | Sort contributed projects. |
 
@@ -35954,7 +35954,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mergerequestreviewerstarredprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="mergerequestreviewerstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="mergerequestreviewerstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="mergerequestreviewerstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="mergerequestreviewerstarredprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | List starred projects by sort order. |
 
@@ -37330,7 +37330,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="organizationprojectsnamespacepath"></a>`namespacePath` | [`ID`](#id) | Filter projects by their namespace's full path (group or user). |
 | <a id="organizationprojectsnotaimedfordeletion"></a>`notAimedForDeletion` | [`Boolean`](#boolean) | Exclude projects that are marked for deletion. |
 | <a id="organizationprojectspersonal"></a>`personal` | [`Boolean`](#boolean) | Return only personal projects. |
-| <a id="organizationprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="organizationprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="organizationprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
 | <a id="organizationprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
 | <a id="organizationprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Defaults to `id_desc`, or `similarity` if search used. |
@@ -44105,7 +44105,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="usercorecontributedprojectsincludepersonal"></a>`includePersonal` | [`Boolean`](#boolean) | Include personal projects. |
 | <a id="usercorecontributedprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="usercorecontributedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="usercorecontributedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="usercorecontributedprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="usercorecontributedprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | Sort contributed projects. |
 
@@ -44251,7 +44251,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="usercorestarredprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="usercorestarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="usercorestarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="usercorestarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="usercorestarredprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | List starred projects by sort order. |
 
@@ -51325,7 +51325,7 @@ An example `ClustersClusterID` is: `"gid://gitlab/Clusters::Cluster/1"`.
 
 Color represented as a hex code or named color.
 
-For example: "#fefefe".
+For example: `#fefefe`.
 
 ### `ComplianceManagementComplianceFrameworkComplianceRequirementID`
 
@@ -52162,7 +52162,7 @@ An example `TerraformStateID` is: `"gid://gitlab/Terraform::State/1"`.
 
 Time represented in ISO 8601.
 
-For example: "2021-03-09T14:58:50+00:00".
+For example: `2021-03-09T14:58:50+00:00`.
 
 See `https://www.iso.org/iso-8601-date-and-time-format.html`.
 
@@ -53621,7 +53621,7 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="usercontributedprojectsincludepersonal"></a>`includePersonal` | [`Boolean`](#boolean) | Include personal projects. |
 | <a id="usercontributedprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="usercontributedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="usercontributedprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="usercontributedprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="usercontributedprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | Sort contributed projects. |
 
@@ -53767,7 +53767,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="userstarredprojectsminaccesslevel"></a>`minAccessLevel` | [`AccessLevelEnum`](#accesslevelenum) | Return only projects where current user has at least the specified access level. |
-| <a id="userstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
+| <a id="userstarredprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: `css` or `ruby`. |
 | <a id="userstarredprojectssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="userstarredprojectssort"></a>`sort` | [`ProjectSort`](#projectsort) | List starred projects by sort order. |
 
