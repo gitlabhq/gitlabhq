@@ -14,6 +14,11 @@ RSpec.describe 'gitlab:usage data take tasks', :silence_stdout, :with_license, f
     # stub prometheus external http calls https://gitlab.com/gitlab-org/gitlab/-/issues/245277
     stub_prometheus_queries
     stub_database_flavor_check
+
+    # We sleep in GitlabServicePingWorker to avoid "thundering herd" problems, which doesn't happen in this test
+    allow_next_instance_of(GitlabServicePingWorker) do |obj|
+      allow(obj).to receive(:sleep)
+    end
   end
 
   after do
