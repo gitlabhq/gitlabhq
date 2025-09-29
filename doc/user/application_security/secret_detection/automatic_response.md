@@ -12,7 +12,7 @@ title: Automatic response to leaked secrets
 
 {{< /details >}}
 
-GitLab Secret Detection automatically responds when it finds certain types of leaked secrets.
+GitLab secret detection automatically responds when it finds certain types of leaked secrets.
 Automatic responses can:
 
 - Automatically revoke the secret.
@@ -46,7 +46,7 @@ GitLab supports automatic response for the following types of secrets:
 
 {{< /history >}}
 
-Credentials are only post-processed when Secret Detection finds them:
+Credentials are only post-processed when secret detection finds them:
 
 - In public projects, because publicly exposed credentials pose an increased threat. Expansion to private projects is considered in [issue 391379](https://gitlab.com/gitlab-org/gitlab/-/issues/391379).
 - In projects with GitLab Ultimate, for technical reasons. Expansion to all tiers is tracked in [issue 391763](https://gitlab.com/gitlab-org/gitlab/-/issues/391763).
@@ -65,31 +65,31 @@ accDescr: How a post-processing hook revokes a secret in the GitLab application.
     GitLab Rails-->+GitLab Rails: gl-secret-detection-report.json
     GitLab Rails->>+GitLab Sidekiq: StoreScansService
     GitLab Sidekiq-->+GitLab Sidekiq: ScanSecurityReportSecretsWorker
-    GitLab Sidekiq-->+GitLab Token Revocation API: GET revocable keys types
-    GitLab Token Revocation API-->>-GitLab Sidekiq: OK
-    GitLab Sidekiq->>+GitLab Token Revocation API: POST revoke revocable keys
-    GitLab Token Revocation API-->>-GitLab Sidekiq: ACCEPTED
-    GitLab Token Revocation API-->>+Partner API: revoke revocable keys
-    Partner API-->>+GitLab Token Revocation API: ACCEPTED
+    GitLab Sidekiq-->+GitLab token revocation API: GET revocable keys types
+    GitLab token revocation API-->>-GitLab Sidekiq: OK
+    GitLab Sidekiq->>+GitLab token revocation API: POST revoke revocable keys
+    GitLab token revocation API-->>-GitLab Sidekiq: ACCEPTED
+    GitLab token revocation API-->>+Partner API: revoke revocable keys
+    Partner API-->>+GitLab token revocation API: ACCEPTED
 ```
 
-1. A pipeline with a Secret Detection job completes, producing a scan report (**1**).
+1. A pipeline with a secret detection job completes, producing a scan report (**1**).
 1. The report is processed (**2**) by a service class, which schedules an asynchronous worker if token revocation is possible.
 1. The asynchronous worker (**3**) communicates with an externally deployed HTTP service
    (**4** and **5**) to determine which kinds of secrets can be automatically revoked.
 1. The worker sends (**6** and **7**) the list of detected secrets which the GitLab Token Revocation API is able to
    revoke.
-1. The GitLab Token Revocation API sends (**8** and **9**) each revocable token to their respective vendor's [Partner API](#implement-a-partner-api).
+1. The GitLab token revocation API sends (**8** and **9**) each revocable token to their respective vendor's [partner API](#implement-a-partner-api).
 
 ## Partner program for leaked-credential notifications
 
 GitLab notifies partners when credentials they issue are leaked in public repositories on GitLab.com.
 If you operate a cloud or SaaS product and you're interested in receiving these notifications, learn more in [epic 4944](https://gitlab.com/groups/gitlab-org/-/epics/4944).
-Partners must [implement a Partner API](#implement-a-partner-api), which is called by the GitLab Token Revocation API.
+Partners must [implement a partner API](#implement-a-partner-api), which is called by the GitLab token revocation API.
 
-### Implement a Partner API
+### Implement a partner API
 
-A Partner API integrates with the GitLab Token Revocation API to receive and respond to leaked token revocation
+A partner API integrates with the GitLab token revocation API to receive and respond to leaked token revocation
 requests. The service should be a publicly accessible HTTP API that is idempotent and rate-limited.
 
 Requests to your service can include one or more leaked tokens, and a header with the signature of the request
@@ -100,26 +100,26 @@ request from GitLab. The diagram below details the necessary steps to receive, v
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
 accTitle: Partner API data flow
-accDescr: How a Partner API should receive and respond to leaked token revocation requests.
+accDescr: How a partner API should receive and respond to leaked token revocation requests.
 
     autonumber
-    GitLab Token Revocation API-->>+Partner API: Send new leaked credentials
-    Partner API-->>+GitLab Public Keys endpoint: Get active public keys
-    GitLab Public Keys endpoint-->>+Partner API: One or more public keys
+    GitLab token revocation API-->>+Partner API: Send new leaked credentials
+    Partner API-->>+GitLab public keys endpoint: Get active public keys
+    GitLab public keys endpoint-->>+Partner API: One or more public keys
     Partner API-->>+Partner API: Verify request is signed by GitLab
     Partner API-->>+Partner API: Respond to leaks
-    Partner API-->>+GitLab Token Revocation API: HTTP status
+    Partner API-->>+GitLab token revocation API: HTTP status
 ```
 
-1. The GitLab Token Revocation API sends (**1**) a [revocation request](#revocation-request) to the Partner API. The request
+1. The GitLab token revocation API sends (**1**) a [revocation request](#revocation-request) to the partner API. The request
    includes headers containing a public key identifier and signature of the request body.
-1. The Partner API requests (**2**) a list of [public keys](#public-keys-endpoint) from GitLab. The response (**3**)
+1. The partner API requests (**2**) a list of [public keys](#public-keys-endpoint) from GitLab. The response (**3**)
    may include multiple public keys in the event of key rotation and should be filtered with the identifier in the request header.
-1. The Partner API [verifies the signature](#verifying-the-request) against the actual request body, using the public key (**4**).
-1. The Partner API processes the leaked tokens, which may involve automatic revocation (**5**).
-1. The Partner API responds to the GitLab Token Revocation API (**6**) with the appropriate HTTP status code:
+1. The partner API [verifies the signature](#verifying-the-request) against the actual request body, using the public key (**4**).
+1. The partner API processes the leaked tokens, which may involve automatic revocation (**5**).
+1. The partner API responds to the GitLab token revocation API (**6**) with the appropriate HTTP status code:
    - A successful response code (HTTP 200 through 299) acknowledges that the partner has received and processed the request.
-   - An error code (HTTP 400 or higher) causes the GitLab Token Revocation API to retry the request.
+   - An error code (HTTP 400 or higher) causes the GitLab token revocation API to retry the request.
 
 #### Revocation request
 
@@ -140,7 +140,7 @@ This JSON schema document describes the body of the revocation request:
                 ]
             },
             "token": {
-                "description": "The substring that was matched by the Secret Detection analyser. In most cases, this is the entire token itself",
+                "description": "The substring that was matched by the secret detection analyzer. In most cases, this is the entire token itself",
                 "type": "string",
                 "examples": [
                     "XXXXXXXXXXXXXXXX"
@@ -164,7 +164,7 @@ Example:
 [{"type": "my_api_token", "token": "XXXXXXXXXXXXXXXX", "url": "https://example.com/some-repo/-/raw/abcdefghijklmnop/compromisedfile1.java"}]
 ```
 
-In this example, Secret Detection has determined that an instance of `my_api_token` has been leaked. The
+In this example, secret detection has determined that an instance of `my_api_token` has been leaked. The
 value of the token is provided to you, in addition to a publicly accessible URL to the raw content of the
 file containing the leaked token.
 
@@ -177,7 +177,7 @@ The request includes two special headers:
 
 You can use these headers along with the GitLab Public Keys endpoint to verify that the revocation request was genuine.
 
-#### Public Keys endpoint
+#### Public keys endpoint
 
 GitLab maintains a publicly-accessible endpoint for retrieving public keys used to verify revocation
 requests. The endpoint can be provided on request.

@@ -776,7 +776,7 @@ without requiring internet access.
 
 ## Using a custom SSL CA certificate authority
 
-To trust a custom Certificate Authority, set the `ADDITIONAL_CA_CERT_BUNDLE` variable to the bundle
+To trust a custom certificate authority, set the `ADDITIONAL_CA_CERT_BUNDLE` variable to the bundle
 of CA certificates that you trust. Do this either in the `.gitlab-ci.yml` file, in a file
 variable, or as a CI/CD variable.
 

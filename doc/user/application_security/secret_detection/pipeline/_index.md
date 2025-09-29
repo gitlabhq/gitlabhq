@@ -45,7 +45,7 @@ Different features are available in different [GitLab tiers](https://about.gitla
 | See new findings in the merge request widget                            | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | View identified secrets in the pipelines' **Security** tab              | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | [Manage vulnerabilities](../../vulnerability_report/_index.md)          | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
-| [Access the Security Dashboard](../../security_dashboard/_index.md)     | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
+| [Access the security dashboard](../../security_dashboard/_index.md)     | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | [Customize analyzer rulesets](configure.md#customize-analyzer-rulesets) | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | [Enable security policies](../../policies/_index.md)                    | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 
@@ -299,7 +299,7 @@ Pipeline secret detection provides detailed information about potential secrets 
 
 When reviewing results:
 
-1. Look at the surrounding code to determine if the detected pattern is actually a secret
+1. Look at the surrounding code to determine if the detected pattern is actually a secret.
 1. Test whether the detected value is a working credential.
 1. Consider the repository's visibility and the secret's scope.
 1. Address active, high-privilege secrets first.
@@ -414,7 +414,7 @@ Debug-level logging can help when troubleshooting. For details, see
 
 #### Warning: `gl-secret-detection-report.json: no matching files`
 
-For information on this, see the [general Application Security troubleshooting section](../../../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload).
+For information on this, see the [general application security troubleshooting section](../../../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload).
 
 #### Error: `Couldn't run the gitleaks command: exit status 2`
 
