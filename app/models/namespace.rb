@@ -66,7 +66,7 @@ class Namespace < ApplicationRecord
   has_one :namespace_details, inverse_of: :namespace, class_name: 'Namespace::Detail', autosave: false
   has_one :namespace_statistics
   has_one :namespace_route, foreign_key: :namespace_id, autosave: false, inverse_of: :namespace, class_name: 'Route'
-  has_one :catalog_verified_namespace, class_name: 'Ci::Catalog::VerifiedNamespace', inverse_of: :namespace
+  has_one :catalog_verified_namespace, class_name: 'Namespaces::VerifiedNamespace', inverse_of: :namespace
 
   has_many :namespace_members, foreign_key: :member_namespace_id, inverse_of: :member_namespace, class_name: 'Member'
 

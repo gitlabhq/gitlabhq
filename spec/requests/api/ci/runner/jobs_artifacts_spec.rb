@@ -11,9 +11,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
   let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
   let_it_be_with_reload(:project) { create(:project, namespace: group, shared_runners_enabled: false) }
 
-  let_it_be(:pipeline, freeze: true) { create(:ci_pipeline, project: project, ref: 'master') }
-  let_it_be(:runner, freeze: true) { create(:ci_runner, :project, projects: [project]) }
-  let_it_be(:user, freeze: true) { create(:user, developer_of: project) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project, ref: 'master') }
+  let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
+  let_it_be(:user) { create(:user, developer_of: project) }
 
   let(:job) { create(:ci_build, :pending, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
   let(:jwt) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
@@ -105,39 +105,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
     end
 
     describe 'POST /api/v4/jobs/:id/artifacts/authorize' do
-      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_api, use_second_scope: true do
-        let(:job2) { create(:ci_build, :pending, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
-
-        def request
-          authorize_artifacts_with_token_in_params(filesize: 100.megabytes.to_i)
-        end
-
-        def request_with_second_scope
-          authorize_artifacts_with_token_in_params({ filesize: 100.megabytes.to_i }, {}, job2)
-        end
-
-        context 'when enforce_runners_request_limit FF is disabled' do
-          before do
-            stub_feature_flags(enforce_runners_request_limit: false)
-          end
-
-          context 'when rate limiter enabled', :freeze_time, :clean_gitlab_redis_rate_limiting do
-            before do
-              allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:runner_jobs_api).and_return(1)
-            end
-
-            it 'logs request and accepts it when endpoint called more than the threshold' do
-              expect(Gitlab::AuthLogger).to receive(:error)
-
-              request
-              request
-
-              expect(response).not_to have_gitlab_http_status(:too_many_requests)
-            end
-          end
-        end
-      end
-
       context 'when using token as parameter' do
         context 'and the artifact is too large' do
           it_behaves_like 'rejecting artifacts that are too large' do
@@ -288,66 +255,33 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end
       end
 
-      def authorize_artifacts(params = {}, request_headers = headers, target_job = job)
-        post api("/jobs/#{target_job.id}/artifacts/authorize"), params: params, headers: request_headers
+      def authorize_artifacts(params = {}, request_headers = headers)
+        post api("/jobs/#{job.id}/artifacts/authorize"), params: params, headers: request_headers
       end
 
-      def authorize_artifacts_with_token_in_params(params = {}, request_headers = headers, target_job = job)
-        params = params.merge(token: target_job.token)
-        authorize_artifacts(params, request_headers, target_job)
+      def authorize_artifacts_with_token_in_params(params = {}, request_headers = headers)
+        params = params.merge(token: job.token)
+        authorize_artifacts(params, request_headers)
       end
 
-      def authorize_artifacts_with_token_in_headers(params = {}, request_headers = headers_with_token, target_job = job)
-        authorize_artifacts(params, request_headers, target_job)
+      def authorize_artifacts_with_token_in_headers(params = {}, request_headers = headers_with_token)
+        authorize_artifacts(params, request_headers)
       end
     end
 
     describe 'POST /api/v4/jobs/:id/artifacts' do
       it_behaves_like 'API::CI::Runner application context metadata', 'POST /api/:version/jobs/:id/artifacts' do
         let(:send_request) do
-          upload_artifacts(file_upload, headers)
+          upload_artifacts(file_upload, headers_with_token)
         end
       end
 
       it_behaves_like 'runner migrations backoff' do
-        let(:request) { upload_artifacts(file_upload, headers) }
-      end
-
-      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_api, use_second_scope: true do
-        let(:job2) { create(:ci_build, :running, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
-
-        def request
-          upload_artifacts(fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif'), headers)
-        end
-
-        def request_with_second_scope
-          upload_artifacts(fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif'), headers, {}, job2)
-        end
-
-        context 'when enforce_runners_request_limit FF is disabled' do
-          before do
-            stub_feature_flags(enforce_runners_request_limit: false)
-          end
-
-          context 'when rate limiter enabled', :freeze_time, :clean_gitlab_redis_rate_limiting do
-            before do
-              allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:runner_jobs_api).and_return(1)
-            end
-
-            it 'logs request and accepts it when endpoint called more than the threshold' do
-              expect(Gitlab::AuthLogger).to receive(:error)
-
-              request
-              request
-
-              expect(response).not_to have_gitlab_http_status(:too_many_requests)
-            end
-          end
-        end
+        let(:request) { upload_artifacts(file_upload, headers_with_token) }
       end
 
       it "doesn't update runner info" do
-        expect { upload_artifacts(file_upload, headers) }.not_to change { runner.reload.contacted_at }
+        expect { upload_artifacts(file_upload, headers_with_token) }.not_to change { runner.reload.contacted_at }
       end
 
       context 'when the artifact is too large' do
@@ -389,11 +323,11 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           let(:job) { create(:ci_build, erased_at: Time.now) }
 
           before do
-            upload_artifacts(file_upload, headers)
+            upload_artifacts(file_upload, headers_with_token)
           end
 
           it 'responds with forbidden' do
-            upload_artifacts(file_upload, headers)
+            upload_artifacts(file_upload, headers_with_token)
 
             expect(response).to have_gitlab_http_status(:forbidden)
           end
@@ -405,7 +339,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           end
 
           it 'returns 403 Forbidden' do
-            upload_artifacts(file_upload, headers)
+            upload_artifacts(file_upload, headers_with_token)
 
             expect(response).to have_gitlab_http_status(:forbidden)
           end
@@ -417,7 +351,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           end
 
           it 'returns 403 Forbidden' do
-            upload_artifacts(file_upload, headers)
+            upload_artifacts(file_upload, headers_with_token)
 
             expect(response).to have_gitlab_http_status(:forbidden)
           end
@@ -429,7 +363,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           end
 
           it 'returns a 403 Forbidden' do
-            upload_artifacts(file_upload, headers)
+            upload_artifacts(file_upload, headers_with_token)
 
             expect(response).to have_gitlab_http_status(:forbidden)
           end
@@ -445,7 +379,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           context 'when uses accelerated file post' do
             context 'for file stored locally' do
               before do
-                upload_artifacts(file_upload, headers)
+                upload_artifacts(file_upload, headers_with_token)
               end
 
               it_behaves_like 'successful artifacts upload'
@@ -512,9 +446,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
           context 'when using runners token' do
             it 'responds with forbidden' do
-              upload_artifacts(
-                file_upload, headers.merge(API::Ci::Helpers::Runner::JOB_TOKEN_HEADER => job.project.runners_token)
-              )
+              upload_artifacts(file_upload, headers.merge(API::Ci::Helpers::Runner::JOB_TOKEN_HEADER => job.project.runners_token))
 
               expect(response).to have_gitlab_http_status(:forbidden)
             end
@@ -543,7 +475,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           it 'fails to post artifacts without GitLab-Workhorse' do
             expect(Gitlab::ErrorTracking).to receive(:track_exception).once
 
-            upload_artifacts(file_upload, headers)
+            upload_artifacts(file_upload, headers_with_token)
 
             expect(response).to have_gitlab_http_status(:forbidden)
           end
@@ -949,19 +881,19 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         end
 
         it 'fails to post artifacts for outside of tmp path' do
-          upload_artifacts(file_upload, headers)
+          upload_artifacts(file_upload, headers_with_token)
 
           expect(response).to have_gitlab_http_status(:bad_request)
         end
       end
 
-      def upload_artifacts(file, headers = {}, params = {}, target_job = job)
+      def upload_artifacts(file, headers = {}, params = {})
         workhorse_finalize(
-          api("/jobs/#{target_job.id}/artifacts"),
+          api("/jobs/#{job.id}/artifacts"),
           method: :post,
           file_key: :file,
           params: params.merge(file: file),
-          headers: headers.reverse_merge(API::Ci::Helpers::Runner::JOB_TOKEN_HEADER => target_job.token),
+          headers: headers,
           send_rewritten_field: true
         )
       end
@@ -985,42 +917,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
       it_behaves_like 'runner migrations backoff' do
         let(:request) { download_artifact }
-      end
-
-      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_api, use_second_scope: true do
-        let(:current_user) { user }
-        let(:job2) { create(:ci_build, :pending, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
-
-        def request
-          download_artifact
-        end
-
-        def request_with_second_scope
-          job2.reload
-
-          get api("/jobs/#{job2.id}/artifacts"), params: { token: job2.token }, headers: headers
-        end
-
-        context 'when enforce_runners_request_limit FF is disabled' do
-          before do
-            stub_feature_flags(enforce_runners_request_limit: false)
-          end
-
-          context 'when rate limiter enabled', :freeze_time, :clean_gitlab_redis_rate_limiting do
-            before do
-              allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:runner_jobs_api).and_return(1)
-            end
-
-            it 'logs request and accepts it when endpoint called more than the threshold' do
-              expect(Gitlab::AuthLogger).to receive(:error)
-
-              request
-              request
-
-              expect(response).not_to have_gitlab_http_status(:too_many_requests)
-            end
-          end
-        end
       end
 
       it "doesn't update runner info" do

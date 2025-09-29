@@ -13588,6 +13588,33 @@ Input type: `UpdateSnippetInput`
 | <a id="mutationupdatesnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationupdatesnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | Snippet after mutation. |
 
+### `Mutation.updateVirtualRegistriesSetting`
+
+{{< details >}}
+**Introduced** in GitLab 18.5.
+**Status**: Experiment.
+{{< /details >}}
+
+Updates or creates virtual registries settings for a root group.
+
+Input type: `UpdateVirtualRegistriesSettingInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatevirtualregistriessettingclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatevirtualregistriessettingenabled"></a>`enabled` | [`Boolean`](#boolean) | Enable or disable the virtual registries. |
+| <a id="mutationupdatevirtualregistriessettingfullpath"></a>`fullPath` | [`ID!`](#id) | Group path for the group virtual registries. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationupdatevirtualregistriessettingclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationupdatevirtualregistriessettingerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationupdatevirtualregistriessettingvirtualregistriessetting"></a>`virtualRegistriesSetting` | [`VirtualRegistriesSetting`](#virtualregistriessetting) | Virtual registries settings after mutation. |
+
 ### `Mutation.uploadDelete`
 
 Deletes an upload.
@@ -30694,6 +30721,7 @@ GPG signature for a signed commit.
 | <a id="groupupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of when the group was last updated. |
 | <a id="groupuserpermissions"></a>`userPermissions` | [`GroupPermissions!`](#grouppermissions) | Permissions for the current user on the resource. |
 | <a id="groupvaluestreamanalytics"></a>`valueStreamAnalytics` | [`ValueStreamAnalytics`](#valuestreamanalytics) | Information about Value Stream Analytics within the group. |
+| <a id="groupvirtualregistriessetting"></a>`virtualRegistriesSetting` {{< icon name="warning-solid" >}} | [`VirtualRegistriesSetting`](#virtualregistriessetting) | **Introduced** in GitLab 18.5. **Status**: Experiment. Virtual registries settings for the group. Returns null if the `maven_virtual_registry` feature flag is disabled. |
 | <a id="groupvisibility"></a>`visibility` | [`String`](#string) | Visibility of the namespace. |
 | <a id="groupvulnerabilitynamespacestatistic"></a>`vulnerabilityNamespaceStatistic` | [`VulnerabilityNamespaceStatisticType`](#vulnerabilitynamespacestatistictype) | Counts for each vulnerability severity in the group and its subgroups. |
 | <a id="groupvulnerabilityscanners"></a>`vulnerabilityScanners` | [`VulnerabilityScannerConnection`](#vulnerabilityscannerconnection) | Vulnerability scanners reported on the project vulnerabilities of the group and its subgroups. (see [Connections](#connections)) |
@@ -44654,6 +44682,16 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="valuestreamstageseriesaveragedurations"></a>`averageDurations` | [`[ValueStreamAnalyticsDateMetric!]`](#valuestreamanalyticsdatemetric) | Average duration for each day within the given date range. |
+
+### `VirtualRegistriesSetting`
+
+Root group level virtual registries settings.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="virtualregistriessettingenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether virtual registries are enabled for the group. |
 
 ### `VulnerabilitiesCountByDay`
 

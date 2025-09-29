@@ -3,7 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WikiDiscussion from '~/wikis/wiki_notes/components/wiki_discussion.vue';
 import WikiNote from '~/wikis/wiki_notes/components/wiki_note.vue';
 import PlaceholderNote from '~/wikis/wiki_notes/components/placeholder_note.vue';
-import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
+import DiscussionActions from '~/wikis/wiki_notes/components/discussion_actions.vue';
 import WikiDiscussionsSignedOut from '~/wikis/wiki_notes/components/wiki_discussions_signed_out.vue';
 import WikiCommentForm from '~/wikis/wiki_notes/components/wiki_comment_form.vue';
 import * as autosave from '~/lib/utils/autosave';
@@ -181,7 +181,7 @@ describe('WikiDiscussion', () => {
     });
 
     it('should not render reply form placeholder', () => {
-      expect(noteFooter().findComponent(DiscussionReplyPlaceholder).exists()).toBe(false);
+      expect(noteFooter().findComponent(DiscussionActions).exists()).toBe(false);
     });
 
     it('should not render reply form', () => {
@@ -210,7 +210,7 @@ describe('WikiDiscussion', () => {
 
     it('should render reply form placeholder when isReplying is false', () => {
       // isReplying is set to false by default
-      expect(noteFooter().findComponent(DiscussionReplyPlaceholder).exists()).toBe(true);
+      expect(noteFooter().findComponent(DiscussionActions).exists()).toBe(true);
     });
 
     it('should render reply form when isReplying is true', async () => {
@@ -227,9 +227,9 @@ describe('WikiDiscussion', () => {
       expect(Boolean(wrapper.vm.$refs.commentForm)).toBe(true);
     });
 
-    it('should render reply form  when focus event is fired from discussion reply placeholder', async () => {
-      const replyPlaceholder = wrapper.findComponent(DiscussionReplyPlaceholder);
-      replyPlaceholder.vm.$emit('focus');
+    it('should render reply form  when showReplyForm event is fired from discussion actions', async () => {
+      const replyPlaceholder = wrapper.findComponent(DiscussionActions);
+      replyPlaceholder.vm.$emit('showReplyForm');
 
       await nextTick();
       expect(Boolean(wrapper.vm.$refs.commentForm)).toBe(true);

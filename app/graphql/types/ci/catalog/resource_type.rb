@@ -41,7 +41,7 @@ module Types
         field :visibility_level, Types::VisibilityLevelsEnum, null: true,
           description: 'Visibility level of the catalog resource.'
 
-        field :verification_level, Types::Ci::Catalog::Resources::VerificationLevelEnum, null: true,
+        field :verification_level, Types::Namespaces::VerificationLevelEnum, null: true,
           description: 'Verification level of the catalog resource.'
 
         field :latest_released_at, Types::TimeType, null: true,

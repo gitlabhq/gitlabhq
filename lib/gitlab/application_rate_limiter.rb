@@ -15,7 +15,7 @@ module Gitlab
       # Application rate limits
       #
       # Threshold value can be either an Integer or a Proc
-      # in order to not evaluate its value every time this method is called
+      # in order to not evaluate it's value every time this method is called
       # and only do that when it's needed.
       def rate_limits # rubocop:disable Metrics/AbcSize
         {
@@ -83,9 +83,6 @@ module Gitlab
             threshold: -> { application_settings.projects_api_rate_limit_unauthenticated }, interval: 10.minutes
           },
           raw_blob: { threshold: -> { application_settings.raw_blob_request_limit }, interval: 1.minute },
-          runner_jobs_request_api: { threshold: -> { application_settings.runner_jobs_request_api_limit }, interval: 1.minute },
-          runner_jobs_patch_trace_api: { threshold: -> { application_settings.runner_jobs_patch_trace_api_limit }, interval: 1.minute },
-          runner_jobs_api: { threshold: -> { application_settings.runner_jobs_endpoints_api_limit }, interval: 1.minute },
           search_rate_limit: { threshold: -> { application_settings.search_rate_limit }, interval: 1.minute },
           search_rate_limit_unauthenticated: { threshold: -> { application_settings.search_rate_limit_unauthenticated }, interval: 1.minute },
           temporary_email_failure: { threshold: 300, interval: 1.day },

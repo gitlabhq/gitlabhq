@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Catalog::VerifiedNamespace, feature_category: :pipeline_composition do
+RSpec.describe Namespaces::VerifiedNamespace, feature_category: :pipeline_composition do
   context 'when a verified creator for self-managed namespace is created' do
     let_it_be(:verified_self_managed_namespace) { create(:catalog_verified_namespace, :verified_creator_self_managed) }
 

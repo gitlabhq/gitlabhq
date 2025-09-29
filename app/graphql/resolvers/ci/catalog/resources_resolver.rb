@@ -21,7 +21,7 @@ module Resolvers
           required: false,
           description: 'Sort catalog resources by given criteria.'
 
-        argument :verification_level, ::Types::Ci::Catalog::Resources::VerificationLevelEnum,
+        argument :verification_level, ::Types::Namespaces::VerificationLevelEnum,
           required: false,
           description: 'Filter catalog resources by verification level.'
 

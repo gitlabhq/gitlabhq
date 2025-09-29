@@ -5,7 +5,7 @@ Style/HashEachMethods:
     - 'app/graphql/resolvers/concerns/caching_array_resolver.rb'
     - 'app/graphql/types/alert_management/severity_enum.rb'
     - 'app/graphql/types/availability_enum.rb'
-    - 'app/graphql/types/ci/catalog/resources/verification_level_enum.rb'
+    - 'app/graphql/types/namespaces/verification_level_enum.rb'
     - 'app/graphql/types/ci/code_quality_degradation_severity_enum.rb'
     - 'app/graphql/types/ci/job_artifact_file_type_enum.rb'
     - 'app/graphql/types/ci/pipeline_config_source_enum.rb'

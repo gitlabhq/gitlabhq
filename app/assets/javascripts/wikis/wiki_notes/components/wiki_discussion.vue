@@ -1,5 +1,4 @@
 <script>
-import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import { getDraft, clearDraft } from '~/lib/utils/autosave';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import { getAutosaveKey, getIdFromGid } from '../utils';
@@ -7,6 +6,7 @@ import WikiNote from './wiki_note.vue';
 import WikiDiscussionsSignedOut from './wiki_discussions_signed_out.vue';
 import WikiCommentForm from './wiki_comment_form.vue';
 import PlaceholderNote from './placeholder_note.vue';
+import DiscussionActions from './discussion_actions.vue';
 
 export default {
   name: 'WikiDiscussion',
@@ -14,9 +14,9 @@ export default {
     WikiNote,
     PlaceholderNote,
     WikiCommentForm,
-    DiscussionReplyPlaceholder,
     WikiDiscussionsSignedOut,
     ToggleRepliesWidget,
+    DiscussionActions,
   },
   inject: ['noteableType', 'currentUserData'],
   props: {
@@ -181,9 +181,12 @@ export default {
           </div>
 
           <wiki-discussions-signed-out v-if="!userSignedId" />
-          <discussion-reply-placeholder
+          <discussion-actions
             v-else-if="renderReplyPlaceHolder"
-            @focus="toggleReplying(true)"
+            :discussion-id="firstNote.discussion.id"
+            :show-resolve-button="canResolve && discussion.resolvable"
+            :is-resolved="discussion.resolved"
+            @showReplyForm="toggleReplying(true)"
           />
           <wiki-comment-form
             v-else-if="renderCommentForm"

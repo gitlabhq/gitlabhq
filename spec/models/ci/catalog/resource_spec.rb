@@ -52,7 +52,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
 
   it 'defines verification levels matching the source of truth in VerifiedNamespace' do
     is_expected.to define_enum_for(:verification_level)
-      .with_values(::Ci::Catalog::VerifiedNamespace::VERIFICATION_LEVELS)
+      .with_values(::Namespaces::VerifiedNamespace::VERIFICATION_LEVELS)
   end
 
   describe '.for_projects' do
@@ -166,7 +166,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
   describe '.for_verification_level' do
     it 'returns catalog resources for required verification_level' do
       verified_resources = described_class
-        .for_verification_level(Ci::Catalog::VerifiedNamespace::VERIFICATION_LEVELS[:gitlab_maintained])
+        .for_verification_level(Namespaces::VerifiedNamespace::VERIFICATION_LEVELS[:gitlab_maintained])
 
       expect(verified_resources).to eq([resource_a])
     end

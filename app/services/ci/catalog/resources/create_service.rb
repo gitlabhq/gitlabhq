@@ -16,7 +16,7 @@ module Ci
         def execute
           raise Gitlab::Access::AccessDeniedError unless can?(current_user, :add_catalog_resource, project)
 
-          verified_namespace = Ci::Catalog::VerifiedNamespace.for_project(project)
+          verified_namespace = ::Namespaces::VerifiedNamespace.for_project(project)
           catalog_resource = Ci::Catalog::Resource.new(
             project: project, verification_level: verified_namespace&.verification_level || :unverified
           )

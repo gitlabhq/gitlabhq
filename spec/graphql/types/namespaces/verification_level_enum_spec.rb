@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Ci::Catalog::Resources::VerificationLevelEnum, feature_category: :pipeline_composition do
+RSpec.describe Types::Namespaces::VerificationLevelEnum, feature_category: :pipeline_composition do
   specify { expect(described_class.graphql_name).to eq('CiCatalogResourceVerificationLevel') }
 
   it 'exposes the expected values' do

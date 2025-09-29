@@ -40700,8 +40700,6 @@ paths:
           description: Conflict
         '422':
           description: Runner is orphaned
-        '429':
-          description: Too Many Requests
       tags:
       - jobs
       operationId: postApiV4JobsRequest
@@ -40733,8 +40731,6 @@ paths:
           description: Unknown parameters
         '403':
           description: Forbidden
-        '429':
-          description: Too Many Requests
       tags:
       - jobs
       operationId: putApiV4JobsId
@@ -40766,8 +40762,6 @@ paths:
           description: Forbidden
         '416':
           description: Range not satisfiable
-        '429':
-          description: Too Many Requests
       tags:
       - jobs
       operationId: patchApiV4JobsIdTrace
@@ -40799,8 +40793,6 @@ paths:
           description: Artifacts support not enabled
         '413':
           description: File too large
-        '429':
-          description: Too Many Requests
       tags:
       - jobs
       operationId: postApiV4JobsIdArtifactsAuthorize
@@ -40834,8 +40826,6 @@ paths:
           description: Artifacts support not enabled
         '413':
           description: File too large
-        '429':
-          description: Too Many Requests
       tags:
       - jobs
       operationId: postApiV4JobsIdArtifacts
@@ -40873,8 +40863,6 @@ paths:
           description: Forbidden
         '404':
           description: Artifact not found
-        '429':
-          description: Too Many Requests
       tags:
       - jobs
       operationId: getApiV4JobsIdArtifacts

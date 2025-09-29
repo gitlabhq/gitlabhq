@@ -90,9 +90,6 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
           project_invited_groups_api_limit
           create_organization_api_limit
           top_level_group_creation_enabled
-          runner_jobs_request_api_limit
-          runner_jobs_patch_trace_api_limit
-          runner_jobs_endpoints_api_limit
         ])
     end
 

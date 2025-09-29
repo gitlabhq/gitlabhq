@@ -16,7 +16,7 @@ title: GitLab MCP server
 
 {{< history >}}
 
-- Introduced in GitLab 18.3 [with two flags](../../../administration/feature_flags/_index.md) named `mcp_server` and `oauth_dynamic_client_generation`. Disabled by default.
+- Introduced in GitLab 18.3 [with two flags](../../../administration/feature_flags/_index.md) named `mcp_server` and `oauth_dynamic_client_registration`. Disabled by default.
 
 {{< /history >}}
 

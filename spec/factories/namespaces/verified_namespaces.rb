@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :catalog_verified_namespace, class: 'Ci::Catalog::VerifiedNamespace' do
+  factory :catalog_verified_namespace, class: 'Namespaces::VerifiedNamespace' do
     namespace factory: :namespace
 
     trait :gitlab_maintained do

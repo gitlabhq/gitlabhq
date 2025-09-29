@@ -54,9 +54,9 @@
   testid: 'runner-settings',
   expanded: expanded_by_default?) do |c|
   - c.with_description do
-    = s_('Configure runner management and registration settings.')
+    = _('Configure runner version management and registration settings.')
   - c.with_body do
-    = render 'runners_settings_form'
+    = render 'runner_registrars_form'
 
 = render ::Layouts::SettingsBlockComponent.new(s_('CICD|Job token permissions'),
   id: 'js-job-token-permissions-settings',
