@@ -432,6 +432,16 @@ Instead of:
 
 - Select the **Run pipelines** button.
 
+## canceled, cancelled
+
+Use **canceled** (one L) for US English instead of the British **cancelled** (two Ls).
+
+Similarly, use **canceling** instead of **cancelling**.
+
+The noun **cancellation** retains both Ls even in US English.
+
+([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SubstitutionWarning.yml))
+
 ## cannot, can not
 
 Use **cannot** instead of **can not**.

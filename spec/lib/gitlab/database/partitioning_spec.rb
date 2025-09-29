@@ -10,6 +10,10 @@ RSpec.describe Gitlab::Database::Partitioning, feature_category: :database do
 
   before do
     stub_feature_flags(disallow_database_ddl_feature_flags: false)
+
+    # We sleep for 1 minute to avoid dropping big partitions (>150GB) concurrently.
+    # However, a partition will never be so big here, so we're just wasting time.
+    stub_const("Gitlab::Database::Partitioning::DetachedPartitionDropper::PROCESSING_DELAY", 0.1)
   end
 
   around do |example|

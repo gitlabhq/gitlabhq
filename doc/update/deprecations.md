@@ -8085,9 +8085,9 @@ use `count` from `cars` in `MergeTrains::TrainType` instead.
 
 <div class="milestone-wrapper" data-special-status="true">
 
-## Cancelled changes
+## Canceled changes
 
-The following changes have been cancelled.
+The following changes have been canceled.
 
 <div class="deprecation breaking-change">
 
@@ -8101,7 +8101,7 @@ The following changes have been cancelled.
 </div>
 {{< alert type="note" >}}
 
-This change has been cancelled.
+This change has been canceled.
 
 {{< /alert >}}
 
@@ -8126,7 +8126,7 @@ To continue showing these findings, you must configure the `CS_SEVERITY_THRESHOL
 </div>
 {{< alert type="note" >}}
 
-This change has been cancelled.
+This change has been canceled.
 
 {{< /alert >}}
 
@@ -8149,7 +8149,7 @@ Instead, you should use [License scanning of CycloneDX files](https://docs.gitla
 </div>
 {{< alert type="note" >}}
 
-This change has been cancelled.
+This change has been canceled.
 
 {{< /alert >}}
 
@@ -8186,7 +8186,7 @@ upgrading to 18.0 to avoid disruptions to your CI/CD pipelines.
 </div>
 {{< alert type="note" >}}
 
-This change has been cancelled.
+This change has been canceled.
 
 {{< /alert >}}
 
@@ -8219,7 +8219,7 @@ to ensure the correct locations are being used to mirror the required scanner im
 </div>
 {{< alert type="note" >}}
 
-This change has been cancelled.
+This change has been canceled.
 
 {{< /alert >}}
 
@@ -8251,7 +8251,7 @@ If you need to use the cache when scanning a project, you can restore the previo
 </div>
 {{< alert type="note" >}}
 
-This change has been cancelled.
+This change has been canceled.
 
 {{< /alert >}}
 
@@ -8271,7 +8271,7 @@ This planned change to the secret detection analyzer is cancelled. You can still
 </div>
 {{< alert type="note" >}}
 
-This change has been cancelled.
+This change has been canceled.
 
 {{< /alert >}}
 

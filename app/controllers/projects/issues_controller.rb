@@ -97,7 +97,7 @@ class Projects::IssuesController < Projects::ApplicationController
   attr_accessor :vulnerability_id
 
   def index
-    redirect_if_epic_params
+    return if redirect_if_epic_params
 
     if index_html_request?
       set_sort_order

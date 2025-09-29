@@ -107,7 +107,7 @@
     animation: none;
   }
 
-  @media(max-width: map.get($grid-breakpoints, md)-1) {
+  @include gl-container-width-down(md, panel) {
     padding-right: 20px;
   }
 

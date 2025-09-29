@@ -56,7 +56,7 @@ CI/CD job tokens can access the following resources:
 | [Pipelines API](../../api/pipelines.md#update-pipeline-metadata)                                      | Can access only the `PUT /projects/:id/pipelines/:pipeline_id/metadata` endpoint. |
 | [Release links API](../../api/releases/links.md)                                                      | Can access all endpoints in this API. |
 | [Releases API](../../api/releases/_index.md)                                                          | Can access all endpoints in this API. |
-| [Repositories API](../../api/repositories.md#generate-changelog-data)                                 | Can access only the `GET /projects/:id/repository/changelog` endpoint. |
+| [Repositories API](../../api/repositories.md#generate-changelog-data)                                 | Can access only the `GET /projects/:id/repository/changelog` endpoint of public repositories. |
 | [Tags API](../../api/tags.md)                                                                         | Can access the `GET /projects/:id/repository/tags` endpoint. |
 
 An open [proposal](https://gitlab.com/groups/gitlab-org/-/epics/3559) exists to make permissions

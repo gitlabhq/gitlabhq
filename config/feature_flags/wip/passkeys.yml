@@ -1,0 +1,10 @@
+---
+name: passkeys
+description: Passkeys login and management
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/18185
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206407
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/564495
+milestone: '18.5'
+group: group::authentication
+type: wip
+default_enabled: false

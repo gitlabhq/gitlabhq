@@ -18471,8 +18471,7 @@ CREATE TABLE issue_tracker_data (
     project_id bigint,
     group_id bigint,
     organization_id bigint,
-    CONSTRAINT check_d525c6d20b CHECK ((num_nonnulls(instance_integration_id, integration_id) = 1)),
-    CONSTRAINT check_f02a3f53bf CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1))
+    CONSTRAINT check_d525c6d20b CHECK ((num_nonnulls(instance_integration_id, integration_id) = 1))
 );
 
 CREATE SEQUENCE issue_tracker_data_id_seq

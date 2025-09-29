@@ -79,7 +79,7 @@
       }
     }
 
-    @media(max-width: map.get($grid-breakpoints, lg)-1) {
+    @include gl-container-width-down(lg, panel) {
       .task-status,
       .issuable-due-date,
       .issuable-weight,

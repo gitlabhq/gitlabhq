@@ -258,7 +258,7 @@ and their respective timings, like the example below:
 ```plaintext
 remote: Running checks for branch: master
 remote: Scanning for LFS objects... (153ms)
-remote: Calculating new repository size... (cancelled after 729ms)
+remote: Calculating new repository size... (canceled after 729ms)
 ```
 
 This could be used to further investigate what operation is performing poorly

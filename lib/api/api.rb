@@ -296,8 +296,8 @@ module API
         mount ::API::MarkdownUploads
         mount ::API::MavenPackages
         mount ::API::Members
-        mount ::API::MergeRequestApprovals
         mount ::API::MergeRequests
+        mount ::API::MergeRequestApprovals
         mount ::API::MergeRequestDiffs
         mount ::API::Metadata
         mount ::API::MlModelPackages

@@ -84,7 +84,7 @@ $diff-file-header: 41px;
     }
   }
 
-  @media (min-width: map.get($grid-breakpoints, md)) {
+  @include gl-container-width-up(md, panel) {
     &.conflict .file-title,
     &.conflict .file-title-flex-parent {
       top: $calc-application-header-height;

@@ -182,6 +182,12 @@
       @apply gl-bg-default #{!important};
     }
   }
+
+  // Todos page sticky header
+  .todos-bulk-bar.is-sticky {
+    top: 0 !important;
+  }
+
 }
 
 /*

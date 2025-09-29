@@ -115,13 +115,25 @@ const MEDIA_QUERIES_REPLACEMENTS = [
   },
   (content) => {
     return content.replace(
-      /@media \(min-width: \$breakpoint-(?<breakpoint>xs|sm|md|lg|xl)\)/g,
+      /@media\s?\(min-width: \$breakpoint-(?<breakpoint>xs|sm|md|lg|xl)\)/g,
       '@include gl-container-width-up($<breakpoint>, panel)',
     );
   },
   (content) => {
     return content.replace(
-      /@media \(max-width: \$breakpoint-(?<breakpoint>xs|sm|md|lg|xl)\)/g,
+      /@media\s?\(min-width: map\.get\(\$grid-breakpoints, (?<breakpoint>xs|sm|md|lg|xl)\)(?:-1)?\)/g,
+      '@include gl-container-width-up($<breakpoint>, panel)',
+    );
+  },
+  (content) => {
+    return content.replace(
+      /@media\s?\(max-width: \$breakpoint-(?<breakpoint>xs|sm|md|lg|xl)\)/g,
+      '@include gl-container-width-down($<breakpoint>, panel)',
+    );
+  },
+  (content) => {
+    return content.replace(
+      /@media\s?\(max-width: map\.get\(\$grid-breakpoints, (?<breakpoint>xs|sm|md|lg|xl)\)(?:-1)?\)/g,
       '@include gl-container-width-down($<breakpoint>, panel)',
     );
   },

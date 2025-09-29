@@ -36,6 +36,7 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
         'gitlab_search',
         'get_issue',
         'create_issue',
+        'create_merge_request',
         'get_merge_request',
         'get_merge_request_commits',
         'get_merge_request_diffs',

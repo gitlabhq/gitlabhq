@@ -70,6 +70,17 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
         end
       end
 
+      context 'when access token OAuth token has multiple scopes' do
+        let(:insufficient_access_token) { create(:oauth_access_token, user: user, scopes: [:api, :mcp]) }
+
+        it 'returns forbidden' do
+          post api('/mcp', user, oauth_access_token: insufficient_access_token),
+            params: { jsonrpc: '2.0', method: 'initialize', id: '1' }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
       context 'when required jsonrpc param is missing' do
         it 'returns JSON-RPC Invalid Request error' do
           post api('/mcp', user, oauth_access_token: access_token), params: { id: '1', method: 'initialize' }
@@ -207,6 +218,17 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
         context 'when access token is PAT' do
           it 'returns forbidden' do
             post api('/mcp', user), params: { jsonrpc: '2.0', method: 'initialize', id: '1' }
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'when access token OAuth token has multiple scopes' do
+          let(:insufficient_access_token) { create(:oauth_access_token, user: user, scopes: [:api, :mcp]) }
+
+          it 'returns forbidden' do
+            post api('/mcp', user, oauth_access_token: insufficient_access_token),
+              params: { jsonrpc: '2.0', method: 'initialize', id: '1' }
 
             expect(response).to have_gitlab_http_status(:forbidden)
           end

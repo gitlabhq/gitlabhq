@@ -168,11 +168,11 @@ flowchart TD
         The user is redirected to the more details page
     ]
     CheckRequestStatus{
-        Group owner has cancelled
+        Group owner has canceled
         the request?
     }
-    RequestCancelledPage(((
-        Shows request cancelled
+    RequestCanceledPage(((
+        Shows request canceled
         by the owner message
     )))
     OwnerCancel(
@@ -195,7 +195,7 @@ flowchart TD
     OwnerAssigns --> Notification --> ReceivesNotification --> ClickMoreDetails
     OwnerAssigns --> OwnerCancel
     ClickMoreDetails --> CheckRequestStatus
-    CheckRequestStatus -- Yes --> RequestCancelledPage
+    CheckRequestStatus -- Yes --> RequestCanceledPage
     CheckRequestStatus -- No --> ReassigmentOptions
     ReassigmentOptions -- User accepts --> ReassigmentStarts
     ReassigmentOptions -- User rejects --> ReassigmentRejected

@@ -228,7 +228,7 @@ If required, you can cancel a running migration by using either the REST API or 
 
 ### Cancel with the REST API
 
-For information on cancelling a running migration with the REST API, see
+For information on canceling a running migration with the REST API, see
 [Cancel a migration](../../../api/bulk_imports.md#cancel-a-migration).
 
 ### Cancel with a Rails console
@@ -256,7 +256,7 @@ To cancel a running migration with a Rails console:
    bulk_import.fail_op!
    ```
 
-Cancelling a `bulk_import` doesn't stop workers that are exporting the project on the source instance, but prevents the
+Canceling a `bulk_import` doesn't stop workers that are exporting the project on the source instance, but prevents the
 destination instance from:
 
 - Asking the source instance for more projects to be exported.

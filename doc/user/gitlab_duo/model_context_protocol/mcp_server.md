@@ -49,7 +49,6 @@ your GitLab MCP server for the first time, it:
 1. Receives an access token for secure API access.
 
 For a click-through demo, see [Duo Agent Platform - MCP server](https://gitlab.navattic.com/gitlab-mcp-server).
-<!-- Demo published on 2025-09-11 -->
 
 ## Connect Cursor to a GitLab MCP server
 
@@ -299,8 +298,27 @@ Parameters:
 Search issues for "flaky test" across GitLab
 ```
 
+### `create_merge_request`
+
+Creates a merge request in a project.
+
+**Parameters**:
+
+- `project_id` (required): The ID or URL-encoded path of the project
+- `source_branch` (required): Name of the branch to merge from
+- `target_branch` (required): Name of the branch to merge into
+- `title` (required): Title of the merge request
+- `description` (optional): Description text
+- `remove_source_branch` (optional): Remove source branch on merge (default: false)
+- `squash` (optional): Squash commits on merge (default: false)
+
+**Example usage in AI tool**:
+
+```plaintext
+Create a merge request in project gitlab-org/gitlab titled "Bug fix broken specs"
+from branch "fix/specs-broken" into "master" and enable squash.
+```
+
 ## Feedback
 
 This feature is experimental. Your feedback is valuable in helping us to improve it. Share your experiences, suggestions, or issues in [issue 561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564).
-
-<!-- TODO: Link the development docs once https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202921/diffs is merged -->

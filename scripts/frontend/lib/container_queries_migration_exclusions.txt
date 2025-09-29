@@ -14,6 +14,8 @@ app/views/devise/
 app/views/layouts/devise.html.haml
 app/views/layouts/devise_empty.html.haml
 
+app/assets/stylesheets/framework/common.scss
+app/assets/stylesheets/framework/modal.scss
 app/assets/stylesheets/framework/super_sidebar.scss
 app/assets/stylesheets/framework/application-chrome.scss
 
@@ -22,5 +24,4 @@ app/assets/javascripts/work_items/components/design_management/design_preview/de
 app/assets/javascripts/work_items/components/design_management/design_preview/design_presentation.vue
 app/assets/javascripts/work_items/components/design_management/design_preview/design_toolbar.vue
 ee/app/assets/javascripts/ai/components/navigation_rail.vue
-app/assets/stylesheets/framework/modal.scss
 app/assets/stylesheets/components/whats_new.scss

@@ -6182,7 +6182,7 @@ msgstr ""
 msgid "Advanced search"
 msgstr ""
 
-msgid "Advanced search indexing in progress. It might take a few minutes to create indices and initiate indexing.Please use gitlab:elastic:info rake task to check progress."
+msgid "Advanced search indexing in progress. It might take a few minutes to create indices and initiate indexing. Please use gitlab:elastic:info rake task to check progress."
 msgstr ""
 
 msgid "Advanced search indexing restrictions"
@@ -21779,6 +21779,27 @@ msgid "Data refresh"
 msgstr ""
 
 msgid "Data type"
+msgstr ""
+
+msgid "DataExplorer|// TYPE YOUR QUERY HERE"
+msgstr ""
+
+msgid "DataExplorer|Copy query"
+msgstr ""
+
+msgid "DataExplorer|Data query"
+msgstr ""
+
+msgid "DataExplorer|Preview not available"
+msgstr ""
+
+msgid "DataExplorer|Run query"
+msgstr ""
+
+msgid "DataExplorer|Start by typing a GLQL query."
+msgstr ""
+
+msgid "DataExplorer|What is GLQL?"
 msgstr ""
 
 msgid "Database '%{database_name}' is using PostgreSQL %{pg_version_current}, but this version of GitLab requires PostgreSQL %{pg_version_minimum}. Please upgrade your environment to a supported PostgreSQL version. See %{pg_requirements_url} for details."
@@ -49842,6 +49863,18 @@ msgid "Profile parameter missing"
 msgstr ""
 
 msgid "ProfileSession|on"
+msgstr ""
+
+msgid "ProfilesAuthentication|Add a passkey to sign in securely with your trusted device. %{link_start}Learn more about passkeys%{link_end}."
+msgstr ""
+
+msgid "ProfilesAuthentication|Add passkey"
+msgstr ""
+
+msgid "ProfilesAuthentication|Sign in faster with passkeys"
+msgstr ""
+
+msgid "ProfilesAuthentication|You currently use passkeys for secure and faster sign in. %{link_start}Manage passkeys%{link_end}."
 msgstr ""
 
 msgid "Profiles| You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{deleteAccount}, it cannot be undone or recovered."

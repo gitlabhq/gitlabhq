@@ -40,7 +40,7 @@
       width: 180px;
     }
 
-    @media (max-width: 1360px) {
+    @include gl-container-width-down(xl, panel) {
       width: auto;
     }
   }

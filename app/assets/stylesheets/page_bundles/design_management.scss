@@ -204,7 +204,7 @@ $design-pin-diameter-sm: 24px;
   }
 }
 
-@media (max-width: map.get($grid-breakpoints, lg)) {
+@include gl-container-width-down(lg, panel) {
   .design-detail {
     overflow-y: scroll;
   }

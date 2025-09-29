@@ -786,6 +786,13 @@
   # CI Templates changes
   - "scripts/lint_templates_bash.rb"
   - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
+  # FE island changes
+  - "ee/frontend_islands/**/{package.json,yarn.lock}"
+  - "ee/frontend_islands/**/.prettierrc"
+  - "ee/frontend_islands/**/{vite,vitest}.config.ts"
+  - "ee/frontend_islands/**/tsconfig{,app,node}.json"
+  - "ee/frontend_islands/**/components.json"
+  - "ee/frontend_islands/**/src/**/*"
 
 .static-analysis-patterns: &static-analysis-patterns
   - ".{haml-lint,haml-lint_todo}.yml"

@@ -47,7 +47,7 @@
   }
 
   .right-block {
-    @media (min-width: map.get($grid-breakpoints, md)) {
+    @include gl-container-width-up(md, panel) {
       min-width: 200px;
     }
   }

@@ -283,6 +283,8 @@ class GroupsController < Groups::ApplicationController
   end
 
   def issues
+    return if redirect_if_epic_params
+
     return super unless html_request?
 
     @has_issues = IssuesFinder.new(current_user, group_id: group.id, include_subgroups: true).execute
@@ -409,6 +411,9 @@ class GroupsController < Groups::ApplicationController
       end
     end
   end
+
+  # Overridden in EE
+  def redirect_if_epic_params; end
 end
 
 GroupsController.prepend_mod

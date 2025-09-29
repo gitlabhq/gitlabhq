@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Runner
+group: Runner Core
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Set timeouts, protect sensitive information, control behavior with tags and variables, and configure artifact and cache settings of your GitLab Runner.
 title: Configuring runners
@@ -520,7 +520,7 @@ You can also use variables to configure how many times a runner
 When using the Kubernetes executor, you can use variables to
 [override Kubernetes CPU and memory allocations for requests and limits](https://docs.gitlab.com/runner/executors/kubernetes/#overwrite-container-resources).
 
-[Runner feature flags](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags) are also accepted as 
+[Runner feature flags](https://docs.gitlab.com/runner/configuration/feature-flags/#available-feature-flags) are also accepted as
 [job and pipeline variables](https://docs.gitlab.com/runner/configuration/feature-flags/#enable-feature-flag-in-pipeline-configuration).
 
 ### Git strategy

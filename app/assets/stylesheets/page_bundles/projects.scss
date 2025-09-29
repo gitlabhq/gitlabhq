@@ -214,7 +214,7 @@
       margin: 0 auto 4px;
       font-size: 24px;
 
-      @media (min-width: map.get($grid-breakpoints, sm)-1) {
+      @include gl-container-width-up(sm, panel) {
         top: 0;
       }
     }

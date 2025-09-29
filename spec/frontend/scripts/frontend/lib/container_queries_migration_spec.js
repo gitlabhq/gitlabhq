@@ -91,22 +91,28 @@ describe('migrateMediaQueries', () => {
   const file = 'file.vue';
 
   it.each`
-    input                                      | output
-    ${'@include media-breakpoint-up(md)'}      | ${'@include gl-container-width-up(md, panel)'}
-    ${'@include media-breakpoint-down(md)'}    | ${'@include gl-container-width-down(lg, panel)'}
-    ${'@include gl-media-breakpoint-up(md)'}   | ${'@include gl-container-width-up(md, panel)'}
-    ${'@include gl-media-breakpoint-down(md)'} | ${'@include gl-container-width-down(md, panel)'}
-    ${'@media (min-width: $breakpoint-md)'}    | ${'@include gl-container-width-up(md, panel)'}
-    ${'@media (max-width: $breakpoint-md)'}    | ${'@include gl-container-width-down(md, panel)'}
+    input                                                     | output
+    ${'@include media-breakpoint-up(md)'}                     | ${'@include gl-container-width-up(md, panel)'}
+    ${'@include media-breakpoint-down(md)'}                   | ${'@include gl-container-width-down(lg, panel)'}
+    ${'@include gl-media-breakpoint-up(md)'}                  | ${'@include gl-container-width-up(md, panel)'}
+    ${'@include gl-media-breakpoint-down(md)'}                | ${'@include gl-container-width-down(md, panel)'}
+    ${'@media (min-width: $breakpoint-md)'}                   | ${'@include gl-container-width-up(md, panel)'}
+    ${'@media(min-width: $breakpoint-md)'}                    | ${'@include gl-container-width-up(md, panel)'}
+    ${'@media (min-width: map.get($grid-breakpoints, md))'}   | ${'@include gl-container-width-up(md, panel)'}
+    ${'@media (min-width: map.get($grid-breakpoints, md)-1)'} | ${'@include gl-container-width-up(md, panel)'}
+    ${'@media(min-width: map.get($grid-breakpoints, md)-1)'}  | ${'@include gl-container-width-up(md, panel)'}
+    ${'@media (max-width: $breakpoint-md)'}                   | ${'@include gl-container-width-down(md, panel)'}
+    ${'@media (max-width: map.get($grid-breakpoints, md))'}   | ${'@include gl-container-width-down(md, panel)'}
+    ${'@media (max-width: map.get($grid-breakpoints, md)-1)'} | ${'@include gl-container-width-down(md, panel)'}
+    ${'@media(max-width: map.get($grid-breakpoints, md)-1)'}  | ${'@include gl-container-width-down(md, panel)'}
   `('rewrites $input to $output', ({ input, output }) => {
     expect(migrateMediaQueries(file, input)).toBe(output);
   });
 
   it.each`
-    input                                                     | query
-    ${'@media (min-width: 420px) { \n somerule; \n }'}        | ${'@media (min-width: 420px) { '}
-    ${'@media (max-width: 100px) { \n somerule; \n }'}        | ${'@media (max-width: 100px) { '}
-    ${'@media (max-width: map.get($grid-breakpoints, lg)-1)'} | ${'@media (max-width: map.get($grid-breakpoints, lg)-1)'}
+    input                                              | query
+    ${'@media (min-width: 420px) { \n somerule; \n }'} | ${'@media (min-width: 420px) { '}
+    ${'@media (max-width: 100px) { \n somerule; \n }'} | ${'@media (max-width: 100px) { '}
   `('does not migrate and shows warning with query "$query"', ({ input, query }) => {
     const warn = jest.spyOn(console, 'warn').mockImplementation(() => {});
 
