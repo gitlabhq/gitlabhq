@@ -26,12 +26,15 @@ module QA
         quality-e2e-tests-4
         quality-e2e-tests-5
         appsec-test-group
+        compliance-test
         gitlab-migration-large-import-test
         gitlab-qa-product-analytics
         gitlab-qa-product-analytics-2
         import-export-testing-group
         qa-perf-testing
-        remote-development].freeze
+        remote-development
+        saml-sso-group
+        test-custom-roles].freeze
 
       USER_TOKENS = %w[GITLAB_QA_ADMIN_ACCESS_TOKEN
         GITLAB_QA_ACCESS_TOKEN

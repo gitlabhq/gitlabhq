@@ -555,4 +555,141 @@ describe('date_format_utility.js', () => {
       expect(utils.formatIso8601Date(2021, 5, 1)).toBe('2021-06-01');
     });
   });
+
+  describe('formatDateLongMonthDay', () => {
+    it('creates a long month date from string without a year', () => {
+      const currentYear = new Date().getFullYear();
+      const date = new Date(`Aug 31, ${currentYear}`);
+      expect(utils.formatDateLongMonthDay(date)).toBe('August 31');
+    });
+
+    it('creates a long month date from numbers without a year', () => {
+      const currentYear = new Date().getFullYear();
+      const date = new Date(`${currentYear}, 08, 31`);
+      expect(utils.formatDateLongMonthDay(date)).toBe('August 31');
+    });
+
+    it('creates a long month date from string with a year', () => {
+      const date = new Date('2023-01-01');
+      expect(utils.formatDateLongMonthDay(date)).toBe('January 1, 2023');
+    });
+
+    it('creates a long month date from numbers with a year', () => {
+      const date = new Date(2023, 0, 1);
+      expect(utils.formatDateLongMonthDay(date)).toBe('January 1, 2023');
+    });
+
+    it('throws if the Date format is incorrect', () => {
+      const date = new Date('abc');
+      expect(() => utils.formatDateLongMonthDay(date)).toThrow(
+        'Argument should be a Date instance',
+      );
+    });
+  });
+
+  describe('formatDateLongMonthDayWithYear', () => {
+    it('creates a long month date from string argument', () => {
+      const date = new Date('Jan 1 2023');
+      expect(utils.formatDateLongMonthDayWithYear(date)).toBe('January 1, 2023');
+    });
+
+    it('creates a long month date from number arguments', () => {
+      const date = new Date(2023, 0, 1);
+      expect(utils.formatDateLongMonthDayWithYear(date)).toBe('January 1, 2023');
+    });
+
+    it('throws if the Date format is incorrect', () => {
+      const date = new Date('abc');
+      expect(() => utils.formatDateLongMonthDayWithYear(date)).toThrow(
+        'Argument should be a Date instance',
+      );
+    });
+  });
+
+  describe('formatDateRangeLongMonthDay', () => {
+    it('formats date range when both dates are in the same current year', () => {
+      const currentYear = new Date().getFullYear();
+      const startDate = new Date(`Jan 15, ${currentYear}`);
+      const dueDate = new Date(`Mar 20, ${currentYear}`);
+
+      expect(utils.formatDateRangeLongMonthDay(startDate, dueDate)).toBe(
+        `January 15 – March 20, ${currentYear}`,
+      );
+    });
+
+    it('formats date range when start date is in previous year and due date is in current year', () => {
+      const currentYear = new Date().getFullYear();
+      const previousYear = currentYear - 1;
+      const startDate = new Date(`Dec 15, ${previousYear}`);
+      const dueDate = new Date(`Feb 20, ${currentYear}`);
+
+      expect(utils.formatDateRangeLongMonthDay(startDate, dueDate)).toBe(
+        `December 15, ${previousYear} – February 20, ${currentYear}`,
+      );
+    });
+
+    it('formats date range when both dates are in different years', () => {
+      const startDate = new Date('2023-06-10');
+      const dueDate = new Date('2024-08-25');
+
+      expect(utils.formatDateRangeLongMonthDay(startDate, dueDate)).toBe(
+        'June 10, 2023 – August 25, 2024',
+      );
+    });
+
+    it('formats date range when both dates are in the same non-current year', () => {
+      const currentYear = new Date().getFullYear();
+      const startDate = new Date(`${currentYear}-03-15`);
+      const dueDate = new Date(`${currentYear}-09-30`);
+
+      expect(utils.formatDateRangeLongMonthDay(startDate, dueDate)).toBe(
+        `March 15 – September 30, ${currentYear}`,
+      );
+    });
+
+    it('throws error when startDate is invalid', () => {
+      const invalidStartDate = new Date('invalid');
+      const validDueDate = new Date('2023-12-31');
+
+      expect(() => utils.formatDateRangeLongMonthDay(invalidStartDate, validDueDate)).toThrow(
+        'Start and due dates should be Date instances',
+      );
+    });
+
+    it('throws error when dueDate is invalid', () => {
+      const validStartDate = new Date('2023-01-01');
+      const invalidDueDate = new Date('invalid');
+
+      expect(() => utils.formatDateRangeLongMonthDay(validStartDate, invalidDueDate)).toThrow(
+        'Start and due dates should be Date instances',
+      );
+    });
+
+    it('throws error when both dates are invalid', () => {
+      const invalidStartDate = new Date('invalid start');
+      const invalidDueDate = new Date('invalid due');
+
+      expect(() => utils.formatDateRangeLongMonthDay(invalidStartDate, invalidDueDate)).toThrow(
+        'Start and due dates should be Date instances',
+      );
+    });
+
+    it('throws error when startDate is not a Date object', () => {
+      const invalidStartDate = 'not a date';
+      const validDueDate = new Date('2023-12-31');
+
+      expect(() => utils.formatDateRangeLongMonthDay(invalidStartDate, validDueDate)).toThrow(
+        'Start and due dates should be Date instances',
+      );
+    });
+
+    it('throws error when dueDate is not a Date object', () => {
+      const validStartDate = new Date('2023-01-01');
+      const invalidDueDate = 'not a date';
+
+      expect(() => utils.formatDateRangeLongMonthDay(validStartDate, invalidDueDate)).toThrow(
+        'Start and due dates should be Date instances',
+      );
+    });
+  });
 });

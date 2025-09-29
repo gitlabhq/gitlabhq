@@ -56,7 +56,10 @@ export default {
   apollo: {
     stageJobs: {
       context() {
-        return getQueryHeaders(this.graphqlEtag);
+        return {
+          ...getQueryHeaders(this.graphqlEtag),
+          featureCategory: 'continuous_integration',
+        };
       },
       query: getPipelineStageJobsQuery,
       variables() {

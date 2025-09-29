@@ -1,9 +1,9 @@
-import { isString, mapValues, reduce, isDate, unescape } from 'lodash';
+import { isString, mapValues, reduce, isDate, unescape, isNaN } from 'lodash';
 import dateFormat from '~/lib/dateformat';
 import { roundToNearestHalf } from '~/lib/utils/common_utils';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import { sanitize } from '~/lib/dompurify';
-import { s__, n__, __, sprintf } from '~/locale';
+import { s__, n__, __, sprintf, createDateTimeFormat } from '~/locale';
 
 /**
  * Returns i18n month names array.
@@ -536,4 +536,99 @@ export const formatIso8601Date = (year, monthIndex, day) => {
     .map(String)
     .map((s) => s.padStart(2, '0'))
     .join('-');
+};
+
+/**
+ * Formats a date with a long month name and numeric day. Includes year if the
+ * date is not in the current year. Example: "January 1" or "January 1, 2025",
+ * depending on locale and year. Uses UTC to avoid timezone shifts.
+ *
+ * @param {Date|string|number} dateish A value accepted by the Date constructor
+ * @returns {string}
+ */
+export const formatDateLongMonthDay = (dateish) => {
+  const date = new Date(dateish);
+
+  if (!isDate(date) || isNaN(date.getTime())) {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    throw new Error('Argument should be a Date instance');
+  }
+
+  if (date.getFullYear() === new Date().getFullYear()) {
+    const formatter = createDateTimeFormat({
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'UTC',
+    });
+    return formatter.format(date);
+  }
+
+  const formatter = createDateTimeFormat({
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+    year: 'numeric',
+  });
+  return formatter.format(date);
+};
+
+/**
+ * Formats a date with a long month name, numeric day, and year.
+ * Example: "January 1, 2025" or, depending on locale, equivalent.
+ * Uses UTC to avoid TZ shifts.
+ *
+ * @param {Date|string|number} dateish
+ * @returns {string}
+ */
+export const formatDateLongMonthDayWithYear = (dateish) => {
+  const date = new Date(dateish);
+
+  if (!isDate(date) || isNaN(date.getTime())) {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    throw new Error('Argument should be a Date instance');
+  }
+
+  const formatter = createDateTimeFormat({
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+    year: 'numeric',
+  });
+  return formatter.format(date);
+};
+
+/**
+ * Formats a date range with a long month name and numeric day.
++ * If the start and end dates are in the same year, format as "January 1 - December 31", 2025.
+ * Otherwise, format as "January 1, 2025 - December 31, 2026".
+ * Uses UTC to avoid TZ shifts.
+ *
+ * @param {Date|string|number} startDate
+ * @param {Date|string|number} endDate
+ * @returns {string}
+ */
+export const formatDateRangeLongMonthDay = (startDateish, dueDateish) => {
+  const startDate = new Date(startDateish);
+  const dueDate = new Date(dueDateish);
+
+  if (!isDate(startDate) || isNaN(startDate.getTime())) {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    throw new Error('Start and due dates should be Date instances');
+  }
+
+  if (!isDate(dueDate) || isNaN(dueDate.getTime())) {
+    // eslint-disable-next-line @gitlab/require-i18n-strings
+    throw new Error('Start and due dates should be Date instances');
+  }
+
+  if (startDate.getFullYear() === dueDate.getFullYear()) {
+    return sprintf(__('%{startDate} – %{dueDate}'), {
+      startDate: formatDateLongMonthDay(startDate),
+      dueDate: formatDateLongMonthDayWithYear(dueDate),
+    });
+  }
+  return sprintf(__('%{startDate} – %{dueDate}'), {
+    startDate: formatDateLongMonthDayWithYear(startDate),
+    dueDate: formatDateLongMonthDayWithYear(dueDate),
+  });
 };

@@ -618,7 +618,7 @@ To install a package by using `gradle`:
 1. In your project, run the following:
 
    ```shell
-   gradle install
+   gradle build
    ```
 
 {{< /tab >}}
@@ -1173,7 +1173,7 @@ The GitLab Maven repository supports the following CLI commands:
 {{< tab title="`gradle`" >}}
 
 - `gradle publish`: Publish your package to the package registry.
-- `gradle install`: Install packages specified in your Gradle project.
+- `gradle build`: Assembles and tests this project.
 
 {{< /tab >}}
 

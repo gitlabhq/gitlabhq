@@ -50,4 +50,9 @@ RSpec.describe Banzai::Filter::EscapedCharFilter, feature_category: :markdown do
 
     expect(filter(doc).to_s).to eq '<p data-sourcepos="1:1-1:14">[link](&lt;foo&gt;)</p>'
   end
+
+  it_behaves_like 'pipeline timing check'
+  it_behaves_like 'a filter timeout' do
+    let(:text) { 'text' }
+  end
 end

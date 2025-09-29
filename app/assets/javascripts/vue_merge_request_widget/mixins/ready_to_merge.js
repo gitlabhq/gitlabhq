@@ -59,7 +59,7 @@ export default {
       return false;
     },
     shouldShowMergeImmediatelyDropdown() {
-      return this.isAutoMergeAvailable && this.isMergeAllowed;
+      return this.isAutoMergeAvailable && this.mr.isMergeAllowed;
     },
     isMergeImmediatelyDangerous() {
       return false;

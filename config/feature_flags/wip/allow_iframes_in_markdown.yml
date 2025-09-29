@@ -1,0 +1,10 @@
+---
+name: allow_iframes_in_markdown
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/282443
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204952
+rollout_issue_url:
+milestone: '18.5'
+group: group::knowledge
+type: wip
+default_enabled: false

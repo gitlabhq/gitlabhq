@@ -1568,7 +1568,7 @@ module Ci
     def merge_request_diff
       return unless merge_request?
 
-      merge_request.merge_request_diff_for(merge_request_diff_sha)
+      merge_request.merge_request_diff_for(merge_request_diff_sha, order_by: :id_desc)
     end
 
     def auto_cancel_on_job_failure

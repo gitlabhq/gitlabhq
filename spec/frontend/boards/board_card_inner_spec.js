@@ -136,7 +136,14 @@ describe('Board card component', () => {
     expect(findWorkItemIcon().props('workItemType')).toBe(issue.type);
   });
 
+  it('renders issue ID with #when work item icon is present', () => {
+    createWrapper({ props: { showWorkItemTypeIcon: true } });
+    expect(wrapper.find('[data-testid="work-item-id-textOnly"]').exists()).toBe(false);
+    expect(wrapper.find('.board-card-number').text()).toContain(`#${issue.iid}`);
+  });
+
   it('renders issue ID with #', () => {
+    expect(findWorkItemIcon().exists()).toBe(false);
     expect(wrapper.find('.board-card-number').text()).toContain(`#${issue.iid}`);
   });
 

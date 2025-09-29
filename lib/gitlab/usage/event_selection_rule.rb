@@ -16,9 +16,17 @@ module Gitlab
     class EventSelectionRule
       include Gitlab::Usage::TimeSeriesStorable
       include Gitlab::Usage::TimeFrame
+      extend Gitlab::Utils::StrongMemoize
 
       TOTAL_COUNTER_KEY_PREFIX = "event_counters"
       SUM_KEY_PREFIX = "event_sums"
+
+      # We want to avoid reading the key_overrides every time a rule is used.
+      def self.key_overrides
+        strong_memoize(:key_overrides) do
+          YAML.safe_load(File.read(Gitlab::UsageDataCounters::HLLRedisCounter::KEY_OVERRIDES_PATH)).freeze
+        end
+      end
 
       attr_reader :filter, :name, :unique_identifier_name, :operator
 
@@ -131,11 +139,7 @@ module Gitlab
 
         path = "#{path}-#{unique_identifier_name}" if unique_identifier_name.present?
 
-        key_overrides.fetch(path, path)
-      end
-
-      def key_overrides
-        YAML.safe_load(File.read(Gitlab::UsageDataCounters::HLLRedisCounter::KEY_OVERRIDES_PATH))
+        EventSelectionRule.key_overrides.fetch(path, path)
       end
     end
   end

@@ -137,7 +137,8 @@ class LintDocsRedirect
       => #{file['old_path']}
 
       Unless you add a redirect or remove the page from the global navigation,
-      this change will break pipelines in the 'gitlab/gitlab-docs' project.
+      this change will break pipelines in the
+      https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com project.
 
       #{rake_command(file)}
 

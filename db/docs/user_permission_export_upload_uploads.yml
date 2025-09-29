@@ -4,7 +4,7 @@ classes:
 - Upload
 - UserPermissionExportUpload
 feature_categories:
-- system_access
+- permissions
 description: Stores uploads fro UserPermissionExportUpload model
 introduced_by_url:
 milestone: '17.11'

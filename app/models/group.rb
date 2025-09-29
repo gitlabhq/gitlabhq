@@ -1177,6 +1177,10 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:glql_load_on_click, type: :ops)
   end
 
+  def allow_iframes_in_markdown_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:allow_iframes_in_markdown, type: :wip)
+  end
+
   # overriden in EE
   def supports_group_work_items?
     false

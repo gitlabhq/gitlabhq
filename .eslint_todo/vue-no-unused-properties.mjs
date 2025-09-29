@@ -59,10 +59,6 @@ export default {
     'ee/app/assets/javascripts/roadmap/components/preset_months/months_header_sub_item.vue',
     'ee/app/assets/javascripts/roadmap/components/preset_quarters/quarters_header_item.vue',
     'ee/app/assets/javascripts/roadmap/components/preset_quarters/quarters_header_sub_item.vue',
-    'ee/app/assets/javascripts/roadmap/components/preset_weeks/weeks_header_item.vue',
-    'ee/app/assets/javascripts/roadmap/components/preset_weeks/weeks_header_sub_item.vue',
-    'ee/app/assets/javascripts/roadmap/components/roadmap_daterange.vue',
-    'ee/app/assets/javascripts/roadmap/components/roadmap_filters.vue',
   ],
   rules: {
     'vue/no-unused-properties': 'off',

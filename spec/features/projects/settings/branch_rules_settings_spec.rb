@@ -81,7 +81,7 @@ RSpec.describe 'Projects > Settings > Repository > Branch rules settings', featu
 
       within_modal do
         expect(page).to have_text 'Update target branch'
-        click_button 'Select Branch or create wildcard'
+        click_button 'Select branch or create rule'
         fill_in 'Search', with: 'test-*'
         find_by_testid('listbox-item-test-*').click
         click_button 'Update'

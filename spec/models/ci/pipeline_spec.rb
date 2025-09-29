@@ -6608,6 +6608,25 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     context 'when the pipeline has a merge request' do
+      context 'when there are multiple diffs for the mr' do
+        let(:merge_request) { create(:merge_request, source_project: project) }
+        let(:pipeline) { create(:ci_pipeline, project: project, merge_request: merge_request) }
+
+        context 'when pipeline is for a merge request' do
+          let!(:diff1) { merge_request.merge_request_diffs.create!(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
+          let!(:diff2) { merge_request.merge_request_diffs.create!(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+          let!(:diff3) { merge_request.merge_request_diffs.create!(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
+
+          before do
+            pipeline.update!(sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
+          end
+
+          it 'returns the most recent diff when multiple diffs match the same SHA' do
+            expect(pipeline.merge_request_diff).to eq(diff3)
+          end
+        end
+      end
+
       context 'when the pipeline is a merged result pipeline' do
         it 'returns the diff for the source sha' do
           pipeline = create(:ci_pipeline, :merged_result_pipeline)

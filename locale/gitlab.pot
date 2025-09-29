@@ -1027,6 +1027,9 @@ msgstr ""
 msgid "%{italic_start}What's new%{italic_end} is inactive and cannot be viewed."
 msgstr ""
 
+msgid "%{itemType} number %{itemIid}"
+msgstr ""
+
 msgid "%{item_ids} could not be removed due to insufficient permissions"
 msgstr ""
 
@@ -4169,9 +4172,6 @@ msgid "Add image comment"
 msgstr ""
 
 msgid "Add internal note"
-msgstr ""
-
-msgid "Add interval"
 msgstr ""
 
 msgid "Add key"
@@ -11402,6 +11402,9 @@ msgstr ""
 msgid "BranchRules|Merge requests"
 msgstr ""
 
+msgid "BranchRules|No branch rules found"
+msgstr ""
+
 msgid "BranchRules|No data to display"
 msgstr ""
 
@@ -11456,7 +11459,10 @@ msgstr ""
 msgid "BranchRules|Rule target"
 msgstr ""
 
-msgid "BranchRules|Select Branch or create wildcard"
+msgid "BranchRules|Select an existing branch, create a branch rule, or use wildcards such as %{stable} or %{production}. Branch names are case-sensitive. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "BranchRules|Select branch or create rule"
 msgstr ""
 
 msgid "BranchRules|Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests. %{linkStart}What is squashing?%{linkEnd}"
@@ -11520,9 +11526,6 @@ msgid "BranchRules|Users & groups"
 msgstr ""
 
 msgid "BranchRules|View details"
-msgstr ""
-
-msgid "BranchRules|Wildcards such as %{stable} or %{production} are supported. Branch names are case-sensitive. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "BranchRules|You are about to delete the %{name} status check."
@@ -24454,6 +24457,9 @@ msgstr ""
 msgid "Due date"
 msgstr ""
 
+msgid "Due date: %{date}"
+msgstr ""
+
 msgid "Due to inactivity, the %{project_link} project is scheduled to be deleted on %{b_open}%{deletion_date}%{b_close}. To unschedule the deletion of %{project_link}, perform some activity on it. For example:"
 msgstr ""
 
@@ -27151,9 +27157,6 @@ msgid "Event|updated"
 msgstr ""
 
 msgid "Every %{action} attempt has failed: %{job_error_message}. Please try again."
-msgstr ""
-
-msgid "Every 2 weeks"
 msgstr ""
 
 msgid "Every 3 months"
@@ -32988,6 +32991,9 @@ msgstr ""
 msgid "Health status"
 msgstr ""
 
+msgid "Health status: %{statusText}"
+msgstr ""
+
 msgid "HealthCheck|Access token"
 msgstr ""
 
@@ -34349,6 +34355,12 @@ msgstr ""
 msgid "In use"
 msgstr ""
 
+msgid "InProductMarketing|AI Chat in the IDE"
+msgstr ""
+
+msgid "InProductMarketing|AI Code Suggestions in the IDE"
+msgstr ""
+
 msgid "InProductMarketing|Boost efficiency and collaboration"
 msgstr ""
 
@@ -34356,6 +34368,9 @@ msgid "InProductMarketing|Built-in security"
 msgstr ""
 
 msgid "InProductMarketing|End-to-end security and compliance"
+msgstr ""
+
+msgid "InProductMarketing|Enjoy %{duration} days of full access to Premium, after which you'll have access to our free tier forever."
 msgstr ""
 
 msgid "InProductMarketing|Enjoy %{duration} days of full access to our best plan, after which you'll have access to our free tier forever. Upgrade to the best plan that suits you at any point - Premium or Ultimate."
@@ -34385,6 +34400,9 @@ msgstr ""
 msgid "InProductMarketing|One platform for Dev, Sec, and Ops teams"
 msgstr ""
 
+msgid "InProductMarketing|Release Controls"
+msgstr ""
+
 msgid "InProductMarketing|Ship secure software faster"
 msgstr ""
 
@@ -34394,10 +34412,16 @@ msgstr ""
 msgid "InProductMarketing|Start with Self-Managed"
 msgstr ""
 
+msgid "InProductMarketing|Team Project Management"
+msgstr ""
+
 msgid "InProductMarketing|Team members collaborating"
 msgstr ""
 
 msgid "InProductMarketing|Trusted by"
+msgstr ""
+
+msgid "InProductMarketing|Unlimited Licensed Users"
 msgstr ""
 
 msgid "InProductMarketing|Want to host GitLab on your servers?"
@@ -35866,6 +35890,9 @@ msgstr ""
 msgid "Issue label"
 msgstr ""
 
+msgid "Issue number %{itemIid}: %{title}"
+msgstr ""
+
 msgid "Issue or merge request ID is required"
 msgstr ""
 
@@ -36147,6 +36174,9 @@ msgid "Iteration removed"
 msgstr ""
 
 msgid "Iteration updated"
+msgstr ""
+
+msgid "Iteration: %{iterationDate}"
 msgstr ""
 
 msgid "Iterations"
@@ -41145,6 +41175,9 @@ msgid "Milestone lists not available with your current license"
 msgstr ""
 
 msgid "Milestone(s) not found: %{milestones}"
+msgstr ""
+
+msgid "Milestone: %{milestoneTitle}"
 msgstr ""
 
 msgid "MilestoneCombobox|Group milestones"
@@ -57681,10 +57714,16 @@ msgstr[1] ""
 msgid "SecretDetection|What are validity checks?"
 msgstr ""
 
+msgid "SecretRotation|After a set number of days, send a reminder to rotate the secret. Minimum 7 days."
+msgstr ""
+
 msgid "SecretRotation|Hi %{name}!"
 msgstr ""
 
 msgid "SecretRotation|Please change the secret value to maintain security."
+msgstr ""
+
+msgid "SecretRotation|Rotation reminder period"
 msgstr ""
 
 msgid "SecretRotation|Secret rotation reminder"
@@ -57712,9 +57751,6 @@ msgid "Secrets|Add a new secret to the group by following the instructions in th
 msgstr ""
 
 msgid "Secrets|Add a new secret to the project by following the instructions in the form below."
-msgstr ""
-
-msgid "Secrets|Add custom interval."
 msgstr ""
 
 msgid "Secrets|Add secret"
@@ -57792,9 +57828,6 @@ msgstr ""
 msgid "Secrets|Failed to load secret. Please try again later."
 msgstr ""
 
-msgid "Secrets|Intervals"
-msgstr ""
-
 msgid "Secrets|Last used"
 msgstr ""
 
@@ -57817,12 +57850,6 @@ msgid "Secrets|Provisioning in progress"
 msgstr ""
 
 msgid "Secrets|Remove secrets manager permission?"
-msgstr ""
-
-msgid "Secrets|Rotation period"
-msgstr ""
-
-msgid "Secrets|Rotation reminder"
 msgstr ""
 
 msgid "Secrets|Secret %{secretName} has been deleted."
@@ -57850,9 +57877,6 @@ msgid "Secrets|Secrets manager user permissions"
 msgstr ""
 
 msgid "Secrets|Secure your sensitive information"
-msgstr ""
-
-msgid "Secrets|Select a reminder interval"
 msgstr ""
 
 msgid "Secrets|Select the access scopes to grant to this user for the Secret Manager and related API endpoints."
@@ -67110,6 +67134,9 @@ msgstr ""
 msgid "Time estimate"
 msgstr ""
 
+msgid "Time estimate: %{estimate}"
+msgstr ""
+
 msgid "Time from first comment to last commit"
 msgstr ""
 
@@ -70107,9 +70134,6 @@ msgid "Use .gitlab-ci.yml"
 msgstr ""
 
 msgid "Use Amazon Q to streamline development workflow and project upgrades"
-msgstr ""
-
-msgid "Use CRON syntax. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "Use Regular Expression"
@@ -73210,6 +73234,9 @@ msgid "Weight - %{maxIssueWeight}"
 msgstr ""
 
 msgid "Weight conflict warning"
+msgstr ""
+
+msgid "Weight: %{weighted}"
 msgstr ""
 
 msgid "Welcome back! Your account had been deactivated due to inactivity but is now reactivated."

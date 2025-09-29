@@ -5442,35 +5442,90 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#merge_request_diff_for' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
+    let(:merge_request) { create(:merge_request, importing: true, source_project: project) }
 
-    let!(:merge_request_diff1) { subject.merge_request_diffs.create!(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
-    let!(:merge_request_diff2) { subject.merge_request_diffs.create!(head_commit_sha: nil) }
-    let!(:merge_request_diff3) { subject.merge_request_diffs.create!(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+    let!(:merge_request_diff1) { merge_request.merge_request_diffs.create!(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
+    let!(:merge_request_diff2) { merge_request.merge_request_diffs.create!(head_commit_sha: nil) }
+    let!(:merge_request_diff3) { merge_request.merge_request_diffs.create!(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
+    let!(:merge_request_diff4) { merge_request.merge_request_diffs.create!(base_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e', head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
 
-    subject { create(:merge_request, importing: true, source_project: project) }
+    context 'when order_by is asc' do
+      subject(:merge_request_diff_for) { merge_request.merge_request_diff_for(param, order_by: :id_asc) }
 
-    context 'with diff refs' do
-      it 'returns the diffs' do
-        expect(subject.merge_request_diff_for(merge_request_diff1.diff_refs)).to eq(merge_request_diff1)
+      context 'with diff refs' do
+        let(:param) { merge_request_diff1.diff_refs }
+
+        it 'returns the diffs' do
+          expect(merge_request_diff_for).to eq(merge_request_diff1)
+        end
+      end
+
+      context 'with a commit SHA' do
+        let(:param) { merge_request_diff3.head_commit_sha }
+
+        it 'returns the diffs' do
+          expect(merge_request_diff_for).to eq(merge_request_diff3)
+        end
+
+        context 'when multiple diffs match' do
+          let(:param) { merge_request_diff4.head_commit_sha }
+
+          it 'returns the first diff' do
+            expect(merge_request_diff_for).to eq(merge_request_diff1)
+          end
+        end
+      end
+
+      it 'runs a single query on the initial call, and none afterwards' do
+        expect { merge_request.merge_request_diff_for(merge_request_diff1.diff_refs, order_by: :id_asc) }
+          .not_to exceed_query_limit(1)
+
+        expect { merge_request.merge_request_diff_for(merge_request_diff2.diff_refs, order_by: :id_asc) }
+          .not_to exceed_query_limit(0)
+
+        expect { merge_request.merge_request_diff_for(merge_request_diff3.head_commit_sha, order_by: :id_asc) }
+          .not_to exceed_query_limit(0)
       end
     end
 
-    context 'with a commit SHA' do
-      it 'returns the diffs' do
-        expect(subject.merge_request_diff_for(merge_request_diff3.head_commit_sha)).to eq(merge_request_diff3)
+    context 'when when order_by is :desc' do
+      subject(:merge_request_diff_for) { merge_request.merge_request_diff_for(param, order_by: :id_desc) }
+
+      context 'with diff refs' do
+        let(:param) { merge_request_diff1.diff_refs }
+
+        it 'returns the diffs' do
+          expect(merge_request_diff_for).to eq(merge_request_diff1)
+        end
       end
-    end
 
-    it 'runs a single query on the initial call, and none afterwards' do
-      expect { subject.merge_request_diff_for(merge_request_diff1.diff_refs) }
-        .not_to exceed_query_limit(1)
+      context 'with a commit SHA' do
+        let(:param) { merge_request_diff3.head_commit_sha }
 
-      expect { subject.merge_request_diff_for(merge_request_diff2.diff_refs) }
-        .not_to exceed_query_limit(0)
+        it 'returns the diffs' do
+          expect(merge_request_diff_for).to eq(merge_request_diff3)
+        end
 
-      expect { subject.merge_request_diff_for(merge_request_diff3.head_commit_sha) }
-        .not_to exceed_query_limit(0)
+        context 'when multiple diffs match' do
+          let(:param) { merge_request_diff1.head_commit_sha }
+
+          it 'returns the latest diff' do
+            expect(merge_request_diff_for).to eq(merge_request_diff4)
+          end
+        end
+      end
+
+      it 'runs a single query on the initial call, and none afterwards' do
+        expect { merge_request.merge_request_diff_for(merge_request_diff1.diff_refs, order_by: :id_desc) }
+          .not_to exceed_query_limit(1)
+
+        expect { merge_request.merge_request_diff_for(merge_request_diff2.diff_refs, order_by: :id_desc) }
+          .not_to exceed_query_limit(0)
+
+        expect { merge_request.merge_request_diff_for(merge_request_diff3.head_commit_sha, order_by: :id_desc) }
+          .not_to exceed_query_limit(0)
+      end
     end
   end
 

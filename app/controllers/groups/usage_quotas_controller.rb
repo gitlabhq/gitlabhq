@@ -5,7 +5,7 @@ module Groups
     before_action :authorize_read_usage_quotas!
     before_action :verify_usage_quotas_enabled!
 
-    feature_category :consumables_cost_management
+    feature_category :consumables_cost_management, [:root]
     urgency :low
 
     def root

@@ -83,7 +83,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       resource :packages_and_registries, only: [:show]
     end
 
-    resource :usage_quotas do
+    resource :usage_quotas, only: [] do
       get '/', to: 'usage_quotas#root'
     end
 

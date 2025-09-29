@@ -272,6 +272,7 @@ export default {
         this.$emit('work-item-updated', this.workItem);
         if (isEmpty(this.workItem)) {
           this.setEmptyState();
+          return;
         }
         if (!res.error) {
           this.error = null;

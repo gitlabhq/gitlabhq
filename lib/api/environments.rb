@@ -64,9 +64,9 @@ module API
         tags environments_tags
       end
       params do
-        requires :name,           type: String,   desc: 'The name of the environment'
-        optional :external_url,   type: String,   desc: 'Place to link to for this environment'
-        optional :slug, absence: { message: "is automatically generated and cannot be changed" }, documentation: { hidden: true }
+        requires :name, type: String, desc: 'The name of the environment'
+        optional :external_url, type: String, desc: 'Place to link to for this environment'
+        optional :slug, absence: { message: "is automatically generated and cannot be changed" }, documentation: { hidden: true } # rubocop:disable API/ParameterDescription -- hidden param
         optional :tier, type: String, values: Environment.tiers.keys, desc: 'The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`'
         optional :cluster_agent_id, type: Integer, desc: 'The ID of the Cluster Agent to associate with this environment'
         optional :kubernetes_namespace, type: String, desc: 'The Kubernetes namespace to associate with this environment'
@@ -111,7 +111,7 @@ module API
       params do
         requires :environment_id, type: Integer,  desc: 'The ID of the environment'
         optional :external_url,   type: String,   desc: 'The new URL on which this deployment is viewable'
-        optional :slug, absence: { message: "is automatically generated and cannot be changed" }, documentation: { hidden: true }
+        optional :slug, absence: { message: "is automatically generated and cannot be changed" }, documentation: { hidden: true } # rubocop:disable API/ParameterDescription -- hidden param
         optional :tier, type: String, values: Environment.tiers.keys, desc: 'The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`'
         optional :cluster_agent_id, type: Integer, desc: 'The ID of the Cluster Agent to associate with this environment'
         optional :kubernetes_namespace, type: String, desc: 'The Kubernetes namespace to associate with this environment'

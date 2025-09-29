@@ -3510,6 +3510,10 @@ class Project < ApplicationRecord
     group&.markdown_placeholders_feature_flag_enabled? || Feature.enabled?(:markdown_placeholders, self, type: :gitlab_com_derisk)
   end
 
+  def allow_iframes_in_markdown_feature_flag_enabled?
+    group&.allow_iframes_in_markdown_feature_flag_enabled? || Feature.enabled?(:allow_iframes_in_markdown, self, type: :wip)
+  end
+
   def enqueue_record_project_target_platforms
     return unless Gitlab.com?
 

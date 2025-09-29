@@ -29,6 +29,7 @@ module Banzai
           Filter::AttributesFilter,
           Filter::VideoLinkFilter,
           Filter::AudioLinkFilter,
+          Filter::IframeLinkFilter,
           Filter::TableOfContentsTagFilter,
           Filter::AutolinkFilter,
           Filter::SuggestionFilter,

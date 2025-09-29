@@ -59,7 +59,21 @@ export default {
   },
   computed: {
     createRuleItems() {
-      return this.isWildcardAvailable ? [this.wildcardItem] : this.filteredOpenBranches;
+      const items = [...this.filteredOpenBranches];
+
+      if (this.filteredOpenBranches.length === 0 && this.searchQuery.trim()) {
+        items.push(this.noResultsItem);
+      }
+
+      if (this.isWildcardAvailable) {
+        items.push(this.wildcardItem);
+      }
+
+      if (this.isBranchNameAvailable) {
+        items.push(this.branchNameItem);
+      }
+
+      return items;
     },
     filteredOpenBranches() {
       const openBranches = this.protectableBranches.map((item) => ({
@@ -69,13 +83,41 @@ export default {
       return openBranches.filter((item) => item.text.includes(this.searchQuery));
     },
     wildcardItem() {
-      return { text: s__('BranchRules|Create wildcard'), value: this.searchQuery };
+      return {
+        text: s__('BranchRules|Create wildcard'),
+        value: this.searchQuery,
+        isWildcard: true,
+      };
+    },
+    branchNameItem() {
+      return {
+        text: s__('BranchRules|Create branch rule'),
+        value: this.searchQuery,
+        isBranchName: true,
+      };
+    },
+    noResultsItem() {
+      return {
+        text: s__('BranchRules|No branch rules found'),
+        value: '',
+        isNoResults: true,
+        disabled: true,
+      };
+    },
+    hasMatchingBranch() {
+      return this.filteredOpenBranches.some((branch) => branch.text === this.searchQuery);
+    },
+    isBranchAvailable() {
+      return this.searchQuery.trim() && !this.hasMatchingBranch;
     },
     isWildcardAvailable() {
-      return this.searchQuery.includes('*');
+      return this.isBranchAvailable && this.searchQuery.includes('*');
+    },
+    isBranchNameAvailable() {
+      return this.isBranchAvailable && !this.searchQuery.includes('*');
     },
     createRuleText() {
-      return this.branchRuleName || s__('BranchRules|Select Branch or create wildcard');
+      return this.branchRuleName || s__('BranchRules|Select branch or create rule');
     },
     primaryProps() {
       return {
@@ -93,7 +135,7 @@ export default {
     },
     formDescriptionText() {
       return s__(
-        'BranchRules|Wildcards such as %{stable} or %{production} are supported. Branch names are case-sensitive. %{linkStart}Learn more.%{linkEnd}',
+        'BranchRules|Select an existing branch, create a branch rule, or use wildcards such as %{stable} or %{production}. Branch names are case-sensitive. %{linkStart}Learn more.%{linkEnd}',
       );
     },
   },
@@ -103,6 +145,9 @@ export default {
       this.searchQuery = query;
     },
     selectBranchRuleName(branchName) {
+      if (branchName === this.noResultsItem.value) {
+        return;
+      }
       this.branchRuleName = branchName;
     },
     show() {
@@ -133,19 +178,29 @@ export default {
         @search="handleBranchRuleSearch"
         @select="selectBranchRuleName"
       >
-        <template v-if="isWildcardAvailable" #list-item="{ item }">
-          {{ item.text }}
-          <code>{{ searchQuery }}</code>
-        </template>
+        <template #list-item="{ item }">
+          <div>
+            <div>
+              <div :class="{ 'gl-text-subtle gl-opacity-6': item.isNoResults }">
+                {{ item.text }}
+              </div>
+              <div v-if="item.isWildcard || item.isBranchName" class="gl-mt-2">
+                <code class="gl-display-block gl-text-subtle">
+                  {{ searchQuery }}
+                </code>
+              </div>
+            </div>
+          </div></template
+        >
       </gl-collapsible-listbox>
       <div data-testid="help-text" class="gl-mt-2 gl-text-subtle">
         <gl-sprintf :message="formDescriptionText">
-          <template #stable
-            ><code>{{ __('*-stable') }}</code></template
-          >
-          <template #production
-            ><code>{{ __('production/*') }}</code></template
-          >
+          <template #stable>
+            <code>{{ __('*-stable') }}</code>
+          </template>
+          <template #production>
+            <code>{{ __('production/*') }}</code>
+          </template>
           <template #link="{ content }">
             <gl-link :href="$options.wildcardsHelpDocLink">
               {{ content }}
