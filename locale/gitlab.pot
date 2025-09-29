@@ -59512,6 +59512,9 @@ msgstr ""
 msgid "SecurityOrchestration|Security job template"
 msgstr ""
 
+msgid "SecurityOrchestration|Security policies cannot be enforced due to invalid YAML syntax in the linked security policy project's %{linkStart}policy.yml%{linkEnd}."
+msgstr ""
+
 msgid "SecurityOrchestration|Security policy overwrites this setting"
 msgstr ""
 
@@ -60086,6 +60089,9 @@ msgid "SecurityOrchestration|on every"
 msgstr ""
 
 msgid "SecurityOrchestration|pipeline sources"
+msgstr ""
+
+msgid "SecurityOrchestration|policy.yml file has syntax errors"
 msgstr ""
 
 msgid "SecurityOrchestration|projects with compliance frameworks"
@@ -77174,6 +77180,9 @@ msgstr ""
 msgid "cannot be used for user namespace"
 msgstr ""
 
+msgid "cannot belong to both an organization and a project"
+msgstr ""
+
 msgid "cannot contain HTML/XML tags, including any word between angle brackets (&lt;,&gt;)."
 msgstr ""
 
@@ -78680,6 +78689,9 @@ msgid "must be unique. This CA has already been configured for another namespace
 msgstr ""
 
 msgid "must belong to either a project or an organization"
+msgstr ""
+
+msgid "must belong to either an organization or a project"
 msgstr ""
 
 msgid "must belong to same project of its requirement object."

@@ -364,14 +364,6 @@ RSpec.shared_examples 'a deployable job' do
       it 'returns options from the job environment' do
         expect(subject).to eq(job.job_environment.options)
       end
-
-      context 'when the environment_attributes_from_job_environment feature flag is disabled' do
-        before do
-          stub_feature_flags(environment_attributes_from_job_environment: false)
-        end
-
-        it { is_expected.to eq(job.environment_options_for_permanent_storage) }
-      end
     end
   end
 
@@ -692,30 +684,6 @@ RSpec.shared_examples 'a deployable job' do
           end
 
           it { is_expected.to eq('name-from-job-env') }
-        end
-
-        context 'when the environment_attributes_from_job_environment feature flag is disabled' do
-          before do
-            stub_feature_flags(environment_attributes_from_job_environment: false)
-          end
-
-          it { is_expected.to eq('review/example-feature') }
-
-          context 'when the job metadata has the namespace persisted' do
-            before do
-              job.metadata.expanded_environment_name = 'name-from-metadata'
-            end
-
-            it { is_expected.to eq('name-from-metadata') }
-          end
-
-          context 'when the job metadata does not exist' do
-            before do
-              job.metadata.destroy!
-            end
-
-            it { is_expected.to eq('review/example-feature') }
-          end
         end
       end
     end

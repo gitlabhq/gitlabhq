@@ -1089,6 +1089,9 @@ module Ci
     def environments_in_self_and_project_descendants(deployment_status: nil)
       # We limit to 100 unique environments for application safety.
       # See: https://gitlab.com/gitlab-org/gitlab/-/issues/340781#note_699114700
+      #
+      # TODO: This metadata query can be removed when historical job environment
+      # records have been backfilled.
       expanded_environment_names =
         jobs_in_self_and_project_descendants.joins(:metadata)
                                       .where.not(Ci::BuildMetadata.table_name => { expanded_environment_name: nil })
@@ -1096,13 +1099,11 @@ module Ci
                                       .limit(100)
                                       .pluck(:expanded_environment_name)
 
-      if use_job_environment_for_environment_lookup?
-        expanded_environment_names += Environments::Job
-          .where(ci_pipeline_id: self_and_project_descendants.pluck(:id))
-          .limit(100)
-          .distinct
-          .pluck(:expanded_environment_name)
-      end
+      expanded_environment_names += Environments::Job
+        .where(ci_pipeline_id: self_and_project_descendants.pluck(:id))
+        .limit(100)
+        .distinct
+        .pluck(:expanded_environment_name)
 
       Environment.where(project: project, name: expanded_environment_names.uniq).with_deployment(sha, status: deployment_status)
     end
@@ -1699,10 +1700,6 @@ module Ci
 
     rescue Repository::AmbiguousRefError
       false
-    end
-
-    def use_job_environment_for_environment_lookup?
-      Feature.enabled?(:environment_attributes_from_job_environment, project)
     end
   end
 end

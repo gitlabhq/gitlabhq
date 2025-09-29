@@ -257,46 +257,63 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       context 'with rate limiting enabled' do
         before do
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-                                                     .with(:ci_job_created_subscription, scope: build.project)
+                                                     .with(:ci_job_processed_subscription, scope: build.project)
                                                      .and_return(true)
         end
 
-        it 'does not trigger GraphQL subscription when rate limited' do
-          expect_next(described_class).to receive(:execute_hooks)
-          expect(GraphqlTriggers).not_to receive(:ci_job_created)
+        %w[cancel! drop! run! skip! success!].each do |action|
+          shared_examples "when build receives #{action} event" do
+            it 'does not trigger GraphQL subscription ciJobProcessed' do
+              expect(GraphqlTriggers).not_to receive(:ci_job_processed).with(build)
 
-          create(:ci_build, pipeline: pipeline)
+              build.public_send(action)
+            end
+          end
         end
       end
 
       context 'without rate limiting enabled' do
         before do
           allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?)
-                                                     .with(:ci_job_created_subscription, scope: build.project)
+                                                     .with(:ci_job_processed_subscription, scope: build.project)
                                                      .and_return(false)
         end
 
-        context 'with feature flag enabled' do
-          it 'triggers GraphQL subscription ciJobCreated' do
-            expect_next(described_class).to receive(:execute_hooks)
+        context 'with ci_job_created_subscription turned on' do
+          %w[cancel! drop! run! skip! success!].each do |action|
+            shared_examples "when build receives #{action} event" do
+              it 'triggers GraphQL subscription ciJobProcessed' do
+                expect(GraphqlTriggers).to receive(:ci_job_processed).with(build)
 
-            expect(GraphqlTriggers).to receive(:ci_job_created).with(instance_of(described_class))
+                build.public_send(action)
+              end
+            end
 
-            create(:ci_build, pipeline: pipeline)
+            it_behaves_like "when build receives #{action} event"
+
+            context 'when FF `stop_writing_builds_metadata` is disabled' do
+              before do
+                stub_feature_flags(stop_writing_builds_metadata: false)
+              end
+
+              it_behaves_like "when build receives #{action} event"
+            end
           end
         end
 
-        context 'with feature flag turned off' do
+        context 'with ci_job_created_subscription feature flag turned off' do
           before do
             stub_feature_flags(ci_job_created_subscription: false)
           end
 
-          it 'does not trigger GraphQL subscription ciJobCreated' do
-            expect_next(described_class).to receive(:execute_hooks)
+          %w[cancel! drop! run! skip! success!].each do |action|
+            shared_examples "when build receives #{action} event" do
+              it 'does not trigger GraphQL subscription ciJobProcessed' do
+                expect(GraphqlTriggers).not_to receive(:ci_job_processed).with(build)
 
-            expect(GraphqlTriggers).not_to receive(:ci_job_created).with(instance_of(described_class))
-
-            create(:ci_build, pipeline: pipeline)
+                build.public_send(action)
+              end
+            end
           end
         end
       end

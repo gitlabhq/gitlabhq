@@ -378,7 +378,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/llm/concerns/exponential_backoff_spec.rb'
     - 'ee/spec/lib/gitlab/llm/templates/categorize_question_spec.rb'
     - 'ee/spec/lib/gitlab/llm/templates/generate_commit_message_spec.rb'
-    - 'ee/spec/lib/gitlab/llm/templates/summarize_review_spec.rb'
     - 'ee/spec/lib/gitlab/llm/vertex_ai/model_configurations/chat_spec.rb'
     - 'ee/spec/lib/gitlab/llm/vertex_ai/model_configurations/code_chat_spec.rb'
     - 'ee/spec/lib/gitlab/llm/vertex_ai/model_configurations/code_completion_spec.rb'

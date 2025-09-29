@@ -11797,6 +11797,25 @@ Input type: `SecurityAttributeCreateInput`
 | <a id="mutationsecurityattributecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationsecurityattributecreatesecurityattributes"></a>`securityAttributes` | [`[SecurityAttribute!]`](#securityattribute) | Created security attributes. |
 
+### `Mutation.securityAttributeDestroy`
+
+Input type: `SecurityAttributeDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityattributedestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityattributedestroyid"></a>`id` | [`SecurityAttributeID!`](#securityattributeid) | Global ID of the security attribute to destroy. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecurityattributedestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecurityattributedestroydeletedattributegid"></a>`deletedAttributeGid` | [`SecurityAttributeID`](#securityattributeid) | Global ID of the destroyed security attribute. |
+| <a id="mutationsecurityattributedestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+
 ### `Mutation.securityAttributeProjectUpdate`
 
 Input type: `SecurityAttributeProjectUpdateInput`

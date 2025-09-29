@@ -42,8 +42,3 @@ tree -r | grep <id>
 
 Because Git is not designed to handle large non-text-based data well, you should use [Git LFS](../topics/git/lfs/_index.md) for these files.
 Git LFS is designed to work with Git to track large files.
-
-## Feedback
-
-If you have any feedback to share about this limit, do so in
-[issue 428188](https://gitlab.com/gitlab-org/gitlab/-/issues/428188).

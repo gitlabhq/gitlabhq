@@ -346,6 +346,7 @@ class Project < ApplicationRecord
   has_many :tag_push_hooks_integrations, -> { tag_push_hooks }, class_name: 'Integration'
   has_many :wiki_page_hooks_integrations, -> { wiki_page_hooks }, class_name: 'Integration'
   has_many :snippets, class_name: 'ProjectSnippet'
+  has_many :snippet_repositories, inverse_of: :project
   has_many :hooks, class_name: 'ProjectHook'
   has_many :protected_branches
   has_many :exported_protected_branches

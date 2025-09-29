@@ -4,9 +4,9 @@ module Types
   class SubscriptionType < ::Types::BaseObject
     graphql_name 'Subscription'
 
-    field :ci_job_created,
-      subscription: Subscriptions::Ci::Jobs::JobCreated, null: true,
-      description: 'Triggered when a job is created.'
+    field :ci_job_processed,
+      subscription: Subscriptions::Ci::Jobs::JobProcessed, null: true,
+      description: 'Triggered when a job changes state.'
 
     field :ci_job_status_updated,
       subscription: Subscriptions::Ci::Jobs::StatusUpdated, null: true,

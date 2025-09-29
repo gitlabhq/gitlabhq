@@ -48,6 +48,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:namespace_requesters) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:snippets).class_name('ProjectSnippet') }
+    it { is_expected.to have_many(:snippet_repositories) }
     it { is_expected.to have_many(:deploy_keys_projects) }
     it { is_expected.to have_many(:deploy_keys) }
     it { is_expected.to have_many(:hooks) }

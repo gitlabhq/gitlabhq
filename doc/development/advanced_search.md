@@ -53,6 +53,10 @@ Developers making significant changes to Elasticsearch queries should test their
   tail -f log/elasticsearch.log
   ```
 
+- If you run in [SaaS mode](ee_features.md#simulate-a-saas-instance), you should [limit the amount of namespace and project data to index](../integration/advanced_search/elasticsearch.md#limit-the-amount-of-namespace-and-project-data-to-index) to mimic how advanced search is configured on GitLab.com.
+
+If namespace limiting is not enabled, advanced search is enabled by default for all namespaces (including free namespaces).
+
 ### Helpful Rake tasks
 
 - `gitlab:elastic:test:index_size`: Tells you how much space the current index is using, as well as how many documents

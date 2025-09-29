@@ -81,7 +81,7 @@ class Event < ApplicationRecord
 
   # Callbacks
   before_save :ensure_sharding_key
-  after_create :update_project
+  after_create :update_project, unless: :imported?
 
   # Scopes
   scope :recent, -> { reorder(id: :desc) }

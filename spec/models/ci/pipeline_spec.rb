@@ -4226,14 +4226,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           it 'returns the environment' do
             expect(subject).to contain_exactly(job.deployment.environment)
           end
-
-          context 'when the environment_attributes_from_job_environment feature flag is disabled' do
-            before do
-              stub_feature_flags(environment_attributes_from_job_environment: false)
-            end
-
-            it { is_expected.to be_empty }
-          end
         end
 
         context 'when there are environments linked via both Environments::Job and CI metadata' do
@@ -4246,16 +4238,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
           it 'includes environments from both sources' do
             expect(subject).to contain_exactly(job.deployment.environment, staging_job.deployment.environment)
-          end
-
-          context 'when the environment_attributes_from_job_environment feature flag is disabled' do
-            before do
-              stub_feature_flags(environment_attributes_from_job_environment: false)
-            end
-
-            it 'includes only the environment fetched from metadata' do
-              expect(subject).to contain_exactly(job.deployment.environment)
-            end
           end
         end
       end

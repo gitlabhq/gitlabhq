@@ -76,6 +76,9 @@ To select a different LLM for a feature:
 
 - In the IDE, model selection for Agentic Chat is applied only when the "Connection type" is set to websockets. The default connection type is gRPC.
 
+- The OpenAI models used in Agentic Duo Chat have experimental support, specifically for GPT-5, GPT-5 mini, and GPT-5-Codex.
+  Please leave your feedback about using OpenAI models in Agentic Duo Chat in this [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/572864).
+
 {{< /alert >}}
 
 #### Assign a default GitLab Duo namespace

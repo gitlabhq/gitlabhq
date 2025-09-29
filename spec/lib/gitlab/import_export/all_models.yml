@@ -715,6 +715,7 @@ project:
 - iterations
 - notes
 - snippets
+- snippet_repositories
 - hooks
 - all_protected_branches
 - protected_branches

@@ -121,7 +121,7 @@ module Ci
       strong_memoize(:expanded_environment_name) do
         # We're using a persisted expanded environment name in order to avoid
         # variable expansion per request.
-        if use_job_environment_for_environment_options? && job_environment&.expanded_environment_name.present?
+        if job_environment&.expanded_environment_name.present?
           job_environment.expanded_environment_name
         elsif metadata&.expanded_environment_name.present?
           metadata.expanded_environment_name
@@ -224,7 +224,7 @@ module Ci
     end
 
     def environment_permanent_metadata
-      if use_job_environment_for_environment_options? && job_environment.present?
+      if job_environment.present?
         job_environment.options
       else
         # TODO: This fallback can be removed when historical job environment
@@ -239,10 +239,6 @@ module Ci
     # retrieve options for historical jobs, use `#environment_permanent_metadata`.
     def environment_processing_metadata
       options&.fetch(:environment, {}) || {}
-    end
-
-    def use_job_environment_for_environment_options?
-      Feature.enabled?(:environment_attributes_from_job_environment, project)
     end
   end
 end
