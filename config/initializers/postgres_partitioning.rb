@@ -44,7 +44,11 @@ Gitlab::Database::Partitioning.register_models(
     MergeRequest::CommitsMetadata,
     WebHookLog,
     MergeRequests::GeneratedRefCommit,
-    MergeRequests::MergeData
+    MergeRequests::MergeData,
+    Gitlab::Database::BackgroundOperation::Worker,
+    Gitlab::Database::BackgroundOperation::Job,
+    Gitlab::Database::BackgroundOperation::WorkerCellLocal,
+    Gitlab::Database::BackgroundOperation::JobCellLocal
   ])
 
 if Gitlab.ee?

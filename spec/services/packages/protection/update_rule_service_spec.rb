@@ -22,7 +22,12 @@ RSpec.describe Packages::Protection::UpdateRuleService, '#execute', feature_cate
   subject(:service_execute) { service.execute }
 
   shared_examples 'a successful service response with side effect' do
-    let(:expected_attributes) { params }
+    let(:expected_attributes) do
+      params.merge(
+        pattern_type: 'wildcard',
+        target_field: 'package_name'
+      )
+    end
 
     it_behaves_like 'returning a success service response' do
       it do
@@ -58,7 +63,12 @@ RSpec.describe Packages::Protection::UpdateRuleService, '#execute', feature_cate
     let(:params) { super().merge!(project_id: 1, unsupported_param: 'unsupported_param_value') }
 
     it_behaves_like 'a successful service response with side effect' do
-      let(:expected_attributes) { params.except(:project_id, :unsupported_param) }
+      let(:expected_attributes) do
+        params.except(:project_id, :unsupported_param).merge(
+          pattern_type: 'wildcard',
+          target_field: 'package_name'
+        )
+      end
     end
   end
 

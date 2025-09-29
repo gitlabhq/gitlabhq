@@ -2462,9 +2462,6 @@ msgstr ""
 msgid "AICatalog|AI Catalog"
 msgstr ""
 
-msgid "AICatalog|AI agents complete specialized tasks."
-msgstr ""
-
 msgid "AICatalog|Add this %{itemType} to a project"
 msgstr ""
 
@@ -2798,7 +2795,13 @@ msgstr ""
 msgid "AICatalog|Tools"
 msgstr ""
 
+msgid "AICatalog|Use agents in flows and with GitLab Duo Chat."
+msgstr ""
+
 msgid "AICatalog|Use agents in your project."
+msgstr ""
+
+msgid "AICatalog|Use agents with GitLab Duo Chat to complete tasks and answer complex questions."
 msgstr ""
 
 msgid "AICatalog|Use flows in your project."
@@ -73804,6 +73807,9 @@ msgstr ""
 msgid "WorkItem|%{invalidWorkItemsList} cannot be added: Cannot assign a non-confidential %{childWorkItemType} to a confidential parent %{parentWorkItemType}. Make the selected %{childWorkItemType} confidential and try again."
 msgstr ""
 
+msgid "WorkItem|%{state} default"
+msgstr ""
+
 msgid "WorkItem|%{usersLength} assignees"
 msgstr ""
 
@@ -74155,6 +74161,9 @@ msgid "WorkItem|Done"
 msgstr ""
 
 msgid "WorkItem|Due"
+msgstr ""
+
+msgid "WorkItem|Duplicate"
 msgstr ""
 
 msgid "WorkItem|Duplicate default"
@@ -74545,6 +74554,9 @@ msgstr ""
 msgid "WorkItem|Only 10 items can be added at a time."
 msgstr ""
 
+msgid "WorkItem|Open"
+msgstr ""
+
 msgid "WorkItem|Open default"
 msgstr ""
 
@@ -74900,6 +74912,9 @@ msgid "WorkItem|This is a %{emailsHelpLinkStart}private email address%{emailsHel
 msgstr ""
 
 msgid "WorkItem|This item is hidden because its author has been banned."
+msgstr ""
+
+msgid "WorkItem|This status is set as the %{state} default. Select a new %{state} default to remove this status."
 msgstr ""
 
 msgid "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it."

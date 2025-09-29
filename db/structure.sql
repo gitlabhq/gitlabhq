@@ -4683,6 +4683,125 @@ CREATE TABLE audit_events (
 )
 PARTITION BY RANGE (created_at);
 
+CREATE TABLE background_operation_jobs (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    worker_id uuid NOT NULL,
+    organization_id bigint NOT NULL,
+    partition bigint DEFAULT 1 NOT NULL,
+    worker_partition bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    started_at timestamp with time zone,
+    finished_at timestamp with time zone,
+    batch_size integer NOT NULL,
+    sub_batch_size integer NOT NULL,
+    pause_ms integer DEFAULT 100 NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    attempts smallint DEFAULT 0 NOT NULL,
+    metrics jsonb DEFAULT '{}'::jsonb NOT NULL,
+    min_cursor jsonb,
+    max_cursor jsonb,
+    CONSTRAINT check_22e75767e4 CHECK (((jsonb_typeof(min_cursor) = 'array'::text) AND (jsonb_typeof(max_cursor) = 'array'::text))),
+    CONSTRAINT check_b922a72749 CHECK ((pause_ms >= 100)),
+    CONSTRAINT check_fc1d4517f5 CHECK ((num_nonnulls(min_cursor, max_cursor) = 2))
+)
+PARTITION BY LIST (partition);
+
+CREATE TABLE background_operation_jobs_cell_local (
+    id bigint NOT NULL,
+    partition bigint DEFAULT 1 NOT NULL,
+    worker_id bigint NOT NULL,
+    worker_partition bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    started_at timestamp with time zone,
+    finished_at timestamp with time zone,
+    batch_size integer NOT NULL,
+    sub_batch_size integer NOT NULL,
+    pause_ms integer DEFAULT 100 NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    attempts smallint DEFAULT 0 NOT NULL,
+    metrics jsonb DEFAULT '{}'::jsonb NOT NULL,
+    min_cursor jsonb,
+    max_cursor jsonb,
+    CONSTRAINT check_00bb39bb33 CHECK ((pause_ms >= 100)),
+    CONSTRAINT check_5b84acc749 CHECK ((num_nonnulls(min_cursor, max_cursor) = 2)),
+    CONSTRAINT check_ebc3302442 CHECK (((jsonb_typeof(min_cursor) = 'array'::text) AND (jsonb_typeof(max_cursor) = 'array'::text)))
+)
+PARTITION BY LIST (partition);
+
+CREATE TABLE background_operation_workers (
+    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    organization_id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    total_tuple_count bigint,
+    partition bigint DEFAULT 1 NOT NULL,
+    started_at timestamp with time zone,
+    on_hold_until timestamp with time zone,
+    created_at timestamp with time zone NOT NULL,
+    finished_at timestamp with time zone,
+    batch_size integer NOT NULL,
+    sub_batch_size integer NOT NULL,
+    pause_ms integer DEFAULT 100 NOT NULL,
+    max_batch_size integer,
+    priority smallint DEFAULT 0 NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    "interval" smallint NOT NULL,
+    job_class_name text NOT NULL,
+    batch_class_name text NOT NULL,
+    table_name text NOT NULL,
+    column_name text NOT NULL,
+    gitlab_schema text NOT NULL,
+    job_arguments jsonb DEFAULT '"[]"'::jsonb,
+    min_cursor jsonb,
+    max_cursor jsonb,
+    next_min_cursor jsonb,
+    CONSTRAINT check_10f672741a CHECK ((char_length(column_name) <= 63)),
+    CONSTRAINT check_510f6260d5 CHECK ((char_length(gitlab_schema) <= 255)),
+    CONSTRAINT check_63fe8b8121 CHECK ((sub_batch_size > 0)),
+    CONSTRAINT check_7f88b7751b CHECK ((char_length(job_class_name) <= 100)),
+    CONSTRAINT check_91cc32fc67 CHECK ((char_length(batch_class_name) <= 100)),
+    CONSTRAINT check_c316362d95 CHECK ((char_length(table_name) <= 63)),
+    CONSTRAINT check_c74b62c410 CHECK ((batch_size >= sub_batch_size)),
+    CONSTRAINT check_e91dfde154 CHECK ((num_nonnulls(min_cursor, max_cursor) = 2)),
+    CONSTRAINT check_f1affe613c CHECK (((jsonb_typeof(min_cursor) = 'array'::text) AND (jsonb_typeof(max_cursor) = 'array'::text)))
+)
+PARTITION BY LIST (partition);
+
+CREATE TABLE background_operation_workers_cell_local (
+    id bigint NOT NULL,
+    total_tuple_count bigint,
+    partition bigint DEFAULT 1 NOT NULL,
+    started_at timestamp with time zone,
+    on_hold_until timestamp with time zone,
+    created_at timestamp with time zone NOT NULL,
+    finished_at timestamp with time zone,
+    batch_size integer NOT NULL,
+    sub_batch_size integer NOT NULL,
+    pause_ms integer DEFAULT 100 NOT NULL,
+    max_batch_size integer,
+    priority smallint DEFAULT 0 NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    "interval" smallint NOT NULL,
+    job_class_name text NOT NULL,
+    batch_class_name text NOT NULL,
+    table_name text NOT NULL,
+    column_name text NOT NULL,
+    gitlab_schema text NOT NULL,
+    job_arguments jsonb DEFAULT '"[]"'::jsonb,
+    min_cursor jsonb,
+    max_cursor jsonb,
+    next_min_cursor jsonb,
+    CONSTRAINT check_1da63db6a8 CHECK ((char_length(table_name) <= 63)),
+    CONSTRAINT check_4cc5ecb4f2 CHECK ((char_length(column_name) <= 63)),
+    CONSTRAINT check_5f184cd88f CHECK ((char_length(gitlab_schema) <= 255)),
+    CONSTRAINT check_9d0c37a905 CHECK ((char_length(batch_class_name) <= 100)),
+    CONSTRAINT check_be878382ae CHECK ((batch_size >= sub_batch_size)),
+    CONSTRAINT check_d94474cbf2 CHECK ((char_length(job_class_name) <= 100)),
+    CONSTRAINT check_e40b641a88 CHECK ((num_nonnulls(min_cursor, max_cursor) = 2)),
+    CONSTRAINT check_f9383a3f2e CHECK ((sub_batch_size > 0)),
+    CONSTRAINT check_f9caba0499 CHECK (((jsonb_typeof(min_cursor) = 'array'::text) AND (jsonb_typeof(max_cursor) = 'array'::text)))
+)
+PARTITION BY LIST (partition);
+
 CREATE TABLE backup_finding_evidences (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
@@ -12364,6 +12483,24 @@ CREATE TABLE aws_roles (
     region text,
     CONSTRAINT check_57adedab55 CHECK ((char_length(region) <= 255))
 );
+
+CREATE SEQUENCE background_operation_jobs_cell_local_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE background_operation_jobs_cell_local_id_seq OWNED BY background_operation_jobs_cell_local.id;
+
+CREATE SEQUENCE background_operation_workers_cell_local_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE background_operation_workers_cell_local_id_seq OWNED BY background_operation_workers_cell_local.id;
 
 CREATE TABLE badges (
     id bigint NOT NULL,
@@ -22065,7 +22202,11 @@ CREATE TABLE packages_protection_rules (
     package_name_pattern text NOT NULL,
     minimum_access_level_for_push smallint,
     minimum_access_level_for_delete smallint,
+    pattern text,
+    pattern_type smallint DEFAULT 0 NOT NULL,
+    target_field smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_520a0596a3 CHECK ((num_nonnulls(minimum_access_level_for_delete, minimum_access_level_for_push) > 0)),
+    CONSTRAINT check_96c7dcb821 CHECK ((char_length(pattern) <= 255)),
     CONSTRAINT check_d2d75d206d CHECK ((char_length(package_name_pattern) <= 255))
 );
 
@@ -27289,6 +27430,7 @@ CREATE TABLE user_preferences (
     project_studio_enabled boolean DEFAULT false NOT NULL,
     merge_request_dashboard_show_drafts boolean DEFAULT true NOT NULL,
     duo_default_namespace_id bigint,
+    policy_advanced_editor boolean DEFAULT false NOT NULL,
     CONSTRAINT check_1d670edc68 CHECK ((time_display_relative IS NOT NULL)),
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_9b50d9f942 CHECK ((char_length(extensions_marketplace_opt_in_url) <= 512)),
@@ -30232,6 +30374,10 @@ ALTER TABLE ONLY automation_rules ALTER COLUMN id SET DEFAULT nextval('automatio
 
 ALTER TABLE ONLY award_emoji ALTER COLUMN id SET DEFAULT nextval('award_emoji_id_seq'::regclass);
 
+ALTER TABLE ONLY background_operation_jobs_cell_local ALTER COLUMN id SET DEFAULT nextval('background_operation_jobs_cell_local_id_seq'::regclass);
+
+ALTER TABLE ONLY background_operation_workers_cell_local ALTER COLUMN id SET DEFAULT nextval('background_operation_workers_cell_local_id_seq'::regclass);
+
 ALTER TABLE ONLY badges ALTER COLUMN id SET DEFAULT nextval('badges_id_seq'::regclass);
 
 ALTER TABLE ONLY batched_background_migration_job_transition_logs ALTER COLUMN id SET DEFAULT nextval('batched_background_migration_job_transition_logs_id_seq'::regclass);
@@ -32679,6 +32825,18 @@ ALTER TABLE ONLY award_emoji
 
 ALTER TABLE ONLY aws_roles
     ADD CONSTRAINT aws_roles_pkey PRIMARY KEY (user_id);
+
+ALTER TABLE ONLY background_operation_jobs_cell_local
+    ADD CONSTRAINT background_operation_jobs_cell_local_pkey PRIMARY KEY (partition, id);
+
+ALTER TABLE ONLY background_operation_jobs
+    ADD CONSTRAINT background_operation_jobs_pkey PRIMARY KEY (partition, id);
+
+ALTER TABLE ONLY background_operation_workers_cell_local
+    ADD CONSTRAINT background_operation_workers_cell_local_pkey PRIMARY KEY (partition, id);
+
+ALTER TABLE ONLY background_operation_workers
+    ADD CONSTRAINT background_operation_workers_pkey PRIMARY KEY (partition, id);
 
 ALTER TABLE ONLY backup_finding_evidences
     ADD CONSTRAINT backup_finding_evidences_pkey PRIMARY KEY (original_record_identifier, date);
@@ -38374,6 +38532,22 @@ CREATE UNIQUE INDEX index_aws_roles_on_role_external_id ON aws_roles USING btree
 
 CREATE UNIQUE INDEX index_aws_roles_on_user_id ON aws_roles USING btree (user_id);
 
+CREATE INDEX index_background_jobs_by_status ON ONLY background_operation_jobs USING btree (status);
+
+CREATE INDEX index_background_operation_jobs_by_created_at ON ONLY background_operation_jobs USING btree (created_at);
+
+CREATE INDEX index_background_operation_jobs_by_organization ON ONLY background_operation_jobs USING btree (organization_id);
+
+CREATE INDEX index_background_operation_workers_by_created_at ON ONLY background_operation_workers USING btree (created_at);
+
+CREATE INDEX index_background_operation_workers_by_organization ON ONLY background_operation_workers USING btree (organization_id);
+
+CREATE INDEX index_background_operation_workers_by_status ON ONLY background_operation_workers USING btree (status);
+
+CREATE INDEX index_background_operation_workers_by_user ON ONLY background_operation_workers USING btree (user_id);
+
+CREATE UNIQUE INDEX index_background_operation_workers_on_unique_configuration ON ONLY background_operation_workers USING btree (partition, organization_id, job_class_name, table_name, column_name, job_arguments);
+
 CREATE INDEX index_backup_finding_evidences_on_fk ON ONLY backup_finding_evidences USING btree (finding_id);
 
 CREATE INDEX index_backup_finding_evidences_on_project_id ON ONLY backup_finding_evidences USING btree (project_id);
@@ -38447,6 +38621,8 @@ CREATE INDEX index_batched_jobs_by_batched_migration_id_and_id ON batched_backgr
 CREATE INDEX index_batched_jobs_on_batched_migration_id_and_status ON batched_background_migration_jobs USING btree (batched_background_migration_id, status);
 
 CREATE UNIQUE INDEX index_batched_migrations_on_gl_schema_and_unique_configuration ON batched_background_migrations USING btree (gitlab_schema, job_class_name, table_name, column_name, job_arguments);
+
+CREATE INDEX index_bj_cell_local_by_status ON ONLY background_operation_jobs_cell_local USING btree (status);
 
 CREATE INDEX index_board_assignees_on_assignee_id ON board_assignees USING btree (assignee_id);
 
@@ -38533,6 +38709,10 @@ CREATE INDEX index_boards_on_iteration_id ON boards USING btree (iteration_id);
 CREATE INDEX index_boards_on_milestone_id ON boards USING btree (milestone_id);
 
 CREATE INDEX index_boards_on_project_id ON boards USING btree (project_id);
+
+CREATE INDEX index_bow_cell_local_by_status ON ONLY background_operation_workers_cell_local USING btree (status);
+
+CREATE UNIQUE INDEX index_bow_cell_local_on_unique_configuration ON ONLY background_operation_workers_cell_local USING btree (partition, job_class_name, table_name, column_name, job_arguments);
 
 CREATE UNIQUE INDEX index_branch_rule_squash_options_on_protected_branch_id ON projects_branch_rules_squash_options USING btree (protected_branch_id);
 

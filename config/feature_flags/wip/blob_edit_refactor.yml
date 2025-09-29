@@ -1,0 +1,10 @@
+---
+name: blob_edit_refactor
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/509968
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205529
+rollout_issue_url:
+milestone: '18.5'
+group: group::source code
+type: wip
+default_enabled: false

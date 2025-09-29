@@ -285,17 +285,16 @@ export default {
     </template>
 
     <div v-else-if="shouldRenderTable">
-      <gl-button
-        v-if="canRenderPipelineButton"
-        block
-        class="gl-mb-3 gl-mt-3 @lg/panel:gl-hidden"
-        variant="confirm"
-        data-testid="run_pipeline_button_mobile"
-        :loading="state.isRunningMergeRequestPipeline"
-        @click="tryRunPipeline"
-      >
-        {{ $options.i18n.runPipelineText }}
-      </gl-button>
+      <div v-if="canRenderPipelineButton" class="gl-flex gl-w-full gl-justify-end gl-px-4 gl-pt-3">
+        <gl-button
+          class="gl-mb-3 gl-mt-3 gl-w-full @md/panel:gl-w-auto @lg/panel:gl-hidden"
+          data-testid="run_pipeline_button_mobile"
+          :loading="state.isRunningMergeRequestPipeline"
+          @click="tryRunPipeline"
+        >
+          {{ $options.i18n.runPipelineText }}
+        </gl-button>
+      </div>
 
       <pipelines-table
         :is-creating-pipeline="state.isRunningMergeRequestPipeline"

@@ -85,6 +85,7 @@ module API
           optional :private_profile, type: Boolean, desc: 'Flag indicating the user has a private profile'
           optional :note, type: String, desc: 'Admin note for this user'
           optional :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
+          optional :policy_advanced_editor, type: Boolean, desc: 'Flag indicating that advanced editor is enabled'
           all_or_none_of :extern_uid, :provider
 
           use :optional_params_ee
@@ -1409,7 +1410,8 @@ module API
         optional :view_diffs_file_by_file, type: Boolean, desc: 'Flag indicating the user sees only one file diff per page'
         optional :show_whitespace_in_diffs, type: Boolean, desc: 'Flag indicating the user sees whitespace changes in diffs'
         optional :pass_user_identities_to_ci_jwt, type: Boolean, desc: 'Flag indicating the user passes their external identities to a CI job as part of a JSON web token.'
-        at_least_one_of :view_diffs_file_by_file, :show_whitespace_in_diffs, :pass_user_identities_to_ci_jwt
+        optional :policy_advanced_editor, type: Boolean, desc: 'Flag indicating that advanced editor is enabled.'
+        at_least_one_of :view_diffs_file_by_file, :show_whitespace_in_diffs, :pass_user_identities_to_ci_jwt, :policy_advanced_editor
       end
       put "preferences", feature_category: :user_profile, urgency: :high do
         authenticate!

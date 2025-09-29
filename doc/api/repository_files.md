@@ -185,10 +185,13 @@ Example response:
 ]
 ```
 
-### Get file metadata only
+### Get file blame metadata only
 
-Use the `HEAD` method to return just file metadata, as in
-[Get file from repository](repository_files.md#get-file-from-repository):
+Use the `HEAD` method to return just file blame metadata.
+
+```plaintext
+HEAD /projects/:id/repository/files/:file_path/blame
+```
 
 ```shell
 curl --head --header "PRIVATE-TOKEN: <your_access_token>" \

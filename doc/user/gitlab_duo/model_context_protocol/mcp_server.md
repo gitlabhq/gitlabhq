@@ -16,22 +16,28 @@ title: GitLab MCP server
 
 {{< history >}}
 
-- Introduced in GitLab 18.3 [with two flags](../../../administration/feature_flags/_index.md) named `mcp_server` and `oauth_dynamic_client_registration`. Disabled by default.
+- Introduced in GitLab 18.3 [with flags](../../../administration/feature_flags/_index.md) named `mcp_server` and `oauth_dynamic_client_registration`. Disabled by default.
 
 {{< /history >}}
 
 {{< alert type="flag" >}}
 
-The availability of this feature is controlled by a feature flag.
+The availability of this feature is controlled by feature flags.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
-The GitLab [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server enables AI tools
-and applications to connect to your GitLab instance securely. After you configure the MCP server,
-AI assistants like Claude Desktop, Cursor, and other MCP-compatible tools can access your GitLab data,
-and perform actions on your behalf.
+{{< alert type="warning" >}}
+
+To provide feedback on this feature, leave a comment on [issue 561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564).
+
+{{< /alert >}}
+
+With the GitLab [Model Context Protocol](https://modelcontextprotocol.io/) (MCP) server,
+you can securely connect AI tools and applications to your GitLab instance.
+AI assistants like Claude Desktop, Cursor, and other MCP-compatible tools
+can then access your GitLab data and perform actions on your behalf.
 
 The MCP server provides a standardized way for AI tools to:
 
@@ -49,6 +55,7 @@ your GitLab MCP server for the first time, it:
 1. Receives an access token for secure API access.
 
 For a click-through demo, see [Duo Agent Platform - MCP server](https://gitlab.navattic.com/gitlab-mcp-server).
+<!-- Demo published on 2025-09-11 -->
 
 ## Connect Cursor to a GitLab MCP server
 
@@ -89,11 +96,11 @@ To configure the GitLab MCP server in Cursor:
    If this does not happen, close and restart Cursor.
 1. In your browser, review and approve the authorization request.
 
-The MCP server is now available within Cursor.
+The MCP server is now available in Cursor.
 
 You can now start a new chat and ask a question about the MCP server version, a GitLab issue, or merge request depending on the [available tools](mcp_server.md#available-tools-and-capabilities).
 
-```markdown
+```plaintext
 What version of the GitLab MCP server am I connected to?
 
 Get details for issue 1 in project gitlab-org/gitlab
@@ -149,7 +156,7 @@ To configure the GitLab MCP server in Claude Desktop:
 
 You can now start a new chat and ask a question about the MCP server version, a GitLab issue, or merge request depending on the [available tools](mcp_server.md#available-tools-and-capabilities).
 
-```markdown
+```plaintext
 What version of the GitLab MCP server am I connected to?
 
 Get details for issue 1 in project gitlab-org/gitlab
@@ -163,15 +170,14 @@ You are responsible for guarding against prompt injection when using these tools
 
 ## Available tools and capabilities
 
-The GitLab MCP server provides these capabilities. The development of this feature is tracked in [epic 18413](https://gitlab.com/groups/gitlab-org/-/epics/18413).
+The GitLab MCP server provides the following capabilities.
+For more information, see [epic 18413](https://gitlab.com/groups/gitlab-org/-/epics/18413).
 
 ### `get_mcp_server_version`
 
 Returns the current version of the GitLab MCP server.
 
-**Parameters**: None
-
-**Example usage in AI tool**:
+Example:
 
 ```plaintext
 What version of the GitLab MCP server am I connected to?
@@ -181,12 +187,12 @@ What version of the GitLab MCP server am I connected to?
 
 Retrieves detailed information about a specific GitLab issue.
 
-**Parameters**:
+| Parameter    | Required | Description |
+|--------------|----------|-------------|
+| `project_id` | Yes      | ID or URL-encoded path of the project |
+| `issue_iid`  | Yes      | Internal ID of the issue |
 
-- `project_id` (required): The ID or URL-encoded path of the project
-- `issue_iid` (required): The internal ID of the issue
-
-**Example usage in AI tool**:
+Example:
 
 ```plaintext
 Get details for issue 42 in project 123
@@ -196,28 +202,29 @@ Get details for issue 42 in project 123
 
 Creates a new issue in a GitLab project.
 
-**Parameters**:
+| Parameter     | Required | Description |
+|---------------|----------|-------------|
+| `project_id`  | Yes      | ID or URL-encoded path of the project |
+| `title`       | Yes      | Title of the issue |
+| `description` | No       | Description of the issue |
 
-- `project_id` (required): The ID or URL-encoded path of the project
-- `title` (required): The title of the issue
-- `description` (optional): The description of the issue
-
-**Example usage in AI tool**:
+Example:
 
 ```plaintext
-Create a new issue titled "Fix login bug" in project 123 with description "Users cannot log in with special characters in password"
+Create a new issue titled "Fix login bug" in project 123 with description
+"Users cannot log in with special characters in password"
 ```
 
 ### `get_merge_request`
 
 Retrieves detailed information about a specific GitLab merge request.
 
-**Parameters**:
+| Parameter           | Required | Description |
+|---------------------|----------|-------------|
+| `project_id`        | Yes      | ID or URL-encoded path of the project |
+| `merge_request_iid` | Yes      | Internal ID of the merge request |
 
-- `project_id` (required): The ID or URL-encoded path of the project
-- `merge_request_iid` (required): The internal ID of the merge request
-
-**Example usage in AI tool**:
+Example:
 
 ```plaintext
 Get details for merge request 15 in project gitlab-org/gitlab
@@ -227,12 +234,12 @@ Get details for merge request 15 in project gitlab-org/gitlab
 
 Retrieves the list of commits in a specific merge request.
 
-**Parameters**:
+| Parameter           | Required | Description |
+|---------------------|----------|-------------|
+| `project_id`        | Yes      | ID or URL-encoded path of the project |
+| `merge_request_iid` | Yes      | Internal ID of the merge request |
 
-- `project_id` (required): The ID or URL-encoded path of the project
-- `merge_request_iid` (required): The internal ID of the merge request
-
-**Example usage in AI tool**:
+Example:
 
 ```plaintext
 Show me all commits in merge request 42 from project 123
@@ -242,12 +249,12 @@ Show me all commits in merge request 42 from project 123
 
 Retrieves the file changes (diffs) for a specific merge request.
 
-**Parameters**:
+| Parameter           | Required | Description |
+|---------------------|----------|-------------|
+| `project_id`        | Yes      | ID or URL-encoded path of the project |
+| `merge_request_iid` | Yes      | Internal ID of the merge request |
 
-- `project_id` (required): The ID or URL-encoded path of the project
-- `merge_request_iid` (required): The internal ID of the merge request
-
-**Example usage in AI tool**:
+Example:
 
 ```plaintext
 What files were changed in merge request 25 in the gitlab project?
@@ -257,12 +264,12 @@ What files were changed in merge request 25 in the gitlab project?
 
 Retrieves the jobs for a specific CI/CD pipeline.
 
-**Parameters**:
+| Parameter     | Required | Description |
+|---------------|----------|-------------|
+| `project_id`  | Yes      | ID or URL-encoded path of the project |
+| `pipeline_id` | Yes      | ID of the pipeline |
 
-- `project_id` (required): The ID or URL-encoded path of the project
-- `pipeline_id` (required): The ID of the pipeline
-
-**Example usage in AI tool**:
+Example:
 
 ```plaintext
 Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
@@ -272,12 +279,12 @@ Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
 
 Retrieves the pipelines for a specific merge request.
 
-**Parameters**:
+| Parameter           | Required | Description |
+|---------------------|----------|-------------|
+| `project_id`        | Yes      | ID or URL-encoded path of the project |
+| `merge_request_iid` | Yes      | Internal ID of the merge request |
 
-- `project_id` (required): The ID or URL-encoded path of the project
-- `merge_request_iid` (required): The internal ID of the merge request
-
-**Example usage in AI tool**:
+Example:
 
 ```plaintext
 Show me all pipelines for merge request 42 in project gitlab-org/gitlab
@@ -285,14 +292,14 @@ Show me all pipelines for merge request 42 in project gitlab-org/gitlab
 
 ### `gitlab_search`
 
-Performs a search on a term across the entire GitLab instance using the Search API.
+Searches for a term across the entire GitLab instance with the search API.
 
-Parameters:
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `search`  | Yes      | Search term |
+| `scope`   | Yes      | Search scope (for example, `issues`, `merge_requests`, or `projects`) |
 
-- `search` (required): The expression to search for
-- `scope` (required): The search scope (for example, `issues`, `merge_requests`, `projects`)
-
-**Example usage in AI tool**:
+Example:
 
 ```plaintext
 Search issues for "flaky test" across GitLab
@@ -302,23 +309,19 @@ Search issues for "flaky test" across GitLab
 
 Creates a merge request in a project.
 
-**Parameters**:
+| Parameter              | Required | Description |
+|------------------------|----------|-------------|
+| `project_id`           | Yes      | ID or URL-encoded path of the project |
+| `source_branch`        | Yes      | Name of the branch to merge from |
+| `target_branch`        | Yes      | Name of the branch to merge into |
+| `title`                | Yes      | Title of the merge request |
+| `description`          | No       | Description text |
+| `remove_source_branch` | No       | Delete the source branch on merge (default is `false`) |
+| `squash`               | No       | Squash commits on merge (default is `false`) |
 
-- `project_id` (required): The ID or URL-encoded path of the project
-- `source_branch` (required): Name of the branch to merge from
-- `target_branch` (required): Name of the branch to merge into
-- `title` (required): Title of the merge request
-- `description` (optional): Description text
-- `remove_source_branch` (optional): Remove source branch on merge (default: false)
-- `squash` (optional): Squash commits on merge (default: false)
-
-**Example usage in AI tool**:
+Example:
 
 ```plaintext
 Create a merge request in project gitlab-org/gitlab titled "Bug fix broken specs"
-from branch "fix/specs-broken" into "master" and enable squash.
+from branch "fix/specs-broken" into "master" and enable squash
 ```
-
-## Feedback
-
-This feature is experimental. Your feedback is valuable in helping us to improve it. Share your experiences, suggestions, or issues in [issue 561564](https://gitlab.com/gitlab-org/gitlab/-/issues/561564).

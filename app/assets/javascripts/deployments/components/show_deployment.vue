@@ -144,7 +144,7 @@ export default {
         :loading="isLoading"
         :deployment="deployment"
         :environment="environment"
-        class="gl-w-1/5"
+        class="gl-w-1/5 gl-shrink-0"
       />
     </div>
   </div>

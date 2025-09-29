@@ -42,6 +42,17 @@ approval_merge_request_rules:
   - table: approval_policy_rules
     column: approval_policy_rule_id
     on_delete: async_nullify
+background_operation_jobs:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
+background_operation_workers:
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
+  - table: users
+    column: user_id
+    on_delete: async_delete
 backup_finding_evidences:
   - table: projects
     column: project_id

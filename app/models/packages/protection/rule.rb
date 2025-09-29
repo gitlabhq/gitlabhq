@@ -3,29 +3,42 @@
 module Packages
   module Protection
     class Rule < ApplicationRecord
+      NPM_PACKAGE_NAME_FORMAT = {
+        with: Gitlab::Regex::Packages::Protection::Rules.protection_rules_npm_package_name_pattern_regex,
+        message: ->(_object, _data) { _('should be a valid NPM package name with optional wildcard characters.') }
+      }.freeze
+      PYPI_PACKAGE_NAME_FORMAT = {
+        with: Gitlab::Regex::Packages::Protection::Rules.protection_rules_pypi_package_name_pattern_regex,
+        message: ->(_object, _data) { _('should be a valid PyPI package name with optional wildcard characters.') }
+      }.freeze
+
       enum :package_type, Packages::Package.package_types.slice(:conan, :generic, :helm, :maven, :npm, :nuget, :pypi)
       enum :minimum_access_level_for_delete, Gitlab::Access.sym_options_with_admin.slice(:owner, :admin),
         prefix: :minimum_access_level_for_delete
       enum :minimum_access_level_for_push, Gitlab::Access.sym_options_with_admin.slice(:maintainer, :owner, :admin),
         prefix: :minimum_access_level_for_push
+      enum :pattern_type, { wildcard: 0 }, prefix: :pattern_type
+      enum :target_field, { package_name: 0 }, prefix: :target_field
 
       belongs_to :project, inverse_of: :package_protection_rules
 
       validates :package_name_pattern, presence: true, uniqueness: { scope: [:project_id, :package_type] },
         length: { maximum: 255 }
-      validates :package_name_pattern,
-        format: {
-          with: Gitlab::Regex::Packages::Protection::Rules.protection_rules_npm_package_name_pattern_regex,
-          message: ->(_object, _data) { _('should be a valid NPM package name with optional wildcard characters.') }
-        },
-        if: :npm?
-      validates :package_name_pattern,
-        format: {
-          with: Gitlab::Regex::Packages::Protection::Rules.protection_rules_pypi_package_name_pattern_regex,
-          message: ->(_object, _data) { _('should be a valid PyPI package name with optional wildcard characters.') }
-        },
-        if: :pypi?
+
       validates :package_type, presence: true
+      validates :pattern, allow_blank: true, length: { maximum: 255 }
+
+      # npm specific validations
+      validates :package_name_pattern, format: NPM_PACKAGE_NAME_FORMAT, if: :npm?
+      validates :pattern, format: NPM_PACKAGE_NAME_FORMAT, allow_blank: true, if: -> {
+        npm? && target_field_package_name? && pattern_type_wildcard?
+      }
+
+      # pypi specific validations
+      validates :package_name_pattern, format: PYPI_PACKAGE_NAME_FORMAT, if: :pypi?
+      validates :pattern, format: PYPI_PACKAGE_NAME_FORMAT, allow_blank: true, if: -> {
+        pypi? && target_field_package_name? && pattern_type_wildcard?
+      }
 
       validate :at_least_one_minimum_access_level_must_be_present
 

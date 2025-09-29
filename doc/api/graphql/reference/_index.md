@@ -46905,6 +46905,7 @@ Type of AI usage event.
 | Value | Description |
 | ----- | ----------- |
 | <a id="aiusageeventtypeagent_platform_session_created"></a>`AGENT_PLATFORM_SESSION_CREATED` | Agent platform session was created. |
+| <a id="aiusageeventtypeagent_platform_session_finished"></a>`AGENT_PLATFORM_SESSION_FINISHED` | Agent platform session was finished. |
 | <a id="aiusageeventtypeagent_platform_session_started"></a>`AGENT_PLATFORM_SESSION_STARTED` | Agent platform session was started. |
 | <a id="aiusageeventtypecode_suggestions_requested"></a>`CODE_SUGGESTIONS_REQUESTED` | Code Suggestion was requested. Old data only. |
 | <a id="aiusageeventtypecode_suggestion_accepted_in_ide"></a>`CODE_SUGGESTION_ACCEPTED_IN_IDE` | Code Suggestion was accepted in IDE. |

@@ -328,6 +328,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "jira_connect_installations" => "https://gitlab.com/gitlab-org/gitlab/-/issues/524682",
       "system_note_metadata" => "https://gitlab.com/gitlab-org/gitlab/-/issues/571215"
     }
+
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }
 
     columns_to_check = organization_id_columns.reject { |column| work_in_progress[column[0]] }

@@ -1,6 +1,6 @@
 <script>
 import { GlLink, GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import ShowMore from '~/vue_shared/components/show_more.vue';
 import AssigneeAvatarLink from '~/sidebar/components/assignees/assignee_avatar_link.vue';
 import { __, s__ } from '~/locale';
@@ -38,7 +38,7 @@ export default {
   },
   data() {
     return {
-      isDesktop: GlBreakpointInstance.isDesktop(),
+      isDesktop: PanelBreakpointInstance.isDesktop(),
       isExpanded: false,
     };
   },
@@ -81,14 +81,14 @@ export default {
     },
   },
   mounted() {
-    window.addEventListener('resize', this.handleWindowResize);
+    PanelBreakpointInstance.addResizeListener(this.handleWindowResize);
   },
   beforeDestroy() {
-    window.removeEventListener('resize', this.handleWindowResize);
+    PanelBreakpointInstance.removeResizeListener(this.handleWindowResize);
   },
   methods: {
     handleWindowResize() {
-      this.isDesktop = GlBreakpointInstance.isDesktop();
+      this.isDesktop = PanelBreakpointInstance.isDesktop();
       if (this.isDesktop) this.isExpanded = false;
     },
     toggleSidebar() {
@@ -121,9 +121,10 @@ export default {
     data-testid="deployment-sidebar"
   >
     <gl-button
+      v-if="isMobile"
       v-gl-tooltip.hover.left
       size="medium"
-      class="gl-ml-auto gl-flex @lg/panel:gl-hidden"
+      class="gl-ml-auto gl-flex"
       data-testid="deployment-sidebar-toggle-button"
       :category="toggleCategory"
       :icon="toggleIcon"

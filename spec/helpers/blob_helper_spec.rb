@@ -508,7 +508,10 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
           empty_repo: 'false',
           blob_name: blob.name,
           branch_allows_collaboration: 'false',
-          last_commit_sha: '782426692977b2cedb4452ee6501a404410f9b00'
+          last_commit_sha: '782426692977b2cedb4452ee6501a404410f9b00',
+          project_id: project.id,
+          project_path: project.full_path,
+          new_merge_request_path: project_new_merge_request_path(project)
         })
       end
 
@@ -522,7 +525,10 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
           can_push_code: 'true',
           can_push_to_branch: 'true',
           empty_repo: 'false',
-          blob_name: nil
+          blob_name: nil,
+          project_id: project.id,
+          project_path: project.full_path,
+          new_merge_request_path: project_new_merge_request_path(project)
         })
       end
     end

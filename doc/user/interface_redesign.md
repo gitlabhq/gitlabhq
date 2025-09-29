@@ -82,10 +82,6 @@ The following buttons are in the upper-right corner:
 - **Admin** (administrators only)
 - Your avatar and its options
 
-The buttons for your issues, merge requests, and to-do items have indicator dots instead of numbers.
-In the previous UI, the number indicators are sometimes incorrect, for example if you get signed out
-of your SSO session.
-
 ![Top bar buttons with the new UI.](img/paneled_view_top_buttons_v18_5.png)
 
 ### GitLab Duo is always accessible

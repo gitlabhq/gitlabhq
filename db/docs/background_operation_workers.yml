@@ -1,0 +1,15 @@
+---
+table_name: background_operation_workers
+classes:
+- Gitlab::Database::BackgroundOperation::Worker
+feature_categories:
+- database
+description: Stores information about the large data operations performed async. See
+  https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/batched_background_operations/
+  for more details.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203234
+milestone: '18.4'
+gitlab_schema: gitlab_shared_org
+sharding_key:
+  organization_id: organizations
+table_size: small

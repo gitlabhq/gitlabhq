@@ -1,8 +1,8 @@
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import { nextTick } from 'vue';
 import mockDeploymentFixture from 'test_fixtures/graphql/deployments/graphql/queries/deployment.query.graphql.json';
 import mockEnvironmentFixture from 'test_fixtures/graphql/deployments/graphql/queries/environment.query.graphql.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import ShowMore from '~/vue_shared/components/show_more.vue';
 import DeploymentAside from '~/deployments/components/deployment_aside.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -179,17 +179,16 @@ describe('~/deployments/components/deployment_aside.vue', () => {
       createComponent();
     });
 
-    it('is exist', () => {
+    it('does not exist on desktop', () => {
       const button = findSidebarToggleButton();
 
-      expect(button.exists()).toBe(true);
-      expect(button.classes()).toContain('@lg/panel:gl-hidden');
+      expect(button.exists()).toBe(false);
     });
 
     describe('on mobile', () => {
       describe('when the sidebar is collapsed', () => {
         beforeEach(() => {
-          jest.spyOn(GlBreakpointInstance, 'isDesktop').mockReturnValue(false);
+          jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(false);
 
           createComponent();
         });
@@ -222,7 +221,7 @@ describe('~/deployments/components/deployment_aside.vue', () => {
         let button;
 
         beforeEach(async () => {
-          jest.spyOn(GlBreakpointInstance, 'isDesktop').mockReturnValue(false);
+          jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(false);
 
           createComponent();
 
@@ -269,7 +268,7 @@ describe('~/deployments/components/deployment_aside.vue', () => {
       let button;
 
       beforeEach(async () => {
-        jest.spyOn(GlBreakpointInstance, 'isDesktop').mockReturnValue(false);
+        jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(false);
 
         createComponent();
 
@@ -331,7 +330,7 @@ describe('~/deployments/components/deployment_aside.vue', () => {
 
     describe('on mobile', () => {
       beforeEach(() => {
-        jest.spyOn(GlBreakpointInstance, 'isDesktop').mockReturnValue(false);
+        jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(false);
       });
 
       it('hides the sidebar items by default', () => {
@@ -374,7 +373,7 @@ describe('~/deployments/components/deployment_aside.vue', () => {
 
     describe('on mobile', () => {
       it('has correct CSS classes', async () => {
-        jest.spyOn(GlBreakpointInstance, 'isDesktop').mockReturnValue(false);
+        jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(false);
 
         createComponent();
 
@@ -407,7 +406,7 @@ describe('~/deployments/components/deployment_aside.vue', () => {
 
     describe('on mobile', () => {
       it('has correct CSS classes', async () => {
-        jest.spyOn(GlBreakpointInstance, 'isDesktop').mockReturnValue(false);
+        jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(false);
 
         createComponent();
 
@@ -427,7 +426,7 @@ describe('~/deployments/components/deployment_aside.vue', () => {
 
   describe('on window resize after transition from mobile to desktop', () => {
     beforeEach(() => {
-      jest.spyOn(GlBreakpointInstance, 'isDesktop').mockReturnValue(false);
+      jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(false);
 
       createComponent();
     });
@@ -437,7 +436,7 @@ describe('~/deployments/components/deployment_aside.vue', () => {
 
       expect(sidebarItems.exists()).toBe(false);
 
-      jest.spyOn(GlBreakpointInstance, 'isDesktop').mockReturnValue(true);
+      jest.spyOn(PanelBreakpointInstance, 'isDesktop').mockReturnValue(true);
       window.dispatchEvent(new Event('resize'));
       await nextTick();
 

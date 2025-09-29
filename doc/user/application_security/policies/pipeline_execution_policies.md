@@ -838,27 +838,75 @@ pipeline_execution_policy:
 
 ### Customize enforced jobs based on project variables
 
-You can customize enforced jobs, based on the presence of a project variable. In this example,
-the value of `CS_IMAGE` is defined in the policy as `alpine:latest`. However, if the project
-also defines the value of `PROJECT_CS_IMAGE`, that value is used instead. The CI/CD variable must be a
-predefined project variable, not defined in the project's `.gitlab-ci.yml` file.
+Pipeline execution policies adapt their behavior based on project-specific variables.
+You can create flexible policies that provide sensible defaults while allowing individual
+projects to customize certain aspects of the enforced jobs.
+
+#### Variable evaluation
+
+Rules in pipeline execution policies (such as `if: $PROJECT_CS_IMAGE`) are evaluated during policy execution, not based on the project's context. This means:
+
+- Project variables are available in the policy using their standard names (for example, `$PROJECT_CS_IMAGE`).
+- Project variables can take precedence over the policy-defined variables.
+- The evaluation on which variable to use happens when GitLab constructs the policy pipeline.
+
+#### Variable naming patterns
+
+When you create customizable policies, follow these naming conventions:
+
+- Policy variables: Use standard names (for example, `CS_IMAGE`) for default values.
+- Project override variables: Use descriptive prefixes (for example, `PROJECT_CS_IMAGE`) to clearly indicate their purpose.
+
+This pattern prevents naming conflicts and makes the intent clear.
+
+#### Example: Container scanning with customizable image
+
+This example shows how to create a policy that uses a default container image but allows projects to specify their own image:
 
 ```yaml
 variables:
   CS_ANALYZER_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/security-products/container-scanning:8"
-  CS_IMAGE: alpine:latest
+  CS_IMAGE: alpine:latest  # Default fallback value
 
 policy::container-security:
   stage: .pipeline-policy-pre
   rules:
-    - if: $PROJECT_CS_IMAGE
+    - if: $PROJECT_CS_IMAGE  # Check if project defined a custom image
       variables:
-        CS_IMAGE: $PROJECT_CS_IMAGE
-    - when: always
+        CS_IMAGE: $PROJECT_CS_IMAGE  # Use project's custom image
+    - when: always  # Always run the job (with default or custom image)
   script:
     - echo "CS_ANALYZER_IMAGE:$CS_ANALYZER_IMAGE"
     - echo "CS_IMAGE:$CS_IMAGE"
 ```
+
+How this works:
+
+1. Default behavior: If no `PROJECT_CS_IMAGE` is defined in the project, `CS_IMAGE` remains `alpine:latest`.
+1. Custom behavior: If a project defines `PROJECT_CS_IMAGE`, that value overrides `CS_IMAGE`.
+1. Rule evaluation: The `if: $PROJECT_CS_IMAGE` condition is evaluated in the policy context and can access project variables.
+1. Variable precedence: The policy's variable assignment takes precedence over the default value.
+
+To customize the container image, projects must define `PROJECT_CS_IMAGE` as a [project variable](../../../ci/variables/_index.md#for-a-project), not specify it in the `.gitlab-ci.yml` file.
+
+#### Summary of variable considerations
+
+Variable sources:
+
+- Project variables must be defined in the project's CI/CD settings, not in `.gitlab-ci.yml`.
+- Policies can also access group variables and instance variables using their standard names.
+- Policy variables take precedence over project variables when both are defined with the same name.
+
+Rule evaluation:
+
+- All `rules:` conditions in pipeline execution policies are evaluated when the policy executes. This means policies can access and react to project-specific variables.
+- The evaluation happens during pipeline construction, before any jobs execute.
+
+Best practices:
+
+- Use descriptive variable names with prefixes (for example, `PROJECT_*`) for project overrides.
+- Always provide sensible defaults in the policy.
+- Document the available customization variables for your users.
 
 ### Customize enforced jobs using `.gitlab-ci.yml` and artifacts
 
