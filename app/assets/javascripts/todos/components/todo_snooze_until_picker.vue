@@ -131,6 +131,7 @@ export default {
       data-testid="snooze-dropdown"
       icon="clock"
       placement="bottom-end"
+      size="small"
       text-sr-only
       no-caret
       fluid-width
@@ -143,7 +144,7 @@ export default {
             <div>
               {{ item.text }}
             </div>
-            <div class="gl-text-right gl-text-secondary">{{ item.formattedDate }}</div>
+            <div class="gl-text-right gl-text-subtle">{{ item.formattedDate }}</div>
           </div>
         </template>
       </gl-disclosure-dropdown-group>

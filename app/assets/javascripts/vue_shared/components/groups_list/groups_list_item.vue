@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlBadge, GlTooltipDirective } from '@gitlab/ui';
+import { GlIcon, GlBadge, GlTooltip } from '@gitlab/ui';
 
 import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
@@ -25,13 +25,11 @@ export default {
     ListItemStat,
     GlIcon,
     GlBadge,
+    GlTooltip,
     GroupListItemActions,
     ListItemInactiveBadge,
     GroupsListItemPlanBadge: () =>
       import('ee_component/vue_shared/components/groups_list/groups_list_item_plan_badge.vue'),
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
   },
   props: {
     group: {
@@ -71,6 +69,9 @@ export default {
     },
     visibilityTooltip() {
       return GROUP_VISIBILITY_TYPE[this.visibility];
+    },
+    visibilityTooltipTarget() {
+      return this.$refs?.visibilityIcon?.$el;
     },
     accessLevel() {
       return this.group.accessLevel?.integerValue;
@@ -136,6 +137,9 @@ export default {
     refetch() {
       this.$emit('refetch');
     },
+    onVisibilityTooltipShown() {
+      this.$emit('hover-visibility', this.visibility);
+    },
   },
 };
 </script>
@@ -149,17 +153,18 @@ export default {
     :list-item-class="listItemClass"
     :timestamp-type="timestampType"
     :data-testid="dataTestid"
+    @click-avatar="$emit('click-avatar')"
   >
     <template #children-toggle>
       <slot name="children-toggle"></slot>
     </template>
     <template #avatar-meta>
-      <gl-icon
-        v-if="visibility"
-        v-gl-tooltip="visibilityTooltip"
-        :name="visibilityIcon"
-        variant="subtle"
-      />
+      <template v-if="visibility">
+        <gl-icon ref="visibilityIcon" :name="visibilityIcon" variant="subtle" />
+        <gl-tooltip :target="() => visibilityTooltipTarget" @shown="onVisibilityTooltipShown">{{
+          visibilityTooltip
+        }}</gl-tooltip>
+      </template>
       <gl-badge v-if="shouldShowAccessLevel" class="gl-block" data-testid="user-access-role">{{
         accessLevelLabel
       }}</gl-badge>
@@ -175,6 +180,7 @@ export default {
         icon-name="subgroup"
         :stat="descendantGroupsCount"
         data-testid="subgroups-count"
+        @hover="$emit('hover-stat', 'subgroups-count')"
       />
       <list-item-stat
         v-if="showProjectsCount"
@@ -182,6 +188,7 @@ export default {
         icon-name="project"
         :stat="projectsCount"
         data-testid="projects-count"
+        @hover="$emit('hover-stat', 'projects-count')"
       />
       <list-item-stat
         v-if="showGroupMembersCount"
@@ -189,6 +196,7 @@ export default {
         icon-name="users"
         :stat="groupMembersCount"
         data-testid="members-count"
+        @hover="$emit('hover-stat', 'members-count')"
       />
     </template>
 

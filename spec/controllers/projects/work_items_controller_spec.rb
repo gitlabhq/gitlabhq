@@ -152,14 +152,6 @@ RSpec.describe Projects::WorkItemsController, feature_category: :team_planning d
           end
         end
       end
-
-      context 'when feature is not available' do
-        before do
-          stub_feature_flags(work_items_project_issues_list: false)
-        end
-
-        it_behaves_like 'response with 404 status'
-      end
     end
 
     context 'with unauthorised user' do

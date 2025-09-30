@@ -1,17 +1,12 @@
 import MockAdapter from 'axios-mock-adapter';
-import { GlAvatarLabeled, GlIcon, GlBadge } from '@gitlab/ui';
+import { GlAvatarLabeled, GlIcon, GlBadge, GlTooltip } from '@gitlab/ui';
+import { stubComponent } from 'helpers/stub_component';
 import GroupsListItemPlanBadge from 'ee_component/vue_shared/components/groups_list/groups_list_item_plan_badge.vue';
 import axios from '~/lib/utils/axios_utils';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import GroupsListItem from '~/vue_shared/components/groups_list/groups_list_item.vue';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ListItemInactiveBadge from '~/vue_shared/components/resource_lists/list_item_inactive_badge.vue';
 import GroupListItemActions from '~/vue_shared/components/groups_list/group_list_item_actions.vue';
-import {
-  VISIBILITY_TYPE_ICON,
-  VISIBILITY_LEVEL_PUBLIC_STRING,
-  GROUP_VISIBILITY_TYPE,
-} from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import {
@@ -33,13 +28,11 @@ describe('GroupsListItem', () => {
   const createComponent = ({ propsData = {} } = {}) => {
     wrapper = mountExtended(GroupsListItem, {
       propsData: { ...defaultPropsData, ...propsData },
-      directives: {
-        GlTooltip: createMockDirective('gl-tooltip'),
-      },
       scopedSlots: {
         'children-toggle': '<div data-testid="children-toggle"></div>',
         children: '<div data-testid="children"></div>',
       },
+      stubs: { GlTooltip: stubComponent(GlTooltip) },
     });
   };
 
@@ -49,12 +42,16 @@ describe('GroupsListItem', () => {
   const findGroupListItemActions = () => wrapper.findComponent(GroupListItemActions);
   const findAccessLevelBadge = () => wrapper.findByTestId('user-access-role');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
-  const findSubgroupCount = () => wrapper.findByTestId('subgroups-count');
+  const findSubgroupsCount = () => wrapper.findByTestId('subgroups-count');
   const findProjectsCount = () => wrapper.findByTestId('projects-count');
   const findMembersCount = () => wrapper.findByTestId('members-count');
   const findStorageSize = () => wrapper.findByTestId('storage-size');
 
   const findInactiveBadge = () => wrapper.findComponent(ListItemInactiveBadge);
+  const findTooltipByTarget = (target) =>
+    wrapper
+      .findAllComponents(GlTooltip)
+      .wrappers.find((tooltip) => tooltip.props('target')() === target.element);
 
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
@@ -112,31 +109,32 @@ describe('GroupsListItem', () => {
     });
   });
 
-  it('renders visibility icon with tooltip', () => {
+  it('renders subgroups count', () => {
     createComponent();
 
-    const icon = findAvatarLabeled().findComponent(GlIcon);
-    const tooltip = getBinding(icon.element, 'gl-tooltip');
-
-    expect(icon.props('name')).toBe(VISIBILITY_TYPE_ICON[VISIBILITY_LEVEL_PUBLIC_STRING]);
-    expect(tooltip.value).toBe(GROUP_VISIBILITY_TYPE[VISIBILITY_LEVEL_PUBLIC_STRING]);
-  });
-
-  it('renders subgroup count', () => {
-    createComponent();
-
-    expect(findSubgroupCount().props()).toMatchObject({
+    expect(findSubgroupsCount().props()).toMatchObject({
       tooltipText: 'Subgroups',
       iconName: 'subgroup',
       stat: group.descendantGroupsCount.toString(),
     });
   });
 
-  describe('when subgroup count is not available', () => {
+  describe('when subgroups count is hovered', () => {
+    beforeEach(() => {
+      createComponent();
+      findSubgroupsCount().vm.$emit('hover');
+    });
+
+    it('emits hover-stat', () => {
+      expect(wrapper.emitted('hover-stat')).toEqual([['subgroups-count']]);
+    });
+  });
+
+  describe('when subgroups count is not available', () => {
     it.each([undefined, null])('does not render subgroup count', (descendantGroupsCount) => {
       createComponent({ propsData: { group: { ...group, descendantGroupsCount } } });
 
-      expect(findSubgroupCount().exists()).toBe(false);
+      expect(findSubgroupsCount().exists()).toBe(false);
     });
   });
 
@@ -147,6 +145,17 @@ describe('GroupsListItem', () => {
       tooltipText: 'Projects',
       iconName: 'project',
       stat: group.projectsCount.toString(),
+    });
+  });
+
+  describe('when projects count is hovered', () => {
+    beforeEach(() => {
+      createComponent();
+      findProjectsCount().vm.$emit('hover');
+    });
+
+    it('emits hover-stat', () => {
+      expect(wrapper.emitted('hover-stat')).toEqual([['projects-count']]);
     });
   });
 
@@ -168,12 +177,44 @@ describe('GroupsListItem', () => {
     });
   });
 
+  describe('when members count is hovered', () => {
+    beforeEach(() => {
+      createComponent();
+      findMembersCount().vm.$emit('hover');
+    });
+
+    it('emits hover-stat', () => {
+      expect(wrapper.emitted('hover-stat')).toEqual([['members-count']]);
+    });
+  });
+
   describe('when members count is not available', () => {
     it.each([undefined, null])('does not render members count', (groupMembersCount) => {
       createComponent({ propsData: { group: { ...group, groupMembersCount } } });
 
       expect(findMembersCount().exists()).toBe(false);
     });
+  });
+
+  it('renders visibility icon with tooltip', () => {
+    createComponent();
+
+    const icon = findAvatarLabeled().findComponent(GlIcon);
+    const tooltip = findTooltipByTarget(icon);
+
+    expect(icon.props('name')).toBe('earth');
+    expect(tooltip.text()).toBe(
+      'Public - The group and any public projects can be viewed without any authentication.',
+    );
+  });
+
+  it('emits hover-visibility event when visibility icon tooltip is shown', () => {
+    createComponent();
+
+    const icon = findAvatarLabeled().findComponent(GlIcon);
+    findTooltipByTarget(icon).vm.$emit('shown');
+
+    expect(wrapper.emitted('hover-visibility')).toEqual([[group.visibility]]);
   });
 
   describe('when visibility is not provided', () => {

@@ -74,6 +74,7 @@ describe('TabView', () => {
       clickStat: 'click_stat_on_your_work_projects',
       hoverStat: 'hover_stat_on_your_work_projects',
       hoverVisibility: 'hover_visibility_icon_on_your_work_projects',
+      clickItem: 'click_group_on_your_work_groups',
       clickItemAfterFilter: 'click_project_after_filter_on_your_work_projects',
       clickTopic: 'click_topic_on_your_work_projects',
     },
@@ -614,7 +615,7 @@ describe('TabView', () => {
   describe('event tracking', () => {
     let trackEventSpy;
 
-    beforeEach(async () => {
+    const setup = async () => {
       createComponent({
         handlers: [
           [PERSONAL_TAB.query, jest.fn().mockResolvedValue(personalProjectsGraphQlResponse)],
@@ -623,10 +624,11 @@ describe('TabView', () => {
       });
       await waitForPromises();
       trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
-    });
+    };
 
     describe('when visibility is hovered', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
+        await setup();
         findProjectsList().vm.$emit('hover-visibility', 'private');
       });
 
@@ -640,7 +642,8 @@ describe('TabView', () => {
     });
 
     describe('when stat is hovered', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
+        await setup();
         findProjectsList().vm.$emit('hover-stat', 'stars-count');
       });
 
@@ -654,7 +657,8 @@ describe('TabView', () => {
     });
 
     describe('when stat is clicked', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
+        await setup();
         findProjectsList().vm.$emit('click-stat', 'stars-count');
       });
 
@@ -668,7 +672,8 @@ describe('TabView', () => {
     });
 
     describe('when topic is clicked', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
+        await setup();
         findProjectsList().vm.$emit('click-topic');
       });
 
@@ -681,12 +686,23 @@ describe('TabView', () => {
       });
     });
 
-    describe('when avatar is clicked', () => {
-      beforeEach(() => {
+    describe('when avatar is clicked with filter', () => {
+      beforeEach(async () => {
+        await setup();
         findProjectsList().vm.$emit('click-avatar');
       });
 
-      it('tracks event', () => {
+      it('tracks click item event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          defaultPropsData.eventTracking.clickItem,
+          {
+            label: PERSONAL_TAB.value,
+          },
+          undefined,
+        );
+      });
+
+      it('tracks click item after filter event', () => {
         expect(trackEventSpy).toHaveBeenCalledWith(
           defaultPropsData.eventTracking.clickItemAfterFilter,
           {
@@ -698,6 +714,36 @@ describe('TabView', () => {
             }),
           },
           undefined,
+        );
+      });
+    });
+
+    describe('when avatar is clicked without filter', () => {
+      beforeEach(async () => {
+        createComponent({
+          handlers: [
+            [PERSONAL_TAB.query, jest.fn().mockResolvedValue(personalProjectsGraphQlResponse)],
+          ],
+          propsData: { tab: PERSONAL_TAB, filters: {}, search: '' },
+        });
+        await waitForPromises();
+        trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
+        findProjectsList().vm.$emit('click-avatar');
+      });
+
+      it('tracks click item event', () => {
+        expect(trackEventSpy).toHaveBeenCalledWith(
+          defaultPropsData.eventTracking.clickItem,
+          {
+            label: PERSONAL_TAB.value,
+          },
+          undefined,
+        );
+      });
+
+      it('does not track click item after filter event', () => {
+        expect(trackEventSpy).not.toHaveBeenCalledWith(
+          defaultPropsData.eventTracking.clickItemAfterFilter,
         );
       });
     });

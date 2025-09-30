@@ -3420,19 +3420,21 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe '#has_codequality_reports?' do
     subject { merge_request.has_codequality_reports? }
 
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     context 'when head pipeline has a codequality report' do
-      let(:merge_request) { create(:merge_request, :with_codequality_reports, source_project: project) }
+      let_it_be(:merge_request) { create(:merge_request, :with_codequality_reports, source_project: project) }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when head pipeline does not have a codequality report' do
-      let(:merge_request) { create(:merge_request, source_project: project) }
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
       it { is_expected.to be_falsey }
     end
+
+    it_behaves_like 'reports in child pipelines', :codequality_reports
   end
 
   describe '#has_terraform_reports?' do

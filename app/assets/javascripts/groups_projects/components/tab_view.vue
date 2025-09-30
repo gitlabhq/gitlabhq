@@ -288,6 +288,12 @@ export default {
       this.$emit('offset-page-change', page);
     },
     onClickAvatar() {
+      if (this.eventTracking?.clickItem) {
+        this.trackEvent(this.eventTracking.clickItem, {
+          label: this.tab.value,
+        });
+      }
+
       if (!this.eventTracking?.clickItemAfterFilter) {
         return;
       }

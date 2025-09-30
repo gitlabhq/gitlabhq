@@ -38,7 +38,8 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     deployment_rejected: 'This deployment job was rejected.',
     ip_restriction_failure: "This job could not be executed because group IP address restrictions are enabled, and the runner's IP address is not in the allowed range.",
     failed_outdated_deployment_job: 'The deployment job is older than the latest deployment, and therefore failed.',
-    reached_downstream_pipeline_trigger_rate_limit: 'Too many downstream pipelines triggered in the last minute. Try again later.'
+    reached_downstream_pipeline_trigger_rate_limit: 'Too many downstream pipelines triggered in the last minute. Try again later.',
+    runner_provisioning_timeout: 'The runner manager did not provision a runner to pick up the job in time. The job will be retried automatically.'
   }.freeze
 
   private_constant :CALLOUT_FAILURE_MESSAGES

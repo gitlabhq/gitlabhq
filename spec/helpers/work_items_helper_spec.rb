@@ -18,6 +18,40 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
       allow(helper).to receive(:generate_feed_token).with(:atom).and_return('test-feed-token')
     end
 
+    shared_examples 'show new work item link' do
+      def fetch_new_work_item(resource_parent, current_user)
+        helper.work_items_data(resource_parent, current_user)[:show_new_work_item]
+      end
+
+      it 'is true when the current user can create_work_item in resource parent' do
+        allow(helper).to receive(:can?).and_call_original
+        expect(helper).to receive(:can?).with(current_user, :create_work_item, resource_parent)
+                                        .and_return(true)
+
+        expect(fetch_new_work_item(resource_parent, current_user)).to eq('true')
+      end
+
+      it 'is false when the current user cannot create_work_item in resource parent' do
+        allow(helper).to receive(:can?).and_call_original
+        expect(helper).to receive(:can?).with(current_user, :create_work_item, resource_parent)
+                                        .and_return(false)
+
+        expect(fetch_new_work_item(resource_parent, current_user)).to eq('false')
+      end
+
+      it 'is false when resource parent is archived' do
+        resource_parent.update!(archived: true)
+
+        expect(fetch_new_work_item(resource_parent, current_user)).to eq('false')
+      end
+
+      it "is false when resource parent's parent is archived" do
+        resource_parent.parent.update!(archived: true)
+
+        expect(fetch_new_work_item(resource_parent, current_user)).to eq('false')
+      end
+    end
+
     describe 'with project context' do
       let_it_be(:project) { build(:project) }
       let_it_be(:current_user) { build(:user, owner_of: project) }
@@ -103,6 +137,16 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
               { is_issue_repositioning_disabled: 'false' }
             )
           end
+        end
+      end
+
+      describe 'show_new_work_item' do
+        let_it_be_with_reload(:resource_parent) { create(:project, group: create(:group)) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- Needed for .self_or_ancestors_archived?
+
+        it_behaves_like 'show new work item link'
+
+        it 'is true when the user is not logged in' do
+          expect(helper.work_items_data(resource_parent, nil)[:show_new_work_item]).to eq('true')
         end
       end
     end

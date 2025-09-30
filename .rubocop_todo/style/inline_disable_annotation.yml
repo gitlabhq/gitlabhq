@@ -989,8 +989,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/controllers/groups/ldap_group_links_controller.rb'
     - 'ee/app/controllers/groups/ldaps_controller.rb'
     - 'ee/app/controllers/groups/scim_oauth_controller.rb'
-    - 'ee/app/controllers/projects/approver_groups_controller.rb'
-    - 'ee/app/controllers/projects/approvers_controller.rb'
     - 'ee/app/controllers/projects/quality/test_cases_controller.rb'
     - 'ee/app/controllers/sitemap_controller.rb'
     - 'ee/app/finders/autocomplete/group_subgroups_finder.rb'

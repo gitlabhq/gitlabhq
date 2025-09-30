@@ -8,8 +8,8 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
   let_it_be(:project) { create(:project) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project, partition_id: partition_id) }
   let(:partition_id) { ci_testing_partition_id }
-  let(:jobs) { [] }
-  let(:service) { described_class.new(pipeline, jobs: jobs) }
+  let(:definitions) { [] }
+  let(:service) { described_class.new(pipeline, definitions: definitions) }
 
   before do
     stub_current_partition_id(partition_id)
@@ -18,8 +18,8 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
   describe '#execute' do
     subject(:execute) { service.execute }
 
-    context 'when jobs array is empty' do
-      let(:jobs) { [] }
+    context 'when definitions array is empty' do
+      let(:definitions) { [] }
 
       it 'returns an empty array' do
         expect(execute).to eq([])
@@ -42,9 +42,7 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
         ::Ci::JobDefinition.fabricate(config: config2, project_id: project.id, partition_id: partition_id)
       end
 
-      let(:job1) { build(:ci_build, pipeline: pipeline, temp_job_definition: job_def1) }
-      let(:job2) { build(:ci_build, pipeline: pipeline, temp_job_definition: job_def2) }
-      let(:jobs) { [job1, job2] }
+      let(:definitions) { [job_def1, job_def2] }
 
       it 'creates new job definitions' do
         expect { execute }.to change { ::Ci::JobDefinition.count }.by(2)
@@ -84,15 +82,13 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
         )
       end
 
-      context 'when jobs have the same config' do
+      context 'when definitions have the same config' do
         let(:config) { { options: { script: ['echo test'] } } }
         let(:shared_job_def) do
           ::Ci::JobDefinition.fabricate(config: config, project_id: project.id, partition_id: partition_id)
         end
 
-        let(:job1) { build(:ci_build, pipeline: pipeline, temp_job_definition: shared_job_def) }
-        let(:job2) { build(:ci_build, pipeline: pipeline, temp_job_definition: shared_job_def) }
-        let(:jobs) { [job1, job2] }
+        let(:definitions) { [shared_job_def, shared_job_def] }
 
         it 'creates only one job definition' do
           expect { execute }.to change { ::Ci::JobDefinition.count }.by(1)
@@ -126,9 +122,7 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
           config: existing_config)
       end
 
-      let(:job1) { build(:ci_build, pipeline: pipeline, temp_job_definition: existing_job_def) }
-      let(:job2) { build(:ci_build, pipeline: pipeline, temp_job_definition: new_job_def) }
-      let(:jobs) { [job1, job2] }
+      let(:definitions) { [existing_job_def, new_job_def] }
 
       it 'only creates the missing records' do
         expect { execute }.to change { ::Ci::JobDefinition.count }.by(1)
@@ -179,9 +173,7 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
           config: config2)
       end
 
-      let(:job1) { build(:ci_build, pipeline: pipeline, temp_job_definition: job_def1) }
-      let(:job2) { build(:ci_build, pipeline: pipeline, temp_job_definition: job_def2) }
-      let(:jobs) { [job1, job2] }
+      let(:definitions) { [job_def1, job_def2] }
 
       it 'does not create any new records' do
         expect { execute }.not_to change { ::Ci::JobDefinition.count }
@@ -215,10 +207,7 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
           partition_id: partition_id)
       end
 
-      let(:job1) { build(:ci_build, pipeline: pipeline, temp_job_definition: job_def_true) }
-      let(:job2) { build(:ci_build, pipeline: pipeline, temp_job_definition: job_def_false) }
-      let(:job3) { build(:ci_build, pipeline: pipeline, temp_job_definition: job_def_default) }
-      let(:jobs) { [job1, job2, job3] }
+      let(:definitions) { [job_def_true, job_def_false, job_def_default] }
 
       it 'sets interruptible based on config or defaults to false' do
         execute
@@ -254,16 +243,10 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
     end
 
     context 'when batch processing' do
-      let(:job_definitions) do
+      let(:definitions) do
         Array.new(described_class::BATCH_SIZE + 10) do |i|
           config = { options: { script: ["echo test#{i}"] } }
           ::Ci::JobDefinition.fabricate(config: config, project_id: project.id, partition_id: partition_id)
-        end
-      end
-
-      let(:jobs) do
-        job_definitions.map do |job_def|
-          build(:ci_build, pipeline: pipeline, temp_job_definition: job_def)
         end
       end
 
@@ -292,9 +275,7 @@ RSpec.describe Gitlab::Ci::JobDefinitions::FindOrCreate, feature_category: :pipe
         ::Ci::JobDefinition.fabricate(config: config2, project_id: project.id, partition_id: partition_id)
       end
 
-      let(:job1) { build(:ci_build, pipeline: pipeline, temp_job_definition: job_def1) }
-      let(:job2) { build(:ci_build, pipeline: pipeline, temp_job_definition: job_def2) }
-      let(:jobs) { [job1, job2] }
+      let(:definitions) { [job_def1, job_def2] }
 
       it 'handles race condition where definitions are inserted after initial check' do
         # Stub the first fetch_records_for call to return empty (simulating no existing records)

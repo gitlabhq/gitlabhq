@@ -22,7 +22,6 @@ module WorkItems
     end
 
     def execute
-      raise FeatureNotAvailableError unless project.work_items_project_issues_list_feature_flag_enabled?
       raise NotAuthorizedError unless Ability.allowed?(user, :import_work_items, project)
 
       super

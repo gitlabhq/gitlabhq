@@ -61,6 +61,9 @@ export default {
       :expanded-override="expandedOverride"
       @load-children="$emit('load-children', $event)"
       @refetch="$emit('refetch')"
+      @hover-visibility="$emit('hover-visibility', $event)"
+      @hover-stat="$emit('hover-stat', $event)"
+      @click-avatar="$emit('click-avatar')"
     />
     <slot></slot>
   </ul>

@@ -3499,10 +3499,6 @@ class Project < ApplicationRecord
     group&.work_items_alpha_feature_flag_enabled? || Feature.enabled?(:work_items_alpha)
   end
 
-  def work_items_project_issues_list_feature_flag_enabled?
-    group&.work_items_project_issues_list_feature_flag_enabled? || Feature.enabled?(:work_items_project_issues_list, type: :beta)
-  end
-
   def glql_load_on_click_feature_flag_enabled?
     group&.glql_load_on_click_feature_flag_enabled? || Feature.enabled?(:glql_load_on_click, self, type: :ops)
   end

@@ -3,8 +3,6 @@
 
 <!-- Briefly describe what this MR is about. -->
 
-%{first_multiline_commit}
-
 ## Related issues
 
 <!-- Link related issues below. -->

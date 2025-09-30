@@ -7,12 +7,6 @@ module WorkItems
 
     NotAvailableError = StandardError.new('This feature is currently behind a feature flag and it is not available.')
 
-    def csv_data
-      raise NotAvailableError unless resource_parent.work_items_project_issues_list_feature_flag_enabled?
-
-      super
-    end
-
     def email(mail_to_user)
       Notify.export_work_items_csv_email(mail_to_user, resource_parent, csv_data, csv_builder.status).deliver_now
     end

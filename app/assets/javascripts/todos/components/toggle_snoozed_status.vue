@@ -108,6 +108,8 @@ export default {
       v-if="isSnoozed"
       v-gl-tooltip
       icon="time-out"
+      size="small"
+      class="gl-self-center"
       :title="$options.i18n.unSnooze"
       :aria-label="$options.i18n.unSnooze"
       data-testid="un-snooze-button"

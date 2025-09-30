@@ -2465,6 +2465,9 @@ msgstr ""
 msgid "AICatalog|AI Catalog"
 msgstr ""
 
+msgid "AICatalog|Access rights"
+msgstr ""
+
 msgid "AICatalog|Add this %{itemType} to a project"
 msgstr ""
 
@@ -2472,6 +2475,9 @@ msgid "AICatalog|Add to project"
 msgstr ""
 
 msgid "AICatalog|Agent added successfully to %{name}."
+msgstr ""
+
+msgid "AICatalog|Agent configuration"
 msgstr ""
 
 msgid "AICatalog|Agent could not be added: %{agentName}"
@@ -2523,6 +2529,12 @@ msgid "AICatalog|Automate tasks and processes using agents."
 msgstr ""
 
 msgid "AICatalog|Automate tasks and processes using flows."
+msgstr ""
+
+msgid "AICatalog|Available tools"
+msgstr ""
+
+msgid "AICatalog|Basic information"
 msgstr ""
 
 msgid "AICatalog|Briefly describe what this agent is designed to do and its key capabilities."
@@ -2579,6 +2591,9 @@ msgstr ""
 msgid "AICatalog|Description is required."
 msgstr ""
 
+msgid "AICatalog|Display name"
+msgstr ""
+
 msgid "AICatalog|Duplicate"
 msgstr ""
 
@@ -2622,6 +2637,9 @@ msgid "AICatalog|Failed to remove flow. %{error}"
 msgstr ""
 
 msgid "AICatalog|Flow added successfully to %{name}."
+msgstr ""
+
+msgid "AICatalog|Flow configuration"
 msgstr ""
 
 msgid "AICatalog|Flow could not be added: %{flowName}"
@@ -2699,6 +2717,9 @@ msgstr ""
 msgid "AICatalog|Project members will be able to run this %{itemType}."
 msgstr ""
 
+msgid "AICatalog|Prompts"
+msgstr ""
+
 msgid "AICatalog|Provide default instructions or context that will be included with every user interaction."
 msgstr ""
 
@@ -2736,6 +2757,9 @@ msgid "AICatalog|Select tools that this agent will have access to."
 msgstr ""
 
 msgid "AICatalog|Selected %{itemType}"
+msgstr ""
+
+msgid "AICatalog|Source project"
 msgstr ""
 
 msgid "AICatalog|Steps"
@@ -45610,6 +45634,9 @@ msgid "Open issue"
 msgid_plural "Open issues"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Open navigation menu"
+msgstr ""
 
 msgid "Open new window"
 msgstr ""

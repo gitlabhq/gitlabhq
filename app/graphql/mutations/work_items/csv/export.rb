@@ -28,8 +28,6 @@ module Mutations
           project_path = args.delete(:project_path)
           project = authorized_find!(project_path)
 
-          check_export_available_for!(project)
-
           # This is some old code, moved to a different module. We should definitely seek to move this code
           # to a service class.
           # rubocop:disable CodeReuse/Worker -- see above
@@ -43,14 +41,6 @@ module Mutations
             ),
             errors: []
           }
-        end
-
-        def check_export_available_for!(project)
-          return if project.work_items_project_issues_list_feature_flag_enabled?
-
-          error = '`work_items_project_issues_list` feature flag is disabled.'
-
-          raise_resource_not_available_error! error
         end
       end
     end

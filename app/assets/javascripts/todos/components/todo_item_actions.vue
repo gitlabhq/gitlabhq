@@ -112,7 +112,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-gap-2">
+  <div class="gl-flex gl-gap-3">
     <toggle-snoozed-status
       :todo="todo"
       :is-snoozed="isSnoozed"
@@ -124,6 +124,8 @@ export default {
       v-gl-tooltip
       data-testid="toggle-status-button"
       :icon="isDone ? 'redo' : 'check'"
+      size="small"
+      class="gl-self-center"
       :aria-label="isDone ? $options.i18n.markAsPending : $options.i18n.markAsDone"
       :title="tooltipTitle"
       @click="toggleStatus"

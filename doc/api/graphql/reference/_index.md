@@ -42433,8 +42433,9 @@ Total risk score information.
 | ---- | ---- | ----------- |
 | <a id="riskscorebyproject"></a>`byProject` {{< icon name="warning-solid" >}} | [`RiskScoreByProjectConnection`](#riskscorebyprojectconnection) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk scores grouped by project. |
 | <a id="riskscorefactors"></a>`factors` {{< icon name="warning-solid" >}} | [`RiskFactors`](#riskfactors) | **Introduced** in GitLab 18.4. **Status**: Experiment. Risk factors contributing to the score. |
+| <a id="riskscoreprojectcount"></a>`projectCount` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 18.5. **Status**: Experiment. Total number of projects with risk scores. |
 | <a id="riskscorerating"></a>`rating` {{< icon name="warning-solid" >}} | [`RiskRating!`](#riskrating) | **Introduced** in GitLab 18.4. **Status**: Experiment. Overall risk rating. |
-| <a id="riskscorescore"></a>`score` {{< icon name="warning-solid" >}} | [`Float!`](#float) | **Introduced** in GitLab 18.4. **Status**: Experiment. Overall risk score. |
+| <a id="riskscorescore"></a>`score` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 18.4. **Status**: Experiment. Overall risk score. |
 
 ### `RiskScoreByProject`
 
@@ -47309,6 +47310,7 @@ Available input types.
 | <a id="cijobfailurereasonreached_downstream_pipeline_trigger_rate_limit"></a>`REACHED_DOWNSTREAM_PIPELINE_TRIGGER_RATE_LIMIT` | A job that failed due to reached downstream pipeline trigger rate limit. |
 | <a id="cijobfailurereasonreached_max_descendant_pipelines_depth"></a>`REACHED_MAX_DESCENDANT_PIPELINES_DEPTH` | A job that failed due to reached max descendant pipelines depth. |
 | <a id="cijobfailurereasonreached_max_pipeline_hierarchy_size"></a>`REACHED_MAX_PIPELINE_HIERARCHY_SIZE` | A job that failed due to reached max pipeline hierarchy size. |
+| <a id="cijobfailurereasonrunner_provisioning_timeout"></a>`RUNNER_PROVISIONING_TIMEOUT` | A job that failed due to runner provisioning timeout. |
 | <a id="cijobfailurereasonrunner_system_failure"></a>`RUNNER_SYSTEM_FAILURE` | A job that failed due to runner system failure. |
 | <a id="cijobfailurereasonrunner_unsupported"></a>`RUNNER_UNSUPPORTED` | A job that failed due to runner unsupported. |
 | <a id="cijobfailurereasonscheduler_failure"></a>`SCHEDULER_FAILURE` | A job that failed due to scheduler failure. |

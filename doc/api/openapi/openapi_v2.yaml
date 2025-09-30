@@ -40762,6 +40762,8 @@ paths:
           description: Unknown parameters
         '403':
           description: Forbidden
+        '409':
+          description: Conflict
       tags:
       - jobs
       operationId: putApiV4JobsId
@@ -67574,7 +67576,7 @@ definitions:
         description: Job token
       state:
         type: string
-        description: 'Job''s status: success, failed'
+        description: 'Job''s status: pending, running, success, failed'
       checksum:
         type: string
         description: Job's trace CRC32 checksum

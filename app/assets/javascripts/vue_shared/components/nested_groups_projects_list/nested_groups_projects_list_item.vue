@@ -132,7 +132,14 @@ export default {
 </script>
 
 <template>
-  <component :is="itemComponent" v-bind="itemProps" @refetch="onRefetch">
+  <component
+    :is="itemComponent"
+    v-bind="itemProps"
+    @refetch="onRefetch"
+    @hover-visibility="$emit('hover-visibility', $event)"
+    @hover-stat="$emit('hover-stat', $event)"
+    @click-avatar="$emit('click-avatar')"
+  >
     <template v-if="item.hasChildren" #children-toggle>
       <gl-button
         v-bind="expandButtonProps"
@@ -151,6 +158,9 @@ export default {
         :class="nestedItemsContainerClasses"
         @load-children="$emit('load-children', $event)"
         @refetch="onRefetch"
+        @hover-visibility="$emit('hover-visibility', $event)"
+        @hover-stat="$emit('hover-stat', $event)"
+        @click-avatar="$emit('click-avatar')"
       >
         <li v-if="hasMoreChildren" class="gl-border-b gl-py-4 gl-pl-7">
           <div class="gl-flex gl-h-7 gl-items-center">

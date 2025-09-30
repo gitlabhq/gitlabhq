@@ -39,6 +39,7 @@ export default {
   i18n: {
     adminArea: s__('Navigation|Admin'),
     searchBtnText: __('Search or go to…'),
+    menuLabel: __('Open navigation menu'),
   },
   inject: ['isSaas'],
   props: {
@@ -85,6 +86,7 @@ export default {
           icon="hamburger"
           type="expand"
           class="xl:gl-hidden"
+          :aria-label="$options.i18n.menuLabel"
         />
 
         <promo-menu v-if="!isLoggedIn" :pricing-url="sidebarData.compare_plans_url" />

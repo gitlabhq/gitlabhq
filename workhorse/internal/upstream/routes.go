@@ -23,6 +23,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/dependencyproxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/git"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 	gobpkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/gob"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/imageresizer"
@@ -158,7 +159,7 @@ func (u *upstream) observabilityMiddlewares(handler http.Handler, method string,
 			}
 
 			if correlationID := r.Header.Get(git.XGitalyCorrelationID); correlationID != "" {
-				fields["gitaly_correlation_id"] = correlationID
+				fields[string(gitaly.GitalyCorrelationIDKey)] = correlationID
 			}
 
 			return fields

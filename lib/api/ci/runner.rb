@@ -230,12 +230,13 @@ module API
           http_codes [[200, 'Job was updated'],
             [202, 'Update accepted'],
             [400, 'Unknown parameters'],
-            [403, 'Forbidden']]
+            [403, 'Forbidden'],
+            [409, 'Conflict']]
         end
         params do
           requires :token, type: String, desc: 'Job token'
           requires :id, type: Integer, desc: "Job's ID"
-          optional :state, type: String, desc: "Job's status: success, failed"
+          optional :state, type: String, desc: "Job's status: pending, running, success, failed"
           optional :checksum, type: String, desc: "Job's trace CRC32 checksum"
           optional :failure_reason, type: String, desc: "Job's failure_reason"
           optional :output, type: Hash, desc: 'Build log state' do
@@ -249,8 +250,8 @@ module API
 
           Gitlab::Metrics.add_event(:update_build)
 
-          service = ::Ci::UpdateBuildStateService
-            .new(job, declared_params(include_missing: false))
+          # Handle job state updates through the service (including two-phase commit workflow)
+          service = ::Ci::UpdateBuildStateService.new(job, declared_params(include_missing: false))
 
           service.execute.then do |result|
             track_ci_minutes_usage!(job)

@@ -45,19 +45,20 @@ describe('NestedGroupsProjectsList', () => {
     );
   });
 
-  describe('when `NestedGroupsProjectsListItem emits load-children event', () => {
-    it('emits load-children event', () => {
-      findNestedGroupsProjectsListItem().vm.$emit('load-children', 1);
-
-      expect(wrapper.emitted('load-children')).toEqual([[1]]);
+  describe.each`
+    event                 | payload
+    ${'load-children'}    | ${1}
+    ${'refetch'}          | ${undefined}
+    ${'hover-visibility'} | ${'private'}
+    ${'hover-stat'}       | ${'projects-count'}
+    ${'click-avatar'}     | ${undefined}
+  `('when NestedGroupsProjectsListItem emits $event event', ({ event, payload }) => {
+    beforeEach(() => {
+      findNestedGroupsProjectsListItem().vm.$emit(event, payload);
     });
-  });
 
-  describe('when NestedGroupsProjectsListItem emits refetch event', () => {
-    it('emits refetch event', () => {
-      findNestedGroupsProjectsListItem().vm.$emit('refetch');
-
-      expect(wrapper.emitted('refetch')).toEqual([[]]);
+    it(`emits ${event} event`, () => {
+      expect(wrapper.emitted(event)).toEqual([[payload]]);
     });
   });
 });

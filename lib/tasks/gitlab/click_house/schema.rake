@@ -57,6 +57,9 @@ namespace :gitlab do
 
       raise "ClickHouse schema dump not found at #{schema_dump_path}" unless File.exist?(schema_dump_path)
 
+      # Environment variable used on CI to to allow requests to ClickHouse docker container
+      WebMock.allow_net_connect! if Rails.env.test? && ENV['DISABLE_WEBMOCK']
+
       schema_sql = File.read(schema_dump_path)
 
       ClickHouse::Client.configuration.databases.each_key do |db|

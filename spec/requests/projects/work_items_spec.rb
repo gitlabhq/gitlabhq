@@ -277,14 +277,6 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
             end
           end
         end
-
-        context 'when work items import/export feature is not available' do
-          before do
-            stub_feature_flags(work_items_project_issues_list: false)
-          end
-
-          it_behaves_like 'response with 404 status'
-        end
       end
     end
 
@@ -332,14 +324,6 @@ RSpec.describe 'Work Items', feature_category: :team_planning do
           let(:uploader_class) { FileUploader }
           let(:maximum_size) { Gitlab::CurrentSettings.max_attachment_size.megabytes }
         end
-      end
-
-      context 'when work_items_project_issues_list is disabled' do
-        before do
-          stub_feature_flags(work_items_project_issues_list: false)
-        end
-
-        it_behaves_like 'response with 404 status'
       end
     end
 

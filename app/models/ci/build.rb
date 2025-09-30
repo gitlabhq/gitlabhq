@@ -19,6 +19,11 @@ module Ci
 
     self.allow_legacy_sti_class = true
 
+    # The `RUNNER_ACK_QUEUE_EXPIRY_TIME` indicates the longest interval that GitLab will wait for a ping from a Runner
+    #   supporting 2-phase commit to either continue waiting (status=pending) or accept (status=running) a job that is
+    #   pending for that runner.
+    RUNNER_ACK_QUEUE_EXPIRY_TIME = 2.minutes
+
     belongs_to :project, inverse_of: :builds
     belongs_to :runner
     belongs_to :erased_by, class_name: 'User'
@@ -1236,6 +1241,47 @@ module Ci
       super
     end
 
+    #
+    # Support for two-phase runner job acceptance acknowledgement
+    #
+    def waiting_for_runner_ack?
+      pending? && runner_id.present? && runner_manager_id_waiting_for_ack.present?
+    end
+
+    # Create a Redis cache entry containing the runner manager id on which we're waiting on
+    # for acknowledgement (job accepted or job declined)
+    def set_waiting_for_runner_ack(runner_manager_id)
+      return unless runner_manager_id.present?
+
+      with_redis do |redis|
+        # Store runner manager ID for this job, only if key does not yet exist
+        redis.set(runner_build_ack_queue_key, runner_manager_id, ex: RUNNER_ACK_QUEUE_EXPIRY_TIME, nx: true)
+      end
+    end
+
+    # Update the ttl for the Redis cache entry containing the runner manager id on which we're waiting on
+    # for acknowledgement (job accepted or job declined)
+    def heartbeat_runner_ack_wait(runner_manager_id)
+      return unless runner_manager_id.present? && runner_manager_id == runner_manager_id_waiting_for_ack
+
+      with_redis do |redis|
+        # Update TTL, only if key already exists
+        redis.set(runner_build_ack_queue_key, runner_manager_id, ex: RUNNER_ACK_QUEUE_EXPIRY_TIME, xx: true)
+      end
+    end
+
+    # Remove the Redis cache entry containing the runner manager id on which we're waiting on
+    # for acknowledgement (job accepted or job declined)
+    def cancel_wait_for_runner_ack
+      with_redis do |redis|
+        redis.del(runner_build_ack_queue_key)
+      end
+    end
+
+    def runner_manager_id_waiting_for_ack
+      with_redis { |redis| redis.get(runner_build_ack_queue_key)&.to_i }
+    end
+
     protected
 
     def run_status_commit_hooks!
@@ -1393,6 +1439,15 @@ module Ci
 
     def prefix_and_partition_for_token
       TOKEN_PREFIX + partition_id_prefix_in_16_bit_encode
+    end
+
+    def with_redis(&block)
+      # Use SharedState to avoid cache evictions
+      Gitlab::Redis::SharedState.with(&block)
+    end
+
+    def runner_build_ack_queue_key
+      "runner:build_ack_queue:#{id}"
     end
   end
 end

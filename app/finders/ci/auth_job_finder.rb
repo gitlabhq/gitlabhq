@@ -60,6 +60,8 @@ module Ci
     end
 
     def validate_executing_job!(job)
+      return if job.waiting_for_runner_ack?
+
       raise NotRunningJobError, 'Job is not running' unless Ci::HasStatus::EXECUTING_STATUSES.include?(job.status)
     end
 

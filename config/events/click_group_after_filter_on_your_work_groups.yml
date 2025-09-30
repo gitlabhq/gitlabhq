@@ -1,0 +1,21 @@
+---
+description: Click group after search on Your work > Groups
+internal_events: true
+status: active
+action: click_group_after_filter_on_your_work_groups
+identifiers:
+- user
+additional_properties:
+  label:
+    description: Tab name (e.g. "member")
+  property:
+    description: Applied filters
+product_group: organizations
+product_categories:
+- groups_and_projects
+milestone: '18.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206569
+tiers:
+- free
+- premium
+- ultimate

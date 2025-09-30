@@ -1,0 +1,19 @@
+---
+description: User hovers over visibility icon on Your work -> Groups
+internal_events: true
+status: active
+action: hover_visibility_icon_on_your_work_groups
+identifiers:
+- user
+additional_properties:
+  label:
+    description: Visibility of group
+product_group: organizations
+product_categories:
+- groups_and_projects
+milestone: '18.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206569
+tiers:
+- free
+- premium
+- ultimate

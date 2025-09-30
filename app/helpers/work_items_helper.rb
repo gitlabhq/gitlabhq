@@ -53,8 +53,8 @@ module WorkItemsHelper
       default_branch: resource_parent.is_a?(Project) ? resource_parent.default_branch_or_main : nil,
       initial_sort: current_user&.user_preference&.issues_sort,
       is_signed_in: current_user.present?.to_s,
+      show_new_work_item: show_new_work_item_link?(resource_parent).to_s,
       is_issue_repositioning_disabled: issue_repositioning_disabled(resource_parent).to_s,
-      show_new_work_item: can?(current_user, :create_work_item, resource_parent).to_s,
       can_create_projects: can?(current_user, :create_projects, group).to_s,
       new_project_path: new_project_path(namespace_id: group&.id),
       project_namespace_full_path:
@@ -91,6 +91,18 @@ module WorkItemsHelper
     else
       project_work_items_path(resource_parent, format: :ics)
     end
+  end
+
+  def show_new_work_item_link?(resource_parent)
+    return false unless resource_parent
+    return false if resource_parent.self_or_ancestors_archived?
+
+    # We want to show the link to users that are not signed in, that way they
+    # get directed to the sign-in/sign-up flow and afterwards to the new issue page.
+    # Note that we do this only for the project issues page
+    return true if !resource_parent.is_a?(Group) && !current_user
+
+    can?(current_user, :create_work_item, resource_parent)
   end
 
   def issue_repositioning_disabled(resource_parent)

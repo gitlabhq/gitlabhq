@@ -21,16 +21,6 @@ RSpec.describe WorkItems::ExportCsvService, :with_license, feature_category: :te
     CSV.parse(subject.csv_data, headers: true)
   end
 
-  context 'when work_items_project_issues_list flag is not enabled' do
-    before do
-      stub_feature_flags(work_items_project_issues_list: false)
-    end
-
-    it 'renders an error' do
-      expect { subject.csv_data }.to raise_error(described_class::NotAvailableError)
-    end
-  end
-
   it 'renders csv to string' do
     expect(subject.csv_data).to be_a String
   end

@@ -16,7 +16,7 @@ description: "Import issues to a project by uploading a CSV file."
 {{< history >}}
 
 - Additionally [allowed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) for Planner role in GitLab 17.7.
-- Support for the `type` column [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199945) in GitLab 18.4, [with a flag](../../../administration/feature_flags/_index.md) named `work_items_project_issues_list`. Enabled by default.
+- Support for the `type` column [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/199945) in GitLab 18.4.
 
 {{< /history >}}
 

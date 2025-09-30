@@ -11,9 +11,6 @@ your local machine. GitLab uses the SSH protocol to securely communicate with Gi
 With SSH, you can authenticate to the GitLab remote server without entering your username
 and password each time.
 
-For information on downloading and installing Git on other operating systems, see the
-[official Git website](https://git-scm.com/downloads).
-
 After you install and configure Git, [generate and add an SSH key pair](../../../user/ssh.md#generate-an-ssh-key-pair)
 to your GitLab account.
 
@@ -71,6 +68,13 @@ Keep Git up to date by periodically running the following command:
 ```shell
 sudo apt-get update && sudo apt-get install git
 ```
+
+{{< /tab >}}
+
+{{< tab title="Other operating systems" >}}
+
+For information on downloading and installing Git on other operating systems, see the
+[official Git website](https://git-scm.com/downloads).
 
 {{< /tab >}}
 
