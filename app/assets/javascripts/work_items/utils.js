@@ -490,3 +490,16 @@ export const preserveDetailsState = (element, descriptionHtml) => {
 };
 
 export const activeWorkItemIds = ref([]);
+
+export const getWorkItemTypeAllowedStatusMap = (workItemTypeNodes) => {
+  const workItemTypeAllowedStatusMap = {};
+
+  workItemTypeNodes.forEach((workItemType) => {
+    const statuses = workItemType.widgetDefinitions?.find(isStatusWidget)?.allowedStatuses;
+    if (statuses) {
+      workItemTypeAllowedStatusMap[workItemType.name.toUpperCase()] = statuses;
+    }
+  });
+
+  return workItemTypeAllowedStatusMap;
+};

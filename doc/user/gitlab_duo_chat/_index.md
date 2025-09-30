@@ -86,7 +86,7 @@ To use GitLab Duo Chat in the GitLab UI:
    - It may take a few seconds for the interactive AI chat to produce an answer.
 1. Optional. Ask a follow-up question.
 
-To ask a new, unrelated question, clear the context by typing `/reset` or `/clear` and selecting **Send**.
+To ask a new, unrelated question, type `/reset` and select **Send** to clear the context.
 
 ### View the Chat history
 
@@ -211,7 +211,7 @@ After Quick Chat opens:
 
 1. In the message box, enter your question. You can also:
    - Type `/` to display all available commands.
-   - Type `/re` to display `/refactor`.
+   - Type `/re` to display `/refactor` and `/reset`.
 1. To send your question, select **Send**, or press <kbd>Command</kbd>+<kbd>Enter</kbd>.
 1. To interact with the responses, above the code blocks, use the **Copy Snippet** and **Insert Snippet** links.
 1. To exit chat, select the chat icon in the gutter, or press **Escape** while focused on the chat.

@@ -23,23 +23,23 @@ If you are unable to resolve pipeline issues, you can get help from:
 If you are having issues with a specific CI/CD feature, see the related troubleshooting section
 for that feature:
 
-- [Caching](caching/_index.md#troubleshooting).
-- [CI/CD job tokens](jobs/ci_job_token.md#troubleshooting).
-- [Container registry](../user/packages/container_registry/troubleshoot_container_registry.md).
-- [Docker](docker/docker_build_troubleshooting.md).
-- [Downstream pipelines](pipelines/downstream_pipelines_troubleshooting.md).
-- [Environments](environments/_index.md#troubleshooting).
-- [GitLab Runner](https://docs.gitlab.com/runner/faq/).
-- [ID tokens](secrets/id_token_authentication.md#troubleshooting).
-- [Jobs](jobs/job_troubleshooting.md).
-- [Job artifacts](jobs/job_artifacts_troubleshooting.md).
-- [Merge request pipelines](pipelines/mr_pipeline_troubleshooting.md),
-  [merged results pipelines](pipelines/merged_results_pipelines.md#troubleshooting),
-  and [merge trains](pipelines/merge_trains.md#troubleshooting).
-- [Pipeline editor](pipeline_editor/_index.md#troubleshooting).
-- [Variables](variables/variables_troubleshooting.md).
-- [YAML `includes` keyword](yaml/includes.md#troubleshooting).
-- [YAML `script` keyword](yaml/script_troubleshooting.md).
+- [Caching](caching/_index.md#troubleshooting)
+- [CI/CD job tokens](jobs/ci_job_token.md#troubleshooting)
+- [Container registry](../user/packages/container_registry/troubleshoot_container_registry.md)
+- [Docker](docker/docker_build_troubleshooting.md)
+- [Downstream pipelines](pipelines/downstream_pipelines_troubleshooting.md)
+- [Environments](environments/_index.md#troubleshooting)
+- [GitLab Runner](https://docs.gitlab.com/runner/faq/)
+- [ID tokens](secrets/id_token_authentication.md#troubleshooting)
+- [Jobs](jobs/job_troubleshooting.md)
+- [Job artifacts](jobs/job_artifacts_troubleshooting.md)
+- [Merge request pipelines](pipelines/mr_pipeline_troubleshooting.md)
+  [merged results pipelines](pipelines/merged_results_pipelines.md#troubleshooting)
+  and [merge trains](pipelines/merge_trains.md#troubleshooting)
+- [Pipeline editor](pipeline_editor/_index.md#troubleshooting)
+- [Variables](variables/variables_troubleshooting.md)
+- [YAML `includes` keyword](yaml/includes.md#troubleshooting)
+- [YAML `script` keyword](yaml/script_troubleshooting.md)
 
 ## Debugging techniques
 

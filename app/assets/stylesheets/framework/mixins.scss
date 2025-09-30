@@ -377,17 +377,18 @@
   }
 }
 
-@mixin notes-media($condition, $breakpoint-width) {
-  @media (#{$condition}-width: ($breakpoint-width)) {
-    @content;
-  }
+@mixin notes-media($breakpoint-name) {
+  @include gl-container-width-down($breakpoint-name) { @content; }
 
   // Diff is side by side
   .notes-content.parallel & {
-    // We hide at double what we normally hide at because
-    // there are two columns of notes
-    @media (#{$condition}-width: (2 * $breakpoint-width)) {
-      @content;
+    $breakpoint-keys: map-keys($grid-breakpoints);
+    $current-index: index($breakpoint-keys, $breakpoint-name);
+
+    @if $current-index < length($breakpoint-keys) {
+      $parallel-breakpoint: nth($breakpoint-keys, $current-index + 1);
+
+      @include gl-container-width-down($parallel-breakpoint) { @content; }
     }
   }
 }

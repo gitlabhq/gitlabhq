@@ -7,6 +7,7 @@ class Projects::CompareController < Projects::ApplicationController
   include DiffHelper
   include RendersCommits
   include CompareHelper
+  include Projects::TargetProjects
   include RapidDiffs::Resource
 
   # Authorize
@@ -94,6 +95,10 @@ class Projects::CompareController < Projects::ApplicationController
         }
       end
     end
+  end
+
+  def target_projects_json
+    render json: ProjectSerializer.new.represent(get_target_projects)
   end
 
   private
@@ -243,3 +248,5 @@ class Projects::CompareController < Projects::ApplicationController
       params.permit(:format)[:format].blank?
   end
 end
+
+Projects::CompareController.prepend_mod

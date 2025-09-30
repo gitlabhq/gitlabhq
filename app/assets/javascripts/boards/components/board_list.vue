@@ -9,10 +9,12 @@ import { defaultSortableOptions, DRAG_DELAY } from '~/sortable/constants';
 import { sortableStart, sortableEnd } from '~/sortable/utils';
 import Tracking from '~/tracking';
 import { getParameterByName } from '~/lib/utils/url_utility';
+import { getWorkItemTypeAllowedStatusMap } from '~/work_items/utils';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
 import BoardNewIssue from 'ee_else_ce/boards/components/board_new_issue.vue';
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
+import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import {
   DEFAULT_BOARD_LIST_ITEMS_SIZE,
   DraggableItemTypes,
@@ -101,6 +103,7 @@ export default {
       updateIssueOrderInProgress: false,
       dragCancelled: false,
       hasMadeDrawerAttempt: false,
+      workItemTypeAllowedStatusMap: {},
     };
   },
   apollo: {
@@ -115,6 +118,26 @@ export default {
       },
       skip() {
         return this.isEpicBoard;
+      },
+    },
+    workItemTypeAllowedStatusMap: {
+      query: namespaceWorkItemTypesQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+        };
+      },
+      update(data) {
+        return getWorkItemTypeAllowedStatusMap(data.workspace?.workItemTypes?.nodes);
+      },
+      skip() {
+        return this.isEpicBoard;
+      },
+      error(error) {
+        setError({
+          error,
+          message: s__('Boards|An error occurred while fetching the statuses. Please try again.'),
+        });
       },
     },
     currentList: {
@@ -316,10 +339,27 @@ export default {
       );
     },
     isInapplicable() {
-      if (!this.draggedType) {
+      if (!this.draggedType || !this.list?.status?.id) {
         return false;
       }
-      return this.draggedType === INCIDENT && this.list.listType === ListType.status;
+
+      // Only check applicability for status lists
+      if (this.list.listType !== ListType.status) {
+        return false;
+      }
+
+      const listStatusId = this.list.status.id;
+
+      // Incidents are always inapplicable for status lists
+      if (this.draggedType === INCIDENT) {
+        return true;
+      }
+
+      // Check if the dragged work item type supports the current list status
+      const allowedStatuses = this.workItemTypeAllowedStatusMap[this.draggedType] || [];
+      const hasMatchingStatus = allowedStatuses.some((status) => status.id === listStatusId);
+
+      return !hasMatchingStatus;
     },
   },
   watch: {

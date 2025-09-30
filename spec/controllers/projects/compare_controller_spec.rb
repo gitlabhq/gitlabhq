@@ -1014,4 +1014,21 @@ RSpec.describe Projects::CompareController, feature_category: :source_code_manag
       end
     end
   end
+
+  describe 'GET target_projects_json', feature_category: :code_review_workflow do
+    it 'returns target projects JSON' do
+      project_fork = fork_project(project)
+
+      get :target_projects_json, params: { namespace_id: project.namespace.to_param, project_id: project }
+
+      expect(json_response.size).to be(2)
+
+      forked_project = json_response.detect { |project| project['id'] == project_fork.id }
+      expect(forked_project).to have_key('id')
+      expect(forked_project).to have_key('name')
+      expect(forked_project).to have_key('full_path')
+      expect(forked_project).to have_key('refs_url')
+      expect(forked_project).to have_key('forked')
+    end
+  end
 end

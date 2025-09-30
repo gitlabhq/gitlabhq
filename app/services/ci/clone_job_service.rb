@@ -53,7 +53,7 @@ module Ci
     def add_job_definition_attributes!(attributes)
       if job_definition_instance
         add_existing_job_definition_attributes!(attributes)
-      elsif ::Feature.enabled?(:write_to_new_ci_destinations, job.project)
+      else
         add_new_job_definition_attributes!(attributes)
       end
     end

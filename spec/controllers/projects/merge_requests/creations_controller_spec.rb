@@ -329,19 +329,4 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
       post :create, params: merge_request_params
     end
   end
-
-  describe 'GET target_projects', feature_category: :code_review_workflow do
-    it 'returns target projects JSON' do
-      get :target_projects, params: { namespace_id: project.namespace.to_param, project_id: project }
-
-      expect(json_response.size).to be(2)
-
-      forked_project = json_response.detect { |project| project['id'] == fork_project.id }
-      expect(forked_project).to have_key('id')
-      expect(forked_project).to have_key('name')
-      expect(forked_project).to have_key('full_path')
-      expect(forked_project).to have_key('refs_url')
-      expect(forked_project).to have_key('forked')
-    end
-  end
 end

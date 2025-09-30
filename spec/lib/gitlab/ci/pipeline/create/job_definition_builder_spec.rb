@@ -152,37 +152,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Create::JobDefinitionBuilder, feature_categ
         expect(job_without_def.job_definition_instance).to be_nil
       end
     end
-
-    context 'when write_to_new_ci_destinations feature flag is disabled' do
-      before do
-        stub_feature_flags(write_to_new_ci_destinations: false)
-      end
-
-      it 'does not create job definitions' do
-        job_def = ::Ci::JobDefinition.fabricate(
-          config: { options: { script: ['echo test'] } },
-          project_id: project.id,
-          partition_id: pipeline.partition_id
-        )
-        build = job_with_temp_job_definition(job_def: job_def)
-        builds << build
-
-        expect { builder.run }.not_to change { Ci::JobDefinition.count }
-      end
-
-      it 'does not create job definition instances' do
-        job_def = ::Ci::JobDefinition.fabricate(
-          config: { options: { script: ['echo test'] } },
-          project_id: project.id,
-          partition_id: pipeline.partition_id
-        )
-        build = job_with_temp_job_definition(job_def: job_def)
-        builds << build
-
-        builder.run
-        expect(build.job_definition_instance).to be_nil
-      end
-    end
   end
 
   private

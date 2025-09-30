@@ -329,7 +329,7 @@ about the renewal.
 An invoice is generated for your renewal. To view or download this renewal invoice,
 go to the [Customers Portal invoices page](https://customers.gitlab.com/invoices).
 
-If your account has a [saved credit card](customers_portal.md#change-your-payment-method),
+If your account has a [saved credit card](billing_account.md#change-your-payment-method),
 the card is charged for the invoice amount.
 
 If we are unable to process a payment or the auto-renewal fails for any other reason,
@@ -488,7 +488,7 @@ Example of a license sync request:
 To change the group linked to a GitLab.com subscription:
 
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) with a
-   [linked](customers_portal.md#link-a-gitlabcom-account) GitLab.com account.
+   [linked](billing_account.md#link-a-gitlabcom-account) GitLab.com account.
 1. Do one of the following:
    - If the subscription is not linked to a group, select **Link subscription to a group**.
    - If the subscription is already linked to a group, select **Subscription actions** ({{< icon name="ellipsis_v" >}}) > **Change linked group**.
@@ -514,8 +514,8 @@ For a demo, see [Linking GitLab Subscription to the Namespace](https://youtu.be/
 
 Contacts can renew a subscription, cancel a subscription, or transfer the subscription to a different namespace.
 
-You can [change profile owner information](customers_portal.md#change-profile-owner-information)
-and [add another billing account manager](customers_portal.md#add-a-billing-account-manager).
+You can [change profile owner information](billing_account.md#change-profile-owner-information)
+and [add another billing account manager](billing_account.md#add-a-billing-account-manager).
 
 ### Transfer restrictions
 

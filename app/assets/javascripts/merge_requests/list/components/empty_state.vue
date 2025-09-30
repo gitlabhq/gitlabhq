@@ -38,7 +38,7 @@ export default {
       }
 
       if (!this.hasMergeRequests) {
-        return __('Make a merge request to propose changes to this project.');
+        return __('Create a merge request to suggest changes to the repository.');
       }
 
       if (this.isOpenTab) {
@@ -53,7 +53,9 @@ export default {
       }
 
       if (!this.hasMergeRequests) {
-        return __('Others can contribute by pushing commits to the same branch.');
+        return __(
+          'Use merge requests to propose, collaborate, and review code changes with others.',
+        );
       }
 
       return null;
@@ -71,6 +73,7 @@ export default {
     :title="title"
     :svg-path="svgPath"
     data-testid="issuable-empty-state"
+    content-class="gl-max-w-75"
   >
     <template #actions>
       <gl-button
@@ -80,7 +83,7 @@ export default {
         data-event-tracking="click_new_merge_request_empty_list"
         data-testid="new-merge-request-button"
       >
-        {{ __('New merge request') }}
+        {{ __('Create merge request') }}
       </gl-button>
     </template>
   </gl-empty-state>

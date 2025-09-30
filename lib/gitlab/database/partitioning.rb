@@ -16,8 +16,16 @@ module Gitlab
           end
         end
 
+        def clear_registered_models
+          @registered_models = Set.new
+        end
+
         def register_tables(tables)
           registered_tables.merge(tables)
+        end
+
+        def clear_registered_tables
+          @registered_tables = Set.new
         end
 
         def sync_partitions_ignore_db_error(analyze: false)

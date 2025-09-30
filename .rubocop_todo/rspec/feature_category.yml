@@ -1436,8 +1436,6 @@ RSpec/FeatureCategory:
     - 'spec/graphql/types/commit_action_mode_enum_spec.rb'
     - 'spec/graphql/types/commit_encoding_enum_spec.rb'
     - 'spec/graphql/types/commit_signature_interface_spec.rb'
-    - 'spec/graphql/types/commit_signatures/gpg_signature_type_spec.rb'
-    - 'spec/graphql/types/commit_signatures/x509_signature_type_spec.rb'
     - 'spec/graphql/types/container_expiration_policy_cadence_enum_spec.rb'
     - 'spec/graphql/types/container_expiration_policy_keep_enum_spec.rb'
     - 'spec/graphql/types/container_expiration_policy_older_than_enum_spec.rb'

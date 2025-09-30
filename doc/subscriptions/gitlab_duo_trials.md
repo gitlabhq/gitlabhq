@@ -62,7 +62,7 @@ To start a GitLab Duo Pro trial on GitLab Self-Managed or GitLab Dedicated:
      1. At the top of the page, the subscription name appears in a badge.
 
         ![Subscription name](img/subscription_name_v17_0.png)
-   - Ensure the email address you submit for trial registration matches the email address of the [subscription contact](customers_portal.md#change-your-subscription-contact).
+   - Ensure the email address you submit for trial registration matches the email address of the [subscription contact](billing_account.md#change-your-subscription-contact).
 1. Select **Submit**.
 
 The trial automatically synchronizes to your instance within 24 hours. After the trial has synchronized, [assign seats](subscription-add-ons.md#assign-gitlab-duo-seats) to users that you want to access GitLab Duo.
@@ -117,7 +117,7 @@ To start a GitLab Duo Enterprise trial on GitLab Self-Managed or GitLab Dedicate
      1. At the top of the page, the subscription name appears in a badge.
 
         ![Subscription name](img/subscription_name_v17_0.png)
-   - Ensure the email address you submit for trial registration matches the email address of the [subscription contact](customers_portal.md#change-your-subscription-contact).
+   - Ensure the email address you submit for trial registration matches the email address of the [subscription contact](billing_account.md#change-your-subscription-contact).
 1. Select **Submit**.
 
 The trial automatically synchronizes to your instance within 24 hours. After the trial has synchronized, [assign seats](subscription-add-ons.md#assign-gitlab-duo-seats) to users that you want to access GitLab Duo.

@@ -108,7 +108,7 @@ If [restricted access](../user/group/manage.md#turn-on-restricted-access) is:
 
 You cannot buy seats for your subscription if either:
 
-- You purchased your subscription through an [authorized reseller](customers_portal.md#subscription-purchased-through-a-reseller) (including GCP and AWS marketplaces). Contact the reseller to add more seats.
+- You purchased your subscription through an [authorized reseller](billing_account.md#subscription-purchased-through-a-reseller) (including GCP and AWS marketplaces). Contact the reseller to add more seats.
 - You have a multi-year subscription. Contact the [sales team](https://customers.gitlab.com/contact_us) to add more seats.
 
 To buy seats for a subscription:

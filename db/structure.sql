@@ -9754,6 +9754,7 @@ CREATE TABLE admin_roles (
     permissions jsonb DEFAULT '{}'::jsonb NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
+    organization_id bigint,
     CONSTRAINT check_89a2f4f799 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_a8c6d1de58 CHECK ((char_length(description) <= 255))
 );
@@ -18738,7 +18739,8 @@ CREATE TABLE jira_connect_installations (
     base_url character varying,
     instance_url text,
     organization_id bigint,
-    CONSTRAINT check_4c6abed669 CHECK ((char_length(instance_url) <= 255))
+    CONSTRAINT check_4c6abed669 CHECK ((char_length(instance_url) <= 255)),
+    CONSTRAINT check_dc0d039821 CHECK ((organization_id IS NOT NULL))
 );
 
 CREATE SEQUENCE jira_connect_installations_id_seq
@@ -33048,9 +33050,6 @@ ALTER TABLE work_item_custom_statuses
 ALTER TABLE packages_packages
     ADD CONSTRAINT check_d6301aedeb CHECK ((char_length(status_message) <= 255)) NOT VALID;
 
-ALTER TABLE jira_connect_installations
-    ADD CONSTRAINT check_dc0d039821 CHECK ((organization_id IS NOT NULL)) NOT VALID;
-
 ALTER TABLE sprints
     ADD CONSTRAINT check_df3816aed7 CHECK ((due_date IS NOT NULL)) NOT VALID;
 
@@ -38188,7 +38187,7 @@ CREATE UNIQUE INDEX index_add_on_purchases_on_add_on_id_and_namespace_id_null ON
 
 CREATE INDEX index_add_on_purchases_on_organization_id ON subscription_add_on_purchases USING btree (organization_id);
 
-CREATE UNIQUE INDEX index_admin_roles_on_name ON admin_roles USING btree (name);
+CREATE UNIQUE INDEX index_admin_roles_on_organization_id_and_name ON admin_roles USING btree (organization_id, name);
 
 CREATE INDEX index_agent_activity_events_on_agent_id_and_recorded_at_and_id ON agent_activity_events USING btree (agent_id, recorded_at, id);
 
@@ -48225,6 +48224,9 @@ ALTER TABLE ONLY snippet_statistics
 
 ALTER TABLE ONLY granular_scopes
     ADD CONSTRAINT fk_73a513f489 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY admin_roles
+    ADD CONSTRAINT fk_74591b3a95 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY index_statuses
     ADD CONSTRAINT fk_74b2492545 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

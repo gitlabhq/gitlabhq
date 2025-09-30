@@ -101,7 +101,7 @@ except those captured by `runit`.
 | [Alertmanager logs](#alertmanager-logs)         | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [crond logs](#crond-logs)                       | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [Gitaly](#gitaly-logs)                          | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
-| [GitLab Exporter for Linux package installations](#gitlab-exporter) | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
+| [GitLab Exporter for Linux package installations](#gitlab-exporter-logs) | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [GitLab Pages logs](#pages-logs)                | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
 | GitLab Rails                                    | {{< icon name="check-circle" >}} Yes  | {{< icon name="dotted-circle" >}} No  |
 | [GitLab Shell logs](#gitlab-shelllog)           | {{< icon name="check-circle" >}} Yes  | {{< icon name="dotted-circle" >}} No  |
@@ -1444,11 +1444,11 @@ For Linux package installations, `logrotate` logs are in `/var/log/gitlab/logrot
 
 For Linux package installations, GitLab Monitor logs are in `/var/log/gitlab/gitlab-monitor/`.
 
-## GitLab Exporter
+## GitLab Exporter logs
 
 For Linux package installations, GitLab Exporter logs are in `/var/log/gitlab/gitlab-exporter/current`.
 
-## GitLab agent server for Kubernetes
+## GitLab agent server for Kubernetes logs
 
 For Linux package installations, GitLab agent server for Kubernetes logs are
 in `/var/log/gitlab/gitlab-kas/current`.

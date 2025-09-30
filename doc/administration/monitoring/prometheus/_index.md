@@ -172,7 +172,7 @@ The next step is to tell all the other nodes where the monitoring node is:
 1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to
    take effect.
 
-After monitoring using Service Discovery is enabled with `consul['monitoring_service_discovery'] =  true`,
+After monitoring using Service Discovery is enabled with `consul['monitoring_service_discovery'] = true`,
 ensure that `prometheus['scrape_configs']` is not set in `/etc/gitlab/gitlab.rb`. Setting both
 `consul['monitoring_service_discovery'] = true` and `prometheus['scrape_configs']` in `/etc/gitlab/gitlab.rb` results in errors.
 

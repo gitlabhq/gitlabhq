@@ -245,8 +245,6 @@ module Gitlab
           end
 
           def apply_job_definition_attributes(attrs)
-            return attrs if ::Feature.disabled?(:write_to_new_ci_destinations, @pipeline.project)
-
             attrs.merge(temp_job_definition: build_temp_job_definition(attrs))
           end
 

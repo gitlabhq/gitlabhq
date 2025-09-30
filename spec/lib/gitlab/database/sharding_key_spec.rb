@@ -273,6 +273,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'todos' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/562437',
       # All the tables below related to uploads are part of the same work to
       # add sharding key to the table
+      "admin_roles" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553437",
       "uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "abuse_report_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "achievement_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",

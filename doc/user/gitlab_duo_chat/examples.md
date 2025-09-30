@@ -778,24 +778,16 @@ In GitLab 17.10 and later, you can have multiple simultaneous conversations with
 - In the top-left corner of the Chat drawer, select **New Chat**.
 - In the text box, type `/new` and press <kbd>Enter</kbd> or select **Send**.
 
-## Delete or reset the conversation
+## Delete or start a new conversation
 
-For a single conversation with Chat:
+To delete a conversation, use the [chat history](_index.md#delete-a-conversation).
 
-- To delete all conversations permanently and clear the chat window:
-
-  - In the text box, type `/clear` and select **Send**.
-
-- To start a new conversation, but keep the previous conversations visible in the chat window:
-
-  - In the text box, type `/reset` and select **Send**.
+To clear the chat window and start a new conversation in the same conversation thread,
+type `/reset` and select **Send**.
 
 In both cases, the conversation history will not be considered when you ask new questions.
-Deleting or resetting might help improve the answers when you switch contexts, because Duo Chat will not get confused by the unrelated conversations.
-
-When having multiple conversations with Chat:
-
-- The `/new` slash command replaces the `/clear` and `/reset` slash commands, and opens a new Chat drawer.
+Starting a new conversation might help improve the answers when you switch contexts,
+because Duo Chat will not get confused by the unrelated conversations.
 
 ## GitLab Duo Chat slash commands
 
@@ -821,8 +813,8 @@ Use the commands to quickly accomplish specific tasks.
 
 | Command | Purpose                                                                                                                       |
 |---------|-------------------------------------------------------------------------------------------------------------------------------|
-| /clear  | [Delete all conversations permanently and clear the chat window](#delete-or-reset-the-conversation)                           |
-| /reset  | [Start a new conversation, but keep the previous conversations visible in the chat window](#delete-or-reset-the-conversation) |
+| /new    | [Start a new conversation, but keep the previous conversations in the chat history](#delete-or-start-a-new-conversation)      |
+| /reset  | [Clear the chat window and reset the conversation](#delete-or-start-a-new-conversation)                                       |
 | /help   | Learn more about how Duo Chat works                                                                                           |
 
 {{< alert type="note" >}}
@@ -853,7 +845,6 @@ These commands are dynamic and are available only in the GitLab UI when using Du
 | /summarize_comments    | Generate a summary of all comments on the current issue                                                            | Issues |
 | /troubleshoot          | [Troubleshoot failed CI/CD jobs with Root Cause Analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | Jobs |
 | /vulnerability_explain | [Explain current vulnerability](../application_security/vulnerabilities/_index.md#vulnerability-explanation)      | Vulnerabilities |
-| /new                   | [Create a new Chat conversation](_index.md#have-multiple-conversations). GitLab 17.10 and later.         | All |
 
 ### IDE
 

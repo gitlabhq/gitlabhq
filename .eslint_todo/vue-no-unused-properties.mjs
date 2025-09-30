@@ -54,11 +54,6 @@ export default {
     'app/assets/javascripts/wikis/wiki_notes/components/wiki_notes_app.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/schedule/components/preset_days/days_header_sub_item.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/schedule/components/preset_weeks/weeks_header_item.vue',
-    'ee/app/assets/javascripts/roadmap/components/milestone_item.vue',
-    'ee/app/assets/javascripts/roadmap/components/milestones_list_section.vue',
-    'ee/app/assets/javascripts/roadmap/components/preset_months/months_header_sub_item.vue',
-    'ee/app/assets/javascripts/roadmap/components/preset_quarters/quarters_header_item.vue',
-    'ee/app/assets/javascripts/roadmap/components/preset_quarters/quarters_header_sub_item.vue',
   ],
   rules: {
     'vue/no-unused-properties': 'off',

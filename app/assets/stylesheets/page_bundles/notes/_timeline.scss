@@ -6,7 +6,7 @@
   list-style: none;
 
   &::before {
-    @include notes-media('max', map.get($grid-breakpoints, sm)) {
+    @include notes-media('sm') {
       background: none;
     }
   }

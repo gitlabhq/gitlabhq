@@ -331,8 +331,8 @@ preserving deployment keys and other credentials from being unintentionally
 accessed. To ensure that jobs intended to be executed on protected
 runners do not use regular runners, they must be [tagged](../yaml/_index.md#tags) accordingly.
 
-Review the [documentation](merge_request_pipelines.md#control-access-to-protected-variables-and-runners) to understand how access to
-protected variables and runners work in the context of Merge request pipelines.
+Review how access to protected variables and runners work in the
+[context of Merge request pipelines](merge_request_pipelines.md#control-access-to-protected-variables-and-runners).
 
 Review the [deployment safety](../environments/deployment_safety.md)
 page for additional security recommendations for securing your pipelines.

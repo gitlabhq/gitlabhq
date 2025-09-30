@@ -45,6 +45,21 @@ module Gitlab
       end
     end
 
+    def self.parallel_each(array)
+      raise 'Nested Gitlab::Seeder.parallel_each calls are not allowed.' if @parallel
+
+      @parallel = true
+
+      # Closing gRPC channels before forking prevents segfaults when Ruby
+      # finalizes inherited gRPC objects in the child process.
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/480716#note_2787476778
+      Gitlab::GitalyClient.clear_stubs!
+
+      Parallel.each(array, in_processes: Parallel.processor_count) { |record| yield(record) }
+    ensure
+      @parallel = false
+    end
+
     def self.log_message(message)
       puts "#{Time.current}: #{message}"
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['X509Signature'] do
+RSpec.describe GitlabSchema.types['X509Signature'], feature_category: :source_code_management do
   specify { expect(described_class.graphql_name).to eq('X509Signature') }
 
   specify { expect(described_class).to require_graphql_authorizations(:download_code) }

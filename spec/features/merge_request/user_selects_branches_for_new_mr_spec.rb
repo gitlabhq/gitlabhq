@@ -23,7 +23,7 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
     visit project_merge_requests_path(project)
 
     page.within '.content' do
-      click_link 'New merge request'
+      click_link 'Create merge request'
     end
     expect(page).to have_content('Source branch')
     expect(page).to have_content('Target branch')
@@ -38,7 +38,7 @@ RSpec.describe 'Merge request > User selects branches for new MR', :js, feature_
     visit project_merge_requests_path(project)
 
     page.within '.content' do
-      click_link 'New merge request'
+      click_link 'Create merge request'
     end
 
     expect(page).to have_content('Source branch')

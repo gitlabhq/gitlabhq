@@ -14,8 +14,6 @@ module Gitlab
           end
 
           def run
-            return unless ::Feature.enabled?(:write_to_new_ci_destinations, project)
-
             find_or_insert_job_definitions.each do |job_definition|
               jobs_by_checksum[job_definition.checksum].each do |job|
                 job.build_job_definition_instance(

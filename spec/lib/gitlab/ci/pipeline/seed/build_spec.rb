@@ -1131,14 +1131,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         end
       end
 
-      context 'when write_to_new_ci_destinations and stop_writing_builds_metadata feature flags are disabled' do
+      context 'when stop_writing_builds_metadata feature flag is disabled' do
         before do
-          stub_feature_flags(write_to_new_ci_destinations: false)
           stub_feature_flags(stop_writing_builds_metadata: false)
-        end
-
-        it 'does not include temp_job_definition' do
-          expect(subject).not_to include(:temp_job_definition)
         end
 
         it 'includes original job attributes' do

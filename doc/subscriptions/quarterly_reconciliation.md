@@ -111,7 +111,7 @@ Your subscription billing defaults to the annual true-up process if you:
 
 If your credit card is declined during the quarterly reconciliation process, you receive an email with the subject `Action required: Your GitLab subscription failed to reconcile`. To resolve this issue:
 
-1. [Update your payment information](customers_portal.md#change-your-payment-method).
-1. [Set your chosen payment method as default](customers_portal.md#set-a-default-payment-method).
+1. [Update your payment information](billing_account.md#change-your-payment-method).
+1. [Set your chosen payment method as default](billing_account.md#set-a-default-payment-method).
 
 When the payment method is updated, reconciliation is retried automatically.

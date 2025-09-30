@@ -33,10 +33,10 @@ describe('Merge request list app empty state component', () => {
       createComponent({ hasMergeRequests: false });
 
       expect(findEmptyState().attributes('title')).toBe(
-        'Make a merge request to propose changes to this project.',
+        'Create a merge request to suggest changes to the repository.',
       );
       expect(findEmptyState().attributes('description')).toBe(
-        'Others can contribute by pushing commits to the same branch.',
+        'Use merge requests to propose, collaborate, and review code changes with others.',
       );
     });
   });

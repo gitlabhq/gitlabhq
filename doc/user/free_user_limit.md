@@ -117,7 +117,7 @@ a paid subscription in the Premium or Ultimate tier, make sure that
 to either of the following:
 
 - The correct top-level namespace.
-- Your [Customers Portal](../subscriptions/customers_portal.md) account.
+- Your [Customers Portal](../subscriptions/billing_account.md) account.
 
 ### Impact of transferred groups on subscription costs
 

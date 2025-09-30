@@ -4,6 +4,7 @@ import { reportToSentry } from '~/ci/utils';
 import { s__ } from '~/locale';
 import { InternalEvents } from '~/tracking';
 import { updateGlobalTodoCount } from '~/sidebar/utils';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { INSTRUMENT_TODO_ITEM_CLICK, TODO_STATE_DONE, TODO_STATE_PENDING } from '../constants';
 import markAsDoneMutation from './mutations/mark_as_done.mutation.graphql';
 import markAsPendingMutation from './mutations/mark_as_pending.mutation.graphql';
@@ -59,6 +60,9 @@ export default {
       this.$toast.show(toastProps.text, {
         variant: toastProps.variant,
       });
+    },
+    hideTooltips() {
+      this.$root.$emit(BV_HIDE_TOOLTIP);
     },
     async toggleStatus() {
       this.trackEvent(INSTRUMENT_TODO_ITEM_CLICK, {
@@ -128,6 +132,7 @@ export default {
       class="gl-self-center"
       :aria-label="isDone ? $options.i18n.markAsPending : $options.i18n.markAsDone"
       :title="tooltipTitle"
+      @mouseout="hideTooltips"
       @click="toggleStatus"
     />
   </div>

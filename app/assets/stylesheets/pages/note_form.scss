@@ -238,12 +238,12 @@ table {
 }
 
 .notes.notes-form > li.timeline-entry {
-  @include notes-media('max', map.get($grid-breakpoints, md) - 1) {
+  @include notes-media('md') {
     padding: 0;
   }
 
   .timeline-content {
-    @include notes-media('max', map.get($grid-breakpoints, md) - 1) {
+    @include notes-media('md') {
       margin: 0;
     }
   }

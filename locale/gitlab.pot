@@ -11063,6 +11063,9 @@ msgstr ""
 msgid "Boards|An error occurred while fetching the board lists. Please reload the page."
 msgstr ""
 
+msgid "Boards|An error occurred while fetching the statuses. Please try again."
+msgstr ""
+
 msgid "Boards|An error occurred while fetching unassigned issues. Please try again."
 msgstr ""
 
@@ -19686,6 +19689,9 @@ msgstr ""
 msgid "Create a merge request for this change"
 msgstr ""
 
+msgid "Create a merge request to suggest changes to the repository."
+msgstr ""
+
 msgid "Create a merge request, or edit your criteria and try again."
 msgstr ""
 
@@ -24634,9 +24640,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Config path"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Convert Jenkins to CI"
-msgstr ""
-
 msgid "DuoAgentsPlatform|Could not display logs. Please try again."
 msgstr ""
 
@@ -24689,9 +24692,6 @@ msgid "DuoAgentsPlatform|Edit trigger"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Enter a description for this flow trigger"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Enter the path to your Jenkinsfile."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Event Type"
@@ -24754,9 +24754,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|New flow trigger"
 msgstr ""
 
-msgid "DuoAgentsPlatform|New session"
-msgstr ""
-
 msgid "DuoAgentsPlatform|No agent sessions yet"
 msgstr ""
 
@@ -24767,9 +24764,6 @@ msgid "DuoAgentsPlatform|Once the service account is configured for use with flo
 msgstr ""
 
 msgid "DuoAgentsPlatform|Owner"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Path must be a Jenkinsfile with the exact matching case."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Path to configuration file"
@@ -24812,9 +24806,6 @@ msgid "DuoAgentsPlatform|Something went wrong while fetching Agent Flows"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Start agent session"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Start an agent session"
 msgstr ""
 
 msgid "DuoAgentsPlatform|The flow trigger could not be created. Try again."
@@ -39172,9 +39163,6 @@ msgstr ""
 msgid "MaintenanceMode|There was an error updating the Maintenance Mode Settings"
 msgstr ""
 
-msgid "Make a merge request to propose changes to this project."
-msgstr ""
-
 msgid "Make adjustments to how your GitLab instance is set up."
 msgstr ""
 
@@ -46033,9 +46021,6 @@ msgid "Other versions"
 msgstr ""
 
 msgid "Other visibility settings have been disabled by the administrator."
-msgstr ""
-
-msgid "Others can contribute by pushing commits to the same branch."
 msgstr ""
 
 msgid "Otherwise, click the link below to complete the process."
@@ -69633,8 +69618,8 @@ msgstr ""
 msgid "UsageBilling|%{percentage}%{percentSymbol} utilized"
 msgstr ""
 
-msgid "UsageBilling|%{poolTokensRemaining} pool unit remaining"
-msgid_plural "UsageBilling|%{poolTokensRemaining} pool units remaining"
+msgid "UsageBilling|%{poolCreditsRemaining} pool credit remaining"
+msgid_plural "UsageBilling|%{poolCreditsRemaining} pool credits remaining"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -69648,6 +69633,18 @@ msgid "UsageBilling|An error occurred while fetching data"
 msgstr ""
 
 msgid "UsageBilling|Blocked"
+msgstr ""
+
+msgid "UsageBilling|Credit amount"
+msgstr ""
+
+msgid "UsageBilling|Credits"
+msgstr ""
+
+msgid "UsageBilling|Credits used from pool this month"
+msgstr ""
+
+msgid "UsageBilling|Credits used this month"
 msgstr ""
 
 msgid "UsageBilling|Current month"
@@ -69710,22 +69707,10 @@ msgstr ""
 msgid "UsageBilling|Status"
 msgstr ""
 
-msgid "UsageBilling|Tokens"
-msgstr ""
-
-msgid "UsageBilling|Total units used"
+msgid "UsageBilling|Total credits used"
 msgstr ""
 
 msgid "UsageBilling|Total users (active users)"
-msgstr ""
-
-msgid "UsageBilling|Unit amount"
-msgstr ""
-
-msgid "UsageBilling|Units used from pool this month"
-msgstr ""
-
-msgid "UsageBilling|Units used this month"
 msgstr ""
 
 msgid "UsageBilling|Unknown"
@@ -69755,10 +69740,10 @@ msgstr ""
 msgid "UsageBilling|Using pool"
 msgstr ""
 
-msgid "UsageBilling|You can increase your commitment amount to extend your monthly allocation of tokens."
+msgid "UsageBilling|You can increase your commitment amount to extend your monthly allocation of credits."
 msgstr ""
 
-msgid "UsageBilling|You can purchase a monthly allocation of GitLab Units to be shared across users."
+msgid "UsageBilling|You can purchase a monthly allocation of GitLab Credits to be shared across users."
 msgstr ""
 
 msgid "UsageQuotas|(of %{totalStorageSize})"
@@ -70206,6 +70191,9 @@ msgid "Use issue weight"
 msgstr ""
 
 msgid "Use issues to collaborate on ideas, solve problems, and plan work"
+msgstr ""
+
+msgid "Use merge requests to propose, collaborate, and review code changes with others."
 msgstr ""
 
 msgid "Use one line per URI"

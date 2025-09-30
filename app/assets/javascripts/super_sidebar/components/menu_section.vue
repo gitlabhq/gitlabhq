@@ -115,7 +115,7 @@ export default {
     handlePointerover(e) {
       if (!this.hasFlyout) return;
 
-      this.isMouseOverSection = e.pointerType === 'mouse';
+      this.isMouseOverSection = e.pointerType === 'mouse' || e.pointerType === 'pen';
     },
     handlePointerleave(e) {
       if (!this.hasFlyout) return;
@@ -126,7 +126,7 @@ export default {
       // has a chance to emit its mouseover event.
       // checks pointer type to not mess with touch devices, which fire a pointerleave event before
       // every click!
-      if (e.pointerType === 'mouse') {
+      if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
         setTimeout(() => {
           this.isMouseOverSection = false;
         }, 5);

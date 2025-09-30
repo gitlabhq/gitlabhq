@@ -254,7 +254,7 @@ Conversations that existed before you created any custom rules do not follow tho
    ```
 
 1. Save the file.
-1. To have GitLab Duo Chat follow the new custom rules, start a new conversation, or `/clear` the existing conversation.
+1. To have GitLab Duo Chat follow the new custom rules, start a new conversation.
 
    You must do this every time you change the custom rules.
 
@@ -365,8 +365,8 @@ GitLab Duo Chat (Agentic) extends GitLab Duo Chat (Classic) capabilities with th
 | Retrieve issues and MRs without specifying IDs |          No |                                                            Yes. Search by other criteria. For example, an MR or issue's title or assignee.                                       |
 | Combine information from multiple sources |               No |                                                            Yes                                                                                                                   |
 | Analyze pipeline logs |                                   Yes. Requires Duo Enterprise add-on. |                          Yes                                                                                                                   |
-| Restart a conversation |                                  Yes. Use `/reset`. |                                            Yes. Use `/reset`.                                                                                                    |
-| Delete a conversation |                                   Yes. Use `/clear`.|                                             Yes, in the chat history                                                                                                            |
+| Restart a conversation |                                  Yes. Use `/new` or `/reset`. |                             Yes. Use `/new` or, if in the UI, `/reset`.                                                                                       |
+| Delete a conversation |                                   Yes, in the chat history.|                                             Yes, in the chat history                                                                                                            |
 | Create issues and MRs |                                   No |                                                            Yes                                                                                                                   |
 | Use Git read-only commands |                                                 No |                                                            Yes                                                  |
 | Use Git write commands |                                                 No |                                                            Yes, UI only                                                  |
