@@ -430,6 +430,10 @@ module API
       authorize! :admin_member_role
     end
 
+    def authorize_read_attestations!
+      authorize! :read_attestation, user_project
+    end
+
     def authorize_read_builds!
       authorize! :read_build, user_project
     end

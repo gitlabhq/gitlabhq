@@ -90,7 +90,6 @@ RSpec/BeEq:
     - 'ee/spec/lib/ee/api/helpers/members_helpers_spec.rb'
     - 'ee/spec/lib/ee/gitlab/auth/auth_finders_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/make_security_policy_bots_private_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/pipeline/chain/command_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/pipeline/chain/validate/abilities_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/project_config_spec.rb'

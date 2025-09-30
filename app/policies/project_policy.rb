@@ -1263,6 +1263,8 @@ class ProjectPolicy < BasePolicy
     enable :invite_project_members
   end
 
+  rule { can?(:read_project) }.enable :read_attestation
+
   private
 
   def project_archived_or_ancestors_archived?

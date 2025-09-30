@@ -12,7 +12,6 @@ Migration/BatchedMigrationBaseClass:
     - 'lib/gitlab/background_migration/fix_projects_without_project_feature.rb'
     - 'lib/gitlab/background_migration/fix_projects_without_prometheus_service.rb'
     - 'lib/gitlab/background_migration/mailers/unconfirm_mailer.rb'
-    - 'lib/gitlab/background_migration/migrate_approver_to_approval_rules.rb'
     - 'lib/gitlab/background_migration/migrate_null_private_profile_to_false.rb'
     - 'lib/gitlab/background_migration/populate_latest_pipeline_ids.rb'
     - 'lib/gitlab/background_migration/project_namespaces/models/namespace.rb'

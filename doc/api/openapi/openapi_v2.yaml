@@ -38161,6 +38161,37 @@ paths:
       tags:
       - projects
       operationId: putApiV4ProjectsIdRepositorySubmodulesSubmodule
+  "/api/v4/projects/{id}/attestations/{subject_digest}":
+    get:
+      summary: Fetch the list of all attestations for a specific project and artifact
+        hash
+      description: This feature was introduced in GitLab 18.5
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: subject_digest
+        description: The SHA-256 hash of the artifact
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Fetch the list of all attestations for a specific project and
+            artifact hash
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Artifact not found
+      tags:
+      - projects
+      operationId: getApiV4ProjectsIdAttestationsSubjectDigest
   "/api/v4/projects/{id}/repository/tags":
     get:
       description: Get a project repository tags

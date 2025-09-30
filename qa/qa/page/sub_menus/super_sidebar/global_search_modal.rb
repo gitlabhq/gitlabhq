@@ -25,6 +25,10 @@ module QA
               view 'app/assets/javascripts/super_sidebar/components/user_bar.vue' do
                 element 'super-sidebar-search-button'
               end
+
+              view 'app/assets/javascripts/super_sidebar/components/super_topbar.vue' do
+                element 'super-topbar-search-button'
+              end
             end
           end
 
@@ -37,7 +41,12 @@ module QA
           end
 
           def go_to_admin_area
-            go_to_places_item("Admin area")
+            if Runtime::Env.project_studio_enabled?
+              click_element('topbar-admin-link')
+              expand_sidebar_if_collapsed
+            else
+              go_to_places_item("Admin area")
+            end
 
             return unless has_text?('Enter admin mode', wait: 1.0)
 
@@ -70,7 +79,11 @@ module QA
           end
 
           def open_global_search_modal
-            click_element('super-sidebar-search-button')
+            if Runtime::Env.project_studio_enabled?
+              click_element('super-topbar-search-button')
+            else
+              click_element('super-sidebar-search-button')
+            end
           end
         end
       end

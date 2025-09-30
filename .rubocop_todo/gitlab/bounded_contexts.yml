@@ -2644,7 +2644,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/models/concerns/app_sec/dast/url_addressable.rb'
     - 'ee/app/models/concerns/approval_rule_like.rb'
     - 'ee/app/models/concerns/approval_rule_user_like.rb'
-    - 'ee/app/models/concerns/approver_migrate_hook.rb'
     - 'ee/app/models/concerns/auditable.rb'
     - 'ee/app/models/concerns/custom_model_naming.rb'
     - 'ee/app/models/concerns/deprecated_approvals_before_merge.rb'

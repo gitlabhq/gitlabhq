@@ -33,7 +33,6 @@ Performance/ActiveRecordSubtransactionMethods:
     - 'ee/app/services/boards/user_preferences/update_service.rb'
     - 'ee/app/services/security/store_scan_service.rb'
     - 'ee/db/fixtures/production/027_plans.rb'
-    - 'ee/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules.rb'
     - 'ee/lib/gitlab/elastic/indexer.rb'
     - 'lib/gitlab/ci/pipeline/seed/processable/resource_group.rb'
     - 'lib/gitlab/ci/trace/chunked_io.rb'

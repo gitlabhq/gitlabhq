@@ -26,7 +26,6 @@ GitLab does not limit the number of private projects you can create.
 - [Project visibility](../public_access.md)
 - [Project settings](working_with_projects.md)
 - [Description templates](description_templates.md)
-- [Project access tokens](settings/project_access_tokens.md)
 - [Deploy keys](deploy_keys/_index.md)
 - [Deploy tokens](deploy_tokens/_index.md)
 - [Reserved project and group names](../reserved_names.md)

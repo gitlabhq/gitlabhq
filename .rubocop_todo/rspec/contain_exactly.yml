@@ -35,7 +35,6 @@ RSpec/ContainExactly:
     - 'ee/spec/helpers/projects/learn_gitlab_helper_spec.rb'
     - 'ee/spec/lib/ee/api/entities/issue_spec.rb'
     - 'ee/spec/lib/ee/gitlab/application_context_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_spec.rb'
     - 'ee/spec/lib/gitlab/ci/pipeline/chain/create_cross_database_associations_spec.rb'
     - 'ee/spec/lib/gitlab/code_owners/file_spec.rb'
     - 'ee/spec/models/approval_project_rule_spec.rb'

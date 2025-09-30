@@ -15,9 +15,9 @@ To get started, [install and configure the extension](setup.md).
 
 When configured, this extension brings the GitLab features you use every day directly into your VS Code environment:
 
-- View issues and merge requests.
+- Create and view issues.
+- Create, view, and review merge requests.
 - [Run common commands](settings.md#command-palette-commands) from the Visual Studio Code Command Palette.
-- Create and review merge requests.
 - [Test your GitLab CI/CD configuration](cicd.md#test-gitlab-cicd-configuration).
 - [View pipeline status](cicd.md) and [job outputs](cicd.md#view-cicd-job-output).
 - Create and manage snippets.
@@ -173,6 +173,31 @@ To view issues and merge requests for a specific project:
    - Your [custom queries](custom_queries.md)
 
 Select an issue or merge request to open it in a new VS Code tab.
+
+## Create an issue
+
+To create an issue in the current project:
+
+1. Open the Command Palette:
+   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In the Command Palette, search for **GitLab: Create new issue on current project**
+   and press <kbd>Enter</kbd>.
+
+GitLab opens the **New issue** page in your default browser.
+
+## Create a merge request
+
+To create a merge request in the current project, on the bottom status bar, select
+**Create MR** ({{< icon name="merge-request-open" >}}) or:
+
+1. Open the Command Palette:
+   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. In the Command Palette, search for **GitLab: Create new merge request from current project**
+   and press <kbd>Enter</kbd>.
+
+GitLab opens the **New merge request** page in your default browser.
 
 ## Review a merge request
 

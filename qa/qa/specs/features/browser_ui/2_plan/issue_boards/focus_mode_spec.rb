@@ -9,7 +9,12 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'focuses on issue board', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347996' do
+      it 'focuses on issue board', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347996',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/567702',
+          type: :bug,
+          only: { job: "gdk-instance-project-studio" }
+        } do
         project.visit!
 
         Page::Project::Menu.perform(&:go_to_issue_boards)

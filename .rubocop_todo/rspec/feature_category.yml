@@ -671,7 +671,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/models/ci/daily_build_group_report_result_spec.rb'
     - 'ee/spec/models/ci/subscriptions/project_spec.rb'
     - 'ee/spec/models/commit_spec.rb'
-    - 'ee/spec/models/concerns/approver_migrate_hook_spec.rb'
     - 'ee/spec/models/concerns/ee/milestoneable_spec.rb'
     - 'ee/spec/models/concerns/ee/noteable_spec.rb'
     - 'ee/spec/models/concerns/ee/participable_spec.rb'

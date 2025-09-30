@@ -20,6 +20,9 @@ module SupplyChain
 
     validates :subject_digest, uniqueness: { scope: [:project_id, :predicate_kind] }
 
+    scope :for_project, ->(project_id) { where(project_id: project_id) }
+    scope :with_digest, ->(subject_digest) { where(subject_digest: subject_digest) }
+
     attribute :file_store, default: -> { AttestationUploader.default_store }
 
     mount_file_store_uploader AttestationUploader

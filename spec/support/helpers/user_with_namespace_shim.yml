@@ -125,7 +125,6 @@
 - ee/spec/helpers/projects/security/discover_helper_spec.rb
 - ee/spec/helpers/subscriptions_helper_spec.rb
 - ee/spec/lib/ee/api/entities/user_with_admin_spec.rb
-- ee/spec/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_spec.rb
 - ee/spec/lib/ee/gitlab/ci/pipeline/chain/validate/external_spec.rb
 - ee/spec/lib/ee/gitlab/import_export/project/tree_restorer_spec.rb
 - ee/spec/lib/ee/gitlab/issuable_metadata_spec.rb

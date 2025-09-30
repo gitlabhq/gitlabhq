@@ -347,6 +347,7 @@ module API
         mount ::API::Statistics
         mount ::API::Submodules
         mount ::API::Suggestions
+        mount ::API::SupplyChain::Attestations
         mount ::API::SystemHooks
         mount ::API::Tags
         mount ::API::Terraform::Modules::V1::NamespacePackages
