@@ -79,9 +79,9 @@ module WorkItemsHelper
 
   def rss_path_for(resource_parent)
     if resource_parent.is_a?(Group)
-      group_work_items_path(resource_parent, format: :atom)
+      group_work_items_path(resource_parent, format: :atom, feed_token: generate_feed_token(:atom))
     else
-      project_work_items_path(resource_parent, format: :atom)
+      project_work_items_path(resource_parent, format: :atom, feed_token: generate_feed_token(:atom))
     end
   end
 

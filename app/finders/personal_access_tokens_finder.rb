@@ -15,6 +15,7 @@ class PersonalAccessTokensFinder
     tokens = by_current_user(tokens)
     tokens = by_user(tokens)
     tokens = by_users(tokens)
+    tokens = by_user_types(tokens)
     tokens = by_impersonation(tokens)
     tokens = by_state(tokens)
     tokens = by_owner_type(tokens)
@@ -27,6 +28,7 @@ class PersonalAccessTokensFinder
     tokens = by_last_used_after(tokens)
     tokens = by_search(tokens)
     tokens = by_organization(tokens)
+    tokens = by_group(tokens)
     tokens = tokens.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/436657")
 
     sort(tokens)
@@ -49,7 +51,11 @@ class PersonalAccessTokensFinder
   def by_owner_type(tokens)
     case @params[:owner_type]
     when 'human'
-      tokens.owner_is_human
+      if Feature.enabled?(:optimize_credentials_inventory, params[:group] || :instance)
+        tokens.for_user_types(:human)
+      else
+        tokens.owner_is_human
+      end
     else
       tokens
     end
@@ -65,6 +71,12 @@ class PersonalAccessTokensFinder
     return tokens unless @params[:users]
 
     tokens.for_users(@params[:users])
+  end
+
+  def by_user_types(tokens)
+    return tokens unless @params[:user_types]
+
+    tokens.for_user_types(@params[:user_types])
   end
 
   def sort(tokens)
@@ -149,6 +161,13 @@ class PersonalAccessTokensFinder
     return tokens unless params[:organization]
 
     tokens.for_organization(params[:organization])
+  end
+
+  def by_group(tokens)
+    return tokens unless params[:group]
+    return tokens unless Feature.enabled?(:optimize_credentials_inventory, params[:group])
+
+    tokens.for_group(params[:group])
   end
 end
 

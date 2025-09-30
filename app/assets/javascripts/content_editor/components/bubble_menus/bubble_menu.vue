@@ -1,8 +1,10 @@
 <script>
 import { BubbleMenuPlugin } from '@tiptap/extension-bubble-menu';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   name: 'BubbleMenu',
+  mixins: [glFeatureFlagsMixin()],
   inject: ['tiptapEditor'],
   props: {
     ariaLabel: {
@@ -32,6 +34,8 @@ export default {
   async mounted() {
     await this.$nextTick();
 
+    const strategy = this.glFeatures.projectStudioEnabled ? 'absolute' : 'fixed';
+
     this.tiptapEditor.registerPlugin(
       BubbleMenuPlugin({
         pluginKey: this.pluginKey,
@@ -49,7 +53,7 @@ export default {
             this.menuVisible = false;
           },
           popperOptions: {
-            strategy: 'fixed',
+            strategy,
           },
           maxWidth: '400px',
         },

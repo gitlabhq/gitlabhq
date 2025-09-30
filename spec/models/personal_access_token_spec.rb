@@ -178,6 +178,42 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
       end
     end
 
+    describe '.for_user_types' do
+      let_it_be(:human_user) { create(:user) }
+      let_it_be(:service_account_user) { create(:user, :service_account) }
+      let_it_be(:project_bot_user) { create(:user, :project_bot) }
+
+      let_it_be(:human_user_personal_access_token1) do
+        create(:personal_access_token, user: human_user)
+      end
+
+      let_it_be(:human_user_personal_access_token2) do
+        create(:personal_access_token, user: human_user)
+      end
+
+      let_it_be(:service_account_user_personal_access_token) do
+        create(:personal_access_token, user: service_account_user)
+      end
+
+      let_it_be(:project_bot_user_personal_access_token) do
+        create(:personal_access_token, user: project_bot_user)
+      end
+
+      it 'returns personal access tokens for the specified user types only', :aggregate_failures do
+        expect(described_class.for_user_types([:human, :service_account]))
+          .to contain_exactly(
+            human_user_personal_access_token1,
+            human_user_personal_access_token2,
+            service_account_user_personal_access_token
+          )
+
+        expect(described_class.for_user_types([:project_bot]))
+          .to contain_exactly(
+            project_bot_user_personal_access_token
+          )
+      end
+    end
+
     describe '.created_before' do
       let(:last_used_at) { 1.month.ago.beginning_of_hour }
       let!(:new_used_token) do
@@ -304,6 +340,21 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
       it "returns personal access tokens for the specified organization only" do
         expect(described_class.for_organization(organization)).to contain_exactly(personal_access_token)
+      end
+    end
+
+    describe ".for_group" do
+      let_it_be(:group) { create(:group) }
+      let_it_be(:personal_access_token1) { create(:personal_access_token, group: group) }
+      let_it_be(:personal_access_token2) { create(:personal_access_token) }
+      let_it_be(:personal_access_token3) { create(:personal_access_token, group: group) }
+      let_it_be(:personal_access_token4) { create(:personal_access_token, group: create(:group)) }
+
+      it "returns personal access tokens for the specified group only" do
+        expect(described_class.for_group(group)).to contain_exactly(
+          personal_access_token1,
+          personal_access_token3
+        )
       end
     end
   end
@@ -786,7 +837,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
   describe '.simple_sorts' do
     it 'includes overridden keys' do
-      expect(described_class.simple_sorts.keys).to include(*%w[expires_asc expires_at_asc_id_desc expires_desc last_used_asc last_used_desc])
+      expect(described_class.simple_sorts.keys).to include(*%w[created_asc created_desc expires_asc expires_desc last_used_asc last_used_desc])
     end
 
     it 'returns a valid ActiveRecord::Relation for each sort' do
@@ -812,15 +863,36 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     end
   end
 
+  describe 'ordering by created_at' do
+    let_it_be(:earlier_token) { create(:personal_access_token, created_at: 2.days.ago) }
+    let_it_be(:later_token) { create(:personal_access_token, created_at: 1.day.ago) }
+
+    describe '.order_created_at_asc_id_asc' do
+      let_it_be(:earlier_token_2) { create(:personal_access_token, created_at: 2.days.ago) }
+
+      it 'returns ordered list in combination of created_at ascending and id ascending' do
+        expect(described_class.order_created_at_asc_id_asc).to eq [earlier_token, earlier_token_2, later_token]
+      end
+    end
+
+    describe '.order_created_at_desc_id_desc' do
+      let_it_be(:earlier_token_2) { create(:personal_access_token, created_at: 2.days.ago) }
+
+      it 'returns ordered list in combination of created_at descending and id descending' do
+        expect(described_class.order_created_at_desc_id_desc).to eq [later_token, earlier_token_2, earlier_token]
+      end
+    end
+  end
+
   describe 'ordering by expires_at' do
     let_it_be(:earlier_token) { create(:personal_access_token, expires_at: 2.days.ago) }
     let_it_be(:later_token) { create(:personal_access_token, expires_at: 1.day.ago) }
 
-    describe '.order_expires_at_asc_id_desc' do
+    describe '.order_expires_at_asc_id_asc' do
       let_it_be(:earlier_token_2) { create(:personal_access_token, expires_at: 2.days.ago) }
 
-      it 'returns ordered list in combination of expires_at ascending and id descending' do
-        expect(described_class.order_expires_at_asc_id_desc).to eq [earlier_token_2, earlier_token, later_token]
+      it 'returns ordered list in combination of expires_at ascending and id ascending' do
+        expect(described_class.order_expires_at_asc_id_asc).to eq [earlier_token, earlier_token_2, later_token]
       end
     end
 
@@ -838,11 +910,11 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
     let_it_be(:earlier_token) { create(:personal_access_token, last_used_at: two_days_ago) }
     let_it_be(:later_token) { create(:personal_access_token, last_used_at: 1.day.ago) }
 
-    describe '.order_last_used_at_asc_id_desc' do
+    describe '.order_last_used_at_asc_id_asc' do
       let_it_be(:earlier_token_2) { create(:personal_access_token, last_used_at: two_days_ago) }
 
-      it 'returns ordered list in combination of last_used_at ascending and id descending' do
-        expect(described_class.order_last_used_at_asc_id_desc).to eq [earlier_token_2, earlier_token, later_token]
+      it 'returns ordered list in combination of last_used_at ascending and id ascending' do
+        expect(described_class.order_last_used_at_asc_id_asc).to eq [earlier_token, earlier_token_2, later_token]
       end
     end
 

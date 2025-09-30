@@ -79,9 +79,7 @@ FactoryBot.define do
     before(:create) do |token, evaluator|
       bot_namespace = evaluator.resource.is_a?(Group) ? evaluator.resource : evaluator.resource.project_namespace
       token.user.update!(bot_namespace: bot_namespace)
-    end
 
-    after(:create) do |token, evaluator|
       evaluator.resource.add_member(token.user, evaluator.access_level)
     end
 

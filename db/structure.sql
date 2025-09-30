@@ -41312,6 +41312,12 @@ CREATE INDEX index_pats_on_expiring_at_sixty_days_notification_sent_at ON person
 
 CREATE INDEX index_pats_on_expiring_at_thirty_days_notification_sent_at ON personal_access_tokens USING btree (expires_at, id) WHERE ((impersonation = false) AND (revoked = false) AND (thirty_days_notification_sent_at IS NULL));
 
+CREATE INDEX index_pats_on_group_id_and_user_type_and_created_at_and_id ON personal_access_tokens USING btree (group_id, user_type, created_at, id) WHERE (impersonation = false);
+
+CREATE INDEX index_pats_on_group_id_and_user_type_and_expires_at_and_id ON personal_access_tokens USING btree (group_id, user_type, expires_at, id) WHERE (impersonation = false);
+
+CREATE INDEX index_pats_on_group_id_and_user_type_and_last_used_at_and_id ON personal_access_tokens USING btree (group_id, user_type, last_used_at, id) WHERE (impersonation = false);
+
 CREATE INDEX index_pats_on_user_id_and_created_at_and_pat_id ON personal_access_tokens USING btree (user_id, created_at, id) WHERE (impersonation = false);
 
 CREATE INDEX index_pats_on_user_id_and_expires_at_and_pat_id ON personal_access_tokens USING btree (user_id, expires_at, id DESC) WHERE (impersonation = false);

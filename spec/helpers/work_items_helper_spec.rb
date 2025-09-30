@@ -15,6 +15,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
   describe '#work_items_data' do
     before do
       allow(helper).to receive(:current_user).and_return(current_user)
+      allow(helper).to receive(:generate_feed_token).with(:atom).and_return('test-feed-token')
     end
 
     describe 'with project context' do
@@ -48,7 +49,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             releases_path: project_releases_path(project, format: :json),
             project_import_jira_path: project_import_jira_path(project),
             can_read_crm_contact: 'true',
-            rss_path: project_work_items_path(project, format: :atom),
+            rss_path: project_work_items_path(project, format: :atom, feed_token: 'test-feed-token'),
             calendar_path: project_work_items_path(project, format: :ics),
             can_import_work_items: "true",
             can_edit: "true",
@@ -118,7 +119,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             project_namespace_full_path: group.full_path,
             default_branch: nil,
             is_issue_repositioning_disabled: 'false',
-            rss_path: group_work_items_path(group, format: :atom),
+            rss_path: group_work_items_path(group, format: :atom, feed_token: 'test-feed-token'),
             calendar_path: group_work_items_path(group, format: :ics)
           }
         )

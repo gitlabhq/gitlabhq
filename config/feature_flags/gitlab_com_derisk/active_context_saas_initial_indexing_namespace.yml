@@ -1,0 +1,13 @@
+---
+name: active_context_saas_initial_indexing_namespace
+description: |
+  Controls the initial indexing of namespaces for AI Active Context Code feature
+  on SaaS. When enabled globally, all eligible namespaces are indexed. When
+  enabled per-namespace, only specific namespaces are indexed.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/569746
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206226
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/569746
+milestone: '18.5'
+group: group::global search
+type: gitlab_com_derisk
+default_enabled: false
