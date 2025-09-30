@@ -120,13 +120,13 @@ GitLab-managed credentials are available only for Anthropic Claude.
 
 Prerequisites:
 
-- On GitLab.com, you must have the Owner role in the top-level group that the project belongs to.
-- On GitLab Self-Managed and GitLab Dedicated, you must either:
+- On GitLab.com, you must have the Owner role for the top-level group the project belongs to.
+- On GitLab Self-Managed and GitLab Dedicated, you must have one of the following:
+  - Administrator access to the instance.
+  - The Owner role for a top-level group and
+    [permission to create service accounts](../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
 
-  - Be an administrator for the instance.
-  - Have the Owner role in a top-level group and [be allowed to create service accounts](../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
-
-There must be a unique [service account](../../user/profile/service_accounts.md)
+A unique [service account](../../user/profile/service_accounts.md) must exist
 for each project where you want to mention a CLI agent. The service account username
 is the name you mention when giving the CLI agent a task.
 
@@ -154,22 +154,22 @@ of the service account. If you enter the wrong name, the CLI agent does not work
 
 Prerequisites:
 
-- You must have at least the Maintainer role in the project.
+- You must have at least the Maintainer role for the project.
 
 Add the following CI/CD variables to your project's settings:
 
-| Integration         | Environment Variable      | Definition |
-|---------------------|---------------------------|------------|
-| All                 | `GITLAB_TOKEN_<integration>`   | Personal access token for the service account user |
-| All                 | `GITLAB_HOST`                  | GitLab instance hostname (for example, `gitlab.com`) |
-| Anthropic Claude, Opencode | `ANTHROPIC_API_KEY`  | Anthropic API key (optional when `injectGatewayToken: true` is set) |
-| OpenAI Codex        | `OPENAI_API_KEY`               | OpenAI API key |
-| Amazon Q            | `AWS_SECRET_NAME`              | AWS Secret Manager secret name |
-| Amazon Q            | `AWS_REGION_NAME`              | AWS region name |
-| Amazon Q            | `AMAZON_Q_SIGV4`               | Amazon Q Sig V4 credentials |
-| Google Gemini CLI   | `GOOGLE_CREDENTIALS`           | JSON credentials file contents |
-| Google Gemini CLI   | `GOOGLE_CLOUD_PROJECT`         | Google Cloud project ID |
-| Google Gemini CLI   | `GOOGLE_CLOUD_LOCATION`        | Google Cloud project location |
+| Integration                | Environment variable         | Description |
+|----------------------------|------------------------------|-------------|
+| All                        | `GITLAB_TOKEN_<integration>` | Personal access token for the service account user. |
+| All                        | `GITLAB_HOST`                | GitLab instance hostname (for example, `gitlab.com`). |
+| Anthropic Claude, Opencode | `ANTHROPIC_API_KEY`          | Anthropic API key (optional when `injectGatewayToken: true` is set). |
+| OpenAI Codex               | `OPENAI_API_KEY`             | OpenAI API key. |
+| Amazon Q                   | `AWS_SECRET_NAME`            | AWS Secret Manager secret name. |
+| Amazon Q                   | `AWS_REGION_NAME`            | AWS region name. |
+| Amazon Q                   | `AMAZON_Q_SIGV4`             | Amazon Q Sig V4 credentials. |
+| Google Gemini CLI          | `GOOGLE_CREDENTIALS`         | JSON credentials file contents. |
+| Google Gemini CLI          | `GOOGLE_CLOUD_PROJECT`       | Google Cloud project ID. |
+| Google Gemini CLI          | `GOOGLE_CLOUD_LOCATION`      | Google Cloud project location. |
 
 To add or update a variable in the project settings:
 
@@ -197,7 +197,7 @@ For more information, see how to [add CI/CD variables to a project's settings](.
 
 Prerequisites:
 
-- You must have at least the Developer role in the project.
+- You must have at least the Developer role for the project.
 
 To tell GitLab how to run the CLI agent for your environment, in your project,
 create a flow configuration file. For example, `.gitlab/duo/flows/claude.yaml`.
@@ -257,9 +257,9 @@ commands:
     `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
 
     If you are asked to summarize a merge request or issue, or asked to provide more information, then please post back a note to the merge request / issue so that the user can see it.
-    
+
     </important>
-    "  
+    "
 variables:
   - GITLAB_TOKEN_CLAUDE
   - GITLAB_HOST
@@ -302,7 +302,7 @@ commands:
     `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
 
     If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
-    
+
     </important>
     "
 variables:
@@ -353,7 +353,7 @@ commands:
     `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
 
     If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
-    
+
     </important>
     "
 variables:
@@ -445,7 +445,7 @@ commands:
     `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
 
     If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
-    
+
     </important>
     "
 variables:
@@ -494,7 +494,7 @@ commands:
     `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
 
     If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
-    
+
     </important>
     "
 variables:
@@ -542,7 +542,7 @@ commands:
     `glab mr create --title "<title>" --description "<desc>" --source-branch <branch> --target-branch <branch>`
 
     If you are asked to summarize a merge request or issue, or asked to provide more information then please post back a note to the merge request / issue so that the user can see it.
-    
+
     </important>
     "
 variables:
@@ -605,7 +605,7 @@ a task. The CLI agent then tries to accomplish that task, using the flow trigger
 
 Prerequisites:
 
-- You must have at least the Developer role in the project.
+- You must have at least the Developer role for the project.
 
 1. In your project, open an issue, merge request, or epic.
 1. Add a comment on the task you want the CLI agent to complete, mentioning the service account user.

@@ -39,7 +39,7 @@ class AbuseReport < ApplicationRecord
   has_many :notes, class_name: 'AntiAbuse::Reports::Note'
   has_many :user_mentions, class_name: 'AntiAbuse::Reports::UserMention'
 
-  validates :reporter, presence: true, on: :create
+  validates :reporter, presence: true
   validates :user, presence: true, on: :create
   validates :organization_id, presence: true, on: :create
   validates :message, presence: true

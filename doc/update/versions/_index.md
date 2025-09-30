@@ -6,7 +6,8 @@ title: GitLab upgrade notes
 description: Version-specific upgrade information and breaking changes for GitLab releases.
 ---
 
-Upgrade notes for supported GitLab versions.
+Upgrade notes for supported GitLab versions. For upgrade notes for older versions, see the
+[GitLab documentation archives](https://archives.docs.gitlab.com).
 
 {{< cards >}}
 
@@ -14,9 +15,5 @@ Upgrade notes for supported GitLab versions.
 - [GitLab 17 upgrade notes](gitlab_17_changes.md)
 - [GitLab 16 upgrade notes](gitlab_16_changes.md)
 - [GitLab 15 upgrade notes](gitlab_15_changes.md)
-- [GitLab Helm chart 9.0 upgrade notes](https://docs.gitlab.com/charts/releases/9_0/")
-- [GitLab Helm chart 8.0 upgrade notes](https://docs.gitlab.com/charts/releases/8_0/")
-- [GitLab Helm chart 7.0 upgrade notes](https://docs.gitlab.com/charts/releases/7_0/")
-- [GitLab Helm chart 6.0 upgrade notes](https://docs.gitlab.com/charts/releases/6_0/")
 
 {{< /cards >}}

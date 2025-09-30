@@ -74432,7 +74432,7 @@ msgstr ""
 msgid "WorkItem|Magenta"
 msgstr ""
 
-msgid "WorkItem|Make default for %{defaultState} issues"
+msgid "WorkItem|Make default for %{defaultState} items"
 msgstr ""
 
 msgid "WorkItem|Mark as done"

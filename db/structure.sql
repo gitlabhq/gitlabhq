@@ -9648,7 +9648,8 @@ CREATE TABLE abuse_reports (
     CONSTRAINT abuse_reports_links_to_spam_length_check CHECK ((cardinality(links_to_spam) <= 20)),
     CONSTRAINT check_4b0a5120e0 CHECK ((char_length(screenshot) <= 255)),
     CONSTRAINT check_ab1260fa6c CHECK ((char_length(reported_from_url) <= 512)),
-    CONSTRAINT check_f3c0947a2d CHECK ((char_length(mitigation_steps) <= 1000))
+    CONSTRAINT check_f3c0947a2d CHECK ((char_length(mitigation_steps) <= 1000)),
+    CONSTRAINT check_fc643d4880 CHECK ((reporter_id IS NOT NULL))
 );
 
 CREATE SEQUENCE abuse_reports_id_seq
@@ -38159,6 +38160,8 @@ CREATE INDEX index_abuse_reports_on_assignee_id ON abuse_reports USING btree (as
 
 CREATE INDEX index_abuse_reports_on_organization_id ON abuse_reports USING btree (organization_id);
 
+CREATE INDEX index_abuse_reports_on_reporter_id ON abuse_reports USING btree (reporter_id);
+
 CREATE INDEX index_abuse_reports_on_resolved_by_id ON abuse_reports USING btree (resolved_by_id);
 
 CREATE INDEX index_abuse_reports_on_status_and_created_at ON abuse_reports USING btree (status, created_at);
@@ -49142,6 +49145,9 @@ ALTER TABLE ONLY operations_strategies_user_lists
 
 ALTER TABLE ONLY incident_management_timeline_events
     ADD CONSTRAINT fk_d606a2a890 FOREIGN KEY (promoted_from_note_id) REFERENCES notes(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY abuse_reports
+    ADD CONSTRAINT fk_d6848ca5d2 FOREIGN KEY (reporter_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY lists
     ADD CONSTRAINT fk_d6cf4279f7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

@@ -23,7 +23,6 @@ Lint/ConstantDefinitionInBlock:
     - 'ee/lib/gitlab/subscription_portal/clients/rest.rb'
     - 'ee/lib/tasks/geo.rake'
     - 'ee/spec/db/schema_support.rb'
-    - 'lib/api/search.rb'
     - 'lib/tasks/cache.rake'
     - 'lib/tasks/dev.rake'
     - 'lib/tasks/gitlab/db.rake'

@@ -137,6 +137,7 @@
 - ee/spec/lib/gitlab/llm/chain/tools/embeddings_completion_spec.rb
 - ee/spec/lib/gitlab/search/zoekt/client_spec.rb
 - ee/spec/lib/gitlab/subscription_portal/clients/graphql_spec.rb
+- ee/spec/lib/security/security_orchestration_policies/policy_scope_checker_spec.rb
 - ee/spec/lib/sidebars/groups/menus/analytics_menu_spec.rb
 - ee/spec/migrations/20220831132802_delete_approval_rules_for_vulnerability_spec.rb
 - ee/spec/migrations/20220907122648_populate_security_orchestration_policy_configuration_id_spec.rb

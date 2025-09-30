@@ -42,7 +42,7 @@ RSpec.describe AbuseReport, feature_category: :insider_threat do
     let(:ftp)   { 'ftp://example.com' }
     let(:javascript) { 'javascript:alert(window.opener.document.location)' }
 
-    it { is_expected.to validate_presence_of(:reporter).on(:create) }
+    it { is_expected.to validate_presence_of(:reporter) }
     it { is_expected.to validate_presence_of(:user).on(:create) }
     it { is_expected.to validate_presence_of(:message) }
     it { is_expected.to validate_presence_of(:category) }

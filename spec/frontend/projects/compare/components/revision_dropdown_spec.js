@@ -1,4 +1,3 @@
-import { nextTick } from 'vue';
 import { GlCollapsibleListbox } from '@gitlab/ui';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -153,17 +152,15 @@ describe('RevisionDropdown component', () => {
         },
       });
 
-      const mockClose = jest.spyOn(
-        wrapper.vm.$refs.collapsibleDropdown.$refs.baseDropdown,
-        'close',
-      );
-
       findGlListbox().vm.$emit('shown');
+      findGlListbox().find('button').vm.$emit('click');
+
+      expect(findGlListbox().emitted('hidden')).toBeUndefined();
+
       findGlListboxSearchInput().element.value = mockCommitHash;
       await findGlListboxSearchInput().trigger('keydown', { code: keyCode });
-      await nextTick();
 
-      expect(mockClose).toHaveBeenCalled();
+      expect(findGlListbox().emitted('hidden')).toHaveLength(1);
       expect(findGlListbox().props('toggleText')).toBe(mockCommitHash);
     });
 
@@ -175,17 +172,15 @@ describe('RevisionDropdown component', () => {
         },
       });
 
-      const mockClose = jest.spyOn(
-        wrapper.vm.$refs.collapsibleDropdown.$refs.baseDropdown,
-        'close',
-      );
-
       findGlListbox().vm.$emit('shown');
+      findGlListbox().find('button').vm.$emit('click');
+
+      expect(findGlListbox().emitted('hidden')).toBeUndefined();
+
       findGlListboxSearchInput().element.value = mockCommitHash;
       await findGlListboxSearchInput().trigger('keydown', { code: 'Escape' });
-      await nextTick();
 
-      expect(mockClose).not.toHaveBeenCalled();
+      expect(findGlListbox().emitted('hidden')).toBeUndefined();
       expect(findGlListbox().props('toggleText')).toBe(defaultProps.paramsBranch);
     });
   });

@@ -5,6 +5,19 @@ module API
     include PaginationParams
     include APIGuard
 
+    SCOPE_ENTITY = {
+      merge_requests: Entities::MergeRequestBasic,
+      issues: Entities::IssueBasic,
+      projects: Entities::BasicProjectDetails,
+      milestones: Entities::Milestone,
+      notes: Entities::Note,
+      commits: Entities::CommitDetail,
+      blobs: Entities::Blob,
+      wiki_blobs: Entities::Blob,
+      snippet_titles: Entities::Snippet,
+      users: Entities::UserBasic
+    }.freeze
+
     before do
       authenticate!
 
@@ -22,19 +35,6 @@ module API
     end
 
     helpers do
-      SCOPE_ENTITY = {
-        merge_requests: Entities::MergeRequestBasic,
-        issues: Entities::IssueBasic,
-        projects: Entities::BasicProjectDetails,
-        milestones: Entities::Milestone,
-        notes: Entities::Note,
-        commits: Entities::CommitDetail,
-        blobs: Entities::Blob,
-        wiki_blobs: Entities::Blob,
-        snippet_titles: Entities::Snippet,
-        users: Entities::UserBasic
-      }.freeze
-
       def scope_preload_method
         {
           merge_requests: :with_api_entity_associations,
@@ -121,7 +121,7 @@ module API
         scope_preload_method[params[:scope].to_sym]
       end
 
-      def verify_search_scope!(resource:)
+      def verify_search_scope!(_ = {})
         # no-op
       end
 
@@ -176,7 +176,7 @@ module API
       end
       route_setting :mcp, tool_name: :gitlab_search, params: Helpers::SearchHelpers.gitlab_search_mcp_params
       get do
-        verify_search_scope!(resource: nil)
+        verify_search_scope!
 
         set_headers('Content-Transfer-Encoding' => 'binary')
 
@@ -201,8 +201,7 @@ module API
         use :pagination
       end
       get ':id/(-/)search' do
-        verify_search_scope!(resource: user_group)
-
+        verify_search_scope!(group_id: user_group.id)
         set_headers
 
         present search(group_id: user_group.id), with: entity, current_user: current_user

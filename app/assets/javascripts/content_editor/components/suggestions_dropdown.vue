@@ -320,7 +320,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-new-dropdown content-editor-suggestions-dropdown">
+  <div class="gl-new-dropdown-container content-editor-suggestions-dropdown">
     <div v-if="!loading && items.length > 0" class="gl-new-dropdown-panel gl-absolute !gl-block">
       <div class="gl-new-dropdown-inner">
         <ul

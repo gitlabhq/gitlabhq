@@ -61,7 +61,7 @@ For a click-through demo, see [Duo Agent Platform - MCP server](https://gitlab.n
 
 Prerequisites:
 
-- You've installed [Node.js](https://nodejs.org/en/download) version 20 or later.
+- Install Node.js version 20 or later.
 
 To configure the GitLab MCP server in Cursor:
 
@@ -96,19 +96,12 @@ To configure the GitLab MCP server in Cursor:
    If this does not happen, close and restart Cursor.
 1. In your browser, review and approve the authorization request.
 
-The MCP server is now available in Cursor.
-
-You can now start a new chat and ask a question about the MCP server version, a GitLab issue, or merge request depending on the [available tools](mcp_server.md#available-tools-and-capabilities).
-
-```plaintext
-What version of the GitLab MCP server am I connected to?
-
-Get details for issue 1 in project gitlab-org/gitlab
-```
+You can now start a new chat and ask a question depending on the available tools.
 
 {{< alert type="warning" >}}
 
-You are responsible for guarding against prompt injection when using these tools. Exercise extreme caution or use MCP tools only on GitLab objects that you trust.
+You're responsible for guarding against prompt injection when you use these tools.
+Exercise extreme caution or use MCP tools only on GitLab objects you trust.
 
 {{< /alert >}}
 
@@ -116,8 +109,8 @@ You are responsible for guarding against prompt injection when using these tools
 
 Prerequisites:
 
-- You've installed [Node.js](https://nodejs.org/en/download) version 20 or later.
-- Node.js is available globally in the `PATH` environment variable (`which -a node`).
+- Install Node.js version 20 or later.
+- Ensure Node.js is available globally in the `PATH` environment variable (`which -a node`).
 
 To configure the GitLab MCP server in Claude Desktop:
 
@@ -154,17 +147,12 @@ To configure the GitLab MCP server in Claude Desktop:
 1. Go to **Settings** > **Developer** and verify the new GitLab MCP configuration.
 1. Go to **Settings** > **Connectors** and inspect the connected GitLab MCP Server.
 
-You can now start a new chat and ask a question about the MCP server version, a GitLab issue, or merge request depending on the [available tools](mcp_server.md#available-tools-and-capabilities).
-
-```plaintext
-What version of the GitLab MCP server am I connected to?
-
-Get details for issue 1 in project gitlab-org/gitlab
-```
+You can now start a new chat and ask a question depending on the available tools.
 
 {{< alert type="warning" >}}
 
-You are responsible for guarding against prompt injection when using these tools. Exercise extreme caution or use MCP tools only on GitLab objects that you trust.
+You're responsible for guarding against prompt injection when you use these tools.
+Exercise extreme caution or use MCP tools only on GitLab objects you trust.
 
 {{< /alert >}}
 
@@ -189,8 +177,8 @@ Retrieves detailed information about a specific GitLab issue.
 
 | Parameter    | Required | Description |
 |--------------|----------|-------------|
-| `project_id` | Yes      | ID or URL-encoded path of the project |
-| `issue_iid`  | Yes      | Internal ID of the issue |
+| `project_id` | Yes      | ID or URL-encoded path of the project. |
+| `issue_iid`  | Yes      | Internal ID of the issue. |
 
 Example:
 
@@ -204,9 +192,9 @@ Creates a new issue in a GitLab project.
 
 | Parameter     | Required | Description |
 |---------------|----------|-------------|
-| `project_id`  | Yes      | ID or URL-encoded path of the project |
-| `title`       | Yes      | Title of the issue |
-| `description` | No       | Description of the issue |
+| `project_id`  | Yes      | ID or URL-encoded path of the project. |
+| `title`       | Yes      | Title of the issue. |
+| `description` | No       | Description of the issue. |
 
 Example:
 
@@ -221,8 +209,8 @@ Retrieves detailed information about a specific GitLab merge request.
 
 | Parameter           | Required | Description |
 |---------------------|----------|-------------|
-| `project_id`        | Yes      | ID or URL-encoded path of the project |
-| `merge_request_iid` | Yes      | Internal ID of the merge request |
+| `project_id`        | Yes      | ID or URL-encoded path of the project. |
+| `merge_request_iid` | Yes      | Internal ID of the merge request. |
 
 Example:
 
@@ -236,8 +224,8 @@ Retrieves the list of commits in a specific merge request.
 
 | Parameter           | Required | Description |
 |---------------------|----------|-------------|
-| `project_id`        | Yes      | ID or URL-encoded path of the project |
-| `merge_request_iid` | Yes      | Internal ID of the merge request |
+| `project_id`        | Yes      | ID or URL-encoded path of the project. |
+| `merge_request_iid` | Yes      | Internal ID of the merge request. |
 
 Example:
 
@@ -251,8 +239,8 @@ Retrieves the file changes (diffs) for a specific merge request.
 
 | Parameter           | Required | Description |
 |---------------------|----------|-------------|
-| `project_id`        | Yes      | ID or URL-encoded path of the project |
-| `merge_request_iid` | Yes      | Internal ID of the merge request |
+| `project_id`        | Yes      | ID or URL-encoded path of the project. |
+| `merge_request_iid` | Yes      | Internal ID of the merge request. |
 
 Example:
 
@@ -266,8 +254,8 @@ Retrieves the jobs for a specific CI/CD pipeline.
 
 | Parameter     | Required | Description |
 |---------------|----------|-------------|
-| `project_id`  | Yes      | ID or URL-encoded path of the project |
-| `pipeline_id` | Yes      | ID of the pipeline |
+| `project_id`  | Yes      | ID or URL-encoded path of the project. |
+| `pipeline_id` | Yes      | ID of the pipeline. |
 
 Example:
 
@@ -281,8 +269,8 @@ Retrieves the pipelines for a specific merge request.
 
 | Parameter           | Required | Description |
 |---------------------|----------|-------------|
-| `project_id`        | Yes      | ID or URL-encoded path of the project |
-| `merge_request_iid` | Yes      | Internal ID of the merge request |
+| `project_id`        | Yes      | ID or URL-encoded path of the project. |
+| `merge_request_iid` | Yes      | Internal ID of the merge request. |
 
 Example:
 
@@ -292,12 +280,18 @@ Show me all pipelines for merge request 42 in project gitlab-org/gitlab
 
 ### `gitlab_search`
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/566143) in GitLab 18.4.
+
+{{< /history >}}
+
 Searches for a term across the entire GitLab instance with the search API.
 
 | Parameter | Required | Description |
 |-----------|----------|-------------|
-| `search`  | Yes      | Search term |
-| `scope`   | Yes      | Search scope (for example, `issues`, `merge_requests`, or `projects`) |
+| `search`  | Yes      | Search term. |
+| `scope`   | Yes      | Search scope (for example, `issues`, `merge_requests`, or `projects`). |
 
 Example:
 
@@ -307,17 +301,23 @@ Search issues for "flaky test" across GitLab
 
 ### `create_merge_request`
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/571243) in GitLab 18.5.
+
+{{< /history >}}
+
 Creates a merge request in a project.
 
 | Parameter              | Required | Description |
 |------------------------|----------|-------------|
-| `project_id`           | Yes      | ID or URL-encoded path of the project |
-| `source_branch`        | Yes      | Name of the branch to merge from |
-| `target_branch`        | Yes      | Name of the branch to merge into |
-| `title`                | Yes      | Title of the merge request |
-| `description`          | No       | Description text |
-| `remove_source_branch` | No       | Delete the source branch on merge (default is `false`) |
-| `squash`               | No       | Squash commits on merge (default is `false`) |
+| `project_id`           | Yes      | ID or URL-encoded path of the project. |
+| `source_branch`        | Yes      | Name of the branch to merge from. |
+| `target_branch`        | Yes      | Name of the branch to merge into. |
+| `title`                | Yes      | Title of the merge request. |
+| `description`          | No       | Description text. |
+| `remove_source_branch` | No       | Delete the source branch on merge (default is `false`). |
+| `squash`               | No       | Squash commits on merge (default is `false`). |
 
 Example:
 

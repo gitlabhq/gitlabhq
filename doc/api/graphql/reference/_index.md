@@ -1831,6 +1831,23 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
+### `Query.subscriptionUsage`
+
+{{< details >}}
+**Introduced** in GitLab 18.5.
+**Status**: Experiment.
+{{< /details >}}
+
+Usage data of consumables under the subscription.
+
+Returns [`GitlabSubscriptionUsage`](#gitlabsubscriptionusage).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="querysubscriptionusagenamespacepath"></a>`namespacePath` | [`ID`](#id) | Path of the top-level namespace. Leave it blank if querying the instance subscription. |
+
 ### `Query.syntheticNote`
 
 {{< details >}}
@@ -18481,6 +18498,29 @@ The edge type for [`GitlabSubscriptionHistory`](#gitlabsubscriptionhistory).
 | <a id="gitlabsubscriptionhistoryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="gitlabsubscriptionhistoryedgenode"></a>`node` | [`GitlabSubscriptionHistory`](#gitlabsubscriptionhistory) | The item at the end of the edge. |
 
+#### `GitlabSubscriptionUsageUsersConnection`
+
+The connection type for [`GitlabSubscriptionUsageUsers`](#gitlabsubscriptionusageusers).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionusageusersconnectionedges"></a>`edges` | [`[GitlabSubscriptionUsageUsersEdge]`](#gitlabsubscriptionusageusersedge) | A list of edges. |
+| <a id="gitlabsubscriptionusageusersconnectionnodes"></a>`nodes` | [`[GitlabSubscriptionUsageUsers]`](#gitlabsubscriptionusageusers) | A list of nodes. |
+| <a id="gitlabsubscriptionusageusersconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `GitlabSubscriptionUsageUsersEdge`
+
+The edge type for [`GitlabSubscriptionUsageUsers`](#gitlabsubscriptionusageusers).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionusageusersedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="gitlabsubscriptionusageusersedgenode"></a>`node` | [`GitlabSubscriptionUsageUsers`](#gitlabsubscriptionusageusers) | The item at the end of the edge. |
+
 #### `GoogleCloudArtifactRegistryArtifactConnection`
 
 The connection type for [`GoogleCloudArtifactRegistryArtifact`](#googlecloudartifactregistryartifact).
@@ -30514,6 +30554,38 @@ Describes the subscription history of a given namespace.
 | <a id="gitlabsubscriptionhistoryseats"></a>`seats` | [`Int`](#int) | Seats purchased in subscription. |
 | <a id="gitlabsubscriptionhistoryseatsinuse"></a>`seatsInUse` | [`Int`](#int) | Seats being used in subscription. |
 | <a id="gitlabsubscriptionhistorystartdate"></a>`startDate` | [`Time`](#time) | Subscription start date. |
+
+### `GitlabSubscriptionUsage`
+
+Describes the usage of consumables under the subscription.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionusageusersusage"></a>`usersUsage` | [`GitlabSubscriptionUsageUsersUsage`](#gitlabsubscriptionusageusersusage) | Consumption usage for users under the subscription. |
+
+### `GitlabSubscriptionUsageUsers`
+
+Describes the user with their usage data.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionusageusersavatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
+| <a id="gitlabsubscriptionusageusersid"></a>`id` | [`UserID!`](#userid) | Global ID of the user. |
+| <a id="gitlabsubscriptionusageusersname"></a>`name` | [`String!`](#string) | Human-readable name of the user. |
+
+### `GitlabSubscriptionUsageUsersUsage`
+
+Describes the usage of consumables by users under the subscription.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionusageusersusageusers"></a>`users` | [`GitlabSubscriptionUsageUsersConnection`](#gitlabsubscriptionusageusersconnection) | List of users with their usage data. (see [Connections](#connections)) |
 
 ### `GoogleCloudArtifactRegistryDockerImage`
 
