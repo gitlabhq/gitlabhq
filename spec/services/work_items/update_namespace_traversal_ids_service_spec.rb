@@ -44,21 +44,6 @@ RSpec.describe WorkItems::UpdateNamespaceTraversalIdsService, feature_category: 
       end
     end
 
-    context 'when feature flag is disabled' do
-      let_it_be(:namespace) { create(:group) }
-      let_it_be(:new_parent) { create(:group) }
-      let_it_be(:work_item) { create(:work_item, :group_level, namespace: namespace) }
-
-      before do
-        stub_feature_flags(update_work_item_traversal_ids_on_transfer: false)
-        namespace.update!(traversal_ids: [new_parent.id, namespace.id])
-      end
-
-      it 'does not permit parallel execution on the same namespace' do
-        expect { update_namespace_traversal_ids }.to not_change { work_item.reload.namespace_traversal_ids }
-      end
-    end
-
     context 'when namespace is a group' do
       let_it_be(:group_namespace) { create(:group, parent: old_parent) }
       let_it_be(:other_namespace) { create(:group, parent: old_parent) }

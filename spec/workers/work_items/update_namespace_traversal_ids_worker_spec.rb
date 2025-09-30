@@ -48,18 +48,6 @@ RSpec.describe WorkItems::UpdateNamespaceTraversalIdsWorker, feature_category: :
       end
     end
 
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(update_work_item_traversal_ids_on_transfer: false)
-      end
-
-      it 'does not call the service layer logic' do
-        perform
-
-        expect(update_traversal_id_service).not_to have_received(:execute)
-      end
-    end
-
     context 'when there is no namespace associated with the namespace_id' do
       let(:namespace_id) { non_existing_record_id }
 

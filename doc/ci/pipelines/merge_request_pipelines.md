@@ -83,6 +83,9 @@ workflow:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 ```
 
+To [use security scanning tools with merge request pipelines](../../user/application_security/detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines),
+use the CI/CD variable `AST_ENABLE_MR_PIPELINES` or the `latest` template edition.
+
 ## Use with forked projects
 
 External contributors who work in forks can't create pipelines in the parent project.

@@ -15,10 +15,7 @@ module WorkItems
     BATCH_SIZE = 100
 
     def self.handles_event?(event)
-      group = Group.find_by_id(event.data[:group_id])
-      return false unless group
-
-      Feature.enabled?(:update_work_item_traversal_ids_on_transfer, group)
+      Group.exists?(event.data[:group_id]) # rubocop: disable CodeReuse/ActiveRecord -- no need to initialize an object to find the Group
     end
 
     def handle_event(event)

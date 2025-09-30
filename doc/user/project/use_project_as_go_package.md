@@ -1,6 +1,6 @@
 ---
-stage: Tenant Scale
-group: Organizations
+stage: Create
+group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Use a project as a Go package
 description: Go modules and import calls.
@@ -21,7 +21,6 @@ description: Go modules and import calls.
 
 Prerequisites:
 
-- Contact your administrator to enable the [GitLab Go Proxy](../packages/go_proxy/_index.md).
 - To use a private project in a subgroup as a Go package, you must [authenticate Go requests](#authenticate-go-requests-to-private-projects). Go requests that are not authenticated cause
   `go get` to fail. You don't need to authenticate Go requests for projects that are not in subgroups.
 

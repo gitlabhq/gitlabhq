@@ -12,10 +12,7 @@ module WorkItems
     concurrency_limit -> { 200 }
 
     def self.handles_event?(event)
-      project = Project.find_by_id(event.data[:project_id])
-      return unless project
-
-      Feature.enabled?(:update_work_item_traversal_ids_on_transfer, project.project_namespace)
+      Project.exists?(event.data[:project_id]) # rubocop: disable CodeReuse/ActiveRecord -- no need to initialize an object to find the Project
     end
 
     def handle_event(event)

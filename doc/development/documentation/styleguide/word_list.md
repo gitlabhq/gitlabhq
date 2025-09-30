@@ -434,11 +434,11 @@ Instead of:
 
 ## canceled, cancelled
 
-Use **canceled** (one L) for US English instead of the British **cancelled** (two Ls).
+Use **canceled** (one L) instead of **cancelled** (two Ls).
 
 Similarly, use **canceling** instead of **cancelling**.
 
-The noun **cancellation** retains both Ls even in US English.
+Use two Ls for the noun **cancellation**.
 
 ([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SubstitutionWarning.yml))
 

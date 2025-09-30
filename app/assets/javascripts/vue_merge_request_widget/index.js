@@ -48,7 +48,6 @@ export default () => {
       commitPathTemplate: gl.mrWidgetData.commit_path_template,
       dismissalDescriptions,
       validityChecksEnabled: parseBoolean(gl.mrWidgetData.validity_checks_enabled),
-      allowValidityCheck: true,
     },
     ...MrWidgetOptions,
     apolloProvider,

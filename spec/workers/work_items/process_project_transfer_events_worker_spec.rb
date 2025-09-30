@@ -32,25 +32,9 @@ RSpec.describe WorkItems::ProcessProjectTransferEventsWorker, feature_category: 
   describe ".handles_event?" do
     subject(:handles_event?) { described_class.handles_event?(event) }
 
-    context 'when feature flag is enabled' do
-      before do
-        stub_feature_flags(update_work_item_traversal_ids_on_transfer: namespace)
-      end
+    it_behaves_like 'subscribes to event'
 
-      it_behaves_like 'subscribes to event'
-
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(update_work_item_traversal_ids_on_transfer: false)
-      end
-
-      it_behaves_like 'ignores the published event'
-
-      it { is_expected.to be_falsey }
-    end
+    it { is_expected.to be_truthy }
   end
 
   describe '#handle_event' do

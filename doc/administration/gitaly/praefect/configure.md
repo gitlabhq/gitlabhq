@@ -1571,6 +1571,9 @@ specific storage nodes to host a repository.
 
 Configurable replication factors requires [repository-specific primary nodes](#repository-specific-primary-nodes).
 
+Do not reduce the replication factor of object pools. This can cause linked repositories to break. 
+Object pools have relative paths that begin with `@pools/`.
+
 {{< /alert >}}
 
 Praefect does not store the actual replication factor, but assigns enough storages to host the repository
@@ -1583,6 +1586,13 @@ You can configure either:
 - A replication factor for an existing repository with the `set-replication-factor` subcommand.
 
 ### Configure default replication factor
+
+{{< alert type="warning" >}}
+
+Reducing the default replication when there are object pools can cause some linked repositories to break. 
+Object pools have relative paths that begin with `@pools/`.
+
+{{< /alert >}}
 
 If `default_replication_factor` is unset, the repositories are always replicated on every storage node defined in
 `virtual_storages`. If a new storage node is introduced to the virtual storage, both new and existing repositories are
