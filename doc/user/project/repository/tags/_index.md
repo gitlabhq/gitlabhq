@@ -218,4 +218,5 @@ policy_job_always:
 
 - [Tagging (Git reference page)](https://git-scm.com/book/en/v2/Git-Basics-Tagging)
 - [Protected tags](../../protected_tags.md)
+- [Compare revisions](../compare_revisions.md)
 - [Tags API](../../../../api/tags.md)

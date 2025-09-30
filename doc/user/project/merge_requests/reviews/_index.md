@@ -334,6 +334,6 @@ Merge requests are related to these features:
 ## Related topics
 
 - [Compare changes in merge requests](../changes.md)
-- [Compare branches](../../repository/branches/_index.md#compare-branches)
+- [Compare revisions](../../repository/compare_revisions.md)
 - [Merge methods](../methods/_index.md)
 - [Draft Notes API](../../../../api/draft_notes.md)

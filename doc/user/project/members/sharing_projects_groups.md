@@ -51,7 +51,7 @@ The following table provides an overview of the group members that get access to
 
 1. GitLab supports extending project access to shared group members, but this approach is not recommended. [Epic 122](https://gitlab.com/groups/gitlab-org/-/epics/122) proposes changing this behavior and transitioning to a teams model for sharing groups.
 
-The [visibility level](../../public_access.md) of the group you're inviting must be at least as restrictive as that of the project.
+The [visibility level](../../public_access.md) of the group you're inviting can't be more restrictive than the project.
 For example, you can invite:
 
 - A **private** group to a **private** project.

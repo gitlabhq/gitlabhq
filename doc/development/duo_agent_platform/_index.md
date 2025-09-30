@@ -40,41 +40,13 @@ This setup can be used as-is with the [publicly available version of the VS Code
 
 To test Agentic Duo Chat in the Web UI of your local GitLab instance, follow these additional setup steps:
 
-1. **Configure Workhorse to disable origin check:**
-
-   In development, Rails and Workhorse origins are different, so you need to modify the WebSocket upgrader.
-
-   **Option A: Apply the following diff:**
-
-   ```diff
-   curl "https://gitlab.com/gitlab-org/gitlab/-/snippets/4889838/raw/main/workhorse.patch" | git apply
-   ```
-
-   **Option B: Manually edit the file:**
-
-   ```go
-   # workhorse/internal/ai_assist/duoworkflow/handler.go
-
-   var upgrader = websocket.Upgrader{
-       CheckOrigin: func(r *http.Request) bool {
-           return true
-       },
-   }
-   ```
-
-   **Important:** Remember not to commit these changes to version control.
-
-1. **Recompile Workhorse:**
-
-   ```shell
-   cd gitlab/workhorse && make && gdk restart gitlab-workhorse
-   ```
-
-   **Verification:** Check that Workhorse restarted successfully:
-
-   ```shell
-   gdk status gitlab-workhorse
-   ```
+1. [Enable NGINX for your GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/nginx.md).
+   A loopback interface and HTTPS are **not** required, only the basic NGINX configuration.
+1. Access your GDK at `http://gdk.test:8080`. Your GDK is still available
+   at port 3000 but accessing it at port 8080 accesses the application through
+   NGINX, which is required for Agentic Duo Chat to work on the web. If you access
+   the application at port 3000 and try Agentic Duo Chat, you see an error message:
+   `Error: Unable to connect to workflow service. Please try again.`.
 
 ### Development Setup for Frontend Components
 

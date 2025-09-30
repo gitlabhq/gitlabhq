@@ -198,5 +198,6 @@ The commit list includes a CI/CD pipeline status icon next to each commit. To vi
 ## Related topics
 
 - [Signed commits](../signed_commits/_index.md)
+- [Compare revisions](../compare_revisions.md)
 - [Git file history](../files/git_history.md)
 - [Tags](../tags/_index.md)

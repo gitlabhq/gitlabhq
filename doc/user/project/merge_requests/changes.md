@@ -471,7 +471,7 @@ GitLab shows an icon and a comment field on the image.
 
 ## Related topics
 
-- [Compare branches](../repository/branches/_index.md#compare-branches)
+- [Compare revisions](../repository/compare_revisions.md)
 - [Download branch comparisons](../repository/branches/_index.md#download-branch-comparisons)
 - [Merge request reviews](reviews/_index.md)
 - [Merge request versions](versions.md)

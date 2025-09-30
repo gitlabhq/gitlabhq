@@ -53,7 +53,6 @@ On this page, you can:
   Otherwise it is considered stale.
 
 - [Create new branches](#create-a-branch).
-- [Compare branches](#compare-branches).
 - [Delete merged branches](#delete-merged-branches).
 - See merge request links that point to the default branch.
 
@@ -244,37 +243,6 @@ GitLab uses this number to import data into the merge request:
 GitLab provides multiple methods to protect individual branches. These methods
 ensure your branches receive oversight and quality checks from their creation to their deletion. To view and edit branch protections, see [Branch rules](branch_rules.md).
 
-## Compare branches
-
-To compare branches in a repository:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code** > **Compare revisions**.
-1. Select the **Source** branch to search for your desired branch. Exact matches are
-   shown first. You can refine your search with operators:
-   - `^` matches the beginning of the branch name: `^feat` matches `feat/user-authentication`.
-   - `$` matches the end of the branch name: `widget$` matches `feat/search-box-widget`.
-   - `*` matches using a wildcard: `branch*cache*` matches `fix/branch-search-cache-expiration`.
-   - You can combine operators: `^chore/*migration$` matches `chore/user-data-migration`.
-1. Select the **Target** repository and branch. Exact matches are shown first.
-1. Below **Show changes**, select the method to compare branches:
-   <!-- vale gitlab_base.SubstitutionWarning = NO -->
-   <!-- Disable Vale gitlab_base.SubstitutionWarning rule so that Vale doesn't flag "since" -->
-   - **Only incoming changes from source** (default) shows differences from the source branch since
-     the latest common commit on both branches.
-     It doesn't include unrelated changes made to the target branch after the source branch was created.
-     This method uses the `git diff <from>...<to>`
-     [Git command](../../../../topics/git/commands.md).
-     To compare branches, this method uses the merge base instead of the actual commit, so
-     changes from cherry-picked commits are shown as new changes.
-   - **Include changes to target since source was created** shows all the differences between the two
-     branches.
-     This method uses the `git diff <from> <to>`
-     [Git command](../../../../topics/git/commands.md).
-   <!-- vale gitlab_base.SubstitutionWarning = YES -->
-1. Select **Compare** to show the list of commits, and changed files.
-1. Optional. To reverse the **Source** and **Target**, select **Swap revisions** ({{< icon name="substitute" >}}).
-
 ### Download branch comparisons
 
 {{< history >}}
@@ -447,6 +415,7 @@ To do this:
 
 - [Protected branches](protected.md)
 - [Branch rules](branch_rules.md)
+- [Compare revisions](../compare_revisions.md)
 - [Compare changes in merge requests](../../merge_requests/changes.md)
 - [Download merge request changes](../../merge_requests/changes.md#download-merge-request-changes)
 - [Branches API](../../../../api/branches.md)
