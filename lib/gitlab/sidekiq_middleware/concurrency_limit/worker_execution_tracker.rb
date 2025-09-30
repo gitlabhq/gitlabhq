@@ -65,6 +65,10 @@ module Gitlab
           false
         end
 
+        def lease_taken_log_level
+          :info
+        end
+
         def with_redis(&)
           Redis::QueuesMetadata.with(&) # rubocop:disable CodeReuse/ActiveRecord -- Not active record
         end

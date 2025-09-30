@@ -23,9 +23,10 @@ import {
   WORK_ITEM_NOTES_FILTER_ALL_NOTES,
   WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS,
   WORK_ITEM_NOTES_FILTER_ONLY_HISTORY,
+  WORK_ITEM_NOTES_SORT_ORDER_KEY,
   NEW_WORK_ITEM_IID,
 } from '~/work_items/constants';
-import { ASC, DESC } from '~/notes/constants';
+import { ASC, DESC, DISCUSSIONS_SORT_ENUM } from '~/notes/constants';
 import { autocompleteDataSources, findNotesWidget } from '~/work_items/utils';
 import {
   updateCacheAfterCreatingNote,
@@ -147,6 +148,7 @@ export default {
   data() {
     return {
       isLoadingMore: false,
+      initialSortOrder: localStorage.getItem(WORK_ITEM_NOTES_SORT_ORDER_KEY) || ASC,
       sortOrder: ASC,
       noteToDelete: null,
       discussionFilter: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
@@ -239,7 +241,7 @@ export default {
         visibleNotes = [...visibleNotes, this.previewNote];
       }
 
-      if (this.sortOrder === DESC) {
+      if (this.sortOrder !== this.initialSortOrder) {
         return [...visibleNotes].reverse();
       }
 
@@ -334,6 +336,7 @@ export default {
           iid: this.workItemIid,
           after: this.after,
           pageSize: DEFAULT_PAGE_SIZE_NOTES,
+          sort: DISCUSSIONS_SORT_ENUM[this.initialSortOrder],
         };
       },
       update(data) {
@@ -359,7 +362,9 @@ export default {
         {
           document: workItemNoteCreatedSubscription,
           updateQuery(previousResult, { subscriptionData: { data } }) {
-            return updateCacheAfterCreatingNote(previousResult, data?.workItemNoteCreated);
+            return updateCacheAfterCreatingNote(previousResult, data?.workItemNoteCreated, {
+              prepend: this.initialSortOrder === DESC,
+            });
           },
           variables() {
             return {
@@ -595,15 +600,13 @@ export default {
             :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
             :is-group-work-item="isGroupWorkItem"
             :uploads-path="uploadsPath"
+            :discussions-sort-order="initialSortOrder"
             @startEditing="$emit('startEditing')"
             @stopEditing="$emit('stopEditing')"
             @error="$emit('error', $event)"
           />
         </ul>
       </div>
-      <work-item-notes-loading
-        v-if="initialLoading || (formAtTop && isLoadingMore && !notesCached)"
-      />
       <ul class="notes main-notes-list timeline">
         <template v-for="discussion in notesArray">
           <system-note
@@ -642,7 +645,7 @@ export default {
 
         <work-item-history-only-filter-note v-if="commentsDisabled" @changeFilter="setFilter" />
       </ul>
-      <work-item-notes-loading v-if="!formAtTop && isLoadingMore && !notesCached" />
+      <work-item-notes-loading v-if="initialLoading || (isLoadingMore && !notesCached)" />
       <div v-if="!formAtTop && !commentsDisabled && markdownPathsLoaded" class="js-comment-form">
         <ul class="notes notes-form timeline">
           <work-item-add-note

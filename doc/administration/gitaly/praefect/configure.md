@@ -192,10 +192,10 @@ following to `gitlab.rb` on each node:
 
 {{< alert type="note" >}}
 
-Do not store the GitLab application database and the Praefect
-database on the same PostgreSQL server if using [Geo](../../geo/_index.md).
-The replication state is internal to each instance of GitLab and should
-not be replicated.
+Praefect manages the Gitaly repository replication state using a database that is separate from the GitLab application database. When using [Geo](../../geo/_index.md) and Gitaly Cluster (Praefect), Praefect replication state is unique to each site. Each Geo site must have a separate, read-write PostgreSQL database instance to house the Praefect database.
+
+- Do not store the GitLab application database and the Praefect database on the same PostgreSQL server.
+- Do not configure the Praefect Postgres database on the Geo primary site to replicate to the Geo secondary sites.
 
 {{< /alert >}}
 

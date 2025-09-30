@@ -19,19 +19,19 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   #                          DELETE /:id(.:format)          projects#destroy
   # preview_markdown_project POST   /:id/-/preview_markdown(.:format) projects#preview_markdown
   describe ProjectsController, 'routing' do
-    it 'to #index' do
+    specify 'to #index' do
       expect(get('/projects')).to route_to('projects#index')
     end
 
-    it 'to #create' do
+    specify 'to #create' do
       expect(post('/projects')).to route_to('projects#create')
     end
 
-    it 'to #new' do
+    specify 'to #new' do
       expect(get('/projects/new')).to route_to('projects#new')
     end
 
-    it 'to #edit' do
+    specify 'to #edit' do
       expect(get('/gitlab/gitlabhq/edit')).to route_to('projects#edit', namespace_id: 'gitlab', id: 'gitlabhq')
     end
 
@@ -57,15 +57,15 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
       end
     end
 
-    it 'to #update' do
+    specify 'to #update' do
       expect(put('/gitlab/gitlabhq')).to route_to('projects#update', namespace_id: 'gitlab', id: 'gitlabhq')
     end
 
-    it 'to #destroy' do
+    specify 'to #destroy' do
       expect(delete('/gitlab/gitlabhq')).to route_to('projects#destroy', namespace_id: 'gitlab', id: 'gitlabhq')
     end
 
-    it 'to #preview_markdown' do
+    specify 'to #preview_markdown' do
       expect(post('/gitlab/gitlabhq/-/preview_markdown')).to(
         route_to('projects#preview_markdown', namespace_id: 'gitlab', project_id: 'gitlabhq')
       )
@@ -73,7 +73,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   end
 
   describe Projects::RedirectController, 'routing' do
-    it 'to #redirect_from_id' do
+    specify 'to #redirect_from_id' do
       expect(get('/projects/1')).to route_to('projects/redirect#redirect_from_id', id: '1')
       expect(get('/-/p/1')).to route_to('projects/redirect#redirect_from_id', id: '1')
     end
@@ -87,8 +87,8 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   # commands_namespace_project_autocomplete_sources_path       GET /:project_id/autocomplete_sources/commands(.:format)       projects/autocomplete_sources#commands
   # snippets_namespace_project_autocomplete_sources_path       GET /:project_id/autocomplete_sources/snippets(.:format)       projects/autocomplete_sources#snippets
   describe Projects::AutocompleteSourcesController, 'routing' do
-    [:members, :issues, :merge_requests, :labels, :milestones, :commands, :snippets].each do |action|
-      it "to ##{action}" do
+    %i[members issues merge_requests labels milestones commands snippets].each do |action|
+      specify "to ##{action}" do
         expect(get("/gitlab/gitlabhq/-/autocomplete_sources/#{action}")).to route_to("projects/autocomplete_sources##{action}", namespace_id: 'gitlab', project_id: 'gitlabhq')
       end
     end
@@ -118,33 +118,33 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   #  archive_project_repository GET    /:project_id/repository/archive(.:format)  projects/repositories#archive
   #     edit_project_repository GET    /:project_id/repository/edit(.:format)     projects/repositories#edit
   describe Projects::RepositoriesController, 'routing' do
-    it 'to #archive format:zip' do
+    specify 'to #archive format:zip' do
       expect(get('/gitlab/gitlabhq/-/archive/master/archive.zip')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'zip', id: 'master/archive')
     end
 
-    it 'to #archive format:tar.bz2' do
+    specify 'to #archive format:tar.bz2' do
       expect(get('/gitlab/gitlabhq/-/archive/master/archive.tar.bz2')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'tar.bz2', id: 'master/archive')
     end
 
-    it 'to #archive with "/" in route' do
+    specify 'to #archive with "/" in route' do
       expect(get('/gitlab/gitlabhq/-/archive/improve/awesome/gitlabhq-improve-awesome.tar.gz')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'tar.gz', id: 'improve/awesome/gitlabhq-improve-awesome')
     end
 
-    it 'to #archive format:html' do
+    specify 'to #archive format:html' do
       expect(get('/gitlab/gitlabhq/-/archive/master.html')).to route_to_route_not_found
     end
 
-    it 'to #archive format:yaml' do
+    specify 'to #archive format:yaml' do
       expect(get('/gitlab/gitlabhq/-/archive/master.yaml')).to route_to_route_not_found
     end
 
-    it 'to #archive format:yml' do
+    specify 'to #archive format:yml' do
       expect(get('/gitlab/gitlabhq/-/archive/master.yml')).to route_to_route_not_found
     end
   end
 
   describe Projects::BranchesController, 'routing' do
-    it 'to #branches' do
+    specify 'to #branches' do
       expect(get('/gitlab/gitlabhq/-/branches')).to route_to('projects/branches#index', namespace_id: 'gitlab', project_id: 'gitlabhq')
       expect(delete('/gitlab/gitlabhq/-/branches/feature%2345')).to route_to('projects/branches#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature#45')
       expect(delete('/gitlab/gitlabhq/-/branches/feature%2B45')).to route_to('projects/branches#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature+45')
@@ -156,7 +156,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   end
 
   describe Projects::TagsController, 'routing' do
-    it 'to #tags' do
+    specify 'to #tags' do
       expect(get('/gitlab/gitlabhq/-/tags')).to route_to('projects/tags#index', namespace_id: 'gitlab', project_id: 'gitlabhq')
       expect(delete('/gitlab/gitlabhq/-/tags/feature%2345')).to route_to('projects/tags#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature#45')
       expect(delete('/gitlab/gitlabhq/-/tags/feature%2B45')).to route_to('projects/tags#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature+45')
@@ -197,11 +197,11 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   #  logs_tree_project_ref GET    /:project_id/refs/:id/logs_tree(.:format)       refs#logs_tree
   #  logs_file_project_ref GET    /:project_id/refs/:id/logs_tree/:path(.:format) refs#logs_tree
   describe Projects::RefsController, 'routing' do
-    it 'to #switch' do
+    specify 'to #switch' do
       expect(get('/gitlab/gitlabhq/-/refs/switch')).to route_to('projects/refs#switch', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
-    it 'to #logs_tree' do
+    specify 'to #logs_tree' do
       expect(get('/gitlab/gitlabhq/-/refs/stable/logs_tree/..%2F..%2F..%2F..%2F..%2F@example.com/tree/a')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'stable', path: '../../../../../@example.com/tree/a')
       expect(get('/gitlab/gitlabhq/-/refs/stable/logs_tree')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'stable')
       expect(get('/gitlab/gitlabhq/-/refs/feature%2345/logs_tree')).to route_to('projects/refs#logs_tree', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature#45')
@@ -240,22 +240,22 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   end
 
   describe Projects::MergeRequestsController, 'routing' do
-    it 'to #commits' do
+    specify 'to #commits' do
       expect(get('/gitlab/gitlabhq/-/merge_requests/1/commits.json')).to route_to('projects/merge_requests#commits', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'json')
     end
 
-    it 'to #pipelines' do
+    specify 'to #pipelines' do
       expect(get('/gitlab/gitlabhq/-/merge_requests/1/pipelines.json')).to route_to('projects/merge_requests#pipelines', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'json')
     end
 
-    it 'to #merge' do
+    specify 'to #merge' do
       expect(post('/gitlab/gitlabhq/-/merge_requests/1/merge')).to route_to(
         'projects/merge_requests#merge',
         namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1'
       )
     end
 
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/merge_requests/1.diff')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'diff')
       expect(get('/gitlab/gitlabhq/-/merge_requests/1.patch')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'patch')
       expect(get('/gitlab/gitlabhq/-/merge_requests/1/diffs')).to route_to('projects/merge_requests#diffs', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', tab: 'diffs')
@@ -263,7 +263,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
       expect(get('/gitlab/gitlabhq/-/merge_requests/1/pipelines')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', tab: 'pipelines')
     end
 
-    it 'to #show from scoped route' do
+    specify 'to #show from scoped route' do
       expect(get('/gitlab/gitlabhq/-/merge_requests/1.diff')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'diff')
       expect(get('/gitlab/gitlabhq/-/merge_requests/1.patch')).to route_to('projects/merge_requests#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'patch')
       expect(get('/gitlab/gitlabhq/-/merge_requests/1/diffs')).to route_to('projects/merge_requests#diffs', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', tab: 'diffs')
@@ -279,29 +279,29 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   end
 
   describe Projects::MergeRequests::CreationsController, 'routing' do
-    it 'to #new' do
+    specify 'to #new' do
       expect(get('/gitlab/gitlabhq/-/merge_requests/new')).to route_to('projects/merge_requests/creations#new', namespace_id: 'gitlab', project_id: 'gitlabhq')
       expect(get('/gitlab/gitlabhq/-/merge_requests/new/diffs')).to route_to('projects/merge_requests/creations#new', namespace_id: 'gitlab', project_id: 'gitlabhq', tab: 'diffs')
       expect(get('/gitlab/gitlabhq/-/merge_requests/new/pipelines')).to route_to('projects/merge_requests/creations#new', namespace_id: 'gitlab', project_id: 'gitlabhq', tab: 'pipelines')
     end
 
-    it 'to #create' do
+    specify 'to #create' do
       expect(post('/gitlab/gitlabhq/-/merge_requests')).to route_to('projects/merge_requests/creations#create', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
-    it 'to #branch_from' do
+    specify 'to #branch_from' do
       expect(get('/gitlab/gitlabhq/-/merge_requests/new/branch_from')).to route_to('projects/merge_requests/creations#branch_from', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
-    it 'to #branch_to' do
+    specify 'to #branch_to' do
       expect(get('/gitlab/gitlabhq/-/merge_requests/new/branch_to')).to route_to('projects/merge_requests/creations#branch_to', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
-    it 'to #pipelines' do
+    specify 'to #pipelines' do
       expect(get('/gitlab/gitlabhq/-/merge_requests/new/pipelines.json')).to route_to('projects/merge_requests/creations#pipelines', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'json')
     end
 
-    it 'to #diffs' do
+    specify 'to #diffs' do
       expect(get('/gitlab/gitlabhq/-/merge_requests/new/diffs.json')).to route_to('projects/merge_requests/creations#diffs', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'json')
     end
 
@@ -309,13 +309,13 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   end
 
   describe Projects::MergeRequests::DiffsController, 'routing' do
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/merge_requests/1/diffs.json')).to route_to('projects/merge_requests/diffs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1', format: 'json')
     end
   end
 
   describe Projects::MergeRequests::ConflictsController, 'routing' do
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/merge_requests/1/conflicts')).to route_to('projects/merge_requests/conflicts#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
   end
@@ -326,27 +326,27 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   # edit_project_snippet GET    /:project_id/snippets/:id/edit(.:format) snippets#edit
   #      project_snippet GET    /:project_id/snippets/:id(.:format)      snippets#show
   describe SnippetsController, 'routing' do
-    it 'to #raw' do
+    specify 'to #raw' do
       expect(get('/gitlab/gitlabhq/-/snippets/1/raw')).to route_to('projects/snippets#raw', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
 
-    it 'to #index' do
+    specify 'to #index' do
       expect(get('/gitlab/gitlabhq/-/snippets')).to route_to('projects/snippets#index', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
-    it 'to #new' do
+    specify 'to #new' do
       expect(get('/gitlab/gitlabhq/-/snippets/new')).to route_to('projects/snippets#new', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
-    it 'to #edit' do
+    specify 'to #edit' do
       expect(get('/gitlab/gitlabhq/-/snippets/1/edit')).to route_to('projects/snippets#edit', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
 
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/snippets/1')).to route_to('projects/snippets#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
 
-    it 'to #raw from unscope routing' do
+    specify 'to #raw from unscope routing' do
       expect(get('/gitlab/gitlabhq/snippets/1/raw')).to route_to('projects/snippets#raw', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
 
@@ -360,7 +360,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   #      project_hook PUT    /:project_id/-/hooks/:id(.:format)      hooks#update
   #                   DELETE /:project_id/-/hooks/:id(.:format)      hooks#destroy
   describe Projects::HooksController, 'routing' do
-    it 'to #test' do
+    specify 'to #test' do
       expect(post('/gitlab/gitlabhq/-/hooks/1/test')).to route_to('projects/hooks#test', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
 
@@ -375,11 +375,11 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   # retry_namespace_project_hook_hook_log POST /:project_id/-/hooks/:hook_id/hook_logs/:id/retry(.:format) projects/hook_logs#retry
   # namespace_project_hook_hook_log       GET  /:project_id/-/hooks/:hook_id/hook_logs/:id(.:format)       projects/hook_logs#show
   describe Projects::HookLogsController, 'routing' do
-    it 'to #retry' do
+    specify 'to #retry' do
       expect(post('/gitlab/gitlabhq/-/hooks/1/hook_logs/1/retry')).to route_to('projects/hook_logs#retry', namespace_id: 'gitlab', project_id: 'gitlabhq', hook_id: '1', id: '1')
     end
 
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/hooks/1/hook_logs/1')).to route_to('projects/hook_logs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', hook_id: '1', id: '1')
     end
 
@@ -388,7 +388,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
 
   # project_commit GET    /:project_id/commit/:id(.:format) commit#show {id: Gitlab::Git::Commit::SHA_PATTERN, project_id: /[^\/]+/}
   describe Projects::CommitController, 'routing' do
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/commit/4246fbd')).to route_to('projects/commit#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '4246fbd')
       expect(get('/gitlab/gitlabhq/-/commit/4246fbd.diff')).to route_to('projects/commit#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '4246fbd', format: 'diff')
       expect(get('/gitlab/gitlabhq/-/commit/4246fbd.patch')).to route_to('projects/commit#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '4246fbd', format: 'patch')
@@ -410,7 +410,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
       let(:base_path) { '/gitlab/gitlabhq/-/commits' }
     end
 
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/commits/master.atom')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master.atom')
       expect(get('/gitlab/gitlabhq/-/commits/master')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master')
       expect(get('/gitlab/gitlabhq/-/commits/master?format=json')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master', format: 'json')
@@ -428,7 +428,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
       expect(get('/gitlab/gitlabhq/-/commits/feature/signatures?format=json&offset=40')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature/signatures', format: 'json', offset: '40')
     end
 
-    it 'to #signatures' do
+    specify 'to #signatures' do
       expect(get('/gitlab/gitlabhq/-/commits/feature/signatures?format=json')).to route_to('projects/commits#signatures', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature', format: 'json')
       expect(get('/gitlab/gitlabhq/-/commits/feature%2Fsignatures/signatures?format=json')).to route_to('projects/commits#signatures', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature/signatures', format: 'json')
     end
@@ -461,14 +461,14 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
       let(:base_path) { '/gitlab/gitlabhq/-/milestones' }
     end
 
-    it 'to #promote' do
+    specify 'to #promote' do
       expect(post('/gitlab/gitlabhq/-/milestones/1/promote')).to route_to('projects/milestones#promote', namespace_id: 'gitlab', project_id: 'gitlabhq', id: "1")
     end
   end
 
   # project_labels GET    /:project_id/labels(.:format) labels#index
   describe Projects::LabelsController, 'routing' do
-    it 'to #index' do
+    specify 'to #index' do
       expect(get('/gitlab/gitlabhq/-/labels')).to route_to('projects/labels#index', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
   end
@@ -484,7 +484,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   #                            PUT    /:project_id/issues/:id(.:format)         issues#update
   #                            DELETE /:project_id/issues/:id(.:format)         issues#destroy
   describe Projects::IssuesController, 'routing' do
-    it 'to #bulk_update' do
+    specify 'to #bulk_update' do
       expect(post('/gitlab/gitlabhq/-/issues/bulk_update')).to route_to('projects/issues#bulk_update', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
@@ -501,7 +501,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   #                        POST   /:project_id/notes(.:format)                        notes#create
   #           project_note DELETE /:project_id/notes/:id(.:format)                    notes#destroy
   describe Projects::NotesController, 'routing' do
-    it 'to #index' do
+    specify 'to #index' do
       expect(get('/gitlab/gitlabhq/noteable/issue/1/notes')).to route_to(
         'projects/notes#index',
         namespace_id: 'gitlab',
@@ -519,7 +519,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
 
   # project_blame GET    /:project_id/blame/:id(.:format) blame#show {id: /[^\0]+/, project_id: /[^\/]+/}
   describe Projects::BlameController, 'routing' do
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/blame/master/app/models/project.rb')).to route_to('projects/blame#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
       expect(get('/gitlab/gitlabhq/-/blame/master/files.scss')).to route_to('projects/blame#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/files.scss')
       newline_file = "new\n\nline.txt"
@@ -539,18 +539,18 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
       )
     end
 
-    it 'to #streaming' do
+    specify 'to #streaming' do
       expect(get('/gitlab/gitlabhq/-/blame/master/app/models/project.rb/streaming')).to route_to('projects/blame#streaming', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb', streaming: true)
     end
 
-    it 'to #page' do
+    specify 'to #page' do
       expect(get('/gitlab/gitlabhq/-/blame_page/master/app/models/project.rb')).to route_to('projects/blame#page', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
     end
   end
 
   # project_blob GET    /:project_id/-/blob/:id(.:format) blob#show {id: /[^\0]+/, project_id: /[^\/]+/}
   describe Projects::BlobController, 'routing' do
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/blob/master/app/models/project.rb')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
       expect(get('/gitlab/gitlabhq/-/blob/master/app/models/compare.rb')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/compare.rb')
       expect(get('/gitlab/gitlabhq/-/blob/master/app/models/diff.js')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/diff.js')
@@ -574,14 +574,14 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
       )
     end
 
-    it 'to #show from unscoped routing' do
+    specify 'to #show from unscoped routing' do
       expect(get('/gitlab/gitlabhq/blob/master/app/models/project.rb')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
     end
   end
 
   # project_tree GET    /:project_id/-/tree/:id(.:format) tree#show {id: /[^\0]+/, project_id: /[^\/]+/}
   describe Projects::TreeController, 'routing' do
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/tree/master/app/models/project.rb')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
       expect(get('/gitlab/gitlabhq/-/tree/master/files.scss')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/files.scss')
       expect(get('/gitlab/gitlabhq/-/tree/master/tree/files')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/tree/files')
@@ -603,7 +603,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
       )
     end
 
-    it 'to #show from unscoped routing' do
+    specify 'to #show from unscoped routing' do
       expect(get('/gitlab/gitlabhq/tree/master')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master')
       expect(get('/gitlab/gitlabhq/tree/master/app/models/project.rb')).to route_to('projects/tree#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
     end
@@ -612,7 +612,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   # project_find_file GET /:namespace_id/:project_id/-/find_file/*id(.:format)  projects/find_file#show {:id=>/[^\0]+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>/html/}
   # project_files     GET /:namespace_id/:project_id/-/files/*id(.:format)      projects/find_file#list {:id=>/(?:[^.]|\.(?!json$))+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>/json/}
   describe Projects::FindFileController, 'routing' do
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/find_file/master')).to route_to('projects/find_file#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master')
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
@@ -631,7 +631,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
       )
     end
 
-    it 'to #list' do
+    specify 'to #list' do
       expect(get('/gitlab/gitlabhq/-/files/master.json')).to route_to('projects/find_file#list', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master.json')
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
@@ -655,7 +655,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   end
 
   describe Projects::BlobController, 'routing' do
-    it 'to #edit' do
+    specify 'to #edit' do
       expect(get('/gitlab/gitlabhq/-/edit/master/app/models/project.rb')).to(
         route_to('projects/blob#edit', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
       )
@@ -676,7 +676,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
       )
     end
 
-    it 'to #preview' do
+    specify 'to #preview' do
       expect(post('/gitlab/gitlabhq/-/preview/master/app/models/project.rb')).to(
         route_to('projects/blob#preview', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
       )
@@ -703,7 +703,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
 
   # project_raw GET    /:project_id/-/raw/:id(.:format) raw#show {id: /[^\0]+/, project_id: /[^\/]+/}
   describe Projects::RawController, 'routing' do
-    it 'to #show' do
+    specify 'to #show' do
       newline_file = "new\n\nline.txt"
       url_encoded_newline_file = ERB::Util.url_encode(newline_file)
       assert_routing(
@@ -721,7 +721,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
       )
     end
 
-    it 'to #show from unscoped routing' do
+    specify 'to #show from unscoped routing' do
       expect(get('/gitlab/gitlabhq/raw/master/app/models/project.rb')).to route_to('projects/raw#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/project.rb')
     end
   end
@@ -730,15 +730,15 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   #                       POST   /:project_id/-/compare(.:format)             compare#create {id: /[^\/]+/, project_id: /[^\/]+/}
   #       project_compare        /:project_id/-/compare/:from...:to(.:format) compare#show {from: /.+/, to: /.+/, id: /[^\/]+/, project_id: /[^\/]+/}
   describe Projects::CompareController, 'routing' do
-    it 'to #index' do
+    specify 'to #index' do
       expect(get('/gitlab/gitlabhq/-/compare')).to route_to('projects/compare#index', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
-    it 'to #compare' do
+    specify 'to #compare' do
       expect(post('/gitlab/gitlabhq/-/compare')).to route_to('projects/compare#create', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/compare/master...stable')).to     route_to('projects/compare#show', namespace_id: 'gitlab', project_id: 'gitlabhq', from: 'master', to: 'stable')
       expect(get('/gitlab/gitlabhq/-/compare/issue/1234...stable')).to route_to('projects/compare#show', namespace_id: 'gitlab', project_id: 'gitlabhq', from: 'issue/1234', to: 'stable')
       expect(get('/gitlab/gitlabhq/-/compare/257cc5642cb1a054f08cc83f2d943e56fd3ebe99...5716ca5987cbf97d6bb54920bea6adde242d87e6'))
@@ -752,7 +752,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   end
 
   describe Projects::NetworkController, 'routing' do
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/network/master')).to route_to('projects/network#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master')
       expect(get('/gitlab/gitlabhq/-/network/ends-with.json')).to route_to('projects/network#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'ends-with.json')
       expect(get('/gitlab/gitlabhq/-/network/master?format=json')).to route_to('projects/network#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master', format: 'json')
@@ -760,7 +760,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   end
 
   describe Projects::GraphsController, 'routing' do
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/graphs/master')).to route_to('projects/graphs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master')
       expect(get('/gitlab/gitlabhq/-/graphs/ends-with.json')).to route_to('projects/graphs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'ends-with.json')
       expect(get('/gitlab/gitlabhq/-/graphs/master?format=json')).to route_to('projects/graphs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master', format: 'json')
@@ -768,18 +768,18 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   end
 
   describe Projects::ForksController, 'routing' do
-    it 'to #new' do
+    specify 'to #new' do
       expect(get('/gitlab/gitlabhq/-/forks/new')).to route_to('projects/forks#new', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
-    it 'to #create' do
+    specify 'to #create' do
       expect(post('/gitlab/gitlabhq/-/forks')).to route_to('projects/forks#create', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
   end
 
   # project_avatar DELETE /project/avatar(.:format) projects/avatars#destroy
   describe Projects::AvatarsController, 'routing' do
-    it 'to #destroy' do
+    specify 'to #destroy' do
       expect(delete('/gitlab/gitlabhq/-/avatar')).to route_to(
         'projects/avatars#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
@@ -792,17 +792,17 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
       let(:id) { 'my.domain.com' }
     end
 
-    it 'to #destroy with a valid domain name' do
+    specify 'to #destroy with a valid domain name' do
       expect(delete('/gitlab/gitlabhq/pages/domains/my.domain.com')).to route_to('projects/pages_domains#destroy', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'my.domain.com')
     end
 
-    it 'to #show with a valid domain' do
+    specify 'to #show with a valid domain' do
       expect(get('/gitlab/gitlabhq/pages/domains/my.domain.com')).to route_to('projects/pages_domains#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'my.domain.com')
     end
   end
 
   describe Projects::ReleasesController, 'routing' do
-    it 'to #latest_permalink with a valid permalink path' do
+    specify 'to #latest_permalink with a valid permalink path' do
       expect(get('/gitlab/gitlabhq/-/releases/permalink/latest/downloads/release-binary.zip')).to route_to(
         'projects/releases#latest_permalink',
         namespace_id: 'gitlab',
@@ -817,7 +817,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
       )
     end
 
-    it 'to #show for the release with tag named permalink' do
+    specify 'to #show for the release with tag named permalink' do
       expect(get('/gitlab/gitlabhq/-/releases/permalink')).to route_to(
         'projects/releases#show',
         namespace_id: 'gitlab',
@@ -854,11 +854,11 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   end
 
   describe Projects::PipelinesController, 'routing' do
-    it 'to #index' do
+    specify 'to #index' do
       expect(get('/gitlab/gitlabhq/-/pipelines')).to route_to('projects/pipelines#index', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/pipelines/12')).to route_to('projects/pipelines#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '12')
     end
 
@@ -866,7 +866,7 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   end
 
   describe Projects::PipelineSchedulesController, 'routing' do
-    it 'to #index' do
+    specify 'to #index' do
       expect(get('/gitlab/gitlabhq/-/pipeline_schedules')).to route_to('projects/pipeline_schedules#index', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
@@ -874,55 +874,55 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   end
 
   describe Projects::Settings::RepositoryController, 'routing' do
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/settings/repository')).to route_to('projects/settings/repository#show', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
-    it 'to repository#create_deploy_token' do
+    specify 'to repository#create_deploy_token' do
       expect(post('gitlab/gitlabhq/-/settings/ci_cd/deploy_token/create')).to route_to('projects/settings/repository#create_deploy_token', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
   end
 
   describe Projects::Settings::CiCdController, 'routing' do
-    it "to #runner_setup_scripts" do
+    specify "to #runner_setup_scripts" do
       expect(get("/gitlab/gitlabhq/-/settings/ci_cd/runner_setup_scripts")).to route_to('projects/settings/ci_cd#runner_setup_scripts', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
   end
 
   describe Projects::Settings::PackagesAndRegistriesController, 'routing' do
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/settings/packages_and_registries')).to route_to('projects/settings/packages_and_registries#show', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
-    it 'to #cleanup_tags' do
+    specify 'to #cleanup_tags' do
       expect(get('gitlab/gitlabhq/-/settings/packages_and_registries/cleanup_image_tags')).to route_to('projects/settings/packages_and_registries#cleanup_tags', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
   end
 
   describe Projects::Settings::IntegrationsController, 'routing' do
-    it 'to #index' do
+    specify 'to #index' do
       expect(get('/gitlab/gitlabhq/-/settings/integrations')).to route_to('projects/settings/integrations#index', namespace_id: 'gitlab', project_id: 'gitlabhq')
     end
 
-    it 'to #edit' do
+    specify 'to #edit' do
       expect(get('/gitlab/gitlabhq/-/settings/integrations/acme/edit')).to route_to('projects/settings/integrations#edit', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'acme')
     end
 
-    it 'to #update' do
+    specify 'to #update' do
       expect(put('/gitlab/gitlabhq/-/settings/integrations/acme')).to route_to('projects/settings/integrations#update', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'acme')
     end
 
-    it 'to #test' do
+    specify 'to #test' do
       expect(put('/gitlab/gitlabhq/-/settings/integrations/acme/test')).to route_to('projects/settings/integrations#test', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'acme')
     end
   end
 
   describe Projects::Settings::IntegrationHookLogsController do
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/settings/integrations/acme/hook_logs/log')).to route_to('projects/settings/integration_hook_logs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', integration_id: 'acme', id: 'log')
     end
 
-    it 'to #retry' do
+    specify 'to #retry' do
       expect(post('/gitlab/gitlabhq/-/settings/integrations/acme/hook_logs/log/retry')).to route_to('projects/settings/integration_hook_logs#retry', namespace_id: 'gitlab', project_id: 'gitlabhq', integration_id: 'acme', id: 'log')
     end
   end
@@ -978,14 +978,14 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   end
 
   describe Projects::DesignManagement::Designs::RawImagesController, 'routing' do
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/design_management/designs/1/raw_image')).to route_to('projects/design_management/designs/raw_images#show', namespace_id: 'gitlab', project_id: 'gitlabhq', design_id: '1')
       expect(get('/gitlab/gitlabhq/-/design_management/designs/1/c6f00aa50b80887ada30a6fe517670be9f8f9ece/raw_image')).to route_to('projects/design_management/designs/raw_images#show', namespace_id: 'gitlab', project_id: 'gitlabhq', design_id: '1', sha: 'c6f00aa50b80887ada30a6fe517670be9f8f9ece')
     end
   end
 
   describe Projects::DesignManagement::Designs::ResizedImageController, 'routing' do
-    it 'to #show' do
+    specify 'to #show' do
       expect(get('/gitlab/gitlabhq/-/design_management/designs/1/resized_image/v432x230')).to route_to('projects/design_management/designs/resized_image#show', namespace_id: 'gitlab', project_id: 'gitlabhq', design_id: '1', id: 'v432x230')
       expect(get('/gitlab/gitlabhq/-/design_management/designs/1/c6f00aa50b80887ada30a6fe517670be9f8f9ece/resized_image/v432x230')).to route_to('projects/design_management/designs/resized_image#show', namespace_id: 'gitlab', project_id: 'gitlabhq', design_id: '1', sha: 'c6f00aa50b80887ada30a6fe517670be9f8f9ece', id: 'v432x230')
       expect(get('/gitlab/gitlabhq/-/design_management/designs/1/invalid/resized_image/v432x230')).to route_to('application#route_not_found', unmatched_route: 'gitlab/gitlabhq/-/design_management/designs/1/invalid/resized_image/v432x230')
@@ -994,14 +994,14 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
   end
 
   describe Projects::Snippets::BlobsController, "routing" do
-    it "to #raw" do
+    specify "to #raw" do
       expect(get('/gitlab/gitlabhq/-/snippets/1/raw/master/lib/version.rb'))
         .to route_to('projects/snippets/blobs#raw',
           namespace_id: 'gitlab', project_id: 'gitlabhq', snippet_id: '1', ref: 'master', path: 'lib/version.rb')
     end
 
     context 'when reference has special symbols' do
-      it "to #raw" do
+      specify "to #raw" do
         expect(get('/gitlab/gitlabhq/-/snippets/1/raw/0.0.x-rc/lib/version.rb'))
           .to route_to('projects/snippets/blobs#raw',
             namespace_id: 'gitlab', project_id: 'gitlabhq', snippet_id: '1', ref: '0.0.x-rc', path: 'lib/version.rb')

@@ -51,6 +51,7 @@ blog post.
 {{< history >}}
 
 - The maximum number of components per project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/436565) from 10 to 30 in GitLab 16.9.
+- The maximum number of components per project [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/569158) from 30 to 100 in GitLab 18.5.
 
 {{< /history >}}
 

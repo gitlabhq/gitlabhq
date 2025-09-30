@@ -57,7 +57,7 @@ const updateNotesWidgetDataInDraftData = (draftData, notesWidget) => {
  * @param currentNotes
  * @param newNote
  */
-export const updateCacheAfterCreatingNote = (currentNotes, newNote) => {
+export const updateCacheAfterCreatingNote = (currentNotes, newNote, { prepend = false } = {}) => {
   if (!newNote) {
     return currentNotes;
   }
@@ -76,7 +76,12 @@ export const updateCacheAfterCreatingNote = (currentNotes, newNote) => {
       return;
     }
 
-    notesWidget.discussions.nodes.push(newNote.discussion);
+    if (prepend) {
+      notesWidget.discussions.nodes.unshift(newNote.discussion);
+    } else {
+      notesWidget.discussions.nodes.push(newNote.discussion);
+    }
+
     updateNotesWidgetDataInDraftData(draftData, notesWidget);
   });
 };

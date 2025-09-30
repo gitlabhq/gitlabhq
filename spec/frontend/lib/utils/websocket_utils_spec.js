@@ -180,23 +180,26 @@ describe('WebSocket Utils', () => {
         expect(mockWebSocket.send).not.toHaveBeenCalled();
       });
     });
+
     describe('close', () => {
-      it('should close socket when in OPEN state', () => {
+      it('should close socket with code 1000 when in OPEN state', () => {
         const connection = createAndConnectSocket();
 
         mockWebSocket.readyState = global.WebSocket.OPEN;
         connection.close();
 
         expect(mockWebSocket.close).toHaveBeenCalledTimes(1);
+        expect(mockWebSocket.close).toHaveBeenCalledWith(1000);
       });
 
-      it('should close socket when in CONNECTING state', () => {
+      it('should close socket with code 1000 when in CONNECTING state', () => {
         const connection = createAndConnectSocket();
 
         mockWebSocket.readyState = global.WebSocket.CONNECTING;
         connection.close();
 
         expect(mockWebSocket.close).toHaveBeenCalledTimes(1);
+        expect(mockWebSocket.close).toHaveBeenCalledWith(1000);
       });
 
       it('should not close socket when in CLOSED state', () => {

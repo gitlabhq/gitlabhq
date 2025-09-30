@@ -42,6 +42,10 @@ module Gitlab
           false
         end
 
+        def lease_taken_log_level
+          :info
+        end
+
         def sleep_interval
           rand(MIN_SLEEP_INTERVAL.to_f..MAX_SLEEP_INTERVAL.to_f)
         end

@@ -84,9 +84,9 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
       end
     end
 
-    context 'when there are at max 30 components' do
+    context 'when there are at max 100 components' do
       let(:metadata) do
-        num_components = 30
+        num_components = 100
         {
           components: (0...num_components).map { |i| { name: "component_#{i}", spec: {}, component_type: 'template' } }
         }
@@ -96,13 +96,13 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
         response = execute
 
         expect(response).to be_success
-        expect(project.ci_components.count).to eq(30)
+        expect(project.ci_components.count).to eq(100)
       end
     end
 
-    context 'when there are more than 30 components' do
+    context 'when there are more than 100 components' do
       let(:metadata) do
-        num_components = 31
+        num_components = 101
         {
           components: (0..num_components).map { |i| { name: "component_#{i}", spec: {}, component_type: 'template' } }
         }
@@ -112,7 +112,7 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
         response = execute
 
         expect(response).to be_error
-        expect(response.message).to include('Release cannot contain more than 30 components')
+        expect(response.message).to include('Release cannot contain more than 100 components')
         expect(project.ci_components.count).to eq(0)
       end
     end
@@ -279,9 +279,9 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
       end
     end
 
-    context 'when there are at max 30 components' do
+    context 'when there are at max 100 components' do
       let(:files) do
-        num_components = 30
+        num_components = 100
         components = (0...num_components).map { |i| "templates/secret#{i}.yml" }
         components << 'README.md'
 
@@ -292,13 +292,13 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
         response = execute
 
         expect(response).to be_success
-        expect(project.ci_components.count).to eq(30)
+        expect(project.ci_components.count).to eq(100)
       end
     end
 
-    context 'when there are more than 30 components' do
+    context 'when there are more than 100 components' do
       let(:files) do
-        num_components = 31
+        num_components = 101
         components = (0..num_components).map { |i| "templates/secret#{i}.yml" }
         components << 'README.md'
 
@@ -309,7 +309,7 @@ RSpec.describe Ci::Catalog::Resources::Versions::CreateService, feature_category
         response = execute
 
         expect(response).to be_error
-        expect(response.message).to include('Release cannot contain more than 30 components')
+        expect(response.message).to include('Release cannot contain more than 100 components')
         expect(project.ci_components.count).to eq(0)
       end
     end

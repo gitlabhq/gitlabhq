@@ -58,6 +58,10 @@ module Gitlab
           "#{self.class.name.underscore}:queues:#{current_queues.join(',')}"
         end
 
+        def lease_taken_log_level
+          :info
+        end
+
         def report_metrics
           workers.each do |w|
             queue_size = concurrent_limit_service.queue_size(w.name)

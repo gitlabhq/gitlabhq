@@ -8,6 +8,7 @@ import { __ } from '~/locale';
 import { clearDraft } from '~/lib/utils/autosave';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
+import { ASC, DESC } from '~/notes/constants';
 import { updateCacheAfterCreatingNote } from '../../graphql/cache_utils';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
 import workItemNotesByIidQuery from '../../graphql/notes/work_item_notes_by_iid.query.graphql';
@@ -130,6 +131,11 @@ export default {
     uploadsPath: {
       type: String,
       required: true,
+    },
+    discussionsSortOrder: {
+      type: String,
+      default: ASC,
+      required: false,
     },
   },
   data() {
@@ -321,7 +327,9 @@ export default {
       }
       cache.writeQuery({
         ...queryArgs,
-        data: updateCacheAfterCreatingNote(sourceData, newNote),
+        data: updateCacheAfterCreatingNote(sourceData, newNote, {
+          prepend: this.discussionsSortOrder === DESC,
+        }),
       });
     },
     onNoteUpdate(cache, { data }) {

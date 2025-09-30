@@ -20,7 +20,7 @@ export const createWebSocket = (url, options = {}) => {
 
   const close = () => {
     if (socket?.readyState === WebSocket.OPEN || socket?.readyState === WebSocket.CONNECTING) {
-      socket.close();
+      socket.close(1000);
     }
     socket = null;
   };
