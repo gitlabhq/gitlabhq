@@ -139,6 +139,10 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     ]
   end
 
+  def wi_dates(work_item)
+    [work_item.reload.start_date, work_item.reload.due_date]
+  end
+
   let_it_be(:users) { create_list(:user, 3) }
   let_it_be(:thumbs_ups) { create_list(:award_emoji, 2, name: 'thumbsup', awardable: original_work_item) }
   let_it_be(:thumbs_downs) { create_list(:award_emoji, 2, name: 'thumbsdown', awardable: original_work_item) }
@@ -288,6 +292,23 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
     ]
   end
 
+  let_it_be(:start_date) { 1.week.ago.to_date }
+  let_it_be(:due_date) { 1.week.from_now.to_date }
+
+  let_it_be(:dates_data) do
+    # order of creating dates source first and start date second is important because we have a trigger
+    # on work_item_dates_sources that copies start and due dates to issues table.
+    create(
+      :work_items_dates_source, work_item: original_work_item,
+      start_date: nil, start_date_fixed: start_date,
+      due_date: nil, due_date_fixed: due_date,
+      start_date_is_fixed: true,
+      due_date_is_fixed: true
+    )
+
+    [start_date, due_date]
+  end
+
   let_it_be(:move) { WorkItems::DataSync::MoveService }
   let_it_be(:clone) { WorkItems::DataSync::CloneService }
   let_it_be(:always_cleaned_up_widgets) { [:work_item_parent] }
@@ -307,7 +328,9 @@ RSpec.shared_examples 'cloneable and moveable widget data' do
       { widget: :labels,             assoc_name: :labels,                      eval_value: :wi_labels,             expected: labels,        operations: [move, clone] },
       { widget: :hierarchy,          assoc_name: :work_item_children,          eval_value: :wi_children,           expected: child_items,   operations: [move] },
       { widget: :hierarchy,          assoc_name: :work_item_parent,            eval_value: :wi_parent,             expected: parent,        operations: [move, clone] },
-      { widget: :linked_items,       assoc_name: :linked_work_items,           eval_value: :wi_linked_items,       expected: related_items, operations: [move], widget_args: [current_user] }
+      { widget: :linked_items,       assoc_name: :linked_work_items,           eval_value: :wi_linked_items,       expected: related_items, operations: [move], widget_args: [current_user] },
+      { widget: :start_and_due_date, assoc_name: :start_date,                  eval_value: :wi_dates,              expected: dates_data,    operations: [move, clone] },
+      { widget: :start_and_due_date, assoc_name: :due_date,                    eval_value: :wi_dates,              expected: dates_data,    operations: [move, clone] }
     ]
   end
   # rubocop: enable Layout/LineLength
