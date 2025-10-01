@@ -68,100 +68,95 @@ export default {
   <header
     class="super-topbar gl-grid gl-w-full gl-grid-cols-[1fr_auto_1fr] gl-items-center gl-gap-4"
   >
-    <div class="gl-contents gl-items-center gl-gap-5 md:gl-flex">
-      <div class="gl-flex gl-items-center gl-gap-3">
-        <brand-logo :logo-url="sidebarData.logo_url" class="!gl-p-0" />
+    <div class="gl-flex gl-items-center gl-gap-3">
+      <brand-logo :logo-url="sidebarData.logo_url" class="!gl-p-0" />
 
-        <gl-badge
-          v-if="sidebarData.gitlab_com_and_canary"
-          variant="success"
-          data-testid="canary-badge-link"
-          :href="sidebarData.canary_toggle_com_url"
-        >
-          {{ $options.NEXT_LABEL }}
-        </gl-badge>
+      <gl-badge
+        v-if="sidebarData.gitlab_com_and_canary"
+        variant="success"
+        data-testid="canary-badge-link"
+        :href="sidebarData.canary_toggle_com_url"
+      >
+        {{ $options.NEXT_LABEL }}
+      </gl-badge>
 
-        <super-sidebar-toggle
-          v-if="sidebarData.current_menu_items.length"
-          icon="hamburger"
-          type="expand"
-          class="xl:gl-hidden"
-          :aria-label="$options.i18n.menuLabel"
-        />
+      <super-sidebar-toggle
+        v-if="sidebarData.current_menu_items.length"
+        icon="hamburger"
+        type="expand"
+        class="xl:gl-hidden"
+        :aria-label="$options.i18n.menuLabel"
+      />
 
-        <promo-menu v-if="!isLoggedIn" :pricing-url="sidebarData.compare_plans_url" />
-      </div>
+      <promo-menu v-if="!isLoggedIn" :pricing-url="sidebarData.compare_plans_url" />
 
-      <organization-switcher v-if="shouldShowOrganizationSwitcher" />
+      <organization-switcher v-if="shouldShowOrganizationSwitcher" class="gl-hidden md:gl-block" />
     </div>
 
-    <div class="gl-col-start-3 gl-flex gl-justify-end gl-gap-3 md:gl-contents">
-      <gl-button
-        id="super-sidebar-search"
-        v-gl-modal="$options.SEARCH_MODAL_ID"
-        button-text-classes="gl-flex gl-w-full gl-items-center"
-        category="tertiary"
-        class="topbar-search-button gl-max-w-88 !gl-rounded-lg !gl-bg-transparent !gl-pl-3 !gl-pr-2 md:!gl-border-strong md:!gl-bg-default md:hover:!gl-border-alpha-dark-40 dark:md:!gl-bg-alpha-light-8 dark:md:hover:!gl-border-alpha-light-36"
-        data-testid="super-topbar-search-button"
+    <gl-button
+      id="super-sidebar-search"
+      v-gl-modal="$options.SEARCH_MODAL_ID"
+      button-text-classes="gl-flex gl-w-full gl-items-center"
+      category="tertiary"
+      class="topbar-search-button gl-max-w-88 !gl-rounded-lg !gl-border-strong !gl-bg-default !gl-pl-3 !gl-pr-2 hover:!gl-border-alpha-dark-40 dark:!gl-bg-alpha-light-8 dark:hover:!gl-border-alpha-light-36"
+      data-testid="super-topbar-search-button"
+    >
+      <gl-icon name="search" class="gl-shrink-0" />
+      <span
+        class="topbar-search-button-placeholder gl-min-w-[24vw] gl-grow gl-text-left gl-font-normal"
+        >{{ $options.i18n.searchBtnText }}</span
       >
-        <gl-icon name="search" class="gl-shrink-0" />
-        <span
-          class="topbar-search-button-placeholder gl-hidden gl-min-w-[24vw] gl-grow gl-text-left gl-font-normal md:gl-block"
-          >{{ $options.i18n.searchBtnText }}</span
+      <kbd class="gl-mr-1 gl-hidden gl-shrink-0 gl-shadow-none">/</kbd>
+    </gl-button>
+
+    <div class="gl-flex gl-justify-end gl-gap-3">
+      <template v-if="isLoggedIn">
+        <create-menu
+          v-if="isLoggedIn && sidebarData.create_new_menu_groups.length > 0"
+          :groups="sidebarData.create_new_menu_groups"
+        />
+        <div
+          class="gl-border-r gl-my-3 gl-hidden gl-h-5 gl-w-1 gl-border-r-strong lg:gl-block"
+        ></div>
+
+        <user-counts
+          v-if="isLoggedIn"
+          :sidebar-data="sidebarData"
+          class="gl-hidden md:gl-flex"
+          counter-class="gl-button btn btn-default btn-default-tertiary !gl-px-3 !gl-rounded-lg"
+        />
+
+        <gl-button
+          v-if="isAdmin"
+          :href="sidebarData.admin_url"
+          icon="admin"
+          class="topbar-admin-link gl-hidden !gl-rounded-lg sm:gl-mr-1 xl:gl-flex"
+          data-testid="topbar-admin-link"
         >
-        <kbd class="gl-mr-1 gl-hidden gl-shrink-0 gl-shadow-none md:gl-block">/</kbd>
-      </gl-button>
+          {{ $options.i18n.adminArea }}
+        </gl-button>
 
-      <div class="gl-flex gl-justify-end gl-gap-3">
-        <template v-if="isLoggedIn">
-          <create-menu
-            v-if="isLoggedIn && sidebarData.create_new_menu_groups.length > 0"
-            class="gl-hidden lg:gl-block"
-            :groups="sidebarData.create_new_menu_groups"
-          />
-          <div
-            class="gl-border-r gl-my-3 gl-hidden gl-h-5 gl-w-1 gl-border-r-strong lg:gl-block"
-          ></div>
-
-          <user-counts
-            v-if="isLoggedIn"
-            :sidebar-data="sidebarData"
-            class="gl-hidden md:gl-flex"
-            counter-class="gl-button btn btn-default btn-default-tertiary !gl-px-3 !gl-rounded-lg"
-          />
-
-          <gl-button
-            v-if="isAdmin"
-            :href="sidebarData.admin_url"
-            icon="admin"
-            class="topbar-admin-link gl-hidden !gl-rounded-lg sm:gl-mr-1 xl:gl-flex"
-            data-testid="topbar-admin-link"
-          >
-            {{ $options.i18n.adminArea }}
-          </gl-button>
-
-          <user-menu :data="sidebarData" />
-        </template>
-        <template v-else>
-          <gl-button
-            v-if="sidebarData.sign_in_visible"
-            :href="sidebarData.sign_in_path"
-            class="!gl-rounded-lg"
-            data-testid="topbar-signin-button"
-          >
-            {{ __('Sign in') }}
-          </gl-button>
-          <gl-button
-            v-if="sidebarData.allow_signup"
-            :href="sidebarData.new_user_registration_path"
-            variant="confirm"
-            class="topbar-signup-button !gl-rounded-lg"
-            data-testid="topbar-signup-button"
-          >
-            {{ isSaas ? __('Get free trial') : __('Register') }}
-          </gl-button>
-        </template>
-      </div>
+        <user-menu :data="sidebarData" />
+      </template>
+      <template v-else>
+        <gl-button
+          v-if="sidebarData.sign_in_visible"
+          :href="sidebarData.sign_in_path"
+          class="!gl-rounded-lg"
+          data-testid="topbar-signin-button"
+        >
+          {{ __('Sign in') }}
+        </gl-button>
+        <gl-button
+          v-if="sidebarData.allow_signup"
+          :href="sidebarData.new_user_registration_path"
+          variant="confirm"
+          class="topbar-signup-button !gl-rounded-lg"
+          data-testid="topbar-signup-button"
+        >
+          {{ isSaas ? __('Get free trial') : __('Register') }}
+        </gl-button>
+      </template>
     </div>
 
     <search-modal />

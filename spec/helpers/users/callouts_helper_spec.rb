@@ -91,13 +91,11 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
 
     using RSpec::Parameterized::TableSyntax
 
-    where(:gitlab_com, :current_user, :signup_enabled, :user_dismissed, :controller_path, :expected_result) do
-      false | ref(:admin) | true  | false | 'admin/users'     | true
-      true  | ref(:admin) | true  | false | 'admin/users'     | false
-      false | ref(:user)  | true  | false | 'admin/users'     | false
-      false | ref(:admin) | false | false | 'admin/users'     | false
-      false | ref(:admin) | true  | true  | 'admin/users'     | false
-      false | ref(:admin) | true  | false | 'projects/issues' | false
+    where(:gitlab_com, :current_user, :signup_enabled, :controller_path, :expected_result) do
+      false | ref(:admin) | true  | 'admin/users'     | true
+      true  | ref(:admin) | true  | 'admin/users'     | false
+      false | ref(:admin) | false | 'admin/users'     | false
+      false | ref(:admin) | true  | 'projects/issues' | false
     end
 
     with_them do
@@ -105,7 +103,6 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
         allow(::Gitlab).to receive(:com?).and_return(gitlab_com)
         allow(helper).to receive(:current_user).and_return(current_user)
         stub_application_setting(signup_enabled: signup_enabled)
-        allow(helper).to receive(:user_dismissed?).with(described_class::REGISTRATION_ENABLED_CALLOUT) { user_dismissed }
         allow(helper.controller).to receive(:controller_path).and_return(controller_path)
       end
 

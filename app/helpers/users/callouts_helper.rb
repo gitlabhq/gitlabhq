@@ -7,7 +7,6 @@ module Users
     SUGGEST_POPOVER_DISMISSED = 'suggest_popover_dismissed'
     TABS_POSITION_HIGHLIGHT = 'tabs_position_highlight'
     FEATURE_FLAGS_NEW_VERSION = 'feature_flags_new_version'
-    REGISTRATION_ENABLED_CALLOUT = 'registration_enabled_callout'
     OPENSSL_CALLOUT = 'openssl_callout'
     UNFINISHED_TAG_CLEANUP_CALLOUT = 'unfinished_tag_cleanup_callout'
     SECURITY_NEWSLETTER_CALLOUT = 'security_newsletter_callout'
@@ -60,7 +59,6 @@ module Users
       !Gitlab.com? &&
         current_user&.can_admin_all_resources? &&
         signup_enabled? &&
-        !user_dismissed?(REGISTRATION_ENABLED_CALLOUT) &&
         REGISTRATION_ENABLED_CALLOUT_ALLOWED_CONTROLLER_PATHS.any? { |path| controller.controller_path.match?(path) }
     end
 

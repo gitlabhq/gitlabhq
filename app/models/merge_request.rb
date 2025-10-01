@@ -2692,6 +2692,28 @@ class MergeRequest < ApplicationRecord
     merge_head_diff&.patch_id_sha
   end
 
+  def commit_exists?(sha)
+    return all_commits.exists?(sha: sha) if Feature.disabled?(:merge_request_diff_commits_dedup, project)
+
+    # We query the SHA from `merge_request_commits_metadata` table first and
+    # fallback to querying them from `merge_request_diff_commits` if doesn't match
+    # anything. That is to check if commit exists but the records are old and there
+    # are no `merge_request_commits_metadata_id` set for them since they're not
+    # backfilled yet.
+    return true if MergeRequest::CommitsMetadata
+      .where(project: project, sha: sha)
+      .where_exists(
+        MergeRequestDiffCommit
+          .where('merge_request_diff_commits.merge_request_commits_metadata_id = merge_request_commits_metadata.id')
+          .where_exists(
+            merge_request_diffs.where('merge_request_diffs.id = merge_request_diff_commits.merge_request_diff_id')
+          )
+      )
+      .exists?
+
+    all_commits.exists?(sha: sha)
+  end
+
   private
 
   def viewable_diffs(order_by: :id_asc)

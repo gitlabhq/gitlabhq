@@ -7724,4 +7724,58 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
   end
+
+  describe '#commit_exists?' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let_it_be(:merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
+
+    let_it_be(:commits_metadata) do
+      create(
+        :merge_request_commits_metadata,
+        project: project,
+        sha: 'abc123'
+      )
+    end
+
+    let_it_be(:diff_commit_with_metadata) do
+      create(
+        :merge_request_diff_commit,
+        merge_request_diff: merge_request_diff,
+        merge_request_commits_metadata_id: commits_metadata.id,
+        relative_order: 0,
+        sha: nil
+      )
+    end
+
+    let_it_be(:diff_commit_without_metadata) do
+      create(
+        :merge_request_diff_commit,
+        merge_request_diff: merge_request_diff,
+        relative_order: 1,
+        sha: 'def456'
+      )
+    end
+
+    it 'checks existence of commit by SHA from merge_request_commits_metadata table' do
+      expect(merge_request.commit_exists?(commits_metadata.sha)).to eq(true)
+    end
+
+    context 'when SHA only matches a record in merge_request_diff_commits table' do
+      it 'checks existence of commit by SHA from merge_request_diff_commits_table' do
+        expect(merge_request.commit_exists?(diff_commit_without_metadata.sha)).to eq(true)
+      end
+    end
+
+    context 'when merge_request_diff_commits_dedup is disabled' do
+      before do
+        stub_feature_flags(merge_request_diff_commits_dedup: false)
+      end
+
+      it 'checks existence of commit by SHA from merge_request_diff_commits_table' do
+        expect(merge_request.commit_exists?(commits_metadata.sha)).to eq(false)
+        expect(merge_request.commit_exists?(diff_commit_without_metadata.sha)).to eq(true)
+      end
+    end
+  end
 end

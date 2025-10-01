@@ -95,7 +95,6 @@ Gitlab/RSpec/MisplacedEeSpecFile:
     - 'ee/spec/helpers/search_helper_spec.rb'
     - 'ee/spec/helpers/timeboxes_helper_spec.rb'
     - 'ee/spec/helpers/tree_helper_spec.rb'
-    - 'ee/spec/helpers/users/group_callouts_helper_spec.rb'
     - 'ee/spec/helpers/users_helper_spec.rb'
     - 'ee/spec/helpers/visibility_level_helper_spec.rb'
     - 'ee/spec/helpers/web_hooks/web_hooks_helper_spec.rb'

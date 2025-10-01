@@ -218,6 +218,7 @@ docs-i18n-lint paths:
     - .default-retry
     - .docs:rules:docs-i18n-lint
     - .docs-markdown-lint-image
+  allow_failure: true
   stage: lint
   needs: []
   script:

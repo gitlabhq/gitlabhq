@@ -42864,7 +42864,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="securitymetricsvulnerabilitiesovertimeenddate"></a>`endDate` | [`ISO8601Date!`](#iso8601date) | End date for the vulnerability metrics time range. |
+| <a id="securitymetricsvulnerabilitiesovertimeenddate"></a>`endDate` | [`ISO8601Date!`](#iso8601date) | End date for the vulnerability metrics time range. The end date should be within 31 days from the start date. |
 | <a id="securitymetricsvulnerabilitiesovertimeseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
 | <a id="securitymetricsvulnerabilitiesovertimestartdate"></a>`startDate` | [`ISO8601Date!`](#iso8601date) | Start date for the vulnerability metrics time range. |
 

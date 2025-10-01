@@ -9,4 +9,4 @@ vocab: false
 level: error
 scope: raw
 raw:
-  - '\[[^\]]+\]\((\.?\/(?!uploads|documentation)|[^:)]*\/\/)[^)]*\)'
+  - '\[[^\]]+\]\((\.?\/(?!uploads|documentation|page-from-root|home)|[^:)]*\/\/)[^)]*\)'

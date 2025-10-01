@@ -15,6 +15,7 @@ module Packages
     DETAILED_INFO_STATUSES = [:default, :deprecated].freeze
     STATUS_MESSAGE_MAX_LENGTH = 255
 
+    attribute :package_type, :integer, limit: 2
     enum :package_type, {
       maven: 1,
       npm: 2,

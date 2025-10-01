@@ -74052,6 +74052,9 @@ msgstr ""
 msgid "WorkItem|Canceled"
 msgstr ""
 
+msgid "WorkItem|Cannot remove status"
+msgstr ""
+
 msgid "WorkItem|Change appearance for all issues, epics, and tasks"
 msgstr ""
 
@@ -74963,6 +74966,12 @@ msgid "WorkItem|This item is hidden because its author has been banned."
 msgstr ""
 
 msgid "WorkItem|This status is set as the %{state} default. Select a new %{state} default to remove this status."
+msgstr ""
+
+msgid "WorkItem|This status is set as the Closed default, and no other Closed statuses exist. Create a \"Done\" or \"Canceled\" status to remove this status."
+msgstr ""
+
+msgid "WorkItem|This status is set as the Open default, and no other Open statuses exist. Create a \"Triage\", \"To do\", or \"In progress\" status to remove this status."
 msgstr ""
 
 msgid "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it."
