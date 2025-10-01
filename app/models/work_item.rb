@@ -228,14 +228,18 @@ class WorkItem < Issue
   end
 
   def create_dates_source_from_current_dates
-    create_dates_source(
+    create_dates_source(date_source_attributes_from_current_dates)
+  end
+
+  def date_source_attributes_from_current_dates
+    {
       due_date: due_date,
       start_date: start_date,
       start_date_is_fixed: due_date.present? || start_date.present?,
       due_date_is_fixed: due_date.present? || start_date.present?,
       start_date_fixed: start_date,
       due_date_fixed: due_date
-    )
+    }
   end
 
   def noteable_target_type_name
