@@ -38,7 +38,7 @@ module CompareHelper
     {
       project_compare_index_path: project_compare_index_path(project),
       source_project: { value: project.id, text: project.full_name }.to_json,
-      target_projects_path: project_new_merge_request_json_target_projects_path(project),
+      target_projects_path: target_projects_project_json_compare_index_path(project),
       target_project: { value: @target_project.id, text: @target_project.full_name }.to_json,
       source_project_refs_path: refs_project_path(project),
       target_project_refs_path: refs_project_path(@target_project),

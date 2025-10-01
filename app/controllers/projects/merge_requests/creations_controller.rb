@@ -5,6 +5,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   include DiffHelper
   include RendersCommits
   include ProductAnalyticsTracking
+  include Projects::TargetProjects
   include RapidDiffs::Resource
 
   skip_before_action :merge_request
@@ -112,21 +113,11 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     render layout: false
   end
 
-  def target_projects
-    render json: ProjectSerializer.new.represent(get_target_projects)
-  end
-
   def diffs_resource(options = {})
     @merge_request&.compare&.diffs(options)
   end
 
   private
-
-  def get_target_projects
-    MergeRequestTargetProjectFinder
-      .new(current_user: current_user, source_project: @project, project_feature: :repository)
-      .execute(include_routes: false, include_fork_networks: true, search: params[:search]).limit(20)
-  end
 
   def define_new_vars
     @noteable = @merge_request
