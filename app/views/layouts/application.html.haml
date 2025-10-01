@@ -8,8 +8,6 @@
   %body{ class: body_classes, data: body_data }
     -# all tooltips from GitLab UI will mount here by default
     #js-tooltips-container
-    -# mount drawers here for better page performance
-    #js-drawer-container
     = render "layouts/init_auto_complete" if @gfm_form
     = render "layouts/init_client_detection_flags"
     = render 'peek/bar'

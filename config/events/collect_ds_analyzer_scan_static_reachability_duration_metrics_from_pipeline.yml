@@ -1,0 +1,23 @@
+---
+description: The event tracks Dependency Scanner analyzer reachability analysis duration
+internal_events: true
+status: active
+action: collect_ds_analyzer_scan_static_reachability_duration_metrics_from_pipeline
+identifiers:
+- project
+- namespace
+additional_properties:
+  property:
+    description: Scan UUID
+  value:
+    description: Scan duration in seconds
+product_group: composition_analysis
+product_categories:
+- software_composition_analysis
+milestone: '18.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206296
+tiers:
+- free
+- premium
+- ultimate
+

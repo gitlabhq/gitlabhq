@@ -1,10 +1,10 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlButton, GlAlert, GlFormCheckbox, GlLink, GlSprintf } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import VueDraggable from 'vuedraggable';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { getFilename, validateImageName } from '~/lib/utils/file_upload';
 import { __, s__ } from '~/locale';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
@@ -106,7 +106,7 @@ export default {
       return this.filesToBeSaved.length > 0;
     },
     isMobile() {
-      return GlBreakpointInstance.getBreakpointSize() === 'xs';
+      return PanelBreakpointInstance.getBreakpointSize() === 'xs';
     },
     canCreateDesign() {
       return this.permissions.createDesign;

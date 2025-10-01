@@ -163,6 +163,9 @@
 .if-merge-request-labels-pipeline-expedite: &if-merge-request-labels-pipeline-expedite
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && ($CI_MERGE_REQUEST_LABELS =~ /pipeline::expedited/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:expedite/)'
 
+.if-merge-request-labels-pipeline-skip-performance: &if-merge-request-labels-pipeline-skip-performance
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-performance/'
+
 .if-merge-request-labels-frontend-and-feature-flag: &if-merge-request-labels-frontend-and-feature-flag
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /frontend/ && $CI_MERGE_REQUEST_LABELS =~ /feature flag/'
 
@@ -474,6 +477,18 @@
   - "data/whats_new/*.yml"
   - "doc/_index.md"
   - "doc/api/settings.md"
+
+  # Backend patterns  - .ci-patterns
+.backend-only-patterns: &backend-only-patterns
+  - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
+  - "Rakefile"
+  - "config.ru"
+  - "keeps/**/*"
+  - "*_VERSION"
+  # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
+  - "{,ee/,jh/}{app/channels,app/components,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
+  - "{,ee/,jh/}{bin,config,db,elastic,gems,generator_templates,lib}/**/*"
 
 .search-backend-patterns: &search-backend-patterns
   - "{,jh/}Gemfile.lock"
@@ -2066,6 +2081,8 @@
   rules:
     - <<: *if-merge-request-targeting-stable-branch
       when: never
+    - <<: *if-merge-request-labels-pipeline-skip-performance
+      when: never
     - if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security"'
       when: never
     - <<: *if-not-canonical-namespace
@@ -2076,14 +2093,15 @@
     # Do not run for scheduled pipeline for rails-next branch
     - <<: *if-rails-branch-schedule
       when: never
+    - !reference [".qa:rules:e2e-blocking-base-before", rules]
+    - !reference [".prevent-tier-2-and-below", rules]
+    - !reference [".qa:rules:e2e-schedule-nightly", rules]
     - <<: *if-merge-request
       changes: *cng-dependency-patterns
       when: manual
-    - !reference [".qa:rules:e2e-blocking-base-before", rules]
-    - !reference [".prevent-tier-2-and-below", rules]
-    - !reference [".qa:rules:e2e-blocking-base-after", rules]
-    - !reference [".qa:rules:e2e-schedule-nightly", rules]
-    - *if-dot-com-gitlab-org-schedule
+    - <<: *if-merge-request
+      changes: *backend-only-patterns
+    - <<: *if-dot-com-gitlab-org-schedule
 
 .qa:rules:test-on-omnibus-nightly:
   rules:

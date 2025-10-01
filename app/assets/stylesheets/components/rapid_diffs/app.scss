@@ -24,7 +24,7 @@
   // allow for the file browser to consume more height even when the diff list is very small
   min-height: 50dvh;
 
-  @include media-breakpoint-down(constants.$app-vertical-breakpoint) {
+  @include gl-container-width-down(constants.$app-vertical-breakpoint) {
     flex-direction: column;
   }
 }
@@ -75,13 +75,13 @@
   flex: none;
   box-sizing: content-box;
 
-  @include media-breakpoint-up(constants.$app-vertical-breakpoint) {
+  @include gl-container-width-up(constants.$app-vertical-breakpoint) {
     $drag-handle-width: 4px;
     padding-right: calc($gl-spacing-scale-4 + $drag-handle-width / 2);
     margin-right: calc($gl-spacing-scale-4 - $drag-handle-width / 2);
   }
 
-  @include media-breakpoint-down(constants.$app-vertical-breakpoint) {
+  @include gl-container-width-down(constants.$app-vertical-breakpoint) {
     --tree-list-max-height: calc(var(--file-row-height) * 8);
     flex: 1;
     margin: 0;
@@ -95,7 +95,7 @@
 }
 
 .rd-app .rd-app-sidebar {
-  @include media-breakpoint-down(constants.$app-vertical-breakpoint) {
+  @include gl-container-width-down(constants.$app-vertical-breakpoint) {
     display: none;
   }
 }

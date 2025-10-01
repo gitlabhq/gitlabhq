@@ -13483,7 +13483,7 @@ msgstr ""
 msgid "CiCatalog|Set component project as a CI/CD Catalog project. %{linkStart}What is the CI/CD Catalog?%{linkEnd}"
 msgstr ""
 
-msgid "CiCatalog|The number of projects that used a component from this project in a pipeline, by using \"include:component\", in the last 30 days."
+msgid "CiCatalog|The number of projects that used a component from this catalog resource in their pipelines in the last 30 days."
 msgstr ""
 
 msgid "CiCatalog|The project and any released versions will be removed from the CI/CD Catalog. If you re-enable this toggle, the project's existing releases are not re-added to the catalog. You must %{linkStart}create a new release%{linkEnd}."
@@ -59144,7 +59144,7 @@ msgstr ""
 msgid "SecurityOrchestration|In each pipeline, a %{boldStart}maximum of 1000%{boldEnd} vulnerabilities that are %{italicStart}no longer detected%{italicEnd} will be set to status %{italicStart}Resolved%{italicEnd} until all have been auto-resolved."
 msgstr ""
 
-msgid "SecurityOrchestration|In warn mode, project settings are checked and violations are reported, but fixes for the violations are not mandatory. %{linkStart}Learn more%{linkEnd}"
+msgid "SecurityOrchestration|In warn mode, project settings are checked and violations are reported, but fixes for the violations are not mandatory. License scanning is not supported in warn mode. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "SecurityOrchestration|Individual users"

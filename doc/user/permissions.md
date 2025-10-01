@@ -395,6 +395,12 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Add project runners to project <sup>11</sup>                                                                |            |       |         |          |           |     ✓      |
 | Clear runner caches manually                                                                                |            |       |         |          |           |     ✓      |
 | Enable instance runners in project                                                                          |            |       |         |          |           |     ✓      |
+| Create pipeline schedules <sup>12</sup>                                                                     |            |       |         |          |     ✓     |     ✓      |
+| Edit own pipeline schedules <sup>12</sup>                                                                   |            |       |         |          |     ✓     |     ✓      |
+| Delete own pipeline schedules                                                                               |            |       |         |          |     ✓     |     ✓      |
+| Run pipeline schedules manually <sup>13</sup>                                                               |            |       |         |          |     ✓     |     ✓      |
+| Take ownership of pipeline schedules                                                                        |            |       |         |          |           |     ✓      |
+| Delete others' pipeline schedules                                                                           |            |       |         |          |           |     ✓      |
 
 **Footnotes**
 
@@ -418,6 +424,11 @@ Project Owners can perform any listed action, and can delete pipelines:
 9. Maintainers: Must have the Maintainer role for a project associated with the runner.
 10. Maintainers: Must have the Maintainer role for [the owner project](../ci/runners/runners_scope.md#project-runner-ownership) (first project associated with runner).
 11. Maintainers: Must have the Maintainer role for the project being added and for a project already associated with the runner.
+12. Developers: Only for branches where the user has merge permissions.
+    For protected branches, must have merge permissions for the target branch.
+    For protected tags, the user must be allowed to create protected tags.
+    These permission requirements apply when creating or editing schedules, and are checked dynamically as branch protection rules may change over time.
+13. When running manually, the pipeline executes with the triggering user's permissions instead of the schedule owner's permissions.
 
 <!-- markdownlint-enable MD029 -->
 

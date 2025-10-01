@@ -1,0 +1,6 @@
+---
+name: delete_branch_rule
+description: Grants the ability to delete branch rules
+scopes:
+  - project
+feature_category: source_code_management

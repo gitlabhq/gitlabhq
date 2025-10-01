@@ -7453,7 +7453,7 @@ RSpec.describe User, feature_category: :user_profile do
           it 'creates an abuse report with the correct data' do
             expect { delete_async }.to change { AbuseReport.count }.from(0).to(1)
             expect(AbuseReport.last.attributes).to include({
-              reporter_id: Users::Internal.security_bot.id,
+              reporter_id: Users::Internal.for_organization(user.organization).security_bot.id,
               organization_id: Users::Internal.security_bot.organization_id,
               user_id: user.id,
               category: "spam",
@@ -7476,7 +7476,7 @@ RSpec.describe User, feature_category: :user_profile do
 
           context 'when there is an existing abuse report' do
             let!(:abuse_report) do
-              create(:abuse_report, user: user, reporter: Users::Internal.security_bot, message: 'Existing')
+              create(:abuse_report, user: user, reporter: Users::Internal.for_organization(user.organization).security_bot, message: 'Existing')
             end
 
             it 'updates the abuse report' do

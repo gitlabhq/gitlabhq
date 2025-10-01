@@ -55,8 +55,9 @@ module Types
           description: 'Relative path to the starrers page for the catalog resource project.'
 
         field :last_30_day_usage_count, GraphQL::Types::Int, null: false,
-          description: 'Number of projects that used a component from this catalog resource in a pipeline, by using ' \
-            '`include:component`, in the last 30 days.',
+          description: 'Number of projects that used a component from' \
+            'this catalog resource in a pipeline, by using ' \
+            '`include:component` in the last 30 days.',
           experiment: { milestone: '17.0' }
 
         field :archived, GraphQL::Types::Boolean, null: true,

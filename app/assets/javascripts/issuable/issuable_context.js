@@ -1,5 +1,5 @@
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
 import $ from 'jquery';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { setCookie } from '~/lib/utils/common_utils';
 import UsersSelect from '~/users_select';
 
@@ -58,10 +58,7 @@ export default class IssuableContext {
 
     window.addEventListener('beforeunload', () => {
       // collapsed_gutter cookie hides the sidebar
-      const bpBreakpoint = GlBreakpointInstance.getBreakpointSize();
-      const supportedSizes = ['xs', 'sm', 'md'];
-
-      if (supportedSizes.includes(bpBreakpoint)) {
+      if (!PanelBreakpointInstance.isDesktop()) {
         setCookie('collapsed_gutter', true);
       }
     });

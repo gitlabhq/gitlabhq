@@ -1,13 +1,13 @@
 import MockAdapter from 'axios-mock-adapter';
 import { setActivePinia } from 'pinia';
 import { nextTick } from 'vue';
+import { pinia } from '~/pinia/instance';
 import axios from '~/lib/utils/axios_utils';
 import { resetHTMLFixture, setHTMLFixture } from 'helpers/fixtures';
 import { initFileBrowser } from '~/rapid_diffs/app/file_browser';
 import { DiffFile } from '~/rapid_diffs/web_components/diff_file';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
-import { useViewport } from '~/pinia/global_stores/viewport';
-import { pinia } from '~/pinia/instance';
+import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { useApp } from '~/rapid_diffs/stores/app';
 
 jest.mock('~/rapid_diffs/app/file_browser/file_browser.vue', () => ({
@@ -122,9 +122,11 @@ describe('Init file browser', () => {
   };
 
   beforeEach(() => {
+    // createTestingPinia wouldn't work here because Pinia instance is explicitly imported
     setActivePinia(pinia);
     initAppData();
-    useViewport().reset();
+    // eslint-disable-next-line no-underscore-dangle
+    useMainContainer()._setCurrentBreakpoint('md');
     useApp().$reset();
 
     mockAxios = new MockAdapter(axios);
@@ -153,14 +155,15 @@ describe('Init file browser', () => {
   });
 
   describe.each`
-    isNarrowScreen | getBrowserElement       | getBrowserToggleElement
-    ${false}       | ${getFileBrowser}       | ${getFileBrowserToggle}
-    ${true}        | ${getFileBrowserDrawer} | ${getFileBrowserDrawerToggle}
+    breakpoint | getBrowserElement       | getBrowserToggleElement
+    ${'lg'}    | ${getFileBrowser}       | ${getFileBrowserToggle}
+    ${'sm'}    | ${getFileBrowserDrawer} | ${getFileBrowserDrawerToggle}
   `(
-    'when narrow screen is $isNarrowScreen',
-    ({ isNarrowScreen, getBrowserElement, getBrowserToggleElement }) => {
+    'when breakpoint is $breakpoint',
+    ({ breakpoint, getBrowserElement, getBrowserToggleElement }) => {
       beforeEach(() => {
-        useViewport().setViewportState({ isNarrowScreen });
+        // eslint-disable-next-line no-underscore-dangle
+        useMainContainer()._setCurrentBreakpoint(breakpoint);
       });
 
       it('mounts the components', async () => {
@@ -204,7 +207,8 @@ describe('Init file browser', () => {
   });
 
   it('hides drawer toggle when app is hidden', async () => {
-    useViewport().setViewportState({ isNarrowScreen: true });
+    // eslint-disable-next-line no-underscore-dangle
+    useMainContainer()._setCurrentBreakpoint('sm');
     await init();
     useApp().appVisible = false;
     await nextTick();

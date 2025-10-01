@@ -967,6 +967,7 @@ lib/gitlab/checks/
 /doc/development/pipelines/ @gl-dx/pipeline-maintainers
 /doc/development/policies.md @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/prometheus_metrics.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
+/doc/development/remote_development/ @gitlab-org/maintainers/remote-development/backend @gitlab-org/maintainers/remote-development/frontend
 /doc/development/search/ @gitlab-org/search-team/migration-maintainers
 /doc/development/sec/ @gitlab-org/secure/composition-analysis-be @gitlab-org/secure/static-analysis
 /doc/development/software_design.md @gl-dx/pipeline-maintainers
@@ -980,7 +981,6 @@ lib/gitlab/checks/
 /doc/install/install_ai_gateway.md @sselhorn
 /doc/integration/ @idurham
 /doc/integration/advanced_search/ @ashrafkhamis
-/doc/integration/datadog.md @rsarangadharan
 /doc/integration/diffblue_cover.md @lyspin
 /doc/integration/elasticsearch/troubleshooting/ @ashrafkhamis
 /doc/integration/external-issue-tracker.md @msedlakjakubowski
@@ -1169,6 +1169,7 @@ lib/gitlab/checks/
 /doc/user/project/repository/ @brendan777
 /doc/user/project/repository/code_explain.md @scawood
 /doc/user/project/repository/code_suggestions/ @scawood
+/doc/user/project/repository/knowledge_graph/ @scawood
 /doc/user/project/repository/monorepos/ @eread
 /doc/user/project/requirements/ @msedlakjakubowski
 /doc/user/project/service_desk/ @msedlakjakubowski

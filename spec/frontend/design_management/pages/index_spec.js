@@ -3,7 +3,6 @@ import Vue, { nextTick } from 'vue';
 
 import VueApollo, { ApolloMutation } from 'vue-apollo';
 import VueRouter from 'vue-router';
-import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/src/utils';
 import VueDraggable from 'vuedraggable';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -11,6 +10,7 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import permissionsQuery from 'shared_queries/design_management/design_permissions.query.graphql';
 import getDesignListQuery from 'shared_queries/design_management/get_design_list.query.graphql';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import DeleteButton from '~/design_management/components/delete_button.vue';
 import DesignDestroyer from '~/design_management/components/design_destroyer.vue';
 import Design from '~/design_management/components/list/item.vue';
@@ -786,7 +786,7 @@ describe('Design management index page', () => {
     `(
       'sets draggable disabled value to $reorderDisabled when breakpoint is $breakpoint',
       async ({ breakpoint, reorderDisabled }) => {
-        jest.spyOn(breakpointInstance, 'getBreakpointSize').mockReturnValue(breakpoint);
+        jest.spyOn(PanelBreakpointInstance, 'getBreakpointSize').mockReturnValue(breakpoint);
 
         createComponentWithApollo({});
         await waitForPromises();

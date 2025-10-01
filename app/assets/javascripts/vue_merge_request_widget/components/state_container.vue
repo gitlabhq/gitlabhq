@@ -2,6 +2,7 @@
 import { GlButton, GlTooltipDirective, GlAnimatedChevronLgDownUpIcon } from '@gitlab/ui';
 import { __ } from '~/locale';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import StatusIcon from './mr_widget_status_icon.vue';
 import Actions from './action_buttons.vue';
 
@@ -67,6 +68,11 @@ export default {
       return this.$scopedSlots.actions?.()?.length;
     },
   },
+  methods: {
+    hideTooltips() {
+      this.$root.$emit(BV_HIDE_TOOLTIP);
+    },
+  },
 };
 </script>
 
@@ -125,6 +131,7 @@ export default {
             size="small"
             class="btn-icon"
             data-testid="widget-toggle"
+            @mouseout="hideTooltips"
             @click="() => $emit('toggle')"
           >
             <gl-animated-chevron-lg-down-up-icon :is-on="!collapsed" />

@@ -14331,6 +14331,33 @@ Input type: `VulnerabilityRevertToDetectedInput`
 | <a id="mutationvulnerabilityreverttodetectederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationvulnerabilityreverttodetectedvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability after state change. |
 
+### `Mutation.vulnerabilityUnlinkMergeRequest`
+
+{{< details >}}
+**Introduced** in GitLab 18.5.
+**Status**: Experiment.
+{{< /details >}}
+
+Unlink a merge request from a vulnerability.
+
+Input type: `VulnerabilityUnlinkMergeRequestInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilityunlinkmergerequestclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilityunlinkmergerequestmergerequestid"></a>`mergeRequestId` | [`MergeRequestID!`](#mergerequestid) | ID of the merge request. |
+| <a id="mutationvulnerabilityunlinkmergerequestvulnerabilityid"></a>`vulnerabilityId` | [`VulnerabilityID!`](#vulnerabilityid) | ID of the vulnerability. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationvulnerabilityunlinkmergerequestclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationvulnerabilityunlinkmergerequesterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationvulnerabilityunlinkmergerequestvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Updated vulnerability. |
+
 ### `Mutation.wikiPageSubscribe`
 
 {{< details >}}
@@ -25300,7 +25327,7 @@ Check user's permission for the car.
 | <a id="cicatalogresourcefullpath"></a>`fullPath` {{< icon name="warning-solid" >}} | [`ID`](#id) | **Introduced** in GitLab 16.11. **Status**: Experiment. Full project path of the catalog resource. |
 | <a id="cicatalogresourceicon"></a>`icon` | [`String`](#string) | Icon for the catalog resource. |
 | <a id="cicatalogresourceid"></a>`id` | [`ID!`](#id) | ID of the catalog resource. |
-| <a id="cicatalogresourcelast30dayusagecount"></a>`last30DayUsageCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 17.0. **Status**: Experiment. Number of projects that used a component from this catalog resource in a pipeline, by using `include:component`, in the last 30 days. |
+| <a id="cicatalogresourcelast30dayusagecount"></a>`last30DayUsageCount` {{< icon name="warning-solid" >}} | [`Int!`](#int) | **Introduced** in GitLab 17.0. **Status**: Experiment. Number of projects that used a component fromthis catalog resource in a pipeline, by using `include:component` in the last 30 days. |
 | <a id="cicatalogresourcelatestreleasedat"></a>`latestReleasedAt` {{< icon name="warning-solid" >}} | [`Time`](#time) | **Introduced** in GitLab 16.5. **Status**: Experiment. Release date of the catalog resource's latest version. |
 | <a id="cicatalogresourcename"></a>`name` | [`String`](#string) | Name of the catalog resource. |
 | <a id="cicatalogresourcestarcount"></a>`starCount` | [`Int!`](#int) | Number of times the catalog resource has been starred. |
@@ -34301,6 +34328,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestname"></a>`name` | [`String`](#string) | Name or title of the object. |
 | <a id="mergerequestparticipants"></a>`participants` | [`MergeRequestParticipantConnection`](#mergerequestparticipantconnection) | Participants in the merge request. This includes the author, assignees, reviewers, and users mentioned in notes. (see [Connections](#connections)) |
 | <a id="mergerequestpoliciesoverridingapprovalsettings"></a>`policiesOverridingApprovalSettings` | [`[PolicyApprovalSettingsOverride!]`](#policyapprovalsettingsoverride) | Approval settings that are overridden by the policies for the merge request. |
+| <a id="mergerequestpolicybypassstatuses"></a>`policyBypassStatuses` {{< icon name="warning-solid" >}} | [`[PolicyBypassStatus!]`](#policybypassstatus) | **Introduced** in GitLab 18.5. **Status**: Experiment. List of bypass settings for security policies. |
 | <a id="mergerequestpolicyviolations"></a>`policyViolations` | [`PolicyViolationDetails`](#policyviolationdetails) | Policy violations reported on the merge request. |
 | <a id="mergerequestpreparedat"></a>`preparedAt` | [`Time`](#time) | Timestamp of when the merge request was prepared. |
 | <a id="mergerequestproject"></a>`project` | [`Project!`](#project) | Alias for target_project. |
@@ -38623,6 +38651,19 @@ Multiple approvers action.
 | <a id="policyapproverstypecustomroles"></a>`customRoles` | [`[MemberRole!]`](#memberrole) | Approvers of the custom role type. Users belonging to these role(s) alone will be approvers. |
 | <a id="policyapproverstyperoles"></a>`roles` | [`[MemberAccessLevelName!]`](#memberaccesslevelname) | Approvers of the role type. Users belonging to these role(s) alone will be approvers. |
 | <a id="policyapproverstypeusers"></a>`users` | [`[UserCore!]`](#usercore) | Approvers of the user type. |
+
+### `PolicyBypassStatus`
+
+Represents bypass status of a merge request for a security policy.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policybypassstatusallowbypass"></a>`allowBypass` | [`Boolean!`](#boolean) | Indicates if bypass is allowed for the policy. |
+| <a id="policybypassstatusbypassed"></a>`bypassed` | [`Boolean!`](#boolean) | Indicates if the policy has been bypassed. |
+| <a id="policybypassstatusid"></a>`id` | [`ID!`](#id) | ID of the security policy. |
+| <a id="policybypassstatusname"></a>`name` | [`String!`](#string) | Name of the security policy. |
 
 ### `PolicyComparisonPipeline`
 

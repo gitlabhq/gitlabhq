@@ -48,6 +48,8 @@
 
               %div{ class: "#{container_class unless @no_container} #{@content_class}" }
                 %main#content-body.content{ class: "gl-@container/panel", **page_itemtype }
+                  -# mount drawers here for better page performance
+                  #js-drawer-container
                   -# Sticky alerts
                   = render "layouts/flash" unless @hide_flash
                   = yield :after_flash_content
@@ -81,6 +83,8 @@
 
       %div{ class: "#{container_class unless @no_container} #{@content_class}" }
         %main.content{ id: "content-body", **page_itemtype, class: @main_wrapper_class }
+          -# mount drawers here for better page performance
+          #js-drawer-container
           = render "layouts/flash" unless @hide_flash
           = yield :after_flash_content
           = yield :before_content

@@ -69,6 +69,14 @@ RSpec.describe API::Issues, :aggregate_failures, feature_category: :team_plannin
   end
 
   describe 'POST /projects/:id/issues' do
+    it_behaves_like 'authorizing granular token permissions', :create_issue do
+      let(:boundary_object) { project }
+      let(:request) do
+        post api("/projects/#{project.id}/issues", personal_access_token: pat),
+          params: { title: 'new issue', assignee_id: user2.id }
+      end
+    end
+
     context 'support for deprecated assignee_id' do
       it 'creates a new project issue' do
         post api("/projects/#{project.id}/issues", user),

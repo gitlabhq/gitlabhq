@@ -34,8 +34,8 @@ and use the [CI/CD job token](../jobs/ci_job_token.md) based on your access leve
 Prerequisites:
 
 - You must have at least the Developer role for the project.
-- For protected branches, you must have [merge permissions](../../user/project/repository/branches/protected.md#protect-a-branch)
-  for the target branch.
+- For schedules that target [protected branches](../../user/project/repository/branches/protected.md#protect-a-branch),
+  you must have merge permissions for the target branch.
 - Your `.gitlab-ci.yml` file must have valid syntax. You can [validate your configuration](../yaml/lint.md) before scheduling.
 
 To create a pipeline schedule:
@@ -64,7 +64,11 @@ delete unused schedules before adding another.
 Prerequisites:
 
 - You must be the schedule owner or take ownership of the schedule.
-- For schedules that run on protected tags, you must be [allowed to create protected tags](../../user/project/protected_tags.md#configuring-protected-tags).
+- You must have at least the Developer role for the project.
+- For schedules that target [protected branches](../../user/project/repository/branches/protected.md#protect-a-branch),
+  you must have merge permissions for the target branch.
+- For schedules that run on [protected tags](../../user/project/protected_tags.md#configuring-protected-tags),
+  you must be allowed to create protected tags.
 
 To edit a pipeline schedule:
 
@@ -86,12 +90,13 @@ To trigger a pipeline schedule immediately instead of waiting for the next sched
 
 ## Take ownership
 
+If a pipeline schedule becomes inactive because the original owner is unavailable, you can take ownership.
+
+Scheduled pipelines execute with the permissions of the user who owns the schedule.
+
 Prerequisites:
 
-- You need at least the Maintainer role to take ownership of a schedule created by someone else.
-
-If a pipeline schedule becomes inactive because the original owner is unavailable, you can take ownership.
-Scheduled pipelines execute with the permissions of the user who owns the schedule.
+- You must have at least the Maintainer role for the project.
 
 To take ownership of a schedule:
 

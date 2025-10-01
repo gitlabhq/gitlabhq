@@ -8,18 +8,19 @@ module Ci
         include Gitlab::Utils::StrongMemoize
 
         def execute
-          update_component_counts
-          update_resource_counts
+          update_component_usage_counts
+          update_resource_usage_counts
 
           ServiceResponse.success(message: 'Usage counts updated for components and resources')
         end
 
         private
 
-        def update_component_counts
+        def update_component_usage_counts
           Ci::Catalog::Resources::Component.find_each(batch_size: 1000) do |component|
             usage_count = component
               .last_usages
+              .within_last_30_days
               .select(:used_by_project_id)
               .distinct
               .count
@@ -30,7 +31,7 @@ module Ci
           end
         end
 
-        def update_resource_counts
+        def update_resource_usage_counts
           # Using a subquery to sum component counts for each resource
           resource_counts = Component
             .group(:catalog_resource_id)

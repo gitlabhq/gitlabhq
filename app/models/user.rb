@@ -2794,7 +2794,7 @@ class User < ApplicationRecord
 
   def ban_and_report
     msg = 'Potential spammer account deletion'
-    attrs = { user_id: id, reporter: Users::Internal.security_bot, category: 'spam' }
+    attrs = { user_id: id, reporter: Users::Internal.for_organization(organization).security_bot, category: 'spam' }
     abuse_report = AbuseReport.find_by(attrs)
 
     if abuse_report.nil?

@@ -164,7 +164,7 @@
     @apply gl-bg-alpha-dark-6 gl-border-default;
   }
 
-  .panel-content-inner:has(.issue-boards-content) {
+  .panel-content-inner:has(.issue-boards-content, .group-epics-roadmap) {
     @apply gl-mx-0;
   }
 

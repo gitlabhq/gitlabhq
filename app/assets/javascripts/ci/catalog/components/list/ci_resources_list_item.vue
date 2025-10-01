@@ -136,7 +136,7 @@ export default {
     },
     usageText() {
       return s__(
-        'CiCatalog|The number of projects that used a component from this project in a pipeline, by using "include:component", in the last 30 days.',
+        'CiCatalog|The number of projects that used a component from this catalog resource in their pipelines in the last 30 days.',
       );
     },
     webPath() {

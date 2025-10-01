@@ -5,15 +5,12 @@ class ReintroduceShardingKeyNotNullConstraintNotValidOnNotes < Gitlab::Database:
   milestone '18.5'
 
   def up
-    add_multi_column_not_null_constraint :notes,
-      :project_id,
-      :namespace_id,
-      :organization_id,
-      operator: '>=',
-      validate: false
+    # no-op
+    # This was causing some errors in old notes records that were getting updated
+    # without using activerecord callbacks
   end
 
   def down
-    remove_multi_column_not_null_constraint :notes, :project_id, :namespace_id, :organization_id
+    # no-op
   end
 end

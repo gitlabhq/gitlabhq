@@ -1,7 +1,7 @@
 <script>
 import uniqueId from 'lodash/uniqueId';
 import { GlIcon, GlTooltip, GlDisclosureDropdown, GlResizeObserverDirective } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import DisclosureHierarchyItem from './disclosure_hierarchy_item.vue';
 
 export default {
@@ -77,7 +77,7 @@ export default {
       return `${this.itemUuid}-item-${index}`;
     },
     handleResize() {
-      this.isMobile = ['sm', 'xs'].includes(GlBreakpointInstance.getBreakpointSize());
+      this.isMobile = ['sm', 'xs'].includes(PanelBreakpointInstance.getBreakpointSize());
     },
   },
 };

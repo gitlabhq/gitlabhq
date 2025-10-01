@@ -132,6 +132,10 @@ Note: Do not remove any existing resources being created form [mr_seed.rb](https
 
 [Component Performance testing](https://gitlab.com/gitlab-org/quality/component-performance-testing) currently doesn't support multiple seed files but this will be addressed as a part of <https://gitlab.com/gitlab-org/quality/component-performance-testing/-/issues/76>
 
+### Skipping `e2e:perf-on-cng` test job
+
+To skip the `e2e:perf-on-cng` test job to run on MR pipeline, add the `pipeline:skip-performance` label while creating the merge request.
+
 ### Troubleshooting
 
 Sometimes the multi-project job under `run-performance-test` job may fail during data seeding with gem incompatibility error.

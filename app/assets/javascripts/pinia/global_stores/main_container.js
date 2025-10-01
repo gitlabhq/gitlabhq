@@ -27,5 +27,9 @@ export const useMainContainer = defineStore('mainContainerStore', () => {
     isCompact,
     isIntermediate,
     isWide,
+    // internal, only used for testing
+    _setCurrentBreakpoint: (value) => {
+      currentBreakpoint.value = value;
+    },
   };
 });

@@ -28,7 +28,7 @@ module AntiAbuse
 
     def report_user(params)
       category = 'spam'
-      reporter = Users::Internal.security_bot
+      reporter = Users::Internal.for_organization(user.organization).security_bot
       report_params = { user_id: params[:user_id],
                         reporter: reporter,
                         category: category,

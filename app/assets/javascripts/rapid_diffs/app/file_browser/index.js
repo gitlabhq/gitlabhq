@@ -7,7 +7,7 @@ import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
 import { SET_TREE_DATA } from '~/diffs/store/mutation_types';
 import { linkTreeNodes, sortTree } from '~/ide/stores/utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
-import { useViewport } from '~/pinia/global_stores/viewport';
+import { useMainContainer } from '~/pinia/global_stores/main_container';
 import { useApp } from '~/rapid_diffs/stores/app';
 import FileBrowser from './file_browser.vue';
 import FileBrowserDrawer from './file_browser_drawer.vue';
@@ -29,7 +29,7 @@ const initToggle = (el) => {
     pinia,
     computed: {
       visible() {
-        return useViewport().isNarrowScreen && useApp().appVisible;
+        return useMainContainer().isCompact && useApp().appVisible;
       },
     },
     render(h) {
@@ -44,7 +44,7 @@ const initToggle = (el) => {
     pinia,
     computed: {
       visible() {
-        return !useViewport().isNarrowScreen;
+        return !useMainContainer().isCompact;
       },
     },
     render(h) {
@@ -61,7 +61,7 @@ const initBrowserComponent = async (el, shouldSort) => {
     el,
     pinia,
     render(h) {
-      return h(useViewport().isNarrowScreen ? FileBrowserDrawer : FileBrowser, {
+      return h(useMainContainer().isCompact ? FileBrowserDrawer : FileBrowser, {
         props: {
           groupBlobsListItems: shouldSort,
         },
