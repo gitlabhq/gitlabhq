@@ -17,6 +17,10 @@ scope format: false do
       get :diff_files_metadata
       get :diffs_stats
       get :diff_file
+
+      scope constraints: ->(req) { req.format == :json }, as: :json do
+        get :target_projects, to: 'compare#target_projects_json'
+      end
     end
   end
 
