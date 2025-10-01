@@ -5,9 +5,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ProjectListItemActions from '~/vue_shared/components/projects_list/project_list_item_actions.vue';
 import ListItemInactiveBadge from '~/vue_shared/components/resource_lists/list_item_inactive_badge.vue';
 import ProjectsListItem from '~/vue_shared/components/projects_list/projects_list_item.vue';
-import ProjectListItemDelayedDeletionModalFooter from '~/vue_shared/components/projects_list/project_list_item_delayed_deletion_modal_footer.vue';
 import { ACTION_DELETE, ACTION_EDIT } from '~/vue_shared/components/list_actions/constants';
-import waitForPromises from 'helpers/wait_for_promises';
 import {
   PROJECT_VISIBILITY_TYPE,
   VISIBILITY_LEVEL_PRIVATE_STRING,
@@ -17,30 +15,14 @@ import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_le
 import { FEATURABLE_DISABLED, FEATURABLE_ENABLED } from '~/featurable/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TopicBadges from '~/vue_shared/components/topic_badges.vue';
-import DeleteModal from '~/projects/components/shared/delete_modal.vue';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
-import {
-  deleteParams,
-  renderDeleteSuccessToast,
-} from '~/vue_shared/components/projects_list/utils';
-import { deleteProject } from '~/api/projects_api';
-import { createAlert } from '~/alert';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
 import { projects } from './mock_data';
 
-const MOCK_DELETE_PARAMS = {
-  testParam: true,
-};
-
-jest.mock('~/vue_shared/components/projects_list/utils', () => ({
-  ...jest.requireActual('~/vue_shared/components/projects_list/utils'),
-  renderDeleteSuccessToast: jest.fn(),
-  deleteParams: jest.fn(() => MOCK_DELETE_PARAMS),
-}));
 jest.mock('~/alert');
 jest.mock('~/api/projects_api');
 
@@ -74,13 +56,7 @@ describe('ProjectsListItem', () => {
   const findInactiveBadge = () => wrapper.findComponent(ListItemInactiveBadge);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findTopicBadges = () => wrapper.findComponent(TopicBadges);
-  const findDeleteModal = () => wrapper.findComponent(DeleteModal);
-  const findDelayedDeletionModalFooter = () =>
-    wrapper.findComponent(ProjectListItemDelayedDeletionModalFooter);
-  const deleteModalFirePrimaryEvent = async () => {
-    findDeleteModal().vm.$emit('primary');
-    await nextTick();
-  };
+
   const findTooltipByTarget = (target) =>
     wrapper
       .findAllComponents(GlTooltip)
@@ -566,71 +542,6 @@ describe('ProjectsListItem', () => {
     it('displays actions dropdown', () => {
       expect(findListActions().exists()).toBe(true);
     });
-
-    describe('when delete action is fired', () => {
-      beforeEach(() => {
-        findListActions().vm.$emit('delete');
-      });
-
-      it('displays confirmation modal with correct props', () => {
-        expect(wrapper.findComponent(DeleteModal).props()).toMatchObject({
-          visible: true,
-          confirmPhrase: project.fullPath,
-          nameWithNamespace: project.nameWithNamespace,
-          isFork: true,
-          issuesCount: '0',
-          forksCount: '0',
-          starsCount: '0',
-          confirmLoading: false,
-        });
-      });
-
-      describe('when deletion is confirmed', () => {
-        describe('when API call is successful', () => {
-          it('calls deleteProject, properly sets loading state, and emits refetch event', async () => {
-            deleteProject.mockResolvedValueOnce();
-
-            await deleteModalFirePrimaryEvent();
-            expect(deleteParams).toHaveBeenCalledWith(projectWithActions);
-            expect(deleteProject).toHaveBeenCalledWith(projectWithActions.id, MOCK_DELETE_PARAMS);
-            expect(findDeleteModal().props('confirmLoading')).toBe(true);
-
-            await waitForPromises();
-
-            expect(findDeleteModal().props('confirmLoading')).toBe(false);
-            expect(wrapper.emitted('refetch')).toEqual([[]]);
-            expect(renderDeleteSuccessToast).toHaveBeenCalledWith(projectWithActions, 'Project');
-            expect(createAlert).not.toHaveBeenCalled();
-          });
-        });
-
-        describe('when API call is not successful', () => {
-          const error = new Error();
-
-          it('calls deleteProject, properly sets loading state, and shows error alert', async () => {
-            deleteProject.mockRejectedValue(error);
-            await deleteModalFirePrimaryEvent();
-
-            expect(deleteParams).toHaveBeenCalledWith(projectWithActions);
-            expect(deleteProject).toHaveBeenCalledWith(projectWithActions.id, MOCK_DELETE_PARAMS);
-            expect(findDeleteModal().props('confirmLoading')).toBe(true);
-
-            await waitForPromises();
-
-            expect(findDeleteModal().props('confirmLoading')).toBe(false);
-
-            expect(wrapper.emitted('refetch')).toBeUndefined();
-            expect(createAlert).toHaveBeenCalledWith({
-              message:
-                'An error occurred deleting the project. Please refresh the page to try again.',
-              error,
-              captureError: true,
-            });
-            expect(renderDeleteSuccessToast).not.toHaveBeenCalled();
-          });
-        });
-      });
-    });
   });
 
   describe('CI Catalog Badge', () => {
@@ -711,23 +622,5 @@ describe('ProjectsListItem', () => {
     createComponent({ propsData: { listItemClass: 'foo' } });
 
     expect(wrapper.element.firstChild.classList).toContain('foo');
-  });
-
-  describe('ProjectListItemDelayedDeletionModalFooter', () => {
-    const deleteProps = {
-      project: {
-        ...project,
-        availableActions: [ACTION_DELETE],
-        actionLoadingStates: { [ACTION_DELETE]: false },
-      },
-    };
-
-    it('renders modal footer', () => {
-      createComponent({ propsData: deleteProps });
-      findListActions().vm.$emit('delete');
-
-      expect(findDeleteModal().exists()).toBe(true);
-      expect(findDelayedDeletionModalFooter().exists()).toBe(false);
-    });
   });
 });

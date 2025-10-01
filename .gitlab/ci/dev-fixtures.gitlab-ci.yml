@@ -13,6 +13,7 @@
     SEED_PRODUCTIVITY_ANALYTICS: "true"
     SEED_CUSTOMIZABLE_CYCLE_ANALYTICS: "true"
     SEED_CI_CD_ANALYTICS: "true"
+    SEED_AI_USAGE_STATS: "true"
     VSA_ISSUE_COUNT: 1
     DISABLE_WEBMOCK: "true"
     SIZE: 0  # number of external projects to fork, requires network connection

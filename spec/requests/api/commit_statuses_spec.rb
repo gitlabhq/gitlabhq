@@ -290,6 +290,21 @@ RSpec.describe API::CommitStatuses, :clean_gitlab_redis_cache, feature_category:
         end
       end
 
+      context 'when service returns conflict' do
+        let(:service_response) { ServiceResponse.error(message: 'conflict!', reason: :conflict) }
+
+        it 'returns 409 Conflict with the error message' do
+          allow_next_instance_of(::Ci::CreateCommitStatusService) do |service|
+            allow(service).to receive(:execute).and_return(service_response)
+          end
+
+          post api(post_url, developer), params: { state: 'pending' }
+
+          expect(response).to have_gitlab_http_status(:conflict)
+          expect(json_response['message']).to eq('conflict!')
+        end
+      end
+
       context 'when status transitions from pending' do
         before do
           post api(post_url, developer), params: { state: 'pending' }

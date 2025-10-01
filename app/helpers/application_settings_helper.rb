@@ -640,7 +640,10 @@ module ApplicationSettingsHelper
       :anonymous_searches_allowed,
       :git_push_pipeline_limit,
       :delay_user_account_self_deletion,
-      :resource_usage_limits
+      :resource_usage_limits,
+      :runner_jobs_request_api_limit,
+      :runner_jobs_patch_trace_api_limit,
+      :runner_jobs_endpoints_api_limit
     ].tap do |settings|
       unless Gitlab.com?
         settings << :deactivate_dormant_users

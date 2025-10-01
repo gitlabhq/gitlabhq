@@ -33,17 +33,6 @@ RSpec.shared_context 'project navbar structure' do
         ]
       },
 
-      if Gitlab.ee?
-        {
-          nav_item: _('Automate'),
-          nav_sub_items: [
-            _('Agent sessions'),
-            s_('AICatalog|Agents'),
-            s_('AICatalog|Flows')
-          ]
-        }
-      end,
-
       {
         nav_item: _('Code'),
         nav_sub_items: [

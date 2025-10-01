@@ -71,7 +71,7 @@ Dependency scanning integrates into your existing CI/CD workflow with minimal co
 making it straightforward to implement secure development practices from day one.
 
 Vulnerabilities can also be identified outside a pipeline by
-[Continuous Vulnerability Scanning](../continuous_vulnerability_scanning/_index.md).
+[continuous vulnerability scanning](../continuous_vulnerability_scanning/_index.md).
 
 GitLab offers both dependency scanning and [container scanning](../container_scanning/_index.md) to
 ensure coverage for all of these dependency types. To cover as much of your risk area as possible,

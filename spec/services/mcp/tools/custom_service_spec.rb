@@ -6,19 +6,6 @@ RSpec.describe Mcp::Tools::CustomService, feature_category: :mcp_server do
   let(:service_name) { 'test_api_tool' }
   let(:current_user) { create(:user) }
 
-  it 'all services are defined as an MCP tool', :eager_load, :aggregate_failures do
-    services = ObjectSpace.each_object(::Class).select do |klass|
-      klass < described_class
-    end
-
-    expect(services).not_to be_empty
-
-    tool_klasses = ::API::Mcp::Handlers::ListToolsRequest::TOOLS.values
-    services.each do |service|
-      expect(tool_klasses).to include(service), "#{service.name} must be defined in ListToolsRequest"
-    end
-  end
-
   describe '#format_response_content' do
     let(:service) { described_class.new(name: service_name) }
 

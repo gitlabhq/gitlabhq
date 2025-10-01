@@ -923,6 +923,7 @@ CREATE FUNCTION sync_organization_push_rules_on_insert_update() RETURNS trigger
  BEGIN
     IF (NEW.organization_id IS NOT NULL AND NEW.is_sample = TRUE) THEN
       INSERT INTO organization_push_rules (
+        id,
         organization_id,
         max_file_size,
         member_check,
@@ -940,6 +941,7 @@ CREATE FUNCTION sync_organization_push_rules_on_insert_update() RETURNS trigger
         created_at,
         updated_at
       ) VALUES (
+        NEW.id,
         NEW.organization_id,
         NEW.max_file_size,
         NEW.member_check,
@@ -958,6 +960,7 @@ CREATE FUNCTION sync_organization_push_rules_on_insert_update() RETURNS trigger
         NEW.updated_at
       )
       ON CONFLICT (organization_id) DO UPDATE SET
+        id = NEW.id,
         max_file_size = NEW.max_file_size,
         member_check = NEW.member_check,
         prevent_secrets = NEW.prevent_secrets,

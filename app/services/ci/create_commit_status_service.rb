@@ -18,6 +18,11 @@ module Ci
         @optional_commit_status_params = optional_commit_status_params
         unsafe_execute
       end
+    rescue FailedToObtainLockError
+      ServiceResponse.error(
+        message: 'Another update to this commit status is in progress',
+        reason: :conflict
+      )
     end
 
     private
@@ -187,7 +192,7 @@ module Ci
 
     def pipeline_lock_params
       {
-        ttl: 5.seconds,
+        ttl: (Feature.enabled?(:long_pipeline_lock_ttl, project) ? 1.minute : 5.seconds),
         sleep_sec: 0.1.seconds,
         retries: 20
       }

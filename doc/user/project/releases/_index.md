@@ -458,7 +458,7 @@ and set **Maintainer** in the **Allowed to create** column.
 
 {{< /history >}}
 
-Group-level release metrics are available by navigating to **Group > Analytics > CI/CD**.
+Group-level release metrics are available by navigating to **Group** > **Analytics** > **CI/CD**.
 These metrics include:
 
 - Total number of releases in the group

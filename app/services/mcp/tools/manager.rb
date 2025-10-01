@@ -29,3 +29,5 @@ module Mcp
     end
   end
 end
+
+Mcp::Tools::Manager.prepend_mod

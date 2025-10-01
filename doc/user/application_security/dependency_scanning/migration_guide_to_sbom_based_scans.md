@@ -72,7 +72,7 @@ When using the legacy dependency scanning feature, all scanning work happens wit
 The dependency scanning using SBOM approach separates these tasks into two distinct phases:
 
 - First, when you run the new dependency scanning analyzer in the CI/CD pipeline, it focuses solely on creating a comprehensive inventory of your project's dependencies. This inventory is captured in a CycloneDX SBOM (Software Bill of Materials) report.
-- Second, the detected components are sent to the GitLab platform to perform a thorough security analysis using the built-in GitLab SBOM Vulnerability Scanner. You're already benefiting from this scanner with the [Continuous Vulnerability Scanning](../continuous_vulnerability_scanning/_index.md) feature.
+- Second, the detected components are sent to the GitLab platform to perform a thorough security analysis using the built-in GitLab SBOM Vulnerability Scanner. You're already benefiting from this scanner with the [continuous vulnerability scanning](../continuous_vulnerability_scanning/_index.md) feature.
 
 This separation of concerns brings several advantages for future enhancements, but it also means some changes are necessary because the security analysis happens outside the CI/CD pipeline.
 This impacts the availability of some functionalities that depend on the security analysis to run in the CI/CD pipeline. Review [the deprecation announcement](../../../update/deprecations.md#dependency-scanning-upgrades-to-the-gitlab-sbom-vulnerability-scanner) for a complete description.

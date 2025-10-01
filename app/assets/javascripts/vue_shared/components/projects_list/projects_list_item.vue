@@ -1,10 +1,6 @@
 <script>
 import { GlIcon, GlBadge, GlTooltip } from '@gitlab/ui';
 
-import {
-  renderDeleteSuccessToast,
-  deleteParams,
-} from '~/vue_shared/components/projects_list/utils';
 import ProjectListItemActions from '~/vue_shared/components/projects_list/project_list_item_actions.vue';
 import ListItemInactiveBadge from '~/vue_shared/components/resource_lists/list_item_inactive_badge.vue';
 import { VISIBILITY_TYPE_ICON, PROJECT_VISIBILITY_TYPE } from '~/visibility_level/constants';
@@ -12,15 +8,10 @@ import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_le
 import { FEATURABLE_ENABLED } from '~/featurable/constants';
 import { __, s__, n__, sprintf } from '~/locale';
 import { numberToHumanSize, numberToMetricPrefix } from '~/lib/utils/number_utils';
-import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
-import DeleteModal from '~/projects/components/shared/delete_modal.vue';
-import ProjectListItemDelayedDeletionModalFooter from '~/vue_shared/components/projects_list/project_list_item_delayed_deletion_modal_footer.vue';
 import {
   TIMESTAMP_TYPES,
   TIMESTAMP_TYPE_CREATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
-import { deleteProject } from '~/rest_api';
-import { createAlert } from '~/alert';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
 import ListItemStat from '~/vue_shared/components/resource_lists/list_item_stat.vue';
@@ -37,9 +28,6 @@ export default {
     topicsPopoverTargetText: __('+ %{count} more'),
     moreTopics: __('More topics'),
     project: __('Project'),
-    deleteErrorMessage: s__(
-      'Projects|An error occurred deleting the project. Please refresh the page to try again.',
-    ),
     ciCatalogBadge: s__('CiCatalog|CI/CD Catalog project'),
   },
   components: {
@@ -48,13 +36,11 @@ export default {
     GlTooltip,
     ListItem,
     ListItemStat,
-    DeleteModal,
     ListItemDescription,
     ProjectListItemActions,
     ListItemInactiveBadge,
     CiIcon,
     TopicBadges,
-    ProjectListItemDelayedDeletionModalFooter,
   },
   props: {
     project: {
@@ -84,12 +70,6 @@ export default {
       required: false,
       default: false,
     },
-  },
-  data() {
-    return {
-      isDeleteModalVisible: false,
-      isDeleteLoading: false,
-    };
   },
   computed: {
     microdataAttributes() {
@@ -195,9 +175,6 @@ export default {
     hasActions() {
       return this.project.availableActions?.length;
     },
-    hasActionDelete() {
-      return this.project.availableActions?.includes(ACTION_DELETE);
-    },
     pipelineStatus() {
       return this.project.pipeline?.detailedStatus;
     },
@@ -246,22 +223,6 @@ export default {
     },
   },
   methods: {
-    onActionDelete() {
-      this.isDeleteModalVisible = true;
-    },
-    async onDeleteModalPrimary() {
-      this.isDeleteLoading = true;
-
-      try {
-        await deleteProject(this.project.id, deleteParams(this.project));
-        this.$emit('refetch');
-        renderDeleteSuccessToast(this.project, this.$options.i18n.project);
-      } catch (error) {
-        createAlert({ message: this.$options.i18n.deleteErrorMessage, error, captureError: true });
-      } finally {
-        this.isDeleteLoading = false;
-      }
-    },
     onVisibilityTooltipShown() {
       this.$emit('hover-visibility', this.visibility);
     },
@@ -368,29 +329,12 @@ export default {
     <template v-if="hasActions" #actions>
       <project-list-item-actions
         :project="project"
-        @refetch="$emit('refetch')"
-        @delete="onActionDelete"
-      />
-    </template>
-
-    <template #footer>
-      <delete-modal
-        v-if="hasActionDelete"
-        v-model="isDeleteModalVisible"
-        :confirm-phrase="project.fullPath"
-        :name-with-namespace="project.nameWithNamespace"
-        :is-fork="project.isForked"
-        :confirm-loading="isDeleteLoading"
-        :merge-requests-count="openMergeRequestsCount"
-        :issues-count="openIssuesCount"
+        :open-merge-requests-count="openMergeRequestsCount"
+        :open-issues-count="openIssuesCount"
         :forks-count="forksCount"
-        :stars-count="starCount"
-        @primary="onDeleteModalPrimary"
-      >
-        <template #modal-footer
-          ><project-list-item-delayed-deletion-modal-footer :project="project"
-        /></template>
-      </delete-modal>
+        :star-count="starCount"
+        @refetch="$emit('refetch')"
+      />
     </template>
   </list-item>
 </template>

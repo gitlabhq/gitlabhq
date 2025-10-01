@@ -570,7 +570,7 @@ To create a flow trigger:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Automate** > **Flow triggers**.
-1. Select **Create flow trigger**.
+1. Select **New flow trigger**.
 1. Complete the fields:
    - In **Description**, enter a description for the flow trigger.
    - From the **Event types** dropdown list, select one or more event types:

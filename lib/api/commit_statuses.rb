@@ -105,7 +105,12 @@ module API
             .execute(optional_commit_status_params: optional_commit_status_params)
 
         if response.error?
-          render_api_error!(response.message, response.http_status)
+          case response.reason
+          when :conflict
+            conflict!(response.message)
+          else
+            render_api_error!(response.message, response.http_status)
+          end
         else
           present response.payload[:job], with: Entities::CommitStatus
         end

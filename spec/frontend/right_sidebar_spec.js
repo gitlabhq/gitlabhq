@@ -50,9 +50,14 @@ describe('RightSidebar', () => {
 
     it('should expand/collapse the sidebar when arrow is clicked', () => {
       assertSidebarState('expanded');
+      $aside.trigger('transitionend');
       $toggle.click();
+
       assertSidebarState('collapsed');
+
+      $aside.trigger('transitionend');
       $toggle.click();
+
       assertSidebarState('expanded');
     });
 

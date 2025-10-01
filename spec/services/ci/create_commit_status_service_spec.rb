@@ -19,6 +19,24 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
   let(:params) { { state: 'pending' } }
   let(:job) { response.payload[:job] }
 
+  context 'when the lock cannot be obtained' do
+    let(:service) do
+      instance = described_class.new(project, user, params)
+      allow(instance).to receive(:in_lock).and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+      instance
+    end
+
+    let(:response) { service.execute(optional_commit_status_params: params) }
+
+    it 'returns a conflict ServiceResponse' do
+      allow(service).to receive(:in_lock).and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+
+      expect(response).to be_error
+      expect(response.reason).to eq(:conflict)
+      expect(response.message).to eq('Another update to this commit status is in progress')
+    end
+  end
+
   context 'when pipeline for sha does not exists' do
     %w[pending running success failed canceled skipped].each do |status|
       context "for #{status}" do

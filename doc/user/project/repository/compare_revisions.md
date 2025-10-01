@@ -33,7 +33,7 @@ To compare revisions:
      [Git command](../../../topics/git/commands.md).
      To compare revisions, this method uses the merge base instead of the actual commit, so
      changes from cherry-picked commits are shown as new changes.
-   - **Include changes to target since source was created** shows all differences between
+   - **Include changes to target after source was created** shows all differences between
      the two revisions.
      This method uses the `git diff <from> <to>`
      [Git command](../../../topics/git/commands.md).

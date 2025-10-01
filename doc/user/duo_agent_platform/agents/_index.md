@@ -65,7 +65,7 @@ To create an agent:
 
 1. On the left sidebar, select **Search or go to** > **Explore**.
 1. Select **AI Catalog**.
-1. Select **New Agent**.
+1. Select **New agent**.
 1. Complete the fields:
    1. **Project**: From the dropdown list, select a project. This is the agent's associated project.
    1. **Name**: Enter the name of your agent.

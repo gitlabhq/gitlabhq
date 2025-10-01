@@ -53,7 +53,7 @@ export default {
         } else {
           this.updateCurrentMergeRequestIds();
 
-          if (!data?.currentUser?.mergeRequests?.pageInfo?.hasNextPage) {
+          if (!data?.currentUser?.mergeRequests?.pageInfo?.hasNextPage && window.gon.dot_com) {
             const countWatcher = this.$watch(
               'count',
               () => {
@@ -61,10 +61,19 @@ export default {
                   if (this.count > this.mergeRequests?.nodes?.length) {
                     // eslint-disable-next-line @gitlab/require-i18n-strings
                     Sentry.captureException(new Error('Count mismatch - possible SAML issue'), {
+                      level: 'debug',
                       tags: {
                         samlBannerVisible: Boolean(
                           document.querySelector('.js-saml-reauth-notice'),
                         ).toString(),
+                        gitlabTeamMember: [...document.querySelectorAll('.js-saml-reauth-notice a')]
+                          .some((el) => el.innerText === 'gitlab-com')
+                          .toString(),
+                      },
+                      extra: {
+                        error,
+                        count: this.count,
+                        mergeRequestsCount: this.mergeRequests?.nodes?.length,
                       },
                     });
                   }

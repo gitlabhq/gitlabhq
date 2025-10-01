@@ -138,7 +138,7 @@ module API
               when 'tools/call'
                 Handlers::CallTool.new(namespace_setting(:mcp_manager)).invoke(request, params[:params], current_user)
               when 'tools/list'
-                Handlers::ListTools.new(namespace_setting(:mcp_manager)).invoke
+                Handlers::ListTools.new(namespace_setting(:mcp_manager)).invoke(current_user)
               else
                 invoke_basic_handler
               end

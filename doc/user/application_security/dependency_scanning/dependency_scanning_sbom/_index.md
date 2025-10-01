@@ -37,7 +37,7 @@ pipeline produces an SBOM report, security findings are identified and compared 
 and target branches. Findings and their severity are listed in the merge request, enabling you to
 proactively address the risk to your application, before the code change is committed. Security
 findings for reported SBOM components are also identified by
-[Continuous Vulnerability Scanning](../../continuous_vulnerability_scanning/_index.md)
+[continuous vulnerability scanning](../../continuous_vulnerability_scanning/_index.md)
 when new security advisories are published, independently from CI/CD pipelines.
 
 GitLab offers both dependency scanning and [container scanning](../../container_scanning/_index.md) to
@@ -629,7 +629,7 @@ The dependency scanning using SBOM approach relies on two distinct phases:
   document.
 - Second, after the CI/CD pipeline completes, the GitLab platform processes your SBOM report and performs
   a thorough security analysis using the built-in GitLab SBOM Vulnerability Scanner. It is the same scanner
-  that provides [Continuous Vulnerability Scanning](../../continuous_vulnerability_scanning/_index.md).
+  that provides [continuous vulnerability scanning](../../continuous_vulnerability_scanning/_index.md).
 
 This separation of concerns and the modularity of this architecture allows to better support customers through expansion
 of language support, a tighter integration and experience within the GitLab platform, and a shift towards industry standard

@@ -94,11 +94,9 @@ When your merge request is ready to be reviewed, use GitLab Duo Code Review to p
 1. Select **Code** > **Merge requests** and find your merge request.
 1. In a comment box, enter the quick action `/assign_reviewer @GitLabDuo`, or assign GitLab Duo as reviewer.
 
-{{< alert type="note" >}}
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=SG3bhD1YjeY&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW&index=2)
 
 Provide feedback on this feature in issue [517386](https://gitlab.com/gitlab-org/gitlab/-/issues/517386).
-
-{{< /alert >}}
 
 Data usage: When you use this feature, the following data is sent to the large language model:
 

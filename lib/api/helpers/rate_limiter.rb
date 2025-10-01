@@ -9,9 +9,9 @@ module API
     # will be logged and an error message will be rendered with a Too Many Requests response status.
     # See app/controllers/concerns/check_rate_limit.rb for Rails controllers version
     module RateLimiter
-      def check_rate_limit!(key, scope:, **options)
+      def check_rate_limit!(key, scope:, user: current_user, **options)
         return unless Gitlab::ApplicationRateLimiter.throttled_request?(
-          request, current_user, key, scope: scope, **options
+          request, user, key, scope: scope, **options
         )
 
         return yield if block_given?

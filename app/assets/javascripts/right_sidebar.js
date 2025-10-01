@@ -23,6 +23,8 @@ function Sidebar() {
 
   this.isMR = /projects:merge_requests:/.test(document.body.dataset.page);
 
+  this.isTransitioning = false;
+
   this.removeListeners();
   this.addEventListeners();
 }
@@ -53,7 +55,7 @@ Sidebar.prototype.addEventListeners = function () {
   this.sidebar.on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
   this.sidebar.on('hiddenGlDropdown', this, this.onSidebarDropdownHidden);
 
-  $document.on('click', '.js-sidebar-toggle', this.sidebarToggleClicked);
+  $document.on('click', '.js-sidebar-toggle', this.sidebarToggleClicked.bind(this));
 
   const layoutPage = document.querySelector('.layout-page');
   const rightSidebar = document.querySelector('.js-right-sidebar');
@@ -68,6 +70,13 @@ Sidebar.prototype.addEventListeners = function () {
 };
 
 Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
+  if (this.isTransitioning) return;
+
+  this.isTransitioning = true;
+  this.sidebar.one('transitionend', () => {
+    this.isTransitioning = false;
+  });
+
   const $toggleButtons = $('.js-sidebar-toggle');
   const $collapseIcon = $('.js-sidebar-collapse');
   const $expandIcon = $('.js-sidebar-expand');

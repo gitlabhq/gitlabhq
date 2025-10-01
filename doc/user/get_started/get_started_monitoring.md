@@ -11,7 +11,7 @@ GitLab observability features help you track errors, analyze application perform
 
 These capabilities are part of the larger DevOps workflow:
 
-![Workflow](img/get_started_monitor_app_v17_3.png)
+![Diagram of the main things to do in GitLab with the "Monitor your application" section highlighted.](img/get_started_monitor_app_v17_3.png)
 
 All of these features can be used independently. For example, you can use
 tracing or incidents without using error tracking. However, for the best experience,

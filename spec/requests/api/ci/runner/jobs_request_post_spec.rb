@@ -107,6 +107,28 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         let(:request) { post api('/jobs/request') }
       end
 
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_request_api, use_second_scope: true do
+        let(:runner2) { create(:ci_runner, :project, projects: [project]) }
+
+        def request
+          request_job
+        end
+
+        def request_with_second_scope
+          request_job(runner2.token)
+        end
+
+        context 'when enforce_runners_request_limit FF is disabled' do
+          before do
+            stub_feature_flags(enforce_runners_request_limit: false)
+            allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).and_call_original
+            allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:runner_jobs_request_api).and_return(1)
+          end
+
+          it_behaves_like 'unthrottled endpoint', rate_limit_key: :runner_jobs_request_api
+        end
+      end
+
       context 'when no token is provided' do
         it 'returns 400 error' do
           post api('/jobs/request')
@@ -124,6 +146,19 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
       end
 
       context 'when valid token is provided' do
+        context 'when authenticated with legacy private_token' do
+          # Pre-17.11 GitLab runners send PRIVATE-TOKEN value instead of token parameter
+          # These tests document the current behavior and ensure we handle this authentication method correctly
+
+          it 'successfully authenticates using token parameter and ignores private_token parameter' do
+            request_job(private_token: 'ignored_token')
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response['id']).to eq(job.id)
+            expect(json_response['token']).to eq(job.token)
+          end
+        end
+
         context 'when runner is paused' do
           let(:runner) { create(:ci_runner, :inactive) }
           let(:update_value) { runner.ensure_runner_queue_value }
@@ -1435,10 +1470,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             expect(response).to have_gitlab_http_status(:no_content)
           end
         end
+      end
 
-        def request_job(token = runner.token, **params)
-          post api('/jobs/request'), params: params.merge(token: token)
-        end
+      def request_job(token = runner.token, **params)
+        post api('/jobs/request'), params: params.merge(token: token)
       end
     end
   end

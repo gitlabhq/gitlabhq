@@ -13,7 +13,7 @@ and incremental rollouts to release the application in a controlled manner.
 
 These processes are part of a larger workflow:
 
-![Workflow](img/get_started_release_v16_11.png)
+![Diagram of the main things to do in GitLab with the "Deploy and release your app" section highlighted.](img/get_started_release_v16_11.png)
 
 ## Step 1: Store and access your project's artifacts
 
