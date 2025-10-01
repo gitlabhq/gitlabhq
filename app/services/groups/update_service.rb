@@ -52,13 +52,10 @@ module Groups
       return true if group.has_parent?
       return true if !group.has_parent? && group.path == params[:path]
 
-      # TODO: Remove `packages_class` with the rollout of the FF packages_refactor_group_packages_finder
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/568923
-      #
       # we have a path change on a root group:
       # check that we don't have any npm package with a scope set to the group path
       npm_packages = ::Packages::GroupPackagesFinder
-                       .new(current_user, group, packages_class: ::Packages::Npm::Package, preload_pipelines: false,
+                       .new(current_user, group, preload_pipelines: false,
                          package_type: :npm)
                        .execute
                        .with_npm_scope(group.path)

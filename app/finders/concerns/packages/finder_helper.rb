@@ -4,10 +4,6 @@ module Packages
   module FinderHelper
     extend ActiveSupport::Concern
 
-    # TODO: Remove with the rollout of the FF packages_refactor_group_packages_finder
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/568923
-    InvalidPackageTypeError = Class.new(StandardError)
-
     InvalidStatusError = Class.new(StandardError)
 
     private
@@ -67,18 +63,6 @@ module Packages
 
     def package_type
       params[:package_type].presence
-    end
-
-    # TODO: Remove with the rollout of the FF packages_refactor_group_packages_finder
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/568923
-    def filter_by_package_type(packages)
-      # Only filter by package_type when using the base `Packages::Package` class
-      # Format-specific classes like `Packages::TerraformModule::Package` don't need this filter
-      return packages unless packages_class == ::Packages::Package
-      return packages.without_package_type(:terraform_module) unless package_type
-      raise InvalidPackageTypeError unless ::Packages::Package.package_types.key?(package_type)
-
-      packages.with_package_type(package_type)
     end
 
     def filter_by_package_name(packages)

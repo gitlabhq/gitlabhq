@@ -4,14 +4,11 @@ module Packages
   class GroupPackagesFinder
     include ::Packages::FinderHelper
 
-    # TODO: Remove `packages_class` with the rollout of the FF packages_refactor_group_packages_finder
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/568923
     def initialize(
       current_user, group, params = { exclude_subgroups: false,
                                       exact_name: false,
                                       order_by: 'created_at',
-                                      sort: 'asc',
-                                      packages_class: ::Packages::Package }
+                                      sort: 'asc' }
     )
       @current_user = current_user
       @group = group
@@ -35,19 +32,8 @@ module Packages
         .for_projects(group_projects_visible_to_current_user.select(:id))
         .sort_by_attribute("#{params[:order_by]}_#{params[:sort]}")
       packages = packages.preload_pipelines if preload_pipelines
-
       packages = filter_with_version(packages)
-
-      packages = if Feature.enabled?(:packages_refactor_group_packages_finder, group)
-                   if package_type
-                     packages
-                   else
-                     packages.without_package_type(:terraform_module)
-                   end
-                 else
-                   filter_by_package_type(packages)
-                 end
-
+      packages = packages.without_package_type(:terraform_module) unless package_type
       packages = (params[:exact_name] ? filter_by_exact_package_name(packages) : filter_by_package_name(packages))
       packages = filter_by_package_version(packages)
       installable_only ? packages.installable : filter_by_status(packages)
@@ -104,7 +90,7 @@ module Packages
     end
 
     def packages_class
-      if group && Feature.enabled?(:packages_refactor_group_packages_finder, group)
+      if group
         return ::Packages::Package unless package_type
 
         klass = ::Packages::Package.inheritance_column_to_class_map[package_type.to_sym]
@@ -112,10 +98,7 @@ module Packages
 
         klass.constantize
       else
-        # TODO: Always use `::Packages::Package` as `packages_class` when no group
-        # with the rollout of the FF packages_refactor_group_packages_finder
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/568923
-        params.fetch(:packages_class, ::Packages::Package)
+        ::Packages::Package
       end
     end
   end

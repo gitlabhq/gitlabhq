@@ -1558,7 +1558,6 @@ Layout/LineLength:
     - 'ee/spec/services/boards/epics/position_create_service_spec.rb'
     - 'ee/spec/services/boards/lists/update_service_spec.rb'
     - 'ee/spec/services/ci/compare_license_scanning_reports_service_spec.rb'
-    - 'ee/spec/services/ci/compare_security_reports_service_spec.rb'
     - 'ee/spec/services/ci/create_pipeline_service/compliance_spec.rb'
     - 'ee/spec/services/ci/create_pipeline_service/dast_configuration_spec.rb'
     - 'ee/spec/services/ci/minutes/refresh_cached_data_service_spec.rb'

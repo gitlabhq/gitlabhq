@@ -1365,7 +1365,7 @@ There are some exceptions, such as checking for structural changes rather than i
 
 {{< alert type="note" >}}
 
-Elasticsearch indexing uses [`Gitlab::Redis::SharedState`](../redis.md#gitlabrediscachesharedstatequeues).
+Indexing for advanced search uses [`Gitlab::Redis::SharedState`](../redis.md#gitlabrediscachesharedstatequeues).
 Therefore, the Elasticsearch metadata dynamically uses `:clean_gitlab_redis_shared_state`.
 You do not need to add `:clean_gitlab_redis_shared_state` manually.
 

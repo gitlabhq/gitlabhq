@@ -360,7 +360,7 @@ export function fetchDiffFilesMeta() {
       eventHub.$emit(EVT_PERF_MARK_FILE_TREE_END);
       this[types.SET_TREE_DATA]({
         treeEntries,
-        tree: sortTree(tree),
+        tree: sortTree(tree, 'key'),
       });
 
       return data;

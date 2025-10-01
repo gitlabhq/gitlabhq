@@ -77,11 +77,6 @@ module Packages
     scope :with_version, ->(version) { where(version: version) }
     scope :with_version_like, ->(version) { where(arel_table[:version].matches(version)) }
     scope :without_version_like, ->(version) { where.not(arel_table[:version].matches(version)) }
-
-    # TODO: Remove with the rollout of the FF packages_refactor_group_packages_finder
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/568923
-    scope :with_package_type, ->(package_type) { where(package_type: package_type) }
-
     scope :without_package_type, ->(package_type) { where.not(package_type: package_type) }
     scope :displayable, -> { with_status(DISPLAYABLE_STATUSES) }
     scope :including_project_route, -> { includes(project: :route) }

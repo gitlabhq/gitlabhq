@@ -432,10 +432,10 @@ To enable advanced search:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **Search**.
 1. Configure the [advanced search settings](#advanced-search-configuration) for
-   your Elasticsearch cluster. Do not select the **Search with Elasticsearch enabled** checkbox yet.
+   your Elasticsearch cluster. Do not select the **Search with advanced search** checkbox yet.
 1. [Index the instance](#index-the-instance).
 1. Optional. [Check indexing status](#check-indexing-status).
-1. After the indexing is complete, select the **Search with Elasticsearch enabled** checkbox, then select **Save changes**.
+1. After the indexing is complete, select the **Search with advanced search** checkbox, then select **Save changes**.
 
 {{< alert type="note" >}}
 
@@ -468,7 +468,7 @@ To enable advanced search and index the instance from the user interface:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **Search**.
-1. Select the **Elasticsearch indexing** checkbox, then select **Save changes**.
+1. Select the **Turn on indexing for advanced search** checkbox, then select **Save changes**.
 1. Select **Index the instance**.
 
 #### With a Rake task
@@ -546,7 +546,7 @@ To enable search with advanced search in GitLab:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **Search**.
-1. Select the **Search with Elasticsearch enabled** checkbox.
+1. Select the **Search with advanced search** checkbox.
 1. Select **Save changes**.
 
 ### Advanced search configuration
@@ -555,10 +555,10 @@ The following Elasticsearch settings are available:
 
 | Parameter                                                   | Description |
 |-------------------------------------------------------------|-------------|
-| **Elasticsearch indexing**                                  | Enables or disables Elasticsearch indexing and creates an empty index if one does not already exist. You may want to enable indexing but disable search to give the index time to be fully completed, for example. Also, keep in mind that this option doesn't have any impact on existing data, this only enables/disables the background indexer which tracks data changes and ensures new data is indexed. |
-| **Pause Elasticsearch indexing**                            | Enables or disables temporary indexing pause. This is useful for cluster migration/reindexing. All changes are still tracked, but they are not committed to the Elasticsearch index until resumed. |
-| **Search with Elasticsearch enabled**                       | Enables or disables using Elasticsearch in search. |
-| **Requeue indexing workers**                                | Enable automatic requeuing of indexing workers. This improves non-code indexing throughput by enqueuing Sidekiq jobs until all documents are processed. Requeuing indexing workers is not recommended for smaller instances or instances with few Sidekiq processes. |
+| **Turn on indexing for advanced search**                    | Turns on or turns off indexing and creates an empty index if one does not already exist. You may want to turn on indexing but turn off search to give the index time to be fully completed, for example. Also, keep in mind that this option doesn't have any impact on existing data, this only enables/disables the background indexer which tracks data changes and ensures new data is indexed. |
+| **Pause indexing for advanced search**                      | Pauses advanced search indexing. This is useful for cluster migration/reindexing. All changes are still tracked, but they are not committed to the index until resumed. |
+| **Search with advanced search**                             | Turns on or turns off using advanced search in search. |
+| **Requeue indexing workers**                                | Turns on automatic requeuing of indexing workers. This improves non-code indexing throughput by enqueuing Sidekiq jobs until all documents are processed. Requeuing indexing workers is not recommended for smaller instances or instances with few Sidekiq processes. |
 | **URL**                                                     | The URL of your Elasticsearch instance. Use a comma-separated list to support clustering (for example, `http://host1, https://host2:9200`). If your Elasticsearch instance is password-protected, use the `Username` and `Password` fields. Alternatively, use inline credentials such as `http://<username>:<password>@<elastic_host>:9200/`. If you use [OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/vpc.html), only connections over ports `80` and `443` are accepted. |
 | **Username**                                                | The `username` of your Elasticsearch instance. |
 | **Password**                                                | The password of your Elasticsearch instance. |
@@ -693,7 +693,7 @@ To disable advanced search in GitLab:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **Search**.
-1. Clear the **Elasticsearch indexing** and **Search with Elasticsearch enabled** checkboxes.
+1. Clear the **Turn on indexing for advanced search** and **Search with advanced search** checkboxes.
 1. Select **Save changes**.
 1. Optional. For Elasticsearch instances that are still online, delete existing indices:
 
@@ -715,7 +715,7 @@ To disable search with advanced search in GitLab:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **Search**.
-1. Clear the **Search with Elasticsearch enabled** checkbox.
+1. Clear the **Search with advanced search** checkbox.
 1. Select **Save changes**.
 
 ## Pause indexing
@@ -729,7 +729,7 @@ To pause indexing:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Advanced search**.
-1. Select the **Pause Elasticsearch indexing** checkbox.
+1. Select the **Pause indexing for advanced search** checkbox.
 1. Select **Save changes**.
 
 ## Resume indexing
@@ -743,7 +743,7 @@ To resume indexing:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Advanced search**.
-1. Clear the **Pause Elasticsearch indexing** checkbox.
+1. Clear the **Pause indexing for advanced search** checkbox.
 1. Select **Save changes**.
 
 ## Zero-downtime reindexing
@@ -844,7 +844,7 @@ To abandon an unfinished reindexing job and resume indexing:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **Search**.
 1. Expand **Advanced search**.
-1. Clear the **Pause Elasticsearch indexing** checkbox.
+1. Clear the **Pause indexing for advanced search** checkbox.
 
 ## Index integrity
 
@@ -993,9 +993,9 @@ The following are some available Rake tasks:
 | Task                                                                                                                                                       | Description |
 |:-----------------------------------------------------------------------------------------------------------------------------------------------------------|:------------|
 | [`sudo gitlab-rake gitlab:elastic:info`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                              | Outputs debugging information for the advanced search integration. |
-| [`sudo gitlab-rake gitlab:elastic:index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                             | In GitLab 17.0 and earlier, enables Elasticsearch indexing and runs `gitlab:elastic:recreate_index`, `gitlab:elastic:clear_index_status`, `gitlab:elastic:index_group_entities`, `gitlab:elastic:index_projects`, `gitlab:elastic:index_snippets`, and `gitlab:elastic:index_users`.<br>In GitLab 17.1 and later, queues a Sidekiq job in the background. First, the job enables Elasticsearch indexing and pauses indexing to ensure all indices are created. Then, the job re-creates all indices, clears indexing status, and queues additional Sidekiq jobs to index project and group data, snippets, and users. Finally, Elasticsearch indexing is resumed to complete. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421298) in GitLab 17.1 [with a flag](../../administration/feature_flags/_index.md) named `elastic_index_use_trigger_indexing`. Enabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/434580) in GitLab 17.3. Feature flag `elastic_index_use_trigger_indexing` removed. |
-| [`sudo gitlab-rake gitlab:elastic:pause_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                    | Pauses Elasticsearch indexing. Changes are still tracked. Useful for cluster/index migrations. |
-| [`sudo gitlab-rake gitlab:elastic:resume_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Resumes Elasticsearch indexing. |
+| [`sudo gitlab-rake gitlab:elastic:index`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                             | In GitLab 17.0 and earlier, turns on indexing for advanced search and runs `gitlab:elastic:recreate_index`, `gitlab:elastic:clear_index_status`, `gitlab:elastic:index_group_entities`, `gitlab:elastic:index_projects`, `gitlab:elastic:index_snippets`, and `gitlab:elastic:index_users`.<br>In GitLab 17.1 and later, queues a Sidekiq job in the background. First, the job turns on indexing for advanced search and pauses indexing to ensure all indices are created. Then, the job re-creates all indices, clears indexing status, and queues additional Sidekiq jobs to index project and group data, snippets, and users. Finally, indexing for advanced search is resumed to complete. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421298) in GitLab 17.1 [with a flag](../../administration/feature_flags/_index.md) named `elastic_index_use_trigger_indexing`. Enabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/434580) in GitLab 17.3. Feature flag `elastic_index_use_trigger_indexing` removed. |
+| [`sudo gitlab-rake gitlab:elastic:pause_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                    | Pauses indexing for advanced search. Changes are still tracked. Useful for cluster/index migrations. |
+| [`sudo gitlab-rake gitlab:elastic:resume_indexing`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                   | Resumes indexing for advanced search. |
 | [`sudo gitlab-rake gitlab:elastic:index_and_search_validation`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)       | Validates cluster connectivity, index, and search operations for all indices. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200664) in GitLab 18.3. |
 | [`sudo gitlab-rake gitlab:elastic:index_projects`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)                    | Iterates over all projects, and queues Sidekiq jobs to index them in the background. It can only be used after the index is created. |
 | [`sudo gitlab-rake gitlab:elastic:index_group_entities`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/elastic.rake)              | Invokes `gitlab:elastic:index_epics` and `gitlab:elastic:index_group_wikis`. |
@@ -1168,7 +1168,7 @@ due to large volumes of data being indexed:
    bundle exec rake gitlab:elastic:clear_index_status RAILS_ENV=production
    ```
 
-1. [Select the **Elasticsearch indexing** checkbox](#enable-advanced-search).
+1. [Select the **Turn on indexing for advanced search** checkbox](#enable-advanced-search).
 1. Indexing large Git repositories can take a while. To speed up the process, you can [tune for indexing speed](https://www.elastic.co/guide/en/elasticsearch/reference/current/tune-for-indexing-speed.html#tune-for-indexing-speed):
 
    - You can temporarily increase [`refresh_interval`](https://www.elastic.co/guide/en/elasticsearch/reference/current/indices-refresh.html).
@@ -1296,7 +1296,7 @@ due to large volumes of data being indexed:
           } }'
    ```
 
-1. After the indexing is complete, [select the **Search with Elasticsearch enabled** checkbox](#enable-advanced-search).
+1. After the indexing is complete, [select the **Search with advanced search** checkbox](#enable-advanced-search).
 
 ### Deleted documents
 

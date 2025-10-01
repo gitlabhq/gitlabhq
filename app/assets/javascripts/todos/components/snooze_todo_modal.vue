@@ -131,7 +131,6 @@ export default {
   <gl-modal
     v-model="isModalVisible"
     modal-id="custom-snooze-todo-modal"
-    modal-class="gl-@container"
     :title="$options.i18n.snooze"
     :action-primary="actionPrimary"
     :action-secondary="$options.actionSecondary"

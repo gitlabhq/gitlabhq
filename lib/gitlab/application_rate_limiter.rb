@@ -241,13 +241,24 @@ module Gitlab
         }
 
         if current_user
-          request_information.merge!({
+          request_information.merge!(
             user_id: current_user.id,
             username: current_user.username
-          })
+          )
         end
 
         logger.error(request_information)
+      end
+
+      # Returns the interval value for a given rate limit key
+      #
+      # @param key [Symbol] Key attribute registered in `.rate_limits`
+      # @return [Integer, nil] The interval value in seconds, or nil if not configured
+      def interval(key)
+        value = rate_limit_value_by_key(key, :interval)
+        raise InvalidKeyError if value.nil?
+
+        rate_limit_value(value)
       end
 
       private
@@ -289,12 +300,6 @@ module Gitlab
 
       def threshold(key)
         value = rate_limit_value_by_key(key, :threshold)
-
-        rate_limit_value(value)
-      end
-
-      def interval(key)
-        value = rate_limit_value_by_key(key, :interval)
 
         rate_limit_value(value)
       end

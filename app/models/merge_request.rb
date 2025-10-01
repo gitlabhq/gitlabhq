@@ -2220,13 +2220,13 @@ class MergeRequest < ApplicationRecord
   def compare_sast_reports(current_user)
     return missing_report_error("SAST") unless has_sast_reports?
 
-    compare_reports(::Ci::CompareSecurityReportsService, current_user, 'sast')
+    compare_reports(::Vulnerabilities::CompareSecurityReportsService, current_user, 'sast')
   end
 
   def compare_secret_detection_reports(current_user)
     return missing_report_error("secret detection") unless has_secret_detection_reports?
 
-    compare_reports(::Ci::CompareSecurityReportsService, current_user, 'secret_detection')
+    compare_reports(::Vulnerabilities::CompareSecurityReportsService, current_user, 'secret_detection')
   end
 
   def calculate_reactive_cache(identifier, current_user_id = nil, report_type = nil, *args)

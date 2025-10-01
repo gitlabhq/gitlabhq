@@ -121,7 +121,6 @@ export default {
     static
     hide-footer
     size="lg"
-    modal-class="gl-@container"
     :modal-id="$options.WORK_ITEM_DETAIL_MODAL_ID"
     header-class="gl-p-0 !gl-pb-2"
     scrollable

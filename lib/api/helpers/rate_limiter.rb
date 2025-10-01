@@ -16,7 +16,12 @@ module API
 
         return yield if block_given?
 
-        render_api_error!({ error: _('This endpoint has been requested too many times. Try again later.') }, 429)
+        interval_value = options[:interval] || Gitlab::ApplicationRateLimiter.interval(key)
+
+        too_many_requests!(
+          { error: _('This endpoint has been requested too many times. Try again later.') },
+          retry_after: interval_value
+        )
       end
 
       def check_rate_limit_by_user_or_ip!(key, **options)

@@ -358,7 +358,7 @@ export const fetchDiffFilesMeta = ({ commit, state }) => {
       eventHub.$emit(EVT_PERF_MARK_FILE_TREE_END);
       commit(types.SET_TREE_DATA, {
         treeEntries,
-        tree: sortTree(tree),
+        tree: sortTree(tree, 'key'),
       });
 
       return data;

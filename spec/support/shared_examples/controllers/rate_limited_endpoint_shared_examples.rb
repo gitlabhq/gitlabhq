@@ -48,6 +48,7 @@ RSpec.shared_examples 'rate limited endpoint' do |rate_limit_key:, graphql: fals
 
         if response.content_type == 'application/json' # it is API spec
           expect(response.body).to eq({ message: { error: error_message } }.to_json)
+          expect(response.headers).to include('Retry-After' => Gitlab::ApplicationRateLimiter.interval(rate_limit_key))
         else
           expect(response.body).to eq(error_message)
         end

@@ -17,3 +17,4 @@ doc/api/packages/conan_v2.md:jwt:82
 ee/spec/fixtures/secrets_manager/test_private_key.pem:private-key:1
 ee/spec/lib/security/secret_detection/partner_tokens/gcp_client_spec.rb:gcp-api-key:10
 ee/spec/lib/security/secret_detection/partner_tokens/gcp_client_spec.rb:gcp-api-key:22
+ee/spec/workers/security/secret_detection/partner_token_verification_worker_spec.rb:generic-api-key:56

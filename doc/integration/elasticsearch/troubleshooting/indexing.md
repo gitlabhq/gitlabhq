@@ -179,7 +179,7 @@ As a last resort, you can recreate the index from scratch. For small GitLab inst
 recreating the index can be a quick way to resolve some issues. For large GitLab
 installations, however, this method might take a very long time. Your index
 does not show correct search results until the indexing is complete. You might
-want to clear the **Search with Elasticsearch enabled** checkbox
+want to clear the **Search with advanced search** checkbox
 while the indexing is running.
 
 If you are sure you've read the previous caveats and want to proceed, then you

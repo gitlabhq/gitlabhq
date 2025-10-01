@@ -5102,9 +5102,6 @@ msgstr ""
 msgid "AdminSettings|Delete project after"
 msgstr ""
 
-msgid "AdminSettings|Disable Elasticsearch until indexing completes."
-msgstr ""
-
 msgid "AdminSettings|Disable feed token"
 msgstr ""
 
@@ -5121,9 +5118,6 @@ msgid "AdminSettings|Dormant project deletion"
 msgstr ""
 
 msgid "AdminSettings|Download payload"
-msgstr ""
-
-msgid "AdminSettings|Elasticsearch indexing"
 msgstr ""
 
 msgid "AdminSettings|Enable Registration Features"
@@ -5327,7 +5321,7 @@ msgstr ""
 msgid "AdminSettings|Package registry metadata to sync"
 msgstr ""
 
-msgid "AdminSettings|Pause Elasticsearch indexing"
+msgid "AdminSettings|Pause indexing for advanced search"
 msgstr ""
 
 msgid "AdminSettings|Pipeline limit per Git push"
@@ -5366,7 +5360,7 @@ msgstr ""
 msgid "AdminSettings|Save %{name} limits"
 msgstr ""
 
-msgid "AdminSettings|Search with Elasticsearch enabled"
+msgid "AdminSettings|Search with advanced search"
 msgstr ""
 
 msgid "AdminSettings|Secret Push Protection"
@@ -5505,6 +5499,12 @@ msgid "AdminSettings|To help improve GitLab and its user experience, GitLab peri
 msgstr ""
 
 msgid "AdminSettings|Total number of jobs in currently active pipelines"
+msgstr ""
+
+msgid "AdminSettings|Turn off advanced search until indexing is complete."
+msgstr ""
+
+msgid "AdminSettings|Turn on indexing for advanced search"
 msgstr ""
 
 msgid "AdminSettings|Use AWS OpenSearch Service with IAM credentials"
@@ -18066,7 +18066,7 @@ msgstr ""
 msgid "Configure search access and visibility settings for search scopes."
 msgstr ""
 
-msgid "Configure settings for Advanced search with Elasticsearch or OpenSearch."
+msgid "Configure settings for advanced search."
 msgstr ""
 
 msgid "Configure settings for exact code search."

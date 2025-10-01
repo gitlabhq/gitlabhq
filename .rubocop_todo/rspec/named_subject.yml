@@ -771,7 +771,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/ci/compare_license_scanning_reports_collapsed_service_spec.rb'
     - 'ee/spec/services/ci/compare_license_scanning_reports_service_spec.rb'
     - 'ee/spec/services/ci/compare_metrics_reports_service_spec.rb'
-    - 'ee/spec/services/ci/compare_security_reports_service_spec.rb'
     - 'ee/spec/services/ci/create_pipeline_service/dast_configuration_spec.rb'
     - 'ee/spec/services/ci/delete_project_subscription_service_spec.rb'
     - 'ee/spec/services/ci/external_pull_requests/process_github_event_service_spec.rb'

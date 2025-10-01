@@ -942,6 +942,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           get api(path, user)
 
           expect(response).to have_gitlab_http_status(:too_many_requests)
+          expect(response.headers).to include('Retry-After' => Gitlab::ApplicationRateLimiter.interval(:users_get_by_id))
         end
 
         it 'still allows admin users' do
@@ -2654,6 +2655,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         get api(path), env: { REMOTE_ADDR: ip }
 
         expect(response).to have_gitlab_http_status(:too_many_requests)
+        expect(response.headers).to include('Retry-After' => Gitlab::ApplicationRateLimiter.interval(:user_ssh_keys))
       end
     end
   end

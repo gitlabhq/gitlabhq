@@ -127,10 +127,8 @@ module Groups
     def group_with_namespaced_npm_packages?
       return false unless group.packages_feature_enabled?
 
-      # TODO: Remove `packages_class` with the rollout of the FF packages_refactor_group_packages_finder
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/568923
       npm_packages = ::Packages::GroupPackagesFinder
-                       .new(current_user, group, packages_class: ::Packages::Npm::Package, preload_pipelines: false, package_type: :npm)
+                       .new(current_user, group, preload_pipelines: false, package_type: :npm)
                        .execute
 
       npm_packages = npm_packages.with_npm_scope(group.root_ancestor.path)
