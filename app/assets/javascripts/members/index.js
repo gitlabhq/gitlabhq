@@ -88,7 +88,7 @@ export const initMembersApp = (el, context, options) => {
       availableRoles,
       context,
       reassignmentCsvPath,
-      restrictReassignmentToEnterprise,
+      restrictReassignmentToEnterprise: parseBoolean(restrictReassignmentToEnterprise),
       allowInactivePlaceholderReassignment: parseBoolean(allowInactivePlaceholderReassignment),
       allowBypassPlaceholderConfirmation,
       group: {
