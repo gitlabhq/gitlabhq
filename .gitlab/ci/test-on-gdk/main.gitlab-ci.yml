@@ -95,11 +95,8 @@ gdk-instance:
 
 # Run E2E tests with Project Studio configured for Project Studio MRs
 gdk-instance-project-studio:
-  extends:
-    - .gdk-qa-base
-    - .with-parallel
+  extends: gdk-instance
   variables:
-    QA_SCENARIO: Test::Instance::All
     QA_FEATURE_FLAGS: "paneled_view=enabled,tailwind_container_queries=enabled"
     QA_PROJECT_STUDIO: true
   rules:

@@ -58,21 +58,6 @@
     = render_if_exists 'groups/settings/remove_dormant_members', f: f, group: @group
     = render_if_exists 'groups/settings/disable_invite_members', f: f, group: @group
     = render_if_exists 'groups/settings/pages_access_control', f: f, group: @group
-
-    %h5= _('Customer relations')
-    .form-group.gl-mb-3
-      = f.gitlab_ui_checkbox_component :crm_enabled,
-          s_('GroupSettings|Customer relations is enabled'),
-          checkbox_options: { checked: @group.crm_enabled? },
-          help_text: s_('GroupSettings|Organizations and contacts can be created and associated with issues.')
-    .form-group.gl-mb-3
-      = s_('GroupSettings|Contact source')
-      .js-vue-group-select{ data: {
-        input_name: 'group[crm_source_group_id]',
-        input_id: 'group_crm_source_group_id',
-        selected: @group.crm_settings&.source_group_id,
-        clearable: 'true',
-        description: s_("GroupSettings|The group from which to source contacts for issues in this group and its subgroups.")
-      } }
+    = render_if_exists 'groups/settings/crm', f: f, group: @group
 
   = f.submit _('Save changes'), pajamas_button: true, class: 'gl-mt-3', data: { testid: 'save-permissions-changes-button' }

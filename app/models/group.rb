@@ -1304,6 +1304,15 @@ class Group < Namespace
     deletion_schedule.marked_for_deletion_on.future?
   end
 
+  def assigning_role_too_high?(current_user, access_level)
+    return false if current_user.can_admin_all_resources?
+    return false unless access_level
+
+    max_access_level = max_member_access(current_user)
+
+    !Authz::Role.access_level_encompasses?(current_access_level: max_access_level, level_to_assign: access_level)
+  end
+
   private
 
   def feature_flag_enabled_for_self_or_ancestor?(feature_flag, type: :development)

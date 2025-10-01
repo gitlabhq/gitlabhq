@@ -428,15 +428,15 @@ requests. These placeholders are called variables, as explained in [using variab
 You can use variables to store and reuse values in your requests and scripts. For example, you can
 edit the collection to add variables to the document:
 
-![Edit collection variable tab view](img/api_fuzzing_postman_collection_edit_variable_v13_9.png)
+![Edit collection variable tab view](img/api_fuzzing_postman_collection_edit_variable_v18_5.png)
 
 Or alternatively, you can add variables in an environment:
 
-![Edit environment variables view](img/api_fuzzing_postman_environment_edit_variable_v13_9.png)
+![Edit environment variables view](img/api_fuzzing_postman_environment_edit_variable_v18_5.png)
 
 You can then use the variables in sections such as URL, headers, and others:
 
-![Edit request using variables view](img/api_fuzzing_postman_request_edit_v13_9.png)
+![Edit request using variables view](img/api_fuzzing_postman_request_edit_v18_5.png)
 
 Postman has grown from a basic client tool with a nice UX experience to a more complex ecosystem that allows testing APIs with scripts, creating complex collections that trigger secondary requests, and setting variables along the way. Not every feature in the Postman ecosystem is supported. For example, scripts are not supported. The main focus of the Postman support is to ingest Postman Collection definitions that are used by the Postman Client and their related variables defined in the workspace, environments, and the collections themselves.
 

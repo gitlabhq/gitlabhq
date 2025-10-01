@@ -1,0 +1,16 @@
+%h5= _('Customer relations')
+.form-group.gl-mb-3
+  = f.gitlab_ui_checkbox_component :crm_enabled,
+      s_('GroupSettings|Customer relations is enabled'),
+      checkbox_options: { checked: @group.crm_enabled? },
+      help_text: s_('GroupSettings|Organizations and contacts can be created and associated with issues.')
+
+%h5= s_('GroupSettings|Contact source')
+.form-group.gl-mb-3
+  .js-vue-group-select{ data: {
+    input_name: 'group[crm_source_group_id]',
+    input_id: 'group_crm_source_group_id',
+    selected: @group.crm_settings&.source_group_id,
+    clearable: 'true',
+    description: s_("GroupSettings|The group from which to source contacts for issues in this group and its subgroups.")
+  } }

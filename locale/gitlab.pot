@@ -46194,7 +46194,7 @@ msgstr ""
 msgid "PQL|Hello %{userName}. Before putting you in touch with our sales team, we would like you to verify and complete the information below."
 msgstr ""
 
-msgid "PQL|Message for the Sales team (optional)"
+msgid "PQL|Message for the Sales team"
 msgstr ""
 
 msgid "PQL|Submit information"

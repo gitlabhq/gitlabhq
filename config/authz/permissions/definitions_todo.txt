@@ -302,7 +302,6 @@ destroy_environment
 destroy_epic
 destroy_feature_flag
 destroy_feature_flags_client
-destroy_freeze_period
 destroy_group_member
 destroy_issue
 destroy_issue_board

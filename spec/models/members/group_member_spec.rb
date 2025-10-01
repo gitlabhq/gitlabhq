@@ -74,6 +74,85 @@ RSpec.describe GroupMember, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#prevent_role_assignement?' do
+    let_it_be(:group) { create(:group) }
+    let_it_be_with_reload(:current_user) { create(:user) }
+    let_it_be_with_reload(:member) do
+      create(:group_member, access_level: Gitlab::Access::GUEST, group: group)
+    end
+
+    let(:access_level) { Gitlab::Access::GUEST }
+    let(:params) { { access_level: access_level } }
+
+    subject(:prevent_assignement?) { member.prevent_role_assignement?(current_user, params) }
+
+    context 'when current user is a DEVELOPER' do
+      before do
+        group.add_developer(current_user)
+      end
+
+      context 'without assigning_access_level param' do
+        let(:access_level) { nil }
+
+        it 'returns false' do
+          expect(prevent_assignement?).to be(false)
+        end
+      end
+
+      context 'with MAINTAINER as access_role param' do
+        let(:access_level) { Gitlab::Access::MAINTAINER }
+
+        it 'returns true' do
+          expect(prevent_assignement?).to be(true)
+        end
+      end
+    end
+
+    context 'when current user is a MAINTAINER' do
+      before do
+        group.add_maintainer(current_user)
+      end
+
+      context 'without assigning_access_level param' do
+        let(:access_level) { nil }
+
+        it 'returns true' do
+          expect(prevent_assignement?).to be(false)
+        end
+      end
+
+      context 'with OWNER as access_role param' do
+        let(:access_level) { Gitlab::Access::OWNER }
+
+        it 'returns false' do
+          expect(prevent_assignement?).to be(true)
+        end
+      end
+    end
+
+    context 'when current user is an admin', :enable_admin_mode do
+      before do
+        current_user.update!(admin: true)
+      end
+
+      context 'without assigning_access_level param' do
+        let(:access_level) { nil }
+
+        it 'returns false' do
+          expect(prevent_assignement?).to be(false)
+        end
+      end
+
+      context 'with OWNER as access_role param' do
+        let(:access_level) { Gitlab::Access::OWNER }
+
+        it 'returns false' do
+          expect(prevent_assignement?).to be(false)
+        end
+      end
+    end
+  end
+
   describe '#permissible_access_level_roles' do
     let_it_be(:group) { create(:group) }
 

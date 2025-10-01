@@ -654,8 +654,21 @@ class Member < ApplicationRecord
     end
   end
 
-  def prevent_role_assignement?(_current_user, _params)
-    false
+  def prevent_role_assignement?(current_user, params)
+    return false if current_user.can_admin_all_resources?
+
+    # access_level will already be set for accepting access request invites
+    assigning_access_level = params[:access_level] || access_level
+    current_access_level = params[:current_access_level]
+
+    # check if it's a valid downgrade, if the member's current access level encompasses the target level
+    return false if Authz::Role.access_level_encompasses?(
+      current_access_level: current_access_level,
+      level_to_assign: assigning_access_level
+    )
+
+    # prevent assignement in case the role access level is higher than current user's role
+    source.assigning_role_too_high?(current_user, assigning_access_level)
   end
 
   private
