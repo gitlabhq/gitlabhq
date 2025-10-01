@@ -1332,11 +1332,7 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  def viewable_diffs
-    @viewable_diffs ||= merge_request_diffs.viewable.to_a
-  end
-
-  def merge_request_diff_for(diff_refs_or_sha)
+  def merge_request_diff_for(diff_refs_or_sha, order_by: :id_asc)
     matcher =
       if diff_refs_or_sha.is_a?(Gitlab::Diff::DiffRefs)
         {
@@ -1348,7 +1344,7 @@ class MergeRequest < ApplicationRecord
         { 'head_commit_sha' => diff_refs_or_sha }
       end
 
-    viewable_diffs.find do |diff|
+    viewable_diffs(order_by: order_by).find do |diff|
       diff.attributes.slice(*matcher.keys) == matcher
     end
   end
@@ -2662,6 +2658,12 @@ class MergeRequest < ApplicationRecord
   end
 
   private
+
+  def viewable_diffs(order_by: :id_asc)
+    strong_memoize_with(:viewable_diffs, order_by) do
+      merge_request_diffs.viewable.order_by(order_by).to_a
+    end
+  end
 
   def target_branch_pipelines_for(sha:)
     project.ci_pipelines
