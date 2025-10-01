@@ -24,6 +24,14 @@ module Gitlab
           end
         end
 
+        def drop_all_detached_partitions!
+          raise 'This is meant to be used only for test cleanup' unless Rails.env.test?
+
+          Postgresql::DetachedPartition.all.find_each do |detached_partition|
+            drop_partition(detached_partition) unless partition_attached?(detached_partition.fully_qualified_table_name)
+          end
+        end
+
         private
 
         def unmark_partition(detached_partition)

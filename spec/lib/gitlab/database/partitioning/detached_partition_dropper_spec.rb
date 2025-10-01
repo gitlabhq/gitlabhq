@@ -270,4 +270,26 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper, feature
       end
     end
   end
+
+  describe '#drop_all_detached_partitions!' do
+    it 'drops partitions even when they are not scheduled to be dropped yet' do
+      create_partition(
+        name: :_test_partition,
+        from: 2.months.ago,
+        to: 1.month.ago,
+        attached: false,
+        drop_after: 1.day.from_now
+      )
+
+      dropper.drop_all_detached_partitions!
+
+      expect_partition_removed(:_test_partition)
+    end
+
+    it 'raises an exception when called outside of tests' do
+      allow(Rails.env).to receive(:test?).and_return(false)
+
+      expect { dropper.drop_all_detached_partitions! }.to raise_error('This is meant to be used only for test cleanup')
+    end
+  end
 end
