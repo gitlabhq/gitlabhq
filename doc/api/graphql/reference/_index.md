@@ -256,24 +256,7 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
-### `Query.aiCatalogItem`
-
-{{< details >}}
-**Introduced** in GitLab 18.2.
-**Status**: Experiment.
-{{< /details >}}
-
-Find an AI Catalog item.
-
-Returns [`AiCatalogItem`](#aicatalogitem).
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="queryaicatalogitemid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog item to find. |
-
-### `Query.aiCatalogItemConsumers`
+### `Query.aiCatalogConfiguredItems`
 
 {{< details >}}
 **Introduced** in GitLab 18.2.
@@ -292,11 +275,28 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queryaicatalogitemconsumersgroupid"></a>`groupId` | [`GroupID`](#groupid) | Group ID to retrieve configured AI Catalog items for. |
-| <a id="queryaicatalogitemconsumersincludeinherited"></a>`includeInherited` | [`Boolean`](#boolean) | Include configured AI Catalog items inherited from parent groups. |
-| <a id="queryaicatalogitemconsumersitemid"></a>`itemId` | [`AiCatalogItemID`](#aicatalogitemid) | Item ID to retrieve configured AI Catalog items for. |
-| <a id="queryaicatalogitemconsumersitemtype"></a>`itemType` | [`AiCatalogItemType`](#aicatalogitemtype) | Type of items to retrieve. |
-| <a id="queryaicatalogitemconsumersprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Project ID to retrieve configured AI Catalog items for. |
+| <a id="queryaicatalogconfigureditemsgroupid"></a>`groupId` | [`GroupID`](#groupid) | Group ID to retrieve configured AI Catalog items for. |
+| <a id="queryaicatalogconfigureditemsincludeinherited"></a>`includeInherited` | [`Boolean`](#boolean) | Include configured AI Catalog items inherited from parent groups. |
+| <a id="queryaicatalogconfigureditemsitemid"></a>`itemId` | [`AiCatalogItemID`](#aicatalogitemid) | Item ID to retrieve configured AI Catalog items for. |
+| <a id="queryaicatalogconfigureditemsitemtype"></a>`itemType` | [`AiCatalogItemType`](#aicatalogitemtype) | Type of items to retrieve. |
+| <a id="queryaicatalogconfigureditemsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Project ID to retrieve configured AI Catalog items for. |
+
+### `Query.aiCatalogItem`
+
+{{< details >}}
+**Introduced** in GitLab 18.2.
+**Status**: Experiment.
+{{< /details >}}
+
+Find an AI Catalog item.
+
+Returns [`AiCatalogItem`](#aicatalogitem).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaicatalogitemid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog item to find. |
 
 ### `Query.aiCatalogItems`
 
