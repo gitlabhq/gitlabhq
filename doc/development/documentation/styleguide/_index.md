@@ -187,6 +187,7 @@ GitLab documentation uses the following shortcodes:
 - [Tabs](#tabs)
 - [Cards](#cards)
 - [Maintained versions](#maintained-versions)
+- [Collapsible panels](#collapsible-panels)
 
 ## Language
 
@@ -1971,6 +1972,24 @@ For more information, see [issue 225](https://gitlab.com/gitlab-org/technical-wr
 
 See [Pajamas](https://design.gitlab.com/components/tabs/#guidelines) for more
 details on tabs.
+
+## Collapsible panels
+
+Collapsible panels are closed by default and require a title. In the rendered documentation,
+you must expand the panel to view the content inside it.
+
+```markdown
+{{</* collapsible title="Collapsible panel example" */>}}
+
+This content appears inside the collapsible panel.
+
+{{</* /collapsible */>}}
+```
+
+Only use collapsible panels on GitLab Duo pages in the [availability details](availability_details.md)
+section for information about supported LLMs, editors, and self-hosted model availability.
+
+Do not use collapsible panels for other content.
 
 ## Cards
 

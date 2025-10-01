@@ -47,6 +47,8 @@ class Projects::RefsController < Projects::ApplicationController
   end
 
   def logs_tree
+    authenticate_user! if require_auth?
+
     respond_to do |format|
       format.json do
         logs, next_offset = tree_summary.fetch_logs
@@ -59,6 +61,11 @@ class Projects::RefsController < Projects::ApplicationController
   end
 
   private
+
+  def require_auth?
+    current_user.blank? && @ref != @project.default_branch_or_main &&
+      Feature.enabled?(:require_login_for_commit_tree, @project)
+  end
 
   def tree_summary
     ::Gitlab::TreeSummary.new(

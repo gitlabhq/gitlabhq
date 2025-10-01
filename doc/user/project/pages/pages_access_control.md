@@ -16,6 +16,7 @@ title: GitLab Pages access control
 
 - Group SAML SSO support for Pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326288) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `ff_oauth_redirect_to_sso_login`. Disabled by default.
 - Group SAML SSO support for OAuth applications [enabled on GitLab.com, GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200682) in GitLab 18.3.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/561778) in GitLab 18.5. Feature flag `ff_oauth_redirect_to_sso_login` removed.
 
 {{< /history >}}
 

@@ -6,6 +6,34 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
   let_it_be(:user) { create(:user) }
   let_it_be(:access_token) { create(:oauth_access_token, user: user, scopes: [:mcp]) }
 
+  shared_examples 'respects mcp access controls' do |success_status|
+    using RSpec::Parameterized::TableSyntax
+
+    where(:description, :feature_flag_enabled, :beta_features_enabled, :expected_status) do
+      'both enabled'           | true  | true  | success_status
+      'feature flag disabled'  | false | true  | :not_found
+      'beta features disabled' | true  | false | :not_found
+      'both disabled'          | false | false | :not_found
+    end
+
+    with_them do
+      before do
+        stub_feature_flags(mcp_server: feature_flag_enabled)
+        stub_application_setting(instance_level_ai_beta_features_enabled: beta_features_enabled)
+      end
+
+      it 'returns correct response' do
+        subject
+
+        expect(response).to have_gitlab_http_status(expected_status)
+      end
+    end
+  end
+
+  before do
+    stub_application_setting(instance_level_ai_beta_features_enabled: true)
+  end
+
   describe 'POST /mcp' do
     context 'when unauthenticated' do
       it 'returns authentication error' do
@@ -39,16 +67,13 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
         })
       end
 
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(mcp_server: false)
+      context 'with feature flag and setting check' do
+        subject do
+          post api('/mcp', user, oauth_access_token: access_token),
+            params: { jsonrpc: '2.0', method: 'initialize', id: '1' }
         end
 
-        it 'returns not found' do
-          post api('/mcp', user)
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
+        it_behaves_like 'respects mcp access controls', :ok
       end
 
       context 'when access token is PAT' do
@@ -168,16 +193,10 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
     end
 
     context 'when authenticated' do
-      context 'when feature flag is disabled' do
-        before do
-          stub_feature_flags(mcp_server: false)
-        end
+      context 'with feature flag and setting check' do
+        subject { get api('/mcp', user, oauth_access_token: access_token) }
 
-        it 'returns not found' do
-          get api('/mcp', user, oauth_access_token: access_token)
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
+        it_behaves_like 'respects mcp access controls', :not_implemented
       end
 
       it 'returns not implemented' do
@@ -203,16 +222,13 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
       end
 
       context 'when authenticated' do
-        context 'when feature flag is disabled' do
-          before do
-            stub_feature_flags(mcp_server: false)
+        context 'with feature flag and setting check' do
+          subject do
+            post api('/mcp', user, oauth_access_token: access_token),
+              params: { jsonrpc: '2.0', method: 'initialize', id: '1' }
           end
 
-          it 'returns not found' do
-            post api('/mcp', user)
-
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
+          it_behaves_like 'respects mcp access controls', :ok
         end
 
         context 'when access token is PAT' do
@@ -332,22 +348,10 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
       end
 
       context 'when authenticated' do
-        context 'when feature flag is disabled' do
-          before do
-            stub_feature_flags(mcp_server: false)
-          end
+        context 'with feature flag and setting check' do
+          subject { get api('/mcp', user, oauth_access_token: access_token) }
 
-          it 'returns not found' do
-            get api('/mcp', user, oauth_access_token: access_token)
-
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
-        end
-
-        it 'returns not implemented' do
-          get api('/mcp', user, oauth_access_token: access_token)
-
-          expect(response).to have_gitlab_http_status(:not_implemented)
+          it_behaves_like 'respects mcp access controls', :not_implemented
         end
       end
     end

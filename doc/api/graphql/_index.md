@@ -115,8 +115,8 @@ curl --request POST \
 
 Tokens must have the correct scope to access the GraphQL API, either:
 
-| Scope      | Access  |
-|------------|---------|
+| Scope      | Access |
+|------------|--------|
 | `read_api` | Grants read access to the API. Sufficient for queries. |
 | `api`      | Grants read and write access to the API. Required by mutations. |
 
@@ -151,7 +151,7 @@ For example, finding a project by its full path `"gitlab-org/gitlab"`:
 }
 ```
 
-Another example, locking an issue by its project's full path `"gitlab-org/gitlab"` and the issue's IID `"1"`":
+Another example, locking an issue by its project's full path `"gitlab-org/gitlab"` and the issue's IID `"1"`:
 
 ```graphql
 mutation {
@@ -177,7 +177,7 @@ An example of finding a CI runner by its Global ID:
 Historically, the GitLab GraphQL API has been inconsistent with typing of full path and
 IID fields and arguments, but generally:
 
-- Full path fields and arguments are a GraphQL `ID` type .
+- Full path fields and arguments are a GraphQL `ID` type.
 - IID fields and arguments are a GraphQL `String` type.
 
 ### Global IDs
@@ -293,7 +293,7 @@ The following limits apply to the GitLab GraphQL API.
 | Maximum page size                                     | 100 records (nodes) per page. Applies to most connections in the API. Particular connections may have different max page size limits that are higher or lower. |
 | [Maximum query complexity](#maximum-query-complexity) | 200 for unauthenticated requests and 250 for authenticated requests. |
 | Maximum query size                                    | 10,000 characters per query or mutation. If this limit is reached, use [variables](https://graphql.org/learn/queries/#variables) and [fragments](https://graphql.org/learn/queries/#fragments) to reduce the query or mutation size. Remove white spaces as last resort. |
-| Rate limits | For GitLab.com, see [GitLab.com-specific rate limits](../../user/gitlab_com/_index.md#rate-limits-on-gitlabcom). |
+| Rate limits                                           | For GitLab.com, see [GitLab.com-specific rate limits](../../user/gitlab_com/_index.md#rate-limits-on-gitlabcom). |
 | Request timeout                                       | 30 seconds. |
 
 ### Maximum query complexity

@@ -3,7 +3,8 @@
 - pipeline = local_assigns.fetch(:pipeline, nil)
 - repository_file_tree_browser_enabled = Feature.enabled?(:repository_file_tree_browser, @project)
 - @force_fluid_layout = repository_file_tree_browser_enabled
-- add_page_startup_api_call logs_file_project_ref_path(@project, ref, @path, format: "json", offset: 0, ref_type: @ref_type&.upcase)
+- unless @skip_logs_tree_loading
+  - add_page_startup_api_call logs_file_project_ref_path(@project, ref, @path, format: "json", offset: 0, ref_type: @ref_type&.upcase)
 - if readme_path = @project.repository.readme_path
   - add_page_startup_api_call project_blob_path(@project, tree_join(@ref, readme_path), viewer: "rich", format: "json")
 - add_page_specific_style 'page_bundles/commit_description'

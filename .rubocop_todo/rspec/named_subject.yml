@@ -1146,7 +1146,6 @@ RSpec/NamedSubject:
     - 'spec/controllers/root_controller_spec.rb'
     - 'spec/controllers/sessions_controller_spec.rb'
     - 'spec/controllers/snippets/blobs_controller_spec.rb'
-    - 'spec/controllers/snippets/notes_controller_spec.rb'
     - 'spec/controllers/snippets_controller_spec.rb'
     - 'spec/controllers/uploads_controller_spec.rb'
     - 'spec/controllers/users/callouts_controller_spec.rb'

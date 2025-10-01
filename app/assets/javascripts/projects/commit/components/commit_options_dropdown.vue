@@ -125,6 +125,9 @@ export default {
         items,
       };
     },
+    hasOptionsGroup() {
+      return this.canRevert || this.canCherryPick || this.canTag;
+    },
   },
 
   methods: {
@@ -146,7 +149,11 @@ export default {
     data-testid="commit-options-dropdown"
     class="gl-leading-20"
   >
-    <gl-disclosure-dropdown-group :group="optionsGroup" @action="closeDropdown" />
+    <gl-disclosure-dropdown-group
+      v-if="hasOptionsGroup"
+      :group="optionsGroup"
+      @action="closeDropdown"
+    />
 
     <gl-disclosure-dropdown-group
       :bordered="showDivider"

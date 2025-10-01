@@ -9,6 +9,7 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
 
   before do
     stub_feature_flags(mcp_server_new_implementation: false)
+    stub_application_setting(instance_level_ai_beta_features_enabled: true)
   end
 
   describe 'POST /mcp with tools/call method' do

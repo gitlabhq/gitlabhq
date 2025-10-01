@@ -531,14 +531,14 @@ If these kinds of risks do not apply, for example in a test environment, or if y
 
    This command assumes that the affected secondary site is the one that was created last.
 
-1. Update the secondary site's status in **Admin > Geo > Sites**. In Rails console in the **secondary** site, run:
+1. Update the secondary site's status in **Admin** > **Geo** > **Sites**. In Rails console in the **secondary** site, run:
 
    ```ruby
    Geo::MetricsUpdateWorker.new.perform
    ```
 
 1. The secondary site should appear healthy. If it does not, run `gitlab-rake gitlab:geo:check` on the secondary site, or try restarting Rails if you haven't done so since re-adding the secondary site.
-1. To resync missing or out-of-date data, go to **Admin > Geo > Sites**.
+1. To resync missing or out-of-date data, go to **Admin** > **Geo** > **Sites**.
 1. Under the secondary site select **Replication Details**.
 1. Select **Reverify all** for every data type.
 
@@ -719,7 +719,7 @@ Gitlab::HTTP.get(primary.internal_uri, allow_local_requests: true, limit: 10)
 ```
 
 Make sure that the value of `internal_uri` is correct in the previous output.
-If the URL of the primary site is incorrect, double-check it in `/etc/gitlab/gitlab.rb`, and in **Admin > Geo > Sites**.
+If the URL of the primary site is incorrect, double-check it in `/etc/gitlab/gitlab.rb`, and in **Admin** > **Geo** > **Sites**.
 
 ### Excessive database IO from Geo metrics collection
 

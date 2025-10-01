@@ -28,6 +28,8 @@ class Projects::CommitsController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def show
+    authenticate_user! if require_auth?
+
     @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened
       .find_by(source_project: @project, source_branch: @ref, target_branch: @repository.root_ref)
 
@@ -49,6 +51,8 @@ class Projects::CommitsController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def signatures
+    authenticate_user! if require_auth?
+
     respond_to do |format|
       format.json do
         render json: {
@@ -74,6 +78,10 @@ class Projects::CommitsController < Projects::ApplicationController
 
     path_exists = @repository.blob_at(@commit.id, @path) || @repository.tree(@commit.id, @path).entries.present?
     redirect_to_tree_root_for_missing_path(@project, @ref, @path) unless path_exists
+  end
+
+  def require_auth?
+    current_user.blank? && @path.present? && Feature.enabled?(:require_login_for_commit_tree, @project)
   end
 
   def set_commits

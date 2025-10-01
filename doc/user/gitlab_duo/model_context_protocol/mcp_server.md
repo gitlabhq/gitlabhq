@@ -156,9 +156,9 @@ Exercise extreme caution or use MCP tools only on GitLab objects you trust.
 
 {{< /alert >}}
 
-## Available tools and capabilities
+## Available tools
 
-The GitLab MCP server provides the following capabilities.
+The GitLab MCP server provides the following tools.
 For more information, see [epic 18413](https://gitlab.com/groups/gitlab-org/-/epics/18413).
 
 ### `get_mcp_server_version`
@@ -169,21 +169,6 @@ Example:
 
 ```plaintext
 What version of the GitLab MCP server am I connected to?
-```
-
-### `get_issue`
-
-Retrieves detailed information about a specific GitLab issue.
-
-| Parameter    | Required | Description |
-|--------------|----------|-------------|
-| `project_id` | Yes      | ID or URL-encoded path of the project. |
-| `issue_iid`  | Yes      | Internal ID of the issue. |
-
-Example:
-
-```plaintext
-Get details for issue 42 in project 123
 ```
 
 ### `create_issue`
@@ -201,6 +186,48 @@ Example:
 ```plaintext
 Create a new issue titled "Fix login bug" in project 123 with description
 "Users cannot log in with special characters in password"
+```
+
+### `get_issue`
+
+Retrieves detailed information about a specific GitLab issue.
+
+| Parameter    | Required | Description |
+|--------------|----------|-------------|
+| `project_id` | Yes      | ID or URL-encoded path of the project. |
+| `issue_iid`  | Yes      | Internal ID of the issue. |
+
+Example:
+
+```plaintext
+Get details for issue 42 in project 123
+```
+
+### `create_merge_request`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/571243) in GitLab 18.5.
+
+{{< /history >}}
+
+Creates a merge request in a project.
+
+| Parameter              | Required | Description |
+|------------------------|----------|-------------|
+| `project_id`           | Yes      | ID or URL-encoded path of the project. |
+| `source_branch`        | Yes      | Name of the branch to merge from. |
+| `target_branch`        | Yes      | Name of the branch to merge into. |
+| `title`                | Yes      | Title of the merge request. |
+| `description`          | No       | Description text. |
+| `remove_source_branch` | No       | Delete the source branch on merge (default is `false`). |
+| `squash`               | No       | Squash commits on merge (default is `false`). |
+
+Example:
+
+```plaintext
+Create a merge request in project gitlab-org/gitlab titled "Bug fix broken specs"
+from branch "fix/specs-broken" into "master" and enable squash
 ```
 
 ### `get_merge_request`
@@ -248,21 +275,6 @@ Example:
 What files were changed in merge request 25 in the gitlab project?
 ```
 
-### `get_pipeline_jobs`
-
-Retrieves the jobs for a specific CI/CD pipeline.
-
-| Parameter     | Required | Description |
-|---------------|----------|-------------|
-| `project_id`  | Yes      | ID or URL-encoded path of the project. |
-| `pipeline_id` | Yes      | ID of the pipeline. |
-
-Example:
-
-```plaintext
-Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
-```
-
 ### `get_merge_request_pipelines_service`
 
 Retrieves the pipelines for a specific merge request.
@@ -276,6 +288,21 @@ Example:
 
 ```plaintext
 Show me all pipelines for merge request 42 in project gitlab-org/gitlab
+```
+
+### `get_pipeline_jobs`
+
+Retrieves the jobs for a specific CI/CD pipeline.
+
+| Parameter     | Required | Description |
+|---------------|----------|-------------|
+| `project_id`  | Yes      | ID or URL-encoded path of the project. |
+| `pipeline_id` | Yes      | ID of the pipeline. |
+
+Example:
+
+```plaintext
+Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
 ```
 
 ### `gitlab_search`
@@ -297,31 +324,4 @@ Example:
 
 ```plaintext
 Search issues for "flaky test" across GitLab
-```
-
-### `create_merge_request`
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/571243) in GitLab 18.5.
-
-{{< /history >}}
-
-Creates a merge request in a project.
-
-| Parameter              | Required | Description |
-|------------------------|----------|-------------|
-| `project_id`           | Yes      | ID or URL-encoded path of the project. |
-| `source_branch`        | Yes      | Name of the branch to merge from. |
-| `target_branch`        | Yes      | Name of the branch to merge into. |
-| `title`                | Yes      | Title of the merge request. |
-| `description`          | No       | Description text. |
-| `remove_source_branch` | No       | Delete the source branch on merge (default is `false`). |
-| `squash`               | No       | Squash commits on merge (default is `false`). |
-
-Example:
-
-```plaintext
-Create a merge request in project gitlab-org/gitlab titled "Bug fix broken specs"
-from branch "fix/specs-broken" into "master" and enable squash
 ```

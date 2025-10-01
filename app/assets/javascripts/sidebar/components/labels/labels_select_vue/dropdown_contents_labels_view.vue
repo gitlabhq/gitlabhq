@@ -43,7 +43,7 @@ export default {
       'footerCreateLabelTitle',
       'footerManageLabelTitle',
     ]),
-    ...mapGetters(['selectedLabelsList', 'isDropdownVariantSidebar', 'isDropdownVariantEmbedded']),
+    ...mapGetters(['isDropdownVariantSidebar', 'isDropdownVariantEmbedded']),
     visibleLabels() {
       if (this.searchKey) {
         return fuzzaldrinPlus.filter(this.labels, this.searchKey, {

@@ -7,6 +7,10 @@ RSpec.describe API::Mcp, 'List tools request', feature_category: :mcp_server do
   let_it_be(:user) { create(:user) }
   let_it_be(:access_token) { create(:oauth_access_token, user: user, scopes: [:mcp]) }
 
+  before do
+    stub_application_setting(instance_level_ai_beta_features_enabled: true)
+  end
+
   describe 'POST /mcp with tools/list method' do
     let(:params) do
       {

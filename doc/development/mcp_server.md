@@ -124,6 +124,17 @@ aggregated tools - we've created an interim `mcp-tool-review-board` committee to
 To add a new tool, please create a [MCP Tool Proposal issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?related_item_id=undefined&type=ISSUE&description_template=MCP%20Tool%20Proposal) 
 and follow the template instructions.
 
+{{< alert type="note" >}}
+Tool implementation location depends on GitLab resource interaction:
+
+- Tools that interact with GitLab resources should eventually live in MCP Server, but can be implemented in DAP for short-term or urgent needs.
+- Tools that don't interact with GitLab resources should be implemented in DAP.
+
+We are working to integrate MCP server functionality into DAP. You can track progress via [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/561296).
+
+We strongly encourage all engineers to follow the tool proposal process and provide clear explanations of their use cases.
+{{< /alert >}}
+
 #### Implement a tool from an API route
 
 This [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201838) defines a process for creating an MCP tool from an API route.

@@ -12,7 +12,12 @@ describe('Merge request dashboard collapsible section', () => {
   const emptyState = () => wrapper.findByTestId('crud-empty');
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
 
-  function createComponent({ count = 3, hasMergeRequests = count > 0, loading = false } = {}) {
+  function createComponent({
+    count = 3,
+    hasMergeRequests = count > 0,
+    loading = false,
+    error = false,
+  } = {}) {
     wrapper = shallowMountExtended(CollapsibleSection, {
       slots: {
         default: 'content',
@@ -23,6 +28,7 @@ describe('Merge request dashboard collapsible section', () => {
         count,
         hasMergeRequests,
         loading,
+        error,
       },
       stubs: {
         CrudComponent,
@@ -43,10 +49,10 @@ describe('Merge request dashboard collapsible section', () => {
     expect(emptyState().exists()).toBe(true);
   });
 
-  it('hides badge when count is null', () => {
+  it('displays badge as `-` when count is `null`', () => {
     createComponent({ count: null });
 
-    expect(wrapper.findByTestId('merge-request-list-count').exists()).toBe(false);
+    expect(wrapper.findByTestId('merge-request-list-count').text()).toBe('-');
   });
 
   it('expands collapsed content', async () => {
@@ -76,6 +82,12 @@ describe('Merge request dashboard collapsible section', () => {
     createComponent({ hasMergeRequests: false, loading: true, count: null });
 
     expect(sectionContent().exists()).toBe(true);
+  });
+
+  it('hides empty state when there are no merge requests, not loading and an error', () => {
+    createComponent({ count: 0, loading: false, error: true });
+
+    expect(emptyState().exists()).toBe(false);
   });
 
   describe('collapsed state sync', () => {

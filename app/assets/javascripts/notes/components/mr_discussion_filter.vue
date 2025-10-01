@@ -12,6 +12,7 @@ import { InternalEvents } from '~/tracking';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { __ } from '~/locale';
 import { SORT_DIRECTION_UI } from '~/search/sort/constants';
+import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import {
   MR_FILTER_OPTIONS,
   MR_FILTER_TRACKING_OPENED,
@@ -124,6 +125,9 @@ export default {
 
       this.previousFilters = allSelectedFilters;
     },
+    hideTooltips() {
+      this.$root.$emit(BV_HIDE_TOOLTIP);
+    },
   },
   MR_FILTER_OPTIONS,
   multipleSelectedPhrase: __('%{strongStart}%{firstSelected}%{strongEnd} +%{length} more'),
@@ -185,6 +189,7 @@ export default {
         :aria-label="sortDirectionData.tooltip"
         :title="sortDirectionData.tooltip"
         :icon="sortDirectionData.icon"
+        @mouseout="hideTooltips"
         @click="updateSortDirection"
       />
     </gl-button-group>

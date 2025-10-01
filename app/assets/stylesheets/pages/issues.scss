@@ -248,7 +248,11 @@ ul.related-merge-requests > li gl-emoji {
 .md-header-preview {
   z-index: 1;
   position: sticky;
-  top: calc(#{$calc-application-header-height} + var(--issuable-sticky-header-height, 0px) - 2px);
+  // note: only either --work-item-sticky-header-height or
+  // --issuable-sticky-header-height will be defined.
+  // --issuable-sticky-header-height is maintained for incidents, all other
+  // work items use --work-item-sticky-header-height.
+  top: calc(#{$calc-application-header-height} + var(--work-item-sticky-header-height, 0px) + var(--issuable-sticky-header-height, 0px) - 2px);
   margin-left: 1px;
   @apply gl-bg-default;
 }

@@ -7,12 +7,20 @@ module Gitlab
     IGNORE_REVS_FILE_NAME = '.git-blame-ignore-revs'
 
     attr_accessor :blob, :commit, :range
+    attr_reader :blame
 
     def initialize(blob, commit, range: nil, ignore_revs: nil)
       @blob = blob
       @commit = commit
       @range = range
       @ignore_revs = ignore_revs
+      @blame = Gitlab::Git::Blame.new(
+        repository,
+        @commit.id,
+        @blob.path,
+        range: range,
+        ignore_revisions_blob: (default_ignore_revisions_ref if ignore_revs)
+      )
     end
 
     def first_line
@@ -47,17 +55,6 @@ module Gitlab
     private
 
     attr_reader :ignore_revs
-
-    def blame
-      Gitlab::Git::Blame.new(
-        repository,
-        @commit.id,
-        @blob.path,
-        range: range,
-        ignore_revisions_blob: ignore_revs ? default_ignore_revisions_ref : nil
-      )
-    end
-    strong_memoize_attr :blame
 
     def default_ignore_revisions_ref
       "refs/heads/#{project.default_branch}:#{IGNORE_REVS_FILE_NAME}"

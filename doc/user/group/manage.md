@@ -338,17 +338,18 @@ To disable group mentions:
 
 {{< /history >}}
 
-You can remove the ability for users to invite new members to subgroups or projects in a top-level
+On GitLab.com, you can remove the ability for users to invite new members to subgroups or projects in a top-level
 group. This also stops group Owners from sending invites. You must disable this setting before you
 can invite users again.
+
+On GitLab Self-Managed and GitLab Dedicated instances, you can prevent user invitations for the entire instance.
+For more information, see [prevent invitations to a groups and projects](../../administration/settings/visibility_and_access_controls.md#prevent-invitations-to-groups-and-projects).
 
 {{< alert type="note" >}}
 
 Features such as [sharing](../project/members/sharing_projects_groups.md) or [migrations](../project/import/_index.md) can still allow access to these subgroups and projects.
 
 {{< /alert >}}
-
-On GitLab Self-Managed and GitLab Dedicated instances, you can prevent user invitations for the entire instance. For more information, see [prevent invitations to a groups and projects](../../administration/settings/visibility_and_access_controls.md#prevent-invitations-to-groups-and-projects).
 
 Prerequisites:
 

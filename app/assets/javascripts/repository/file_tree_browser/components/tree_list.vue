@@ -398,6 +398,7 @@ export default {
             :level="item.level"
             :opened="item.opened"
             :loading="item.loading"
+            :aria-current="isCurrentPath(item.path)"
             :style="{ '--level': item.level }"
             :class="{
               'tree-list-parent': item.level > 0,

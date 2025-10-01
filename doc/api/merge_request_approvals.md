@@ -798,7 +798,7 @@ Supported attributes:
         "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
         "web_url": "http://localhost:3000/root"
       },
-      "approved_by": "2016-06-09T01:45:21.720Z"
+      "approved_at": "2016-06-09T01:45:21.720Z"
     }
   ]
 }
@@ -1476,7 +1476,7 @@ Supported attributes:
 
 | Attribute            | Type              | Required | Description |
 |----------------------|-------------------|----------|-------------|
-| `approval_rule_id`.  | integer           | Yes      | The ID of the approval rule. |
+| `approval_rule_id`   | integer           | Yes      | The ID of the approval rule. |
 | `id`                 | integer or string | Yes      | The ID or [URL-encoded path of a group](rest/_index.md#namespaced-paths). |
 | `approvals_required` | string            | No       | The number of required approvals for this rule. |
 | `group_ids`          | integer           | No       | The IDs of users as approvers. |

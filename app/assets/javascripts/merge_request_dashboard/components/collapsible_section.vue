@@ -43,6 +43,11 @@ export default {
       required: false,
       default: false,
     },
+    error: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     mergeRequests: {
       type: Array,
       required: false,
@@ -54,6 +59,11 @@ export default {
       default: () => [],
     },
     activeList: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    hideCount: {
       type: Boolean,
       required: false,
       default: false,
@@ -129,7 +139,9 @@ export default {
     >
       <template #title>
         {{ title }}
-        <gl-badge v-if="count !== null" size="sm">{{ count }}</gl-badge>
+        <gl-badge v-if="!hideCount" size="sm" data-testid="merge-request-list-count">{{
+          count === null ? '-' : count
+        }}</gl-badge>
       </template>
 
       <template #actions>
@@ -150,7 +162,7 @@ export default {
         />
       </template>
 
-      <template v-if="!hasMergeRequests && !loading" #empty>
+      <template v-if="!hasMergeRequests && !loading && !error" #empty>
         <p class="gl-pt-1 gl-text-center gl-text-subtle">
           {{ __('No merge requests match this list.') }}
         </p>

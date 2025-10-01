@@ -262,6 +262,8 @@ GitLab has several features to help you manage the number of users. You can:
   and instead manage new users manually.
 - View a breakdown of users by role in the
   [Users statistics](../administration/admin_area.md#users-statistics) page.
+- [Turn on administrator approval for role promotions](../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions).
+- [Prevent users with the Guest role from creating projects and groups](../administration/settings/account_and_limit_settings.md#prevent-non-members-from-creating-projects-and-groups).
 
 To increase the number of users covered by your license, [buy more seats](#buy-more-seats)
 during the subscription period. The cost of seats added during the subscription

@@ -14,6 +14,8 @@ class Projects::NetworkController < Projects::ApplicationController
   urgency :low, [:show]
 
   def show
+    authenticate_user! if require_auth?
+
     @url = project_network_path(@project, @ref, @options.merge(format: :json, ref_type: ref_type))
 
     @ref_type = ref_type
@@ -42,5 +44,12 @@ class Projects::NetworkController < Projects::ApplicationController
     return if @options[:extended_sha1].blank?
 
     @commit = @repo.commit(@options[:extended_sha1])
+  end
+
+  private
+
+  def require_auth?
+    current_user.blank? && @ref != @project.default_branch_or_main &&
+      Feature.enabled?(:require_login_for_commit_tree, @project)
   end
 end

@@ -496,10 +496,7 @@ export default {
     },
 
     showStickyHeader() {
-      // only if scrolled under the issue's title
-      if (this.$refs.title.$el.offsetTop < window.pageYOffset) {
-        this.isStickyHeaderShowing = true;
-      }
+      this.isStickyHeaderShowing = true;
 
       document.body.classList?.add(STICKY_HEADER_VISIBLE_CLASS);
     },

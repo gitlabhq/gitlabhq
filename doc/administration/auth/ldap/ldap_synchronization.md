@@ -669,7 +669,7 @@ To enable add-on seat management for groups, you must configure the `duo_add_on_
        ldap:
          servers:
            main:
-            duo_add_on_groups: ['duo_group_1', 'duo_group_2']
+             duo_add_on_groups: ['duo_group_1', 'duo_group_2']
    ```
 
 1. Save the file and apply the new values:
@@ -783,7 +783,7 @@ is ignored.
   filter `(cn=<cn_from_group_link>)`.
 - If the LDAP group has the `memberuid` attribute, GitLab executes another
   LDAP query per member to obtain each user's full DN. These queries are
-  executed with base `base`, scope 'base object', and a filter depending on
+  executed with base `base`, scope `baseObject`, and a filter depending on
   whether `user_filter` is set. Filter may be `(uid=<uid_from_group>)` or a
   joining of `user_filter`.
 

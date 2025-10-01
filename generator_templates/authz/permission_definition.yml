@@ -1,9 +1,4 @@
 ---
 name: <%= name %>
 description:
-scopes:
-  # - admin
-  # - instance
-  # - group
-  # - project
 feature_category:

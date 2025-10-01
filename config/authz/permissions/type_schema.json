@@ -15,24 +15,11 @@
       "type": "string",
       "description": "Feature category of the permission",
       "format": "known_product_category"
-    },
-    "scopes": {
-      "type": "array",
-      "description": "Specifies scopes where the permission is effective",
-      "items": {
-        "enum": [
-          "admin",
-          "instance",
-          "group",
-          "project"
-        ]
-      }
     }
   },
   "required": [
     "name",
     "description",
-    "feature_category",
-    "scopes"
+    "feature_category"
   ]
 }

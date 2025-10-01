@@ -7,19 +7,20 @@ title: Retrieve GitLab Duo and SDLC trend data
 
 {{< details >}}
 
-- Tier: Free, Premium, Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Pro, GitLab Duo Enterprise
-- Offering: GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
-Use the GraphQL API to retrieve and export GitLab Duo and SDLC trend data.
+Use the GraphQL API to retrieve and export GitLab Duo data.
 
 ## Retrieve AI usage data
 
 {{< details >}}
 
 - Add-on: GitLab Duo Enterprise
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -32,16 +33,11 @@ Use the GraphQL API to retrieve and export GitLab Duo and SDLC trend data.
 
 {{< /history >}}
 
-The `AiUsageData` endpoint provides raw event data for Code Suggestions:
+The `AiUsageData` endpoint provides raw event data. It exposes Code Suggestions-specific events through `codeSuggestionEvents` and all raw event data through `all`:
 
-- Size
-- Language
-- User
-- Type (shown, accepted, or rejected)
+You can use this endpoint to import events into a BI tool or write scripts that aggregate the data, acceptance rates, and per-user metrics for all Duo events.
 
-You can use this endpoint to import events into a BI tool or write scripts that aggregate the data, acceptance rates, and per-user metrics for Code Suggestions events.
-
-Data is retained for three months.
+Data is retained for three months for customers without ClickHouse installed. For customers with ClickHouse configured, there is currently no data retention policy.
 
 For example, to retrieve usage data for all Code Suggestions events for the `gitlab-org` group:
 
@@ -49,7 +45,7 @@ For example, to retrieve usage data for all Code Suggestions events for the `git
 query {
   group(fullPath: "gitlab-org") {
     aiUsageData {
-      codeSuggestionEvents {
+      codeSuggestionEvents(startDate: "2025-09-26") {
         nodes {
           event
           timestamp
@@ -76,27 +72,27 @@ The query returns the following output:
           "nodes": [
             {
               "event": "CODE_SUGGESTION_SHOWN_IN_IDE",
-              "timestamp": "2024-12-22T18:17:25Z",
-              "language": null,
-              "suggestionSize": null,
+              "timestamp": "2025-09-26T18:17:25Z",
+              "language": "python",
+              "suggestionSize": 2,
               "user": {
                 "username": "jasbourne"
               }
             },
             {
               "event": "CODE_SUGGESTION_REJECTED_IN_IDE",
-              "timestamp": "2024-12-22T18:13:45Z",
-              "language": null,
-              "suggestionSize": null,
+              "timestamp": "2025-09-26T18:13:45Z",
+              "language": "python",
+              "suggestionSize": 2,
               "user": {
                 "username": "jasbourne"
               }
             },
             {
               "event": "CODE_SUGGESTION_ACCEPTED_IN_IDE",
-              "timestamp": "2024-12-22T18:13:44Z",
-              "language": null,
-              "suggestionSize": null,
+              "timestamp": "2025-09-26T18:13:44Z",
+              "language": "python",
+              "suggestionSize": 2,
               "user": {
                 "username": "jasbourne"
               }
@@ -109,11 +105,74 @@ The query returns the following output:
 }
 ```
 
+Alternatively, to retrieve usage data for all Duo events for the `gitlab-org` group:
+
+```graphql
+query {
+  group(fullPath: "gitlab-org") {
+    aiUsageData {
+      all(startDate: "2025-09-26") {
+        nodes {
+          event
+          timestamp
+          user {
+            username
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+The query returns the following output:
+
+```graphql
+{
+  "data": {
+    "group": {
+      "aiUsageData": {
+        "all": {
+          "nodes": [
+            {
+              "event": "FIND_NO_ISSUES_DUO_CODE_REVIEW_AFTER_REVIEW",
+              "timestamp": "2025-09-26T18:17:25Z",
+              "user": {
+                "username": "jasbourne"
+              }
+            },
+            {
+              "event": "REQUEST_REVIEW_DUO_CODE_REVIEW_ON_MR_BY_AUTHOR",
+              "timestamp": "2025-09-26T18:13:45Z",
+              "user": {
+                "username": "jasbourne"
+              }
+            },
+            {
+              "event": "AGENT_PLATFORM_SESSION_STARTED",
+              "timestamp": "2025-09-26T18:13:44Z",
+              "user": {
+                "username": "jasbourne"
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+```
+
+The `all` attribute is filterable by `startDate`, `endDate`, `events`, `userIds`, and standard pagination values.
+
+To see which events are being tracked, you can examine the events declared in the [`ai_tracking.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/tracking/ai_tracking.rb) file.
+
 ## Retrieve AI user metrics
 
 {{< details >}}
 
 - Add-on: GitLab Duo Enterprise
+- Offering: GitLab.com, GitLab Dedicated
 
 {{< /details >}}
 
@@ -183,7 +242,8 @@ The query returns the following output:
 
 {{< details >}}
 
-- Add-on: GitLab Duo Pro
+- Add-on: GitLab Duo Pro, GitLab Duo Enterprise
+- Offering: GitLab.com, GitLab Dedicated
 
 {{< /details >}}
 

@@ -11,6 +11,10 @@ module Resolvers
       required: false,
       default_value: 1,
       description: 'Range starting from the line. Cannot be less than 1 or greater than `to_line`.'
+    argument :ignore_revs, GraphQL::Types::Boolean,
+      required: false,
+      default_value: false,
+      description: 'Enable to ignore revisions in the `.git-ignore-revs-file` when fetching the blame.'
     argument :to_line, GraphQL::Types::Int,
       required: false,
       default_value: 1,
@@ -24,11 +28,16 @@ module Resolvers
       super
     end
 
-    def resolve(from_line:, to_line:)
+    def resolve(from_line:, to_line:, ignore_revs:)
       authorize!
 
-      Gitlab::Blame.new(blob, blob.repository.commit(blob.commit_id),
-        range: (from_line..to_line))
+      Gitlab::Blame.new(
+        blob, blob.repository.commit(blob.commit_id), range: (from_line..to_line), ignore_revs: ignore_revs
+      )
+    rescue Gitlab::Git::Blame::IgnoreRevsFileError
+      raise GraphQL::ExecutionError, "Could not resolve ignore-revisions file (`#{ignore_revisions_ref}`)."
+    rescue Gitlab::Git::Blame::IgnoreRevsFormatError
+      raise GraphQL::ExecutionError, "The ignore-revisions file (`#{ignore_revisions_ref}`) contains invalid revisions."
     end
 
     private
@@ -38,7 +47,7 @@ module Resolvers
     end
 
     def read_code?
-      Ability.allowed?(current_user, :read_code, blob.repository.project)
+      Ability.allowed?(current_user, :read_code, project)
     end
 
     def validate_line_params!(args)
@@ -54,6 +63,14 @@ module Resolvers
     def raise_greater_than_one
       raise Gitlab::Graphql::Errors::ArgumentError,
         '`from_line` and `to_line` must be greater than or equal to 1'
+    end
+
+    def project
+      blob.repository.project
+    end
+
+    def ignore_revisions_ref
+      "refs/heads/#{project.default_branch}:#{Gitlab::Blame::IGNORE_REVS_FILE_NAME}"
     end
   end
 end

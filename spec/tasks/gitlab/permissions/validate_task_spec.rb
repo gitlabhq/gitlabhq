@@ -15,8 +15,7 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
       {
         name: permission_name,
         description: 'a defined permission',
-        feature_category: 'permissions',
-        scopes: %w[project group]
+        feature_category: 'permissions'
       }
     end
 
@@ -125,7 +124,6 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           name: permission_name,
           description: 'a defined permission',
           feature_category: 'unknown',
-          scopes: %w[project foobar],
           key: 'not allowed'
         }
       end
@@ -138,7 +136,6 @@ RSpec.describe Tasks::Gitlab::Permissions::ValidateTask, feature_category: :perm
           #
           #    - defined_permission
           #        - property '/feature_category' does not match format: known_product_category
-          #        - property '/scopes/1' is not one of: ["admin", "instance", "group", "project"]
           #        - property '/key' is invalid: error_type=schema
           #
           #######################################################################

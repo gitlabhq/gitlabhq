@@ -46,9 +46,6 @@ Models that have limited functionality for a feature will not receive GitLab sup
 | Model family | Model | Supported platforms | Code completion | Code generation | GitLab Duo Chat | GitLab Duo Agent Platform |
 |-------------|-------|---------------------|-----------------|-----------------|-----------------|-----------------|
 | Mistral Codestral | [Codestral 22B v0.1](https://huggingface.co/mistralai/Codestral-22B-v0.1) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | Not applicable |  Limited functionality |
-| Mistral | [Mistral 7B-it v0.3](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3) <sup>1</sup> | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality | Limited functionality |
-| Mistral | [Mixtral 8x7B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1) <sup>1</sup> | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments), [AWS Bedrock](https://aws.amazon.com/bedrock/mistral/) | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | Limited functionality |
-| Mistral | [Mixtral 8x22B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1) <sup>1</sup> | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality | Limited functionality |
 | Mistral | [Mistral Small 24B Instruct 2506](https://huggingface.co/mistralai/Mistral-Small-3.2-24B-Instruct-2506) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | Limited functionality |
 | Claude 3 |  [Claude 3.5 Sonnet](https://www.anthropic.com/news/claude-3-5-sonnet) | [AWS Bedrock](https://aws.amazon.com/bedrock/claude/) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-dashed" >}} Partial functionality |
 | Claude 3 |  [Claude 3.7 Sonnet](https://www.anthropic.com/news/claude-3-7-sonnet) | [AWS Bedrock](https://aws.amazon.com/bedrock/claude/) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality |  {{< icon name="check-circle-dashed" >}} Partial functionality |
@@ -64,10 +61,6 @@ Models that have limited functionality for a feature will not receive GitLab sup
 | Llama | [Llama 3 70B](https://huggingface.co/meta-llama/Meta-Llama-3-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-dashed" >}} Partial functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="dash-circle" >}} Limited functionality | Limited functionality |
 | Llama | [Llama 3.1 70B](https://huggingface.co/meta-llama/Llama-3.1-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | Limited functionality |
 | Llama | [Llama 3.3 70B](https://huggingface.co/meta-llama/Llama-3.3-70B-Instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | {{< icon name="check-circle-filled" >}} Full functionality | Limited functionality |
-
-**Footnotes**:
-
-1. This model is scheduled for deprecation in GitLab 18.5. Mistral Small 24B Instruct 2506 is the recommended alternative.
 
 ### Compatible models
 
@@ -104,6 +97,13 @@ This feature is in beta and is therefore subject to change as we gather feedback
 | DeepSeek Coder | [DeepSeek Coder 33b Instruct](https://huggingface.co/deepseek-ai/deepseek-coder-33b-instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) |
 | DeepSeek Coder | [DeepSeek Coder 33b Base](https://huggingface.co/deepseek-ai/deepseek-coder-33b-base) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) |
 | Mistral        | [Mistral 7B-it v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) <br> [AWS Bedrock](https://aws.amazon.com/bedrock/mistral/) |
+| Mistral | [Mistral 7B-it v0.3](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3) <sup>1</sup> | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | 
+| Mistral | [Mixtral 8x7B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1) <sup>1</sup> | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments), [AWS Bedrock](https://aws.amazon.com/bedrock/mistral/) |
+| Mistral | [Mixtral 8x22B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1) <sup>1</sup> | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | 
+
+**Footnotes**:
+
+1. Support for this model was removed in GitLab 18.5. You should use Mistral Small 24B Instruct 2506 instead.
 
 <!-- vale gitlab_base.Spelling = YES -->
 

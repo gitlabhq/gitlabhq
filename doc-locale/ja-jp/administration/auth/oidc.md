@@ -8,7 +8,7 @@ title: 認証プロバイダーとしてOpenID Connectを使用する
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab Self-Managed
+- 提供形態: GitLab Self-Managed
 
 {{< /details >}}
 
@@ -24,7 +24,7 @@ OpenID Connect OmniAuthプロバイダーを有効にするには、OpenID Conne
    sudo editor /etc/gitlab/gitlab.rb
    ```
 
-   自己コンパイルインストールの場合:
+   自己コンパイルによるインストールの場合:
 
    ```shell
    cd /home/git/gitlab
@@ -105,13 +105,7 @@ OpenID Connect OmniAuthプロバイダーを有効にするには、OpenID Conne
    }
    ```
 
-   {{< alert type="note" >}}
-
-   OIDCでの複数のIdentity Providerを使用する場合の詳細については、[イシュー5992](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5992)を参照してください。
-
-   {{< /alert >}}
-
-   自己コンパイルインストールの場合:
+   自己コンパイルによるインストールの場合:
 
    ```yaml
      - { name: 'openid_connect', # do not change this parameter
@@ -145,7 +139,7 @@ OpenID Connect OmniAuthプロバイダーを有効にするには、OpenID Conne
 1. プロバイダーを設定する際は、ご利用のOpenID Connectクライアントの設定に合わせてプロバイダーの値を変更する必要があります。次の情報を参考にしてください。
 
    - `<your_oidc_label>`は、ログインページに表示されるラベルです。
-   - `<custom_provider_icon>`（オプション）は、ログインページに表示されるアイコンです。主要なソーシャルログインプラットフォームのアイコンはGitLabに組み込まれていますが、このパラメーターを指定することで、これらのアイコンを上書きできます。GitLabは、ローカルパスと絶対URLの両方を受け入れます。GitLabには、主要なソーシャルログインプラットフォームのほとんどのアイコンが組み込まれていますが、外部URL、または独自のアイコンファイルの絶対パスまたは相対パスを指定することで、これらのアイコンを上書きできます。
+   - `<custom_provider_icon>`（オプション）は、ログインページに表示されるアイコンです。主要なソーシャルログインプラットフォームのアイコンはGitLabに組み込まれていますが、このパラメータを指定することで、これらのアイコンを上書きできます。GitLabではローカルパスと絶対URLの両方を使用できます。GitLabには、主要なソーシャルログインプラットフォームのほとんどのアイコンが組み込まれていますが、外部URL、または独自のアイコンファイルの絶対パスまたは相対パスを指定することで、これらのアイコンを上書きできます。
      - ローカルの絶対パスを使用する場合は、プロバイダーの設定で`icon: <path>/<to>/<your-icon>`と指定します。
        - アイコンファイルは`/opt/gitlab/embedded/service/gitlab-rails/public/<path>/<to>/<your-icon>`に保存します。
        - アイコンファイルには`https://gitlab.example/<path>/<to>/<your-icon>`でアクセスできます。
@@ -162,18 +156,18 @@ OpenID Connect OmniAuthプロバイダーを有効にするには、OpenID Conne
        - その他の値はすべて、リクエスト本文にクライアントIDとシークレットを含めてポストします。
      - この値を指定しない場合、デフォルトは`basic`です。
    - `<uid_field>`（オプション）は、`user_info.raw_attributes`に含まれるフィールド名で、`uid`の値を定義します（例: `preferred_username`）。この値を指定しない場合、または設定した値を持つフィールドが`user_info.raw_attributes`の詳細に存在しない場合、`uid`には`sub`フィールドを使用します。
-   - `send_scope_to_token_endpoint`はデフォルトで`true`であるため、`scope`パラメーターは通常、トークンエンドポイントへのリクエストに含まれます。ただし、OpenID Connectプロバイダーがこのようなリクエストで`scope`パラメーターを受け入れない場合は、これを`false`に設定します。
-   - `pkce`（オプション）: [Proof Key for Code Exchange](https://www.rfc-editor.org/rfc/rfc7636)（PKCE）を有効にします。[GitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109557)で利用可能です。
+   - `send_scope_to_token_endpoint`はデフォルトで`true`であるため、`scope`パラメータは通常、トークンエンドポイントへのリクエストに含まれます。ただし、OpenID Connectプロバイダーがこの種のリクエストで`scope`パラメータを受け付けない場合は、これを`false`に設定します。
+   - `pkce`（オプション）:[Proof Key for Code Exchange](https://www.rfc-editor.org/rfc/rfc7636)（PKCE）を有効にします。
    - `client_options`は、OpenID Connectクライアント固有のオプションです。具体的には次のとおりです。
      - `identifier`は、OpenID Connectサービスプロバイダーで設定されているクライアント識別子です。
      - `secret`は、OpenID Connectサービスプロバイダーで設定されているクライアントシークレットです。たとえば、[OmniAuth OpenID Connect](https://github.com/omniauth/omniauth_openid_connect)ではこれが必要です。サービスプロバイダーがシークレットを必要としない場合は、任意の値を指定します。その値は無視されます。
      - `redirect_uri`は、ログインに成功した後、ユーザーをリダイレクトするGitLabのURLです（例: `http://example.com/users/auth/openid_connect/callback`）。
      - `end_session_endpoint`（オプション）は、セッションを終了するエンドポイントのURLです。自動検出が無効になっているか失敗した場合は、このURLを指定できます。
      - 次の`client_options`は、自動検出が無効になっているか失敗した場合を除き、オプションです。
-       - `authorization_endpoint`: エンドユーザーを認可するエンドポイントのURL
-       - `token_endpoint`: アクセストークンを提供するエンドポイントのURL
-       - `userinfo_endpoint`: ユーザー情報を提供するエンドポイントのURL
-       - `jwks_uri`: トークン署名者がキーを公開するエンドポイントのURL
+       - `authorization_endpoint`: エンドユーザーを認可するエンドポイントのURL。
+       - `token_endpoint`: アクセストークンを提供するエンドポイントのURL。
+       - `userinfo_endpoint`: ユーザー情報を提供するエンドポイントのURL。
+       - `jwks_uri`: トークン署名者がキーを公開するエンドポイントのURL。
 
 1. 設定ファイルを保存します。
 1. 変更を有効にするには、次の手順に従います。
@@ -183,11 +177,11 @@ OpenID Connect OmniAuthプロバイダーを有効にするには、OpenID Conne
 
 サインインページで、標準のサインインフォームの下にOpenID Connectオプションが表示されます。このオプションを選択すると、認証プロセスが開始されます。クライアントによる確認が必要な場合、OpenID Connectプロバイダーは、サインインとGitLabアプリケーションの認可を求めます。その後、GitLabにリダイレクトされ、サインインが完了します。
 
-## 設定例
+## 設定例 {#example-configurations}
 
 次の設定は、Linuxパッケージインストールを使用している場合に、さまざまなプロバイダーでOpenIDをセットアップする方法を示しています。
 
-### Googleを設定する
+### Googleを設定する {#configure-google}
 
 詳細については、[Googleのドキュメント](https://developers.google.com/identity/openid-connect/openid-connect)を参照してください。
 
@@ -215,16 +209,18 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-### Microsoft Azureを設定する
+### Microsoft Azureを設定する {#configure-microsoft-azure}
 
 Microsoft AzureにおけるOpenID Connect（OIDC）プロトコルは、[Microsoft IDプラットフォーム（v2）エンドポイント](https://learn.microsoft.com/en-us/previous-versions/azure/active-directory/azuread-dev/azure-ad-endpoint-comparison)を使用します。開始するには、[Azureポータル](https://portal.azure.com)にサインインします。アプリには、次の情報が必要です。
 
-- テナントID。すでにお持ちの場合があります。詳細については、[Microsoft Azureのテナント](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-create-new-tenant)に関するドキュメントを参照してください。
+- テナントID。すでにお持ちの場合もあります。詳細については、[Microsoft Azureのテナント](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-create-new-tenant)に関するドキュメントを参照してください。
 - クライアントIDとクライアントシークレット。[Microsoftのアプリケーション登録に関するクイックスタート](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app)ドキュメントの手順に従って、アプリ用のテナントID、クライアントID、クライアントシークレットを取得します。
+
+Microsoft Azureアプリケーションを登録するときには、GitLabが必要な詳細を取得できるように、API権限を付与する必要があります。少なくとも`openid`、`profile`、`email`の各権限を付与する必要があります。詳細については、[Web APIのアプリ権限の設定に関するMicrosoftのドキュメント](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-configure-app-access-web-apis#add-permissions-to-access-microsoft-graph)を参照してください。
 
 {{< alert type="note" >}}
 
-Azureによってプロビジョニングされるすべてのアカウントに、メールアドレスが定義されている必要があります。メールアドレスが定義されていない場合、Azureはランダムに生成されたアドレスを割り当てます。[ドメインのサインアップ制限](../settings/sign_up_restrictions.md#allow-or-deny-sign-ups-using-specific-email-domains)を設定している場合、このランダムなアドレスが原因でアカウントが作成できない可能性があります。
+Azureによってプロビジョニングされるすべてのアカウントに、メールアドレスが定義されている必要があります。メールアドレスが定義されていない場合、Azureはランダムに生成されたアドレスを割り当てます。[ドメインの新規登録の制限](../settings/sign_up_restrictions.md#allow-or-deny-sign-ups-using-specific-email-domains)を設定している場合、このランダムなアドレスが原因でアカウントが作成できない可能性があります。
 
 {{< /alert >}}
 
@@ -256,13 +252,13 @@ gitlab_rails['omniauth_providers'] = [
 
 Microsoftは、自社のプラットフォームが[OIDCプロトコル](https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc)でどのように動作するのかを文書化しています。
 
-#### Microsoft Entraのカスタム署名キー
+#### Microsoft Entraのカスタム署名キー {#microsoft-entra-custom-signing-keys}
 
 [SAMLクレームマッピング機能](https://learn.microsoft.com/en-us/entra/identity-platform/saml-claims-customization)を使用しているためにアプリケーションでカスタム署名キーを使用している場合は、OpenIDプロバイダーを次のように設定する必要があります。
 
 - `args.discovery`を省略するか、`false`に設定して、OpenID Connectのディスカバリを無効にします。
 - `client_options`で、次のように指定します。
-  - `appid`クエリパラメーターを含めた`jwks_uri`を指定する: `https://login.microsoftonline.com/<YOUR-TENANT-ID>/discovery/v2.0/keys?appid=<YOUR APP CLIENT ID>`
+  - `appid`クエリパラメータを含む`jwks_uri`: `https://login.microsoftonline.com/<YOUR-TENANT-ID>/discovery/v2.0/keys?appid=<YOUR APP CLIENT ID>`
   - `end_session_endpoint`
   - `authorization_endpoint`
   - `userinfo_endpoint`
@@ -298,15 +294,15 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-`KidNotFound`メッセージが表示されて認証エラーが発生した場合、原因はおそらく、`appid`クエリパラメーターがないか、間違っています。Microsoftから返されたIDトークンを、`jwks_uri`エンドポイントで提供されるキーで検証できない場合、GitLabはこのエラーを発生させます。
+認証エラーが発生し、`KidNotFound`というメッセージが表示される場合、原因は`appid`クエリパラメータの欠落または誤りである可能性が高いです。Microsoftから返されたIDトークンが、`jwks_uri`エンドポイントで提供されるキーによって検証できないときに、GitLabはこのエラーを返します。
 
 詳細については、[Microsoft Entraのトークンの検証に関するドキュメント](https://learn.microsoft.com/en-us/entra/identity-platform/access-tokens#validate-tokens)を参照してください。
 
-#### 汎用OpenID Connect設定に移行する
+#### 汎用OpenID Connect設定に移行する {#migrate-to-generic-openid-connect-configuration}
 
 `azure_activedirectory_v2`と`azure_oauth2`のどちらからでも、汎用OpenID Connect設定に移行できます。
 
-まず、`uid_field`を設定します。`uid_field`、および`uid_field`として設定できる`sub`クレームは、プロバイダーによって異なります。`uid_field`を設定せずにサインインすると、GitLab内に追加のアイデンティティが作成され、手動で修正する必要があります。
+まず、`uid_field`を設定します。`uid_field`、および`uid_field`として設定できる`sub`クレームは、プロバイダーによって異なります。`uid_field`を設定せずにサインインすると、GitLab内に別のIDが作成され、手動で変更する必要があります。
 
 | プロバイダー                                                                                                        | `uid_field` | サポート情報  |
 |-----------------------------------------------------------------------------------------------------------------|-------|-----------------------------------------------------------------------|
@@ -451,13 +447,13 @@ YAMLファイル（例: `provider.yaml`）に[プロバイダーの設定](https
 GitLab 17.0以降へのアップグレードに伴い、`azure_oauth2`から`omniauth_openid_connect`に移行する際、組織に設定される`sub`クレームの値が異なる場合があります。`azure_oauth2`はMicrosoft V1エンドポイントを使用しますが、`azure_activedirectory_v2`および`omniauth_openid_connect`はどちらも、共通の`sub`値を持つMicrosoft V2エンドポイントを使用します。
 
 - **Entra IDにメールアドレスを登録しているユーザーに対して**、メールアドレスへのフォールバックを許可してユーザーのアイデンティティを更新するには、次のように設定します。
-  - Linuxパッケージインストールの場合: [`omniauth_auto_link_user`](../../integration/omniauth.md#link-existing-users-to-omniauth-users)
-  - Helmインストールの場合: [`autoLinkUser`](https://docs.gitlab.com/charts/charts/globals.html#omniauth)
+  - Linuxパッケージインストールの場合: [`omniauth_auto_link_user`](../../integration/omniauth.md#link-existing-users-to-omniauth-users)。
+  - Helmインストールの場合: [`autoLinkUser`](https://docs.gitlab.com/charts/charts/globals.html#omniauth)。
 
 - **メールアドレスを持たないユーザーに対して**、管理者は次のいずれかの操作を行う必要があります。
 
   - 別の認証方法を設定するか、GitLabのユーザー名とパスワードによるサインインを有効にします。ユーザーはその後サインインして、自分のプロファイルを使用してAzureのアイデンティティを手動でリンクできます。
-  - 既存の`azure_oauth2`に加えて、OpenID Connectを新しいプロバイダーとして実装します。これにより、ユーザーがOAuth2を通じてサインインし、OpenID Connectのアイデンティティをリンクできるようになります（前述の方法と同様）。この方法は、`auto_link_user`が有効になっている限り、メールアドレスを持つユーザーにも有効です。
+  - 既存の`azure_oauth2`に加えて、OpenID Connectを新しいプロバイダーとして実装します。これにより、ユーザーがOAuth 2.0を通じてサインインし、OpenID Connectのアイデンティティをリンクできるようになります（前述の方法と同様）。この方法は、`auto_link_user`が有効になっている限り、メールアドレスを持つユーザーにも有効です。
   - `extern_uid`を手動で更新します。これを行うには、[APIまたはRailsコンソール](../../integration/omniauth.md#change-apps-or-configuration)を使用して、各ユーザーの`extern_uid`を更新します。この方法は、インスタンスがすでに17.0以降にアップグレードされており、ユーザーがサインインを試みた場合に必要になることがあります。
 
 {{< alert type="note" >}}
@@ -466,11 +462,11 @@ GitLabアカウントのプロビジョニング時に`email`クレームが存�
 
 {{< /alert >}}
 
-### Microsoft Azure Active Directory B2Cを設定する
+### Microsoft Azure Active Directory B2Cを設定する {#configure-microsoft-azure-active-directory-b2c}
 
 GitLabを[Azure Active Directory B2C](https://learn.microsoft.com/en-us/azure/active-directory-b2c/overview)と連携させるには、特別な設定が必要です。開始するには、[Azureポータル](https://portal.azure.com)にサインインします。アプリには、Azureからの次の情報が必要です。
 
-- テナントID。すでにお持ちの場合があります。詳細については、[Microsoft Azureのテナント](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-create-new-tenant)に関するドキュメントを参照してください。
+- テナントID。すでにお持ちの場合もあります。詳細については、[Microsoft Azureのテナント](https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-create-new-tenant)に関するドキュメントを参照してください。
 - クライアントIDとクライアントシークレット。[Microsoftのチュートリアル](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-register-applications?tabs=app-reg-ga)ドキュメントの手順に従って、アプリ用のクライアントIDとクライアントシークレットを取得します。
 - ユーザーフローまたはポリシー名。[Microsoftのチュートリアル](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-user-flow)の手順に従います。
 
@@ -485,14 +481,14 @@ GitLabを[Azure Active Directory B2C](https://learn.microsoft.com/en-us/azure/ac
    - `openid`
    - `offline_access`
 
-#### カスタムポリシーを設定する
+#### カスタムポリシーを設定する {#configure-custom-policies}
 
 Azure B2Cは、[ユーザーのログインに関するビジネスロジックを定義する方法を2つ提供しています](https://learn.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview)。
 
 - [ユーザーフロー](https://learn.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview#user-flows)
 - [カスタムポリシー](https://learn.microsoft.com/en-us/azure/active-directory-b2c/user-flow-overview#custom-policies)
 
-標準のAzure B2Cユーザーフローは[OpenIDの`email`クレームを送信しない](https://github.com/MicrosoftDocs/azure-docs/issues/16566)ため、カスタムポリシーが必要です。そのため、標準のユーザーフローは[`allow_single_sign_on`または`auto_link_user`パラメーター](../../integration/omniauth.md#configure-common-settings)では機能しません。標準のAzure B2Cポリシーでは、GitLabは新しいアカウントを作成したり、メールアドレスを持つ既存のアカウントにリンクしたりできません。
+標準のAzure B2Cユーザーフローは[OpenIDの`email`クレームを送信しない](https://github.com/MicrosoftDocs/azure-docs/issues/16566)ため、カスタムポリシーが必要です。そのため、標準のユーザーフローは[`allow_single_sign_on`または`auto_link_user`パラメータ](../../integration/omniauth.md#configure-common-settings)では機能しません。標準のAzure B2Cポリシーでは、GitLabは新しいアカウントを作成したり、メールアドレスを持つ既存のアカウントにリンクしたりできません。
 
 まず、[カスタムポリシーを作成します](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy)。
 
@@ -550,7 +546,7 @@ Microsoftの手順では、[カスタムポリシースターターパック](ht
    "https://example.b2clogin.com/tfp/fc40c736-476c-4da1-b489-ee48cee84386/b2c_1a_signup_signin/v2.0/"
    ```
 
-1. `signup_signin`に使用するカスタムポリシーで、発行者URLを設定します。たとえば、Linuxパッケージインストールにおいて、`b2c_1a_signup_signin`のカスタムポリシーを使用した場合の設定は次のとおりです。
+1. `signup_signin`に使用するカスタムポリシーで、発行者URLを設定します。たとえば、Linuxパッケージインストールで`b2c_1a_signup_signin`のカスタムポリシーを使用した場合の設定は次のとおりです。
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -576,22 +572,22 @@ Microsoftの手順では、[カスタムポリシースターターパック](ht
    }]
    ```
 
-#### Azure B2Cの問題を解決する
+#### Azure B2Cのトラブルシューティング {#troubleshooting-azure-b2c}
 
 - `yourtenant.onmicrosoft.com`、`ProxyIdentityExperienceFrameworkAppId`、`IdentityExperienceFrameworkAppId`のすべての箇所が、B2Cテナントのホスト名およびXMLポリシーファイル内の対応するクライアントIDと一致していることを確認します。
 - アプリのリダイレクトURIとして`https://jwt.ms`を追加し、[カスタムポリシーテスター](https://learn.microsoft.com/en-us/azure/active-directory-b2c/tutorial-create-user-flows?pivots=b2c-custom-policy#test-the-custom-policy)を使用します。ペイロードに、ユーザーのメールアクセスと一致する`email`が含まれていることを確認します。
-- カスタムポリシーを有効にした後、ユーザーがサインインしようとすると、`Invalid username or password`と表示される場合があります。これは、`IdentityExperienceFramework`アプリの設定に問題がある可能性があります。[こちらのMicrosoftのコメント](https://learn.microsoft.com/en-us/answers/questions/50355/unable-to-sign-on-using-custom-policy?childtoview=122370#comment-122370)を参照してください。このコメントでは、アプリのmanifestに次の設定が含まれているかを確認することが推奨されています。
+- カスタムポリシーを有効にした後、ユーザーがサインインしようとすると、`Invalid username or password`と表示される場合があります。これは、`IdentityExperienceFramework`アプリの設定に問題がある可能性があります。[こちらのMicrosoftのコメント](https://learn.microsoft.com/en-us/answers/questions/50355/unable-to-sign-on-using-custom-policy?childtoview=122370#comment-122370)を参照してください。このコメントでは、アプリのマニフェストに次の設定が含まれているかを確認することが推奨されています。
 
   - `"accessTokenAcceptedVersion": null`
   - `"signInAudience": "AzureADMyOrg"`
 
 この設定は、`IdentityExperienceFramework`アプリの作成時に使用した`Supported account types`の設定に対応しています。
 
-### Keycloakを設定する
+### Keycloakを設定する {#configure-keycloak}
 
 GitLabは、HTTPSを使用するOpenIDプロバイダーと連携します。HTTPを使用するKeycloakサーバーをセットアップすることもできますが、GitLabが通信できるのはHTTPSを使用するKeycloakサーバーのみです。
 
-トークンの署名には、対称キー暗号化アルゴリズム（例: HS256やHS358）ではなく、公開キー暗号化アルゴリズム（例: RSA256やRSA512）を使用するようにKeycloakを設定してください。公開キー暗号化アルゴリズムには次の利点があります。
+トークンに署名するために公開キーアルゴリズムを使用するようにKeycloakを構成します。たとえば、HS256またはHS358の代わりにRSA256またはRSA512を使用します。公開キー暗号化アルゴリズムには次の利点があります。
 
 - 簡単に設定できる。
 - 秘密キーが漏えいした場合はセキュリティ上重大な結果を招く可能性があるため、公開キー暗号化アルゴリズムのほうが安全性が高い。
@@ -626,7 +622,7 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-#### 対称キーアルゴリズムでKeycloakを設定する
+#### 対称キーアルゴリズムでKeycloakを設定する {#configure-keycloak-with-a-symmetric-key-algorithm}
 
 {{< alert type="warning" >}}
 
@@ -636,7 +632,7 @@ gitlab_rails['omniauth_providers'] = [
 
 対称キー暗号化を使用するには、次の手順に従います。
 
-1. Keycloakデータベースからシークレットキーを抽出します。Keycloakでは、この値をWebインターフェースでは公開していません。Webインターフェースに表示されるクライアントシークレットはOAuth 2.0クライアントシークレットであり、JSON Webトークンの署名に使用されるシークレットとは異なります。
+1. Keycloakデータベースからシークレットキーを抽出します。Keycloakでは、この値をWebインターフェースでは公開していません。Webインターフェースに表示されるクライアントシークレットはOAuth 2.0クライアントシークレットであり、JSON Web Tokenの署名に使用されるシークレットとは異なります。
 
    たとえば、PostgreSQLをKeycloakのバックエンドデータベースとして使用する場合:
 
@@ -703,14 +699,14 @@ gitlab_rails['omniauth_providers'] = [
 
 `JSON::JWS::VerificationFailed`エラーが表示された場合は、間違ったシークレットを指定しています。
 
-### Casdoor
+### Casdoor {#casdoor}
 
 GitLabは、HTTPSを使用するOpenIDプロバイダーと連携します。Casdoorを使用してOpenID経由でGitLabに接続するには、HTTPSを使用してください。
 
 アプリに対して、Casdoorで次の手順を実行します。
 
 1. クライアントIDとクライアントシークレットを取得します。
-1. GitLabのリダイレクトURLを追加します。たとえば、GitLabドメインが`gitlab.example.com`の場合、Casdoorアプリに次の`Redirect URI`が設定されていることを確認してください。`https://gitlab.example.com/users/auth/openid_connect/callback`
+1. GitLabのリダイレクトURLを追加します。たとえば、GitLabドメインが`gitlab.example.com`の場合、Casdoorアプリに次の`Redirect URI`が設定されていることを確認してください: `https://gitlab.example.com/users/auth/openid_connect/callback`。
 
 詳細については、[Casdoorのドキュメント](https://casdoor.org/docs/integration/ruby/gitlab/)を参照してください。
 
@@ -761,7 +757,7 @@ gitlab_rails['omniauth_providers'] = [
     }
 ```
 
-## 複数のOpenID Connectプロバイダーを設定する
+## 複数のOpenID Connectプロバイダーを設定する {#configure-multiple-openid-connect-providers}
 
 複数のOpenID Connect（OIDC）プロバイダーを使用するようにアプリケーションを設定できます。そのためには、設定ファイルで`strategy_class`を明示的に指定します。
 
@@ -823,7 +819,7 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-自己コンパイルインストールの場合:
+自己コンパイルによるインストールの場合:
 
 ```yaml
   - { name: 'openid_connect',
@@ -902,20 +898,14 @@ def sync_missing_provider(self, user: User, extern_uid: str)
 
 詳細については、[GitLab APIのユーザーメソッドに関するドキュメント](https://python-gitlab.readthedocs.io/en/stable/gl_objects/users.html#examples)を参照してください。
 
-## OIDCグループメンバーシップに基づいてユーザーを設定する
+## OIDCグループメンバーシップに基づいてユーザーを設定する {#configure-users-based-on-oidc-group-membership}
 
 {{< details >}}
 
 - プラン: Premium、Ultimate
-- 製品: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
-
-{{< history >}}
-
-- GitLab 15.10で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/209898)されました。
-
-{{< /history >}}
 
 OIDCグループメンバーシップを設定して、次のことを行えます。
 
@@ -924,12 +914,12 @@ OIDCグループメンバーシップを設定して、次のことを行えま�
 
 GitLabは、サインインのたびにこれらのグループをチェックし、必要に応じてユーザー属性を更新します。ただし、この機能では、GitLab[グループ](../../user/group/_index.md)にユーザーを自動的に追加することは**できません**。
 
-### 必須グループ
+### 必須グループ {#required-groups}
 
-Identity Provider（IdP）は、OIDC応答でグループ情報をGitLabに渡す必要があります。この応答を使用して、ユーザーが特定のグループのメンバーであることを必須とするには、次を情報を特定できるようにGitLabを設定します。
+Identity Provider（IdP）は、OIDC応答でグループ情報をGitLabに渡す必要があります。この応答を利用して、特定のグループへの所属を必須にする場合は、GitLab側で次の項目を識別するように設定します。
 
-- OIDC応答内でグループがある場所（`groups_attribute`設定を使用）
-- サインインに必要なグループメンバーシップ（`required_groups`設定を使用）
+- OIDC応答内でグループがある場所（`groups_attribute`設定を使用）。
+- サインインに必要なグループメンバーシップ（`required_groups`設定を使用）。
 
 `required_groups`を設定しない場合、または設定を空のままにしている場合は、IdPによってOIDC経由で認証されたユーザーであれば誰でもGitLabを使用できます。
 
@@ -966,7 +956,7 @@ Identity Provider（IdP）は、OIDC応答でグループ情報をGitLabに渡�
    ]
    ```
 
-1. ファイルを保存し、変更を反映させるため[GitLabを再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)します。
+1. ファイルを保存して、[GitLabを再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)し、変更を有効にします。
 
 {{< /tab >}}
 
@@ -1001,18 +991,18 @@ Identity Provider（IdP）は、OIDC応答でグループ情報をGitLabに渡�
        }
    ```
 
-1. ファイルを保存し、変更を反映させるため[GitLabを再設定](../restart_gitlab.md#self-compiled-installations)します。
+1. ファイルを保存して、[GitLabを再設定](../restart_gitlab.md#self-compiled-installations)し、変更を有効にします。
 
 {{< /tab >}}
 
 {{< /tabs >}}
 
-### 外部グループ
+### 外部グループ {#external-groups}
 
 IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります。この応答を使用して、グループメンバーシップに基づいてユーザーを[外部ユーザー](../external_users.md)として識別するには、次の情報を特定できるようにGitLabを設定します。
 
-- OIDC応答内でグループがある場所（`groups_attribute`設定を使用）
-- どのグループメンバーシップに基づきユーザーを[外部ユーザー](../external_users.md)として識別するか（`external_groups`設定を使用）
+- OIDC応答内でグループがある場所（`groups_attribute`設定を使用）。
+- どのグループメンバーシップに基づきユーザーを[外部ユーザー](../external_users.md)として識別するか（`external_groups`設定を使用。
 
 {{< tabs >}}
 
@@ -1047,7 +1037,7 @@ IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります�
    ]
    ```
 
-1. ファイルを保存し、変更を反映させるため[GitLabを再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)します。
+1. ファイルを保存して、[GitLabを再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)し、変更を有効にします。
 
 {{< /tab >}}
 
@@ -1082,25 +1072,25 @@ IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります�
        }
    ```
 
-1. ファイルを保存し、変更を反映させるため[GitLabを再設定](../restart_gitlab.md#self-compiled-installations)します。
+1. ファイルを保存して、[GitLabを再設定](../restart_gitlab.md#self-compiled-installations)し、変更を有効にします。
 
 {{< /tab >}}
 
 {{< /tabs >}}
 
-### 監査担当者グループ
+### 監査担当者グループ {#auditor-groups}
 
 {{< details >}}
 
 - プラン: Premium、Ultimate
-- 製品: GitLab Self-Managed
+- 提供形態: GitLab Self-Managed
 
 {{< /details >}}
 
 IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります。この応答を使用して、グループメンバーシップに基づいてユーザーに監査担当者を割り当てるには、次の情報を特定できるようにGitLabを設定します。
 
-- OIDC応答内でグループがある場所（`groups_attribute`設定を使用）
-- どのグループメンバーシップに基づきユーザーに監査担当者アクセス権を付与するか（`auditor_groups`設定を使用）
+- OIDC応答内でグループがある場所（`groups_attribute`設定を使用）。
+- どのグループメンバーシップに基づきユーザーに監査担当者アクセス権を付与するか（`auditor_groups`設定を使用）。
 
 {{< tabs >}}
 
@@ -1135,7 +1125,7 @@ IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります�
    ]
    ```
 
-1. ファイルを保存し、変更を反映させるため[GitLabを再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)します。
+1. ファイルを保存して、[GitLabを再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)し、変更を有効にします。
 
 {{< /tab >}}
 
@@ -1170,18 +1160,18 @@ IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります�
        }
    ```
 
-1. ファイルを保存し、変更を反映させるため[GitLabを再設定](../restart_gitlab.md#self-compiled-installations)します。
+1. ファイルを保存して、[GitLabを再設定](../restart_gitlab.md#self-compiled-installations)し、変更を有効にします。
 
 {{< /tab >}}
 
 {{< /tabs >}}
 
-### 管理者グループ
+### 管理者グループ {#administrator-groups}
 
 IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります。この応答を使用して、グループメンバーシップに基づいてユーザーに管理者を割り当てるには、次の情報を特定できるようにGitLabを設定します。
 
-- OIDC応答内でグループがある場所（`groups_attribute`設定を使用）
-- どのグループメンバーシップに基づきユーザーに管理者アクセス権を付与するか（`admin_groups`設定を使用）
+- OIDC応答内でグループがある場所（`groups_attribute`設定を使用）。
+- どのグループメンバーシップに基づきユーザーに管理者アクセス権を付与するか（`admin_groups`設定を使用）。
 
 {{< tabs >}}
 
@@ -1216,7 +1206,7 @@ IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります�
    ]
    ```
 
-1. ファイルを保存し、変更を反映させるため[GitLabを再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)します。
+1. ファイルを保存して、[GitLabを再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)し、変更を有効にします。
 
 {{< /tab >}}
 
@@ -1251,18 +1241,18 @@ IdPは、OIDC応答でグループ情報をGitLabに渡す必要があります�
        }
    ```
 
-1. ファイルを保存し、変更を反映させるため[GitLabを再設定](../restart_gitlab.md#self-compiled-installations)します。
+1. ファイルを保存して、[GitLabを再設定](../restart_gitlab.md#self-compiled-installations)し、変更を有効にします。
 
 {{< /tab >}}
 
 {{< /tabs >}}
 
-### IDトークンのカスタム有効期間を設定する
+### IDトークンのカスタム有効期間を設定する {#configure-a-custom-duration-for-id-tokens}
 
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab Self-Managed
+- 提供形態: GitLab Self-Managed
 
 {{< /details >}}
 
@@ -1286,7 +1276,7 @@ IDトークンのカスタム有効期間を設定するには、次の手順に
    gitlab_rails['oidc_provider_openid_id_token_expire_in_seconds'] = 3600
    ```
 
-1. ファイルを保存し、変更を反映させるため[GitLabを再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)します。
+1. ファイルを保存して、[GitLabを再設定](../restart_gitlab.md#reconfigure-a-linux-package-installation)し、変更を有効にします。
 
 {{< /tab >}}
 
@@ -1300,13 +1290,347 @@ IDトークンのカスタム有効期間を設定するには、次の手順に
       openid_id_token_expire_in_seconds: 3600
    ```
 
-1. ファイルを保存し、変更を反映させるため[GitLabを再設定](../restart_gitlab.md#self-compiled-installations)します。
+1. ファイルを保存して、[GitLabを再設定](../restart_gitlab.md#self-compiled-installations)し、変更を有効にします。
 
 {{< /tab >}}
 
 {{< /tabs >}}
 
-## トラブルシューティング
+## ステップアップ認証 {#step-up-authentication}
+
+{{< details >}}
+
+- プラン: Free、Premium、Ultimate
+- 提供形態: GitLab Self-Managed
+- ステータス: 実験的機能
+
+{{< /details >}}
+
+{{< alert type="flag" >}}
+
+この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
+
+{{< /alert >}}
+
+場合によっては、デフォルトの認証方法では重要なリソースやリスクの高いアクションを十分に保護できないことがあります。ステップアップ認証は、特権行動または機密オペレーションのための追加レイヤーを追加します。たとえば、管理者エリアにアクセスするなどです。
+
+ステップアップ認証を使用すると、特定の機能にアクセスする前に、ユーザーは登録済みの[2要素認証](../../user/profile/account/two_factor_authentication.md)で追加の認証を完了する必要があります。
+
+OIDC標準には、認証コンテキストクラス参照（`ACR`）が含まれています。この`ACR`の概念は、管理者モードなどのさまざまなシナリオに合わせてステップアップ認証を設定および実装する際に役立ちます。
+
+これは[実験的機能](../../policy/development_stages_support.md)であり、予告なく変更される場合があります。この機能は本番環境での使用には対応していません。この機能を使用する場合は、まず本番環境以外でテストする必要があります。
+
+### 管理者モードのステップアップ認証を有効にする {#enable-step-up-authentication-for-admin-mode}
+
+{{< history >}}
+
+- GitLab 17.11で`omniauth_step_up_auth_for_admin_mode`[フラグ](../feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/474650)されました。デフォルトでは無効になっています。
+
+{{< /history >}}管理者モードでステップアップ認証を有効にするには、次のようにします。
+
+1. GitLab設定ファイル（`gitlab.yml`または`/etc/gitlab/gitlab.rb`）を編集して、特定のOmniAuthプロバイダーに対してステップアップ認証を有効にします。
+
+   ```yaml
+   production: &base
+     omniauth:
+       providers:
+       - { name: 'openid_connect',
+           label: 'Provider name',
+           args: {
+             name: 'openid_connect',
+             # ...
+             allow_authorize_params: ["claims"], # Match this to the parameters defined in `step_up_auth => admin_mode => params`
+           },
+           step_up_auth: {
+             admin_mode: {
+               # The `id_token` field defines the claims that must be included with the token.
+               # You can specify claims in one or both of the `required` or `included` fields.
+               # The token must include matching values for every claim you define in these fields.
+               id_token: {
+                 # The `required` field defines key-value pairs that must be included with the ID token.
+                 # The values must match exactly what is defined.
+                 # In this example, the 'acr' (Authentication Context Class Reference) claim
+                 # must have the value 'gold' to pass the step-up authentication challenge.
+                 # This ensures a specific level of authentication assurance.
+                 required: {
+                   acr: 'gold'
+                 },
+                 # The `included` field also defines key-value pairs that must be included with the ID token.
+                 # Multiple accepted values can be defined in an array. If an array is not used, the value must match exactly.
+                 # In this example, the 'amr' (Authentication Method References) claim
+                 # must have a value of either 'mfa' or 'fpt' to pass the step-up authentication challenge.
+                 # This is useful for scenarios where the user must provide additional authentication factors.
+                 included: {
+                   amr: ['mfa', 'fpt']
+                 },
+               },
+               # The `params` field defines any additional parameters that are sent during the authentication process.
+               # In this example, the `claims` parameter is added to the authorization request and instructs the
+               # identity provider to include an 'acr' claim with the value 'gold' in the ID token.
+               # The 'essential: true' indicates that this claim is required for successful authentication.
+               params: {
+                 claims: {
+                   id_token: {
+                     acr: {
+                       essential: true,
+                       values: ['gold']
+                     }
+                   }
+                 }
+               },
+               # Optional: Provide a custom documentation link for users who fail step-up authentication
+               # This link is displayed when step-up authentication fails, directing users to
+               # organization-specific authentication documentation.
+               documentation_link: 'https://internal.example.com/path/to/documentation'
+             },
+           }
+         }
+   ```
+
+1. 設定ファイルを保存してGitLabを再起動し、変更を有効にします。
+
+{{< alert type="note" >}}
+
+OIDCは標準化されていますが、さまざまなIdentity Provider（IdP）には固有の要件があることがあります。`params`設定を使用すると、柔軟性の高いハッシュでステップアップ認証に必要なパラメータを定義できます。これらの値は、各IdPの要件に基づいて異なる場合があります。
+
+{{< /alert >}}
+
+### Keycloakでステップアップ認証を要求する {#require-step-up-authentication-with-keycloak}
+
+Keycloakは、認証レベルとカスタムブラウザログインフローを定義することで、ステップアップ認証に対応します。
+
+Keycloakで管理者モードのステップアップ認証を要求するには、次の手順を実行します。
+
+1. GitLabで[Keycloakを設定](#configure-keycloak)します。
+
+1. Keycloakドキュメントの手順に従って、[Keycloakでステップアップ認証を使用してブラウザログインフローを作成します](https://www.keycloak.org/docs/latest/server_admin/#_step-up-flow)。
+
+1. GitLab設定ファイル（`gitlab.yml`または`/etc/gitlab/gitlab.rb`）を編集して、Keycloak OIDCプロバイダー設定でステップアップ認証を有効にします。
+
+   Keycloakは、`silver`と`gold`という2種類の認証レベルを定義します。次の例では、セキュリティレベルが強化されていることを示すために`gold`を使用しています。
+
+   ```yaml
+   production: &base
+     omniauth:
+       providers:
+       - { name: 'openid_connect',
+           label: 'Keycloak',
+           args: {
+             name: 'openid_connect',
+             # ...
+             allow_authorize_params: ["claims"] # Match this to the parameters defined in `step_up_auth => admin_mode => params`
+           },
+           step_up_auth: {
+             admin_mode: {
+               id_token: {
+                 # In this example, the 'acr' claim must have the value 'gold' that is also defined in the Keycloak documentation.
+                 required: {
+                   acr: 'gold'
+                 }
+               },
+               params: {
+                 claims: {
+                   id_token: {
+                     acr: { essential: true, values: ['gold'] }
+                   }
+                 },
+               },
+               # Optional: Add a custom documentation link for Keycloak-specific step-up authentication help
+               documentation_link: 'https://internal.example.com/path/to/documentation'
+             },
+           }
+         }
+   ```
+
+1. 設定ファイルを保存してGitLabを再起動し、変更を有効にします。
+
+### Microsoft Entra IDでステップアップ認証を要求する {#require-step-up-authentication-with-microsoft-entra-id}
+
+Microsoft Entra ID（旧称: Azure Active Directory）は、[条件付きアクセス認証のコンテキスト](https://learn.microsoft.com/en-us/entra/identity-platform/developer-guide-conditional-access-authentication-context)でステップアップ認証をサポートしています。Microsoft Entra IDの管理者と協力して、正しい設定を定義する必要があります。
+
+次の点を考慮してください。
+
+- 認証コンテキストIDは、他のIdentity Providerに使用されるIDトークンクレーム`acr`ではなく、`acrs`クレームのみを介してリクエストされます。
+- 認証コンテキストIDは、`c1`から`c99`までの固定値を使用します。それぞれの値は、条件付きアクセスポリシーが適用された特定の認証コンテキストを表します。
+- デフォルトでは、Microsoft Entra IDはIDトークンに`acrs`クレームを含めません。これを有効にするには、[オプションのクレームを設定する](https://learn.microsoft.com/en-us/entra/identity-platform/optional-claims?tabs=appui#configure-optional-claims-in-your-application)必要があります。
+- ステップアップ認証が成功すると、応答は[`acrs`](https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference#payload-claims)クレームを文字列のJSON配列として返します。例: `acrs: ["c1", "c2", "c3"]`。
+
+Microsoft Entra IDで管理者モードのステップアップ認証を要求するには、次の手順を実行します。
+
+1. GitLabで[Microsoft Entra IDを設定](#configure-microsoft-azure)します。
+
+1. Microsoft Entra IDのドキュメントの手順に従って、[Microsoft Entra IDで条件付きアクセス認証コンテキストを定義します](https://learn.microsoft.com/en-us/entra/identity-platform/developer-guide-conditional-access-authentication-context)。
+
+1. Microsoft Entra IDで、[IDトークンに含めるオプションの`acrs`クレーム](https://openid.net/specs/openid-connect-core-1_0.html#IDToken)を定義します。
+
+1. GitLab設定ファイル（`gitlab.yml`または`/etc/gitlab/gitlab.rb`）を編集して、Microsoft Entra IDプロバイダー設定でステップアップ認証を有効にします。
+
+   ```yaml
+   production: &base
+     omniauth:
+       providers:
+       - { name: 'openid_connect',
+         label: 'Azure OIDC',
+         args: {
+           name: 'openid_connect',
+           # ...
+           allow_authorize_params: ["claims"] # Match this to the parameters defined in `step_up_auth => admin_mode => params`
+         },
+         step_up_auth: {
+           admin_mode: {
+             id_token: {
+               # In this example, the Microsoft Entra ID administrators have defined `c20`
+               # as the authentication context ID with the desired security level and
+               # an optional claim `acrs` to be included in the ID token.
+               # The `included` field declares that the id token claim `acrs` must include the value `c20`.
+               included: {
+                 acrs: ["c20"],
+               },
+             },
+             params: {
+               claims: {
+                 id_token: {
+                   acrs: { essential: true, value: 'c20' }
+                 }
+               },
+             },
+             # Optional: Add a custom documentation link for Microsoft Entra ID step-up authentication
+             documentation_link: 'https://internal.example.com/path/to/documentation'
+           },
+         }
+       }
+   ```
+
+1. 設定ファイルを保存してGitLabを再起動し、変更を有効にします。
+
+### グループのステップアップ認証プロバイダーを追加する {#add-a-step-up-authentication-provider-for-groups}
+
+{{< history >}}
+
+- GitLab 18.4で`omniauth_step_up_auth_for_namespace`[フラグ](../feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/556943)されました。デフォルトでは無効になっています。
+
+{{< /history >}}
+
+インスタンス内のすべてのグループが利用できるステップアップ認証プロバイダーを追加することもできます。これにより、グループでステップアップ認証の使用が強制されることはありません。各グループでこの機能を個別に[設定](#force-step-up-authentication-for-a-group)する必要があります。
+
+グループのステップアップ認証プロバイダーを追加するには、次の手順を実行します。
+
+1. GitLab設定ファイル（`gitlab.yml`または`/etc/gitlab/gitlab.rb`）を編集して、特定のOmniAuthプロバイダーに対してステップアップ認証を有効にします。
+
+   ```yaml
+   production: &base
+     omniauth:
+       providers:
+       - { name: 'openid_connect',
+           label: 'Provider name',
+           args: {
+             name: 'openid_connect',
+             # ...
+             allow_authorize_params: ["claims"], # Match this to the parameters defined in `step_up_auth => admin_mode => params`
+           },
+           step_up_auth: {
+             # Unlike step-up authentication configuration for Admin Mode, you use the `namespace`
+             # object. This is because you're adding step-up authentication to access the entire
+             # group, not just Admin Mode.
+             namespace : {
+               # The `id_token` field defines the claims that must be included with the token.
+               # You can specify claims in one or both of the `required` or `included` fields.
+               # The token must include matching values for every claim you define in these fields.
+               id_token: {
+                 # The `required` field defines key-value pairs that must be included with the ID token.
+                 # The values must match exactly what is defined.
+                 # In this example, the 'acr' (Authentication Context Class Reference) claim
+                 # must have the value 'gold' to pass the step-up authentication challenge.
+                 # This ensures a specific level of authentication assurance.
+                 required: {
+                   acr: 'gold'
+                 },
+                 # The `included` field also defines key-value pairs that must be included with the ID token.
+                 # Multiple accepted values can be defined in an array. If an array is not used, the value must match exactly.
+                 # In this example, the 'amr' (Authentication Method References) claim
+                 # must have a value of either 'mfa' or 'fpt' to pass the step-up authentication challenge.
+                 # This is useful for scenarios where the user must provide additional authentication factors.
+                 included: {
+                   amr: ['mfa', 'fpt']
+                 },
+               },
+               # The `params` field defines any additional parameters that are sent during the authentication process.
+               # In this example, the `claims` parameter is added to the authorization request and instructs the
+               # identity provider to include an 'acr' claim with the value 'gold' in the ID token.
+               # The 'essential: true' indicates that this claim is required for successful authentication.
+               params: {
+                 claims: {
+                   id_token: {
+                     acr: {
+                       essential: true,
+                       values: ['gold']
+                     }
+                   }
+                 }
+               }
+             },
+           }
+         }
+   ```
+
+1. 設定ファイルを保存してGitLabを再起動し、変更を有効にします。
+
+### グループのステップアップ認証を強制する {#force-step-up-authentication-for-a-group}
+
+ユーザーがグループにアクセスする前に、ステップアップ認証を完了するように強制できます。この設定はグループごとに個別に管理されますが、インスタンス全体に対して以前に追加されたステップアップ認証プロバイダーが要件となります。
+
+前提要件:
+
+- [インスタンス内のグループのステップアップ認証プロバイダー](#add-a-step-up-authentication-provider-for-groups)。
+- オーナーロールを持っている必要があります。
+
+グループのステップアップ認証を強制するには、次の手順を実行します。
+
+1. 左側のサイドバーで、**検索または移動先**を選択して、グループを見つけます。
+1. **設定 > 一般**を選択します。
+1. **権限とグループ機能**セクションを展開します。
+1. ステップアップ認証で、利用可能な認証プロバイダーを選択します。
+1. **変更を保存**を選択します。
+
+### ステップアップ認証のカスタムドキュメントリンクを追加する {#add-custom-documentation-links-for-step-up-authentication}
+
+ステップアップ認証に失敗した場合、GitLabはカスタムドキュメントへのリンクを表示し、ユーザーが組織の認証要件を理解できるようにします。この機能により、管理者は組織固有のガイダンスを提供し、ユーザーを社内ドキュメントやヘルプリソースへ案内できます。
+
+カスタムドキュメントリンクを追加するには、次の手順を実行します。
+
+1. `gitlab.yml`または`/etc/gitlab/gitlab.rb`のGitLabの設定ファイルを編集して、`documentation_link`フィールドを`step_up_auth => admin_mode`に追加します。
+
+   ```yaml
+   production: &base
+     omniauth:
+       providers:
+       - { name: 'openid_connect',
+           label: 'Corporate SSO',
+           # ... other provider configuration ...
+           step_up_auth: {
+             admin_mode: {
+               # ... id_token and params configuration ...
+               documentation_link: 'https://internal.example.com/path/to/documentation'
+             }
+           }
+         }
+   ```
+
+1. 設定ファイルを保存してGitLabを再起動し、変更を有効にします。
+
+ユーザーがステップアップ認証に失敗すると、失敗したプロバイダーに対応する関連ドキュメントへのリンク付きのエラーメッセージが表示されます。リンクは実際にステップアップ認証に失敗したプロバイダーにのみ表示されるため、より適切で実用的なガイダンスを提供できます。
+
+{{< alert type="note" >}}
+
+ドキュメントリンクのベストプラクティス:
+
+- セキュリティのためにHTTPS URLを使用してください。
+- 組織の特定の認証の要件を説明する内部ドキュメントにリンクしてください。
+- `MFA`またはその他の要求される認証方法を有効にする方法に関する情報を含めてください。
+
+{{< /alert >}}
+
+## トラブルシューティング {#troubleshooting}
 
 1. `discovery`が`true`に設定されていることを確認してください。`false`に設定すると、OpenIDを機能させるために必要なすべてのURLとキーを指定する必要があります。
 
@@ -1314,4 +1638,6 @@ IDトークンのカスタム有効期間を設定するには、次の手順に
 
 1. [OmniAuth OpenID Connectのドキュメント](https://github.com/omniauth/omniauth_openid_connect)で説明されているように、`issuer`がディスカバリURLのベースURLに対応していることを確認してください。たとえば、URLが`https://accounts.google.com/.well-known/openid-configuration`の場合、`https://accounts.google.com`が使用されます。
 
-1. `client_auth_method`が未定義の場合、または`basic`に設定されている場合、OpenID ConnectクライアントはHTTP基本認証を使用してOAuth 2.0アクセストークンを送信します。`userinfo`エンドポイントの取得時に401エラーが表示される場合は、OpenID Webサーバーの設定を確認してください。たとえば、[`oauth2-server-php`](https://github.com/bshaffer/oauth2-server-php)の場合、[Apacheに設定パラメーターを追加](https://github.com/bshaffer/oauth2-server-php/issues/926#issuecomment-387502778)する必要がある場合があります。
+1. `client_auth_method`が未定義の場合、または`basic`に設定されている場合、OpenID ConnectクライアントはHTTP基本認証を使用してOAuth 2.0アクセストークンを送信します。`userinfo`エンドポイントの取得時に401エラーが表示される場合は、OpenID Webサーバーの設定を確認してください。たとえば、[`oauth2-server-php`](https://github.com/bshaffer/oauth2-server-php)の場合、[Apacheに設定パラメータを追加](https://github.com/bshaffer/oauth2-server-php/issues/926#issuecomment-387502778)する必要がある場合があります。
+
+1. **ステップアップ認証のみ**: `step_up_auth => admin_mode => params`で定義されているパラメータが`args => allow_authorize_params`でも定義されていることを確認します。これにより、IdP認証エンドポイントへのリダイレクトに使用されるリクエストクエリパラメータにパラメータが含まれるようになります。

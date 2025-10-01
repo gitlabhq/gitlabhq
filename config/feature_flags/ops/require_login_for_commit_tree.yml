@@ -1,0 +1,10 @@
+---
+name: require_login_for_commit_tree
+description:
+feature_issue_url: https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/27625
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206365
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/572011
+milestone: '18.5'
+group: group::source code
+type: ops
+default_enabled: false

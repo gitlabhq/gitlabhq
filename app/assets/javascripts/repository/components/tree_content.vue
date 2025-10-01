@@ -162,6 +162,10 @@ export default {
         .find(({ hasNextPage }) => hasNextPage);
     },
     handleRowAppear(rowNumber) {
+      if (window.gon?.show_commit_columns === false) {
+        return;
+      }
+
       if (isRequested(rowNumber)) {
         return;
       }

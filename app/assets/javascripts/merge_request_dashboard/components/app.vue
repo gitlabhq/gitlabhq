@@ -177,11 +177,13 @@ export default {
             >
               <collapsible-section
                 :id="list.id"
+                :hide-count="list.hideCount"
                 :count="count"
                 :has-merge-requests="mergeRequests.length > 0"
                 :title="list.title"
                 :help-content="list.helpContent"
                 :loading="loading"
+                :error="error"
                 :new-merge-request-ids="newMergeRequestIds"
                 :merge-requests="mergeRequests"
                 :active-list="i === 0"

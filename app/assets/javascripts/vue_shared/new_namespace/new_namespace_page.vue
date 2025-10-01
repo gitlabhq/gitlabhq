@@ -23,7 +23,10 @@ export default {
     MountingPortal,
   },
 
-  inject: ['identityVerificationRequired', 'identityVerificationPath'],
+  inject: {
+    identityVerificationRequired: { default: false },
+    identityVerificationPath: { default: null },
+  },
 
   props: {
     title: {

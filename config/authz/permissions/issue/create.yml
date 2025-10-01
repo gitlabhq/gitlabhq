@@ -1,5 +1,3 @@
 name: create_issue
 description: Grants the ability to create issues
-scopes:
-  - project
 feature_category: team_planning

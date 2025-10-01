@@ -125,7 +125,7 @@ the URL-encoded path parameters.
 ### `id` vs `iid`
 
 Some API resources have two similarly-named fields. For example, [issues](../issues.md),
-[merge requests](../merge_requests.md), and [project milestones](../merge_requests.md).
+[merge requests](../merge_requests.md), and [project milestones](../milestones.md).
 The fields are:
 
 - `id`: ID that is unique across all projects.

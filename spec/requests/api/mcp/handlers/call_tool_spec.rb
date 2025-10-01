@@ -19,6 +19,10 @@ RSpec.describe API::Mcp, 'Call tool request', feature_category: :mcp_server do
     }
   end
 
+  before do
+    stub_application_setting(instance_level_ai_beta_features_enabled: true)
+  end
+
   describe 'POST /mcp with tools/call method' do
     let(:tool_params) do
       { name: 'get_issue', arguments: { id: project.full_path, issue_iid: issue.iid } }

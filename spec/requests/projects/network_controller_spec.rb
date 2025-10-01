@@ -14,6 +14,38 @@ RSpec.describe Projects::NetworkController, feature_category: :source_code_manag
         subject
         expect(response).to redirect_to(new_user_session_path)
       end
+
+      context 'when project is public' do
+        let_it_be(:project) { create(:project, :repository, :public) }
+
+        it 'is successful' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+
+        context 'when non-default branch is requested' do
+          let(:ref) { 'feature' }
+
+          it 'redirects to sign in page' do
+            subject
+
+            expect(response).to redirect_to(new_user_session_path)
+          end
+
+          context 'when "require_login_for_commit_tree" FF is disabled' do
+            before do
+              stub_feature_flags(require_login_for_commit_tree: false)
+            end
+
+            it 'is successful' do
+              subject
+
+              expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+      end
     end
 
     context 'when user is authorized' do

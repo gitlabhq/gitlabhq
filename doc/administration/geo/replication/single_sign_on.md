@@ -49,7 +49,7 @@ If a secondary site uses a different `external_url` to the primary site, then co
 1. Go to **Okta Admin Dashboard** > **Applications** > **Your App Name** > **General**.
 1. In **SAML Settings**, select **Edit**.
 1. In **General Settings**, select **Next** to go to **SAML Settings**.
-1. In **SAML Settings > General**, make sure the **Single sign-on URL** is your primary site's SAML callback URL. For example, `https://gitlab-primary.example.com/users/auth/saml/callback`. If it is not, enter your primary site's SAML callback URL into this field.
+1. In **SAML Settings** > **General**, make sure the **Single sign-on URL** is your primary site's SAML callback URL. For example, `https://gitlab-primary.example.com/users/auth/saml/callback`. If it is not, enter your primary site's SAML callback URL into this field.
 1. Select **Show Advanced Settings**.
 1. In **Other Requestable SSO URLs**, enter your secondary site's SAML callback URL. For example, `https://gitlab-secondary.example.com/users/auth/saml/callback`. You can set **Index** to anything.
 1. Select **Next** and then **Finish**.

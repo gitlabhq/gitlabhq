@@ -1,9 +1,4 @@
 ---
 name: read_fake_resource
 description:
-scopes:
-  # - admin
-  # - instance
-  # - group
-  # - project
 feature_category:

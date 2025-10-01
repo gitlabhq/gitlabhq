@@ -32,7 +32,6 @@ export default {
     'app/assets/javascripts/repository/components/upload_blob_modal.vue',
     'app/assets/javascripts/repository/pages/blob_edit_header.vue',
     'app/assets/javascripts/set_status_modal/set_status_modal_wrapper.vue',
-    'app/assets/javascripts/sidebar/components/labels/labels_select_vue/dropdown_contents_labels_view.vue',
     'app/assets/javascripts/sidebar/components/labels/labels_select_vue/dropdown_title.vue',
     'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_contents.vue',
     'app/assets/javascripts/sidebar/components/labels/labels_select_widget/dropdown_contents_labels_view.vue',

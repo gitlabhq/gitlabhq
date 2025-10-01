@@ -3,7 +3,10 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { HTTP_STATUS_SERVICE_UNAVAILABLE } from '~/lib/utils/http_status';
+import {
+  HTTP_STATUS_SERVICE_UNAVAILABLE,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+} from '~/lib/utils/http_status';
 import eventHub from '~/merge_request_dashboard/event_hub';
 import MergeRequestQuery from '~/merge_request_dashboard/components/merge_requests_query.vue';
 import reviewerQuery from '~/merge_request_dashboard/queries/reviewer.query.graphql';
@@ -143,11 +146,22 @@ describe('Merge requests query component', () => {
 
     expect(slotSpy).toHaveBeenCalledWith(
       expect.objectContaining({
+        count: 0,
         mergeRequests: expect.arrayContaining([
           expect.objectContaining({
             title,
           }),
         ]),
+      }),
+    );
+  });
+
+  it('renders `count` as `null` when count query hasnt completed', () => {
+    createComponent();
+
+    expect(slotSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        count: null,
       }),
     );
   });
@@ -218,5 +232,27 @@ describe('Merge requests query component', () => {
 
       expect(reviewerQueryMock.mock.calls).toHaveLength(2);
     });
+  });
+
+  it('returns error prop when error gets thrown', async () => {
+    const error = {
+      statusCode: HTTP_STATUS_INTERNAL_SERVER_ERROR,
+      result: {
+        errors: [{ message: 'Service temporarily unavailable' }],
+      },
+    };
+
+    reviewerQueryMock = jest.fn().mockRejectedValueOnce(error);
+
+    createComponent();
+
+    await waitForPromises();
+
+    expect(slotSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        error: true,
+        loading: false,
+      }),
+    );
   });
 });

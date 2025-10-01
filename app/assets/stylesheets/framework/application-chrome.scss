@@ -183,11 +183,6 @@
     }
   }
 
-  // Todos page sticky header
-  .todos-bulk-bar.is-sticky {
-    top: 0 !important;
-  }
-
 }
 
 /*
@@ -248,6 +243,17 @@
   // Panels container
   .panels-container {
     @apply gl-relative gl-grow gl-flex gl-pr-0 gl-pb-0;
+
+    // Inside the panels container, everything that calculates an offset from
+    // the top needs to ignore application header height, system header height,
+    // performance bar height, header height and top bar height, since these
+    // all lie outside of the panels. Note that the `px` IS REQUIRED here for
+    // these variables to function properly.
+    --application-header-height: 0px; // stylelint-disable-line length-zero-no-unit
+    --system-header-height: 0px; // stylelint-disable-line length-zero-no-unit
+    --performance-bar-height: 0px; // stylelint-disable-line length-zero-no-unit
+    --header-height: 0px; // stylelint-disable-line length-zero-no-unit
+    --top-bar-height: 0px; // stylelint-disable-line length-zero-no-unit
 
     .panel-content-inner,
     .vue-portal-target .work-item-drawer-content {
@@ -413,7 +419,6 @@
     // Issue sticky header
     .issue-sticky-header:not(.merge-request-sticky-header) {
       @apply gl-w-full gl-border-b-subtle;
-      top: -1px !important;
 
       .work-item-sticky-header-text {
         @apply @xl/panel:gl-px-4 gl-py-2;
@@ -425,15 +430,6 @@
 
       .work-item-sticky-header-text {
         @apply gl-px-6;
-      }
-    }
-
-    // Merge request sticky header wrapper
-    .merge-request-sticky-header-wrapper,
-    .merge-request-sticky-header::after,
-    .issue-sticky-header.merge-request-sticky-header {
-      @include media-breakpoint-up(md) {
-        top: 0 !important;
       }
     }
 
@@ -478,32 +474,14 @@
       }
     }
 
-    // Sticky headers below top bar
-    .right-sidebar,
-    .issue-sticky-header:not(.merge-request-sticky-header),
-    .settings-sticky-header,
-    .rd-diff-file-header-sticky {
-      top: -1px !important;
-    }
-
     // Sticky flash alert
     .flash-container:has(.gl-alert) {
       top: auto !important;
     }
 
-    // Sticky settings header
-    .settings-sticky-header::after {
-      top: 2.5rem !important;
-    }
-
     // Fix drawer height
     .gl-drawer {
       height: calc(100% - #{$header-height});
-    }
-
-    // MR: File tree sidebar alignment
-    .rd-app-sidebar {
-      top: calc(#{$mr-sticky-header-height} + 1rem + -1px) !important;
     }
 
     // Compare revision: File tree sidebar alignment
@@ -615,15 +593,6 @@
 
   .paneled-view:has(.fullscreen) {
     @apply gl-grow;
-  }
-
-  // Vulnerability dashboard
-  .security-dashboard-filters {
-    top: 0 !important;
-  }
-
-  .vulnerability-list thead {
-    top: var(--sticky-container-height) !important;
   }
 
 }

@@ -21802,10 +21802,10 @@ msgstr ""
 msgid "DastSiteValidation|You will not be able to run active scans against %{url}."
 msgstr ""
 
-msgid "Data Management"
+msgid "Data is still calculating…"
 msgstr ""
 
-msgid "Data is still calculating…"
+msgid "Data management"
 msgstr ""
 
 msgid "Data refresh"

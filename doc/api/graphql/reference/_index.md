@@ -23500,13 +23500,26 @@ An AI catalog agent.
 | <a id="aicatalogagentdescription"></a>`description` | [`String!`](#string) | Description of the item. |
 | <a id="aicatalogagentid"></a>`id` | [`ID!`](#id) | ID of the item. |
 | <a id="aicatalogagentitemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
-| <a id="aicatalogagentlatestversion"></a>`latestVersion` | [`AiCatalogItemVersion`](#aicatalogitemversion) | Latest version of the item. |
 | <a id="aicatalogagentname"></a>`name` | [`String!`](#string) | Name of the item. |
 | <a id="aicatalogagentproject"></a>`project` | [`Project`](#project) | Project for the item. |
 | <a id="aicatalogagentpublic"></a>`public` | [`Boolean!`](#boolean) | Whether the item is publicly visible in the catalog. |
 | <a id="aicatalogagentupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item was updated. |
 | <a id="aicatalogagentuserpermissions"></a>`userPermissions` | [`AiCatalogItemPermissions!`](#aicatalogitempermissions) | Permissions for the current user on the resource. |
 | <a id="aicatalogagentversions"></a>`versions` | [`AiCatalogItemVersionConnection`](#aicatalogitemversionconnection) | Versions of the item. (see [Connections](#connections)) |
+
+#### Fields with arguments
+
+##### `AiCatalogAgent.latestVersion`
+
+Latest version of the item.
+
+Returns [`AiCatalogItemVersion`](#aicatalogitemversion).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogagentlatestversionreleased"></a>`released` | [`Boolean`](#boolean) | Return the latest released version. |
 
 ### `AiCatalogAgentVersion`
 
@@ -23552,13 +23565,26 @@ An AI catalog flow.
 | <a id="aicatalogflowdescription"></a>`description` | [`String!`](#string) | Description of the item. |
 | <a id="aicatalogflowid"></a>`id` | [`ID!`](#id) | ID of the item. |
 | <a id="aicatalogflowitemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
-| <a id="aicatalogflowlatestversion"></a>`latestVersion` | [`AiCatalogItemVersion`](#aicatalogitemversion) | Latest version of the item. |
 | <a id="aicatalogflowname"></a>`name` | [`String!`](#string) | Name of the item. |
 | <a id="aicatalogflowproject"></a>`project` | [`Project`](#project) | Project for the item. |
 | <a id="aicatalogflowpublic"></a>`public` | [`Boolean!`](#boolean) | Whether the item is publicly visible in the catalog. |
 | <a id="aicatalogflowupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item was updated. |
 | <a id="aicatalogflowuserpermissions"></a>`userPermissions` | [`AiCatalogItemPermissions!`](#aicatalogitempermissions) | Permissions for the current user on the resource. |
 | <a id="aicatalogflowversions"></a>`versions` | [`AiCatalogItemVersionConnection`](#aicatalogitemversionconnection) | Versions of the item. (see [Connections](#connections)) |
+
+#### Fields with arguments
+
+##### `AiCatalogFlow.latestVersion`
+
+Latest version of the item.
+
+Returns [`AiCatalogItemVersion`](#aicatalogitemversion).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogflowlatestversionreleased"></a>`released` | [`Boolean`](#boolean) | Return the latest released version. |
 
 ### `AiCatalogFlowSteps`
 
@@ -42353,6 +42379,7 @@ Returns [`Blame`](#blame).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="repositoryblobblamefromline"></a>`fromLine` | [`Int`](#int) | Range starting from the line. Cannot be less than 1 or greater than `to_line`. |
+| <a id="repositoryblobblameignorerevs"></a>`ignoreRevs` | [`Boolean`](#boolean) | Enable to ignore revisions in the `.git-ignore-revs-file` when fetching the blame. |
 | <a id="repositoryblobblametoline"></a>`toLine` | [`Int`](#int) | Range ending on the line. Cannot be smaller than `from_line` or greater than `from_line` + 100. |
 
 ### `RepositoryCodeownerError`
@@ -52677,13 +52704,26 @@ Implementations:
 | <a id="aicatalogitemdescription"></a>`description` | [`String!`](#string) | Description of the item. |
 | <a id="aicatalogitemid"></a>`id` | [`ID!`](#id) | ID of the item. |
 | <a id="aicatalogitemitemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
-| <a id="aicatalogitemlatestversion"></a>`latestVersion` | [`AiCatalogItemVersion`](#aicatalogitemversion) | Latest version of the item. |
 | <a id="aicatalogitemname"></a>`name` | [`String!`](#string) | Name of the item. |
 | <a id="aicatalogitemproject"></a>`project` | [`Project`](#project) | Project for the item. |
 | <a id="aicatalogitempublic"></a>`public` | [`Boolean!`](#boolean) | Whether the item is publicly visible in the catalog. |
 | <a id="aicatalogitemupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item was updated. |
 | <a id="aicatalogitemuserpermissions"></a>`userPermissions` | [`AiCatalogItemPermissions!`](#aicatalogitempermissions) | Permissions for the current user on the resource. |
 | <a id="aicatalogitemversions"></a>`versions` | [`AiCatalogItemVersionConnection`](#aicatalogitemversionconnection) | Versions of the item. (see [Connections](#connections)) |
+
+##### Fields with arguments
+
+###### `AiCatalogItem.latestVersion`
+
+Latest version of the item.
+
+Returns [`AiCatalogItemVersion`](#aicatalogitemversion).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogitemlatestversionreleased"></a>`released` | [`Boolean`](#boolean) | Return the latest released version. |
 
 #### `AiCatalogItemVersion`
 

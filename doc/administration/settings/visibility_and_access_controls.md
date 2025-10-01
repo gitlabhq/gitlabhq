@@ -23,7 +23,6 @@ For example, you can define:
 - Allowed types and lengths for SSH keys.
 - Git settings, such as accepted protocols (SSH or HTTPS) and clone URLs.
 - Allow or prevent push mirroring and pull mirroring.
-- Allow or prevent invitations to groups and projects.
 
 Prerequisites:
 
@@ -384,13 +383,11 @@ Features such as [sharing](../../user/project/members/sharing_projects_groups.md
 
 {{< /alert >}}
 
-Administrators can also [prevent user invitations to a specific group](../../user/group/manage.md#prevent-invitations-to-a-group).
-
 Prerequisites:
 
 - You must be an administrator.
 
-To prevent invitations to an instance:
+To prevent invitations:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **General**.
