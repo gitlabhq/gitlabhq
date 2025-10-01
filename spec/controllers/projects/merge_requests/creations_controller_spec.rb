@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'labkit/rspec/matchers'
 
 RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :code_review_workflow do
   let(:project) { create(:project, :repository) }
@@ -287,10 +288,27 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
       )
     end
 
-    it 'creates merge request' do
+    it 'creates merge request and starts covered experience' do
       expect do
         post_request(params)
       end.to change { MergeRequest.count }.by(1)
+      .and start_covered_experience(:create_merge_request)
+    end
+
+    context 'when covered_experience_create_merge_request feature flag is disabled' do
+      before do
+        stub_feature_flags(covered_experience_create_merge_request: false)
+      end
+
+      it 'creates merge request without starting covered experience' do
+        mr_count = MergeRequest.count
+
+        expect do
+          post_request(params)
+        end.not_to start_covered_experience(:create_merge_request)
+
+        expect(MergeRequest.count).to eq(mr_count + 1)
+      end
     end
 
     context 'when the merge request is not created from the web ide' do

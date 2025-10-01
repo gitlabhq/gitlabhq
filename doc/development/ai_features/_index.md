@@ -348,7 +348,7 @@ An [example](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/
 
 ## Security
 
-Refer to the [secure coding guidelines for Artificial Intelligence (AI) features](../secure_coding_guidelines.md#artificial-intelligence-ai-features).
+Refer to the [secure coding guidelines for Artificial Intelligence (AI) features](../secure_coding_guidelines/_index.md#artificial-intelligence-ai-features).
 
 ## Help
 

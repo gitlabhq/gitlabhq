@@ -246,7 +246,7 @@ describe('WikiCommentForm', () => {
             expect($apollo.mutate).toHaveBeenCalledWith({
               mutation: expect.any(Object),
               variables: expect.objectContaining({
-                createNoteInput: {
+                input: {
                   body: 'Test comment',
                   id: 'gid://gitlab/Note/12',
                 },

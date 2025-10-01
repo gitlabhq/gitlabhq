@@ -598,6 +598,19 @@ RSpec.configure do |config|
     # Set default editor preference for new users in tests to not set (value derived from local storage)
     allow_any_instance_of(UserPreference).to receive(:text_editor_type).and_return(0) # not_set
   end
+
+  # Labkit::CoveredExperience hooks
+  config.around do |example|
+    Labkit::CoveredExperience.configure do |config|
+      # Ignore logs by default in tests
+      config.logger = Labkit::Logging::JsonLogger.new("/dev/null")
+    end
+
+    example.run
+
+    Labkit::CoveredExperience::Current.reset
+    Labkit::CoveredExperience.reset_configuration
+  end
 end
 
 # Disabled because it's causing N+1 queries.

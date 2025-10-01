@@ -402,7 +402,7 @@ module MergeRequestsHelper
     target_branch_class = "ref-container gl-inline-block gl-truncate gl-max-w-26 gl-shrink-0"
     copy_action_description = _('Copy branch name')
     copy_action_shortcut = 'b'
-    copy_button_title = "#{copy_action_description} <kbd class='flat ml-1' " \
+    copy_button_title = "#{copy_action_description} <kbd class='flat gl-ml-2' " \
       "aria-hidden=true>#{copy_action_shortcut}</kbd>"
 
     target_branch_class = if @project.default_branch != merge_request.target_branch
@@ -416,14 +416,14 @@ module MergeRequestsHelper
       title: copy_button_title,
       aria_keyshortcuts: copy_action_shortcut,
       aria_label: copy_action_description,
-      class: '!gl-hidden md:!gl-inline-block gl-mx-1 js-source-branch-copy'
+      class: '!gl-hidden @md/panel:!gl-inline-block gl-mx-1 js-source-branch-copy'
     )
 
     target_copy_button = clipboard_button(
       text: merge_request.target_branch,
       title: copy_action_description,
       aria_label: copy_action_description,
-      class: '!gl-hidden md:!gl-inline-block gl-mx-1'
+      class: '!gl-hidden @md/panel:!gl-inline-block gl-mx-1'
     )
 
     target_branch = link_to merge_request.target_branch,

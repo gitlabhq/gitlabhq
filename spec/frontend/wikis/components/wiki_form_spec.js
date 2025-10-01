@@ -152,7 +152,6 @@ describe('WikiForm', () => {
         renderMarkdownPath: pageInfoPersisted.markdownPreviewPath,
         uploadsPath: pageInfoPersisted.uploadsPath,
         autofocus: pageInfoPersisted.persisted,
-        markdownDocsPath: pageInfoPersisted.markdownHelpPath,
       }),
     );
 
@@ -350,9 +349,7 @@ describe('WikiForm', () => {
   it('shows correct link for wiki specific markdown docs', () => {
     createWrapper({ mountFn: mount });
 
-    expect(findMarkdownHelpLink().attributes().href).toBe(
-      '/help/user/markdown#wiki-specific-markdown',
-    );
+    expect(findMarkdownHelpLink().attributes().href).toBe('/help/user/project/wiki/markdown#links');
   });
 
   describe('when wiki content is updated', () => {

@@ -4,9 +4,8 @@ import {
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
   GlTooltipDirective,
-  GlResizeObserverDirective,
 } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import JobDropdownItem from '~/ci/common/private/job_dropdown_item.vue';
 import { FAILED_STATUS } from '~/ci/constants';
 import { JOB_DROPDOWN } from '../constants';
@@ -28,7 +27,6 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    GlResizeObserver: GlResizeObserverDirective,
   },
   props: {
     group: {
@@ -88,9 +86,15 @@ export default {
       return this.failedJobs.length > 0;
     },
   },
+  mounted() {
+    PanelBreakpointInstance.addResizeListener(this.onResize);
+  },
+  beforeDestroy() {
+    PanelBreakpointInstance.removeResizeListener(this.onResize);
+  },
   methods: {
-    handleResize() {
-      this.isMobile = GlBreakpointInstance.getBreakpointSize() === 'xs';
+    onResize() {
+      this.isMobile = PanelBreakpointInstance.getBreakpointSize() === 'xs';
     },
     showDropdown() {
       this.showTooltip = true;
@@ -104,7 +108,6 @@ export default {
 <template>
   <gl-disclosure-dropdown
     :id="computedJobId"
-    v-gl-resize-observer="handleResize"
     v-gl-tooltip.viewport.left="{ customClass: 'ci-job-component-tooltip' }"
     :title="dropdownTooltip"
     block

@@ -15,6 +15,7 @@ import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import csrf from '~/lib/utils/csrf';
 import { setUrlFragment } from '~/lib/utils/url_utility';
 import { __, s__, sprintf } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
@@ -101,7 +102,7 @@ export default {
       placeholder: s__('WikiPage|Write your content or drag files here…'),
     },
     linksHelpText: s__(
-      'WikiPage|To link to a (new) page, simply type %{linkExample}. More examples are in the %{linkStart}documentation%{linkEnd}.',
+      'WikiPage|To link to a (new) page, type %{linkExample}. %{linkStart}What types of links are supported?%{linkEnd}',
     ),
     commitMessage: {
       label: s__('WikiPage|Commit message'),
@@ -230,7 +231,7 @@ export default {
       return this.pageInfo.wikiPath;
     },
     wikiSpecificMarkdownHelpPath() {
-      return setUrlFragment(this.pageInfo.markdownHelpPath, 'wiki-specific-markdown');
+      return helpPagePath('user/project/wiki/markdown', { anchor: 'links' });
     },
     contentEditorHelpPath() {
       return setUrlFragment(this.pageInfo.helpPath, 'gitlab-flavored-markdown-support');

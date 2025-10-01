@@ -2720,9 +2720,6 @@ msgstr ""
 msgid "AICatalog|Prompts"
 msgstr ""
 
-msgid "AICatalog|Provide default instructions or context that will be included with every user interaction."
-msgstr ""
-
 msgid "AICatalog|Provide instructions or context that will be included for this run."
 msgstr ""
 
@@ -73588,7 +73585,7 @@ msgstr ""
 msgid "WikiPage|Title"
 msgstr ""
 
-msgid "WikiPage|To link to a (new) page, simply type %{linkExample}. More examples are in the %{linkStart}documentation%{linkEnd}."
+msgid "WikiPage|To link to a (new) page, type %{linkExample}. %{linkStart}What types of links are supported?%{linkEnd}"
 msgstr ""
 
 msgid "WikiPage|Update %{pageTitle}"

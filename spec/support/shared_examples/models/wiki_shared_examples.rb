@@ -326,6 +326,15 @@ RSpec.shared_examples 'wiki model' do
           expect(wiki_pages.count).to eq(0)
           expect(subject.error_message).to match(/Gitaly broken in this spec/)
         end
+
+        it 'returns an empty list if the repository not found' do
+          allow(Gitlab::GitalyClient).to receive(:call) do
+            raise GRPC::NotFound
+          end
+
+          expect(subject.repository).to receive(:expire_status_cache).at_least(:once)
+          expect(wiki_pages.count).to eq(0)
+        end
       end
     end
 
@@ -384,6 +393,15 @@ RSpec.shared_examples 'wiki model' do
 
           expect(subject.find_page('index page')).to be_nil
           expect(subject.error_message).to match(/Gitaly broken in this spec/)
+        end
+
+        it 'returns nil if the repository not found' do
+          allow(Gitlab::GitalyClient).to receive(:call) do
+            raise GRPC::NotFound
+          end
+
+          expect(subject.repository).to receive(:expire_status_cache).at_least(:once)
+          expect(subject.find_page('index page')).to be_nil
         end
       end
 
@@ -633,6 +651,15 @@ RSpec.shared_examples 'wiki model' do
         expect(subject.find_file('image.png')).to be_nil
         expect(subject.error_message).to match(/Gitaly broken in this spec/)
       end
+
+      it 'returns nil if the repository is not found' do
+        allow(Gitlab::GitalyClient).to receive(:call) do
+          raise GRPC::NotFound
+        end
+
+        expect(subject.repository).to receive(:expire_status_cache).at_least(:once)
+        expect(subject.find_file('image.png')).to be_nil
+      end
     end
   end
 
@@ -817,6 +844,15 @@ RSpec.shared_examples 'wiki model' do
           expect(subject.create_page('test page', 'content')).to eq(false)
           expect(subject.error_message).to match(/Gitaly broken in this spec/)
         end
+
+        it 'returns false if the repository if not found' do
+          allow(Gitlab::GitalyClient).to receive(:call) do
+            raise GRPC::NotFound
+          end
+
+          expect(subject.repository).to receive(:expire_status_cache).at_least(:once)
+          expect(subject.create_page('test page', 'content')).to eq(false)
+        end
       end
     end
 
@@ -984,6 +1020,16 @@ RSpec.shared_examples 'wiki model' do
         expect(subject.update_page(page.page, content: 'new content', format: :markdown))
           .to eq(false)
         expect(subject.error_message).to match(/Gitaly broken in this spec/)
+      end
+
+      it 'returns false if the repository if not found' do
+        allow(Gitlab::GitalyClient).to receive(:call) do
+          raise GRPC::NotFound
+        end
+
+        expect(subject.repository).to receive(:expire_status_cache).at_least(:once)
+        expect(subject.update_page(page.page, content: 'new content', format: :markdown))
+          .to eq(false)
       end
 
       it 'returns false and sets error message if the repository raise an IndexError', :aggregate_failures do

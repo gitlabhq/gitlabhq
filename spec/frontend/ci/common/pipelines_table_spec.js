@@ -101,6 +101,16 @@ describe('Pipelines Table', () => {
       expect(findActionsTh().text()).toBe('Actions');
     });
 
+    it('should render tables widths', () => {
+      expect(wrapper.findAll('col').wrappers.map((e) => e.classes())).toEqual([
+        ['gl-w-3/20'],
+        ['gl-w-5/20'],
+        ['gl-w-3/20'],
+        ['gl-w-5/20'],
+        ['gl-w-4/20'],
+      ]);
+    });
+
     it('should display a table row', () => {
       expect(findTableRows()).toHaveLength(pipelines.length);
     });

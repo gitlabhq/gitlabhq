@@ -183,6 +183,14 @@ export default {
         resolve: this.newResolvedState,
       };
     },
+    editMutationVariables() {
+      return {
+        input: {
+          id: convertToGraphQLId(TYPENAME_NOTE, this.noteId),
+          body: this.note,
+        },
+      };
+    },
     saveMutationVariables() {
       return {
         shouldCreateNote: this.noteHasContent,
@@ -255,7 +263,7 @@ export default {
       try {
         const discussion = await this.$apollo.mutate({
           mutation: this.isEdit ? updateWikiPageMutation : createWikiPageNoteMutation,
-          variables: this.saveMutationVariables,
+          variables: this.isEdit ? this.editMutationVariables : this.saveMutationVariables,
         });
 
         const response = this.isEdit

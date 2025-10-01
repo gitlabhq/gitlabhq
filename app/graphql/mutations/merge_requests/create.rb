@@ -50,6 +50,8 @@ module Mutations
         project = authorized_find!(project_path)
         params = parse_arguments(attributes)
 
+        ::Gitlab::CoveredExperience.start_covered_experience_create_merge_request(project, **params)
+
         merge_request = ::MergeRequests::CreateService.new(
           project: project,
           current_user: current_user,

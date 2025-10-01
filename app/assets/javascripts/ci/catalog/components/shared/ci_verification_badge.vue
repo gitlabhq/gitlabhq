@@ -1,6 +1,6 @@
 <script>
 import { GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
@@ -10,13 +10,7 @@ import {
 } from '../../constants';
 
 export default {
-  i18n: {
-    verifiedCreatorPopoverLink: s__('CiCatalog|What are verified component creators?'),
-    verificationLevelPopoverLink: s__('CiCatalog|Learn more about designated creators'),
-    verificationLevelSelfManagedPopoverLink: s__(
-      'CiCatalog|Learn more about verified creators on GitLab Self-Managed or GitLab Dedicated.',
-    ),
-  },
+  name: 'CiVerificationBadge',
   verificationHelpPagePath: helpPagePath('ci/components/_index', {
     anchor: 'verified-component-creators',
   }),
@@ -44,16 +38,18 @@ export default {
   },
   computed: {
     isMobile() {
-      return ['sm', 'xs'].includes(GlBreakpointInstance.getBreakpointSize());
+      return ['sm', 'xs'].includes(PanelBreakpointInstance.getBreakpointSize());
     },
     popoverLink() {
       if (this.verificationLevel === VERIFICATION_LEVEL_VERIFIED_CREATOR_MAINTAINED) {
-        return this.$options.i18n.verifiedCreatorPopoverLink;
+        return s__('CiCatalog|What are verified component creators?');
       }
       if (this.verificationLevel === VERIFICATION_LEVEL_VERIFIED_CREATOR_SELF_MANAGED) {
-        return this.$options.i18n.verificationLevelSelfManagedPopoverLink;
+        return s__(
+          'CiCatalog|Learn more about verified creators on GitLab Self-Managed or GitLab Dedicated.',
+        );
       }
-      return this.$options.i18n.verificationLevelPopoverLink;
+      return s__('CiCatalog|Learn more about designated creators');
     },
     popoverPlacement() {
       return this.isMobile ? 'bottom' : 'right';

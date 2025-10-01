@@ -331,6 +331,9 @@ When the Elasticsearch cluster is fully upgraded and active:
    ```
 
 1. [Resume indexing](#resume-indexing).
+1. Optional. [Check indexing status](#check-indexing-status).
+   For correct search results, ensure indexing is complete especially
+   if your Elasticsearch instance was offline for some time.
 1. [Enable search with advanced search](#enable-search-with-advanced-search).
 
 ## Elasticsearch repository indexer
@@ -523,18 +526,19 @@ To check indexing status:
 1. Select **Settings** > **Search**.
 1. Expand **Advanced search indexing status**.
 
-### Monitor the status of background jobs
+#### Monitor the status of background jobs
 
 Prerequisites:
 
 - You must have administrator access to the instance.
 
-To monitor the status of background jobs:
+To monitor indexing progress, you can also check the status of background jobs:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Monitoring > Background jobs**.
-1. On the Sidekiq dashboard, select **Busy** and wait for all of the indexing jobs to complete.
-   These jobs index code and wiki data for projects and groups.
+1. On the Sidekiq dashboard, select **Busy** and watch for these indexing jobs:
+   - `Search::Elastic::CommitIndexerWorker` for code and commits.
+   - `ElasticWikiIndexerWorker` for wiki data.
 
 ### Enable search with advanced search
 

@@ -20675,7 +20675,6 @@ CREATE TABLE notes_archived (
     CONSTRAINT check_1244cbd7d0 CHECK ((noteable_type IS NOT NULL)),
     CONSTRAINT check_3cd1f25f0d CHECK ((char_length(note_html) <= 1000000)),
     CONSTRAINT check_438623dd0e CHECK ((char_length(change_position) <= 50000)),
-    CONSTRAINT check_82f260979e CHECK ((num_nonnulls(namespace_id, organization_id, project_id) >= 1)),
     CONSTRAINT check_88582b41f4 CHECK ((char_length(st_diff) <= 1000000)),
     CONSTRAINT check_c73ba3a9d6 CHECK ((char_length(note) <= 1000000)),
     CONSTRAINT check_ef82c93395 CHECK ((char_length(original_position) <= 50000)),
@@ -33059,9 +33058,6 @@ ALTER TABLE redirect_routes
 
 ALTER TABLE system_note_metadata
     ADD CONSTRAINT check_f2c4e04565 CHECK ((num_nonnulls(namespace_id, organization_id) = 1)) NOT VALID;
-
-ALTER TABLE notes_archived
-    ADD CONSTRAINT check_notes_archived_has_parent CHECK ((num_nonnulls(namespace_id, organization_id, project_id) >= 1)) NOT VALID;
 
 ALTER TABLE ci_runner_taggings_group_type
     ADD CONSTRAINT check_organization_id_nullness CHECK ((organization_id IS NOT NULL)) NOT VALID;

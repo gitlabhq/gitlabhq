@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlFormInput, GlLink, GlSprintf, GlIcon } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import GoogleCloudFieldGroup from '~/ci/runner/components/registration/google_cloud_field_group.vue';
 import GoogleCloudLearnMoreLink from '~/ci/runner/components/registration/google_cloud_learn_more_link.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
@@ -60,7 +60,7 @@ export default {
   },
   computed: {
     isMobile() {
-      return ['sm', 'xs'].includes(GlBreakpointInstance.getBreakpointSize());
+      return ['sm', 'xs'].includes(PanelBreakpointInstance.getBreakpointSize());
     },
     removeButtonCategory() {
       return this.isMobile ? 'secondary' : 'tertiary';

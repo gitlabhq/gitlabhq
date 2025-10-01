@@ -91,7 +91,7 @@ export default {
           key: 'pipeline',
           label: __('Pipeline'),
           tdClass: `${this.tdClasses}`,
-          columnClass: 'gl-w-6/20',
+          columnClass: 'gl-w-5/20',
           thAttr: { 'data-testid': 'pipeline-th' },
         },
         {
@@ -105,13 +105,13 @@ export default {
           key: 'stages',
           label: s__('Pipeline|Stages'),
           tdClass: this.tdClasses,
-          columnClass: 'gl-w-5/20',
+          columnClass: this.glFeatures.aiDuoAgentFixPipelineButton ? 'gl-w-4/20' : 'gl-w-5/20',
           thAttr: { 'data-testid': 'stages-th' },
         },
         {
           key: 'actions',
           tdClass: this.tdClasses,
-          columnClass: 'gl-w-4/20',
+          columnClass: this.glFeatures.aiDuoAgentFixPipelineButton ? 'gl-w-5/20' : 'gl-w-4/20',
           thAttr: { 'data-testid': 'actions-th' },
         },
       ];

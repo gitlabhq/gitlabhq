@@ -8,6 +8,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
   let(:event_eligible) { true }
   let(:track_struct_event_logger) { false }
   let(:snowplow_sync_emitter) { false }
+  let(:snowplow_emitter_batching_off) { false }
   let(:tracker) do
     SnowplowTracker::Tracker.new(emitters: [emitter], subject: SnowplowTracker::Subject.new, namespace: 'namespace',
       app_id: 'app_id')
@@ -16,7 +17,8 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
   before do
     stub_feature_flags(
       track_struct_event_logger: track_struct_event_logger,
-      snowplow_sync_emitter: snowplow_sync_emitter
+      snowplow_sync_emitter: snowplow_sync_emitter,
+      snowplow_emitter_batching_off: snowplow_emitter_batching_off
     )
     stub_application_setting(
       snowplow_enabled?: true,
@@ -114,6 +116,63 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
         end
       end
     end
+
+    context 'when snowplow_emitter_batching_off feature flag is enabled' do
+      let(:snowplow_emitter_batching_off) { true }
+
+      it "initializes POST emitter with buffer_size 1" do
+        allow(SnowplowTracker::Tracker).to receive(:new).and_return(tracker)
+        allow(tracker).to receive(:track_struct_event).and_call_original
+
+        allow_next_instance_of(Gitlab::Tracking::Destinations::DestinationConfiguration) do |config|
+          allow(config).to receive_messages(hostname: 'gitfoo.com', protocol: 'https')
+        end
+
+        expect(SnowplowTracker::AsyncEmitter)
+          .to receive(:new)
+                .with(endpoint: 'gitfoo.com',
+                  options: { protocol: 'https',
+                             method: 'post',
+                             buffer_size: 1,
+                             on_success: subject.method(:increment_successful_events_emissions),
+                             on_failure: subject.method(:failure_callback) })
+                .and_return(emitter)
+
+        subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+      end
+
+      it "doesn't add Kernel.at_exit hook" do
+        expect(Kernel).not_to receive(:at_exit)
+
+        subject
+      end
+    end
+
+    context 'when snowplow_emitter_batching_off feature flag is disabled' do
+      before do
+        stub_feature_flags(snowplow_emitter_batching_off: false)
+      end
+
+      it "initializes POST emitter with buffer_size 10" do
+        options = {
+          protocol: 'https',
+          method: 'post',
+          buffer_size: 10,
+          on_success: subject.method(:increment_successful_events_emissions),
+          on_failure: subject.method(:failure_callback)
+        }
+        expect(SnowplowTracker::AsyncEmitter)
+          .to receive(:new).with(endpoint: 'gitfoo.com', options: options).and_return(emitter)
+
+        subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
+      end
+
+      it "adds Kernel.at_exit hook" do
+        expect(Kernel).to receive(:at_exit)
+
+        subject
+      end
+    end
   end
 
   context "when in development environment" do
@@ -146,85 +205,6 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
       expect(Kernel).not_to receive(:at_exit)
 
       subject
-    end
-  end
-
-  context "when in staging" do
-    before do
-      allow(Gitlab).to receive(:staging?).and_return(true)
-      allow(Rails.env).to receive(:test?).and_return(false)
-
-      allow(SnowplowTracker::Tracker).to receive(:new).and_return(tracker)
-      allow(tracker).to receive(:track_struct_event).and_call_original
-
-      allow_next_instance_of(Gitlab::Tracking::Destinations::DestinationConfiguration) do |config|
-        allow(config).to receive_messages(hostname: 'gitfoo.com', protocol: 'https')
-      end
-    end
-
-    it "initializes POST emitter with buffer_size 1" do
-      options = {
-        protocol: 'https',
-        method: 'post',
-        buffer_size: 1,
-        on_success: subject.method(:increment_successful_events_emissions),
-        on_failure: subject.method(:failure_callback)
-      }
-      expect(SnowplowTracker::AsyncEmitter)
-        .to receive(:new).with(endpoint: 'gitfoo.com', options: options).and_return(emitter)
-
-      subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
-    end
-
-    it "doesn't add Kernel.at_exit hook" do
-      expect(Kernel).not_to receive(:at_exit)
-
-      subject
-    end
-
-    context 'when snowplow_emitter_batching_off feature flag is disabled' do
-      before do
-        stub_feature_flags(snowplow_emitter_batching_off: false)
-      end
-
-      it "initializes POST emitter with buffer_size 10" do
-        options = {
-          protocol: 'https',
-          method: 'post',
-          buffer_size: 10,
-          on_success: subject.method(:increment_successful_events_emissions),
-          on_failure: subject.method(:failure_callback)
-        }
-        expect(SnowplowTracker::AsyncEmitter)
-          .to receive(:new).with(endpoint: 'gitfoo.com', options: options).and_return(emitter)
-
-        subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
-      end
-
-      it "adds Kernel.at_exit hook" do
-        expect(Kernel).to receive(:at_exit)
-
-        subject
-      end
-    end
-
-    context "when track_struct_event_logger flag is enabled" do
-      let(:track_struct_event_logger) { true }
-
-      it "initializes the emitter with a custom logger" do
-        options = {
-          protocol: 'https',
-          method: 'post',
-          buffer_size: 1,
-          on_success: subject.method(:increment_successful_events_emissions),
-          on_failure: subject.method(:failure_callback),
-          logger: Gitlab::AppLogger
-        }
-        expect(SnowplowTracker::AsyncEmitter)
-          .to receive(:new).with(endpoint: 'gitfoo.com', options: options).and_return(emitter)
-
-        subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
-      end
     end
   end
 

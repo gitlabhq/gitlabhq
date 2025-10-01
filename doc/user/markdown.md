@@ -671,6 +671,7 @@ You cannot use relative links to reference project files in a wiki
 page, or a wiki page in a project file. This limitation exists because wikis are always
 in separate Git repositories in GitLab. For example, `[I'm a reference-style link](style)`
 points to `wikis/style` only when the link is inside a wiki Markdown file.
+For more information, see [Wiki-specific Markdown](project/wiki/markdown.md).
 
 {{< /alert >}}
 

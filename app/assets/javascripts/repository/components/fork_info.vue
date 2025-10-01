@@ -309,7 +309,7 @@ export default {
         <div v-else data-testid="inaccessible-project" class="gl-flex gl-items-center">
           {{ $options.i18n.inaccessibleProject }}
         </div>
-        <div class="gl-mt-3 @sm/panel:gl-mt-0">
+        <div class="gl-mt-3 gl-gap-3 @sm/panel:gl-mt-0 @sm/panel:gl-flex">
           <gl-button v-if="hasCreateMrButton" :href="createMrPath" data-testid="create-mr-button">
             <span>{{ $options.i18n.createMergeRequest }}</span>
           </gl-button>

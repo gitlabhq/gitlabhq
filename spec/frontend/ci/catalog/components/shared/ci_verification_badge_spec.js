@@ -1,6 +1,7 @@
-import { GlIcon, GlLink } from '@gitlab/ui';
+import { GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import CiVerificationBadge from '~/ci/catalog/components/shared/ci_verification_badge.vue';
 import { VERIFICATION_LEVELS } from '~/ci/catalog/constants';
 
@@ -15,6 +16,7 @@ describe('Catalog Verification Badge', () => {
 
   const findVerificationIcon = () => wrapper.findComponent(GlIcon);
   const findLink = () => wrapper.findComponent(GlLink);
+  const findPopover = () => wrapper.findComponent(GlPopover);
   const findVerificationText = () => wrapper.findByTestId('verification-badge-text');
 
   const createComponent = (props = defaultProps) => {
@@ -22,6 +24,9 @@ describe('Catalog Verification Badge', () => {
       shallowMount(CiVerificationBadge, {
         propsData: {
           ...props,
+        },
+        stubs: {
+          GlSprintf,
         },
       }),
     );
@@ -64,26 +69,39 @@ describe('Catalog Verification Badge', () => {
   });
 
   describe.each`
-    verificationLevel                  | describeText
-    ${'GITLAB_MAINTAINED'}             | ${'GitLab'}
-    ${'GITLAB_PARTNER_MAINTAINED'}     | ${'a GitLab partner'}
-    ${'VERIFIED_CREATOR_MAINTAINED'}   | ${'a verified creator'}
-    ${'VERIFIED_CREATOR_SELF_MANAGED'} | ${'a verified creator'}
-  `('when the resource is maintained by $describeText', ({ verificationLevel }) => {
-    beforeEach(() => {
-      createComponent({ ...defaultProps, verificationLevel });
-    });
+    verificationLevel                  | breakpoint | text                       | link                     | placement
+    ${'GITLAB_MAINTAINED'}             | ${'sm'}    | ${'by GitLab'}             | ${'designated creators'} | ${'bottom'}
+    ${'GITLAB_MAINTAINED'}             | ${'md'}    | ${'by GitLab'}             | ${'designated creators'} | ${'right'}
+    ${'GITLAB_PARTNER_MAINTAINED'}     | ${'sm'}    | ${'by a GitLab Partner'}   | ${'designated creators'} | ${'bottom'}
+    ${'VERIFIED_CREATOR_MAINTAINED'}   | ${'sm'}    | ${'by a verified creator'} | ${'component creators'}  | ${'bottom'}
+    ${'VERIFIED_CREATOR_SELF_MANAGED'} | ${'sm'}    | ${'by a verified creator'} | ${'verified creators'}   | ${'bottom'}
+  `(
+    'when the resource is maintained $text',
+    ({ verificationLevel, text, breakpoint, link, placement }) => {
+      beforeEach(() => {
+        jest.spyOn(PanelBreakpointInstance, 'getBreakpointSize').mockReturnValue(breakpoint);
 
-    it('renders the correct icon', () => {
-      expect(findVerificationIcon().props('name')).toBe(
-        VERIFICATION_LEVELS[verificationLevel].icon,
-      );
-    });
+        createComponent({ ...defaultProps, verificationLevel });
+      });
 
-    it('displays the correct badge text', () => {
-      expect(findVerificationText().text()).toContain(
-        VERIFICATION_LEVELS[verificationLevel].badgeText,
-      );
-    });
-  });
+      it('renders the correct icon', () => {
+        expect(findVerificationIcon().props('name')).toBe(
+          VERIFICATION_LEVELS[verificationLevel].icon,
+        );
+      });
+
+      it('displays the correct badge text', () => {
+        expect(findVerificationText().text()).toContain(
+          VERIFICATION_LEVELS[verificationLevel].badgeText,
+        );
+      });
+
+      it('displays the correct popover text and link', () => {
+        expect(findPopover().props('placement')).toBe(placement);
+        expect(findPopover().text().replace(/\s+/g, ' ')).toContain(text);
+
+        expect(findPopover().findComponent(GlLink).text()).toContain(link);
+      });
+    },
+  );
 });

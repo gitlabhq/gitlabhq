@@ -63,7 +63,7 @@ The `token_field_encrypted` column should always be indexed, because it is used 
 
 - `unique: false`: Doesn't enforce token uniqueness and disables the generation of `find_by_token_field` (where `token_field` is the attribute name). Default is `true`.
 - `format_with_prefix: :compute_token_prefix`: Allows to define a prefix for the token. The `#compute_token_prefix` method needs to return a `String`. Default is no prefix.
-  See guidance on [token prefixes](secure_coding_guidelines.md#token-prefixes).
+  See guidance on [token prefixes](secure_coding_guidelines/_index.md#token-prefixes).
 - `expires_at: :compute_token_expiration_time`: Allows to define a time when the token should expire.
   The `#compute_token_expiration_time` method needs to return a `Time` object. Default is no expiration.
 - `token_generator:` A proc that returns a token. If absent, a random token is generated using `Devise.friendly_token`.

@@ -449,11 +449,21 @@ class Wiki
     Gitlab::Git::CommandError,
     ArgumentError => e
 
-    @error_message = e.message
-
-    Gitlab::ErrorTracking.log_exception(e, action: action, wiki_id: id)
+    track_error(e, action)
 
     response_on_error
+  rescue Gitlab::Git::Repository::NoRepository => e
+    repository.expire_status_cache
+
+    track_error(e, action)
+
+    response_on_error
+  end
+
+  def track_error(error, action)
+    @error_message = error.message
+
+    Gitlab::ErrorTracking.log_exception(error, action: action, wiki_id: id)
   end
 
   def update_redirection_actions(new_path, old_path = nil, **options)

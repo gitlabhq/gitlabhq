@@ -510,6 +510,18 @@
     .rd-app .rd-app-sidebar {
       top: calc(1rem + -1px) !important;
     }
+
+    // Commits diff file tree header
+    .diff-file .file-title-flex-parent {
+
+      @include media-breakpoint-up(md) {
+        &.is-commit,
+        &.is-compare,
+        &.is-wiki {
+          top: 0 !important;
+        }
+      }
+    }
   }
 
   // Sidebar adjustments

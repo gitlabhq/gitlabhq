@@ -147,6 +147,7 @@ export default {
       this.showErrorAlert = state;
     },
     onPlatformsButtonResize() {
+      // Note, this component is a modal, so it should not be migrated to PanelBreakpointInstance
       if (GlBreakpointInstance.getBreakpointSize() === 'xs') {
         this.platformsButtonGroupVertical = true;
       } else {

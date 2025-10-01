@@ -1206,13 +1206,13 @@ export default {
                       <duo-workflow-action
                         v-if="isDuoWorkflowEnabled"
                         :project-path="workItemFullPath"
-                        :title="__('Generate MR with Duo')"
                         :hover-message="__('Generate merge request with Duo')"
                         :goal="workItem.webUrl"
                         workflow-definition="issue_to_merge_request"
                         :agent-privileges="agentPrivileges"
                         size="medium"
-                      />
+                        >{{ __('Generate MR with Duo') }}</duo-workflow-action
+                      >
                     </div>
                   </div>
                 </div>

@@ -18,7 +18,7 @@ Broadly speaking, there are two classes of secrets:
 1. **Application secrets.** The GitLab application uses these to implement a particular feature or function.
    An example would be access tokens or private keys to create cryptographic signatures. We store
    these secrets in the database in encrypted columns.
-   See [Secure Coding Guidelines: At rest](secure_coding_guidelines.md#at-rest).
+   See [Secure Coding Guidelines: At rest](secure_coding_guidelines/_index.md#at-rest).
 1. **Operational secrets.** Used to read and store other secrets or bootstrap the application. For this reason,
    they cannot be stored in the database.
    These secrets are stored as [Rails credentials](https://guides.rubyonrails.org/security.html#environmental-security)

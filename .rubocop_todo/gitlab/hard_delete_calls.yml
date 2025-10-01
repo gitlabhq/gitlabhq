@@ -10,4 +10,3 @@ Gitlab/HardDeleteCalls:
     - 'app/services/users/destroy_service.rb'
     - 'lib/api/groups.rb'
     - 'lib/api/projects.rb'
-    - 'lib/gitlab/background_migration/delete_orphaned_groups.rb'
