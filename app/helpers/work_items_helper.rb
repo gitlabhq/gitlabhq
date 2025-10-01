@@ -78,18 +78,32 @@ module WorkItemsHelper
   end
 
   def rss_path_for(resource_parent)
+    params = safe_params.merge(rss_url_options)
+
     if resource_parent.is_a?(Group)
-      group_work_items_path(resource_parent, format: :atom, feed_token: generate_feed_token(:atom))
+      # Remove id and use group_id instead for the route
+      params = params.except(:id)
+      url_for(params.merge(controller: 'groups/work_items', action: 'index', group_id: resource_parent.to_param))
     else
-      project_work_items_path(resource_parent, format: :atom, feed_token: generate_feed_token(:atom))
+      url_for(params.merge(controller: 'projects/work_items',
+        action: 'rss',
+        namespace_id: resource_parent.namespace.to_param,
+        project_id: resource_parent.to_param))
     end
   end
 
   def calendar_path_for(resource_parent)
+    params = safe_params.merge(calendar_url_options)
+
     if resource_parent.is_a?(Group)
-      group_work_items_path(resource_parent, format: :ics)
+      # Remove id and use group_id instead for the route
+      params = params.except(:id)
+      url_for(params.merge(controller: 'groups/work_items', action: 'index', group_id: resource_parent.to_param))
     else
-      project_work_items_path(resource_parent, format: :ics)
+      url_for(params.merge(controller: 'projects/work_items',
+        action: 'calendar',
+        namespace_id: resource_parent.namespace.to_param,
+        project_id: resource_parent.to_param))
     end
   end
 

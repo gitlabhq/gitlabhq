@@ -456,7 +456,7 @@ GitLab can be considered to have two layers from a process perspective:
   - [Omnibus](https://docs.gitlab.com/omnibus/settings/ssl/)
   - [Charts](https://docs.gitlab.com/charts/installation/tls.html)
   - [Source](../install/self_compiled/_index.md#using-https)
-  - [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/nginx.md)
+  - [GDK](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/nginx/)
 - Layer: Core Service (Processor)
 - GitLab.com: [Secrets Management](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/architecture/#secrets-management)
 

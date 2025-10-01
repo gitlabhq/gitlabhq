@@ -531,7 +531,7 @@ After you are confident in the dependency scanning with SBOM results for a singl
 ## Supported package types
 
 For the security analysis to be effective, the components listed in your SBOM report must have corresponding
-entries in the [GitLab Advisory Database](../../gitlab_advisory_database/_index.md).
+entries in the [GitLab advisory database](../../gitlab_advisory_database/_index.md).
 
 The GitLab SBOM Vulnerability Scanner can report dependency scanning vulnerabilities for components with the
 following [PURL types](https://github.com/package-url/purl-spec/blob/346589846130317464b677bc4eab30bf5040183a/PURL-TYPES.rst):
@@ -655,7 +655,7 @@ When using GitLab-provided analyzers, these requirements are met.
 ## Security analysis
 
 After a compatible CycloneDX SBOM document is uploaded, GitLab automatically performs the security analysis
-with the GitLab SBOM Vulnerability Scanner. Each component is checked against the GitLab Advisory Database and
+with the GitLab SBOM Vulnerability Scanner. Each component is checked against the GitLab advisory database and
 scan results are processed in the following manners:
 
 If the SBOM report is declared by a CI/CD job on the default branch: vulnerabilities are created,

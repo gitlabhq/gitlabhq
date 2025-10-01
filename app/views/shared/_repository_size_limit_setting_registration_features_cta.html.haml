@@ -1,7 +1,7 @@
 - return unless registration_features_can_be_prompted?
 
 .row
-  .form-group.col-md-9
+  .form-group.gl-col-md-9
     = form.label :disabled_repository_size_limit, class: 'label-bold' do
       = _('Repository size limit (MiB)')
     = form.number_field :disabled_repository_size_limit, value: '', class: 'form-control', disabled: true

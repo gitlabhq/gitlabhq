@@ -1,7 +1,7 @@
 - hide_class = 'gl-hidden' if form_errors(@trigger)
 
 .row.gl-mt-3.gl-mb-3
-  .col-lg-12
+  .gl-col-lg-12
     = render ::Layouts::CrudComponent.new(_("Active pipeline trigger tokens"),
       icon: 'token',
       count: @triggers.size,

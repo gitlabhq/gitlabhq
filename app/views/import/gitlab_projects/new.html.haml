@@ -26,15 +26,15 @@
     = render 'import/shared/new_project_form'
 
     .row
-      .form-group.col-md-12
+      .form-group.gl-col-md-12
         = _("To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here.")
     .row
-      .form-group.col-sm-12
+      .form-group.gl-col-sm-12
         = label_tag :file, _('GitLab project export'), class: 'label-bold'
         .form-group
           = file_field_tag :file, class: ''
     .row
-      .col-sm-12.gl-mt-5
+      .gl-col-sm-12.gl-mt-5
         = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { class: 'gl-mr-2', data: { testid: 'import-project-button' }}) do
           = _('Import project')
         = render Pajamas::ButtonComponent.new(href: new_project_path) do

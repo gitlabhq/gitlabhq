@@ -94,7 +94,7 @@ RSpec.describe Gitlab::ExperimentFeatureRollout, :experiment, feature_category: 
 
           100.times { |i| run_cycle(subject_experiment, value: i) }
 
-          expect(counts).to eq(variant1: 39, variant2: 24, variant3: 37)
+          expect(counts).to eq(variant1: 39, variant2: 23, variant3: 38)
         end
       end
 
@@ -106,7 +106,7 @@ RSpec.describe Gitlab::ExperimentFeatureRollout, :experiment, feature_category: 
         it "rolls out with the expected distribution" do
           100.times { |i| run_cycle(subject_experiment, value: i) }
 
-          expect(counts).to eq(variant1: 95, variant2: 5)
+          expect(counts).to eq(variant1: 93, variant2: 7)
         end
       end
 

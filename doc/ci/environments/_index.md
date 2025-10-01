@@ -33,18 +33,17 @@ Prerequisites:
 There are a few ways to view a list of environments for a given project:
 
 - On the project's overview page, if at least one environment is available (that is, not stopped).
-   ![A project overview page displaying the number of available environments as an incremental counter.](img/environments_project_home_v15_9.png)
 
-- On the left sidebar, select **Operate** > **Environments**.
-  The environments are displayed.
+  ![A project overview page displaying the number of available environments as an incremental counter.](img/environments_project_home_v15_9.png)
+
+- On the left sidebar, select **Operate** > **Environments**. The environments are displayed.
 
   ![A list of available environments in a GitLab project, showing environment names, statuses, and other relevant details.](img/environments_list_v14_8.png)
 
 - To view a list of deployments for an environment, select the environment name,
-  for example, `staging`.
-  ![A list of deployments for a selected environment, displaying deployment history and related details.](img/deployments_list_v13_10.png)
+  for example, `staging`. Deployments show up in this list only after a deployment job has created them.
 
-  Deployments show up in this list only after a deployment job has created them.
+  ![A list of deployments for a selected environment, displaying deployment history and related details.](img/deployments_list_v13_10.png)
 
 - To view a list of all manual jobs in a deployment pipeline, select the **Run** ({{< icon name="play" >}}) dropdown list.
 
@@ -63,10 +62,15 @@ The [environment URL](../yaml/_index.md#environmenturl) is displayed in a few
 places in GitLab:
 
 - In a merge request as a link:
+
   ![Environment URL in merge request](img/environments_mr_review_app_v11_10.png)
+
 - In the Environments view as a button:
+
   ![Open live environment from environments view](img/environments_open_live_environment_v14_8.png)
+
 - In the Deployments view as a button:
+
   ![Environment URL in deployments](img/deployments_view_v11_10.png)
 
 You can see this information in a merge request if:
@@ -1020,7 +1024,7 @@ To ensure the `action: stop` can always run when needed, you can:
     when: manual
   ```
 
-### Error: job would create an environment with an invalid parameter
+### Error: job `would create an environment with an invalid parameter`
 
 If your project is configured to [create a dynamic environment](#create-a-dynamic-environment),
 you might encounter this error in a deployment job because the dynamically generated parameter can't be used for creating an environment:

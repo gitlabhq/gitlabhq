@@ -15970,7 +15970,7 @@ msgstr ""
 msgid "CompareRevisions|Filter by Git revision"
 msgstr ""
 
-msgid "CompareRevisions|Include changes to target since source was created"
+msgid "CompareRevisions|Include changes to target after source was created"
 msgstr ""
 
 msgid "CompareRevisions|Only incoming changes from source"

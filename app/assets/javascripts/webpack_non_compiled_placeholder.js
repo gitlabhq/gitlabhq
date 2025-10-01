@@ -33,7 +33,7 @@ div.innerHTML = `
 <p>
   To reduce GDK memory consumption, incremental on-demand compiling is on by default.<br />
   You can disable this within gdk.yml.
-  Learn more <a href="https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/configuration.md#webpack-settings">here</a>.
+  Learn more <a href="https://gitlab-org.gitlab.io/gitlab-development-kit/configuration/#webpack-settings">here</a>.
 </p>
 <p>
   ${reloadMessage}<br />
@@ -54,7 +54,7 @@ div.innerHTML = `
       Follow the documentation to switch to using Vite.<br />
       Vite compiles frontend assets faster and eliminates the need for this message.
     </p>
-    <a href="https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/configuration.md?ref_type=heads#vite-settings" rel="noopener noreferrer" target="_blank" class="btn btn-confirm btn-md gl-button">
+    <a href="https://gitlab-org.gitlab.io/gitlab-development-kit/configuration/#vite-settings" rel="noopener noreferrer" target="_blank" class="btn btn-confirm btn-md gl-button">
       <span class="gl-button-text">Switch to Vite</span>
     </a>
   </div>

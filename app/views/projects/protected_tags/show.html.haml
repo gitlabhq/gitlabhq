@@ -1,11 +1,11 @@
 - page_title @protected_ref.name, _("Protected Tags")
 
 .row.gl-mt-3.gl-mb-3
-  .col-lg-3
+  .gl-col-lg-3
     %h4.gl-mt-0.ref-name
       = @protected_ref.name
 
-  .col-lg-9
+  .gl-col-lg-9
     %h5= s_("ProtectedTag|Matching Tags")
     - if @matching_refs.present?
       .table-responsive

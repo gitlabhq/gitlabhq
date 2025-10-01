@@ -10,7 +10,7 @@ title: GitLab Observability development guidelines
 
 There are several options for developing and debugging GitLab Observability:
 
-- [Run GDK and GitLab Observability Backend locally all-in-one](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_observability_backend.md): This is the simplest and recommended approach for those looking to make changes, or verify changes to Rails, Sidekiq or Workhorse.
+- [Run GDK and GitLab Observability Backend locally all-in-one](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_observability_backend/): This is the simplest and recommended approach for those looking to make changes, or verify changes to Rails, Sidekiq or Workhorse.
 - [Run GDK locally and connect to the staging instance](#run-gdk-and-connect-to-the-staging-instance-of-gitlab-observability-backend) of [GitLab Observability Backend](https://gitlab.com/gitlab-org/opstrace/opstrace). This is an alternative approach for those looking to make changes, or verify changes to Rails, Sidekiq or Workhorse.
 - [Use the purpose built `devvm`](#use-the-purpose-built-devvm). This is more involved but includes a development deployment of the [GitLab Observability Backend](https://gitlab.com/gitlab-org/opstrace/opstrace). This is recommended for those who want to make changes to the GitLab Observability Backend component.
 - [Run GDK with mocked Observability data](#run-gdk-with-mocked-observability-data). This could be useful in case you just need to work on a frontend or Rails change and do not need the full stack, or when providing reproduction steps for an MR reviewer, who probably won't want to set up the full stack just for an MR.
@@ -113,7 +113,7 @@ You can reference the [instructions for running the demo app](https://openteleme
 
 {{< alert type="note" >}}
 
-For GDK and Docker to communicate you may need to set up a [loopback interface](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/local_network.md#create-loopback-interface).
+For GDK and Docker to communicate you may need to set up a [loopback interface](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/local_network/#create-loopback-interface).
 
 {{< /alert >}}
 

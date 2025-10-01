@@ -23,7 +23,7 @@
     .div
       = form_with url: oauth_device_authorizations_authorize_url, method: :post, class: 'gl-inline-block gl-pr-3' do |f|
         .form-group.row
-          .col-lg-8.col-sm-10
+          .gl-col-lg-8.gl-col-sm-10
             = f.hidden_field :user_code, value: params[:user_code]
         .div
           = render Pajamas::ButtonComponent.new(type: :submit,

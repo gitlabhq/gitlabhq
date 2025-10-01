@@ -40,7 +40,7 @@ RSpec.describe UserHighestRole, feature_category: :plan_provisioning do
     end
 
     it 'returns all access values' do
-      expected_allowed_values << Gitlab::Access::MINIMAL_ACCESS if Gitlab.ee?
+      expected_allowed_values.unshift(Gitlab::Access::MINIMAL_ACCESS) if Gitlab.ee?
 
       expect(::UserHighestRole.allowed_values).to eq(expected_allowed_values)
     end

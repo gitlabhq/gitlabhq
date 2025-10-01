@@ -724,7 +724,7 @@ GEM
     git (1.19.1)
       addressable (~> 2.8)
       rchardet (~> 1.8)
-    gitaly (18.4.0.pre.rc1)
+    gitaly (18.4.1)
       grpc (~> 1.0)
     gitlab (4.19.0)
       httparty (~> 0.20)
@@ -741,7 +741,7 @@ GEM
       danger (>= 9.3.0)
       danger-gitlab (>= 8.0.0)
       rake (~> 13.0)
-    gitlab-experiment (0.9.1)
+    gitlab-experiment (1.0.0)
       activesupport (>= 3.0)
       request_store (>= 1.0)
     gitlab-fog-azure-rm (2.4.0)
@@ -2170,7 +2170,7 @@ DEPENDENCIES
   gitlab-crystalball (~> 1.1.0)
   gitlab-dangerfiles (~> 4.10.0)
   gitlab-duo-workflow-service-client (~> 0.3)!
-  gitlab-experiment (~> 0.9.1)
+  gitlab-experiment (~> 1.0.0)
   gitlab-fog-azure-rm (~> 2.4.0)
   gitlab-glfm-markdown (~> 0.0.33)
   gitlab-housekeeper!

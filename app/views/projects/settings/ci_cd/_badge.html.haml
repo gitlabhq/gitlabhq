@@ -1,5 +1,5 @@
 %div{ class: badge.title.gsub(' ', '-') }
-  .col-lg-12
+  .gl-col-lg-12
     %h4
       = badge.title.capitalize
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, header_options: { class: 'gl-flex gl-items-center' }) do |c|
@@ -12,21 +12,21 @@
         .js-ref-switcher-badge{ id: "js-project-ci-cd-ref-switcher-#{badge.title.parameterize(separator: '-') }", data: { project_id: @project.id, ref: @ref } }
       - c.with_body do
         .row
-          .col-md-2.gl-text-center
+          .gl-col-md-2.gl-text-center
             Markdown
-          .col-md-10.code.js-syntax-highlight
+          .gl-col-md-10.code.js-syntax-highlight
             = highlight_badge('.md', badge.to_markdown, language: 'markdown')
         .row
           %hr
         .row
-          .col-md-2.gl-text-center
+          .gl-col-md-2.gl-text-center
             HTML
-          .col-md-10.code.js-syntax-highlight
+          .gl-col-md-10.code.js-syntax-highlight
             = highlight_badge('.html', badge.to_html, language: 'html')
         .row
           %hr
         .row
-          .col-md-2.gl-text-center
+          .gl-col-md-2.gl-text-center
             AsciiDoc
-          .col-md-10.code.js-syntax-highlight
+          .gl-col-md-10.code.js-syntax-highlight
             = highlight_badge('.adoc', badge.to_asciidoc)

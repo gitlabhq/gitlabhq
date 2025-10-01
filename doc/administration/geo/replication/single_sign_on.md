@@ -135,7 +135,9 @@ in most cases, it should work without an issue:
 
 ## LDAP
 
-If you use LDAP on your **primary** site, you should also set up secondary LDAP servers on each **secondary** site. Otherwise, users cannot perform Git operations over HTTP(s) on the **secondary** site using HTTP basic authentication. However, users can still use Git with SSH and personal access tokens.
+If you use LDAP on your **primary** site, the same LDAP configuration also applies to the **secondary** site because the **secondary** proxies requests related to authentication to the **primary**.
+
+To prepare for disaster recovery scenarios, you should set up secondary LDAP servers on each **secondary** site. In this case, when you promote the **secondary**, users will be able to authenticate using the replica LDAP service. Otherwise, if the LDAP service connected to the **primary** site is not available to the promoted **secondary** site, users won't be able to perform Git operations over HTTP(s) on the **secondary** site using HTTP basic authentication. However, users can still use Git with SSH and personal access tokens.
 
 {{< alert type="note" >}}
 

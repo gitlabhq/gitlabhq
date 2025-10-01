@@ -118,7 +118,7 @@ Is the cache being added "worthy"? This can be hard to measure, but you can cons
 - After you're looking in the right place:
   - Remove or comment out sections of code until you find the cause.
   - Use `binding.pry` to poke about in live requests. This requires a
-    [foreground web process](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/pry.md).
+    [foreground web process](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/pry/).
 
 #### Verification
 

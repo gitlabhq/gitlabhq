@@ -7511,6 +7511,7 @@ Input type: `GroupUpdateInput`
 | <a id="mutationgroupupdatename"></a>`name` | [`String`](#string) | Name of the group. |
 | <a id="mutationgroupupdatepath"></a>`path` | [`String`](#string) | Path of the namespace. |
 | <a id="mutationgroupupdatesharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
+| <a id="mutationgroupupdatestepupauthrequiredoauthprovider"></a>`stepUpAuthRequiredOauthProvider` | [`String`](#string) | OAuth provider required for step-up authentication. |
 | <a id="mutationgroupupdatevisibility"></a>`visibility` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Visibility of the namespace. |
 | <a id="mutationgroupupdatewebbasedcommitsigningenabled"></a>`webBasedCommitSigningEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 
@@ -11900,6 +11901,26 @@ Input type: `SecurityCategoryCreateInput`
 | <a id="mutationsecuritycategorycreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationsecuritycategorycreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationsecuritycategorycreatesecuritycategory"></a>`securityCategory` | [`SecurityCategory`](#securitycategory) | Created security category. |
+
+### `Mutation.securityCategoryDestroy`
+
+Input type: `SecurityCategoryDestroyInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecuritycategorydestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecuritycategorydestroyid"></a>`id` | [`SecurityCategoryID!`](#securitycategoryid) | Global ID of the security category to destroy. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecuritycategorydestroyclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecuritycategorydestroydeletedattributesgid"></a>`deletedAttributesGid` | [`[SecurityAttributeID!]`](#securityattributeid) | Global IDs of the deleted security attributes. |
+| <a id="mutationsecuritycategorydestroydeletedcategorygid"></a>`deletedCategoryGid` | [`SecurityCategoryID`](#securitycategoryid) | Global ID of the deleted security category. |
+| <a id="mutationsecuritycategorydestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.securityCategoryUpdate`
 
@@ -23854,7 +23875,6 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="aiusageeventevent"></a>`event` | [`AiUsageEventType!`](#aiusageeventtype) | Type of the event. |
-| <a id="aiusageeventid"></a>`id` | [`ID!`](#id) | ID of the usage event. |
 | <a id="aiusageeventtimestamp"></a>`timestamp` | [`Time!`](#time) | When the event happened. |
 | <a id="aiusageeventuser"></a>`user` | [`UserCore!`](#usercore) | User associated with the event. |
 
@@ -26486,7 +26506,6 @@ Code Quality report for a pipeline.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="codesuggestioneventevent"></a>`event` | [`AiUsageEventType!`](#aiusageeventtype) | Type of the event. |
-| <a id="codesuggestioneventid"></a>`id` | [`ID!`](#id) | ID of the usage event. |
 | <a id="codesuggestioneventlanguage"></a>`language` | [`String`](#string) | Programming language in the context of the suggestion. |
 | <a id="codesuggestioneventsuggestionsize"></a>`suggestionSize` | [`String`](#string) | Size of the code suggestion measured in lines of code. |
 | <a id="codesuggestioneventtimestamp"></a>`timestamp` | [`Time!`](#time) | When the event happened. |
@@ -30803,6 +30822,7 @@ GPG signature for a signed commit.
 | <a id="groupmentionsdisabled"></a>`mentionsDisabled` | [`Boolean`](#boolean) | Indicates if a group is disabled from getting mentioned. |
 | <a id="groupmergerequestsenabled"></a>`mergeRequestsEnabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if merge requests are enabled for the namespace. |
 | <a id="groupname"></a>`name` | [`String`](#string) | Name of the group. |
+| <a id="groupnamespacesettings"></a>`namespaceSettings` | [`NamespaceSettings`](#namespacesettings) | Namespace settings for the namespace. |
 | <a id="grouporganizationeditpath"></a>`organizationEditPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.1. **Status**: Experiment. Path for editing group at the organization level. |
 | <a id="grouppackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
 | <a id="groupparent"></a>`parent` | [`Group`](#group) | Parent group. |
@@ -32559,6 +32579,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="groupworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]` (maximum is 100 IIDs). |
 | <a id="groupworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="groupworkitemstatecountsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include work items from ancestor groups. Ignored for project namespaces. |
+| <a id="groupworkitemstatecountsincludearchived"></a>`includeArchived` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.5. **Status**: Experiment. Return work items from archived projects. Ignored for project namespaces. |
 | <a id="groupworkitemstatecountsincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether to include work items of descendant parents when filtering by parent_ids. |
 | <a id="groupworkitemstatecountsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include work items from descendant groups and projects. Ignored for project namespaces. |
 | <a id="groupworkitemstatecountsiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter by a list of iteration cadence IDs (maximum is 100 IDs). |
@@ -32643,6 +32664,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]` (maximum is 100 IIDs). |
 | <a id="groupworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="groupworkitemsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include work items from ancestor groups. Ignored for project namespaces. |
+| <a id="groupworkitemsincludearchived"></a>`includeArchived` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.5. **Status**: Experiment. Return work items from archived projects. Ignored for project namespaces. |
 | <a id="groupworkitemsincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether to include work items of descendant parents when filtering by parent_ids. |
 | <a id="groupworkitemsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include work items from descendant groups and projects. Ignored for project namespaces. |
 | <a id="groupworkitemsiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter by a list of iteration cadence IDs (maximum is 100 IDs). |
@@ -36543,6 +36565,7 @@ Product analytics events for a specific month and year.
 | <a id="namespacemarkdownpaths"></a>`markdownPaths` {{< icon name="warning-solid" >}} | [`MarkdownPaths`](#markdownpaths) | **Introduced** in GitLab 18.1. **Status**: Experiment. Namespace relevant paths to create markdown links on the UI. |
 | <a id="namespacemergerequestsenabled"></a>`mergeRequestsEnabled` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Indicates if merge requests are enabled for the namespace. |
 | <a id="namespacename"></a>`name` | [`String!`](#string) | Name of the namespace. |
+| <a id="namespacenamespacesettings"></a>`namespaceSettings` | [`NamespaceSettings`](#namespacesettings) | Namespace settings for the namespace. |
 | <a id="namespacepackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
 | <a id="namespacepath"></a>`path` | [`String!`](#string) | Path of the namespace. |
 | <a id="namespaceplan"></a>`plan` {{< icon name="warning-solid" >}} | [`NamespacePlan`](#namespaceplan) | **Introduced** in GitLab 18.2. **Status**: Experiment. Subscription plan associated with the namespace. |
@@ -36963,6 +36986,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="namespaceworkitemstatecountsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]` (maximum is 100 IIDs). |
 | <a id="namespaceworkitemstatecountsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="namespaceworkitemstatecountsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include work items from ancestor groups. Ignored for project namespaces. |
+| <a id="namespaceworkitemstatecountsincludearchived"></a>`includeArchived` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.5. **Status**: Experiment. Return work items from archived projects. Ignored for project namespaces. |
 | <a id="namespaceworkitemstatecountsincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether to include work items of descendant parents when filtering by parent_ids. |
 | <a id="namespaceworkitemstatecountsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include work items from descendant groups and projects. Ignored for project namespaces. |
 | <a id="namespaceworkitemstatecountsiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter by a list of iteration cadence IDs (maximum is 100 IDs). |
@@ -37052,6 +37076,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceworkitemsiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of work items. For example, `["1", "2"]` (maximum is 100 IIDs). |
 | <a id="namespaceworkitemsin"></a>`in` | [`[IssuableSearchableField!]`](#issuablesearchablefield) | Specify the fields to perform the search in. Defaults to `[TITLE, DESCRIPTION]`. Requires the `search` argument.'. |
 | <a id="namespaceworkitemsincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include work items from ancestor groups. Ignored for project namespaces. |
+| <a id="namespaceworkitemsincludearchived"></a>`includeArchived` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.5. **Status**: Experiment. Return work items from archived projects. Ignored for project namespaces. |
 | <a id="namespaceworkitemsincludedescendantworkitems"></a>`includeDescendantWorkItems` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.3. **Status**: Experiment. Whether to include work items of descendant parents when filtering by parent_ids. |
 | <a id="namespaceworkitemsincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include work items from descendant groups and projects. Ignored for project namespaces. |
 | <a id="namespaceworkitemsiterationcadenceid"></a>`iterationCadenceId` | [`[IterationsCadenceID!]`](#iterationscadenceid) | Filter by a list of iteration cadence IDs (maximum is 100 IDs). |
@@ -37232,6 +37257,16 @@ Represents a subscription plan.
 | <a id="namespaceprojectstatisticsstoragesize"></a>`storageSize` | [`Float`](#float) | Storage size of the project in bytes. |
 | <a id="namespaceprojectstatisticsuploadssize"></a>`uploadsSize` | [`Float`](#float) | Uploads size of the project in bytes. |
 | <a id="namespaceprojectstatisticswikisize"></a>`wikiSize` | [`Float`](#float) | Wiki size of the project in bytes. |
+
+### `NamespaceSettings`
+
+Settings for the namespace.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespacesettingsstepupauthrequiredoauthprovider"></a>`stepUpAuthRequiredOauthProvider` | [`String`](#string) | OAuth provider required for step-up authentication. |
 
 ### `NamespaceSidebar`
 

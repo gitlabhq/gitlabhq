@@ -24,7 +24,7 @@ This document describes various guidelines to ensure good and consistent perform
 - Frontend:
   - [Performance guidelines and monitoring](fe_guide/performance.md)
   - [Browser performance testing guidelines](../ci/testing/browser_performance_testing.md)
-  - [`gdk measure` and `gdk measure-workflow`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/gdk_commands.md#measure-performance)
+  - [`gdk measure` and `gdk measure-workflow`](https://gitlab-org.gitlab.io/gitlab-development-kit/gdk_commands/#measure-performance)
 - QA:
   - [Load performance testing](../ci/testing/load_performance_testing.md)
   - [GitLab Performance Tool project](https://gitlab.com/gitlab-org/quality/performance)
@@ -411,7 +411,7 @@ This patch is available by default for
 [CNG](https://gitlab.com/gitlab-org/build/CNG/-/merge_requests/591),
 [GitLab CI](https://gitlab.com/gitlab-org/gitlab-build-images/-/merge_requests/355),
 [GCK](https://gitlab.com/gitlab-org/gitlab-compose-kit/-/merge_requests/149)
-and can additionally be enabled for [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/advanced.md#apply-custom-patches-for-ruby).
+and can additionally be enabled for [GDK](https://gitlab-org.gitlab.io/gitlab-development-kit/advanced/#apply-custom-patches-for-ruby).
 
 This patch provides the following metrics that make it easier to understand efficiency of memory use for a given code path:
 

@@ -15,13 +15,13 @@
       = form_errors(@o11y_service_settings)
 
       .row
-        .form-group.col-md-6
+        .form-group.gl-col-md-6
           = f.label :group_id, s_('Observability|Group ID'), class: 'label-bold'
           = f.text_field :group_id, class: 'form-control', placeholder: '12345', readonly: true
           %span.form-text.gl-text-subtle
             = s_('Observability|The ID of the group for this o11y service configuration.')
 
-        .form-group.col-md-6
+        .form-group.gl-col-md-6
           = label_tag :group_name, s_('Observability|Group name'), class: 'label-bold'
           = text_field_tag :group_name, @o11y_service_settings.group.name, class: 'form-control', readonly: true
           %span.form-text.gl-text-subtle

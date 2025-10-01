@@ -2,7 +2,6 @@
 # Do not add new specs to this file.
 ee/spec/frontend/approvals/project_settings/project_rules_spec.js
 ee/spec/frontend/boards/components/board_new_issue_spec.js
-ee/spec/frontend/dependencies/components/direct_descendant_viewer_spec.js
 ee/spec/frontend/geo_sites/index_spec.js
 ee/spec/frontend/iterations/components/iteration_form_spec.js
 ee/spec/frontend/sidebar/components/sidebar_dropdown_widget_spec.js

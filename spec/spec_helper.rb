@@ -387,6 +387,10 @@ RSpec.configure do |config|
 
       # FF is temporary until we add a proper UI setting to enable/disable pipeline running for composite identities.
       stub_feature_flags(forbid_composite_identities_to_run_pipelines: false)
+
+      # Using the new indexes causes many specs to fail on the group issues list when joining on project in the finder
+      # Default to false, since switching the finders over is still a WIP
+      stub_feature_flags(use_namespace_id_for_issue_and_work_item_finders: false)
     else
       unstub_all_feature_flags
     end

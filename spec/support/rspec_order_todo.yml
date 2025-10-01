@@ -7913,7 +7913,6 @@
 - './spec/workers/users/create_statistics_worker_spec.rb'
 - './spec/workers/users/deactivate_dormant_users_worker_spec.rb'
 - './spec/workers/user_status_cleanup/batch_worker_spec.rb'
-- './spec/workers/web_hooks/log_destroy_worker_spec.rb'
 - './spec/workers/web_hook_worker_spec.rb'
 - './spec/workers/wikis/git_garbage_collect_worker_spec.rb'
 - './spec/workers/x509_certificate_revoke_worker_spec.rb'

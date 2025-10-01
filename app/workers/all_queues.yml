@@ -5100,16 +5100,6 @@
   :idempotent: false
   :tags: []
   :queue_namespace:
-- :name: web_hooks_log_destroy
-  :worker_name: WebHooks::LogDestroyWorker
-  :feature_category: :webhooks
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: true
-  :tags: []
-  :queue_namespace:
 - :name: web_hooks_log_execution
   :worker_name: WebHooks::LogExecutionWorker
   :feature_category: :webhooks

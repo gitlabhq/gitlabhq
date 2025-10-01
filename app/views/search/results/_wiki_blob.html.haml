@@ -6,5 +6,5 @@
   %span.gl-flex.gl-items-center
     = link_to wiki_blob_link(wiki_blob), data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position }, class: 'gl-w-full' do
       %span.term.str-truncated.gl-font-bold= ::Wiki.canonicalize_filename(wiki_blob.path)
-  .description.term.col-sm-10.gl-px-0
+  .description.term.gl-col-sm-10.gl-px-0
     = simple_search_highlight_and_truncate(wiki_blob.data, @search_term)

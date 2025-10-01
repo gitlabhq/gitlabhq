@@ -270,7 +270,7 @@ What needs to be included in the code:
 
 {{< alert type="note" >}}
 
-For more information, see [the GitLab AI gateway documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#optional-enable-authentication-and-authorization-in-ai-gateway) about authentication and authorization in AI gateway.
+For more information, see [the GitLab AI gateway documentation](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#optional-enable-authentication-and-authorization-in-ai-gateway) about authentication and authorization in AI gateway.
 
 {{< /alert >}}
 

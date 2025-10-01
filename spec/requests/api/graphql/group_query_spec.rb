@@ -297,5 +297,69 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
         })
       end
     end
+
+    context 'with general settings' do
+      let(:omniauth_provider_config_oidc) do
+        GitlabSettings::Options.new(
+          name: 'openid_connect',
+          label: 'OpenID Connect',
+          step_up_auth: {
+            namespace: {
+              id_token: {
+                required: {
+                  acr: 'gold'
+                }
+              }
+            }
+          }
+        )
+      end
+
+      before do
+        stub_omniauth_setting(enabled: true, providers: [omniauth_provider_config_oidc])
+      end
+
+      context 'when user has admin permission' do
+        before do
+          private_group.add_owner(user2)
+          private_group.update!(step_up_auth_required_oauth_provider: 'openid_connect')
+        end
+
+        it 'includes namespaceSettings with stepUpAuthRequiredOauthProvider' do
+          query = graphql_query_for(
+            'group',
+            { 'fullPath' => private_group.full_path },
+            <<~FIELDS
+              namespaceSettings {
+                stepUpAuthRequiredOauthProvider
+              }
+            FIELDS
+          )
+
+          post_graphql(query, current_user: user2)
+
+          expect(graphql_data_at(:group, :namespaceSettings, :stepUpAuthRequiredOauthProvider))
+            .to eq('openid_connect')
+        end
+      end
+
+      context 'when user lacks admin permission' do
+        before do
+          private_group.add_developer(user2)
+        end
+
+        it 'returns nil for namespaceSettings' do
+          query = graphql_query_for(
+            'group',
+            { 'fullPath' => private_group.full_path },
+            'namespaceSettings { stepUpAuthRequiredOauthProvider }'
+          )
+
+          post_graphql(query, current_user: user2)
+
+          expect(graphql_data_at(:group, :namespaceSettings)).to be_nil
+        end
+      end
+    end
   end
 end

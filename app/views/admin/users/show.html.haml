@@ -5,7 +5,7 @@
 = render 'admin/users/head'
 
 .row
-  .col-md-6
+  .gl-col-md-6
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-2'}) do |c|
       - c.with_header do
         = @user.name
@@ -197,6 +197,6 @@
     = render 'shared/custom_attributes', custom_attributes: @user.custom_attributes
 
   -# Rendered on desktop only so order of cards can be different on desktop vs mobile
-  .col-md-6.gl-hidden{ class: "@md/panel:gl-block" }
+  .gl-col-md-6.gl-hidden{ class: "@md/panel:gl-block" }
     = render 'admin/users/profile', user: @user
     = render 'admin/users/user_detail_note'

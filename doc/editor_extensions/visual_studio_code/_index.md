@@ -318,7 +318,7 @@ To perform SAST scanning of a file in VS Code:
         <kbd>Enter</kbd>.
 1. View the results of the SAST scan.
    1. View the **Primary Side Bar**.
-   1. Select GitLab Workflow ({tanuki}) to display the extension sidebar.
+   1. Select GitLab Workflow ({{< icon name="tanuki">}}) to display the extension sidebar.
    1. Expand the **GITLAB REMOTE SCAN (SAST)** section.
 
    The results of the SAST scan are listed in descending order by severity. To see details of a

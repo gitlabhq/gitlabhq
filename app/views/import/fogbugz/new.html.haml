@@ -18,16 +18,16 @@
     %p
       = _("To get started you enter your FogBugz URL and login information below. In the next steps, you'll be able to map users and select the projects you want to import.")
     .form-group.row
-      = label_tag :uri, _('FogBugz URL'), class: 'col-form-label col-md-2'
-      .col-md-4
+      = label_tag :uri, _('FogBugz URL'), class: 'col-form-label gl-col-md-2'
+      .gl-col-md-4
         = text_field_tag :uri, nil, placeholder: 'https://mycompany.fogbugz.com', class: 'form-control gl-form-input'
     .form-group.row
-      = label_tag :email, _('FogBugz Email'), class: 'col-form-label col-md-2'
-      .col-md-4
+      = label_tag :email, _('FogBugz Email'), class: 'col-form-label gl-col-md-2'
+      .gl-col-md-4
         = text_field_tag :email, nil, class: 'form-control gl-form-input'
     .form-group.row
-      = label_tag :password, _('FogBugz Password'), class: 'col-form-label col-md-2'
-      .col-md-4
+      = label_tag :password, _('FogBugz Password'), class: 'col-form-label gl-col-md-2'
+      .gl-col-md-4
         = password_field_tag :password, nil, class: 'form-control gl-form-input'
     .form-actions
       = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm) do

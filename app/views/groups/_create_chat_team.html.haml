@@ -2,11 +2,11 @@
 - checkbox_help_text = "%s %s/%s".html_safe % [_('Mattermost URL:'), Settings.mattermost.host, bind_out_tag]
 
 .form-group
-  .col-sm-2.col-form-label
+  .gl-col-sm-2.col-form-label
     = f.label :create_chat_team do
       %span.gl-flex
         = custom_icon('icon_mattermost')
         %span.gl-ml-2= _('Mattermost')
-  .col-sm-12
+  .gl-col-sm-12
     = f.gitlab_ui_checkbox_component :create_chat_team, _('Create a Mattermost team for this group'), help_text: checkbox_help_text, checkbox_options: { checked: false }, checked_value: true, unchecked_value: false
 

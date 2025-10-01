@@ -52155,12 +52155,12 @@ definitions:
         type: integer
         format: int32
         enum:
+        - 5
         - 10
         - 15
         - 20
         - 30
         - 40
-        - 5
         example: 40
       admin_merge_request:
         type: boolean

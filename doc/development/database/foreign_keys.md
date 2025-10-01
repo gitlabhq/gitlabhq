@@ -354,7 +354,7 @@ validating a foreign key:
 1. Run `bundle exec rails gitlab:db:validate_async_constraints:all` so that the FK is validated
    asynchronously on all databases.
 1. To verify the foreign key, open the PostgreSQL console using the
-   [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/postgresql.md)
+   [GDK](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/postgresql/)
    command `gdk psql` and run the command `\d+ table_name` to check that your
    foreign key is valid. A successful validation removes `NOT VALID` from
    the foreign key definition.

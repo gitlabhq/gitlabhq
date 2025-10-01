@@ -1,8 +1,8 @@
 .row
-  .form-group.project-name.col-sm-12
+  .form-group.project-name.gl-col-sm-12
     = label_tag :name, _('Project name'), class: 'label-bold'
     = text_field_tag :name, @name, placeholder: s_('ProjectsNew|My project'), class: "js-project-name form-control gl-form-input input-lg", autofocus: true, required: true, aria: { required: true }, data: { testid: 'project-name-field' }
-  .form-group.col-12.col-sm-6.gl-pr-0
+  .form-group.gl-col-12.gl-col-sm-6.gl-pr-0
     = label_tag :namespace_id, _('Project URL'), class: 'label-bold'
     .input-group.gl-flex-nowrap
       - if current_user.can_select_namespace?
@@ -19,6 +19,6 @@
             #{user_url(current_user.username)}/
         = hidden_field_tag :namespace_id, current_user.namespace_id
       .gl-self-center.gl-pl-5 /
-  .form-group.col-12.col-sm-6.project-path
+  .form-group.gl-col-12.gl-col-sm-6.project-path
     = label_tag :path, _('Project slug'), class: 'label-bold'
     = text_field_tag :path, @path, placeholder: "my-awesome-project", class: "js-path-name form-control gl-form-input", required: true, aria: { required: true }

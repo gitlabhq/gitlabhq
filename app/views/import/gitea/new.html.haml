@@ -22,12 +22,12 @@
   = form_tag personal_access_token_import_gitea_path do
     = hidden_field_tag(:namespace_id, params[:namespace_id])
     .form-group.row
-      = label_tag :gitea_host_url, _('Gitea host URL'), class: 'col-form-label col-sm-2'
-      .col-sm-4
+      = label_tag :gitea_host_url, _('Gitea host URL'), class: 'col-form-label gl-col-sm-2'
+      .gl-col-sm-4
         = text_field_tag :gitea_host_url, nil, placeholder: 'https://gitea.com', class: 'form-control gl-form-input'
     .form-group.row
-      = label_tag :personal_access_token, _('Personal access token'), for: :personal_access_token, class: 'col-form-label col-sm-2'
-      .col-sm-4
+      = label_tag :personal_access_token, _('Personal access token'), for: :personal_access_token, class: 'col-form-label gl-col-sm-2'
+      .gl-col-sm-4
         = password_field_tag :personal_access_token, nil, class: 'form-control gl-form-input'
     .form-actions
       = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm) do

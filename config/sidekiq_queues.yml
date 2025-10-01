@@ -1155,8 +1155,6 @@
   - 1
 - - web_hook
   - 1
-- - web_hooks_log_destroy
-  - 1
 - - web_hooks_log_execution
   - 1
 - - wikis_git_garbage_collect

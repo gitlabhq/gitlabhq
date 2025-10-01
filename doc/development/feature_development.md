@@ -209,5 +209,5 @@ The following integration guides are internal. Some integrations require access 
 ## Other GitLab Development Kit (GDK) guides
 
 - [Using GitLab Runner with the GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/runner.md)
-- [Using the Web IDE terminal with the GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/web_ide_terminal_gdk_setup.md)
+- [Using the Web IDE terminal with the GDK](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/web_ide_terminal_gdk_setup/)
 - [Gitpod configuration internals page](gitpod_internals.md)

@@ -572,8 +572,8 @@ The following variables configure the behavior of specific dependency scanning a
 | CI/CD variable                       | Analyzer           | Default                      | Description |
 |--------------------------------------|--------------------|------------------------------|-------------|
 | `GEMNASIUM_DB_LOCAL_PATH`            | `gemnasium`        | `/gemnasium-db`              | Path to local Gemnasium database. |
-| `GEMNASIUM_DB_UPDATE_DISABLED`       | `gemnasium`        | `"false"`                    | Disable automatic updates for the `gemnasium-db` advisory database. For usage see [Access to the GitLab Advisory Database](#access-to-the-gitlab-advisory-database). |
-| `GEMNASIUM_DB_REMOTE_URL`            | `gemnasium`        | `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` | Repository URL for fetching the GitLab Advisory Database. |
+| `GEMNASIUM_DB_UPDATE_DISABLED`       | `gemnasium`        | `"false"`                    | Disable automatic updates for the `gemnasium-db` advisory database. For usage see [Access to the GitLab advisory database](#access-to-the-gitlab-advisory-database). |
+| `GEMNASIUM_DB_REMOTE_URL`            | `gemnasium`        | `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` | Repository URL for fetching the GitLab advisory database. |
 | `GEMNASIUM_DB_REF_NAME`              | `gemnasium`        | `master`                     | Branch name for remote repository database. `GEMNASIUM_DB_REMOTE_URL` is required. |
 | `GEMNASIUM_IGNORED_SCOPES`           | `gemnasium`        |                              | Comma-separated list of Maven dependency scopes to ignore. For more details, see the [Maven dependency scope documentation](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope) |
 | `DS_REMEDIATE`                       | `gemnasium`        | `"true"`, `"false"` in FIPS mode | Enable automatic remediation of vulnerable dependencies. Not supported in FIPS mode. |
@@ -735,7 +735,7 @@ To run dependency scanning in an offline environment you must have:
 
 - A GitLab Runner with the `docker` or `kubernetes` executor
 - Local copies of the dependency scanning analyzer images
-- Access to the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db)
+- Access to the [GitLab advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db)
 - Access to the [Package Metadata Database](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database)
 
 #### Local copies of analyzer images
@@ -773,31 +773,31 @@ To use dependency scanning with all [supported languages and frameworks](#suppor
      SECURE_ANALYZERS_PREFIX: "docker-registry.example.com/analyzers"
    ```
 
-#### Access to the GitLab Advisory Database
+#### Access to the GitLab advisory database
 
-The [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is the
+The [GitLab advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is the
 source of vulnerability data used by the `gemnasium`, `gemnasium-maven`, and `gemnasium-python`
 analyzers. The Docker images of these analyzers include a clone of the database.
 The clone is synchronized with the database before starting a scan,
 to ensure the analyzers have the latest vulnerability data.
 
-In an offline environment, the default host of the GitLab Advisory Database can't be accessed.
+In an offline environment, the default host of the GitLab advisory database can't be accessed.
 Instead, you must host the database somewhere that it is accessible to the GitLab runners. You must
 also update the database manually at your own schedule.
 
 Available options for hosting the database are:
 
-- [Use a clone of the GitLab Advisory Database](#use-a-copy-of-the-gitlab-advisory-database).
-- [Use a copy of the GitLab Advisory Database](#use-a-copy-of-the-gitlab-advisory-database).
+- [Use a clone of the GitLab advisory database](#use-a-copy-of-the-gitlab-advisory-database).
+- [Use a copy of the GitLab advisory database](#use-a-copy-of-the-gitlab-advisory-database).
 
-##### Use a clone of the GitLab Advisory Database
+##### Use a clone of the GitLab advisory database
 
-Using a clone of the GitLab Advisory Database is recommended because it is the most efficient
+Using a clone of the GitLab advisory database is recommended because it is the most efficient
 method.
 
-To host a clone of the GitLab Advisory Database:
+To host a clone of the GitLab advisory database:
 
-1. Clone the GitLab Advisory Database to a host that is accessible by HTTP from the GitLab runners.
+1. Clone the GitLab advisory database to a host that is accessible by HTTP from the GitLab runners.
 1. In your `.gitlab-ci.yml` file, set the value of the CI/CD variable `GEMNASIUM_DB_REMOTE_URL` to
    the URL of the Git repository.
 
@@ -808,14 +808,14 @@ variables:
   GEMNASIUM_DB_REMOTE_URL: https://users-own-copy.example.com/gemnasium-db.git
 ```
 
-##### Use a copy of the GitLab Advisory Database
+##### Use a copy of the GitLab advisory database
 
-Using a copy of the GitLab Advisory Database requires you to host an archive file which is
+Using a copy of the GitLab advisory database requires you to host an archive file which is
 downloaded by the analyzers.
 
-To use a copy of the GitLab Advisory Database:
+To use a copy of the GitLab advisory database:
 
-1. Download an archive of the GitLab Advisory Database to a host that is accessible by HTTP from the
+1. Download an archive of the GitLab advisory database to a host that is accessible by HTTP from the
    GitLab runners. The archive is located at
    `https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/archive/master/gemnasium-db-master.tar.gz`.
 1. Update your `.gitlab-ci.yml` file.
@@ -1512,5 +1512,5 @@ Remember to always run `pod install` after updating your Podfile to ensure all d
 
 ## Contributing to the vulnerability database
 
-To find a vulnerability, you can search the [`GitLab Advisory Database`](https://advisories.gitlab.com/).
+To find a vulnerability, you can search the [`GitLab advisory database`](https://advisories.gitlab.com/).
 You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security-products/gemnasium-db/blob/master/CONTRIBUTING.md).

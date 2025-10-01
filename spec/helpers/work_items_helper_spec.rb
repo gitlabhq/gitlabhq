@@ -15,7 +15,8 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
   describe '#work_items_data' do
     before do
       allow(helper).to receive(:current_user).and_return(current_user)
-      allow(helper).to receive(:generate_feed_token).with(:atom).and_return('test-feed-token')
+      allow(helper).to receive(:generate_feed_token).with(:atom).and_return('atom-feed-token')
+      allow(helper).to receive(:generate_feed_token).with(:ics).and_return('ics-feed-token')
     end
 
     shared_examples 'show new work item link' do
@@ -57,7 +58,12 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
       let_it_be(:current_user) { build(:user, owner_of: project) }
 
       before do
-        allow(helper).to receive(:can?).and_return(true)
+        allow(helper).to receive_messages(
+          can?: true,
+          safe_params: ActionController::Parameters.new(
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param
+          ).permit!)
       end
 
       it 'returns the expected data properties' do
@@ -83,8 +89,12 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             releases_path: project_releases_path(project, format: :json),
             project_import_jira_path: project_import_jira_path(project),
             can_read_crm_contact: 'true',
-            rss_path: project_work_items_path(project, format: :atom, feed_token: 'test-feed-token'),
-            calendar_path: project_work_items_path(project, format: :ics),
+            rss_path: project_work_items_path(project, format: :atom, feed_token: 'atom-feed-token'),
+            calendar_path: project_work_items_path(project,
+              format: :ics,
+              feed_token: 'ics-feed-token',
+              due_date: Issue::DueNextMonthAndPreviousTwoWeeks.name,
+              sort: 'closest_future_date'),
             can_import_work_items: "true",
             can_edit: "true",
             export_csv_path: export_csv_project_issues_path(project)
@@ -155,6 +165,12 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
       let_it_be(:group) { build(:group) }
       let_it_be(:current_user) { build(:user, owner_of: group) }
 
+      before do
+        allow(helper).to receive_messages(
+          safe_params: ActionController::Parameters.new(group_id: group.to_param).permit!
+        )
+      end
+
       it 'returns the expected group_path' do
         expect(helper.work_items_data(group, current_user)).to include(
           {
@@ -163,8 +179,12 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             project_namespace_full_path: group.full_path,
             default_branch: nil,
             is_issue_repositioning_disabled: 'false',
-            rss_path: group_work_items_path(group, format: :atom, feed_token: 'test-feed-token'),
-            calendar_path: group_work_items_path(group, format: :ics)
+            rss_path: group_work_items_path(group, format: :atom, feed_token: 'atom-feed-token'),
+            calendar_path: group_work_items_path(group,
+              format: :ics,
+              feed_token: 'ics-feed-token',
+              due_date: Issue::DueNextMonthAndPreviousTwoWeeks.name,
+              sort: 'closest_future_date')
           }
         )
       end

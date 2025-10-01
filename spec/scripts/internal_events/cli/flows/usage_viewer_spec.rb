@@ -427,7 +427,7 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
 
       2. View metric updates within the terminal
 
-      3. [Optional] Configure gdk with snowplow micro to see individual events: https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/snowplow_micro.md
+      3. [Optional] Configure gdk with snowplow micro to see individual events: https://gitlab-org.gitlab.io/gitlab-development-kit/howto/snowplow_micro/
 
       --------------------------------------------------
       # RAILS CONSOLE -- generate service ping payload, including most recent usage data

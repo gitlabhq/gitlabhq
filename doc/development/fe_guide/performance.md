@@ -360,7 +360,7 @@ time. If the entrypoint is correctly configured but the JavaScript is not loadin
 try clearing the Vite cache and restarting the service:
 `rm -rf tmp/cache/vite && gdk restart vite`
 
-Alternatively, you can opt to use Webpack instead. Follow these [instructions for disabling Vite and using Webpack](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/configuration.md#vite-settings).
+Alternatively, you can opt to use Webpack instead. Follow these [instructions for disabling Vite and using Webpack](https://gitlab-org.gitlab.io/gitlab-development-kit/configuration/#vite-settings).
 
 #### Important Considerations
 

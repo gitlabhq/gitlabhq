@@ -13,19 +13,19 @@ For detailed instructions on setting up GitLab Duo licensing in your development
 
 Here is a list of all of the main steps to go through from a fresh, GDK-less computer to fully working ai-development ready.
 
-1. [Setup GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/_index.md#install-prerequisites). You should follow the [local network binding](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/local_network.md) documentation as well.
+1. [Setup GDK](https://gitlab-org.gitlab.io/gitlab-development-kit/#install-prerequisites#install-prerequisites). You should follow the [local network binding](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/local_network/) documentation as well.
 1. [Configure license](ai_development_license.md#set-up-gitlab-team-member-license-for-gdk)
-1. [Setup your Google Cloud Platform account and the CLI](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#set-up-google-cloud-platform-in-ai-gateway)
+1. [Setup your Google Cloud Platform account and the CLI](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/#set-up-google-cloud-platform-in-ai-gateway)
 1. Get your Anthropic license key by [making an access request like this](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/37278)
-1. [If you want to use Duo Chat, Code Suggestions, and other non-Duo Agent Platform features, install and configure AI gateway](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md)
-1. [If you want to use Duo Agent Platform or Agentic Chat locally, setup Duo Workflow Service](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_agent_platform.md)
+1. [If you want to use Duo Chat, Code Suggestions, and other non-Duo Agent Platform features, install and configure AI gateway](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/)
+1. [If you want to use Duo Agent Platform or Agentic Chat locally, setup Duo Workflow Service](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/duo_agent_platform/)
 1. [Run the Duo setup Rake task](#run-gitlabduosetup-script)
 
 More details on each step can be found down below for help and troubleshooting.
 
 ### Setup GDK
 
-After following the [installation documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/_index.md#install-prerequisites), executing `gdk status` should show all services as up and running. Login as the root user and make sure there are no errors.
+After following the [installation documentation](https://gitlab-org.gitlab.io/gitlab-development-kit/#install-prerequisites), executing `gdk status` should show all services as up and running. Login as the root user and make sure there are no errors.
 
 ### Configure licenses
 
@@ -37,7 +37,7 @@ If there is any issue, check out [the troubleshooting documentation](ai_developm
 
 ### Install AI gateway
 
-This step includes getting your Google Cloud account setup, getting your Anthropic key and then setting up AI Gateway. Follow [these instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md) to install the AI gateway with GDK.
+This step includes getting your Google Cloud account setup, getting your Anthropic key and then setting up AI Gateway. Follow [these instructions](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_ai_gateway/) to install the AI gateway with GDK.
 
 {{< alert type="note" >}}
 Make sure your license has a Duo Pro or Duo Enterprise add-on enabled before you proceed.
@@ -66,7 +66,7 @@ Finally, run `gdk tail gitlab-ai-gateway` from the GitLab project directory. The
 
 ### Setup Duo Workflow Service
 
-After following the steps in the [setup](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_agent_platform.md), run `gdk status`. You should see the `duo-workflow-service` running. You can run `gdk tail duo-workflow-service` in case there might be errors.
+After following the steps in the [setup](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/duo_agent_platform/), run `gdk status`. You should see the `duo-workflow-service` running. You can run `gdk tail duo-workflow-service` in case there might be errors.
 
 ### Run `gitlab:duo:setup` script
 

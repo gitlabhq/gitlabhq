@@ -7,9 +7,10 @@ title: GitLab Duo and SDLC trends
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise, GitLab Duo with Amazon Q
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta for GitLab Self-Managed
 
 {{< /details >}}
 
@@ -18,20 +19,24 @@ title: GitLab Duo and SDLC trends
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443696) in GitLab 16.11 [with a flag](../../administration/feature_flags/_index.md) named `ai_impact_analytics_dashboard`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/451873) in GitLab 17.2. Feature flag `ai_impact_analytics_dashboard` removed.
 - Changed to require GitLab Duo add-on in GitLab 17.6.
+- Moved from GitLab Ultimate to GitLab Premium in 18.2.
 - Changed to support Amazon Q in GitLab 18.2.1.
 - Pipeline metrics table [added](https://gitlab.com/gitlab-org/gitlab/-/issues/550356) in GitLab 18.4.
 - Renamed from `AI impact analytics` to `GitLab Duo and SDLC trends` in GitLab 18.4.
 
 {{< /history >}}
 
+This feature is in beta for GitLab Self-Managed.
+For more information, see [epic 51](https://gitlab.com/groups/gitlab-org/architecture/gitlab-data-analytics/-/epics/51).
+
 GitLab Duo and SDLC trends measure the impact of GitLab Duo on software development lifecycle (SDLC) performance.
 This dashboard provides visibility into key SDLC metrics in the context of AI adoption for projects or groups.
 You can use the dashboard to measure which metrics have improved from your AI investments.
 
-Use GitLab Duo and SDLC trends for:
+Use GitLab Duo and SDLC trends to:
 
-- Correlation observations: Examine how trends in AI usage in a project or group influence other crucial productivity metrics. AI usage metrics are displayed for the last six months, including the current one.
-- Snapshot of GitLab Duo usage: Track the use of seats and features in a project or group over the last 30 days.
+- Track SDLC trends in relation to your Duo journey: Examine how trends in GitLab Duo usage in a project or group influence other crucial productivity metrics such as mean time to merge and CI/CD statistics. Duo usage metrics are displayed for the last six months, including the current one.
+- Monitor GitLab Duo feature adoption: Track the use of seats and features in a project or group over the last 30 days.
 
 To learn how you can optimize your license utilization,
 see [GitLab Duo add-ons](../../subscriptions/subscription-add-ons.md).

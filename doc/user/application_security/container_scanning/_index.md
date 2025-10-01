@@ -56,7 +56,7 @@ will stop working.
 | [UBI Image Support](#fips-enabled-images)                                                                                                                                                                         | {{< icon name="check-circle" >}} Yes                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
 | Support for Trivy                                                                                                                                                                                                 | {{< icon name="check-circle" >}} Yes                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
 | [End-of-life Operating System Detection](#end-of-life-operating-system-detection)                                                                                                                                 | {{< icon name="check-circle" >}} Yes                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
-| Inclusion of GitLab Advisory Database                                                                                                                                                                             | Limited to the time-delayed content from GitLab [advisories-communities](https://gitlab.com/gitlab-org/advisories-community/) project | Yes - all the latest content from [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) |
+| Inclusion of GitLab advisory database                                                                                                                                                                             | Limited to the time-delayed content from GitLab [advisories-communities](https://gitlab.com/gitlab-org/advisories-community/) project | Yes - all the latest content from [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) |
 | Presentation of Report data in Merge Request and Security tab of the CI pipeline job                                                                                                                              | {{< icon name="dotted-circle" >}} No                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
 | [Solutions for vulnerabilities (auto-remediation)](#solutions-for-vulnerabilities-auto-remediation)                                                                                                               | {{< icon name="dotted-circle" >}} No                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
 | Support for the [vulnerability allow list](#vulnerability-allowlisting)                                                                                                                                           | {{< icon name="dotted-circle" >}} No                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
@@ -915,7 +915,7 @@ When security findings are identified, GitLab populates the vulnerability report
 
 {{< alert type="note" >}}
 
-Container Scanning for Registry populates the vulnerability report only when a new advisory is published to the [GitLab Advisory Database](../gitlab_advisory_database/_index.md). Support for populating the vulnerability report with all present advisory data, instead of only newly-detected data, is proposed in [epic 11219](https://gitlab.com/groups/gitlab-org/-/epics/11219).
+Container Scanning for Registry populates the vulnerability report only when a new advisory is published to the [GitLab advisory database](../gitlab_advisory_database/_index.md). Support for populating the vulnerability report with all present advisory data, instead of only newly-detected data, is proposed in [epic 11219](https://gitlab.com/groups/gitlab-org/-/epics/11219).
 
 {{< /alert >}}
 
@@ -980,10 +980,10 @@ The images use data from upstream advisory databases:
 
 In addition to the sources provided by these scanners, GitLab maintains the following vulnerability databases:
 
-- The proprietary [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db).
-- The open source [GitLab Advisory Database (Open Source Edition)](https://gitlab.com/gitlab-org/advisories-community).
+- The proprietary [GitLab advisory database](https://gitlab.com/gitlab-org/security-products/gemnasium-db).
+- The open source [GitLab advisory database (Open Source Edition)](https://gitlab.com/gitlab-org/advisories-community).
 
-In the GitLab Ultimate tier, the data from the GitLab Advisory Database is merged in to augment the
+In the GitLab Ultimate tier, the data from the GitLab advisory database is merged in to augment the
 data from the external sources. In the GitLab Premium and Free tiers, the data from the GitLab
 Advisory Database (Open Source Edition) is merged in to augment the data from the external sources.
 This augmentation only applies to the analyzer images for the Trivy scanner.

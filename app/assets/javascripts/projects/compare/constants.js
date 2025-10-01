@@ -4,7 +4,7 @@ import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
 export const COMPARE_OPTIONS_INPUT_NAME = 'straight';
 export const COMPARE_OPTIONS = [
   { value: false, text: s__('CompareRevisions|Only incoming changes from source') },
-  { value: true, text: s__('CompareRevisions|Include changes to target since source was created') },
+  { value: true, text: s__('CompareRevisions|Include changes to target after source was created') },
 ];
 
 export const I18N = {
@@ -22,4 +22,4 @@ export const I18N = {
   openMr: s__('CompareRevisions|Create merge request'),
 };
 
-export const COMPARE_REVISIONS_DOCS_URL = `${DOCS_URL_IN_EE_DIR}/user/project/repository/branches/#compare-branches`;
+export const COMPARE_REVISIONS_DOCS_URL = `${DOCS_URL_IN_EE_DIR}/user/project/repository/compare_revisions/`;

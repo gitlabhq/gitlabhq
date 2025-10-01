@@ -360,7 +360,7 @@ downloaded from the [Red Hat developer's portal](https://developers.redhat.com).
 Registration is required.
 
 After the virtual machine is set up, you can follow the [GDK](https://gitlab.com/gitlab-org/gitlab-development-kit)
-installation instructions, including the [advanced instructions for RHEL](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/advanced.md#red-hat-enterprise-linux).
+installation instructions, including the [advanced instructions for RHEL](https://gitlab-org.gitlab.io/gitlab-development-kit/advanced/#red-hat-enterprise-linux).
 The `asdf` tool is not used for dependency management because it's essential to
 use the RedHat-provided Go compiler and other system dependencies.
 

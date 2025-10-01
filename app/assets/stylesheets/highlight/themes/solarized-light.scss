@@ -202,10 +202,6 @@ $solarized-light-il: #2aa198;
       @include match-line;
     }
 
-    &.diff-grid-row.expansion .diff-td {
-      background-color: $solarized-light-matchline-bg;
-    }
-
     .diff-td.diff-line-num.hll,
     .diff-td.line-coverage.hll,
     .diff-td.line-inline-findings.hll,

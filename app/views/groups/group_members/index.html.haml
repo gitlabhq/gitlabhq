@@ -9,7 +9,7 @@
     - c.with_description do
       = group_member_header_subtext(@group)
       - if current_appearance&.member_guidelines?
-        .gl-w-full.order-md-1
+        .gl-w-full.gl-order-md-1
         = brand_member_guidelines
     - c.with_actions do
       - if can?(current_user, :create_group_link, @group)

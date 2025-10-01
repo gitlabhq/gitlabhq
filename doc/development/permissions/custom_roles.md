@@ -229,7 +229,7 @@ rule { custom_role_enables_read_dependency }.enable(:read_dependency)
 
 Custom roles may impact [advanced search functionality](../../user/search/advanced_search.md#available-scopes) if the ability impacts data that is indexed by Advanced search.
 
-- Enable [Advanced search and index the instance](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/elasticsearch.md#enable-elasticsearch-in-the-gdk)
+- Enable [Advanced search and index the instance](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/elasticsearch/#enable-elasticsearch-in-the-gdk)
 - Sign in as a member with the custom role assigned to any Group
 - Perform a global search by navigating to `Search or go to...`. Type in a search term and select to search in `all GitLab`.
 - Verify that the user can search for data impacted by the custom role

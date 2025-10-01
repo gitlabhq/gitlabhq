@@ -73,8 +73,6 @@ To create an agent:
    1. **Tools**: Optional. Select which built-in tools the agent can use.
       For example, select **Create issue** if you want the agent to be able to create issues automatically.
    1. **System prompt**: Enter guidelines to define the agent's personality or shape how it behaves.
-   1. **User prompt**: Enter instructions or ask a question. When you execute a test run, this is the prompt the agent uses.
-      When you use an agent with GitLab Duo Chat (Agentic), the user prompt is ignored.
    1. **Visibility level**: Choose whether the agent is public or private.
 1. Select **Create agent**.
 
@@ -96,7 +94,7 @@ The agent appears on the project's **Agents** page.
 
 ## Run an agent
 
-Execute a test run to start a session that uses the agent's user prompt.
+Execute a test run to start a session with the agent.
 
 Prerequisites:
 

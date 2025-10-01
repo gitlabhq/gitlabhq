@@ -22,9 +22,9 @@ Use this guidance to help ensure you have the tools you need.
 - Optional. Install the [Conventional Comments](https://gitlab.com/conventionalcomments/conventional-comments-button) extension for Chrome.
   The plugin adds **Conventional Comment** buttons to GitLab comments.
 
-After you're comfortable with your toolset, you can [install the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/_index.md), a fully functional self-managed version of GitLab.
+After you're comfortable with your toolset, you can [install the GitLab Development Kit (GDK)](https://gitlab-org.gitlab.io/gitlab-development-kit/), a fully functional self-managed version of GitLab.
 
 You can use GDK to:
 
-- [Preview documentation changes locally](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_docs.md).
-- [Preview code changes locally](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/preview_gitlab_changes.md).
+- [Preview documentation changes locally](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/gitlab_docs/).
+- [Preview code changes locally](https://gitlab-org.gitlab.io/gitlab-development-kit/howto/preview_gitlab_changes/).

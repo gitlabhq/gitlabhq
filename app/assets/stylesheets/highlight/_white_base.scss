@@ -156,20 +156,9 @@ $white-gc-bg: #eaf2f5;
       @include match-line;
     }
 
-    &.diff-grid-row {
-      &.expansion {
-        &.match .diff-td {
-          color: $gl-color-neutral-400;
-        }
-
-        .diff-td {
-          background-color: $gl-color-neutral-50;
-
-          &:first-child {
-            border-color: $gl-color-neutral-100;
-          }
-        }
-      }
+    &.diff-grid-row.expansion.match .diff-td {
+      color: $gl-color-neutral-400;
+      background-color: $gl-color-neutral-50;
     }
 
     &:not(.match) .diff-grid-left:hover,

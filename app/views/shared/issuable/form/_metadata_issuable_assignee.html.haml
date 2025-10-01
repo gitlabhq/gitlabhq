@@ -1,5 +1,5 @@
-= form.label :assignee_id, issuable.allows_multiple_assignees? ? _('Assignees') : s_('SearchToken|Assignee'), class: "col-12"
-.col-12
+= form.label :assignee_id, issuable.allows_multiple_assignees? ? _('Assignees') : s_('SearchToken|Assignee'), class: "gl-col-12"
+.gl-col-12
   .issuable-form-select-holder.selectbox
     - issuable.assignees.each do |assignee|
       = hidden_field_tag "#{issuable.to_ability_name}[assignee_ids][]", assignee.id, id: nil, data: { meta: assignee.name, avatar_url: assignee.avatar_url, name: assignee.name, username: assignee.username }
