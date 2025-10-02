@@ -42,7 +42,7 @@ To create project A:
 1. Select **Create blank project**.
 1. Complete the fields. For **Project name**, enter `go-example-a`.
 1. Select **Create project**.
-1. Select **Add (`+`) > New file**.
+1. Select **Add (`+`)** > **New file**.
 1. Enter `helloworld.go` in the filename.
 1. Copy and paste the following example Go code into the file.
 
@@ -132,7 +132,7 @@ To create project B:
 1. Select **Create blank project**.
 1. Complete the fields. For **Project name**, enter `go-example-b`.
 1. Select **Create project**.
-1. Select **Add (`+`) > New file**.
+1. Select **Add (`+`)** > **New file**.
 1. Enter `helloworld.go` in the filename.
 1. Copy and paste the following example Go code into the file.
 

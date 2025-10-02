@@ -156,7 +156,9 @@ export default {
   apollo: {
     workspaceWorkItems: {
       query() {
-        // TODO: Remove the this.isIssue check once issues are migrated to work items
+        // The logic to fetch the Parent seems to be different than other pages
+        // Below issue targets to have a common logic across work items app
+        // https://gitlab.com/gitlab-org/gitlab/-/issues/571302
         return this.isGroup || this.isIssue ? groupWorkItemsQuery : projectWorkItemsQuery;
       },
       variables() {

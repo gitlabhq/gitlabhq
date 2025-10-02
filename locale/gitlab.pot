@@ -74533,6 +74533,9 @@ msgstr ""
 msgid "WorkItem|No assignees"
 msgstr ""
 
+msgid "WorkItem|No available parent for all selected items."
+msgstr ""
+
 msgid "WorkItem|No available status for all selected items."
 msgstr ""
 

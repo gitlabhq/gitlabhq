@@ -21,7 +21,7 @@ build plan before you configure the integration in GitLab.
 
 ## Configure Bamboo
 
-1. In Bamboo, go to a build plan and choose **Actions > Configure plan**.
+1. In Bamboo, go to a build plan and choose **Actions** > **Configure plan**.
 1. Select the **Triggers** tab.
 1. Select **Add trigger**.
 1. Enter a description like `GitLab trigger`.

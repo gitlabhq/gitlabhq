@@ -46,7 +46,7 @@ If you are on GitLab Self-Managed, create a personal access token.
 
 Then authenticate with GitLab.
 
-1. In Visual Studio, on the top bar, go to **Tools > Options > GitLab**.
+1. In Visual Studio, on the top bar, go to **Tools** > **Options** > **GitLab**.
 1. In the **Access Token** field, paste in your token. The token is not displayed, nor is it accessible to others.
 1. In the **GitLab URL** text box, enter the URL of your GitLab instance. For GitLab.com, use `https://gitlab.com`.
 
@@ -80,5 +80,5 @@ default keyboard shortcuts to avoid conflicts with your existing Visual Studio c
 You can access the extension's custom commands with keyboard shortcuts, which you can customize:
 
 1. On the top bar, go to **Tools** > **Options**.
-1. Go to **Environment > Keyboard**. Search for `GitLab.`.
+1. Go to **Environment** > **Keyboard**. Search for `GitLab.`.
 1. Select a command, and assign it a keyboard shortcut.

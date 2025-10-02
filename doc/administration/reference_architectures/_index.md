@@ -821,7 +821,7 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 - [2023-02-17](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110379): Updated Praefect configuration examples to the new format.
 - [2023-02-14](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109798): Added examples of what automation may be considered additional workloads.
 - [2023-02-13](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111018): Added a new before you start section that gives more context about what's involved with running production software self-managed. Also added more details for Standalone setups and cloud provider services in the decision tree section.
-- [2023-02-01](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110641): Switched to use more common complex terminology instead of the less known **involved**.
+- [2023-02-01](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110641): Switched to using the word "complex" instead of the less clear "involved".
 - [2023-01-31](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110328): Expanded and centralized the requirements section on the main page.
 - [2023-01-26](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110183): Added notes on migrating Git data from NFS, that object data is still supported on NFS and handling SSH keys correctly across multiple Rails nodes.
 

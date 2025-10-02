@@ -275,7 +275,6 @@ export default {
       workItemsSlim: [],
       workItemStateCounts: {},
       activeItem: null,
-      isRefetching: false,
       hasStateToken: false,
       initialLoadWasFiltered: false,
       showLocalBoard: false,
@@ -461,7 +460,7 @@ export default {
       return Boolean(this.searchQuery);
     },
     isLoading() {
-      return this.$apollo.queries.workItemsSlim.loading && !this.isRefetching;
+      return this.$apollo.queries.workItemsSlim.loading;
     },
     isOpenTab() {
       return this.state === STATUS_OPEN;

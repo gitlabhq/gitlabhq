@@ -34,9 +34,9 @@ in Mattermost:
 Incoming Webhooks might be blocked on your Mattermost instance. Ask your Mattermost administrator
 to enable it on:
 
-- **Mattermost System Console > Integrations > Integration Management** in Mattermost
+- **Mattermost System Console** > **Integrations** > **Integration Management** in Mattermost
   versions 5.12 and later.
-- **Mattermost System Console > Integrations > Custom Integrations** in Mattermost
+- **Mattermost System Console** > **Integrations** > **Custom Integrations** in Mattermost
   versions 5.11 and earlier.
 
 Display name override is not enabled by default, you need to ask your administrator to enable it on that same section.

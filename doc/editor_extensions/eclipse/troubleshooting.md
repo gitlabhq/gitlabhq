@@ -41,7 +41,7 @@ The Workspace log file, named `.log` is located in the directory `<your-eclipse-
 
 To enable GitLab Language Server debug logs:
 
-1. In your IDE, select **Eclipse > Settings**.
+1. In your IDE, select **Eclipse** > **Settings**.
 1. On the left sidebar, select **GitLab**.
 1. In **Language Server Log Level**, enter `debug`.
 1. Select **Apply and Close**.
@@ -58,14 +58,15 @@ When creating a support request, provide the following information:
 1. Your current GitLab for Eclipse plugin version.
    1. Open the `About Eclipse IDE` dialog.
       - On Windows, in your IDE, select **Help** > **About Eclipse IDE**.
-      - On MacOS, in your IDE, select **Eclipse > About Eclipse IDE**.
+      - On MacOS, in your IDE, select **Eclipse** > **About Eclipse IDE**.
+
    1. On the dialog, select **Installation details**.
    1. Locate **GitLab for Eclipse** and copy the **Version** value.
 
 1. Your Eclipse version.
    1. Open the `About Eclipse IDE` dialog.
       - On Windows, in your IDE, select **Help** > **About Eclipse IDE**.
-      - On MacOS, in your IDE, select **Eclipse > About Eclipse IDE**.
+      - On MacOS, in your IDE, select **Eclipse** > **About Eclipse IDE**.
 
 1. Your operating system.
 1. Are you using a GitLab.com, GitLab Self-Managed, or GitLab Dedicated instance?

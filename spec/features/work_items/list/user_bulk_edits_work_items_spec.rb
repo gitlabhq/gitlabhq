@@ -14,6 +14,8 @@ RSpec.describe 'Work items bulk editing', :js, feature_category: :team_planning 
   let_it_be(:wontfix_label) { create(:label, project: project, title: 'wontfix') }
   let_it_be(:issue) { create(:work_item, :issue, project: project, title: "Issue without label") }
   let_it_be(:task) { create(:work_item, :task, project: project, title: "Task without label") }
+  let_it_be(:task_2) { create(:work_item, :task, project: project, title: "Task 2") }
+  let_it_be(:incident) { create(:incident, project: project, title: "Incident 1") }
   let_it_be(:issue_with_label) do
     create(:work_item, :issue, project: project, title: "Issue with label", labels: [frontend_label])
   end
@@ -83,6 +85,52 @@ RSpec.describe 'Work items bulk editing', :js, feature_category: :team_planning 
       it_behaves_like 'when user bulk assigns and unassigns labels simultaneously' do
         let(:work_item) { issue }
         let(:work_item_with_label) { issue_with_label }
+      end
+    end
+
+    context 'when bulk editing parent on project issue list' do
+      before do
+        allow(Gitlab::QueryLimiting).to receive(:threshold).and_return(137)
+        stub_feature_flags(work_item_view_for_issues: true)
+
+        visit project_issues_path(project)
+        # clear the type filter as we will also update task
+        click_button 'Clear'
+        click_bulk_edit
+      end
+
+      it_behaves_like 'when user bulk assigns parent' do
+        let(:child_work_item) { task }
+        let(:parent_work_item) { issue }
+        let(:child_work_item_2) { task_2 }
+      end
+
+      context 'when unassigning a parent' do
+        before do
+          create(:parent_link, work_item_parent: issue, work_item: task)
+          create(:parent_link, work_item_parent: issue, work_item: task_2)
+          page.refresh
+
+          click_bulk_edit
+        end
+
+        it_behaves_like 'when user bulk unassigns parent' do
+          let(:child_work_item) { task }
+          let(:parent_work_item) { issue }
+          let(:child_work_item_2) { task_2 }
+        end
+      end
+
+      it_behaves_like 'when parent bulk edit shows no available items' do
+        let(:incompatible_work_item) { incident }
+        let(:incompatible_work_item_1) { issue }
+        let(:incompatible_work_item_2) { task }
+      end
+
+      it_behaves_like 'when parent bulk edit fetches correct work items' do
+        let(:child_work_item) { task }
+        let(:parent_work_item) { issue }
+        let(:incident_work_item) { incident }
       end
     end
   end

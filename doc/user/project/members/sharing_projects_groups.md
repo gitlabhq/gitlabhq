@@ -357,9 +357,9 @@ This option is only available for top-level groups.
 
 For example, in the following group and project hierarchy:
 
-- **Animals > Dogs > Dog Project**
-- **Animals > Cats**
-- **Plants > Trees**
+- **Animals** > **Dogs** > **Dog Project**
+- **Animals** > **Cats**
+- **Plants** > **Trees**
 
 If you prevent inviting groups outside the hierarchy for the **Animals** group:
 

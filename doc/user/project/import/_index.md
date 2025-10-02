@@ -640,7 +640,7 @@ To undo the operation:
 
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Manage > Members**.
+1. Select **Manage** > **Members**.
 1. Select the **Placeholders** tab.
 1. Go to **Reassigned** sub-tab, where placeholders are listed in a table.
 1. Select **Undo** in the correct row.

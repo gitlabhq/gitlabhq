@@ -17,5 +17,5 @@
 
 - popover_data = { container: 'body', toggle: 'popover', placement: "top", html: 'true', triggers: 'hover focus', title: popover_title, content: popover_content }
 
-%span{ class: style }
+%span{ class: local_assigns[:style] }
   = gl_badge_tag(_('Beta'), variant: :neutral, href: '#', data: popover_data)

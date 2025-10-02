@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop: disable Sidekiq/EnforceDatabaseHealthSignalDeferral -- Causing request timeout on prometheus - investigating https://gitlab.com/gitlab-org/gitlab/-/issues/571999
 module MergeRequests
   module Refresh
     class WebHooksWorker # rubocop:disable Scalability/IdempotentWorker -- Web hooks aren't idempotent
@@ -10,8 +11,6 @@ module MergeRequests
       urgency :low
       data_consistency :sticky
       worker_has_external_dependencies!
-
-      defer_on_database_health_signal :gitlab_main, [], 10.seconds
 
       # NOTE: This worker will be deprecated once we switch to using events
       def perform(project_id, user_id, oldrev, newrev, ref)
@@ -28,3 +27,4 @@ module MergeRequests
     end
   end
 end
+# rubocop: enable Sidekiq/EnforceDatabaseHealthSignalDeferral

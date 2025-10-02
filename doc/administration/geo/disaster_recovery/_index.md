@@ -106,7 +106,7 @@ Note the following when promoting a secondary:
 - If you don't expect the runners connected to the previous primary to come back, you should remove them:
   - Through the UI:
     1. On the left sidebar, at the bottom, select **Admin**.
-    1. Select **CI/CD > Runners** and remove them.
+    1. Select **CI/CD** > **Runners** and remove them.
   - Using the [Runners API](../../../api/runners.md).
 
 #### Promoting a **secondary** site running on a single node

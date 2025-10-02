@@ -322,11 +322,12 @@ export default {
       :disabled="!hasItemsSelected || !canEditMilestone"
     />
     <work-item-bulk-edit-parent
-      v-if="!isEpicsList"
       v-model="parentId"
       :full-path="fullPath"
       :is-group="isGroup"
       :disabled="!hasItemsSelected || !canEditParent"
+      :selected-work-item-types-ids="workItemTypeIds"
+      data-testid="bulk-edit-parent"
     />
     <template v-if="!isEpicsList">
       <hr />

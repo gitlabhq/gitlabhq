@@ -67,9 +67,9 @@ This extension can display an alert in VS Code when a pipeline for your current 
 
 To show alerts for your current Git branch:
 
-1. In VS Code, on the top menu, select **Code > Settings > Settings**.
+1. In VS Code, on the top menu, select **Code** > **Settings** > **Settings**.
 1. Depending on your configuration, select either **User** or **Workplace** settings.
-1. In the main tab, select **Extensions > GitLab Workflow** to view this extension's settings.
+1. In the main tab, select **Extensions** > **GitLab Workflow** to view this extension's settings.
 1. Under **Show Pipeline Update Notifications**, select the **Show notification in VS Code when the pipeline status changes** checkbox.
 
 ## View CI/CD job output

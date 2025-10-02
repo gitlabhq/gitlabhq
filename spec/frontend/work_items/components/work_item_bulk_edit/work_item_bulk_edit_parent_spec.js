@@ -8,12 +8,14 @@ import { createAlert } from '~/alert';
 import groupWorkItemsQuery from '~/work_items/graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import workItemsByReferencesQuery from '~/work_items/graphql/work_items_by_references.query.graphql';
+import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import WorkItemBulkEditParent from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_parent.vue';
 import { BULK_EDIT_NO_VALUE } from '~/work_items/constants';
 import {
   availableObjectivesResponse,
   mockWorkItemReferenceQueryResponse,
   groupEpicsWithMilestonesQueryResponse,
+  namespaceWorkItemTypesQueryResponse,
 } from '../../mock_data';
 
 jest.mock('~/alert');
@@ -34,6 +36,11 @@ const listResults = [
     value: 'gid://gitlab/WorkItem/711',
   },
 ];
+const objectiveTypeId = 'gid://gitlab/WorkItems::Type/6';
+const issueTypeId = 'gid://gitlab/WorkItems::Type/1';
+const incidentTypeId = 'gid://gitlab/WorkItems::Type/2';
+const taskTypeId = 'gid://gitlab/WorkItems::Type/5';
+const keyResultTypeId = 'gid://gitlab/WorkItems::Type/7';
 
 describe('WorkItemBulkEditParent component', () => {
   let wrapper;
@@ -43,22 +50,26 @@ describe('WorkItemBulkEditParent component', () => {
   const workItemsByReferenceHandler = jest
     .fn()
     .mockResolvedValue(mockWorkItemReferenceQueryResponse);
+  const typesQuerySuccessHandler = jest.fn().mockResolvedValue(namespaceWorkItemTypesQueryResponse);
 
   const createComponent = ({
     props = {},
     projectHandler = projectWorkItemsHandler,
     groupHandler = groupWorkItemsHandler,
     searchHandler = workItemsByReferenceHandler,
+    selectedWorkItemTypesIds = [objectiveTypeId],
   } = {}) => {
     wrapper = mount(WorkItemBulkEditParent, {
       apolloProvider: createMockApollo([
         [groupWorkItemsQuery, groupHandler],
         [projectWorkItemsQuery, projectHandler],
         [workItemsByReferencesQuery, searchHandler],
+        [namespaceWorkItemTypesQuery, typesQuerySuccessHandler],
       ]),
       propsData: {
         fullPath: 'group/project',
         isGroup: false,
+        selectedWorkItemTypesIds,
         ...props,
       },
       stubs: {
@@ -113,13 +124,66 @@ describe('WorkItemBulkEditParent component', () => {
         expect(projectWorkItemsHandler).not.toHaveBeenCalled();
       });
 
-      it('is called when dropdown is shown', async () => {
+      it('project work items query is called and not group work items query when dropdown is shown', async () => {
         createComponent();
 
         findListbox().vm.$emit('shown');
-        await nextTick();
+        await waitForPromises();
 
         expect(projectWorkItemsHandler).toHaveBeenCalled();
+        expect(groupWorkItemsHandler).not.toHaveBeenCalled();
+      });
+
+      it('excludes incident, test case and ticket when any work item is selected', async () => {
+        createComponent({
+          selectedWorkItemTypesIds: [objectiveTypeId],
+        });
+
+        findListbox().vm.$emit('shown');
+        await waitForPromises();
+
+        expect(projectWorkItemsHandler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            types: expect.not.arrayContaining(['INCIDENT', 'TEST_CASE', 'TICKET']),
+          }),
+        );
+      });
+
+      it('does not call project work items query and calls group work items query when an issue is selected', async () => {
+        createComponent({
+          selectedWorkItemTypesIds: [issueTypeId],
+        });
+
+        findListbox().vm.$emit('shown');
+        await waitForPromises();
+
+        expect(projectWorkItemsHandler).not.toHaveBeenCalled();
+        expect(groupWorkItemsHandler).toHaveBeenCalled();
+      });
+
+      describe('shows no available items', () => {
+        it.each`
+          description                                                    | selectedWorkItemTypesIds
+          ${'when multiple incompatible types are selected in a group '} | ${[objectiveTypeId, taskTypeId, issueTypeId, keyResultTypeId]}
+          ${'when objective and issue are selected in a group'}          | ${[objectiveTypeId, issueTypeId]}
+          ${'when task and issue are selected in a group'}               | ${[taskTypeId, issueTypeId]}
+          ${'when key result and issue are selected in a group'}         | ${[keyResultTypeId, issueTypeId]}
+          ${'when objective and task are selected in a group'}           | ${[objectiveTypeId, taskTypeId]}
+          ${'in case of incident in a project'}                          | ${[incidentTypeId]}
+        `('$description', async ({ selectedWorkItemTypesIds }) => {
+          createComponent({
+            props: { isGroup: false },
+            selectedWorkItemTypesIds,
+          });
+
+          findListbox().vm.$emit('shown');
+          await waitForPromises();
+
+          expect(findListbox().props('items')).toEqual([]);
+          expect(findListbox().props('noResultsText')).toBe(
+            'No available parent for all selected items.',
+          );
+        });
       });
 
       it('emits an error when there is an error in the call', async () => {
@@ -147,9 +211,63 @@ describe('WorkItemBulkEditParent component', () => {
         createComponent({ props: { isGroup: true } });
 
         findListbox().vm.$emit('shown');
-        await nextTick();
+        await waitForPromises();
 
         expect(groupWorkItemsHandler).toHaveBeenCalled();
+      });
+
+      it('excludes incident, test case and ticket when an objective is selected', async () => {
+        createComponent({
+          props: { isGroup: true },
+          selectedWorkItemTypesIds: [objectiveTypeId],
+        });
+
+        findListbox().vm.$emit('shown');
+        await waitForPromises();
+
+        expect(groupWorkItemsHandler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            types: expect.not.arrayContaining(['INCIDENT', 'TEST_CASE', 'TICKET']),
+          }),
+        );
+      });
+
+      it('does not call project work items query when it is a group', async () => {
+        createComponent({
+          props: { isGroup: true },
+          selectedWorkItemTypesIds: [objectiveTypeId],
+        });
+
+        findListbox().vm.$emit('shown');
+        await waitForPromises();
+
+        expect(projectWorkItemsHandler).not.toHaveBeenCalled();
+        expect(groupWorkItemsHandler).toHaveBeenCalled();
+      });
+
+      describe('shows no available items', () => {
+        it.each`
+          description                                                    | selectedWorkItemTypesIds
+          ${'when multiple incompatible types are selected in a group '} | ${[objectiveTypeId, taskTypeId, issueTypeId, keyResultTypeId]}
+          ${'when objective and issue are selected in a group'}          | ${[objectiveTypeId, issueTypeId]}
+          ${'when task and issue are selected in a group'}               | ${[taskTypeId, issueTypeId]}
+          ${'when key result and issue are selected in a group'}         | ${[keyResultTypeId, issueTypeId]}
+          ${'when objective and task are selected in a group'}           | ${[objectiveTypeId, taskTypeId]}
+          ${'in case of incident in a group'}                            | ${[incidentTypeId]}
+        `('$description', async ({ selectedWorkItemTypesIds }) => {
+          createComponent({
+            props: { isGroup: true },
+            selectedWorkItemTypesIds,
+          });
+
+          findListbox().vm.$emit('shown');
+          await waitForPromises();
+
+          expect(findListbox().props('items')).toEqual([]);
+          expect(findListbox().props('noResultsText')).toBe(
+            'No available parent for all selected items.',
+          );
+        });
       });
 
       it('emits an error when there is an error in the call', async () => {
@@ -264,8 +382,8 @@ describe('WorkItemBulkEditParent component', () => {
       });
     });
 
-    describe('with selected milestone', () => {
-      it('renders the milestone title', async () => {
+    describe('with selected parent', () => {
+      it('renders the parent title', async () => {
         createComponent();
 
         await openListboxAndSelect('gid://gitlab/WorkItem/711');

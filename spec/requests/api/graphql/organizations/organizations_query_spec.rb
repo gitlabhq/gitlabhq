@@ -5,19 +5,20 @@ require 'spec_helper'
 RSpec.describe 'getting organizations information', feature_category: :organization do
   include GraphqlHelpers
 
-  let(:query) { graphql_query_for(:organizations, organizations_fields) }
+  let(:params) { {} }
+  let(:query) { graphql_query_for(:organizations, params, organizations_fields) }
   let(:organizations) { graphql_data_at(:organizations, :nodes) }
   let(:organizations_fields) do
     <<~FIELDS
-    nodes {
-      id
-      path
-    }
-    count
+      nodes {
+        id
+        path
+      }
+      count
     FIELDS
   end
 
-  let_it_be(:private_organization) { create(:organization, :private) }
+  let_it_be(:private_organization) { create(:organization, :private, name: 'Private Organization') }
   let_it_be(:public_organizations) { create_list(:organization, 3, :public) }
   let_it_be(:organization) { public_organizations.first }
   let_it_be(:user) { create(:admin, organization: organization, organizations: [organization]) }
@@ -56,6 +57,17 @@ RSpec.describe 'getting organizations information', feature_category: :organizat
 
     def pagination_query(params)
       graphql_query_for(:organizations, params, "#{page_info} nodes { id }")
+    end
+  end
+
+  describe 'search' do
+    let(:current_user) { user }
+    let(:params) { { search: private_organization.name } }
+
+    it 'returns matching organization' do
+      request_organization
+
+      expect(organizations).to contain_exactly(a_graphql_entity_for(private_organization))
     end
   end
 end

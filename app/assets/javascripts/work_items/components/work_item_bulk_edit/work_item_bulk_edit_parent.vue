@@ -5,11 +5,17 @@ import { createAlert } from '~/alert';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { __, s__ } from '~/locale';
 import { isValidURL } from '~/lib/utils/url_utility';
-import { BULK_EDIT_NO_VALUE } from '../../constants';
+import {
+  BULK_EDIT_NO_VALUE,
+  NAME_TO_ENUM_MAP,
+  WORK_ITEM_TYPE_ENUM_EPIC,
+  WORK_ITEMS_NO_PARENT_LIST,
+} from '../../constants';
 import groupWorkItemsQuery from '../../graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '../../graphql/project_work_items.query.graphql';
 import workItemsByReferencesQuery from '../../graphql/work_items_by_references.query.graphql';
-import { isReference } from '../../utils';
+import namespaceWorkItemTypesQuery from '../../graphql/namespace_work_item_types.query.graphql';
+import { isReference, findHierarchyWidgetDefinition } from '../../utils';
 
 export default {
   components: {
@@ -36,6 +42,11 @@ export default {
       required: false,
       default: false,
     },
+    selectedWorkItemTypesIds: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -45,23 +56,31 @@ export default {
       workspaceWorkItems: [],
       workItemsCache: [],
       workItemsByReference: [],
+      allowedParentTypesMap: {},
     };
   },
   apollo: {
     workspaceWorkItems: {
       query() {
-        return this.isGroup ? groupWorkItemsQuery : projectWorkItemsQuery;
+        // The logic to fetch the Parent seems to be different than other pages
+        // Below issue targets to have a common logic across work items app
+        // https://gitlab.com/gitlab-org/gitlab/-/issues/571302
+        return this.shouldSearchAcrossGroups ? groupWorkItemsQuery : projectWorkItemsQuery;
       },
       variables() {
         return {
-          fullPath: this.fullPath,
+          fullPath: !this.isGroup && this.shouldSearchAcrossGroups ? this.groupPath : this.fullPath,
           searchTerm: this.searchTerm,
           in: this.searchTerm ? 'TITLE' : undefined,
           includeAncestors: true,
+          includeDescendants: this.shouldSearchAcrossGroups,
+          types: this.selectedItemParentTypes.filter(
+            (type) => !WORK_ITEMS_NO_PARENT_LIST.includes(type),
+          ),
         };
       },
       skip() {
-        return !this.searchStarted;
+        return !this.searchStarted || !this.shouldLoadParents;
       },
       update(data) {
         return data.workspace?.workItems?.nodes || [];
@@ -96,6 +115,38 @@ export default {
         });
       },
     },
+    allowedParentTypesMap: {
+      query: namespaceWorkItemTypesQuery,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+        };
+      },
+      update(data) {
+        const typesParentsMap = {};
+        const types = data.workspace.workItemTypes.nodes || [];
+
+        // Used `for` loop for better readability and performance
+        for (const type of types) {
+          // Get the hierarchy widgets
+          const hierarchyWidget = findHierarchyWidgetDefinition({ workItemType: type });
+
+          // If there are allowed parent types map the ids and names
+          if (hierarchyWidget?.allowedParentTypes?.nodes?.length > 0) {
+            const parentNames = hierarchyWidget.allowedParentTypes?.nodes.map((parent) => {
+              // Used enums because the workspaceWorkItems does not support gids in the types fields
+              return { id: parent.id, name: NAME_TO_ENUM_MAP[parent.name] };
+            });
+            typesParentsMap[type.id] = parentNames;
+          }
+        }
+
+        return typesParentsMap;
+      },
+      skip() {
+        return !this.fullPath;
+      },
+    },
   },
   computed: {
     isSearchingByReference() {
@@ -111,6 +162,10 @@ export default {
       return this.isSearchingByReference ? this.workItemsByReference : this.workspaceWorkItems;
     },
     listboxItems() {
+      if (!this.shouldLoadParents) {
+        return [];
+      }
+
       if (!this.searchTerm.trim().length) {
         return [
           {
@@ -140,6 +195,54 @@ export default {
         return s__('WorkItem|No parent');
       }
       return s__('WorkItem|Select parent');
+    },
+    selectedItemsCanHaveParents() {
+      return this.selectedWorkItemTypesIds.some((id) =>
+        Object.keys(this.allowedParentTypesMap).includes(id),
+      );
+    },
+    areTypesCompatible() {
+      return (
+        this.selectedWorkItemTypesIds
+          .map((id) => new Set((this.allowedParentTypesMap[id] || []).map((type) => type.id)))
+          .reduce((intersection, parentIds) => {
+            // If there are no parents
+            if (parentIds.size === 0) return new Set();
+            // If parents are unique
+            if (!intersection) return parentIds;
+            // Verify if the parents are incompatible
+            return new Set([...parentIds].filter((id) => intersection.has(id)));
+          }, null)?.size > 0 ?? false
+      );
+    },
+    shouldLoadParents() {
+      return this.selectedItemsCanHaveParents && this.areTypesCompatible;
+    },
+    selectedItemParentTypes() {
+      return [
+        ...new Set(
+          this.selectedWorkItemTypesIds?.flatMap(
+            (id) => this.allowedParentTypesMap?.[id]?.map((type) => type.name) || [],
+          ),
+        ),
+      ];
+    },
+    canHaveEpicParent() {
+      return this.selectedItemParentTypes?.includes(WORK_ITEM_TYPE_ENUM_EPIC);
+    },
+    shouldSearchAcrossGroups() {
+      // Determines if we need to search across groups.
+      // Cross-group search applies only when the parent is
+      // a group-level work item, an epic.
+      return this.isGroup || this.canHaveEpicParent;
+    },
+    groupPath() {
+      return this.fullPath.substring(0, this.fullPath.lastIndexOf('/'));
+    },
+    noResultText() {
+      return !this.shouldLoadParents
+        ? s__('WorkItem|No available parent for all selected items.')
+        : s__('WorkItem|No matching results');
     },
   },
   watch: {
@@ -191,7 +294,7 @@ export default {
       :header-text="s__('WorkItem|Select parent')"
       is-check-centered
       :items="listboxItems"
-      :no-results-text="s__('WorkItem|No matching results')"
+      :no-results-text="noResultText"
       :reset-button-label="__('Reset')"
       searchable
       :searching="isLoading"

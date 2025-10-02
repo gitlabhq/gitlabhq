@@ -123,7 +123,7 @@ To display the deploy boards for a specific [environment](../../ci/environments/
    Kubernetes as well. The image below demonstrates how this is shown inside
    Kubernetes.
 
-   If you use GCP to manage clusters, you can see the deployment details in GCP itself by navigating to **Workloads > deployment name > Details**:
+   If you use GCP to manage clusters, you can see the deployment details in GCP itself by navigating to **Workloads** > **deployment name** > **Details**:
 
    ![deploy boards Kubernetes Label](img/deploy_boards_kubernetes_label_v11_9.png)
 

@@ -232,42 +232,18 @@ describe('WorkItemBulkEditSidebar component', () => {
 
   describe('widget visibility', () => {
     it('shows the correct widgets', () => {
-      createComponent({
-        provide: { hasIssuableHealthStatusFeature: true },
-      });
+      createComponent();
 
       // visible
       expect(findStateComponent().exists()).toBe(true);
       expect(findAssigneeComponent().exists()).toBe(true);
       expect(findAddLabelsComponent().exists()).toBe(true);
       expect(findRemoveLabelsComponent().exists()).toBe(true);
-      expect(findHealthStatusComponent().exists()).toBe(true);
       expect(findSubscriptionComponent().exists()).toBe(true);
       expect(findConfidentialityComponent().exists()).toBe(true);
       expect(findMilestoneComponent().exists()).toBe(true);
       expect(findParentComponent().exists()).toBe(true);
       expect(findBulkMoveComponent().exists()).toBe(true);
-    });
-
-    it('shows the correct widgets on epics list', () => {
-      createComponent({
-        props: { isEpicsList: true },
-        provide: { hasIssuableHealthStatusFeature: true },
-      });
-
-      // visible
-      expect(findAssigneeComponent().exists()).toBe(true);
-      expect(findAddLabelsComponent().exists()).toBe(true);
-      expect(findRemoveLabelsComponent().exists()).toBe(true);
-      expect(findHealthStatusComponent().exists()).toBe(true);
-      expect(findSubscriptionComponent().exists()).toBe(true);
-      expect(findConfidentialityComponent().exists()).toBe(true);
-      expect(findMilestoneComponent().exists()).toBe(true);
-
-      // hidden
-      expect(findStateComponent().exists()).toBe(false);
-      expect(findParentComponent().exists()).toBe(false);
-      expect(findBulkMoveComponent().exists()).toBe(false);
     });
   });
 
@@ -557,14 +533,6 @@ describe('WorkItemBulkEditSidebar component', () => {
   });
 
   describe('"Parent" component', () => {
-    it.each([true, false])('renders depending on isEpicsList prop', (isEpicsList) => {
-      createComponent({
-        props: { isEpicsList },
-      });
-
-      expect(findParentComponent().exists()).toBe(!isEpicsList);
-    });
-
     it('updates parent when "Parent" component emits "input" event', async () => {
       createComponent({
         props: { isEpicsList: false },

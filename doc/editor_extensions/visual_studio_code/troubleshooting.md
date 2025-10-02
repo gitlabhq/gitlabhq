@@ -20,7 +20,7 @@ see [Troubleshooting Code Suggestions for VS Code](../../user/project/repository
 
 Both the VS Code Extension and the GitLab Language Server provide logs that can help you troubleshoot. To enable debug logging:
 
-1. In VS Code, on the top bar, go to **Code > Settings > Settings**.
+1. In VS Code, on the top bar, go to **Code** > **Settings** > **Settings**.
 1. On the top right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
 1. Add this line, or edit it if it already exists:
 
@@ -104,7 +104,7 @@ SSH connections), you might encounter initialization failures like:
 
 To resolve these issues:
 
-1. In VS Code, on the top bar, go to **Code > Settings > Settings**.
+1. In VS Code, on the top bar, go to **Code** > **Settings** > **Settings**.
 1. On the top right corner, select **Open Settings (JSON)** to edit your `settings.json` file.
    - Alternatively, press <kbd>F1</kbd>, enter **Preferences: Open Settings (JSON)**, and select it.
 1. Add or modify this setting:

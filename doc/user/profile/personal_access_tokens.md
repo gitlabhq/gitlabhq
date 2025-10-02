@@ -393,7 +393,7 @@ Prerequisites:
 - You must have the Owner role for the top-level group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General > Permissions and group features**.
+1. Select **Settings** > **General** > **Permissions and group features**.
 1. Clear the **Service account token expiration** checkbox.
 
 You can now create personal access tokens for a service account user with no expiry date.

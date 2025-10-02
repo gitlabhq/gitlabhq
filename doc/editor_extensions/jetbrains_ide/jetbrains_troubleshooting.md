@@ -19,8 +19,8 @@ see [Troubleshooting Code Suggestions](../../user/project/repository/code_sugges
 
 To enable debug logs in JetBrains:
 
-1. On the top bar, go to **Help > Diagnostic Tools > Debug Log Settings**, or
-   search for the action by going to **Help > Find Action > Debug log settings**.
+1. On the top bar, go to **Help** > **Diagnostic Tools > Debug Log Settings**, or
+   search for the action by going to **Help** > **Find Action** > **Debug log settings**.
 1. Add this line: `com.gitlab.plugin`
 1. Select **OK** or **Save**.
 

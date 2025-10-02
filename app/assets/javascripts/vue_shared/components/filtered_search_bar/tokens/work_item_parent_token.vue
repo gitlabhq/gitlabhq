@@ -62,6 +62,9 @@ export default {
       this.loading = true;
 
       try {
+        // The logic to fetch the Parent seems to be different than other pages
+        // Below issue targets to have a common logic across work items app
+        // https://gitlab.com/gitlab-org/gitlab/-/issues/571302
         const { data } = await this.$apollo.query({
           query: searchWorkItemParentQuery,
           variables: {

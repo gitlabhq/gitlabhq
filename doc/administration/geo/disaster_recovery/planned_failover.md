@@ -301,7 +301,7 @@ You should install the correct certificates on the secondary site if either:
 - The primary site uses custom or self-signed TLS certificates to secure inbound connections.
 - The primary site connects to external services that use custom or self-signed certificates.
 
-For more information, see 
+For more information, see
 [using custom certificates](../replication/configuration.md#step-4-optional-using-custom-certificates)
 with secondary sites.
 
@@ -333,7 +333,7 @@ primary site. To resolve these failures, either:
 
 ### Verify the integrity of replicated data
 
-Ensure that verification is complete before proceeding with failover. Any corrupted data 
+Ensure that verification is complete before proceeding with failover. Any corrupted data
 that fails verification may be lost during failover.
 
 For more information, see [automatic background verification](background_verification.md).
@@ -398,7 +398,7 @@ on the primary site to give the secondary site time to catch up:
    final replication process now.
 1. On the primary site:
    1. On the left sidebar, at the bottom, select **Admin**.
-   1. On the left sidebar, select **Monitoring > Background jobs**.
+   1. On the left sidebar, select **Monitoring** > **Background jobs**.
    1. On the Sidekiq dashboard, select **Queues**. Wait for all queues, except
       those with `geo` in the name, to drop to 0.
       These queues contain work submitted by your users. Failing over

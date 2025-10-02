@@ -10,6 +10,10 @@ module Resolvers
       required: false,
       description: 'Search query.'
 
+    argument :active, GraphQL::Types::Boolean,
+      required: false,
+      description: "Filters by projects that are not archived and not scheduled for deletion."
+
     argument :sort, Types::Projects::ProjectSortEnum,
       required: false,
       description: "List starred projects by sort order.",
@@ -47,7 +51,8 @@ module Resolvers
         search: args[:search],
         sort: args[:sort],
         min_access_level: args[:min_access_level],
-        language_name: args[:programming_language_name]
+        language_name: args[:programming_language_name],
+        active: args[:active]
       }
     end
   end

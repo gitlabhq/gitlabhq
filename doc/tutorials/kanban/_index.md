@@ -59,7 +59,7 @@ Optionally, you can enable [work in progress (WIP) limits](../../user/project/is
 To do so:
 
 1. Select the **Edit list settings** gear icon in the top right of a label list.
-1. Select **Work in progress limit > Edit**.
+1. Select **Work in progress limit** > **Edit**.
 1. Enter the maximum number of issues allowed in the corresponding list, the press the **Enter** key.
 
 Your list background will now automatically turn red when the limit is reached.

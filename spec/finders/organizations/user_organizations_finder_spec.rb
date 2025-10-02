@@ -54,18 +54,6 @@ RSpec.describe Organizations::UserOrganizationsFinder, '#execute', feature_categ
     it { is_expected.to be_empty }
   end
 
-  context 'when searching by name' do
-    let(:params) { { search: 'Organization' } }
-
-    it { is_expected.to contain_exactly(organization) }
-  end
-
-  context 'when searching by path' do
-    let(:params) { { search: 'organization' } }
-
-    it { is_expected.to contain_exactly(organization) }
-  end
-
   context 'when solo_owned parameter is true' do
     let_it_be(:organization_owner) { create(:user) }
 

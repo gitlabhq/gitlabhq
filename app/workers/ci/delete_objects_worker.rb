@@ -23,7 +23,11 @@ module Ci
     end
 
     def max_running_jobs
-      20
+      if ::Feature.enabled?(:ci_delete_objects_high_concurrency, :instance)
+        50
+      else
+        20
+      end
     end
 
     private
