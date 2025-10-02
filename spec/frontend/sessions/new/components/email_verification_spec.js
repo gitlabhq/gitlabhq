@@ -74,7 +74,7 @@ describe('EmailVerification', () => {
 
     it('contains help text describing option to verification code to secondary email and a link to support page', () => {
       expect(wrapper.text()).toMatch(
-        /If you don't have access to the primary email address, you can.*send a code to another address associated with this account, or you can try to verify another way./,
+        /If you don't have access to the primary email address, you can.*send a code to another address associated with this account.*, or you can try to verify another way./,
       );
     });
 

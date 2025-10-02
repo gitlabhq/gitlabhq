@@ -59,7 +59,7 @@ describe('UserAvatar', () => {
   it("renders user's avatar", () => {
     createComponent();
 
-    expect(findAvatarLabeled().attributes('src')).toBe(
+    expect(findAvatarLabeled().props('src')).toBe(
       'https://www.gravatar.com/avatar/4816142ef496f956a277bedf1a40607b?s=80&d=identicon&width=96',
     );
   });

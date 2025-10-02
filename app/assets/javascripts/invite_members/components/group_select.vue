@@ -207,6 +207,7 @@ export default {
           :entity-id="item.value"
           :entity-name="item.name"
           :size="32"
+          :data-testid="`group-select-avatar-${item.value}`"
         />
       </template>
     </gl-collapsible-listbox>

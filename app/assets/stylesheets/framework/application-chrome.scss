@@ -269,7 +269,7 @@
       }
 
       .container-fluid {
-        @apply gl-px-4 gl-pb-3;
+        @apply gl-px-0 lg:gl-px-3 gl-pb-3;
       }
 
       // Hide alert wrapper if it's empty
@@ -357,7 +357,7 @@
   // Panel header
   .panel-header .top-bar-fixed,
   .work-item-drawer-header {
-    @apply gl-bg-default gl-shadow-none gl-relative gl-px-5 #{!important};
+    @apply gl-bg-default gl-shadow-none gl-relative gl-px-3 lg:gl-px-5 #{!important};
     z-index: 99;
     border-bottom: 1px solid var(--super-sidebar-bg);
   }

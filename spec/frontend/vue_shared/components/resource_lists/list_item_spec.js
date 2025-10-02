@@ -1,4 +1,4 @@
-import { GlAvatarLabeled, GlIcon } from '@gitlab/ui';
+import { GlAvatar, GlAvatarLabeled, GlIcon } from '@gitlab/ui';
 import membershipProjectsGraphQlResponse from 'test_fixtures/graphql/projects/your_work/membership_projects.query.graphql.json';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import ListItem from '~/vue_shared/components/resource_lists/list_item.vue';
@@ -69,6 +69,7 @@ describe('ListItem', () => {
       propsData: {
         avatarAttrs: { itemprop: 'image', labelLinkAttrs: { itemprop: 'name' } },
       },
+      mountFn: mountExtended,
     });
 
     const avatarLabeled = findAvatarLabeled();
@@ -77,13 +78,13 @@ describe('ListItem', () => {
       label: group.avatarLabel,
       labelLink: group.relativeWebUrl,
       labelLinkAttrs: { itemprop: 'name' },
-    });
-
-    expect(avatarLabeled.attributes()).toMatchObject({
-      'entity-id': group.id.toString(),
-      'entity-name': group.fullName,
+      entityId: group.id,
+      entityName: group.fullName,
       src: group.avatarUrl,
       shape: 'rect',
+    });
+
+    expect(avatarLabeled.findComponent(GlAvatar).attributes()).toMatchObject({
       itemprop: 'image',
     });
   });

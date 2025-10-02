@@ -89,6 +89,13 @@ If push rules were never configured for the group, returns [`404 Not Found`](res
 }
 ```
 
+{{< alert type="note" >}}
+
+This differs from the [project push rules API](project_push_rules.md#get-project-push-rules),
+which returns HTTP `200 OK` with the literal string `"null"` when no push rules are configured.
+
+{{< /alert >}}
+
 When disabled, some boolean attributes return `null` instead of `false`. For example:
 
 - `commit_committer_check`

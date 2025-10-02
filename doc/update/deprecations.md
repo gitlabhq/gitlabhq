@@ -611,7 +611,7 @@ Use `dependencyProxyTotalSizeBytes` instead, introduced in GitLab 16.1.
 - Announced in GitLab <span class="milestone">17.11</span>
 - End of Support in GitLab <span class="milestone">19.0</span>
 - Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/475152).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/573447).
 
 </div>
 

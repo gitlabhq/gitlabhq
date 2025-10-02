@@ -40,12 +40,12 @@ describe('OrganizationsListItem', () => {
     });
 
     it('renders GlAvatarLabeled with correct data', () => {
-      expect(findGlAvatarLabeled().attributes()).toMatchObject({
-        'entity-id': getIdFromGraphQLId(organization.id).toString(),
-        'entity-name': organization.name,
+      expect(findGlAvatarLabeled().props()).toMatchObject({
+        entityId: getIdFromGraphQLId(organization.id),
+        entityName: organization.name,
         src: organization.avatarUrl,
         label: organization.name,
-        labellink: organization.webUrl,
+        labelLink: organization.webUrl,
       });
     });
   });

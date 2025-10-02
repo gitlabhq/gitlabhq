@@ -46,7 +46,7 @@ describe('ExtendedDashboardPanel', () => {
         titleIcon: '',
         titleIconClass: '',
         titlePopover: {},
-        titlePopoverClasses: [],
+        titlePopoverClasses: '',
         loading: false,
         loadingDelayed: false,
         loadingDelayedText: 'Still loading…',

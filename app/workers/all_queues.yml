@@ -4903,7 +4903,7 @@
   :worker_name: Releases::CreateEvidenceWorker
   :feature_category: :release_evidence
   :has_external_dependencies: false
-  :urgency: :low
+  :urgency: :throttled
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false

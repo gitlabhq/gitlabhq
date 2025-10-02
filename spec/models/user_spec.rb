@@ -5642,6 +5642,29 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#authorized_root_ancestor_ids' do
+    let_it_be(:user) { create(:user) }
+
+    subject { user.authorized_root_ancestor_ids }
+
+    context 'when user has authorized groups' do
+      let!(:root_group_1) { create(:group, developers: user) }
+      let!(:root_group_2) { create(:group) }
+      let!(:root_group_3) { create(:group) }
+      let!(:project) { create(:project, group: root_group_2, developers: user) }
+
+      it 'returns only the root group IDs' do
+        expect(subject).to contain_exactly(root_group_1.id, root_group_2.id)
+      end
+    end
+
+    context 'when user has no authorized groups' do
+      it 'returns an empty array' do
+        expect(subject).to be_empty
+      end
+    end
+  end
+
   describe '#search_on_authorized_groups' do
     let_it_be(:user) { create(:user) }
     let_it_be(:group_1) { create(:group, name: 'test', path: 'blah') }

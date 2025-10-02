@@ -13,9 +13,10 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
 
       let(:pipeline) { build(:ci_pipeline) }
       let(:context) {}
+      let(:changed_files) { files.keys.map { |path| instance_double(Gitlab::Git::ChangedPath, path: path) } }
 
       before do
-        allow(pipeline).to receive(:modified_paths).and_return(files.keys)
+        allow(pipeline).to receive(:changed_paths).and_return(changed_files)
       end
 
       # rubocop:disable Layout/LineLength
@@ -36,6 +37,15 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
 
       with_them do
         it { is_expected.to eq(satisfied) }
+
+        context 'when ci_changes_changed_paths is disabled' do
+          before do
+            stub_feature_flags(ci_changes_changed_paths: false)
+            allow(pipeline).to receive(:modified_paths).and_return(files.keys)
+          end
+
+          it { is_expected.to eq(satisfied) }
+        end
       end
     end
 
@@ -47,12 +57,120 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
       it { is_expected.to be_truthy }
     end
 
+    context 'when changed paths exceed diff limits' do
+      # setup project with changes
+      let(:project) do
+        create(
+          :project,
+          :custom_repo,
+          files: { 'README.md' => 'readme' }
+        )
+      end
+
+      let(:user) { project.owner }
+      let(:globs) { { paths: ['file3.txt'] } }
+      let(:topic_branch) { 'feature_foo' }
+      let(:merge_request) do
+        project.repository.create_branch(topic_branch, project.default_branch)
+
+        project.repository.create_file(
+          user, 'file1.txt', 'file 1',
+          message: 'create file1.txt',
+          branch_name: topic_branch
+        )
+        project.repository.create_file(
+          user, 'file2.txt', 'file 2',
+          message: 'create file2.txt',
+          branch_name: topic_branch
+        )
+        project.repository.create_file(
+          user, 'file3.txt', 'file 3',
+          message: 'create file3.txt',
+          branch_name: topic_branch
+        )
+        create(
+          :merge_request,
+          target_project: project,
+          source_project: project,
+          source_branch: topic_branch,
+          target_branch: project.default_branch
+        )
+      end
+
+      let(:pipeline) do
+        create(:ci_pipeline, project: project, merge_request: merge_request)
+      end
+
+      before do
+        # Ensure diff limits are beneath the number of
+        # changes made
+        stub_application_setting(diff_max_files: 1)
+        allow(Gitlab::Git::DiffCollection.limits)
+          .to receive(:default_limits)
+          .and_return({ max_files: 1 })
+      end
+
+      context 'when ci_changes_changed_paths is enabled' do
+        before do
+          # FF to use changed_paths gitaly api
+          stub_feature_flags(ci_changes_changed_paths: true)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when ci_changes_changed_paths is disabled' do
+        before do
+          # Ensure diff limits are beneath the number of
+          # changes made
+          stub_feature_flags(ci_changes_changed_paths: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when changes exceeds comparison limits' do
+      let(:pipeline) { build(:ci_pipeline) }
+      let_it_be(:project) { create(:project, :repository) }
+      let(:globs) { { paths: ['*impossible/glob*'] } }
+      let(:changed_paths) { [instance_double(Gitlab::Git::ChangedPath, path: 'some/modified/file')] }
+
+      before do
+        stub_const('Gitlab::Ci::Build::Rules::Rule::Clause::Changes::CHANGES_MAX_PATTERN_COMPARISONS', 0)
+        allow(pipeline).to receive(:changed_paths).and_return(changed_paths)
+        allow(context).to receive(:project).and_return(project)
+      end
+
+      it { is_expected.to be_truthy }
+
+      it 'does not call fnmatch' do
+        expect(File).not_to receive(:fnmatch?)
+        satisfied_by
+      end
+
+      it 'logs the pattern comparison limit exceeded' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(
+          class: described_class.name,
+          message: 'rules:changes pattern comparisons limit exceeded',
+          project_id: project.id,
+          paths_size: kind_of(Integer),
+          globs_size: 1,
+          comparisons: kind_of(Integer)
+        )
+        satisfied_by
+      end
+    end
+
     context 'when multiple rules have the same glob paths' do
       let(:pipeline) { build(:ci_pipeline) }
       let(:globs) { { paths: ['some/glob/*'] } }
+      let(:changed_paths) { [instance_double(Gitlab::Git::ChangedPath, path: 'some/modified/file')] }
+      let(:modified_paths) { ['some/modified/file'] }
 
       before do
-        allow(pipeline).to receive(:modified_paths).and_return(['some/modified/file'])
+        allow(pipeline).to receive(:changed_paths).and_return(changed_paths)
+        allow(pipeline).to receive(:modified_paths).and_return(modified_paths)
         allow(pipeline).to receive(:modified_paths_since).and_return(['some/modified/file'])
         allow(pipeline.project).to receive(:commit).and_return(build_stubbed(:commit, sha: 'sha'))
       end
@@ -78,6 +196,19 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
 
           call_twice
         end
+
+        # verify behavior doesn't change when feature flag is disabled
+        context 'when ci_changes_changed_paths is disabled' do
+          before do
+            stub_feature_flags(ci_changes_changed_paths: false)
+          end
+
+          it 'calls the #fnmatch? each time' do
+            expect_fnmatch_call_count(2)
+
+            call_twice
+          end
+        end
       end
 
       context 'with a request store', :request_store do
@@ -93,10 +224,23 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
             described_class.new(globs.merge(compare_to: 'other')).satisfied_by?(pipeline, {})
           end
 
-          it 'calls #fnmatch? each time' do
+          it 'calls the #fnmatch? each time' do
             expect_fnmatch_call_count(2)
 
             call_twice
+          end
+
+          # verify behavior doesn't change when feature flag is disabled
+          context 'when ci_changes_changed_paths is disabled' do
+            before do
+              stub_feature_flags(ci_changes_changed_paths: false)
+            end
+
+            it 'calls the #fnmatch? each time' do
+              expect_fnmatch_call_count(2)
+
+              call_twice
+            end
           end
         end
 
@@ -107,10 +251,22 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
             described_class.new(globs).satisfied_by?(pipeline, {})
           end
 
-          it 'calls #fnmatch? each time' do
+          it 'calls the #fnmatch? each time' do
             expect_fnmatch_call_count(2)
 
             call_twice
+          end
+
+          context 'when ci_changes_changed_paths is disabled' do
+            before do
+              stub_feature_flags(ci_changes_changed_paths: false)
+            end
+
+            it 'calls the #fnmatch? each time' do
+              expect_fnmatch_call_count(2)
+
+              call_twice
+            end
           end
         end
 
@@ -121,10 +277,22 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
             described_class.new(globs).satisfied_by?(pipeline, {})
           end
 
-          it 'calls #fnmatch? each time' do
+          it 'calls the #fnmatch? each time' do
             expect_fnmatch_call_count(2)
 
             call_twice
+          end
+
+          context 'when ci_changes_changed_paths is disabled' do
+            before do
+              stub_feature_flags(ci_changes_changed_paths: false)
+            end
+
+            it 'calls the #fnmatch? each time' do
+              expect_fnmatch_call_count(2)
+
+              call_twice
+            end
           end
         end
       end
@@ -132,11 +300,13 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
 
     context 'when using variable expansion' do
       let(:pipeline) { build(:ci_pipeline) }
+      let(:changed_paths) { [instance_double(Gitlab::Git::ChangedPath, path: 'helm/test.txt')] }
       let(:modified_paths) { ['helm/test.txt'] }
       let(:globs) { { paths: ['$HELM_DIR/**/*'] } }
       let(:context) { instance_double(Gitlab::Ci::Build::Context::Base) }
 
       before do
+        allow(pipeline).to receive(:changed_paths).and_return(changed_paths)
         allow(pipeline).to receive(:modified_paths).and_return(modified_paths)
       end
 
@@ -144,12 +314,29 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
         let(:context) {}
 
         it { is_expected.to be_falsey }
+
+        context 'when ci_changes_changed_paths is disabled' do
+          before do
+            stub_feature_flags(ci_changes_changed_paths: false)
+          end
+
+          it { is_expected.to be_falsey }
+        end
       end
 
-      context 'when modified paths are nil' do
-        let(:modified_paths) {}
+      context 'when changed paths are nil' do
+        let(:changed_paths) { [] }
+        let(:modified_paths) { [] }
 
-        it { is_expected.to be_truthy }
+        it { is_expected.to be_falsey }
+
+        context 'when ci_changes_changed_paths is disabled' do
+          before do
+            stub_feature_flags(ci_changes_changed_paths: false)
+          end
+
+          it { is_expected.to be_falsey }
+        end
       end
 
       context 'when context has the specified variables' do
@@ -182,6 +369,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
 
       context 'when variable expansion does not match' do
         let(:globs) { { paths: ['path/with/$in/it/*'] } }
+        let(:changed_paths) { [instance_double(Gitlab::Git::ChangedPath, path: 'path/with/$in/it/file.txt')] }
         let(:modified_paths) { ['path/with/$in/it/file.txt'] }
 
         before do
@@ -189,6 +377,14 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
         end
 
         it { is_expected.to be_truthy }
+
+        context 'when ci_changes_changed_paths is disabled' do
+          before do
+            stub_feature_flags(ci_changes_changed_paths: false)
+          end
+
+          it { is_expected.to be_truthy }
+        end
       end
     end
 

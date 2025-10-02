@@ -2042,8 +2042,8 @@ documentation site (`https://docs.gitlab.com`). In all other cases and in
 ## Plagiarism
 
 Do not copy and paste content from other sources unless it is a limited
-quotation with the source cited. Typically it is better to rephrase
-relevant information in your own words or link out to the other source.
+quotation with the source cited. Typically, it is better to rephrase
+relevant information in your own words or link to the source.
 
 ## Promising features in future versions
 

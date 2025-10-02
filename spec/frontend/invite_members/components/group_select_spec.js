@@ -125,11 +125,11 @@ describe('GroupSelect', () => {
         createComponent({ isProject });
         await waitForPromises();
 
-        expect(findAvatarByLabel(group1.full_name).attributes()).toMatchObject({
+        expect(findAvatarByLabel(group1.full_name).props()).toMatchObject({
           src: group1.avatar_url,
-          'entity-id': `${group1.id}`,
-          'entity-name': group1.full_name,
-          size: '32',
+          entityId: group1.id,
+          entityName: group1.full_name,
+          size: 32,
         });
       });
 

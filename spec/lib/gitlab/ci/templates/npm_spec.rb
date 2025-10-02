@@ -9,7 +9,7 @@ RSpec.describe 'npm.gitlab-ci.yml', feature_category: :continuous_integration do
 
   describe 'the created pipeline' do
     let(:repo_files) { { 'package.json' => '{}', 'README.md' => '' } }
-    let(:modified_files) { %w[package.json] }
+    let(:changed_files) { [instance_double(Gitlab::Git::ChangedPath, path: 'package.json')] }
     let(:project) { create(:project, :custom_repo, files: repo_files) }
     let(:user) { project.first_owner }
     let(:pipeline_branch) { project.default_branch }
@@ -33,7 +33,7 @@ RSpec.describe 'npm.gitlab-ci.yml', feature_category: :continuous_integration do
       create_branch(name: pipeline_branch)
       create_tag(name: pipeline_tag)
 
-      allow_any_instance_of(Ci::Pipeline).to receive(:modified_paths).and_return(modified_files)
+      allow_any_instance_of(Ci::Pipeline).to receive(:changed_paths).and_return(changed_files)
     end
 
     shared_examples 'publish job created' do
@@ -55,7 +55,7 @@ RSpec.describe 'npm.gitlab-ci.yml', feature_category: :continuous_integration do
       end
 
       context 'when package.json does not exist or has not been changed' do
-        let(:modified_files) { %w[README.md] }
+        let(:changed_files) { [instance_double(Gitlab::Git::ChangedPath, path: 'README.md')] }
 
         it_behaves_like 'no pipeline created'
       end

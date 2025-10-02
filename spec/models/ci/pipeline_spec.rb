@@ -2945,6 +2945,65 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#changed_paths' do
+    let(:pipeline) { create(:ci_empty_pipeline, :created, project: project) }
+
+    context 'when old and new revisions are set' do
+      before do
+        pipeline.update!(before_sha: '1234abcd', sha: '2345bcde')
+      end
+
+      it 'fetches stats for changes between commits' do
+        expect(project.repository)
+          .to receive(:find_changed_paths).with(
+            array_including((an_instance_of(Gitlab::Git::DiffTree).and have_attributes(left_tree_id: "1234abcd", right_tree_id: "2345bcde"))),
+            hash_including(merge_commit_diff_mode: :all_parents)
+          )
+          .and_call_original
+
+        pipeline.changed_paths
+      end
+    end
+
+    context 'when either old or new revision is missing' do
+      before do
+        pipeline.update!(before_sha: Gitlab::Git::SHA1_BLANK_SHA)
+      end
+
+      it 'returns nil' do
+        expect(pipeline.changed_paths).to be_nil
+      end
+    end
+
+    context 'when source is merge request' do
+      let(:pipeline) do
+        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request)
+      end
+
+      let(:merge_request) do
+        create(:merge_request, :simple, source_project: project, target_project: project)
+      end
+
+      it 'returns merge request modified paths' do
+        expect(pipeline.changed_paths).to match(merge_request.changed_paths)
+      end
+    end
+
+    context 'when source is an external pull request' do
+      let(:pipeline) do
+        create(:ci_pipeline, source: :external_pull_request_event, external_pull_request: external_pull_request)
+      end
+
+      let(:external_pull_request) do
+        create(:external_pull_request, project: project, target_sha: '281d3a7', source_sha: '498214d')
+      end
+
+      it 'returns external pull request modified paths' do
+        expect(pipeline.changed_paths).to match(external_pull_request.changed_paths)
+      end
+    end
+  end
+
   describe '#modified_paths_since' do
     let(:project) do
       create(:project, :custom_repo, files: { 'file1.txt' => 'file 1' })

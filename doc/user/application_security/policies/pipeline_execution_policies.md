@@ -762,7 +762,7 @@ in a Git repository.
 {{< /alert >}}
 
 Pipeline execution jobs are executed in isolation. Variables defined in another policy or in the project's `.gitlab-ci.yml` file are not available in the pipeline execution policy
-and cannot be overwritten from the outside, unless permitted by the [variables_override type](#variables_override-type) type.
+and cannot be overwritten from the outside, unless permitted by the [`variables_override` type](#variables_override-type).
 
 Variables can be shared with pipeline execution policies using group or project settings, which follow the standard [CI/CD variable precedence](../../../ci/variables/_index.md#cicd-variable-precedence) rules. However, the precedence rules are more complex when using a pipeline execution policy as they can vary depending on the pipeline execution policy strategy:
 

@@ -1449,6 +1449,10 @@ class User < ApplicationRecord
     end
   end
 
+  def authorized_root_ancestor_ids
+    authorized_groups&.top_level&.pluck(:id)
+  end
+
   # Used to search on the user's authorized_groups effeciently by using a CTE
   def search_on_authorized_groups(query, use_minimum_char_limit: true)
     authorized_groups_cte = Gitlab::SQL::CTE.new(:authorized_groups, authorized_groups)

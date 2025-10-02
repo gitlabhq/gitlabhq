@@ -112,6 +112,7 @@ export default {
           :label="dropdownItem.title"
           :size="32"
           :shape="$options.AVATAR_SHAPE_OPTION_RECT"
+          :data-testid="`topics-token-selector-avatar-${dropdownItem.name}`"
         />
       </template>
     </gl-token-selector>

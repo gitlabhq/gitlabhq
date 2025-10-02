@@ -84,19 +84,14 @@ describe('ProjectDropdown', () => {
       const avatars = findAllGlListboxItems().wrappers.map((item) =>
         item.findComponent(GlAvatarLabeled),
       );
-      const avatarAttributes = avatars.map((avatar) => avatar.attributes());
       const avatarProps = avatars.map((avatar) => avatar.props());
 
       expect(avatarProps).toMatchObject(
         mockProjects.map((project) => ({
           label: project.name,
           subLabel: project.nameWithNamespace,
-        })),
-      );
-      expect(avatarAttributes).toMatchObject(
-        mockProjects.map((project) => ({
           src: project.avatarUrl,
-          'entity-name': project.name,
+          entityName: project.name,
         })),
       );
     });

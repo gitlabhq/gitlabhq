@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import { GlAvatarLabeled, GlIcon, GlBadge, GlTooltip } from '@gitlab/ui';
+import { GlAvatarLabeled, GlIcon, GlBadge, GlTooltip, GlAvatar } from '@gitlab/ui';
 import { stubComponent } from 'helpers/stub_component';
 import GroupsListItemPlanBadge from 'ee_component/vue_shared/components/groups_list/groups_list_item_plan_badge.vue';
 import axios from '~/lib/utils/axios_utils';
@@ -81,7 +81,7 @@ describe('GroupsListItem', () => {
         labelLinkAttrs: { itemprop: 'name' },
       });
 
-      expect(avatarLabeled.attributes()).toMatchObject({
+      expect(avatarLabeled.findComponent(GlAvatar).attributes()).toMatchObject({
         itemprop: 'logo',
       });
     });
@@ -99,11 +99,8 @@ describe('GroupsListItem', () => {
     expect(avatarLabeled.props()).toMatchObject({
       label: group.fullName,
       labelLink: group.relativeWebUrl,
-    });
-
-    expect(avatarLabeled.attributes()).toMatchObject({
-      'entity-id': group.id.toString(),
-      'entity-name': group.fullName,
+      entityId: group.id,
+      entityName: group.fullName,
       src: group.avatarUrl,
       shape: 'rect',
     });

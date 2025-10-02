@@ -32,6 +32,6 @@ describe('MemberList', () => {
   });
 
   it('renders avatar', () => {
-    expect(findAvatarLabeled().attributes('src')).toBe(invite.avatarUrl);
+    expect(findAvatarLabeled().props('src')).toBe(invite.avatarUrl);
   });
 });

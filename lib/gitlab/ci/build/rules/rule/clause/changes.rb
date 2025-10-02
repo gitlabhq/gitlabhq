@@ -6,6 +6,10 @@ module Gitlab
       class Rules::Rule::Clause::Changes < Rules::Rule::Clause
         include Gitlab::Utils::StrongMemoize
 
+        # The maximum number of patterned glob comparisons that will be
+        # performed before the rule assumes that it has a match
+        CHANGES_MAX_PATTERN_COMPARISONS = 50_000
+
         def initialize(globs)
           @globs = globs
         end
@@ -20,20 +24,41 @@ module Gitlab
           expanded_globs = expand_globs(context).uniq
           return false if expanded_globs.empty?
 
-          cache_key = [
+          comparison_cache_key = comparison_key(pipeline, expanded_globs, compare_to_sha)
+          changes_match?(modified_paths, expanded_globs, context, comparison_cache_key)
+        end
+
+        private
+
+        def changes_match?(paths, globs, context, key)
+          comparison_count = paths.size * globs.size
+          if comparison_count > CHANGES_MAX_PATTERN_COMPARISONS
+            Gitlab::AppJsonLogger.info(
+              class: self.class.name,
+              message: 'rules:changes pattern comparisons limit exceeded',
+              project_id: context.project&.id,
+              paths_size: paths.size,
+              globs_size: globs.size,
+              comparisons: comparison_count
+            )
+            return true
+          end
+
+          Gitlab::SafeRequestStore.fetch(key) do
+            match?(globs, paths)
+          end
+        end
+
+        def comparison_key(pipeline, globs, comparison_sha)
+          [
             self.class.to_s,
             '#satisfied_by?',
             pipeline.project_id,
             pipeline.sha,
-            compare_to_sha,
-            expanded_globs.sort
+            comparison_sha,
+            globs.sort
           ]
-          Gitlab::SafeRequestStore.fetch(cache_key) do
-            match?(expanded_globs, modified_paths)
-          end
         end
-
-        private
 
         def match?(globs, paths)
           paths.any? do |path|
@@ -62,6 +87,8 @@ module Gitlab
 
           if compare_to_sha
             pipeline.modified_paths_since(compare_to_sha)
+          elsif Feature.enabled?(:ci_changes_changed_paths, pipeline.project)
+            pipeline.changed_paths&.map(&:path)
           else
             pipeline.modified_paths
           end

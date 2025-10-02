@@ -29358,7 +29358,8 @@ CREATE TABLE x509_certificates (
     serial_number bytea NOT NULL,
     certificate_status smallint DEFAULT 0 NOT NULL,
     x509_issuer_id bigint NOT NULL,
-    emails character varying[] DEFAULT '{}'::character varying[] NOT NULL
+    emails character varying[] DEFAULT '{}'::character varying[] NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE x509_certificates_id_seq
@@ -29397,7 +29398,8 @@ CREATE TABLE x509_issuers (
     updated_at timestamp with time zone NOT NULL,
     subject_key_identifier character varying(255) NOT NULL,
     subject character varying(255),
-    crl_url character varying(255)
+    crl_url character varying(255),
+    project_id bigint
 );
 
 CREATE SEQUENCE x509_issuers_id_seq
@@ -42966,6 +42968,8 @@ CREATE INDEX index_workspaces_on_project_id ON workspaces USING btree (project_i
 
 CREATE INDEX index_workspaces_on_user_id ON workspaces USING btree (user_id);
 
+CREATE INDEX index_x509_certificates_on_project_id ON x509_certificates USING btree (project_id);
+
 CREATE INDEX index_x509_certificates_on_subject_key_identifier ON x509_certificates USING btree (subject_key_identifier);
 
 CREATE INDEX index_x509_certificates_on_x509_issuer_id ON x509_certificates USING btree (x509_issuer_id);
@@ -42975,6 +42979,8 @@ CREATE INDEX index_x509_commit_signatures_on_commit_sha ON x509_commit_signature
 CREATE INDEX index_x509_commit_signatures_on_project_id ON x509_commit_signatures USING btree (project_id);
 
 CREATE INDEX index_x509_commit_signatures_on_x509_certificate_id ON x509_commit_signatures USING btree (x509_certificate_id);
+
+CREATE INDEX index_x509_issuers_on_project_id ON x509_issuers USING btree (project_id);
 
 CREATE INDEX index_x509_issuers_on_subject_key_identifier ON x509_issuers USING btree (subject_key_identifier);
 
@@ -47435,6 +47441,9 @@ ALTER TABLE ONLY design_management_versions
 ALTER TABLE ONLY sentry_issues
     ADD CONSTRAINT fk_1df79abe52 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY x509_certificates
+    ADD CONSTRAINT fk_1e0da0fd78 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY zoekt_enabled_namespaces
     ADD CONSTRAINT fk_1effa65b25 FOREIGN KEY (root_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -47851,6 +47860,9 @@ ALTER TABLE ONLY workspace_variables
 
 ALTER TABLE ONLY cluster_agent_url_configurations
     ADD CONSTRAINT fk_49b126e246 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY x509_issuers
+    ADD CONSTRAINT fk_49eab854cd FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY incident_management_issuable_escalation_statuses
     ADD CONSTRAINT fk_4a05518b10 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

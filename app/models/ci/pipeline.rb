@@ -1382,6 +1382,23 @@ module Ci
       end
     end
 
+    # Returns the changed paths from Gitaly ChangedPaths RPC
+    #
+    # The returned value is
+    # * Array: List of Gitlab::Git::ChangedPath objects
+    # * empty list: No paths were changed
+    def changed_paths
+      strong_memoize(:changed_paths) do
+        if merge_request?
+          merge_request.changed_paths
+        elsif branch_updated?
+          push_details.changed_paths
+        elsif external_pull_request?
+          external_pull_request.changed_paths
+        end
+      end
+    end
+
     def all_worktree_paths
       strong_memoize(:all_worktree_paths) do
         project.repository.ls_files(sha)

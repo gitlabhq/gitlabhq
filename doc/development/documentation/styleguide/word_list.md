@@ -1577,6 +1577,16 @@ Licenses are different than subscriptions.
 - A license grants users access to the subscription they purchased. The license includes information like the number of seats and subscription dates.
 - A subscription is the subscription tier that the user purchases.
 
+Use:
+
+- Add a license to your instance.
+- Purchase a subscription.
+
+Instead of:
+
+- Buy a license.
+- Purchase a license.
+
 Avoid the terms [**cloud license** or **cloud licensing**](#cloud-licensing) if possible.
 
 The following terms are displayed in the UI and in emails. You can use them when necessary:
@@ -1590,16 +1600,6 @@ describing the files that customers receive by email as part of the overall
 licensing and synchronization process.
 
 However, if you can, rather than the relying on the term, use the more specific description instead.
-
-Use:
-
-- Add a license to your instance.
-- Purchase a subscription.
-
-Instead of:
-
-- Buy a license.
-- Purchase a license.
 
 ## lifecycle, life cycle, life-cycle
 

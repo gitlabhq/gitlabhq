@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlAvatarLabeled, GlIcon, GlTooltip } from '@gitlab/ui';
+import { GlAvatar, GlAvatarLabeled, GlIcon, GlTooltip } from '@gitlab/ui';
 import { stubComponent } from 'helpers/stub_component';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ProjectListItemActions from '~/vue_shared/components/projects_list/project_list_item_actions.vue';
@@ -93,7 +93,7 @@ describe('ProjectsListItem', () => {
         labelLinkAttrs: { itemprop: 'name' },
       });
 
-      expect(avatarLabeled.attributes()).toMatchObject({
+      expect(avatarLabeled.findComponent(GlAvatar).attributes()).toMatchObject({
         itemprop: 'image',
       });
     });
@@ -111,11 +111,8 @@ describe('ProjectsListItem', () => {
     expect(avatarLabeled.props()).toMatchObject({
       label: project.nameWithNamespace,
       labelLink: project.relativeWebUrl,
-    });
-
-    expect(avatarLabeled.attributes()).toMatchObject({
-      'entity-id': project.id.toString(),
-      'entity-name': project.nameWithNamespace,
+      entityId: project.id,
+      entityName: project.nameWithNamespace,
       src: project.avatarUrl,
       shape: 'rect',
     });
