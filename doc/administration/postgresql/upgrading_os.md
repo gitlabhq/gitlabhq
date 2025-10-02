@@ -49,7 +49,7 @@ Backup and restore recreates the entire database, including the indexes.
    (so only the database is backed up).
 1. In all PostgreSQL nodes, upgrade the OS.
 1. In all PostgreSQL nodes,
-   [update GitLab package sources after upgrading the OS](../../update/package/_index.md#upgrade-the-operating-system-optional).
+   [update GitLab package sources](../../update/package/_index.md) after upgrading the operating system.
 1. In all PostgreSQL nodes, install the new GitLab package of the same GitLab version.
 1. Restore the PostgreSQL database from backup.
 1. In all nodes, start GitLab.
@@ -78,7 +78,7 @@ Disadvantages:
    (so only the database is backed up).
 1. In all PostgreSQL nodes of all sites, upgrade the OS.
 1. In all PostgreSQL nodes of all sites,
-   [update GitLab package sources after upgrading the OS](../../update/package/_index.md#upgrade-the-operating-system-optional).
+   [update GitLab package sources](../../update/package/_index.md) after upgrading the operating system.
 1. In all PostgreSQL nodes of all sites, install the new GitLab package of the same GitLab version.
 1. In the primary site, restore the PostgreSQL database from backup.
 1. Optionally, start using the primary site, at the risk of not having a secondary site as warm
@@ -101,7 +101,7 @@ Disadvantages:
 
 1. In all PostgreSQL nodes, upgrade the OS.
 1. In all PostgreSQL nodes,
-   [update GitLab package sources after upgrading the OS](../../update/package/_index.md#upgrade-the-operating-system-optional).
+   [update GitLab package sources](../../update/package/_index.md) after upgrading the operating system.
 1. In all PostgreSQL nodes, install the new GitLab package of the same GitLab version.
 1. In a [database console](../troubleshooting/postgresql.md#start-a-database-console), rebuild all indexes:
 
@@ -140,7 +140,7 @@ Disadvantages:
 
 1. In all PostgreSQL nodes, upgrade the OS.
 1. In all PostgreSQL nodes,
-   [update GitLab package sources after upgrading the OS](../../update/package/_index.md#upgrade-the-operating-system-optional).
+   [update GitLab package sources](../../update/package/_index.md) after upgrading the operating system.
 1. In all PostgreSQL nodes, install the new GitLab package of the same GitLab version.
 1. In the primary site, in a
    [database console](../troubleshooting/postgresql.md#start-a-database-console), rebuild all indexes:
@@ -176,7 +176,7 @@ different types of indexes were handled, see the blog post about
 
 1. In all PostgreSQL nodes, upgrade the OS.
 1. In all PostgreSQL nodes,
-   [update GitLab package sources after upgrading the OS](../../update/package/_index.md#upgrade-the-operating-system-optional).
+   [update GitLab package sources](../../update/package/_index.md) after upgrading the operating system.
 1. In all PostgreSQL nodes, install the new GitLab package of the same GitLab version.
 1. [Determine which indexes are affected](https://wiki.postgresql.org/wiki/Locale_data_changes#What_indexes_are_affected).
 1. In a [database console](../troubleshooting/postgresql.md#start-a-database-console), reindex each affected index:
@@ -216,7 +216,7 @@ Disadvantages:
 
 1. In all PostgreSQL nodes, upgrade the OS.
 1. In all PostgreSQL nodes,
-   [update GitLab package sources after upgrading the OS](../../update/package/_index.md#upgrade-the-operating-system-optional).
+   [update GitLab package sources](../../update/package/_index.md) after upgrading the operating system.
 1. In all PostgreSQL nodes, install the new GitLab package of the same GitLab version.
 1. [Determine which indexes are affected](https://wiki.postgresql.org/wiki/Locale_data_changes#What_indexes_are_affected).
 1. In the primary site, in a

@@ -208,27 +208,36 @@ Other example servers are [Smithery.ai](https://smithery.ai/) and [Awesome MCP S
 
 ## Use GitLab Duo features with MCP
 
-When a GitLab Duo feature wants to call an external tool to answer
-the question you have asked, you must review the tool before
-the feature can use that tool:
+{{< history >}}
+
+- Approving external tools for the entire session [added](https://gitlab.com/gitlab-org/gitlab/-/issues/556045) in GitLab 18.4.
+
+{{< /history >}}
+
+When a GitLab Duo feature calls an external tool to answer a question,
+you must review that tool unless you've approved it for the entire session:
 
 1. Open VS Code.
 1. On the left sidebar, select **GitLab Duo Agent Platform (Beta)** ({{< icon name="duo-agentic-chat" >}}).
 1. Select the **Chat** or **Flows** tab.
 1. In the text box, enter a question or specify a code task.
 1. Submit the question or code task.
-1. The **Tool Approval Required** dialog appears.
+1. The **Tool Approval Required** dialog appears in these cases:
 
-   You must review a tool every time a GitLab Duo feature tries to connect
-   to that tool, even if you have previously reviewed that tool.
+   - GitLab Duo is calling that tool for the first time in your session.
+   - You have not approved that tool for the entire session.
 
 1. Approve or deny the tool:
 
    - If you approve the tool, the feature connects to the tool and generates an answer.
+     - Optional. To approve the tool for the entire session,
+       from the **Approve** dropdown list, select **Approve for Session**.
 
-   - Optional. For Chat, if you deny the tool, the **Provide Rejection Reason**
-     dialog appears. Enter a rejection reason into the text box, and select
-     **Submit Rejection**.
+       You can approve only MCP server-provided tools for the session. You cannot
+       approve terminal or CLI commands.
+
+   - For Chat, if you deny the tool, the **Provide Rejection Reason** dialog appears.
+     Enter a rejection reason, then select **Submit Rejection**.
 
 ## Related topics
 

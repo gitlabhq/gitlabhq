@@ -26,6 +26,17 @@ For more information on:
 - Using `gitlab-rake` for configuration checking, see
   [Check GitLab configuration](../../administration/raketasks/maintenance.md#check-gitlab-configuration).
 
+## No new version found after upgrading operating system
+
+Operating system upgrades are sometimes required before upgrading GitLab. When upgrading an operating system, you
+might also need to update the GitLab package source URL in the package manager configuration of your operating system.
+
+If your package manager finds no available upgrades but upgrades should be available, add the GitLab package repository
+again. For more information, see information about
+[installing GitLab by using the Linux package](../../install/package/_index.md).
+
+Future GitLab upgrades are fetched according to your upgraded operating system.
+
 ## 500 errors with `PG::UndefinedColumn: ERROR:..` message in logs
 
 After upgrading, if you start getting `500` errors in the logs that show messages similar to `PG::UndefinedColumn: ERROR:...`,

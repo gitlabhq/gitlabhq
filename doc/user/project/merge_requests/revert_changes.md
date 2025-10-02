@@ -178,7 +178,7 @@ To redact text from your repository:
 1. On the left sidebar, select **Settings** > **General**.
 1. Expand **Advanced**.
 1. Select **Run housekeeping**. Wait at least 30 minutes for the operation to complete.
-1. In the same **Settings > General > Advanced** section, select **Prune unreachable objects**.
+1. In the same **Settings** > **General** > **Advanced** section, select **Prune unreachable objects**.
    This operation takes approximately 5-10 minutes to complete.
 
 {{< alert type="note" >}}

@@ -5,6 +5,13 @@ set -euo pipefail
 source "$(dirname "$0")/utils.sh"
 
 function build_frontend_islands() {
+  local original_dir=$(pwd)
+
+  if [[ ! -d "ee/" ]]; then
+    echo "Not building the frontend islands in FOSS only mode. Exiting early"
+    return 0
+  fi
+
   section_start "frontend-islands-check" "Checking for frontend islands"
 
   # Check if frontend islands directory exists
@@ -36,11 +43,12 @@ function build_frontend_islands() {
     echosuccess "Frontend island built successfully at: $(pwd)/dist/duo_next.js (${file_size})"
   else
     echoerr "Expected build output not found at dist/duo_next.js"
+    cd "$original_dir"
     return 1
   fi
 
   # Return to project root
-  cd ../../..
+  cd "$original_dir"
 }
 
 section_start "build-frontend-islands" "Building Frontend Islands"

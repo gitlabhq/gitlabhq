@@ -65,7 +65,7 @@ kubectl scale deploy -n <namespace> -l release=<helm release name> -l 'app in (p
 Follow instructions for [upgrading the Consul nodes](../administration/consul.md#upgrade-the-consul-nodes). In summary:
 
 1. Check the Consul nodes are all healthy.
-1. [Upgrade GitLab](package/_index.md#upgrade-to-a-specific-version) on all Consul servers.
+1. [Upgrade GitLab](package/_index.md) on all Consul servers.
 1. Restart all GitLab services **one node at a time**:
 
    ```shell
@@ -81,7 +81,7 @@ Patroni. In this case, when upgrading those servers:
 ## Upgrade Gitaly and Gitaly Cluster (Praefect)
 
 For Gitaly servers that are not part of Gitaly Cluster (Praefect),
-[upgrade GitLab](package/_index.md#upgrade-to-a-specific-version). If you have multiple Gitaly shards, you can upgrade
+[upgrade GitLab](package/_index.md). If you have multiple Gitaly shards, you can upgrade
 the Gitaly servers in any order.
 
 If you're running Gitaly Cluster (Praefect), follow the
@@ -110,7 +110,7 @@ To upgrade Gitaly Cluster (Praefect) nodes by using an AMI redeployment process:
 
 For non-clustered PostgreSQL servers:
 
-1. [Upgrade GitLab](package/_index.md#upgrade-to-a-specific-version).
+1. [Upgrade GitLab](package/_index.md).
 1. Because the upgrade process does not restart PostgreSQL when the binaries are upgraded, restart to load the new version:
 
    ```shell
@@ -138,7 +138,7 @@ To upgrade Patroni nodes:
    sudo gitlab-ctl patroni members
    ```
 
-1. [Upgrade GitLab](package/_index.md#upgrade-to-a-specific-version) on one of the replica nodes.
+1. [Upgrade GitLab](package/_index.md) on one of the replica nodes.
 1. Restart to load the new version:
 
    ```shell
@@ -159,12 +159,12 @@ To upgrade Patroni nodes:
 ## Upgrade the PgBouncer nodes
 
 If you run PgBouncer on your GitLab application (Rails) nodes, then PgBouncer is upgraded as part of the
-application server upgrade. Otherwise, [upgrade GitLab](package/_index.md#upgrade-to-a-specific-version) on the
+application server upgrade. Otherwise, [upgrade GitLab](package/_index.md) on the
 PgBouncer nodes.
 
 ## Upgrade the Redis node
 
-Upgrade a standalone Redis server by [upgrading GitLab](package/_index.md#upgrade-to-a-specific-version) on the Redis
+Upgrade a standalone Redis server by [upgrading GitLab](package/_index.md) on the Redis
 node.
 
 ### Upgrade Redis HA (using Sentinel)
@@ -229,7 +229,7 @@ deploy node:
       sudo gitlab-ctl reconfigure
       ```
 
-1. [Upgrade GitLab](package/_index.md#upgrade-to-a-specific-version).
+1. [Upgrade GitLab](package/_index.md).
 1. If you modified `gitlab.rb` on the deploy node to bypass PgBouncer:
    1. Update `gitlab.rb` on the deploy node. Change `gitlab_rails['db_host']`
       and `gitlab_rails['db_port']` back to your PgBouncer settings.
@@ -251,7 +251,7 @@ set to anything in `gitlab.rb` on these nodes.
 
 They can be upgraded in parallel:
 
-1. [Upgrade GitLab](package/_index.md#upgrade-to-a-specific-version).
+1. [Upgrade GitLab](package/_index.md).
 1. Ensure all services are restarted:
 
    ```shell
@@ -283,4 +283,4 @@ kubectl scale deploy -lapp=prometheus,release=<helm release name> -n <namespace>
 You might have configured Prometheus to act as a standalone monitoring node. For example, as part of
 [configuring a 60 RPS or 3,000 users reference architecture](../administration/reference_architectures/3k_users.md#configure-prometheus).
 
-To upgrade the monitor node, [upgrade GitLab](package/_index.md#upgrade-to-a-specific-version) on the node.
+To upgrade the monitor node, [upgrade GitLab](package/_index.md) on the node.

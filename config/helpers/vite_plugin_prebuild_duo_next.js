@@ -1,6 +1,7 @@
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import fs from 'node:fs';
+import IS_EE from './is_ee_env';
 
 export const PrebuildDuoNext = (options = {}) => {
   const {
@@ -18,6 +19,7 @@ export const PrebuildDuoNext = (options = {}) => {
     enforce: 'pre',
 
     configureServer() {
+      if (!IS_EE) return;
       if (ran) return;
       if (process.env[skipEnv]) return;
 

@@ -265,7 +265,7 @@ To manually renew your subscription:
 
 1. Determine the number of users you need in the next subscription period.
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Under your existing subscription, select **Renew**. This button does not display
+1. Under your existing subscription, select **Start renewal**. This button does not display
    until 15 days before the subscription expires.
 1. If renewing Premium or Ultimate products, in the **Seats** text box, enter the
    total number of user seats you need for the upcoming year.

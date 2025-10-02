@@ -389,7 +389,7 @@ As part of the integration, you must allow GitLab to communicate with the Micros
 
 To configure Azure AD:
 
-1. In the [Azure Portal](https://portal.azure.com), go to **Microsoft Entra ID > App registrations > All applications**, and select your GitLab SAML application.
+1. In the [Azure Portal](https://portal.azure.com), go to **Microsoft Entra ID** > **App registrations** > **All applications**, and select your GitLab SAML application.
 1. Under **Essentials**, the **Application (client) ID** and **Directory (tenant) ID** values are displayed. Copy these values, because you need them for the GitLab configuration.
 1. In the left navigation, select **Certificates & secrets**.
 1. On the **Client secrets** tab, select **New client secret**.
@@ -398,7 +398,7 @@ To configure Azure AD:
    1. To generate the credentials, select **Add**.
    1. Copy the **Value** of the credential. This value is displayed only once, and you need it for the GitLab configuration.
 1. In the left navigation, select **API permissions**.
-1. Select **Microsoft Graph > Application permissions**.
+1. Select **Microsoft Graph** > **Application permissions**.
 1. Select the checkboxes **GroupMember.Read.All** and **User.Read.All**.
 1. Select **Add permissions** to save.
 1. Select **Grant admin consent for `<application_name>`**, then on the confirmation dialog select **Yes**. The **Status** column for both permissions should change to a green check with **Granted for `<application_name>`**.

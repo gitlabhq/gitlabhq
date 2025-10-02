@@ -93,15 +93,15 @@ later.
 [ECS Task definitions](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html)
 is a specification about how the application image is started by an [ECS service](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html).
 
-1. Go to **ECS > Task Definitions** on [AWS console](https://aws.amazon.com/).
+1. Go to **ECS** > **Task Definitions** on [AWS console](https://aws.amazon.com/).
 1. Select **Create new Task Definition**.
 
    ![Task definitions page with a 'Create new task definition' button.](img/ecs-task-definitions_v13_10.png)
 
 1. Choose **EC2** as the launch type. Select **Next Step**.
 1. Set `ecs_demo` to **Task Definition Name**.
-1. Set `512` to **Task Size > Task memory** and **Task CPU**.
-1. Select **Container Definitions > Add container**. This opens a container registration form.
+1. Set `512` to **Task Size** > **Task memory** and **Task CPU**.
+1. Select **Container Definitions** > **Add container**. This opens a container registration form.
 1. Set `web` to **Container name**.
 1. Set `registry.gitlab.com/<your-namespace>/ecs-demo/master:latest` to **Image**.
    Alternatively, you can copy and paste the image path from the [GitLab container registry page](#push-a-containerized-application-image-to-gitlab-container-registry).
@@ -123,7 +123,7 @@ An [ECS cluster](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/clu
 is a virtual group of [ECS services](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html).
 It's also associated with EC2 or Fargate as the computation resource.
 
-1. Go to **ECS > Clusters** on [AWS console](https://aws.amazon.com/).
+1. Go to **ECS** > **Clusters** on [AWS console](https://aws.amazon.com/).
 1. Select **Create Cluster**.
 1. Select **EC2 Linux + Networking** as the cluster template. Select **Next Step**.
 1. Set `ecs-demo` to **Cluster Name**.
@@ -150,7 +150,7 @@ Note the following:
 [ECS service](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs_services.html)
 is a daemon to create an application container based on the [ECS task definition](#create-an-ecs-task-definition).
 
-1. Go to **ECS > Clusters > ecs-demo > Services** on the [AWS console](https://aws.amazon.com/)
+1. Go to **ECS** > **Clusters** > **ecs-demo** > **Services** on the [AWS console](https://aws.amazon.com/)
 1. Select **Deploy**. This opens a service creation form.
 1. Select `EC2` in **Launch Type**.
 1. Set `ecs_demo` to **Task definition**. This corresponds to [the task definition you created previously](#create-an-ecs-task-definition).
@@ -171,7 +171,7 @@ instructions, select the closest one.
 
 Now, the demo application is accessible from the internet.
 
-1. Go to **EC2 > Instances** on the [AWS console](https://aws.amazon.com/)
+1. Go to **EC2** > **Instances** on the [AWS console](https://aws.amazon.com/)
 1. Search by `ECS Instance` to find the corresponding EC2 instance that [the ECS cluster created](#create-an-ecs-cluster).
 1. Select the ID of the EC2 instance. This brings you to the instance detail page.
 1. Copy **Public IPv4 address** and paste it in the browser. Now you can see the demo application
@@ -191,7 +191,7 @@ Now that you have an application running on ECS, you can set up continuous deplo
 For GitLab to access the ECS cluster, service, and task definition that you previously created, you must
 create a deployer user on AWS:
 
-1. Go to **IAM > Users** on [AWS console](https://aws.amazon.com/).
+1. Go to **IAM** > **Users** on [AWS console](https://aws.amazon.com/).
 1. Select **Add user**.
 1. Set `ecs_demo` to **User name**.
 1. Enable **Programmatic access** checkbox. Select **Next: Permissions**.
@@ -215,7 +215,7 @@ You can register the access information in [GitLab CI/CD Variables](../../variab
 These variables are injected into the pipeline jobs and can access the ECS API.
 
 1. On the left sidebar, select **Search or go to** and find your `ecs-demo` project.
-1. Go to **Settings > CI/CD > Variables**.
+1. Go to **Settings** > **CI/CD** > **Variables**.
 1. Select **Add Variable** and set the following key-value pairs.
 
    | Key                          | Value                                 | Note |

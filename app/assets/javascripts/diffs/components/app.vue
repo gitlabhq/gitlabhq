@@ -157,6 +157,7 @@ export default {
       sastData: {},
       keydownTime: undefined,
       listenersAttached: false,
+      toggledFile: false,
     };
   },
   apollo: {
@@ -495,6 +496,7 @@ export default {
       notesEventHub.$on('noteFormStartReview', this.handleReviewTracking);
       diffsEventHub.$on('diffFilesModified', this.setDiscussions);
       diffsEventHub.$on('doneLoadingBatches', this.autoScroll);
+      diffsEventHub.$on('setFileActive', this.setFileActive);
       diffsEventHub.$on(EVT_MR_PREPARED, this.fetchData);
       diffsEventHub.$on(EVT_DISCUSSIONS_ASSIGNED, this.handleHash);
     },
@@ -508,6 +510,7 @@ export default {
       notesEventHub.$off('fetchedNotesData', this.rereadNoteHash);
       notesEventHub.$off('refetchDiffData', this.refetchDiffData);
       notesEventHub.$off('fetchDiffData', this.fetchData);
+      diffsEventHub.$off('setFileActive', this.setFileActive);
     },
     autoScroll() {
       const lineCode = window.location.hash;
@@ -750,13 +753,20 @@ export default {
       }
     },
     isDiffViewActive(item) {
-      return this.virtualScrollCurrentIndex >= 0 && this.currentDiffFileId === item.file_hash;
+      return (
+        (this.virtualScrollCurrentIndex >= 0 || this.toggledFile) &&
+        this.currentDiffFileId === item.file_hash
+      );
     },
     toggleFileByFile() {
       this.setFileByFile({ fileByFile: !this.viewDiffsFileByFile });
     },
     toggleWhitespace(updatedSetting) {
       this.setShowWhitespace({ showWhitespace: updatedSetting });
+    },
+    setFileActive(hash) {
+      this.setCurrentFileHash(hash);
+      this.toggledFile = true;
     },
   },
   howToMergeDocsPath: helpPagePath('user/project/merge_requests/merge_request_troubleshooting.md', {

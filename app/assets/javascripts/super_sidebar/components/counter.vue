@@ -51,6 +51,8 @@ export default {
     class="dashboard-shortcuts-button gl-relative gl-flex gl-items-center gl-justify-center"
   >
     <gl-icon aria-hidden="true" :name="icon" class="gl-shrink-0" />
-    <span v-if="count" aria-hidden="true" class="gl-font-semibold">{{ formattedCount }}</span>
+    <span v-if="count" aria-hidden="true" class="gl-text-sm gl-font-semibold">{{
+      formattedCount
+    }}</span>
   </component>
 </template>
