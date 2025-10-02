@@ -200,7 +200,7 @@ RSpec.describe Ci::RetryWaitingJobService, :clean_gitlab_redis_shared_state, fea
   private
 
   def runner_build_ack_queue_key
-    build.send(:runner_build_ack_queue_key)
+    build.send(:runner_ack_queue).redis_key
   end
 
   def expire_redis_ttl(cache_key)

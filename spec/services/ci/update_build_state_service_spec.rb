@@ -718,7 +718,7 @@ RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :conti
     private
 
     def runner_build_ack_queue_key
-      build.send(:runner_build_ack_queue_key)
+      build.send(:runner_ack_queue).redis_key
     end
 
     def redis_ttl(cache_key)
@@ -729,7 +729,8 @@ RSpec.describe Ci::UpdateBuildStateService, '#execute', feature_category: :conti
 
     def consume_redis_ttl(cache_key)
       redis_klass.with do |redis|
-        redis.set(cache_key, runner_manager.id, ex: Ci::Build::RUNNER_ACK_QUEUE_EXPIRY_TIME - 1, nx: false)
+        redis.set(cache_key, runner_manager.id, ex: Gitlab::Ci::Build::RunnerAckQueue::RUNNER_ACK_QUEUE_EXPIRY_TIME - 1,
+          nx: false)
       end
     end
   end

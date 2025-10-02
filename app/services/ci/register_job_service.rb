@@ -386,7 +386,9 @@ module Ci
           Ci::UpdateBuildQueueService.new.remove!(build)
         end
 
-        Ci::RetryStuckWaitingJobWorker.perform_in(Ci::Build::RUNNER_ACK_QUEUE_EXPIRY_TIME, build.id)
+        Ci::RetryStuckWaitingJobWorker.perform_in(
+          Gitlab::Ci::Build::RunnerAckQueue::RUNNER_ACK_QUEUE_EXPIRY_TIME, build.id
+        )
 
         success = true
       rescue ActiveRecord::ActiveRecordError

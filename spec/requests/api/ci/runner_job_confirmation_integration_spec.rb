@@ -301,7 +301,7 @@ RSpec.describe 'Job confirmation integration', :freeze_time, :clean_gitlab_redis
       private
 
       def runner_build_ack_queue_key
-        build.send(:runner_build_ack_queue_key)
+        build.send(:runner_ack_queue).redis_key
       end
     end
 

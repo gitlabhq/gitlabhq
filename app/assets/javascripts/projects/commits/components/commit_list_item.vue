@@ -186,4 +186,3 @@ export default {
     </gl-card>
   </li>
 </template>
-!

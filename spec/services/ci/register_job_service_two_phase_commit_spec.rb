@@ -81,7 +81,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
         expect(build.runner_id).to be_nil
 
         expect(::Ci::RetryStuckWaitingJobWorker).to receive(:perform_in)
-          .with(Ci::Build::RUNNER_ACK_QUEUE_EXPIRY_TIME, build.id)
+          .with(Gitlab::Ci::Build::RunnerAckQueue::RUNNER_ACK_QUEUE_EXPIRY_TIME, build.id)
 
         result = execute
 
@@ -213,7 +213,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
       private
 
       def runner_build_ack_queue_key
-        build.send(:runner_build_ack_queue_key)
+        build.send(:runner_ack_queue).redis_key
       end
 
       def redis_ack_pending_key_count
@@ -328,7 +328,7 @@ RSpec.describe Ci::RegisterJobService, 'two-phase commit feature', feature_categ
 
       it 'assigns job to waiting state' do
         expect(Ci::RetryStuckWaitingJobWorker).to receive(:perform_in)
-          .with(Ci::Build::RUNNER_ACK_QUEUE_EXPIRY_TIME, pending_job.id)
+          .with(Gitlab::Ci::Build::RunnerAckQueue::RUNNER_ACK_QUEUE_EXPIRY_TIME, pending_job.id)
 
         result = execute
 

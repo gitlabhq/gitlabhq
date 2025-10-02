@@ -14,8 +14,6 @@ title: Job artifacts
 
 Jobs can output an archive of files and directories. This output is known as a job artifact.
 
-You can download job artifacts by using the GitLab UI or the API.
-
 ## Create job artifacts
 
 To create job artifacts, use the `artifacts` keyword in your `.gitlab-ci.yml` file:
@@ -196,7 +194,9 @@ You can download or delete individual artifacts from this list.
 
 ## Download job artifacts
 
-You can download job artifacts from:
+You can download job artifacts by using the GitLab UI or the API.
+
+From the GitLab UI, you can download job artifacts from:
 
 - Any **Pipelines** list. On the right of the pipeline, select **Download artifacts** ({{< icon name="download" >}}).
 - Any **Jobs** list. On the right of the job, select **Download artifacts** ({{< icon name="download" >}}).
@@ -257,6 +257,18 @@ build_submodule:
 ```
 
 To fetch artifacts from a job in the same pipeline, use the `needs:artifacts` keyword.
+
+### Control who can download artifacts
+
+To restrict who can download job artifacts, use the `artifacts:access` keyword in your `.gitlab-ci.yml` file. For example:
+
+```yaml
+job:
+  artifacts:
+    access: maintainer
+    paths:
+      - build/
+```
 
 ## Browse the contents of the artifacts archive
 
