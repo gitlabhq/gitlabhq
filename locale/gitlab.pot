@@ -2513,6 +2513,9 @@ msgstr ""
 msgid "AICatalog|Anyone can view and use the flow without authorization. Only maintainers and owners of this project can edit or delete the flow."
 msgstr ""
 
+msgid "AICatalog|Anyone in your organization can view and use agents unless you make it private. Private agents can only be viewed and run in their source project."
+msgstr ""
+
 msgid "AICatalog|Are you sure you want to delete agent %{name}?"
 msgstr ""
 
@@ -2841,6 +2844,9 @@ msgid "AICatalog|User prompt is required."
 msgstr ""
 
 msgid "AICatalog|Version"
+msgstr ""
+
+msgid "AICatalog|Visibility"
 msgstr ""
 
 msgid "AICatalog|Visibility level is required."

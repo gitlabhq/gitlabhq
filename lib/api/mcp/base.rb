@@ -43,10 +43,7 @@ module API
 
       before do
         authenticate!
-
-        not_found! unless Feature.enabled?(:mcp_server, current_user) &&
-          ::Gitlab::CurrentSettings.instance_level_ai_beta_features_enabled?
-
+        not_found! unless Feature.enabled?(:mcp_server, current_user)
         forbidden! unless access_token&.scopes&.map(&:to_s) == [Gitlab::Auth::MCP_SCOPE.to_s]
       end
 

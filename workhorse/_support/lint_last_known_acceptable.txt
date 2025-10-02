@@ -35,7 +35,7 @@ internal/imageresizer/image_resizer.go:266:28: G115: integer overflow conversion
 internal/imageresizer/image_resizer.go:274:41: G115: integer overflow conversion uint32 -> int32 (gosec)
 internal/imageresizer/image_resizer.go:316:46: G115: integer overflow conversion uint -> int (gosec)
 internal/imageresizer/image_resizer.go:362:15: G304: Potential file inclusion via variable (gosec)
-internal/testhelper/testhelper.go:245:21: G302: Expect file permissions to be 0600 or less (gosec)
+internal/testhelper/testhelper.go:251:21: G302: Expect file permissions to be 0600 or less (gosec)
 internal/upload/artifacts_uploader.go:82:11: G204: Subprocess launched with a potential tainted input or cmd arguments (gosec)
 internal/upload/destination/multi_hash.go:4:2: G501: Blocklisted import crypto/md5: weak cryptographic primitive (gosec)
 internal/upload/destination/multi_hash.go:5:2: G505: Blocklisted import crypto/sha1: weak cryptographic primitive (gosec)

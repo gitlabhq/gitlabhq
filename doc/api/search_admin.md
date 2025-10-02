@@ -33,7 +33,8 @@ GET /admin/search/migrations
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/admin/search/migrations"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://primary.example.com/api/v4/admin/search/migrations"
 ```
 
 Example response:
@@ -98,8 +99,10 @@ Parameters:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/admin/search/mirations/20230503064300"
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://primary.example.com/api/v4/admin/search/mirations/BackfillProjectPermissionsInBlobsUsingPermutations"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://primary.example.com/api/v4/admin/search/migrations/20230503064300"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://primary.example.com/api/v4/admin/search/migrations/BackfillProjectPermissionsInBlobsUsingPermutations"
 ```
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the following

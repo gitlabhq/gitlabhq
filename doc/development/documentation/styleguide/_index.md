@@ -114,7 +114,7 @@ Hard-coded HTML is valid, although it's discouraged for a few reasons:
 - Custom markup has potential to break future site-wide changes or design system updates.
 - Custom markup does not have test coverage to ensure consistency across the site.
 - Custom markup might not be responsive or accessible.
-- Custom markup might not adhere to Pajamas guidelines.
+- Custom markup might not adhere to [Pajamas](https://design.gitlab.com) guidelines.
 - HTML and CSS in Markdown do not render on `/help`.
 - Hand-coding HTML can be error-prone. It's possible to break the page layout or other components with malformed HTML.
 

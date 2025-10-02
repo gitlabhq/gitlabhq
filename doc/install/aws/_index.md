@@ -239,7 +239,7 @@ it receive traffic from any destination.
 
 1. Select **Route Tables** from the left menu and select the `gitlab-public`
    route to show the options at the bottom.
-1. Select the **Routes** tab, select **Edit routes > Add route** and set `0.0.0.0/0`
+1. Select the **Routes** tab, select **Edit routes** > **Add route** and set `0.0.0.0/0`
    as the destination. In the target column, select the **Internet Gateway** and select the `gitlab-gateway` we created previously.
    Select **Save changes** when done.
 
@@ -568,7 +568,7 @@ Because we're adding our SSL certificate at the load balancer, we do not need th
 
 From your GitLab instance, connect to the RDS instance to verify access and to install the required `pg_trgm` and `btree_gist` extensions.
 
-To find the host or endpoint, go to **Amazon RDS > Databases** and select the database you created earlier. Look for the endpoint under the **Connectivity & security** tab.
+To find the host or endpoint, go to **Amazon RDS** > **Databases** and select the database you created earlier. Look for the endpoint under the **Connectivity & security** tab.
 
 Do not to include the colon and port number:
 

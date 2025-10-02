@@ -69,11 +69,11 @@ To configure a Jenkins integration with GitLab:
 
 Install and configure the Jenkins plugin to authorize the connection to GitLab.
 
-1. On the Jenkins server, select **Manage Jenkins > Manage Plugins**.
+1. On the Jenkins server, select **Manage Jenkins** > **Manage Plugins**.
 1. Select the **Available** tab. Search for `gitlab-plugin` and select it to install.
    See the [Jenkins GitLab documentation](https://plugins.jenkins.io/gitlab-plugin/)
    for other ways to install the plugin.
-1. Select **Manage Jenkins > Configure System**.
+1. Select **Manage Jenkins** > **Configure System**.
 1. In the **GitLab** section, select **Enable authentication for '/project' end-point**.
 1. Select **Add**, then choose **Jenkins Credential Provider**.
 1. Select **GitLab API token** as the token type.
@@ -232,7 +232,7 @@ more details about your builds.
 
 To enable job logs in Jenkins:
 
-1. Go to **Dashboard > Manage Jenkins > System Log**.
+1. Go to **Dashboard** > **Manage Jenkins** > **System Log**.
 1. Select **Add new log recorder**.
 1. Enter a name for the log recorder.
 1. On the next screen, select **Add** and enter `com.dabsquared.gitlabjenkins`.
@@ -241,5 +241,5 @@ To enable job logs in Jenkins:
 To view your logs:
 
 1. Run a build.
-1. Go to **Dashboard > Manage Jenkins > System Log**.
+1. Go to **Dashboard** > **Manage Jenkins** > **System Log**.
 1. Select your logger and check the logs.

@@ -503,8 +503,6 @@ for_ssh_key?:
   file: app/models/todo.rb
 self_assigned?:
   file: app/models/todo.rb
-inner_join_local_uploads_projects:
-  file: app/models/upload.rb
 owner_class_attribute_default:
   file: app/models/user.rb
 inactive_message:

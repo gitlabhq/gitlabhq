@@ -535,7 +535,7 @@ Prerequisites:
 To monitor indexing progress, you can also check the status of background jobs:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Monitoring > Background jobs**.
+1. Select **Monitoring** > **Background jobs**.
 1. On the Sidekiq dashboard, select **Busy** and watch for these indexing jobs:
    - `Search::Elastic::CommitIndexerWorker` for code and commits.
    - `ElasticWikiIndexerWorker` for wiki data.

@@ -103,7 +103,7 @@ For more information, see [issue 340160](https://gitlab.com/gitlab-org/gitlab/-/
 If Jira displays incorrect information, such as deleted branches, you may have to
 resynchronize the information:
 
-1. In Jira, select **Jira Administration > Applications > DVCS accounts**.
+1. In Jira, select **Jira Administration** > **Applications** > **DVCS accounts**.
 1. For the account (group or subgroup), select
    **Refresh repositories** from the {{< icon name="ellipsis_h" >}} (ellipsis) menu.
 1. For each project, next to the **Last activity** date:

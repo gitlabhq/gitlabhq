@@ -179,7 +179,7 @@ Select the displayed link to view your site. You need to change the `BaseURL` se
 
 If your Hugo site is stored in a private repository, you'll need to change your permissions so the Pages site is visible. Otherwise, it's visible to project members only. To change the site permissions:
 
-1. Go to **Settings > General > Visibility, project features, permissions**.
+1. Go to **Settings** > **General** > **Visibility, project features, permissions**.
 1. Scroll down to the **Pages** section and select **Everyone** from the dropdown list.
 1. Select **Save changes**.
 

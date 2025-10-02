@@ -37,7 +37,7 @@ func TestProxyRequest(t *testing.T) {
 	require.NoError(t, err, "parse inbound url")
 
 	urlRegexp := regexp.MustCompile(fmt.Sprintf(`%s\z`, inboundURL.Path))
-	ts := testhelper.TestServerWithHandler(urlRegexp, func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, urlRegexp, func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "POST", r.Method, "method")
 		assert.Equal(t, "test", r.Header.Get("Custom-Header"), "custom header")
 		assert.Equal(t, testVersion, r.Header.Get("Gitlab-Workhorse"), "version header")
@@ -79,7 +79,7 @@ func TestProxyWithForcedTargetHostHeader(t *testing.T) {
 	require.NoError(t, err, "parse upstream url")
 
 	urlRegexp := regexp.MustCompile(fmt.Sprintf(`%s\z`, inboundURL.Path))
-	ts := testhelper.TestServerWithHandler(urlRegexp, func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, urlRegexp, func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, tsURL.Host, r.Host, "upstream host header")
 		assert.Equal(t, inboundURL.Host, r.Header.Get("X-Forwarded-Host"), "X-Forwarded-Host header")
 		assert.Equal(t, fmt.Sprintf("host=%s", inboundURL.Host), r.Header.Get("Forwarded"), "Forwarded header")
@@ -100,7 +100,7 @@ func TestProxyWithForcedTargetHostHeader(t *testing.T) {
 }
 
 func TestProxyWithCustomHeaders(t *testing.T) {
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`/url/path\z`), func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`/url/path\z`), func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "value", r.Header.Get("Custom-Header"), "custom proxy header")
 		assert.Equal(t, testVersion, r.Header.Get("Gitlab-Workhorse"), "version header")
 
@@ -129,7 +129,7 @@ func TestProxyError(t *testing.T) {
 }
 
 func TestProxyReadTimeout(t *testing.T) {
-	ts := testhelper.TestServerWithHandler(nil, func(_ http.ResponseWriter, _ *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, nil, func(_ http.ResponseWriter, _ *http.Request) {
 		time.Sleep(time.Minute)
 	})
 
@@ -154,7 +154,7 @@ func TestProxyReadTimeout(t *testing.T) {
 }
 
 func TestProxyHandlerTimeout(t *testing.T) {
-	ts := testhelper.TestServerWithHandler(nil,
+	ts := testhelper.TestServerWithHandler(t, nil,
 		http.TimeoutHandler(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 			time.Sleep(time.Second)
 		}), time.Millisecond, "Request took too long").ServeHTTP,

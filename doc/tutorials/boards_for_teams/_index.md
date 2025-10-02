@@ -83,7 +83,7 @@ upcoming code changes.
 To create a blank project:
 
 1. In your group, on the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}) and then select
-   **In this group > New project/repository**.
+   **In this group** > **New project/repository**.
 1. Select **Create blank project**.
 1. Enter the project details:
    - In the **Project name** field, name your project `Paperclip Assistant`.

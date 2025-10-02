@@ -18,13 +18,14 @@ The [GitLab Duo Agent Platform](../../../duo_agent_platform/_index.md) uses the
 accuracy of AI agents. You can use the Knowledge Graph framework in your AI projects to enable rich
 code intelligence across your codebase. For example, when building Retrieval-Augmented Generation (RAG)
 applications, the Knowledge Graph turns your codebase into a live, embeddable graph database
-for AI agents. The Knowledge Graph also creates architectural visualizations. This provides insightful diagrams of your system's structure and dependencies.
+for AI agents. The Knowledge Graph also creates architectural visualizations. This provides insightful
+diagrams of your system's structure and dependencies.
 
-You can install the Knowledge Graph framework with a one-line script. It parses local
-repositories, and connects using the Model Context Protocol (MCP) to query your projects. The Knowledge
-Graph captures entities like files, directories, classes, functions, and their relationships. This added context enables advanced code understanding and AI features. For example, this allows Duo agents
-to understand relationships across your local workspace and enables faster and more precise responses
-to complex questions.
+You can install the Knowledge Graph framework with a one-line script. It parses local repositories, and
+connects using Model Context Protocol (MCP) to query your projects. The Knowledge Graph captures entities like files,
+directories, classes, functions, and their relationships. This added context enables advanced code
+understanding and AI features. For example, this allows GitLab Duo agents to understand relationships
+across your local workspace and enables faster and more precise responses to complex questions.
 
 The Knowledge Graph scans your code to identify:
 

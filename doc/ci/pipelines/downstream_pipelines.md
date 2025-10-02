@@ -236,8 +236,6 @@ runner for testing, the path separator for the trigger job is `/`. Other CI/CD
 configuration for jobs that use the Windows runner, like scripts, use ` \ `.
 
 You cannot use CI/CD variables in an `include` section in a dynamic child pipeline's configuration.
-[Issue 378717](https://gitlab.com/gitlab-org/gitlab/-/issues/378717) proposes fixing
-this issue.
 
 ### Run child pipelines with merge request pipelines
 

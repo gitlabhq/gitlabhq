@@ -632,7 +632,7 @@
 {"name":"rexml","version":"3.4.4","platform":"ruby","checksum":"19e0a2c3425dfbf2d4fc1189747bdb2f849b6c5e74180401b15734bc97b5d142"},
 {"name":"rinku","version":"2.0.0","platform":"ruby","checksum":"3e695aaf9f24baba3af45823b5c427b58a624582132f18482320e2737f9f8a85"},
 {"name":"rotp","version":"6.3.0","platform":"ruby","checksum":"75d40087e65ed0d8022c33055a6306c1c400d1c12261932533b5d6cbcd868854"},
-{"name":"rouge","version":"4.6.0","platform":"ruby","checksum":"10198622df0ef919796da5686a9cc116a49280805e1ed4b851c97ef677eddd7a"},
+{"name":"rouge","version":"4.6.1","platform":"ruby","checksum":"5075346d5797d6864be93f7adc75a16047a7dbfa572c63c502419ffa582c77de"},
 {"name":"rqrcode","version":"2.2.0","platform":"ruby","checksum":"23eea88bb44c7ee6d6cab9354d08c287f7ebcdc6112e1fe7bcc2d010d1ffefc1"},
 {"name":"rqrcode_core","version":"1.2.0","platform":"ruby","checksum":"cf4989dc82d24e2877984738c4ee569308625fed2a810960f1b02d68d0308d1a"},
 {"name":"rspec","version":"3.13.0","platform":"ruby","checksum":"d490914ac1d5a5a64a0e1400c1d54ddd2a501324d703b8cfe83f458337bab993"},

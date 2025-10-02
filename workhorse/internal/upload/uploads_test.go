@@ -57,7 +57,7 @@ func TestUploadTempPathRequirement(t *testing.T) {
 }
 
 func TestUploadHandlerForwardingRawData(t *testing.T) {
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`/url/path\z`), func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`/url/path\z`), func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "PATCH", r.Method, "method")
 
 		body, err := io.ReadAll(r.Body)
@@ -67,7 +67,6 @@ func TestUploadHandlerForwardingRawData(t *testing.T) {
 		w.WriteHeader(202)
 		fmt.Fprint(w, "RESPONSE")
 	})
-	defer ts.Close()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -92,7 +91,7 @@ func TestUploadHandlerRewritingMultiPartData(t *testing.T) {
 	var filePath string
 	tempPath := t.TempDir()
 
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`/url/path\z`), func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`/url/path\z`), func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "PUT", r.Method, "method")
 		assert.NoError(t, r.ParseMultipartForm(100000))
 
@@ -125,7 +124,6 @@ func TestUploadHandlerRewritingMultiPartData(t *testing.T) {
 		w.WriteHeader(202)
 		fmt.Fprint(w, "RESPONSE")
 	})
-	defer ts.Close()
 
 	var buffer bytes.Buffer
 
@@ -184,13 +182,12 @@ func TestUploadHandlerDetectingInjectedMultiPartData(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			ts := testhelper.TestServerWithHandler(regexp.MustCompile(`/url/path\z`), func(w http.ResponseWriter, r *http.Request) {
+			ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`/url/path\z`), func(w http.ResponseWriter, r *http.Request) {
 				assert.Equal(t, "PUT", r.Method, "method")
 
 				w.WriteHeader(202)
 				fmt.Fprint(w, "RESPONSE")
 			})
-			defer ts.Close()
 
 			var buffer bytes.Buffer
 
@@ -589,8 +586,7 @@ func runUploadTest(t *testing.T, image []byte, filename string, httpCode int, ts
 	err = writer.Close()
 	require.NoError(t, err)
 
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`/url/path\z`), tsHandler)
-	defer ts.Close()
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`/url/path\z`), tsHandler)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

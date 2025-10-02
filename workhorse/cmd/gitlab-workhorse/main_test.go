@@ -91,11 +91,10 @@ func TestDeniedPush(t *testing.T) {
 func TestRegularProjectsAPI(t *testing.T) {
 	apiResponse := "API RESPONSE"
 
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
 		_, err := w.Write([]byte(apiResponse))
 		assert.NoError(t, err)
 	})
-	defer ts.Close()
 
 	ws := startWorkhorseServer(t, ts.URL)
 
@@ -133,11 +132,11 @@ func TestAllowedStaticFile(t *testing.T) {
 	setupStaticFile(t, "static file.txt", content)
 
 	proxied := false
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
 		proxied = true
 		w.WriteHeader(404)
 	})
-	defer ts.Close()
+
 	ws := startWorkhorseServer(t, ts.URL)
 
 	for _, resource := range []string{
@@ -159,8 +158,8 @@ func TestStaticFileRelativeURL(t *testing.T) {
 	setupStaticFile(t, "static.txt", content)
 
 	// nolint:gocritic // Required for compatibility with existing code structure
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), http.HandlerFunc(http.NotFound))
-	defer ts.Close()
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), http.HandlerFunc(http.NotFound))
+
 	backendURLString := ts.URL + "/my-relative-url"
 	log.Info(backendURLString)
 	ws := startWorkhorseServer(t, backendURLString)
@@ -178,12 +177,12 @@ func TestAllowedPublicUploadsFile(t *testing.T) {
 	setupStaticFile(t, "uploads/static file.txt", content)
 
 	proxied := false
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 		proxied = true
 		w.Header().Add("X-Sendfile", absDocumentRoot+r.URL.Path)
 		w.WriteHeader(200)
 	})
-	defer ts.Close()
+
 	ws := startWorkhorseServer(t, ts.URL)
 
 	for _, resource := range []string{
@@ -204,11 +203,11 @@ func TestDeniedPublicUploadsFile(t *testing.T) {
 	setupStaticFile(t, "uploads/static.txt", content)
 
 	proxied := false
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
 		proxied = true
 		w.WriteHeader(404)
 	})
-	defer ts.Close()
+
 	ws := startWorkhorseServer(t, ts.URL)
 
 	for _, resource := range []string{
@@ -235,7 +234,7 @@ This is a static error page for code 499
 </html>
 `
 	setupStaticFile(t, "499.html", errorPageBody)
-	ts := testhelper.TestServerWithHandler(nil, func(w http.ResponseWriter, _ *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, nil, func(w http.ResponseWriter, _ *http.Request) {
 		upstreamError := "499"
 		// This is the point of the test: the size of the upstream response body
 		// should be overridden.
@@ -244,7 +243,6 @@ This is a static error page for code 499
 		_, err := w.Write([]byte(upstreamError))
 		assert.NoError(t, err)
 	})
-	defer ts.Close()
 
 	ws := startWorkhorseServer(t, ts.URL)
 
@@ -270,11 +268,11 @@ func TestGzipAssets(t *testing.T) {
 	setupStaticFile(t, path+".gz", contentGzip)
 
 	proxied := false
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
 		proxied = true
 		w.WriteHeader(404)
 	})
-	defer ts.Close()
+
 	ws := startWorkhorseServer(t, ts.URL)
 
 	testCases := []struct {
@@ -322,11 +320,10 @@ func TestAltDocumentAssets(t *testing.T) {
 	setupAltStaticFile(t, path+".gz", contentGzip)
 
 	proxied := false
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
 		proxied = true
 		w.WriteHeader(404)
 	})
-	defer ts.Close()
 
 	upstreamConfig := newUpstreamConfig(ts.URL)
 	upstreamConfig.AltDocumentRoot = testAltDocumentRoot
@@ -375,7 +372,7 @@ func TestAltDocumentAssets(t *testing.T) {
 
 var sendDataHeader = "Gitlab-Workhorse-Send-Data"
 
-func sendDataResponder(command string, literalJSON string) *httptest.Server {
+func sendDataResponder(t *testing.T, command string, literalJSON string) *httptest.Server {
 	handler := func(w http.ResponseWriter, _ *http.Request) {
 		data := base64.URLEncoding.EncodeToString([]byte(literalJSON))
 		w.Header().Set(sendDataHeader, fmt.Sprintf("%s:%s", command, data))
@@ -386,12 +383,11 @@ func sendDataResponder(command string, literalJSON string) *httptest.Server {
 		}
 	}
 
-	return testhelper.TestServerWithHandler(regexp.MustCompile(`.`), handler)
+	return testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), handler)
 }
 
 func doSendDataRequest(t *testing.T, path string, command, literalJSON string) (*http.Response, []byte, error) {
-	ts := sendDataResponder(command, literalJSON)
-	defer ts.Close()
+	ts := sendDataResponder(t, command, literalJSON)
 
 	ws := startWorkhorseServer(t, ts.URL)
 
@@ -512,12 +508,11 @@ func TestSendURLForArtifacts(t *testing.T) {
 
 func TestApiContentTypeBlock(t *testing.T) {
 	wrongResponse := `{"hello":"world"}`
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", api.ResponseContentType)
 		_, err := w.Write([]byte(wrongResponse))
 		assert.NoError(t, err, "write upstream response")
 	})
-	defer ts.Close()
 
 	ws := startWorkhorseServer(t, ts.URL)
 
@@ -531,7 +526,7 @@ func TestApiContentTypeBlock(t *testing.T) {
 
 func TestAPIFalsePositivesAreProxied(t *testing.T) {
 	goodResponse := []byte(`<html></html>`)
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 		url := r.URL.String()
 		switch {
 		case url[len(url)-1] == '/':
@@ -546,7 +541,6 @@ func TestAPIFalsePositivesAreProxied(t *testing.T) {
 			assert.NoError(t, err)
 		}
 	})
-	defer ts.Close()
 
 	ws := startWorkhorseServer(t, ts.URL)
 
@@ -580,11 +574,11 @@ func TestAPIFalsePositivesAreProxied(t *testing.T) {
 }
 
 func TestCorrelationIdHeader(t *testing.T) {
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Add("X-Request-Id", "12345678")
 		w.WriteHeader(200)
 	})
-	defer ts.Close()
+
 	ws := startWorkhorseServer(t, ts.URL)
 
 	for _, resource := range []string{
@@ -600,11 +594,10 @@ func TestCorrelationIdHeader(t *testing.T) {
 }
 
 func TestPropagateCorrelationIdHeader(t *testing.T) {
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("X-Request-Id", r.Header.Get("X-Request-Id"))
 		w.WriteHeader(200)
 	})
-	defer ts.Close()
 
 	testCases := []struct {
 		desc                         string
@@ -691,10 +684,10 @@ func TestPropagateCorrelationIdHeader(t *testing.T) {
 }
 
 func TestRejectUnknownMethod(t *testing.T) {
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(200)
 	})
-	defer ts.Close()
+
 	ws := startWorkhorseServer(t, ts.URL)
 
 	req, err := http.NewRequest("UNKNOWN", ws.URL+"/api/v3/projects/123/repository/not/special", nil)
@@ -720,7 +713,7 @@ func newBranch() string {
 }
 
 func testAuthServer(t *testing.T, url *regexp.Regexp, params url.Values, code int, body interface{}) *httptest.Server {
-	ts := testhelper.TestServerWithHandler(url, func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, url, func(w http.ResponseWriter, r *http.Request) {
 		assert.NotEmpty(t, r.Header.Get("X-Request-Id"))
 
 		// return a 204 No Content response if we don't receive the JWT header
@@ -771,10 +764,6 @@ func testAuthServer(t *testing.T, url *regexp.Regexp, params url.Values, code in
 
 		w.WriteHeader(code)
 		w.Write(data)
-	})
-
-	t.Cleanup(func() {
-		ts.Close()
 	})
 
 	return ts
@@ -872,13 +861,12 @@ This is a static error page for code 503
 `
 	setupStaticFile(t, "503.html", errorPageBody)
 
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("X-Gitlab-Custom-Error", "1")
 		w.WriteHeader(503)
 		_, err := w.Write([]byte(apiResponse))
 		assert.NoError(t, err)
 	})
-	defer ts.Close()
 
 	ws := startWorkhorseServer(t, ts.URL)
 
@@ -958,7 +946,7 @@ func TestDependencyProxyInjector(t *testing.T) {
 
 			originResourceURL := originResourceServer.URL + originResource
 
-			ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+			ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 				switch r.URL.String() {
 				case "/base":
 					params := `{"Url": "` + originResourceURL + `", "Token": "` + token + `"}`
@@ -973,7 +961,6 @@ func TestDependencyProxyInjector(t *testing.T) {
 					t.Fatalf("unexpected request: %s", r.URL)
 				}
 			})
-			defer ts.Close()
 
 			ws := startWorkhorseServer(t, ts.URL)
 

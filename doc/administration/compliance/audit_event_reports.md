@@ -22,7 +22,7 @@ You can view audit events from user actions across an entire GitLab instance.
 To view instance audit events:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Monitoring > Audit events**.
+1. Select **Monitoring** > **Audit events**.
 1. Filter by the following:
    - Member of the project (user) who performed the action
    - Group

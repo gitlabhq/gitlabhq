@@ -63,7 +63,7 @@ Prerequisites:
 
 To install the GitLab for Jira Cloud app:
 
-1. In Jira, on the top bar, select **Apps > Explore more apps** and search for `GitLab for Jira Cloud`.
+1. In Jira, on the top bar, select **Apps** > **Explore more apps** and search for `GitLab for Jira Cloud`.
 1. Select **GitLab for Jira Cloud**, then select **Get it now**.
 
 Alternatively, [get the app directly from the Atlassian Marketplace](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud).
@@ -177,8 +177,8 @@ and not through the GitLab integrations form or API.
 
 In Jira Service Management:
 
-1. In your service project, go to **Project settings > Change management**.
-1. Select **Connect Pipeline > GitLab**, then copy the **Service ID** at the end of the setup flow.
+1. In your service project, go to **Project settings** > **Change management**.
+1. Select **Connect Pipeline** > **GitLab**, then copy the **Service ID** at the end of the setup flow.
 
 In GitLab:
 
@@ -373,8 +373,8 @@ In Bitbucket:
 In Jira:
 
 1. In **Projects**, select your project.
-1. Select **Development > Code**.
-1. Select **Connect Bitbucket > Link Bitbucket Cloud workspace**.
+1. Select **Development** > **Code**.
+1. Select **Connect Bitbucket** > **Link Bitbucket Cloud workspace**.
 1. Select the workspace you created in Bitbucket.
 1. Select **Grant access**.
 

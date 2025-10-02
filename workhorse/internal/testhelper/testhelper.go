@@ -66,8 +66,8 @@ func RequireResponseHeader(t *testing.T, w interface{}, header string, expected 
 // TestServerWithHandler skips Geo API polling for a proxy URL by default,
 // use TestServerWithHandlerWithGeoPolling if you need to explicitly
 // handle Geo API polling request as well.
-func TestServerWithHandler(url *regexp.Regexp, handler http.HandlerFunc) *httptest.Server {
-	return TestServerWithHandlerWithGeoPolling(url, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func TestServerWithHandler(t *testing.T, url *regexp.Regexp, handler http.HandlerFunc) *httptest.Server {
+	return TestServerWithHandlerWithGeoPolling(t, url, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == geoProxyEndpointPath {
 			return
 		}
@@ -77,8 +77,8 @@ func TestServerWithHandler(url *regexp.Regexp, handler http.HandlerFunc) *httpte
 }
 
 // TestServerWithHandlerWithGeoPolling creates a test server with the provided handler and URL pattern for geopolling tests.
-func TestServerWithHandlerWithGeoPolling(url *regexp.Regexp, handler http.HandlerFunc) *httptest.Server {
-	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func TestServerWithHandlerWithGeoPolling(t *testing.T, url *regexp.Regexp, handler http.HandlerFunc) *httptest.Server {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		logEntry := log.WithFields(log.Fields{
 			"method": r.Method,
 			"url":    r.URL,
@@ -99,6 +99,12 @@ func TestServerWithHandlerWithGeoPolling(url *regexp.Regexp, handler http.Handle
 
 		handler(w, r)
 	}))
+
+	t.Cleanup(func() {
+		ts.Close()
+	})
+
+	return ts
 }
 
 var workhorseExecutables = []string{"gitlab-workhorse", "gitlab-zip-cat", "gitlab-zip-metadata", "gitlab-resize-image"}

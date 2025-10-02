@@ -267,7 +267,7 @@ gem 'asciidoctor', '~> 2.0.18', feature_category: :markdown
 gem 'asciidoctor-include-ext', '~> 0.4.0', require: false, feature_category: :markdown
 gem 'asciidoctor-plantuml', '~> 0.0.16', feature_category: :markdown
 gem 'asciidoctor-kroki', '~> 0.10.0', require: false, feature_category: :markdown
-gem 'rouge', '~> 4.6.0', feature_category: :shared
+gem 'rouge', '~> 4.6.1', feature_category: :shared
 gem 'truncato', '~> 0.7.13', feature_category: :team_planning
 gem 'nokogiri', '~> 1.18', feature_category: :shared
 gem 'gitlab-glfm-markdown', '~> 0.0.33', feature_category: :markdown

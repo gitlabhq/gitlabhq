@@ -34,7 +34,7 @@ func TestAllowedLfsDownload(t *testing.T) {
 func allowedXSendfileDownload(t *testing.T, contentFilename string, filePath string) {
 	contentPath := path.Join(t.TempDir(), contentFilename)
 	// Prepare test server and backend
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.WithFields(log.Fields{"method": r.Method, "url": r.URL}).Info("UPSTREAM")
 
 		assert.Equal(t, "X-Sendfile", r.Header.Get("X-Sendfile-Type"))
@@ -44,7 +44,7 @@ func allowedXSendfileDownload(t *testing.T, contentFilename string, filePath str
 		w.Header().Set("Content-Type", "application/octet-stream")
 		w.WriteHeader(200)
 	}))
-	defer ts.Close()
+
 	ws := startWorkhorseServer(t, ts.URL)
 
 	contentBytes := []byte("content")
@@ -64,7 +64,7 @@ func allowedXSendfileDownload(t *testing.T, contentFilename string, filePath str
 
 func deniedXSendfileDownload(t *testing.T, contentFilename string, filePath string) {
 	// Prepare test server and backend
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(t, regexp.MustCompile(`.`), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.WithFields(log.Fields{"method": r.Method, "url": r.URL}).Info("UPSTREAM")
 
 		assert.Equal(t, "X-Sendfile", r.Header.Get("X-Sendfile-Type"))
@@ -73,7 +73,7 @@ func deniedXSendfileDownload(t *testing.T, contentFilename string, filePath stri
 		w.WriteHeader(200)
 		fmt.Fprint(w, "Denied")
 	}))
-	defer ts.Close()
+
 	ws := startWorkhorseServer(t, ts.URL)
 
 	resp, err := http.Get(fmt.Sprintf("%s/%s", ws.URL, filePath))

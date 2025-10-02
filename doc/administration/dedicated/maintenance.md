@@ -115,23 +115,12 @@ You receive advance notice when possible and complete details after the issue
 is resolved. The Support team:
 
 - Creates a support ticket for tracking.
-- Sends email notifications to your **Operational email addresses** in the
-  **Customer communication** section of Switchboard.
+- Sends email notifications to your operational contacts.
 - Copies your Customer Success Manager (CSM) on all communications.
 
-### Verify your operational contacts
-
-To ensure you receive maintenance notifications, verify that your operational contacts
-are current in Switchboard.
-
-To verify your operational contacts:
-
-1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
-1. Select your tenant.
-1. In the **Customer communication** section, review the email addresses listed under
-   **Operational email addresses**.
-
-To update these contacts, submit a support ticket.
+To ensure you receive these notifications,
+[review your contact information](configure_instance/users_notifications.md#manage-email-addresses-for-operational-contacts)
+in Switchboard.
 
 ## Related topics
 

@@ -48,13 +48,13 @@ To install the app in Jira:
 1. Enable Jira development mode to install apps that are not from the Atlassian
    Marketplace:
 
-   1. In Jira, go to **Jira settings > Apps > Manage apps**.
+   1. In Jira, go to **Jira settings** > **Apps** > **Manage apps**.
    1. Scroll to the bottom of the **Manage apps** page and select **Settings**.
    1. Select **Enable development mode** and select **Apply**.
 
 1. Install the app:
 
-   1. In Jira, go to **Jira settings > Apps > Manage apps**.
+   1. In Jira, go to **Jira settings** > **Apps** > **Manage apps**.
    1. Select **Upload app**.
    1. In the **From this URL** field, provide a link to the app descriptor. The host and port must point to your GitLab instance.
 
@@ -84,7 +84,7 @@ otherwise the app installation in Jira fails.
 The following steps describe setting up an environment to test the GitLab OAuth flow:
 
 1. Start a [Gitpod session](#setting-up-gitpod).
-1. On your GitLab instance, go to **Admin > Applications**.
+1. On your GitLab instance, go to **Admin** > **Applications**.
 1. Create a new application with the following settings:
    - Name: `GitLab for Jira`
    - Redirect URI: `YOUR_GITPOD_INSTANCE/-/jira_connect/oauth_callbacks`
@@ -92,7 +92,7 @@ The following steps describe setting up an environment to test the GitLab OAuth 
    - Confidential: **No**
    - Scopes: `api`
 1. Copy the **Application ID** value.
-1. Go to **Admin > Settings > General**.
+1. Go to **Admin** > **Settings** > **General**.
 1. Expand **GitLab for Jira App**.
 1. Paste the **Application ID** value into **Jira Connect Application ID**.
 1. In **Jira Connect Proxy URL**, enter `YOUR_GITPOD_INSTANCE` (for example, `https://xxxx.gitpod.io`).
@@ -104,7 +104,7 @@ The following steps describe setting up an environment to test the GitLab OAuth 
 Ensure you have [set up OAuth first](#set-up-the-gitlab-oauth-authentication-flow) first before doing these steps,
 otherwise these steps fail.
 
-1. In Jira, go to **Jira settings > Apps > Manage apps**.
+1. In Jira, go to **Jira settings** > **Apps** > **Manage apps**.
 1. Scroll to **User-installed apps**, find your GitLab for Jira Cloud app and expand it.
 1. Select **Get started**.
 
@@ -188,7 +188,7 @@ If the _Installed and ready to go!_ dialog opens, select **Close** (don't select
      ```
 
 1. Configure this GitLab instance to use the proxy:
-   1. Go to **Admin > Settings > General**
+   1. Go to **Admin** > **Settings** > **General**
    1. Expand **GitLab for Jira App**
    1. Paste the **Application ID** value into **Jira Connect Application ID**
    1. In **Jira Connect Proxy URL**, enter `JIRA_CONNECT_PROXY_INSTANCE` (for example, `https://xxxx.gitpod.io`)
@@ -196,7 +196,7 @@ If the _Installed and ready to go!_ dialog opens, select **Close** (don't select
 
 ### Complete the setup in Jira
 
-1. In Jira, go to **Jira settings > Apps > Manage apps**.
+1. In Jira, go to **Jira settings** > **Apps** > **Manage apps**.
 1. Scroll to **User-installed apps**, find your GitLab for Jira Cloud app and expand it.
 1. Select **Get started**.
 1. To link the app to the secondary GitLab instance, select **Change GitLab version**.

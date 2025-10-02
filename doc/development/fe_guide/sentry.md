@@ -8,7 +8,7 @@ title: Sentry monitoring in the frontend development of GitLab
 The GitLab Frontend team uses Sentry as an observability tool to monitor how the UI performs for
 users on `gitlab.com`.
 
-GitLab.com is configured to report to our Sentry instance at **Admin > Metrics and profiling > Sentry**.
+GitLab.com is configured to report to our Sentry instance at **Admin** > **Metrics and profiling** > **Sentry**.
 
 We monitor two kinds of data: **Errors** and **Performance**.
 
