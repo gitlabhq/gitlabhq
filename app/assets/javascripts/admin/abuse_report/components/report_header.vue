@@ -38,7 +38,7 @@ export default {
       return REPORT_HEADER_I18N[this.state];
     },
     badgeIcon() {
-      return this.isOpen ? 'issues' : 'issue-closed';
+      return this.isOpen ? 'issue-type-issue' : 'issue-close';
     },
   },
   methods: {

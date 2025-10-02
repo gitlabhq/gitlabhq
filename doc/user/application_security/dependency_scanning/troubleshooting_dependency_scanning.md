@@ -384,3 +384,18 @@ run using group ID (GID) 0.
     run_as_non_root = true
     run_as_group = 0
 ```
+
+## Error: `node with package name <package_name> does not exist`
+
+This issue occurs when the package manager, usually nuget, is unable to find the package. This might
+happen because the image used to build the application is different than the image used to run the
+dependency scan.
+
+To resolve this issue, use the same .NET SDK image that the dependency scanner uses to build your
+application. You can find the exact image by running:
+
+```shell
+curl --silent "https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/raw/master/build/gemnasium/alpine/Dockerfile" | grep "vrange-nuget-build" | grep "FROM"
+```
+
+Check the Dockerfile linked above for the current image version.

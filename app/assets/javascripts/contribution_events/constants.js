@@ -147,7 +147,7 @@ export const EVENT_DESTROYED_I18N = Object.freeze({
 });
 
 export const EVENT_CLOSED_ICONS = Object.freeze({
-  [WORK_ITEM_ISSUE_TYPE_ISSUE]: 'issue-closed',
+  [WORK_ITEM_ISSUE_TYPE_ISSUE]: 'issue-close',
   [TARGET_TYPE_MERGE_REQUEST]: 'merge-request-close',
   [TYPE_FALLBACK]: 'status_closed',
 });
