@@ -21,7 +21,9 @@ module DropdownsHelper
         dropdown_output = dropdown_toggle_link(toggle_text, data_attr, options)
       end
 
-      content_tag_options = { class: "dropdown-menu dropdown-select #{options[:dropdown_class] if options.key?(:dropdown_class)}" }
+      content_tag_options = {
+        class: "dropdown-menu dropdown-select #{options[:dropdown_class] if options.key?(:dropdown_class)}"
+      }
       content_tag_options[:data] ||= {}
       content_tag_options[:data][:testid] = (options[:dropdown_testid]).to_s if options[:dropdown_testid]
 
@@ -36,7 +38,8 @@ module DropdownsHelper
           output << dropdown_filter(options[:placeholder])
         end
 
-        output << content_tag(:div, data: { testid: "dropdown-list-content" }, class: "dropdown-content #{options[:content_class] if options.key?(:content_class)}") do
+        output << content_tag(:div, data: { testid: "dropdown-list-content" },
+          class: "dropdown-content #{options[:content_class] if options.key?(:content_class)}") do
           capture(&block) if block && !options.key?(:footer_content)
         end
 
@@ -57,15 +60,27 @@ module DropdownsHelper
 
   def dropdown_toggle(toggle_text, data_attr, options = {})
     default_label = data_attr[:default_label]
-    content_tag(:button, disabled: options[:disabled], class: "dropdown-menu-toggle #{options[:toggle_class] if options.key?(:toggle_class)}", id: (options[:id] if options.key?(:id)), type: "button", data: data_attr) do
-      output = content_tag(:span, toggle_text, class: "dropdown-toggle-text #{'is-default' if toggle_text == default_label}")
+    content_tag(
+      :button, disabled: options[:disabled],
+      class: "dropdown-menu-toggle #{options[:toggle_class] if options.key?(:toggle_class)}",
+      id: (options[:id] if options.key?(:id)),
+      type: "button",
+      data: data_attr
+    ) do
+      output = content_tag(:span, toggle_text,
+        class: "dropdown-toggle-text #{'is-default' if toggle_text == default_label}")
       output << sprite_icon('chevron-down', css_class: "dropdown-menu-toggle-icon")
       output.html_safe
     end
   end
 
   def dropdown_toggle_link(toggle_text, data_attr, options = {})
-    output = content_tag(:a, toggle_text, class: "dropdown-toggle-text #{options[:toggle_class] if options.key?(:toggle_class)}", id: (options[:id] if options.key?(:id)), data: data_attr)
+    output = content_tag(
+      :a, toggle_text,
+      class: "dropdown-toggle-text #{options[:toggle_class] if options.key?(:toggle_class)}",
+      id: (options[:id] if options.key?(:id)),
+      data: data_attr
+    )
     output.html_safe
   end
 
@@ -91,7 +106,8 @@ module DropdownsHelper
       title_output = []
 
       if has_back
-        title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-back #{margin_class}", aria: { label: "Go back" }, type: "button") do
+        title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-back #{margin_class}",
+          aria: { label: "Go back" }, type: "button") do
           sprite_icon('arrow-left')
         end
       end
@@ -99,7 +115,8 @@ module DropdownsHelper
       title_output << content_tag(:span, title, class: margin_class)
 
       if has_close
-        title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-close #{margin_class}", aria: { label: "Close" }, type: "button") do
+        title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-close #{margin_class}",
+          aria: { label: "Close" }, type: "button") do
           sprite_icon('close', size: 16, css_class: 'dropdown-menu-close-icon')
         end
       end
@@ -110,7 +127,8 @@ module DropdownsHelper
 
   def dropdown_filter(placeholder, search_id: nil)
     content_tag :div, class: "dropdown-input" do
-      filter_output = search_field_tag search_id, nil, data: { testid: "dropdown-input-field" }, id: nil, class: "dropdown-input-field", placeholder: placeholder, autocomplete: 'off'
+      filter_output = search_field_tag search_id, nil, data: { testid: "dropdown-input-field" }, id: nil,
+        class: "dropdown-input-field", placeholder: placeholder, autocomplete: 'off'
       filter_output << sprite_icon('search', css_class: 'dropdown-input-search')
       filter_output << sprite_icon('close', size: 16, css_class: 'dropdown-input-clear js-dropdown-input-clear')
 

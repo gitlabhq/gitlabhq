@@ -118,40 +118,29 @@ cache:assets-hash:
       dotenv: build.env
   allow_failure: false
 
-cache:frontend-islands-hash:
+#=================================
+# FE Island
+#=================================
+cache:fe-island-hash:
   extends:
     - .cache-pull-push-base
     - .with-alpine-ruby-image
-    - .caching:rules:frontend-islands-hash
+    - .caching:rules:frontend-asset-hash
   script:
-    - echo "GLCI_FRONTEND_ISLANDS_HASH=$(ruby scripts/lib/frontend_islands_sha.rb)" > build.env
-    - echo "Calculated frontend islands checksum - $(cat build.env)"
+    - echo "GLCI_FE_ISLAND_HASH=$(ruby scripts/lib/frontend_islands_sha.rb)" > build.env
+    - echo "Calculated assets checksum - $(cat build.env)"
   artifacts:
     reports:
       dotenv: build.env
+  allow_failure: false
 
-.frontend-islands-cache: &frontend-islands-cache
-  key: "frontend-islands-${BUILD_OS}-${OS_VERSION}-node-${NODE_VERSION}-${GLCI_FRONTEND_ISLANDS_HASH}"
-  paths:
-    - ee/frontend_islands/apps/duo_next/dist/
-  policy: pull-push
-
-.frontend-islands-cache-pull:
-  - <<: *frontend-islands-cache
-    policy: pull
-
-cache:frontend-islands:
+cache:fe-island-node-modules:
   extends:
     - .cache-pull-push-base
     - .with-ci-node-image
-    - .caching:rules:update-cache-on-frontend-islands-code-changes
-  cache:
-    - !reference [.yarn-cache, cache]
-    - <<: *frontend-islands-cache
-  needs:
-    - job: cache:frontend-islands-hash
-      optional: true
-  variables:
-    USE_BUNDLE_INSTALL: "false"
+    - .fe-island-yarn-pull-push-cache
+  before_script:
+    - source scripts/utils.sh
   script:
-    - scripts/build_frontend_islands
+    - cd ee/frontend_islands/apps/duo_next
+    - yarn_install_script

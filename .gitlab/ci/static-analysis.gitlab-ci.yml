@@ -66,7 +66,7 @@ generate-apollo-graphql-schema:
     - .static-analysis-base
   needs:
     - generate-apollo-graphql-schema
-    - job: cache:frontend-islands-hash
+    - job: compile-fe-island
       optional: true
   variables:
     USE_BUNDLE_INSTALL: "false"
@@ -74,10 +74,8 @@ generate-apollo-graphql-schema:
   before_script:
     - !reference [.default-before_script, before_script]
     - yarn_install_script
-    - scripts/build_frontend_islands
   cache:
     - !reference [.yarn-cache, cache]
-    - !reference [.frontend-islands-cache-pull]
 
 eslint-changed-files:
   extends:
@@ -96,20 +94,20 @@ eslint:
     reports:
       codequality: gl-code-quality-report.json
 
-eslint:frontend-islands:
+eslint:fe-island:
   extends:
     - .eslint-base
-    - .frontend:rules:fe-islands:test
+    - .frontend:rules:fe-island:test
   needs:
-    - job: cache:frontend-islands-hash
+    - cache:fe-island-hash
+    - job: compile-fe-island
       optional: true
   cache:
     - !reference [.yarn-cache, cache]
-    - !reference [.frontend-islands-cache-pull]
+    - !reference [.fe-island-yarn-cache, cache]
   before_script:
     - !reference [.default-before_script, before_script]
     - yarn_install_script
-    - scripts/build_frontend_islands
   script:
     - cd ee/frontend_islands/apps/duo_next
     - yarn run lint --format gitlab

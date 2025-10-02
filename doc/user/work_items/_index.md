@@ -104,7 +104,7 @@ These filters are available for work items:
   - Values: `Yes`, `No`
 - Contact
   - Operators: `is`
-- Custom status
+- Status
   - Operators: `is`
 - Health status
   - Operators: `is`, `is not`
@@ -137,6 +137,12 @@ To access filters you've used recently, on the left side of the filter bar, sele
 
 ### Sort work items
 
+{{< history >}}
+
+- Sorting by status [introduced](https://gitlab.com/groups/gitlab-org/-/epics/18638) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Disabled by default.
+
+{{< /history >}}
+
 <!-- When the feature flag work_item_planning_view is removed, move information from
 sorting_issue_lists.md to this page and redirect here -->
 
@@ -147,6 +153,7 @@ Sort the list of work items by the following:
 - Start date
 - Due date
 - Title
+- Status
 
 To change the sorting criteria:
 

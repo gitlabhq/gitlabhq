@@ -418,7 +418,7 @@ If you have merge request pipelines enabled for your project, you must set the `
 
 Some scanners behave differently in a `scan` action than they do in a regular CI/CD pipeline scan:
 
-- Static Application Security Testing (SAST): Runs only if the repository contains
+- Static application security testing (SAST): Runs only if the repository contains
   [files supported by SAST](../sast/_index.md#supported-languages-and-frameworks).
 - Secret detection:
   - Only rules in the default ruleset are supported by default.

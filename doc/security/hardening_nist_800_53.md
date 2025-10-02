@@ -61,7 +61,7 @@ including but not limited to:
 - [Security configuration](../user/application_security/detect/security_configuration.md)
 - [Container Scanning](../user/application_security/container_scanning/_index.md)
 - [Dependency Scanning](../user/application_security/dependency_scanning/_index.md)
-- [Static Application Security Testing](../user/application_security/sast/_index.md)
+- [Static application security testing](../user/application_security/sast/_index.md)
 - [Infrastructure as Code (IaC) Scanning](../user/application_security/iac_scanning/_index.md)
 - [Secret Detection](../user/application_security/secret_detection/_index.md)
 - [Dynamic Application Security Testing (DAST)](../user/application_security/dast/_index.md)
@@ -605,7 +605,7 @@ for running web applications.
 Additional security features that may be used to secure and manage
 application code include:
 
-- [Static Application Security Testing (SAST)](../user/application_security/sast/_index.md)
+- [Static application security testing (SAST)](../user/application_security/sast/_index.md)
 
 - [Secret Detection](../user/application_security/secret_detection/_index.md)
 

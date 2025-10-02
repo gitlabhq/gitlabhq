@@ -159,7 +159,6 @@ Exercise extreme caution or use MCP tools only on GitLab objects you trust.
 ## Available tools
 
 The GitLab MCP server provides the following tools.
-For more information, see [epic 18413](https://gitlab.com/groups/gitlab-org/-/epics/18413).
 
 ### `get_mcp_server_version`
 
@@ -175,11 +174,16 @@ What version of the GitLab MCP server am I connected to?
 
 Creates a new issue in a GitLab project.
 
-| Parameter     | Required | Description |
-|---------------|----------|-------------|
-| `project_id`  | Yes      | ID or URL-encoded path of the project. |
-| `title`       | Yes      | Title of the issue. |
-| `description` | No       | Description of the issue. |
+| Parameter      | Type    | Required | Description |
+|----------------|---------|----------|-------------|
+| `id`           | string  | Yes      | ID or URL-encoded path of the project. |
+| `title`        | string  | Yes      | Title of the issue. |
+| `description`  | string  | No       | Description of the issue. |
+| `assignee_ids` | array   | No       | IDs of assigned users. |
+| `milestone_id` | integer | No       | ID of the milestone. |
+| `labels`       | string  | No       | Comma-separated list of label names. |
+| `confidential` | boolean | No       | Sets the issue to confidential. Default is `false`. |
+| `epic_id`      | integer | No       | ID of the linked epic. |
 
 Example:
 
@@ -192,10 +196,10 @@ Create a new issue titled "Fix login bug" in project 123 with description
 
 Retrieves detailed information about a specific GitLab issue.
 
-| Parameter    | Required | Description |
-|--------------|----------|-------------|
-| `project_id` | Yes      | ID or URL-encoded path of the project. |
-| `issue_iid`  | Yes      | Internal ID of the issue. |
+| Parameter   | Type    | Required | Description |
+|-------------|---------|----------|-------------|
+| `id`        | string  | Yes      | ID or URL-encoded path of the project. |
+| `issue_iid` | integer | Yes      | Internal ID of the issue. |
 
 Example:
 
@@ -213,15 +217,13 @@ Get details for issue 42 in project 123
 
 Creates a merge request in a project.
 
-| Parameter              | Required | Description |
-|------------------------|----------|-------------|
-| `project_id`           | Yes      | ID or URL-encoded path of the project. |
-| `source_branch`        | Yes      | Name of the branch to merge from. |
-| `target_branch`        | Yes      | Name of the branch to merge into. |
-| `title`                | Yes      | Title of the merge request. |
-| `description`          | No       | Description text. |
-| `remove_source_branch` | No       | Delete the source branch on merge (default is `false`). |
-| `squash`               | No       | Squash commits on merge (default is `false`). |
+| Parameter           | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
+| `title`             | string  | Yes      | Title of the merge request. |
+| `source_branch`     | string  | Yes      | Name of the source branch. |
+| `target_branch`     | string  | Yes      | Name of the target branch. |
+| `target_project_id` | integer | No       | ID of the target project. |
 
 Example:
 
@@ -234,10 +236,10 @@ from branch "fix/specs-broken" into "master" and enable squash
 
 Retrieves detailed information about a specific GitLab merge request.
 
-| Parameter           | Required | Description |
-|---------------------|----------|-------------|
-| `project_id`        | Yes      | ID or URL-encoded path of the project. |
-| `merge_request_iid` | Yes      | Internal ID of the merge request. |
+| Parameter           | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
+| `merge_request_iid` | integer | Yes      | Internal ID of the merge request. |
 
 Example:
 
@@ -249,10 +251,12 @@ Get details for merge request 15 in project gitlab-org/gitlab
 
 Retrieves the list of commits in a specific merge request.
 
-| Parameter           | Required | Description |
-|---------------------|----------|-------------|
-| `project_id`        | Yes      | ID or URL-encoded path of the project. |
-| `merge_request_iid` | Yes      | Internal ID of the merge request. |
+| Parameter           | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
+| `merge_request_iid` | integer | Yes      | Internal ID of the merge request. |
+| `per_page`          | integer | No       | Number of commits per page. |
+| `page`              | integer | No       | Current page number. |
 
 Example:
 
@@ -260,14 +264,16 @@ Example:
 Show me all commits in merge request 42 from project 123
 ```
 
-### `get_merge_request_changes`
+### `get_merge_request_diffs`
 
-Retrieves the file changes (diffs) for a specific merge request.
+Retrieves the diffs for a specific merge request.
 
-| Parameter           | Required | Description |
-|---------------------|----------|-------------|
-| `project_id`        | Yes      | ID or URL-encoded path of the project. |
-| `merge_request_iid` | Yes      | Internal ID of the merge request. |
+| Parameter           | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
+| `merge_request_iid` | integer | Yes      | Internal ID of the merge request. |
+| `per_page`          | integer | No       | Number of diffs per page. |
+| `page`              | integer | No       | Current page number. |
 
 Example:
 
@@ -275,14 +281,14 @@ Example:
 What files were changed in merge request 25 in the gitlab project?
 ```
 
-### `get_merge_request_pipelines_service`
+### `get_merge_request_pipelines`
 
 Retrieves the pipelines for a specific merge request.
 
-| Parameter           | Required | Description |
-|---------------------|----------|-------------|
-| `project_id`        | Yes      | ID or URL-encoded path of the project. |
-| `merge_request_iid` | Yes      | Internal ID of the merge request. |
+| Parameter           | Type    | Required | Description |
+|---------------------|---------|----------|-------------|
+| `id`                | string  | Yes      | ID or URL-encoded path of the project. |
+| `merge_request_iid` | integer | Yes      | Internal ID of the merge request. |
 
 Example:
 
@@ -294,10 +300,12 @@ Show me all pipelines for merge request 42 in project gitlab-org/gitlab
 
 Retrieves the jobs for a specific CI/CD pipeline.
 
-| Parameter     | Required | Description |
-|---------------|----------|-------------|
-| `project_id`  | Yes      | ID or URL-encoded path of the project. |
-| `pipeline_id` | Yes      | ID of the pipeline. |
+| Parameter     | Type    | Required | Description |
+|---------------|---------|----------|-------------|
+| `id`          | string  | Yes      | ID or URL-encoded path of the project. |
+| `pipeline_id` | integer | Yes      | ID of the pipeline. |
+| `per_page`    | integer | No       | Number of jobs per page. |
+| `page`        | integer | No       | Current page number. |
 
 Example:
 
@@ -314,11 +322,17 @@ Show me all jobs in pipeline 12345 for project gitlab-org/gitlab
 {{< /history >}}
 
 Searches for a term across the entire GitLab instance with the search API.
+This tool is available only for global search.
 
-| Parameter | Required | Description |
-|-----------|----------|-------------|
-| `search`  | Yes      | Search term. |
-| `scope`   | Yes      | Search scope (for example, `issues`, `merge_requests`, or `projects`). |
+| Parameter      | Type    | Required | Description |
+|----------------|---------|----------|-------------|
+| `scope`        | string  | Yes      | Search scope (for example, `issues`, `merge_requests`, or `projects`). |
+| `search`       | string  | Yes      | Search term. |
+| `state`        | string  | No       | State of search results. |
+| `confidential` | boolean | No       | Filters results by confidentiality. Default is `false`. |
+| `per_page`     | integer | No       | Number of results per page. |
+| `page`         | integer | No       | Current page number. |
+| `fields`       | string  | No       | Comma-separated list of fields you want to search. |
 
 Example:
 

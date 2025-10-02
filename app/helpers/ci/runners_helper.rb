@@ -14,7 +14,8 @@ module Ci
 
       case status
       when :online
-        title = safe_format(s_("Runners|Runner is online; last contact was %{runner_contact} ago"), runner_contact: time_ago_in_words(contacted_at))
+        title = safe_format(s_("Runners|Runner is online; last contact was %{runner_contact} ago"),
+          runner_contact: time_ago_in_words(contacted_at))
         icon = 'status-active'
         span_class = 'gl-text-success'
       when :never_contacted
@@ -23,7 +24,8 @@ module Ci
       when :offline
         title =
           if contacted_at
-            safe_format(s_("Runners|Runner is offline; last contact was %{runner_contact} ago"), runner_contact: time_ago_in_words(contacted_at))
+            safe_format(s_("Runners|Runner is offline; last contact was %{runner_contact} ago"),
+              runner_contact: time_ago_in_words(contacted_at))
           else
             s_("Runners|Runner is offline; it has never contacted this instance")
           end
@@ -32,12 +34,19 @@ module Ci
         span_class = 'gl-text-subtle'
       when :stale
         # runner may have contacted (or not) and be stale: consider both cases.
-        title = contacted_at ? safe_format(s_("Runners|Runner is stale; last contact was %{runner_contact} ago"), runner_contact: time_ago_in_words(contacted_at)) : s_("Runners|Runner is stale; it has never contacted this instance")
+        title = if contacted_at
+                  safe_format(s_("Runners|Runner is stale; last contact was %{runner_contact} ago"),
+                    runner_contact: time_ago_in_words(contacted_at))
+                else
+                  s_("Runners|Runner is stale; it has never contacted this instance")
+                end
+
         icon = 'time-out'
         span_class = 'gl-text-warning'
       end
 
-      content_tag(:span, class: span_class, title: title, data: { toggle: 'tooltip', container: 'body', testid: 'runner-status-icon', qa_status: status }) do
+      content_tag(:span, class: span_class, title: title,
+        data: { toggle: 'tooltip', container: 'body', testid: 'runner-status-icon', qa_status: status }) do
         sprite_icon(icon, size: size, css_class: icon_class)
       end
     end
@@ -144,7 +153,9 @@ module Ci
 
         # instance runners tab
         instance_runners_enabled: project.shared_runners_enabled?.to_s,
-        instance_runners_disabled_and_unoverridable: (project.group&.shared_runners_setting == Namespace::SR_DISABLED_AND_UNOVERRIDABLE).to_s,
+        instance_runners_disabled_and_unoverridable: (
+          project.group&.shared_runners_setting == Namespace::SR_DISABLED_AND_UNOVERRIDABLE
+        ).to_s,
         instance_runners_update_path: toggle_shared_runners_project_runners_path(project),
         instance_runners_group_settings_path: nil,
         group_name: nil
@@ -163,7 +174,9 @@ module Ci
     def toggle_shared_runners_settings_data(project)
       data = {
         is_enabled: project.shared_runners_enabled?.to_s,
-        is_disabled_and_unoverridable: (project.group&.shared_runners_setting == Namespace::SR_DISABLED_AND_UNOVERRIDABLE).to_s,
+        is_disabled_and_unoverridable: (
+          project.group&.shared_runners_setting == Namespace::SR_DISABLED_AND_UNOVERRIDABLE
+        ).to_s,
         update_path: toggle_shared_runners_project_runners_path(project),
         group_name: nil,
         group_settings_path: nil

@@ -64,6 +64,7 @@ Gitlab::Application.config.to_prepare do
         Analytics::ValueStreamDashboard::Count,
         Ci::FinishedBuildChSyncEvent,
         Search::Zoekt::Task,
+        Ai::EventsCount,
         Ai::UsageEvent,
         Vulnerabilities::Archive,
         Vulnerabilities::ArchivedRecord,

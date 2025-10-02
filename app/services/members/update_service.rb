@@ -74,7 +74,14 @@ module Members
     def has_update_permissions?(member, permission)
       can?(current_user, action_member_permission(permission, member), member) &&
         !prevent_upgrade_to_owner?(member) &&
-        !prevent_downgrade_from_owner?(member)
+        !prevent_downgrade_from_owner?(member) &&
+        !role_too_high?(member)
+    end
+
+    def role_too_high?(member)
+      return false unless params[:access_level] # we don't update access_level
+
+      member.prevent_role_assignement?(current_user, params.merge(current_access_level: member.access_level))
     end
 
     def downgrading_to_guest?

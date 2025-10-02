@@ -177,6 +177,12 @@ RSpec.describe Members::UpdateService, feature_category: :groups_and_projects do
         end
       end
 
+      context 'and updating members to PLANNER' do
+        it_behaves_like 'a service updating members' do
+          let_it_be(:access_level) { Gitlab::Access::PLANNER }
+        end
+      end
+
       context 'and updating themselves to OWNER' do
         let(:members) { source.members_and_requesters.find_by!(user_id: current_user.id) }
 

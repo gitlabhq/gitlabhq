@@ -318,6 +318,138 @@ RSpec.describe Gitlab::Help::HugoTransformer do
 
         expect(transformer.transform(content).strip).to eq(expected_content.strip)
       end
+
+      it 'handles collapsible shortcodes with correct heading levels' do
+        content = <<~MARKDOWN
+          # Main heading
+
+          Some content here.
+
+          ## Secondary heading
+
+          More content here.
+
+          {{< collapsible title="Advanced configuration" >}}
+
+          This is collapsible content with some details:
+
+          - Configuration option 1
+          - Configuration option 2
+
+          ```yaml
+          config:
+            option: value
+          ```
+
+          {{< /collapsible >}}
+
+          ### Another heading
+
+          {{< collapsible title="Troubleshooting" >}}
+
+          Here are some troubleshooting steps:
+
+          1. Check the logs
+          2. Restart the service
+
+          {{< /collapsible >}}
+        MARKDOWN
+
+        expected_content = <<~MARKDOWN
+          # Main heading
+
+          Some content here.
+
+          ## Secondary heading
+
+          More content here.
+
+          ### Advanced configuration
+
+          This is collapsible content with some details:
+
+          - Configuration option 1
+          - Configuration option 2
+
+          ```yaml
+          config:
+            option: value
+          ```
+
+          ### Another heading
+
+          #### Troubleshooting
+
+          Here are some troubleshooting steps:
+
+          1. Check the logs
+          2. Restart the service
+        MARKDOWN
+
+        expect(transformer.transform(content).strip).to eq(expected_content.strip)
+      end
+
+      it 'handles collapsible shortcodes at the beginning of content' do
+        content = <<~MARKDOWN
+          {{< collapsible title="Getting started" >}}
+
+          Welcome to the documentation!
+
+          This section contains important information.
+
+          {{< /collapsible >}}
+
+          # Main content
+
+          Regular content follows.
+        MARKDOWN
+
+        expected_content = <<~MARKDOWN
+          ## Getting started
+
+          Welcome to the documentation!
+
+          This section contains important information.
+
+          # Main content
+
+          Regular content follows.
+        MARKDOWN
+
+        expect(transformer.transform(content).strip).to eq(expected_content.strip)
+      end
+
+      it 'handles multiple collapsible shortcodes' do
+        content = <<~MARKDOWN
+          # Documentation
+
+          {{< collapsible title="Section A" >}}
+
+          Content for section A.
+
+          {{< /collapsible >}}
+
+          {{< collapsible title="Section B" >}}
+
+          Content for section B.
+
+          {{< /collapsible >}}
+        MARKDOWN
+
+        expected_content = <<~MARKDOWN
+          # Documentation
+
+          ## Section A
+
+          Content for section A.
+
+          ## Section B
+
+          Content for section B.
+        MARKDOWN
+
+        expect(transformer.transform(content).strip).to eq(expected_content.strip)
+      end
     end
 
     it 'converts maintained-versions shortcodes to maintenance policy message' do

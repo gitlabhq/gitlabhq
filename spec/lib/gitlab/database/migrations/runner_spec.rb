@@ -64,6 +64,10 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
     ].sort_by(&:version)
   end
 
+  let(:async_operations_runner) do
+    Gitlab::Database::Migrations::PreparedAsyncDmlOperationsTesting::AsyncOperationsRunner
+  end
+
   before do
     skip_if_shared_database(database)
 
@@ -98,6 +102,20 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
     ]
   end
 
+  shared_examples 'using async operations runner' do
+    it 'installs async operations mixin before running migrations' do
+      expect(async_operations_runner).to receive(:install!).ordered
+
+      subject.run
+    end
+
+    it 'executes async operations after each migration' do
+      expect(async_operations_runner).to receive(:execute!).exactly(pending_migrations.count).times
+
+      subject.run
+    end
+  end
+
   with_them do
     it 'creates the results dir when one does not exist' do
       FileUtils.rm_rf(result_dir)
@@ -108,23 +126,21 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
     end
 
     describe '.up' do
+      subject(:up) { described_class.up(database: database) }
+
       context 'result directory' do
         it 'uses the /up subdirectory' do
-          expect(described_class.up(database: database).result_dir).to eq(result_dir.join('up'))
+          expect(up.result_dir).to eq(result_dir.join('up'))
         end
       end
 
       context 'migrations to run' do
-        subject(:up) { described_class.up(database: database) }
-
         it 'is the list of pending migrations' do
           expect(up.migrations).to eq(pending_migrations)
         end
       end
 
       context 'running migrations' do
-        subject(:up) { described_class.up(database: database) }
-
         it 'runs the unapplied migrations in regular/post order, then version order', :aggregate_failures do
           up.run
 
@@ -147,6 +163,8 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
           expect(migration_runs.map(&:database).uniq).to contain_exactly(database.to_s)
         end
       end
+
+      it_behaves_like 'using async operations runner'
     end
 
     describe '.down' do
@@ -181,6 +199,8 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
         metadata = Gitlab::Json.parse(File.read(metadata_file))
         expect(metadata).to match('version' => expected_schema_version, 'database' => database.to_s)
       end
+
+      it_behaves_like 'using async operations runner'
     end
 
     describe '.batched_background_migrations' do

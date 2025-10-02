@@ -2,7 +2,7 @@
 stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Static Application Security Testing (SAST)
+title: Static application security testing (SAST)
 description: Scanning, configuration, analyzers, vulnerabilities, reporting, customization, and integration.
 ---
 
@@ -50,7 +50,7 @@ table.no-vertical-table-lines tr {
 
 {{< /details >}}
 
-Static Application Security Testing (SAST) discovers vulnerabilities in your source code before they
+Static application security testing (SAST) discovers vulnerabilities in your source code before they
 reach production. Integrated directly into your CI/CD pipeline, SAST identifies security issues
 during development when they're easiest and most cost-effective to fix.
 

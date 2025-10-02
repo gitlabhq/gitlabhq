@@ -100,9 +100,100 @@ To configure custom statuses:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings** > **Issues**.
-1. In the **Statuses** section, select **Edit statuses**.
+1. In the **Statuses** section, select **Edit statuses** for the lifecycle being used by the work item type.
 1. Add, edit, or reorder statuses for the namespace.
 1. Select **Close**.
+
+## Create a lifecycle
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556113) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Disabled by default.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the group.
+- This group must be at the top level.
+
+To create a lifecycle:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings** > **Issues**.
+1. In the **Statuses** section, select **Create lifecycle**.
+1. Add the lifecycle name and choose either the default lifecycle configuration or one of the existing lifecycles to start from. This pre-populates the new lifecycle with statuses which you can customize afterwards.
+1. Select **Create**.
+
+## Rename a lifecycle
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/557003) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Disabled by default.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the group.
+- This group must be at the top level.
+
+To rename a lifecycle:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings** > **Issues**.
+1. In the **Statuses** section, hover over the lifecycle detail view.
+1. Select **Rename**.
+1. Rename the lifecycle and select **Save**.
+
+## Remove a lifecycle
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/557013) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Disabled by default.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the group.
+- This group must be at the top level.
+- The lifecycle must not be in use i.e., should not be associated with any work item type
+
+To remove a lifecycle:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings** > **Issues**.
+1. In the **Statuses** section, select **Remove lifecycle** for the lifecycle you want to remove.
+1. On the confirmation dialog, select **Remove**.
+
+## Change lifecycle for a work item type
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/557009) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Disabled by default.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the group.
+- This group must be at the top level.
+
+To change the lifecycle for a work item type:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings** > **Issues**.
+1. In the **Statuses** section, either:
+   - Select **Change lifecycle**.
+   - If the lifecycle is used with more than one work item type, select it from the dropdown list.
+1. Select a new lifecycle for the work item type. You can either choose an existing lifecycle or create a new lifecycle.
+1. Select **Next**.
+
+   All current statuses show which new status from the new lifecycle they get.
+
+1. Optional. To choose a different replacement status, select it from the dropdown list.
+1. Select **Save**.
 
 ## Set status for a work item
 

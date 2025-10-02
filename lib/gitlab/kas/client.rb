@@ -234,6 +234,11 @@ module Gitlab
         project = environment.project
         return unless agent && project && build && build.user
 
+        # compatible with Gitlab::Kubernetes::DefaultNamespace
+        suffix = "-#{project.id}-#{environment.slug}"
+        sanitized_project_path = Gitlab::NamespaceSanitizer.sanitize(project.path.downcase).first(63 - suffix.length)
+        legacy_namespace = "#{sanitized_project_path}#{suffix}"
+
         Gitlab::Agent::ManagedResources::TemplatingInfo.new(
           agent: Gitlab::Agent::ManagedResources::Agent.new(
             id: agent.id,
@@ -253,7 +258,8 @@ module Gitlab
             url: project.web_url),
           pipeline: Gitlab::Agent::ManagedResources::Pipeline.new(id: build.pipeline_id),
           job: Gitlab::Agent::ManagedResources::Job.new(id: build.id),
-          user: Gitlab::Agent::ManagedResources::User.new(id: build.user_id, username: build.user.username)
+          user: Gitlab::Agent::ManagedResources::User.new(id: build.user_id, username: build.user.username),
+          legacy_namespace: legacy_namespace
         )
       end
 

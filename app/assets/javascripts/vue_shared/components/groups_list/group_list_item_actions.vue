@@ -190,7 +190,7 @@ export default {
     <gl-loading-icon v-if="actionsLoading" size="sm" class="gl-p-3" />
     <list-actions
       v-else
-      data-testid="groups-projects-more-actions-dropdown"
+      data-testid="groups-list-item-actions"
       :actions="actions"
       :available-actions="availableActions"
     />

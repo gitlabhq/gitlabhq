@@ -183,7 +183,7 @@ export default {
         )
       }}
     </gl-modal>
-    <div v-if="repositories.length" class="gl-w-full">
+    <div v-if="repositories.length" class="table-responsive gl-w-full">
       <table class="table gl-table">
         <thead>
           <tr>

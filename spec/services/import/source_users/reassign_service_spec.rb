@@ -4,15 +4,23 @@ require 'spec_helper'
 
 RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importers do
   let_it_be(:user) { create(:user) }
-  let(:import_source_user) { create(:import_source_user) }
+  let_it_be(:namespace) { create(:group) }
+  let_it_be(:service_account) { create(:user, :service_account) }
+  let_it_be(:project) { create(:project, namespace: namespace) }
+  let_it_be(:subgroup) { create(:group, parent: namespace) }
+  let_it_be(:project_bot) { create(:user, :project_bot, bot_namespace: project.namespace) }
+  let_it_be(:subgroup_bot) { create(:user, :project_bot, bot_namespace: subgroup) }
+  let_it_be(:different_namespace_project_bot) { create(:user, :project_bot, bot_namespace: create(:project).namespace) }
+
+  let(:import_source_user) { create(:import_source_user, namespace: namespace) }
   let(:current_user) { user }
   let(:assignee_user) { create(:user) }
   let(:service) { described_class.new(import_source_user, assignee_user, current_user: current_user) }
   let(:result) { service.execute }
 
   describe '#execute' do
-    before do
-      import_source_user.namespace.add_owner(user)
+    before_all do
+      namespace.add_owner(user)
     end
 
     shared_examples 'a success response' do
@@ -162,7 +170,27 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
     end
 
     it_behaves_like 'normal reassignment responses for assignee types',
-      assignee_error: s_('UserMapping|You can assign active users with regular or auditor access only.')
+      assignee_error: s_('UserMapping|You can assign active users with regular or auditor access, ' \
+        'service accounts and group or project bots only.')
+
+    context 'when the assignee user is a project bot' do
+      let(:assignee_user) { project_bot }
+
+      it_behaves_like 'a success response that bypasses user confirmation'
+    end
+
+    context 'when the assignee user is a subgroup bot' do
+      let(:assignee_user) { subgroup_bot }
+
+      it_behaves_like 'a success response that bypasses user confirmation'
+    end
+
+    context 'when the assignee user is a project bot from a different namespace' do
+      let(:assignee_user) { different_namespace_project_bot }
+
+      it_behaves_like 'an error response', 'invalid status',
+        error: s_('UserMapping|Group or project bot does not belong to top level group.')
+    end
 
     context 'when current user does not have permission' do
       let(:current_user) { create(:user) }
@@ -188,7 +216,8 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
 
       it_behaves_like 'normal reassignment responses for assignee types',
         assignee_error: s_(
-          'UserMapping|You can assign active users with regular, auditor, or administrator access only.'
+          'UserMapping|You can assign active users with regular, auditor, or administrator access, ' \
+            'service accounts and group or project bots only.'
         ), skip_admin: true do
         context 'and the assignee user is an admin' do
           let(:assignee_user) { create(:user, :admin) }
@@ -206,7 +235,9 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
         end
 
         it_behaves_like 'bypassed reassignment responses for assignee types',
-          assignee_error: s_('UserMapping|You can assign users with regular, auditor, or administrator access only.'),
+          assignee_error: s_(
+            'UserMapping|You can assign users with regular, auditor, or administrator access, ' \
+              'service accounts and group or project bots only.'),
           skip_admin: true do
           context 'and the assignee user is an admin' do
             let(:assignee_user) { create(:user, :admin) }
@@ -220,7 +251,8 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
 
           it_behaves_like 'normal reassignment responses for assignee types',
             assignee_error: s_(
-              'UserMapping|You can assign active users with regular, auditor, or administrator access only.'
+              'UserMapping|You can assign active users with regular, auditor, or administrator access, ' \
+                'service accounts and group or project bots only.'
             ), skip_admin: true do
             context 'and the assignee user is an admin' do
               let(:assignee_user) { create(:user, :admin) }
@@ -237,7 +269,8 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
 
           it_behaves_like 'normal reassignment responses for assignee types',
             assignee_error: s_(
-              'UserMapping|You can assign active users with regular, auditor, or administrator access only.'
+              'UserMapping|You can assign active users with regular, auditor, or administrator access, ' \
+                'service accounts and group or project bots only.'
             ), skip_admin: true do
             context 'and the assignee user is an admin' do
               let(:assignee_user) { create(:user, :admin) }
@@ -258,13 +291,15 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
       end
 
       it_behaves_like 'bypassed reassignment responses for assignee types',
-        assignee_error: s_('UserMapping|You can assign users with regular or auditor access only.')
+        assignee_error: s_('UserMapping|You can assign users with regular or auditor access, ' \
+          'service accounts and group or project bots only.')
 
       context 'and the current user is not an admin' do
         let_it_be(:current_user) { user }
 
         it_behaves_like 'normal reassignment responses for assignee types',
-          assignee_error: s_('UserMapping|You can assign active users with regular or auditor access only.')
+          assignee_error: s_('UserMapping|You can assign active users with regular or auditor access, ' \
+            'service accounts and group or project bots only.')
       end
 
       context 'and user impersonation is not enabled' do
@@ -273,7 +308,27 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
         end
 
         it_behaves_like 'normal reassignment responses for assignee types',
-          assignee_error: s_('UserMapping|You can assign active users with regular or auditor access only.')
+          assignee_error: s_('UserMapping|You can assign active users with regular or auditor access, ' \
+            'service accounts and group or project bots only.')
+      end
+
+      context 'and the assignee user is a project bot' do
+        let(:assignee_user) { project_bot }
+
+        it_behaves_like 'a success response that bypasses user confirmation'
+      end
+
+      context 'and the assignee user is a subgroup bot' do
+        let(:assignee_user) { subgroup_bot }
+
+        it_behaves_like 'a success response that bypasses user confirmation'
+      end
+
+      context 'and the assignee user is a project bot from a different namespace' do
+        let(:assignee_user) { different_namespace_project_bot }
+
+        it_behaves_like 'an error response', 'invalid status',
+          error: s_('UserMapping|Group or project bot does not belong to top level group.')
       end
     end
 

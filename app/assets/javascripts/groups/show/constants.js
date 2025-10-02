@@ -21,11 +21,6 @@ import sharedGroupsQuery from './graphql/queries/shared_groups.query.graphql';
 import subgroupsAndProjectsQuery from './graphql/queries/subgroups_and_projects.query.graphql';
 import sharedProjectsQuery from './graphql/queries/shared_projects.query.graphql';
 
-const transformSortToUpperCase = (variables) => ({
-  ...variables,
-  sort: variables.sort.toUpperCase(),
-});
-
 const subgroupsAndProjectsFormatter = (items) =>
   formatGraphQLGroupsAndProjects(
     items,
@@ -43,12 +38,12 @@ export const SORT_OPTION_NAME = {
 };
 
 export const SORT_OPTION_CREATED = {
-  value: 'created_at',
+  value: 'created',
   text: SORT_LABEL_CREATED,
 };
 
 export const SORT_OPTION_UPDATED = {
-  value: 'updated_at',
+  value: 'updated',
   text: SORT_LABEL_UPDATED,
 };
 
@@ -97,7 +92,6 @@ export const SHARED_PROJECTS_TAB = {
   emptyStateComponent: SharedProjectsEmptyState,
   text: __('Shared projects'),
   value: 'shared_projects',
-  transformVariables: transformSortToUpperCase,
   queryErrorMessage: __('Shared projects could not be loaded. Refresh the page to try again.'),
   sortOptions: SORT_OPTIONS,
   defaultSortOption: SORT_OPTION_UPDATED,
@@ -116,7 +110,19 @@ export const SHARED_GROUPS_TAB = {
   emptyStateComponent: SharedGroupsEmptyState,
   text: __('Shared groups'),
   value: 'shared_groups',
-  transformVariables: transformSortToUpperCase,
+  transformVariables: (variables) => {
+    const sortMap = {
+      created_asc: 'CREATED_AT_ASC',
+      created_desc: 'CREATED_AT_DESC',
+      updated_asc: 'UPDATED_AT_ASC',
+      updated_desc: 'UPDATED_AT_DESC',
+    };
+
+    return {
+      ...variables,
+      sort: sortMap[variables.sort] || variables.sort.toUpperCase(),
+    };
+  },
   sortOptions: SORT_OPTIONS,
   defaultSortOption: SORT_OPTION_UPDATED,
 };

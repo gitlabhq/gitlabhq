@@ -15,7 +15,6 @@ class PersonalAccessTokensFinder
     tokens = by_current_user(tokens)
     tokens = by_user(tokens)
     tokens = by_users(tokens)
-    tokens = by_user_types(tokens)
     tokens = by_impersonation(tokens)
     tokens = by_state(tokens)
     tokens = by_owner_type(tokens)
@@ -31,7 +30,9 @@ class PersonalAccessTokensFinder
     tokens = by_group(tokens)
     tokens = tokens.allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/436657")
 
-    sort(tokens)
+    by_user_types_with_in_operator_optimization(
+      sort(tokens)
+    )
   end
 
   private
@@ -49,13 +50,11 @@ class PersonalAccessTokensFinder
   end
 
   def by_owner_type(tokens)
+    return tokens if Feature.enabled?(:optimize_credentials_inventory, params[:group] || :instance)
+
     case @params[:owner_type]
     when 'human'
-      if Feature.enabled?(:optimize_credentials_inventory, params[:group] || :instance)
-        tokens.for_user_types(:human)
-      else
-        tokens.owner_is_human
-      end
+      tokens.owner_is_human
     else
       tokens
     end
@@ -71,12 +70,6 @@ class PersonalAccessTokensFinder
     return tokens unless @params[:users]
 
     tokens.for_users(@params[:users])
-  end
-
-  def by_user_types(tokens)
-    return tokens unless @params[:user_types]
-
-    tokens.for_user_types(@params[:user_types])
   end
 
   def sort(tokens)
@@ -168,6 +161,39 @@ class PersonalAccessTokensFinder
     return tokens unless Feature.enabled?(:optimize_credentials_inventory, params[:group])
 
     tokens.for_group(params[:group])
+  end
+
+  def by_user_types_with_in_operator_optimization(tokens)
+    return tokens if Feature.disabled?(:optimize_credentials_inventory, params[:group] || :instance)
+
+    user_types = Array(params[:user_types]).map(&:to_sym)
+    owner_type = @params[:owner_type]&.to_sym
+    user_types = Array(owner_type) if owner_type
+    user_types_values = user_types.filter_map { |user_type| HasUserType::USER_TYPES[user_type] }
+
+    return tokens if user_types_values.empty?
+    return tokens.for_user_types(user_types_values) if user_types_values.one?
+
+    user_types_values_string = user_types_values.map { |user_type_value| "(#{user_type_value})" }.join(', ')
+
+    # rubocop:disable CodeReuse/ActiveRecord -- https://docs.gitlab.com/development/database/efficient_in_operator_queries/
+    array_scope = PersonalAccessToken.select(:user_type).from("(VALUES #{user_types_values_string}) tbl(user_type)")
+
+    array_mapping_scope = ->(user_type_expression) do
+      PersonalAccessToken.where(PersonalAccessToken.arel_table[:user_type].eq(user_type_expression))
+    end
+
+    finder_query = ->(_expression, id_expression) do
+      PersonalAccessToken.where(PersonalAccessToken.arel_table[:id].eq(id_expression))
+    end
+    # rubocop:enable CodeReuse/ActiveRecord
+
+    Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder.new(
+      scope: tokens,
+      array_scope: array_scope,
+      array_mapping_scope: array_mapping_scope,
+      finder_query: finder_query
+    ).execute
   end
 end
 

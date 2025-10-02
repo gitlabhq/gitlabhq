@@ -19,6 +19,10 @@ module Import
             return unless valid_access_level?(access_level)
 
             if source_user.accepted_status?
+              # We don't want to create a new membership for a project bot,
+              # as they are not allowed to be members of other groups or projects.
+              return if source_user.mapped_user.project_bot?
+
               {
                 user_id: source_user.mapped_user_id,
                 access_level: access_level,

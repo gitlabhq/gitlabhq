@@ -24,6 +24,8 @@ module Gitlab
           access_level = map_access_level
 
           if user_finder.source_user_accepted?(collaborator)
+            return if mapped_to_project_bot?(user_id)
+
             membership = existing_user_membership(user_id)
             return if membership && membership[:access_level] > map_access_level
 
@@ -38,6 +40,12 @@ module Gitlab
         end
 
         private
+
+        # We don't want to create a new membership for a project bot,
+        # as they are not allowed to be members of other groups or projects.
+        def mapped_to_project_bot?(user_id)
+          ::User.find_by_id(user_id)&.project_bot?
+        end
 
         def existing_user_membership(user_id)
           members_finder.execute(include_relations: member_finder_relations).find_by_user_id(user_id)

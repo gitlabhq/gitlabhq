@@ -3593,6 +3593,9 @@ msgstr ""
 msgid "AccessTokens|Description"
 msgstr ""
 
+msgid "AccessTokens|Description is too long (maximum is 255 characters)."
+msgstr ""
+
 msgid "AccessTokens|Disable access tokens"
 msgstr ""
 
@@ -3761,6 +3764,9 @@ msgid "AccessTokens|Static object token"
 msgstr ""
 
 msgid "AccessTokens|Status"
+msgstr ""
+
+msgid "AccessTokens|The form contains the following errors:"
 msgstr ""
 
 msgid "AccessTokens|The last five distinct IP addresses from where the token was used"
@@ -16339,6 +16345,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Description is required and must be less than %{maxLength} characters"
 msgstr ""
 
+msgid "ComplianceFrameworks|Disabled"
+msgstr ""
+
 msgid "ComplianceFrameworks|Edit compliance framework"
 msgstr ""
 
@@ -16346,6 +16355,9 @@ msgid "ComplianceFrameworks|Edit compliance framework: %{frameworkName}"
 msgstr ""
 
 msgid "ComplianceFrameworks|Edit requirement"
+msgstr ""
+
+msgid "ComplianceFrameworks|Enable ping"
 msgstr ""
 
 msgid "ComplianceFrameworks|Error fetching compliance frameworks data. Please refresh the page or try a different framework"
@@ -16523,6 +16535,9 @@ msgid "ComplianceFrameworks|Unable to save this compliance framework. Please try
 msgstr ""
 
 msgid "ComplianceFrameworks|Unknown"
+msgstr ""
+
+msgid "ComplianceFrameworks|When enabled, GitLab pings this external control every 12 hours to reset its status to 'pending'. To manage the control status exclusively through the API, disable this setting."
 msgstr ""
 
 msgid "ComplianceFrameworks|You are about to permanently delete the compliance framework %{framework} from all projects which currently have it applied, which may remove other functionality. This cannot be undone."
@@ -43197,9 +43212,6 @@ msgstr ""
 msgid "No data available"
 msgstr ""
 
-msgid "No data available."
-msgstr ""
-
 msgid "No data found for this query."
 msgstr ""
 
@@ -60214,6 +60226,15 @@ msgstr ""
 msgid "SecurityReports|1 vulnerability attached to 1 issue"
 msgstr ""
 
+msgid "SecurityReports|30 days"
+msgstr ""
+
+msgid "SecurityReports|60 days"
+msgstr ""
+
+msgid "SecurityReports|90 days"
+msgstr ""
+
 msgid "SecurityReports|A comment is required when changing the severity."
 msgstr ""
 
@@ -60742,6 +60763,9 @@ msgid "SecurityReports|This project is reaching the maximum number of vulnerabil
 msgstr ""
 
 msgid "SecurityReports|This selection is required."
+msgstr ""
+
+msgid "SecurityReports|Time period"
 msgstr ""
 
 msgid "SecurityReports|To widen your search, change or remove filters above"
@@ -70601,6 +70625,9 @@ msgstr ""
 msgid "UserMapping|Full user details missing"
 msgstr ""
 
+msgid "UserMapping|Group or project bot does not belong to top level group."
+msgstr ""
+
 msgid "UserMapping|How do I accept reassignments?"
 msgstr ""
 
@@ -70787,6 +70814,9 @@ msgstr ""
 msgid "UserMapping|Select user"
 msgstr ""
 
+msgid "UserMapping|Service account does not belong to top level group."
+msgstr ""
+
 msgid "UserMapping|Something went wrong while uploading the CSV file."
 msgstr ""
 
@@ -70832,10 +70862,10 @@ msgstr ""
 msgid "UserMapping|When to restore user confirmation"
 msgstr ""
 
-msgid "UserMapping|You can assign active users with regular or auditor access only."
+msgid "UserMapping|You can assign active users with regular or auditor access, service accounts and group or project bots only."
 msgstr ""
 
-msgid "UserMapping|You can assign active users with regular, auditor, or administrator access only."
+msgid "UserMapping|You can assign active users with regular, auditor, or administrator access, service accounts and group or project bots only."
 msgstr ""
 
 msgid "UserMapping|You can assign only enterprise users in the top-level group you're importing to."
@@ -70844,10 +70874,10 @@ msgstr ""
 msgid "UserMapping|You can assign only users with linked SAML and SCIM identities. Ensure the user has signed into GitLab through your SAML SSO provider and has an active SCIM identity for this group."
 msgstr ""
 
-msgid "UserMapping|You can assign users with regular or auditor access only."
+msgid "UserMapping|You can assign users with regular or auditor access, service accounts and group or project bots only."
 msgstr ""
 
-msgid "UserMapping|You can assign users with regular, auditor, or administrator access only."
+msgid "UserMapping|You can assign users with regular, auditor, or administrator access, service accounts and group or project bots only."
 msgstr ""
 
 msgid "UserMapping|You cannot reassign user contributions of imports to a personal namespace."

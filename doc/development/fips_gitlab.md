@@ -114,7 +114,7 @@ listed here that also do not work properly in FIPS mode:
 - [Dependency scanning](../user/application_security/dependency_scanning/_index.md) support for Gradle.
 - [Solutions for vulnerabilities](../user/application_security/vulnerabilities/_index.md#resolve-a-vulnerability)
   for yarn projects.
-- [Static Application Security Testing (SAST)](../user/application_security/sast/_index.md)
+- [Static application security testing (SAST)](../user/application_security/sast/_index.md)
   supports a reduced set of [analyzers](../user/application_security/sast/_index.md#fips-enabled-images)
   when operating in FIPS-compliant mode.
 - [Operational Container Scanning](../user/clusters/agent/vulnerabilities.md).

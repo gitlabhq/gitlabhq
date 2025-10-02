@@ -189,15 +189,7 @@ module Gitlab
         )
       end
 
-      def gitlab_sdk_client
-        app_id = ENV['GITLAB_ANALYTICS_ID']
-        host = ENV['GITLAB_ANALYTICS_URL']
-
-        return unless app_id.present? && host.present?
-
-        buffer_size = Feature.enabled?(:internal_events_batching) ? SNOWPLOW_EMITTER_BUFFER_SIZE : DEFAULT_BUFFER_SIZE
-        GitlabSDK::Client.new(app_id: app_id, host: host, buffer_size: buffer_size)
-      end
+      def gitlab_sdk_client; end
       strong_memoize_attr :gitlab_sdk_client
 
       def base_additional_properties_keys

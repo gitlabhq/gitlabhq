@@ -134,7 +134,7 @@ describe('GroupsShowApp', () => {
       tabCountsQueryErrorMessage: 'An error occurred loading the tab counts.',
       eventTracking: {},
       shouldUpdateActiveTabCountFromTabQuery: false,
-      userPreferencesSortKey: null,
+      userPreferencesSortKey: 'projectsSort',
     });
   });
 
@@ -257,7 +257,7 @@ describe('GroupsShowApp', () => {
 
       expect(wrapper.findComponent(FilteredSearchAndSort).props()).toMatchObject({
         sortOptions: SORT_OPTIONS_WITH_STARS,
-        activeSortOption: SORT_OPTION_UPDATED,
+        activeSortOption: SORT_OPTION_CREATED,
       });
     });
   });
@@ -315,7 +315,7 @@ describe('GroupsShowApp', () => {
 
       expect(wrapper.findComponent(FilteredSearchAndSort).props()).toMatchObject({
         sortOptions: SORT_OPTIONS_WITH_STARS,
-        activeSortOption: SORT_OPTION_UPDATED,
+        activeSortOption: SORT_OPTION_CREATED,
       });
     });
   });
@@ -396,17 +396,25 @@ describe('GroupsShowApp', () => {
       });
     });
 
-    it('transforms sort to uppercase', async () => {
+    it.each`
+      sort              | expected
+      ${'created_asc'}  | ${'CREATED_AT_ASC'}
+      ${'created_desc'} | ${'CREATED_AT_DESC'}
+      ${'updated_asc'}  | ${'UPDATED_AT_ASC'}
+      ${'updated_desc'} | ${'UPDATED_AT_DESC'}
+      ${'name_asc'}     | ${'NAME_ASC'}
+      ${'name_desc'}    | ${'NAME_DESC'}
+    `('correctly transforms $sort sort', async ({ sort, expected }) => {
       const handler = jest.fn().mockResolvedValue(sharedGroupsResponse);
 
       await createComponent({
         mountFn: mountExtended,
-        route: { ...route, query: { sort: 'created_at_desc' } },
+        route: { ...route, query: { sort } },
         handlers: [[sharedGroupsQuery, handler]],
       });
       await waitForPromises();
 
-      expect(handler).toHaveBeenCalledWith(expect.objectContaining({ sort: 'CREATED_AT_DESC' }));
+      expect(handler).toHaveBeenCalledWith(expect.objectContaining({ sort: expected }));
     });
 
     it('uses keyset pagination', async () => {
@@ -481,7 +489,7 @@ describe('GroupsShowApp', () => {
 
       expect(wrapper.findComponent(FilteredSearchAndSort).props()).toMatchObject({
         sortOptions: SORT_OPTIONS,
-        activeSortOption: SORT_OPTION_UPDATED,
+        activeSortOption: SORT_OPTION_CREATED,
       });
     });
   });
@@ -562,19 +570,6 @@ describe('GroupsShowApp', () => {
       });
     });
 
-    it('transforms sort to uppercase', async () => {
-      const handler = jest.fn().mockResolvedValue(sharedProjectsResponse);
-
-      await createComponent({
-        mountFn: mountExtended,
-        route: { ...route, query: { sort: 'created_at_desc' } },
-        handlers: [[sharedProjectsQuery, handler]],
-      });
-      await waitForPromises();
-
-      expect(handler).toHaveBeenCalledWith(expect.objectContaining({ sort: 'CREATED_AT_DESC' }));
-    });
-
     it('uses keyset pagination', async () => {
       await createComponent({
         mountFn: mountExtended,
@@ -647,7 +642,7 @@ describe('GroupsShowApp', () => {
 
       expect(wrapper.findComponent(FilteredSearchAndSort).props()).toMatchObject({
         sortOptions: SORT_OPTIONS,
-        activeSortOption: SORT_OPTION_UPDATED,
+        activeSortOption: SORT_OPTION_CREATED,
       });
     });
   });

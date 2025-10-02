@@ -25,7 +25,7 @@ title: GitLab Advanced SAST
 
 {{< /history >}}
 
-GitLab Advanced SAST is a Static Application Security Testing (SAST) analyzer
+GitLab Advanced SAST is a static application security testing (SAST) analyzer
 designed to discover vulnerabilities by performing cross-function and cross-file taint analysis.
 
 GitLab Advanced SAST is an opt-in feature.

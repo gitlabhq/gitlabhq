@@ -883,13 +883,13 @@ export default {
               :is-available-for-import="group.flags.isAvailableForImport"
               :is-invalid="group.flags.isInvalid"
               :is-project-creation-allowed="group.flags.isProjectCreationAllowed"
+              class="gl-mb-3"
               @import-group="importGroup({ group, extraArgs: $event, index })"
             />
             <import-history-link
               v-if="showHistoryLink(group)"
               :id="group.progress.id"
               :history-path="historyShowPath"
-              class="gl-mt-3"
             />
           </template>
         </gl-table>

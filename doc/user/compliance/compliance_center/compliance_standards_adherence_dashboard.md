@@ -71,7 +71,7 @@ The GitLab standard consists of the following rules:
 - Prevent authors as approvers.
 - Prevent committers as approvers.
 - At least two approvals.
-- Static Application Security Testing (SAST) scanner artifact.
+- Static application security testing (SAST) scanner artifact.
 - Dynamic Application Security Testing (DAST) scanner artifact.
 
 ### Prevent authors as approvers
@@ -100,7 +100,7 @@ information, see [Merge request approval rules](../../project/merge_requests/app
 ### SAST scanner artifact
 
 To comply with the GitLab standard, you must have the SAST scanner enabled, configured, and producing an artifact in the project's pipeline. For more
-information, see [Static Application Security Testing (SAST)](../../application_security/sast/_index.md).
+information, see [static application security testing (SAST)](../../application_security/sast/_index.md).
 
 ### DAST scanner artifact
 

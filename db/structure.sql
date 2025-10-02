@@ -4654,6 +4654,17 @@ RETURN NULL;
 END
 $$;
 
+CREATE TABLE ai_events_counts (
+    id bigint NOT NULL,
+    events_date date NOT NULL,
+    namespace_id bigint,
+    user_id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    event smallint NOT NULL,
+    total_occurrences integer DEFAULT 0 NOT NULL
+)
+PARTITION BY RANGE (events_date);
+
 CREATE TABLE ai_usage_events (
     id bigint NOT NULL,
     "timestamp" timestamp with time zone NOT NULL,
@@ -10191,6 +10202,15 @@ CREATE SEQUENCE ai_duo_chat_events_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ai_duo_chat_events_id_seq OWNED BY ai_duo_chat_events.id;
+
+CREATE SEQUENCE ai_events_counts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_events_counts_id_seq OWNED BY ai_events_counts.id;
 
 CREATE TABLE ai_feature_settings (
     id bigint NOT NULL,
@@ -30249,6 +30269,8 @@ ALTER TABLE ONLY ai_conversation_threads ALTER COLUMN id SET DEFAULT nextval('ai
 
 ALTER TABLE ONLY ai_duo_chat_events ALTER COLUMN id SET DEFAULT nextval('ai_duo_chat_events_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_events_counts ALTER COLUMN id SET DEFAULT nextval('ai_events_counts_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_feature_settings ALTER COLUMN id SET DEFAULT nextval('ai_feature_settings_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_flow_triggers ALTER COLUMN id SET DEFAULT nextval('ai_flow_triggers_id_seq'::regclass);
@@ -32594,6 +32616,9 @@ ALTER TABLE ONLY ai_conversation_threads
 
 ALTER TABLE ONLY ai_duo_chat_events
     ADD CONSTRAINT ai_duo_chat_events_pkey PRIMARY KEY (id, "timestamp");
+
+ALTER TABLE ONLY ai_events_counts
+    ADD CONSTRAINT ai_events_counts_pkey PRIMARY KEY (id, events_date);
 
 ALTER TABLE ONLY ai_feature_settings
     ADD CONSTRAINT ai_feature_settings_pkey PRIMARY KEY (id);
@@ -37490,6 +37515,8 @@ CREATE UNIQUE INDEX idx_ai_catalog_item_version_unique ON ai_catalog_item_versio
 
 CREATE INDEX idx_ai_code_repository_project_id_state ON ONLY p_ai_active_context_code_repositories USING btree (project_id, state);
 
+CREATE UNIQUE INDEX idx_ai_events_counts_unique_tuple ON ONLY ai_events_counts USING btree (events_date, namespace_id, event, user_id) INCLUDE (total_occurrences) NULLS NOT DISTINCT;
+
 CREATE UNIQUE INDEX idx_ai_usage_events_uniqueness ON ONLY ai_usage_events USING btree (namespace_id, user_id, event, "timestamp") NULLS NOT DISTINCT;
 
 CREATE INDEX idx_alert_management_alerts_on_created_at_project_id_with_issue ON alert_management_alerts USING btree (created_at, project_id) WHERE (issue_id IS NOT NULL);
@@ -38297,6 +38324,10 @@ CREATE INDEX index_ai_duo_chat_events_on_organization_id ON ONLY ai_duo_chat_eve
 CREATE INDEX index_ai_duo_chat_events_on_personal_namespace_id ON ONLY ai_duo_chat_events USING btree (personal_namespace_id);
 
 CREATE INDEX index_ai_duo_chat_events_on_user_id ON ONLY ai_duo_chat_events USING btree (user_id);
+
+CREATE INDEX index_ai_events_counts_on_organization_id ON ONLY ai_events_counts USING btree (organization_id);
+
+CREATE INDEX index_ai_events_counts_on_user_id ON ONLY ai_events_counts USING btree (user_id);
 
 CREATE INDEX index_ai_feature_settings_on_ai_self_hosted_model_id ON ai_feature_settings USING btree (ai_self_hosted_model_id);
 
@@ -50932,6 +50963,9 @@ ALTER TABLE ONLY pages_deployments
 
 ALTER TABLE ONLY dast_pre_scan_verification_steps
     ADD CONSTRAINT fk_rails_9990fc2adf FOREIGN KEY (dast_pre_scan_verification_id) REFERENCES dast_pre_scan_verifications(id) ON DELETE CASCADE;
+
+ALTER TABLE ai_events_counts
+    ADD CONSTRAINT fk_rails_99a3f4a8f1 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY members_deletion_schedules
     ADD CONSTRAINT fk_rails_9af19961f8 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

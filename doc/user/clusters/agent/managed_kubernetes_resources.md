@@ -150,21 +150,38 @@ The following variables are available:
 | Agent          | `{{ .agent.url }}`            | The agent URL.            | String  | N/A                       |
 | Environment    | `{{ .environment.id }}`       | The environment ID.       | Integer | N/A                       |
 | Environment    | `{{ .environment.name }}`     | The environment name.     | String  | N/A                       |
-| Environment    | `{{ .environment.slug }}`     | The environment slug.     | String  | N/A                       |
+| Environment    | `{{ .environment.slug }}`     | The environment slug based on the environment name. Maximum 24 lowercase alphanumeric characters, including `-`, beginning with a letter, and not ending with `-`. | String  | N/A                       |
 | Environment    | `{{ .environment.url }}`      | The environment URL.      | String  | Empty string               |
 | Environment    | `{{ .environment.page_url }}` | The environment page URL. | String  | N/A                       |
 | Environment    | `{{ .environment.tier }}`     | The environment tier.     | String  | N/A                       |
 | Project        | `{{ .project.id }}`           | The project ID.           | Integer | N/A                       |
-| Project        | `{{ .project.slug }}`         | The project slug.         | String  | N/A                       |
+| Project        | `{{ .project.slug }}`         | The project slug. This is the unmodified last component of the project path.        | String  | N/A                       |
 | Project        | `{{ .project.path }}`         | The project path.         | String  | N/A                       |
 | Project        | `{{ .project.url }}`          | The project URL.          | String  | N/A                       |
 | CI/CD Pipeline | `{{ .ci_pipeline.id }}`       | The pipeline ID.          | Integer | Zero                       |
 | CI/CD Job      | `{{ .ci_job.id }}`            | The CI/CD job ID.         | Integer | Zero                       |
 | User           | `{{ .user.id }}`              | The user ID.              | Integer | N/A                       |
 | User           | `{{ .user.username }}`        | The username.             | String  | N/A                       |
+| Namespace      | `{{ .legacy_namespace }}`     | The Kubernetes namespace that the deprecated certificate-based cluster integration would have produced for this environment. This namespace is only intended for migration from certificate-based cluster integration to GitLab-managed resources. Don't use it for any other purpose. | String | N/A |
 
 All variables should be referenced using the double curly brace syntax, for example: `{{ .project.id }}`.
 See [`text/template`](https://pkg.go.dev/text/template) documentation for more information on the templating system used.
+
+### Template functions
+
+Environment templates support limited functions to manipulate the variable values.
+The following functions are available:
+
+| Name         | Arguments                | Description                                          | Example                                    |
+|--------------|--------------------------|------------------------------------------------------|--------------------------------------------|
+| `lower`      | `<string>`               | Convert to lower case.                               | `lower "HELLO"` -> `"hello"`               |
+| `substr`     | `<start> <end> <string>` | Take a substring from a string.                      | `substr 0 5 "hello world"` -> `"hello"`    |
+| `replace`    | `<old> <new> <string>`   | Replace all occurrences of a substring in the string. | `replace "_" "-" "foo_bar"` -> `"foo-bar"` |
+| `trimPrefix` | `<prefix> <string>`      | Remove the prefix from the string.                   | `trimPrefix "-" "-hello"` -> `"hello"`     |
+| `trimSuffix` | `<suffix> <string>`      | Remove the suffix from the string.                   | `trimSuffix "-" "hello-"` -> `"hello"`   |
+
+To make variables compliant for Kubernetes values, the number of functions is intentionally
+limited to a minimum set of functions, like namespace names or labels.
 
 ### Resource lifecycle management
 

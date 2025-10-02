@@ -6,6 +6,7 @@ source "$(dirname "$0")/utils.sh"
 
 function build_frontend_islands() {
   local original_dir=$(pwd)
+  local fe_island_dir="ee/frontend_islands/apps/duo_next"
 
   if [[ ! -d "ee/" ]]; then
     echo "Not building the frontend islands in FOSS only mode. Exiting early"
@@ -22,16 +23,19 @@ function build_frontend_islands() {
   fi
 
   # Check if frontend islands's dependencies are installed
-  if [ ! -d "ee/frontend_islands/apps/duo_next/node_modules" ]; then
+  # Checking for the integrity file instead of just the folder that can be empty
+  if [ ! -f "ee/frontend_islands/apps/duo_next/node_modules/.yarn-integrity" ]; then
     echoinfo "Frontend islands dependencies not found, installing..."
-    yarn_install_script
+    cd "$fe_island_dir"
+    retry yarn install --frozen-lockfile
+    cd "$original_dir"
   fi
 
   echoinfo "Found frontend islands directory, proceeding with build..."
   section_end "frontend-islands-check"
 
   # Navigate to the frontend island
-  cd ee/frontend_islands/apps/duo_next
+  cd "$fe_island_dir"
 
   section_start "frontend-islands-build" "Building frontend island"
   retry yarn build:prod

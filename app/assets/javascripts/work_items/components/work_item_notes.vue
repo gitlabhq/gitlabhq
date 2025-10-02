@@ -217,7 +217,7 @@ export default {
     notesArray() {
       const notes = this.notesSource.nodes || [];
 
-      let visibleNotes = collapseSystemNotes(notes);
+      let visibleNotes = collapseSystemNotes(notes, this.initialSortOrder);
 
       visibleNotes = visibleNotes.filter((note) => {
         const isSystemNote = this.isSystemNote(note);

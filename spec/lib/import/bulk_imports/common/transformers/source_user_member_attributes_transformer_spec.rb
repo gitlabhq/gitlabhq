@@ -29,6 +29,26 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
       )
     end
 
+    let_it_be(:reassigned_project_bot_import_source_user) do
+      create(:import_source_user, :completed,
+        namespace: context.portable.root_ancestor,
+        source_hostname: bulk_import.configuration.url,
+        import_type: Import::SOURCE_DIRECT_TRANSFER,
+        source_user_identifier: '103',
+        reassign_to_user: create(:user, :project_bot)
+      )
+    end
+
+    let_it_be(:reassigned_service_account_import_source_user) do
+      create(:import_source_user, :completed,
+        namespace: context.portable.root_ancestor,
+        source_hostname: bulk_import.configuration.url,
+        import_type: Import::SOURCE_DIRECT_TRANSFER,
+        source_user_identifier: '104',
+        reassign_to_user: create(:user, :service_account)
+      )
+    end
+
     let(:importer_user_mapping_enabled) { true }
 
     before do
@@ -128,6 +148,29 @@ RSpec.describe Import::BulkImports::Common::Transformers::SourceUserMemberAttrib
           group: entity.group,
           project: entity.project
         )
+      end
+    end
+
+    context 'when an import source user exists and is mapped to service account' do
+      let(:data) { member_data(source_user_id: reassigned_service_account_import_source_user.source_user_identifier) }
+
+      it 'returns member hash with the reassigned_to_user_id' do
+        expect(subject.transform(context, data)).to eq(
+          access_level: 30,
+          user_id: reassigned_service_account_import_source_user.reassign_to_user_id,
+          created_by_id: user.id,
+          created_at: '2020-01-01T00:00:00Z',
+          updated_at: '2020-01-01T00:00:00Z',
+          expires_at: nil
+        )
+      end
+    end
+
+    context 'when an import source user exists and is mapped to project bot user' do
+      let(:data) { member_data(source_user_id: reassigned_project_bot_import_source_user.source_user_identifier) }
+
+      it 'returns nil' do
+        expect(subject.transform(context, data)).to eq(nil)
       end
     end
 

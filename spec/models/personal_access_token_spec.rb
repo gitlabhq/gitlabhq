@@ -837,7 +837,7 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
   describe '.simple_sorts' do
     it 'includes overridden keys' do
-      expect(described_class.simple_sorts.keys).to include(*%w[created_asc created_desc expires_asc expires_desc last_used_asc last_used_desc])
+      expect(described_class.simple_sorts.keys).to include(*%w[name_asc name_desc created_asc created_desc expires_asc expires_desc last_used_asc last_used_desc])
     end
 
     it 'returns a valid ActiveRecord::Relation for each sort' do
@@ -859,6 +859,27 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
 
       it 'raises error' do
         expect { notification_interval }.to raise_error(KeyError)
+      end
+    end
+  end
+
+  describe 'ordering by name' do
+    let_it_be(:earlier_token) { create(:personal_access_token, name: 'Token A') }
+    let_it_be(:later_token) { create(:personal_access_token, name: 'Token B') }
+
+    describe '.order_name_asc_id_asc' do
+      let_it_be(:earlier_token_2) { create(:personal_access_token, name: 'Token A') }
+
+      it 'returns ordered list in combination of name ascending and id ascending' do
+        expect(described_class.order_name_asc_id_asc).to eq [earlier_token, earlier_token_2, later_token]
+      end
+    end
+
+    describe '.order_name_desc_id_desc' do
+      let_it_be(:earlier_token_2) { create(:personal_access_token, name: 'Token A') }
+
+      it 'returns ordered list in combination of name descending and id descending' do
+        expect(described_class.order_name_desc_id_desc).to eq [later_token, earlier_token_2, earlier_token]
       end
     end
   end

@@ -338,7 +338,7 @@ Combine GitLab compliance controls to help you meet
 | Restricted build access                                  | `restricted_build_access`                                  | Ensures [restricted access to build artifacts and pipeline outputs](../../../ci/pipelines/settings.md). |
 | Review and archive stale repositories                    | `review_and_archive_stale_repos`                           | Ensures that stale repositories are reviewed and [archived](../../project/settings/_index.md). |
 | Review and remove inactive users                         | `review_and_remove_inactive_users`                         | Ensures that [inactive users](../../../administration/admin_area.md) are reviewed and removed. |
-| SAST running                                             | `scanner_sast_running`                                     | Ensures that [Static Application Security Testing](../../application_security/sast/_index.md) (SAST) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
+| SAST running                                             | `scanner_sast_running`                                     | Ensures that [static application security testing](../../application_security/sast/_index.md) (SAST) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
 | Secret detection running                                 | `scanner_secret_detection_running`                         | Ensures that [secret detection scanning](../../application_security/secret_detection/_index.md) is configured and running in the project's default branch pipeline. Requires a successful pipeline run. |
 | Secure webhooks                                          | `secure_webhooks`                                          | Ensures that [webhooks](../../project/integrations/webhooks.md) are securely configured. |
 | Stale branch cleanup enabled                             | `stale_branch_cleanup_enabled`                             | Ensures that [automatic cleanup of stale branches](../../project/repository/branches/_index.md) is enabled. |
@@ -380,7 +380,22 @@ To add an external control when creating or editing a framework:
 1. In the **Requirements** section, select **New requirement**.
 1. Select **Add an external control**.
 1. In the fields edit **External Control Name**, **External URL** and **`HMAC` shared secret**.
+1. Optional. Turn off the **Ping enabled** toggle to control whether GitLab sends notifications to the external service during compliance scans.
 1. Select **Save changes to the framework** to save the requirement.
+
+#### Ping enabled setting
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538898) in GitLab 18.5.
+
+{{< /history >}}
+
+The **Ping enabled** setting controls whether GitLab requests external control status updates from external systems every 12 hours.
+
+- Enabled (default): GitLab automatically sends HTTP requests to the external service URL every 12 hours and updates the external control status based on the response.
+- Disabled: GitLab does not send notifications to the external service and the external control displays a **Disabled** badge in the compliance framework UI. To request
+  the status of an external control, you must manually use the [External Controls API](../../../api/external_controls.md).
 
 #### External control lifecycle
 

@@ -21,8 +21,6 @@ module Gitlab
       gon.markdown_maintain_indentation = current_user&.markdown_maintain_indentation
       gon.math_rendering_limits_enabled = Gitlab::CurrentSettings.math_rendering_limits_enabled
 
-      add_browsersdk_tracking
-
       # Sentry configurations for the browser client are done
       # via `Gitlab::CurrentSettings` from the Admin panel:
       # `/admin/application_settings/metrics_and_profiling`
@@ -164,15 +162,6 @@ module Gitlab
       # may be an absolute URL.
       URI.join(Gitlab.config.gitlab.url,
         ActionController::Base.helpers.image_path('no_avatar.png')).to_s
-    end
-
-    def add_browsersdk_tracking
-      return unless Gitlab.com?
-
-      return if ENV['GITLAB_ANALYTICS_URL'].blank? || ENV['GITLAB_ANALYTICS_ID'].blank?
-
-      gon.analytics_url = ENV['GITLAB_ANALYTICS_URL']
-      gon.analytics_id = ENV['GITLAB_ANALYTICS_ID']
     end
 
     # `::Current.organization` is only valid within the context of a request,

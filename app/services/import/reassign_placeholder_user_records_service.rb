@@ -160,6 +160,11 @@ module Import
     end
 
     def create_memberships
+      # Memberships are not created when the assignee is project bots because
+      # membership are already created for them when they are created and they
+      # are not allowed to be members of other groups or projects
+      return if import_source_user.reassign_to_user.project_bot?
+
       group_ids = import_source_user.namespace.self_and_descendant_ids
       project_ids = import_source_user.namespace.all_project_ids
 

@@ -1,4 +1,4 @@
-import { DESCRIPTION_TYPE, TIME_DIFFERENCE_VALUE } from '~/notes/constants';
+import { DESCRIPTION_TYPE, TIME_DIFFERENCE_VALUE, ASC } from '~/notes/constants';
 
 /**
  * Checks the time difference between two notes from their 'created_at' dates
@@ -31,11 +31,13 @@ export const isDescriptionSystemNote = (note) => {
  * @param {Array} notes
  * @returns {Array}
  */
-export const collapseSystemNotes = (notes) => {
+export const collapseSystemNotes = (notes, sortOrder = ASC) => {
   let lastDescriptionSystemNote = null;
   let lastDescriptionSystemNoteIndex = -1;
 
-  return notes.reduce((acc, currentNote) => {
+  let ascendingNotes = sortOrder === ASC ? notes : [...notes].reverse();
+
+  ascendingNotes = ascendingNotes.reduce((acc, currentNote) => {
     const note = currentNote.notes.nodes[0];
     let lastStartVersionId = '';
 
@@ -89,4 +91,10 @@ export const collapseSystemNotes = (notes) => {
 
     return acc;
   }, []);
+
+  if (sortOrder === ASC) {
+    return ascendingNotes;
+  }
+
+  return ascendingNotes.reverse();
 };

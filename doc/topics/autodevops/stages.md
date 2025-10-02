@@ -188,7 +188,7 @@ out. The merge request widget also displays any
 
 {{< /history >}}
 
-Static Application Security Testing (SAST) runs static
+Static application security testing (SAST) runs static
 analysis on the current code, and checks for potential security issues. The
 Auto SAST stage requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or later.
 
@@ -196,8 +196,7 @@ After creating the report, it's uploaded as an artifact which you can later
 download and check out. The merge request widget also displays any security
 warnings on [Ultimate](https://about.gitlab.com/pricing/) licenses.
 
-For more information, see
-[Static Application Security Testing (SAST)](../../user/application_security/sast/_index.md).
+For more information, see [SAST](../../user/application_security/sast/_index.md).
 
 ## Auto Secret Detection
 

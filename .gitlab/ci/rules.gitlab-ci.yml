@@ -393,11 +393,15 @@
   - '{Gemfile.next.lock,*/Gemfile.next.lock,*/*/Gemfile.next.lock}'
   - '{go.sum,*/go.sum,*/*/go.sum}'
   - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
+  # FE island changes
+  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
 
 .frontend-dependency-patterns: &frontend-dependency-patterns
   - "{package.json,yarn.lock}"
   - "config/webpack.config.js"
   - "config/helpers/*.js"
+  # FE island changes
+  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
 
 .frontend-build-patterns: &frontend-build-patterns
   - "{package.json,yarn.lock}"
@@ -410,6 +414,12 @@
   - "config/**/*.js"
   - "{,ee/,jh/}app/assets/**/*"
   - "vendor/assets/**/*"
+  # FE island changes
+  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
+  - "ee/frontend_islands/apps/**/tsconfig*.json"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
 
 # This list should match the list in Tasks::Gitlab::Assets.assets_impacting_compilation
 .assets-compilation-patterns: &assets-compilation-patterns
@@ -584,7 +594,7 @@
   # match the .rc config files like .browserslistrc, .stylelintrc etc.,
   - "{.,}*rc"
 
-.code-frontend-islands-patterns: &code-frontend-islands-patterns
+.code-fe-island-patterns: &code-fe-island-patterns
   - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
   - "ee/frontend_islands/apps/**/*/src/**/*.{js,cjs,mjs,ts,tsx,vue,graphql,css}"
@@ -622,6 +632,12 @@
   - "data/whats_new/*.yml"
   - "doc/_index.md"
   - "doc/api/settings.md"
+  # FE island changes
+  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
+  - "ee/frontend_islands/apps/**/tsconfig*.json"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
 
 # .code-patterns + .backstage-patterns
 .code-backstage-patterns: &code-backstage-patterns
@@ -661,6 +677,12 @@
   - "{,ee/,jh/}spec/**/*"
   - "scripts/**/*"
   - "{,spec/}tooling/**/*"
+  # FE island changes
+  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
+  - "ee/frontend_islands/apps/**/tsconfig*.json"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
 
 # .code-patterns + .qa-patterns
 .code-qa-patterns: &code-qa-patterns
@@ -694,6 +716,12 @@
   # QA changes
   - ".dockerignore"
   - "{,jh/}qa/**/*"
+  # FE island changes
+  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
+  - "ee/frontend_islands/apps/**/tsconfig*.json"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
 
 .code-rest-api-patterns: &code-rest-api-patterns
   - "{,ee/,jh/}lib/{,ee/,jh/}api/**/*"
@@ -744,6 +772,12 @@
   - "data/whats_new/*.yml"
   - "doc/_index.md"
   - "doc/api/settings.md"
+  # FE island changes
+  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
+  - "ee/frontend_islands/apps/**/tsconfig*.json"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
 
 # .code-backstage-qa-patterns + .workhorse-patterns
 # NOTE: `setup-test-env-patterns` intentionally does not include docs files, because this would
@@ -802,12 +836,11 @@
   - "scripts/lint_templates_bash.rb"
   - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
   # FE island changes
-  - "ee/frontend_islands/**/{package.json,yarn.lock}"
-  - "ee/frontend_islands/**/.prettierrc"
-  - "ee/frontend_islands/**/{vite,vitest}.config.ts"
-  - "ee/frontend_islands/**/tsconfig{,app,node}.json"
-  - "ee/frontend_islands/**/components.json"
-  - "ee/frontend_islands/**/src/**/*"
+  - "ee/frontend_islands/apps/**/.{gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
+  - "ee/frontend_islands/apps/**/{package.json,yarn.lock}"
+  - "ee/frontend_islands/apps/**/tsconfig*.json"
+  - "ee/frontend_islands/apps/**/components.json"
+  - "ee/frontend_islands/apps/**/*.config.{js,ts,cjs,mjs}"
 
 .static-analysis-patterns: &static-analysis-patterns
   - ".{haml-lint,haml-lint_todo}.yml"
@@ -1267,12 +1300,6 @@
       changes: *code-backstage-patterns
     - *if-as-if-foss-mr-refs
 
-.caching:rules:update-cache-on-frontend-islands-code-changes:
-  rules:
-    - <<: *if-default-refs
-      changes: *code-frontend-islands-patterns
-    - *if-as-if-foss-mr-refs
-
 # e2e runners are only available in .com and in gitlab-org grouped projects
 .caching:rules:e2e-gem-cache-e2e-runners:
   rules:
@@ -1294,15 +1321,6 @@
     - !reference [.build-images:rules:build-gdk-image, rules]
     - !reference [.frontend:rules:assets-shared, rules]
     - !reference [.releases:rules:canonical-dot-com-security-gitlab-stable-branch-only, rules]
-
-.caching:rules:frontend-islands-hash:
-  rules:
-    - <<: *if-default-refs
-      changes: *code-frontend-islands-patterns
-    - <<: *if-merge-request
-      changes: *code-frontend-islands-patterns
-    - <<: *if-tag
-    - <<: *if-sync-changes-on-stable-branches
 
 ######################
 # CI Templates Rules #
@@ -1630,25 +1648,25 @@
         - '{,ee/}app/**/*.vue'
         - '{,ee/}app/**/*.stories.js'
 
-.frontend:rules:fe-islands:test:
+.frontend:rules:fe-island:test:
   rules:
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-fork-merge-request
       when: never
     - <<: *if-automated-merge-request
-      changes: *code-frontend-islands-patterns
+      changes: *code-fe-island-patterns
     - <<: *if-security-merge-request
-      changes: *code-frontend-islands-patterns
+      changes: *code-fe-island-patterns
     - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request-labels-frontend-and-feature-flag
-      changes: *code-frontend-islands-patterns
+      changes: *code-fe-island-patterns
     - <<: *if-merge-request
-      changes: *code-frontend-islands-patterns
+      changes: *code-fe-island-patterns
     - <<: *if-merge-request
       changes: [".gitlab/ci/frontend.gitlab-ci.yml"]
     - <<: *if-default-refs
-      changes: *code-frontend-islands-patterns
+      changes: *code-fe-island-patterns
 
 .frontend:rules:jest:
   rules:
@@ -1786,6 +1804,14 @@
   rules:
     - if: $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "push"
       changes: *code-backstage-patterns
+
+.frontend:rules:update-fe-island:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [.frontend:rules:compile-production-assets, rules]
+    - !reference [.frontend:rules:compile-test-assets, rules]
+    - !reference [.build-images:rules:build-gdk-image, rules]
 
 ################
 # Memory rules #

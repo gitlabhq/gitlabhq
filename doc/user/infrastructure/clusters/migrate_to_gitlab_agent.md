@@ -120,16 +120,20 @@ To migrate from GitLab-managed clusters to GitLab-managed Kubernetes resources:
      - apiVersion: v1
        kind: Namespace
        metadata:
-         name: project-{{ .project.id }}-{{ .environment.slug }}
+         # the `.legacy_namespace` produces something like:
+         # '{{ .project.slug }}-{{ .project.id }}-{{ .environment.slug }}'
+         # that is compatible with what the certificate-based cluster integration
+         # would have generated.
+         name: '{{ .legacy_namespace }}'
      - apiVersion: rbac.authorization.k8s.io/v1
        kind: RoleBinding
        metadata:
-         name: bind-{{ .agent.id }}-{{ .project.id }}-{{ .environment.slug }}
-         namespace: project-{{ .project.id }}-{{ .environment.slug }}
+         name: 'bind-{{ .agent.id }}-{{ .project.id }}-{{ .environment.slug }}'
+         namespace: '{{ .legacy_namespace }}'
        subjects:
          - kind: Group
            apiGroup: rbac.authorization.k8s.io
-           name: gitlab:project_env:{{ .project.id }}:{{ .environment.slug }}
+           name: 'gitlab:project_env:{{ .project.id }}:{{ .environment.slug }}'
        roleRef:
          apiGroup: rbac.authorization.k8s.io
          kind: ClusterRole
@@ -143,16 +147,16 @@ To migrate from GitLab-managed clusters to GitLab-managed Kubernetes resources:
      - apiVersion: v1
        kind: Namespace
        metadata:
-         name: project-{{ .project.id }}
+         name: '{{ .project.slug }}-{{ .project.id }}'
      - apiVersion: rbac.authorization.k8s.io/v1
        kind: RoleBinding
        metadata:
-         name: bind-{{ .agent.id }}-{{ .project.id }}-{{ .environment.slug }}
-         namespace: project-{{ .project.id }}
+         name: 'bind-{{ .agent.id }}-{{ .project.id }}-{{ .environment.slug }}'
+         namespace: 'project-{{ .project.id }}'
        subjects:
          - kind: Group
            apiGroup: rbac.authorization.k8s.io
-           name: gitlab:project_env:{{ .project.id }}:{{ .environment.slug }}
+           name: 'gitlab:project_env:{{ .project.id }}:{{ .environment.slug }}'
        roleRef:
          apiGroup: rbac.authorization.k8s.io
          kind: ClusterRole

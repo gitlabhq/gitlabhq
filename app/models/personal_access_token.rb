@@ -74,6 +74,8 @@ class PersonalAccessToken < ApplicationRecord
   scope :for_organization, ->(organization) { where(organization_id: organization) }
   scope :for_group, ->(group) { where(group: group) }
   scope :preload_users, -> { preload(:user) }
+  scope :order_name_asc_id_asc, -> { reorder(name: :asc, id: :asc) }
+  scope :order_name_desc_id_desc, -> { reorder(name: :desc, id: :desc) }
   scope :order_created_at_asc_id_asc, -> { reorder(created_at: :asc, id: :asc) }
   scope :order_created_at_desc_id_desc, -> { reorder(created_at: :desc, id: :desc) }
   scope :order_expires_at_asc_id_asc, -> { reorder(expires_at: :asc, id: :asc) }
@@ -115,6 +117,8 @@ class PersonalAccessToken < ApplicationRecord
   def self.simple_sorts
     super.merge(
       {
+        'name_asc' => -> { order_name_asc_id_asc },
+        'name_desc' => -> { order_name_desc_id_desc },
         'created_asc' => -> { order_created_at_asc_id_asc },
         'created_desc' => -> { order_created_at_desc_id_desc },
         'expires_asc' => -> { order_expires_at_asc_id_asc },

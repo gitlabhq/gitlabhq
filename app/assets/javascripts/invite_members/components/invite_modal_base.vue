@@ -357,9 +357,9 @@ export default {
     </content-transition>
 
     <template #modal-footer>
-      <div class="gl-m-0 gl-flex gl-w-full gl-flex-col @sm/panel:gl-flex-row-reverse">
+      <div class="gl-m-0 gl-flex gl-w-full gl-flex-col @sm:gl-flex-row-reverse">
         <gl-button
-          class="gl-w-full @sm/panel:!gl-ml-3 @sm/panel:gl-w-auto"
+          class="gl-w-full @sm:!gl-ml-3 @sm:gl-w-auto"
           data-testid="invite-modal-submit"
           v-bind="actionPrimary.attributes"
           @click.prevent="onSubmit"
@@ -368,7 +368,7 @@ export default {
         </gl-button>
 
         <gl-button
-          class="gl-w-full @sm/panel:gl-w-auto"
+          class="gl-w-full @sm:gl-w-auto"
           data-testid="invite-modal-cancel"
           v-bind="actionCancel.attributes"
           @click="onCancel"
