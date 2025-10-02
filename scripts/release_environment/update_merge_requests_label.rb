@@ -14,10 +14,17 @@ class UpdateMergeRequestsLabel
   def execute
     return if deployment_mrs.empty?
 
-    @logger.info("Found #{deployment_mrs.count} merge requests for deployment #{deployment_id}.")
+    @logger.info(
+      "Found merge requests for deployment.",
+      deployment_id: deployment_id,
+      merge_request_count: deployment_mrs.count
+    )
 
     deployment_mrs.each do |mr|
-      @logger.info("Adding label 'workflow::release-environment' to merge request #{mr.web_url} ...")
+      @logger.info(
+        "Adding label 'workflow::release-environment' to merge request.",
+        merge_request_url: mr.web_url
+      )
       labels = mr.labels
 
       # Remove existing workflow labels from the list
@@ -29,8 +36,11 @@ class UpdateMergeRequestsLabel
           labels: ['workflow::release-environment', *labels].join(',')
         )
       rescue StandardError => e
-        @logger.error("Could not add label 'workflow::release-environment' to merge request #{mr.web_url}." \
-          "\n[ERROR]: #{e.message}")
+        @logger.error(
+          "Could not add label 'workflow::release-environment' to merge request.",
+          error_message: e.message,
+          merge_request_url: mr.web_url
+        )
       end
     end
   end
@@ -40,7 +50,11 @@ class UpdateMergeRequestsLabel
   def deployment_mrs
     @client.get("/projects/#{PROJECT_ID}/deployments/#{deployment_id}/merge_requests")
   rescue StandardError => e
-    @logger.error("Could not retrieve merge requests for deployment #{deployment_id}.\n[ERROR]: #{e.message}")
+    @logger.error(
+      "Could not retrieve merge requests for deployment.",
+      error_message: e.message,
+      deployment_id: deployment_id
+    )
     [] # Return empty array on error
   end
 
