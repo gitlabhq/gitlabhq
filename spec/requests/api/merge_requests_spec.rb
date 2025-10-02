@@ -44,6 +44,11 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   end
 
   shared_examples 'merge requests list' do
+    it_behaves_like 'issuable API rate-limited search' do
+      let(:url) { endpoint_path }
+      let(:issuable) { merge_request }
+    end
+
     context 'when unauthenticated' do
       it 'returns merge requests for public projects' do
         get api(endpoint_path)
@@ -71,11 +76,6 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
             expect(merge_request.reload.merge_status).to eq('unchecked')
           end
         end
-      end
-
-      it_behaves_like 'issuable API rate-limited search' do
-        let(:url) { endpoint_path }
-        let(:issuable) { merge_request }
       end
     end
 
@@ -743,19 +743,19 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   describe 'GET /merge_requests' do
     include_context 'with merge requests'
 
+    it_behaves_like 'issuable API rate-limited search' do
+      let(:url) { '/merge_requests' }
+      let(:issuable) { merge_request }
+    end
+
     context 'when unauthenticated' do
       it 'returns an array of all merge requests' do
-        get api('/merge_requests', user), params: { scope: 'all' }
+        get api('/merge_requests'), params: { scope: 'all' }
 
         expect_response_contain_exactly(
           merge_request_merged.id, merge_request_locked.id,
           merge_request_closed.id, merge_request.id
         )
-      end
-
-      it_behaves_like 'issuable API rate-limited search' do
-        let(:url) { '/merge_requests' }
-        let(:issuable) { merge_request }
       end
 
       it "returns authentication error without any scope" do

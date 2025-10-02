@@ -1116,6 +1116,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           def request
             get api(path, current_user)
           end
+
+          def request_with_second_scope
+            get api(path, user_with_2fa)
+          end
         end
       end
 
@@ -1125,6 +1129,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         it_behaves_like 'rate limited endpoint', rate_limit_key: :user_status do
           def request
             get api(path, current_user)
+          end
+
+          def request_with_second_scope
+            get api(path, user_with_2fa)
           end
         end
       end
@@ -1262,6 +1270,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           def request
             get api(path, current_user)
           end
+
+          def request_with_second_scope
+            get api(path, user_with_2fa)
+          end
         end
       end
 
@@ -1328,6 +1340,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         it_behaves_like 'rate limited endpoint', rate_limit_key: :user_following do
           def request
             get api(path, current_user)
+          end
+
+          def request_with_second_scope
+            get api(path, user_with_2fa)
           end
         end
       end
@@ -2607,6 +2623,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           def request
             get api(path, current_user)
           end
+
+          def request_with_second_scope
+            get api(path, user_with_2fa)
+          end
         end
       end
 
@@ -2616,6 +2636,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_keys do
           def request
             get api(path, current_user)
+          end
+
+          def request_with_second_scope
+            get api(path, user_with_2fa)
           end
         end
       end
@@ -2697,6 +2721,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           def request
             get api(path, current_user)
           end
+
+          def request_with_second_scope
+            get api(path, user_with_2fa)
+          end
         end
       end
 
@@ -2706,6 +2734,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_key do
           def request
             get api(path, current_user)
+          end
+
+          def request_with_second_scope
+            get api(path, user_with_2fa)
           end
         end
       end
@@ -2816,6 +2848,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           def request
             get api(path, current_user)
           end
+
+          def request_with_second_scope
+            get api(path, user_with_2fa)
+          end
         end
       end
 
@@ -2825,6 +2861,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_keys do
           def request
             get api(path, current_user)
+          end
+
+          def request_with_second_scope
+            get api(path, user_with_2fa)
           end
         end
       end
@@ -2866,6 +2906,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
           def request
             get api(path, current_user)
           end
+
+          def request_with_second_scope
+            get api(path, user_with_2fa)
+          end
         end
       end
 
@@ -2875,6 +2919,10 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
         it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_key do
           def request
             get api(path, current_user)
+          end
+
+          def request_with_second_scope
+            get api(path, user_with_2fa)
           end
         end
       end

@@ -1326,6 +1326,10 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           def request
             get api(path, current_user)
           end
+
+          def request_with_second_scope
+            get api(path, user2)
+          end
         end
       end
 
@@ -1335,6 +1339,10 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         it_behaves_like 'rate limited endpoint', rate_limit_key: :projects_api_rate_limit_unauthenticated do
           def request
             get api(path, current_user)
+          end
+
+          def request_with_second_scope
+            get api(path, user2)
           end
         end
       end
@@ -1839,6 +1847,10 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       def request
         get api("/users/#{user4.id}/projects/")
       end
+
+      def request_with_second_scope
+        get api("/users/#{user4.id}/projects/", user2)
+      end
     end
 
     it 'includes container_registry_access_level' do
@@ -1986,6 +1998,10 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       def request
         get api(path)
       end
+
+      def request_with_second_scope
+        get api(path, user2)
+      end
     end
 
     context 'with a public profile' do
@@ -2072,6 +2088,10 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     it_behaves_like 'rate limited endpoint', rate_limit_key: :user_contributed_projects_api do
       def request
         get api(path)
+      end
+
+      def request_with_second_scope
+        get api(path, user2)
       end
     end
 
@@ -2595,6 +2615,10 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     it_behaves_like 'rate limited endpoint', rate_limit_key: :project_api do
       def request
         get api(path)
+      end
+
+      def request_with_second_scope
+        get api(path, user2)
       end
     end
 
@@ -3850,6 +3874,10 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     it_behaves_like 'rate limited endpoint', rate_limit_key: :project_invited_groups_api do
       def request
         get api(path)
+      end
+
+      def request_with_second_scope
+        get api(path, user2)
       end
     end
 

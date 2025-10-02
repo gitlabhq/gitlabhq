@@ -1,6 +1,7 @@
 <script>
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import { destroyImageLightbox } from '~/behaviors/markdown/render_image_lightbox';
 import { toggleCheckbox } from '~/behaviors/markdown/utils';
 
 const isCheckbox = (target) => target?.classList.contains('task-list-item-checkbox');
@@ -43,6 +44,11 @@ export default {
         this.disableCheckboxes(isUpdating);
       },
     },
+  },
+  beforeDestroy() {
+    if (this.$refs['gfm-content'] && gon.features.imageLightboxes) {
+      destroyImageLightbox(this.$refs['gfm-content']);
+    }
   },
   methods: {
     renderGFM() {

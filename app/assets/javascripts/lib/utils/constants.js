@@ -21,3 +21,5 @@ export const DEFAULT_CI_CONFIG_PATH = '.gitlab-ci.yml';
 export const CI_CONFIG_PATH_EXTENSION = /(\.gitlab-ci\.yml)/;
 
 export const PREFERS_DARK = '(prefers-color-scheme: dark)';
+
+export const IMAGE_FORMATS = /^[\w.\-+]+\.(png|jpg|jpeg|gif|bmp|tiff|ico|webp)$/;

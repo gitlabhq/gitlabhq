@@ -18,6 +18,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
       project.add_developer(user)
       project.update!(auto_devops_attributes: { enabled: false })
+      stub_feature_flags(pipelines_page_graphql: false)
     end
 
     describe 'GET /:project/-/pipelines' do
@@ -961,7 +962,9 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
   context 'when user is not logged in' do
     before do
+      stub_feature_flags(pipelines_page_graphql: false)
       project.update!(auto_devops_attributes: { enabled: false })
+
       visit project_pipelines_path(project)
     end
 

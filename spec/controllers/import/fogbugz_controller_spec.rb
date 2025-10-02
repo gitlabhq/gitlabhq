@@ -88,9 +88,17 @@ RSpec.describe Import::FogbugzController, feature_category: :importers do
     end
 
     it_behaves_like 'rate limited endpoint', rate_limit_key: :fogbugz_import, with_redirect: true do
+      let_it_be(:second_user) { create(:user) }
+
       let(:current_user) { user }
 
       def request
+        post :callback, params: { uri: uri, email: 'test@example.com', password: 'mypassword' }
+      end
+
+      def request_with_second_scope
+        sign_in(second_user)
+        session[:fogbugz_token] = token
         post :callback, params: { uri: uri, email: 'test@example.com', password: 'mypassword' }
       end
     end

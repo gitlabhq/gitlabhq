@@ -1,3 +1,5 @@
+import { IMAGE_FORMATS } from './constants';
+
 export default (buttonSelector, fileSelector) => {
   const btn = document.querySelector(buttonSelector);
   const fileInput = document.querySelector(fileSelector);
@@ -26,8 +28,7 @@ export const getFilename = (file) => {
 
 export const validateImageName = (file) => {
   const fileName = file.name ? file.name : 'image.png';
-  const legalImageRegex = /^[\w.\-+]+\.(png|jpg|jpeg|gif|bmp|tiff|ico|webp)$/;
-  return legalImageRegex.test(fileName) ? fileName : 'image.png';
+  return IMAGE_FORMATS.test(fileName) ? fileName : 'image.png';
 };
 
 export const validateFileFromAllowList = (fileName, allowList) => {

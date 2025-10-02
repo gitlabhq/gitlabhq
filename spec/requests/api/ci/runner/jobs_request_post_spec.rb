@@ -107,7 +107,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         let(:request) { post api('/jobs/request') }
       end
 
-      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_request_api, use_second_scope: true do
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_request_api do
         let(:runner2) { create(:ci_runner, :project, projects: [project]) }
 
         def request

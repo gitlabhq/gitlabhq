@@ -6,7 +6,7 @@
 # - params
 
 RSpec.shared_examples 'create notes request exceeding rate limit' do
-  include_examples 'rate limited endpoint', rate_limit_key: :notes_create
+  include_examples 'rate limited endpoint', rate_limit_key: :notes_create, use_second_scope: false
 
   it 'allows user in allow-list to create notes, even if the case is different', :freeze_time, :clean_gitlab_redis_rate_limiting do
     allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:notes_create).and_return(1)

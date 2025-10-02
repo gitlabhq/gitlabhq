@@ -190,6 +190,7 @@ export default {
       if (
         (this.isWaitingForMutation && !bypassPendingRequests) ||
         document.body.classList.contains('modal-open') ||
+        document.body.classList.contains('image-lightbox-open') ||
         document.activeElement?.closest('.js-editor') != null ||
         document.activeElement.classList.contains('gl-form-input')
       ) {

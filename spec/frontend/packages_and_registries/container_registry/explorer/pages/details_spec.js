@@ -147,16 +147,6 @@ describe('Details Page', () => {
 
       expect(findTagsList().exists()).toBe(true);
     });
-
-    it('has the correct props bound', async () => {
-      mountComponent();
-
-      await waitForApolloRequestRender();
-
-      expect(findTagsList().props()).toMatchObject({
-        isMobile: false,
-      });
-    });
   });
 
   describe('modal', () => {

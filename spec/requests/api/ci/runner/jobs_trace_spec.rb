@@ -44,7 +44,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks, feature_catego
         }
       end
 
-      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_patch_trace_api, use_second_scope: true do
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_patch_trace_api do
         let(:job2) { create(:ci_build, *job_traits, **job_args) }
 
         def request

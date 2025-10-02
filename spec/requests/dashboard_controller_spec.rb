@@ -22,7 +22,11 @@ RSpec.describe DashboardController, feature_category: :system_access do
       end
 
       def request
-        get issues_dashboard_path, params: { scope: 'all', search: 'test' }
+        get issues_dashboard_path, params: { scope: 'merge_requests', search: 'test' }
+      end
+
+      def request_with_second_scope
+        get issues_dashboard_path, params: { scope: 'issues', search: 'test' }
       end
     end
   end
@@ -36,7 +40,11 @@ RSpec.describe DashboardController, feature_category: :system_access do
 
     it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
       def request
-        get merge_requests_dashboard_path, params: { scope: 'all', search: 'test' }
+        get merge_requests_dashboard_path, params: { scope: 'issues', search: 'test' }
+      end
+
+      def request_with_second_scope
+        get merge_requests_dashboard_path, params: { scope: 'merge_requests', search: 'test' }
       end
     end
 
@@ -56,7 +64,11 @@ RSpec.describe DashboardController, feature_category: :system_access do
       end
 
       def request
-        get merge_requests_search_dashboard_path, params: { scope: 'all', search: 'test' }
+        get merge_requests_search_dashboard_path, params: { scope: 'merge_requests', search: 'test' }
+      end
+
+      def request_with_second_scope
+        get merge_requests_search_dashboard_path, params: { scope: 'issues', search: 'test' }
       end
     end
   end

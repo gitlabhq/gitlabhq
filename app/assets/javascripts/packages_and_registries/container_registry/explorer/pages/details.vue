@@ -1,6 +1,5 @@
 <script>
-import { GlResizeObserverDirective, GlEmptyState, GlSkeletonLoader } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
+import { GlEmptyState, GlSkeletonLoader } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
@@ -36,9 +35,6 @@ export default {
     StatusAlert,
     DeleteImage,
   },
-  directives: {
-    GlResizeObserver: GlResizeObserverDirective,
-  },
   mixins: [Tracking.mixin()],
   inject: ['config'],
   i18n: {
@@ -72,7 +68,6 @@ export default {
     return {
       containerRepository: {},
       itemsToBeDeleted: [],
-      isMobile: false,
       mutationLoading: false,
       deleteAlertType: null,
       hidePartialCleanupWarning: false,
@@ -107,9 +102,6 @@ export default {
     confirmDelete() {
       this.$refs.deleteImage.doDelete();
     },
-    handleResize() {
-      this.isMobile = GlBreakpointInstance.getBreakpointSize() === 'xs';
-    },
     dismissPartialCleanupWarning() {
       this.hidePartialCleanupWarning = true;
       axios.post(this.config.userCalloutsPath, {
@@ -135,7 +127,7 @@ export default {
 </script>
 
 <template>
-  <div v-gl-resize-observer="handleResize" class="gl-my-3">
+  <div class="gl-my-3">
     <template v-if="containerRepository">
       <delete-alert
         v-model="deleteAlertType"
@@ -166,7 +158,6 @@ export default {
       <tags-list
         :id="$route.params.id"
         :is-image-loading="isLoading"
-        :is-mobile="isMobile"
         :disabled="pageActionsAreDisabled"
         @delete="showAlert"
       />

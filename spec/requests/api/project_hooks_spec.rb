@@ -4,9 +4,9 @@ require 'spec_helper'
 
 RSpec.describe API::ProjectHooks, 'ProjectHooks', feature_category: :webhooks do
   let_it_be(:user) { create(:user) }
-  let_it_be(:user3) { create(:user) }
+  let_it_be(:user2) { create(:user) }
   let_it_be_with_reload(:project) do
-    create(:project, :repository, creator_id: user.id, namespace: user.namespace, maintainers: user, developers: user3)
+    create(:project, :repository, creator_id: user.id, namespace: user.namespace, maintainers: user, developers: user2)
   end
 
   let_it_be_with_refind(:hook) do
@@ -21,7 +21,7 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks', feature_category: :webhooks do
   end
 
   it_behaves_like 'web-hook API endpoints', '/projects/:id' do
-    let(:unauthorized_user) { user3 }
+    let(:unauthorized_user) { user2 }
 
     def scope
       project.hooks
@@ -72,11 +72,11 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks', feature_category: :webhooks do
     it_behaves_like 'POST webhook API endpoints with a branch filter', '/projects/:id'
     it_behaves_like 'PUT webhook API endpoints with a branch filter', '/projects/:id'
     it_behaves_like 'resend web-hook event endpoint' do
-      let(:unauthorized_user) { user3 }
+      let(:unauthorized_user) { user2 }
     end
 
     it_behaves_like 'get web-hook event endpoint' do
-      let(:unauthorized_user) { user3 }
+      let(:unauthorized_user) { user2 }
     end
   end
 end

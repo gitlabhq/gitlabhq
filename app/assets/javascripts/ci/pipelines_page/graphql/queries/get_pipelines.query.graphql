@@ -1,0 +1,76 @@
+#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getPipelines(
+  $fullPath: ID!
+  $first: Int
+  $last: Int
+  $prevPageCursor: String = ""
+  $nextPageCursor: String = ""
+) {
+  project(fullPath: $fullPath) {
+    id
+    pipelines(first: $first, last: $last, after: $nextPageCursor, before: $prevPageCursor) {
+      nodes {
+        id
+        iid
+        detailedStatus {
+          ...CiIcon
+        }
+        createdAt
+        finishedAt
+        duration
+        name
+        ref
+        refPath
+        refText
+        commit {
+          id
+          name
+          sha
+          shortId
+          title
+          webUrl
+          author {
+            id
+            avatarUrl
+            webPath
+            name
+          }
+        }
+        user {
+          id
+          name
+          webPath
+          avatarUrl
+        }
+        source
+        latest
+        yamlErrors
+        failureReason
+        configSource
+        stuck
+        type
+        path
+        stages {
+          nodes {
+            id
+            name
+            status
+          }
+        }
+        mergeRequest {
+          id
+          iid
+          webPath
+          title
+        }
+        mergeRequestEventType
+      }
+
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}

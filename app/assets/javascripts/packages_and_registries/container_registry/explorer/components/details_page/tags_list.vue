@@ -55,11 +55,6 @@ export default {
       type: [Number, String],
       required: true,
     },
-    isMobile: {
-      type: Boolean,
-      default: true,
-      required: false,
-    },
     disabled: {
       type: Boolean,
       default: false,
@@ -267,7 +262,6 @@ export default {
               :disabled="disabled"
               :selected="isSelected(item)"
               :selectable="isSelectable(item)"
-              :is-mobile="isMobile"
               :can-delete="!hideBulkDelete"
               @select="selectItem(item)"
               @delete="deleteTags([item])"

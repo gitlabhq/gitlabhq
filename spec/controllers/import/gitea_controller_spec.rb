@@ -108,6 +108,8 @@ RSpec.describe Import::GiteaController, feature_category: :importers do
     end
 
     it_behaves_like 'rate limited endpoint', rate_limit_key: :gitea_import, with_redirect: true do
+      let_it_be(:second_user) { create(:user) }
+
       let(:token) { 'gitea token' }
       let(:current_user) { user }
 
@@ -118,6 +120,13 @@ RSpec.describe Import::GiteaController, feature_category: :importers do
       end
 
       def request
+        get :status
+      end
+
+      def request_with_second_scope
+        sign_in(second_user)
+        session[:gitea_access_token] = token
+        assign_host_url
         get :status
       end
     end

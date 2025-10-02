@@ -20,7 +20,7 @@ export default {
   },
   computed: {
     duration() {
-      return this.pipeline?.details?.duration;
+      return this.pipeline?.details?.duration ?? this.pipeline?.duration;
     },
     durationFormatted() {
       if (typeof this.duration === 'number') {

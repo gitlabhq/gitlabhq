@@ -26,7 +26,8 @@ RSpec.shared_examples 'Wiki redirection' do
     visit(wiki_path(wiki, action: :pages))
   end
 
-  context 'when pages and directories are renamed in order from child to parent' do
+  # rubocop:disable Layout/LineLength -- short lived quarantine link
+  context 'when pages and directories are renamed in order from child to parent', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
     before do
       # rubocop:disable Rails/SaveBang -- Not an ActiveRecord object
       wiki.find_page('parent/child/grandchild').update(title: 'new-grandchild')
@@ -82,7 +83,7 @@ RSpec.shared_examples 'Wiki redirection' do
     end
   end
 
-  context 'when pages and directories are renamed in order from parent to child' do
+  context 'when pages and directories are renamed in order from parent to child', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
     before do
       # rubocop:disable Rails/SaveBang -- Not an ActiveRecord object
       wiki.find_page('parent').update(title: 'new-parent')
@@ -124,4 +125,5 @@ RSpec.shared_examples 'Wiki redirection' do
       end
     end
   end
+  # rubocop:enable Layout/LineLength
 end

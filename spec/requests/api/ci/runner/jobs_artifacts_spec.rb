@@ -105,7 +105,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
     end
 
     describe 'POST /api/v4/jobs/:id/artifacts/authorize' do
-      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_api, use_second_scope: true do
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_api do
         let(:job2) { create(:ci_build, :pending, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
 
         def request
@@ -301,7 +301,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         let(:request) { upload_artifacts(file_upload, headers) }
       end
 
-      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_api, use_second_scope: true do
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_api do
         let(:job2) { create(:ci_build, :running, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
 
         def request
@@ -963,7 +963,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         let(:request) { download_artifact }
       end
 
-      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_api, use_second_scope: true do
+      it_behaves_like 'rate limited endpoint', rate_limit_key: :runner_jobs_api do
         let(:job2) { create(:ci_build, :pending, user: user, project: project, pipeline: pipeline, runner_id: runner.id) }
 
         def request

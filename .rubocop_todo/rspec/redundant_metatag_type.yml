@@ -256,7 +256,6 @@ RSpec/RedundantMetatagType:
     - 'ee/spec/workers/ee/dependency_proxy/cleanup_dependency_proxy_worker_spec.rb'
     - 'ee/spec/workers/ee/members/expiring_worker_spec.rb'
     - 'ee/spec/workers/ee/virtual_registries/packages/cache/destroy_orphan_entries_worker_spec.rb'
-    - 'ee/spec/workers/gitlab_subscriptions/trials/apply_trial_worker_spec.rb'
     - 'ee/spec/workers/licenses/reset_submit_license_usage_data_banner_worker_spec.rb'
     - 'ee/spec/workers/members_destroyer/clean_up_group_protected_branch_rules_worker_spec.rb'
     - 'ee/spec/workers/namespaces/cascade_duo_features_enabled_worker_spec.rb'

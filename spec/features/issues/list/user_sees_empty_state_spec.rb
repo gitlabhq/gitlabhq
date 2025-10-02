@@ -29,8 +29,7 @@ RSpec.describe 'Issues > User sees empty state', :js, feature_category: :team_pl
       it 'user sees empty state' do
         visit project_issues_path(project)
 
-        expect(page).to have_content('Use issues to collaborate on ideas, solve problems, and plan work')
-        expect(page).to have_content('Learn more about issues.')
+        expect(page).to have_content('Track bugs, plan features, and organize your work with issues')
         expect(page).to have_content('Register / Sign In')
       end
 
@@ -47,9 +46,8 @@ RSpec.describe 'Issues > User sees empty state', :js, feature_category: :team_pl
       it 'user sees empty state' do
         visit project_issues_path(project)
 
-        expect(page).to have_content('Use issues to collaborate on ideas, solve problems, and plan work')
-        expect(page).to have_content('Learn more about issues.')
-        expect(page).to have_content('New issue')
+        expect(page).to have_content('Track bugs, plan features, and organize your work with issues')
+        expect(page).to have_content('Create issue')
       end
 
       it_behaves_like 'empty state with filters'

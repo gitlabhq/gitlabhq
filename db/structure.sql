@@ -22612,6 +22612,7 @@ CREATE TABLE snippet_repositories (
     verification_started_at timestamp with time zone,
     snippet_project_id bigint,
     snippet_organization_id bigint,
+    CONSTRAINT check_0d1a38de4c CHECK ((num_nonnulls(snippet_organization_id, snippet_project_id) = 1)),
     CONSTRAINT snippet_repositories_verification_failure_text_limit CHECK ((char_length(verification_failure) <= 255))
 );
 

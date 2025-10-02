@@ -47,6 +47,37 @@ For deprecation reviewers (Technical Writers only):
 -->
 
 <div class="js-deprecation-filters"></div>
+<div class="milestone-wrapper" data-milestone="21.0">
+
+## GitLab 21.0
+
+<div class="deprecation " data-milestone="21.0">
+
+### Container Registry legacy metadata storage
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.5</span>
+- Removal in GitLab <span class="milestone">21.0</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/571531).
+
+</div>
+
+The GitLab container registry's legacy metadata storage approach is deprecated in favor of the container registry metadata database.
+
+GitLab.com already uses the metadata database. This deprecation affects GitLab Self-Managed instances currently using the legacy container registry that stores metadata information directly in the storage backend (whether object storage or a local filesystem).
+
+The legacy metadata storage method will remain supported in maintenance mode, but will not receive new features or improvements. We strongly recommend migrating to the container registry metadata database at your earliest convenience.
+
+This change only affects how the container registry stores metadata about your images and tags. Your choice of storage backend (object storage or filesystem) remains the same. You can continue using [object storage](https://docs.gitlab.com/administration/packages/container_registry/#use-object-storage) or filesystem storage with the metadata database.
+
+To migrate from legacy metadata storage to the metadata database, follow the [container registry metadata database migration guide](https://docs.gitlab.com/administration/packages/container_registry_metadata_database/). The migration process involves enabling the metadata database feature and running the import tool to transfer your existing registry data.
+
+The metadata database provides better performance, reliability, and enables new container registry features that are not available with the legacy metadata storage approach.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="20.0">
 
 ## GitLab 20.0
@@ -295,21 +326,23 @@ If you encounter any issues after making these changes, try regenerating your AW
 
 </div>
 
-<div class="deprecation breaking-change" data-milestone="19.0">
+<div class="deprecation " data-milestone="19.0">
 
 ### Azure storage driver for the container registry
 
 <div class="deprecation-notes">
 
 - Announced in GitLab <span class="milestone">17.10</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- Removal in GitLab <span class="milestone">19.0</span>
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523096).
 
 </div>
 
-The legacy Azure storage driver for the container registry is deprecated in GitLab 17.10 and will be removed in GitLab 19.0. If you use Azure object storage for your container registry, you'll need to update your configuration to use the new `azure_v2` driver.
+The legacy Azure storage driver for the container registry is deprecated in GitLab 17.10 and will be removed in GitLab 19.0.
+If you use Azure object storage for your container registry, and would like to use the new driver earlier, you'll need to update your configuration to use the new `azure_v2` driver. In GitLab 19.0, the deprecated Azure driver will become an alias for `azure_v2` driver and no manual action will be needed.
 
-The `azure_v2` storage driver provides improved reliability, better performance, and uses a more maintainable codebase compared to the legacy driver. These improvements help prevent performance issues as your registry usage scales.
+The `azure_v2` storage driver provides improved reliability, better performance, and uses a more maintainable codebase compared to the legacy driver.
+These improvements help prevent performance issues as your registry usage scales.
 
 To migrate to the `azure_v2` driver:
 
@@ -754,22 +787,26 @@ GitLab has [required client authentication for ROPC on GitLab.com](https://about
 
 </div>
 
-<div class="deprecation breaking-change" data-milestone="19.0">
+<div class="deprecation " data-milestone="19.0">
 
 ### S3 storage driver (AWS SDK v1) for the container registry
 
 <div class="deprecation-notes">
 
 - Announced in GitLab <span class="milestone">17.10</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- Removal in GitLab <span class="milestone">19.0</span>
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523095).
 
 </div>
 
-The S3 storage driver for the container registry that uses AWS SDK v1 is deprecated and will be removed in GitLab 19.0. If you use S3 object storage for your container registry, you'll need to update your configuration to use the new `s3_v2` driver.
+The S3 storage driver for the container registry that uses AWS SDK v1 is deprecated and will be removed in GitLab 19.0.
+If you use S3 object storage for your container registry, and would like to use the new driver sooner, you must update your configuration to use the new `s3_v2` driver. In GitLab 19.0, the deprecated s3 driver will become an alias for the `s3_v2` driver, and no manual action will be needed.
 
-The `s3_v2` storage driver is based on AWS SDK v2 and provides improved performance, better security, and continued support from AWS. It will be available starting May 2025 to replace the deprecated [AWS SDK v1](https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-go-v1-on-july-31-2025/), which reaches end-of-support on July 31, 2025.
+The `s3_v2` storage driver is based on AWS SDK v2 and provides improved performance, better security, and continued support from AWS.
+It will be available starting May 2025 to replace the deprecated [AWS SDK v1](https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-go-v1-on-july-31-2025/), which reaches end-of-support on July 31, 2025.
 
+The `s3_v2` driver no longer supports Signature Signing Algorithm v2.
+If `v4auth: false` option is set in the configuration, it will be transparently ignored by the `s3_v2` driver and the more secure V4 algorithm will be used.
 To migrate to the `s3_v2` driver:
 
 1. Update your registry configuration file to use the `s3_v2` configuration instead of `s3`.

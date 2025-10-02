@@ -105,6 +105,7 @@ module Gitlab
       push_frontend_feature_flag(:extensible_reference_filters, current_user)
       push_frontend_feature_flag(:paneled_view, current_user)
       push_frontend_feature_flag(:disallow_immediate_deletion, current_user)
+      push_frontend_feature_flag(:image_lightboxes, current_user)
 
       # Expose the Project Studio user preference as if it were a feature flag
       push_force_frontend_feature_flag(:project_studio_enabled, Users::ProjectStudio.new(current_user).enabled?)

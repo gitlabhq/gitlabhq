@@ -20,12 +20,7 @@ module API
         return unless blob
         return unless blob.size > Helpers::BlobHelpers::MAX_BLOB_SIZE
 
-        rate_limit_key = :large_blob_download
-        check_rate_limit!(rate_limit_key, scope: [user_project]) do
-          interval_value = Gitlab::ApplicationRateLimiter.interval(rate_limit_key)
-
-          too_many_requests!({ error: error_msg(endpoint) }, retry_after: interval_value)
-        end
+        check_rate_limit!(:large_blob_download, scope: [user_project], message: error_msg(endpoint))
       end
 
       private

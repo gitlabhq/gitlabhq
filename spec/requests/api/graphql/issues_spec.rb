@@ -251,6 +251,10 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
       def request
         post_graphql(query({ search: 'test' }), current_user: developer)
       end
+
+      def request_with_second_scope
+        post_graphql(query({ search: 'test' }), current_user: reporter)
+      end
     end
 
     it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit_unauthenticated, graphql: true do
@@ -262,6 +266,10 @@ RSpec.describe 'getting an issue list at root level', feature_category: :team_pl
 
       def request
         post_graphql(query({ search: 'test' }))
+      end
+
+      def request_with_second_scope
+        post_graphql(query({ search: 'different_test' }), headers: { 'REMOTE_ADDR' => '1.2.3.4' })
       end
     end
   end

@@ -204,4 +204,70 @@ RSpec.describe API::Helpers::RateLimiter do
       end
     end
   end
+
+  describe 'block execution behavior' do
+    let(:custom_logic_executed) { [] }
+    let(:args) { { scope: scope } }
+
+    subject(:check_rate_limit) do
+      rate_limiter.check_rate_limit!(key, **args) do
+        custom_logic_executed << :block_executed
+      end
+    end
+
+    it 'executes both the block and standard response' do
+      expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(key, scope: scope).and_return(true)
+      expect(::Gitlab::ApplicationRateLimiter).to receive(:log_request).with(request, "#{key}_request_limit".to_sym, user)
+      expect(::Gitlab::ApplicationRateLimiter).to receive(:interval).with(key).and_return(5.minutes)
+      expect(rate_limiter).to receive(:too_many_requests!).with(
+        { error: _('This endpoint has been requested too many times. Try again later.') },
+        retry_after: 5.minutes
+      )
+
+      check_rate_limit
+
+      expect(custom_logic_executed).to contain_exactly(:block_executed)
+    end
+
+    context 'when custom interval is provided' do
+      let(:args) { { scope: scope, interval: 10.minutes } }
+
+      it 'uses custom interval' do
+        expect(::Gitlab::ApplicationRateLimiter)
+          .to receive(:throttled?).with(key, **args).and_return(true)
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:log_request).with(request, :"#{key}_request_limit", user)
+        expect(::Gitlab::ApplicationRateLimiter).not_to receive(:interval)
+        expect(rate_limiter).to receive(:too_many_requests!).with(
+          { error: _('This endpoint has been requested too many times. Try again later.') },
+          retry_after: 10.minutes
+        )
+
+        check_rate_limit
+
+        expect(custom_logic_executed).to contain_exactly(:block_executed)
+      end
+    end
+
+    describe 'when a custom message is provided' do
+      let(:custom_message) { 'Custom API rate limit message' }
+      let(:args) { { scope: scope, message: custom_message } }
+
+      subject(:check_rate_limit) do
+        rate_limiter.check_rate_limit!(key, **args)
+      end
+
+      it 'uses the custom message in the response' do
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(key, scope: scope).and_return(true)
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:log_request).with(request, :"#{key}_request_limit", user)
+        expect(::Gitlab::ApplicationRateLimiter).to receive(:interval).with(key).and_return(5.minutes)
+
+        expect(rate_limiter).to receive(:too_many_requests!).with(
+          { error: custom_message },
+          retry_after: 5.minutes
+        )
+
+        check_rate_limit
+      end
+    end
+  end
 end

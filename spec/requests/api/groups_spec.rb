@@ -137,6 +137,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       def request
         get api("/groups")
       end
+
+      def request_with_second_scope
+        get api("/groups", user2)
+      end
     end
 
     context "when unauthenticated" do
@@ -641,6 +645,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     it_behaves_like 'rate limited endpoint', rate_limit_key: :group_api do
       def request
         get api("/groups/#{group2.id}")
+      end
+
+      def request_with_second_scope
+        get api("/groups/#{group2.id}", user1)
       end
     end
 
@@ -1559,6 +1567,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       def request
         get api("/groups/#{group1.id}/projects")
       end
+
+      def request_with_second_scope
+        get api("/groups/#{group1.id}/projects", user2)
+      end
     end
 
     context "when authenticated as user" do
@@ -2172,6 +2184,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       def request
         get api(path)
       end
+
+      def request_with_second_scope
+        get api(path, user2)
+      end
     end
 
     context 'when authenticated as user' do
@@ -2458,6 +2474,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     it_behaves_like 'rate limited endpoint', rate_limit_key: :group_invited_groups_api do
       def request
         get api(path)
+      end
+
+      def request_with_second_scope
+        get api(path, user2)
       end
     end
 

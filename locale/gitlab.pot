@@ -13174,9 +13174,6 @@ msgstr ""
 msgid "Characters over limit"
 msgstr ""
 
-msgid "Chat content placeholder"
-msgstr ""
-
 msgid "ChatMessage|%{project_link}: Pipeline %{pipeline_link} of %{ref_type} %{ref_link} by %{user_combined_name} %{humanized_status} in %{duration}"
 msgstr ""
 
@@ -19378,6 +19375,9 @@ msgid "Copy file path"
 msgstr ""
 
 msgid "Copy file permalink"
+msgstr ""
+
+msgid "Copy image link"
 msgstr ""
 
 msgid "Copy issue URL to clipboard"
@@ -30149,6 +30149,9 @@ msgstr ""
 msgid "GitLab Duo"
 msgstr ""
 
+msgid "GitLab Duo Agentic Chat"
+msgstr ""
+
 msgid "GitLab Duo Chat"
 msgstr ""
 
@@ -33950,6 +33953,12 @@ msgstr ""
 msgid "Image"
 msgstr ""
 
+msgid "Image could not be loaded."
+msgstr ""
+
+msgid "Image viewer"
+msgstr ""
+
 msgid "ImageDiffViewer|2-up"
 msgstr ""
 
@@ -36061,12 +36070,6 @@ msgstr ""
 msgid "Issues closed"
 msgstr ""
 
-msgid "Issues exist in projects. Select a project to create an issue, or create a project."
-msgstr ""
-
-msgid "Issues exist in projects. To create an issue, first create a project."
-msgstr ""
-
 msgid "Issues must match this scope to appear in this list."
 msgstr ""
 
@@ -36135,7 +36138,16 @@ msgstr ""
 msgid "Issues|An error occurred while importing issues."
 msgstr ""
 
+msgid "Issues|Create issue"
+msgstr ""
+
 msgid "Issues|Move selected"
+msgstr ""
+
+msgid "Issues|No closed issues"
+msgstr ""
+
+msgid "Issues|No open issues"
 msgstr ""
 
 msgid "Issues|Tasks and test cases can not be moved."
@@ -36148,6 +36160,12 @@ msgid "Issues|Test cases can not be moved."
 msgstr ""
 
 msgid "Issues|There was an error while moving the issues."
+msgstr ""
+
+msgid "Issues|Track bugs, plan features, and organize your work with issues"
+msgstr ""
+
+msgid "Issues|Use issues (also known as tickets or stories on other platforms) to collaborate on ideas, solve problems, and plan your project."
 msgstr ""
 
 msgid "Issue|Title"
@@ -36743,9 +36761,6 @@ msgstr ""
 msgid "JiraService| on branch %{branch_link}"
 msgstr ""
 
-msgid "JiraService|%{jiraDocsLinkStart}Enable the Jira integration%{jiraDocsLinkEnd} to view your Jira issues in GitLab."
-msgstr ""
-
 msgid "JiraService|%{jira_docs_link_start}Enable the Jira integration%{jira_docs_link_end} to view your Jira issues in GitLab."
 msgstr ""
 
@@ -36921,6 +36936,9 @@ msgid "JiraService|Ready, In Progress, Review"
 msgstr ""
 
 msgid "JiraService|Recommended. Only available for Jira Data Center and Jira Server."
+msgstr ""
+
+msgid "JiraService|See integration options"
 msgstr ""
 
 msgid "JiraService|Select issue type"
@@ -38328,9 +38346,6 @@ msgid "Learn more about groups."
 msgstr ""
 
 msgid "Learn more about importing GitLab projects"
-msgstr ""
-
-msgid "Learn more about issues."
 msgstr ""
 
 msgid "Learn more about linking epics"
@@ -43060,6 +43075,9 @@ msgid "Next design"
 msgstr ""
 
 msgid "Next file in diff"
+msgstr ""
+
+msgid "Next image"
 msgstr ""
 
 msgid "Next open thread"
@@ -48147,6 +48165,9 @@ msgstr ""
 msgid "Pipelines|Active"
 msgstr ""
 
+msgid "Pipelines|An error occurred while loading pipelines"
+msgstr ""
+
 msgid "Pipelines|An error occurred while trying to fetch the active merge train."
 msgstr ""
 
@@ -49575,6 +49596,9 @@ msgid "Previous design"
 msgstr ""
 
 msgid "Previous file in diff"
+msgstr ""
+
+msgid "Previous image"
 msgstr ""
 
 msgid "Previous open thread"
@@ -70241,9 +70265,6 @@ msgstr ""
 msgid "Use issue weight"
 msgstr ""
 
-msgid "Use issues to collaborate on ideas, solve problems, and plan work"
-msgstr ""
-
 msgid "Use merge requests to propose, collaborate, and review code changes with others."
 msgstr ""
 
@@ -71620,6 +71641,9 @@ msgid "View group labels"
 msgstr ""
 
 msgid "View group pipeline usage quota"
+msgstr ""
+
+msgid "View image"
 msgstr ""
 
 msgid "View incident details at"

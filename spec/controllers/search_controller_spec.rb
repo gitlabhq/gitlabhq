@@ -403,6 +403,10 @@ RSpec.describe SearchController, feature_category: :global_search do
         def request
           get(:show, params: { search: 'foo@bar.com', scope: 'users' })
         end
+
+        def request_with_second_scope
+          get(:show, params: { search: 'foo@bar.com', scope: 'projects' })
+        end
       end
 
       it_behaves_like 'search request exceeding rate limit', :clean_gitlab_redis_cache do
@@ -589,6 +593,10 @@ RSpec.describe SearchController, feature_category: :global_search do
         def request
           get(:count, params: { search: 'foo@bar.com', scope: 'users' })
         end
+
+        def request_with_second_scope
+          get(:count, params: { search: 'foo@bar.com', scope: 'projects' })
+        end
       end
 
       it_behaves_like 'search request exceeding rate limit', :clean_gitlab_redis_cache do
@@ -624,6 +632,10 @@ RSpec.describe SearchController, feature_category: :global_search do
 
         def request
           get(:autocomplete, params: { term: 'foo@bar.com', scope: 'users' })
+        end
+
+        def request_with_second_scope
+          get(:autocomplete, params: { term: 'foo@bar.com', scope: 'projects' })
         end
       end
 
@@ -806,7 +818,8 @@ RSpec.describe SearchController, feature_category: :global_search do
       end
 
       with_them do
-        it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit_unauthenticated do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit_unauthenticated,
+          use_second_scope: false do
           def request
             get endpoint, params: params.merge(project_id: project.id)
           end

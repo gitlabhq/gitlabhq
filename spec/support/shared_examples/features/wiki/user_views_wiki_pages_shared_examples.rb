@@ -28,7 +28,7 @@ RSpec.shared_examples 'User views wiki pages' do
     visit(wiki_path(wiki, action: :pages))
   end
 
-  context 'ordered by title' do
+  context 'ordered by title', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
     let(:pages_ordered_by_title) { [wiki_page2, wiki_page3, wiki_page1] }
 
     context 'asc' do
@@ -54,7 +54,8 @@ RSpec.shared_examples 'User views wiki pages' do
     end
   end
 
-  context 'when listing more pages than allowed items per page' do
+  # rubocop:disable Layout/LineLength -- short lived quarantine link
+  context 'when listing more pages than allowed items per page', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
     let(:items_per_page) { 1 }
 
     before do
@@ -73,6 +74,7 @@ RSpec.shared_examples 'User views wiki pages' do
       end
     end
   end
+  # rubocop:enable Layout/LineLength
 
   it_behaves_like 'Wiki redirection'
 end

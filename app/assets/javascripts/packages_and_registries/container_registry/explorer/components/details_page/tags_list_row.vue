@@ -61,11 +61,6 @@ export default {
       type: Object,
       required: true,
     },
-    isMobile: {
-      type: Boolean,
-      default: true,
-      required: false,
-    },
     selectable: {
       type: Boolean,
       default: true,
@@ -127,9 +122,6 @@ export default {
     },
     layers() {
       return this.tag.layers ? n__('%d layer', '%d layers', this.tag.layers) : '';
-    },
-    mobileClasses() {
-      return this.isMobile ? 'gl-max-w-20' : '';
     },
     shortDigest() {
       // remove sha256: from the string, and show only the first 7 char
@@ -208,8 +200,7 @@ export default {
         <div
           v-gl-tooltip="tag.name"
           data-testid="name"
-          class="gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap"
-          :class="mobileClasses"
+          class="gl-max-w-20 gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap @sm:gl-max-w-full"
         >
           {{ tag.name }}
         </div>

@@ -15,6 +15,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
   before do
     sign_in(user)
     project.add_role(user, role)
+    stub_feature_flags(pipelines_page_graphql: false)
   end
 
   shared_context 'pipeline builds' do

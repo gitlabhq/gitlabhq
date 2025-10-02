@@ -39,6 +39,7 @@ exports[`Repository last commit component renders commit widget 1`] = `
         <clipboard-button-stub
           category="secondary"
           class="dark:!gl-border-l-section input-group-text"
+          icon="copy-to-clipboard"
           size="medium"
           text="123456789"
           title="Copy commit SHA"

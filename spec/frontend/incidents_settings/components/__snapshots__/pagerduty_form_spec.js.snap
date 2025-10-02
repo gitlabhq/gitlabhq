@@ -37,6 +37,7 @@ exports[`Alert integration settings form should match the default snapshot 1`] =
       >
         <clipboard-button-stub
           category="secondary"
+          icon="copy-to-clipboard"
           size="medium"
           text="pagerduty.webhook.com"
           title="Copy"

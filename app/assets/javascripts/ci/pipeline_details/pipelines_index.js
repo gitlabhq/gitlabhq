@@ -11,6 +11,7 @@ import { doesHashExistInUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import Translate from '~/vue_shared/translate';
 import Pipelines from '~/ci/pipelines_page/pipelines.vue';
+import PipelinesGraphql from '~/ci/pipelines_page/pipelines_graphql.vue';
 import PipelinesStore from './stores/pipelines_store';
 
 Vue.use(Translate);
@@ -91,6 +92,27 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
           store: this.store,
         },
       });
+    },
+  });
+};
+
+export const initPipelinesIndexGraphql = (selector = '#pipelines-list-vue') => {
+  const el = document.querySelector(selector);
+
+  if (!el) {
+    return null;
+  }
+
+  const { fullPath } = el.dataset;
+
+  return new Vue({
+    el,
+    apolloProvider,
+    provide: {
+      fullPath,
+    },
+    render(createElement) {
+      return createElement(PipelinesGraphql, {});
     },
   });
 };

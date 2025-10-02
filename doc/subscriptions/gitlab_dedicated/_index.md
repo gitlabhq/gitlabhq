@@ -82,6 +82,18 @@ For more information, see [encrypted data at rest (BYOK)](../../administration/d
 
 By default, [Amazon Simple Email Service (Amazon SES)](https://aws.amazon.com/ses/) is used to send emails securely. As an alternative, you can [configure your own email service](../../administration/dedicated/configure_instance/users_notifications.md#smtp-email-service) using SMTP.
 
+#### Web application firewall
+
+{{< details >}}
+
+- Status: Limited availability
+
+{{< /details >}}
+
+Cloudflare is implemented as a web application firewall (WAF) for distributed denial-of-service (DDoS)
+protection and related security capabilities. The WAF implementation and configuration is managed by the GitLab SRE team. 
+Direct access to WAF configuration or logs is not available.
+
 ### Compliance
 
 GitLab Dedicated adheres to various regulations, certifications, and compliance frameworks to ensure the security, and reliability of your data.

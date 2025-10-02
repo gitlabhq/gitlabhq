@@ -5,7 +5,7 @@ RSpec.shared_examples 'User views Git access wiki page' do
     sign_in(user)
   end
 
-  it 'shows the correct clone URLs', :js do
+  it 'shows the correct clone URLs', :js, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
     visit wiki_page_path(wiki, 'git_access')
 
     expect(page).to have_text("Clone Wiki repository")

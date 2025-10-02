@@ -71,3 +71,7 @@ svg {
     }
   }
 }
+
+body.image-lightbox-open {
+  overflow: hidden;
+}

@@ -86,6 +86,11 @@ export default {
       required: false,
       default: 'default',
     },
+    icon: {
+      type: String,
+      required: false,
+      default: 'copy-to-clipboard',
+    },
   },
   data() {
     return {
@@ -142,7 +147,7 @@ export default {
     data-clipboard-handle-tooltip="false"
     :category="category"
     :size="size"
-    icon="copy-to-clipboard"
+    :icon="icon"
     :variant="variant"
     :aria-label="sanitizedLocalTitle"
     aria-live="polite"

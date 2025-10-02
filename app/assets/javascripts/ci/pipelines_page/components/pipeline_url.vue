@@ -2,6 +2,7 @@
 import { GlIcon, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { ICONS, PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/constants';
@@ -35,25 +36,25 @@ export default {
   },
   computed: {
     mergeRequestRef() {
-      return this.pipeline?.merge_request;
+      return this.pipeline?.merge_request || this.pipeline?.mergeRequest;
     },
     commitRef() {
       return this.pipeline?.ref;
     },
     commitTag() {
-      return this.commitRef?.tag;
+      return this.commitRef?.tag || this.pipeline?.type === 'tag';
     },
     commitUrl() {
-      return this.pipeline?.commit?.commit_path;
+      return this.pipeline?.commit?.commit_path || this.pipeline?.commit?.webUrl;
     },
     commitShortSha() {
-      return this.pipeline?.commit?.short_id;
+      return this.pipeline?.commit?.short_id || this.pipeline?.commit?.shortId;
     },
     refUrl() {
-      return this.commitRef?.ref_url || this.commitRef?.path;
+      return this.commitRef?.ref_url || this.commitRef?.path || this.pipeline?.refPath;
     },
     tooltipTitle() {
-      return this.mergeRequestRef?.title || this.commitRef?.name;
+      return this.mergeRequestRef?.title || this.commitRef?.name || this.pipeline?.refText;
     },
     commitAuthor() {
       let commitAuthorInformation;
@@ -68,22 +69,23 @@ export default {
       if (pipelineCommitAuthor) {
         // 2. if person who is an author of a commit is a GitLab user
         // they can have a GitLab avatar
-        if (pipelineCommitAuthor?.avatar_url) {
+
+        if (pipelineCommitAuthor?.avatar_url || pipelineCommitAuthor?.avatarUrl) {
           commitAuthorInformation = pipelineCommitAuthor;
 
           // 3. If GitLab user does not have avatar, they might have a Gravatar
-        } else if (pipelineCommit?.author_gravatar_url) {
+        } else if (pipelineCommit?.author_gravatar_url || pipelineCommitAuthor?.avatarUrl) {
           commitAuthorInformation = {
             ...pipelineCommitAuthor,
-            avatar_url: pipelineCommit.author_gravatar_url,
+            avatar_url: pipelineCommit?.author_gravatar_url || pipelineCommitAuthor?.avatarUrl,
           };
         }
         // 4. If committer is not a GitLab User, they can have a Gravatar
       } else {
         commitAuthorInformation = {
-          avatar_url: pipelineCommit?.author_gravatar_url,
-          path: `mailto:${pipelineCommit?.author_email}`,
-          username: pipelineCommit.author_name,
+          avatar_url: pipelineCommit?.author_gravatar_url || pipelineCommitAuthor?.avatarUrl,
+          path: `mailto:${pipelineCommit?.author_email || pipelineCommitAuthor?.publicEmail}`,
+          username: pipelineCommit?.author_name || pipelineCommitAuthor?.name,
         };
       }
 
@@ -136,6 +138,9 @@ export default {
 
       return false;
     },
+    pipelineId() {
+      return getIdFromGraphQLId(this.pipeline[this.pipelineIdType]);
+    },
   },
   methods: {
     trackClick(action) {
@@ -187,7 +192,7 @@ export default {
         class="gl-mr-1"
         data-testid="pipeline-url-link"
         @click="trackClick('click_pipeline_id')"
-        >#{{ pipeline[pipelineIdType] }}</gl-link
+        >#{{ pipelineId }}</gl-link
       >
       <!--Commit row-->
       <div class="gl-inline-flex gl-rounded-base gl-bg-strong gl-px-2">
@@ -202,7 +207,7 @@ export default {
           />
           <gl-link
             v-if="mergeRequestRef"
-            :href="mergeRequestRef.path"
+            :href="mergeRequestRef.path || mergeRequestRef.webPath"
             class="gl-text-sm gl-text-subtle gl-font-monospace hover:gl-text-subtle"
             data-testid="merge-request-ref"
             @click="trackClick('click_mr_ref')"
@@ -214,7 +219,7 @@ export default {
             class="gl-text-sm gl-text-subtle gl-font-monospace hover:gl-text-subtle"
             data-testid="commit-ref-name"
             @click="trackClick('click_commit_name')"
-            >{{ commitRef.name }}</gl-link
+            >{{ commitRef.name || pipeline.ref }}</gl-link
           >
         </tooltip-on-truncate>
       </div>
@@ -240,8 +245,8 @@ export default {
 
       <user-avatar-link
         v-if="commitAuthor"
-        :link-href="commitAuthor.path"
-        :img-src="commitAuthor.avatar_url"
+        :link-href="commitAuthor.path || commitAuthor.webPath"
+        :img-src="commitAuthor.avatar_url || commitAuthor.avatarUrl"
         :img-size="16"
         :img-alt="commitAuthor.name"
         :tooltip-text="commitAuthor.name"

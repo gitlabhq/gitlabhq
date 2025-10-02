@@ -164,15 +164,15 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
       end
 
       context 'with signed in user' do
-        it_behaves_like 'rate limited endpoint', rate_limit_key: :expanded_diff_files do
-          let_it_be(:current_user) { user }
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :expanded_diff_files, use_second_scope: false do
+          let(:current_user) { user }
 
           before do
             sign_in current_user
           end
 
           def request
-            get diff_files_namespace_project_commit_url(params), params: { scope: user }
+            get diff_files_namespace_project_commit_url(params)
           end
         end
       end
@@ -185,6 +185,10 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
           def request
             get diff_files_namespace_project_commit_url(params),
               params: { scope: request_ip }, env: { REMOTE_ADDR: request_ip }
+          end
+
+          def request_with_second_scope
+            get diff_files_namespace_project_commit_url(params), env: { REMOTE_ADDR: '1.2.3.5' }
           end
         end
       end

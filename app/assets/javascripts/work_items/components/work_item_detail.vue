@@ -874,6 +874,15 @@ export default {
         this.$options.VALID_DESIGN_FILE_MIMETYPE.mimetype.includes(item.type),
       );
     },
+    preventDefaultConditionally(event) {
+      const $refs = this.$refs.workItemNotes?.$el.$refs;
+      const topForm = $refs.addNoteTop;
+      const bottomForm = $refs.addNoteBottom;
+
+      if (!topForm?.contains(event.target) && !bottomForm?.contains(event.target)) {
+        event.preventDefault();
+      }
+    },
     onDragEnter(event) {
       this.dragCounter += 1;
       this.isValidDragDataType(event);
@@ -931,8 +940,8 @@ export default {
       ref="workItemDetail"
       class="work-item-detail"
       data-testid="work-item-detail"
-      @dragstart.prevent.stop
-      @dragend.prevent.stop
+      @dragstart="preventDefaultConditionally"
+      @dragend="preventDefaultConditionally"
       @dragenter.prevent.stop="onDragEnter"
       @dragover.prevent.stop="onDragOver"
       @dragleave.prevent.stop="onDragLeaveMain"
@@ -1335,6 +1344,7 @@ export default {
 
               <work-item-notes
                 v-if="workItemNotes"
+                ref="workItemNotes"
                 :full-path="workItemFullPath"
                 :work-item-id="workItem.id"
                 :work-item-iid="workItem.iid"

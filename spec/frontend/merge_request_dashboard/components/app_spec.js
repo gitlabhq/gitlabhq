@@ -28,6 +28,7 @@ describe('Merge requests app component', () => {
 
   const $router = {
     push: jest.fn(),
+    resolve: jest.fn().mockReturnValue({ href: '/' }),
   };
 
   function createComponent(lists = null) {

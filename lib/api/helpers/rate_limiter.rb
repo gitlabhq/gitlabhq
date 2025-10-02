@@ -9,19 +9,16 @@ module API
     # will be logged and an error message will be rendered with a Too Many Requests response status.
     # See app/controllers/concerns/check_rate_limit.rb for Rails controllers version
     module RateLimiter
-      def check_rate_limit!(key, scope:, user: current_user, **options)
-        return unless Gitlab::ApplicationRateLimiter.throttled_request?(
-          request, user, key, scope: scope, **options
-        )
+      def check_rate_limit!(key, scope:, user: current_user, message: nil, **options)
+        return unless Gitlab::ApplicationRateLimiter.throttled_request?(request, user, key, scope: scope, **options)
 
-        return yield if block_given?
+        # Execute custom logic if block is given
+        yield if block_given?
 
         interval_value = options[:interval] || Gitlab::ApplicationRateLimiter.interval(key)
+        error_message = message || _('This endpoint has been requested too many times. Try again later.')
 
-        too_many_requests!(
-          { error: _('This endpoint has been requested too many times. Try again later.') },
-          retry_after: interval_value
-        )
+        too_many_requests!({ error: error_message }, retry_after: interval_value)
       end
 
       def check_rate_limit_by_user_or_ip!(key, **options)

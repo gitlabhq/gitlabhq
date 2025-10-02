@@ -8,8 +8,15 @@
 # - error_message # optional
 
 RSpec.shared_examples 'rate limited endpoint' do |rate_limit_key:, graphql: false, with_redirect: false,
-  use_second_scope: false|
+  use_second_scope: true|
   let(:error_message) { _('This endpoint has been requested too many times. Try again later.') }
+
+  before do
+    if use_second_scope && !respond_to?(:request_with_second_scope)
+      raise "The 'rate limited endpoint' shared example requires a 'request_with_second_scope' method " \
+        "when use_second_scope is true. Please define this method in your test context."
+    end
+  end
 
   context 'when rate limiter enabled', :freeze_time, :clean_gitlab_redis_rate_limiting do
     let(:expected_logger_attributes) do

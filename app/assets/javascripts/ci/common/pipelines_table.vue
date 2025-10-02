@@ -195,6 +195,18 @@ export default {
     getAdditionalContext(item) {
       return [
         {
+          Category: 'merge_request',
+          Content: JSON.stringify({
+            url: this.mergeRequestPath,
+          }),
+        },
+        {
+          Category: 'pipeline',
+          Content: JSON.stringify({
+            source_branch: this.currentBranch(item),
+          }),
+        },
+        {
           Category: 'agent_user_environment',
           Content: JSON.stringify({
             merge_request_url: this.mergeRequestPath,

@@ -52,7 +52,8 @@ RSpec.describe 'Group empty states', feature_category: :groups_and_projects do
             wait_for_all_requests
 
             within_testid('issuable-empty-state') do
-              expect(page).to have_content(/There are no open #{issuable.to_s.humanize.downcase}/)
+              empty_state_copy_start = issuable == :issue ? 'No open' : 'There are no open'
+              expect(page).to have_content("#{empty_state_copy_start} #{issuable.to_s.humanize.downcase}")
               new_issuable_path = issuable == :issue ? 'new_project_issue_path' : 'project_new_merge_request_path'
 
               path = public_send(new_issuable_path, project)
@@ -83,7 +84,8 @@ RSpec.describe 'Group empty states', feature_category: :groups_and_projects do
             wait_for_all_requests
 
             within_testid('issuable-empty-state') do
-              expect(page).to have_content(/There are no closed #{issuable.to_s.humanize.downcase}/)
+              empty_state_copy_start = issuable == :issue ? 'No closed' : 'There are no closed'
+              expect(page).to have_content("#{empty_state_copy_start} #{issuable.to_s.humanize.downcase}")
             end
           end
         end

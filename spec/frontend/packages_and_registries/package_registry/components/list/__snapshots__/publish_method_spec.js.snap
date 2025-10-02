@@ -31,6 +31,7 @@ exports[`publish_method renders 1`] = `
   </gl-link-stub>
   <clipboard-button-stub
     category="tertiary"
+    icon="copy-to-clipboard"
     size="small"
     text="b83d6e391c22777fca1ed3012fce84f633d7fed0"
     title="Copy commit SHA"

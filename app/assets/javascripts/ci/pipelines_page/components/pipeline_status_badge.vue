@@ -18,7 +18,7 @@ export default {
   },
   computed: {
     pipelineStatus() {
-      return this.pipeline?.details?.status ?? {};
+      return this.pipeline?.details?.status || this.pipeline?.detailedStatus;
     },
   },
   methods: {

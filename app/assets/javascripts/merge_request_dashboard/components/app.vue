@@ -105,6 +105,9 @@ export default {
         .filter((l) => !l.hideCount)
         .map((list) => ({ query: list.query, variables: list.variables }));
     },
+    tabAttributes(tab) {
+      return { href: this.$router.resolve({ path: tab.key }).href };
+    },
   },
   mergeRequestIllustration,
   docsPath: helpPagePath('/user/project/merge_requests/homepage.html'),
@@ -140,6 +143,7 @@ export default {
         :key="tab.title"
         :active="tab.key === currentTab"
         :lazy="!visitedTabs.has(tab.key)"
+        :title-link-attributes="tabAttributes(tab)"
         data-testid="merge-request-dashboard-tab"
         @click="clickTab(tab)"
       >
