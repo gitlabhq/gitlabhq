@@ -6395,8 +6395,8 @@ Deploy these Helm charts in production by calling commands through GitLab
 As part of this change, the following specific capabilities within GitLab
 are now deprecated, and are scheduled for removal in GitLab 15.0:
 
-- The **Security & Compliance > Threat Monitoring** page.
-- The `Network Policy` security policy type, as found on the **Security & Compliance > Policies** page.
+- The **Security & Compliance** > **Threat Monitoring** page.
+- The `Network Policy` security policy type, as found on the **Security & Compliance** > **Policies** page.
 - The ability to manage integrations with the following technologies through GitLab: AppArmor, Cilium, Falco, FluentD, and Pod Security Policies.
 - All APIs related to the above functionality.
 
@@ -7537,7 +7537,7 @@ If you monitor Value Stream Analytics metrics and rely on the date filter, to av
 
 </div>
 
-The vulnerability check feature is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0. We encourage you to migrate to the new security approvals feature instead. You can do so by navigating to **Security & Compliance > Policies** and creating a new Scan Result Policy.
+The vulnerability check feature is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0. We encourage you to migrate to the new security approvals feature instead. You can do so by navigating to **Security & Compliance** > **Policies** and creating a new Scan Result Policy.
 
 The new security approvals feature is similar to vulnerability check. For example, both can require approvals for MRs that contain security vulnerabilities. However, security approvals improve the previous experience in several ways:
 

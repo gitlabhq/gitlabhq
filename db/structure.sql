@@ -50089,6 +50089,9 @@ ALTER TABLE ONLY packages_terraform_module_metadata
 ALTER TABLE ONLY container_registry_protection_tag_rules
     ADD CONSTRAINT fk_rails_343879fca2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE merge_requests_merge_data
+    ADD CONSTRAINT fk_rails_34941e4a91 FOREIGN KEY (merge_user_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY group_features
     ADD CONSTRAINT fk_rails_356514082b FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -50302,6 +50305,9 @@ ALTER TABLE ONLY aws_roles
 ALTER TABLE ONLY packages_debian_publications
     ADD CONSTRAINT fk_rails_4fc8ebd03e FOREIGN KEY (distribution_id) REFERENCES packages_debian_project_distributions(id) ON DELETE CASCADE;
 
+ALTER TABLE merge_requests_merge_data
+    ADD CONSTRAINT fk_rails_4fd2676ef4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY merge_request_diff_files
     ADD CONSTRAINT fk_rails_501aa0a391 FOREIGN KEY (merge_request_diff_id) REFERENCES merge_request_diffs(id) ON DELETE CASCADE;
 
@@ -50376,6 +50382,9 @@ ALTER TABLE ONLY packages_debian_project_architectures
 
 ALTER TABLE ONLY virtual_registries_container_registry_upstreams
     ADD CONSTRAINT fk_rails_583c557285 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE merge_requests_merge_data
+    ADD CONSTRAINT fk_rails_593f9b7924 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY analytics_cycle_analytics_group_stages
     ADD CONSTRAINT fk_rails_5a22f40223 FOREIGN KEY (start_event_label_id) REFERENCES labels(id) ON DELETE CASCADE;

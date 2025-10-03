@@ -2774,6 +2774,9 @@ msgstr ""
 msgid "AICatalog|System prompt is required."
 msgstr ""
 
+msgid "AICatalog|Test"
+msgstr ""
+
 msgid "AICatalog|Test run"
 msgstr ""
 
@@ -73939,9 +73942,6 @@ msgstr ""
 msgid "WorkItem| %{workItemType}s closed"
 msgstr ""
 
-msgid "WorkItem|%{count} items currently use the status '%{status}'. Select a new status for these items."
-msgstr ""
-
 msgid "WorkItem|%{count} more assignees"
 msgstr ""
 
@@ -74456,7 +74456,7 @@ msgstr ""
 msgid "WorkItem|It must have a header row and at least two columns: the first column is the work item title and the second column is the work item description. The separator is automatically detected."
 msgstr ""
 
-msgid "WorkItem|Items from archived projects will not be shown."
+msgid "WorkItem|Items in archived projects are counted but not shown."
 msgstr ""
 
 msgid "WorkItem|Iteration"

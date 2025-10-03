@@ -118,6 +118,64 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     end
   end
 
+  shared_examples 'composite identity authentication' do
+    context 'with composite identity', :request_store do
+      let_it_be(:oauth_application) { create(:oauth_application) }
+      let_it_be_with_reload(:primary_user) { create(:user, :service_account, composite_identity_enforced: true) }
+      let_it_be(:scoped_user) { create(:user) }
+
+      let(:scopes) { ['api', "user:#{scoped_user.id}"] }
+
+      let(:oauth_access_token) do
+        create(:oauth_access_token,
+          application_id: oauth_application.id,
+          resource_owner_id: primary_user.id,
+          scopes: scopes,
+          organization_id: organization.id)
+      end
+
+      before do
+        set_bearer_token(oauth_access_token.plaintext_token)
+      end
+
+      context 'when the token resource owner has composite_identity_enforced' do
+        context 'when linked composite identity is available' do
+          it 'returns the scoped user' do
+            expect(subject).to eq(scoped_user)
+          end
+
+          it 'sets the scoped user to composite_identity_enforced' do
+            expect(subject.composite_identity_enforced?).to be(true)
+          end
+        end
+
+        context 'when linked composite identity is not available' do
+          before do
+            allow(Gitlab::Auth::Identity).to(receive(:currently_linked).and_return(nil))
+          end
+
+          it 'raises an error' do
+            expect { subject }.to raise_error(::Gitlab::Auth::UnauthorizedError)
+          end
+        end
+      end
+
+      context 'when the token resource owner does not have composite_identity_enforced' do
+        before do
+          primary_user.update!(composite_identity_enforced: false)
+        end
+
+        it 'returns the resource owner user' do
+          expect(subject).to eq(primary_user)
+        end
+
+        it 'does not set the user to composite_identity_enforced' do
+          expect(subject.composite_identity_enforced?).to be(false)
+        end
+      end
+    end
+  end
+
   describe '#find_user_from_bearer_token' do
     context 'with composite CI_JOB_TOKEN (JWT)', :request_store do
       let_it_be(:scoped_user) { create(:user) }
@@ -592,60 +650,8 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
       end
     end
 
-    context 'with composite identity', :request_store do
-      let_it_be(:oauth_application) { create(:oauth_application) }
-      let_it_be_with_reload(:primary_user) { create(:user, :service_account, composite_identity_enforced: true) }
-      let_it_be(:scoped_user) { create(:user) }
-
-      let(:scopes) { ['api', "user:#{scoped_user.id}"] }
-
-      let(:oauth_access_token) do
-        create(:oauth_access_token,
-          application_id: oauth_application.id,
-          resource_owner_id: primary_user.id,
-          scopes: scopes,
-          organization_id: organization.id)
-      end
-
-      before do
-        set_bearer_token(oauth_access_token.plaintext_token)
-      end
-
-      context 'when the token resource owner has composite_identity_enforced' do
-        context 'when linked composite identity is available' do
-          it 'returns the scoped user' do
-            expect(find_user_from_access_token).to eq(scoped_user)
-          end
-
-          it 'sets the scoped user to composite_identity_enforced' do
-            expect(find_user_from_access_token.composite_identity_enforced?).to be(true)
-          end
-        end
-
-        context 'when linked composite identity is not available' do
-          before do
-            allow(Gitlab::Auth::Identity).to(receive(:currently_linked).and_return(nil))
-          end
-
-          it 'raises an error' do
-            expect { find_user_from_access_token }.to raise_error(::Gitlab::Auth::UnauthorizedError)
-          end
-        end
-      end
-
-      context 'when the token resource owner does not have composite_identity_enforced' do
-        before do
-          primary_user.update!(composite_identity_enforced: false)
-        end
-
-        it 'returns the resource owner user' do
-          expect(find_user_from_access_token).to eq(primary_user)
-        end
-
-        it 'does not set the user to composite_identity_enforced' do
-          expect(find_user_from_access_token.composite_identity_enforced?).to be(false)
-        end
-      end
+    it_behaves_like 'composite identity authentication' do
+      subject { find_user_from_access_token }
     end
 
     context 'automatic reuse detection' do
@@ -690,101 +696,111 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
   end
 
   describe '#find_user_from_web_access_token' do
-    before do
-      set_header(described_class::PRIVATE_TOKEN_HEADER, personal_access_token.token)
-    end
-
-    it 'returns exception if token has no user' do
-      allow_any_instance_of(PersonalAccessToken).to receive(:user).and_return(nil)
-
-      expect { find_user_from_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
-    end
-
-    context 'no feed, API, archive or download requests' do
-      it 'returns nil if the request is not RSS' do
-        expect(find_user_from_web_access_token(:rss)).to be_nil
+    context 'with personal access tokens' do
+      before do
+        set_header(described_class::PRIVATE_TOKEN_HEADER, personal_access_token.token)
       end
 
-      it 'returns nil if the request is not ICS' do
-        expect(find_user_from_web_access_token(:ics)).to be_nil
+      it 'returns exception if token has no user' do
+        allow_any_instance_of(PersonalAccessToken).to receive(:user).and_return(nil)
+
+        expect { find_user_from_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
       end
 
-      it 'returns nil if the request is not API' do
-        expect(find_user_from_web_access_token(:api)).to be_nil
-      end
-
-      it 'returns nil if the request is not ARCHIVE' do
-        expect(find_user_from_web_access_token(:archive)).to be_nil
-      end
-
-      it 'returns nil if the request is not DOWNLOAD' do
-        expect(find_user_from_web_access_token(:download)).to be_nil
-      end
-    end
-
-    it 'returns the user for RSS requests' do
-      set_header('SCRIPT_NAME', 'url.atom')
-
-      expect(find_user_from_web_access_token(:rss)).to eq(user)
-    end
-
-    it 'returns the user for ICS requests' do
-      set_header('SCRIPT_NAME', 'url.ics')
-
-      expect(find_user_from_web_access_token(:ics)).to eq(user)
-    end
-
-    it 'returns the user for ARCHIVE requests' do
-      set_header('SCRIPT_NAME', '/-/archive/main.zip')
-
-      expect(find_user_from_web_access_token(:archive)).to eq(user)
-    end
-
-    it 'returns the user for DOWNLOAD requests' do
-      set_header('SCRIPT_NAME', '/-/1.0.0/downloads/main.zip')
-
-      expect(find_user_from_web_access_token(:download)).to eq(user)
-    end
-
-    context 'for API requests' do
-      it 'returns the user' do
-        set_header('SCRIPT_NAME', '/api/endpoint')
-
-        expect(find_user_from_web_access_token(:api)).to eq(user)
-      end
-
-      it 'returns nil if URL does not start with /api/' do
-        set_header('SCRIPT_NAME', '/relative_root/api/endpoint')
-
-        expect(find_user_from_web_access_token(:api)).to be_nil
-      end
-
-      context 'when the token has read_api scope' do
-        let_it_be(:personal_access_token, freeze: true) { create(:personal_access_token, user: user, scopes: ['read_api']) }
-
-        before do
-          set_header('SCRIPT_NAME', '/api/endpoint')
+      context 'no feed, API, archive or download requests' do
+        it 'returns nil if the request is not RSS' do
+          expect(find_user_from_web_access_token(:rss)).to be_nil
         end
 
-        it 'raises InsufficientScopeError by default' do
-          expect { find_user_from_web_access_token(:api) }.to raise_error(Gitlab::Auth::InsufficientScopeError)
+        it 'returns nil if the request is not ICS' do
+          expect(find_user_from_web_access_token(:ics)).to be_nil
         end
 
-        it 'finds the user when the read_api scope is passed' do
-          expect(find_user_from_web_access_token(:api, scopes: [:api, :read_api])).to eq(user)
+        it 'returns nil if the request is not API' do
+          expect(find_user_from_web_access_token(:api)).to be_nil
+        end
+
+        it 'returns nil if the request is not ARCHIVE' do
+          expect(find_user_from_web_access_token(:archive)).to be_nil
+        end
+
+        it 'returns nil if the request is not DOWNLOAD' do
+          expect(find_user_from_web_access_token(:download)).to be_nil
         end
       end
 
-      context 'when relative_url_root is set' do
-        before do
-          stub_config_setting(relative_url_root: '/relative_root')
-        end
+      it 'returns the user for RSS requests' do
+        set_header('SCRIPT_NAME', 'url.atom')
 
+        expect(find_user_from_web_access_token(:rss)).to eq(user)
+      end
+
+      it 'returns the user for ICS requests' do
+        set_header('SCRIPT_NAME', 'url.ics')
+
+        expect(find_user_from_web_access_token(:ics)).to eq(user)
+      end
+
+      it 'returns the user for ARCHIVE requests' do
+        set_header('SCRIPT_NAME', '/-/archive/main.zip')
+
+        expect(find_user_from_web_access_token(:archive)).to eq(user)
+      end
+
+      it 'returns the user for DOWNLOAD requests' do
+        set_header('SCRIPT_NAME', '/-/1.0.0/downloads/main.zip')
+
+        expect(find_user_from_web_access_token(:download)).to eq(user)
+      end
+
+      context 'for API requests' do
         it 'returns the user' do
-          set_header('SCRIPT_NAME', '/relative_root/api/endpoint')
+          set_header('SCRIPT_NAME', '/api/endpoint')
 
           expect(find_user_from_web_access_token(:api)).to eq(user)
         end
+
+        it 'returns nil if URL does not start with /api/' do
+          set_header('SCRIPT_NAME', '/relative_root/api/endpoint')
+
+          expect(find_user_from_web_access_token(:api)).to be_nil
+        end
+
+        context 'when the token has read_api scope' do
+          let_it_be(:personal_access_token, freeze: true) { create(:personal_access_token, user: user, scopes: ['read_api']) }
+
+          before do
+            set_header('SCRIPT_NAME', '/api/endpoint')
+          end
+
+          it 'raises InsufficientScopeError by default' do
+            expect { find_user_from_web_access_token(:api) }.to raise_error(Gitlab::Auth::InsufficientScopeError)
+          end
+
+          it 'finds the user when the read_api scope is passed' do
+            expect(find_user_from_web_access_token(:api, scopes: [:api, :read_api])).to eq(user)
+          end
+        end
+
+        context 'when relative_url_root is set' do
+          before do
+            stub_config_setting(relative_url_root: '/relative_root')
+          end
+
+          it 'returns the user' do
+            set_header('SCRIPT_NAME', '/relative_root/api/endpoint')
+
+            expect(find_user_from_web_access_token(:api)).to eq(user)
+          end
+        end
+      end
+    end
+
+    it_behaves_like 'composite identity authentication' do
+      subject { find_user_from_web_access_token(:api) }
+
+      before do
+        set_header('SCRIPT_NAME', '/api/endpoint')
       end
     end
   end

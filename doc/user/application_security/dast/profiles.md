@@ -100,7 +100,7 @@ To create a site profile:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
-1. Select **New > Site profile**.
+1. Select **New** > **Site profile**.
 1. Complete the fields then select **Save profile**.
 
 The site profile is saved, for use in an on-demand scan.
@@ -306,7 +306,7 @@ To create a scanner profile:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure** > **Security configuration**.
 1. In the **Dynamic Application Security Testing (DAST)** section, select **Manage profiles**.
-1. Select **New > Scanner profile**.
+1. Select **New** > **Scanner profile**.
 1. Complete the form. For details of each field, see [Scanner profile](#scanner-profile).
 1. Select **Save profile**.
 

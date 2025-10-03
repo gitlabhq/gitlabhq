@@ -377,7 +377,7 @@ To create your first stories:
 1. In the upper-left corner, make sure the dropdown list with the current board name shows **Release Planning**.
    If not, from the dropdown list, select that board.
 1. Open an epic by clicking the title of the epic card.
-1. In the **Child issues and epics** section, select **Add > Add a new issue**.
+1. In the **Child issues and epics** section, select **Add** > **Add a new issue**.
 1. Enter the following title for the issue:
 
    ```plaintext

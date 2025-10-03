@@ -280,7 +280,6 @@ RSpec/BeEq:
     - 'ee/spec/presenters/merge_request_approver_presenter_spec.rb'
     - 'ee/spec/presenters/merge_request_presenter_spec.rb'
     - 'ee/spec/presenters/project_member_presenter_spec.rb'
-    - 'ee/spec/requests/api/admin/search/zoekt_spec.rb'
     - 'ee/spec/requests/api/ai/duo_workflows/workflows_spec.rb'
     - 'ee/spec/requests/api/ci/runner_spec.rb'
     - 'ee/spec/requests/api/epic_boards_spec.rb'

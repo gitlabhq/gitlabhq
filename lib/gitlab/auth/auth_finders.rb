@@ -135,7 +135,8 @@ module Gitlab
 
         ::PersonalAccessTokens::LastUsedService.new(access_token).execute
 
-        access_token.user || raise(UnauthorizedError)
+        user = access_token.user || raise(UnauthorizedError)
+        resolve_composite_identity_user(user)
       end
 
       def find_user_from_access_token
