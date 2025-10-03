@@ -119,10 +119,4 @@ RSpec.describe Resolvers::Projects::SnippetsResolver do
   def resolve_snippets(args: {}, context: { current_user: current_user }, obj: project)
     resolve(described_class, obj: obj, args: args, ctx: context)
   end
-
-  def calculate_query_complexity(query_string)
-    query = GraphQL::Query.new(GitlabSchema, query_string)
-    analyzer = GraphQL::Analysis::AST::QueryComplexity
-    GraphQL::Analysis::AST.analyze_query(query, [analyzer]).first
-  end
 end

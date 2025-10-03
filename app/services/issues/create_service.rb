@@ -49,6 +49,7 @@ module Issues
 
     def before_create(issue)
       issue.check_for_spam(user: current_user, action: :create) if perform_spam_check
+      issue.ensure_work_item_description
 
       after_commit_tasks(current_user, issue)
     end

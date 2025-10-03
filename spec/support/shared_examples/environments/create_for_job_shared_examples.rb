@@ -391,12 +391,19 @@ RSpec.shared_examples 'create environment for job' do
           end
         end
 
-        it 'does not change metadata.expanded_environment_name' do
-          expect { subject }.to not_change { job.metadata.expanded_environment_name }
+        context 'when job metadata exists' do
+          before do
+            job.ensure_metadata
+          end
+
+          it 'does not change metadata.expanded_environment_name' do
+            expect { subject }.to not_change { job.metadata.expanded_environment_name }
+          end
         end
 
         context 'when FF `stop_writing_builds_metadata` is disabled' do
           before do
+            job.ensure_metadata
             stub_feature_flags(stop_writing_builds_metadata: false)
           end
 
@@ -429,12 +436,19 @@ RSpec.shared_examples 'create environment for job' do
           end
         end
 
-        it 'does not change metadata.expanded_environment_name' do
-          expect { subject }.to not_change { job.metadata.expanded_environment_name }
+        context 'when job metadata exists' do
+          before do
+            job.ensure_metadata
+          end
+
+          it 'does not change metadata.expanded_environment_name' do
+            expect { subject }.to not_change { job.metadata.expanded_environment_name }
+          end
         end
 
         context 'when FF `stop_writing_builds_metadata` is disabled' do
           before do
+            job.ensure_metadata
             stub_feature_flags(stop_writing_builds_metadata: false)
           end
 
@@ -470,12 +484,19 @@ RSpec.shared_examples 'create environment for job' do
         expect(job.expanded_environment_name).to eq('review/master')
       end
 
-      it 'does not change metadata.expanded_environment_name' do
-        expect { subject }.to not_change { job.metadata.expanded_environment_name }
+      context 'when job metadata exists' do
+        before do
+          job.ensure_metadata
+        end
+
+        it 'does not change metadata.expanded_environment_name' do
+          expect { subject }.to not_change { job.metadata.expanded_environment_name }
+        end
       end
 
       context 'when FF `stop_writing_builds_metadata` is disabled' do
         before do
+          job.ensure_metadata
           stub_feature_flags(stop_writing_builds_metadata: false)
         end
 

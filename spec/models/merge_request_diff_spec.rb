@@ -152,7 +152,7 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
   end
 
   describe '.by_head_commit_sha' do
-    subject(:by_head_commit_sha) { described_class.by_commit_sha(sha) }
+    subject(:by_head_commit_sha) { described_class.by_head_commit_sha(sha) }
 
     context "with given sha equal to the diff's head_commit_sha" do
       let(:sha) { diff_with_commits.head_commit_sha }

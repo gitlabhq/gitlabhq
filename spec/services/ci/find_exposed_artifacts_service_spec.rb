@@ -227,7 +227,6 @@ RSpec.describe Ci::FindExposedArtifactsService, feature_category: :job_artifacts
       def create_job_with_artifacts(options)
         create(:ci_build, pipeline: pipeline, options: options).tap do |job|
           create(:ci_job_artifact, :metadata, job: job)
-          job.metadata.delete
         end
       end
     end

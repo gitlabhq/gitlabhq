@@ -14,13 +14,15 @@ FactoryBot.define do
     # TODO: Remove metadata association when FF `stop_writing_builds_metadata` is removed.
     # https://gitlab.com/gitlab-org/gitlab/-/issues/552065
     metadata do
-      association(
-        :ci_build_metadata,
-        build: instance,
-        config_options: options,
-        config_variables: yaml_variables,
-        strategy: :build
-      )
+      if Feature.disabled?(:stop_writing_builds_metadata, project)
+        association(
+          :ci_build_metadata,
+          build: instance,
+          config_options: options,
+          config_variables: yaml_variables,
+          strategy: :build
+        )
+      end
     end
 
     job_definition do
@@ -123,7 +125,9 @@ FactoryBot.define do
 
     trait :interruptible do
       after(:build) do |processable|
-        processable.metadata.interruptible = true
+        if Feature.disabled?(:stop_writing_builds_metadata, processable.project)
+          processable.metadata.interruptible = true
+        end
 
         next unless processable.job_definition
 

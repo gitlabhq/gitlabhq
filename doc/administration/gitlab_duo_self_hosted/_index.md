@@ -64,9 +64,9 @@ The following tables state:
 
 {{< alert type="note" >}}
 
-To use these features with GitLab Duo Self-Hosted, you must have the Duo Enterprise add-on. This applies regardless
-of whether you can use these features with Duo Core or Duo Pro when
-[GitLab hosts the models and connects to those models through the cloud-based AI gateway](../../user/gitlab_duo/gateway.md).
+You must have the GitLab Duo Enterprise add-on to use these features with GitLab Duo Self-Hosted.
+This applies even if you can use these features with GitLab Duo Core or GitLab Duo Pro
+when GitLab hosts and connects to those models through the cloud-based [AI gateway](../../user/gitlab_duo/gateway.md).
 
 {{< /alert >}}
 

@@ -2,9 +2,16 @@
 
 module WorkItems
   class Description < ApplicationRecord
+    include CacheMarkdownField
+    include Redactable
+
     self.table_name = 'work_item_descriptions'
 
     DESCRIPTION_LENGTH_MAX = 1.megabyte
+
+    cache_markdown_field :description, issuable_reference_expansion_enabled: true
+
+    redact_field :description
 
     belongs_to :work_item
     belongs_to :namespace

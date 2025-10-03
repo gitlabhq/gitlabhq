@@ -103,12 +103,6 @@ export default {
       'setHighlightedRow',
       'toggleLineDiscussions',
     ]),
-    showCommentLeft(line) {
-      return line.left && !line.right;
-    },
-    showCommentRight(line) {
-      return line.right && !line.left;
-    },
     onStartDragging({ event = {}, line }) {
       if (event.target?.parentNode) {
         hide(event.target.parentNode);
@@ -178,12 +172,6 @@ export default {
     },
     getCountBetweenIndex(index) {
       return countLinesInBetween(this.diffLines, index);
-    },
-    getCodeQualityLine(line) {
-      return (
-        (line.left ?? line.right)?.codequality?.[0]?.line ||
-        (line.left ?? line.right)?.sast?.[0]?.line
-      );
     },
     lineDrafts(line, side) {
       return (line[side]?.lineDrafts || []).filter((entry) => entry.isDraft);

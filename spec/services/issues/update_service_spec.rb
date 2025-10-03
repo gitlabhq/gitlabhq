@@ -114,6 +114,65 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
           )
       end
 
+      context 'for work_item_description' do
+        let_it_be_with_reload(:issue) { create(:issue, :with_work_item_description, description: "old") }
+
+        context 'when the issue already has a work item description record' do
+          it_behaves_like 'syncs successfully to work_item_description' do
+            subject { update_issue(opts) }
+          end
+        end
+
+        context 'when the issue has no work item description record' do
+          let_it_be_with_reload(:issue) { create(:issue) }
+
+          it_behaves_like 'syncs successfully to work_item_description' do
+            subject { update_issue(opts) }
+          end
+        end
+
+        context 'when title changes' do
+          let(:opts) { { title: "change" } }
+
+          it 'upserts to sync lock_version' do
+            expect(WorkItems::Description).to receive(:upsert).and_call_original
+
+            update_issue(opts)
+
+            expect(issue.reload.lock_version).to eq(issue.work_item_description.lock_version)
+          end
+        end
+
+        context 'when no description related data changes' do
+          let(:opts) { { state_event: "close" } }
+
+          it 'does not upsert' do
+            expect(WorkItems::Description).not_to receive(:upsert)
+
+            update_issue(opts)
+          end
+        end
+
+        context 'when upserting raises an error' do
+          before do
+            allow(WorkItems::Description).to receive(:upsert).and_raise(ActiveRecord::ActiveRecordError)
+          end
+
+          it 'does not save the updates on the record and tracks the error' do
+            expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
+              a_kind_of(ActiveRecord::ActiveRecordError),
+              hash_including(
+                issue_id: issue.id,
+                message: /^Failed to upsert description/i
+              )
+            )
+
+            expect { update_issue(opts) }.to not_change { issue.reload.description }
+              .and not_change { issue.state_id }
+          end
+        end
+      end
+
       context 'with lock_version' do
         let(:opts) do
           {
@@ -998,6 +1057,25 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
           expect(issue).not_to receive(:check_for_spam)
 
           service.execute(issue)
+        end
+
+        it_behaves_like 'syncs successfully to work_item_description' do
+          before do
+            update_issue(description: "- [x] Task 1\n- [X] Task 2")
+          end
+
+          let(:params) do
+            {
+              update_task: {
+                index: 1,
+                checked: false,
+                line_source: '- [x] Task 1',
+                line_number: 1
+              }
+            }
+          end
+
+          subject { described_class.new(container: project, current_user: user, params: params).execute(issue) }
         end
 
         # At the moment of writting old associations are not necessary for update_task

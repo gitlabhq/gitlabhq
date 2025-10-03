@@ -133,10 +133,4 @@ RSpec.describe 'snippets', feature_category: :source_code_management do
     }
     GRAPHQL
   end
-
-  def calculate_query_complexity(query_string)
-    query = GraphQL::Query.new(GitlabSchema, query_string)
-    analyzer = GraphQL::Analysis::AST::QueryComplexity
-    GraphQL::Analysis::AST.analyze_query(query, [analyzer]).first
-  end
 end

@@ -54,7 +54,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(useLegacyDiffs, ['getDiffFileByHash', 'getCommentFormForDiffFile']),
+    ...mapState(useLegacyDiffs, ['getCommentFormForDiffFile']),
     currentCommentForm() {
       return this.getCommentFormForDiffFile(this.fileHash);
     },

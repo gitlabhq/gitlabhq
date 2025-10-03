@@ -8,7 +8,8 @@ RSpec.describe Gitlab::Usage::EventSelectionRule, feature_category: :service_pin
   end
 
   describe '.key_overrides' do
-    it 'returns the content of the YAML file as a Hash' do
+    it 'returns the content of the YAML file as a Hash',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572900' do
       stub_file_read(Gitlab::UsageDataCounters::HLLRedisCounter::KEY_OVERRIDES_PATH,
         content: 'an_event-filter:[label:foo]: a_legacy_key')
       expect(YAML).to receive(:safe_load).once.and_call_original

@@ -1092,6 +1092,10 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
   end
 
   describe 'metadata support' do
+    before do
+      stub_feature_flags(stop_writing_builds_metadata: false)
+    end
+
     it 'reads YAML variables correctly' do
       expect(bridge.yaml_variables).not_to be_empty
       expect(bridge.metadata).to be_a Ci::BuildMetadata

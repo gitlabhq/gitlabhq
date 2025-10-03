@@ -47,7 +47,10 @@ FactoryBot.define do
       if evaluator.id_tokens
         # TODO: Remove this when FF `stop_writing_builds_metadata` is removed.
         # https://gitlab.com/gitlab-org/gitlab/-/issues/552065
-        build.metadata.write_attribute(:id_tokens, evaluator.id_tokens)
+        if Feature.disabled?(:stop_writing_builds_metadata, build.project)
+          build.metadata.write_attribute(:id_tokens, evaluator.id_tokens)
+        end
+
         next unless build.job_definition
 
         updated_config = build.job_definition.config.merge(id_tokens: evaluator.id_tokens)

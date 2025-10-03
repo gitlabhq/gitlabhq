@@ -41,7 +41,10 @@ FactoryBot.define do
       if updated_options
         # TODO: Remove this when FF `stop_writing_builds_metadata` is removed.
         # https://gitlab.com/gitlab-org/gitlab/-/issues/552065
-        bridge.metadata.write_attribute(:config_options, updated_options)
+        if Feature.disabled?(:stop_writing_builds_metadata, bridge.project)
+          bridge.metadata.write_attribute(:config_options, updated_options)
+        end
+
         next unless bridge.job_definition
 
         updated_config = bridge.job_definition.config.merge(options: updated_options)

@@ -21384,6 +21384,20 @@ CREATE SEQUENCE p_ci_job_messages_id_seq
 
 ALTER SEQUENCE p_ci_job_messages_id_seq OWNED BY p_ci_job_messages.id;
 
+CREATE TABLE p_ci_pipeline_artifact_states (
+    verification_started_at timestamp with time zone,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    pipeline_artifact_id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_retry_count smallint DEFAULT 0,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_ee83b93f85 CHECK ((char_length(verification_failure) <= 255))
+)
+PARTITION BY LIST (partition_id);
+
 CREATE SEQUENCE p_ci_workload_variable_inclusions_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -28444,6 +28458,7 @@ CREATE TABLE vulnerability_occurrences (
     initial_pipeline_id bigint,
     latest_pipeline_id bigint,
     security_project_tracked_context_id bigint,
+    detected_at timestamp with time zone,
     CONSTRAINT check_4a3a60f2ba CHECK ((char_length(solution) <= 7000)),
     CONSTRAINT check_ade261da6b CHECK ((char_length(description) <= 15000)),
     CONSTRAINT check_f602da68dd CHECK ((char_length(cve) <= 48400))
@@ -34346,6 +34361,9 @@ ALTER TABLE ONLY p_ci_job_inputs
 ALTER TABLE ONLY p_ci_job_messages
     ADD CONSTRAINT p_ci_job_messages_pkey PRIMARY KEY (id, partition_id);
 
+ALTER TABLE ONLY p_ci_pipeline_artifact_states
+    ADD CONSTRAINT p_ci_pipeline_artifact_states_pkey PRIMARY KEY (pipeline_artifact_id, partition_id);
+
 ALTER TABLE ONLY p_ci_pipeline_variables
     ADD CONSTRAINT p_ci_pipeline_variables_pkey PRIMARY KEY (id, partition_id);
 
@@ -38969,6 +38987,8 @@ CREATE INDEX index_ci_pipeline_artifacts_failed_verification ON ci_pipeline_arti
 CREATE INDEX index_ci_pipeline_artifacts_needs_verification ON ci_pipeline_artifacts USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
 
 CREATE INDEX index_ci_pipeline_artifacts_on_expire_at ON ci_pipeline_artifacts USING btree (expire_at);
+
+CREATE UNIQUE INDEX index_ci_pipeline_artifacts_on_partition_id_and_id ON ci_pipeline_artifacts USING btree (partition_id, id);
 
 CREATE UNIQUE INDEX index_ci_pipeline_artifacts_on_pipeline_id_and_file_type ON ci_pipeline_artifacts USING btree (pipeline_id, file_type);
 
@@ -46603,6 +46623,8 @@ CREATE TRIGGER assign_p_knowledge_graph_tasks_id_trigger BEFORE INSERT ON p_know
 CREATE TRIGGER assign_zoekt_tasks_id_trigger BEFORE INSERT ON zoekt_tasks FOR EACH ROW EXECUTE FUNCTION assign_zoekt_tasks_id_value();
 
 CREATE TRIGGER chat_names_loose_fk_trigger AFTER DELETE ON chat_names REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
+CREATE TRIGGER ci_pipeline_artifacts_loose_fk_trigger AFTER DELETE ON ci_pipeline_artifacts REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER ci_runner_machines_loose_fk_trigger AFTER DELETE ON ci_runner_machines REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('ci_runner_machines');
 

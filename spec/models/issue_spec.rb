@@ -25,6 +25,7 @@ RSpec.describe Issue, feature_category: :team_planning do
     it { is_expected.to have_one(:sentry_issue) }
     it { is_expected.to have_one(:alert_management_alert) }
     it { is_expected.to have_one(:dates_source).class_name('WorkItems::DatesSource').inverse_of(:work_item) }
+    it { is_expected.to have_one(:work_item_description).class_name('WorkItems::Description').inverse_of(:work_item).autosave(true) }
     it { is_expected.to have_many(:alert_management_alerts).validate(false) }
     it { is_expected.to have_many(:resource_milestone_events) }
     it { is_expected.to have_many(:resource_state_events) }
@@ -2005,6 +2006,42 @@ RSpec.describe Issue, feature_category: :team_planning do
         expect(Projects::OpenIssuesCountService).not_to receive(:new).with(reusable_project)
 
         group_work_item.invalidate_project_counter_caches
+      end
+    end
+  end
+
+  describe 'work_item_description' do
+    context 'on import' do
+      it 'creates a work_item_description record' do
+        issue = build(:issue, project: reusable_project, description: "test")
+        issue.importing = true
+
+        issue.save!
+
+        expect(issue.work_item_description.description).to eq("test")
+      end
+    end
+
+    context 'on create' do
+      it 'does not create the work_item_description record' do
+        issue = build(:issue, project: reusable_project, description: "old")
+
+        issue.save!
+
+        expect(issue.work_item_description).to be_nil
+      end
+    end
+
+    context 'on update' do
+      it 'does not update the work_item_description record' do
+        issue = build(:issue, project: reusable_project, description: "old")
+        issue.ensure_work_item_description
+
+        issue.save!
+        issue.update!(description: "new")
+
+        expect(issue.reload.description).to eq("new")
+        expect(issue.work_item_description.description).to eq("old")
       end
     end
   end

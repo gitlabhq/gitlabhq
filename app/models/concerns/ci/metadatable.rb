@@ -23,7 +23,7 @@ module Ci
       before_validation :ensure_metadata, on: :create, if: :can_write_metadata?
 
       scope :with_project_and_metadata, -> do
-        joins(:metadata).includes(:metadata).preload(:project, :job_definition)
+        preload(:project, :metadata, :job_definition)
       end
 
       def self.any_with_exposed_artifacts?
@@ -157,8 +157,9 @@ module Ci
       valid?
     end
 
+    # metadata has `unknown_timeout_source` as default
     def timeout_source_value
-      (read_from_new_destination? && timeout_source) || metadata&.timeout_source
+      (read_from_new_destination? && timeout_source) || metadata&.timeout_source || 'unknown_timeout_source'
     end
 
     def artifacts_exposed_as

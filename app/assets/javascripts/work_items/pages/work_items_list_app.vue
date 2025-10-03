@@ -1519,7 +1519,7 @@ export default {
         </template>
 
         <template #sidebar-items="{ checkedIssuables }">
-          <div class="gl-h-[calc(100%-57px)] gl-overflow-y-auto">
+          <div class="work-item-bulk-edit-sidebar-wrapper gl-overflow-y-auto">
             <work-item-bulk-edit-sidebar
               v-if="showBulkEditSidebar"
               :checked-items="checkedIssuables"

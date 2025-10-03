@@ -2,6 +2,7 @@
 
 module Issues
   class UpdateService < Issues::BaseService
+    WORK_ITEM_DESCRIPTION_FIELDS = %w[description last_edited_by_id last_edited_at lock_version].freeze
     # NOTE: For Issues::UpdateService, we default perform_spam_check to false, because spam_checking is not
     # necessary in many cases, and we don't want to require every caller to explicitly pass it
     # to disable spam checking.
@@ -114,6 +115,40 @@ module Issues
     private
 
     attr_reader :perform_spam_check
+
+    override :transaction_update
+    def transaction_update(issue, opts = {})
+      return false unless super
+
+      sync_to_work_item_description(issue)
+    end
+
+    override :transaction_update_task
+    def transaction_update_task(issue)
+      return false unless super
+
+      sync_to_work_item_description(issue)
+    end
+
+    def sync_to_work_item_description(issue)
+      return true unless WORK_ITEM_DESCRIPTION_FIELDS.intersection(issue.previous_changes.keys).any?
+
+      WorkItems::Description.upsert({
+        work_item_id: issue.id,
+        namespace_id: issue.namespace_id,
+        description: issue.description,
+        description_html: issue.description_html,
+        last_edited_by_id: issue.last_edited_by_id,
+        last_edited_at: issue.last_edited_at,
+        lock_version: issue.lock_version,
+        cached_markdown_version: issue.cached_markdown_version
+      }, unique_by: [:work_item_id, :namespace_id])
+
+      true
+    rescue StandardError => e
+      Gitlab::ErrorTracking.track_exception(e, issue_id: issue.id, message: "Failed to upsert description: #{e.message}")
+      false
+    end
 
     override :after_update
     def after_update(issue, old_associations)

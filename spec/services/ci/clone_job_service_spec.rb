@@ -111,7 +111,6 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
 
     before do
       job.update!(retried: false, status: :success)
-      job.metadata.update!(interruptible: true)
     end
   end
 
@@ -170,17 +169,18 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
 
       context 'when the job definitions do not exit' do
         before do
+          job.ensure_metadata
           Ci::JobDefinitionInstance.delete_all
           Ci::JobDefinition.delete_all
         end
 
-        it 'creates a new job definition' do
+        it 'creates a new job definition from metadata' do
           expect(job.job_definition).not_to be_present
           expect(new_job.job_definition).to be_present
         end
       end
 
-      context 'when a job definition already exits' do
+      context 'when a job definition for the metadata attributes already exits' do
         let(:config) do
           {
             options: job.metadata.config_options,
@@ -202,8 +202,16 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
         end
 
         before do
+          job.ensure_metadata.update!(
+            config_options: job.options,
+            config_variables: job.yaml_variables,
+            id_tokens: job.id_tokens,
+            interruptible: job.interruptible
+          )
+
           Ci::JobDefinitionInstance.delete_all
           Ci::JobDefinition.fabricate(**attributes).save!
+          job.reload # clear the associated records
         end
 
         it 'attaches an existing job definition' do
@@ -330,6 +338,7 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
         before do
           job.clear_memoization(:read_from_new_destination?)
           job.clear_memoization(:can_write_metadata?)
+          job.ensure_metadata.update!(interruptible: true)
 
           stub_feature_flags(
             stop_writing_builds_metadata: false,

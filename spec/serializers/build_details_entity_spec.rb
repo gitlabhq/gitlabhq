@@ -324,20 +324,21 @@ RSpec.describe BuildDetailsEntity, feature_category: :continuous_integration do
     describe 'metadata timeout fields' do
       subject(:metadata) { serialized_entity[:metadata] }
 
-      it 'returns default values' do
-        expect(metadata[:timeout_human_readable]).to be_nil
-        expect(metadata[:timeout_source]).to eq('unknown_timeout_source')
+      context 'when metadata exists' do
+        before do
+          stub_feature_flags(stop_writing_builds_metadata: false)
+        end
+
+        it 'returns default values' do
+          expect(metadata[:timeout_human_readable]).to be_nil
+          expect(metadata[:timeout_source]).to eq('unknown_timeout_source')
+        end
       end
 
       context 'when build.metadata does not exist' do
-        before do
-          build.metadata.delete
-          build.reload
-        end
-
         it 'returns nil values' do
           expect(metadata[:timeout_human_readable]).to be_nil
-          expect(metadata[:timeout_source]).to be_nil
+          expect(metadata[:timeout_source]).to eq('unknown_timeout_source')
         end
       end
 

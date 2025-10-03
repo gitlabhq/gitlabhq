@@ -233,6 +233,12 @@ module Import
             columns: { "author_id" => "author_id", "updated_by_id" => "updated_by_id",
                        "closed_by_id" => "closed_by_id", "last_edited_by_id" => "last_edited_by_id" }
           }
+        },
+        'WorkItems::Description' => {
+          1 => {
+            model: WorkItems::Description,
+            columns: { "last_edited_by_id" => "last_edited_by_id" }
+          }
         }
       }.freeze
 

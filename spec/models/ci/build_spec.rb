@@ -188,7 +188,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     describe 'with_secure_reports_from_metadata_config_options' do
       let_it_be(:pipeline) { create(:ci_empty_pipeline) }
       let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
-      let_it_be_with_refind(:build_metadata) { build.metadata }
+      let_it_be_with_refind(:build_metadata) { build.ensure_metadata.tap(&:save!) }
       let(:job_types) { %w[sast secret_detection] }
 
       subject(:query) { described_class.with_secure_reports_from_metadata_config_options(job_types) }
@@ -2313,8 +2313,16 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       expect(build.options['image']).to be_nil
     end
 
-    it 'persist data in build metadata' do
-      expect(build.metadata.read_attribute(:config_options)).to eq(options.symbolize_keys)
+    context 'when allowed to write metadata' do
+      before do
+        stub_feature_flags(stop_writing_builds_metadata: false)
+      end
+
+      let(:build) { create(:ci_build, pipeline: pipeline, yaml_variables: []) }
+
+      it 'persist data in build metadata' do
+        expect(build.metadata.read_attribute(:config_options)).to eq(options.symbolize_keys)
+      end
     end
 
     it 'does not persist data in build' do
@@ -4028,8 +4036,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     it_behaves_like 'having consistent representation'
 
-    it 'persist data in build metadata' do
-      expect(build.metadata.read_attribute(:config_variables)).not_to be_nil
+    context 'when allowed to write to metadata' do
+      before do
+        stub_feature_flags(stop_writing_builds_metadata: false)
+      end
+
+      it 'persist data in build metadata' do
+        expect(build.metadata.read_attribute(:config_variables)).not_to be_nil
+      end
     end
 
     it 'does not persist data in build' do
@@ -5089,6 +5103,10 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   end
 
   it_behaves_like 'a degenerable job' do
+    before do
+      stub_feature_flags(stop_writing_builds_metadata: false)
+    end
+
     subject(:job) { create(:ci_build, pipeline: pipeline) }
   end
 

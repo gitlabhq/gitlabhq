@@ -128,6 +128,7 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
     subject(:set_options) { processable.options = options }
 
     before do
+      processable.ensure_metadata
       processable.write_attribute(:options, { script: 'echo something' })
     end
 
@@ -164,6 +165,7 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
     subject(:set_yaml_variables) { processable.yaml_variables = yaml_variables }
 
     before do
+      processable.ensure_metadata
       processable.write_attribute(:yaml_variables, [{ key: 'VAR', value: 'something' }])
     end
 
@@ -273,6 +275,8 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
       it { is_expected.to be_nil }
 
       it 'does not change job timeout nor metadata timeout values' do
+        processable.ensure_metadata
+
         expect { update_timeout_state }
           .to not_change { processable.read_attribute(:timeout) }
           .and not_change { processable.read_attribute(:timeout_source) }
@@ -297,6 +301,8 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
       end
 
       it 'does not change metadata timeout values' do
+        processable.ensure_metadata
+
         expect { update_timeout_state }
           .to not_change { processable.metadata.timeout }
           .and not_change { processable.metadata.timeout_source }
@@ -305,6 +311,7 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
       context 'when FF `stop_writing_builds_metadata` is disabled' do
         before do
           stub_feature_flags(stop_writing_builds_metadata: false)
+          processable.ensure_metadata
         end
 
         it { is_expected.to be(true) }
@@ -345,15 +352,21 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
 
     subject(:timeout_source_value) { job.timeout_source_value }
 
-    it { is_expected.to eq('unknown_timeout_source') }
+    context 'when metadata exists' do
+      before do
+        job.ensure_metadata.save!
+      end
+
+      it { is_expected.to eq('unknown_timeout_source') }
+    end
 
     context 'when metadata does not exist' do
       before do
-        job.metadata.delete
+        job.metadata&.delete
         job.reload
       end
 
-      it { is_expected.to be_nil }
+      it { is_expected.to eq('unknown_timeout_source') }
     end
 
     context 'when job timeout_source is present' do
@@ -417,6 +430,8 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
     end
 
     it 'does not change metadata.debug_trace_enabled' do
+      processable.ensure_metadata
+
       expect { enable_debug_trace! }
         .to not_change { processable.metadata.debug_trace_enabled }
     end
@@ -424,6 +439,7 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
     context 'when FF `stop_writing_builds_metadata` is disabled' do
       before do
         stub_feature_flags(stop_writing_builds_metadata: false)
+        processable.ensure_metadata
       end
 
       it 'sets metadata.debug_trace_enabled to true' do
@@ -440,7 +456,10 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
     shared_examples 'when job debug_trace_enabled is nil' do
       context 'when metadata.debug_trace_enabled is true' do
         before do
-          processable.metadata.update!(debug_trace_enabled: true)
+          processable.ensure_metadata.update!(
+            debug_trace_enabled: true,
+            config_options: { image: 'image:1.0' } # job is not degenerated
+          )
         end
 
         it { is_expected.to be(true) }
@@ -448,7 +467,10 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
 
       context 'when metadata.debug_trace_enabled is false' do
         before do
-          processable.metadata.update!(debug_trace_enabled: false)
+          processable.ensure_metadata.update!(
+            debug_trace_enabled: false,
+            config_options: { image: 'image:1.0' } # job is not degenerated
+          )
         end
 
         it { is_expected.to be(false) }
@@ -458,7 +480,7 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
         before do
           # Very old jobs populated this column instead of metadata
           processable.update_column(:options, '{}')
-          processable.metadata.delete
+          processable.metadata&.delete
           processable.reload
         end
 
@@ -571,6 +593,10 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
 
     subject(:set_id_tokens) { processable.id_tokens = new_id_tokens }
 
+    before do
+      processable.ensure_metadata.save!
+    end
+
     it 'does not change metadata.id_tokens' do
       expect { set_id_tokens }
         .to not_change { processable.metadata.id_tokens }
@@ -596,7 +622,7 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
 
     context 'when metadata exit_code is present' do
       before do
-        processable.metadata.write_attribute(:exit_code, 1)
+        processable.ensure_metadata.write_attribute(:exit_code, 1)
       end
 
       it { is_expected.to eq(1) }
@@ -627,7 +653,7 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
 
     before do
       processable.write_attribute(:exit_code, existing_exit_code)
-      processable.metadata.write_attribute(:exit_code, existing_exit_code)
+      processable.ensure_metadata.write_attribute(:exit_code, existing_exit_code)
     end
 
     it 'does not change job exit_code nor metadata exit_code value' do
@@ -714,6 +740,8 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
 
   describe '#interruptible=' do
     it 'does not change metadata.interruptible' do
+      processable.ensure_metadata
+
       expect { processable.interruptible = true }
         .to not_change { processable.metadata.interruptible }
     end
@@ -721,6 +749,7 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
     context 'when FF `stop_writing_builds_metadata` is disabled' do
       before do
         stub_feature_flags(stop_writing_builds_metadata: false)
+        processable.ensure_metadata
       end
 
       it 'sets the value into metadata.interruptible' do

@@ -103,7 +103,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(useLegacyDiffs, ['latestDiff', 'diffHasExpandedDiscussions', 'diffHasDiscussions']),
+    ...mapState(useLegacyDiffs, ['diffHasExpandedDiscussions', 'diffHasDiscussions']),
     ...mapState(useNotes, ['getNoteableData']),
     diffContentIDSelector() {
       return fileContentsId(this.diffFile);

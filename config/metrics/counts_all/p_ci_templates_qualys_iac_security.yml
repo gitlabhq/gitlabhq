@@ -4,19 +4,21 @@ description: Count of distinct projects that included the Qualys-IaC-Security.gi
 product_group: static_analysis
 value_type: number
 status: active
-milestone: "14.7"
+milestone: '14.7'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77362
 time_frame:
 - 28d
 - 7d
-data_source: redis_hll
+data_source: internal_events
 data_category: optional
-instrumentation_class: RedisHLLMetric
 performance_indicator_type: []
 tiers:
 - free
 - premium
 - ultimate
-options:
-  events:
-    - p_ci_templates_qualys_iac_security
+events:
+- name: ci_template_included
+  unique: project.id
+  filter:
+    label: qualys_iac_security
+    property: 'false'

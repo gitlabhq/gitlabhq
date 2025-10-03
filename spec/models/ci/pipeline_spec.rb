@@ -4279,7 +4279,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
         context 'when the environment is linked via Environments::Job instead of CI metadata' do
           before do
-            job.metadata.destroy!
+            job.metadata&.destroy!
           end
 
           it 'returns the environment' do
@@ -4292,7 +4292,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
           before do
             job.job_environment.destroy!
-            job.metadata.update!(expanded_environment_name: job.expanded_environment_name)
+            job.ensure_metadata.update!(expanded_environment_name: job.expanded_environment_name)
           end
 
           it 'includes environments from both sources' do

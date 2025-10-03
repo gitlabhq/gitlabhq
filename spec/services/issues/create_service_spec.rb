@@ -220,6 +220,13 @@ RSpec.describe Issues::CreateService, feature_category: :team_planning do
         end
       end
 
+      it_behaves_like 'syncs successfully to work_item_description' do
+        let(:opts) { { title: "Hello", description: "Hello World" } }
+        let(:issue) { result.payload[:issue] }
+
+        subject(:result) { service.execute }
+      end
+
       context 'when skip_system_notes is true' do
         let(:issue) { described_class.new(container: project, current_user: user, params: opts).execute(skip_system_notes: true) }
 

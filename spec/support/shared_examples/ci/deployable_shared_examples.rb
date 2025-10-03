@@ -614,7 +614,7 @@ RSpec.shared_examples 'a deployable job' do
 
         context 'when job metadata has already persisted the expanded environment name' do
           before do
-            job.metadata.expanded_environment_name = 'review/foo'
+            job.ensure_metadata.expanded_environment_name = 'review/foo'
           end
 
           it 'returns a persisted expanded environment name without a list of variables' do
@@ -672,7 +672,7 @@ RSpec.shared_examples 'a deployable job' do
 
         context 'when the job metadata has the namespace persisted' do
           before do
-            job.metadata.expanded_environment_name = 'name-from-metadata'
+            job.ensure_metadata.expanded_environment_name = 'name-from-metadata'
           end
 
           it { is_expected.to eq('name-from-job-env') }
@@ -680,7 +680,7 @@ RSpec.shared_examples 'a deployable job' do
 
         context 'when the job metadata does not exist' do
           before do
-            job.metadata.destroy!
+            job.metadata&.destroy!
           end
 
           it { is_expected.to eq('name-from-job-env') }

@@ -257,7 +257,8 @@
 
     .panel-content-inner,
     .vue-portal-target .work-item-drawer-content {
-      height: calc(100% - #{$header-height} - #{$gl-spacing-scale-3});
+      --panel-content-inner-height: calc(100% - #{$header-height} - #{$gl-spacing-scale-3});
+      height: var(--panel-content-inner-height);
 
       @apply gl-overflow-y-auto gl-overflow-x-hidden;
       scrollbar-color: var(--gl-color-neutral-400) transparent;

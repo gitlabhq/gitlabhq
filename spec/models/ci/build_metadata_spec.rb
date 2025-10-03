@@ -21,6 +21,10 @@ RSpec.describe Ci::BuildMetadata, feature_category: :continuous_integration do
   let(:job) { create(:ci_build, pipeline: pipeline, runner: runner) }
   let(:metadata) { job.metadata }
 
+  before do
+    stub_feature_flags(stop_writing_builds_metadata: false)
+  end
+
   it_behaves_like 'having unique enum values'
 
   it { is_expected.to belong_to(:build) }

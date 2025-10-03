@@ -28,6 +28,10 @@ RSpec.describe Security::SecurityJobsFinder, feature_category: :vulnerability_ma
       end
 
       context 'with empty definition' do
+        before_all do
+          stub_feature_flags(stop_writing_builds_metadata: false)
+        end
+
         let_it_be(:sast_build) { create(:ci_build, :without_job_definition, :sast, pipeline: pipeline) }
         let_it_be(:container_scanning_build) { create(:ci_build, :without_job_definition, :container_scanning, pipeline: pipeline) }
         let_it_be(:dast_build) { create(:ci_build, :without_job_definition, :dast, pipeline: pipeline) }
