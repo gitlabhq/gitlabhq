@@ -577,7 +577,7 @@
       @apply gl-left-5 #{!important};
       top: var(--header-height);
       width: calc(100% - #{$gl-spacing-scale-5 * 2});
-      height: calc(100% - var(--system-header-height) - var(--performance-bar-height) - var(--header-height) - var(--ai-panel-height));
+      height: calc(100% - var(--system-header-height) - var(--performance-bar-height) - var(--header-height) - var(--ai-panel-height) + 0.5rem); // 0.5rem is to balance the -0.25rem top margin
       z-index: 999;
     }
   }

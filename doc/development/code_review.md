@@ -613,6 +613,10 @@ experience, refactors the existing code). Then:
   them. ("What do you think about using a custom validator here?")
 - Seek to understand the author's perspective.
 - Check out the branch, and test the changes locally. You can decide how much manual testing you want to perform.
+  - If the merge request requires significant GDK modifications (such as adding new services, modifying environment variables, or complex configuration changes), consider these approaches:
+    - **Skip local testing** and perform a thorough code review instead, then request a domain expert from the author's team to do local verification.
+    - **Request additional verification** such as screenshots, videos, or detailed testing steps from the author.
+    - **Identify the minimal change** needed to trigger the code path (for example, setting a condition to `true` in the code) rather than full environment setup.
   Your testing might result in opportunities to add automated tests.
 - If you don't understand a piece of code, _say so_. There's a good chance
   someone else would be confused by it as well.

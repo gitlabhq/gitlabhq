@@ -52,7 +52,9 @@ GET /groups/:id/protected_environments
 | `id` | integer or string | yes | The ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the group maintained by the authenticated user. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/protected_environments/"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/protected_environments/"
 ```
 
 Example response:
@@ -89,7 +91,9 @@ GET /groups/:id/protected_environments/:name
 | `name`    | string | yes    | The deployment tier of the protected environment. One of `production`, `staging`, `testing`, `development`, or `other`. Read more about [deployment tiers](../ci/environments/_index.md#deployment-tier-of-environments).|
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/protected_environments/production"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/protected_environments/production"
 ```
 
 Example response:
@@ -129,7 +133,11 @@ The assignable `user_id` are the users who belong to the given group with the Ma
 The assignable `group_id` are the subgroups under the given group.
 
 ```shell
-curl --header 'Content-Type: application/json' --request POST --data '{"name": "production", "deploy_access_levels": [{"group_id": 9899826}]}' --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/22034114/protected_environments"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/groups/22034114/protected_environments" \
+  --data '{"name": "production", "deploy_access_levels": [{"group_id": 9899826}]}'
 ```
 
 Example response:
@@ -153,10 +161,18 @@ Example response:
 An example with multiple approval rules:
 
 ```shell
-curl --header 'Content-Type: application/json' --request POST \
-     --data '{"name": "production", "deploy_access_levels": [{"group_id": 138}], "approval_rules": [{"group_id": 134}, {"group_id": 135, "required_approvals": 2}]}' \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/128/protected_environments"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/groups/128/protected_environments" \
+  --data '{
+    "name": "production", 
+    "deploy_access_levels": [{"group_id": 138}], 
+    "approval_rules": [
+      {"group_id": 134}, 
+      {"group_id": 135, "required_approvals": 2}
+    ]
+  }'
 ```
 
 In this configuration, the operator group `"group_id": 138` can execute the deployment job
@@ -197,10 +213,11 @@ To delete:
 ### Example: Create a `deploy_access_level` record
 
 ```shell
-curl --header 'Content-Type: application/json' --request PUT \
-     --data '{"deploy_access_levels": [{"group_id": 9899829, access_level: 40}]}' \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/22034114/protected_environments/production"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/groups/22034114/protected_environments/production" \
+  --data '{"deploy_access_levels": [{"group_id": 9899829, "access_level": 40}]}'
 ```
 
 Example response:
@@ -225,9 +242,11 @@ Example response:
 ### Example: Update a `deploy_access_level` record
 
 ```shell
-curl --header 'Content-Type: application/json' --request PUT \
-     --data '{"deploy_access_levels": [{"id": 12, "group_id": 22034120}]}' \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/22034114/protected_environments/production"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/groups/22034114/protected_environments/production" \
+  --data '{"deploy_access_levels": [{"id": 12, "group_id": 22034120}]}'
 ```
 
 ```json
@@ -250,9 +269,11 @@ curl --header 'Content-Type: application/json' --request PUT \
 ### Example: Delete a `deploy_access_level` record
 
 ```shell
-curl --header 'Content-Type: application/json' --request PUT \
-     --data '{"deploy_access_levels": [{"id": 12, "_destroy": true}]}' \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/22034114/protected_environments/production"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/groups/22034114/protected_environments/production" \
+  --data '{"deploy_access_levels": [{"id": 12, "_destroy": true}]}'
 ```
 
 Example response:
@@ -268,10 +289,11 @@ Example response:
 ### Example: Create an `approval_rule` record
 
 ```shell
-curl --header 'Content-Type: application/json' --request PUT \
-     --data '{"approval_rules": [{"group_id": 134, "required_approvals": 1}]}' \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/22034114/protected_environments/production"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/groups/22034114/protected_environments/production" \
+  --data '{"approval_rules": [{"group_id": 134, "required_approvals": 1}]}'
 ```
 
 Example response:
@@ -296,9 +318,11 @@ Example response:
 ### Example: Update an `approval_rule` record
 
 ```shell
-curl --header 'Content-Type: application/json' --request PUT \
-     --data '{"approval_rules": [{"id": 38, "group_id": 135, "required_approvals": 2}]}' \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/22034114/protected_environments/production"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/groups/22034114/protected_environments/production" \
+  --data '{"approval_rules": [{"id": 38, "group_id": 135, "required_approvals": 2}]}'
 ```
 
 ```json
@@ -321,9 +345,11 @@ curl --header 'Content-Type: application/json' --request PUT \
 ### Example: Delete an `approval_rule` record
 
 ```shell
-curl --header 'Content-Type: application/json' --request PUT \
-     --data '{"approval_rules": [{"id": 38, "_destroy": true}]}' \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/22034114/protected_environments/production"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/groups/22034114/protected_environments/production" \
+  --data '{"approval_rules": [{"id": 38, "_destroy": true}]}'
 ```
 
 Example response:
@@ -349,7 +375,9 @@ DELETE /groups/:id/protected_environments/:name
 | `name`    | string | yes    | The deployment tier of the protected environment. One of `production`, `staging`, `testing`, `development`, or `other`. Read more about [deployment tiers](../ci/environments/_index.md#deployment-tier-of-environments).|
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/protected_environments/staging"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/5/protected_environments/staging"
 ```
 
 The response should return a 200 code.

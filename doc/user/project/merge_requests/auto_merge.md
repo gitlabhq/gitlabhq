@@ -82,15 +82,16 @@ To do this from the GitLab user interface:
 1. Scroll to the merge request reports section.
 1. Optional. Select your desired merge options, such as **Delete source branch**,
    **Squash commits**, or **Edit commit message**.
-1. Review the contents of the merge request widget. If it contains an
-   [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically), confirm
-   that the issue should close when this work merges:
-   ![This merge request closes issue #2754.](img/closing_pattern_v17_4.png)
-1. Select **Auto-merge**.
+1. Review the contents of the merge request reports section. If it contains an
+   [issue closing pattern](../issues/managing_issues.md#closing-issues-automatically),
+   confirm that the issue should close when the merge request merges:
 
-Commenting on a merge request after you select **Auto-merge**,
-but before the pipeline completes, blocks the merge until you
-resolve all existing threads.
+   ![This merge request closes issue #2754.](img/closing_pattern_v18_5.png)
+
+1. Select **Set to auto-merge**.
+
+If you comment on the merge request after setting it to auto-merge,
+but before the pipeline completes, the merge is blocked until you resolve all existing threads.
 
 ## Cancel an auto-merge
 
@@ -106,7 +107,7 @@ To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code** > **Merge requests**.
-1. Select the merge request to edit.
+1. Select your desired merge request.
 1. Scroll to the merge request reports section.
 1. Select **Cancel auto-merge**.
 
