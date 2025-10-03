@@ -71799,6 +71799,9 @@ msgstr[1] ""
 msgid "VirtualRegistry|-- artifacts"
 msgstr ""
 
+msgid "VirtualRegistry|Actions"
+msgstr ""
+
 msgid "VirtualRegistry|Add upstream"
 msgstr ""
 
@@ -71882,6 +71885,9 @@ msgstr ""
 msgid "VirtualRegistry|Edit upstream"
 msgstr ""
 
+msgid "VirtualRegistry|Edit upstream %{name}"
+msgstr ""
+
 msgid "VirtualRegistry|Enter a personal access token for GitLab-hosted upstreams."
 msgstr ""
 
@@ -71904,6 +71910,9 @@ msgid "VirtualRegistry|Failed to delete cache entry."
 msgstr ""
 
 msgid "VirtualRegistry|Failed to fetch cache entries."
+msgstr ""
+
+msgid "VirtualRegistry|Failed to fetch list of maven upstream registries."
 msgstr ""
 
 msgid "VirtualRegistry|Failed to fetch list of maven virtual registries."
@@ -72053,6 +72062,9 @@ msgid "VirtualRegistry|URL"
 msgstr ""
 
 msgid "VirtualRegistry|Updated %{date}"
+msgstr ""
+
+msgid "VirtualRegistry|Upstream"
 msgstr ""
 
 msgid "VirtualRegistry|Upstream URL"
