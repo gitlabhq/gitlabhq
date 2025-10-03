@@ -71,7 +71,7 @@ See: https://docs.gitlab.com/user/markdown/#tables
 | Tool       | Language | Command        | Regex pattern |
 |------------|----------|----------------|---------------|
 | pytest-cov | Python   | `pytest --cov` | `/TOTAL.*? (100(?:\.0+)?\%\|[1-9]?\d(?:\.\d+)?\%)$/` |
-| Simplecov  | Ruby     | `rspec spec`   | `/(?:LOC\s\(\d+\.\d+%\|Line Coverage:\s\d+\.\d+%)/` |
+| Simplecov-html  | Ruby     | `rspec spec`   | `/Line\sCoverage:\s\d+\.\d+%/` |
 
 {{< /tab >}}
 

@@ -20,6 +20,8 @@ module Gitlab
       gon.markdown_automatic_lists      = current_user&.markdown_automatic_lists
       gon.markdown_maintain_indentation = current_user&.markdown_maintain_indentation
       gon.math_rendering_limits_enabled = Gitlab::CurrentSettings.math_rendering_limits_enabled
+      gon.allow_immediate_namespaces_deletion =
+        Gitlab::CurrentSettings.allow_immediate_namespaces_deletion_for_user?(current_user)
 
       # Sentry configurations for the browser client are done
       # via `Gitlab::CurrentSettings` from the Admin panel:
@@ -104,7 +106,6 @@ module Gitlab
       push_frontend_feature_flag(:whats_new_featured_carousel)
       push_frontend_feature_flag(:extensible_reference_filters, current_user)
       push_frontend_feature_flag(:paneled_view, current_user)
-      push_frontend_feature_flag(:disallow_immediate_deletion, current_user)
       push_frontend_feature_flag(:image_lightboxes, current_user)
 
       # Expose the Project Studio user preference as if it were a feature flag

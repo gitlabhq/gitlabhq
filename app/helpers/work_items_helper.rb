@@ -65,7 +65,8 @@ module WorkItemsHelper
       max_attachment_size: number_to_human_size(Gitlab::CurrentSettings.max_attachment_size.megabytes),
       can_read_crm_organization: can?(current_user, :read_crm_organization, resource_parent.crm_group).to_s,
       rss_path: rss_path_for(resource_parent),
-      calendar_path: calendar_path_for(resource_parent)
+      calendar_path: calendar_path_for(resource_parent),
+      has_projects: has_group_projects?(resource_parent).to_s
     }
   end
 
@@ -125,5 +126,11 @@ module WorkItemsHelper
     elsif resource_parent.is_a?(Project)
       resource_parent.root_namespace.issue_repositioning_disabled?
     end
+  end
+
+  def has_group_projects?(group)
+    return false unless group.is_a?(Group)
+
+    GroupProjectsFinder.new(group: group, current_user: current_user).execute.exists?
   end
 end

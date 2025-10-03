@@ -79,6 +79,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
     canEdit,
     exportCsvPath,
     isIssueRepositioningDisabled,
+    hasProjects,
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
@@ -170,6 +171,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
       exportCsvPath,
       showNewIssueLink: parseBoolean(showNewWorkItem),
       isIssueRepositioningDisabled: parseBoolean(isIssueRepositioningDisabled),
+      hasProjects: parseBoolean(hasProjects),
     },
     mounted() {
       performanceMarkAndMeasure({

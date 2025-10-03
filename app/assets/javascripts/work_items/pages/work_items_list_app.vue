@@ -236,6 +236,7 @@ export default {
     'canImportWorkItems',
     'canEdit',
     'isIssueRepositioningDisabled',
+    'hasProjects',
   ],
   props: {
     eeWorkItemUpdateCount: {
@@ -876,6 +877,12 @@ export default {
         text: s__('WorkItem|Import CSV'),
       };
     },
+    showProjectNewWorkItem() {
+      return this.showNewWorkItem && !this.isGroupIssuesList;
+    },
+    showGroupNewWorkItem() {
+      return this.isGroupIssuesList && this.hasProjects;
+    },
   },
   watch: {
     eeWorkItemUpdateCount() {
@@ -1408,7 +1415,7 @@ export default {
               {{ __('Bulk edit') }}
             </gl-button>
             <create-work-item-modal
-              v-if="showNewWorkItem && !isGroupIssuesList"
+              v-if="showProjectNewWorkItem"
               :allowed-work-item-types="allowedWorkItemTypes"
               :always-show-work-item-type-select="!isEpicsList"
               :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
@@ -1418,7 +1425,7 @@ export default {
               @workItemCreated="refetchItems"
             />
             <new-resource-dropdown
-              v-if="showNewWorkItem && isGroupIssuesList"
+              v-if="showGroupNewWorkItem"
               :query="$options.searchProjectsQuery"
               :query-variables="newIssueDropdownQueryVariables"
               :extract-projects="extractProjects"
@@ -1462,7 +1469,7 @@ export default {
                 @workItemCreated="refetchItems"
               />
               <new-resource-dropdown
-                v-if="showNewWorkItem && isGroupIssuesList"
+                v-if="isGroupIssuesList"
                 :query="$options.searchProjectsQuery"
                 :query-variables="newIssueDropdownQueryVariables"
                 :extract-projects="extractProjects"
@@ -1579,11 +1586,21 @@ export default {
       <empty-state-without-any-issues :export-csv-path-with-query="exportCsvPathWithQuery">
         <template #new-issue-button>
           <create-work-item-modal
+            v-if="showProjectNewWorkItem"
+            :allowed-work-item-types="allowedWorkItemTypes"
+            :always-show-work-item-type-select="!isEpicsList"
             :creation-context="$options.CREATION_CONTEXT_LIST_ROUTE"
             :full-path="rootPageFullPath"
             :is-group="isGroup"
             :preselected-work-item-type="preselectedWorkItemType"
             @workItemCreated="handleWorkItemCreated"
+          />
+          <new-resource-dropdown
+            v-if="showGroupNewWorkItem"
+            :query="$options.searchProjectsQuery"
+            :query-variables="newIssueDropdownQueryVariables"
+            :extract-projects="extractProjects"
+            :group-id="groupId"
           />
         </template>
         <template #import-export-buttons

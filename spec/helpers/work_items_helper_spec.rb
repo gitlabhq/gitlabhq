@@ -97,7 +97,8 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
               sort: 'closest_future_date'),
             can_import_work_items: "true",
             can_edit: "true",
-            export_csv_path: export_csv_project_issues_path(project)
+            export_csv_path: export_csv_project_issues_path(project),
+            has_projects: 'false'
           }
         )
       end
@@ -110,7 +111,8 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
           expect(helper.work_items_data(group_project, current_user)).to include(
             {
               group_path: group_project.group.full_path,
-              show_new_work_item: 'true'
+              show_new_work_item: 'true',
+              has_projects: 'false'
             }
           )
         end
@@ -215,6 +217,36 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
           it 'returns is_issue_repositioning_disabled as false' do
             expect(helper.work_items_data(group, current_user)).to include(
               { is_issue_repositioning_disabled: 'false' }
+            )
+          end
+        end
+      end
+
+      describe 'has_projects' do
+        context 'when a group has a project' do
+          before do
+            expect_next_instance_of(GroupProjectsFinder) do |finder|
+              allow(finder).to receive_message_chain(:execute, :exists?).and_return(true)
+            end
+          end
+
+          it 'returns true' do
+            expect(helper.work_items_data(group, current_user)).to include(
+              { has_projects: 'true' }
+            )
+          end
+        end
+
+        context 'when a group has no projects' do
+          before do
+            expect_next_instance_of(GroupProjectsFinder) do |finder|
+              allow(finder).to receive_message_chain(:execute, :exists?).and_return(false)
+            end
+          end
+
+          it 'returns false' do
+            expect(helper.work_items_data(group, current_user)).to include(
+              { has_projects: 'false' }
             )
           end
         end

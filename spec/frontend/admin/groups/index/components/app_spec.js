@@ -140,6 +140,8 @@ describe('AdminGroupsApp', () => {
   });
 
   it('allows deleting immediately on Inactive tab', async () => {
+    window.gon = { allow_immediate_namespaces_deletion: true };
+
     await createComponent({
       mountFn: mountExtended,
       handlers: [

@@ -173,7 +173,7 @@ export default {
 <template>
   <bubble-menu
     data-testid="code-block-bubble-menu"
-    class="gl-rounded-base gl-bg-overlap gl-shadow"
+    class="gl-rounded-lg gl-bg-overlap gl-shadow"
     plugin-key="bubbleMenuCodeBlock"
     :should-show="shouldShow"
     :tippy-options="tippyOptions()"

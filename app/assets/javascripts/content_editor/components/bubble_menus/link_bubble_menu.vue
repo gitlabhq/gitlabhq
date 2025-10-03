@@ -213,7 +213,7 @@ export default {
   >
     <bubble-menu
       data-testid="link-bubble-menu"
-      class="gl-rounded-base gl-bg-dropdown gl-shadow"
+      class="gl-rounded-lg gl-bg-dropdown gl-shadow"
       plugin-key="bubbleMenuLink"
       :should-show="shouldShow"
       :tippy-options="$options.tippyOptions"

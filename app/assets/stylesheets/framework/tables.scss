@@ -71,3 +71,9 @@ table {
 .gl-table-no-top-border th {
   border-top: 0;
 }
+
+// If a user makes a table that only uses the thead, then
+// let's make sure it has a bottom border.
+.md table:not(:has(tbody)) thead tr {
+  @apply gl-border-b;
+}

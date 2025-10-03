@@ -1989,6 +1989,9 @@ msgstr ""
 msgid "/day"
 msgstr ""
 
+msgid "0"
+msgstr ""
+
 msgid "0 B"
 msgstr ""
 
@@ -2123,6 +2126,9 @@ msgstr ""
 msgid "20-29 contributions"
 msgstr ""
 
+msgid "29"
+msgstr ""
+
 msgid "2FA"
 msgstr ""
 
@@ -2184,6 +2190,9 @@ msgid "503|Please contact your GitLab administrator if you think this is a mista
 msgstr ""
 
 msgid "503|Try refreshing the page, or going back and attempting the action again."
+msgstr ""
+
+msgid "99"
 msgstr ""
 
 msgid ":%{startLine} to %{endLine}"
@@ -10229,7 +10238,13 @@ msgstr ""
 msgid "BillingPlans|%{group_name} is currently using the %{plan_name}"
 msgstr ""
 
+msgid "BillingPlans|10 GiB adjustable storage"
+msgstr ""
+
 msgid "BillingPlans|10,000 CI/CD minutes per month"
+msgstr ""
+
+msgid "BillingPlans|10,000 compute minutes per month"
 msgstr ""
 
 msgid "BillingPlans|10000 compute minutes"
@@ -10241,10 +10256,16 @@ msgstr ""
 msgid "BillingPlans|400 compute minutes"
 msgstr ""
 
+msgid "BillingPlans|400 compute minutes per month"
+msgstr ""
+
 msgid "BillingPlans|5 users per top-level group"
 msgstr ""
 
 msgid "BillingPlans|50,000 CI/CD minutes per month"
+msgstr ""
+
+msgid "BillingPlans|50,000 compute minutes per month"
 msgstr ""
 
 msgid "BillingPlans|50000 compute minutes"
@@ -10257,6 +10278,9 @@ msgid "BillingPlans|AI Chat in the IDE"
 msgstr ""
 
 msgid "BillingPlans|AI Code Suggestions in the IDE"
+msgstr ""
+
+msgid "BillingPlans|Add-ons"
 msgstr ""
 
 msgid "BillingPlans|Advanced CI/CD"
@@ -10274,13 +10298,31 @@ msgstr ""
 msgid "BillingPlans|All the benefits of Premium +"
 msgstr ""
 
+msgid "BillingPlans|Application Security Testing"
+msgstr ""
+
+msgid "BillingPlans|Billed annually at $1,188 USD"
+msgstr ""
+
+msgid "BillingPlans|Billed annually at $348 USD"
+msgstr ""
+
 msgid "BillingPlans|Billed annually at %{price_per_year} USD"
+msgstr ""
+
+msgid "BillingPlans|Billing"
 msgstr ""
 
 msgid "BillingPlans|Bring your own CI runners"
 msgstr ""
 
 msgid "BillingPlans|Bring your own production environment"
+msgstr ""
+
+msgid "BillingPlans|Choose Premium"
+msgstr ""
+
+msgid "BillingPlans|Choose Ultimate"
 msgstr ""
 
 msgid "BillingPlans|Code Ownership and Protected Branches"
@@ -10292,6 +10334,9 @@ msgstr ""
 msgid "BillingPlans|Compliance automation"
 msgstr ""
 
+msgid "BillingPlans|Compute Minutes"
+msgstr ""
+
 msgid "BillingPlans|Congratulations, your free trial is activated."
 msgstr ""
 
@@ -10301,16 +10346,34 @@ msgstr ""
 msgid "BillingPlans|Cross-team project management"
 msgstr ""
 
+msgid "BillingPlans|Current subscription"
+msgstr ""
+
+msgid "BillingPlans|Currently trialing"
+msgstr ""
+
 msgid "BillingPlans|Custom Roles"
 msgstr ""
 
 msgid "BillingPlans|Dependency Scanning"
 msgstr ""
 
+msgid "BillingPlans|Don't lose access to advanced features, make the switch now to maintain your team's productivity gains."
+msgstr ""
+
+msgid "BillingPlans|Duo Enterprise"
+msgstr ""
+
+msgid "BillingPlans|Duo Pro"
+msgstr ""
+
 msgid "BillingPlans|Dynamic Application Security Testing"
 msgstr ""
 
 msgid "BillingPlans|Enterprise Agile Planning"
+msgstr ""
+
+msgid "BillingPlans|Enterprise Agile Planning Seats"
 msgstr ""
 
 msgid "BillingPlans|Enterprise User and Incident Management"
@@ -10325,10 +10388,19 @@ msgstr ""
 msgid "BillingPlans|Executive level insights"
 msgstr ""
 
+msgid "BillingPlans|Features include:"
+msgstr ""
+
 msgid "BillingPlans|For enterprises looking to deliver software faster"
 msgstr ""
 
+msgid "BillingPlans|For individuals working on personal projects and open source contributions."
+msgstr ""
+
 msgid "BillingPlans|For scaling organizations and multi-team usage"
+msgstr ""
+
+msgid "BillingPlans|For scaling organizations seeking enhanced productivity and collaboration."
 msgstr ""
 
 msgid "BillingPlans|Free"
@@ -10341,6 +10413,12 @@ msgid "BillingPlans|Free guest users"
 msgstr ""
 
 msgid "BillingPlans|Get the most out of GitLab with Ultimate and GitLab Duo Enterprise"
+msgstr ""
+
+msgid "BillingPlans|GitLab Free"
+msgstr ""
+
+msgid "BillingPlans|Governance & Compliance"
 msgstr ""
 
 msgid "BillingPlans|Have a question? We're here to help."
@@ -10364,10 +10442,16 @@ msgstr ""
 msgid "BillingPlans|Learn more about each plan by visiting our %{pricing_page_link}."
 msgstr ""
 
+msgid "BillingPlans|Level up with Premium"
+msgstr ""
+
 msgid "BillingPlans|Looking to purchase or manage a subscription for your group? Navigate to your %{groups_link} and go to %{strong_open}Settings &gt; Billing.%{strong_close}"
 msgstr ""
 
 msgid "BillingPlans|Manage plan"
+msgstr ""
+
+msgid "BillingPlans|Manage seats"
 msgstr ""
 
 msgid "BillingPlans|Merge Request Approval Rules"
@@ -10388,7 +10472,7 @@ msgstr ""
 msgid "BillingPlans|Not ready to trial the full suite of GitLab and GitLab Duo features? Start a free trial of GitLab Duo Pro instead."
 msgstr ""
 
-msgid "BillingPlans|Not the group you're looking for? %{all_groups_link}"
+msgid "BillingPlans|Now with AI features included"
 msgstr ""
 
 msgid "BillingPlans|Per user/month"
@@ -10403,10 +10487,19 @@ msgstr ""
 msgid "BillingPlans|Pricing page"
 msgstr ""
 
+msgid "BillingPlans|Priority Support"
+msgstr ""
+
 msgid "BillingPlans|Priority support"
 msgstr ""
 
 msgid "BillingPlans|Recommended"
+msgstr ""
+
+msgid "BillingPlans|Release Controls"
+msgstr ""
+
+msgid "BillingPlans|Seats in use"
 msgstr ""
 
 msgid "BillingPlans|Security Dashboards"
@@ -10415,10 +10508,19 @@ msgstr ""
 msgid "BillingPlans|See all %{plan_name} features"
 msgstr ""
 
+msgid "BillingPlans|Software Supply Chain Security"
+msgstr ""
+
+msgid "BillingPlans|Source Code Management & CI/CD"
+msgstr ""
+
 msgid "BillingPlans|Start a GitLab Duo Enterprise trial to try all end-to-end AI capabilities from GitLab. You can try it for free for %{duration} days, no credit card required."
 msgstr ""
 
 msgid "BillingPlans|Start a free GitLab Duo Enterprise Trial"
+msgstr ""
+
+msgid "BillingPlans|Start an Ultimate trial with GitLab Duo Enterprise to try the complete set of features from GitLab."
 msgstr ""
 
 msgid "BillingPlans|Start an Ultimate trial with GitLab Duo Enterprise to try the complete set of features from GitLab. GitLab Duo Enterprise gives you access to the full product offering from GitLab, including AI-native features."
@@ -10427,10 +10529,22 @@ msgstr ""
 msgid "BillingPlans|Start an Ultimate trial with GitLab Duo Enterprise to try the complete set of features from GitLab. GitLab Duo Enterprise gives you access to the full product offering from GitLab, including AI-native features. You can try it for free, no credit card required."
 msgstr ""
 
+msgid "BillingPlans|Start free trial"
+msgstr ""
+
 msgid "BillingPlans|Start free trial of GitLab Ultimate and GitLab Duo Enterprise"
 msgstr ""
 
+msgid "BillingPlans|Start free with advanced enterprise security and compliance, no credit card required."
+msgstr ""
+
 msgid "BillingPlans|Static Application Security Testing"
+msgstr ""
+
+msgid "BillingPlans|Storage"
+msgstr ""
+
+msgid "BillingPlans|Strategic Portfolio Management"
 msgstr ""
 
 msgid "BillingPlans|Suggested Reviewers"
@@ -10439,16 +10553,19 @@ msgstr ""
 msgid "BillingPlans|Support"
 msgstr ""
 
-msgid "BillingPlans|Switch to a different group."
+msgid "BillingPlans|Talk to an expert"
 msgstr ""
 
-msgid "BillingPlans|Talk to an expert"
+msgid "BillingPlans|Team Project Management"
 msgstr ""
 
 msgid "BillingPlans|Then %{move_link_start}move any projects%{move_link_end} you wish to use with your subscription to that group."
 msgstr ""
 
 msgid "BillingPlans|This group uses the plan associated with its parent group."
+msgstr ""
+
+msgid "BillingPlans|This trial ends on"
 msgstr ""
 
 msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
@@ -10461,6 +10578,15 @@ msgid "BillingPlans|Try GitLab Duo Pro"
 msgstr ""
 
 msgid "BillingPlans|Ultimate"
+msgstr ""
+
+msgid "BillingPlans|Unlimited guest users"
+msgstr ""
+
+msgid "BillingPlans|Unlimited licensed users"
+msgstr ""
+
+msgid "BillingPlans|Upgrade and unlock advanced features that boost your team's productivity instantly."
 msgstr ""
 
 msgid "BillingPlans|Upgrade to Premium"
@@ -10478,19 +10604,19 @@ msgstr ""
 msgid "BillingPlans|Vulnerability Management"
 msgstr ""
 
-msgid "BillingPlans|You can retain access to the %{plan} features by upgrading below."
-msgstr ""
-
 msgid "BillingPlans|You don't have any groups. You'll need to %{create_group_link_start}create one%{create_group_link_end} and %{move_link_start}move your projects to it%{move_link_end}."
 msgstr ""
 
 msgid "BillingPlans|You have successfully started an Ultimate and GitLab Duo Enterprise trial that will expire on %{exp_date}. To give members access to new GitLab Duo Enterprise features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Enterprise seats."
 msgstr ""
 
-msgid "BillingPlans|Your GitLab.com %{plan} trial will %{strong_open}expire after %{expiration_date}%{strong_close}."
+msgid "BillingPlans|Your current plan"
 msgstr ""
 
-msgid "BillingPlans|Your current plan"
+msgid "BillingPlans|Your group is on %{planName}"
+msgstr ""
+
+msgid "BillingPlans|a trial of Ultimate + Duo Enterprise"
 msgstr ""
 
 msgid "BillingPlans|billed annually at %{price_per_year}"
@@ -10502,7 +10628,13 @@ msgstr ""
 msgid "BillingPlans|monthly"
 msgstr ""
 
+msgid "BillingPlans|no credit card required"
+msgstr ""
+
 msgid "BillingPlans|per user"
+msgstr ""
+
+msgid "BillingPlans|per user/month,"
 msgstr ""
 
 msgid "BillingPlan|Upgrade"
@@ -28991,6 +29123,9 @@ msgid "Frameworks"
 msgstr ""
 
 msgid "France"
+msgstr ""
+
+msgid "Free"
 msgstr ""
 
 msgid "Free Ultimate Trial with GitLab Duo Enterprise"
@@ -49554,6 +49689,9 @@ msgid "Preferences|When you type in a description or comment box, selected text 
 msgstr ""
 
 msgid "Preferences|Workspaces"
+msgstr ""
+
+msgid "Premium"
 msgstr ""
 
 msgid "Premium plan"

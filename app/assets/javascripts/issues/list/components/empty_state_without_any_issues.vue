@@ -84,48 +84,48 @@ export default {
         data-testid="issuable-empty-state"
       >
         <template #actions>
-          <slot name="actions"></slot>
-          <new-resource-dropdown
-            v-if="showNewIssueDropdown"
-            class="gl-mx-2 gl-mb-3 gl-self-center"
-            :query="$options.searchProjectsQuery"
-            :query-variables="newIssueDropdownQueryVariables"
-            :extract-projects="extractProjects"
-            :group-id="groupId"
-          />
-          <slot name="new-issue-button">
+          <div class="gl-flex gl-justify-center gl-gap-3">
+            <slot name="actions"></slot>
+            <new-resource-dropdown
+              v-if="showNewIssueDropdown"
+              class="gl-self-center"
+              :query="$options.searchProjectsQuery"
+              :query-variables="newIssueDropdownQueryVariables"
+              :extract-projects="extractProjects"
+              :group-id="groupId"
+            />
+            <slot name="new-issue-button">
+              <gl-button
+                v-if="showNewIssueLink"
+                :href="newIssuePath"
+                variant="confirm"
+                data-track-action="click_new_issue_project_issues_empty_list_page"
+                data-track-label="new_issue_project_issues_empty_list"
+              >
+                {{ s__('Issues|Create issue') }}
+              </gl-button>
+            </slot>
             <gl-button
-              v-if="showNewIssueLink"
-              :href="newIssuePath"
-              variant="confirm"
-              class="gl-mx-2 gl-mb-3"
-              data-track-action="click_new_issue_project_issues_empty_list_page"
-              data-track-label="new_issue_project_issues_empty_list"
+              v-if="showNewProjectButton"
+              :href="newProjectPath"
+              :variant="showNewIssueDropdown ? 'default' : 'confirm'"
             >
-              {{ s__('Issues|Create issue') }}
+              {{ __('New project') }}
             </gl-button>
-          </slot>
-          <gl-button
-            v-if="showNewProjectButton"
-            :href="newProjectPath"
-            :variant="showNewIssueDropdown ? 'default' : 'confirm'"
-            class="gl-mx-2 gl-mb-3"
-          >
-            {{ __('New project') }}
-          </gl-button>
-          <slot name="import-export-buttons">
-            <gl-disclosure-dropdown
-              v-if="showCsvButtons"
-              class="gl-mx-2 gl-mb-3"
-              :toggle-text="__('Import issues')"
-              data-testid="import-issues-dropdown"
-            >
-              <csv-import-export-buttons
-                :export-csv-path="exportCsvPathWithQuery"
-                :issuable-count="currentTabCount"
-              />
-            </gl-disclosure-dropdown>
-          </slot>
+
+            <slot name="import-export-buttons">
+              <gl-disclosure-dropdown
+                v-if="showCsvButtons"
+                :toggle-text="__('Import issues')"
+                data-testid="import-issues-dropdown"
+              >
+                <csv-import-export-buttons
+                  :export-csv-path="exportCsvPathWithQuery"
+                  :issuable-count="currentTabCount"
+                />
+              </gl-disclosure-dropdown>
+            </slot>
+          </div>
         </template>
       </gl-empty-state>
       <hr class="gl-mb-7" />

@@ -46,7 +46,7 @@ const itCorrectlyFormatsWithoutActions = (formattedGroup, mockGroup) => {
 
 describe('formatGraphQLGroup', () => {
   it('correctly formats the group with edit, delete, and leave permissions', () => {
-    window.gon = { relative_url_root: '/gitlab' };
+    window.gon = { relative_url_root: '/gitlab', allow_immediate_namespaces_deletion: true };
     const [mockGroup] = organizationGroups;
     const formattedGroup = formatGraphQLGroup(mockGroup, (group) => ({
       customProperty: group.fullName,
@@ -65,7 +65,7 @@ describe('formatGraphQLGroup', () => {
 
 describe('formatGraphQLGroups', () => {
   it('correctly formats the groups with edit, delete, and leave permissions', () => {
-    window.gon = { relative_url_root: '/gitlab' };
+    window.gon = { relative_url_root: '/gitlab', allow_immediate_namespaces_deletion: true };
     const [firstMockGroup] = organizationGroups;
     const formattedGroups = formatGraphQLGroups(organizationGroups, (group) => ({
       customProperty: group.fullName,

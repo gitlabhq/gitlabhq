@@ -69,6 +69,7 @@ import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_
 import getWorkItemsFullQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
+import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
   CREATION_CONTEXT_LIST_ROUTE,
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -148,6 +149,7 @@ describeSkipVue3(skipReason, () => {
   const findImportIssuesButton = () => wrapper.findByTestId('import-issues-dropdown');
   const findImportCSVButton = () => wrapper.findByTestId('import-csv-button');
   const findImportJiraIssueButton = () => wrapper.findByTestId('import-from-jira-link');
+  const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
 
   const mountComponent = ({
     provide = {},
@@ -163,6 +165,7 @@ describeSkipVue3(skipReason, () => {
     canReadCrmOrganization = true,
     canReadCrmContact = true,
     isIssueRepositioningDisabled = false,
+    hasProjects = true,
     stubs = {},
   } = {}) => {
     window.gon = {
@@ -224,6 +227,7 @@ describeSkipVue3(skipReason, () => {
         canEdit: true,
         canImportWorkItems: true,
         isIssueRepositioningDisabled,
+        hasProjects,
         ...provide,
       },
       propsData: {
@@ -1439,14 +1443,23 @@ describeSkipVue3(skipReason, () => {
       closed: 0,
       opened: 0,
     };
+    const getEmptyQueryHandler = ({
+      emptyWorkItems = emptyWorkItemsResponse,
+      emptyWorkItemsSlim = emptyWorkItemsSlimResponse,
+      emptyCounts = emptyCountsResponse,
+    } = {}) => {
+      return {
+        queryHandler: jest.fn().mockResolvedValue(emptyWorkItems),
+        slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlim),
+        countsQueryHandler: jest.fn().mockResolvedValue(emptyCounts),
+      };
+    };
 
     describe('when filters are applied and no work items match', () => {
       beforeEach(async () => {
         setWindowLocation('?label_name=bug');
         mountComponent({
-          queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
-          slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlimResponse),
-          countsQueryHandler: jest.fn().mockResolvedValue(emptyCountsResponse),
+          ...getEmptyQueryHandler(),
         });
         await waitForPromises();
       });
@@ -1457,14 +1470,13 @@ describeSkipVue3(skipReason, () => {
       });
     });
 
-    describe('when there are no work items', () => {
+    describe('when there are no work items in group context', () => {
       beforeEach(async () => {
         mountComponent({
-          queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
-          slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlimResponse),
-          countsQueryHandler: jest.fn().mockResolvedValue(emptyCountsResponse),
+          ...getEmptyQueryHandler(),
           provide: {
             isProject: false,
+            isGroupIssuesList: true,
           },
         });
         await waitForPromises();
@@ -1484,6 +1496,28 @@ describeSkipVue3(skipReason, () => {
       it('does not render the import issues dropdown', () => {
         expect(findImportIssuesButton().exists()).toBe(false);
       });
+
+      it('renders the new resource dropdown when group has projects', () => {
+        expect(findNewResourceDropdown().exists()).toBe(true);
+        expect(findCreateWorkItemModal().exists()).toBe(false);
+      });
+
+      describe('when group has no projects', () => {
+        beforeEach(async () => {
+          mountComponent({
+            ...getEmptyQueryHandler(),
+            provide: {
+              isGroupIssuesList: true,
+              hasProjects: false,
+            },
+          });
+          await waitForPromises();
+        });
+
+        it('does not render the new resource dropdown when group has projects', () => {
+          expect(findNewResourceDropdown().exists()).toBe(false);
+        });
+      });
     });
 
     describe('when there are no work items in project context', () => {
@@ -1497,9 +1531,7 @@ describeSkipVue3(skipReason, () => {
         },
       };
       const emptyStateConfig = {
-        queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
-        slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlimResponse),
-        countsQueryHandler: jest.fn().mockResolvedValue(projectEmptyCountsResponse),
+        ...getEmptyQueryHandler({ emptyCounts: projectEmptyCountsResponse }),
         provide: {
           isGroup: false,
           isProject: true,
@@ -1574,9 +1606,7 @@ describeSkipVue3(skipReason, () => {
 
       it('does not render the import issues dropdown when user not signed in', async () => {
         mountComponent({
-          queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
-          slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlimResponse),
-          countsQueryHandler: jest.fn().mockResolvedValue(projectEmptyCountsResponse),
+          ...getEmptyQueryHandler({ emptyCounts: projectEmptyCountsResponse }),
           provide: {
             isGroup: false,
             isProject: true,

@@ -9,6 +9,7 @@ import ProjectListItemDelayedDeletionModalFooter from '~/vue_shared/components/p
 import {
   ACTION_ARCHIVE,
   ACTION_DELETE,
+  ACTION_DELETE_IMMEDIATELY,
   ACTION_EDIT,
   ACTION_RESTORE,
   ACTION_UNARCHIVE,
@@ -104,10 +105,16 @@ export default {
         [ACTION_DELETE]: {
           action: this.onActionDelete,
         },
+        [ACTION_DELETE_IMMEDIATELY]: {
+          action: this.onActionDelete,
+        },
       };
     },
     hasActionDelete() {
-      return this.project.availableActions?.includes(ACTION_DELETE);
+      return (
+        this.project.availableActions?.includes(ACTION_DELETE) ||
+        this.project.availableActions?.includes(ACTION_DELETE_IMMEDIATELY)
+      );
     },
   },
   methods: {

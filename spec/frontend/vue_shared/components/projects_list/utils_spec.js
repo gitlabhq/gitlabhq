@@ -9,6 +9,7 @@ import {
 import {
   ACTION_ARCHIVE,
   ACTION_DELETE,
+  ACTION_DELETE_IMMEDIATELY,
   ACTION_EDIT,
   ACTION_RESTORE,
   ACTION_UNARCHIVE,
@@ -40,14 +41,6 @@ const MOCK_PROJECT_PENDING_DELETION = {
 };
 
 describe('availableGraphQLProjectActions', () => {
-  beforeEach(() => {
-    window.gon = {
-      features: {
-        disallowImmediateDeletion: false,
-      },
-    };
-  });
-
   describe.each`
     userPermissions                                  | markedForDeletion | isSelfDeletionInProgress | isSelfDeletionScheduled | archived | availableActions
     ${{ viewEditPage: false, removeProject: false }} | ${false}          | ${false}                 | ${false}                | ${false} | ${[]}
@@ -56,9 +49,9 @@ describe('availableGraphQLProjectActions', () => {
     ${{ viewEditPage: true, removeProject: true }}   | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT, ACTION_DELETE]}
     ${{ viewEditPage: true, removeProject: false }}  | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT]}
     ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT]}
-    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${true}                 | ${false} | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE]}
+    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${true}                 | ${false} | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
     ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${false}                | ${false} | ${[ACTION_EDIT]}
-    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${true}                 | ${false} | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE]}
+    ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${false}                 | ${true}                 | ${false} | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
     ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${true}                  | ${false}                | ${false} | ${[]}
     ${{ viewEditPage: true, removeProject: true }}   | ${true}           | ${true}                  | ${true}                 | ${false} | ${[]}
     ${{ archiveProject: true }}                      | ${false}          | ${false}                 | ${false}                | ${false} | ${[ACTION_ARCHIVE]}
@@ -75,6 +68,12 @@ describe('availableGraphQLProjectActions', () => {
       archived,
       availableActions,
     }) => {
+      beforeEach(() => {
+        window.gon = {
+          allow_immediate_namespaces_deletion: true,
+        };
+      });
+
       it(`when userPermissions = ${JSON.stringify(userPermissions)}, markedForDeletion is ${markedForDeletion}, isSelfDeletionInProgress is ${isSelfDeletionInProgress}, isSelfDeletionScheduled is ${isSelfDeletionScheduled}, and  archived is ${archived} then availableActions = [${availableActions}] and is sorted correctly`, () => {
         expect(
           availableGraphQLProjectActions({
@@ -89,12 +88,10 @@ describe('availableGraphQLProjectActions', () => {
     },
   );
 
-  describe('when disallowImmediateDeletion feature flag is enabled', () => {
+  describe('when allow_immediate_namespaces_deletion is disabled', () => {
     beforeEach(() => {
       window.gon = {
-        features: {
-          disallowImmediateDeletion: true,
-        },
+        allow_immediate_namespaces_deletion: false,
       };
     });
 
@@ -107,19 +104,6 @@ describe('availableGraphQLProjectActions', () => {
           isSelfDeletionScheduled: true,
         }),
       ).toStrictEqual([ACTION_EDIT, ACTION_RESTORE]);
-    });
-
-    describe('when userPermissions include adminAllResources', () => {
-      it('allows deleting immediately', () => {
-        expect(
-          availableGraphQLProjectActions({
-            userPermissions: { removeProject: true, adminAllResources: true },
-            markedForDeletion: true,
-            isSelfDeletionInProgress: false,
-            isSelfDeletionScheduled: true,
-          }),
-        ).toStrictEqual([ACTION_RESTORE, ACTION_DELETE]);
-      });
     });
   });
 });

@@ -40,12 +40,14 @@ GET /projects/:id/repository/tags
 
 Supported attributes:
 
-| Attribute  | Type              | Required | Description |
-|------------|-------------------|----------|-------------|
-| `id`       | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `order_by` | string            | No       | Return tags ordered by `name`, `updated`, or `version`. Default is `updated`. |
-| `search`   | string            | No       | Return a list of tags matching the search criteria. You can use `^term` and `term$` to find tags that begin and end with `term`. No other regular expressions are supported. |
-| `sort`     | string            | No       | Return tags sorted in `asc` or `desc` order. Default is `desc`. |
+| Attribute    | Type              | Required | Description |
+|--------------|-------------------|----------|-------------|
+| `id`         | integer or string | Yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of the project. |
+| `order_by`   | string            | No       | Return tags ordered by `name`, `updated`, or `version`. `version` sorts by semantic version number. Default is `updated`. |
+| `page`       | integer           | No       | Current page number for pagination. Default is `1`. |
+| `page_token` | string            | No       | Name of tag to start the pagination from. Used for keyset pagination. |
+| `search`     | string            | No       | Return a list of tags matching the search criteria. You can use `^term` and `term$` to find tags that begin and end with `term`. No other regular expressions are supported. |
+| `sort`       | string            | No       | Return tags sorted in `asc` or `desc` order. Default is `desc`. |
 
 If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes) and the following response attributes:
 

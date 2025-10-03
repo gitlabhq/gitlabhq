@@ -1301,7 +1301,7 @@ export default {
           </template>
         </div>
         <div
-          class="gl-border-t gl-sticky gl-bottom-0 gl-z-1 gl-flex gl-flex-col gl-justify-between gl-gap-2 @sm/panel:gl-flex-row @sm/panel:gl-items-center"
+          class="gl-border-t gl-sticky gl-bottom-0 gl-z-1 gl-flex gl-flex-col gl-justify-between gl-gap-2 @sm:gl-flex-row @sm:gl-items-center"
           :class="formButtonsClasses"
           data-testid="form-buttons"
         >

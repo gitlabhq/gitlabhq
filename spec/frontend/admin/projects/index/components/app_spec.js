@@ -107,6 +107,8 @@ describe('AdminProjectsApp', () => {
   });
 
   it('allows deleting immediately on Inactive tab', async () => {
+    window.gon = { allow_immediate_namespaces_deletion: true };
+
     await createComponent({
       mountFn: mountExtended,
       handlers: [
@@ -118,7 +120,7 @@ describe('AdminProjectsApp', () => {
     await waitForPromises();
     await wrapper.findByRole('button', { name: 'Actions' }).trigger('click');
 
-    expect(wrapper.findByRole('button', { name: 'Delete' }).exists()).toBe(true);
+    expect(wrapper.findByRole('button', { name: 'Delete immediately' }).exists()).toBe(true);
   });
 
   it('renders relative URL that supports relative_url_root', async () => {

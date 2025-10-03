@@ -1,6 +1,7 @@
 import {
   ACTION_EDIT,
   ACTION_DELETE,
+  ACTION_DELETE_IMMEDIATELY,
   ACTION_RESTORE,
   ACTION_UNARCHIVE,
   ACTION_ARCHIVE,
@@ -39,11 +40,8 @@ export const availableGraphQLProjectActions = ({
     if (!markedForDeletion) {
       availableActions.push(ACTION_DELETE);
       // Projects with self deletion scheduled can be deleted immediately
-    } else if (
-      isSelfDeletionScheduled &&
-      (userPermissions.adminAllResources || !gon?.features?.disallowImmediateDeletion)
-    ) {
-      availableActions.push(ACTION_DELETE);
+    } else if (isSelfDeletionScheduled && gon?.allow_immediate_namespaces_deletion) {
+      availableActions.push(ACTION_DELETE_IMMEDIATELY);
     }
   }
 

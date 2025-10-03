@@ -120,6 +120,18 @@ RSpec.describe Gitlab::GonHelper, feature_category: :shared do
         helper.add_gon_variables
       end
     end
+
+    describe 'allow_immediate_namespaces_deletion' do
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:allow_immediate_namespaces_deletion_for_user?).and_return(false)
+      end
+
+      it 'exposes allow_immediate_namespaces_deletion property' do
+        expect(gon).to receive(:allow_immediate_namespaces_deletion=).with(false)
+
+        helper.add_gon_variables
+      end
+    end
   end
 
   describe '#push_frontend_ability' do

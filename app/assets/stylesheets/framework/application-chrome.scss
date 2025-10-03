@@ -401,12 +401,6 @@
     @apply gl-px-5 #{!important};
   }
 
-  // Work item modal footer
-  #create-work-item-modal {
-    container-type: inline-size;
-    container-name: panel;
-  }
-
   // Content adjustments within panels
   .paneled-view {
     @apply gl-overflow-clip;

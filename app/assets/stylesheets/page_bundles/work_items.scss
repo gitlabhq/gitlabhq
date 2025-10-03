@@ -55,7 +55,7 @@ $work-item-overview-gap-width: 2rem;
 }
 
 .work-item-overview:not(.sidebar-hidden) {
-  @include gl-container-width-up(md, panel) {
+  @include gl-container-width-up(md) {
     display: grid;
     // allow the main content area to shrink
     // grid items have "max-width: auto" so without the minmax the content can

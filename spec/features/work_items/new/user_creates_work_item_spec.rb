@@ -6,7 +6,8 @@ RSpec.describe 'User creates work items', :js, feature_category: :team_planning 
   include WorkItemsHelpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :public, developers: user) }
+  let_it_be(:group) { create(:group, :public) }
+  let_it_be(:project) { create(:project, :public, developers: user, group: group) }
 
   before do
     sign_in(user)
@@ -80,6 +81,26 @@ RSpec.describe 'User creates work items', :js, feature_category: :team_planning 
             .and have_link(label.name)
             .and have_link(user.name, href: user_path(user))
         end
+      end
+    end
+  end
+
+  context 'when projects with issues disabled' do
+    describe 'create issue dropdown' do
+      let_it_be(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group).user }
+      let_it_be(:project_with_issues_disabled) { create(:project, :issues_disabled, group: group) }
+
+      before do
+        [project, project_with_issues_disabled].each { |project| project.add_maintainer(user_in_group) }
+        sign_in(user_in_group)
+        visit issues_group_path(group)
+      end
+
+      it 'shows projects only with issues feature enabled', :js do
+        click_button 'Toggle project select'
+
+        expect(page).to have_button project.full_name
+        expect(page).not_to have_button project_with_issues_disabled.full_name
       end
     end
   end

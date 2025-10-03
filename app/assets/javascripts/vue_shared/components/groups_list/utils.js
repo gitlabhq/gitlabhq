@@ -49,10 +49,7 @@ export const availableGraphQLGroupActions = ({
     if (!markedForDeletion) {
       availableActions.push(ACTION_DELETE);
       // Groups with self deletion scheduled can be deleted immediately
-    } else if (
-      isSelfDeletionScheduled &&
-      (userPermissions.adminAllResources || !gon?.features?.disallowImmediateDeletion)
-    ) {
+    } else if (isSelfDeletionScheduled && gon?.allow_immediate_namespaces_deletion) {
       availableActions.push(ACTION_DELETE_IMMEDIATELY);
     }
   }

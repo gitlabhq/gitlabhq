@@ -60,6 +60,31 @@ RSpec.describe Badge do
     end
   end
 
+  context 'both group and project are set' do
+    it 'prefers project_id to the group_id for a ProjectBadge' do
+      badge = build(:project_badge)
+      badge.group_id = create(:group).id
+      badge.project_id = create(:project).id
+
+      expect(badge).to be_valid
+      expect(badge.group_id).to be_nil
+      expect(badge.project_id).not_to be_nil
+
+      expect(badge.save).to be(true)
+      badge.reload
+      expect(badge.group_id).to be_nil
+      expect(badge.project_id).not_to be_nil
+    end
+
+    it 'prevents a GroupBadge from being created with a project_id' do
+      badge = build(:group_badge)
+      badge.group_id = create(:group).id
+      badge.project_id = create(:project).id
+
+      expect { badge.save! }.to raise_error(ActiveRecord::RecordInvalid, /Validation failed: Group can't be blank/)
+    end
+  end
+
   shared_examples 'rendered_links' do
     context 'when the repository is not nil' do
       let_it_be(:full_path) { project.full_path }

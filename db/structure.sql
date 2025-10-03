@@ -33051,6 +33051,9 @@ ALTER TABLE ONLY chat_teams
 ALTER TABLE epic_issues
     ADD CONSTRAINT check_048dce81f3 CHECK ((work_item_parent_link_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE badges
+    ADD CONSTRAINT check_22ac1b6d3a CHECK ((num_nonnulls(group_id, project_id) = 1)) NOT VALID;
+
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
 
@@ -37998,8 +38001,6 @@ CREATE INDEX idx_sbom_graph_paths_project_path_length_created ON sbom_graph_path
 
 CREATE INDEX idx_sbom_occurr_on_project_component_version_input_file_path ON sbom_occurrences USING btree (project_id, component_version_id, input_file_path);
 
-CREATE INDEX idx_sbom_occurr_on_traversal_ids_and_comp_name_and_comp_ver_id ON sbom_occurrences USING btree (traversal_ids, component_name COLLATE "C", component_version_id);
-
 CREATE INDEX idx_sbom_occurrences_on_project_id_and_source_id ON sbom_occurrences USING btree (project_id, source_id);
 
 CREATE INDEX idx_scan_result_policies_on_configuration_id_id_updated_at ON scan_result_policies USING btree (security_orchestration_policy_configuration_id, id, updated_at);
@@ -41979,6 +41980,8 @@ CREATE INDEX index_sbom_occurrences_on_component_version_id ON sbom_occurrences 
 CREATE INDEX index_sbom_occurrences_on_highest_severity ON sbom_occurrences USING btree (project_id, highest_severity DESC NULLS LAST);
 
 CREATE INDEX index_sbom_occurrences_on_licenses_spdx_identifier ON sbom_occurrences USING btree (project_id, ((licenses #> '{0,spdx_identifier}'::text[])), ((licenses #> '{1,spdx_identifier}'::text[])));
+
+CREATE INDEX index_sbom_occurrences_on_name_traversal_ids_and_component ON sbom_occurrences USING btree (component_name COLLATE "C", traversal_ids, component_id);
 
 CREATE INDEX index_sbom_occurrences_on_pipeline_id ON sbom_occurrences USING btree (pipeline_id);
 
