@@ -21,7 +21,7 @@ Define the owners of files and directories in a repository to:
   see [Code Owners and protected branches](#code-owners-and-protected-branches).
 - Identify owners. Code Owner names are displayed on the files and directories they own:
 
-  ![Code Owners displayed in UI](img/codeowners_in_UI_v15_10.png)
+  ![File view showing the Code Owners listed below a description of the most recent change.](img/codeowners_in_UI_v15_10.png)
 
 ## Code Owners and approval rules
 

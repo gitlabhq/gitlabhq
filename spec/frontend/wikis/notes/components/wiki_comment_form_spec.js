@@ -3,7 +3,6 @@ import { nextTick } from 'vue';
 import WikiCommentForm from '~/wikis/wiki_notes/components/wiki_comment_form.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WikiDiscussionsSignedOut from '~/wikis/wiki_notes/components/wiki_discussions_signed_out.vue';
-import WikiDiscussionLocked from '~/wikis/wiki_notes/components/wiki_discussion_locked.vue';
 import * as secretsDetection from '~/lib/utils/secret_detection';
 import * as confirmViaGLModal from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { wikiCommentFormProvideData, noteableId } from '../mock_data';
@@ -15,8 +14,8 @@ describe('WikiCommentForm', () => {
     mutate: jest.fn(),
   };
 
-  const createWrapper = ({ props, provideData } = {}) =>
-    shallowMountExtended(WikiCommentForm, {
+  const createComponent = ({ props, provideData } = {}) => {
+    wrapper = shallowMountExtended(WikiCommentForm, {
       propsData: { noteableId, noteId: '12', discussionId: '1', ...props },
       provide: { ...wikiCommentFormProvideData, ...provideData },
       mocks: {
@@ -36,14 +35,16 @@ describe('WikiCommentForm', () => {
         },
       },
     });
+  };
 
-  const wikiCommentContainer = () => wrapper.findByTestId('wiki-note-comment-form-container');
+  const findWikiDiscussionsSignedOut = () => wrapper.findComponent(WikiDiscussionsSignedOut);
+  const findWikiNoteCommentForm = () => wrapper.findByTestId('wiki-note-comment-form');
   const findResolveCheckbox = () => wrapper.findByTestId('wiki-note-resolve-checkbox');
   const findUnresolveCheckbox = () => wrapper.findByTestId('wiki-note-unresolve-checkbox');
 
   describe('user is not logged in', () => {
     beforeEach(() => {
-      wrapper = createWrapper({
+      createComponent({
         provideData: {
           currentUserData: null,
         },
@@ -51,42 +52,35 @@ describe('WikiCommentForm', () => {
     });
 
     it('should only render wiki discussion signed out component', () => {
-      expect(wikiCommentContainer().element.children).toHaveLength(1);
-
-      const wikiDiscussionsSignedOut =
-        wikiCommentContainer().findComponent(WikiDiscussionsSignedOut);
-      expect(wikiDiscussionsSignedOut.exists()).toBe(true);
+      expect(findWikiDiscussionsSignedOut().exists()).toBe(true);
+      expect(findWikiNoteCommentForm().exists()).toBe(false);
     });
   });
 
   describe('user is logged in', () => {
     describe('user cannot create note', () => {
       beforeEach(() => {
-        wrapper = createWrapper({
+        createComponent({
           provideData: {
             isContainerArchived: true,
           },
         });
       });
 
-      it('should render only wiki discussion locked component when user cannot create note', () => {
-        expect(wikiCommentContainer().element.children).toHaveLength(1);
-
-        const wikiDiscussionLocked = wikiCommentContainer().findComponent(WikiDiscussionLocked);
-        expect(wikiDiscussionLocked.exists()).toBe(true);
+      it('does not render contents', () => {
+        expect(findWikiDiscussionsSignedOut().exists()).toBe(false);
+        expect(findWikiNoteCommentForm().exists()).toBe(false);
       });
     });
 
     describe('user can create note', () => {
       beforeEach(() => {
-        wrapper = createWrapper();
+        createComponent();
       });
 
-      it('should render only the wiki comment form', () => {
-        expect(wikiCommentContainer().element.children).toHaveLength(1);
-
-        const commentForm = wikiCommentContainer().find('[data-testid=wiki-note-comment-form]');
-        expect(commentForm.exists()).toBe(true);
+      it('should only render the wiki comment form', () => {
+        expect(findWikiDiscussionsSignedOut().exists()).toBe(false);
+        expect(findWikiNoteCommentForm().exists()).toBe(true);
       });
 
       it('should not autofocus on themarkdown editor when isReply and isEdit are false', () => {
@@ -94,29 +88,29 @@ describe('WikiCommentForm', () => {
       });
 
       it('should autofocus on the markdown editor when isReply is true', () => {
-        wrapper = createWrapper({ props: { isReply: true } });
+        createComponent({ props: { isReply: true } });
         expect(wrapper.vm.$refs.markdownEditor.autofocus).toBe(true);
       });
 
       it('should autofocus on the markdown editor when isEdit is true', () => {
-        wrapper = createWrapper({ props: { isEdit: true } });
+        createComponent({ props: { isEdit: true } });
         expect(wrapper.vm.$refs.markdownEditor.autofocus).toBe(true);
       });
 
       it('should display resolve checkbox when isReply is true', () => {
-        wrapper = createWrapper({ props: { isReply: true, canResolve: true } });
+        createComponent({ props: { isReply: true, canResolve: true } });
         expect(findResolveCheckbox().exists()).toBe(true);
         expect(findUnresolveCheckbox().exists()).toBe(false);
       });
 
       it('should not display resolve checkbox when canResolve is false, even when isReply is true', () => {
-        wrapper = createWrapper({ props: { isReply: true, canResolve: false } });
+        createComponent({ props: { isReply: true, canResolve: false } });
         expect(findResolveCheckbox().exists()).toBe(false);
         expect(findUnresolveCheckbox().exists()).toBe(false);
       });
 
       it('should display unresolve checkbox when isReply is true and discussionResolved is true', () => {
-        wrapper = createWrapper({
+        createComponent({
           props: { isReply: true, discussionResolved: true, canResolve: true },
         });
         expect(findResolveCheckbox().exists()).toBe(false);
@@ -124,7 +118,7 @@ describe('WikiCommentForm', () => {
       });
 
       it('should not display any resolve checkbox when isReply is false', () => {
-        wrapper = createWrapper({ props: { isReply: false } });
+        createComponent({ props: { isReply: false } });
         expect(findResolveCheckbox().exists()).toBe(false);
         expect(findUnresolveCheckbox().exists()).toBe(false);
       });
@@ -148,7 +142,7 @@ describe('WikiCommentForm', () => {
 
       describe('handle save', () => {
         const createWrapperWithNote = (props) => {
-          wrapper = createWrapper({
+          createComponent({
             props: {
               discussionId: '1',
               noteableId: '1',
@@ -179,7 +173,7 @@ describe('WikiCommentForm', () => {
         });
 
         it('should not emit the creating-note:start event when note is empty', async () => {
-          wrapper = createWrapper();
+          createComponent();
           await wrapper.vm.handleSave();
           expect(Boolean(wrapper.emitted('creating-note:start'))).toBe(false);
         });
@@ -393,7 +387,7 @@ describe('WikiCommentForm', () => {
         const internalNoteCheckbox = () => wrapper.findByTestId('wiki-internal-note-checkbox');
 
         beforeEach(() => {
-          wrapper = createWrapper({ props: { canSetInternalNote: true } });
+          createComponent({ props: { canSetInternalNote: true } });
         });
 
         it('should render both correctly', async () => {
@@ -402,13 +396,13 @@ describe('WikiCommentForm', () => {
         });
 
         it('should render neither when isReply is true', () => {
-          wrapper = createWrapper({ props: { isReply: true } });
+          createComponent({ props: { isReply: true } });
           expect(submitButton().exists()).toBe(false);
           expect(internalNoteCheckbox().exists()).toBe(false);
         });
 
         it('should render neither when isEdit is true', () => {
-          wrapper = createWrapper({ props: { isEdit: true } });
+          createComponent({ props: { isEdit: true } });
           expect(submitButton().exists()).toBe(false);
           expect(internalNoteCheckbox().exists()).toBe(false);
         });
@@ -435,7 +429,7 @@ describe('WikiCommentForm', () => {
         const cancelButton = () => wrapper.findByTestId('wiki-note-cancel-button');
 
         beforeEach(() => {
-          wrapper = createWrapper({ props: { isEdit: true } });
+          createComponent({ props: { isEdit: true } });
         });
 
         it('should render both save and cancel with correct text buttons when isEdit is true', async () => {
@@ -444,13 +438,13 @@ describe('WikiCommentForm', () => {
         });
 
         it('should render both save and cancel with correct text buttons when isReply is true', async () => {
-          wrapper = createWrapper({ props: { isReply: true, isEdit: false } });
+          createComponent({ props: { isReply: true, isEdit: false } });
           expect(await saveButton().text()).toBe('Reply');
           expect(await cancelButton().text()).toBe('Cancel');
         });
 
         it('should not render either button when isEdit and isReply are false', () => {
-          wrapper = createWrapper({ props: { isReply: false, isEdit: false } });
+          createComponent({ props: { isReply: false, isEdit: false } });
           expect(saveButton().exists()).toBe(false);
           expect(cancelButton().exists()).toBe(false);
         });
@@ -483,7 +477,7 @@ describe('WikiCommentForm', () => {
 
         describe('when note is not empty', () => {
           const createWrapperWithNote = (props) => {
-            wrapper = createWrapper({
+            createComponent({
               props,
             });
 

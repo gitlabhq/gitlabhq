@@ -100,6 +100,27 @@ module Gitlab::UsageDataCounters
       p_ci_templates_jobs_secret_detection
       p_ci_templates_jobs_secret_detection_latest
       p_ci_templates_jobs_test
+      p_ci_templates_kaniko
+      p_ci_templates_katalon
+      p_ci_templates_latex
+      p_ci_templates_liquibase
+      p_ci_templates_matlab
+      p_ci_templates_mono
+      p_ci_templates_opentofu_base_latest
+      p_ci_templates_opentofu_latest
+      p_ci_templates_packer
+      p_ci_templates_pages_gatsby
+      p_ci_templates_pages_harp
+      p_ci_templates_pages_hexo
+      p_ci_templates_pages_hyde
+      p_ci_templates_pages_jbake
+      p_ci_templates_pages_jekyll
+      p_ci_templates_pages_jigsaw
+      p_ci_templates_pages_lektor
+      p_ci_templates_pages_metalsmith
+      p_ci_templates_pages_middleman
+      p_ci_templates_pages_octopress
+      p_ci_templates_pages_pelican
     ].freeze
 
     class << self

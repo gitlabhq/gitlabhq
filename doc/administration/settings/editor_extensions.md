@@ -15,6 +15,26 @@ title: Configure Editor Extensions
 
 Configure Editor Extensions settings for your GitLab instance.
 
+## Create an OAuth application
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/merge_requests/2738) in GitLab Workflow 6.47.0.
+
+{{< /history >}}
+
+You can configure GitLab Workflow extension for VS Code to connect and authenticate with GitLab using an OAuth application ID.
+
+To create an OAuth application:
+
+1. Create an [instance-wide application](../../integration/oauth_provider.md#create-an-instance-wide-application).
+1. In **Redirect URI**, enter `vscode://gitlab.gitlab-workflow/authentication`.
+   - To specify additional IDEs like Code Insiders or Cursor,
+     add multiple redirect URIs separated by newlines.
+1. Select the `api` scope.
+1. Select **Submit**.
+1. Copy the **Application ID**. Use this for the `gitlab.authentication.oauthClientIds` setting in your VS Code configuration.
+
 ## Require a minimum language server version
 
 {{< history >}}

@@ -1288,6 +1288,8 @@ vulnerability_finding:
   - security_findings
   - finding_token_status
   - finding_risk_score
+  - cve_identifiers
+  - cve_enrichments
 scanner:
   - findings
   - security_findings
@@ -1295,6 +1297,7 @@ identifiers: &identifiers_definition
   - finding_identifiers
   - findings
   - primary_findings
+  - cve_enrichment
 primary_identifier: *identifiers_definition
 initial_finding_pipeline: *pipeline_definition
 latest_finding_pipeline: *pipeline_definition

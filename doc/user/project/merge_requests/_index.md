@@ -408,7 +408,7 @@ If you have one specific open thread in a merge request, you can
 create an issue to resolve it separately:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests** and find your merge request.
+1. Select **Code** > **Merge requests** and find your merge request.
 1. In the merge request, find the thread you want to move.
 1. Below the last reply to the thread, next to **Resolve thread**, select
    **Create issue to resolve thread** ({{< icon name="issue-new" >}}).

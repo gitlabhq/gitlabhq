@@ -187,9 +187,12 @@ To configure Slack notifications:
    - Select the **Notify only broken pipelines** checkbox
      to receive notifications for failed pipelines only.
    - From the **Branches for which notifications are to be sent** dropdown list,
-     select the branches you want to receive notifications for. Notifications
-     for vulnerabilities are only triggered by the default branch, regardless
-     of the selected branches.
+     select the branches you want to receive notifications for.
+
+     Notifications are also sent for pipelines triggered by tags created from these branches.
+
+     Notifications for vulnerabilities are only triggered by the default branch,
+     regardless of the selected branches.
      For more details, see [issue 469373](https://gitlab.com/gitlab-org/gitlab/-/issues/469373).
    - For **Labels to be notified**, enter any or all of the labels a GitLab
      issue, merge request, or comment must have to receive notifications for.

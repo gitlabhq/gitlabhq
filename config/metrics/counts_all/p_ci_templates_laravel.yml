@@ -16,8 +16,8 @@ tiers:
 - premium
 - ultimate
 events:
-  - name: ci_template_included
-    unique: project.id
-    filter:
-      label: laravel
-      property: 'false'
+- name: ci_template_included
+  unique: project.id
+  filter:
+    label: laravel
+    property: 'false'

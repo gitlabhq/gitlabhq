@@ -9,7 +9,7 @@ class Release < ApplicationRecord
   include FromUnion
   include UpdatedAtFilterable
 
-  cache_markdown_field :description
+  cache_markdown_field :description, issuable_reference_expansion_enabled: true
 
   belongs_to :project, touch: true
   belongs_to :author, class_name: 'User'

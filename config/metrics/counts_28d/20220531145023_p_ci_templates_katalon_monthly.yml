@@ -1,21 +1,23 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_katalon_monthly
 description: Count of distinct projects that included the Katalon.gitlab-ci.yml template in a pipeline
-product_group: 'pipeline_authoring'
+product_group: pipeline_authoring
 product_categories:
 - pipeline_composition
 value_type: number
 status: active
-milestone: "15.4"
+milestone: '15.4'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86484
 time_frame: 28d
-data_source: redis_hll
+data_source: internal_events
 data_category: optional
-instrumentation_class: RedisHLLMetric
-options:
-  events:
-    - p_ci_templates_katalon
 tiers:
 - free
 - premium
 - ultimate
+events:
+- name: ci_template_included
+  unique: project.id
+  filter:
+    label: katalon
+    property: 'false'

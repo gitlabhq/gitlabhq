@@ -91,7 +91,7 @@ To cherry-pick a commit from the list of all commits for a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code** > **Commits**.
 1. Select the [title](https://git-scm.com/docs/git-commit#_discussion) of the commit you want to cherry-pick.
-1. In the upper-right corner, select **Options > Cherry-pick**.
+1. In the upper-right corner, select **Options** > **Cherry-pick**.
 1. On the cherry-pick dialog, select the project and branch to cherry-pick into.
 1. Optional. Select **Start a new merge request with these changes**.
 1. Select **Cherry-pick**.
@@ -106,7 +106,7 @@ when you view that file in your project's Git repository:
 1. Go to the file changed by the commit. In the last commit block, select **History**.
 1. Select the [title](https://git-scm.com/docs/git-commit#_discussion)
    of the commit you want to cherry-pick.
-1. In the upper-right corner, select **Options > Cherry-pick**.
+1. In the upper-right corner, select **Options** > **Cherry-pick**.
 1. On the cherry-pick dialog, select the project and branch to cherry-pick into.
 1. Optional. Select **Start a new merge request with these changes**.
 1. Select **Cherry-pick**.

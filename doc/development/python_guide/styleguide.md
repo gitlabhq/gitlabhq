@@ -161,4 +161,4 @@ Consider running the following tools in your CI pipeline as well as locally:
 
 - **Dependency scanning**: Checks for vulnerabilities in dependencies
 - **Secret detection**: Ensures no secrets are committed to the repository
-- **SAST (semgrep)**: Static Application Security Testing
+- **SAST (semgrep)**: Static application security testing

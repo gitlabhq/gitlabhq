@@ -91,6 +91,7 @@ If you use self-signed certificates to connect to your GitLab instance, read the
 | Setting | Default | Information |
 | ------- | ------- | ----------- |
 | `gitlab.customQueries` | Not applicable | Defines the search queries that retrieves the items shown on the GitLab Panel. For more information, see [Custom Queries documentation](custom_queries.md). |
+| `gitlab.authentication.oauthClientIds` | Not applicable | The OAuth client ID to use (by GitLab instance URL) during [setup](setup.md#authenticate-with-gitlab). |
 | `gitlab.debug` | false | When `true`, enables debug mode. Debug mode improves error stack traces because the extension uses source maps to understand minified code. Debug mode also shows debug log messages in the [extension logs](troubleshooting.md#view-log-files). |
 | `gitlab.duo.enabledWithoutGitlabProject` | true | When `true`, keeps GitLab Duo features enabled if the extension can't retrieve the project's `duoFeaturesEnabledForProject` setting. When `false`, disables all GitLab Duo features if the extension can't retrieve the project's `duoFeaturesEnabledForProject` setting. See [`duoFeaturesEnabledForProject` setting](#duofeaturesenabledforproject). |
 | `gitlab.duoAgentPlatform.defaultNamespace` | Not applicable | The default group or namespace path for GitLab Duo Agent Platform when the extension can't get GitLab project details. |

@@ -422,7 +422,7 @@ Prerequisites:
 To set the default minimum role:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > CI/CD > Variables**.
+1. Select **Settings** > **CI/CD** > **Variables**.
 1. Under **Default role to use pipeline variables** select a minimum role, or select
    **No one allowed** to prevent any user from using pipeline variables.
 1. Select **Save changes**.

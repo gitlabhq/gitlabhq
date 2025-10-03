@@ -78,9 +78,20 @@ To change your company details, including company name and tax ID:
 
 ## Subscription and billing contacts
 
-### Change your subscription contact
+Users involved in subscription management can have three distinct roles
+with varying levels of permissions and visibility into the subscription:
 
-The subscription contact is the primary contact for your billing account. They receive subscription event notifications and information about applying subscription.
+- Billing account manager: Has access to view and edit subscriptions, payment methods, and billing account settings, and can pay and download invoices in the Customers Portal.
+- Subscription contact (or "Sold to" contact): The subscription owner and primary contact
+  for your billing account. Receives notifications about subscription events and information
+  about applying the subscription. This role is also a billing account manager by default.
+- Billing contact (or "Bill to" contact): Receives all invoices and notifications about
+  subscription events. Does not have a Customers Portal account with access to the subscription
+  unless this role is also a billing account manager.
+
+One user can have all three roles.
+
+### Change your subscription contact
 
 To change the subscription contact:
 
@@ -92,8 +103,6 @@ To change the subscription contact:
 1. Select **Save changes**.
 
 ### Add a billing account manager
-
-Billing account managers can view and edit subscriptions, payment methods, and account settings, as well as pay and download invoices.
 
 To add another billing account manager for your account:
 

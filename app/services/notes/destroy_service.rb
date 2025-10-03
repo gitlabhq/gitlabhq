@@ -2,7 +2,7 @@
 
 module Notes
   class DestroyService < ::Notes::BaseService
-    def execute(note)
+    def execute(note, old_note_body: nil) # rubocop:disable Lint/UnusedMethodArgument -- used in EE override
       TodoService.new.destroy_target(note) do |note|
         note.destroy
       end

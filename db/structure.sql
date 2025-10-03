@@ -26697,6 +26697,31 @@ CREATE SEQUENCE system_note_metadata_id_seq
 
 ALTER SEQUENCE system_note_metadata_id_seq OWNED BY system_note_metadata.id;
 
+CREATE TABLE tag_gpg_signatures (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    gpg_key_id bigint,
+    gpg_key_subkey_id bigint,
+    verification_status smallint DEFAULT 0 NOT NULL,
+    object_name bytea NOT NULL,
+    gpg_key_primary_keyid bytea NOT NULL,
+    gpg_key_user_name text,
+    gpg_key_user_email text,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_ade3afeeaf CHECK ((char_length(gpg_key_user_name) <= 255)),
+    CONSTRAINT check_afd515f6c7 CHECK ((char_length(gpg_key_user_email) <= 255))
+);
+
+CREATE SEQUENCE tag_gpg_signatures_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE tag_gpg_signatures_id_seq OWNED BY tag_gpg_signatures.id;
+
 CREATE TABLE tags (
     id bigint NOT NULL,
     name character varying,
@@ -31498,6 +31523,8 @@ ALTER TABLE ONLY system_access_microsoft_graph_access_tokens ALTER COLUMN id SET
 
 ALTER TABLE ONLY system_note_metadata ALTER COLUMN id SET DEFAULT nextval('system_note_metadata_id_seq'::regclass);
 
+ALTER TABLE ONLY tag_gpg_signatures ALTER COLUMN id SET DEFAULT nextval('tag_gpg_signatures_id_seq'::regclass);
+
 ALTER TABLE ONLY tags ALTER COLUMN id SET DEFAULT nextval('tags_id_seq'::regclass);
 
 ALTER TABLE ONLY target_branch_rules ALTER COLUMN id SET DEFAULT nextval('target_branch_rules_id_seq'::regclass);
@@ -35074,6 +35101,9 @@ ALTER TABLE ONLY system_access_microsoft_graph_access_tokens
 
 ALTER TABLE ONLY system_note_metadata
     ADD CONSTRAINT system_note_metadata_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY tag_gpg_signatures
+    ADD CONSTRAINT tag_gpg_signatures_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY tags
     ADD CONSTRAINT tags_pkey PRIMARY KEY (id);
@@ -42282,6 +42312,12 @@ CREATE UNIQUE INDEX index_system_note_metadata_on_description_version_id ON syst
 
 CREATE UNIQUE INDEX index_system_note_metadata_on_note_id ON system_note_metadata USING btree (note_id);
 
+CREATE INDEX index_tag_gpg_signatures_on_gpg_key_id ON tag_gpg_signatures USING btree (gpg_key_id);
+
+CREATE INDEX index_tag_gpg_signatures_on_gpg_key_subkey_id ON tag_gpg_signatures USING btree (gpg_key_subkey_id);
+
+CREATE UNIQUE INDEX index_tag_gpg_signatures_on_project_id_and_object_name ON tag_gpg_signatures USING btree (project_id, object_name);
+
 CREATE UNIQUE INDEX index_tags_on_name ON tags USING btree (name);
 
 CREATE INDEX index_tags_on_name_trigram ON tags USING gin (name gin_trgm_ops);
@@ -48790,6 +48826,9 @@ ALTER TABLE ONLY user_group_member_roles
 ALTER TABLE ONLY ssh_signatures
     ADD CONSTRAINT fk_aa1efbe865 FOREIGN KEY (key_id) REFERENCES keys(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY tag_gpg_signatures
+    ADD CONSTRAINT fk_aa4e77f534 FOREIGN KEY (gpg_key_subkey_id) REFERENCES gpg_key_subkeys(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_aa5798e761 FOREIGN KEY (closed_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -49354,6 +49393,9 @@ ALTER TABLE ONLY issue_links
 ALTER TABLE ONLY csv_issue_imports
     ADD CONSTRAINT fk_e71c0ae362 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY tag_gpg_signatures
+    ADD CONSTRAINT fk_e72d8fc117 FOREIGN KEY (gpg_key_id) REFERENCES gpg_keys(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY namespaces
     ADD CONSTRAINT fk_e7a0b20a6b FOREIGN KEY (custom_project_templates_group_id) REFERENCES namespaces(id) ON DELETE SET NULL;
 
@@ -49389,6 +49431,9 @@ ALTER TABLE ONLY board_labels
 
 ALTER TABLE ONLY packages_debian_project_distribution_keys
     ADD CONSTRAINT fk_eb2224a3c0 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY tag_gpg_signatures
+    ADD CONSTRAINT fk_ebf091e1c4 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY compliance_requirements
     ADD CONSTRAINT fk_ebf5c3365b FOREIGN KEY (framework_id) REFERENCES compliance_management_frameworks(id) ON DELETE CASCADE;

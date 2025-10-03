@@ -426,7 +426,7 @@ commands:
   - echo "Running q"
   - |
     AMAZON_Q_SIGV4=1 q chat --trust-all-tools --no-interactive --verbose "
-   You are an AI assistant helping with GitLab operations.
+    You are an AI assistant helping with GitLab operations.
 
     Context: $AI_FLOW_CONTEXT
     Task: $AI_FLOW_INPUT

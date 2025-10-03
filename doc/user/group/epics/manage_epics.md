@@ -142,7 +142,7 @@ Prerequisites:
 
 To update multiple epics at the same time:
 
-1. In a group, go to **Epics > List**.
+1. In a group, go to **Epics** > **List**.
 1. Select **Bulk edit**. A sidebar on the right appears with editable fields.
 1. Select the checkboxes next to each epic you want to edit.
 1. Select the appropriate fields and their values from the sidebar.
@@ -932,7 +932,7 @@ Prerequisites:
 
 To add a new epic as child epic:
 
-1. In an epic, in the **Child items** section, select **Add > Add a new epic**.
+1. In an epic, in the **Child items** section, select **Add** > **Add a new epic**.
 1. Select a group from the dropdown list. The epic's group is selected by default.
 1. Enter a title for the new epic.
 1. Select **Create epic**.
@@ -941,7 +941,7 @@ To add a new epic as child epic:
 
 To add an existing epic as child epic:
 
-1. In an epic, in the **Child items** section, select **Add > Add an existing epic**.
+1. In an epic, in the **Child items** section, select **Add** > **Add an existing epic**.
 1. Identify the epic to be added, using either of the following methods:
    - Paste the link of the epic.
    - Search for the desired issue by entering part of the epic's title, then selecting the desired match. This search is only available for epics in the same group hierarchy.

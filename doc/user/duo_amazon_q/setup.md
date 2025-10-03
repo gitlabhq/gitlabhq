@@ -90,7 +90,7 @@ Prerequisites:
 Now, create an AWS identity provider:
 
 1. Sign in to the [AWS IAM console](https://console.aws.amazon.com/iam).
-1. Select **Access Management > Identity providers**.
+1. Select **Access Management** > **Identity providers**.
 1. Select **Add provider**.
 1. For **Provider type**, select **OpenID Connect**.
 1. For **Provider URL**, enter the value from GitLab.

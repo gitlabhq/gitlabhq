@@ -87,7 +87,7 @@ To configure the contact source for a group or subgroup:
 1. On the left sidebar, select **Search or go to** and find your group or subgroup.
 1. Select **Settings** > **General**.
 1. Expand the **Permissions and group features** section.
-1. Select **Contact source > Search for a group**.
+1. Select **Contact source** > **Search for a group**.
 1. Select the group from which you wish to source contacts.
 1. Select **Save changes**.
 

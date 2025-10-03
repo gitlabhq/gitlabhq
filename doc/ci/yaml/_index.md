@@ -5126,11 +5126,6 @@ docker-build-2:
 
 In this example, both jobs have the same behavior.
 
-**Additional details**:
-
-- In some cases you cannot use `/` or `./` in a CI/CD variable with `exists`.
-  See [issue 386595](https://gitlab.com/gitlab-org/gitlab/-/issues/386595) for more details.
-
 ---
 
 ##### `rules:exists:project`

@@ -257,9 +257,9 @@ Prerequisites:
 
 - You're using GitLab Workflow version 3.74.0 or later.
 - Your project includes [Security Risk Management](https://about.gitlab.com/features/?stage=secure) features, such as
-  Static Application Security Testing (SAST), Dynamic Application Security Testing (DAST),
-  Container Scanning, or Dependency Scanning.
-- You configured the [Security Risk Management](../../user/application_security/secure_your_application.md) features.
+  static application security testing (SAST), dynamic application security testing (DAST),
+  container scanning, or dependency scanning.
+- You configured the [security risk management](../../user/application_security/secure_your_application.md) features.
 
 To view security findings:
 

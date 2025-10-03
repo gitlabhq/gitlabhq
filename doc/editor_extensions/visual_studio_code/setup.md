@@ -15,23 +15,9 @@ To install the GitLab Workflow extension for VS Code:
 
 ## Connect to GitLab
 
-After you install the extension, connect it to your GitLab account by creating a personal access token and authenticating with GitLab.
-
-### Create a personal access token
-
-If you are on GitLab Self-Managed, create a personal access token.
-
-1. On the left sidebar, select your avatar.
-1. Select **Edit profile**.
-1. On the left sidebar, select **Access tokens**.
-1. Select **Add new token**.
-1. Enter a name, description, and expiration date.
-1. Select the `api` scope.
-1. Select **Create personal access token**.
+After you download and install the extension, connect it to your GitLab account.
 
 ### Authenticate with GitLab
-
-Then authenticate with GitLab.
 
 1. Open the Command Palette:
    - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
@@ -40,8 +26,9 @@ Then authenticate with GitLab.
 1. Select your GitLab instance URL from the options, or enter one manually.
    - If you enter one manually, in **URL to GitLab instance**, paste the full URL,
      including the `http://` or `https://`. Press <kbd>Enter</kbd> to confirm.
-1. Authenticate with GitLab. For `GitLab.com`, you can use the OAuth authentication method.
-   If you don't use OAuth, use a personal access token.
+1. Authenticate with GitLab using:
+   - OAuth login after [configuring authentication](#authentication).
+   - A new [personal access token](#create-a-personal-access-token).
 
 The extension matches your Git repository remote URL with the GitLab instance URL you specified
 for your token. If you have multiple accounts or projects, you can choose the one you want to use.
@@ -80,9 +67,58 @@ The extension shows information in the VS Code status bar if both:
 ## Configure the extension
 
 To configure settings, go to **Settings** > **Extensions** > **GitLab Workflow**.
+Settings can be configured at the user or workspace level.
 
 By default, Code Suggestions and GitLab Duo Chat are enabled, so if you have
 the GitLab Duo add-on and a seat assigned, you should have access.
+
+### Authentication
+
+Authenticate using a personal access token or logging in through an OAuth application.
+
+#### Create a personal access token
+
+If you are on GitLab Self-Managed or GitLab Dedicated, create a personal access token.
+
+1. On the left sidebar, select your avatar.
+1. Select **Edit profile**.
+1. On the left sidebar, select **Access tokens**.
+1. Select **Add new token**.
+1. Enter a name, description, and expiration date.
+1. Select the `api` scope.
+1. Select **Create personal access token**.
+
+#### Use an OAuth application
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/merge_requests/2738) in GitLab Workflow 6.47.0.
+
+{{< /history >}}
+
+To use OAuth authentication you must know the client ID of either:
+
+- An instance-wide OAuth application managed by your instance administrator.
+- A group-wide OAuth application managed by a group owner.
+- A user OAuth application managed by yourself.
+
+To configure OAuth application login:
+
+1. Open the Command Palette:
+   - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+1. Type `Preferences: Open User Settings` and press <kbd>Enter</kbd>.
+1. Select **Settings** > **Extensions** > **GitLab Workflow** > **Authentication**.
+1. Under **OAuth Client IDs**, select **Add Item**.
+1. Select **Key** and enter the GitLab instance URL.
+1. Select **Value** and enter the client ID of the OAuth application.
 
 ### Code security
 

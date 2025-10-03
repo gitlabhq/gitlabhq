@@ -138,7 +138,7 @@ To view the Security Center:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Your work**.
-1. Select **Security > Security dashboard**.
+1. Select **Security** > **Security dashboard**.
 
 The Security Center is blank by default. You must add a project which have been configured with at least one security scanner.
 

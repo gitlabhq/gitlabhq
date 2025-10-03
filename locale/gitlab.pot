@@ -65533,9 +65533,6 @@ msgstr ""
 msgid "The discussion in this %{noteableTypeText} is locked."
 msgstr ""
 
-msgid "The discussion in this Wiki is locked. Only project members can comment."
-msgstr ""
-
 msgid "The discussion in this merge request is locked."
 msgstr ""
 
@@ -66677,9 +66674,6 @@ msgid "This group has no active access tokens."
 msgstr ""
 
 msgid "This group has no inactive access tokens."
-msgstr ""
-
-msgid "This group is archived and cannot be commented on."
 msgstr ""
 
 msgid "This group is archived. Its subgroups, projects, and data are %{strong_open}read-only%{strong_close}."
