@@ -18,11 +18,7 @@ module Gitlab
           def ensure_resource_group(processable)
             return unless processable.is_a?(::Ci::Processable)
 
-            key = if Feature.enabled?(:read_from_new_ci_destinations, project)
-                    processable.options[:resource_group_key]
-                  else
-                    processable.options.delete(:resource_group_key)
-                  end
+            key = processable.options[:resource_group_key]
 
             resource_group = ::Gitlab::Ci::Pipeline::Seed::Processable::ResourceGroup
               .new(processable, key).to_resource

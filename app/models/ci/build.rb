@@ -216,7 +216,7 @@ module Ci
       )
     end
 
-    # TODO: remove this scope with FF `read_from_new_ci_destinations`
+    # TODO: remove this scope with `ci_builds_metadata`
     scope :with_secure_reports_from_metadata_config_options, ->(job_types) do
       joins(:metadata).where("#{Ci::BuildMetadata.quoted_table_name}.config_options -> 'artifacts' -> 'reports' ?| array[:job_types]", job_types: job_types)
     end
@@ -454,7 +454,7 @@ module Ci
       Ci::JobArtifact.where(job: self.select(:id)).update_all(expire_at: nil)
     end
 
-    # TODO: remove this method with FF `read_from_new_ci_destinations`
+    # TODO: remove this method with `ci_builds_metadata`
     def self.has_any_job_definition?
       left_joins(:job_definition_instance).limit(1).pick(:job_id).present?
     end

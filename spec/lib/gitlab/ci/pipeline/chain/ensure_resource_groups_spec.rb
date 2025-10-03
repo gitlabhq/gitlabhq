@@ -34,13 +34,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureResourceGroups do
         expect(job.resource_group.key).to eq('production')
       end
 
-      it 'deletes :resource_group_key from options when FF `read_from_new_ci_destinations` is disabled' do
-        stub_feature_flags(read_from_new_ci_destinations: false)
-        subject
-
-        expect(job.options[:resource_group_key]).to be_nil
-      end
-
       context 'when a resource group has already been existed' do
         before do
           create(:ci_resource_group, project: project, key: 'production')
@@ -51,13 +44,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureResourceGroups do
 
           expect(project.resource_groups.find_by_key('production')).to be_present
           expect(job.resource_group.key).to eq('production')
-        end
-
-        it 'deletes :resource_group_key from options when FF `read_from_new_ci_destinations` is disabled' do
-          stub_feature_flags(read_from_new_ci_destinations: false)
-          subject
-
-          expect(job.options[:resource_group_key]).to be_nil
         end
       end
 
@@ -86,13 +72,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureResourceGroups do
             expect { subject }.to change { Ci::ResourceGroup.count }.by(1)
             expect(project.resource_groups.find_by_key('TE_GROUP')).to be_present
           end
-
-          it 'deletes :resource_group_key from options when FF `read_from_new_ci_destinations` is disabled' do
-            stub_feature_flags(read_from_new_ci_destinations: false)
-            subject
-
-            expect(job.options[:resource_group_key]).to be_nil
-          end
         end
 
         context "when there are nested variables" do
@@ -101,13 +80,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureResourceGroups do
           it 'expands all of the nested variables before creating the group' do
             expect { subject }.to change { Ci::ResourceGroup.count }.by(1)
             expect(project.resource_groups.find_by_key('TEST_GROUP')).to be_present
-          end
-
-          it 'deletes :resource_group_key from options when FF `read_from_new_ci_destinations` is disabled' do
-            stub_feature_flags(read_from_new_ci_destinations: false)
-            subject
-
-            expect(job.options[:resource_group_key]).to be_nil
           end
         end
       end

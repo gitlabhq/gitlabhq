@@ -9,7 +9,7 @@ import './behaviors';
 
 // lib/utils
 import { setGlTooltipDefaultContainer } from '@gitlab/ui';
-import { GlBreakpointInstance } from '@gitlab/ui/src/utils';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import { initRails } from '~/lib/utils/rails_ujs';
 import * as popovers from '~/popovers';
 import * as tooltips from '~/tooltips';
@@ -120,7 +120,7 @@ function deferredInitialisation() {
 
 const $body = $('body');
 const $document = $(document);
-const bootstrapBreakpoint = GlBreakpointInstance.getBreakpointSize();
+const currentBreakpoint = PanelBreakpointInstance.getBreakpointSize();
 
 initUserTracking();
 initLayoutNav();
@@ -146,7 +146,7 @@ $body.on('click', 'a[href^="#"]', function clickHashLinkCallback() {
 const isBoardsOrMR = /((projects|groups):boards:show|projects:merge_requests:)/.test(
   document.body.dataset.page,
 );
-if (!isBoardsOrMR && (bootstrapBreakpoint === 'sm' || bootstrapBreakpoint === 'xs')) {
+if (!isBoardsOrMR && (currentBreakpoint === 'sm' || currentBreakpoint === 'xs')) {
   const $rightSidebar = $('.js-right-sidebar[data-auto-collapse]');
   const $layoutPage = $('.layout-page');
 

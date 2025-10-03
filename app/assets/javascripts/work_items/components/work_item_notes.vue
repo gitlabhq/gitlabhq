@@ -1,6 +1,7 @@
 <script>
 import { GlModal } from '@gitlab/ui';
 import { isEmpty } from 'lodash';
+
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __ } from '~/locale';
 import {
@@ -542,9 +543,24 @@ export default {
     cancelDeletingNote() {
       this.noteToDelete = null;
     },
+    updateDiscussionsCount(value) {
+      if (typeof value !== 'number') return;
+
+      const { cache } = this.$apollo.provider.defaultClient;
+
+      cache.modify({
+        id: cache.identify({ __typename: 'WorkItem', id: this.workItemId }),
+        fields: {
+          userDiscussionsCount(existingCount = 0) {
+            return Math.max(0, existingCount + value);
+          },
+        },
+      });
+    },
     async deleteNote() {
       try {
         const { id, isLastNote, discussionId } = this.noteToDelete;
+        const { updateDiscussionsCount } = this;
         await this.$apollo.mutate({
           mutation: deleteNoteMutation,
           variables: {
@@ -560,6 +576,7 @@ export default {
               id: cache.identify(deletedObject),
               fields: (_, { DELETE }) => DELETE,
             });
+            if (!discussionId || isLastNote) updateDiscussionsCount(-1);
           },
           optimisticResponse: {
             destroyNote: {
@@ -604,6 +621,7 @@ export default {
             @startEditing="$emit('startEditing')"
             @stopEditing="$emit('stopEditing')"
             @error="$emit('error', $event)"
+            @updateCount="updateDiscussionsCount"
           />
         </ul>
       </div>
@@ -659,6 +677,7 @@ export default {
             @error="$emit('error', $event)"
             @focus="$emit('focus')"
             @blur="$emit('blur')"
+            @updateCount="updateDiscussionsCount"
           />
         </ul>
       </div>
@@ -677,3 +696,4 @@ export default {
     </gl-modal>
   </div>
 </template>
+Use cache.modify instead of writeQuery to update userDiscussionsCount

@@ -741,6 +741,7 @@ export const setNewWorkItemCache = async ({
           duplicatedToWorkItemUrl: null,
           promotedToEpicUrl: null,
           showPlanUpgradePromotion: false,
+          userDiscussionsCount: 0,
           project: null,
           namespace: {
             id: newWorkItemPath,

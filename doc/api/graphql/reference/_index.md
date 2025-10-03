@@ -46999,6 +46999,7 @@ Possible item types for AI items.
 | ----- | ----------- |
 | <a id="aicatalogitemtypeagent"></a>`AGENT` | Agent. |
 | <a id="aicatalogitemtypeflow"></a>`FLOW` | Flow. |
+| <a id="aicatalogitemtypethird_party_flow"></a>`THIRD_PARTY_FLOW` | Third party flow. |
 
 ### `AiCatalogVersionBump`
 

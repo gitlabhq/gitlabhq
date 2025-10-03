@@ -6,8 +6,6 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
   let_it_be_with_refind(:processable) { create(:ci_processable, options: { script: 'echo' }) }
 
   before do
-    # Remove when FF `read_from_new_ci_destinations` is removed
-    processable.clear_memoization(:read_from_new_destination?)
     # Remove when FF `stop_writing_builds_metadata` is removed
     processable.clear_memoization(:can_write_metadata?)
   end
@@ -46,14 +44,6 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
           end
 
           it { is_expected.to eq(job_definition_options) }
-
-          context 'when FF `read_from_new_ci_destinations` is disabled' do
-            before do
-              stub_feature_flags(read_from_new_ci_destinations: false)
-            end
-
-            it { is_expected.to eq(metadata_options) }
-          end
 
           context 'when legacy job options are present' do
             before do
@@ -101,14 +91,6 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
           end
 
           it { is_expected.to eq(job_definition_variables) }
-
-          context 'when FF `read_from_new_ci_destinations` is disabled' do
-            before do
-              stub_feature_flags(read_from_new_ci_destinations: false)
-            end
-
-            it { is_expected.to eq(metadata_variables) }
-          end
 
           context 'when legacy job variables are present' do
             before do
@@ -216,14 +198,6 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
         end
 
         it { is_expected.to eq('2m') }
-
-        context 'when FF `read_from_new_ci_destinations` is disabled' do
-          before do
-            stub_feature_flags(read_from_new_ci_destinations: false)
-          end
-
-          it { is_expected.to eq('1m') }
-        end
       end
     end
   end
@@ -246,14 +220,6 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
         end
 
         it { is_expected.to eq(120) }
-
-        context 'when FF `read_from_new_ci_destinations` is disabled' do
-          before do
-            stub_feature_flags(read_from_new_ci_destinations: false)
-          end
-
-          it { is_expected.to eq(60) }
-        end
       end
     end
   end
@@ -375,14 +341,6 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
       end
 
       it { is_expected.to eq('project_timeout_source') }
-
-      context 'when FF `read_from_new_ci_destinations` is disabled' do
-        before do
-          stub_feature_flags(read_from_new_ci_destinations: false)
-        end
-
-        it { is_expected.to eq('unknown_timeout_source') }
-      end
     end
   end
 
@@ -505,14 +463,6 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
       end
 
       it { is_expected.to be(true) }
-
-      context 'when FF `read_from_new_ci_destinations` is disabled' do
-        before do
-          stub_feature_flags(read_from_new_ci_destinations: false)
-        end
-
-        it_behaves_like 'when job debug_trace_enabled is nil'
-      end
     end
 
     context 'when job debug_trace_enabled is false' do
@@ -521,14 +471,6 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
       end
 
       it { is_expected.to be(false) }
-
-      context 'when FF `read_from_new_ci_destinations` is disabled' do
-        before do
-          stub_feature_flags(read_from_new_ci_destinations: false)
-        end
-
-        it_behaves_like 'when job debug_trace_enabled is nil'
-      end
     end
   end
 
@@ -571,17 +513,6 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
           it 'returns job definition id_tokens' do
             expect(id_tokens).to eq(job_definition_id_tokens)
             expect(processable.id_tokens?).to be(true)
-          end
-
-          context 'when FF `read_from_new_ci_destinations` is disabled' do
-            before do
-              stub_feature_flags(read_from_new_ci_destinations: false)
-            end
-
-            it 'returns metadata id_tokens' do
-              expect(id_tokens).to eq(metadata_id_tokens)
-              expect(processable.id_tokens?).to be(true)
-            end
           end
         end
       end
@@ -633,14 +564,6 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
         end
 
         it { is_expected.to eq(2) }
-
-        context 'when FF `read_from_new_ci_destinations` is disabled' do
-          before do
-            stub_feature_flags(read_from_new_ci_destinations: false)
-          end
-
-          it { is_expected.to eq(1) }
-        end
       end
     end
   end
@@ -721,18 +644,6 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
 
         it 'returns job definition interruptible' do
           expect(interruptible).to be false
-        end
-
-        context 'when FF `read_from_new_ci_destinations` is disabled' do
-          before do
-            stub_feature_flags(read_from_new_ci_destinations: false)
-            processable.ensure_metadata.write_attribute(:interruptible, true)
-            processable.job_definition.interruptible = false
-          end
-
-          it 'returns metadata interruptible' do
-            expect(interruptible).to be_truthy
-          end
         end
       end
     end

@@ -12,6 +12,9 @@ mutation createWorkItemNote($input: CreateNoteInput!) {
           id
           name
         }
+        userPermissions {
+          resolveNote
+        }
         notes {
           nodes {
             ...WorkItemNote

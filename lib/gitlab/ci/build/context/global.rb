@@ -26,24 +26,14 @@ module Gitlab
           private
 
           def stub_build
-            if Feature.enabled?(:read_from_new_ci_destinations, project)
-              ::Ci::Build.new(pipeline_attributes).tap do |job|
-                temp_job_definition = ::Ci::JobDefinition.fabricate(
-                  config: { yaml_variables: @yaml_variables },
-                  project_id: pipeline.project_id,
-                  partition_id: pipeline.partition_id
-                )
-                job.temp_job_definition = temp_job_definition
-              end
-            else
-              ::Ci::Build.new(build_attributes)
+            ::Ci::Build.new(pipeline_attributes).tap do |job|
+              temp_job_definition = ::Ci::JobDefinition.fabricate(
+                config: { yaml_variables: @yaml_variables },
+                project_id: pipeline.project_id,
+                partition_id: pipeline.partition_id
+              )
+              job.temp_job_definition = temp_job_definition
             end
-          end
-
-          # Remove this method with FF `read_from_new_ci_destinations`
-          def build_attributes
-            pipeline_attributes.merge(
-              yaml_variables: @yaml_variables)
           end
         end
       end

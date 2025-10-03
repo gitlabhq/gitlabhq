@@ -4265,14 +4265,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it_behaves_like 'saves data on transition'
-
-        context 'when FF `read_from_new_ci_destinations` is disabled' do
-          before do
-            stub_feature_flags(read_from_new_ci_destinations: false)
-          end
-
-          it_behaves_like 'saves data on transition'
-        end
       end
     end
 
@@ -4292,14 +4284,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it_behaves_like 'saves data on transition'
-
-        context 'when FF `read_from_new_ci_destinations` is disabled' do
-          before do
-            stub_feature_flags(read_from_new_ci_destinations: false)
-          end
-
-          it_behaves_like 'saves data on transition'
-        end
       end
     end
   end

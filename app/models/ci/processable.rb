@@ -67,10 +67,6 @@ module Ci
       where('NOT EXISTS (?)', needs)
     end
 
-    scope :with_metadata_interruptible_true, -> do
-      joins(:metadata).merge(Ci::BuildMetadata.with_interruptible)
-    end
-
     scope :with_interruptible_true, -> do
       where_exists(
         Ci::JobDefinitionInstance

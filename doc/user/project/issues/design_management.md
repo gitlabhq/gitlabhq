@@ -74,7 +74,7 @@ To view a design:
 The design you selected opens. You can then [zoom in](#zoom-in-on-a-design) on it or
 [create a comment](#add-a-comment-to-a-design).
 
-![Designs section](img/design_management_v14_10.png)
+![The 'Designs' section in a GitLab issue, displaying uploaded design mockups.](img/design_management_v14_10.png)
 
 When viewing a design, you can move to other designs. To do so, either:
 
@@ -128,7 +128,7 @@ To add a design to an issue:
 
    - Drag a file from your file browser and drop it in the drop zone in the **Designs** section.
 
-     ![Drag and drop design uploads](img/design_drag_and_drop_uploads_v13_2.png)
+     ![Uploading a new design by dragging and dropping it onto the issue page.](img/design_drag_and_drop_uploads_v13_2.png)
 
    - Take a screenshot or copy a local image file into your clipboard, hover your cursor over the
      drop zone, and press <kbd>Control</kbd> or <kbd>Cmd</kbd> + <kbd>V</kbd>.

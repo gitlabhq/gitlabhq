@@ -118,7 +118,7 @@ The tabs below the title and description show the following:
 The milestone view contains a [burndown and burnup chart](burndown_and_burnup_charts.md),
 showing the progress of completing a milestone.
 
-![burndown and burnup chart](img/burndown_and_burnup_charts_v15_3.png)
+![A burndown and burnup chart showing project progress over time.](img/burndown_and_burnup_charts_v15_3.png)
 
 #### Milestone sidebar
 
@@ -132,7 +132,7 @@ The sidebar on the milestone view shows the following:
 - Links to associated releases.
 - The milestone's reference you can copy to your clipboard.
 
-![Project milestone page](img/milestones_project_milestone_page_sidebar_v13_11.png)
+![The project milestones page, displaying a list of milestones with their progress and due dates.](img/milestones_project_milestone_page_sidebar_v13_11.png)
 
 ## Create a milestone
 
@@ -159,7 +159,7 @@ To create a milestone:
 1. Optional. Enter description, start date, and due date.
 1. Select **New milestone**.
 
-![New milestone](img/milestones_new_project_milestone_v16_11.png)
+![The form for creating a new milestone, with fields for a title, description, start date, and due date.](img/milestones_new_project_milestone_v16_11.png)
 
 ## Edit a milestone
 

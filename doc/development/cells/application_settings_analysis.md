@@ -1,5 +1,5 @@
 ---
-stage: Tenant Scale
+stage: Runtime
 group: Cells Infrastructure
 info: Analysis of Application Settings for Cells 1.0.
 title: Application Settings analysis

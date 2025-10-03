@@ -334,7 +334,7 @@ export default {
     },
     onNoteUpdate(cache, { data }) {
       this.addDiscussionToCache(cache, data.createNote.note);
-
+      this.$emit('updateCount', 1);
       const numErrors = data?.createNote?.errors?.length;
 
       if (numErrors) {

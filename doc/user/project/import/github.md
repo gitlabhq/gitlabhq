@@ -239,7 +239,7 @@ To open a repository in GitLab URL after it has been imported, select its GitLab
 
 Completed imports can be re-imported by selecting **Re-import** and specifying new name. This creates a new copy of the source project.
 
-![GitHub importer page](img/import_projects_from_github_importer_v16_0.png)
+![The GitHub importer page, which lists repositories to be imported into GitLab.](img/import_projects_from_github_importer_v16_0.png)
 
 ### Check status of imports
 

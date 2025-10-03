@@ -74,19 +74,6 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
         )
       end
 
-      context 'when using the metadata queries' do
-        before do
-          stub_feature_flags(ci_read_interruptible_from_job_definitions: false)
-        end
-
-        it 'cancels only previous non started builds' do
-          execute
-
-          expect(build_statuses(prev_pipeline)).to contain_exactly('canceled', 'success', 'canceled')
-          expect(build_statuses(pipeline)).to contain_exactly('pending')
-        end
-      end
-
       context 'when the previous pipeline is running on the same SHA' do
         # This setup specifies the SHA for clarity, but every
         # FactoryBot Pipeline record has the same hardcoded SHA

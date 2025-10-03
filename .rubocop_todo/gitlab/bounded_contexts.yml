@@ -651,7 +651,6 @@ Gitlab/BoundedContexts:
     - 'app/models/active_session.rb'
     - 'app/models/activity_pub.rb'
     - 'app/models/activity_pub/releases_subscription.rb'
-    - 'app/models/admin/abuse_report_assignee.rb'
     - 'app/models/alert_management.rb'
     - 'app/models/alert_management/alert.rb'
     - 'app/models/alert_management/alert_assignee.rb'

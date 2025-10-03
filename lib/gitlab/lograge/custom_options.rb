@@ -32,7 +32,7 @@ module Gitlab
 
         ::Gitlab::InstrumentationHelper.add_instrumentation_data(payload)
 
-        payload[Labkit::Correlation::CorrelationId::LOG_KEY] = event.payload[Labkit::Correlation::CorrelationId::LOG_KEY] || Labkit::Correlation::CorrelationId.current_id
+        payload[Labkit::Fields::CORRELATION_ID] = event.payload[Labkit::Fields::CORRELATION_ID] || Labkit::Correlation::CorrelationId.current_id
 
         # https://github.com/roidrage/lograge#logging-errors--exceptions
         exception = event.payload[:exception_object]

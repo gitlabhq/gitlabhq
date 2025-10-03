@@ -430,6 +430,8 @@ On GitLab Self-Managed, by default the `fallback_behavior` field is available. T
 
 ## `policy_tuning`
 
+### `unblock_rules_using_execution_policies`
+
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498624) support for use in pipeline execution policies in GitLab 17.10 [with a flag](../../../administration/feature_flags/_index.md) named `unblock_rules_using_pipeline_execution_policies`. Enabled by default.
@@ -449,9 +451,9 @@ The availability of support for pipeline execution policies is controlled by a f
 
 You can only exclude [license finding rules](#license_finding-rule-type) if they target newly detected states only (`license_states` is set to `newly_detected`).
 
-### Examples
+#### Examples
 
-#### Example of `policy_tuning` with a scan execution policy
+##### Example of `policy_tuning` with a scan execution policy
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
 [security policy project](enforcement/security_policy_projects.md):
@@ -497,7 +499,7 @@ approval_policy:
     unblock_rules_using_execution_policies: true
 ```
 
-#### Example of `policy_tuning` with a pipeline execution policy
+##### Example of `policy_tuning` with a pipeline execution policy
 
 {{< alert type="warning" >}}
 
@@ -531,7 +533,7 @@ include:
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 ```
 
-##### Recreate pipeline execution policies created before GitLab 17.10
+###### Recreate pipeline execution policies created before GitLab 17.10
 
 Pipeline execution policies created before GitLab 17.10 do not contain the data required
 to use the `policy_tuning` feature. To use this feature with older pipeline execution policies,
@@ -553,6 +555,27 @@ To recreate a pipeline execution policy:
 1. In the **Pipeline execution policy** section, select **Select policy**.
 1. In the **.YAML mode**, paste the contents of the old policy.
 1. Select **Update via merge request** and merge the generated merge request.
+
+### `security_report_time_window`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525509) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `approval_policy_time_window`.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+In busy projects, the most recent pipeline may not have completed security scans available right away, which blocks security report comparisons. Use the `security_report_time_window` setting to security reports from recently completed pipelines instead. The security reports cannot be older than the time window, specified in minutes prior to the creation of the target branch pipeline. This setting does not apply if the selected pipeline already has completed security reports.
+
+| Field  | Type     | Required | Possible values    | Description                                                                                                          |
+|--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
+| `security_report_time_window` | `integer` | false    | 1 to 10080 (7 days) | Specifies the time window in minutes for choosing the target pipeline for the security report comparison. |
 
 ## Policy scope schema
 

@@ -485,6 +485,7 @@ export const updateWorkItemMutationResponse = {
         createdAt: '2022-08-03T12:41:54Z',
         updatedAt: '2022-08-08T12:41:54Z',
         closedAt: null,
+        userDiscussionsCount: 0,
         author: {
           ...mockAssignees[0],
         },
@@ -646,6 +647,7 @@ export const convertWorkItemMutationResponse = {
         createdAt: '2022-08-03T12:41:54Z',
         updatedAt: '2022-08-08T12:41:54Z',
         closedAt: null,
+        userDiscussionsCount: 0,
         author: {
           ...mockAssignees[0],
         },
@@ -1805,6 +1807,7 @@ export const workItemResponseFactory = ({
       duplicatedToWorkItemUrl,
       promotedToEpicUrl,
       showPlanUpgradePromotion,
+      userDiscussionsCount: 0,
       project: {
         id: 'gid://gitlab/Project/7',
         __typename: 'Project',
@@ -2220,6 +2223,7 @@ export const createWorkItemMutationResponse = {
         createdAt: '2022-08-03T12:41:54Z',
         closedAt: null,
         webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
+        userDiscussionsCount: 0,
         author: {
           ...mockAssignees[0],
         },
@@ -3548,6 +3552,7 @@ export const changeWorkItemParentMutationResponse = {
         createdAt: '2022-08-03T12:41:54Z',
         updatedAt: null,
         closedAt: null,
+        userDiscussionsCount: 0,
         author: {
           ...mockAssignees[0],
         },
@@ -6489,6 +6494,7 @@ export const createWorkItemQueryResponse = (widgets = []) => ({
         reference: 'gitlab-org#56',
         createNoteEmail: null,
         project: null,
+        userDiscussionsCount: 0,
         namespace: {
           id: 'full-path-epic-id',
           fullPath: 'full-path',

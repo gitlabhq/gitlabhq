@@ -279,7 +279,6 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:abuse_trust_scores).class_name('AntiAbuse::TrustScore').dependent(:destroy) }
     it { is_expected.to have_many(:issue_assignment_events).class_name('ResourceEvents::IssueAssignmentEvent') }
     it { is_expected.to have_many(:merge_request_assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent') }
-    it { is_expected.to have_many(:admin_abuse_report_assignees).class_name('Admin::AbuseReportAssignee') }
     it { is_expected.to have_many(:early_access_program_tracking_events).class_name('EarlyAccessProgram::TrackingEvent') }
 
     describe '#triggers' do
@@ -302,12 +301,6 @@ RSpec.describe User, feature_category: :user_profile do
           expect(user.triggers).to contain_exactly(expired_trigger, valid_trigger)
         end
       end
-    end
-
-    it do
-      is_expected.to have_many(:assigned_abuse_reports).class_name('AbuseReport')
-        .through(:admin_abuse_report_assignees)
-        .source(:abuse_report)
     end
 
     it do

@@ -45,7 +45,7 @@ module Security
 
     def find_jobs
       scope = @pipeline.builds
-      if Feature.enabled?(:read_from_new_ci_destinations, @pipeline.project) && scope.has_any_job_definition?
+      if scope.has_any_job_definition?
         scope.with_secure_reports_from_config_options(@job_types)
       else
         scope.with_secure_reports_from_metadata_config_options(@job_types)

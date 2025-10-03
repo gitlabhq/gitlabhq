@@ -70,7 +70,7 @@ class EmailReceiverWorker # rubocop:disable Scalability/IdempotentWorker
   def build_message(message, params = {})
     {
       class: self.class.name,
-      Labkit::Correlation::CorrelationId::LOG_KEY => Labkit::Correlation::CorrelationId.current_id,
+      Labkit::Fields::CORRELATION_ID => Labkit::Correlation::CorrelationId.current_id,
       message: message
     }.merge(params)
   end

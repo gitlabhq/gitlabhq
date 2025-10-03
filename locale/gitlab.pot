@@ -4601,16 +4601,19 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|GitLab default model (%{defaultModel})"
 msgstr ""
 
+msgid "AdminAIPoweredFeatures|GitLab managed model"
+msgstr ""
+
 msgid "AdminAIPoweredFeatures|Model"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Other GitLab Duo features"
 msgstr ""
 
-msgid "AdminAIPoweredFeatures|Select a model version for full control of your configuration, or GitLab Default for GitLab to manage the selection."
+msgid "AdminAIPoweredFeatures|Select a model"
 msgstr ""
 
-msgid "AdminAIPoweredFeatures|Select a self-hosted model"
+msgid "AdminAIPoweredFeatures|Select a model version for full control of your configuration, or GitLab Default for GitLab to manage the selection."
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Select the model for the feature"
@@ -24628,6 +24631,9 @@ msgstr ""
 msgid "DuoAgenticChat|The agent associated with this conversation is no longer available. You can view the conversation history but cannot send new messages."
 msgstr ""
 
+msgid "DuoAgentsPlatform|AI Catalog"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Action"
 msgstr ""
 
@@ -24638,6 +24644,9 @@ msgid "DuoAgentsPlatform|Agent session"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Agent sessions"
+msgstr ""
+
+msgid "DuoAgentsPlatform|An error occurred while fetching flows configured for this project."
 msgstr ""
 
 msgid "DuoAgentsPlatform|An error occurred while fetching users."
@@ -24655,7 +24664,10 @@ msgstr ""
 msgid "DuoAgentsPlatform|Config Path"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Config path"
+msgid "DuoAgentsPlatform|Configuration path"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Configuration source"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Could not display logs. Please try again."
@@ -24712,6 +24724,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Enter a description for this flow trigger"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Enter the path to your configuration file."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Event Type"
 msgstr ""
 
@@ -24727,6 +24742,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Failed to fetch workflows"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Flow"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Flow trigger created successfully."
 msgstr ""
 
@@ -24740,6 +24758,9 @@ msgid "DuoAgentsPlatform|Flow trigger updated successfully."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Flow triggers"
+msgstr ""
+
+msgid "DuoAgentsPlatform|From the flows configured for this project, select the flow that this trigger will execute."
 msgstr ""
 
 msgid "DuoAgentsPlatform|Full"
@@ -24806,6 +24827,9 @@ msgid "DuoAgentsPlatform|Search issues"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Select a flow"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Select a flow from the AI Catalog"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Select a service account user"
@@ -33397,6 +33421,9 @@ msgid "I agree that GitLab can contact me by email or telephone about its produc
 msgstr ""
 
 msgid "I forgot my password"
+msgstr ""
+
+msgid "I understand"
 msgstr ""
 
 msgid "I want to explore GitLab to see if it’s worth switching to"
@@ -42081,6 +42108,9 @@ msgstr ""
 msgid "ModelSelection|An error occurred while updating the feature setting. Please try again."
 msgstr ""
 
+msgid "ModelSelection|By selecting %{selectedGitlabManagedModel}, you consent to using a GitLab managed model and sending data to the GitLab AI gateway."
+msgstr ""
+
 msgid "ModelSelection|GitLab default model"
 msgstr ""
 
@@ -42094,6 +42124,9 @@ msgid "ModelSelection|Model Selection"
 msgstr ""
 
 msgid "ModelSelection|Model Selection is enabled for GitLab Duo, which requires a default namespace to be set. You must select a default namespace in profile preferences to continue using GitLab Duo features."
+msgstr ""
+
+msgid "ModelSelection|Model has been pinned by an administrator."
 msgstr ""
 
 msgid "ModelSelection|Select a model"
@@ -57049,6 +57082,9 @@ msgstr ""
 msgid "ScanResultPolicy|If your dependabot@company.com service account automatically creates pull requests for dependency updates that may contain license compliance violations requiring manual review."
 msgstr ""
 
+msgid "ScanResultPolicy|In busy projects where the target branch always has a pipeline running, the latest pipeline might be pending. Instead, the policy can use security reports from successful pipelines completed during the specified time window."
+msgstr ""
+
 msgid "ScanResultPolicy|Invalid fallback value detected. Please update your selection."
 msgstr ""
 
@@ -57244,6 +57280,12 @@ msgstr ""
 msgid "ScanResultPolicy|Unknown"
 msgstr ""
 
+msgid "ScanResultPolicy|Use security reports from pipelines completed within the last"
+msgstr ""
+
+msgid "ScanResultPolicy|Use time window for target pipeline comparison"
+msgstr ""
+
 msgid "ScanResultPolicy|Users"
 msgstr ""
 
@@ -57323,6 +57365,9 @@ msgid "ScanResultPolicy|license status"
 msgstr ""
 
 msgid "ScanResultPolicy|matching type"
+msgstr ""
+
+msgid "ScanResultPolicy|minutes"
 msgstr ""
 
 msgid "ScanResultPolicy|scanners"

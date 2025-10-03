@@ -24,7 +24,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       group_members
       project_members
       created_namespace_details
-      admin_abuse_report_assignees
       resolved_abuse_reports
       abuse_events
       builds

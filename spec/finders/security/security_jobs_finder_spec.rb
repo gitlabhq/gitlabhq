@@ -46,20 +46,6 @@ RSpec.describe Security::SecurityJobsFinder, feature_category: :vulnerability_ma
 
           is_expected.not_to include(dast_build)
         end
-
-        context 'when ff read_from_new_ci_destinations is disabled' do
-          before do
-            stub_feature_flags(read_from_new_ci_destinations: false)
-          end
-
-          it 'returns only those requested' do
-            is_expected.to include(sast_build)
-            is_expected.to include(container_scanning_build)
-            is_expected.to include(secret_detection_build)
-
-            is_expected.not_to include(dast_build)
-          end
-        end
       end
     end
 

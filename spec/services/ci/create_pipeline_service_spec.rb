@@ -889,15 +889,6 @@ RSpec.describe Ci::CreatePipelineService, :clean_gitlab_redis_cache, feature_cat
 
       it_behaves_like 'with resource group'
       it_behaves_like 'when resource group is defined for review app deployment'
-
-      context 'when FF `read_from_new_ci_destinations` is disabled' do
-        before do
-          stub_feature_flags(read_from_new_ci_destinations: false)
-        end
-
-        it_behaves_like 'with resource group'
-        it_behaves_like 'when resource group is defined for review app deployment'
-      end
     end
 
     context 'with timeout' do

@@ -1137,25 +1137,6 @@ and controls.
 
 ## GitLab 18.6
 
-<div class="deprecation breaking-change" data-milestone="18.6">
-
-### Fix typo in user profile visibility updated audit event type
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">17.8</span>
-- Removal in GitLab <span class="milestone">18.6</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/474386).
-
-</div>
-
-In GitLab 17.11, we created a duplicate audit event type with the name `user_profile_visibility_updated` to replace the audit event type
-`user_profile_visiblity_updated` that is misspelled. You should begin to migrate to this new audit event type as soon as possible.
-
-In GitLab 18.6, we'll remove the `user_profile_visiblity_updated` event type.
-
-</div>
-
 <div class="deprecation " data-milestone="18.6">
 
 ### Prometheus 2.x bundled with the Omnibus Linux package

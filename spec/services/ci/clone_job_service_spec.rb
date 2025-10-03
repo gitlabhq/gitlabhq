@@ -336,14 +336,10 @@ RSpec.describe Ci::CloneJobService, feature_category: :continuous_integration do
       # Remove with stop_writing_builds_metadata
       context 'when writing to builds metadata' do
         before do
-          job.clear_memoization(:read_from_new_destination?)
           job.clear_memoization(:can_write_metadata?)
           job.ensure_metadata.update!(interruptible: true)
 
-          stub_feature_flags(
-            stop_writing_builds_metadata: false,
-            read_from_new_ci_destinations: false
-          )
+          stub_feature_flags(stop_writing_builds_metadata: false)
         end
 
         it 'clones the interruptible job attribute' do

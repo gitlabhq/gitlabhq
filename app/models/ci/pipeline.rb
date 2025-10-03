@@ -482,12 +482,6 @@ module Ci
       where_exists(Ci::Build.latest.scoped_pipeline.with_artifacts(reports_scope))
     end
 
-    scope :legacy_conservative_interruptible, -> do
-      where_not_exists(
-        Ci::Build.scoped_pipeline.with_status(STARTED_STATUSES).with_metadata_interruptible_false
-      )
-    end
-
     scope :conservative_interruptible, -> do
       where_not_exists(
         Ci::Build.scoped_pipeline.with_status(STARTED_STATUSES).with_interruptible_false

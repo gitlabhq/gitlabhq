@@ -6,7 +6,7 @@ module ApplicationCable
 
     def notification_payload(_)
       super.merge!(
-        Labkit::Correlation::CorrelationId::LOG_KEY => request.request_id,
+        Labkit::Fields::CORRELATION_ID => request.request_id,
         user_id: current_user&.id,
         username: current_user&.username,
         remote_ip: request.remote_ip,

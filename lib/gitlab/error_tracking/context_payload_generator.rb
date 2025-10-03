@@ -37,7 +37,7 @@ module Gitlab
             program: Gitlab.process_name,
             locale: I18n.locale,
             feature_category: current_context['meta.feature_category'],
-            Labkit::Correlation::CorrelationId::LOG_KEY.to_sym => Labkit::Correlation::CorrelationId.current_id
+            Labkit::Fields::CORRELATION_ID.to_sym => Labkit::Correlation::CorrelationId.current_id
           )
         )
       end
