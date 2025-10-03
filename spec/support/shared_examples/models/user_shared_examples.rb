@@ -148,7 +148,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       merge_requests_merge_data
       namespace_uploads
       organization_detail_uploads
-      note_uploads
       packages_composer_packages
       packages_debian_group_distributions
       packages_debian_project_distributions

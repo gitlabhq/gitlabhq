@@ -13,6 +13,9 @@ module API
       expose :merge_requests_events, documentation: { type: 'boolean' }
       expose :repository_update_events, documentation: { type: 'boolean' }
       expose :enable_ssl_verification, documentation: { type: 'boolean' }
+      expose :organization_id,
+        if: ->(hook, _) { hook.is_a?(SystemHook) },
+        documentation: { type: 'integer', example: 1 }
 
       expose :alert_status, documentation: { type: 'symbol', example: :executable }
       expose :disabled_until, documentation: { type: 'dateTime', example: '2012-05-28T04:42:42-07:00' }

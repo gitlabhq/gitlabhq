@@ -18,7 +18,9 @@ module WebHooks
     end
 
     def create
-      result = WebHooks::CreateService.new(current_user).execute(hook_params, relation)
+      organization = Current.organization
+
+      result = WebHooks::CreateService.new(current_user).execute(hook_params, relation, organization)
 
       if result.success?
         flash[:notice] = _('Webhook created')

@@ -234,7 +234,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         ropc_without_client_credentials: true,
         rsa_key_restriction: 0,
         runner_jobs_request_api_limit: 2000,
-        runner_jobs_patch_trace_api_limit: 2000,
+        runner_jobs_patch_trace_api_limit: 200,
         runner_jobs_endpoints_api_limit: 200,
         search_rate_limit: 30,
         search_rate_limit_allowlist: [],

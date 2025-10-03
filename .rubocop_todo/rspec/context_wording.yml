@@ -2307,7 +2307,6 @@ RSpec/ContextWording:
     - 'spec/services/git/tag_hooks_service_spec.rb'
     - 'spec/services/git/tag_push_service_spec.rb'
     - 'spec/services/git/wiki_push_service/change_spec.rb'
-    - 'spec/services/git/wiki_push_service_spec.rb'
     - 'spec/services/gpg_keys/create_service_spec.rb'
     - 'spec/services/groups/deploy_tokens/revoke_service_spec.rb'
     - 'spec/services/groups/destroy_service_spec.rb'

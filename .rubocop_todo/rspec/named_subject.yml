@@ -2824,7 +2824,6 @@ RSpec/NamedSubject:
     - 'spec/services/git/branch_push_service_spec.rb'
     - 'spec/services/git/process_ref_changes_service_spec.rb'
     - 'spec/services/git/tag_push_service_spec.rb'
-    - 'spec/services/git/wiki_push_service_spec.rb'
     - 'spec/services/gpg_keys/create_service_spec.rb'
     - 'spec/services/gpg_keys/destroy_service_spec.rb'
     - 'spec/services/groups/autocomplete_service_spec.rb'

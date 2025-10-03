@@ -230,7 +230,6 @@ Rails/StrongParams:
     - 'ee/app/controllers/ee/projects/application_controller.rb'
     - 'ee/app/controllers/ee/projects/cycle_analytics_controller.rb'
     - 'ee/app/controllers/ee/projects/issues_controller.rb'
-    - 'ee/app/controllers/ee/projects/merge_requests/creations_controller.rb'
     - 'ee/app/controllers/ee/projects/merge_requests_controller.rb'
     - 'ee/app/controllers/ee/projects/mirrors_controller.rb'
     - 'ee/app/controllers/ee/projects/project_members_controller.rb'

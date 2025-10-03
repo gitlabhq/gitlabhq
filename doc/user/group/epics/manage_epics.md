@@ -270,11 +270,11 @@ Epic colors are visible in [roadmaps](../roadmap/_index.md) and [epic boards](ep
 
 On roadmaps, the timeline bars match the epic's color:
 
-![Epic color on roadmap](img/epic_color_roadmap_v17_0.png)
+![Epics differentiated by color in v17.0](img/epic_color_roadmap_v17_0.png)
 
 On epic boards, the color shows on the epic's card accent:
 
-![Epic color on epic boards](img/epic_accent_boards_v17_0.png)
+![Cards accented with their associated epic color in v17.0](img/epic_accent_boards_v17_0.png)
 
 ### Change an epic's color
 

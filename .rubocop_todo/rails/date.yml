@@ -176,7 +176,6 @@ Rails/Date:
     - 'spec/requests/verifies_with_email_spec.rb'
     - 'spec/serializers/entity_date_helper_spec.rb'
     - 'spec/serializers/member_user_entity_spec.rb'
-    - 'spec/services/ci/catalog/resources/aggregate_last30_day_usage_service_spec.rb'
     - 'spec/services/environments/stop_stale_service_spec.rb'
     - 'spec/services/event_create_service_spec.rb'
     - 'spec/services/import/placeholder_memberships/create_service_spec.rb'

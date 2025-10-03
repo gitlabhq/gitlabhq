@@ -111,7 +111,8 @@ For incoming connections to GitLab.com, you must allow CIDR blocks of Cloudflare
 
 ## Diff display limits
 
-The settings for the display of diff files cannot be changed on GitLab.com.
+The settings for the display of diff files cannot be changed on GitLab.com. These limits
+apply to both the GitLab UI and API endpoints.
 
 | Setting                 | Definition                                     | GitLab.com |
 |-------------------------|------------------------------------------------|------------|

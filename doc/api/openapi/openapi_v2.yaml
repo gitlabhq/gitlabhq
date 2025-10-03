@@ -62729,6 +62729,10 @@ definitions:
         type: boolean
       enable_ssl_verification:
         type: boolean
+      organization_id:
+        type: integer
+        format: int32
+        example: 1
       alert_status:
         type: symbol
         example: executable
@@ -70006,6 +70010,10 @@ definitions:
         type: boolean
       enable_ssl_verification:
         type: boolean
+      organization_id:
+        type: integer
+        format: int32
+        example: 1
       alert_status:
         type: symbol
         example: executable

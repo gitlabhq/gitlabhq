@@ -12,6 +12,7 @@ module API
       authenticate!
       ability = route.request_method == 'GET' ? :read_web_hook : :admin_web_hook
       authorize! ability
+      set_current_organization
     end
 
     helpers ::API::Helpers::WebHooksHelpers
@@ -88,7 +89,7 @@ module API
       post do
         hook_params = create_hook_params
 
-        result = WebHooks::CreateService.new(current_user).execute(hook_params, hook_scope)
+        result = WebHooks::CreateService.new(current_user).execute(hook_params, hook_scope, Current.organization)
 
         if result[:status] == :success
           present result[:hook], with: Entities::Hook

@@ -214,8 +214,6 @@ When you configure a feature to use GitLab managed models:
 
 {{< /alert >}}
 
-For more information, see [Model selection](../../user/gitlab_duo/model_selection.md#on-gitlab-self-managed).
-
 ### GitLab.com AI gateway with default GitLab external vendor LLMs
 
 {{< details >}}

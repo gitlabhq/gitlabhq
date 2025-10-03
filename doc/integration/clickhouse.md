@@ -155,11 +155,31 @@ To verify that your connection is set up successfully:
 
 ### Run ClickHouse migrations
 
+{{< tabs >}}
+
+{{< tab title="Linux package" >}}
+
 To create the required database objects execute:
 
 ```shell
 sudo gitlab-rake gitlab:clickhouse:migrate
 ```
+
+{{< /tab >}}
+
+{{< tab title="Helm chart (Kubernetes)" >}}
+
+Migrations are executed automatically using the [GitLab-Migrations chart](https://docs.gitlab.com/charts/charts/gitlab/migrations/#clickhouse-optional).
+
+Alternatively, you can run migrations by executing the following command in the [Toolbox pod](https://docs.gitlab.com/charts/charts/gitlab/toolbox/):
+
+```shell
+gitlab-rake gitlab:clickhouse:migrate
+```
+
+{{< /tab >}}
+
+{{< /tabs >}}
 
 ### Enable ClickHouse for Analytics
 

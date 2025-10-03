@@ -57,7 +57,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       import_export_upload_uploads.project_id import_export_upload_uploads.namespace_id
       issuable_metric_image_uploads.namespace_id
       namespace_uploads.namespace_id
-      note_uploads.namespace_id
       organization_detail_uploads.organization_id
       project_import_export_relation_export_upload_uploads.project_id
       project_topic_uploads.organization_id
@@ -286,7 +285,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "import_export_upload_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "issuable_metric_image_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "namespace_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
-      "note_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "organization_detail_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "project_import_export_relation_export_upload_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",
       "project_topic_uploads" => "https://gitlab.com/gitlab-org/gitlab/-/issues/398199",

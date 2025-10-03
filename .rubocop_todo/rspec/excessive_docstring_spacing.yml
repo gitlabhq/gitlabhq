@@ -70,7 +70,6 @@ RSpec/ExcessiveDocstringSpacing:
     - 'spec/serializers/stage_entity_spec.rb'
     - 'spec/services/bulk_imports/create_service_spec.rb'
     - 'spec/services/environments/stop_service_spec.rb'
-    - 'spec/services/git/wiki_push_service_spec.rb'
     - 'spec/services/groups/nested_create_service_spec.rb'
     - 'spec/services/issues/update_service_spec.rb'
     - 'spec/services/ml/experiment_tracking/candidate_repository_spec.rb'

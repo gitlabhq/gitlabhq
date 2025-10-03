@@ -20601,27 +20601,6 @@ CREATE SEQUENCE note_metadata_note_id_seq
 
 ALTER SEQUENCE note_metadata_note_id_seq OWNED BY note_metadata.note_id;
 
-CREATE TABLE note_uploads (
-    id bigint NOT NULL,
-    size bigint NOT NULL,
-    model_id bigint NOT NULL,
-    uploaded_by_user_id bigint,
-    organization_id bigint,
-    namespace_id bigint,
-    project_id bigint,
-    created_at timestamp without time zone,
-    store integer DEFAULT 1 NOT NULL,
-    version integer DEFAULT 1,
-    path text NOT NULL,
-    checksum text,
-    model_type text NOT NULL,
-    uploader text NOT NULL,
-    mount_point text,
-    secret text,
-    CONSTRAINT check_2849dedce7 CHECK ((char_length(path) <= 511)),
-    CONSTRAINT check_b888b1df14 CHECK ((char_length(checksum) <= 64))
-);
-
 CREATE TABLE notes (
     note text,
     noteable_type character varying,
@@ -30218,8 +30197,6 @@ ALTER TABLE ONLY uploads_9ba88c4165 ATTACH PARTITION issuable_metric_image_uploa
 
 ALTER TABLE ONLY uploads_9ba88c4165 ATTACH PARTITION namespace_uploads FOR VALUES IN ('Namespace');
 
-ALTER TABLE ONLY uploads_9ba88c4165 ATTACH PARTITION note_uploads FOR VALUES IN ('Note');
-
 ALTER TABLE ONLY uploads_9ba88c4165 ATTACH PARTITION organization_detail_uploads FOR VALUES IN ('Organizations::OrganizationDetail');
 
 ALTER TABLE ONLY uploads_9ba88c4165 ATTACH PARTITION project_import_export_relation_export_upload_uploads FOR VALUES IN ('Projects::ImportExport::RelationExportUpload');
@@ -34207,9 +34184,6 @@ ALTER TABLE ONLY note_diff_files
 
 ALTER TABLE ONLY note_metadata
     ADD CONSTRAINT note_metadata_pkey PRIMARY KEY (note_id);
-
-ALTER TABLE ONLY note_uploads
-    ADD CONSTRAINT note_uploads_pkey PRIMARY KEY (id, model_type);
 
 ALTER TABLE ONLY notes_archived
     ADD CONSTRAINT notes_archived_pkey PRIMARY KEY (id);
@@ -43180,22 +43154,6 @@ CREATE INDEX namespace_uploads_uploaded_by_user_id_idx ON namespace_uploads USIN
 
 CREATE INDEX namespace_uploads_uploader_path_idx ON namespace_uploads USING btree (uploader, path);
 
-CREATE INDEX note_uploads_checksum_idx ON note_uploads USING btree (checksum);
-
-CREATE INDEX note_uploads_model_id_model_type_uploader_created_at_idx ON note_uploads USING btree (model_id, model_type, uploader, created_at);
-
-CREATE INDEX note_uploads_namespace_id_idx ON note_uploads USING btree (namespace_id);
-
-CREATE INDEX note_uploads_organization_id_idx ON note_uploads USING btree (organization_id);
-
-CREATE INDEX note_uploads_project_id_idx ON note_uploads USING btree (project_id);
-
-CREATE INDEX note_uploads_store_idx ON note_uploads USING btree (store);
-
-CREATE INDEX note_uploads_uploaded_by_user_id_idx ON note_uploads USING btree (uploaded_by_user_id);
-
-CREATE INDEX note_uploads_uploader_path_idx ON note_uploads USING btree (uploader, path);
-
 CREATE UNIQUE INDEX one_canonical_wiki_page_slug_per_metadata ON wiki_page_slugs USING btree (wiki_page_meta_id) WHERE (canonical = true);
 
 CREATE INDEX organization_detail_uploads_checksum_idx ON organization_detail_uploads USING btree (checksum);
@@ -46367,24 +46325,6 @@ ALTER INDEX index_uploads_9ba88c4165_on_store ATTACH PARTITION namespace_uploads
 ALTER INDEX index_uploads_9ba88c4165_on_uploaded_by_user_id ATTACH PARTITION namespace_uploads_uploaded_by_user_id_idx;
 
 ALTER INDEX index_uploads_9ba88c4165_on_uploader_and_path ATTACH PARTITION namespace_uploads_uploader_path_idx;
-
-ALTER INDEX index_uploads_9ba88c4165_on_checksum ATTACH PARTITION note_uploads_checksum_idx;
-
-ALTER INDEX index_uploads_9ba88c4165_on_model_uploader_created_at ATTACH PARTITION note_uploads_model_id_model_type_uploader_created_at_idx;
-
-ALTER INDEX index_uploads_9ba88c4165_on_namespace_id ATTACH PARTITION note_uploads_namespace_id_idx;
-
-ALTER INDEX index_uploads_9ba88c4165_on_organization_id ATTACH PARTITION note_uploads_organization_id_idx;
-
-ALTER INDEX uploads_9ba88c4165_pkey ATTACH PARTITION note_uploads_pkey;
-
-ALTER INDEX index_uploads_9ba88c4165_on_project_id ATTACH PARTITION note_uploads_project_id_idx;
-
-ALTER INDEX index_uploads_9ba88c4165_on_store ATTACH PARTITION note_uploads_store_idx;
-
-ALTER INDEX index_uploads_9ba88c4165_on_uploaded_by_user_id ATTACH PARTITION note_uploads_uploaded_by_user_id_idx;
-
-ALTER INDEX index_uploads_9ba88c4165_on_uploader_and_path ATTACH PARTITION note_uploads_uploader_path_idx;
 
 ALTER INDEX index_uploads_9ba88c4165_on_checksum ATTACH PARTITION organization_detail_uploads_checksum_idx;
 

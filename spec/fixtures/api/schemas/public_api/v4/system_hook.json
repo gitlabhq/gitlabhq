@@ -88,6 +88,9 @@
         "null"
       ]
     },
+    "organization_id": {
+      "type": "integer"
+    },
     "custom_headers": {
       "type": "array",
       "items": {

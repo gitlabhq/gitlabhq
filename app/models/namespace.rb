@@ -852,6 +852,13 @@ class Namespace < ApplicationRecord
     super.presence || build_namespace_details
   end
 
+  def user_role(user)
+    return unless user && !user_namespace?
+
+    user_access = max_member_access_for_user(user)
+    Gitlab::Access.human_access(user_access)&.downcase
+  end
+
   private
 
   def parent_organization_match

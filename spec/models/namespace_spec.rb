@@ -3202,4 +3202,64 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       it { is_expected.to be(false) }
     end
   end
+
+  describe '#user_role' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+
+    using RSpec::Parameterized::TableSyntax
+
+    where(:role, :expected_name) do
+      :guest      | 'guest'
+      :reporter   | 'reporter'
+      :developer  | 'developer'
+      :maintainer | 'maintainer'
+      :owner      | 'owner'
+    end
+
+    with_them do
+      before do
+        group.add_member(user, role)
+      end
+
+      it 'returns the correct role name' do
+        expect(group.user_role(user)).to eq(expected_name)
+      end
+    end
+
+    context 'when user has no access' do
+      let_it_be(:user_without_access) { create(:user) }
+
+      it 'returns nil' do
+        expect(group.user_role(user_without_access)).to be_nil
+      end
+    end
+
+    context 'with a user namespace' do
+      let_it_be(:user_namespace) { create(:user_namespace) }
+
+      it 'returns nil' do
+        expect(user_namespace.user_role(user)).to be_nil
+      end
+    end
+
+    context 'when user is nil' do
+      it 'returns nil' do
+        expect(group.user_role(nil)).to be_nil
+      end
+    end
+
+    context 'with a project namespace' do
+      let_it_be(:project) { create(:project) }
+      let(:project_namespace) { project.project_namespace }
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'returns the role from the project' do
+        expect(project_namespace.user_role(user)).to eq('developer')
+      end
+    end
+  end
 end

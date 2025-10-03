@@ -78,6 +78,10 @@ module Namespaces
     def all_projects
       Project.where(id: project.id)
     end
+
+    def max_member_access_for_user(user)
+      project.max_member_access_for_user(user)
+    end
   end
 end
 

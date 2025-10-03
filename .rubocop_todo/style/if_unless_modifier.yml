@@ -462,7 +462,6 @@ Style/IfUnlessModifier:
     - 'lib/gitlab/ci/config.rb'
     - 'lib/gitlab/ci/config/entry/caches.rb'
     - 'lib/gitlab/ci/config/entry/environment.rb'
-    - 'lib/gitlab/ci/config/entry/includes.rb'
     - 'lib/gitlab/ci/config/entry/job.rb'
     - 'lib/gitlab/ci/config/entry/jobs.rb'
     - 'lib/gitlab/ci/config/entry/needs.rb'

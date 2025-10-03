@@ -1176,7 +1176,7 @@ class ApplicationSetting < ApplicationRecord
       project_invited_groups_api_limit: [:integer, { default: 60 }],
       projects_api_limit: [:integer, { default: 2000 }],
       runner_jobs_request_api_limit: [:integer, { default: 2000 }],
-      runner_jobs_patch_trace_api_limit: [:integer, { default: 2000 }],
+      runner_jobs_patch_trace_api_limit: [:integer, { default: 200 }],
       runner_jobs_endpoints_api_limit: [:integer, { default: 200 }],
       throttle_authenticated_git_http_enabled: [:boolean, { default: false }],
       throttle_authenticated_git_http_requests_per_period:

@@ -10,7 +10,7 @@ title: GitLab Duo model selection
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro or Enterprise
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab.com
 
 {{< /details >}}
 
@@ -113,40 +113,6 @@ To select a default namespace:
 1. Go to the **Behavior** section.
 1. From the **Default GitLab Duo namespace** dropdown list, select the namespace to set as your default.
 1. Select **Save changes**.
-
-### On GitLab Self-Managed
-
-{{< details >}}
-
-- Add-on: GitLab Duo Enterprise
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/19144) in GitLab 18.4 with a [flag](../../administration/feature_flags/_index.md) named `instance_level_model_selection`. Enabled by default.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-On GitLab Self-Managed, you can select a model for a feature that applies to the entire instance. If you don't select a specific model, all GitLab Duo features inherit the default GitLab model.
-
-Prerequisites:
-
-- You must be an administrator.
-
-To select a model for a feature:
-
-1. In the left sidebar, at the bottom, select **Admin**.
-1. Select **GitLab Duo**.
-1. On **Configure AI features**, select **Configure models for GitLab Duo**. If **Configure AI features** is not displayed, verify that the GitLab Duo Enterprise add-on is configured for your instance.
-1. For the feature you want to configure, select an LLM from the dropdown list.
 
 ## Troubleshooting
 
