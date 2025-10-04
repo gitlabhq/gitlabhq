@@ -162,7 +162,7 @@ GET /api/v4/projects/diaspora%2Fdiaspora
 
 A project's path isn't necessarily the same as its name. A project's path is
 found in the project's URL or in the project's settings, under
-**General > Advanced > Change path**.
+**General** > **Advanced** > **Change path**.
 
 #### File path, branches, and tags name
 

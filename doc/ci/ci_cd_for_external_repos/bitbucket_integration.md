@@ -39,7 +39,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
       - For **Password**, enter the App password from Bitbucket.
 
    GitLab imports the repository and enables [Pull Mirroring](../../user/project/repository/mirror/pull.md).
-   You can check that mirroring is working in the project in **Settings > Repository > Mirroring repositories**.
+   You can check that mirroring is working in the project in **Settings** > **Repository** > **Mirroring repositories**.
 
 1. In GitLab, create a
    [personal access token](../../user/profile/personal_access_tokens.md)
@@ -63,7 +63,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
    After saving, test the webhook by pushing a change to your Bitbucket
    repository.
 
-1. In GitLab, from **Settings > CI/CD > Variables**, add variables to allow
+1. In GitLab, from **Settings** > **CI/CD** > **Variables**, add variables to allow
    communication with Bitbucket through the Bitbucket API:
 
    - `BITBUCKET_ACCESS_TOKEN`: The Bitbucket app password created previously. This variable should be [masked](../variables/_index.md#mask-a-cicd-variable).

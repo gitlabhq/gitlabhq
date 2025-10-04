@@ -2,6 +2,7 @@
 
 module SupplyChain
   class Attestation < ::ApplicationRecord
+    include AtomicInternalId
     include FileStoreMounter
     include ObjectStorable
 
@@ -11,6 +12,8 @@ module SupplyChain
 
     belongs_to :project
     belongs_to :build, class_name: 'Ci::Build', optional: true
+
+    has_internal_id :iid, scope: :project
 
     validates :project_id, presence: true
     validates :file, presence: true

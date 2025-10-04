@@ -35,4 +35,16 @@ RSpec.describe SupplyChain::Attestation, feature_category: :artifact_security do
       expect(attestation.file.read).to eq(sample_file)
     end
   end
+
+  describe 'modules' do
+    let_it_be(:project) { create(:project) }
+
+    it_behaves_like 'AtomicInternalId' do
+      let(:internal_id_attribute) { :iid }
+      let(:instance) { build(:supply_chain_attestation, project: project) }
+      let(:scope) { :project }
+      let(:scope_attrs) { { project: project } }
+      let(:usage) { :slsa_attestations }
+    end
+  end
 end

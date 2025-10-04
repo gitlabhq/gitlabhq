@@ -26054,6 +26054,7 @@ CREATE TABLE slsa_attestations (
     subject_digest text NOT NULL,
     file text,
     file_store smallint DEFAULT 1,
+    iid integer,
     CONSTRAINT check_3575e9121e CHECK ((char_length(file) <= 255)),
     CONSTRAINT check_dec11b603a CHECK ((char_length(subject_digest) <= 255)),
     CONSTRAINT check_ea0d61030d CHECK ((char_length(predicate_type) <= 255))
@@ -42145,7 +42146,7 @@ CREATE INDEX index_slsa_attestations_on_build_id ON slsa_attestations USING btre
 
 CREATE UNIQUE INDEX index_slsa_attestations_on_digest_project_predicate_uniq ON slsa_attestations USING btree (subject_digest, project_id, predicate_kind);
 
-CREATE INDEX index_slsa_attestations_on_project_id ON slsa_attestations USING btree (project_id);
+CREATE INDEX index_slsa_attestations_on_project_id_iid ON slsa_attestations USING btree (project_id, iid);
 
 CREATE UNIQUE INDEX index_smartcard_identities_on_subject_and_issuer ON smartcard_identities USING btree (subject, issuer);
 
