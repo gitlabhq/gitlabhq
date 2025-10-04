@@ -21521,6 +21521,29 @@ The edge type for [`SecretPermission`](#secretpermission).
 | <a id="secretpermissionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="secretpermissionedgenode"></a>`node` | [`SecretPermission`](#secretpermission) | The item at the end of the edge. |
 
+#### `SecurityAttributeConnection`
+
+The connection type for [`SecurityAttribute`](#securityattribute).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityattributeconnectionedges"></a>`edges` | [`[SecurityAttributeEdge]`](#securityattributeedge) | A list of edges. |
+| <a id="securityattributeconnectionnodes"></a>`nodes` | [`[SecurityAttribute]`](#securityattribute) | A list of nodes. |
+| <a id="securityattributeconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `SecurityAttributeEdge`
+
+The edge type for [`SecurityAttribute`](#securityattribute).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="securityattributeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="securityattributeedgenode"></a>`node` | [`SecurityAttribute`](#securityattribute) | The item at the end of the edge. |
+
 #### `SecurityPolicyTypeConnection`
 
 The connection type for [`SecurityPolicyType`](#securitypolicytype).
@@ -38948,6 +38971,7 @@ Project-level settings for product analytics provider.
 | <a id="projectsastciconfiguration"></a>`sastCiConfiguration` | [`SastCiConfiguration`](#sastciconfiguration) | SAST CI configuration for the project. |
 | <a id="projectsavedreplies"></a>`savedReplies` | [`ProjectSavedReplyConnection`](#projectsavedreplyconnection) | Saved replies available to the project. (see [Connections](#connections)) |
 | <a id="projectsecretpushprotectionenabled"></a>`secretPushProtectionEnabled` | [`Boolean`](#boolean) | Indicates whether Secret Push Protection is on or not for the project. |
+| <a id="projectsecurityattributes"></a>`securityAttributes` {{< icon name="warning-solid" >}} | [`SecurityAttributeConnection`](#securityattributeconnection) | **Introduced** in GitLab 18.5. **Status**: Experiment. Security attributes linked to the project. |
 | <a id="projectsecuritydashboardpath"></a>`securityDashboardPath` | [`String`](#string) | Path to project's security dashboard. |
 | <a id="projectsecuritypolicyproject"></a>`securityPolicyProject` | [`Project`](#project) | Security policy project assigned to the project, absent if assigned to a parent group. |
 | <a id="projectsecuritypolicyprojectlinkednamespaces"></a>`securityPolicyProjectLinkedNamespaces` {{< icon name="warning-solid" >}} | [`NamespaceConnection`](#namespaceconnection) | **Deprecated** in GitLab 17.4. This was renamed. Use: `security_policy_project_linked_groups`. |
