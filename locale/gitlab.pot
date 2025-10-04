@@ -77626,6 +77626,9 @@ msgstr ""
 msgid "ciReport|Diff-based"
 msgstr ""
 
+msgid "ciReport|Diff-based SAST scanning is turned on for this project. Diff-based scans only check the changed parts of the codebase, resulting in quicker results. This may not be a complete report of all vulnerabilities if the report includes only diff-based scans. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "ciReport|Download Patch"
 msgstr ""
 
