@@ -34,6 +34,7 @@ import initBroadcastNotifications from './broadcast_notification';
 import { initCopyCodeButton } from './behaviors/copy_code';
 import initGitlabVersionCheck from './gitlab_version_check';
 import { initExpireSessionModal } from './authentication/sessions';
+import initPanelHeightCalc from './panel_height_calc';
 import 'ee_else_ce/main_ee';
 import 'jh_else_ce/main_jh';
 
@@ -97,6 +98,7 @@ function deferredInitialisation() {
   initCopyCodeButton();
   initGitlabVersionCheck();
   initExpireSessionModal();
+  initPanelHeightCalc();
 
   addSelectOnFocusBehaviour('.js-select-on-focus');
 

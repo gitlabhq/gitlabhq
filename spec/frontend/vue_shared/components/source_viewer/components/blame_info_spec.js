@@ -1,4 +1,5 @@
 import { nextTick } from 'vue';
+import { GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitInfo from '~/repository/components/commit_info.vue';
 import BlameInfo from '~/vue_shared/components/source_viewer/components/blame_info.vue';
@@ -18,6 +19,8 @@ describe('BlameInfo component', () => {
   });
 
   const findCommitInfoComponents = () => wrapper.findAllComponents(CommitInfo);
+  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
+
   const findBlameWrappers = () => wrapper.findAll('.blame-commit-wrapper');
 
   it('renders a CommitInfo component for each blame entry', () => {
@@ -81,16 +84,41 @@ describe('BlameInfo component', () => {
     });
   });
 
-  describe('commitInfo component styling', () => {
-    const borderTopClassName = 'gl-border-t';
+  describe('skeleton loader', () => {
+    it('renders skeleton loaders when loading with no data', () => {
+      wrapper = shallowMountExtended(BlameInfo, {
+        propsData: {
+          blameInfo: [],
+          isBlameLoading: true,
+        },
+      });
 
-    it('does not add a top border for the first entry', () => {
-      expect(findCommitInfoComponents().at(0).element.classList).not.toContain(borderTopClassName);
+      expect(findSkeletonLoader().exists()).toBe(true);
+      expect(findCommitInfoComponents()).toHaveLength(0);
     });
 
-    it('add a top border for the rest of the entries', () => {
-      expect(findCommitInfoComponents().at(1).element.classList).toContain(borderTopClassName);
-      expect(findCommitInfoComponents().at(2).element.classList).toContain(borderTopClassName);
+    it('does not render skeleton loader when loading is false', () => {
+      wrapper = shallowMountExtended(BlameInfo, {
+        propsData: {
+          blameInfo: BLAME_DATA_MOCK,
+          isBlameLoading: false,
+        },
+      });
+
+      expect(findSkeletonLoader().exists()).toBe(false);
+      expect(findCommitInfoComponents()).toHaveLength(BLAME_DATA_MOCK.length);
+    });
+
+    it('does not render skeleton loader when data exists even if loading', () => {
+      wrapper = shallowMountExtended(BlameInfo, {
+        propsData: {
+          blameInfo: BLAME_DATA_MOCK,
+          isBlameLoading: true,
+        },
+      });
+
+      expect(findSkeletonLoader().exists()).toBe(false);
+      expect(findCommitInfoComponents()).toHaveLength(BLAME_DATA_MOCK.length);
     });
   });
 });

@@ -525,6 +525,18 @@ describe('UserMenu component', () => {
     });
   });
 
+  describe('mobile user counts', () => {
+    it('do not render when Project Studio is disabled', () => {
+      createWrapper();
+      expect(wrapper.findByTestId('user-counts-item').exists()).toBe(false);
+    });
+
+    it('should render with mobile-only CSS', () => {
+      createWrapper({}, {}, { projectStudioEnabled: true });
+      expect(wrapper.findByTestId('user-counts-item').classes()).toContain('md:gl-hidden');
+    });
+  });
+
   describe('Preferences item', () => {
     let item;
 

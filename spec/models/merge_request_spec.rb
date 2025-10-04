@@ -2857,6 +2857,53 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
 
+    context 'with metadata preloading' do
+      let(:merge_request) { create(:merge_request) }
+
+      before do
+        allow(merge_request).to receive(:commits).and_return(commits)
+        allow(commits).to receive(:committers).and_return(committers)
+      end
+
+      context 'when feature flag is enabled' do
+        before do
+          stub_feature_flags(merge_request_diff_commits_dedup: true)
+        end
+
+        it 'preloads commits metadata' do
+          expect(merge_request).to receive(:preload_commits_metadata)
+
+          merge_request.committers
+        end
+
+        it 'memoizes the result with the same parameters' do
+          expect(merge_request).to receive(:preload_commits_metadata).once
+
+          merge_request.committers
+          merge_request.committers
+        end
+
+        it 'preloads metadata for different parameter combinations' do
+          expect(merge_request).to receive(:preload_commits_metadata).twice
+
+          merge_request.committers(with_merge_commits: false)
+          merge_request.committers(with_merge_commits: true)
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(merge_request_diff_commits_dedup: false)
+        end
+
+        it 'does not preload commits metadata' do
+          expect(merge_request).not_to receive(:preload_commits_metadata)
+
+          merge_request.committers
+        end
+      end
+    end
+
     context 'when given with_merge_commits true' do
       it 'calls committers on the commits object with the expected param' do
         expect(subject).to receive(:commits).and_return(commits)

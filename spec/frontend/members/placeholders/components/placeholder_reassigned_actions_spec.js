@@ -1,5 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { GlAvatarLabeled } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -34,7 +35,8 @@ describe('PlaceholderReassignedActions', () => {
   };
 
   const findUndoButton = () => wrapper.findByTestId('undo-button');
-  const findAvatar = () => wrapper.findByTestId('placeholder-reassigned');
+  const findAvatar = () =>
+    wrapper.findByTestId('placeholder-reassigned').findComponent(GlAvatarLabeled);
 
   describe('when status is KEEP_AS_PLACEHOLDER', () => {
     const mockSourceUser = mockSourceUsers[5];

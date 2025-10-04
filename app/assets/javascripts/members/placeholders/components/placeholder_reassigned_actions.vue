@@ -76,13 +76,12 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-flex-wrap gl-items-start gl-gap-3">
+  <div class="gl-flex gl-flex-wrap gl-items-start gl-gap-3" data-testid="placeholder-reassigned">
     <gl-avatar-labeled
       :size="32"
       :src="reassignedUser().avatarUrl"
       :label="reassignedUser().name"
       :sub-label="`@${reassignedUser().username}`"
-      data-testid="placeholder-reassigned"
     />
 
     <template v-if="statusIsKeepAsPlaceholder">

@@ -882,6 +882,10 @@ class MergeRequest < ApplicationRecord
 
   def committers(with_merge_commits: false, lazy: false, include_author_when_signed: false)
     strong_memoize_with(:committers, with_merge_commits, lazy, include_author_when_signed) do
+      if Feature.enabled?(:merge_request_diff_commits_dedup, project)
+        preload_commits_metadata
+      end
+
       commits.committers(
         with_merge_commits: with_merge_commits,
         lazy: lazy,

@@ -21,6 +21,7 @@ import { logError } from '~/lib/logger';
 import { USER_MENU_TRACKING_DEFAULTS, DROPDOWN_Y_OFFSET } from '../constants';
 import UserMenuProfileItem from './user_menu_profile_item.vue';
 import UserMenuProjectStudioSection from './user_menu_project_studio_section.vue';
+import UserCounts from './user_counts.vue';
 
 // Left offset required for the dropdown to be aligned with the super sidebar
 const DROPDOWN_X_OFFSET_BASE = -192;
@@ -49,6 +50,7 @@ export default {
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
     GlButton,
+    UserCounts,
     UserMenuProfileItem,
     UserMenuProjectStudioSection,
     SetStatusModal: () =>
@@ -371,6 +373,18 @@ export default {
       <gl-disclosure-dropdown-group>
         <user-menu-profile-item :user="data" />
       </gl-disclosure-dropdown-group>
+
+      <gl-disclosure-dropdown-item
+        v-if="projectStudioEnabled"
+        class="gl-flex md:gl-hidden"
+        data-testid="user-counts-item"
+      >
+        <user-counts
+          :sidebar-data="data"
+          class="gl-w-full"
+          counter-class="gl-button btn btn-default btn-default-tertiary"
+        />
+      </gl-disclosure-dropdown-item>
 
       <gl-disclosure-dropdown-group bordered>
         <gl-disclosure-dropdown-item

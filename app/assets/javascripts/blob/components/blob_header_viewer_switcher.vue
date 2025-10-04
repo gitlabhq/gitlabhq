@@ -53,6 +53,7 @@ export default {
   methods: {
     switchToViewer(viewer) {
       if (viewer === BLAME_VIEWER) {
+        this.$emit('blame-loading-started');
         this.$emit('blame');
         this.trackEvent('open_blame_viewer_on_blob_page');
       }

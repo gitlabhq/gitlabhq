@@ -19,6 +19,8 @@ module Ci
 
       project.execute_hooks(build_data, :job_hooks) if project.has_active_hooks?(:job_hooks)
       project.execute_integrations(build_data, :job_hooks) if project.has_active_integrations?(:job_hooks)
+
+      log_extra_metadata_on_done(:build_status, build_data[:build_status])
     end
   end
 end

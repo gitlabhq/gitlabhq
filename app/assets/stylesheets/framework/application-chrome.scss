@@ -257,8 +257,7 @@
 
     .panel-content-inner,
     .vue-portal-target .work-item-drawer-content {
-      --panel-content-inner-height: calc(100% - #{$header-height} - #{$gl-spacing-scale-3});
-      height: var(--panel-content-inner-height);
+      height: calc(100% - #{$header-height} - #{$gl-spacing-scale-3});
 
       @apply gl-overflow-y-auto gl-overflow-x-hidden;
       scrollbar-color: var(--gl-color-neutral-400) transparent;
@@ -447,13 +446,6 @@
       }
     }
 
-    // Issue sidebar
-    @include media-breakpoint-up(md) {
-      .work-item-attributes-wrapper {
-        top: calc(#{$work-item-sticky-header-height} + #{$gl-spacing-scale-3}) !important;
-        height: calc(#{$calc-application-viewport-height} - #{$work-item-sticky-header-height} - #{$gl-spacing-scale-6});
-      }
-    }
 
     // Project sidebar
     @include media-breakpoint-up(lg) {
@@ -802,6 +794,16 @@
       /* stylelint-disable-next-line property-no-unknown */
       interpolate-size: allow-keywords;
       transition: width .25s $gl-easing-out-cubic !important;
+    }
+  }
+}
+
+// Issue sidebar
+@include gl-container-width-up(md, panel) {
+  &:where(.application-chrome) {
+    .work-item-attributes-wrapper {
+      top: calc(#{$work-item-sticky-header-height} + #{$gl-spacing-scale-3}) !important;
+      height: calc(var(--panel-content-inner-height) - var(--work-item-sticky-header-height) - 1.5rem + 1px) !important; // 1.5rem is to account for padding, the +1px is to account for a border
     }
   }
 }
