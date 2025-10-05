@@ -67,7 +67,7 @@ The following graphic shows the architecture diagram of hosted runners for GitLa
 
 ![Hosted runners for GitLab.com architecture](img/gitlab-hosted_runners_architecture_v17_0.png)
 
-For more information on how runners are authenticating and executing the job payload, see [Runner Execution Flow](https://docs.gitlab.com/runner#runner-execution-flow).
+For more information on how runners are authenticating and executing the job payload, see [Runner Execution Flow](https://docs.gitlab.com/runner/#runner-execution-flow).
 
 #### Job isolation of hosted runners for GitLab.com
 

@@ -268,7 +268,7 @@ module Types
     field :squash, GraphQL::Types::Boolean, null: false,
       description: <<~HEREDOC.squish
                    Indicates if the merge request is set to be squashed when merged.
-                   [Project settings](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html#configure-squash-options-for-a-project)
+                   [Project settings](https://docs.gitlab.com/user/project/merge_requests/squash_and_merge/#configure-squash-options-for-a-project)
                    may override this value. Use `squash_on_merge` instead to take project squash options into account.
       HEREDOC
     field :squash_on_merge, GraphQL::Types::Boolean, null: false, method: :squash_on_merge?,

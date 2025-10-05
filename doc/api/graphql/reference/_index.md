@@ -32,11 +32,11 @@ in [Removed Items](../removed_items.md).
 
 <!-- vale off -->
 <!-- Vale linting disabled after this line. -->
-<!-- See https://docs.gitlab.com/ee/development/documentation/testing/vale.html#disable-vale-tests -->
+<!-- See https://docs.gitlab.com/development/documentation/testing/vale/#disable-vale-tests -->
 
 <!-- markdownlint-disable MD044 -->
 <!-- MD044/proper-names test disabled after this line to make page compatible with markdownlint-cli 0.29.0. -->
-<!-- See https://docs.gitlab.com/ee/development/documentation/testing/markdownlint.html#disable-markdownlint-tests -->
+<!-- See https://docs.gitlab.com/development/documentation/testing/markdownlint/#disable-markdownlint-tests -->
 
 ## `Query` type
 
@@ -34380,7 +34380,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestsourcebranchprotected"></a>`sourceBranchProtected` | [`Boolean!`](#boolean) | Indicates if the source branch is protected. |
 | <a id="mergerequestsourceproject"></a>`sourceProject` | [`Project`](#project) | Source project of the merge request. |
 | <a id="mergerequestsourceprojectid"></a>`sourceProjectId` | [`Int`](#int) | ID of the merge request source project. |
-| <a id="mergerequestsquash"></a>`squash` | [`Boolean!`](#boolean) | Indicates if the merge request is set to be squashed when merged. [Project settings](https://docs.gitlab.com/ee/user/project/merge_requests/squash_and_merge.html#configure-squash-options-for-a-project) may override this value. Use `squash_on_merge` instead to take project squash options into account. |
+| <a id="mergerequestsquash"></a>`squash` | [`Boolean!`](#boolean) | Indicates if the merge request is set to be squashed when merged. [Project settings](https://docs.gitlab.com/user/project/merge_requests/squash_and_merge/#configure-squash-options-for-a-project) may override this value. Use `squash_on_merge` instead to take project squash options into account. |
 | <a id="mergerequestsquashonmerge"></a>`squashOnMerge` | [`Boolean!`](#boolean) | Indicates if the merge request will be squashed when merged. |
 | <a id="mergerequestsquashreadonly"></a>`squashReadOnly` | [`Boolean!`](#boolean) | Indicates if `squashReadOnly` is enabled. |
 | <a id="mergerequeststate"></a>`state` | [`MergeRequestState!`](#mergerequeststate) | State of the merge request. |
@@ -42120,7 +42120,7 @@ Pypi metadata.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="querycomplexitylimit"></a>`limit` | [`Int`](#int) | GraphQL query complexity limit. See [GitLab documentation on this limit](https://docs.gitlab.com/ee/api/graphql/#maximum-query-complexity). |
+| <a id="querycomplexitylimit"></a>`limit` | [`Int`](#int) | GraphQL query complexity limit. See [GitLab documentation on this limit](https://docs.gitlab.com/api/graphql/#maximum-query-complexity). |
 | <a id="querycomplexityscore"></a>`score` | [`Int`](#int) | GraphQL query complexity score. |
 
 ### `QueueingDelayHistory`
@@ -51013,10 +51013,10 @@ The state of the vulnerability.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="vulnerabilitystateconfirmed"></a>`CONFIRMED` | For details, see [vulnerability status values](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#vulnerability-status-values). |
-| <a id="vulnerabilitystatedetected"></a>`DETECTED` | For details, see [vulnerability status values](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#vulnerability-status-values). |
-| <a id="vulnerabilitystatedismissed"></a>`DISMISSED` | For details, see [vulnerability status values](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#vulnerability-status-values). |
-| <a id="vulnerabilitystateresolved"></a>`RESOLVED` | For details, see [vulnerability status values](https://docs.gitlab.com/ee/user/application_security/vulnerabilities/#vulnerability-status-values). |
+| <a id="vulnerabilitystateconfirmed"></a>`CONFIRMED` | For details, see [vulnerability status values](https://docs.gitlab.com/user/application_security/vulnerabilities/#vulnerability-status-values). |
+| <a id="vulnerabilitystatedetected"></a>`DETECTED` | For details, see [vulnerability status values](https://docs.gitlab.com/user/application_security/vulnerabilities/#vulnerability-status-values). |
+| <a id="vulnerabilitystatedismissed"></a>`DISMISSED` | For details, see [vulnerability status values](https://docs.gitlab.com/user/application_security/vulnerabilities/#vulnerability-status-values). |
+| <a id="vulnerabilitystateresolved"></a>`RESOLVED` | For details, see [vulnerability status values](https://docs.gitlab.com/user/application_security/vulnerabilities/#vulnerability-status-values). |
 
 ### `WeightWildcardId`
 
@@ -54680,8 +54680,8 @@ Values for ordering deployments by a specific field.
 | ---- | ---- | ----------- |
 | <a id="diffpositioninputbasesha"></a>`baseSha` | [`String`](#string) | Merge base of the branch the comment was made on. |
 | <a id="diffpositioninputheadsha"></a>`headSha` | [`String!`](#string) | SHA of the HEAD at the time the comment was made. |
-| <a id="diffpositioninputnewline"></a>`newLine` | [`Int`](#int) | Line on HEAD SHA that was changed. Please see the [REST API Documentation](https://docs.gitlab.com/ee/api/discussions.html#create-a-new-thread-in-the-merge-request-diff) for more information on how to use this field. |
-| <a id="diffpositioninputoldline"></a>`oldLine` | [`Int`](#int) | Line on start SHA that was changed. Please see the [REST API Documentation](https://docs.gitlab.com/ee/api/discussions.html#create-a-new-thread-in-the-merge-request-diff) for more information on how to use this field. |
+| <a id="diffpositioninputnewline"></a>`newLine` | [`Int`](#int) | Line on HEAD SHA that was changed. Please see the [REST API Documentation](https://docs.gitlab.com/api/discussions/#create-a-new-thread-in-the-merge-request-diff) for more information on how to use this field. |
+| <a id="diffpositioninputoldline"></a>`oldLine` | [`Int`](#int) | Line on start SHA that was changed. Please see the [REST API Documentation](https://docs.gitlab.com/api/discussions/#create-a-new-thread-in-the-merge-request-diff) for more information on how to use this field. |
 | <a id="diffpositioninputpaths"></a>`paths` | [`DiffPathsInput!`](#diffpathsinput) | The paths of the file that was changed. Both of the properties of this input are optional, but at least one of them is required. |
 | <a id="diffpositioninputstartsha"></a>`startSha` | [`String!`](#string) | SHA of the branch being compared against. |
 

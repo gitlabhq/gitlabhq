@@ -90,6 +90,6 @@ The following diagram illustrates a GitLab-managed AWS account that contains Git
 
 ![Diagram of hosted Runners architecture for GitLab Dedicated.](img/hosted-runners-architecture_v17_3.png)
 
-For more information on how runners authenticate and execute the job payload, see [runner execution flow](https://docs.gitlab.com/runner#runner-execution-flow).
+For more information on how runners authenticate and execute the job payload, see [runner execution flow](https://docs.gitlab.com/runner/#runner-execution-flow).
 
 GitLab team members with edit access can update the [source](https://lucid.app/lucidchart/0fb12de8-5236-4d80-9a9c-61c08b714e6f/edit?invitationId=inv_4a12e347-49e8-438e-a28f-3930f936defd) files for the diagram in Lucidchart.

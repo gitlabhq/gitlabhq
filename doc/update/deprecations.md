@@ -12,12 +12,12 @@ The following GitLab features are deprecated and no longer recommended for use.
 - Some features cause breaking changes when they are removed.
 - On GitLab.com, deprecated features can be removed at any time during the month leading up to the release.
 - To view documentation for a removed feature, see the [GitLab Docs archive](https://docs.gitlab.com/archives/).
-- For GraphQL API deprecations, you should [verify your API calls work without the deprecated items](https://docs.gitlab.com/api/graphql/#verify-against-the-future-breaking-change-schema).
+- For GraphQL API deprecations, you should [verify your API calls work without the deprecated items](../api/graphql/_index.md#verify-against-the-future-breaking-change-schema).
 
 For advanced searching and filtering of this deprecation information, try
 [a tool built by our Customer Success team](https://gitlab-com.gitlab.io/cs-tools/gitlab-cs-tools/what-is-new-since/?tab=deprecations).
 
-[REST API deprecations](https://docs.gitlab.com/api/rest/deprecations/) are documented separately.
+[REST API deprecations](../api/rest/deprecations.md) are documented separately.
 
 {{< icon name="rss" >}} **To be notified of upcoming breaking changes**,
 add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`
