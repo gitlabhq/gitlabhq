@@ -67,6 +67,7 @@ RSpec.describe Observability::AccessRequestService, feature_category: :observabi
           )
 
           expect(Issues::CreateService).not_to receive(:new)
+          expect(Observability::CreateGroupO11ySettingWorker).not_to receive(:perform_async)
           result = service.execute
 
           expect(result).to be_success
@@ -94,6 +95,14 @@ RSpec.describe Observability::AccessRequestService, feature_category: :observabi
           result = service.execute
           expect(result).to be_success
         end
+
+        it 'enqueues CreateGroupO11ySettingWorker job when issue creation succeeds' do
+          expect(Observability::CreateGroupO11ySettingWorker).to receive(:perform_async)
+            .with(user.id, group.id)
+
+          result = service.execute
+          expect(result).to be_success
+        end
       end
 
       context 'with system dependencies unavailable' do
@@ -112,6 +121,11 @@ RSpec.describe Observability::AccessRequestService, feature_category: :observabi
               allow(instance).to receive(:execute).and_return(ServiceResponse.error(message: 'Issue creation failed'))
             end
           end
+
+          it 'does not enqueue CreateGroupO11ySettingWorker when issue creation fails' do
+            expect(Observability::CreateGroupO11ySettingWorker).not_to receive(:perform_async)
+            service.execute
+          end
         end
 
         it 'handles multiple validation errors' do
@@ -120,6 +134,7 @@ RSpec.describe Observability::AccessRequestService, feature_category: :observabi
               .and_return(ServiceResponse.error(message: ['Title required', 'Description too long']))
           end
 
+          expect(Observability::CreateGroupO11ySettingWorker).not_to receive(:perform_async)
           result = service.execute
           expect(result).to be_error
           expect(result.message).to eq('Title required, Description too long')

@@ -8,7 +8,7 @@ export default () => {
     return null;
   }
 
-  const { username, obfuscatedEmail, verifyPath, resendPath } = el.dataset;
+  const { username, obfuscatedEmail, verifyPath, resendPath, skipPath } = el.dataset;
 
   return new Vue({
     el,
@@ -20,6 +20,7 @@ export default () => {
           obfuscatedEmail,
           verifyPath,
           resendPath,
+          skipPath,
         },
       });
     },

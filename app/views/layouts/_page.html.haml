@@ -65,7 +65,23 @@
         }
 
     .paneled-view.ai-panels
-      #duo-chat-panel
+      - if defined?(::Gitlab::Llm::TanukiBot) && ::Gitlab::Llm::TanukiBot.enabled_for?(user: current_user, container: nil)
+        - resource_id = Gitlab::Llm::TanukiBot.resource_id
+        - root_namespace_id = Gitlab::Llm::TanukiBot.root_namespace_id
+        - is_agentic_available = Gitlab::Llm::TanukiBot.agentic_mode_available?(user: current_user, project: @project, group: @group)
+        - user_model_selection_enabled = Gitlab::Llm::TanukiBot.user_model_selection_enabled?(user: current_user)
+        - chat_title = ::Ai::AmazonQ.enabled? ? s_('GitLab Duo Chat with Amazon Q') : s_('GitLab Duo Chat')
+
+        #duo-chat-panel{ data: {
+          user_id: current_user.to_global_id,
+          project_id: @project&.to_global_id,
+          namespace_id: @group&.to_global_id,
+          root_namespace_id: root_namespace_id,
+          resource_id: resource_id,
+          metadata: Gitlab::DuoWorkflow::Client.metadata(current_user).to_json,
+          user_model_selection_enabled: user_model_selection_enabled.to_s,
+          agentic_available: is_agentic_available.to_s,
+          chat_title: chat_title } }
 
   - else
     - @content_wrapper_class = "#{@content_wrapper_class || ""} gl-@container" if container_queries_enabled

@@ -153,7 +153,7 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
             click_button s_('IdentityVerification|send a code to another address associated with this account')
             fill_in _('Email'), with: secondary_email.email
 
-            click_request_new_code_button
+            click_button s_('IdentityVerification|Resend code')
             expect(page).to have_content(s_('IdentityVerification|A new code has been sent.'))
             expect_log_message('Instructions Sent', reason: 'resend lock verification code')
 
@@ -379,6 +379,92 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
     end
   end
 
+  describe 'skip verification during grace period' do
+    let(:today) { Time.zone.parse('2025-09-01') }
+
+    before do
+      stub_feature_flags(skip_require_email_verification: false)
+      Feature.enable(:email_based_mfa, user)
+      # email verification is skipped unless last_sign_in_at is populated
+      user.update!(last_sign_in_at: today - 2.days)
+      travel_to(today)
+    end
+
+    after do
+      travel_back
+    end
+
+    context 'when user is not in email otp grace period' do
+      let(:yesterday) { today - 1.day }
+      let(:user) { create(:user, email_otp_required_after: yesterday) }
+
+      it 'does not show skip for now button in email verification page' do
+        gitlab_sign_in(user)
+        expect_no_skip_for_now_button
+      end
+    end
+
+    context 'when user is locked due to presence of unlock_token' do
+      let(:user) { create(:user) }
+
+      before do
+        user.update!(unlock_token: 'token', locked_at: Time.current)
+      end
+
+      it 'does not show skip for now button in email verification page' do
+        gitlab_sign_in(user)
+        expect_no_skip_for_now_button
+      end
+    end
+
+    context 'when user has a previous authentication event from a different IP address' do
+      before do
+        create(:authentication_event, :successful, user: user, ip_address: '1.2.3.4')
+        allow(Gitlab::AppLogger).to receive(:info).and_call_original
+      end
+
+      it 'does not show skip for now button in email verification page' do
+        gitlab_sign_in(user)
+        expect_no_skip_for_now_button
+      end
+    end
+
+    context 'when user is not locked, has a safe IP address, and is in email otp grace period' do
+      let(:tomorrow) { today + 1.day }
+      let(:user) { create(:user, email_otp_required_after: tomorrow) }
+      let(:parsed_date) { 'September 02, 2025' }
+      let(:confirmation_msg) do
+        "You can skip email verification for now. Starting on #{parsed_date}, email verification will be mandatory."
+      end
+
+      before do
+        allow(Gitlab::AppLogger).to receive(:info).and_call_original
+      end
+
+      it 'user can skip email verification and will be reminded of the email otp required date' do
+        gitlab_sign_in(user)
+
+        expect(page).to have_content(s_('IdentityVerification|Help us protect your account'))
+        expect(page).to have_button(s_('IdentityVerification|Skip for now'))
+
+        click_button s_('IdentityVerification|Skip for now')
+
+        expect(page).to have_content(confirmation_msg)
+        expect(page).to have_current_path(users_skip_verification_confirmation_path)
+        expect(page).to have_current_path(root_path)
+      end
+
+      it 'user can still choose to complete the email verification' do
+        perform_enqueued_jobs do
+          gitlab_sign_in(user)
+          code = expect_instructions_email_and_extract_code
+          perform_verification_with_code(code)
+          expect_successful_verification
+        end
+      end
+    end
+  end
+
   private
 
   def expect_no_email_verification
@@ -457,6 +543,11 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
     expect(user.locked_at).to be_nil
     expect(user.unlock_token).to be_nil
     expect(user.failed_attempts).to eq(0)
+  end
+
+  def expect_no_skip_for_now_button
+    expect(page).to have_content(s_('IdentityVerification|Help us protect your account'))
+    expect(page).not_to have_button(s_('IdentityVerification|Skip for now'))
   end
 
   def perform_verification_with_code(code)

@@ -20,15 +20,34 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
   describe '#verification_data' do
     let(:user) { build_stubbed(:user) }
 
-    it 'returns the expected data' do
-      expect(helper.verification_data(user)).to match({
-        username: user.username,
-        obfuscated_email: obfuscated_email(user.email),
-        verify_path: helper.session_path(:user),
-        resend_path: users_resend_verification_code_path,
-        skip_path: users_skip_verification_for_now_path,
-        permitted_to_skip_email_otp_in_grace_period: permitted_to_skip_email_otp_in_grace_period?(user)
-      })
+    context 'when user is not permitted to skip email otp' do
+      it 'returns the expected data with skip_path being nil' do
+        expect(helper.verification_data(user)).to match({
+          username: user.username,
+          obfuscated_email: obfuscated_email(user.email),
+          verify_path: helper.session_path(:user),
+          resend_path: users_resend_verification_code_path,
+          skip_path: nil
+        })
+      end
+    end
+
+    context 'when user is permitted to skip email otp' do
+      before do
+        allow(helper).to receive(
+          :permitted_to_skip_email_otp_in_grace_period?
+        ).and_return(true)
+      end
+
+      it 'returns the expected data with skip_path being the correct route' do
+        expect(helper.verification_data(user)).to match({
+          username: user.username,
+          obfuscated_email: obfuscated_email(user.email),
+          verify_path: helper.session_path(:user),
+          resend_path: users_resend_verification_code_path,
+          skip_path: users_skip_verification_for_now_path
+        })
+      end
     end
   end
 

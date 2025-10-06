@@ -372,6 +372,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'MergeWorker' => 3,
         'MigrateExternalDiffsWorker' => 3,
         'Onboarding::ProgressTrackingWorker' => 3,
+        'Observability::CreateGroupO11ySettingWorker' => 3,
         'Namespaces::RootStatisticsWorker' => 3,
         'Namespaces::ScheduleAggregationWorker' => 3,
         'Namespaces::RemoveDormantMembersWorker' => 0,

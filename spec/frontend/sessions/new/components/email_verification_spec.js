@@ -12,10 +12,11 @@ import {
   I18N_EMAIL_EMPTY_CODE,
   I18N_EMAIL_INVALID_CODE,
   I18N_GENERIC_ERROR,
-  I18N_RESEND_LINK,
+  I18N_RESEND_CODE,
   I18N_EMAIL_RESEND_SUCCESS,
   I18N_SEND_TO_SECONDARY_EMAIL_BUTTON_TEXT,
   I18N_SEND_TO_SECONDARY_EMAIL_GUIDE,
+  I18N_SKIP_FOR_NOW_BUTTON,
 } from '~/sessions/new/constants';
 
 jest.mock('~/alert');
@@ -33,6 +34,7 @@ describe('EmailVerification', () => {
     obfuscatedEmail: 'al**@g*****.com',
     verifyPath: '/users/sign_in',
     resendPath: '/users/resend_verification_code',
+    skipPath: '/users/skip_verification_for_now',
     isOfferEmailReset: true,
   };
 
@@ -47,7 +49,7 @@ describe('EmailVerification', () => {
   const findSecondaryEmailForm = () => wrapper.findComponent(EmailForm);
   const findCodeInput = () => wrapper.findComponent(GlFormInput);
   const findSubmitButton = () => wrapper.find('[type="submit"]');
-  const findResendLink = () => wrapper.findByText(I18N_RESEND_LINK);
+  const findResendLink = () => wrapper.findByText(I18N_RESEND_CODE);
   const findShowSecondaryEmailFormLink = () =>
     wrapper.findByText(I18N_SEND_TO_SECONDARY_EMAIL_BUTTON_TEXT);
   const enterCode = (code) => findCodeInput().setValue(code);
@@ -266,7 +268,7 @@ describe('EmailVerification', () => {
       expect(findSecondaryEmailForm().exists()).toBe(true);
       expect(findSecondaryEmailForm().props()).toMatchObject({
         formInfo: I18N_SEND_TO_SECONDARY_EMAIL_GUIDE,
-        submitText: I18N_RESEND_LINK,
+        submitText: I18N_RESEND_CODE,
       });
     });
 
@@ -300,6 +302,88 @@ describe('EmailVerification', () => {
 
         expect(findSecondaryEmailForm().exists()).toBe(false);
         expect(findCodeInput().element.value).toBe('');
+      });
+    });
+  });
+
+  describe('skipping verification', () => {
+    const { skipPath, redirectPath } = defaultPropsData;
+
+    beforeEach(() => {
+      createComponent({ props: { skipPath } });
+    });
+
+    const findSkipButton = () => wrapper.findByText(I18N_SKIP_FOR_NOW_BUTTON);
+
+    describe('when skip button is present', () => {
+      it('renders the skip button when skipPath is provided', () => {
+        expect(findSkipButton().exists()).toBe(true);
+      });
+
+      it('does not render the skip button when skipPath is null', () => {
+        createComponent({ props: { skipPath: null } });
+
+        expect(findSkipButton().exists()).toBe(false);
+      });
+
+      describe('when successfully skipping verification', () => {
+        beforeEach(async () => {
+          axiosMock
+            .onPost(skipPath)
+            .reply(HTTP_STATUS_OK, { status: 'success', redirect_path: redirectPath });
+
+          findSkipButton().trigger('click');
+
+          await axios.waitForAll();
+        });
+
+        it('redirects to the returned redirect path', () => {
+          expect(visitUrl).toHaveBeenCalledWith(redirectPath);
+        });
+      });
+
+      describe('error handling', () => {
+        it('shows error message when skip request fails', async () => {
+          const errorMessage = 'User is not permitted to skip email OTP.';
+
+          axiosMock
+            .onPost(skipPath)
+            .reply(HTTP_STATUS_OK, { status: 'failure', message: errorMessage });
+
+          findSkipButton().trigger('click');
+
+          await axios.waitForAll();
+
+          expect(createAlert).toHaveBeenCalledWith({ message: errorMessage });
+        });
+
+        it('shows generic error when response status is undefined', async () => {
+          axiosMock.onPost(skipPath).reply(HTTP_STATUS_OK, { status: undefined });
+
+          findSkipButton().trigger('click');
+
+          await axios.waitForAll();
+
+          expect(createAlert).toHaveBeenCalledWith({
+            message: I18N_GENERIC_ERROR,
+            captureError: true,
+            error: undefined,
+          });
+        });
+
+        it('shows generic error when request fails', async () => {
+          axiosMock.onPost(skipPath).reply(HTTP_STATUS_NOT_FOUND, null);
+
+          findSkipButton().trigger('click');
+
+          await axios.waitForAll();
+
+          expect(createAlert).toHaveBeenCalledWith({
+            message: I18N_GENERIC_ERROR,
+            captureError: true,
+            error: expect.any(Error),
+          });
+        });
       });
     });
   });

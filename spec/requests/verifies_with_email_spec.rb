@@ -779,11 +779,13 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
     end
 
     context 'when user is permitted to skip email OTP in grace period' do
-      it 'removes verification_user_id session key and returns success status' do
-        post(users_skip_verification_for_now_path)
+      it 'returns success status and redirects to skip verification confirmation path' do
+        post(users_skip_verification_for_now_path(user: { login: user.username }))
 
-        expect(request.session.has_key?(:verification_user_id)).to eq(false)
-        expect(json_response).to eq('status' => 'success')
+        expect(json_response).to match(
+          'status' => 'success',
+          'redirect_path' => users_skip_verification_confirmation_path
+        )
       end
 
       context 'when user has email_otp set' do
@@ -793,50 +795,14 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
           stub_session(session_data: { verification_user_id: user.id })
         end
 
-        context 'when user.update succeeds' do
-          it 'clears the email_otp' do
-            expect { post(users_skip_verification_for_now_path) }
-              .to change { user.reload.email_otp }.to(nil)
-          end
-        end
-
-        context 'when user.update fails' do
-          before do
-            allow_next_instance_of(SessionsController) do |controller|
-              allow(controller).to receive(
-                :find_verification_user
-              ).and_return(user)
-
-              allow(controller).to receive(
-                :permitted_to_skip_email_otp_in_grace_period?
-              ).with(user).and_return(permitted_to_skip_email_otp_in_grace_period)
-            end
-
-            allow(user).to receive(:update).with(email_otp: nil).and_return(false)
-            allow(user).to receive(:errors).and_return(
-              instance_double(ActiveModel::Errors, full_messages: ['error message'])
-            )
-          end
-
-          it 'logs the failure event while still allowing the skip workflow to proceed' do
-            post(users_skip_verification_for_now_path)
-
-            expect(json_response).to eq('status' => 'success')
-            expect(Gitlab::AppLogger).to have_received(:info).with(
-              hash_including(
-                message: 'Email Verification',
-                event: 'Email Otp Clear Failed',
-                username: user.username,
-                reason: 'Failed to clear email_otp: error message',
-                ip: '127.0.0.1'
-              )
-            )
-          end
+        it 'clears the email_otp' do
+          expect { post(users_skip_verification_for_now_path(user: { login: user.username })) }
+            .to change { user.reload.email_otp }.to(nil)
         end
       end
 
       it 'logs the verification skip event' do
-        post(users_skip_verification_for_now_path)
+        post(users_skip_verification_for_now_path(user: { login: user.username }))
 
         expect(Gitlab::AppLogger).to have_received(:info).with(
           hash_including(
@@ -850,19 +816,35 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
       end
 
       it 'logs user activity', :freeze_time do
-        expect { post(users_skip_verification_for_now_path) }
+        expect { post(users_skip_verification_for_now_path(user: { login: user.username })) }
           .to change { user.reload.last_activity_on }.to(Date.today)
+      end
+
+      context 'when user signed in from an unknown remote IP' do
+        let(:user) { create(:user, :with_sign_ins) }
+        let(:malicious_ip) { '203.0.113.1' }
+
+        it 'calls verify_known_sign_in and notifies the user about this sign in activity' do
+          expect_next_instance_of(NotificationService) do |instance|
+            expect(instance).to receive(:unknown_sign_in)
+          end
+
+          post(users_skip_verification_for_now_path(
+            user: { login: user.username }),
+            headers: { 'REMOTE_ADDR' => malicious_ip }
+          )
+        end
       end
     end
 
     context 'when user is not permitted to skip email OTP in grace period' do
       let(:permitted_to_skip_email_otp_in_grace_period) { false }
 
-      it 'does not remove verification_user_id session key or return any status' do
-        post(users_skip_verification_for_now_path)
+      it 'returne a 403 status code and does not remove verification_user_id session key' do
+        post(users_skip_verification_for_now_path(user: { login: user.username }))
 
         expect(request.session[:verification_user_id]).to eq(user.id)
-        expect(response.body).to eq('')
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
@@ -871,9 +853,97 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
         stub_session(session_data: {})
       end
 
-      it 'does not return any status' do
-        post(users_skip_verification_for_now_path)
-        expect(response.body).to eq('')
+      it 'returns a 422 status code' do
+        post(users_skip_verification_for_now_path(user: { login: user.username }))
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
+  end
+
+  describe 'skip_verification_confirmation' do
+    let(:permitted_to_skip_email_otp_in_grace_period) { true }
+    let(:email_otp_required_after) { 1.day.from_now }
+    let(:expected_redirect_url) { root_path }
+
+    before do
+      user.update!(email_otp_required_after: email_otp_required_after)
+
+      allow_next_instance_of(SessionsController) do |controller|
+        allow(controller).to receive(
+          :permitted_to_skip_email_otp_in_grace_period?
+        ).with(user).and_return(permitted_to_skip_email_otp_in_grace_period)
+
+        allow(controller).to receive(:after_sign_in_path_for)
+          .with(user).and_return(expected_redirect_url)
+      end
+
+      sign_in(user) # to ensure that current_user is populated
+    end
+
+    context 'when user is permitted to skip email OTP in grace period' do
+      context 'when verification_user_id session exists' do
+        before do
+          stub_session(session_data: { verification_user_id: user.id })
+        end
+
+        it 'renders skip_verification_confirmation template with correct layout and locals' do
+          get(users_skip_verification_confirmation_path)
+
+          expect(response).to render_template('skip_verification_confirmation')
+          expect(response.body).to include(expected_redirect_url)
+          expect(response.body).to include(email_otp_required_after.strftime('%B %d, %Y'))
+        end
+      end
+
+      context 'when verification_user_id does not exist' do
+        before do
+          stub_session(session_data: {})
+        end
+
+        it 'returns error and does not render the template' do
+          get(users_skip_verification_confirmation_path)
+
+          expect(response).not_to render_template('skip_verification_confirmation')
+          expect(json_response).to eq('status' => 'failure')
+        end
+      end
+
+      context 'when email_based_mfa feature flag is disabled' do
+        before do
+          stub_feature_flags(email_based_mfa: false)
+        end
+
+        it 'returns error and does not render the template' do
+          get(users_skip_verification_confirmation_path)
+
+          expect(response).not_to render_template('skip_verification_confirmation')
+          expect(json_response).to eq('status' => 'failure')
+        end
+      end
+
+      context 'when current_user is nil (user is signed out)' do
+        before do
+          sign_out(user)
+        end
+
+        it 'returns error and does not render the template' do
+          get(users_skip_verification_confirmation_path)
+
+          expect(response).not_to render_template('skip_verification_confirmation')
+          expect(json_response).to eq('status' => 'failure')
+        end
+      end
+    end
+
+    context 'when user is not permitted to skip email OTP' do
+      let(:permitted_to_skip_email_otp_in_grace_period) { false }
+
+      it 'returns error and does not render the template' do
+        get(users_skip_verification_confirmation_path)
+
+        expect(response).not_to render_template('skip_verification_confirmation')
+        expect(json_response).to eq('status' => 'failure')
       end
     end
   end

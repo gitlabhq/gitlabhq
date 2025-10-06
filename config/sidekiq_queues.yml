@@ -711,6 +711,8 @@
   - 1
 - - object_storage
   - 1
+- - observability_create_group_o11y_setting
+  - 2
 - - onboarding_add_on_seat_assignment_iterable_trigger
   - 1
 - - onboarding_create_iterable_trigger

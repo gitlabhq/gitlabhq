@@ -28,6 +28,10 @@ module Observability
 
     attr_writer :o11y_service_name
 
+    def self.find_by_group_id(group_id)
+      find_by(group_id: group_id)
+    end
+
     def self.human_attribute_name(attribute, *options)
       HUMANIZED_ATTRIBUTES[attribute.to_sym] || super
     end

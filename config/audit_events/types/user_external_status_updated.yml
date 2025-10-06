@@ -1,0 +1,10 @@
+---
+name: user_external_status_updated
+description: A user is either flagged as external or has the external flag removed.
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/546230
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207107
+feature_category: user_management
+scope: [User]
+milestone: "18.5"
+saved_to_database: true
+streamed: true

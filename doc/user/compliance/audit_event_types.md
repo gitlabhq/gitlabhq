@@ -706,6 +706,7 @@ Audit event types belong to the following product categories.
 | [`user_provisioned_by_scim`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/174040) | A user is provisioned by SCIM | {{< icon name="check-circle" >}} Yes | GitLab [17.8](https://gitlab.com/gitlab-org/gitlab/-/issues/423322) | Group |
 | [`user_records_migrated_to_ghost`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203756) | Event triggered when user records are migrated to ghost user during batch processing | {{< icon name="check-circle" >}} Yes | GitLab [18.4](https://gitlab.com/gitlab-org/gitlab/-/issues/567635) | User |
 | [`user_rejected`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113784) | A user registration is rejected | {{< icon name="check-circle" >}} Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374107) | User |
+| [`user_external_status_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207107) | A user is either flagged as external or has the external flag removed. | {{< icon name="check-circle" >}} Yes | GitLab [18.5](https://gitlab.com/gitlab-org/gitlab/-/issues/546230) | User |
 
 ### User profile
 

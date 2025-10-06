@@ -339,3 +339,27 @@ Example:
 ```plaintext
 Search issues for "flaky test" across GitLab
 ```
+
+### `get_code_context`
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569624) in GitLab 18.5.
+
+{{< /history >}}
+
+Searches for relevant code snippets in a project.
+
+| Parameter        | Type    | Required | Description |
+|------------------|---------|----------|-------------|
+| `search_term`    | string  | Yes      | Search term. |
+| `project_id`     | integer | Yes      | ID of the project. |
+| `directory_path` | string  | No       | Path of the directory (for example, `app/services/`). |
+| `knn`            | integer | No       | Number of nearest neighbors used to find similar code snippets. Default is `64`. |
+| `limit`          | integer | No       | Maximum number of results to return. Default is `20`. |
+
+Example:
+
+```plaintext
+Search for relevant code snippets that show how authorizations are managed in GitLab
+```

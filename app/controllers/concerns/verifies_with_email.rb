@@ -88,29 +88,36 @@ module VerifiesWithEmail
   end
 
   def skip_verification_for_now
-    return unless user = find_verification_user
-    return unless permitted_to_skip_email_otp_in_grace_period?(user)
+    return respond_422 unless user = find_verification_user
+    return render_403 unless permitted_to_skip_email_otp_in_grace_period?(user)
 
-    # remove verification_user_id from session to indicate that verification process is done for this user
-    session.delete(:verification_user_id)
-    sign_in(user)
-    # If an email-otp was set, e.g. by this or a concurrent sign in attempt,
-    # clear it since user chose to skip verification so the previous otp no longer applies.
-    # In rare cases if email otp failed to clear,
-    # we don't want to block the workflow as the email otp will be reset in the next user login.
-    # As a result we will just log the event and move on
-    if user.email_otp.present? && !user.update(email_otp: nil)
-      log_verification(
-        user,
-        :email_otp_clear_failed,
-        "Failed to clear email_otp: #{user.errors.full_messages.join(', ')}"
-      )
+    handle_verification_success(
+      user,
+      :skipped,
+      'user chose to skip verification in grace period'
+    )
+
+    render json: {
+      status: :success,
+      redirect_path: users_skip_verification_confirmation_path
+    }
+  end
+
+  def skip_verification_confirmation
+    if permitted_to_view_skip_verification_confirmation?
+      render 'skip_verification_confirmation',
+        layout: 'minimal',
+        locals: {
+          redirect_url: after_sign_in_path_for(current_user),
+          email_otp_required_after: current_user.email_otp_required_after
+        }
+
+      # remove verification_user_id from session to indicate that skip verification workflow is done
+      # this ensures the confirmation page cannot be visited by user manually navigating to this path
+      session.delete(:verification_user_id)
+    else
+      render json: { status: :failure }
     end
-
-    log_verification(user, :skipped, 'user chose to skip verification in grace period')
-    log_user_activity(user)
-
-    render json: { status: :success }
   end
 
   private
@@ -191,9 +198,7 @@ module VerifiesWithEmail
       elsif require_email_based_otp?(user)
         # We don't lock accounts for Email-based MFA. We just require
         # the token for successful sign in.
-        if !user.email_otp || token_expired?(user, :email_otp) # rubocop:disable Style/IfUnlessModifier -- This is easier to read
-          send_otp_with_email(user)
-        end
+        send_otp_with_email(user) if !user.email_otp || token_expired?(user, :email_otp)
       end
     end
 
@@ -242,7 +247,7 @@ module VerifiesWithEmail
     result = service.execute
 
     if result[:status] == :success
-      handle_verification_success(user)
+      handle_verification_success(user, :successful)
       render json: { status: :success, redirect_path: users_successful_verification_path }
     else
       handle_verification_failure(user, result[:reason], result[:message])
@@ -280,19 +285,28 @@ module VerifiesWithEmail
     log_verification(user, :failed_attempt, reason)
   end
 
-  def handle_verification_success(user)
+  def handle_verification_success(user, verification_result, log_message = '')
     # Unlock the user
     user.unlock_access!
     # If an email-otp was set, e.g. by this or a concurrent sign in
     # attempt, clear it, so that a new sign in must be performed.
     user.update(email_otp: nil)
-    log_verification(user, :successful)
+    log_verification(user, verification_result, log_message)
 
     sign_in(user)
 
     log_audit_event(current_user, user, with: authentication_method)
     log_user_activity(user)
     verify_known_sign_in
+  end
+
+  def permitted_to_view_skip_verification_confirmation?
+    current_user &&
+      Feature.enabled?(:email_based_mfa, current_user) &&
+      permitted_to_skip_email_otp_in_grace_period?(current_user) &&
+      # User should not be able to visit users_skip_verification_confirmation_path after
+      # finishing token verification OR after completing the skip verification workflow
+      session[:verification_user_id]
   end
 
   def prompt_for_email_verification(user)

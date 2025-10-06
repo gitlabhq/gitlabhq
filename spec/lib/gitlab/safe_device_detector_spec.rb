@@ -17,4 +17,12 @@ RSpec.describe Gitlab::SafeDeviceDetector, feature_category: :system_access do
     big_user_agent = "chrome #{'abc' * 1024}"
     expect(described_class.new(big_user_agent).user_agent).not_to be_eql(big_user_agent)
   end
+
+  it 'handles non UTF-8 encoded user agents' do
+    non_utf8_user_agent = String.new("\xE2\x80\xAE[tcejbO tcejbo]", encoding: 'ASCII-8BIT')
+
+    client = described_class.new(non_utf8_user_agent)
+
+    expect { client.name }.not_to raise_error
+  end
 end

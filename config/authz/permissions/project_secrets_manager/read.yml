@@ -1,0 +1,6 @@
+---
+name: read_project_secrets_manager
+description: Grants the ability to read permissions for project secrets.
+scopes:
+  - project
+feature_category: secrets_management

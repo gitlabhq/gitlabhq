@@ -4512,6 +4512,16 @@
   :idempotent: false
   :tags: []
   :queue_namespace:
+- :name: observability_create_group_o11y_setting
+  :worker_name: Observability::CreateGroupO11ySettingWorker
+  :feature_category: :observability
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 2
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: pages
   :worker_name: PagesWorker
   :feature_category: :pages

@@ -14078,6 +14078,9 @@ msgstr ""
 msgid "CiVariable|Variable %{key} has been updated."
 msgstr ""
 
+msgid "Classic Chat Placeholder"
+msgstr ""
+
 msgid "Classification Label (optional)"
 msgstr ""
 
@@ -23818,6 +23821,11 @@ msgstr ""
 msgid "Developer (default)"
 msgstr ""
 
+msgid "Developers may dismiss findings to proceed or%{requireStart}receive%{requireEnd} %{approvalsRequired} %{approvalStart}approval%{approvalEnd} from:"
+msgid_plural "Developers may dismiss findings to proceed or%{requireStart}receive%{requireEnd} %{approvalsRequired} %{approvalStart}approvals%{approvalEnd} from:"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Development widget is not enabled for this work item type"
 msgstr ""
 
@@ -30316,16 +30324,25 @@ msgstr ""
 msgid "GitLab Duo"
 msgstr ""
 
+msgid "GitLab Duo Active Chat"
+msgstr ""
+
 msgid "GitLab Duo Agentic Chat"
 msgstr ""
 
 msgid "GitLab Duo Chat"
 msgstr ""
 
+msgid "GitLab Duo Chat History"
+msgstr ""
+
 msgid "GitLab Duo Chat with Amazon Q"
 msgstr ""
 
 msgid "GitLab Duo Core is on"
+msgstr ""
+
+msgid "GitLab Duo New Chat"
 msgstr ""
 
 msgid "GitLab Duo Sessions"
@@ -33796,6 +33813,9 @@ msgstr ""
 msgid "IdentityVerification|Country or region"
 msgstr ""
 
+msgid "IdentityVerification|Didn't get the code? %{buttonStart}Resend code%{buttonEnd}."
+msgstr ""
+
 msgid "IdentityVerification|Email Verification"
 msgstr ""
 
@@ -33886,6 +33906,9 @@ msgstr ""
 msgid "IdentityVerification|Send code in %{timer}"
 msgstr ""
 
+msgid "IdentityVerification|Skip for now"
+msgstr ""
+
 msgid "IdentityVerification|Something went wrong. Please try again."
 msgstr ""
 
@@ -33959,6 +33982,12 @@ msgid "IdentityVerification|You are signed in as %{username}. For added security
 msgstr ""
 
 msgid "IdentityVerification|You are signed in as %{username}. For added security, you'll need to verify your identity. We've sent a verification code to %{email}"
+msgstr ""
+
+msgid "IdentityVerification|You can skip email verification for now. Starting on %{date}, email verification will be mandatory."
+msgstr ""
+
+msgid "IdentityVerification|You will be automatically redirected"
 msgstr ""
 
 msgid "IdentityVerification|You will receive a text containing a code. Standard charges may apply."

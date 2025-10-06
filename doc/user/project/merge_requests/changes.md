@@ -23,7 +23,7 @@ This example shows changes to a text file. In the default syntax highlighting th
 - The _current_ version is shown in red, with a minus (`-`) sign before the line.
 - The _proposed_ version is shown in green with a plus (`+`) sign before the line.
 
-![Example screenshot of a source code diff](img/mr_diff_example_v16_9.png)
+![A merge request diff showing added and removed lines of code.](img/mr_diff_example_v16_9.png)
 
 The header for each file in the diff contains:
 
@@ -102,7 +102,7 @@ first in the list of changed files. To copy a merge request link that shows your
 1. When you visit that link, your chosen file is shown at the top of the list. The file browser
    shows a link icon ({{< icon name="link" >}}) next to the filename:
 
-   ![A merge request showing a YAML file at the top of the list.](img/linked_file_v17_4.png)
+   ![A merge request listing files, with the selected YAML file at the top.](img/linked_file_v17_4.png)
 
 ## Collapse generated files
 
@@ -230,13 +230,13 @@ To change how a merge request shows changed lines:
 
    {{< tab title="Inline changes" >}}
 
-   ![inline changes](img/changes-inline_v17_10.png)
+   ![Merge request code changes in inline mode.](img/changes-inline_v17_10.png)
 
    {{< /tab >}}
 
    {{< tab title="Side-by-side changes" >}}
 
-   ![side-by-side changes](img/changes-sidebyside_v17_10.png)
+   ![Merge request code changes in side-by-side mode.](img/changes-sidebyside_v17_10.png)
 
    {{< /tab >}}
 
@@ -292,7 +292,7 @@ To explain the code in a merge request:
 1. On the new tab, select the lines you want to have explained.
 1. On the left side, select the question mark ({{< icon name="question" >}}). You might have to scroll to the first line of your selection to view it.
 
-   ![explain code in a merge request](img/explain_code_v17_1.png)
+   ![Icon to explain the selected code snippet using GitLab Duo in a merge request.](img/explain_code_v17_1.png)
 
 Duo Chat explains the code. It might take a moment for the explanation to be generated.
 
@@ -314,7 +314,7 @@ When reviewing code changes, you can hide inline comments:
 1. Below the title, select **Changes**.
 1. Scroll to the file that contains the comments you want to hide.
 1. Scroll to the line the comment is attached to. In the gutter margin, select **Collapse** ({{< icon name="collapse" >}}):
-   ![collapse a comment](img/collapse-comment_v17_1.png)
+   ![Icon to collapse a comment in a merge request diff.](img/collapse-comment_v17_1.png)
 
 To expand inline comments and show them again:
 
@@ -323,7 +323,7 @@ To expand inline comments and show them again:
 1. Below the title, select **Changes**.
 1. Scroll to the file that contains the collapsed comments you want to show.
 1. Scroll to the line the comment is attached to. In the gutter margin, select the user avatar:
-   ![expand a comment](img/expand-comment_v17_10.png)
+   ![Icon to expand a comment in a merge request diff.](img/expand-comment_v17_10.png)
 
 ## Ignore whitespace changes
 
@@ -336,7 +336,7 @@ a merge request. You can choose to hide or show whitespace changes:
 1. Before the list of changed files, select **Preferences** ({{< icon name="preferences" >}}).
 1. Select or clear **Show whitespace changes**:
 
-   ![A merge request diff with the Preferences menu expanded](img/merge_request_diff_v17_10.png)
+   ![A merge request diff with Preferences menu expanded and 'Show whitespace changes' option selected.](img/merge_request_diff_v17_10.png)
 
 ## Mark files as viewed
 
@@ -361,7 +361,7 @@ source branch with the `HEAD` of the target branch.
 When the source and target branch conflict, we show an alert
 per conflicted file on the merge request diff:
 
-![Example of a conflict alert shown in a merge request diff](img/conflict_ui_v15_6.png)
+![A conflict alert in a merge request diff.](img/conflict_ui_v15_6.png)
 
 ## Show scanner findings in diff
 
