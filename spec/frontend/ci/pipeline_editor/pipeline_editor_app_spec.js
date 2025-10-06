@@ -55,6 +55,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
 const defaultProvide = {
   ciConfigPath: mockCiConfigPath,
   defaultBranch: mockDefaultBranch,
+  emptyStateIllustrationPath: '/assets/illustrations/empty-state/empty-pipeline-md.svg',
   newMergeRequestPath: mockNewMergeRequestPath,
   projectFullPath: mockProjectFullPath,
   usesExternalConfig: false,

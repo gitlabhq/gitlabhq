@@ -48,6 +48,8 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
     identityVerificationPath,
     identityVerificationRequired,
     pipelinesAnalyticsPath,
+    usesExternalConfig,
+    emptyStateIllustrationPath,
   } = el.dataset;
 
   return new Vue({
@@ -68,6 +70,8 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
       identityVerificationRequired: parseBoolean(identityVerificationRequired),
       suggestedCiTemplates: JSON.parse(suggestedCiTemplates),
       showJenkinsCiPrompt: parseBoolean(showJenkinsCiPrompt),
+      usesExternalConfig: parseBoolean(usesExternalConfig),
+      emptyStateIllustrationPath,
     },
     data() {
       return {

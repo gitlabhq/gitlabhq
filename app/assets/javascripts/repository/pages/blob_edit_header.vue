@@ -7,8 +7,11 @@ import PageHeading from '~/vue_shared/components/page_heading.vue';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 import { getParameterByName, visitUrl, joinPaths, mergeUrlParams } from '~/lib/utils/url_utility';
 import { buildApiUrl } from '~/api/api_utils';
+import { VARIANT_INFO } from '~/alert';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_local_storage';
 import getRefMixin from '../mixins/get_ref';
+import { prepareEditFormData, prepareCreateFormData } from '../utils/edit_form_data_utils';
 
 const MR_SOURCE_BRANCH = 'merge_request[source_branch]';
 
@@ -70,6 +73,25 @@ export default {
         ? __('An error occurred editing the blob')
         : __('An error occurred creating the blob');
     },
+    successMessageForAlert() {
+      return (isNewBranch, createMergeRequestNotChosen) => {
+        let message = __(
+          'Your %{changesLinkStart}changes%{changesLinkEnd} have been committed successfully.',
+        );
+
+        if (isNewBranch && createMergeRequestNotChosen) {
+          // Use canPushToBranch to determine if user is working on a fork
+          const mrMessage = this.canPushToBranch
+            ? __('You can now submit a merge request to get this change into the original branch.')
+            : __(
+                'You can now submit a merge request to get this change into the original project.',
+              );
+          message += ` ${mrMessage}`;
+        }
+
+        return message;
+      };
+    },
   },
   methods: {
     handleCancelButtonClick() {
@@ -86,22 +108,6 @@ export default {
       this.filePath = filePath;
       this.originalFilePath = this.editor.getOriginalFilePath();
       this.$refs[this.updateModalId].show();
-    },
-    prepareFormData(formData) {
-      formData.append('file', this.fileContent);
-      formData.append('file_path', this.filePath);
-      formData.append('last_commit_sha', this.lastCommitSha);
-      formData.append('from_merge_request_iid', this.fromMergeRequestIid);
-
-      return Object.fromEntries(formData);
-    },
-    prepareControllerFormData(formData) {
-      formData.append('file', this.fileContent);
-      formData.append('file_path', this.filePath);
-      formData.append('last_commit_sha', this.lastCommitSha);
-      formData.append('from_merge_request_iid', this.fromMergeRequestIid);
-
-      return Object.fromEntries(formData);
     },
     handleError(message, errorCode = null) {
       if (!message) return;
@@ -120,7 +126,19 @@ export default {
       }
     },
     async handleEditFormSubmit(formData) {
-      const originalFormData = this.prepareFormData(formData);
+      const originalFormData = this.glFeatures.blobEditRefactor
+        ? prepareEditFormData(formData, {
+            fileContent: this.fileContent,
+            filePath: this.filePath,
+            lastCommitSha: this.lastCommitSha,
+            fromMergeRequestIid: this.fromMergeRequestIid,
+          })
+        : prepareEditFormData(formData, {
+            fileContent: this.fileContent,
+            filePath: this.filePath,
+            lastCommitSha: this.lastCommitSha,
+            fromMergeRequestIid: this.fromMergeRequestIid,
+          });
 
       try {
         const response = this.glFeatures.blobEditRefactor
@@ -147,14 +165,10 @@ export default {
       }
     },
     async handleCreateFormSubmit(formData) {
-      formData.append('file_name', this.filePath);
-      formData.append('content', this.fileContent);
-
-      // Object.fromEntries is used here to handle potential line ending mutations in `FormData`.
-      // `FormData` uses the "multipart/form-data" format (RFC 2388), which follows MIME data stream rules (RFC 2046).
-      // These specifications require line breaks to be represented as CRLF sequences in the canonical form.
-      // See https://stackoverflow.com/questions/69835705/formdata-textarea-puts-r-carriage-return-when-sent-with-post for more details.
-      const originalFormData = Object.fromEntries(formData);
+      const originalFormData = prepareCreateFormData(formData, {
+        filePath: this.filePath,
+        fileContent: this.fileContent,
+      });
 
       try {
         const response = await axios({
@@ -218,7 +232,19 @@ export default {
         );
         visitUrl(mrUrl);
       } else {
-        visitUrl(this.getUpdatePath(responseData.branch, responseData.file_path));
+        const successPath = this.getUpdatePath(responseData.branch, responseData.file_path);
+        const isNewBranch = this.originalBranch !== responseData.branch;
+        const createMergeRequestNotChosen = !formData.create_merge_request;
+
+        const message = this.successMessageForAlert(isNewBranch, createMergeRequestNotChosen);
+
+        saveAlertToLocalStorage({
+          message,
+          messageLinks: { changesLink: successPath },
+          variant: VARIANT_INFO,
+        });
+
+        visitUrl(successPath);
       }
     },
     handleControllerSuccess(responseData) {

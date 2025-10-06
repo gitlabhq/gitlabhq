@@ -16,7 +16,7 @@ module SupplyChain
     has_internal_id :iid, scope: :project
 
     validates :project_id, presence: true
-    validates :file, presence: true
+    validates :file, presence: true, unless: :error?
     validates :predicate_kind, presence: true
     validates :predicate_type, presence: true
     validates :subject_digest, presence: true, length: { minimum: 64, maximum: 255 }
@@ -25,6 +25,7 @@ module SupplyChain
 
     scope :for_project, ->(project_id) { where(project_id: project_id) }
     scope :with_digest, ->(subject_digest) { where(subject_digest: subject_digest) }
+    scope :with_predicate_kind, ->(predicate_kind) { where(predicate_kind: predicate_kind) }
 
     attribute :file_store, default: -> { AttestationUploader.default_store }
 
@@ -39,5 +40,9 @@ module SupplyChain
       provenance: 0,
       sbom: 1
     }
+
+    def self.find_provenance(project:, subject_digest:)
+      for_project(project).with_predicate_kind("provenance").with_digest(subject_digest).take
+    end
   end
 end

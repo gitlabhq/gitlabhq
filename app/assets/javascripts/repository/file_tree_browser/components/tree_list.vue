@@ -398,6 +398,7 @@ export default {
             :level="item.level"
             :opened="item.opened"
             :loading="item.loading"
+            :tabindex="item.loading ? -1 : 0"
             :aria-current="isCurrentPath(item.path)"
             :style="{ '--level': item.level }"
             :class="{

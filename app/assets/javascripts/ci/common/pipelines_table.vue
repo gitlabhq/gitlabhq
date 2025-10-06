@@ -206,14 +206,6 @@ export default {
             source_branch: this.currentBranch(item),
           }),
         },
-        {
-          Category: 'agent_user_environment',
-          Content: JSON.stringify({
-            merge_request_url: this.mergeRequestPath,
-            source_branch: this.currentBranch(item),
-          }),
-          Metadata: '{}',
-        },
       ];
     },
   },

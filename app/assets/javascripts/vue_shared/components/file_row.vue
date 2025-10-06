@@ -147,6 +147,7 @@ export default {
     :data-level="level"
     class="file-row"
     :aria-expanded="file.type === 'tree' ? file.opened.toString() : undefined"
+    :aria-label="file.name"
     @click="clickFile"
   >
     <span

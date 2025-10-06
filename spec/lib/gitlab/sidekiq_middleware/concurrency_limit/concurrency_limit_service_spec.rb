@@ -68,7 +68,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitServ
   end
 
   describe '.resume_processing!' do
-    subject(:resume_processing!) { described_class.resume_processing!(worker_class_name, limit: 10) }
+    subject(:resume_processing!) { described_class.resume_processing!(worker_class_name) }
 
     it 'calls an instance method' do
       expect_next_instance_of(described_class) do |instance|
@@ -87,7 +87,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitServ
 
       expect(described_class.queue_size(worker_class_name)).to eq(1)
 
-      expect { service.resume_processing!(limit: 1) }.to change { described_class.queue_size(worker_class_name) }.by(-1)
+      expect { service.resume_processing! }.to change { described_class.queue_size(worker_class_name) }.by(-1)
     end
   end
 
@@ -211,10 +211,10 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitServ
         .to change { other_subject.queue_size }
         .from(0).to(1)
 
-      expect { service.resume_processing!(limit: 1) }.to change { service.has_jobs_in_queue? }
+      expect { service.resume_processing! }.to change { service.has_jobs_in_queue? }
         .from(true).to(false)
 
-      expect { other_subject.resume_processing!(limit: 1) }.to change { other_subject.has_jobs_in_queue? }
+      expect { other_subject.resume_processing! }.to change { other_subject.has_jobs_in_queue? }
         .from(true).to(false)
     end
   end

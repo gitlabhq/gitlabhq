@@ -83,7 +83,7 @@ run this in the #chat-ops-test Slack channel:
 /chatops run auto_deploy status
 ```
 
-![ChatopsAutoDeployStatus.png](img/ChatopsAutoDeployStatus_v18_0.png)
+![ChatOps auto deploy status output.](img/ChatopsAutoDeployStatus_v18_0.png)
 
 You will [need access to the https://ops.gitlab.net/gitlab-com/chatops](../../chatops_on_gitlabcom.md#requesting-access) project to run `/chatops` commands.
 Ask to be added to this project in the #development Slack channel.

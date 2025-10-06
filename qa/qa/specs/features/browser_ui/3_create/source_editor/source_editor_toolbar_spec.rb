@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', feature_category: :source_code_management, feature_flag: {
-    name: :blob_edit_refactor
-  } do
+  RSpec.describe 'Create', feature_category: :source_code_management do
     describe 'Source editor toolbar preview' do
       let(:project) { create(:project, :with_readme, name: 'empty-project-with-md') }
       let(:edited_readme_content) { 'Here is the edited content.' }
@@ -14,10 +12,6 @@ module QA
 
       it 'can preview markdown side-by-side while editing',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367749' do
-        # Skip test when blob_edit_refactor feature flag is enabled as it is WIP
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/509968
-        skip 'blob_edit_refactor feature flag is WIP' if Runtime::Feature.enabled?(:blob_edit_refactor)
-
         project.visit!
         Page::Project::Show.perform do |project|
           project.click_file('README.md')

@@ -126,6 +126,8 @@ namespace :gitlab do
     Rake::Task['db:schema:dump'].enhance(['gitlab:db:validate_config'])
 
     ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
+      next if name == "geo"
+
       Rake::Task["db:migrate:#{name}"].enhance(['gitlab:db:validate_config'])
       Rake::Task["db:schema:load:#{name}"].enhance(['gitlab:db:validate_config'])
       Rake::Task["db:schema:dump:#{name}"].enhance(['gitlab:db:validate_config'])

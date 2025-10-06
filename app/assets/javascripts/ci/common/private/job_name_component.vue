@@ -37,7 +37,7 @@ export default {
       :use-link="false"
       class="gl-leading-0"
     />
-    <span class="gl-line-clamp-2 gl-pl-3 gl-wrap-anywhere" :title="name">
+    <span class="gl-line-clamp-2 gl-pl-3 gl-text-left gl-wrap-anywhere" :title="name">
       {{ name }}
     </span>
   </span>

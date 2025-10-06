@@ -25344,7 +25344,7 @@ msgstr ""
 msgid "DuoFeatures|Save exclusions"
 msgstr ""
 
-msgid "DuoFeatures|Specify project files and directories that GitLab Duo will not access. Excluded content is never sent to AI models. %{linkStart}learn more%{linkEnd}."
+msgid "DuoFeatures|Specify project files and directories that GitLab Duo will not access. Excluded content is never sent to AI models. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "DuoFeatures|The exclusion rule was deleted."
@@ -27809,6 +27809,12 @@ msgid "ExternalAuthorization|Service URL"
 msgstr ""
 
 msgid "ExternalAuthorization|URL to which the projects make authorization requests. If the URL is blank, cross-project features are available and can still specify classification labels for projects."
+msgstr ""
+
+msgid "ExternalConfigEmptyState|This project's pipeline configuration is located outside this repository"
+msgstr ""
+
+msgid "ExternalConfigEmptyState|To view or edit the pipeline configuration, check your project's CI/CD settings for the external file location, then navigate to that project or repository."
 msgstr ""
 
 msgid "ExternalIssueIntegration|Another issue tracker is already in use"
@@ -52758,9 +52764,6 @@ msgstr ""
 msgid "ProtectedBranch|Giving merge rights to a protected branch also gives elevated permissions for certain CI/CD features."
 msgstr ""
 
-msgid "ProtectedBranch|How do I use branch rules?"
-msgstr ""
-
 msgid "ProtectedBranch|Inherited - This setting can be changed at the group level"
 msgstr ""
 
@@ -52798,9 +52801,6 @@ msgid "ProtectedBranch|Protected branch was successfully created"
 msgstr ""
 
 msgid "ProtectedBranch|Protected branches"
-msgstr ""
-
-msgid "ProtectedBranch|Protected branches is moving to %{branch_rules_link_start}Branch rules%{branch_rules_link_end}."
 msgstr ""
 
 msgid "ProtectedBranch|Reject code pushes that change files listed in the CODEOWNERS file."
@@ -52849,9 +52849,6 @@ msgid "ProtectedBranch|What are the security implications?"
 msgstr ""
 
 msgid "ProtectedBranch|You can add only groups that have this project shared. %{learn_more_link}"
-msgstr ""
-
-msgid "ProtectedBranch|You can now manage branch protections, approval rules, and status checks in one place."
 msgstr ""
 
 msgid "ProtectedBranch|default"
@@ -67232,9 +67229,6 @@ msgstr ""
 msgid "This project will be deleted on %{date} because its parent group is scheduled for deletion."
 msgstr ""
 
-msgid "This project's pipeline configuration is located outside this repository"
-msgstr ""
-
 msgid "This release was created with a date in the past. Evidence collection at the moment of the release is unavailable."
 msgstr ""
 
@@ -67834,9 +67828,6 @@ msgid "To continue, you need to select the link in the confirmation email we sen
 msgstr ""
 
 msgid "To disable the setting, set this value to 0."
-msgstr ""
-
-msgid "To edit the pipeline configuration, you must go to the project or external site that hosts the file."
 msgstr ""
 
 msgid "To ensure %{project_link} is unscheduled for deletion, check that activity has been logged by GitLab. For example:"
@@ -72749,6 +72740,15 @@ msgstr ""
 msgid "Vulnerability|A solution is available for this vulnerability"
 msgstr ""
 
+msgid "Vulnerability|AI Generating Fix"
+msgstr ""
+
+msgid "Vulnerability|AI has created a merge request to resolve this vulnerability"
+msgstr ""
+
+msgid "Vulnerability|AI is currently working to resolve this vulnerability"
+msgstr ""
+
 msgid "Vulnerability|Active secret"
 msgstr ""
 
@@ -76640,6 +76640,9 @@ msgid "You've successfully verified! You now have access to slash commands. Than
 msgstr ""
 
 msgid "YouTube"
+msgstr ""
+
+msgid "Your %{changesLinkStart}changes%{changesLinkEnd} have been committed successfully."
 msgstr ""
 
 msgid "Your %{changes_link} have been committed successfully."

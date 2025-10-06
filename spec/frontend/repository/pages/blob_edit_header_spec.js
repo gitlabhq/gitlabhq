@@ -11,11 +11,13 @@ import {
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 import BlobEditHeader from '~/repository/pages/blob_edit_header.vue';
+import { saveAlertToLocalStorage } from '~/repository/local_storage_alert/save_alert_to_local_storage';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { stubComponent } from 'helpers/stub_component';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 jest.mock('~/alert');
+jest.mock('~/repository/local_storage_alert/save_alert_to_local_storage');
 jest.mock('lodash/uniqueId', () => {
   return jest.fn((input) => `${input}1`);
 });
@@ -36,7 +38,7 @@ describe('BlobEditHeader', () => {
     },
   };
 
-  const createWrapper = ({ action = 'update', glFeatures = {} } = {}) => {
+  const createWrapper = ({ action = 'update', glFeatures = {}, provided = {} } = {}) => {
     return shallowMountExtended(BlobEditHeader, {
       provide: {
         action,
@@ -54,6 +56,7 @@ describe('BlobEditHeader', () => {
         projectId: 123,
         projectPath: 'gitlab-org/gitlab',
         newMergeRequestPath: 'merge_request/new/123',
+        ...provided,
         glFeatures: { blobEditRefactor: true, ...glFeatures },
       },
       mixins: [glFeatureFlagMixin()],
@@ -103,42 +106,45 @@ describe('BlobEditHeader', () => {
     await axios.waitForAll();
   };
 
+  it('renders title with two buttons', () => {
+    expect(findTitle().text()).toBe('Edit file');
+    const buttons = findButtons();
+    expect(buttons).toHaveLength(2);
+    expect(buttons.at(0).text()).toBe('Cancel');
+    expect(buttons.at(1).text()).toBe('Commit changes');
+  });
+
+  it('retrieves edit content, when opening the modal', () => {
+    clickCommitChangesButton();
+    expect(mockEditor.getFileContent).toHaveBeenCalled();
+  });
+
+  it('opens commit changes modal with correct props', () => {
+    expect(findCommitChangesModal().props()).toEqual({
+      modalId: 'update-modal1',
+      canPushCode: true,
+      canPushToBranch: true,
+      commitMessage: 'Edit test.js',
+      emptyRepo: false,
+      isUsingLfs: false,
+      originalBranch: 'main',
+      targetBranch: 'feature',
+      loading: false,
+      branchAllowsCollaboration: false,
+      valid: true,
+      error: null,
+    });
+  });
+
   describe('for edit blob', () => {
     describe('when blobEditRefactor is enabled', () => {
-      it('renders title with two buttons', () => {
-        expect(findTitle().text()).toBe('Edit file');
-        const buttons = findButtons();
-        expect(buttons).toHaveLength(2);
-        expect(buttons.at(0).text()).toBe('Cancel');
-        expect(buttons.at(1).text()).toBe('Commit changes');
-      });
-
-      it('opens commit changes modal with correct props', () => {
-        clickCommitChangesButton();
-        expect(mockEditor.getFileContent).toHaveBeenCalled();
-        expect(findCommitChangesModal().props()).toEqual({
-          modalId: 'update-modal1',
-          canPushCode: true,
-          canPushToBranch: true,
-          commitMessage: 'Edit test.js',
-          emptyRepo: false,
-          isUsingLfs: false,
-          originalBranch: 'main',
-          targetBranch: 'feature',
-          loading: false,
-          branchAllowsCollaboration: false,
-          valid: true,
-          error: null,
-        });
-      });
-
       it('shows confirmation message on cancel button', () => {
         expect(findCancelButton().attributes('data-confirm')).toBe(
           'Leave edit mode? All unsaved changes will be lost.',
         );
       });
 
-      it('on submit, redirects to the updated file', async () => {
+      it('on submit, saves success message to localStorage and redirects to the updated file', async () => {
         // First click the commit button to open the modal and set up the file content
         clickCommitChangesButton();
         mock.onPut().replyOnce(HTTP_STATUS_OK, {
@@ -146,6 +152,15 @@ describe('BlobEditHeader', () => {
           file_path: 'test.js',
         });
         await submitForm();
+
+        expect(saveAlertToLocalStorage).toHaveBeenCalledWith({
+          message:
+            'Your %{changesLinkStart}changes%{changesLinkEnd} have been committed successfully. You can now submit a merge request to get this change into the original branch.',
+          messageLinks: {
+            changesLink: 'http://test.host/gitlab-org/gitlab/-/blob/feature/test.js',
+          },
+          variant: 'info',
+        });
 
         expect(mock.history.put).toHaveLength(1);
         expect(mock.history.put[0].url).toBe('/api/v4/projects/123/repository/files/test.js');
@@ -156,12 +171,63 @@ describe('BlobEditHeader', () => {
         );
       });
 
+      it('on submit to same branch, saves shorter success message to localStorage', async () => {
+        mock.onPut().replyOnce(HTTP_STATUS_OK, {
+          branch: 'main', // Same as originalBranch
+          file_path: 'test.js',
+        });
+
+        const formData = new FormData();
+        formData.append('commit_message', 'Test commit');
+        formData.append('branch_name', 'main');
+        formData.append('original_branch', 'main');
+
+        findCommitChangesModal().vm.$emit('submit-form', formData);
+        await axios.waitForAll();
+
+        expect(saveAlertToLocalStorage).toHaveBeenCalledWith({
+          message:
+            'Your %{changesLinkStart}changes%{changesLinkEnd} have been committed successfully.',
+          messageLinks: {
+            changesLink: 'http://test.host/gitlab-org/gitlab/-/blob/main/test.js',
+          },
+          variant: 'info',
+        });
+
+        expect(visitUrlSpy).toHaveBeenCalledWith(
+          'http://test.host/gitlab-org/gitlab/-/blob/main/test.js',
+        );
+      });
+
+      it('on submit to new branch to a fork repo, saves success message with "original project" text', async () => {
+        // Create wrapper with canPushToBranch: false to simulate fork scenario
+        wrapper = createWrapper({
+          glFeatures: { blobEditRefactor: true },
+          provided: { canPushToBranch: false },
+        });
+
+        mock.onPut().replyOnce(HTTP_STATUS_OK, {
+          branch: 'feature',
+          file_path: 'test.js',
+        });
+        await submitForm();
+
+        expect(saveAlertToLocalStorage).toHaveBeenCalledWith({
+          message:
+            'Your %{changesLinkStart}changes%{changesLinkEnd} have been committed successfully. You can now submit a merge request to get this change into the original project.',
+          messageLinks: {
+            changesLink: 'http://test.host/gitlab-org/gitlab/-/blob/feature/test.js',
+          },
+          variant: 'info',
+        });
+
+        expect(visitUrlSpy).toHaveBeenCalledWith(
+          'http://test.host/gitlab-org/gitlab/-/blob/feature/test.js',
+        );
+      });
+
       describe('error handling', () => {
         const errorMessage = 'Custom error message';
-
-        beforeEach(() => {
-          clickCommitChangesButton();
-        });
 
         it('shows error message in modal when response contains error', async () => {
           mock.onPut().replyOnce(HTTP_STATUS_OK, { error: errorMessage });
@@ -293,33 +359,6 @@ describe('BlobEditHeader', () => {
       wrapper = createWrapper({ action: 'create' });
     });
 
-    it('renders title with two buttons', () => {
-      expect(findTitle().text()).toBe('New file');
-      const buttons = findButtons();
-      expect(buttons).toHaveLength(2);
-      expect(buttons.at(0).text()).toBe('Cancel');
-      expect(buttons.at(1).text()).toBe('Commit changes');
-    });
-
-    it('opens commit changes modal with correct props', () => {
-      clickCommitChangesButton();
-      expect(mockEditor.getFileContent).toHaveBeenCalled();
-      expect(findCommitChangesModal().props()).toEqual({
-        modalId: 'update-modal1',
-        canPushCode: true,
-        canPushToBranch: true,
-        commitMessage: 'Add new file',
-        originalBranch: 'main',
-        targetBranch: 'feature',
-        isUsingLfs: false,
-        emptyRepo: false,
-        branchAllowsCollaboration: false,
-        loading: false,
-        valid: true,
-        error: null,
-      });
-    });
-
     it('shows confirmation message on cancel button', () => {
       expect(findCancelButton().attributes('data-confirm')).toBe(
         'Leave edit mode? All unsaved changes will be lost.',
@@ -341,7 +380,7 @@ describe('BlobEditHeader', () => {
   describe('validation', () => {
     it('toggles validation error when filename is empty', () => {
       mockEditor.filepathFormMediator.$filenameInput.val.mockReturnValue(null);
-      wrapper = createWrapper();
+      createWrapper();
       clickCommitChangesButton();
 
       expect(mockEditor.filepathFormMediator.toggleValidationError).toHaveBeenCalledWith(true);

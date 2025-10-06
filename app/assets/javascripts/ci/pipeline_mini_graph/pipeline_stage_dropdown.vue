@@ -199,8 +199,12 @@ export default {
         </gl-disclosure-dropdown-group>
       </template>
       <template v-else>
-        <gl-disclosure-dropdown-group v-if="hasFailedJobs">
-          <template #group-label>{{ s__('Pipelines|Failed jobs') }}</template>
+        <gl-disclosure-dropdown-group v-if="hasFailedJobs" class="gl-text-left">
+          <template #group-label
+            ><span class="gl-inline-block gl-w-full gl-text-left">{{
+              s__('Pipelines|Failed jobs')
+            }}</span></template
+          >
           <job-dropdown-item
             v-for="job in failedJobs"
             :key="job.id"

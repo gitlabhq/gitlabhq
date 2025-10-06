@@ -58,6 +58,7 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { AutocompleteCache } from '../utils';
 
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
@@ -85,6 +86,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: [
     'autocompleteAwardEmojisPath',
     'autocompleteUsersPath',
@@ -394,7 +396,7 @@ export default {
         hasBlockedIssuesFeature: this.hasBlockedIssuesFeature,
         hasIssuableHealthStatusFeature: this.hasIssuableHealthStatusFeature,
         hasIssueWeightsFeature: this.hasIssueWeightsFeature,
-        hasStatusFeature: this.hasStatusFeature,
+        hasStatusFeature: this.glFeatures.workItemStatusOnDashboard && this.hasStatusFeature,
         hasManualSort: false,
       });
     },

@@ -334,6 +334,59 @@ describe('IssuesDashboardApp component', () => {
       });
     });
 
+    describe('sort options', () => {
+      beforeEach(() => {
+        gon.features = { workItemStatusMvc2: true };
+      });
+
+      describe('when workItemStatusOnDashboard=true', () => {
+        it('includes Status in sort options', () => {
+          mountComponent({
+            provide: { hasStatusFeature: true, glFeatures: { workItemStatusOnDashboard: true } },
+          });
+
+          expect(findIssuableList().props('sortOptions')).toEqual([
+            expect.objectContaining({ title: 'Priority' }),
+            expect.objectContaining({ title: 'Created date' }),
+            expect.objectContaining({ title: 'Updated date' }),
+            expect.objectContaining({ title: 'Closed date' }),
+            expect.objectContaining({ title: 'Milestone due date' }),
+            expect.objectContaining({ title: 'Due date' }),
+            expect.objectContaining({ title: 'Popularity' }),
+            expect.objectContaining({ title: 'Label priority' }),
+            expect.objectContaining({ title: 'Title' }),
+            expect.objectContaining({ title: 'Health' }),
+            expect.objectContaining({ title: 'Status' }),
+            expect.objectContaining({ title: 'Weight' }),
+            expect.objectContaining({ title: 'Blocking' }),
+          ]);
+        });
+      });
+
+      describe('when workItemStatusOnDashboard=false', () => {
+        it('does not include Status in sort options', () => {
+          mountComponent({
+            provide: { hasStatusFeature: true, glFeatures: { workItemStatusOnDashboard: false } },
+          });
+
+          expect(findIssuableList().props('sortOptions')).toEqual([
+            expect.objectContaining({ title: 'Priority' }),
+            expect.objectContaining({ title: 'Created date' }),
+            expect.objectContaining({ title: 'Updated date' }),
+            expect.objectContaining({ title: 'Closed date' }),
+            expect.objectContaining({ title: 'Milestone due date' }),
+            expect.objectContaining({ title: 'Due date' }),
+            expect.objectContaining({ title: 'Popularity' }),
+            expect.objectContaining({ title: 'Label priority' }),
+            expect.objectContaining({ title: 'Title' }),
+            expect.objectContaining({ title: 'Health' }),
+            expect.objectContaining({ title: 'Weight' }),
+            expect.objectContaining({ title: 'Blocking' }),
+          ]);
+        });
+      });
+    });
+
     describe('state', () => {
       it('is set from the url params', () => {
         const initialState = STATUS_ALL;

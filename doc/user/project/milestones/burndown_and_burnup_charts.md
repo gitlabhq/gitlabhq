@@ -16,7 +16,7 @@ title: Burndown and burnup charts
 Burndown charts show the remaining issues (burndown) over the course of a project [milestone](_index.md).
 Burnup charts show the total number of issues against completed issues.
 
-![burndown and burnup chart](img/burndown_and_burnup_charts_v15_3.png)
+![Burndown and burnup chart, showing milestone progress with burndown chart displaying remaining issues over time and burnup chart showing total versus completed issues.](img/burndown_and_burnup_charts_v15_3.png)
 
 ### Similarities and differences
 
@@ -62,7 +62,7 @@ project's scope) by showing spikes in the chart's total issues.
 
 Burndown charts show the number of issues over the course of a milestone.
 
-![burndown chart](img/burndown_chart_v15_3.png)
+![Burndown chart, showing declining trend of remaining issues over milestone duration.](img/burndown_chart_v15_3.png)
 
 At a glance, you see the current state for the completion a given milestone.
 Without them, you would have to organize the data from the milestone and plot it
@@ -110,7 +110,7 @@ switch between Legacy and Fixed views.
 
 | Legacy | Fixed |
 | ----- | ----- |
-| ![Legacy burndown chart](img/burndown_chart_legacy_v13_6.png) | ![Fixed burndown chart, showing a jump when a lot of issues were added to the milestone](img/burndown_chart_fixed_v13_6.png) |
+| ![Legacy burndown chart, showing downward trending line representing remaining issues decreasing.](img/burndown_chart_legacy_v13_6.png) | ![Fixed burndown chart, showing a jump when a lot of issues were added to the milestone.](img/burndown_chart_fixed_v13_6.png) |
 
 **Fixed burndown** charts track the full history of milestone activity, from its creation until the
 milestone expires. After the milestone due date passes, issues removed from the milestone no longer
@@ -129,7 +129,7 @@ Reopened issues are considered as having been opened on the day after they were 
 
 Burnup charts show the assigned and completed work for a milestone.
 
-![burnup chart](img/burnup_chart_v15_3.png)
+![Burnup chart, displaying two lines with a blue total issues line remaining relatively stable and an orange completed issues line steadily increasing.](img/burnup_chart_v15_3.png)
 
 To view a project's burnup chart:
 

@@ -360,9 +360,9 @@ the bot message is sent as long as at least one of those policies has the `send_
 
 ### Example bot messages
 
-![scan_results_example_bot_message_v17_0](img/scan_result_policy_example_bot_message_vulnerabilities_v17_0.png)
+![Example bot message showing vulnerabilities detected by security scans.](img/scan_result_policy_example_bot_message_vulnerabilities_v17_0.png)
 
-![scan_results_example_bot_message_v17_0](img/scan_result_policy_example_bot_message_artifacts_v17_0.png)
+![Example bot message showing missing or incomplete scan artifacts required for policy evaluation.](img/scan_result_policy_example_bot_message_artifacts_v17_0.png)
 
 ## Warn mode
 

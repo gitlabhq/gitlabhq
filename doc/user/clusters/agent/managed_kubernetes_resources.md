@@ -179,6 +179,7 @@ The following functions are available:
 | `replace`    | `<old> <new> <string>`   | Replace all occurrences of a substring in the string. | `replace "_" "-" "foo_bar"` -> `"foo-bar"` |
 | `trimPrefix` | `<prefix> <string>`      | Remove the prefix from the string.                   | `trimPrefix "-" "-hello"` -> `"hello"`     |
 | `trimSuffix` | `<suffix> <string>`      | Remove the suffix from the string.                   | `trimSuffix "-" "hello-"` -> `"hello"`   |
+| `slugify`    | `[<len>] <string>`       | Slugify the given string according to RFC1123. By default, trims to `63` characters. | `slugify "hello WORLD"` -> `"hello-world"`   |
 
 To make variables compliant for Kubernetes values, the number of functions is intentionally
 limited to a minimum set of functions, like namespace names or labels.

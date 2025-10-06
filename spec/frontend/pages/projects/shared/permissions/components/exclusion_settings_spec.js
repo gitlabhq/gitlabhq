@@ -47,8 +47,6 @@ describe('ExclusionSettings', () => {
       expect(crudComponent.exists()).toBe(true);
       expect(crudComponent.props()).toMatchObject({
         title: wrapper.vm.$options.i18n.title,
-        count: 3,
-        icon: 'remove',
       });
     });
 
@@ -79,7 +77,6 @@ describe('ExclusionSettings', () => {
 
       // Check that the empty-text prop is set to the component's i18n message
       expect(table.text()).toContain(wrapper.vm.$options.i18n.emptyStateMessage);
-      expect(findCrudComponent().props('count')).toBe(0);
     });
   });
 

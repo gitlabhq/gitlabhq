@@ -11,6 +11,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
       end
 
       include ApplicationWorker
+
+      concurrency_limit -> { 2 }
     end
   end
 
@@ -100,78 +102,91 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
     end
 
     let(:buffered_at) { Time.now.utc }
-    let(:metadata_queue) do
-      queue = Queue.new
-      2.times do
-        queue.push({ 'concurrency_limit_buffered_at' => buffered_at.to_f,
-                     'concurrency_limit_resume' => true,
-                     'wal_locations' => wal_locations }.merge(stored_context))
-      end
-
-      queue
-    end
-
     let(:metadata_key) { service.metadata_key }
-
-    subject(:stored_metadata_queue) { Gitlab::SafeRequestStore.read(metadata_key) }
+    let(:expected_metadata) do
+      { 'concurrency_limit_buffered_at' => be_within(1.second).of(buffered_at.to_f),
+        'concurrency_limit_resume' => true,
+        'wal_locations' => wal_locations }.merge(stored_context)
+    end
 
     before do
       service.remove_instance_variable(:@lease) if service.instance_variable_defined?(:@lease)
       travel_to(buffered_at) do
-        jobs.each do |j|
-          service.add_to_queue!(j, worker_context)
+        jobs.each_with_index do |j, index|
+          service.add_to_queue!(j, worker_context.merge({ "index" => index + 1 }))
         end
       end
     end
 
-    it 'puts jobs back into the queue and respects order' do
-      expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
-        expect(el).to receive(:try_obtain).and_call_original
+    shared_examples 'resumes jobs respecting concurrency limit' do
+      it 'puts jobs back into the queue and respects order' do
+        expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
+          expect(el).to receive(:try_obtain).and_call_original
+        end
+
+        expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance)
+          .to receive(:resumed_log)
+                .with(worker_class_name, [[1], [2]]).ordered
+        expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance)
+          .to receive(:resumed_log)
+                .with(worker_class_name, [[3]]).ordered
+        expect(Gitlab::SafeRequestStore).to receive(:write).with(
+          metadata_key,
+          kind_of(Queue)
+        ) do |_key, queue|
+          job1 = queue.pop
+          expect(job1).to match(expected_metadata.merge({ "index" => 1 }))
+          job2 = queue.pop
+          expect(job2).to match(expected_metadata.merge({ "index" => 2 }))
+        end
+
+        expect(Gitlab::SafeRequestStore).to receive(:write).with(
+          metadata_key,
+          kind_of(Queue)
+        ) do |_key, queue|
+          job3 = queue.pop
+          expect(job3).to match(expected_metadata.merge({ "index" => 3 }))
+        end
+
+        expect(worker_class).to receive(:bulk_perform_async).with([[1], [2]])
+        expect(worker_class).to receive(:bulk_perform_async).with([[3]])
+
+        resumed = service.resume_processing!
+
+        expect(resumed).to eq(3)
       end
-
-      expect(Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance)
-        .to receive(:resumed_log)
-              .with(worker_class_name, [[1], [2]])
-      expect(Gitlab::SafeRequestStore).to receive(:write).with(
-        metadata_key,
-        kind_of(Queue)
-      ).and_call_original
-      expect(worker_class).to receive(:bulk_perform_async).with([[1], [2]])
-
-      service.resume_processing!(limit: 2)
-
-      until metadata_queue.empty?
-        expected = metadata_queue.pop
-        actual = stored_metadata_queue.pop
-        expect(actual['concurrency_limit_buffered_at']).to be_within(1.second)
-                                                       .of(expected['concurrency_limit_buffered_at'])
-        expect(actual.except('concurrency_limit_buffered_at')).to eq(expected.except('concurrency_limit_buffered_at'))
-      end
-
-      expect(stored_metadata_queue).to be_empty
     end
+
+    it_behaves_like 'resumes jobs respecting concurrency limit'
 
     it 'drops a set after execution' do
       expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
         expect(el).to receive(:try_obtain).and_call_original
       end
 
-      expect(worker_class).to receive(:bulk_perform_async).with([[1], [2], [3]])
-      expect { service.resume_processing!(limit: jobs.count) }
+      expect(worker_class).to receive(:bulk_perform_async).with([[1], [2]])
+      expect(worker_class).to receive(:bulk_perform_async).with([[3]])
+      expect { service.resume_processing! }
         .to change { service.has_jobs_in_queue? }.from(true).to(false)
     end
 
-    context 'when processing more than batch size' do
+    context 'when processing longer than deadline' do
+      let(:deadline) { instance_double(ActiveSupport::TimeWithZone) }
+
       before do
-        stub_const("#{described_class}::RESUME_PROCESSING_BATCH_SIZE", 1)
+        allow(described_class::MAX_PROCESSING_TIME).to receive(:from_now).and_return(deadline)
+        allow(deadline).to receive(:future?).and_return(true, false)
       end
 
-      it 'pushes the jobs in batches' do
-        jobs.each do |job|
-          expect(worker_class).to receive(:bulk_perform_async).with([job['args']]).ordered
+      it 'stops processing after the deadline' do
+        expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
+          expect(el).to receive(:try_obtain).and_call_original
         end
 
-        service.resume_processing!(limit: jobs.count)
+        resumed = service.resume_processing!
+
+        expect(resumed).to eq(2)
+        expect(service.queue_size).to eq(1)
       end
     end
 
@@ -189,7 +204,34 @@ RSpec.describe Gitlab::SidekiqMiddleware::ConcurrencyLimit::QueueManager,
 
         expect(worker_class).not_to receive(:concurrency_limit_resume)
 
-        service.resume_processing!(limit: 2)
+        service.resume_processing!
+      end
+    end
+
+    context 'when concurrency_limit_current_limit_from_redis FF is disabled' do
+      before do
+        stub_feature_flags(concurrency_limit_current_limit_from_redis: false)
+      end
+
+      it_behaves_like 'resumes jobs respecting concurrency limit'
+    end
+
+    context 'when worker limit is 0' do
+      before do
+        worker_class.concurrency_limit -> { 0 }
+        stub_const("#{described_class}::MAX_BATCH_SIZE", 1)
+      end
+
+      it 'resumes at MAX_BATCH_SIZE per iteration' do
+        expect_next_instance_of(Gitlab::ExclusiveLease) do |el|
+          expect(el).to receive(:try_obtain).and_call_original
+        end
+
+        expect(worker_class).to receive(:bulk_perform_async) do |args|
+          expect(args.size).to eq(1)
+        end.exactly(3).times
+
+        service.resume_processing!
       end
     end
   end

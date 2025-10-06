@@ -62,9 +62,9 @@ whether they are stored on the local file system or in object storage.
 To enable GitLab replication:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Geo** > **Nodes**.
+1. Select **Geo** > **Sites**.
 1. Select **Edit** on the **secondary** site.
-1. In the **Synchronization Settings** section, find the **Allow this secondary node to replicate content on Object Storage**
+1. In the **Synchronization Settings** section, find the **Allow this secondary site to replicate content on Object Storage**
    checkbox to enable it.
 
 For LFS, follow the documentation to
@@ -81,16 +81,16 @@ configure the **secondary** in a few ways:
 - Use the exact same object storage.
 - Use a separate object store but leverage your object storage solution's built-in
   replication.
-- Use a separate object store and enable the **Allow this secondary node to replicate
+- Use a separate object store and enable the **Allow this secondary site to replicate
   content on Object Storage** setting.
 
-If the **Allow this secondary node to replicate content on Object Storage** setting
+If the **Allow this secondary site to replicate content on Object Storage** setting
 is disabled, and if you have migrated all your files from local storage to object storage,
 then many **Admin** > **Geo** > **Sites** progress bars display **Nothing to synchronize**.
 
 {{< alert type="warning" >}}
 
-To avoid data loss, you should only enable the **Allow this secondary node to replicate content on
+To avoid data loss, you should only enable the **Allow this secondary site to replicate content on
 Object Storage** setting if you are using separate object stores for the Primary and Secondary
 sites.
 

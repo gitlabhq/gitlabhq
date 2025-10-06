@@ -392,32 +392,44 @@ If you are unable to use Switchboard to add a private hosted zone, you can open 
 
 ## IP allowlist
 
-GitLab Dedicated allows you to control which IP addresses can access your instance through an IP allowlist. Once the IP allowlist has been enabled, when an IP not on the allowlist tries to access your instance an `HTTP 403 Forbidden` response is returned.
+Control which IP addresses can access your instance with an IP allowlist.
+When you enable the IP allowlist, IP addresses not on the allowlist are blocked
+and receive an `HTTP 403 Forbidden` response when they try to access your instance.
 
-IP addresses that have been added to your IP allowlist can be viewed on the Configuration page in Switchboard. You can add or remove IP addresses from your allowlist with Switchboard.
+Use Switchboard to configure and manage your IP allowlist, or submit a support request if Switchboard is unavailable.
 
-### Add an IP to the allowlist with Switchboard
+### Add IP addresses to the allowlist with Switchboard
+
+To add IP addresses to the allowlist:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.
-1. Expand **Allowed Source List Config / IP allowlist**.
-1. Turn on the **Enable** toggle.
-1. To add an IP address:
+1. Expand **IP allowlist**, then select **IP allowlist** to go to the IP allowlist page.
+1. To enable the IP allowlist, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), then select **Enabled**.
+1. Do one of the following:
 
-   1. Select **Add Item**.
-   1. In the **Address** text box, enter either:
+   - To add a single IP address:
+
+   1. Select **Add IP address**.
+   1. In the **IP address** text box, enter either:
       - A single IPv4 address (for example, `192.168.1.1`).
       - An IPv4 address range in CIDR notation (for example, `192.168.1.0/24`).
    1. In the **Description** text box, enter a description.
+   1. Select **Add**.
 
-   To add another address or range, repeat this step. IPv6 addresses are not supported.
+   - To import multiple IP addresses:
 
-1. Select **Save**.
-1. Scroll up to the top of the page and select whether to apply the changes immediately or during the next maintenance window. After the changes are applied, the IP addresses are added to the IP allowlist for your instance.
+   1. Select **Import**.
+   1. Upload a CSV file or paste a list of IP addresses.
+   1. Select **Continue**.
+   1. Fix any invalid or duplicate entries, then select **Continue**.
+   1. Review the changes, then select **Import**.
 
-### Add an IP to the allowlist with a Support Request
+1. Scroll up to the top of the page and choose whether to apply the changes immediately or during the next maintenance window.
 
-If you are unable to use Switchboard to update your IP allowlist, you can open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) and specify a comma separated list of IP addresses that can access your GitLab Dedicated instance.
+### Add an IP to the allowlist with a support request
+
+If you are unable to use Switchboard to update your IP allowlist, open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) and specify a comma-separated list of IP addresses that can access your instance.
 
 ### Enable OpenID Connect for your IP allowlist
 

@@ -147,12 +147,12 @@ To migrate from GitLab-managed clusters to GitLab-managed Kubernetes resources:
      - apiVersion: v1
        kind: Namespace
        metadata:
-         name: '{{ .project.slug }}-{{ .project.id }}'
+         name: '{{ .project.slug | slugify }}-{{ .project.id }}'
      - apiVersion: rbac.authorization.k8s.io/v1
        kind: RoleBinding
        metadata:
          name: 'bind-{{ .agent.id }}-{{ .project.id }}-{{ .environment.slug }}'
-         namespace: 'project-{{ .project.id }}'
+         namespace: '{{ .project.slug | slugify }}-{{ .project.id }}'
        subjects:
          - kind: Group
            apiGroup: rbac.authorization.k8s.io

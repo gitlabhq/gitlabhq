@@ -3,6 +3,7 @@ stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Service accounts API
+description: GitLab service accounts API manages service accounts at instance or group level, with robust token and account management controls.
 ---
 
 {{< details >}}

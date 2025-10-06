@@ -167,7 +167,7 @@ To start a CI/CD pipeline that includes the contents of `variables.json`, run th
 the path to the file as needed:
 
 ```shell
-$ glab ci run --variables-file /tmp/variables.json`
+$ glab ci run --variables-file /tmp/variables.json
 
 $ echo $EXAMPLE_VARIABLE_1
 example value 1

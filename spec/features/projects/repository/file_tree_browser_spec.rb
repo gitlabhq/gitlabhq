@@ -35,6 +35,10 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
       end
     end
 
+    it 'passes axe automated accessibility testing' do
+      expect(page).to be_axe_clean.within('.file-tree-browser')
+    end
+
     it 'navigates to a file' do
       within('.file-tree-browser') do
         click_file('README.md')
@@ -59,14 +63,14 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
 
       within('.file-tree-browser') do
         # Should auto-expand parent directories
-        files_folder = find('[aria-label="files"]').ancestor('.file-row')
+        files_folder = find_button('files')
         expect(files_folder[:class]).to include('is-open')
 
-        ruby_folder = find('[aria-label="ruby"]').ancestor('.file-row')
+        ruby_folder = find_button('ruby')
         expect(ruby_folder[:class]).to include('is-open')
 
         # Should highlight the current file
-        popen_row = find('[aria-label="popen.rb"]').ancestor('.file-row')
+        popen_row = find_button('popen.rb')
         expect(popen_row['aria-current']).to eq('true')
       end
     end
@@ -121,11 +125,11 @@ RSpec.describe 'Repository file tree browser', :js, feature_category: :source_co
   private
 
   def click_file(name)
-    find("[aria-label=\"#{name}\"]").click
+    find(".file-row[aria-label=\"#{name}\"]").click
     wait_for_requests
   end
 
   def have_file(name)
-    have_css("[aria-label=\"#{name}\"]")
+    have_css(".file-row[aria-label=\"#{name}\"]")
   end
 end

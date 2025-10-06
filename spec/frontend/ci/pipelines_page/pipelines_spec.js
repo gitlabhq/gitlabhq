@@ -112,6 +112,8 @@ describeSkipVue3(skipReason, () => {
           showJenkinsCiPrompt: false,
           identityVerificationRequired: false,
           identityVerificationPath: '#',
+          usesExternalConfig: false,
+          emptyStateIllustrationPath: 'illustrations/empty-state/empty-pipeline-md.svg',
         },
         propsData: {
           ...defaultProps,
@@ -409,9 +411,11 @@ describeSkipVue3(skipReason, () => {
           expect(trackingSpy).not.toHaveBeenCalled();
         });
 
-        it('calls mutation to save idType preference', () => {
+        it('calls mutation to save idType preference', async () => {
           mutationMock = jest.fn().mockResolvedValue(setIdTypePreferenceMutationResponse);
           createComponent();
+
+          await waitForPromises();
 
           findPipelineKeyCollapsibleBox().vm.$emit('select', PIPELINE_IID_KEY);
 
@@ -423,6 +427,8 @@ describeSkipVue3(skipReason, () => {
         it('captures error when mutation response has errors', async () => {
           mutationMock = jest.fn().mockResolvedValue(setIdTypePreferenceMutationResponseWithErrors);
           createComponent();
+
+          await waitForPromises();
 
           findPipelineKeyCollapsibleBox().vm.$emit('select', PIPELINE_IID_KEY);
           await waitForPromises();

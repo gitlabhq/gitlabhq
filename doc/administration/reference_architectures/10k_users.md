@@ -1917,7 +1917,7 @@ To configure the Sidekiq nodes, on each one:
    gitlab_rails['backup_upload_remote_directory'] = "<gcp-backups-state-bucket-name>"
 
    gitlab_rails['ci_secure_files_object_store_enabled'] = true
-   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "gcp-ci_secure_files-bucket-name"
+   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "<gcp-ci_secure_files-bucket-name>"
 
    gitlab_rails['ci_secure_files_object_store_connection'] = {
       'provider' => 'Google',
@@ -2065,7 +2065,7 @@ On each node perform the following:
    }
    gitlab_rails['backup_upload_remote_directory'] = "<gcp-backups-state-bucket-name>"
    gitlab_rails['ci_secure_files_object_store_enabled'] = true
-   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "gcp-ci_secure_files-bucket-name"
+   gitlab_rails['ci_secure_files_object_store_remote_directory'] = "<gcp-ci_secure_files-bucket-name>"
 
    gitlab_rails['ci_secure_files_object_store_connection'] = {
       'provider' => 'Google',

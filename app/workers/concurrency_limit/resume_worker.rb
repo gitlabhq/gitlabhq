@@ -6,7 +6,6 @@ module ConcurrencyLimit
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext -- There is no onward scheduling and this cron handles work from across the
     # application, so there's no useful context to add.
 
-    BATCH_SIZE = 5_000
     RESCHEDULE_DELAY = 1.second
 
     feature_category :scalability
@@ -61,27 +60,21 @@ module ConcurrencyLimit
       limit = worker_limit(worker)
       queue_size = queue_size(worker)
       current = concurrent_worker_count(worker)
+      to_resume = limit - current
 
       return unless queue_size > 0
       return if limit < 0 # do not re-queue jobs if circuit-broken
+      return if limit != 0 && to_resume <= 0
 
       Gitlab::SidekiqLogging::ConcurrencyLimitLogger.instance.worker_stats_log(
         worker.name, limit, queue_size, current
       )
 
-      processing_limit = if limit > 0
-                           limit - current
-                         else
-                           BATCH_SIZE
-                         end
-
-      return unless processing_limit > 0
-
-      resume_processing!(worker, limit: processing_limit)
+      resumed_jobs_num = resume_processing!(worker)
       cleanup_stale_trackers(worker)
 
-      queue_remaining_count = queue_size - processing_limit
-      self.class.perform_in(RESCHEDULE_DELAY, worker_name) if queue_remaining_count > 0
+      self.class.perform_in(RESCHEDULE_DELAY, worker_name) if queue_size(worker) > 0
+      log_extra_metadata_on_done(:resumed_jobs, resumed_jobs_num)
     end
 
     def concurrent_worker_count(worker)
@@ -96,8 +89,8 @@ module ConcurrencyLimit
       Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService.cleanup_stale_trackers(worker.name)
     end
 
-    def resume_processing!(worker, limit:)
-      Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService.resume_processing!(worker.name, limit: limit)
+    def resume_processing!(worker)
+      Gitlab::SidekiqMiddleware::ConcurrencyLimit::ConcurrencyLimitService.resume_processing!(worker.name)
     end
 
     def worker_limit(worker)

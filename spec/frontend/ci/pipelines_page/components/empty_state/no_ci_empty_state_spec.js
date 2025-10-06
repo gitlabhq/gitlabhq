@@ -19,6 +19,7 @@ describe('Pipelines Empty State', () => {
         anyRunnersAvailable: true,
         ciRunnerSettingsPath: '',
         canCreatePipeline: true,
+        emptyStateIllustrationPath: 'illustrations/empty-state/empty-pipeline-md.svg',
         ...provide,
       },
       propsData: {

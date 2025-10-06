@@ -69,7 +69,9 @@ module Ci
         full_path: project.full_path,
         visibility_pipeline_id_type: visibility_pipeline_id_type,
         show_jenkins_ci_prompt: show_jenkins_ci_prompt(project).to_s,
-        pipelines_analytics_path: charts_project_pipelines_path(project)
+        pipelines_analytics_path: charts_project_pipelines_path(project),
+        uses_external_config: uses_external_config?(project).to_s,
+        empty_state_illustration_path: image_path('illustrations/empty-state/empty-pipeline-md.svg')
       }
     end
 
@@ -96,6 +98,10 @@ module Ci
         user_role: project.team.human_max_access(current_user&.id),
         can_set_pipeline_variables: Ability.allowed?(current_user, :set_pipeline_variables, project).to_s
       }
+    end
+
+    def uses_external_config?(project)
+      Gitlab::Ci::ProjectConfig.new(project: project, sha: nil).external?
     end
 
     private

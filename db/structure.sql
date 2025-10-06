@@ -25788,12 +25788,9 @@ ALTER SEQUENCE security_policy_requirements_id_seq OWNED BY security_policy_requ
 CREATE TABLE security_policy_settings (
     id bigint NOT NULL,
     csp_namespace_id bigint,
-    singleton boolean DEFAULT true NOT NULL,
     organization_id bigint NOT NULL,
     csp_namespace_locked_until timestamp with time zone
 );
-
-COMMENT ON COLUMN security_policy_settings.singleton IS 'Always true, used for singleton enforcement';
 
 CREATE SEQUENCE security_policy_settings_id_seq
     START WITH 1
@@ -26718,6 +26715,26 @@ CREATE SEQUENCE tag_gpg_signatures_id_seq
     CACHE 1;
 
 ALTER SEQUENCE tag_gpg_signatures_id_seq OWNED BY tag_gpg_signatures.id;
+
+CREATE TABLE tag_ssh_signatures (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    key_id bigint,
+    verification_status smallint DEFAULT 0 NOT NULL,
+    object_name bytea NOT NULL,
+    key_fingerprint_sha256 bytea,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE tag_ssh_signatures_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE tag_ssh_signatures_id_seq OWNED BY tag_ssh_signatures.id;
 
 CREATE TABLE tags (
     id bigint NOT NULL,
@@ -31522,6 +31539,8 @@ ALTER TABLE ONLY system_note_metadata ALTER COLUMN id SET DEFAULT nextval('syste
 
 ALTER TABLE ONLY tag_gpg_signatures ALTER COLUMN id SET DEFAULT nextval('tag_gpg_signatures_id_seq'::regclass);
 
+ALTER TABLE ONLY tag_ssh_signatures ALTER COLUMN id SET DEFAULT nextval('tag_ssh_signatures_id_seq'::regclass);
+
 ALTER TABLE ONLY tags ALTER COLUMN id SET DEFAULT nextval('tags_id_seq'::regclass);
 
 ALTER TABLE ONLY target_branch_rules ALTER COLUMN id SET DEFAULT nextval('target_branch_rules_id_seq'::regclass);
@@ -35104,6 +35123,9 @@ ALTER TABLE ONLY system_note_metadata
 
 ALTER TABLE ONLY tag_gpg_signatures
     ADD CONSTRAINT tag_gpg_signatures_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY tag_ssh_signatures
+    ADD CONSTRAINT tag_ssh_signatures_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY tags
     ADD CONSTRAINT tags_pkey PRIMARY KEY (id);
@@ -42320,6 +42342,10 @@ CREATE INDEX index_tag_gpg_signatures_on_gpg_key_subkey_id ON tag_gpg_signatures
 
 CREATE UNIQUE INDEX index_tag_gpg_signatures_on_project_id_and_object_name ON tag_gpg_signatures USING btree (project_id, object_name);
 
+CREATE INDEX index_tag_ssh_signatures_on_key_id ON tag_ssh_signatures USING btree (key_id);
+
+CREATE UNIQUE INDEX index_tag_ssh_signatures_on_project_id_and_object_name ON tag_ssh_signatures USING btree (project_id, object_name);
+
 CREATE UNIQUE INDEX index_tags_on_name ON tags USING btree (name);
 
 CREATE INDEX index_tags_on_name_trigram ON tags USING gin (name gin_trgm_ops);
@@ -48729,6 +48755,9 @@ ALTER TABLE ONLY subscription_add_on_purchases
 ALTER TABLE ONLY approval_policy_merge_request_bypass_events
     ADD CONSTRAINT fk_a24f768758 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY tag_ssh_signatures
+    ADD CONSTRAINT fk_a3a00301c7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY protected_environment_approval_rules
     ADD CONSTRAINT fk_a3cc825836 FOREIGN KEY (protected_environment_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -49133,6 +49162,9 @@ ALTER TABLE ONLY external_status_checks_protected_branches
 
 ALTER TABLE ONLY dast_profiles_pipelines
     ADD CONSTRAINT fk_cc206a8c13 FOREIGN KEY (dast_profile_id) REFERENCES dast_profiles(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY tag_ssh_signatures
+    ADD CONSTRAINT fk_cc24b85c89 FOREIGN KEY (key_id) REFERENCES keys(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY ai_settings
     ADD CONSTRAINT fk_cce81e0b9a FOREIGN KEY (amazon_q_service_account_user_id) REFERENCES users(id) ON DELETE SET NULL;

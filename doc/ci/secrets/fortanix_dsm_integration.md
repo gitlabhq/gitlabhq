@@ -134,7 +134,7 @@ To generate a new secret in Fortanix DSM and use it with GitLab:
    ```
 
 1. The pipeline should run automatically after saving the `.gitlab-ci.yml` file.
-   If not, select **Build > Pipelines > Run pipeline**.
+   If not, select **Build** > **Pipelines** > **Run pipeline**.
 1. Go to **Build** > **Jobs** and check the `build` job's log:
 
    ![gitlab_build_result_1](img/gitlab_build_result_1_v16_9.png)

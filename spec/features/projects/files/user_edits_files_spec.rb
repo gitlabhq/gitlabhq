@@ -48,7 +48,6 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
 
   context 'when an user has write access', :js do
     before do
-      stub_feature_flags(blob_edit_refactor: false)
       project.add_maintainer(user)
       visit(project_tree_path_root_ref)
       wait_for_requests

@@ -3,6 +3,7 @@ stage: Data Access
 group: Durability
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Back up GitLab
+description: Guide to backing up GitLab instances, covering backup strategies, data types, command options, and scaling considerations.
 ---
 
 {{< details >}}

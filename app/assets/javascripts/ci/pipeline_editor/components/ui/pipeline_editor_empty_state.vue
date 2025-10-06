@@ -2,6 +2,7 @@
 import { GlButton, GlSprintf, GlEmptyState } from '@gitlab/ui';
 import { __ } from '~/locale';
 import PipelineEditorFileNav from '~/ci/pipeline_editor/components/file_nav/pipeline_editor_file_nav.vue';
+import ExternalConfigEmptyState from '~/ci/common/empty_state/external_config_empty_state.vue';
 
 export default {
   components: {
@@ -9,6 +10,7 @@ export default {
     GlSprintf,
     GlEmptyState,
     PipelineEditorFileNav,
+    ExternalConfigEmptyState,
   },
   i18n: {
     title: __('Configure a pipeline to automate your builds, tests, and deployments'),
@@ -16,21 +18,8 @@ export default {
       'Create a %{codeStart}.gitlab-ci.yml%{codeEnd} file in your repository to configure and run your first pipeline.',
     ),
     btnText: __('Configure pipeline'),
-    externalCiNote: __("This project's pipeline configuration is located outside this repository"),
-    externalCiInstructions: __(
-      'To edit the pipeline configuration, you must go to the project or external site that hosts the file.',
-    ),
   },
-  inject: {
-    emptyStateIllustrationPath: {
-      default: '',
-    },
-    usesExternalConfig: {
-      default: false,
-      type: Boolean,
-      required: false,
-    },
-  },
+  inject: ['emptyStateIllustrationPath', 'usesExternalConfig'],
   methods: {
     createEmptyConfigFile() {
       this.$emit('createEmptyConfigFile');
@@ -41,12 +30,7 @@ export default {
 <template>
   <div>
     <pipeline-editor-file-nav v-on="$listeners" />
-    <gl-empty-state
-      v-if="usesExternalConfig"
-      :title="$options.i18n.externalCiNote"
-      :description="$options.i18n.externalCiInstructions"
-      :svg-path="emptyStateIllustrationPath"
-    />
+    <external-config-empty-state v-if="usesExternalConfig" />
 
     <gl-empty-state v-else :title="$options.i18n.title" :svg-path="emptyStateIllustrationPath">
       <template #description>

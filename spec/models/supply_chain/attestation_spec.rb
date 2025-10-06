@@ -36,6 +36,36 @@ RSpec.describe SupplyChain::Attestation, feature_category: :artifact_security do
     end
   end
 
+  describe '#find_provenance' do
+    let(:subject_digest) { "5db1fee4b5703808c48078a76768b155b421b210c0761cd6a5d223f2d99f1eaa" }
+
+    subject(:attestation) do
+      create(:supply_chain_attestation, subject_digest: subject_digest)
+    end
+
+    context "when the right parameters are passed" do
+      let(:result) do
+        described_class.find_provenance(project: attestation.project, subject_digest: subject_digest)
+      end
+
+      it 'finds the required attestation if the attestation exists' do
+        expect(result).to be_a(described_class)
+        expect(result.id).to eq(attestation.id)
+      end
+    end
+
+    context "when incorrect parameters are passed" do
+      let(:result) do
+        described_class.find_provenance(project: attestation.project,
+          subject_digest: "f3d9bb2a27422532b5264e1e1e22010ef9d71f604ca5de574a42a3ec07c27721")
+      end
+
+      it 'finds the required attestation if the attestation exists' do
+        expect(result).to be_nil
+      end
+    end
+  end
+
   describe 'modules' do
     let_it_be(:project) { create(:project) }
 
