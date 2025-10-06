@@ -7,6 +7,8 @@ module Gitlab
     class EventDefinition
       attr_reader :path
 
+      IDENTIFIERS = [:user, :namespace, :project].freeze
+
       class << self
         include Gitlab::Utils::StrongMemoize
 
@@ -57,7 +59,7 @@ module Gitlab
       end
 
       def additional_properties
-        @attributes.fetch(:additional_properties, {})
+        @attributes.fetch(:additional_properties, {}).except(*IDENTIFIERS)
       end
 
       def internal_events?

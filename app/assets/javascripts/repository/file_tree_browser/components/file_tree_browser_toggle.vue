@@ -28,6 +28,7 @@ export default {
   data() {
     return {
       shouldShowPopover: true,
+      showPopover: false,
     };
   },
   computed: {
@@ -41,10 +42,22 @@ export default {
       return !shouldDisableShortcuts();
     },
   },
+  mounted() {
+    if (this.shouldShowPopover) {
+      setTimeout(() => {
+        this.showPopover = true;
+      }, 500);
+    }
+  },
   methods: {
     ...mapActions(useFileTreeBrowserVisibility, ['handleFileTreeBrowserToggleClick']),
     onClickToggle() {
       this.handleFileTreeBrowserToggleClick();
+
+      if (this.showPopover) {
+        this.showPopover = false;
+        this.setShouldShowPopover(false);
+      }
 
       this.trackEvent(
         this.fileTreeBrowserIsVisible
@@ -57,6 +70,10 @@ export default {
     },
     setShouldShowPopover(value) {
       this.shouldShowPopover = value;
+    },
+    onPopoverClose() {
+      this.showPopover = false;
+      this.setShouldShowPopover(false);
     },
   },
 };
@@ -92,11 +109,13 @@ export default {
     >
       <gl-popover
         v-if="shouldShowPopover"
+        :show="showPopover"
         :show-close-button="true"
         placement="bottom"
         boundary="viewport"
         target="file-tree-browser-toggle"
-        @close-button-clicked="setShouldShowPopover(false)"
+        triggers=""
+        @close-button-clicked="onPopoverClose"
       >
         <template #title>
           <div class="gl-flex gl-items-center gl-justify-between gl-gap-3">

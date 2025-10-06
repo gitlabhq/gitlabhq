@@ -222,7 +222,7 @@ module Gitlab
         #
         #   enqueue_partitioning_data_migration :audit_events
         #
-        def enqueue_partitioning_data_migration(table_name, migration = MIGRATION)
+        def enqueue_partitioning_data_migration(table_name, migration = MIGRATION, batch_min_value: nil)
           assert_table_is_allowed(table_name)
 
           assert_not_in_transaction_block(scope: ERROR_SCOPE)
@@ -230,14 +230,23 @@ module Gitlab
           partitioned_table_name = make_partitioned_table_name(table_name)
           primary_key = connection.primary_key(table_name)
 
+          # Create a hash for the named arguments
+          named_args = {
+            batch_size: BATCH_SIZE,
+            sub_batch_size: SUB_BATCH_SIZE,
+            job_interval: BATCH_INTERVAL
+          }
+
+          # Only add batch_min_value if it's provided
+          named_args[:batch_min_value] = batch_min_value if batch_min_value
+
+          # Call with positional args first, then unpack the named args
           queue_batched_background_migration(
             migration,
             table_name,
             primary_key,
             partitioned_table_name,
-            batch_size: BATCH_SIZE,
-            sub_batch_size: SUB_BATCH_SIZE,
-            job_interval: BATCH_INTERVAL
+            **named_args
           )
         end
 

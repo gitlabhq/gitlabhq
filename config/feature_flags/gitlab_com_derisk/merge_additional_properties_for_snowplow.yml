@@ -1,8 +1,8 @@
 ---
 name: merge_additional_properties_for_snowplow
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201429
-rollout_issue_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/567983
 milestone: '18.4'
-type: wip
+type: gitlab_com_derisk
 group: group::analytics instrumentation
 default_enabled: false

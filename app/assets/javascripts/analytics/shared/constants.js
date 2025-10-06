@@ -375,15 +375,17 @@ export const VALUE_STREAM_METRIC_METADATA = {
   },
   [AI_METRICS.CODE_SUGGESTIONS_USAGE_RATE]: {
     description: s__(
-      'AiImpactAnalytics|Monthly user engagement with GitLab Duo Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors.',
+      'AiImpactAnalytics|Code contributors with assigned Duo seats who used Code Suggestions.',
     ),
     groupLink: '',
     projectLink: '',
-    docsLink: helpPagePath('user/project/repository/code_suggestions/_index'),
+    docsLink: helpPagePath('user/project/repository/code_suggestions/_index', {
+      anchor: 'use-code-suggestions',
+    }),
   },
   [AI_METRICS.CODE_SUGGESTIONS_ACCEPTANCE_RATE]: {
     description: s__(
-      'AiImpactAnalytics|Monthly GitLab Duo Code Suggestions accepted / total Code Suggestions generated.',
+      'AiImpactAnalytics|Code Suggestions accepted out of total Code Suggestions generated.',
     ),
     groupLink: '',
     projectLink: '',
@@ -401,7 +403,7 @@ export const VALUE_STREAM_METRIC_METADATA = {
   },
   [AI_METRICS.DUO_RCA_USAGE_RATE]: {
     description: s__(
-      'AiImpactAnalytics|Monthly user engagement with Duo Root Cause Analysis. Percentage ratio of total monthly unique Duo Root Cause Analysis users / total Duo seats assigned.',
+      'AiImpactAnalytics|Users with assigned Duo seats who used Root Cause Analysis.',
     ),
     groupLink: '',
     projectLink: '',

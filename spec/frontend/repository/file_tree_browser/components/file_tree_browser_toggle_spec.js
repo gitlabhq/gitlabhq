@@ -42,9 +42,22 @@ describe('FileTreeBrowserToggle', () => {
     });
   };
 
+  // Set up fake timers for entire file to satisfy global test cleanup
+  beforeAll(() => {
+    jest.useFakeTimers({ legacyFakeTimers: true });
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   beforeEach(() => {
     pinia = createTestingPinia({ stubActions: false });
     fileTreeBrowserStore = useFileTreeBrowserVisibility();
+  });
+
+  afterEach(() => {
+    jest.clearAllTimers();
   });
 
   describe('rendering', () => {
@@ -110,6 +123,7 @@ describe('FileTreeBrowserToggle', () => {
       );
     });
   });
+
   describe('tooltip', () => {
     it.each`
       browserState   | shortcutState | expectedTooltipText         | shouldShowShortcut
@@ -161,15 +175,36 @@ describe('FileTreeBrowserToggle', () => {
       it('has an empty localStorage', () => {
         expect(localStorage.getItem('ftb-popover-visible')).toBe(null);
       });
+
+      it('has empty triggers prop', () => {
+        expect(findPopover().props('triggers')).toBe('');
+      });
+
+      it('is not shown immediately on mount', () => {
+        expect(findPopover().props('show')).toBe(false);
+      });
+
+      it('is shown after 500ms delay', async () => {
+        jest.advanceTimersByTime(500);
+        await nextTick();
+
+        expect(findPopover().props('show')).toBe(true);
+      });
     });
 
     describe('when the localStorage entry is true', () => {
-      it('shows the popover', async () => {
+      it('shows the popover after delay', async () => {
         localStorage.setItem('ftb-popover-visible', 'true');
         createComponent();
         await nextTick();
 
         expect(findPopover().exists()).toBe(true);
+        expect(findPopover().props('show')).toBe(false);
+
+        jest.advanceTimersByTime(500);
+        await nextTick();
+
+        expect(findPopover().props('show')).toBe(true);
       });
     });
 
@@ -183,10 +218,16 @@ describe('FileTreeBrowserToggle', () => {
       });
     });
 
-    describe('when dismissing the popover', () => {
-      beforeEach(() => {
+    describe('when dismissing the popover via close button', () => {
+      beforeEach(async () => {
+        localStorage.setItem('ftb-popover-visible', 'true');
         createComponent();
+
+        jest.advanceTimersByTime(500);
+        await nextTick();
+
         findPopover().vm.$emit('close-button-clicked');
+        await nextTick();
       });
 
       it('sets the correct localStorage item', () => {
@@ -195,6 +236,35 @@ describe('FileTreeBrowserToggle', () => {
 
       it('sets the correct localStorage value', () => {
         expect(localStorage.getItem('ftb-popover-visible')).toBe('false');
+      });
+
+      it('hides the popover', () => {
+        expect(findPopover().exists()).toBe(false);
+      });
+    });
+
+    describe('when dismissing the popover via toggle button click', () => {
+      beforeEach(async () => {
+        localStorage.setItem('ftb-popover-visible', 'true');
+        createComponent();
+
+        jest.advanceTimersByTime(500);
+        await nextTick();
+
+        await findToggleButton().vm.$emit('click');
+        await nextTick();
+      });
+
+      it('sets the correct localStorage item', () => {
+        expect(localStorage.setItem).toHaveBeenCalledWith('ftb-popover-visible', 'false');
+      });
+
+      it('sets the correct localStorage value', () => {
+        expect(localStorage.getItem('ftb-popover-visible')).toBe('false');
+      });
+
+      it('hides the popover', () => {
+        expect(findPopover().exists()).toBe(false);
       });
     });
   });

@@ -54,12 +54,12 @@ For an overview, see [GitLab Duo AI Impact Dashboard](https://youtu.be/FxSWX64aU
 
 - **Assigned Duo seat engagement**: Percentage of users that are assigned a Duo seat and used at least one AI feature in the last 30 days.
 It is calculated as the number of users with Duo seats that use AI features divided by the total number of assigned Duo seats.
-- **Code Suggestions: Usage**: Percentage of users with assigned Duo seats that used Code Suggestions in the last 30 days.
+- **Code Suggestions usage**: Percentage of users with assigned Duo seats that used Code Suggestions in the last 30 days.
 It is calculated as the number of unique users with Duo seats that interact with Code Suggestions divided by the total number of unique code contributors (users with `pushed` events) with Duo seats.
 For calculating Code Suggestions metrics, GitLab collects data only from code editor extensions.
-- **Code Suggestions: Acceptance rate**: Percentage of code suggestions provided by GitLab Duo that have been accepted by code contributors in the last 30 days.
+- **Code Suggestions acceptance rate**: Percentage of code suggestions provided by GitLab Duo that have been accepted by code contributors in the last 30 days.
 It is calculated as the number of accepted code suggestions divided by the total number of generated code suggestions.
-- **Duo Chat: Usage**: Percentage of users that engage with GitLab Duo Chat every month.
+- **Duo Chat usage**: Percentage of users that engage with GitLab Duo Chat every month.
 It is calculated as the number of monthly unique GitLab Duo Chat users divided by the total GitLab Duo assigned users.
 
 ## Metric trends
@@ -76,7 +76,7 @@ The **Metric trends** table displays metrics for the last six months, with month
 
 {{< /history >}}
 
-- **Code Suggestions: Usage**: Monthly user engagement with AI Code Suggestions.
+- **Code Suggestions usage**: Monthly user engagement with AI Code Suggestions.
 
   On GitLab.com, data updates every fives minutes.
   GitLab counts Code Suggestions usage only if the user has pushed code to the project in the current month.
@@ -93,7 +93,7 @@ The **Metric trends** table displays metrics for the last six months, with month
 
   {{< /alert >}}
 
-- **Duo RCA: Usage**: Monthly user engagement with Duo Root Cause Analysis.
+- **Duo RCA usage**: Monthly user engagement with Duo Root Cause Analysis.
   Tracks the percentage of Duo users who use GitLab Duo Chat to troubleshoot a failed CI/CD job from a merge request.
 
   {{< alert type="note" >}}

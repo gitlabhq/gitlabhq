@@ -6347,46 +6347,46 @@ msgstr ""
 msgid "AiImpactAnalytics|Assigned Duo seat engagement"
 msgstr ""
 
-msgid "AiImpactAnalytics|Code Suggestions: Acceptance rate"
+msgid "AiImpactAnalytics|Code Suggestions acceptance rate"
 msgstr ""
 
-msgid "AiImpactAnalytics|Code Suggestions: Usage"
+msgid "AiImpactAnalytics|Code Suggestions accepted out of total Code Suggestions generated."
+msgstr ""
+
+msgid "AiImpactAnalytics|Code Suggestions accepted out of total Code Suggestions generated. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "AiImpactAnalytics|Code Suggestions usage"
+msgstr ""
+
+msgid "AiImpactAnalytics|Code contributors with assigned Duo seats who used Code Suggestions."
 msgstr ""
 
 msgid "AiImpactAnalytics|Data available after upgrade to GitLab 18.0. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "AiImpactAnalytics|Duo Chat: Usage"
+msgid "AiImpactAnalytics|Duo Chat usage"
 msgstr ""
 
-msgid "AiImpactAnalytics|Duo RCA: Usage"
-msgstr ""
-
-msgid "AiImpactAnalytics|Monthly GitLab Duo Code Suggestions accepted / total Code Suggestions generated."
+msgid "AiImpactAnalytics|Duo RCA usage"
 msgstr ""
 
 msgid "AiImpactAnalytics|Monthly user engagement with Duo Chat. Percentage ratio of monthly unique Duo Chat users / total Duo seats assigned."
 msgstr ""
 
-msgid "AiImpactAnalytics|Monthly user engagement with Duo Root Cause Analysis. Percentage ratio of total monthly unique Duo Root Cause Analysis users / total Duo seats assigned."
-msgstr ""
-
-msgid "AiImpactAnalytics|Monthly user engagement with GitLab Duo Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors."
-msgstr ""
-
 msgid "AiImpactAnalytics|Percentage ratio of Duo seats assigned that interacted with Code Suggestions / total number of unique code contributors with Duo seats. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "AiImpactAnalytics|Percentage ratio of Duo seats assigned that interacted with Duo Chat / total Duo seats assigned. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
-msgid "AiImpactAnalytics|Percentage ratio of Duo seats assigned that used at least one Duo feature / total Duo seats assigned. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
-msgid "AiImpactAnalytics|Percentage ratio of total number of code suggestions accepted / code suggestions generated. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
 msgid "AiImpactAnalytics|The usage data may be incomplete due to backend calculations starting after upgrade to GitLab 16.11. For more information, see %{linkStart}epic 12978%{linkEnd}."
+msgstr ""
+
+msgid "AiImpactAnalytics|Users with assigned Duo seats who used Duo Chat. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "AiImpactAnalytics|Users with assigned Duo seats who used Root Cause Analysis."
+msgstr ""
+
+msgid "AiImpactAnalytics|Users with assigned Duo seats who used at least one Duo feature. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "AiImpactAnalytics|Value can't be calculated due to division by zero."

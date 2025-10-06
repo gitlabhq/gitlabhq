@@ -800,6 +800,28 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
           end
         end
       end
+
+      context 'when batch_min_value is provided' do
+        let(:batch_min_value) { 100 }
+        let(:primary_key) { 'id' }
+
+        it 'passes batch_min_value to queue_batched_background_migration' do
+          Sidekiq::Testing.fake! do
+            expect(migration).to receive(:queue_batched_background_migration).with(
+              migration_class,
+              source_table,
+              primary_key,
+              partitioned_table,
+              batch_size: described_class::BATCH_SIZE,
+              sub_batch_size: described_class::SUB_BATCH_SIZE,
+              job_interval: described_class::BATCH_INTERVAL,
+              batch_min_value: batch_min_value
+            )
+
+            migration.enqueue_partitioning_data_migration(source_table, migration_class, batch_min_value: batch_min_value)
+          end
+        end
+      end
     end
   end
 

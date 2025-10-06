@@ -48,7 +48,7 @@
     "additional_properties": {
       "anyOf": [
         {
-          "description": "Only base additional properties are provided",
+          "description": "Only base additional properties and identifier properties are provided",
           "type": "object",
           "properties": {
             "label": {
@@ -59,11 +59,39 @@
             },
             "value": {
               "$ref": "#additional_prop"
+            },
+            "user": {
+              "type": "null"
+            },
+            "project": {
+              "type": "null"
+            },
+            "namespace": {
+              "type": "null"
             }
           },
           "additionalProperties": {
             "type": "null",
             "x-error": "Either property/label or value must be used before defining other additional_properties"
+          }
+        },
+        {
+          "description": "Only identifier properties (user, project, namespace) are provided",
+          "type": "object",
+          "properties": {
+            "user": {
+              "type": "null"
+            },
+            "project": {
+              "type": "null"
+            },
+            "namespace": {
+              "type": "null"
+            }
+          },
+          "additionalProperties": {
+            "type": "null",
+            "x-error": "Only user, project, or namespace properties are allowed in this configuration"
           }
         },
         {
@@ -78,6 +106,15 @@
             },
             "value": {
               "$ref": "#additional_prop"
+            },
+            "user": {
+              "type": "null"
+            },
+            "project": {
+              "type": "null"
+            },
+            "namespace": {
+              "type": "null"
             }
           },
           "required": [
@@ -100,6 +137,15 @@
             },
             "value": {
               "$ref": "#additional_prop"
+            },
+            "user": {
+              "type": "null"
+            },
+            "project": {
+              "type": "null"
+            },
+            "namespace": {
+              "type": "null"
             }
           },
           "required": [
