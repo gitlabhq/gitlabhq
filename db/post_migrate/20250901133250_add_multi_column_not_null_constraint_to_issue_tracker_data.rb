@@ -6,20 +6,10 @@ class AddMultiColumnNotNullConstraintToIssueTrackerData < Gitlab::Database::Migr
   disable_ddl_transaction!
 
   def up
-    add_multi_column_not_null_constraint(
-      :issue_tracker_data,
-      :group_id,
-      :project_id,
-      :organization_id
-    )
+    # no-op
   end
 
   def down
-    remove_multi_column_not_null_constraint(
-      :issue_tracker_data,
-      :group_id,
-      :project_id,
-      :organization_id
-    )
+    # no-op
   end
 end
