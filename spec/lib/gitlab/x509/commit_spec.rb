@@ -36,6 +36,10 @@ RSpec.describe Gitlab::X509::Commit, feature_category: :source_code_management d
         expect(signature.committer_email).to be_nil
       end
     end
+
+    it 'sets project for signature' do
+      expect(signature.project).to eq(project)
+    end
   end
 
   context 'when signature committer_email is nil' do

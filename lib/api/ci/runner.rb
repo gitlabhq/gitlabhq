@@ -194,7 +194,7 @@ module API
         parser :build_json, ::Grape::Parser::Json
 
         post '/request', urgency: :low, feature_category: :continuous_integration do
-          check_runner_request_rate_limit!(:runner_jobs_request_api, scope: [Gitlab::CryptoHelper.sha256(params[:token])], user: nil)
+          check_rate_limit!(:runner_jobs_request_api, scope: [Gitlab::CryptoHelper.sha256(params[:token])], user: nil)
 
           authenticate_runner!(creation_state: :finished)
 
@@ -252,7 +252,7 @@ module API
           optional :exit_code, type: Integer, desc: "Job's exit code"
         end
         put '/:id', urgency: :low, feature_category: :continuous_integration do
-          check_runner_request_rate_limit!(:runner_jobs_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
+          check_rate_limit!(:runner_jobs_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
 
           job = authenticate_job!(heartbeat_runner: true)
 
@@ -284,7 +284,7 @@ module API
           optional :debug_trace, type: Boolean, desc: 'Enable or Disable the debug trace'
         end
         patch '/:id/trace', urgency: :low, feature_category: :continuous_integration do
-          check_runner_request_rate_limit!(:runner_jobs_patch_trace_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
+          check_rate_limit!(:runner_jobs_patch_trace_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
 
           job = authenticate_job!(heartbeat_runner: true)
 
@@ -333,7 +333,7 @@ module API
             default: 'archive', values: ::Ci::JobArtifact.file_types.keys
         end
         post '/:id/artifacts/authorize', feature_category: :job_artifacts, urgency: :low do
-          check_runner_request_rate_limit!(:runner_jobs_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
+          check_rate_limit!(:runner_jobs_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
 
           not_allowed! unless Gitlab.config.artifacts.enabled
           require_gitlab_workhorse!
@@ -373,7 +373,7 @@ module API
           optional :accessibility, type: String, desc: 'Specify accessibility level of artifact private/public'
         end
         post '/:id/artifacts', feature_category: :job_artifacts, urgency: :low do
-          check_runner_request_rate_limit!(:runner_jobs_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
+          check_rate_limit!(:runner_jobs_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
 
           not_allowed! unless Gitlab.config.artifacts.enabled
           require_gitlab_workhorse!
@@ -412,7 +412,7 @@ module API
         route_setting :authorization, job_token_policies: :read_jobs,
           allow_public_access_for_enabled_project_features: [:repository, :builds]
         get '/:id/artifacts', feature_category: :job_artifacts do
-          check_runner_request_rate_limit!(:runner_jobs_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
+          check_rate_limit!(:runner_jobs_api, scope: [Gitlab::CryptoHelper.sha256(job_token)], user: nil)
 
           authenticate_job_via_dependent_job!
           authorize_job_token_policies!(current_job.project)

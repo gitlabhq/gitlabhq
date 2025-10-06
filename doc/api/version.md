@@ -28,8 +28,10 @@ GET /version
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  "https://gitlab.example.com/api/v4/version"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/version"
+
 ```
 
 ## Example responses

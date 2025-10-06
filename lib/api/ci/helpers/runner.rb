@@ -201,18 +201,6 @@ module API
         def metrics
           strong_memoize(:metrics) { ::Gitlab::Ci::Runner::Metrics.new }
         end
-
-        # TODO: Replace with check_rate_limit! when closing https://gitlab.com/gitlab-org/gitlab/-/issues/571740
-        def check_runner_request_rate_limit!(key, scope:, user: current_user)
-          return if Feature.disabled?(:enforce_runners_request_limit, Feature.current_request)
-
-          check_rate_limit!(key, scope: scope, user: user) do
-            too_many_requests!(
-              { error: _('This endpoint has been requested too many times. Try again later.') },
-              retry_after: Gitlab::ApplicationRateLimiter.interval(key)
-            )
-          end
-        end
       end
     end
   end

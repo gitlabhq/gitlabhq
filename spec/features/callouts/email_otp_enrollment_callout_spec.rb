@@ -29,7 +29,9 @@ RSpec.describe 'Email OTP enrollment callout', :js, feature_category: :system_ac
         end
 
         # The 'x' button top right
-        find('[data-feature-id="email_otp_enrollment_callout"] button[aria-label="Dismiss"]').click
+        within('body.page-initialised') do
+          find('[data-feature-id="email_otp_enrollment_callout"] button[aria-label="Dismiss"]').click
+        end
 
         expect(page).not_to have_content(expected_title)
 
@@ -38,10 +40,11 @@ RSpec.describe 'Email OTP enrollment callout', :js, feature_category: :system_ac
         expect(page).not_to have_content(expected_title)
       end
 
-      it 'allows dismissing the callout with the action button',
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/570553' do
+      it 'allows dismissing the callout with the action button' do
         visit root_path
-        click_link(s_('EmailOTP|Review email addresses'))
+        within('body.page-initialised') do
+          click_link(s_('EmailOTP|Review email addresses'))
+        end
 
         expect(URI.parse(current_url).path).to eq(profile_emails_path)
         expect(page).not_to have_content(expected_title)

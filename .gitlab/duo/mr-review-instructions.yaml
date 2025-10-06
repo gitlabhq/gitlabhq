@@ -4,7 +4,7 @@
 
 # References:
 # - Code Review Guidelines: https://docs.gitlab.com/development/code_review/
-# - Databse Review Guidelines: https://docs.gitlab.com/development/database_review/
+# - Database Review Guidelines: https://docs.gitlab.com/development/database_review/
 # - Developer Guide: https://docs.gitlab.com/operator/developer/guide/
 # - Contributing Guide: https://docs.gitlab.com/development/contributing/
 # - Documentation Guide: https://docs.gitlab.com/development/documentation/styleguide/
@@ -12,8 +12,12 @@
 # This file defines custom review criteria that will be applied to specific files
 # during merge request reviews. Instructions are grouped by name and can target
 # multiple file patterns using glob syntax.
-
 instructions:
+  - name: General Standards
+    fileFilters:
+      - "**/*"
+    instructions: |
+      1. Ensure you use inclusive language where applicable, e.g. prefer `allowlist` over `whitelist`
   - name: Ruby Code Quality
     fileFilters:
       - "**/*.rb"

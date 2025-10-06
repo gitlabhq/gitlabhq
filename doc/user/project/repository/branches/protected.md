@@ -512,13 +512,13 @@ branches by using the GitLab web interface:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code** > **Branches**.
-1. Next to the branch you want to delete, select **Delete** ({{< icon name="remove" >}}).
+1. Next to the branch you want to delete, select **More actions** ({{< icon name="ellipsis_v" >}}).
+1. Select **Delete protected branch**.
 1. On the confirmation dialog, enter the branch name and select **Yes, delete protected branch**.
    Branch names are case-sensitive.
 
-Protected branches can only be deleted by using GitLab either from the UI or API.
-This prevents accidentally deleting a branch through local Git commands or
-third-party Git clients.
+You can only delete protected branches with the GitLab UI or API.
+You cannot delete protected branches with local Git commands or third-party Git clients.
 
 ## Policy enforcement
 

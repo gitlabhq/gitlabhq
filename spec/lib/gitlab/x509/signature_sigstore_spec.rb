@@ -8,9 +8,12 @@ RSpec.describe Gitlab::X509::Signature, feature_category: :source_code_managemen
       signature_text,
       signed_text,
       email,
-      created_at
+      created_at,
+      project
     )
   end
+
+  let_it_be(:project) { create(:project) }
 
   let(:signature_text) { X509Helpers::User2.signed_commit_signature }
   let(:signed_text) { X509Helpers::User2.signed_commit_base_data }
@@ -20,7 +23,8 @@ RSpec.describe Gitlab::X509::Signature, feature_category: :source_code_managemen
   let(:issuer_attributes) do
     {
       subject_key_identifier: X509Helpers::User2.issuer_subject_key_identifier,
-      subject: X509Helpers::User2.certificate_issuer
+      subject: X509Helpers::User2.certificate_issuer,
+      project_id: project.id
     }
   end
 
@@ -33,7 +37,8 @@ RSpec.describe Gitlab::X509::Signature, feature_category: :source_code_managemen
         subject: X509Helpers::User2.certificate_subject,
         email: X509Helpers::User2.certificate_email,
         emails: [X509Helpers::User2.certificate_email],
-        serial_number: X509Helpers::User2.certificate_serial
+        serial_number: X509Helpers::User2.certificate_serial,
+        project_id: project.id
       }
     end
 
@@ -76,14 +81,16 @@ RSpec.describe Gitlab::X509::Signature, feature_category: :source_code_managemen
         subject: X509Helpers::User2.certificate_subject,
         email: X509Helpers::User2.certificate_email,
         emails: [X509Helpers::User2.certificate_email],
-        serial_number: X509Helpers::User2.tag_certificate_serial
+        serial_number: X509Helpers::User2.tag_certificate_serial,
+        project_id: project.id
       }
     end
 
     let(:issuer_attributes) do
       {
         subject_key_identifier: X509Helpers::User2.tag_issuer_subject_key_identifier,
-        subject: X509Helpers::User2.tag_certificate_issuer
+        subject: X509Helpers::User2.tag_certificate_issuer,
+        project_id: project.id
       }
     end
 

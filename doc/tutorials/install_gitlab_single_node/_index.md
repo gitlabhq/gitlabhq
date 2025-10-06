@@ -322,7 +322,7 @@ credentials, and then configure SMTP for the Linux package:
    ```
 
    By default, the encrypted file is stored under
-   `/var/opt/gitlab/gitlab-rails/shared/encrypted_configuration/smtp.yaml.enc`.
+   `/var/opt/gitlab/gitlab-rails/shared/encrypted_settings/smtp.yaml.enc`.
 
 1. Remove the YAML file:
 

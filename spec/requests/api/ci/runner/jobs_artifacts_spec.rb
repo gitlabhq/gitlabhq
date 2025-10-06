@@ -115,15 +115,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
         def request_with_second_scope
           authorize_artifacts_with_token_in_params({ filesize: 100.megabytes.to_i }, {}, job2)
         end
-
-        context 'when enforce_runners_request_limit FF is disabled' do
-          before do
-            stub_feature_flags(enforce_runners_request_limit: false)
-            allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:runner_jobs_api).and_return(1)
-          end
-
-          it_behaves_like 'unthrottled endpoint', rate_limit_key: :runner_jobs_api
-        end
       end
 
       context 'when using token as parameter' do
@@ -310,15 +301,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
 
         def request_with_second_scope
           upload_artifacts(fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif'), headers, {}, job2)
-        end
-
-        context 'when enforce_runners_request_limit FF is disabled' do
-          before do
-            stub_feature_flags(enforce_runners_request_limit: false)
-            allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:runner_jobs_api).and_return(1)
-          end
-
-          it_behaves_like 'unthrottled endpoint', rate_limit_key: :runner_jobs_api
         end
       end
 
@@ -974,15 +956,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           job2.reload
 
           get api("/jobs/#{job2.id}/artifacts"), params: { token: job2.token }, headers: headers
-        end
-
-        context 'when enforce_runners_request_limit FF is disabled' do
-          before do
-            stub_feature_flags(enforce_runners_request_limit: false)
-            allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:runner_jobs_api).and_return(1)
-          end
-
-          it_behaves_like 'unthrottled endpoint', rate_limit_key: :runner_jobs_api
         end
       end
 

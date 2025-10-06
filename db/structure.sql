@@ -28442,6 +28442,7 @@ CREATE TABLE vulnerability_occurrences (
     latest_pipeline_id bigint,
     security_project_tracked_context_id bigint,
     detected_at timestamp with time zone,
+    new_uuid uuid,
     CONSTRAINT check_4a3a60f2ba CHECK ((char_length(solution) <= 7000)),
     CONSTRAINT check_ade261da6b CHECK ((char_length(description) <= 15000)),
     CONSTRAINT check_f602da68dd CHECK ((char_length(cve) <= 48400))

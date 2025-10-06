@@ -48,7 +48,13 @@ module Gitlab
       def attributes
         return if @commit.sha.nil? || @commit.project.nil?
 
-        signature = X509::Signature.new(signature_text, signed_text, @commit.committer_email, @commit.created_at)
+        signature = X509::Signature.new(
+          signature_text,
+          signed_text,
+          @commit.committer_email,
+          @commit.created_at,
+          @commit.project
+        )
 
         return if signature.verified_signature.nil? || signature.x509_certificate.nil?
 

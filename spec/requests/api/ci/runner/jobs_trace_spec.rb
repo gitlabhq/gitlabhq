@@ -56,18 +56,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks, feature_catego
             params: ' appended',
             headers: headers_with_range.merge(API::Ci::Helpers::Runner::JOB_TOKEN_HEADER => job2.token)
         end
-
-        context 'when enforce_runners_request_limit FF is disabled' do
-          before do
-            stub_feature_flags(enforce_runners_request_limit: false)
-
-            job
-            allow(Gitlab::ApplicationRateLimiter).to receive(:threshold)
-              .with(:runner_jobs_patch_trace_api).and_return(1)
-          end
-
-          it_behaves_like 'unthrottled endpoint', rate_limit_key: :runner_jobs_patch_trace_api
-        end
       end
 
       context 'with initial patch request' do

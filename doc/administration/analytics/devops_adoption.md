@@ -48,7 +48,7 @@ before this feature becomes available.
 To view DevOps adoption for your instance:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Analytics > DevOps adoption**.
+1. Select **Analytics** > **DevOps adoption**.
 
 ## Add a group to DevOps adoption
 
@@ -59,7 +59,7 @@ Prerequisites:
 To add a group to DevOps adoption:
 
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Analytics > DevOps adoption**.
+1. Select **Analytics** > **DevOps adoption**.
 1. From the **Add or remove groups** dropdown list, select the group you want to add.
 
 ## Remove a group from DevOps adoption
@@ -71,7 +71,7 @@ Prerequisites:
 To remove a group from DevOps adoption:
 
 1. On the left sidebar, at the bottom, select **Admin area**.
-1. Select **Analytics > DevOps adoption**.
+1. Select **Analytics** > **DevOps adoption**.
 1. Either:
 
 - From the **Add or remove groups** dropdown list, clear the group you want to remove.

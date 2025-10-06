@@ -8,9 +8,12 @@ RSpec.describe Gitlab::X509::Signature, feature_category: :source_code_managemen
       signature_text,
       signed_text,
       email,
-      created_at
+      created_at,
+      project
     )
   end
+
+  let_it_be(:project) { create(:project) }
 
   let(:signature_text) { X509Helpers::User1.signed_commit_signature }
   let(:signed_text) { X509Helpers::User1.signed_commit_base_data }
@@ -21,7 +24,8 @@ RSpec.describe Gitlab::X509::Signature, feature_category: :source_code_managemen
     {
       subject_key_identifier: X509Helpers::User1.issuer_subject_key_identifier,
       subject: X509Helpers::User1.certificate_issuer,
-      crl_url: X509Helpers::User1.certificate_crl
+      crl_url: X509Helpers::User1.certificate_crl,
+      project_id: project.id
     }
   end
 
@@ -34,7 +38,8 @@ RSpec.describe Gitlab::X509::Signature, feature_category: :source_code_managemen
         subject: X509Helpers::User1.certificate_subject,
         email: X509Helpers::User1.certificate_email,
         emails: [X509Helpers::User1.certificate_email],
-        serial_number: X509Helpers::User1.certificate_serial
+        serial_number: X509Helpers::User1.certificate_serial,
+        project_id: project.id
       }
     end
 
@@ -102,7 +107,8 @@ RSpec.describe Gitlab::X509::Signature, feature_category: :source_code_managemen
         subject: X509Helpers::User1.certificate_subject,
         email: X509Helpers::User1.certificate_email,
         emails: [X509Helpers::User1.certificate_email],
-        serial_number: X509Helpers::User1.tag_certificate_serial
+        serial_number: X509Helpers::User1.tag_certificate_serial,
+        project_id: project.id
       }
     end
 
@@ -110,7 +116,8 @@ RSpec.describe Gitlab::X509::Signature, feature_category: :source_code_managemen
       {
         subject_key_identifier: X509Helpers::User1.tag_issuer_subject_key_identifier,
         subject: X509Helpers::User1.tag_certificate_issuer,
-        crl_url: X509Helpers::User1.tag_certificate_crl
+        crl_url: X509Helpers::User1.tag_certificate_crl,
+        project_id: project.id
       }
     end
 
