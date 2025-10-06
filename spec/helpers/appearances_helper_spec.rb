@@ -285,6 +285,12 @@ RSpec.describe AppearancesHelper do
 
       expect(helper.brand_title).to eq(helper.default_brand_title)
     end
+
+    it 'returns the title if current_appearance is present' do
+      appearance = create(:appearance, title: 'Gitlab.com')
+
+      expect(helper.brand_title).to eq(appearance.title)
+    end
   end
 
   describe '#default_brand_title' do

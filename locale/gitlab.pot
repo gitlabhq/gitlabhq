@@ -30131,6 +30131,9 @@ msgstr ""
 msgid "Get started with Git"
 msgstr ""
 
+msgid "Get started with GitLab"
+msgstr ""
+
 msgid "Get started with embedded views"
 msgstr ""
 
