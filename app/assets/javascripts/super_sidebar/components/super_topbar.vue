@@ -60,6 +60,13 @@ export default {
         this.glFeatures.uiForOrganizations && this.isLoggedIn && window.gon.current_organization
       );
     },
+    showAdminButton() {
+      return (
+        this.isAdmin &&
+        (!this.sidebarData.admin_mode.admin_mode_feature_enabled ||
+          this.sidebarData.admin_mode.admin_mode_active)
+      );
+    },
   },
 };
 </script>
@@ -127,7 +134,7 @@ export default {
         />
 
         <gl-button
-          v-if="isAdmin"
+          v-if="showAdminButton"
           :href="sidebarData.admin_url"
           icon="admin"
           class="topbar-admin-link gl-hidden !gl-rounded-lg sm:gl-mr-1 xl:gl-flex"

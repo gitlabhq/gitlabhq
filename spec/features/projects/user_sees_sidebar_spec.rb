@@ -176,8 +176,11 @@ RSpec.describe 'Projects > User sees sidebar', :js, feature_category: :groups_an
         expect(page).not_to have_button 'Build'
 
         click_button 'Code'
-        expect(page).not_to have_link 'Repository'
-        expect(page).not_to have_link 'Merge requests'
+
+        within_testid('non-static-items-section') do
+          expect(page).not_to have_link 'Repository'
+          expect(page).not_to have_link 'Merge requests'
+        end
       end
     end
 

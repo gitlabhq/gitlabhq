@@ -119,6 +119,7 @@ describe('Create work item component', () => {
     namespaceQueryResponse = namespaceWorkItemTypesQueryResponse,
     preselectedWorkItemType = WORK_ITEM_TYPE_NAME_EPIC,
     isGroupWorkItem = false,
+    fullPath = 'full-path',
   } = {}) => {
     const namespaceResponseCopy = cloneDeep(namespaceQueryResponse);
     namespaceResponseCopy.data.workspace.id = 'gid://gitlab/Group/33';
@@ -139,8 +140,8 @@ describe('Create work item component', () => {
       apolloProvider: mockApollo,
       propsData: {
         creationContext: CREATION_CONTEXT_LIST_ROUTE,
-        fullPath: 'full-path',
-        projectNamespaceFullPath: 'full-path',
+        fullPath,
+        projectNamespaceFullPath: fullPath,
         preselectedWorkItemType,
         ...props,
       },
@@ -352,6 +353,37 @@ describe('Create work item component', () => {
       expect(findGroupProjectSelector().exists()).toBe(true);
       expect(findGroupProjectSelector().props('fullPath')).toBe('full-path');
     });
+
+    describe.each`
+      workItemPlanningViewEnabled
+      ${true}
+      ${false}
+    `(
+      'parent widget group path when workItemPlanningViewEnabled is $workItemPlanningViewEnabled',
+      ({ workItemPlanningViewEnabled }) => {
+        it.each`
+          scenario                               | fullPath                               | expectedGroupPath
+          ${'group-path'}                        | ${'group-path'}                        | ${'group-path'}
+          ${'group-path/sub-group-path'}         | ${'group-path/sub-group-path'}         | ${'group-path'}
+          ${'group-path/project'}                | ${'group-path/project'}                | ${'group-path'}
+          ${'group-path/sub-group-path/project'} | ${'group-path/sub-group-path/project'} | ${'group-path/sub-group-path'}
+        `(
+          'passes correct group path "$expectedGroupPath" for fullpath $scenario',
+          async ({ fullPath, expectedGroupPath }) => {
+            createComponent({
+              fullPath,
+              provide: {
+                workItemPlanningViewEnabled,
+              },
+            });
+
+            await waitForPromises();
+
+            expect(findParentWidget().props().groupPath).toBe(expectedGroupPath);
+          },
+        );
+      },
+    );
   });
 
   describe('Work item types dropdown', () => {

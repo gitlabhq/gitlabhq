@@ -2,9 +2,9 @@
  * @module common-utils
  */
 
-import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/src/utils';
 import $ from 'jquery';
 import { isFunction, defer, escape, partial, toLower } from 'lodash';
+import { PanelBreakpointInstance } from '~/panel_breakpoint_instance';
 import Cookies from '~/lib/utils/cookies';
 import { SCOPED_LABEL_DELIMITER } from '~/sidebar/components/labels/labels_select_widget/constants';
 import { DEFAULT_CI_CONFIG_PATH, CI_CONFIG_PATH_EXTENSION } from '~/lib/utils/constants';
@@ -187,13 +187,14 @@ export const getOuterHeight = (selector) => {
 };
 
 export const contentTop = () => {
-  const isDesktop = breakpointInstance.isDesktop();
+  const isDesktop = PanelBreakpointInstance.isDesktop();
+
   const heightCalculators = [
     () => getOuterHeight('#js-peek'),
     () => getOuterHeight('.header-logged-out'),
     () => getOuterHeight('.top-bar-fixed'),
     ({ desktop }) => {
-      const mrStickyHeader = document.querySelector('.merge-request-sticky-header');
+      const mrStickyHeader = document.querySelector('.js-merge-request-sticky-header-wrapper');
       if (mrStickyHeader) {
         return mrStickyHeader.offsetHeight;
       }
@@ -220,6 +221,7 @@ export const contentTop = () => {
         : 0;
     },
     ({ desktop }) => (desktop ? getOuterHeight('.mr-version-controls') : 0),
+    () => getOuterHeight('.super-topbar'),
   ];
 
   return heightCalculators.reduce((totalHeight, calculator) => {
@@ -273,7 +275,8 @@ export const scrollToElement = (element, options = {}) => {
         behavior = duration ? 'smooth' : 'auto',
         parent,
       } = options;
-      const y = el.getBoundingClientRect().top + window.pageYOffset + offset - contentTop();
+      const scrollTop = scrollingEl.scrollTop ?? scrollingEl.pageYOffset;
+      const y = el.getBoundingClientRect().top + scrollTop + offset - contentTop();
 
       if (parent && typeof parent === 'string') {
         scrollingEl = document.querySelector(parent);

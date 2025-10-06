@@ -1035,11 +1035,23 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
 
               context 'tries to push to own project' do
                 before do
+                  project.ci_push_repository_for_job_token_allowed = push_repository_for_job_token_allowed
+                  project.save!
                   project.add_developer(user)
                   put_authorize
                 end
 
-                it_behaves_like 'LFS http 403 response'
+                context 'when project is not allowed to push' do
+                  let(:push_repository_for_job_token_allowed) { false }
+
+                  it_behaves_like 'LFS http 403 response'
+                end
+
+                context 'when project is allowed to push' do
+                  let(:push_repository_for_job_token_allowed) { true }
+
+                  it_behaves_like 'LFS http 200 workhorse response'
+                end
               end
 
               context 'tries to push to other project' do

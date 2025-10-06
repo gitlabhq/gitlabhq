@@ -1,6 +1,6 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
-import { n__ } from '~/locale';
+import { __ } from '~/locale';
 import {
   destroyUserCountsManager,
   createUserCountsManager,
@@ -29,21 +29,15 @@ export default {
       default: '',
     },
   },
+  i18n: {
+    issues: __('Assigned issues'),
+    mergeRequests: __('Merge requests'),
+    todoList: __('To-do items'),
+  },
   data() {
     return {
       userCounts,
     };
-  },
-  computed: {
-    issuesTitle() {
-      return n__('%d assigned issue', '%d assigned issues', this.userCounts.assigned_issues);
-    },
-    mergeRequestsTitle() {
-      return n__('%d merge request', '%d merge requests', this.userCounts.total_merge_requests);
-    },
-    toDoListTitle() {
-      return n__('%d to-do item', '%d to-do items', this.userCounts.todos);
-    },
   },
   created() {
     Object.assign(userCounts, this.sidebarData.user_counts);
@@ -64,15 +58,15 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-items-center gl-justify-between gl-gap-2">
+  <div class="gl-flex gl-items-center gl-justify-between gl-gap-0">
     <counter
-      v-gl-tooltip.bottom="issuesTitle"
+      v-gl-tooltip.bottom="$options.i18n.issues"
       class="dashboard-shortcuts-issues gl-basis-1/3"
       icon="issues"
       :class="counterClass"
       :count="userCounts.assigned_issues"
       :href="sidebarData.issues_dashboard_path"
-      :label="issuesTitle"
+      :label="$options.i18n.issues"
       data-testid="issues-shortcut-button"
       data-track-action="click_link"
       data-track-label="issues_link"
@@ -80,13 +74,13 @@ export default {
     />
     <div class="!gl-block gl-basis-1/3">
       <counter
-        v-gl-tooltip.bottom="mergeRequestsTitle"
+        v-gl-tooltip.bottom="$options.i18n.mergeRequests"
         class="js-merge-request-dashboard-shortcut gl-w-full"
         :class="counterClass"
         icon="merge-request"
         :href="sidebarData.merge_request_dashboard_path"
         :count="userCounts.total_merge_requests"
-        :label="mergeRequestsTitle"
+        :label="$options.i18n.mergeRequests"
         data-testid="merge-requests-shortcut-button"
         data-track-action="click_dropdown"
         data-track-label="merge_requests_menu"
@@ -94,13 +88,13 @@ export default {
       />
     </div>
     <counter
-      v-gl-tooltip.bottom="toDoListTitle"
+      v-gl-tooltip.bottom="$options.i18n.todoList"
       class="shortcuts-todos js-todos-count gl-basis-1/3"
       icon="todo-done"
       :class="counterClass"
       :count="userCounts.todos"
       :href="sidebarData.todos_dashboard_path"
-      :label="toDoListTitle"
+      :label="$options.i18n.todoList"
       data-testid="todos-shortcut-button"
       data-track-action="click_link"
       data-track-label="todos_link"

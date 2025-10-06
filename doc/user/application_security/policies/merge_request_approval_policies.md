@@ -545,6 +545,8 @@ For a video walkthrough, see [Security policies: Recreate a pipeline execution p
 
 To recreate a pipeline execution policy:
 
+<!-- markdownlint-disable MD044 -->
+
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure** > **Policies**.
 1. Select the pipeline execution policy you want to recreate.
@@ -553,8 +555,10 @@ To recreate a pipeline execution policy:
 1. Merge the generated merge request.
 1. Go back to **Secure** > **Policies** and select **New policy**.
 1. In the **Pipeline execution policy** section, select **Select policy**.
-1. In the **.YAML mode**, paste the contents of the old policy.
+1. In the **.yaml mode**, paste the contents of the old policy.
 1. Select **Update via merge request** and merge the generated merge request.
+
+<!-- markdownlint-enable MD044 -->
 
 ### `security_report_time_window`
 

@@ -170,15 +170,47 @@ describe('SuperTopbar', () => {
     });
 
     describe('Admin link', () => {
-      describe('when user is admin', () => {
+      describe('when user is admin and admin mode feature is not enabled', () => {
         it('renders', () => {
           createComponent({
             sidebarData: {
               ...mockSidebarData,
-              admin_mode: { user_is_admin: true },
+              admin_mode: { user_is_admin: true, admin_mode_feature_enabled: false },
             },
           });
           expect(findAdminLink().attributes('href')).toBe(mockSidebarData.admin_url);
+        });
+      });
+
+      describe('when user is admin and admin mode is active', () => {
+        it('renders', () => {
+          createComponent({
+            sidebarData: {
+              ...mockSidebarData,
+              admin_mode: {
+                user_is_admin: true,
+                admin_mode_feature_enabled: true,
+                admin_mode_active: true,
+              },
+            },
+          });
+          expect(findAdminLink().attributes('href')).toBe(mockSidebarData.admin_url);
+        });
+      });
+
+      describe('when user is admin but admin mode feature is enabled and not active', () => {
+        it('does not render', () => {
+          createComponent({
+            sidebarData: {
+              ...mockSidebarData,
+              admin_mode: {
+                user_is_admin: true,
+                admin_mode_feature_enabled: true,
+                admin_mode_active: false,
+              },
+            },
+          });
+          expect(findAdminLink().exists()).toBe(false);
         });
       });
 

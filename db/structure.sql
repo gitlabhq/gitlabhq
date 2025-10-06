@@ -267,6 +267,7 @@ CREATE TABLE namespaces (
     allow_descendants_override_disabled_shared_runners boolean DEFAULT false NOT NULL,
     traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
     organization_id bigint,
+    state smallint,
     CONSTRAINT check_2eae3bdf93 CHECK ((organization_id IS NOT NULL))
 );
 
@@ -20290,7 +20291,9 @@ CREATE TABLE namespace_details (
     description text,
     description_html text,
     creator_id bigint,
-    deleted_at timestamp with time zone
+    deleted_at timestamp with time zone,
+    state_metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
+    CONSTRAINT check_namespace_details_state_metadata_is_hash CHECK ((jsonb_typeof(state_metadata) = 'object'::text))
 );
 
 CREATE TABLE namespace_import_users (

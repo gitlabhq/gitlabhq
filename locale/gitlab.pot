@@ -176,11 +176,6 @@ msgid_plural "%d artifacts"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d assigned issue"
-msgid_plural "%d assigned issues"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d author"
 msgid_plural "%d authors"
 msgstr[0] ""
@@ -528,11 +523,6 @@ msgstr[1] ""
 
 msgid "%d template found"
 msgid_plural "%d templates found"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d to-do item"
-msgid_plural "%d to-do items"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -67988,6 +67978,9 @@ msgid "To widen your search, change or remove filters above."
 msgstr ""
 
 msgid "To-Do List"
+msgstr ""
+
+msgid "To-do items"
 msgstr ""
 
 msgid "Today"

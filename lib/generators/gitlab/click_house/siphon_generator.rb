@@ -35,7 +35,8 @@ module Gitlab
         1043 => 'String',
         1082 => 'Date32',
         1184 => "DateTime64(6, 'UTC')",
-        1114 => "DateTime64(6, 'UTC')"
+        1114 => "DateTime64(6, 'UTC')",
+        3802 => "String" # JSONB
       }.freeze
 
       PG_TO_CH_DEFAULT_MAP = {

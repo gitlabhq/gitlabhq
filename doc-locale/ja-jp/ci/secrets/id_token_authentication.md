@@ -2,29 +2,29 @@
 stage: Software Supply Chain Security
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: ID トークンを使用した OpenID Connect（OIDC）認証
+title: IDトークンを使用したOpenID Connect（OIDC）認証
 ---
 
 {{< details >}}
 
-- プラン:Free、Premium、Ultimate
-- 提供:GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- プラン: Free、Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
 {{< history >}}
 
-- GitLab 15.7 [で導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/356986)。
+- GitLab 15.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/356986)されました。
 
 {{< /history >}}
 
-GitLab CI/CD の[IDトークン](../yaml/_index.md#id_tokens)を使用して、サードパーティサービスで認証できます。
+GitLab CI/CDの[IDトークン](../yaml/_index.md#id_tokens)を使用して、サードパーティサービスで認証できます。
 
-## IDトークン
+## IDトークン {#id-tokens}
 
-[IDトークン](../yaml/_index.md#id_tokens)は、GitLab CI/CDジョブに追加できるJSON Web Token（JWT）です。これらは、サードパーティサービスとの OIDC 認証に使用でき、[`secrets`](../yaml/_index.md#secrets)キーワードによって HashiCorp Vault での認証に使用されます。
+[IDトークン](../yaml/_index.md#id_tokens)は、GitLab CI/CDジョブに追加できるJSON Webトークン（JWT）です。これらは、サードパーティサービスとのOIDC認証に使用でき、HashiCorp Vaultで認証するために、[`secrets`](../yaml/_index.md#secrets)キーワードで使用されます。
 
-IDトークンは`.gitlab-ci.yml`でConfigureします。次に例を示します。
+IDトークンは`.gitlab-ci.yml`で設定します。次に例を示します。
 
 ```yaml
 job_with_id_tokens:
@@ -38,16 +38,16 @@ job_with_id_tokens:
     - second-service-authentication-script.sh $SECOND_ID_TOKEN
 ```
 
-この例では、2つのトークンは異なる`aud`クレームを持っています。サードパーティサービスは、バインドされたオーディエンスに一致する`aud`クレームを持たないトークンを拒否するようにConfigureできます。この機能を使用して、トークンが認証できるサービスの数を減らします。これにより、トークンが侵害された場合の重大度が軽減されます。
+この例では、2つのトークンには異なる`aud`クレームが含まれています。サードパーティサービスは、バインドされたオーディエンスに一致する`aud`クレームを持たないトークンを拒否するように設定できます。この機能を使用して、トークンが認証に使用できるサービスの数を減らします。これにより、トークンが侵害された場合の重大度が軽減されます。
 
-### トークンのペイロード
+### トークンのペイロード {#token-payload}
 
 各IDトークンには、次の標準クレームが含まれています。
 
 | フィールド                                                              | 説明 |
 |--------------------------------------------------------------------|-------------|
 | [`iss`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.1) | トークンの発行者。これはGitLabインスタンスのドメイン（「issuer」クレーム）です。 |
-| [`sub`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.2) | トークンのサブジェクト（「subject」クレーム）。デフォルトは`project_path:{group}/{project}:ref_type:{type}:ref:{branch_name}`です。[プロジェクトAPI](../../api/projects.md#edit-a-project)でプロジェクトに対してConfigureできます。 |
+| [`sub`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.2) | トークンのサブジェクト（「subject」クレーム）。デフォルトは`project_path:{group}/{project}:ref_type:{type}:ref:{branch_name}`です。[プロジェクトAPI](../../api/projects.md#edit-a-project)でプロジェクトに対して設定できます。 |
 | [`aud`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.3) | トークンの対象オーディエンス（「audience」クレーム）。[IDトークン](../yaml/_index.md#id_tokens)設定で指定されます。デフォルトではGitLabインスタンスのドメイン。 |
 | [`exp`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.4) | 有効期限（「expiration time」クレーム）。 |
 | [`nbf`](https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.5) | トークンが有効になる時刻（「not before」クレーム）。 |
@@ -56,35 +56,35 @@ job_with_id_tokens:
 
 トークンには、GitLabによって提供されるカスタムクレームも含まれています。
 
-| フィールド                   | 時期                         | 説明                                                                                                                                                                                                                                                                                                      |
-|-------------------------|------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `namespace_id`          | 常時                       | IDでグループまたはユーザーレベルのネームスペースにスコープを設定するために使用します。                                                                                                                                                                                                                                                        |
-| `namespace_path`        | 常時                       | パスでグループまたはユーザーレベルのネームスペースにスコープを設定するために使用します。                                                                                                                                                                                                                                                      |
-| `project_id`            | 常時                       | IDでプロジェクトにスコープを設定するために使用します。                                                                                                                                                                                                                                                                              |
-| `project_path`          | 常時                       | パスでプロジェクトにスコープを設定するために使用します。                                                                                                                                                                                                                                                                            |
-| `user_id`               | 常時                       | ジョブを実行しているユーザーのID。                                                                                                                                                                                                                                                                                |
-| `user_login`            | 常時                       | ジョブを実行しているユーザーのユーザー名。                                                                                                                                                                                                                                                                          |
-| `user_email`            | 常時                       | ジョブを実行しているユーザーのメール。                                                                                                                                                                                                                                                                             |
-| `user_access_level`     | 常時                       | ジョブを実行しているユーザーのアクセスレベル。GitLab 16.9[で導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/432052)。                                                                                                                                                                                                                                                                            |
-| `user_identities`       | ユーザー設定      | ユーザーの外部IDのリスト（GitLab 16.0[で導入](https://gitlab.com/gitlab-org/gitlab/-/issues/387537)）。                                                                                                                                                                                      |
-| `pipeline_id`           | 常時                       | パイプラインのID。                                                                                                                                                                                                                                                                                              |
-| `pipeline_source`       | 常時                       | [パイプラインソース](../jobs/job_rules.md#common-if-clauses-with-predefined-variables)。                                                                                                                                                                                                                                           |
-| `job_id`                | 常時                       | ジョブのID。                                                                                                                                                                                                                                                                                                   |
-| `ref`                   | 常時                       | ジョブのGit refs。                                                                                                                                                                                                                                                                                             |
-| `ref_type`              | 常時                       | Git refタイプ、`branch`または`tag`。                                                                                                                                                                                                                                                                          |
-| `ref_path`              | 常時                       | ジョブの完全修飾refs。例：`refs/heads/main`。GitLab 16.0[で導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119075)。                                                                                                                                                      |
-| `ref_protected`         | 常時                       | Git refが保護されている場合は`true`、それ以外の場合は`false`。                                                                                                                                                                                                                                                           |
-| `groups_direct`         | ユーザーは0〜200のグループの直接メンバーです | ユーザーの直接メンバーシップグループのパス。ユーザーが200を超えるグループの直接メンバーである場合、省略されます。（GitLab 16.11[で導入](https://gitlab.com/gitlab-org/gitlab/-/issues/435848)され、GitLab 17.3の`ci_jwt_groups_direct` [機能フラグ](../../administration/feature_flags.md)の背後に置かれました。 |
-| `environment`           | ジョブは環境を指定します | このジョブのデプロイ先の環境。                                                                                                                                                                                             |
-| `environment_protected` | ジョブは環境を指定します | デプロイされた環境が保護されている場合は`true`、それ以外の場合は`false`。                                                                                                                                                              |
-| `deployment_tier`       | ジョブは環境を指定します | ジョブが指定する環境の[デプロイメントプラン](../environments/_index.md#deployment-tier-of-environments)。GitLab 15.2[で導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/363590)。                                                                                                             |
-| `environment_action`    | ジョブは環境を指定します | ジョブで指定された[環境アクション（`environment:action`）](../environments/_index.md)。（GitLab 16.5[で導入](https://gitlab.com/gitlab-org/gitlab/-/)）                                                                                                                                               |
-| `runner_id`             | 常時                       | ジョブを実行しているRunnerのID。GitLab 16.0[で導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/404722)。                                                                                                                                                                                           |
-| `runner_environment`    | 常時                       | ジョブで使用されるRunnerのタイプ。`gitlab-hosted`または`self-hosted`のいずれかになります。GitLab 16.0[で導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/404722)。                                                                                                                                           |
-| `sha`                   | 常時                       | ジョブのコミットSHA。GitLab 16.0[で導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/404722)。                                                                                                                                                                                                   |
-| `ci_config_ref_uri`     | 常時                       | トップレベルのパイプライン定義へのrefsパス（例：`gitlab.example.com/my-group/my-project//.gitlab-ci.yml@refs/heads/main`）。GitLab 16.2[で導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/404722)。パイプライン定義が同じプロジェクトにない場合、このクレームは`null`です。 |
-| `ci_config_sha`         | 常時                       | `ci_config_ref_uri`のGitコミットSHA。GitLab 16.2[で導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/404722)。パイプライン定義が同じプロジェクトにない場合、このクレームは`null`です。                                                                                               |
-| `project_visibility`    | 常時                       | パイプラインが実行されているプロジェクトの[表示レベル](../../user/public_access.md)。`internal`、`private`、または`public`を指定できます。GitLab 16.3[で導入されました](https://gitlab.com/gitlab-org/gitlab/-/issues/418810)。                                                                                        |
+| フィールド                   | 使用時                                       | 説明 |
+|-------------------------|--------------------------------------------|-------------|
+| `namespace_id`          | 常時                                     | IDでグループまたはユーザーレベルのネームスペースにスコープを設定するために使用します。 |
+| `namespace_path`        | 常時                                     | パスでグループまたはユーザーレベルのネームスペースにスコープを設定するために使用します。 |
+| `project_id`            | 常時                                     | IDでプロジェクトにスコープを設定するために使用します。 |
+| `project_path`          | 常時                                     | パスでプロジェクトにスコープを設定するために使用します。 |
+| `user_id`               | 常時                                     | ジョブを実行しているユーザーのID。 |
+| `user_login`            | 常時                                     | ジョブを実行しているユーザーのユーザー名。 |
+| `user_email`            | 常時                                     | ジョブを実行しているユーザーのメール。 |
+| `user_access_level`     | 常時                                     | ジョブを実行しているユーザーのアクセスレベル。GitLab 16.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/432052)されました。 |
+| `user_identities`       | ユーザー設定で有効のとき                    | ユーザーの外部IDのリスト（GitLab 16.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/387537)されました）。 |
+| `pipeline_id`           | 常時                                     | パイプラインのID。 |
+| `pipeline_source`       | 常時                                     | [パイプラインソース](../jobs/job_rules.md#common-if-clauses-with-predefined-variables)。 |
+| `job_id`                | 常時                                     | ジョブのID。 |
+| `ref`                   | 常時                                     | ジョブのGit参照。 |
+| `ref_type`              | 常時                                     | Git参照タイプ（`branch`または`tag`）。 |
+| `ref_path`              | 常時                                     | ジョブの完全修飾参照。たとえば、`refs/heads/main`です。GitLab 16.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119075)されました。 |
+| `ref_protected`         | 常時                                     | Git参照が保護されている場合は`true`、それ以外の場合は`false`。 |
+| `groups_direct`         | ユーザーが0 - 200のグループの直接メンバーであるとき | ユーザーの直接メンバーシップグループのパス。ユーザーが200を超えるグループの直接のメンバーである場合は省略されます。（GitLab 16.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/435848)され、GitLab 17.3で`ci_jwt_groups_direct`[機能フラグ](../../administration/feature_flags/_index.md)の背後に置かれました。 |
+| `environment`           | ジョブが環境を指定するとき               | このジョブのデプロイ先の環境。 |
+| `environment_protected` | ジョブが環境を指定するとき               | デプロイされた環境が保護されている場合は`true`、それ以外の場合は`false`。 |
+| `deployment_tier`       | ジョブが環境を指定するとき               | ジョブが指定する環境の[デプロイ層](../environments/_index.md#deployment-tier-of-environments)。GitLab 15.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/363590)されました。 |
+| `environment_action`    | ジョブが環境を指定するとき               | ジョブで指定された[環境アクション（`environment:action`）](../environments/_index.md)。（GitLab 16.5で[導入](https://gitlab.com/gitlab-org/gitlab/-/)されました） |
+| `runner_id`             | 常時                                     | ジョブを実行しているRunnerのID。GitLab 16.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/404722)されました。 |
+| `runner_environment`    | 常時                                     | ジョブで使用されるRunnerのタイプ。`gitlab-hosted`または`self-hosted`のいずれかになります。GitLab 16.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/404722)されました。 |
+| `sha`                   | 常時                                     | ジョブのコミットSHA。GitLab 16.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/404722)されました。 |
+| `ci_config_ref_uri`     | 常時                                     | トップレベルのパイプライン定義への参照パス（例: `gitlab.example.com/my-group/my-project//.gitlab-ci.yml@refs/heads/main`）。GitLab 16.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/404722)されました。パイプライン定義が同じプロジェクトにない場合、このクレームは`null`です。 |
+| `ci_config_sha`         | 常時                                     | `ci_config_ref_uri`のGitコミットSHA。GitLab 16.2で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/404722)されました。パイプライン定義が同じプロジェクトにない場合、このクレームは`null`です。 |
+| `project_visibility`    | 常時                                     | パイプラインが実行されているプロジェクトの[表示レベル](../../user/public_access.md)。`internal`、`private`、または`public`を指定できます。GitLab 16.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/418810)されました。 |
 
 ```json
 {
@@ -127,9 +127,9 @@ job_with_id_tokens:
 }
 ```
 
-IDトークンはRS256を使用してエンコードされ、専用の秘密キーで署名されます。トークンの有効期限は、ジョブのタイムアウトが指定されている場合はジョブのタイムアウトに設定され、タイムアウトが指定されていない場合は5分に設定されます。
+IDトークンはRS256を使用してエンコードされ、専用の秘密キーで署名されます。トークンの有効期限は、ジョブのタイムアウト（指定されている場合）または5分（タイムアウトが指定されていない場合）に設定されます。
 
-## サードパーティサービスでのIDトークン認証
+## サードパーティサービスでのIDトークン認証 {#id-token-authentication-with-third-party-services}
 
 IDトークンを使用して、サードパーティサービスでOIDC認証を行うことができます。次に例を示します。
 
@@ -137,17 +137,17 @@ IDトークンを使用して、サードパーティサービスでOIDC認証�
 - [Google Cloud Secret Manager](gcp_secret_manager.md#configure-gitlab-cicd-to-use-gcp-secret-manager-secrets)
 - [Azure Key Vault](azure_key_vault.md#use-azure-key-vault-secrets-in-a-cicd-job)
 
-## トラブルシューティング
+## トラブルシューティング {#troubleshooting}
 
-### `400: missing token`状態コード
+### `400: missing token`ステータスコード {#400-missing-token-status-code}
 
-このエラーは、IDトークンに必要な基本コンポーネントの1つ以上が欠落しているか、予期したとおりにConfigureされていないことを示しています。
+このエラーは、IDトークンに必要な基本コンポーネントが1つ以上欠落しているか、予期したとおりに設定されていないことを示しています。
 
-問題を特定するには、管理者は失敗した特定の方法について、インスタンスの`exceptions_json.log`で詳細を確認できます。
+管理者が問題を特定するには、失敗した特定の方法について、インスタンスの`exceptions_json.log`で詳細を確認できます。
 
-### `GitLab::Ci::Jwt::NoSigningKeyError`
+### `GitLab::Ci::Jwt::NoSigningKeyError` {#gitlabcijwtnosigningkeyerror}
 
-`exceptions_json.log`ファイル内のこのエラーは、署名キーがデータベースから欠落しており、トークンを生成できなかったことが原因である可能性があります。これがイシューであることを検証するには、インスタンスのPostgreSQLターミナルで次のクエリを実行します。
+`exceptions_json.log`ファイル内のこのエラーは、署名キーがデータベースから欠落しており、トークンを生成できなかったことが原因で発生している可能性があります。これが問題であることを確認するには、インスタンスのPostgreSQLターミナルで次のクエリを実行します。
 
 ```sql
 SELECT encrypted_ci_jwt_signing_key FROM application_settings;
@@ -162,3 +162,24 @@ SELECT encrypted_ci_jwt_signing_key FROM application_settings;
     application_setting.update(ci_jwt_signing_key: key)
   end
 ```
+
+### `401: unauthorized`ステータスコード {#401-unauthorized-status-code}
+
+このエラーは、認証リクエストが失敗したことを示しています。GitLabパイプラインから外部サービスへのOpenID Connect（OIDC）認証を使用する場合、次のようないくつかの一般的な理由により`401 Unauthorized`エラーが発生することがあります。
+
+- [IDトークンを宣言する](../yaml/_index.md#id_tokens)代わりに、`$CI_JOB_JWT_V2`のような非推奨のトークンを使用した。詳細については、[古いバージョンのJSON Webトークンは非推奨](../../update/deprecations.md#old-versions-of-json-web-tokens-are-deprecated)を参照してください。
+- `.gitlab-ci.yml`ファイルと外部サービスのOIDC Identity Providerの設定の間で`provider_name`の値が一致していない。
+- GitLabが発行したIDトークンと、外部サービスが予期する内容の間で、`aud`（オーディエンス）クレームが欠落しているか、一致していない。
+- GitLab CI/CDジョブで`id_tokens:`ブロックを有効にしていないか、設定していない。
+
+このエラーを解決するには、ジョブ内でトークンをデコードします。
+
+```shell
+echo $OIDC_TOKEN | cut -d '.' -f2 | base64 -d | jq .
+```
+
+以下を確認してください。
+
+- `aud`（オーディエンス）が、予期されるオーディエンス（外部サービスのURLなど）と一致している。
+- `sub`（サブジェクト）が、サービスのIdentity Providerの設定でマップされている。
+- `preferred_username`が、デフォルトでGitLab IDトークンに存在しない。

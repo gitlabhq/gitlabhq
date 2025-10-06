@@ -141,6 +141,7 @@ export default {
     <user-counts
       v-if="sidebarData.is_logged_in"
       counter-class="user-bar-button gl-grow gl-gap-2 gl-rounded-lg gl-py-3 gl-text-sm hover:gl-no-underline gl-leading-1"
+      class="!gl-gap-2"
       :sidebar-data="sidebarData"
     />
 

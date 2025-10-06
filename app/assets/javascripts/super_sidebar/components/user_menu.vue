@@ -215,6 +215,12 @@ export default {
         'current-clear-status-after': clearAfter || '',
       };
     },
+    showAdminButton() {
+      return (
+        this.isAdmin &&
+        (!this.data.admin_mode.admin_mode_feature_enabled || this.data.admin_mode.admin_mode_active)
+      );
+    },
     showEnterAdminModeItem() {
       return (
         this.data.admin_mode.user_is_admin &&
@@ -376,7 +382,7 @@ export default {
 
       <gl-disclosure-dropdown-item
         v-if="projectStudioEnabled"
-        class="gl-flex md:gl-hidden"
+        class="gl-border-t gl-flex gl-pt-2 md:gl-hidden"
         data-testid="user-counts-item"
       >
         <user-counts
@@ -415,7 +421,7 @@ export default {
         </gl-disclosure-dropdown-item>
 
         <gl-disclosure-dropdown-item
-          v-if="projectStudioEnabled && isAdmin"
+          v-if="projectStudioEnabled && showAdminButton"
           :item="adminLinkItem"
           class="xl:gl-hidden"
           data-testid="admin-link"

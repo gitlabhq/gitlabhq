@@ -625,8 +625,12 @@ export default {
         : '-gl-mx-3 -gl-mb-10 gl-px-3 gl-bg-default gl-py-4';
     },
     selectedProjectGroupPath() {
+      // Eventually, we should be able to select both groups and projects from a single interface in consolidated list.
+      if (this.selectedProjectFullPath && this.selectedProjectFullPath.indexOf('/') === -1) {
+        return this.selectedProjectFullPath;
+      }
       return this.selectedProjectFullPath
-        ? this.selectedProjectFullPath.split('/')[0]
+        ? this.selectedProjectFullPath.substring(0, this.selectedProjectFullPath.lastIndexOf('/'))
         : this.groupPath;
     },
   },

@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "last_updated_at": {
+      "type": "date-time"
+    },
+    "last_changed_by_user_id": {
+      "type": "number"
+    },
+    "last_error": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}
