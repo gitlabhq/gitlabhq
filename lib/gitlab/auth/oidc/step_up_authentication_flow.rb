@@ -11,6 +11,7 @@ module Gitlab
         attr_reader :session, :provider, :scope
 
         def initialize(session:, provider:, scope:)
+          validate_scope!(scope)
           @session = session
           @provider = provider
           @scope = scope
@@ -91,6 +92,14 @@ module Gitlab
         def conditions_fulfilled?(oidc_id_token_claims)
           ::Gitlab::Auth::Oidc::StepUpAuthentication
             .conditions_fulfilled?(oauth_extra_metadata: oidc_id_token_claims, provider: provider, scope: scope)
+        end
+
+        def validate_scope!(scope)
+          return if ::Gitlab::Auth::Oidc::StepUpAuthentication::ALLOWED_SCOPES.include?(scope&.to_sym)
+
+          allowed = ::Gitlab::Auth::Oidc::StepUpAuthentication::ALLOWED_SCOPES
+          raise ArgumentError,
+            "Invalid scope '#{scope}'. Allowed scopes are: #{allowed.join(', ')}"
         end
       end
     end

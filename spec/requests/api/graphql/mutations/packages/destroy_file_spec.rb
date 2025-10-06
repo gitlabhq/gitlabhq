@@ -100,9 +100,10 @@ RSpec.describe 'Destroying a package file', feature_category: :package_registry 
         end
 
         it 'enqueue worker to sync helm metadata cache' do
-          expect(::Packages::Helm::CreateMetadataCacheWorker)
-            .to receive(:perform_async)
-            .with(package_file.project_id, package_file.helm_channel)
+          expect(::Packages::Helm::BulkSyncHelmMetadataCacheService)
+            .to receive(:new)
+            .with(user, ::Packages::PackageFile.id_in(package_file.id))
+            .and_call_original
 
           mutation_request
         end

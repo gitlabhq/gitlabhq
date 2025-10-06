@@ -926,7 +926,159 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
         it 'does not add session key "step_up_auth"' do
           get provider
 
-          expect(session).not_to include 'step_up_auth'
+          expect(session).not_to include 'omniauth_step_up_auth'
+        end
+      end
+
+      context 'for namespace scope' do
+        using RSpec::Parameterized::TableSyntax
+
+        let(:ommiauth_provider_config_with_namespace_step_up_auth) do
+          GitlabSettings::Options.new(
+            name: "openid_connect",
+            step_up_auth: {
+              namespace: {
+                id_token: {
+                  required: required_id_token_claims,
+                  included: included_id_token_claims
+                }
+              }
+            }
+          )
+        end
+
+        before do
+          mock_auth_hash(provider, extern_uid, user.email, additional_info: { extra: { raw_info: mock_auth_hash_extra_raw_info } })
+
+          request.env['omniauth.auth'] = Rails.application.env_config['omniauth.auth']
+          session['omniauth_step_up_auth'] = { 'openid_connect' => { 'namespace' => { 'state' => 'requested' } } }
+
+          stub_omniauth_setting(enabled: true, auto_link_user: true, block_auto_created_users: false, providers: [ommiauth_provider_config_with_namespace_step_up_auth])
+        end
+
+        where(:required_id_token_claims, :included_id_token_claims, :mock_auth_hash_extra_raw_info, :step_up_auth_authenticated) do
+          { claim_1: 'silver' } | nil                          | { claim_1: 'silver' }                       | 'succeeded'
+          { claim_1: 'silver' } | nil                          | { claim_1: 'gold' }                         | 'failed'
+          nil                   | { claim_2: %w[mfa fpt] }     | { claim_2: 'mfa' }                          | 'succeeded'
+          { claim_1: 'silver' } | { claim_2: %w[mfa fpt] }     | { claim_1: 'silver', claim_2: 'mfa' }       | 'succeeded'
+          { claim_1: 'silver' } | { claim_2: %w[mfa fpt] }     | { claim_1: 'silver', claim_2: 'other_amr' } | 'failed'
+        end
+
+        with_them do
+          context 'when user is signed in' do
+            before do
+              sign_in user
+            end
+
+            it 'evaluates step-up authentication conditions for namespace scope' do
+              get provider
+
+              expect(session.to_h.dig('omniauth_step_up_auth', 'openid_connect', 'namespace', 'state'))
+                .to eq step_up_auth_authenticated
+            end
+
+            context 'when feature flag :omniauth_step_up_auth_for_namespace is disabled' do
+              before do
+                stub_feature_flags(omniauth_step_up_auth_for_namespace: false)
+                session.delete 'omniauth_step_up_auth'
+              end
+
+              it 'does not store step-up authentication evaluation result in session' do
+                get provider
+
+                expect(session).not_to include 'omniauth_step_up_auth'
+              end
+            end
+          end
+        end
+      end
+
+      context 'with both admin_mode and namespace scopes configured' do
+        let(:ommiauth_provider_config_with_both_scopes) do
+          GitlabSettings::Options.new(
+            name: "openid_connect",
+            step_up_auth: {
+              admin_mode: {
+                id_token: {
+                  required: { claim_1: 'gold' }
+                }
+              },
+              namespace: {
+                id_token: {
+                  required: { claim_1: 'silver' }
+                }
+              }
+            }
+          )
+        end
+
+        before do
+          mock_auth_hash(provider, extern_uid, user.email, additional_info: { extra: { raw_info: { claim_1: 'gold' } } })
+          request.env['omniauth.auth'] = Rails.application.env_config['omniauth.auth']
+          stub_omniauth_setting(enabled: true, auto_link_user: true, block_auto_created_users: false, providers: [ommiauth_provider_config_with_both_scopes])
+          sign_in user
+        end
+
+        context 'when both scopes are requested' do
+          before do
+            session['omniauth_step_up_auth'] = {
+              'openid_connect' => {
+                'admin_mode' => { 'state' => 'requested' },
+                'namespace' => { 'state' => 'requested' }
+              }
+            }
+          end
+
+          it 'evaluates both admin_mode and namespace scopes' do
+            get provider
+
+            expect(session.to_h.dig('omniauth_step_up_auth', 'openid_connect', 'admin_mode', 'state'))
+              .to eq 'succeeded'
+            expect(session.to_h.dig('omniauth_step_up_auth', 'openid_connect', 'namespace', 'state'))
+              .to eq 'failed' # gold claim doesn't meet silver requirement
+          end
+        end
+
+        context 'when only admin_mode feature flag is enabled' do
+          before do
+            stub_feature_flags(omniauth_step_up_auth_for_namespace: false)
+            session['omniauth_step_up_auth'] = {
+              'openid_connect' => {
+                'admin_mode' => { 'state' => 'requested' },
+                'namespace' => { 'state' => 'requested' }
+              }
+            }
+          end
+
+          it 'only evaluates admin_mode scope' do
+            get provider
+
+            expect(session.to_h.dig('omniauth_step_up_auth', 'openid_connect', 'admin_mode', 'state'))
+              .to eq 'succeeded'
+            expect(session.to_h.dig('omniauth_step_up_auth', 'openid_connect', 'namespace', 'state'))
+              .to eq 'requested' # unchanged
+          end
+        end
+
+        context 'when only namespace feature flag is enabled' do
+          before do
+            stub_feature_flags(omniauth_step_up_auth_for_admin_mode: false)
+            session['omniauth_step_up_auth'] = {
+              'openid_connect' => {
+                'admin_mode' => { 'state' => 'requested' },
+                'namespace' => { 'state' => 'requested' }
+              }
+            }
+          end
+
+          it 'only evaluates namespace scope' do
+            get provider
+
+            expect(session.to_h.dig('omniauth_step_up_auth', 'openid_connect', 'admin_mode', 'state'))
+              .to eq 'requested' # unchanged
+            expect(session.to_h.dig('omniauth_step_up_auth', 'openid_connect', 'namespace', 'state'))
+              .to eq 'failed'
+          end
         end
       end
     end

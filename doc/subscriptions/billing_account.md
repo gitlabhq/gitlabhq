@@ -60,7 +60,7 @@ their personal details are used on invoices, and for license and subscription-re
 To change profile details, including name and email address:
 
 1. Sign in to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
-1. Select **My profile > Profile settings**.
+1. Select **My profile** > **Profile settings**.
 1. Edit **Your personal details**.
 1. Select **Save changes**.
 
@@ -226,7 +226,7 @@ To link a GitLab.com account to your Customers Portal profile:
 
 1. Trigger a one-time sign-in link to your email from your [Customers Portal](https://customers.gitlab.com/customers/sign_in?legacy=true) account.
 1. Locate the email and select the one-time sign-in link to sign in to your Customers Portal account.
-1. Select **My profile > Profile settings**.
+1. Select **My profile** > **Profile settings**.
 1. Under **Your GitLab.com account**, select **Link account**.
 1. Sign in to the [GitLab.com](https://gitlab.com/users/sign_in) account you want to link to the Customers Portal profile.
 
@@ -249,7 +249,7 @@ To change the GitLab.com account linked to your Customers Portal profile:
 
 1. Sign in to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. In a separate browser tab, go to [GitLab.com](https://gitlab.com/users/sign_in) and ensure you are not logged in.
-1. On the Customers Portal page, select **My profile > Profile settings**.
+1. On the Customers Portal page, select **My profile** > **Profile settings**.
 1. Under **Your GitLab.com account**, select **Change linked account**.
 1. Sign in to the [GitLab.com](https://gitlab.com/users/sign_in) account you want to link to the Customers Portal profile.
 

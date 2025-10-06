@@ -5182,7 +5182,7 @@ CREATE TABLE p_ci_job_definitions (
     partition_id bigint NOT NULL,
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone,
     interruptible boolean DEFAULT false NOT NULL,
     checksum bytea NOT NULL,
     config jsonb DEFAULT '{}'::jsonb NOT NULL
@@ -42769,6 +42769,8 @@ CREATE UNIQUE INDEX index_vulnerability_flags_on_unique_columns ON vulnerability
 CREATE INDEX index_vulnerability_flags_on_workflow_id ON vulnerability_flags USING btree (workflow_id);
 
 CREATE INDEX index_vulnerability_historical_statistics_on_date_and_id ON vulnerability_historical_statistics USING btree (date, id);
+
+CREATE INDEX index_vulnerability_identifiers_on_id_where_external_type_cve ON vulnerability_identifiers USING btree (id) WHERE (lower((external_type)::text) = 'cve'::text);
 
 CREATE UNIQUE INDEX index_vulnerability_identifiers_on_project_id_and_fingerprint ON vulnerability_identifiers USING btree (project_id, fingerprint);
 

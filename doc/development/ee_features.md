@@ -299,7 +299,7 @@ To simulate a CE instance without deleting the license in a GDK:
 1. Then restart the GDK:
 
    ```shell
-   gdk restart rails && gdk restart webpack
+   gdk restart
    ```
 
 If you want to revert back to an EE

@@ -157,7 +157,7 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthentication, feature_category: :syst
       lazy { { 'openid_connect' => { 'admin_mode' => { 'state' => 'succeeded' } }, 'other_provider' => { 'admin_mode' => { 'state' => 'succeeded' } } } } | true
       lazy { { 'openid_connect' => { 'admin_mode' => { 'state' => 'failed' } },    'other_provider' => { 'admin_mode' => { 'state' => 'failed' } } } }    | false
       lazy { { 'openid_connect' => { 'admin_mode' => { 'state' => 'failed' } },    'other_provider' => { 'admin_mode' => { 'state' => 'succeeded' } } } } | false
-      lazy { { 'openid_connect' => { 'other_mode' => { 'state' => 'succeeded' } }, 'other_provider' => { 'admin_mode' => { 'state' => 'failed' } } } }    | false
+      lazy { { 'openid_connect' => { 'namespace' => { 'state' => 'succeeded' } }, 'other_provider' => { 'admin_mode' => { 'state' => 'failed' } } } } | false
 
       nil                                                                                                                                                 | false
       {}                                                                                                                                                  | false
@@ -177,7 +177,7 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthentication, feature_category: :syst
         'omniauth_step_up_auth' => {
           'openid_connect' => {
             'admin_mode' => { 'state' => 'succeeded' },
-            'other_scope' => { 'state' => 'succeeded' }
+            'namespace' => { 'state' => 'succeeded' }
           },
           'other_provider' => {
             'admin_mode' => { 'state' => 'failed' }
@@ -199,7 +199,7 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthentication, feature_category: :syst
       disable_step_up_authentication!
 
       expect(session['omniauth_step_up_auth']['openid_connect']).not_to have_key('admin_mode')
-      expect(session['omniauth_step_up_auth']['openid_connect']).to have_key('other_scope')
+      expect(session['omniauth_step_up_auth']['openid_connect']).to have_key('namespace')
       expect(session['omniauth_step_up_auth']['other_provider']).not_to have_key('admin_mode')
 
       expect(described_class.succeeded?(session)).to be_falsey
@@ -218,7 +218,7 @@ RSpec.describe Gitlab::Auth::Oidc::StepUpAuthentication, feature_category: :syst
         disable_step_up_authentication!
 
         expect(session['omniauth_step_up_auth']['openid_connect']).to have_key('admin_mode')
-        expect(session['omniauth_step_up_auth']['openid_connect']).to have_key('other_scope')
+        expect(session['omniauth_step_up_auth']['openid_connect']).to have_key('namespace')
         expect(session['omniauth_step_up_auth']['other_provider']).to have_key('admin_mode')
       end
     end

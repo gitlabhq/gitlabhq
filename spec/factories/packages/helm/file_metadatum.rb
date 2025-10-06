@@ -6,6 +6,7 @@ FactoryBot.define do
       description { nil }
     end
 
+    project
     package_file { association(:helm_package_file, without_loaded_metadatum: true) }
     sequence(:channel) { |n| "#{FFaker::Lorem.word}-#{n}" }
     metadata do

@@ -91,8 +91,8 @@ used in [web API fuzz testing](configuration/enabling_the_analyzer.md#http-archi
    - OpenAPI v2, v3.
 1. Verify each API call works.
    - If you imported an OpenAPI specification, go through and add working data.
-1. Select **API > Import/Export**.
-1. Select **Export Data > Current Workspace**.
+1. Select **API** > **Import/Export**.
+1. Select **Export Data** > **Current Workspace**.
 1. Select requests to include in the HAR file.
 1. Select **Export**.
 1. In the **Select Export Type** dropdown list select **HAR -- HTTP Archive Format**.
@@ -110,7 +110,7 @@ responses in HAR format.
 1. Go to the [Fiddler home page](https://www.telerik.com/fiddler) and sign in. If you don't already
    have an account, create an account.
 1. Browse pages that call an API. Fiddler automatically captures the requests.
-1. Select one or more requests, then from the context menu, select **Export > Selected Sessions**.
+1. Select one or more requests, then from the context menu, select **Export** > **Selected Sessions**.
 1. In the **Choose Format** dropdown list select **HTTPArchive v1.2**.
 1. Enter a filename and select **Save**.
 
@@ -128,12 +128,12 @@ Prerequisites:
 
 - Enable the `Develop` menu item.
   1. Open Safari's preferences. Press <kbd>Command</kbd>+<kbd>,</kbd> or from the menu, select
-     **Safari > Preferences**.
+     **Safari** > **Preferences**.
   1. Select **Advanced** tab, then select `Show Develop menu item in menu bar`.
   1. Close the **Preferences** window.
 
 1. Open the **Web Inspector**. Press <kbd>Option</kbd>+<kbd>Command</kbd>+<kbd>i</kbd>, or from the
-   menu, select **Develop > Show Web Inspector**.
+   menu, select **Develop** > **Show Web Inspector**.
 1. Select the **Network** tab, and select **Preserve Log**.
 1. Browse pages that call the API.
 1. Open the **Web Inspector** and select the **Network** tab

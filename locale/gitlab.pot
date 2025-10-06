@@ -11561,6 +11561,9 @@ msgstr ""
 msgid "BranchRules|Groups"
 msgstr ""
 
+msgid "BranchRules|Inherited branch rule"
+msgstr ""
+
 msgid "BranchRules|Keep stable branches secure and force developers to use merge requests. %{linkStart}What are protected branches?%{linkEnd}"
 msgstr ""
 
@@ -11678,6 +11681,9 @@ msgstr ""
 msgid "BranchRules|Target branch"
 msgstr ""
 
+msgid "BranchRules|This branch rule is inherited from the group Protected branches settings."
+msgstr ""
+
 msgid "BranchRules|This setting is configured for the group. To make changes, contact a user with required %{linkStart}permissions%{linkEnd}."
 msgstr ""
 
@@ -11709,6 +11715,9 @@ msgid "BranchRules|You are about to delete the %{name} status check."
 msgstr ""
 
 msgid "BranchRules|default"
+msgstr ""
+
+msgid "BranchRules|group"
 msgstr ""
 
 msgid "Branches"

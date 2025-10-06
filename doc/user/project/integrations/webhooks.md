@@ -557,13 +557,13 @@ GitLab rewrites relative image references to absolute URLs in webhook bodies.
 If the original image reference in a merge request, comment, or wiki page is:
 
 ```markdown
-![image](/uploads/$sha/image.png)
+![A Markdown image with a relative URL.](/uploads/$sha/image.png)
 ```
 
 The rewritten image reference in the webhook body would be:
 
 ```markdown
-![image](https://gitlab.example.com/-/project/:id/uploads/<SHA>/image.png)
+![A Markdown image with an absolute URL.](https://gitlab.example.com/-/project/:id/uploads/<SHA>/image.png)
 ```
 
 This example assumes:

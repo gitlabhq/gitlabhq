@@ -247,7 +247,7 @@ Before you run `docker-compose up -d`, complete the following steps:
 
 To properly receive telemetry data, you need to open specific ports in your GitLab O11y instance's security group:
 
-1. Go to **AWS Console > EC2 > Security Groups**.
+1. Go to **AWS Console** > **EC2** > **Security Groups**.
 1. Select the security group attached to your GitLab O11y instance.
 1. Select **Edit inbound rules**.
 1. Add the following rules:

@@ -268,7 +268,8 @@ FactoryBot.define do
           create :helm_file_metadatum,
             package_file: package_file,
             channel: evaluator.channel,
-            description: evaluator.description
+            description: evaluator.description,
+            project: package_file.project
         end
       end
     end

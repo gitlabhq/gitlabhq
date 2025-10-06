@@ -671,6 +671,8 @@ module Trigger
         'charts'
       when 'gitlab-org/cloud-native/gitlab-operator'
         'operator'
+      when 'gitlab-org/gitlab-environment-toolkit'
+        'get'
       end
     end
 

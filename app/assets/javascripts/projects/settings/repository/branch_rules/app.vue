@@ -53,6 +53,8 @@ export default {
     branchRulesPath: { default: '' },
     showStatusChecks: { default: false },
     showApprovers: { default: false },
+    canAdminGroupProtectedBranches: { default: false },
+    groupSettingsRepositoryPath: { default: '' },
   },
   data() {
     return {

@@ -10,19 +10,19 @@ module Gitlab
       module StepUpAuthentication
         SESSION_STORE_KEY = 'omniauth_step_up_auth'
 
-        STEP_UP_AUTH_SCOPE_ADMIN_MODE = :admin_mode
-        STEP_UP_AUTH_SCOPE_NAMESPACE = :namespace
+        SCOPE_ADMIN_MODE = :admin_mode
+        SCOPE_NAMESPACE = :namespace
 
         ALLOWED_SCOPES = [
-          STEP_UP_AUTH_SCOPE_ADMIN_MODE,
-          STEP_UP_AUTH_SCOPE_NAMESPACE
+          SCOPE_ADMIN_MODE,
+          SCOPE_NAMESPACE
         ].freeze
 
         class << self
           # Checks if step-up authentication is enabled for the step-up auth scope 'admin_mode'
           #
           # @return [Boolean] true if any OAuth provider requires step-up auth for admin mode
-          def enabled_by_config?(scope: STEP_UP_AUTH_SCOPE_ADMIN_MODE)
+          def enabled_by_config?(scope: SCOPE_ADMIN_MODE)
             oauth_providers.any? do |provider|
               enabled_for_provider?(provider_name: provider, scope: scope)
             end
@@ -33,12 +33,12 @@ module Gitlab
           # @param oauth_provider_name [String] the name of the OAuth provider
           # @param scope [Symbol] the scope to check configuration for (default: :admin_mode)
           # @return [Boolean] true if configuration exists
-          def enabled_for_provider?(provider_name:, scope: STEP_UP_AUTH_SCOPE_ADMIN_MODE)
+          def enabled_for_provider?(provider_name:, scope: SCOPE_ADMIN_MODE)
             has_required_claims?(provider_name, scope) ||
               has_included_claims?(provider_name, scope)
           end
 
-          def enabled_providers(scope: STEP_UP_AUTH_SCOPE_ADMIN_MODE)
+          def enabled_providers(scope: SCOPE_ADMIN_MODE)
             oauth_providers.select do |provider|
               enabled_for_provider?(provider_name: provider, scope: scope)
             end
@@ -49,7 +49,7 @@ module Gitlab
           #
           # @param session [Hash] the session hash containing authentication state
           # @return [Boolean] true if step-up authentication is authenticated
-          def succeeded?(session, scope: STEP_UP_AUTH_SCOPE_ADMIN_MODE)
+          def succeeded?(session, scope: SCOPE_ADMIN_MODE)
             step_up_auth_flows(session)
               .select do |step_up_auth_flow|
                 step_up_auth_flow.scope.to_s == scope.to_s
@@ -63,7 +63,7 @@ module Gitlab
           # @param oauth [OAuth2::AccessToken] the OAuth object to validate
           # @param scope [Symbol] the scope to validate conditions for (default: :admin_mode)
           # @return [Boolean] true if all conditions are fulfilled
-          def conditions_fulfilled?(oauth_extra_metadata:, provider:, scope: STEP_UP_AUTH_SCOPE_ADMIN_MODE)
+          def conditions_fulfilled?(oauth_extra_metadata:, provider:, scope: SCOPE_ADMIN_MODE)
             conditions = []
 
             if has_required_claims?(provider, scope)
@@ -79,7 +79,7 @@ module Gitlab
             conditions.present? && conditions.all?
           end
 
-          def build_flow(provider:, session:, scope: STEP_UP_AUTH_SCOPE_ADMIN_MODE)
+          def build_flow(provider:, session:, scope: SCOPE_ADMIN_MODE)
             Gitlab::Auth::Oidc::StepUpAuthenticationFlow.new(provider: provider, scope: scope, session: session)
           end
 
@@ -87,9 +87,9 @@ module Gitlab
           #
           # @param oauth_raw_info [Hash] The raw information received from the OAuth provider.
           # @param provider [String] The name of the OAuth provider.
-          # @param scope [String] The scope of the authentication request, default is STEP_UP_AUTH_SCOPE_ADMIN_MODE.
+          # @param scope [String] The scope of the authentication request, default is SCOPE_ADMIN_MODE.
           # @return [Hash] A hash containing only the relevant ID token claims.
-          def slice_relevant_id_token_claims(oauth_raw_info:, provider:, scope: STEP_UP_AUTH_SCOPE_ADMIN_MODE)
+          def slice_relevant_id_token_claims(oauth_raw_info:, provider:, scope: SCOPE_ADMIN_MODE)
             relevant_id_token_claims = [
               *get_id_token_claims_required_conditions(provider, scope)&.keys,
               *get_id_token_claims_included_conditions(provider, scope)&.keys
@@ -101,7 +101,7 @@ module Gitlab
             Gitlab::NamespacedSessionStore.new(SESSION_STORE_KEY, session)
           end
 
-          def disable_step_up_authentication!(session:, scope: STEP_UP_AUTH_SCOPE_ADMIN_MODE)
+          def disable_step_up_authentication!(session:, scope: SCOPE_ADMIN_MODE)
             omniauth_step_up_auth_session_data(session)
                       &.to_h
                       &.each_value do |step_up_auth_object|
@@ -114,7 +114,7 @@ module Gitlab
           # @param session [Hash] the session hash containing authentication state
           # @param scope [Symbol] the scope to check (default: :admin_mode)
           # @return [Array<StepUpAuthenticationFlow>] list of failed authentication flows
-          def failed_step_up_auth_flows(session, scope: STEP_UP_AUTH_SCOPE_ADMIN_MODE)
+          def failed_step_up_auth_flows(session, scope: SCOPE_ADMIN_MODE)
             (step_up_auth_flows(session) || []).select do |flow|
               flow.enabled_by_config? &&
                 flow.failed? &&
@@ -186,8 +186,12 @@ module Gitlab
               &.flat_map do |provider, step_up_auth_object|
                 step_up_auth_object.map do |step_up_auth_scope, _|
                   build_flow(provider: provider, session: session, scope: step_up_auth_scope)
+                rescue ArgumentError => e
+                  Gitlab::AppLogger.error("Error building step-up authentication flow: #{e.message}")
+                  nil
                 end
               end
+              &.compact
           end
         end
       end

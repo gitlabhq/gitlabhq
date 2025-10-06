@@ -19,16 +19,6 @@ module API
     helpers do
       include Gitlab::Utils::StrongMemoize
 
-      def enqueue_sync_helm_metadata_cache_worker(package_file)
-        channel = package_file.helm_channel
-        return unless channel
-
-        # rubocop:disable CodeReuse/Worker -- This is required because we want to sync metadata cache as soon as package file is deleted
-        # Related issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/569680
-        ::Packages::Helm::CreateMetadataCacheWorker.perform_async(user_project.id, channel)
-        # rubocop:enable CodeReuse/Worker
-      end
-
       def package
         ::Packages::PackageFinder.new(user_project, params[:package_id]).execute
       end
@@ -114,7 +104,12 @@ module API
 
           enqueue_sync_npm_metadata_cache_worker(user_project, package.name) if package.npm?
 
-          enqueue_sync_helm_metadata_cache_worker(package_file) if package.helm?
+          if package.helm? && package_file.helm_channel
+            ::Packages::Helm::BulkSyncHelmMetadataCacheService.new(
+              current_user,
+              ::Packages::PackageFile.id_in(package_file.id)
+            ).execute
+          end
         end
       end
 

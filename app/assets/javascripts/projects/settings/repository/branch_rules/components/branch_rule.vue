@@ -6,7 +6,9 @@ import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
 import { s__, sprintf, n__ } from '~/locale';
 import { accessLevelsConfig } from '~/projects/settings/branch_rules/components/view/constants';
 import squashOptionQuery from '~/projects/settings/branch_rules/queries/squash_option.query.graphql';
+import GroupInheritancePopover from '~/projects/settings/branch_rules/components/view/group_inheritance_popover.vue';
 import { getAccessLevels } from '../../../utils';
+import GroupBadge from './group_badge.vue';
 
 export default {
   name: 'BranchRule',
@@ -27,6 +29,8 @@ export default {
     GlBadge,
     GlButton,
     ProtectedBadge,
+    GroupInheritancePopover,
+    GroupBadge,
   },
   mixins: [glFeatureFlagsMixin()],
   apollo: {
@@ -53,6 +57,8 @@ export default {
     showCodeOwners: { default: false },
     showStatusChecks: { default: false },
     showApprovers: { default: false },
+    canAdminGroupProtectedBranches: { default: false },
+    groupSettingsRepositoryPath: { default: '' },
   },
   props: {
     name: {
@@ -100,6 +106,9 @@ export default {
     },
     isProtected() {
       return Boolean(this.branchProtection);
+    },
+    isGroupLevel() {
+      return Boolean(this.branchProtection?.isGroupLevel);
     },
     hasApprovalDetails() {
       return this.approvalDetails.length;
@@ -202,28 +211,32 @@ export default {
       data-testid="branch-content"
       :data-qa-branch-name="name"
     >
-      <div>
-        <strong class="gl-font-monospace">{{ name }}</strong>
+      <div class="gl-flex gl-flex-wrap gl-gap-2 @sm/panel:gl-flex-nowrap">
+        <strong class="gl-w-full gl-font-monospace">{{ name }}</strong>
 
-        <gl-badge v-if="isDefault" variant="info" class="gl-ml-2">{{
-          $options.i18n.defaultLabel
-        }}</gl-badge>
+        <gl-badge v-if="isDefault" variant="info">{{ $options.i18n.defaultLabel }}</gl-badge>
 
         <protected-badge v-if="isProtected" />
 
-        <ul v-if="hasApprovalDetails" class="gl-mb-0 gl-mt-2 gl-pl-6 gl-text-subtle">
-          <li v-for="(detail, index) in approvalDetails" :key="index">{{ detail }}</li>
-        </ul>
+        <group-badge v-if="isGroupLevel" />
       </div>
-      <gl-button
-        class="gl-self-start"
-        category="tertiary"
-        size="small"
-        data-testid="details-button"
-        :href="detailsPath"
-      >
-        {{ $options.i18n.detailsButtonLabel }}</gl-button
-      >
+
+      <div class="gl-flex gl-items-start gl-gap-2">
+        <group-inheritance-popover v-if="isGroupLevel" />
+        <gl-button
+          class="gl-self-start"
+          category="tertiary"
+          size="small"
+          data-testid="details-button"
+          :href="detailsPath"
+          :disabled="isGroupLevel"
+        >
+          {{ $options.i18n.detailsButtonLabel }}</gl-button
+        >
+      </div>
     </div>
+    <ul v-if="hasApprovalDetails" class="gl-mb-0 gl-mt-2 gl-pl-6 gl-text-subtle">
+      <li v-for="(detail, index) in approvalDetails" :key="index">{{ detail }}</li>
+    </ul>
   </li>
 </template>

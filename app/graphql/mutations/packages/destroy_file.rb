@@ -34,10 +34,10 @@ module Mutations
       def sync_helm_metadata_cache(package_file)
         return unless package_file.package.helm? && package_file.helm_channel
 
-        # rubocop:disable CodeReuse/Worker -- This is required because we want to sync metadata cache as soon as package files are deleted
-        # Related issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/569680
-        ::Packages::Helm::CreateMetadataCacheWorker.perform_async(package_file.project_id, package_file.helm_channel)
-        # rubocop:enable CodeReuse/Worker
+        ::Packages::Helm::BulkSyncHelmMetadataCacheService.new(
+          current_user,
+          ::Packages::PackageFile.id_in(package_file.id)
+        ).execute
       end
     end
   end

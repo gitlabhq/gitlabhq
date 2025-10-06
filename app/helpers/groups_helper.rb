@@ -355,7 +355,7 @@ module GroupsHelper
 
   def available_step_up_auth_providers_for_namespace
     Gitlab::Auth::Oidc::StepUpAuthentication.enabled_providers(
-      scope: Gitlab::Auth::Oidc::StepUpAuthentication::STEP_UP_AUTH_SCOPE_NAMESPACE
+      scope: Gitlab::Auth::Oidc::StepUpAuthentication::SCOPE_NAMESPACE
     )
   end
 end

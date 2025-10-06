@@ -114,10 +114,10 @@ You can use FortiAuthenticator as an OTP provider in GitLab. Users must:
 - Exist in both FortiAuthenticator and GitLab with the same username.
 - Have FortiToken configured in FortiAuthenticator.
 
-You need a username and access token for FortiAuthenticator. The `access_token` shown below is the FortAuthenticator
+You need a username and access token for FortiAuthenticator. The `access_token` shown below is the FortiAuthenticator
 access key. To get the token, see the REST API Solution Guide at
 [Fortinet Document Library](https://docs.fortinet.com/document/fortiauthenticator/6.2.0/rest-api-solution-guide/158294/the-fortiauthenticator-api).
-Tested with FortAuthenticator version 6.2.0.
+Tested with FortiAuthenticator version 6.2.0.
 
 Configure FortiAuthenticator in GitLab. On your GitLab server:
 

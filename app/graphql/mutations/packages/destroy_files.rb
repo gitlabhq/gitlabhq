@@ -37,7 +37,7 @@ module Mutations
 
         result = ::Packages::MarkPackageFilesForDestructionService.new(files_to_destroy_relation).execute
 
-        sync_helm_metadata_caches(package_files, project) unless result.error?
+        sync_helm_metadata_caches(package_files) unless result.error?
 
         service_errors = result.error? ? Array.wrap(result[:message]) : []
         all_errors = protection_errors + service_errors
@@ -59,20 +59,10 @@ module Mutations
         GitlabSchema.parse_gids(gids, expected_type: ::Packages::PackageFile).map(&:model_id)
       end
 
-      def sync_helm_metadata_caches(package_files, project)
-        metadata = ::Packages::Helm::FileMetadatum.for_package_files(package_files)
-        .select_distinct_channel
-
-        return if metadata.blank?
-
-        # rubocop:disable CodeReuse/Worker -- This is required because we want to sync metadata cache as soon as package file are deleted
-        # Related issue: https://gitlab.com/gitlab-org/gitlab/-/work_items/569680
-        ::Packages::Helm::CreateMetadataCacheWorker.bulk_perform_async_with_contexts(
-          metadata,
-          arguments_proc: ->(metadatum) { [project.id, metadatum.channel] },
-          context_proc: ->(_) { { project: project, user: current_user } }
-        )
-        # rubocop:enable CodeReuse/Worker
+      def sync_helm_metadata_caches(package_files)
+        ::Packages::Helm::BulkSyncHelmMetadataCacheService.new(
+          current_user, package_files
+        ).execute
       end
 
       def filter_protected_files(project, package_files)

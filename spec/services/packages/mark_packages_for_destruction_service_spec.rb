@@ -106,7 +106,7 @@ RSpec.describe Packages::MarkPackagesForDestructionService, :sidekiq_inline, fea
             packages.each { |package| expect(package.reload).to be_pending_destruction }
           end
 
-          it 'creates helm metadata for the project and channel' do
+          it 'creates helm metadata cache for the project and channel' do
             expect(::Packages::Helm::CreateMetadataCacheService).to receive(:new).with(
               project, 'stable'
             ).once.and_call_original

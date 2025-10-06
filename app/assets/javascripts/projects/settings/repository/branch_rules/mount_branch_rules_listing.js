@@ -10,11 +10,18 @@ const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(),
 });
 
-export default function mountBranchRules(el) {
+export default function mountBranchRulesListing(el) {
   if (!el) return null;
 
-  const { projectPath, branchRulesPath, showCodeOwners, showStatusChecks, showApprovers } =
-    el.dataset;
+  const {
+    projectPath,
+    branchRulesPath,
+    showCodeOwners,
+    showStatusChecks,
+    showApprovers,
+    canAdminGroupProtectedBranches,
+    groupSettingsRepositoryPath,
+  } = el.dataset;
 
   return new Vue({
     el,
@@ -25,6 +32,8 @@ export default function mountBranchRules(el) {
       showCodeOwners: parseBoolean(showCodeOwners),
       showStatusChecks: parseBoolean(showStatusChecks),
       showApprovers: parseBoolean(showApprovers),
+      canAdminGroupProtectedBranches: parseBoolean(canAdminGroupProtectedBranches),
+      groupSettingsRepositoryPath,
     },
     render(createElement) {
       return createElement(BranchRulesApp);
