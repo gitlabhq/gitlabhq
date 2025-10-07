@@ -43,7 +43,6 @@ RSpec/NoExpectationExample:
     - 'qa/qa/specs/features/browser_ui/3_create/snippet/add_comment_to_snippet_spec.rb'
     - 'qa/qa/specs/features/browser_ui/4_verify/ci_variable/ui_variable_inheritable_when_forward_pipeline_variables_true_spec.rb'
     - 'qa/qa/specs/features/browser_ui/4_verify/ci_variable/ui_variable_non_inheritable_when_forward_pipeline_variables_false_spec.rb'
-    - 'qa/qa/specs/features/ee/api/2_plan/epics_to_work_items_sync_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/12_systems/geo/wiki_ssh_push_spec.rb'
     - 'qa/spec/specs/helpers/context_selector_spec.rb'
     - 'qa/spec/specs/helpers/feature_flag_spec.rb'

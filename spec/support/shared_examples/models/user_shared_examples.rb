@@ -34,7 +34,6 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       audit_events
       uploaded_uploads
       alert_assignees
-      issue_assignees
       created_custom_emoji
       bulk_imports
       namespace_import_user

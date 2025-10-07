@@ -261,6 +261,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:releases).dependent(:nullify) }
     it { is_expected.to have_many(:reviews).inverse_of(:author) }
     it { is_expected.to have_many(:merge_request_assignees).inverse_of(:assignee) }
+    it { is_expected.to have_many(:issue_assignees).inverse_of(:assignee).dependent(:delete_all) }
     it { is_expected.to have_many(:merge_request_reviewers).inverse_of(:reviewer) }
     it { is_expected.to have_many(:created_custom_emoji).inverse_of(:creator) }
     it { is_expected.to have_many(:timelogs) }

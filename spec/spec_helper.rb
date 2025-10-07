@@ -357,10 +357,6 @@ RSpec.configure do |config|
       # New paneled view is still a WIP and not functional.
       stub_feature_flags(paneled_view: false)
 
-      # We are in the process of migrating Tailwind utils to container queries and some breakages
-      # are still expected at the moment
-      stub_feature_flags(tailwind_container_queries: false)
-
       # Handle dynamic partitions creation
       stub_feature_flags(disallow_database_ddl_feature_flags: false)
 

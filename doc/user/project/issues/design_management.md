@@ -272,7 +272,7 @@ Prerequisites:
 
 To delete a comment from a design:
 
-1. On the comment you want to delete, select **More actions** {{< icon name="ellipsis_v" >}} **> Delete comment**.
+1. On the comment you want to delete, select **More actions** {{< icon name="ellipsis_v" >}} > **Delete comment**.
 1. On the confirmation dialog, select **Delete comment**.
 
 ## Resolve a discussion thread on a design

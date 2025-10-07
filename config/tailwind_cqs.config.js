@@ -1,7 +1,7 @@
 /**
  * This is a temporary config file which we leverage to build a second Tailwind CSS bundle where
  * `@`-prefixed responsive utils are compiled to container queries rather than media queries.
- * When the CQs migration is complete and the `tailwind_container_queries` feature flag is removed,
+ * When the CQs migration is complete and the `paneled_view` feature flag is removed,
  * we should remove this config and the code that uses it as building CQs will become the default.
  */
 

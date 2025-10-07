@@ -17,7 +17,7 @@ module Users
     def available?
       return false if user.nil?
 
-      Feature.enabled?(:paneled_view, user) && Feature.enabled?(:tailwind_container_queries, user)
+      Feature.enabled?(:paneled_view, user)
     end
 
     private

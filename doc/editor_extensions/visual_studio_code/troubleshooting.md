@@ -121,7 +121,7 @@ For updates on a permanent solution, see
 
 ## Error: `can't access the OS Keychain`
 
-Error messages like these can occur on both MacOS and Ubuntu:
+Error messages like these can occur on both macOS and Ubuntu:
 
 ```plaintext
 GitLab Workflow can't access the OS Keychain.
@@ -138,9 +138,9 @@ For more information about these errors, see:
 - [Extension issue 580](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/580)
 - [Upstream `microsoft/vscode` issue 147515](https://github.com/microsoft/vscode/issues/147515)
 
-### MacOS workaround
+### macOS workaround
 
-A workaround exists for MacOS:
+A workaround exists for macOS:
 
 1. On your machine, open **Keychain Access** and search for `vscodegitlab.gitlab-workflow`.
 1. Delete `vscodegitlab.gitlab-workflow` from your keychain.

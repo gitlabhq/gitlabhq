@@ -16,7 +16,7 @@ description: Learn about an upcoming redesign of GitLab user interface.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18710) in GitLab 18.5 [with flags](../administration/feature_flags/_index.md) named `paneled_view` and `tailwind_container_queries`.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18710) in GitLab 18.5 [with flags](../administration/feature_flags/_index.md) named `paneled_view`.
   Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
 
 {{< /history >}}

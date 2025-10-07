@@ -320,7 +320,7 @@ module ApplicationHelper
     class_names << 'with-header' if @with_header || !current_user || project_studio_enabled?
     class_names << 'application-chrome' if project_studio_enabled?
     class_names << 'page-with-panels' if project_studio_enabled?
-    class_names << 'with-gl-container-queries' if Feature.enabled?(:tailwind_container_queries, current_user)
+    class_names << 'with-gl-container-queries' if project_studio_enabled?
     class_names << system_message_class
 
     class_names

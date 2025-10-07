@@ -475,7 +475,6 @@ RSpec/BeEq:
     - 'ee/spec/workers/work_items/rolledup_dates/update_milestone_related_work_item_dates_event_handler_spec.rb'
     - 'ee/spec/workers/work_items/rolledup_dates/update_rolledup_dates_event_handler_spec.rb'
     - 'qa/qa/specs/features/ee/api/12_systems/geo/geo_nodes_spec.rb'
-    - 'qa/qa/specs/features/ee/api/2_plan/epics_to_work_items_sync_spec.rb'
     - 'qa/spec/resource/api_fabricator_spec.rb'
     - 'qa/spec/runtime/env_spec.rb'
     - 'qa/spec/specs/allure_report_spec.rb'

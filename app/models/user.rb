@@ -263,7 +263,7 @@ class User < ApplicationRecord
   has_many :uploaded_uploads, class_name: 'Upload', foreign_key: :uploaded_by_user_id
 
   has_many :alert_assignees, class_name: '::AlertManagement::AlertAssignee', inverse_of: :assignee
-  has_many :issue_assignees, inverse_of: :assignee
+  has_many :issue_assignees, inverse_of: :assignee, dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent -- required by https://gitlab.com/groups/gitlab-org/-/epics/19085
   has_many :merge_request_assignees, inverse_of: :assignee, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :merge_request_reviewers, inverse_of: :reviewer, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue

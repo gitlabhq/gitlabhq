@@ -94,7 +94,7 @@ To lock a file:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Go to the file you want to lock.
-1. In the upper-right corner, next to a filename, select **Actions** ({{< icon name="ellipsis_v" >}}) **> Lock**.
+1. In the upper-right corner, next to a filename, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Lock**.
 1. On the confirmation dialog, select **OK**.
 
 If you do not have permission to lock the file, the menu item is disabled.

@@ -115,9 +115,9 @@ Select multiple cells and merge or split them.
 To merge selected cells into one:
 
 1. Select multiple cells - select one and drag your cursor.
-1. In the upper-right corner of a cell, select the chevron {{< icon name="chevron-down" >}} **> Merge N cells**.
+1. In the upper-right corner of a cell, select the chevron {{< icon name="chevron-down" >}} > **Merge N cells**.
 
-To split merged cells: In the upper-right corner of a cell, select the chevron {{< icon name="chevron-down" >}} **> Split cell**.
+To split merged cells: In the upper-right corner of a cell, select the chevron {{< icon name="chevron-down" >}} > **Split cell**.
 
 ## Insert diagrams
 

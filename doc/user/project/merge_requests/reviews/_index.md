@@ -159,7 +159,7 @@ To start your review of a merge request:
 
 1. Either:
    - Press <kbd>Shift</kbd> + <kbd>r</kbd> to go to your **Review requests** page.
-   - On the left sidebar, select **Merge requests** ({{< icon name="merge-request" >}}) **> Review requests**.
+   - On the left sidebar, select **Merge requests** ({{< icon name="merge-request" >}}) > **Review requests**.
 <!-- When the feature flag paneled_view is removed, refer only to the button icon -->
 
 1. Find your merge request, and select the title of the merge request to view it.

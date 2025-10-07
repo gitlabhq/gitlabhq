@@ -86,7 +86,7 @@ Prerequisites:
 To generate an issue description:
 
 1. Create a new issue.
-1. Above the **Description** field, select **GitLab Duo** ({{< icon name="tanuki-ai" >}}) **> Generate issue description**.
+1. Above the **Description** field, select **GitLab Duo** ({{< icon name="tanuki-ai" >}}) > **Generate issue description**.
 1. Write a short description and select **Submit**.
 
 The issue description is replaced with AI-generated text.

@@ -1,9 +1,8 @@
-- container_queries_enabled = Feature.enabled?(:tailwind_container_queries, current_user)
-- @main_wrapper_class =  "container-queries-enabled gl-@container/panel js-container-queries-enabled" if container_queries_enabled
+- @main_wrapper_class =  "container-queries-enabled gl-@container/panel js-container-queries-enabled" if project_studio_enabled?
 
 .layout-page{ class: page_with_sidebar_class }
   -# this is required to exactly match the main container width to the viewport inner width, which includes scrollbar
-  - if container_queries_enabled
+  - if project_studio_enabled?
     = javascript_tag do
       :plain
         const outer = document.createElement('div');
@@ -84,7 +83,7 @@
           chat_title: chat_title } }
 
   - else
-    - @content_wrapper_class = "#{@content_wrapper_class || ""} gl-@container" if container_queries_enabled
+    - @content_wrapper_class = "#{@content_wrapper_class || ""} gl-@container" if project_studio_enabled?
     .content-wrapper{ class: "#{@content_wrapper_class}" }
       -# Broadcast messages
       .broadcast-wrapper

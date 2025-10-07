@@ -128,7 +128,6 @@ export default {
         first: this.pageSize,
         name: this.filters?.name,
         sort: this.sort,
-        referrers: this.glFeatures.showContainerRegistryTagSignatures,
         ...this.pageParams,
       };
     },

@@ -45,7 +45,7 @@
     = universal_stylesheet_link_tag "application"
     = yield :page_specific_styles
     = universal_stylesheet_link_tag 'application_utilities'
-  - if Feature.enabled?(:tailwind_container_queries, current_user)
+  - if project_studio_enabled?
     = universal_stylesheet_link_tag 'tailwind_cqs'
   - else
     = universal_stylesheet_link_tag 'tailwind'

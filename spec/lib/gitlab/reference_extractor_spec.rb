@@ -313,8 +313,21 @@ RSpec.describe Gitlab::ReferenceExtractor, feature_category: :shared do
       end
     end
 
+    # There should never be more than these 7 single-character prefixes,
+    # @, #, ~, %, !, $, and &
+    # See https://gitlab.com/groups/gitlab-org/-/epics/7563
+    it 'returns only 7 single-character prefixes' do
+      single_character_prefixes = prefixes.keys.select { |prefix| prefix.length == 1 }
+      valid_prefixes = %w[@ # ~ % ! $ &]
+
+      expect(single_character_prefixes).to match_array(valid_prefixes)
+    end
+
     it 'returns all supported prefixes' do
-      expect(prefixes.keys.uniq).to include(*%w(@ # ~ % ! $ & [vulnerability:))
+      valid_prefixes = %w(@ # ~ % ! $ & [vulnerability:)
+      valid_prefixes += %w[*iteration:] if Gitlab.ee?
+
+      expect(prefixes.keys).to match_array(valid_prefixes)
     end
 
     it 'does not allow one prefix for multiple referables if not allowed specificly' do

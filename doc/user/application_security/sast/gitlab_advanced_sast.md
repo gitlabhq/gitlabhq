@@ -22,6 +22,7 @@ title: GitLab Advanced SAST
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/474094) in GitLab 17.3.
 - Support for Java Server Pages (JSP) added in GitLab 17.4.
 - Support for PHP [added](https://gitlab.com/groups/gitlab-org/-/epics/14273) in GitLab 18.1.
+- Support for C/C++ [added](https://gitlab.com/groups/gitlab-org/-/epics/14271) in GitLab 18.6.
 
 {{< /history >}}
 
@@ -111,12 +112,18 @@ In some cases, Semgrep vulnerabilities may still appear as duplicates if the [de
 GitLab Advanced SAST supports the following languages with cross-function and cross-file taint analysis:
 
 - C# (up to and including 10.0)
+- C/C++<sup>1</sup>
 - Go
 - Java, including Java Server Pages (JSP)
 - JavaScript, TypeScript
 - PHP
 - Python
 - Ruby
+
+**Footnotes**:
+
+1. C/C++ support is based on the [clang static analyzer](https://clang-analyzer.llvm.org/) and requires additional configuration (such as a compilation database) to be used with GitLab Advanced SAST.
+For details, see [C/C++ configuration](clangsa.md).
 
 ### PHP known issues
 

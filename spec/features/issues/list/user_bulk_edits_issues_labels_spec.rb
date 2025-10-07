@@ -20,7 +20,6 @@ RSpec.describe 'Issues > Labels bulk assignment', feature_category: :team_planni
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
-    stub_feature_flags(tailwind_container_queries: false)
   end
 
   context 'as an allowed user', :js do

@@ -1809,7 +1809,6 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - !reference [.frontend:rules:compile-production-assets, rules]
     - !reference [.frontend:rules:compile-test-assets, rules]
     - !reference [.build-images:rules:build-gdk-image, rules]
 

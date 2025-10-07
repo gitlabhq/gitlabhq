@@ -48,7 +48,9 @@ GET /search
 ### Scope: `projects`
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=projects&search=flight"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/search?scope=projects&search=flight"
 ```
 
 Example response:
@@ -81,7 +83,9 @@ Example response:
 ### Scope: `issues`
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=issues&search=file"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/search?scope=issues&search=file"
 ```
 
 Example response:
@@ -150,7 +154,9 @@ The `assignee` column is deprecated. It is shown as a single-sized array `assign
 ### Scope: `merge_requests`
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=merge_requests&search=file"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/search?scope=merge_requests&search=file"
 ```
 
 Example response:
@@ -229,7 +235,9 @@ Example response:
 ### Scope: `milestones`
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=milestones&search=release"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/search?scope=milestones&search=release"
 ```
 
 Example response:
@@ -254,7 +262,9 @@ Example response:
 ### Scope: `snippet_titles`
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=snippet_titles&search=sample"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/search?scope=snippet_titles&search=sample"
 ```
 
 Example response:
@@ -285,7 +295,9 @@ Example response:
 ### Scope: `users`
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=users&search=doe"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/search?scope=users&search=doe"
 ```
 
 Example response:
@@ -316,7 +328,9 @@ Use this scope to search wikis.
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=wiki_blobs&search=bye"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/search?scope=wiki_blobs&search=bye"
 ```
 
 Example response:
@@ -355,7 +369,9 @@ Example response:
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/search?scope=commits&search=bye"
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/search?scope=commits&search=bye"
 ```
 
 Example response:

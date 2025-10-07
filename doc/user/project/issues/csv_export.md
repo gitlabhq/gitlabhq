@@ -53,7 +53,7 @@ Prerequisites:
 1. In the dropdown list that appears, select the attributes to filter by.
    For more information about filter options, see
    [Filter the list of issues](managing_issues.md#filter-the-list-of-issues).
-1. In the upper right, select **Actions** ({{< icon name="ellipsis_v" >}}) **> Export as CSV**.
+1. In the upper right, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Export as CSV**.
 1. In the dialog, verify that the email address is correct, then select **Export issues**.
 
 All matching issues are exported, including those not shown on the first page.

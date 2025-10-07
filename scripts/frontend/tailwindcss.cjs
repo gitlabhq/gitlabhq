@@ -19,7 +19,7 @@ const createProcessorModulePath = 'tailwindcss/lib/cli/build/plugin.js';
  *
  * - We're on Tailwind v3, and given v4 is available, it's unlikely to receive
  *   any updates other than bug fixes.
- * - This hack will only exist as long as the `tailwind_container_queries`
+ * - This hack will only exist as long as the `paneled_view`
  *   feature flag exists. That is, it is temporary, to help with the
  *   [migration to container queries][4].
  *
