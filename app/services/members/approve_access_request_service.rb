@@ -41,7 +41,12 @@ module Members
     end
 
     def can_approve_access_requester?(access_requester)
-      can?(current_user, :admin_member_access_request, access_requester.source)
+      can?(current_user, :admin_member_access_request, access_requester.source) &&
+        !role_too_high?(access_requester)
+    end
+
+    def role_too_high?(access_requester)
+      access_requester.prevent_role_assignement?(current_user, params)
     end
 
     def approving_member_with_owner_access_level?(access_requester)

@@ -38984,13 +38984,23 @@ CREATE INDEX index_ci_pending_builds_on_project_id ON ci_pending_builds USING bt
 
 CREATE INDEX index_ci_pending_builds_on_tag_ids ON ci_pending_builds USING btree (tag_ids) WHERE (cardinality(tag_ids) > 0);
 
+CREATE INDEX index_ci_pipeline_artifact_states_failed_verification ON ONLY p_ci_pipeline_artifact_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
+
+CREATE INDEX index_ci_pipeline_artifact_states_needs_verification_id ON ONLY p_ci_pipeline_artifact_states USING btree (pipeline_artifact_id) WHERE ((verification_state = 0) OR (verification_state = 3));
+
+CREATE UNIQUE INDEX index_ci_pipeline_artifact_states_on_artifact_and_partition ON ONLY p_ci_pipeline_artifact_states USING btree (pipeline_artifact_id, partition_id);
+
+CREATE INDEX index_ci_pipeline_artifact_states_on_verification_started ON ONLY p_ci_pipeline_artifact_states USING btree (pipeline_artifact_id, verification_started_at) WHERE (verification_state = 1);
+
+CREATE INDEX index_ci_pipeline_artifact_states_pending_verification ON ONLY p_ci_pipeline_artifact_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
+
 CREATE INDEX index_ci_pipeline_artifacts_failed_verification ON ci_pipeline_artifacts USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
 
 CREATE INDEX index_ci_pipeline_artifacts_needs_verification ON ci_pipeline_artifacts USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
 
 CREATE INDEX index_ci_pipeline_artifacts_on_expire_at ON ci_pipeline_artifacts USING btree (expire_at);
 
-CREATE UNIQUE INDEX index_ci_pipeline_artifacts_on_partition_id_and_id ON ci_pipeline_artifacts USING btree (partition_id, id);
+CREATE UNIQUE INDEX index_ci_pipeline_artifacts_on_id_and_partition_id ON ci_pipeline_artifacts USING btree (id, partition_id);
 
 CREATE UNIQUE INDEX index_ci_pipeline_artifacts_on_pipeline_id_and_file_type ON ci_pipeline_artifacts USING btree (pipeline_id, file_type);
 
@@ -40973,6 +40983,8 @@ CREATE INDEX index_on_namespaces_lower_path ON namespaces USING btree (lower((pa
 CREATE INDEX index_on_namespaces_namespaces_by_top_level_namespace ON namespaces USING btree ((traversal_ids[1]), type, id);
 
 CREATE INDEX index_on_oncall_schedule_escalation_rule ON incident_management_escalation_rules USING btree (oncall_schedule_id);
+
+CREATE INDEX index_on_pipeline_artifact_id_partition_id_verification_state ON ONLY p_ci_pipeline_artifact_states USING btree (verification_state, pipeline_artifact_id);
 
 CREATE UNIQUE INDEX index_on_project_id_escalation_policy_name_unique ON incident_management_escalation_policies USING btree (project_id, name);
 

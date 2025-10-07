@@ -30,7 +30,7 @@ RSpec.describe 'user_settings/passwords/edit.html.haml', feature_category: :syst
     it 'displays an alert to add passkeys' do
       render
 
-      learn_more_link = link_to('', help_page_path('TODO.md', anchor: 'TODO'), target: '_blank', rel: 'noopener') # rubocop:disable Gitlab/DocumentationLinks/Link -- Temporal stub. We will be replace
+      learn_more_link = link_to('', help_page_path('auth/passkeys.md'), target: '_blank', rel: 'noopener')
       expect(rendered).to include(safe_format(s_('ProfilesAuthentication|Add a passkey to sign in securely with your ' \
         'trusted device. %{link_start}Learn more about passkeys%{link_end}.'),
         tag_pair(learn_more_link, :link_start, :link_end)))

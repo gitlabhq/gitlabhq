@@ -44,11 +44,17 @@ export default {
   },
   mounted() {
     if (this.shouldShowPopover) {
-      setTimeout(() => {
+      this.popoverTimeout = setTimeout(() => {
         this.showPopover = true;
       }, 500);
     }
   },
+  beforeDestroy() {
+    if (this.popoverTimeout) {
+      clearTimeout(this.popoverTimeout);
+    }
+  },
+
   methods: {
     ...mapActions(useFileTreeBrowserVisibility, ['handleFileTreeBrowserToggleClick']),
     onClickToggle() {

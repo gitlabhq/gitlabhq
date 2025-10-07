@@ -9,6 +9,7 @@ title: Static reachability analysis
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 
 {{< /details >}}
 
@@ -31,6 +32,8 @@ security risks, helping you prioritize remediation based on actual threat exposu
 
 If you are new to static reachability analysis, the following steps show how to enable it for your
 project.
+
+Share any feedback on the new static reachability analysis in this [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/535498).
 
 Prerequisites:
 
@@ -163,6 +166,8 @@ To use the dependency scanning component in an offline environment, you must fir
 Dependency scanning generates an SBOM report that identifies all components and their transitive
 dependencies. Static reachability analysis checks each dependency in the SBOM report and adds a
 reachability value to the SBOM report. The enriched SBOM is then ingested by the GitLab instance.
+
+Static reachability analysis relies on [metadata](https://gitlab.com/gitlab-org/security-products/static-reachability-metadata) that maps package names from SBOMs to their corresponding code import paths for Python and Java packages. This metadata is maintained with weekly updates.
 
 The following are marked as not found:
 
