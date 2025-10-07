@@ -179,7 +179,6 @@ describe('TodosWidget', () => {
     });
 
     it('refetches todos when a todo item changes', async () => {
-      // Reset call count after initial query
       todosQuerySuccessHandler.mockClear();
 
       const firstTodoItem = findFirstTodoItem();
@@ -259,7 +258,6 @@ describe('TodosWidget', () => {
       };
 
       const queryHandler = jest.fn((value) => {
-        // Return an empty response if the filter is provided
         if (value.action) {
           return emptyResponse;
         }

@@ -35,13 +35,6 @@ For more information on:
 
 ## Hashed storage
 
-{{< history >}}
-
-- Support for legacy storage, where repository paths were generated based on the project path, has been completely removed in GitLab 14.0.
-- **Storage name** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly storage name** and **Relative path** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly relative path** in GitLab 16.3.
-
-{{< /history >}}
-
 Hashed storage stores projects on disk in a location based on a hash of the project's ID. This makes the folder
 structure immutable and eliminates the need to synchronize state from URLs to disk structure. This means that renaming a
 group, user, or project:
@@ -74,6 +67,12 @@ translate between the human-readable project name and the hashed storage path. Y
 - From a [hashed path to a project's name](#from-hashed-path-to-project-name).
 
 #### From project name to hashed path
+
+{{< history >}}
+
+- **Relative path** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly relative path** in GitLab 16.3.
+
+{{< /history >}}
 
 Administrators can look up a project's hashed path from its name or ID using:
 

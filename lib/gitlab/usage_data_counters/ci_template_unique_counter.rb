@@ -88,6 +88,7 @@ module Gitlab::UsageDataCounters
       p_ci_templates_jobs_dast_default_branch_deploy
       p_ci_templates_jobs_dependency_scanning
       p_ci_templates_jobs_dependency_scanning_latest
+      p_ci_templates_jobs_dependency_scanning_v2
       p_ci_templates_jobs_deploy
       p_ci_templates_jobs_deploy_ec2
       p_ci_templates_jobs_deploy_ecs

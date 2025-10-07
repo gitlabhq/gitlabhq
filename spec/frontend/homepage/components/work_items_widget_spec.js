@@ -186,6 +186,66 @@ describe('WorkItemsWidget', () => {
       await waitForPromises();
       expect(workItemsWidgetMetadataQueryHandler).toHaveBeenCalledTimes(2);
     });
+
+    it('calls reload method directly', async () => {
+      createWrapper();
+      await waitForPromises();
+
+      const refetchSpy = jest.spyOn(wrapper.vm.$apollo.queries.metadata, 'refetch');
+
+      wrapper.vm.reload();
+
+      expect(wrapper.vm.hasError).toBe(false);
+      expect(refetchSpy).toHaveBeenCalled();
+    });
+
+    it('handles visibility change when document is not hidden', async () => {
+      let mockTime = Date.now();
+      jest.spyOn(Date, 'now').mockImplementation(() => mockTime);
+
+      const workItemsWidgetMetadataQueryHandler =
+        workItemsWidgetMetadataQuerySuccessHandler(withItems);
+
+      createWrapper({ workItemsWidgetMetadataQueryHandler });
+      await waitForPromises();
+
+      Object.defineProperty(document, 'hidden', {
+        writable: true,
+        value: false,
+      });
+
+      // Initial visibility change - sets timestamp but doesn't reload
+      document.dispatchEvent(new Event('visibilitychange'));
+      expect(workItemsWidgetMetadataQueryHandler).toHaveBeenCalledTimes(1);
+
+      // Advance time and trigger another visibility change
+      mockTime += 6000; // 6 seconds
+      document.dispatchEvent(new Event('visibilitychange'));
+
+      await waitForPromises();
+      expect(workItemsWidgetMetadataQueryHandler).toHaveBeenCalledTimes(2);
+
+      Date.now.mockRestore();
+    });
+
+    it('does not reload when document is hidden', async () => {
+      const workItemsWidgetMetadataQueryHandler =
+        workItemsWidgetMetadataQuerySuccessHandler(withItems);
+
+      createWrapper({ workItemsWidgetMetadataQueryHandler });
+      await waitForPromises();
+
+      Object.defineProperty(document, 'hidden', {
+        writable: true,
+        value: true,
+      });
+
+      document.dispatchEvent(new Event('visibilitychange'));
+      await waitForPromises();
+
+      // Should not have queried again since document is hidden
+      expect(workItemsWidgetMetadataQueryHandler).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('number formatting', () => {
@@ -229,6 +289,78 @@ describe('WorkItemsWidget', () => {
 
       expect(findAssignedCount().text()).toBe('15K');
       expect(findAuthoredCount().text()).toBe('1.5M');
+    });
+
+    it('formats small counts with grouping', async () => {
+      const mockData = {
+        data: {
+          currentUser: {
+            id: 'gid://gitlab/User/1',
+            assigned: {
+              count: 1234,
+              nodes: [
+                {
+                  id: 'gid://gitlab/WorkItem/1',
+                  updatedAt: '2025-06-28T18:13:25Z',
+                  __typename: 'WorkItem',
+                },
+              ],
+              __typename: 'WorkItemConnection',
+            },
+            authored: {
+              count: 5678,
+              nodes: [
+                {
+                  id: 'gid://gitlab/WorkItem/2',
+                  updatedAt: '2025-06-25T18:13:25Z',
+                  __typename: 'WorkItem',
+                },
+              ],
+              __typename: 'WorkItemConnection',
+            },
+            __typename: 'CurrentUser',
+          },
+        },
+      };
+
+      createWrapper({
+        workItemsWidgetMetadataQueryHandler: workItemsWidgetMetadataQuerySuccessHandler(mockData),
+        assignedIssuesCount: 1234,
+      });
+      await waitForPromises();
+
+      expect(findAssignedCount().text()).toBe('1,234');
+      expect(findAuthoredCount().text()).toBe('5,678');
+    });
+
+    it('formats negative counts correctly', async () => {
+      const mockData = {
+        data: {
+          currentUser: {
+            id: 'gid://gitlab/User/1',
+            assigned: {
+              count: -1234,
+              nodes: [],
+              __typename: 'WorkItemConnection',
+            },
+            authored: {
+              count: -25000,
+              nodes: [],
+              __typename: 'WorkItemConnection',
+            },
+            __typename: 'CurrentUser',
+          },
+        },
+      };
+
+      createWrapper({
+        workItemsWidgetMetadataQueryHandler: workItemsWidgetMetadataQuerySuccessHandler(mockData),
+        assignedIssuesCount: -1234,
+      });
+      await waitForPromises();
+
+      expect(findAssignedCount().text()).toBe('-1,234');
+      expect(findAuthoredCount().text()).toBe('-25K');
     });
   });
 

@@ -126,7 +126,10 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mb-7 gl-mt-8 gl-flex gl-flex-row gl-items-center gl-gap-x-5">
+  <div
+    data-testid="homepage-greeting-header"
+    class="gl-mb-7 gl-mt-8 gl-flex gl-flex-row gl-items-center gl-gap-x-5"
+  >
     <!-- When no status is set, the entire avatar area is clickable -->
     <button
       v-if="!statusEmoji"

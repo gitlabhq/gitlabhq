@@ -57,6 +57,7 @@
 'ci_template_included-filter:[label:jobs_dependency_scanning,property:false]-project': p_ci_templates_jobs_dependency_scanning
 'ci_template_included-filter:[label:jobs_dependency_scanning,property:true]-project': p_ci_templates_implicit_jobs_dependency_scanning
 'ci_template_included-filter:[label:jobs_dependency_scanning_latest,property:false]-project': p_ci_templates_jobs_dependency_scanning_latest
+'ci_template_included-filter:[label:jobs_dependency_scanning_v2,property:false]-project': p_ci_templates_jobs_dependency_scanning_v2
 'ci_template_included-filter:[label:jobs_deploy,property:false]-project': p_ci_templates_jobs_deploy
 'ci_template_included-filter:[label:jobs_deploy,property:true]-project': p_ci_templates_implicit_jobs_deploy
 'ci_template_included-filter:[label:jobs_deploy_ec2,property:false]-project': p_ci_templates_jobs_deploy_ec2

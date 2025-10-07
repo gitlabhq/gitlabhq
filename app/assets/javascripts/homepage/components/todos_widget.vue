@@ -145,7 +145,7 @@ export default {
 </script>
 
 <template>
-  <base-widget @visible="reload">
+  <base-widget data-testid="homepage-todos-widget" @visible="reload">
     <div class="gl-mb-2 gl-flex gl-items-center gl-justify-between gl-gap-2">
       <div class="gl-flex gl-items-center gl-gap-2">
         <h2 class="gl-heading-4 gl-m-0 gl-grow">{{ __('Items that need your attention') }}</h2>

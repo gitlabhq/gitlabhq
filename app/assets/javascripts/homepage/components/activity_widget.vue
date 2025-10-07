@@ -154,7 +154,7 @@ export default {
 </script>
 
 <template>
-  <base-widget @visible="reload">
+  <base-widget data-testid="homepage-activity-widget" @visible="reload">
     <div class="gl-flex gl-items-center gl-justify-between gl-gap-2">
       <div class="gl-flex gl-items-center gl-gap-2">
         <h2 class="gl-heading-4 gl-m-0">{{ __('Follow the latest updates') }}</h2>

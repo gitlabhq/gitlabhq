@@ -25,6 +25,12 @@ For a video overview, see [Design Management](https://www.youtube.com/watch?v=CC
 
 ## Prerequisites
 
+{{< history >}}
+
+- **Relative path** field [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly relative path** in GitLab 16.3.
+
+{{< /history >}}
+
 - [Git Large File Storage (LFS)](../../../topics/git/lfs/_index.md) must be enabled:
   - On GitLab.com, LFS is already enabled.
   - On GitLab Self-Managed instances, a GitLab administrator must

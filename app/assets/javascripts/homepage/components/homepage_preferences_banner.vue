@@ -20,6 +20,7 @@ export default {
       <template #default="{ dismiss, shouldShowCallout }">
         <gl-banner
           v-if="shouldShowCallout"
+          data-testid="homepage-preferences-banner"
           :title="s__('Homepage|Welcome to the new homepage')"
           class="homepage-duo-core-banner gl-mb-5 gl-bg-white"
           button-text=""

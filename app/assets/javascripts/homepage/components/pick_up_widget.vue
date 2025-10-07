@@ -53,7 +53,7 @@ export default {
 
 <template>
   <local-storage-sync v-model="dismissed" :storage-key="storageKey">
-    <div v-if="!dismissed" data-testid="pick-up-widget-container">
+    <div v-if="!dismissed" data-testid="homepage-pick-up-widget">
       <h2 class="gl-heading-4 gl-mb-4 gl-mt-0">{{ __('Pick up where you left off') }}</h2>
       <div class="gl-border gl-mt-3 gl-rounded-lg gl-border-default gl-p-4">
         <div class="gl-flex-col gl-space-y-2">

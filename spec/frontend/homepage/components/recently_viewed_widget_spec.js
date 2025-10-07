@@ -188,7 +188,7 @@ describe('RecentlyViewedWidget', () => {
       createComponent();
       await waitForPromises();
 
-      expect(findItemLinks()).toHaveLength(5); // 5 items total (2 MRs, 2 Issues, 1 Epic)
+      expect(findItemLinks()).toHaveLength(5);
     });
 
     it('handles empty response gracefully', async () => {
@@ -247,7 +247,6 @@ describe('RecentlyViewedWidget', () => {
     });
 
     it('limits items to MAX_ITEMS', async () => {
-      // Create response with more than 10 items
       const manyItemsResponse = {
         data: {
           currentUser: {
@@ -307,11 +306,11 @@ describe('RecentlyViewedWidget', () => {
     it('renders items with correct icons', () => {
       const icons = findItemIcons();
 
-      expect(icons.at(0).props('name')).toBe('merge-request'); // First item is MR
-      expect(icons.at(1).props('name')).toBe('issues'); // Second item is issue
-      expect(icons.at(2).props('name')).toBe('epic'); // Third item is epic
-      expect(icons.at(3).props('name')).toBe('issues'); // Fourth item is issue
-      expect(icons.at(4).props('name')).toBe('merge-request'); // Fifth item is MR
+      expect(icons.at(0).props('name')).toBe('merge-request');
+      expect(icons.at(1).props('name')).toBe('issues');
+      expect(icons.at(2).props('name')).toBe('epic');
+      expect(icons.at(3).props('name')).toBe('issues');
+      expect(icons.at(4).props('name')).toBe('merge-request');
     });
 
     it('renders tooltip components for each item', () => {

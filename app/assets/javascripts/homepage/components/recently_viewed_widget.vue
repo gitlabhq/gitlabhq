@@ -72,7 +72,7 @@ export default {
 </script>
 
 <template>
-  <base-widget @visible="reload">
+  <base-widget data-testid="homepage-recently-viewed-widget" @visible="reload">
     <h2 class="gl-heading-4 gl-mb-3">{{ __('Recently viewed') }}</h2>
 
     <p v-if="error" class="gl-mb-0">

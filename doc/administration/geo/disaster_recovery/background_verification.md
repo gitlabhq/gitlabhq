@@ -86,6 +86,12 @@ be resynced with a back-off period. You can also manually [resync and reverify i
 
 ## Reconcile differences with checksum mismatches
 
+{{< history >}}
+
+- **Storage name** and **Relative path** fields [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128416) from **Gitaly storage name** and **Gitaly relative path** in GitLab 16.3.
+
+{{< /history >}}
+
 If the **primary** and **secondary** sites have a checksum verification mismatch, the cause may not be apparent. To find the cause of a checksum mismatch:
 
 1. On the **primary** site:

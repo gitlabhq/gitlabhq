@@ -22472,6 +22472,29 @@ The edge type for [`VulnerabilityExternalIssueLink`](#vulnerabilityexternalissue
 | <a id="vulnerabilityexternalissuelinkedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="vulnerabilityexternalissuelinkedgenode"></a>`node` | [`VulnerabilityExternalIssueLink`](#vulnerabilityexternalissuelink) | The item at the end of the edge. |
 
+#### `VulnerabilityFlagConnection`
+
+The connection type for [`VulnerabilityFlag`](#vulnerabilityflag).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityflagconnectionedges"></a>`edges` | [`[VulnerabilityFlagEdge]`](#vulnerabilityflagedge) | A list of edges. |
+| <a id="vulnerabilityflagconnectionnodes"></a>`nodes` | [`[VulnerabilityFlag]`](#vulnerabilityflag) | A list of nodes. |
+| <a id="vulnerabilityflagconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `VulnerabilityFlagEdge`
+
+The edge type for [`VulnerabilityFlag`](#vulnerabilityflag).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityflagedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="vulnerabilityflagedgenode"></a>`node` | [`VulnerabilityFlag`](#vulnerabilityflag) | The item at the end of the edge. |
+
 #### `VulnerabilityIssueLinkConnection`
 
 The connection type for [`VulnerabilityIssueLink`](#vulnerabilityissuelink).
@@ -27374,11 +27397,13 @@ Represents a vulnerability. The connection type is countable.
 | <a id="countablevulnerabilityexternalissuelinks"></a>`externalIssueLinks` | [`VulnerabilityExternalIssueLinkConnection!`](#vulnerabilityexternalissuelinkconnection) | List of external issue links related to the vulnerability. (see [Connections](#connections)) |
 | <a id="countablevulnerabilityfalsepositive"></a>`falsePositive` | [`Boolean`](#boolean) | Indicates whether the vulnerability is a false positive. |
 | <a id="countablevulnerabilityfindingtokenstatus"></a>`findingTokenStatus` | [`VulnerabilityFindingTokenStatus`](#vulnerabilityfindingtokenstatus) | Status of the secret token associated with this vulnerability. Returns `null` if the `validity_checks` feature flag is disabled. |
+| <a id="countablevulnerabilityflags"></a>`flags` {{< icon name="warning-solid" >}} | [`VulnerabilityFlagConnection`](#vulnerabilityflagconnection) | **Introduced** in GitLab 18.5. **Status**: Experiment. Flags set on the vulnerability. |
 | <a id="countablevulnerabilityhasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Indicates whether there is a remediation available for the vulnerability. |
 | <a id="countablevulnerabilityid"></a>`id` | [`ID!`](#id) | GraphQL ID of the vulnerability. |
 | <a id="countablevulnerabilityidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifier!]!`](#vulnerabilityidentifier) | Identifiers of the vulnerability. |
 | <a id="countablevulnerabilityinitialdetectedpipeline"></a>`initialDetectedPipeline` {{< icon name="warning-solid" >}} | [`Pipeline`](#pipeline) | **Introduced** in GitLab 18.2. **Status**: Experiment. Pipeline where the vulnerability was first detected. |
 | <a id="countablevulnerabilitylatestdetectedpipeline"></a>`latestDetectedPipeline` {{< icon name="warning-solid" >}} | [`Pipeline`](#pipeline) | **Introduced** in GitLab 18.2. **Status**: Experiment. Pipeline where the vulnerability was last detected. |
+| <a id="countablevulnerabilitylatestflag"></a>`latestFlag` {{< icon name="warning-solid" >}} | [`VulnerabilityFlag`](#vulnerabilityflag) | **Introduced** in GitLab 18.5. **Status**: Experiment. Latest flag for the vulnerability. |
 | <a id="countablevulnerabilitylatestsecurityreportfinding"></a>`latestSecurityReportFinding` {{< icon name="warning-solid" >}} | [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding) | **Introduced** in GitLab 18.4. **Status**: Experiment. Latest security report finding for the vulnerability. |
 | <a id="countablevulnerabilitylinks"></a>`links` | [`[VulnerabilityLink!]!`](#vulnerabilitylink) | List of links associated with the vulnerability. |
 | <a id="countablevulnerabilitylocation"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
@@ -45012,11 +45037,13 @@ Represents a vulnerability.
 | <a id="vulnerabilityexternalissuelinks"></a>`externalIssueLinks` | [`VulnerabilityExternalIssueLinkConnection!`](#vulnerabilityexternalissuelinkconnection) | List of external issue links related to the vulnerability. (see [Connections](#connections)) |
 | <a id="vulnerabilityfalsepositive"></a>`falsePositive` | [`Boolean`](#boolean) | Indicates whether the vulnerability is a false positive. |
 | <a id="vulnerabilityfindingtokenstatus"></a>`findingTokenStatus` | [`VulnerabilityFindingTokenStatus`](#vulnerabilityfindingtokenstatus) | Status of the secret token associated with this vulnerability. Returns `null` if the `validity_checks` feature flag is disabled. |
+| <a id="vulnerabilityflags"></a>`flags` {{< icon name="warning-solid" >}} | [`VulnerabilityFlagConnection`](#vulnerabilityflagconnection) | **Introduced** in GitLab 18.5. **Status**: Experiment. Flags set on the vulnerability. |
 | <a id="vulnerabilityhasremediations"></a>`hasRemediations` | [`Boolean`](#boolean) | Indicates whether there is a remediation available for the vulnerability. |
 | <a id="vulnerabilityid"></a>`id` | [`ID!`](#id) | GraphQL ID of the vulnerability. |
 | <a id="vulnerabilityidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifier!]!`](#vulnerabilityidentifier) | Identifiers of the vulnerability. |
 | <a id="vulnerabilityinitialdetectedpipeline"></a>`initialDetectedPipeline` {{< icon name="warning-solid" >}} | [`Pipeline`](#pipeline) | **Introduced** in GitLab 18.2. **Status**: Experiment. Pipeline where the vulnerability was first detected. |
 | <a id="vulnerabilitylatestdetectedpipeline"></a>`latestDetectedPipeline` {{< icon name="warning-solid" >}} | [`Pipeline`](#pipeline) | **Introduced** in GitLab 18.2. **Status**: Experiment. Pipeline where the vulnerability was last detected. |
+| <a id="vulnerabilitylatestflag"></a>`latestFlag` {{< icon name="warning-solid" >}} | [`VulnerabilityFlag`](#vulnerabilityflag) | **Introduced** in GitLab 18.5. **Status**: Experiment. Latest flag for the vulnerability. |
 | <a id="vulnerabilitylatestsecurityreportfinding"></a>`latestSecurityReportFinding` {{< icon name="warning-solid" >}} | [`PipelineSecurityReportFinding`](#pipelinesecurityreportfinding) | **Introduced** in GitLab 18.4. **Status**: Experiment. Latest security report finding for the vulnerability. |
 | <a id="vulnerabilitylinks"></a>`links` | [`[VulnerabilityLink!]!`](#vulnerabilitylink) | List of links associated with the vulnerability. |
 | <a id="vulnerabilitylocation"></a>`location` | [`VulnerabilityLocation`](#vulnerabilitylocation) | Location metadata for the vulnerability. Its fields depend on the type of security scan that found the vulnerability. |
@@ -45455,6 +45482,22 @@ Represents the status of a secret token found in a vulnerability.
 | <a id="vulnerabilityfindingtokenstatuslastverifiedat"></a>`lastVerifiedAt` | [`Time`](#time) | When the token was last verified with the issuing service. |
 | <a id="vulnerabilityfindingtokenstatusstatus"></a>`status` | [`VulnerabilityFindingTokenStatusState!`](#vulnerabilityfindingtokenstatusstate) | Status of the token (unknown, active, inactive). |
 | <a id="vulnerabilityfindingtokenstatusupdatedat"></a>`updatedAt` | [`Time!`](#time) | When the token status was last updated. |
+
+### `VulnerabilityFlag`
+
+Represents a flag result for a vulnerability.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilityflagconfidencescore"></a>`confidenceScore` {{< icon name="warning-solid" >}} | [`Float`](#float) | **Introduced** in GitLab 18.5. **Status**: Experiment. Confidence score of the detection (0.0 to 1.0). |
+| <a id="vulnerabilityflagcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the detection was created. |
+| <a id="vulnerabilityflagdescription"></a>`description` | [`String`](#string) | Reasoning for the raising of the flag on the vulnerability. |
+| <a id="vulnerabilityflagid"></a>`id` | [`ID!`](#id) | ID of the false positive detection. |
+| <a id="vulnerabilityflagorigin"></a>`origin` | [`String`](#string) | Origin of service that raising the flag on the vulnerability. |
+| <a id="vulnerabilityflagstatus"></a>`status` {{< icon name="warning-solid" >}} | [`VulnerabilityFalsePositiveDetectionStatus`](#vulnerabilityfalsepositivedetectionstatus) | **Introduced** in GitLab 18.5. **Status**: Experiment. Status of the false positive detection. |
+| <a id="vulnerabilityflagupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp when the detection was last updated. |
 
 ### `VulnerabilityIdentifier`
 
@@ -50920,6 +50963,18 @@ The type of the external issue link related to a vulnerability.
 | Value | Description |
 | ----- | ----------- |
 | <a id="vulnerabilityexternalissuelinktypecreated"></a>`CREATED` | Created link type. |
+
+### `VulnerabilityFalsePositiveDetectionStatus`
+
+Status of vulnerability flag false positive detection.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="vulnerabilityfalsepositivedetectionstatusdetected_as_fp"></a>`DETECTED_AS_FP` | Detection is detected as fp. |
+| <a id="vulnerabilityfalsepositivedetectionstatusdetected_as_not_fp"></a>`DETECTED_AS_NOT_FP` | Detection is detected as not fp. |
+| <a id="vulnerabilityfalsepositivedetectionstatusfailed"></a>`FAILED` | Detection is failed. |
+| <a id="vulnerabilityfalsepositivedetectionstatusin_progress"></a>`IN_PROGRESS` | Detection is in progress. |
+| <a id="vulnerabilityfalsepositivedetectionstatusnot_started"></a>`NOT_STARTED` | Detection is not started. |
 
 ### `VulnerabilityFindingTokenStatusState`
 

@@ -199,6 +199,66 @@ describe('MergeRequestsWidget', () => {
       // queried after visibility change
       expect(mergeRequestsWidgetMetadataQueryHandler).toHaveBeenCalledTimes(2);
     });
+
+    it('calls reload method directly', async () => {
+      createWrapper();
+      await waitForPromises();
+
+      const refetchSpy = jest.spyOn(wrapper.vm.$apollo.queries.metadata, 'refetch');
+
+      wrapper.vm.reload();
+
+      expect(wrapper.vm.hasError).toBe(false);
+      expect(refetchSpy).toHaveBeenCalled();
+    });
+
+    it('handles visibility change when document is not hidden', async () => {
+      let mockTime = Date.now();
+      jest.spyOn(Date, 'now').mockImplementation(() => mockTime);
+
+      const mergeRequestsWidgetMetadataQueryHandler =
+        mergeRequestsWidgetMetadataQuerySuccessHandler(withItems);
+
+      createWrapper({ mergeRequestsWidgetMetadataQueryHandler });
+      await waitForPromises();
+
+      Object.defineProperty(document, 'hidden', {
+        writable: true,
+        value: false,
+      });
+
+      // Initial visibility change - sets timestamp but doesn't reload
+      document.dispatchEvent(new Event('visibilitychange'));
+      expect(mergeRequestsWidgetMetadataQueryHandler).toHaveBeenCalledTimes(1);
+
+      // Advance time and trigger another visibility change
+      mockTime += 6000; // 6 seconds
+      document.dispatchEvent(new Event('visibilitychange'));
+
+      await waitForPromises();
+      expect(mergeRequestsWidgetMetadataQueryHandler).toHaveBeenCalledTimes(2);
+
+      Date.now.mockRestore();
+    });
+
+    it('does not reload when document is hidden', async () => {
+      const mergeRequestsWidgetMetadataQueryHandler =
+        mergeRequestsWidgetMetadataQuerySuccessHandler(withItems);
+
+      createWrapper({ mergeRequestsWidgetMetadataQueryHandler });
+      await waitForPromises();
+
+      Object.defineProperty(document, 'hidden', {
+        writable: true,
+        value: true,
+      });
+
+      document.dispatchEvent(new Event('visibilitychange'));
+      await waitForPromises();
+
+      // Should not have queried again since document is hidden
+      expect(mergeRequestsWidgetMetadataQueryHandler).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('number formatting', () => {
@@ -242,6 +302,78 @@ describe('MergeRequestsWidget', () => {
 
       expect(findReviewRequestedCount().text()).toBe('25K');
       expect(findAssignedCount().text()).toBe('750K');
+    });
+
+    it('formats small counts without grouping', async () => {
+      const mockData = {
+        data: {
+          currentUser: {
+            id: 'gid://gitlab/User/1',
+            reviewRequestedMergeRequests: {
+              count: 1234,
+              nodes: [
+                {
+                  id: 'gid://gitlab/MergeRequest/1',
+                  updatedAt: '2025-06-11T18:13:25Z',
+                  __typename: 'MergeRequest',
+                },
+              ],
+              __typename: 'MergeRequestConnection',
+            },
+            assignedMergeRequests: {
+              count: 5678,
+              nodes: [
+                {
+                  id: 'gid://gitlab/MergeRequest/2',
+                  updatedAt: '2025-06-10T18:13:25Z',
+                  __typename: 'MergeRequest',
+                },
+              ],
+              __typename: 'MergeRequestConnection',
+            },
+            __typename: 'CurrentUser',
+          },
+        },
+      };
+
+      createWrapper({
+        mergeRequestsWidgetMetadataQueryHandler:
+          mergeRequestsWidgetMetadataQuerySuccessHandler(mockData),
+      });
+      await waitForPromises();
+
+      expect(findReviewRequestedCount().text()).toBe('1234');
+      expect(findAssignedCount().text()).toBe('5678');
+    });
+
+    it('formats negative counts correctly', async () => {
+      const mockData = {
+        data: {
+          currentUser: {
+            id: 'gid://gitlab/User/1',
+            reviewRequestedMergeRequests: {
+              count: -1234,
+              nodes: [],
+              __typename: 'MergeRequestConnection',
+            },
+            assignedMergeRequests: {
+              count: -25000,
+              nodes: [],
+              __typename: 'MergeRequestConnection',
+            },
+            __typename: 'CurrentUser',
+          },
+        },
+      };
+
+      createWrapper({
+        mergeRequestsWidgetMetadataQueryHandler:
+          mergeRequestsWidgetMetadataQuerySuccessHandler(mockData),
+      });
+      await waitForPromises();
+
+      expect(findReviewRequestedCount().text()).toBe('-1234');
+      expect(findAssignedCount().text()).toBe('-25K');
     });
   });
 

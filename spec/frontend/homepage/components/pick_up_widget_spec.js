@@ -12,7 +12,7 @@ describe('PickUpWidget', () => {
     lastPushEvent,
   };
 
-  const findWidget = () => wrapper.findByTestId('pick-up-widget-container');
+  const findWidget = () => wrapper.findByTestId('homepage-pick-up-widget');
   const findCreateMrButton = () => wrapper.findByTestId('create-merge-request-button');
   const findDismissButton = () => wrapper.findByTestId('dismiss-button');
   const findProjectLink = () => wrapper.findByTestId('project-link');
