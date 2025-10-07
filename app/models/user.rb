@@ -2227,8 +2227,45 @@ class User < ApplicationRecord
     end
   end
 
+  def merge_request_dashboard_show_drafts?
+    return true if Feature.disabled?(:mr_dashboard_drafts_toggle, self)
+
+    merge_request_dashboard_show_drafts
+  end
+
+  def returned_to_you_merge_requests_count(force: false, cached_only: false)
+    return if merge_request_dashboard_show_drafts? || user_preference.role_based?
+
+    Rails.cache.fetch(['users', id, 'returned_to_you_merge_requests_count'], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD, skip_nil: true) do
+      return if cached_only # rubocop:disable Cop/AvoidReturnFromBlocks -- return from method to prevent caching nil when only reading cache
+
+      params = {
+        state: 'opened',
+        non_archived: true,
+        include_assigned: true,
+        author_id: id,
+        review_states: %w[reviewed requested_changes],
+        ignored_reviewer_username: ::Users::Internal.duo_code_review_bot.username
+      }
+
+      begin
+        MergeRequestsFinder.new(self, params).execute.count
+      # rubocop:disable Database/RescueStatementTimeout, Database/RescueQueryCanceled -- Expensive query can throw 500 error, temporary while the query gets improved
+      rescue ActiveRecord::StatementTimeout, ActiveRecord::QueryCanceled => e
+        # rubocop:enable Database/RescueStatementTimeout, Database/RescueQueryCanceled
+        Gitlab::AppLogger.error(
+          message: 'Timeout counting assigned merge requests',
+          user_id: id,
+          error: e.message
+        )
+
+        nil
+      end
+    end
+  end
+
   def assigned_open_merge_requests_count(force: false, cached_only: false)
-    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', user_preference.role_based?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD, skip_nil: true) do
+    Rails.cache.fetch(['users', id, 'assigned_open_merge_requests_count', user_preference.role_based?, merge_request_dashboard_show_drafts?], force: force, expires_in: COUNT_CACHE_VALIDITY_PERIOD, skip_nil: true) do
       return if cached_only # rubocop:disable Cop/AvoidReturnFromBlocks -- return from method to prevent caching nil when only reading cache
 
       params = {
@@ -2240,6 +2277,11 @@ class User < ApplicationRecord
 
       unless user_preference.role_based?
         params[:or] = { reviewer_wildcard: 'none', review_states: %w[reviewed requested_changes], only_reviewer_username: 'GitLabDuo' }
+      end
+
+      unless merge_request_dashboard_show_drafts?
+        params[:draft] = false
+        params[:or] = { reviewer_wildcard: 'NONE', only_reviewer_username: ::Users::Internal.duo_code_review_bot.username }
       end
 
       begin
@@ -2256,6 +2298,15 @@ class User < ApplicationRecord
         nil
       end
     end
+  end
+
+  def all_assigned_merge_requests_count(force: false, cached_only: false)
+    assigned_count = assigned_open_merge_requests_count(force: force, cached_only: cached_only)
+    returned_to_you_count = returned_to_you_merge_requests_count(force: force, cached_only: cached_only)
+
+    return if assigned_count.nil? && returned_to_you_count.nil?
+
+    assigned_count.to_i + returned_to_you_count.to_i
   end
 
   def review_requested_open_merge_requests_count(force: false, cached_only: false)
@@ -2303,8 +2354,9 @@ class User < ApplicationRecord
   end
 
   def invalidate_merge_request_cache_counts
-    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count', user_preference.role_based?])
+    Rails.cache.delete(['users', id, 'assigned_open_merge_requests_count', user_preference.role_based?, merge_request_dashboard_show_drafts?])
     Rails.cache.delete(['users', id, 'review_requested_open_merge_requests_count'])
+    Rails.cache.delete(['users', id, 'returned_to_you_merge_requests_count'])
   end
 
   def invalidate_todos_cache_counts

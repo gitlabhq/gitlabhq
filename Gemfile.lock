@@ -63,6 +63,13 @@ PATH
       thor (~> 1.3)
 
 PATH
+  remote: gems/gitlab-grape-openapi
+  specs:
+    gitlab-grape-openapi (0.1.0)
+      grape (~> 2.0.0)
+      grape-entity (~> 1.0.1)
+
+PATH
   remote: gems/gitlab-housekeeper
   specs:
     gitlab-housekeeper (0.1.0)
@@ -2177,6 +2184,7 @@ DEPENDENCIES
   gitlab-experiment (~> 1.0.0)
   gitlab-fog-azure-rm (~> 2.4.0)
   gitlab-glfm-markdown (~> 0.0.33)
+  gitlab-grape-openapi!
   gitlab-housekeeper!
   gitlab-http!
   gitlab-kas-grpc (~> 18.5.0.pre.rc4)

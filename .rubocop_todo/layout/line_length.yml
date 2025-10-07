@@ -1724,7 +1724,6 @@ Layout/LineLength:
     - 'ee/spec/views/projects/security/discover/show.html.haml_spec.rb'
     - 'ee/spec/views/shared/_mirror_status.html.haml_spec.rb'
     - 'ee/spec/views/shared/_namespace_user_cap_reached_alert.html.haml_spec.rb'
-    - 'ee/spec/views/shared/billings/_trial_status.html.haml_spec.rb'
     - 'ee/spec/views/shared/credentials_inventory/personal_access_tokens/_personal_access_token.html.haml_spec.rb'
     - 'ee/spec/workers/active_user_count_threshold_worker_spec.rb'
     - 'ee/spec/workers/analytics/cycle_analytics/consistency_worker_spec.rb'

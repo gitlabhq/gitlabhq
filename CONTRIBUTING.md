@@ -14,11 +14,6 @@ repository is licensed under Creative Commons:
 
 _This notice should stay as the first item in the `CONTRIBUTING.md` file._
 
-## Contributing Documentation has been moved
-
-As of July 2018, all the documentation for contributing to the GitLab project has been moved to a new location.
-[View the documentation](https://about.gitlab.com/community/contribute/) to find the latest information.
-
 ## Contribute to GitLab
 
 [View the documentation](https://about.gitlab.com/community/contribute/) to find the latest information.

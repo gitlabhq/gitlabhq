@@ -565,6 +565,7 @@ To recreate a pipeline execution policy:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525509) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `approval_policy_time_window`.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/543027) in GitLab 18.5.
 
 {{< /history >}}
 

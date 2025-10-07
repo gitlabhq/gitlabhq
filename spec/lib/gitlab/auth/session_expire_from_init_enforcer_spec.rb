@@ -100,6 +100,21 @@ RSpec.describe Gitlab::Auth::SessionExpireFromInitEnforcer, feature_category: :s
         expect(session).to be_empty
       end
     end
+
+    context 'for sessionless users' do
+      let(:opts) do
+        {
+          scope: :user,
+          store: false
+        }
+      end
+
+      it 'does not set signed_in_at session info' do
+        set_login_time
+
+        expect(session).to be_empty
+      end
+    end
   end
 
   describe '#enforce!', :freeze_time do

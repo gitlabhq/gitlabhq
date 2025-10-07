@@ -307,7 +307,7 @@ two-phase job commit feature.
 There are two ways of marking builds as "stuck" and drop them.
 
 1. When a build is created, [`Ci::PipelineCreation::DropNotRunnableBuildsService`](https://gitlab.com/gitlab-org/gitlab/-/blob/v16.0.4-ee/ee/app/services/ci/pipeline_creation/drop_not_runnable_builds_service.rb) checks for upfront known conditions that would make jobs not executable:
-   - If there is not enough [CI/CD Minutes](#compute-quota) to run the build, then the build is immediately dropped with `ci_quota_exceeded`.
+   - If there is not enough [CI/CD Minutes](compute_minutes.md) to run the build, then the build is immediately dropped with `ci_quota_exceeded`.
    - [In the future](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121761), if the project is not on the plan that available runners for the build require via `allowed_plans`, then the build is immediately dropped with `no_matching_runner`.
 1. If there is no available Runner to pick up a build, it is dropped after 1 hour by [`Ci::StuckBuilds::DropPendingService`](https://gitlab.com/gitlab-org/gitlab/-/blob/v16.0.4-ee/app/services/ci/stuck_builds/drop_pending_service.rb).
    - If a job is not picked up by a runner in 24 hours it is automatically removed from
@@ -365,25 +365,6 @@ We have a few inconsistencies in our codebase that should be refactored.
 For example, `CommitStatus` should be `Ci::Job` and `Ci::JobArtifact` should be `Ci::BuildArtifact`.
 See [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/16111) for the full refactoring plan.
 
-## Compute quota
+## Compute Minutes and Quota
 
-{{< history >}}
-
-- [Renamed](https://gitlab.com/groups/gitlab-com/-/epics/2150) from "CI/CD minutes" to "compute quota" and "compute minutes" in GitLab 16.1.
-
-{{< /history >}}
-
-This diagram shows how the [Compute quota](../../ci/pipelines/compute_minutes.md)
-feature and its components work.
-
-![compute quota architecture](img/ci_minutes_v13_9.png)
-<!-- Editable diagram available at https://app.diagrams.net/?libs=general;flowchart#G1XjLPvJXbzMofrC3eKRyDEk95clV6ypOb -->
-
-Watch a walkthrough of this feature in details in the video below.
-
-<div class="video-fallback">
-  See the video: <a href="https://www.youtube.com/watch?v=NmdWRGT8kZg">CI/CD minutes - architectural overview</a>.
-</div>
-<figure class="video-container">
-  <iframe src="https://www.youtube-nocookie.com/embed/NmdWRGT8kZg" frameborder="0" allowfullscreen> </iframe>
-</figure>
+See [compute minutes development doucmentation](compute_minutes.md)

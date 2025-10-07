@@ -336,7 +336,6 @@ RSpec/ExampleWithoutDescription:
     - 'spec/lib/gitlab/instrumentation/redis_base_spec.rb'
     - 'spec/lib/gitlab/instrumentation/redis_cluster_router_spec.rb'
     - 'spec/lib/gitlab/instrumentation/redis_cluster_validator_spec.rb'
-    - 'spec/lib/gitlab/internal_events_spec.rb'
     - 'spec/lib/gitlab/kubernetes/kubeconfig/template_spec.rb'
     - 'spec/lib/gitlab/markdown_cache/active_record/extension_spec.rb'
     - 'spec/lib/gitlab/metrics/samplers/threads_sampler_spec.rb'

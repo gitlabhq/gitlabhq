@@ -1920,3 +1920,6 @@ frontend/**/geo_* @zcuddy
 /.gitlab/merge_request_templates/Security\ Fix.md @gitlab-org/delivery
 /.gitlab/merge_request_templates/Stable\ Branch.md @gitlab-org/delivery
 /.gitlab/issue_templates/Security\ developer\ workflow.md @gitlab-org/delivery
+
+[API Team]
+/gems/gitlab-grape-openapi/**/*.rb @cfeick @mwoolf @vwolanyk

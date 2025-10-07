@@ -6768,8 +6768,9 @@ RSpec.describe User, feature_category: :user_profile do
     it 'invalidates cache for merge request counters' do
       cache_mock = double
 
-      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count', false])
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count', false, true])
       expect(cache_mock).to receive(:delete).with(['users', user.id, 'review_requested_open_merge_requests_count'])
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'returned_to_you_merge_requests_count'])
 
       allow(Rails).to receive(:cache).and_return(cache_mock)
 
@@ -6886,6 +6887,16 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
+    context 'when merge_request_dashboard_show_drafts is false' do
+      before do
+        user.user_preference.update!(merge_request_dashboard_list_type: 'action_based')
+
+        allow(user).to receive(:merge_request_dashboard_show_drafts?).and_return(false)
+      end
+
+      it { is_expected.to eq 1 }
+    end
+
     context 'when fetching only cached' do
       let(:cached_only) { true }
 
@@ -6939,6 +6950,67 @@ RSpec.describe User, feature_category: :user_profile do
 
           user.assigned_open_merge_requests_count
         end
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+    end
+  end
+
+  describe '#returned_to_you_merge_requests_count' do
+    subject { user.returned_to_you_merge_requests_count(force: true, cached_only: cached_only) }
+
+    let_it_be_with_refind(:user) { create(:user) }
+    let_it_be_with_refind(:project) { create(:project, :public) }
+    let_it_be_with_refind(:archived_project) { create(:project, :public, :archived) }
+
+    let(:cached_only) { false }
+
+    context 'when role based rendering' do
+      before do
+        user.user_preference.update!(merge_request_dashboard_list_type: 'role_based')
+      end
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+
+    context 'when action based rendering' do
+      let(:show_drafts) { false }
+
+      before do
+        user.user_preference.update!(merge_request_dashboard_list_type: 'action_based')
+
+        allow(user).to receive(:merge_request_dashboard_show_drafts?).and_return(show_drafts)
+      end
+
+      context 'when merge_request_dashboard_show_drafts is true' do
+        let(:show_drafts) { true }
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
+      end
+
+      it 'returns count of open merge requests where reviewers have state of reviewed or requested_changes' do
+        create(:merge_request, source_project: project, author: user, assignees: [user], reviewers: [user])
+        create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, assignees: [user])
+        create(:merge_request, :closed, source_project: project, author: user, assignees: [user])
+        create(:merge_request, source_project: archived_project, author: user, assignees: [user])
+
+        mr = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
+        mr2 = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
+
+        mr.merge_request_reviewers.update_all(state: :reviewed)
+        mr2.merge_request_reviewers.update_all(state: :requested_changes)
+
+        is_expected.to eq 2
+      end
+
+      context 'when fetching only cached' do
+        let(:cached_only) { true }
 
         it 'returns nil' do
           is_expected.to be_nil
@@ -9855,6 +9927,58 @@ RSpec.describe User, feature_category: :user_profile do
 
       user_with_pin.support_pin
       user_with_pin.support_pin_expires_at
+    end
+  end
+
+  describe '#merge_request_dashboard_show_drafts?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:user) { create(:user) }
+
+    subject { user.merge_request_dashboard_show_drafts? }
+
+    where(:flag_enabled, :show_drafts, :result) do
+      false | false | true
+      false | true  | true
+      true  | true  | true
+      true  | false | false
+    end
+
+    with_them do
+      before do
+        stub_feature_flags(mr_dashboard_drafts_toggle: flag_enabled)
+        user.user_preference.update!(merge_request_dashboard_show_drafts: show_drafts)
+      end
+
+      it do
+        is_expected.to be(result)
+      end
+    end
+  end
+
+  describe '#all_assigned_merge_requests_count' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:user) { create(:user) }
+
+    subject { user.all_assigned_merge_requests_count }
+
+    where(:assigned_count, :returned_count, :result) do
+      nil | nil | nil
+      2   | nil | 2
+      nil | 2   | 2
+      2   | 2   | 4
+    end
+
+    with_them do
+      before do
+        allow(user).to receive(:assigned_open_merge_requests_count).and_return(assigned_count)
+        allow(user).to receive(:returned_to_you_merge_requests_count).and_return(returned_count)
+      end
+
+      it do
+        is_expected.to be(result)
+      end
     end
   end
 end

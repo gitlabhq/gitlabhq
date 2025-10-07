@@ -58989,6 +58989,9 @@ msgstr ""
 msgid "SecurityOrchestration|After this merge request is merged, go to [%{framework}](%{link}) and remove the compliance pipeline so that the new pipeline execution policy can take precedence."
 msgstr ""
 
+msgid "SecurityOrchestration|All policy requirements will be bypassed for this MR and can be merged immediately"
+msgstr ""
+
 msgid "SecurityOrchestration|All projects in linked groups"
 msgstr ""
 

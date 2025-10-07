@@ -2,6 +2,7 @@
 stage: Runtime
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Use Geo for planned failover to migrate GitLab with minimal downtime by following preflight checks and sync steps to promote a secondary site without data loss.
 title: Disaster recovery for planned failover
 ---
 

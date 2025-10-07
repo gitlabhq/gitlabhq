@@ -88,7 +88,7 @@ module SidebarsHelper
       },
       user_counts: {
         assigned_issues: user.assigned_open_issues_count,
-        assigned_merge_requests: user.assigned_open_merge_requests_count(cached_only: true),
+        assigned_merge_requests: user.all_assigned_merge_requests_count(cached_only: true),
         review_requested_merge_requests: user.review_requested_open_merge_requests_count(cached_only: true),
         todos: user.todos_pending_count,
         last_update: time_in_milliseconds

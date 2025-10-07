@@ -203,7 +203,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/views/shared/_mirror_status.html.haml_spec.rb'
     - 'ee/spec/views/shared/_mirror_update_button.html.haml_spec.rb'
     - 'ee/spec/views/shared/_namespace_user_cap_reached_alert.html.haml_spec.rb'
-    - 'ee/spec/views/shared/billings/_trial_status.html.haml_spec.rb'
     - 'ee/spec/views/shared/credentials_inventory/_expiry_date.html.haml_spec.rb'
     - 'ee/spec/views/shared/credentials_inventory/gpg_keys/_gpg_key.html.haml_spec.rb'
     - 'ee/spec/views/shared/credentials_inventory/personal_access_tokens/_personal_access_token.html.haml_spec.rb'

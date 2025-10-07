@@ -32,7 +32,7 @@ module Gitlab
       end
 
       def enabled?
-        self.class.enabled?
+        self.class.enabled? && opts[:store] != false
       end
 
       def set_login_time

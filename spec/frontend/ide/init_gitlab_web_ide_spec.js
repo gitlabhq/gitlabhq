@@ -106,7 +106,6 @@ describe('ide/init_gitlab_web_ide', () => {
 
   beforeEach(() => {
     gon.current_username = TEST_USERNAME;
-    gon.features = { webIdeLanguageServer: true };
     process.env.GITLAB_WEB_IDE_PUBLIC_PATH = TEST_GITLAB_WEB_IDE_PUBLIC_PATH;
     ideContainer = {
       element: document.createElement('div'),
@@ -157,7 +156,7 @@ describe('ide/init_gitlab_web_ide', () => {
           signIn: TEST_SIGN_IN_PATH,
         },
         featureFlags: {
-          languageServerWebIDE: gon.features.webIdeLanguageServer,
+          languageServerWebIDE: true,
           additionalSourceControlOperations: true,
         },
         editorFont: {

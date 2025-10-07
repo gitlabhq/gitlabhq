@@ -72,11 +72,10 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       if user
         allow(user).to receive(:assigned_open_issues_count).and_return(1)
         allow(user).to receive(:assigned_open_merge_requests_count).and_return(4)
+        allow(user).to receive(:returned_to_you_merge_requests_count).and_return(0)
         allow(user).to receive(:review_requested_open_merge_requests_count).and_return(0)
         allow(user).to receive(:todos_pending_count).and_return(3)
         allow(user).to receive(:pinned_nav_items).and_return({ panel_type => %w[foo bar], 'another_panel' => %w[baz] })
-        allow(user).to receive(:review_requested_open_merge_requests_count_in_cache?).and_return(true)
-        allow(user).to receive(:assigned_open_merge_requests_count_in_cache?).and_return(true)
       end
     end
 

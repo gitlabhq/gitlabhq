@@ -3,6 +3,7 @@
 
 require 'google/protobuf'
 
+require 'proto/autz_pb'
 require 'proto/cell_info_pb'
 
 Google::Protobuf::DescriptorPool.generated_pool.build do

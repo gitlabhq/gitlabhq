@@ -2,6 +2,7 @@
 stage: Runtime
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Finalize your secondary Geo site setup by replicating secrets, SSH keys, and adding the new site to the primary to begin data synchronization.
 title: Configure a new **secondary** site
 ---
 

@@ -43,7 +43,8 @@ GET /projects/:id/badges
 | `name`    | string         | no  | Name of the badges to return (case-sensitive). |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/badges?name=Coverage"
 ```
 
@@ -86,7 +87,8 @@ GET /projects/:id/badges/:badge_id
 | `badge_id` | integer | yes   | The badge ID |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/badges/:badge_id"
 ```
 
@@ -210,7 +212,8 @@ GET /projects/:id/badges/render
 | `image_url` | string | yes | URL of the badge image |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/:id/badges/render?link_url=http%3A%2F%2Fexample.com%2Fci_status.svg%3Fproject%3D%25%7Bproject_path%7D%26ref%3D%25%7Bdefault_branch%7D&image_url=https%3A%2F%2Fshields.io%2Fmy%2Fbadge"
 ```
 

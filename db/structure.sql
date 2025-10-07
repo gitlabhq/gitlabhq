@@ -4900,7 +4900,8 @@ CREATE TABLE backup_vulnerabilities (
     original_record_identifier bigint NOT NULL,
     project_id bigint NOT NULL,
     date date NOT NULL,
-    data jsonb NOT NULL
+    data jsonb NOT NULL,
+    traversal_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
 )
 PARTITION BY RANGE (date);
 
@@ -29315,7 +29316,7 @@ CREATE TABLE workspaces (
     url_prefix text,
     url_query_string text,
     workspaces_agent_config_version integer NOT NULL,
-    desired_config_generator_version integer,
+    desired_config_generator_version integer DEFAULT 3,
     project_ref text,
     actual_state_updated_at timestamp with time zone NOT NULL,
     CONSTRAINT check_15543fb0fa CHECK ((char_length(name) <= 64)),
@@ -38046,6 +38047,8 @@ CREATE INDEX idx_security_pipeline_execution_project_schedules_next_run_at ON se
 
 CREATE INDEX idx_security_policies_config_id_policy_index ON security_policies USING btree (security_orchestration_policy_configuration_id, policy_index);
 
+CREATE INDEX idx_security_policy_dismissals_project_findings_uuids ON security_policy_dismissals USING gin (security_findings_uuids);
+
 CREATE INDEX idx_security_policy_project_links_on_project_id_and_id ON security_policy_project_links USING btree (project_id, id);
 
 CREATE UNIQUE INDEX idx_security_scans_on_build_and_scan_type ON security_scans USING btree (build_id, scan_type);
@@ -38163,6 +38166,8 @@ CREATE UNIQUE INDEX idx_wi_type_custom_lifecycles_on_namespace_type_lifecycle ON
 CREATE INDEX idx_wi_type_custom_lifecycles_on_work_item_type_id ON work_item_type_custom_lifecycles USING btree (work_item_type_id);
 
 CREATE INDEX idx_workflows_status_updated_at_id ON duo_workflows_workflows USING btree (status, updated_at, id);
+
+CREATE INDEX idx_workspaces_null_config_version_id ON workspaces USING btree (id) WHERE (desired_config_generator_version IS NULL);
 
 CREATE INDEX idx_zoekt_last_indexed_at_gt_used_storage_bytes_updated_at ON zoekt_indices USING btree (used_storage_bytes_updated_at) WHERE (last_indexed_at >= used_storage_bytes_updated_at);
 
@@ -38661,6 +38666,8 @@ CREATE INDEX index_backup_finding_signatures_on_project_id ON ONLY backup_findin
 CREATE INDEX index_backup_findings_on_fk ON ONLY backup_findings USING btree (vulnerability_id);
 
 CREATE INDEX index_backup_findings_on_project_id ON ONLY backup_findings USING btree (project_id);
+
+CREATE INDEX index_backup_vulnerabilities_for_restoring ON ONLY backup_vulnerabilities USING btree (traversal_ids, original_record_identifier);
 
 CREATE INDEX index_backup_vulnerabilities_on_project_id ON ONLY backup_vulnerabilities USING btree (project_id);
 

@@ -2,16 +2,12 @@
 Gitlab/DocumentationLinks/HardcodedUrl:
   Exclude:
     - 'app/controllers/jira_connect/app_descriptor_controller.rb'
-    - 'app/graphql/types/merge_request_type.rb'
-    - 'app/graphql/types/notes/diff_position_input_type.rb'
-    - 'app/graphql/types/query_complexity_type.rb'
     - 'app/serializers/build_details_entity.rb'
     - 'app/services/security/ci_configuration/container_scanning_create_service.rb'
     - 'app/services/security/ci_configuration/dependency_scanning_create_service.rb'
     - 'app/services/security/ci_configuration/sast_create_service.rb'
     - 'app/services/security/ci_configuration/sast_iac_create_service.rb'
     - 'ee/app/graphql/mutations/requirements_management/export_requirements.rb'
-    - 'ee/app/graphql/types/vulnerability_state_enum.rb'
     - 'ee/app/mailers/emails/user_cap.rb'
     - 'ee/lib/system_check/app/advanced_search_migrations_check.rb'
     - 'ee/lib/tasks/gitlab/geo.rake'

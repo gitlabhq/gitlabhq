@@ -39159,6 +39159,23 @@ Returns [`AiAgent`](#aiagent).
 | ---- | ---- | ----------- |
 | <a id="projectaiagentid"></a>`id` | [`AiAgentID!`](#aiagentid) | ID of the Agent. |
 
+##### `Project.aiCatalogItem`
+
+{{< details >}}
+**Introduced** in GitLab 18.5.
+**Status**: Experiment.
+{{< /details >}}
+
+AI Catalog item of the project. This field can only be resolved for one project in any single request.
+
+Returns [`AiCatalogItem`](#aicatalogitem).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectaicatalogitemid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog item to find. |
+
 ##### `Project.aiFlowTriggers`
 
 {{< details >}}

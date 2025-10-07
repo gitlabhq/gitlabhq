@@ -178,7 +178,6 @@ Rails/Date:
     - 'spec/services/environments/stop_stale_service_spec.rb'
     - 'spec/services/event_create_service_spec.rb'
     - 'spec/services/import/placeholder_memberships/create_service_spec.rb'
-    - 'spec/services/import/reassign_placeholder_user_records_service_spec.rb'
     - 'spec/services/issuable/callbacks/time_tracking_spec.rb'
     - 'spec/services/issuable/common_system_notes_service_spec.rb'
     - 'spec/services/members/invitation_reminder_email_service_spec.rb'

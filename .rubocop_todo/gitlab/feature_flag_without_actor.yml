@@ -117,7 +117,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'lib/gitlab/experiment_feature_rollout.rb'
     - 'lib/gitlab/git/diff.rb'
     - 'lib/gitlab/git/repository.rb'
-    - 'lib/gitlab/internal_events.rb'
     - 'lib/gitlab/lograge/custom_options.rb'
     - 'lib/gitlab/memory/reports/heap_dump.rb'
     - 'lib/gitlab/memory/reports/jemalloc_stats.rb'
