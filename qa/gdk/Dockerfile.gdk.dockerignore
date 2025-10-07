@@ -44,7 +44,10 @@ ee/db/fixtures/
 !ee/db/fixtures/development/10_license_file.rb
 
 scripts/
+!scripts/build_frontend_islands
 !scripts/frontend
+!scripts/lib/assets_sha.rb
+!scripts/lib/gitlab.rb
 
 qa/
 !qa/gdk
@@ -53,8 +56,12 @@ spec/
 !spec/contracts
 !spec/factories
 !spec/support
+# only needed for asset compilation
+!spec/frontend
 
 ee/spec
 !ee/spec/contracts
 !ee/spec/factories
 !ee/spec/support
+# only needed for asset compilation
+!ee/spec/frontend

@@ -166,6 +166,7 @@ cancel_build
 cancel_pipeline
 change_commit_committer_check
 change_commit_committer_name_check
+change_group
 change_namespace
 change_new_user_signups_cap
 change_prevent_group_forking
@@ -207,6 +208,7 @@ create_feature_flag
 create_feature_flags_client
 create_freeze_period
 create_group
+create_group_link
 create_group_stage
 create_group_via_api
 create_group_with_default_branch_protection
@@ -274,6 +276,7 @@ decline_terms
 delete_admin_role
 delete_conversation_thread
 delete_custom_emoji
+delete_group_link
 delete_group_stage
 delete_merge_train_car
 delete_o11y_settings
@@ -344,6 +347,7 @@ developer_access
 disable_two_factor
 download_code
 download_wiki_code
+duo_generate_direct_access_token
 duo_workflow
 edit_approval_rule
 edit_billing
@@ -352,6 +356,7 @@ edit_incident_management_timeline_event
 edit_on_demand_dast_scan
 enable_container_scanning_for_registry
 enable_continuous_vulnerability_scans
+enable_project_studio
 enable_secret_push_protection
 erase_build
 execute_duo_workflow_in_ci
@@ -374,6 +379,7 @@ invite_group_members
 invite_member
 invite_project_members
 jailbreak
+keep_job_artifacts
 link
 link_forked_project
 log_in
@@ -385,6 +391,7 @@ manage_destroy
 manage_devops_adoption_namespaces
 manage_duo_core_settings
 manage_group_link_with_owner_access
+manage_instance_model_selection
 manage_ldap_admin_links
 manage_merge_request_settings
 manage_owners
@@ -457,6 +464,7 @@ read_application_setting
 read_application_statistics
 read_approval_rule
 read_approvers
+read_attestation
 read_billable_member
 read_billing
 read_blob
@@ -586,8 +594,8 @@ read_jobs_statistics
 read_label
 read_licenses
 read_limit_alert
+read_manual_variables
 read_member_access_request
-read_member_role
 read_merge_request
 read_merge_request_closing_issue
 read_merge_request_iid
@@ -626,6 +634,7 @@ read_pro_ai_analytics
 read_project
 read_project_audit_events
 read_project_for_iids
+read_project_level_analytics_dashboard
 read_project_level_value_stream_dashboard_overview_counts
 read_project_member
 read_project_merge_request_analytics
@@ -665,6 +674,8 @@ read_saved_replies
 read_scan
 read_secret_push_protection_info
 read_secure_files
+read_security_attribute
+read_security_category
 read_security_configuration
 read_security_inventory
 read_security_orchestration_policies
@@ -679,6 +690,7 @@ read_software_license_policy
 read_squash_option
 read_statistics
 read_storage_disk_path
+read_subscription_usage
 read_target_branch_rule
 read_terraform_state
 read_timelog_category
@@ -739,6 +751,7 @@ reset_merge_request_approvals
 resolve_note
 resolve_vulnerability_with_ai
 retry_failed_status_checks
+retry_job
 revoke_token
 rollover_issues
 rotate_token
@@ -773,6 +786,7 @@ trigger_amazon_q
 troubleshoot_job_with_ai
 unassign_runner
 unlink
+unschedule_job
 update_admin_role
 update_alert_management_alert
 update_alert_management_metric_image
@@ -801,10 +815,10 @@ update_freeze_period
 update_git_access_protocol
 update_group_deploy_key
 update_group_deploy_key_for_group
+update_group_link
 update_group_member
 update_group_stage
 update_issuable_metric_image
-update_issue
 update_issue_board
 update_issue_board_list
 update_issue_link

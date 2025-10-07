@@ -179,7 +179,7 @@ You can use push options to skip [secret push protection](../../user/application
 
 ### Push options for security policy
 
-You can use push options to [bypass security policies](../../user/application_security/policies/merge_request_approval_policies.md#access-token-and-service-account-exceptions).
+You can use push options to [bypass security policies](../../user/application_security/policies/merge_request_approval_policies.md#allowing-users-to-bypass-security-policies).
 
 | Push option                    | Description | Example |
 |--------------------------------|-------------|---------|

@@ -805,9 +805,9 @@ You can use the OR operator (**is one of: `||`**) when you [filter the list of i
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan** > **Issues**.
-1. In the **Search** box, type `#` followed by the issue ID. For example, enter filter `#10` to return only issue 10.
+1. In the **Search** box, type `#` followed by the issue ID. For example, enter filter `#362255` to return only issue 362255.
 
-![filter issues by specific ID](img/issue_search_by_id_v15_0.png)
+![Search results showing issues filtered by a specific ID, '362255'.](img/issue_search_by_id_v15_0.png)
 
 ### Open issues in a drawer
 

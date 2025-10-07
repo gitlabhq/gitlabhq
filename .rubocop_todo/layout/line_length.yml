@@ -332,7 +332,6 @@ Layout/LineLength:
     - 'app/validators/nested_attributes_duplicates_validator.rb'
     - 'app/views/projects/merge_requests/index.atom.builder'
     - 'app/workers/analytics/usage_trends/counter_job_worker.rb'
-    - 'app/workers/concerns/application_worker.rb'
     - 'app/workers/concerns/each_shard_worker.rb'
     - 'app/workers/concerns/limited_capacity/worker.rb'
     - 'app/workers/concerns/project_import_options.rb'

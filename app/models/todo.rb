@@ -60,6 +60,7 @@ class Todo < ApplicationRecord
   belongs_to :note
   belongs_to :project
   belongs_to :group
+  belongs_to :organization, class_name: 'Organizations::Organization'
   belongs_to :target, -> {
     if self.klass.respond_to?(:with_api_entity_associations)
       self.with_api_entity_associations
@@ -73,12 +74,19 @@ class Todo < ApplicationRecord
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 
+  before_validation :set_sharding_key
+
   validates :action, :target_type, :user, presence: true
   validates :author, presence: true
   validates :target_id, presence: true, unless: :for_commit?
   validates :commit_id, presence: true, if: :for_commit?
-  validates :project, presence: true, unless: -> { group_id || parentless_type? }
-  validates :group, presence: true, unless: -> { project_id || parentless_type? }
+
+  validates :project, presence: { unless: -> { group_id || parentless_type? } }
+  validates :project, absence: { if: -> { group_id || parentless_type? } }
+  validates :group, presence: { unless: -> { project_id || parentless_type? } }
+  validates :group, absence: { if: -> { project_id || parentless_type? } }
+  validates :organization, presence: { if: :parentless_type? }
+  validates :organization, absence: { unless: :parentless_type? }
 
   scope :pending, -> { with_state(:pending) }
   scope :snoozed, -> { where(arel_table[:snoozed_until].gt(Time.current)) }
@@ -427,6 +435,35 @@ class Todo < ApplicationRecord
   end
 
   private
+
+  def set_sharding_key
+    # NOTE: Records can be instantiated or created by providing
+    #       all sharding key columns. We only allow for one of
+    #       the sharding key columns to be set. In order to allow
+    #       for a smooth transition and to avoid touching all existing
+    #       codepaths, we set the preferred sharding key column
+    #       in a before_validation.
+    preferred_key = if parentless_type?
+                      :organization
+                    elsif project_id.present?
+                      :project
+                    elsif group_id.present?
+                      :group
+                    end
+
+    case preferred_key
+    when :organization
+      self.organization = user.organization if user_id.present?
+      self.group = nil
+      self.project = nil
+    when :project
+      self.organization = nil
+      self.group = nil
+    when :group
+      self.organization = nil
+      self.project = nil
+    end
+  end
 
   def build_work_item_target_url
     ::Gitlab::UrlBuilder.build(

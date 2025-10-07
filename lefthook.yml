@@ -151,6 +151,11 @@ pre-push:
     secrets-detection:
       tags: secrets
       run: .lefthook/gitleaks.sh pre-push
+    permissions_docs:
+      tags: documentation
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '{config/authz/permissions/*.yml,app/policies/*,rb.ee/app/policies/*.rb}'
+      run: bundle exec rake gitlab:permissions:validate
 
   scripts:
     'merge_conflicts':

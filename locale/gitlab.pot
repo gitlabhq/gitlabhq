@@ -69933,16 +69933,10 @@ msgstr ""
 msgid "UsageBilling|Credits used this month"
 msgstr ""
 
-msgid "UsageBilling|Current month"
-msgstr ""
-
 msgid "UsageBilling|Current month usage"
 msgstr ""
 
 msgid "UsageBilling|Current overage"
-msgstr ""
-
-msgid "UsageBilling|Custom dates"
 msgstr ""
 
 msgid "UsageBilling|Daily average use"
@@ -69958,12 +69952,6 @@ msgid "UsageBilling|Export usage data"
 msgstr ""
 
 msgid "UsageBilling|Increase monthly commitment"
-msgstr ""
-
-msgid "UsageBilling|Last 3 months"
-msgstr ""
-
-msgid "UsageBilling|Last month"
 msgstr ""
 
 msgid "UsageBilling|Last updated:"

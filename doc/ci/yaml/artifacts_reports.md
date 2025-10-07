@@ -2,6 +2,7 @@
 stage: Verify
 group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Artifact report types for test results, security scans, code quality checks, and performance metrics.
 title: GitLab CI/CD artifacts reports types
 ---
 

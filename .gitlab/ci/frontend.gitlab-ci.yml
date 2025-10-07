@@ -123,14 +123,6 @@ compile-fe-island:
     paths:
       - ee/frontend_islands/apps/duo_next/dist/duo_next.js
 
-gdk:compile-test-assets:
-  extends:
-    - compile-test-assets
-    - .assets-compile-cache-pull
-    - .build-images:rules:build-gdk-image
-  before_script:
-    - !reference [.compile-assets-base, before_script]
-
 .frontend-fixtures-base:
   extends:
     - .default-retry

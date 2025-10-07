@@ -446,7 +446,8 @@ class TodoService
         target_id: ssh_key.id,
         target_type: Key,
         action: action,
-        author_id: user.id
+        author_id: user.id,
+        organization_id: user.organization_id
       }
       create_todos(user, attributes, nil, nil)
     end
@@ -544,7 +545,6 @@ class TodoService
 
     if source.instance_of? Project
       attributes[:project_id] = source.id
-      attributes[:group_id] = source.group.id if source.group.present?
     else
       attributes[:group_id] = source.id
     end

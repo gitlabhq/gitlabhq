@@ -1,5 +1,10 @@
+#syntax=docker/dockerfile:1.19-labs
+
 ARG MISE_DATA_DIR=/home/gdk/.local/share/mise
 ARG GDK_DIR=/home/gdk/gitlab-development-kit
+ARG RAILS_ENV=test
+ARG NODE_ENV=test
+ARG NODE_OPTIONS=--max-old-space-size=10240
 
 ARG GDK_SHA=bb37e0c30ef61da1d5f2d601f193050a1a7cdbcb
 # Use tag prefix when running on 'stable' branch to make sure 'protected' image is used which is not deleted by registry cleanup
@@ -75,7 +80,7 @@ FROM base AS gitlab-gems
 COPY --chown=gdk:gdk Gemfile Gemfile.lock .tool-versions ./gitlab/
 COPY --chown=gdk:gdk vendor/gems/ ./gitlab/vendor/gems/
 COPY --chown=gdk:gdk gems/ ./gitlab/gems/
-RUN set -eux; \
+RUN set -eu; \
     make gitlab-tool-install \
     && make .gitlab-bundle \
     && rm -rf ${MISE_DATA_DIR}/installs/ruby/*/lib/ruby/gems/*/cache
@@ -99,6 +104,43 @@ RUN make gitlab-topology-service-setup
 FROM base AS gitlab-http-router
 RUN make gitlab-http-router-setup
 
+# Build duo-next frontend island
+#
+FROM base AS frontend-duo-next
+
+WORKDIR ${GDK_DIR}/gitlab/ee/frontend_islands/apps/duo_next
+
+COPY --chown=gdk:gdk ee/frontend_islands/apps/duo_next/package.json ./
+COPY --chown=gdk:gdk ee/frontend_islands/apps/duo_next/yarn.lock ./
+
+RUN yarn install --frozen-lockfile
+
+COPY --chown=gdk:gdk ee/frontend_islands/apps/duo_next/ ./
+
+RUN yarn build:prod
+
+# Compile frontend assets
+#
+FROM gitlab-gems AS frontend-assets
+
+ARG RAILS_ENV
+ARG NODE_ENV
+ARG NODE_OPTIONS
+# Assets hash file is always packaged together with assets in the cache archive and if it is present, it indicates cached assets are present as well
+ARG GLCI_GITLAB_ASSETS_HASH_FILE
+
+ENV SKIP_FRONTEND_ISLANDS_BUILD=true
+
+WORKDIR ${GDK_DIR}/gitlab
+
+COPY --chown=gdk:gdk ./ ./
+COPY --from=frontend-duo-next --chown=gdk:gdk ${GDK_DIR}/gitlab/ee/frontend_islands/apps/duo_next/dist ./ee/frontend_islands/apps/duo_next/dist
+
+RUN --mount=type=bind,target=node_modules,source=${GDK_DIR}/gitlab/node_modules,from=gitlab-node-modules \
+    cp config/gitlab.yml.example config/gitlab.yml; \
+    cp config/database.yml.decomposed-postgresql config/database.yml; \
+    [ -s "${GLCI_GITLAB_ASSETS_HASH_FILE}" ] && echo "Cached assets found, skipping asset compilation!" || (echo "Compiling assets!" && bin/rake gitlab:assets:compile)
+
 # Build final image
 #
 FROM base AS gdk
@@ -115,17 +157,20 @@ COPY --from=gitlab-shell --chown=gdk:gdk ${GDK_DIR}/gitlab-shell ./gitlab-shell/
 COPY --from=gitlab-http-router --chown=gdk:gdk ${GDK_DIR}/gitlab-http-router ./gitlab-http-router
 COPY --from=gitaly --chown=gdk:gdk ${GDK_DIR}/gitaly ./gitaly/
 COPY --from=workhorse --chown=gdk:gdk ${GDK_DIR}/gitlab/workhorse ./gitlab/workhorse/
-COPY --from=gitlab-node-modules --chown=gdk:gdk ${GDK_DIR}/gitlab/node_modules ./gitlab/node_modules/
 # TODO: Check if skipping setup can be added same way as gitaly and other services, otherwise 'make all' rebuilds topology-service on all rails code changes
 # https://gitlab.com/gitlab-org/gitlab-development-kit/-/issues/2802
 COPY --from=gitlab-topology-service --chown=gdk:gdk ${GDK_DIR}/gitlab-topology-service ./gitlab-topology-service
-# Copy all mise tools and gems for main rails app
+# Copy compiled frontend assets and island apps
+COPY --from=frontend-assets --chown=gdk:gdk ${GDK_DIR}/gitlab/ee/frontend_islands/apps/duo_next/dist ./gitlab/ee/frontend_islands/apps/duo_next/dist
+COPY --from=frontend-assets --chown=gdk:gdk ${GDK_DIR}/gitlab/public/assets ./gitlab/public/assets
+# Copy all mise tools, gems and node_modules for main rails app
+COPY --from=gitlab-node-modules --chown=gdk:gdk ${GDK_DIR}/gitlab/node_modules ./gitlab/node_modules/
 COPY --from=gitlab-gems --chown=gdk:gdk ${MISE_DATA_DIR}/installs/ ${MISE_DATA_DIR}/installs/
 COPY --from=gitlab-gems --chown=gdk:gdk ${MISE_DATA_DIR}/shims/ ${MISE_DATA_DIR}/shims/
 COPY --from=gitlab-gems --chown=gdk:gdk ${MISE_DATA_DIR}/plugins/ ${MISE_DATA_DIR}/plugins/
 
 # Copy code
-COPY --chown=gdk:gdk ./ ./gitlab/
+COPY --chown=gdk:gdk --exclude=ee/spec/frontend --exclude=spec/frontend ./ ./gitlab/
 COPY --chown=gdk:gdk qa/gdk/entrypoint ../
 
 # Create custom hook for E2E tests

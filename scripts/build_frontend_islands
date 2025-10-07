@@ -2,6 +2,11 @@
 
 set -euo pipefail
 
+if [[ "${SKIP_FRONTEND_ISLANDS_BUILD:=false}" == "true" ]]; then
+  echo "Skipping frontend islands build, the variable SKIP_FRONTEND_ISLANDS_BUILD is set to true!"
+  exit
+fi
+
 source "$(dirname "$0")/utils.sh"
 
 function build_frontend_islands() {

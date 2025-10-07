@@ -170,7 +170,6 @@ Style/GuardClause:
     - 'app/validators/top_level_group_validator.rb'
     - 'app/validators/x509_certificate_credentials_validator.rb'
     - 'app/workers/clusters/agents/delete_expired_events_worker.rb'
-    - 'app/workers/concerns/application_worker.rb'
     - 'app/workers/google_cloud/create_cloudsql_instance_worker.rb'
     - 'app/workers/packages/cleanup/execute_policy_worker.rb'
     - 'app/workers/packages/maven/metadata/sync_worker.rb'

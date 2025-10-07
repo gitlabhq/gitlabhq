@@ -18,7 +18,6 @@ RSpec.describe 'new tables with gitlab_main schema', feature_category: :cell do
       'abuse_report_labels',                                    # gitlab_main_clusterwide now deprecated
       'abuse_report_notes',                                     # gitlab_main_clusterwide now deprecated
       'abuse_report_uploads',                                   # gitlab_main_clusterwide now deprecated
-      'admin_roles',                                            # gitlab_main_clusterwide now deprecated
       'audit_events_instance_amazon_s3_configurations',         # gitlab_main_clusterwide now deprecated
       # temporary table to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/562154
       'authentication_event_archived_records',

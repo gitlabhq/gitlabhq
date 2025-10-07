@@ -597,6 +597,10 @@ The `bypass_settings` field allows you to specify exceptions to the policy for c
 | `branches`        | array   | false    | List of source and target branches (by name or pattern) that bypass the policy. |
 | `access_tokens`   | array   | false    | List of access token IDs that bypass the policy.                                |
 | `service_accounts`| array   | false    | List of service account IDs that bypass the policy.                             |
+| `users`           | array   | false    | List of user IDs that can bypass the policy.                                        |
+| `groups`          | array   | false    | List of group IDs that can bypass the policy.                                       |
+| `roles`           | array   | false    | List of default roles that can bypass the policy.                                   |
+| `custom_roles`    | array   | false    | List of custom role IDs that can bypass the policy.                                 |
 
 ### Source branch exceptions
 
@@ -629,6 +633,27 @@ With access token and service account exceptions, you can designate specific ser
 |-------|---------|----------|------------------------------------------------|
 | `id`  | integer | true     | The ID of the access token or service account. |
 
+### Allowing users to bypass security policies
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18114) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_bypass_options_group_roles`.
+
+{{< /history >}}
+
+You can prepare for urgent situations by designating specific users, groups, roles, or custom roles that can bypass merge request approval policies. This capability provides flexibility for emergency responses, while providing comprehensive audit trails and maintaining governance controls. To allow a user, group, role, or custom role the ability to bypass security policies, you grant them an exception.
+
+Users who have these exceptions can bypass at two levels:
+
+- Merge request approval requirements: The user can bypass an approval requirement by providing a reason from the merge request UI.
+- Branch protections: The user can push directly to a branch with push protection from merge request approval policy by providing a reason in the [`security_policy.bypass_reason` Git push options](../../../topics/git/commit.md#push-options-for-security-policy)
+
+{{< alert type="note" >}}
+
+The `security_policy.bypass_reason` push option works only for branches with push protection from a merge request approval policy configured with [approval_settings](merge_request_approval_policies.md#approval_settings). Pushes to protected branches that are not covered by a merge request approval policy cannot be bypassed with this option.
+
+{{< /alert >}}
+
 #### Example YAML
 
 ```yaml
@@ -637,6 +662,18 @@ bypass_settings:
     - id: 123
     - id: 456
   service_accounts:
+    - id: 789
+    - id: 1011
+  users:
+    - id: 123
+    - id: 456
+  groups:
+    - id: 789
+    - id: 1011
+  roles:
+    - maintainer
+    - developer
+  custom_roles:
     - id: 789
     - id: 1011
 ```

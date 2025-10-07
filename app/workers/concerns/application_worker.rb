@@ -62,7 +62,7 @@ module ApplicationWorker
     end
 
     def with_status
-      status_from_class = self.sidekiq_options_hash['status_expiration']
+      status_from_class = sidekiq_options_hash['status_expiration']
 
       set(status_expiration: status_from_class || Gitlab::SidekiqStatus::DEFAULT_EXPIRATION)
     end
@@ -86,9 +86,9 @@ module ApplicationWorker
     def validate_worker_attributes!
       # Since the delayed data_consistency will use sidekiq built in retry mechanism, it is required that this mechanism
       # is not disabled.
-      if retry_disabled? && get_data_consistency_per_database.value?(:delayed)
-        raise ArgumentError, "Retry support cannot be disabled if data_consistency is set to :delayed"
-      end
+      return unless retry_disabled? && get_data_consistency_per_database.value?(:delayed)
+
+      raise ArgumentError, "Retry support cannot be disabled if data_consistency is set to :delayed"
     end
 
     # Checks if sidekiq retry support is disabled
@@ -168,12 +168,14 @@ module ApplicationWorker
 
     def bulk_perform_async(args_list)
       if log_bulk_perform_async?
-        Sidekiq.logger.info('class' => self.name, 'args_list' => args_list, 'args_list_count' => args_list.length, 'message' => 'Inserting multiple jobs')
+        Sidekiq.logger.info('class' => self.name, 'args_list' => args_list, 'args_list_count' => args_list.length,
+          'message' => 'Inserting multiple jobs')
       end
 
       do_push_bulk(args_list).tap do |job_ids|
         if log_bulk_perform_async?
-          Sidekiq.logger.info('class' => self.name, 'jid_list' => job_ids, 'jid_list_count' => job_ids.length, 'message' => 'Completed JID insertion')
+          Sidekiq.logger.info('class' => self.name, 'jid_list' => job_ids, 'jid_list_count' => job_ids.length,
+            'message' => 'Completed JID insertion')
         end
       end
     end
@@ -182,9 +184,7 @@ module ApplicationWorker
       now = Time.now.to_i
       base_schedule_at = now + delay.to_i
 
-      if base_schedule_at <= now
-        raise ArgumentError, 'The schedule time must be in the future!'
-      end
+      raise ArgumentError, 'The schedule time must be in the future!' if base_schedule_at <= now
 
       schedule_at = base_schedule_at
 

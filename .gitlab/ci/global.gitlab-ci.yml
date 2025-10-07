@@ -489,11 +489,6 @@
     - tmp/cache
   policy: pull-push
 
-# used in jobs like gdk:compile-test-assets which is just a copy of compile-test-assets
-.assets-cache-pull: &assets-cache-pull
-  <<: *assets-cache
-  policy: pull
-
 .storybook-node-modules-cache: &storybook-node-modules-cache
   key:
     prefix: "storybook-node-modules-${BUILD_OS}-${OS_VERSION}-${NODE_ENV}"
@@ -604,14 +599,9 @@
     - *assets-cache
     - *assets-tmp-cache
 
-.assets-compile-cache-pull: # this cache is used only for gdk:compile-test-assets which should only pull, never push
-  extends:
-    - .cache-analytics
+.assets-compile-cache-pull:
   cache:
-    - !reference [.ruby-gems-cache]
-    - *node-modules-cache
-    - *assets-cache-pull
-    - <<: *assets-tmp-cache
+    - <<: *assets-cache
       policy: pull
 
 .fe-island-compile-cache:

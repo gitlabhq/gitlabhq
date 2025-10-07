@@ -383,7 +383,7 @@ The table includes:
 - Elapsed time of the request
 - Relative time the request was made
 
-![Recent deliveries](img/webhook_logs_v14_4.png)
+![Webhook event log showing status codes and response times](img/webhook_logs_v14_4.png)
 
 #### Inspect request and response details
 
@@ -429,7 +429,7 @@ To test a webhook:
 
 Alternatively, you can test a webhook from its edit page.
 
-![Webhook testing](img/webhook_testing_v9_4.png)
+![Dropdown list with options for testing a webhook.](img/webhook_testing_v9_4.png)
 
 Testing is not supported for some types of events for project and group webhooks.
 For more information, see [issue 379201](https://gitlab.com/gitlab-org/gitlab/-/issues/379201).
@@ -497,7 +497,7 @@ In the webhook list, auto-disabled webhooks display as:
 - **Temporarily disabled** if they fail four consecutive times
 - **Disabled** if they fail 40 consecutive times
 
-![Badges on failing webhooks](img/failed_badges_v17_11.png)
+![Webhook list showing disabled and temporarily disabled status badges.](img/failed_badges_v17_11.png)
 
 #### Temporarily disabled webhooks
 

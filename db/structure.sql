@@ -1323,6 +1323,29 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION todos_sharding_key() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF num_nonnulls(NEW.organization_id, NEW.group_id, NEW.project_id) != 1 THEN
+    IF NEW.project_id IS NOT NULL THEN
+      NEW.organization_id := NULL;
+      NEW.group_id := NULL;
+    ELSIF NEW.group_id IS NOT NULL THEN
+      NEW.organization_id := NULL;
+      NEW.project_id := NULL;
+    ELSE
+      SELECT "organization_id", NULL, NULL
+      INTO NEW."organization_id", NEW."group_id", NEW."project_id"
+      FROM "users"
+      WHERE "users"."id" = NEW."user_id";
+    END IF;
+  END IF;
+
+  RETURN NEW;
+END
+$$;
+
 CREATE FUNCTION trigger_009314eae986() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -9772,6 +9795,7 @@ CREATE TABLE admin_roles (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     organization_id bigint,
+    CONSTRAINT check_1c6a3bcca1 CHECK ((organization_id IS NOT NULL)),
     CONSTRAINT check_89a2f4f799 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_a8c6d1de58 CHECK ((char_length(description) <= 255))
 );
@@ -33094,6 +33118,9 @@ ALTER TABLE vulnerability_scanners
 ALTER TABLE push_event_payloads
     ADD CONSTRAINT check_37c617d07d CHECK ((project_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE todos
+    ADD CONSTRAINT check_3c13ed1c7a CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)) NOT VALID;
+
 ALTER TABLE ONLY instance_type_ci_runners
     ADD CONSTRAINT check_5c34a3c1db UNIQUE (id);
 
@@ -42449,6 +42476,8 @@ CREATE INDEX index_todos_on_group_id ON todos USING btree (group_id);
 
 CREATE INDEX index_todos_on_note_id ON todos USING btree (note_id);
 
+CREATE INDEX index_todos_on_organization_id ON todos USING btree (organization_id);
+
 CREATE INDEX index_todos_on_project_id_and_id ON todos USING btree (project_id, id);
 
 CREATE INDEX index_todos_on_target_type_and_target_id ON todos USING btree (target_type, target_id);
@@ -47147,6 +47176,8 @@ CREATE TRIGGER trigger_sync_redirect_routes_namespace_id BEFORE INSERT OR UPDATE
 
 CREATE TRIGGER trigger_sync_work_item_transitions_from_issues AFTER INSERT OR UPDATE OF moved_to_id, duplicated_to_id, promoted_to_epic_id, namespace_id ON issues FOR EACH ROW EXECUTE FUNCTION sync_work_item_transitions_from_issues();
 
+CREATE TRIGGER trigger_todos_sharding_key BEFORE INSERT OR UPDATE ON todos FOR EACH ROW EXECUTE FUNCTION todos_sharding_key();
+
 CREATE TRIGGER trigger_update_details_on_namespace_insert AFTER INSERT ON namespaces FOR EACH ROW WHEN (((new.type)::text <> 'Project'::text)) EXECUTE FUNCTION update_namespace_details_from_namespaces();
 
 CREATE TRIGGER trigger_update_details_on_namespace_update AFTER UPDATE ON namespaces FOR EACH ROW WHEN ((((new.type)::text <> 'Project'::text) AND (((old.description)::text IS DISTINCT FROM (new.description)::text) OR (old.description_html IS DISTINCT FROM new.description_html) OR (old.cached_markdown_version IS DISTINCT FROM new.cached_markdown_version)))) EXECUTE FUNCTION update_namespace_details_from_namespaces();
@@ -48377,6 +48408,9 @@ ALTER TABLE ONLY approval_project_rules
 
 ALTER TABLE ONLY agent_user_access_project_authorizations
     ADD CONSTRAINT fk_78034b05d8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY todos
+    ADD CONSTRAINT fk_78558e5d74 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY analytics_devops_adoption_snapshots
     ADD CONSTRAINT fk_78c9eac821 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

@@ -1387,12 +1387,13 @@
     core-js "^3.29.1"
     mitt "^3.0.1"
 
-"@gitlab/duo-ui@^11.2.2":
-  version "11.2.2"
-  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-11.2.2.tgz#5063c72025fa83b5ca12ea8fe76843fbb160bcd9"
-  integrity sha512-b+1ZnEtt5QDz+LAc3D7nPlxoWNMY+AwdHIwgDKH2IznvkgJr36/ExwFJlTzJ9IBX+QX9rArUllHTqVvkcvTXVw==
+"@gitlab/duo-ui@^11.4.0":
+  version "11.4.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-11.4.0.tgz#3fd2d81ebb1f4502e1994eec4818f15d959c9ebf"
+  integrity sha512-4Gjl2w/4L27rbBxjWSFt6IRL+rjiZYGY4Wh16slQtWqLr5ZF72vEF5vzwAO/Oz0go/6TJIvkaBwT5+5K+1Gcqg==
   dependencies:
     "@floating-ui/dom" "1.7.4"
+    diff "^8.0.2"
     echarts "^5.3.2"
     iframe-resizer "^4.3.2"
     lodash "^4.17.20"
@@ -6893,6 +6894,11 @@ diff@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/diff/-/diff-5.0.0.tgz#7ed6ad76d859d030787ec35855f5b1daf31d852b"
   integrity sha512-/VTCrvm5Z0JGty/BWHljh+BAiw3IK+2j87NGMu8Nwc/f48WoDAC395uomO9ZD117ZOBaHmkX1oyLvkVM/aIT3w==
+
+diff@^8.0.2:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/diff/-/diff-8.0.2.tgz#712156a6dd288e66ebb986864e190c2fc9eddfae"
+  integrity sha512-sSuxWU5j5SR9QQji/o2qMvqRNYRDOcBTgsJ/DeCf4iSN4gW+gNMXM7wFIP+fdXZxoNiAnHUTGjCr+TSWXdRDKg==
 
 diffie-hellman@^5.0.0:
   version "5.0.2"

@@ -57,6 +57,18 @@ required upgrade stops occur at versions:
   Rails.cache.delete_matched("pipeline:*:create_persistent_ref_service")
   ```
 
+## 18.5.0
+
+- A [post deployment migration](../../development/database/post_deployment_migrations.md)
+  `20250922202128_finalize_correct_design_management_designs_backfill` finalizes a
+  batched [background migration](../background_migrations.md) that was scheduled in 18.4.
+  If you skipped 18.4 in the upgrade path, the migration is fully executed when
+  post deployment migrations are run.
+  Execution time is directly related to the size of your `design_management_designs` table.
+  For most instances the migration should not take longer than 2 minutes, but for some larger instances,
+  it could take up to 10 minutes.
+  Please be patient and don't interrupt the migration process.
+
 ## 18.4.1
 
 GitLab 18.4.1, 18.3.3, and 18.2.7 introduced limits on JSON inputs to prevent denial of service attacks.

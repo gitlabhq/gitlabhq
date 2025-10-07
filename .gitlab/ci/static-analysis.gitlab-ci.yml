@@ -303,6 +303,21 @@ custom-roles-verify:
   script:
     - bundle exec rake gitlab:custom_roles:check_docs
 
+permissions-verify:
+  variables:
+    SETUP_DB: "false"
+  extends:
+    - .default-retry
+    - .ruby-cache
+    - .default-before_script
+    - .permissions:rules:permissions-verify
+  stage: lint
+  needs:
+    - job: cache:ruby-gems
+      optional: true
+  script:
+    - bundle exec rake gitlab:permissions:validate
+
 ci-job-token-policies-verify:
   variables:
     SETUP_DB: "false"

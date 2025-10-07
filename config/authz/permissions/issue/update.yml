@@ -1,0 +1,4 @@
+---
+name: update_issue
+description: Grants the ability to update issues
+feature_category: team_planning

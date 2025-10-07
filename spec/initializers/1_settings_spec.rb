@@ -187,6 +187,7 @@ RSpec.describe '1_settings', feature_category: :shared do
         adjourned_projects_deletion_cron_worker
         admin_email_worker
         analytics_usage_trends_count_job_trigger_worker
+        authn_data_retention_oauth_access_token_archive_worker
         authorized_project_update_periodic_recalculate_worker
         batched_background_migrations_worker
         batched_background_migration_worker_ci_database

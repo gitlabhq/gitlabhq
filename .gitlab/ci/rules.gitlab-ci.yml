@@ -908,6 +908,10 @@
   - "tooling/custom_roles/docs/templates/custom_abilities.md.erb"
   - "ee/{lib/,spec/}tasks/gitlab/custom_roles/*"
 
+.permissions-patterns: &permissions-patterns
+  - "config/authz/permissions/**/*.yml"
+  - "{,ee/}app/policies/**/*.rb"
+
 .ci-job-token-policies-patterns: &ci-job-token-policies-patterns
   - "{,ee/}lib/api/*.rb"
   - "app/validators/json_schemas/ci_job_token_policies.json"
@@ -1192,9 +1196,6 @@
     - <<: *if-merge-request
       changes: *gdk-component-patterns
 
-# These rules have to include rules from ".qa:rules:e2e:test-on-gdk" which are also used
-# for "e2e:test-product-analytics" job in "qa.gitkab-ci.yml".
-# "e2e:test-product-analytics" job requires QA image to be built.
 .build-images:rules:build-qa-image:
   rules:
     - <<: *if-not-canonical-namespace
@@ -1239,56 +1240,6 @@
       changes:
         - qa/gdk/Dockerfile.gdk
 
-# This has to match ".qa:rules:e2e:test-on-gdk" otherwise there won't be an image available to run GDK in the test jobs.
-# Unfortunately, we can't just include ".qa:rules:e2e:test-on-gdk" because some of the conditions are manual
-# Since the smoke test job is not allowed to fail, the `build-gdk-image` job is also not allowed to fail.
-# It's better to fail early and avoid wasting resources running test jobs that would just fail anyway.
-.build-images:rules:build-gdk-image:
-  rules:
-    - !reference [".qa:rules:e2e-test-never-run", rules]
-    # E2E tests are already executed against cng deployment so gdk is skipped
-    - <<: *if-merge-request-targeting-stable-branch
-      when: never
-    - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
-      when: never
-    - <<: *if-dot-com-gitlab-org-schedule
-    - <<: *if-default-branch-refs
-    - <<: *if-merge-request-labels-run-all-e2e
-    - <<: *if-force-ci
-      when: manual
-    # The rest is included to be consistent with .qa:rules:e2e:test-on-gdk
-    # Run tests automatically for MRs that touch Ruby version files
-    - <<: *if-merge-request
-      changes: *ruby-version-patterns
-    # Run tests automatically for MRs that touch QA files
-    - <<: *if-merge-request
-      changes: *qa-patterns
-    # Run tests automatically for MRs that touch GITALY_SERVER_VERSION
-    - <<: *if-merge-request
-      changes: *gitaly-patterns
-    # Otherwise, only run in pipeline::tier-2 and above
-    - !reference [".prevent-tier-1", rules]
-    - <<: *if-merge-request-targeting-stable-branch
-      changes: *setup-test-env-patterns
-    - <<: *if-ruby-branch
-    - <<: *if-rails-next-branch
-    # We include the job under the matching conditions below, but unlike in .qa:rules:e2e:test-on-gdk we don't need to
-    # set OMNIBUS_GITLAB_BUILD_ON_ALL_OS when testing against GDK
-    - <<: *if-merge-request
-      changes: *gdk-component-patterns
-    - <<: *if-merge-request
-      changes: *dependency-patterns
-    - <<: *if-merge-request
-      changes: *feature-flag-development-config-patterns
-    - <<: *if-merge-request
-      changes: *initializers-patterns
-    - <<: *if-merge-request
-      changes: *nodejs-patterns
-    - <<: *if-merge-request
-      changes: *ci-qa-patterns
-    - <<: *if-merge-request
-      changes: *code-qa-patterns
-
 #################
 # Caching rules #
 #################
@@ -1307,10 +1258,10 @@
       when: never
     - !reference [.caching:rules:update-cache-on-code-changes, rules]
 
-# this rule is combination of rules for compile assets jobs:
+# this rule is combination of rules for jobs that use cached frontend assets:
 #  * .frontend:rules:compile-test-assets
 #  * .frontend:rules:compile-production-assets
-#  * .build-images:rules:build-gdk-image
+#  * .qa:rules:e2e:test-on-gdk
 .caching:rules:frontend-asset-hash:
   rules:
     - <<: *if-tag
@@ -1318,9 +1269,9 @@
     - if: '$ENABLE_COMPILE_PRODUCTION_ASSETS == "true"'
     - if: '$ENABLE_COMPILE_TEST_ASSETS == "true"'
     - !reference [.frontend:rules:compile-test-assets, rules]
-    - !reference [.build-images:rules:build-gdk-image, rules]
     - !reference [.frontend:rules:assets-shared, rules]
     - !reference [.releases:rules:canonical-dot-com-security-gitlab-stable-branch-only, rules]
+    - !reference [.qa:rules:e2e:test-on-gdk, rules]
 
 ######################
 # CI Templates Rules #
@@ -1452,6 +1403,16 @@
     - <<: *if-default-refs
       changes: *custom-roles-patterns
 
+############################
+# Permissions rules        #
+############################
+.permissions:rules:permissions-verify:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - <<: *if-default-refs
+      changes: *permissions-patterns
+
 #############################
 # CI job token policy rules #
 #############################
@@ -1496,7 +1457,7 @@
       changes: *ci-build-images-patterns
     - <<: *if-default-refs
       changes: *workhorse-patterns
-    - !reference [".prevent-tier-2-and-below", rules]
+    - !reference [".prevent-tier-1", rules]
     # Rules to support e2e test execution
     - <<: *if-merge-request
       changes: *dependency-patterns
@@ -1810,7 +1771,6 @@
     - <<: *if-not-ee
       when: never
     - !reference [.frontend:rules:compile-test-assets, rules]
-    - !reference [.build-images:rules:build-gdk-image, rules]
 
 ################
 # Memory rules #
@@ -2062,10 +2022,6 @@
 
 .qa:rules:e2e:test-on-gdk:
   rules:
-    - if: '$QA_RUN_TESTS_ON_GDK =~ /false|no|0/i'
-      when: never
-    - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
-      when: never
     # Full suite is already executed against cng deployment which is a proper release environment
     - <<: *if-merge-request-targeting-stable-branch
       when: never
@@ -2073,18 +2029,19 @@
     # Run tests automatically for MRs that touch Ruby version files
     - <<: *if-merge-request
       changes: *ruby-version-patterns
-    - !reference [".prevent-tier-1", rules]
-    - !reference [".qa:rules:e2e-blocking-base-after", rules]
     # Certain components trigger a rebuild of the e2e GDK image so we want to test it too
     - <<: *if-merge-request
       changes: *gdk-component-patterns
+    - !reference [".prevent-tier-2-and-below", rules]
+    - !reference [".qa:rules:e2e-blocking-base-after", rules]
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         <<: *qa-e2e-test-schedule-variables
         COVERBAND_ENABLED: "true"
-        BABEL_ENV: "istanbul" # This sets the environmental variable enabling `istanbul` plugin in Babel
-        # https://gitlab.com/gitlab-org/gitlab/-/blob/master/babel.config.js
         QA_RUN_IN_PARALLEL: "false"
+        # https://gitlab.com/gitlab-org/gitlab/-/blob/master/babel.config.js
+        # This sets the environmental variable enabling `istanbul` plugin in Babel
+        BABEL_ENV: "istanbul"
 
 .qa:rules:e2e:test-on-cng:
   rules:
@@ -2096,9 +2053,8 @@
     - <<: *if-merge-request
       changes: *cng-dependency-patterns
     - !reference [".qa:rules:e2e-blocking-base-before", rules]
-    - !reference [".prevent-tier-2-and-below", rules]
+    - !reference [".prevent-tier-1", rules]
     - !reference [".qa:rules:e2e-blocking-base-after", rules]
-    - !reference [".qa:rules:e2e-schedule-nightly", rules]
     - <<: *if-dot-com-gitlab-org-schedule
       variables: *qa-e2e-test-schedule-variables
 
