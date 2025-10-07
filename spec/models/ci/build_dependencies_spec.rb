@@ -205,7 +205,7 @@ RSpec.describe Ci::BuildDependencies, feature_category: :continuous_integration 
             end
 
             before do
-              allow(job).to receive(:yaml_variables).and_return(
+              stub_ci_job_definition(job, yaml_variables:
                 job.yaml_variables +
                 [{ key: 'parent_pipeline_ID', value: parent_pipeline.id.to_s, public: true }] +
                 [{ key: 'UPSTREAM_JOB', value: upstream_job.name, public: true }]

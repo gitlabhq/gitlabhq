@@ -179,6 +179,28 @@ type CircuitBreakerConfig struct {
 	ConsecutiveFailures uint32 `toml:"consecutive_failures" json:"consecutive_failures"`
 }
 
+// HealthCheckConfig holds configuration for health check endpoints
+type HealthCheckConfig struct {
+	// Network is the network type (tcp, tcp4, tcp6, unix)
+	Network string `toml:"network" json:"network"`
+	// Addr is the address to listen on (e.g., "localhost:8082")
+	Addr string `toml:"addr" json:"addr"`
+	// ReadinessProbeURL is the URL to check the readiness endpoint
+	ReadinessProbeURL string `toml:"readiness_probe_url" json:"readiness_probe_url"`
+	// PumaControlURL is the URL to check Puma's control server (for readiness checks)
+	PumaControlURL string `toml:"puma_control_url" json:"puma_control_url"`
+	// CheckInterval is how often to perform health checks
+	CheckInterval TomlDuration `toml:"check_interval" json:"check_interval"`
+	// Timeout for health check requests
+	Timeout TomlDuration `toml:"timeout" json:"timeout"`
+	// GracefulShutdownDelay is how long to remain not ready after shutdown signal
+	GracefulShutdownDelay TomlDuration `toml:"graceful_shutdown_delay" json:"graceful_shutdown_delay"`
+	// MaxConsecutiveFailures is the number of consecutive failures allowed before marking as not ready (readiness only)
+	MaxConsecutiveFailures int `toml:"max_consecutive_failures" json:"max_consecutive_failures"`
+	// MinSuccessfulProbes is the number of successful probes in a row required to be deemed ready (readiness only)
+	MinSuccessfulProbes int `toml:"min_successful_probes" json:"min_successful_probes"`
+}
+
 // Config holds the overall application configuration
 type Config struct {
 	ConfigCommand                string                   `toml:"config_command,omitempty" json:"config_command"`
@@ -207,6 +229,7 @@ type Config struct {
 	TrustedCIDRsForPropagation   []string                 `toml:"trusted_cidrs_for_propagation" json:"trusted_cidrs_for_propagation"`
 	Listeners                    []ListenerConfig         `toml:"listeners" json:"listeners"`
 	MetricsListener              *ListenerConfig          `toml:"metrics_listener" json:"metrics_listener"`
+	HealthCheckListener          *HealthCheckConfig       `toml:"health_check_listener" json:"health_check_listener"`
 	Sentinel                     *SentinelConfig          `toml:"Sentinel" json:"Sentinel"`
 	CircuitBreakerConfig         CircuitBreakerConfig     `toml:"circuit_breaker" json:"circuit_breaker"`
 }
@@ -302,6 +325,36 @@ func (c *Config) RegisterGoCloudURLOpeners() error {
 	}
 
 	return nil
+}
+
+// ApplyHealthCheckDefaults applies default values to health check configuration
+func (c *Config) ApplyHealthCheckDefaults() {
+	if c.HealthCheckListener == nil {
+		return
+	}
+
+	if c.HealthCheckListener.CheckInterval.Duration == 0 {
+		c.HealthCheckListener.CheckInterval = TomlDuration{Duration: 10 * time.Second}
+	}
+	if c.HealthCheckListener.Timeout.Duration == 0 {
+		c.HealthCheckListener.Timeout = TomlDuration{Duration: 5 * time.Second}
+	}
+	if c.HealthCheckListener.GracefulShutdownDelay.Duration == 0 {
+		c.HealthCheckListener.GracefulShutdownDelay = TomlDuration{Duration: 10 * time.Second}
+	}
+	if c.HealthCheckListener.MaxConsecutiveFailures <= 0 {
+		c.HealthCheckListener.MaxConsecutiveFailures = 1
+	}
+	if c.HealthCheckListener.MinSuccessfulProbes <= 0 {
+		c.HealthCheckListener.MinSuccessfulProbes = 1
+	}
+	if c.HealthCheckListener.ReadinessProbeURL == "" {
+		readinessProbeURL := "http://localhost:8080/-/readiness"
+		if c.Backend != nil {
+			readinessProbeURL = c.Backend.String() + "/-/readiness"
+		}
+		c.HealthCheckListener.ReadinessProbeURL = readinessProbeURL
+	}
 }
 
 func (creds *AzureCredentials) getURLOpener() *azureblob.URLOpener {

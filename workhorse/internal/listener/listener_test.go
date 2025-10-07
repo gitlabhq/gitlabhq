@@ -1,4 +1,4 @@
-package main
+package listener
 
 import (
 	"crypto/tls"
@@ -13,7 +13,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 )
 
-func TestNewListener(t *testing.T) {
+func TestNew(t *testing.T) {
 	const unixSocket = "../../testdata/sock"
 
 	require.NoError(t, os.RemoveAll(unixSocket))
@@ -27,7 +27,7 @@ func TestNewListener(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.network+"+"+tc.addr, func(t *testing.T) {
-			l, err := newListener("test", config.ListenerConfig{
+			l, err := New("test", config.ListenerConfig{
 				Addr:    tc.addr,
 				Network: tc.network,
 			})
@@ -59,7 +59,7 @@ func pingClient(t *testing.T, c net.Conn) {
 	require.Equal(t, "ping", string(buf))
 }
 
-func TestNewListener_TLS(t *testing.T) {
+func TestNew_TLS(t *testing.T) {
 	const (
 		certFile = "../../testdata/localhost.crt"
 		keyFile  = "../../testdata/localhost.key"
@@ -73,7 +73,7 @@ func TestNewListener_TLS(t *testing.T) {
 		},
 	}
 
-	l, err := newListener("test", cfg)
+	l, err := New("test", cfg)
 	require.NoError(t, err)
 	defer l.Close()
 	go pingServer(l)

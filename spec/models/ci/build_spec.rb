@@ -1417,7 +1417,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when build has cache' do
       before do
-        allow(build).to receive(:options).and_return(options)
+        stub_ci_job_definition(build, options: options)
       end
 
       context 'when build has multiple caches' do
@@ -1598,7 +1598,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it do
-          is_expected.to eq(options[:cache].map { |entry| entry.merge(key: "#{entry[:key]}-non_protected") })
+          is_expected.to eq(
+            options[:cache].map { |entry| entry.merge(key: "#{entry[:key]}-non_protected").merge(fallback_keys: []) })
         end
 
         context 'and the cache have fallback keys' do
@@ -1620,7 +1621,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when build does not have cache' do
       before do
-        allow(build).to receive(:options).and_return({})
+        stub_ci_job_definition(build, options: {})
       end
 
       it { is_expected.to be_empty }
@@ -1636,7 +1637,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context "with fallbacks keys" do
       before do
-        allow(build).to receive(:options).and_return({
+        stub_ci_job_definition(build, options: {
           cache: [{
             key: "key1",
             fallback_keys: %w[key2]
@@ -2785,7 +2786,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
               allow(builder).to receive(:pipeline_variables_builder) { pipeline_variables_builder }
             end
 
-            allow(build).to receive(:yaml_variables) { [build_yaml_var] }
+            stub_ci_job_definition(build, yaml_variables: [build_yaml_var])
             allow(build).to receive(:persisted_variables) { [] }
             allow(build).to receive(:job_jwt_variables) { [job_jwt_var] }
             allow(build).to receive(:dependency_variables) { [job_dependency_var] }
@@ -2819,7 +2820,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           before do
             environment = create(:environment, project: build.project, name: 'staging')
 
-            allow(build).to receive(:yaml_variables) { [{ key: 'YAML_VARIABLE', value: 'var', public: true }] }
+            stub_ci_job_definition(build, yaml_variables: [{ key: 'YAML_VARIABLE', value: 'var', public: true }])
             build.environment = 'staging'
 
             insert_expected_predefined_variables(
@@ -2860,7 +2861,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
             context 'when options is set' do
               before do
-                allow(build).to receive(:options).and_return(options)
+                stub_ci_job_definition(build, options: options)
               end
 
               context 'when options is empty' do
@@ -2889,7 +2890,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       context 'when the build has ID tokens' do
         before do
-          allow(build).to receive(:id_tokens).and_return({ 'TEST_ID_TOKEN' => { 'aud' => 'https://client.test' } })
+          stub_ci_job_definition(build, id_tokens: { 'TEST_ID_TOKEN' => { 'aud' => 'https://client.test' } })
         end
 
         it 'includes the tokens and excludes the predefined JWT variables' do
@@ -3764,7 +3765,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       before do
         rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
         stub_application_setting(ci_jwt_signing_key: rsa_key)
-        allow(build).to receive(:id_tokens).and_return({
+        stub_ci_job_definition(build, id_tokens: {
           'ID_TOKEN_1' => { 'aud' => 'developers' },
           'ID_TOKEN_2' => { 'aud' => 'maintainers' }
         })
@@ -3812,7 +3813,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       before do
         rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
         stub_application_setting(ci_jwt_signing_key: rsa_key)
-        allow(build).to receive(:id_tokens).and_return({
+        stub_ci_job_definition(build, id_tokens: {
           'ID_TOKEN_1' => { 'aud' => '$CI_SERVER_URL' },
           'ID_TOKEN_2' => { 'aud' => 'https://$CI_SERVER_HOST' },
           'ID_TOKEN_3' => { 'aud' => ['developers', '$CI_SERVER_URL', 'https://$CI_SERVER_HOST'] }
@@ -3854,7 +3855,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         build.update!(environment: 'production')
         rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
         stub_application_setting(ci_jwt_signing_key: rsa_key)
-        allow(build).to receive(:id_tokens).and_return({
+        stub_ci_job_definition(build, id_tokens: {
           'ID_TOKEN_1' => { 'aud' => '$ENVIRONMENT_SCOPED_VAR' },
           'ID_TOKEN_2' => { 'aud' => ['$CI_ENVIRONMENT_NAME', '$ENVIRONMENT_SCOPED_VAR'] }
         })
@@ -4527,7 +4528,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       before do
         stub_pages_setting(enabled: enabled)
         build.update!(name: name)
-        allow(build).to receive(:options).and_return({ pages: pages_config })
+        stub_ci_job_definition(build, options: { pages: pages_config })
         stub_feature_flags(customizable_pages_job_name: true)
       end
 
@@ -4555,7 +4556,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     with_them do
       before do
-        allow(build).to receive_messages(options: options)
+        stub_ci_job_definition(build, options: options)
         allow(build).to receive(:pages_generator?).and_return(pages_generator)
         # Create custom variables to test that they are properly expanded in the `build.pages.publish` property
         create(:ci_job_variable, key: 'CUSTOM_FOLDER', value: 'custom_folder', job: build)
@@ -5077,7 +5078,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let(:options) { { allow_failure_criteria: { exit_codes: [1] } } }
 
       before do
-        allow(build).to receive(:options).and_return(options)
+        stub_ci_job_definition(build, options: options)
       end
 
       context 'when runner provides given feature' do
@@ -5188,7 +5189,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when threshold variable is defined' do
       before do
-        allow(build).to receive(:yaml_variables).and_return([
+        stub_ci_job_definition(build, yaml_variables: [
           { key: 'SOME_VAR_1', value: 'SOME_VAL_1' },
           { key: 'DEGRADATION_THRESHOLD', value: '5' },
           { key: 'SOME_VAR_2', value: 'SOME_VAL_2' }
@@ -5200,7 +5201,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when threshold variable is not defined' do
       before do
-        allow(build).to receive(:yaml_variables).and_return([
+        stub_ci_job_definition(build, yaml_variables: [
           { key: 'SOME_VAR_1', value: 'SOME_VAL_1' },
           { key: 'SOME_VAR_2', value: 'SOME_VAL_2' }
         ])
@@ -5276,7 +5277,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it 'when in yaml variables' do
-          allow(build).to receive(:yaml_variables).and_return([{ key: 'CI_DEBUG_TRACE', value: value.to_s }])
+          stub_ci_job_definition(build, yaml_variables: [{ key: 'CI_DEBUG_TRACE', value: value.to_s }])
 
           is_expected.to eq true
         end
@@ -5316,7 +5317,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
         end
 
         it 'when in yaml variables' do
-          allow(build).to receive(:yaml_variables).and_return([{ key: 'CI_DEBUG_SERVICES', value: value.to_s }])
+          stub_ci_job_definition(build, yaml_variables: [{ key: 'CI_DEBUG_SERVICES', value: value.to_s }])
 
           is_expected.to eq true
         end
@@ -5440,7 +5441,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     let(:options) { {} }
 
     before do
-      allow(build).to receive(:options).and_return(options)
+      stub_ci_job_definition(build, options: options)
     end
 
     subject(:exit_codes_defined) do

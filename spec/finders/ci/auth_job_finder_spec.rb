@@ -31,7 +31,7 @@ RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
 
       before do
         # Remove stub with stop_writing_builds_metadata
-        allow(job).to receive(:options).and_return(job.options.merge(scoped_user_id: scoped_user.id))
+        stub_ci_job_definition(job, options: job.options.merge(scoped_user_id: scoped_user.id))
         job.update!(scoped_user_id: scoped_user.id)
       end
 

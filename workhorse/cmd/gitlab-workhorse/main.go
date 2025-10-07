@@ -19,6 +19,8 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/healthcheck"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/listener"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
@@ -168,6 +170,11 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	cfg.TrustedCIDRsForXForwardedFor = cfgFromFile.TrustedCIDRsForXForwardedFor
 	cfg.TrustedCIDRsForPropagation = cfgFromFile.TrustedCIDRsForPropagation
 	cfg.Listeners = cfgFromFile.Listeners
+	cfg.HealthCheckListener = cfgFromFile.HealthCheckListener
+
+	// Apply default health check configuration if not provided
+	cfg.ApplyHealthCheckDefaults()
+
 	cfg.CircuitBreakerConfig = cfgFromFile.CircuitBreakerConfig
 	cfg.AdoptCfRayHeader = cfgFromFile.AdoptCfRayHeader
 
@@ -233,7 +240,7 @@ func run(boot bootConfig, cfg config.Config) error {
 
 	monitoringOpts := []monitoring.Option{monitoring.WithBuildInformation(Version, BuildTime)}
 	if cfg.MetricsListener != nil {
-		l, err = newListener("metrics", *cfg.MetricsListener)
+		l, err = listener.New("metrics", *cfg.MetricsListener)
 		if err != nil {
 			return err
 		}
@@ -276,6 +283,15 @@ func run(boot bootConfig, cfg config.Config) error {
 
 	gitaly.InitializeSidechannelRegistry(accessLogger)
 
+	// Initialize health check server
+	healthCheckServer, healthCancel, err := healthcheck.InitializeAndStart(cfg, accessLogger, finalErrors)
+	if err != nil {
+		return err
+	}
+	if healthCancel != nil {
+		defer healthCancel()
+	}
+
 	up := wrapRaven(upstream.NewUpstream(cfg, accessLogger, watchKeyFn, rdb))
 
 	done := make(chan os.Signal, 1)
@@ -288,7 +304,7 @@ func run(boot bootConfig, cfg config.Config) error {
 	var listeners []net.Listener
 	oldUmask := syscall.Umask(boot.listenUmask)
 	for _, cfg := range append(cfg.Listeners, listenerFromBootConfig) {
-		l, err := newListener("upstream", cfg)
+		l, err := listener.New("upstream", cfg)
 		if err != nil {
 			return err
 		}
@@ -307,6 +323,19 @@ func run(boot bootConfig, cfg config.Config) error {
 		return err
 	case sig := <-done:
 		log.WithFields(log.Fields{"shutdown_timeout_s": cfg.ShutdownTimeout.Duration.Seconds(), "signal": sig.String()}).Infof("shutdown initiated")
+
+		// Initiate graceful shutdown for health check server
+		var gracefulShutdownDelay time.Duration
+		if healthCheckServer != nil {
+			healthCheckServer.InitiateShutdown()
+			gracefulShutdownDelay = healthCheckServer.GetGracefulShutdownDelay()
+		}
+
+		// Wait for the graceful shutdown delay to complete before shutting down the server
+		if gracefulShutdownDelay > 0 {
+			log.WithField("shutdown_delay_s", gracefulShutdownDelay.Seconds()).Info("Waiting for graceful shutdown delay")
+			time.Sleep(gracefulShutdownDelay)
+		}
 
 		ctx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout.Duration) // lint:allow context.Background
 		defer cancel()

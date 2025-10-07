@@ -26,7 +26,7 @@ RSpec.describe Ci::Builds::TimeoutCalculator, feature_category: :continuous_inte
 
     with_them do
       before do
-        allow(build).to receive(:options).and_return({ job_timeout: job_timeout })
+        stub_ci_job_definition(build, options: { job_timeout: job_timeout })
         allow(project).to receive(:build_timeout).and_return(project_timeout)
         allow(runner).to receive(:maximum_timeout).and_return(runner_timeout)
       end

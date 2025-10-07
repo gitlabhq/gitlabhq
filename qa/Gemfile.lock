@@ -107,7 +107,7 @@ GEM
       excon (~> 1.0)
       formatador (>= 0.2, < 2.0)
       mime-types
-    fog-google (1.25.0)
+    fog-google (1.26.0)
       addressable (>= 2.7.0)
       fog-core (~> 2.5)
       fog-json (~> 1.2)
@@ -384,7 +384,7 @@ DEPENDENCIES
   factory_bot (~> 6.5.1)
   faker (~> 3.5, >= 3.5.2)
   faraday-retry (~> 2.3, >= 2.3.2)
-  fog-google (~> 1.25)
+  fog-google (~> 1.26)
   gitlab-orchestrator!
   gitlab-qa (~> 15, >= 15.5.0)
   gitlab-utils!

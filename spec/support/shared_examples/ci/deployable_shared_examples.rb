@@ -524,7 +524,7 @@ RSpec.shared_examples 'a deployable job' do
       let(:options) { { environment: { url: nil } } }
 
       before do
-        allow(job).to receive(:options).and_return(options)
+        stub_ci_job_definition(job, options: options)
         job.persisted_environment.update!(external_url: 'http://prd.example.com/$CI_JOB_NAME')
       end
 
@@ -785,7 +785,7 @@ RSpec.shared_examples 'a deployable job' do
         end
 
         before do
-          allow(job).to receive(:yaml_variables).and_return(yaml_variables)
+          stub_ci_job_definition(job, yaml_variables: yaml_variables)
         end
 
         it { is_expected.to eq('2 days') }
@@ -794,7 +794,7 @@ RSpec.shared_examples 'a deployable job' do
 
     shared_examples 'environment actions' do
       before do
-        allow(job).to receive(:options).and_return(options) if try(:options)
+        stub_ci_job_definition(job, options: options) if try(:options)
       end
 
       context 'when environment is defined' do
@@ -862,7 +862,7 @@ RSpec.shared_examples 'a deployable job' do
 
     describe '#stops_environment?' do
       before do
-        allow(job).to receive(:options).and_return(options) if try(:options)
+        stub_ci_job_definition(job, options: options) if try(:options)
       end
 
       subject { job.stops_environment? }

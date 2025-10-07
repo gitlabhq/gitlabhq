@@ -70,7 +70,7 @@ Sidebar.prototype.addEventListeners = function () {
 };
 
 Sidebar.prototype.sidebarToggleClicked = function (e, triggered) {
-  if (this.isTransitioning) return;
+  if (this.isTransitioning && this.sidebar.is(':not(.right-sidebar-merge-requests)')) return;
 
   this.isTransitioning = true;
   this.sidebar.one('transitionend', () => {

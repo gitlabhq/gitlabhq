@@ -285,9 +285,12 @@ export default {
     </template>
 
     <div v-else-if="shouldRenderTable">
-      <div v-if="canRenderPipelineButton" class="gl-flex gl-w-full gl-justify-end gl-px-4 gl-pt-3">
+      <div
+        v-if="canRenderPipelineButton"
+        class="gl-flex gl-w-full gl-justify-end gl-px-4 gl-pt-3 @lg/panel:gl-hidden"
+      >
         <gl-button
-          class="gl-mb-3 gl-mt-3 gl-w-full @md/panel:gl-w-auto @lg/panel:gl-hidden"
+          class="gl-mb-3 gl-mt-3 gl-w-full @md/panel:gl-w-auto"
           data-testid="run_pipeline_button_mobile"
           :loading="state.isRunningMergeRequestPipeline"
           @click="tryRunPipeline"
@@ -301,6 +304,7 @@ export default {
         :pipeline-id-type="$options.pipelineIdKey"
         :pipelines="state.pipelines"
         :view-type="viewType"
+        class="@lg/panel:-gl-mt-px"
         @cancel-pipeline="onCancelPipeline"
         @refresh-pipelines-table="onRefreshPipelinesTable"
         @retry-pipeline="onRetryPipeline"

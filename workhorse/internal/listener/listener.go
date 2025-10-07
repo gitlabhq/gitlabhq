@@ -1,4 +1,5 @@
-package main
+// Package listener contains utilities for creating network listeners with optional TLS support.
+package listener
 
 import (
 	"crypto/tls"
@@ -9,7 +10,8 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 )
 
-func newListener(name string, cfg config.ListenerConfig) (net.Listener, error) {
+// New creates a network listener with optional TLS support
+func New(name string, cfg config.ListenerConfig) (net.Listener, error) {
 	if cfg.TLS == nil {
 		log.WithFields(log.Fields{"address": cfg.Addr, "network": cfg.Network}).Infof("Running %v server", name)
 

@@ -357,9 +357,7 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
 
     context 'when only metadata downstream errors are present' do
       before do
-        allow(processable)
-          .to receive(:options)
-          .and_return({ downstream_errors: ['options error'] })
+        stub_ci_job_definition(processable, options: { downstream_errors: ['options error'] })
       end
 
       it { is_expected.to eq(['options error']) }
@@ -369,9 +367,7 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
       before do
         create(:ci_job_message, job: processable, content: 'job message error')
 
-        allow(processable)
-          .to receive(:options)
-          .and_return({ downstream_errors: ['options error'] })
+        stub_ci_job_definition(processable, options: { downstream_errors: ['options error'] })
       end
 
       it { is_expected.to eq(['job message error']) }
