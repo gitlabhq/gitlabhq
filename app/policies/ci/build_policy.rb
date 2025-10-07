@@ -76,8 +76,10 @@ module Ci
       can?(:developer_access, @subject.project)
     end
 
+    condition(:explicit_member) { @subject.project.member?(@user) }
+
     rule { public_project & project_developer }.enable :read_manual_variables
-    rule { ~public_project & guest }.enable :read_manual_variables
+    rule { ~public_project & explicit_member }.enable :read_manual_variables
 
     # Use admin_ci_minutes for detailed quota and usage reporting
     # this is limited to total usage and total quota for a builds namespace
