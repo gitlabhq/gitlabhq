@@ -9,6 +9,7 @@ module Gitlab
       ArraySizeLimitError = Class.new(LimitExceededError)
       ElementCountLimitError = Class.new(LimitExceededError)
       HashSizeLimitError = Class.new(LimitExceededError)
+      BodySizeExceededError = Class.new(LimitExceededError)
 
       attr_reader :result, :options
 
@@ -17,12 +18,23 @@ module Gitlab
         @depth = 0
         @array_counts = {} # Track size by array object_id
         @hash_counts = {} # Track size by hash object_id
+        @body_bytesize = 0
         @total_elements = 0
         @stack = []
         @result = nil
         @max_depth_reached = 0
         @max_array_count = 0
         @max_hash_count = 0
+      end
+
+      def sc_parse(body)
+        @body_bytesize = body.bytesize
+
+        if options[:max_json_size_bytes].to_i > 0 && body.bytesize > options[:max_json_size_bytes]
+          raise BodySizeExceededError, "JSON body too large: #{body.bytesize} bytes"
+        end
+
+        ::Oj.sc_parse(self, body)
       end
 
       # Called when a hash starts
@@ -113,6 +125,7 @@ module Gitlab
       # Returns metadata about the parsed JSON structure
       def metadata
         {
+          body_bytesize: @body_bytesize,
           total_elements: @total_elements,
           max_array_count: @max_array_count,
           max_hash_count: @max_hash_count,
