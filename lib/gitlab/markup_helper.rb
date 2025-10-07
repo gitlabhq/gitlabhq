@@ -8,7 +8,7 @@ module Gitlab
     ASCIIDOC_EXTENSIONS = %w[adoc ad asciidoc].freeze
     OTHER_EXTENSIONS = %w[textile rdoc org creole wiki mediawiki rst].freeze
     EXTENSIONS = MARKDOWN_EXTENSIONS + ASCIIDOC_EXTENSIONS + OTHER_EXTENSIONS
-    PLAIN_FILENAMES = %w[readme index].freeze
+    PLAIN_FILENAMES = %w[readme index _index].freeze
 
     # Public: Determines if a given filename is compatible with GitHub::Markup.
     #

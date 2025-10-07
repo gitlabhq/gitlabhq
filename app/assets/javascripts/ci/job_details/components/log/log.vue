@@ -41,7 +41,9 @@ export default {
             await this.$nextTick();
 
             const el = document.getElementById(lineNumber);
-            scrollToElement(el);
+            const topBarHeight = document.querySelector('.js-job-log-top-bar')?.offsetHeight || 0;
+            scrollToElement(el, { offset: topBarHeight * -1 });
+
             this.unwatchJobLog();
           }
         },

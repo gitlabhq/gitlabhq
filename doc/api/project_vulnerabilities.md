@@ -61,7 +61,9 @@ GET /projects/:id/vulnerabilities
 | `id`          | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths).                                                            |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/4/vulnerabilities"
+curl --request GET \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/projects/4/vulnerabilities"
 ```
 
 Example response:
@@ -144,7 +146,9 @@ its source Vulnerability Finding, or with these default values:
 | `confidence` | The `confidence` attribute of a Vulnerability Finding |
 
 ```shell
-curl --header POST "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/vulnerabilities?finding_id=1"
+curl --request POST \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/projects/1/vulnerabilities?finding_id=1"
 ```
 
 Example response:

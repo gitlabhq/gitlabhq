@@ -56,10 +56,7 @@ export default {
 </script>
 
 <template>
-  <div
-    class="super-sidebar-inner-scrollbar gl-scroll-scrim gl-overflow-y-auto gl-overflow-x-hidden"
-    :class="scrimClasses"
-  >
+  <div class="gl-scroll-scrim gl-overflow-y-auto gl-overflow-x-hidden" :class="scrimClasses">
     <div class="top-scrim-wrapper">
       <div class="top-scrim"></div>
     </div>

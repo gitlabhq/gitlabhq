@@ -1,4 +1,4 @@
-const FILENAMES = ['index', 'readme'];
+const FILENAMES = ['readme', 'index', '_index'];
 
 const MARKUP_EXTENSIONS = [
   'ad',
@@ -17,15 +17,25 @@ const MARKUP_EXTENSIONS = [
   'textile',
   'wiki',
 ];
+const README_PATTERNS = [
+  ...FILENAMES.flatMap((base) =>
+    MARKUP_EXTENSIONS.map((ext) => new RegExp(`^${base}\\.${ext}$`, 'i')),
+  ),
+  ...FILENAMES.map((base) => new RegExp(`^${base}(\\.txt)?$`, 'i')),
+];
 
-const isRichReadme = (file) => {
-  const re = new RegExp(`^(${FILENAMES.join('|')})\\.(${MARKUP_EXTENSIONS.join('|')})$`, 'i');
-  return re.test(file.name);
-};
+export function readmeFile(blobs) {
+  if (!blobs || !(blobs instanceof Array) || !blobs.length) {
+    return undefined;
+  }
 
-const isPlainReadme = (file) => {
-  const re = new RegExp(`^(${FILENAMES.join('|')})(\\.txt)?$`, 'i');
-  return re.test(file.name);
-};
+  for (const pattern of README_PATTERNS) {
+    const match = blobs.find((blob) => pattern.test(blob.name));
 
-export const readmeFile = (blobs) => blobs.find(isRichReadme) || blobs.find(isPlainReadme);
+    if (match) {
+      return match;
+    }
+  }
+
+  return undefined;
+}

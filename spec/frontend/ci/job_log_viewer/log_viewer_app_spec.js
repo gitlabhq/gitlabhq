@@ -73,9 +73,11 @@ describe('LogViewerApp', () => {
       attachTo: document.body,
     });
 
+    jest.spyOn(findLogViewerTopBar().element, 'offsetHeight', 'get').mockReturnValue(50);
+
     await waitForPromises();
 
-    expect(scrollToElement).toHaveBeenCalledWith(wrapper.find('#L1').element);
+    expect(scrollToElement).toHaveBeenCalledWith(wrapper.find('#L1').element, { offset: -50 });
   });
 
   it('shows alert when log cannot be fetched', async () => {

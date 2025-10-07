@@ -35,6 +35,7 @@ const createState = () => ({
   userData: {},
   noteableData: {
     discussion_locked: false,
+    archived: false,
     confidential: false, // TODO: Move data like this to Issue Store, should not be apart of notes.
     current_user: {},
     preview_note_path: 'path/to/preview',

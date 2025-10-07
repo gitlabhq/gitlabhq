@@ -6,6 +6,10 @@
  */
 
 :where(.application-chrome) {
+  // Scroll bars styles
+  * {
+    scrollbar-color: var(--gl-color-neutral-400) transparent;
+  }
 
   // Variable overrides
   @include media-breakpoint-up(xl) {
@@ -234,12 +238,6 @@
     }
   }
 
-  // Super sidebar scollbar.
-  .super-sidebar-inner-scrollbar {
-    scrollbar-color: var(--gl-color-neutral-400) transparent;
-    scrollbar-width: thin;
-  }
-
   // Panels container
   .panels-container {
     @apply gl-relative gl-grow gl-flex gl-pr-0 gl-pb-0;
@@ -260,8 +258,6 @@
       height: calc(100% - #{$header-height} - #{$gl-spacing-scale-3});
 
       @apply gl-overflow-y-auto gl-overflow-x-hidden;
-      scrollbar-color: var(--gl-color-neutral-400) transparent;
-      scrollbar-width: thin;
 
       // This prevents the scrollbar transparency rule above from breaking scrollbars in dropdown menus
       .dropdown-menu {
@@ -543,14 +539,6 @@
     }
   }
 
-  // Linux scrollbar adjustment
-  .gl-platform-linux .panels-container {
-    .panel-content-inner,
-    .vue-portal-target [data-testid="work-item-detail"] {
-      scrollbar-width: auto;
-    }
-  }
-
   // Static and Contextual panels
   .paneled-view.static-panel,
   .paneled-view.contextual-panel {
@@ -630,6 +618,10 @@
       border-color: var(--gl-color-alpha-dark-8);
     }
 
+    .super-sidebar .super-sidebar-nav-item:not(.super-sidebar-nav-item-current) .badge {
+      background-color: transparent;
+    }
+
     .super-sidebar .super-sidebar-nav-item.super-sidebar-nav-item-current:not(:hover) .badge {
       background-color: var(--_shade-1);
     }
@@ -686,6 +678,11 @@
 
     .super-sidebar hr {
       border-color: var(--gl-color-alpha-light-16);
+    }
+
+    .super-sidebar .super-sidebar-nav-item:not(.super-sidebar-nav-item-current) .badge {
+      color: var(--super-sidebar-accent-color-fg);
+      background-color: transparent;
     }
 
     .super-sidebar .super-sidebar-nav-item.super-sidebar-nav-item-current:not(:hover) .badge {

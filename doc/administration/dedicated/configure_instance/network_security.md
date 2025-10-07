@@ -104,7 +104,7 @@ For example, you might need to add a certificate authority to connect to:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. At the top of the page, select **Configuration**.
-1. Expand **Custom Certificate Authorities**.
+1. Expand **Custom certificates**.
 1. Select **+ Add Certificate**.
 1. Paste the certificate into the text box.
 1. Select **Save**.

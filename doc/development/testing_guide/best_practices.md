@@ -1821,6 +1821,8 @@ GitLab uses [`factory_bot`](https://github.com/thoughtbot/factory_bot) as a test
 - Factory definitions live in `spec/factories/`, named using the pluralization
   of their corresponding model (`User` factories are defined in `users.rb`).
 - There should be only one top-level factory definition per file.
+- Consider creating specs for factories, especially when custom logic is used. For example, logic in an
+`after(:build)` hook. Specs for factories are stored in `spec/factories_specs`.
 - FactoryBot methods are mixed in to all RSpec groups. This means you can (and
   should) call `create(...)` instead of `FactoryBot.create(...)`.
 - Make use of [traits](https://www.rubydoc.info/gems/factory_bot/file/GETTING_STARTED.md#traits) to clean up definitions and usages.

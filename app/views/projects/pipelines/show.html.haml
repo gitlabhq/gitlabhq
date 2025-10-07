@@ -12,7 +12,7 @@
 #js-pipeline-header{ data: js_pipeline_header_data(@project, @pipeline) }
 
 - if pipeline_has_errors
-  - has_composite_identity_forbidden = @pipeline.read_attribute(:failure_reason) == 'composite_identity_forbidden'
+  - has_composite_identity_forbidden = @pipeline.composite_identity_forbidden?
   - if has_composite_identity_forbidden
     = render Pajamas::AlertComponent.new(title: s_('Pipelines|Unable to create pipeline'),
       variant: :warning,

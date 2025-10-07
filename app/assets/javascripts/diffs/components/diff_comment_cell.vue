@@ -1,6 +1,7 @@
 <script>
-import { mapActions } from 'pinia';
+import { mapActions, mapState } from 'pinia';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 import DiffDiscussionReply from './diff_discussion_reply.vue';
 import DiffDiscussions from './diff_discussions.vue';
 import DiffLineNoteForm from './diff_line_note_form.vue';
@@ -41,6 +42,12 @@ export default {
       default: '',
     },
   },
+  computed: {
+    ...mapState(useNotes, ['noteableData']),
+    showReplyForm() {
+      return !this.noteableData.archived && !this.hasDraft;
+    },
+  },
   methods: {
     ...mapActions(useLegacyDiffs, ['showCommentForm']),
   },
@@ -56,13 +63,13 @@ export default {
       :help-page-path="helpPagePath"
     />
     <diff-discussion-reply
-      v-if="!hasDraft"
-      :has-form="line.hasCommentForm"
+      v-if="showReplyForm"
       :render-reply-placeholder="Boolean(line.discussions.length)"
       @showNewDiscussionForm="showCommentForm({ lineCode: line.line_code, fileHash: diffFileHash })"
     >
       <template #form>
         <diff-line-note-form
+          v-if="line.hasCommentForm"
           :diff-file-hash="diffFileHash"
           :line="line"
           :range="lineRange"

@@ -131,7 +131,6 @@ export default {
       data-testid="snooze-dropdown"
       icon="clock"
       placement="bottom-end"
-      size="small"
       text-sr-only
       no-caret
       fluid-width

@@ -82,6 +82,7 @@
                 help_page_path: suggest_changes_help_path,
                 current_user_data: @current_user_data,
                 is_locked: @merge_request.discussion_locked.to_s,
+                archived: @project.self_or_ancestors_archived?.to_s,
                 report_abuse_path: add_category_abuse_reports_path,
                 new_comment_template_paths: new_comment_template_paths(@project.group, @project).to_json,
                 new_custom_emoji_path: new_custom_emoji_path(@project.group) } }

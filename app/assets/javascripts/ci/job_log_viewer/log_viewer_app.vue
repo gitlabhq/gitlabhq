@@ -61,9 +61,11 @@ export default {
     },
     scrollToLine() {
       const { hash } = window.location;
+
       if (hash) {
         try {
-          scrollToElement(document.querySelector(hash));
+          const topBarHeight = this.$refs.logViewerTopBar.$el.offsetHeight || 0;
+          scrollToElement(document.querySelector(hash), { offset: topBarHeight * -1 });
         } catch {
           // selector provider by user is invalid, pass through
         }
@@ -74,7 +76,7 @@ export default {
 </script>
 <template>
   <div class="build-page">
-    <log-viewer-top-bar :has-timestamps="hasTimestamps" />
+    <log-viewer-top-bar ref="logViewerTopBar" :has-timestamps="hasTimestamps" />
     <log-viewer :log="log" :loading="loading" />
   </div>
 </template>

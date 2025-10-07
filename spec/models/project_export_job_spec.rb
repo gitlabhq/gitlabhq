@@ -62,6 +62,23 @@ RSpec.describe ProjectExportJob, feature_category: :importers, type: :model do
         expect(described_class.by_user_id(user.id)).to match_array([recent_export_job, prunable_export_job_1])
       end
     end
+
+    describe '.queued_or_started' do
+      let_it_be(:jobs) do
+        [
+          create(:project_export_job, :queued),
+          create(:project_export_job, :started),
+          create(:project_export_job, :finished),
+          create(:project_export_job, :failed)
+        ]
+      end
+
+      it 'returns only queued or started jobs' do
+        expect(described_class.queued_or_started.pluck(:status)).to all(
+          be_in(ProjectExportJob::STATUS.values_at(:queued, :started))
+        )
+      end
+    end
   end
 
   describe 'status transitions' do

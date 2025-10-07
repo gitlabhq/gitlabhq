@@ -4,7 +4,7 @@ export const EVENT_USER_CLICKS_LINK_ON_ACTIVITY_FEED = 'user_clicks_link_in_acti
 
 // Labels
 export const TRACKING_LABEL_MERGE_REQUESTS = 'Merge requests';
-export const TRACKING_LABEL_ISSUES = 'Issues';
+export const TRACKING_LABEL_WORK_ITEMS = 'Issues';
 export const TRACKING_LABEL_TODO_ITEMS = 'To-do items';
 export const TRACKING_LABEL_RECENTLY_VIEWED = 'Recently viewed';
 export const TRACKING_LABEL_FEEDBACK = 'Feedback';

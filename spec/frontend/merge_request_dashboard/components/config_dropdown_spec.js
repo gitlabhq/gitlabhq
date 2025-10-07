@@ -22,6 +22,7 @@ describe('Merge request dashboard config dropdown component', () => {
 
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findPopover = () => wrapper.findComponent(GlPopover);
+  const findDraftsToggle = () => wrapper.findByTestId('show-drafts-toggle');
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   function createComponent({ isShowingLabels = false, shouldShowCallout = true } = {}) {
@@ -169,13 +170,23 @@ describe('Merge request dashboard config dropdown component', () => {
   it('triggers mutation when toggling show drafts toggle', async () => {
     createComponent();
 
-    wrapper.findByTestId('show-drafts-toggle').vm.$emit('change', false);
+    findDraftsToggle().vm.$emit('change', false);
 
     await nextTick();
 
     expect(updatePreferencesMutationMock).toHaveBeenCalledWith({
       mergeRequestDashboardShowDrafts: false,
     });
+  });
+
+  it('set isLoading prop on drafts toggle', async () => {
+    createComponent();
+
+    findDraftsToggle().vm.$emit('change', false);
+
+    await nextTick();
+
+    expect(findDraftsToggle().props('isLoading')).toBe(true);
   });
 
   it.each`

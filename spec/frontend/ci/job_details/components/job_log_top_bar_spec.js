@@ -5,6 +5,8 @@ import { backoffMockImplementation } from 'helpers/backoff_helper';
 import * as commonUtils from '~/lib/utils/common_utils';
 import { mockJobLog } from 'jest/ci/jobs_mock_data';
 
+jest.mock('~/lib/utils/common_utils');
+
 const mockToastShow = jest.fn();
 
 describe('JobLogTopBar', () => {

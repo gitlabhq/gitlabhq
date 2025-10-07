@@ -1,4 +1,4 @@
-export const withItems = {
+export const workItemsDataWithItems = {
   data: {
     currentUser: {
       id: 'gid://gitlab/User/1',
@@ -29,7 +29,7 @@ export const withItems = {
   },
 };
 
-export const withoutItems = {
+export const workItemsDataWithoutItems = {
   data: {
     currentUser: {
       id: 'gid://gitlab/User/1',

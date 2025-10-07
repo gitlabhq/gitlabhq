@@ -17,7 +17,4 @@
     = _("Verify code")
 
 - if @user.two_factor_webauthn_enabled?
-  - if Feature.enabled?(:webauthn_authentication_vue, Feature.current_request)
-    #js-authentication-webauthn{ data: { target_path: target_path, render_remember_me: render_remember_me.to_s, remember_me: user_params.fetch(:remember_me, 0) } }
-  - else
-    = render 'authentication/authenticate', target_path: target_path, render_remember_me: render_remember_me
+  #js-authentication-webauthn{ data: { target_path: target_path, render_remember_me: render_remember_me.to_s, remember_me: user_params.fetch(:remember_me, 0) } }

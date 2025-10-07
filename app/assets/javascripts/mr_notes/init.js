@@ -17,6 +17,7 @@ function setupMrNotesState(notesDataset, diffsDataset = {}) {
   noteableData.noteableType = notesDataset.noteableType;
   noteableData.targetType = notesDataset.targetType;
   noteableData.discussion_locked = parseBoolean(notesDataset.isLocked);
+  noteableData.archived = parseBoolean(notesDataset.archived);
   const notesData = JSON.parse(notesDataset.notesData);
   const currentUserData = JSON.parse(notesDataset.currentUserData);
   const endpoints = { metadata: notesDataset.endpointMetadata };

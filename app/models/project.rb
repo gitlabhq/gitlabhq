@@ -60,6 +60,7 @@ class Project < ApplicationRecord
 
   BoardLimitExceeded = Class.new(StandardError)
   ExportLimitExceeded = Class.new(StandardError)
+  ExportAlreadyInProgress = Class.new(StandardError)
 
   EPOCH_CACHE_EXPIRATION = 30.days
   STATISTICS_ATTRIBUTE = 'repositories_count'
@@ -2664,6 +2665,7 @@ class Project < ApplicationRecord
 
   def add_export_job(current_user:, after_export_strategy: nil, params: {})
     check_project_export_limit!
+    check_duplicate_export!(current_user)
 
     params[:exported_by_admin] = current_user.can_admin_all_resources?
 
@@ -3684,6 +3686,12 @@ class Project < ApplicationRecord
   end
 
   private
+
+  def check_duplicate_export!(current_user)
+    return unless export_jobs.by_user_id(current_user.id).queued_or_started.exists?
+
+    raise ExportAlreadyInProgress, _('An export is already running or queued for this project. Please try again once it\'s done.')
+  end
 
   def with_redis(&block)
     Gitlab::Redis::Cache.with(&block)

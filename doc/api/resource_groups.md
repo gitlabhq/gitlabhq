@@ -25,7 +25,8 @@ GET /projects/:id/resource_groups
 | `id`      | integer or string     | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/resource_groups"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/1/resource_groups"
 ```
 
 Example of response
@@ -54,7 +55,8 @@ GET /projects/:id/resource_groups/:key
 | `key`     | string  | yes      | The URL-encoded key of the resource group. For example, use `resource%5Fa` instead of `resource_a`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/resource_groups/production"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/1/resource_groups/production"
 ```
 
 Example of response
@@ -81,7 +83,8 @@ GET /projects/:id/resource_groups/:key/upcoming_jobs
 | `key`     | string  | yes      | The URL-encoded key of the resource group. For example, use `resource%5Fa` instead of `resource_a`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/50/resource_groups/production/upcoming_jobs"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/50/resource_groups/production/upcoming_jobs"
 ```
 
 Example of response
@@ -180,8 +183,10 @@ PUT /projects/:id/resource_groups/:key
 | `process_mode`  | string  | no                                | The process mode of the resource group. One of `unordered`, `oldest_first`, `newest_first`, or `newest_ready_first`. Read [process modes](../ci/resource_groups/_index.md#process-modes) for more information. |
 
 ```shell
-curl --request PUT --data "process_mode=oldest_first" \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/resource_groups/production"
+curl --request PUT \
+     --header "PRIVATE-TOKEN: <your_access_token>" \
+     --data "process_mode=oldest_first" \
+     --url "https://gitlab.example.com/api/v4/projects/1/resource_groups/production"
 ```
 
 Example response:

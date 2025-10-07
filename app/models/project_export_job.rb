@@ -22,6 +22,7 @@ class ProjectExportJob < ApplicationRecord
   scope :prunable, -> { where("updated_at < ?", EXPIRES_IN.ago) }
   scope :order_by_updated_at, -> { order(:updated_at, :id) }
   scope :by_user_id, ->(user_id) { where(user_id: user_id) }
+  scope :queued_or_started, -> { where(status: [STATUS[:queued], STATUS[:started]]) }
 
   state_machine :status, initial: :queued do
     event :start do

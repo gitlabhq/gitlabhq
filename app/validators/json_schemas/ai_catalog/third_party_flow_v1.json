@@ -21,7 +21,10 @@
       "type": "boolean"
     },
     "variables": {
-      "type": "object"
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   }
 }

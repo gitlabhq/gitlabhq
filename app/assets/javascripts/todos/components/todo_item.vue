@@ -90,7 +90,7 @@ export default {
       />
     </gl-link>
     <todo-item-actions
-      class="gl-mt-3 gl-self-start"
+      class="gl-mt-2 gl-self-start"
       :todo="todo"
       :is-snoozed="isSnoozed"
       @change="$emit('change')"

@@ -45,6 +45,7 @@ export default {
     return {
       isShowingLabels: null,
       savingPreferences: false,
+      savingDraftsToggle: false,
       preferences: {},
     };
   },
@@ -96,6 +97,8 @@ export default {
       });
     },
     async toggleShowDrafts(mergeRequestDashboardShowDrafts) {
+      this.savingDraftsToggle = true;
+
       try {
         await this.$apollo.mutate({
           mutation: updatePreferencesMutation,
@@ -106,7 +109,7 @@ export default {
 
         window.location.reload();
       } catch (error) {
-        this.savingPreferences = false;
+        this.savingDraftsToggle = false;
 
         createAlert({
           message: __('There was an error updating your show drafts preference.'),
@@ -197,6 +200,7 @@ export default {
             :value="preferences.showDrafts"
             class="gl-justify-between"
             data-testid="show-drafts-toggle"
+            :is-loading="savingDraftsToggle"
             @change="toggleShowDrafts"
           />
           <local-storage-sync

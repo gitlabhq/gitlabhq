@@ -37,6 +37,8 @@
   - 1
 - - ai_active_context_code_saas_initial_indexing_event
   - 1
+- - ai_duo_workflows_code_review_timeout
+  - 1
 - - ai_duo_workflows_update_workflow_status_event
   - 1
 - - ai_knowledge_graph_indexing_task

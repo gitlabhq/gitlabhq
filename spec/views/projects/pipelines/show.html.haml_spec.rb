@@ -19,8 +19,8 @@ RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_compositio
   context 'when pipeline has errors' do
     context 'with composite_identity_forbidden error' do
       before do
-        allow(pipeline).to receive(:read_attribute).with(:failure_reason).and_return('composite_identity_forbidden')
-        allow(pipeline).to receive(:failure_reason).and_return('Composite identity is forbidden')
+        allow(pipeline).to receive_messages(composite_identity_forbidden?: true,
+          failure_reason: 'Composite identity is forbidden')
         create(:ci_pipeline_message, pipeline: pipeline, content: 'some errors', severity: :error)
       end
 

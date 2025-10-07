@@ -158,12 +158,12 @@ export default {
       if (this.searchResults.length > 0) {
         this.$emit('searchResults', this.searchResults);
 
-        // BE returns zero based index, we need to add one to match the line numbers in the DOM
-        const firstSearchResult = `#L${this.searchResults[0].lineNumber + 1}`;
-        const logLine = document.querySelector(`.js-log-line ${firstSearchResult}`);
+        const { lineNumber } = this.searchResults[0];
+        const logLine = document.querySelector(`.js-log-line #L${lineNumber}`);
 
         if (logLine) {
-          setTimeout(() => scrollToElement(logLine));
+          const topBarHeight = this.$el.offsetHeight || 0;
+          setTimeout(() => scrollToElement(logLine, { offset: topBarHeight * -1 }));
 
           const message = sprintf(
             n__(
@@ -189,7 +189,9 @@ export default {
 };
 </script>
 <template>
-  <div class="top-bar gl-flex gl-flex-wrap gl-items-center gl-justify-between gl-gap-3">
+  <div
+    class="top-bar js-job-log-top-bar gl-flex gl-flex-wrap gl-items-center gl-justify-between gl-gap-3"
+  >
     <div class="gl-hidden gl-truncate @sm/panel:gl-block">
       <!-- truncated log information -->
       <span data-testid="showing-last">

@@ -47,7 +47,13 @@ module QA
           # with the attribute `data-testid` since such element is not unique when the
           # `is-focused` class is not set, and it was not possible to find a better solution.
           def focused_board
-            find('.issue-boards-content.js-focus-mode-board.is-focused')
+            # Project Studio: .is-focused on parent .content-panels
+            project_studio_selector = '.is-focused .issue-boards-content.js-focus-mode-board'
+
+            # Legacy UI: .is-focused directly on .issue-boards-content
+            legacy_ui_selector = '.issue-boards-content.js-focus-mode-board.is-focused'
+
+            find("#{project_studio_selector}, #{legacy_ui_selector}")
           end
 
           def boards_dropdown

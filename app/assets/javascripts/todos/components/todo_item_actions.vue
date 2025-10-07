@@ -128,7 +128,6 @@ export default {
       v-gl-tooltip
       data-testid="toggle-status-button"
       :icon="isDone ? 'redo' : 'check'"
-      size="small"
       class="gl-self-center"
       :aria-label="isDone ? $options.i18n.markAsPending : $options.i18n.markAsDone"
       :title="tooltipTitle"

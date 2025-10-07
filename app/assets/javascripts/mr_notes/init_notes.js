@@ -51,6 +51,7 @@ export default () => {
       noteableData.noteableType = notesDataset.noteableType;
       noteableData.targetType = notesDataset.targetType;
       noteableData.discussion_locked = parseBoolean(notesDataset.isLocked);
+      noteableData.archived = parseBoolean(notesDataset.archived);
 
       return {
         noteableData,

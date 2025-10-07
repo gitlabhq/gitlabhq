@@ -25,19 +25,19 @@ the last two monthly releases. See
 GitLab uses [Semantic Versioning](https://semver.org/) for its releases:
 `(Major).(Minor).(Patch)`.
 
-For example, for GitLab version 13.10.6:
+For example, for GitLab version 18.3.2:
 
-- `13` represents the major version. The major release was 13.0.0 but often referred to as 13.0.
-- `10` represents the minor version. The minor release was 13.10.0 but often referred to as 13.10.
-- `6` represents the patch number.
+- `18` represents the major version. The major release was 18.0.0 but often referred to as 18.0.
+- `3` represents the minor version. The minor release was 18.3.0 but often referred to as 18.3.
+- `2` represents the patch number.
 
-Any part of the version number can increment into multiple digits, for example, 13.10.11.
+Any part of the version number can increment into multiple digits, for example, 18.3.11.
 
 The following table describes the version types and their release cadence:
 
 | Version type | Description | Cadence |
 |:-------------|:------------|:--------|
-| Major        | For significant changes, or when any backward-incompatible changes are introduced to the public API. | Yearly. The next major release is GitLab 18.0, scheduled for May 15th, 2025. GitLab [schedules major releases](https://about.gitlab.com/releases/) for May each year, by default. |
+| Major        | For significant changes, or when any backward-incompatible changes are introduced to the public API. | Yearly. The next major release is GitLab 19.0, scheduled for May 21, 2026. GitLab [schedules major releases](https://about.gitlab.com/releases/) for May each year, by default. |
 | Minor        | For when new backward-compatible functionality is introduced to the public API, a minor feature is introduced, or when a set of smaller features is rolled out. | Monthly, scheduled for the third Thursday of each month. |
 | Patch        | For backward-compatible bug fixes that fix incorrect behavior. See [Patch releases](#patch-releases). | Twice monthly, scheduled for the Wednesday the week before and the Wednesday the week after the monthly minor release. |
 

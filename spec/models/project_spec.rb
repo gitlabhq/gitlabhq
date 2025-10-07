@@ -10501,4 +10501,69 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       end
     end
   end
+
+  describe 'export duplication guard' do
+    let_it_be(:user)    { create(:user) }
+    let_it_be(:project) { create(:project) }
+    let(:current_user) { user }
+
+    subject(:run_export) { project.add_export_job(current_user: current_user) }
+
+    def expect_worker_to_be_enqueued(user = current_user)
+      expect(Projects::ImportExport::CreateRelationExportsWorker)
+        .to receive(:perform_async)
+        .with(user.id, project.id, nil, { exported_by_admin: false })
+    end
+
+    shared_examples 'blocks duplicate export' do |status|
+      it "raises an error when status is #{status}" do
+        create(:project_export_job, status, project: project, user: user)
+
+        expect { run_export }
+          .to raise_error(Project::ExportAlreadyInProgress, /An export is already running or queued for this project/)
+      end
+    end
+
+    shared_examples 'allows new export' do |status|
+      it "enqueues worker when last job is #{status}" do
+        create(:project_export_job, status, project: project, user: user)
+
+        expect_worker_to_be_enqueued
+        run_export
+      end
+    end
+
+    context 'when no existing export jobs' do
+      it 'enqueues the worker' do
+        expect_worker_to_be_enqueued
+        run_export
+      end
+    end
+
+    [:queued, :started].each { |status| include_examples 'blocks duplicate export', status }
+    [:finished, :failed].each { |status| include_examples 'allows new export', status }
+
+    context 'when another user exports the same project' do
+      let(:other_user) { create(:user) }
+      let(:current_user) { other_user }
+
+      it 'enqueues worker for the other user' do
+        create(:project_export_job, :started, project: project, user: user)
+
+        expect_worker_to_be_enqueued(other_user)
+        run_export
+      end
+    end
+
+    context 'when user has an export in another project' do
+      let(:other_project) { create(:project) }
+
+      it 'enqueues worker for the current project' do
+        create(:project_export_job, :started, project: other_project, user: user)
+
+        expect_worker_to_be_enqueued
+        run_export
+      end
+    end
+  end
 end
