@@ -11,6 +11,7 @@ module Gitlab
     SilentModeBlockedError = Class.new(StandardError)
     ResponseSizeTooLarge = Class.new(StandardError)
     MaxDecompressionSizeError = Class.new(StandardError)
+    InvalidResponseError = Class.new(StandardError)
 
     HTTP_TIMEOUT_ERRORS = [
       Net::OpenTimeout, Net::ReadTimeout, Net::WriteTimeout, Gitlab::HTTP_V2::ReadTotalTimeout
@@ -20,7 +21,8 @@ module Gitlab
       EOFError, SocketError, OpenSSL::SSL::SSLError, OpenSSL::OpenSSLError,
       Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::ENETUNREACH,
       Gitlab::HTTP_V2::BlockedUrlError, Gitlab::HTTP_V2::RedirectionTooDeep,
-      Net::HTTPBadResponse, Gitlab::HTTP_V2::ResponseSizeTooLarge, Gitlab::HTTP_V2::ResponseSizeTooLarge
+      Net::HTTPBadResponse, Gitlab::HTTP_V2::ResponseSizeTooLarge, Gitlab::HTTP_V2::MaxDecompressionSizeError,
+      Gitlab::HTTP_V2::InvalidResponseError
     ].freeze
   end
 end
