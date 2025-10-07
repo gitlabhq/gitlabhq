@@ -47,19 +47,19 @@ Silent Mode is not designed for:
 
 - Production environments: Silent Mode intentionally [breaks many GitLab features](#behavior-of-gitlab-features-in-silent-mode). Silent Mode can cause unexpected errors, particularly in new features. Silent Mode must err on the side of caution by blocking new communications by default.
 
-## Enable Silent Mode
+## Turn on Silent Mode
 
 Prerequisites:
 
 - You must have administrator access.
 
-There are multiple ways to enable Silent Mode:
+There are multiple ways to turn on Silent Mode:
 
 - **Web UI**
 
   1. On the left sidebar, at the bottom, select **Admin**..
   1. On the left sidebar, select **Settings** > **General**.
-  1. Expand **Silent Mode**, and toggle **Enable Silent Mode**.
+  1. Expand **Silent Mode**, and turn on the **Enable Silent Mode** toggle.
   1. Changes are saved immediately.
 
 - [**API**](../../api/settings.md):
@@ -76,7 +76,7 @@ There are multiple ways to enable Silent Mode:
 
 It may take up to a minute to take effect. [Issue 405433](https://gitlab.com/gitlab-org/gitlab/-/issues/405433) proposes removing this delay.
 
-## Disable Silent Mode
+## Turn off Silent Mode
 
 Prerequisites:
 
@@ -88,7 +88,7 @@ There are multiple ways to disable Silent Mode:
 
   1. On the left sidebar, at the bottom, select **Admin**.
   1. On the left sidebar, select **Settings** > **General**.
-  1. Expand **Silent Mode**, and toggle **Enable Silent Mode**.
+  1. Expand **Silent Mode**, and turn off the **Enable Silent Mode** toggle.
   1. Changes are saved immediately.
 
 - [**API**](../../api/settings.md):

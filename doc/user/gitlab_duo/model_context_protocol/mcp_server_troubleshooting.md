@@ -40,8 +40,8 @@ When working with GitLab MCP server, you might encounter issues.
 
 1. In Cursor, to open the Output view, do one of the following:
    - Go to **View** > **Output**.
-   - In macOS, press <kbd>Cmd</kbd>+<kbd>Shift</kbd><kbd>U</kbd>.
-   - In Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd><kbd>U</kbd>.
+   - In macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd><kbd>U</kbd>.
+   - In Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd><kbd>U</kbd>.
 1. In the Output view, select **MCP:SERVERNAME**. The name depends on the MCP configuration value. The example with `GitLab` results in `MCP: user-GitLab`.
 1. When reporting bugs, copy the output into the issue template logs section.
 

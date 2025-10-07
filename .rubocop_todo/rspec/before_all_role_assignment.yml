@@ -100,7 +100,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/features/issues/related_issues_spec.rb'
     - 'ee/spec/features/merge_request/user_creates_merge_request_spec.rb'
     - 'ee/spec/features/merge_request/user_edits_approval_rules_mr_spec.rb'
-    - 'ee/spec/features/merge_request/user_sees_mr_approvals_promo_spec.rb'
     - 'ee/spec/features/merge_request/user_sees_security_widget_spec.rb'
     - 'ee/spec/features/merge_request/user_sees_status_checks_widget_spec.rb'
     - 'ee/spec/features/merge_request/user_sets_approval_rules_spec.rb'

@@ -130,8 +130,8 @@ with Code Suggestions:
    vim.o.completeopt = 'menu,menuone'
    ```
 
-When working in a supported file type, open the Omni Completion menu by pressing <kbd>Ctrl</kbd>+<kbd>x</kbd>
-then <kbd>Ctrl</kbd>+<kbd>o</kbd>.
+When working in a supported file type, open the Omni Completion menu by pressing <kbd>Control</kbd>+<kbd>x</kbd>
+then <kbd>Control</kbd>+<kbd>o</kbd>.
 
 ## Configure `<Plug>` key mappings
 
@@ -139,7 +139,7 @@ For convenience, this plugin provides `<Plug>` key mappings. To use the `<Plug>(
 you must include your own key mapping that references it:
 
 ```lua
--- Toggle Code Suggestions on/off with CTRL-g in normal mode:
+-- Toggle Code Suggestions on/off with Control-G in normal mode:
 vim.keymap.set('n', '<C-g>', '<Plug>(GitLabToggleCodeSuggestions)')
 ```
 

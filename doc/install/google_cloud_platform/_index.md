@@ -2,7 +2,7 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Learn how to install a GitLab instance on Google Cloud Platform.
+description: Install a GitLab instance on a virtual machine in Google Cloud Platform.
 title: Installing GitLab on Google Cloud Platform
 ---
 

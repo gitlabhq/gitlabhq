@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['Organization'], feature_category: :organization do
   let_it_be(:expected_fields) do
-    %w[avatar_url description description_html groups id name organization_users path projects web_url]
+    %w[avatar_url description description_html groups id name organization_users path root_path projects web_url]
   end
 
   specify { expect(described_class.graphql_name).to eq('Organization') }

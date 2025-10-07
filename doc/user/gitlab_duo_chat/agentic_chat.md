@@ -332,8 +332,6 @@ After you create a conversation with a custom agent:
 - The conversation remembers the custom agent you selected.
 - If you use the chat history to go back to the same conversation, it uses the same agent.
 
-A bug exists with this functionality. For more information, see [issue 1457](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/1457).
-
 ## GitLab Duo Chat capabilities
 
 GitLab Duo Chat (Agentic) extends GitLab Duo Chat (Classic) capabilities with the following features:

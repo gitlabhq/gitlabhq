@@ -21,6 +21,16 @@ Ensure you review these instructions for:
 For additional information for Helm chart installations, see
 [the Helm chart 9.0 upgrade notes](https://docs.gitlab.com/charts/releases/9_0.html).
 
+## Required upgrade stops
+
+To provide a predictable upgrade schedule for instance administrators,
+required upgrade stops occur at versions:
+
+- `18.2`
+- `18.5`
+- `18.8`
+- `18.11`
+
 ## Issues to be aware of when upgrading from 16.11
 
 - [PostgreSQL 14 is not supported starting from GitLab 18](../deprecations.md#postgresql-14-and-15-no-longer-supported). Upgrade PostgreSQL to at least version 16.8 before upgrading to GitLab 18.0 or later.

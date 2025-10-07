@@ -536,7 +536,7 @@ The following installation instructions assume you are running Ubuntu:
 
 1. [Install mitmproxy](https://docs.mitmproxy.org/stable/overview-installation/).
 1. Run `mitmproxy --port 9000` to generate its certificates.
-   Enter <kbd>CTRL</kbd>-<kbd>C</kbd> to quit.
+   Enter <kbd>Control</kbd>-<kbd>C</kbd> to quit.
 1. Install the certificate from `~/.mitmproxy` to your system:
 
    ```shell

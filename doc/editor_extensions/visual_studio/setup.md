@@ -69,9 +69,9 @@ default keyboard shortcuts to avoid conflicts with your existing Visual Studio c
 |---------------------------------------|---------------------------------------------|-------------|
 | `GitLab.ToggleCodeSuggestions`        | None                                        | Turn on or turn off Code Suggestions. |
 | `GitLab.OpenDuoChat`                  | None                                        | Open GitLab Duo Chat.  |
-| `GitLab.GitLabDuoNextSuggestions`     | <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>N</kbd> | Switch to the next code suggestion. |
+| `GitLab.GitLabDuoNextSuggestions`     | <kbd>Control</kbd>+<kbd>Alt</kbd>+<kbd>N</kbd> | Switch to the next code suggestion. |
 | `GitLab.GitLabDuoPreviousSuggestions` | None                                        | Switch to the previous code suggestion. |
-| `GitLab.GitLabExplainTerminalWithDuo` | <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>E</kbd> | Explain selected text in the terminal. |
+| `GitLab.GitLabExplainTerminalWithDuo` | <kbd>Control</kbd>+<kbd>Alt</kbd>+<kbd>E</kbd> | Explain selected text in the terminal. |
 | `GitLabDuoChat.ExplainCode`           | None                                        | Explain selected code. |
 | `GitLabDuoChat.Fix`                   | None                                        | Fix issues for the selected code. |
 | `GitLabDuoChat.GenerateTests`         | None                                        | Generate tests for the selected code. |

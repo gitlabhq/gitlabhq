@@ -38,11 +38,21 @@ In GitLab 17.5 and later, to provide a predictable upgrade schedule for instance
 at versions `x.2.z`, `x.5.z`, `x.8.z`, and `x.11.z`.
 
 To check available patch releases for a specific minor version, you can search for the minor version
-in the [GitLab package repository](https://packages.gitlab.com/gitlab). For example, to search for the latest
-GitLab 18.2 Enterprise Edition version, go to <https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=18.2>.
+in the [GitLab package repository](https://packages.gitlab.com/gitlab).
 
 If you're upgrading a GitLab Helm chart instance, see the
 [list of GitLab Helm chart mappings](https://docs.gitlab.com/charts/installation/version_mappings/#previous-chart-versions).
+
+### Required GitLab 18 upgrade stops
+
+Required upgrade stops occur at versions `18.2`, `18.5`, `18.8`, and `18.11`.
+
+You must upgrade to those versions of GitLab 18 before upgrading to later versions. For each version you upgrade to,
+see the [upgrade notes for GitLab 18](versions/gitlab_18_changes.md). If a version is not
+in the upgrade notes, then there's nothing specific about that version to be aware of.
+
+Find the patch releases in the GitLab package repository. For example, to search for the latest
+GitLab 18.2 Enterprise Edition version, go to <https://packages.gitlab.com/app/gitlab/gitlab-ee/search?q=18.2>.
 
 ### Required GitLab 17 upgrade stops
 

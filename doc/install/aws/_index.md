@@ -2,7 +2,7 @@
 stage: GitLab Delivery
 group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Read through the GitLab installation methods.
+description: Install GitLab on AWS using community AMIs provided by GitLab.
 title: Installing a GitLab POC on Amazon Web Services (AWS)
 ---
 

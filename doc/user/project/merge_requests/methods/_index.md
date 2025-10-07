@@ -164,36 +164,85 @@ see where every branch began and was merged.
 
 Sometimes, a workflow policy might mandate a clean commit history without
 merge commits. In such cases, the fast-forward merge is appropriate. With
-fast-forward merge requests, you can retain a linear Git history and a way
-to accept merge requests without creating merge commits. An example commit graph
-generated using this merge method:
+fast-forward merge requests, you can retain a linear Git history without
+creating merge commits.
+
+A fast-forward merge is only possible when the target branch (such as `main`) has not
+diverged from the source branch's base commit. If the target branch has new commits
+that aren't in the source branch, you must first rebase the source branch.
+
+When the fast-forward merge
+([`--ff-only`](https://git-scm.com/docs/git-merge#git-merge---ff-only)) setting
+is enabled, merging is only allowed if the branch can be fast-forwarded.
+If a fast-forward merge is not possible, you are provided the option to rebase.
+For more information, see
+[Rebasing in (semi-)linear merge methods](#rebasing-in-semi-linear-merge-methods).
+
+### Without squashing
+
+When squashing is disabled, all commits from the source branch are added directly
+to the target branch, maintaining their individual commit history.
+
+Before merge, with `main` at commit A and `feature` containing commits B, C, and D:
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 gitGraph
-  accTitle: Diagram of a fast-forward merge
-  accDescr: Shows how a fast-forwarded merge request maintains a linear Git history, but does not add a merge commit.
-  commit id: "Init"
-  commit id: "Merge mr-branch-1"
-  commit id: "Merge mr-branch-2"
-  commit id: "Commit on main"
-  commit id: "Merge squash-mr"
+  accTitle: Branch state before fast-forward merge
+  accDescr: Shows main branch at commit A, with feature branch containing commits B, C, and D.
+  commit id: "A (main)"
+  branch feature
+  commit id: "B"
+  commit id: "C"
+  commit id: "D"
 ```
 
-This method is equivalent to:
+After fast-forward merge, `main` now points to commit D, including all commits from the feature branch:
 
-- `git merge --ff <source-branch>` for regular merges.
-- `git merge --squash <source-branch>` followed by `git commit` for squash merges.
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+gitGraph
+  accTitle: Result after fast-forward merge without squashing
+  accDescr: Shows linear history with all individual commits B, C, and D now on main branch.
+  commit id: "A"
+  commit id: "B"
+  commit id: "C"
+  commit id: "D (main)"
+```
 
-When the fast-forward merge
-([`--ff-only`](https://git-scm.com/docs/git-merge#git-merge---ff-only)) setting
-is enabled, no merge commits are created and all merges are fast-forwarded.
-Merging is only allowed if the branch can be fast-forwarded.
-When a fast-forward merge is not possible, the user is given the option to rebase, see
-[Rebasing in (semi-)linear merge methods](#rebasing-in-semi-linear-merge-methods).
+This method is equivalent to `git merge --ff-only <source-branch>`.
 
-When you visit the merge request page with `Fast-forward merge`
-method selected, you can accept it only if a fast-forward merge is possible.
+### With squashing
+
+When squashing is enabled, all commits from the source branch are first combined
+into a single commit, then fast-forwarded to the target branch.
+
+Before merge, with `main` at commit A and `feature` containing commits B, C, and D:
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+gitGraph
+  accTitle: Branch state before fast-forward merge with squashing
+  accDescr: Shows main branch at commit A, with feature branch containing commits B, C, and D.
+  commit id: "A (main)"
+  branch feature
+  commit id: "B"
+  commit id: "C"
+  commit id: "D"
+```
+
+After fast-forward merge with squashing, `main` now includes a single commit containing all changes from B, C, and D:
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+gitGraph
+  accTitle: Result after fast-forward merge with squashing
+  accDescr: Shows linear history with commits B, C, and D combined into one squashed commit on main branch.
+  commit id: "A"
+  commit id: "B+C+D (main)"
+```
+
+This method is equivalent to `git merge --squash <source-branch>` followed by `git commit`.
 
 ## Rebasing in (semi-)linear merge methods
 

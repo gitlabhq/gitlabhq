@@ -4606,6 +4606,9 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|GitLab Duo for merge requests"
 msgstr ""
 
+msgid "AdminAIPoweredFeatures|GitLab default model"
+msgstr ""
+
 msgid "AdminAIPoweredFeatures|GitLab default model %{defaultModel}"
 msgstr ""
 

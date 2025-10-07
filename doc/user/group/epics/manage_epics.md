@@ -470,7 +470,7 @@ To open an epic in the full page view:
 
 - Open the epic in a new tab. From the list of epics, either:
   - Right-click the epic and open it in a new browser tab.
-  - Hold <kbd>Cmd</kbd> or <kbd>Ctrl</kbd> and select the epic.
+  - Hold <kbd>Command</kbd> or <kbd>Control</kbd> and select the epic.
 - Select an epic, and from the drawer, in the top-left corner, select **Open in full page** ({{< icon name="maximize" >}}).
 
 #### Set preference whether to open epics in a drawer

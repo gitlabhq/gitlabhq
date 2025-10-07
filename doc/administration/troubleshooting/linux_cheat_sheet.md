@@ -100,7 +100,7 @@ locate <filename>
 history
 
 # search CLI history
-<ctrl>-R
+<Control>-R
 ```
 
 ### File contents
@@ -135,7 +135,7 @@ history
 !his
 
 # Search through command history
-<ctrl>-R
+<Control>-R
 
 
 # Execute last command with sudo

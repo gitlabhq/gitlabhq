@@ -150,7 +150,7 @@ Consider the following example application, which defines a check using a regula
 
 ```ruby
 # For ruby versions < 3.2.0
-# Press ctrl+c to terminate a hung process
+# Press Control+C to terminate a hung process
 class Email < ApplicationRecord
   DOMAIN_MATCH = Regexp.new('([a-zA-Z0-9]+)+\.com')
 

@@ -5,11 +5,13 @@
   ],
   "AiCatalogItem": [
     "AiCatalogAgent",
-    "AiCatalogFlow"
+    "AiCatalogFlow",
+    "AiCatalogThirdPartyFlow"
   ],
   "AiCatalogItemVersion": [
     "AiCatalogAgentVersion",
-    "AiCatalogFlowVersion"
+    "AiCatalogFlowVersion",
+    "AiCatalogThirdPartyFlowVersion"
   ],
   "AlertManagementIntegration": [
     "AlertManagementHttpIntegration",

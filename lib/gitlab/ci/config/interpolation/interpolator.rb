@@ -89,12 +89,16 @@ module Gitlab
 
           def context
             @context ||= Context.new(
-              { inputs: inputs.to_hash }, variables: yaml_context.variables
+              { inputs: inputs.to_hash, component: component_data }, variables: yaml_context.variables
             )
           end
 
           def template
             @template ||= Template.new(content, context)
+          end
+
+          def component_data
+            yaml_context.component.slice(*header.spec_component_value)
           end
         end
       end

@@ -26,8 +26,10 @@ When you work on multiple features at once, squashing separates each feature's c
 Each time a branch merges into your base branch, up to two commits are added:
 
 - The single commit created by squashing the commits from the branch.
-- A merge commit, unless you have enabled [fast-forward merges](methods/_index.md#fast-forward-merge)
-  in your project. Fast-forward merges disable merge commits.
+- A merge commit, unless you have enabled
+  [fast-forward merges](methods/_index.md#fast-forward-merge) in your project.
+  Fast-forward merges prevent the creation of additional merge commits, but
+  you can still squash the commits from your branch into a single commit.
 
 By default, squashed commits contain the following metadata:
 

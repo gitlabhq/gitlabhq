@@ -6,6 +6,7 @@ RSpec.describe 'getting organization information', feature_category: :organizati
   include GraphqlHelpers
   using RSpec::Parameterized::TableSyntax
 
+  let(:object) { organization }
   let(:query) { graphql_query_for(:organization, { id: organization.to_global_id }, organization_fields) }
   let(:current_user) { user }
   let(:organization_fields) do
@@ -285,6 +286,42 @@ RSpec.describe 'getting organization information', feature_category: :organizati
           :organization, { id: organization.to_global_id },
           query_nodes(:projects, :id, include_pagination_info: true, args: params)
         )
+      end
+    end
+
+    describe 'root_path field' do
+      let(:organization_fields) do
+        <<~FIELDS
+          id
+          rootPath
+        FIELDS
+      end
+
+      context 'when organization is default' do
+        let_it_be(:default_organization) { create(:organization, :default, organization_users: [organization_owner]) } # rubocop:disable Gitlab/RSpec/AvoidCreateDefaultOrganization -- the application code checks for default organization so we need to test this.
+        let(:object) { default_organization }
+
+        it "returns unscoped root path" do
+          expect(root_path).to eq('/')
+        end
+      end
+
+      context 'when organization is not default' do
+        it 'returns scoped root path' do
+          request_organization
+
+          expect(graphql_data_at(:organization, :root_path)).to eq("/o/#{organization.path}")
+        end
+      end
+
+      context 'when organization_scoped_paths feature flag is disabled' do
+        before do
+          stub_feature_flags(organization_scoped_paths: false)
+        end
+
+        it 'returns unscoped root path' do
+          expect(root_path).to eq('/')
+        end
       end
     end
   end

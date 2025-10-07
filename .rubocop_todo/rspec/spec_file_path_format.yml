@@ -34,6 +34,7 @@ RSpec/SpecFilePathFormat:
     - 'spec/requests/api/pages/pages_spec.rb'
     - 'spec/services/ci/create_pipeline_service/artifacts_spec.rb'
     - 'spec/services/ci/create_pipeline_service/cache_spec.rb'
+    - 'spec/services/ci/create_pipeline_service/component_interpolation_spec.rb'
     - 'spec/services/ci/create_pipeline_service/composite_identity_spec.rb'
     - 'spec/services/ci/create_pipeline_service/creation_errors_and_warnings_spec.rb'
     - 'spec/services/ci/create_pipeline_service/cross_project_pipeline_spec.rb'

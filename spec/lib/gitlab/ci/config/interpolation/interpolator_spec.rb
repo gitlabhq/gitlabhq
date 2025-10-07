@@ -172,6 +172,76 @@ RSpec.describe Gitlab::Ci::Config::Interpolation::Interpolator, feature_category
     end
   end
 
+  context 'when using component interpolation' do
+    let(:yaml_context) do
+      ::Gitlab::Ci::Config::Yaml::Context.new(
+        variables: [],
+        component: { name: 'my-component', sha: 'abc123' }
+      )
+    end
+
+    context 'when component values are specified in spec' do
+      let(:header) do
+        { spec: { component: %w[name sha] } }
+      end
+
+      let(:content) do
+        { test: 'Component $[[ component.name ]] at $[[ component.sha ]]' }
+      end
+
+      let(:arguments) { {} }
+
+      it 'correctly interpolates component data' do
+        subject.interpolate!
+
+        expect(subject).to be_interpolated
+        expect(subject).to be_valid
+        expect(subject.to_hash).to eq({ test: 'Component my-component at abc123' })
+      end
+    end
+
+    context 'when component value not in spec is accessed' do
+      let(:header) do
+        { spec: { component: %w[name] } }
+      end
+
+      let(:content) do
+        { test: 'Component $[[ component.name ]] at $[[ component.sha ]]' }
+      end
+
+      let(:arguments) { {} }
+
+      it 'returns an error for unspecified component value' do
+        subject.interpolate!
+
+        expect(subject).not_to be_valid
+        expect(subject.errors).to include 'unknown interpolation provided: `sha` in `component.sha`'
+      end
+    end
+
+    context 'when both inputs and component are used' do
+      let(:header) do
+        { spec: { inputs: { env: nil }, component: %w[name] } }
+      end
+
+      let(:content) do
+        {
+          test: 'Deploy to $[[ inputs.env ]] using $[[ component.name ]]'
+        }
+      end
+
+      let(:arguments) { { env: 'production' } }
+
+      it 'correctly interpolates both inputs and component data' do
+        subject.interpolate!
+
+        expect(subject).to be_interpolated
+        expect(subject).to be_valid
+        expect(subject.to_hash).to eq({ test: 'Deploy to production using my-component' })
+      end
+    end
+  end
+
   describe '#to_hash' do
     context 'when interpolation is not used' do
       let(:result) do

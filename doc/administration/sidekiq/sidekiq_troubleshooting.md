@@ -294,7 +294,7 @@ Run `perf` against the Sidekiq PID:
 sudo perf record -p <sidekiq_pid>
 ```
 
-Let this run for 30-60 seconds and then press Ctrl-C. Then view the `perf` report:
+Let this run for 30-60 seconds and then press <kbd>Control</kbd>-<kbd>C</kbd>. Then view the `perf` report:
 
 ```shell
 $ sudo perf report

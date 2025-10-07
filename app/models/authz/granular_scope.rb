@@ -17,7 +17,12 @@ module Authz
     end
 
     def self.token_permissions(boundary)
-      find_by_namespace_id(boundary.namespace)&.permissions&.map(&:to_sym) || []
+      # rubocop:disable Database/AvoidUsingPluckWithoutLimit -- limited permissions, and not used with IN clause
+      namespace_ids = boundary.namespace&.self_and_ancestor_ids
+      where(namespace_id: namespace_ids)
+        .pluck(Arel.sql('DISTINCT jsonb_array_elements_text(permissions)'))
+        .map(&:to_sym)
+      # rubocop:enable Database/AvoidUsingPluckWithoutLimit
     end
 
     private

@@ -49,6 +49,11 @@ module Types
         description: 'Projects within this organization that the user has access to.',
         experiment: { milestone: '16.8' },
         resolver: ::Resolvers::Organizations::ProjectsResolver
+      field :root_path,
+        GraphQL::Types::String,
+        null: false,
+        description: 'Root path in the context of the organization.',
+        experiment: { milestone: '18.5' }
       field :web_url,
         GraphQL::Types::String,
         null: false,

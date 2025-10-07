@@ -21,7 +21,7 @@ After you download and install the extension, connect it to your GitLab account.
 
 1. Open the Command Palette:
    - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
 1. Type `GitLab: Authenticate` and press <kbd>Enter</kbd>.
 1. Select your GitLab instance URL from the options, or enter one manually.
    - If you enter one manually, in **URL to GitLab instance**, paste the full URL,
@@ -113,7 +113,7 @@ To configure OAuth application login:
 
 1. Open the Command Palette:
    - For macOS, press <kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
-   - For Windows or Linux, press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
+   - For Windows or Linux, press <kbd>Control</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>.
 1. Type `Preferences: Open User Settings` and press <kbd>Enter</kbd>.
 1. Select **Settings** > **Extensions** > **GitLab Workflow** > **Authentication**.
 1. Under **OAuth Client IDs**, select **Add Item**.
