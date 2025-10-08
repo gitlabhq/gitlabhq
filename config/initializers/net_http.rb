@@ -55,4 +55,14 @@ module Net
       end
     end
   end
+
+  class HTTPInformation < Net::HTTPResponse
+    # This is a monkey patch over an existing method of net/http to reject Net::HTTPInformation responses
+    #
+    # Original code from
+    # https://github.com/ruby/ruby/blob/98aa2a6608b026c56130154aa07b1635e05d95e8/lib/net/http/responses.rb#L21-24
+    def initialize(_httpv, _code, _msg)
+      raise Gitlab::HTTP::InvalidResponseError, "Invalid server response: 1xx responses not supported"
+    end
+  end
 end

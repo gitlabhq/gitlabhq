@@ -3,7 +3,13 @@
 module Gitlab
   module Logging
     module JsonMetadataHelper
-      JSON_METADATA_HEADERS = %i[json_total_elements json_max_array_count json_max_hash_count json_max_depth].freeze
+      JSON_METADATA_HEADERS = %i[
+        json_body_bytesize
+        json_total_elements
+        json_max_array_count
+        json_max_hash_count
+        json_max_depth
+      ].freeze
 
       def store_json_metadata_headers!(payload, request)
         # Add JSON metadata from middleware if available
