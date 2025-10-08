@@ -123,10 +123,6 @@ class Release < ApplicationRecord
     end
   end
 
-  def tag_missing?
-    actual_tag.nil?
-  end
-
   def assets_count(except: [])
     links_count = links.size
     sources_count = except.include?(:sources) ? 0 : sources.size

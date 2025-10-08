@@ -115,6 +115,11 @@ module WorkItems
         validates: { length: { maximum: MAX_FIELD_LIMIT } },
         prepare: ->(global_ids, _ctx) { GitlabSchema.parse_gids(global_ids, expected_type: ::WorkItem).map(&:model_id) }
 
+      argument :parent_wildcard_id, ::Types::WorkItems::ParentWildcardIdEnum,
+        required: false,
+        description: 'Filter by parent ID wildcard. Incompatible with parentIds.',
+        experiment: { milestone: '18.5' }
+
       argument :include_descendant_work_items, GraphQL::Types::Boolean,
         description: 'Whether to include work items of descendant parents when filtering by parent_ids.',
         required: false,
@@ -139,7 +144,9 @@ module WorkItems
       validates mutually_exclusive: [:milestone_title, :milestone_wildcard_id]
       validates mutually_exclusive: [:release_tag, :release_tag_wildcard_id]
 
+      validates mutually_exclusive: [:parent_ids, :parent_wildcard_id]
       validates mutually_exclusive: [:hierarchy_filters, :parent_ids]
+      validates mutually_exclusive: [:hierarchy_filters, :parent_wildcard_id]
       validates mutually_exclusive: [:hierarchy_filters, :include_descendant_work_items]
     end
 

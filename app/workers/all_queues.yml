@@ -4402,6 +4402,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: merge_requests_refresh_pipeline
+  :worker_name: MergeRequests::Refresh::PipelineWorker
+  :feature_category: :code_review_workflow
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+  :queue_namespace:
 - :name: merge_requests_refresh_web_hooks
   :worker_name: MergeRequests::Refresh::WebHooksWorker
   :feature_category: :code_review_workflow

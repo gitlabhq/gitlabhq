@@ -471,8 +471,6 @@ members_in_project_and_ancestors:
   file: app/models/project_team.rb
 members_with_access_levels:
   file: app/models/project_team.rb
-tag_missing?:
-  file: app/models/release.rb
 mark_for_retry!:
   file: app/models/remote_mirror.rb
 mirror_url_changed?:

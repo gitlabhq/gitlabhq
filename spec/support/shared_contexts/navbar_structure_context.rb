@@ -126,13 +126,6 @@ RSpec.shared_context 'project navbar structure' do
 end
 
 RSpec.shared_context 'group navbar structure' do
-  let(:analyze_nav_item) do
-    {
-      nav_item: _("Analyze"),
-      nav_sub_items: group_analytics_sub_nav_item
-    }
-  end
-
   let(:settings_nav_item) do
     {
       nav_item: _('Settings'),
@@ -208,6 +201,10 @@ RSpec.shared_context 'group navbar structure' do
       {
         nav_item: _("Operate"),
         nav_sub_items: [_("Kubernetes")]
+      },
+      {
+        nav_item: _("Analyze"),
+        nav_sub_items: [_("Data explorer")]
       },
       observability_nav_item
     ]

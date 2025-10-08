@@ -83,7 +83,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
     end
   end
 
-  context 'when there are 15 existing pages', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/572733' do
+  context 'when there are 15 existing pages' do
     before do
       (1..5).each { |i| create(:wiki_page, wiki: wiki, title: "my page #{i}") }
       (6..10).each { |i| create(:wiki_page, wiki: wiki, title: "parent/my page #{i}") }
@@ -101,7 +101,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
       visit wiki_path(wiki)
 
       within('.right-sidebar') do
-        expect(page.all("[data-testid='chevron-down-icon']").size).to eq(3)
+        expect(page.all("[data-testid='wiki-sidebar-entry-collapser']").size).to eq(3)
       end
     end
 
@@ -109,15 +109,15 @@ RSpec.shared_examples 'User views wiki sidebar' do
       visit wiki_path(wiki)
 
       within('.right-sidebar') do
-        first("[data-testid='chevron-down-icon']").click
+        first("[data-testid='wiki-sidebar-entry-collapser']").click
         (11..15).each { |i| expect(page).not_to have_content("my page #{i}") }
-        expect(page.all("[data-testid='chevron-down-icon']").size).to eq(1)
-        expect(page.all("[data-testid='chevron-right-icon']").size).to eq(1)
+        expect(page.all("[data-testid='wiki-sidebar-entry-collapser'].gl-rotate-90").size).to eq(1)
+        expect(page.all("[data-testid='wiki-sidebar-entry-collapser']:not(.gl-rotate-90)").size).to eq(1)
 
-        first("[data-testid='chevron-right-icon']").click
+        first("[data-testid='wiki-sidebar-entry-collapser']").click
         (11..15).each { |i| expect(page).to have_content("my page #{i}") }
-        expect(page.all("[data-testid='chevron-down-icon']").size).to eq(3)
-        expect(page.all("[data-testid='chevron-right-icon']").size).to eq(0)
+        expect(page.all("[data-testid='wiki-sidebar-entry-collapser'].gl-rotate-90").size).to eq(3)
+        expect(page.all("[data-testid='wiki-sidebar-entry-collapser']:not(.gl-rotate-90)").size).to eq(0)
       end
     end
 

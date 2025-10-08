@@ -613,7 +613,14 @@ To represent missing information in a code block, use a comment or an [ellipsis]
 
 ### Keyboard commands
 
-Use the HTML `<kbd>` tag when referring to keystroke presses. For example:
+When writing about keystroke presses:
+
+- Use the HTML `<kbd>` tag.
+- Spell out the full name of the key, except for `Alt` ([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SubstitutionWarning.yml)).
+- Capitalize the first letter of the key if it's an action key, for example: `Shift`, `Command`, `Delete`.
+  Use lowercase if it's a letter, and use `↑`, `↓`, `←`, and `→` for arrows.
+
+For example:
 
 ```plaintext
 To stop the command, press <kbd>Control</kbd>+<kbd>C</kbd>.

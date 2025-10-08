@@ -423,13 +423,14 @@ Prerequisites:
 To test a webhook:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings** > **Webhooks**.
-1. In the list of configured webhooks, locate the webhook you want to test.
-1. From the **Test** dropdown list, select the type of event to test.
-
-Alternatively, you can test a webhook from its edit page.
-
-![Dropdown list with options for testing a webhook.](img/webhook_testing_v9_4.png)
+1. Select **Settings** > **Webhooks** to see all webhooks for this project.
+1. To test a webhook directly from the list of configured webhooks:
+   1. Locate the webhook you want to test.
+   1. From the **Test** dropdown list, select the type of event to test.
+1. To test a webhook while editing it:
+   1. Locate the webhook you want to test, and select **Edit**.
+   1. Make your changes to the webhook.
+   1. Select the **Test** dropdown list, then select the type of event to test.
 
 Testing is not supported for some types of events for project and group webhooks.
 For more information, see [issue 379201](https://gitlab.com/gitlab-org/gitlab/-/issues/379201).

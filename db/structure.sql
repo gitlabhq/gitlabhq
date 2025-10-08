@@ -18960,6 +18960,19 @@ CREATE TABLE label_links (
     namespace_id bigint
 );
 
+CREATE TABLE label_links_archived (
+    id bigint NOT NULL,
+    label_id bigint,
+    target_id bigint,
+    target_type character varying,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    namespace_id bigint,
+    archived_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+COMMENT ON TABLE label_links_archived IS 'Temporary table for storing orphaned label_links during namespace_id backfill. To be dropped after migration completion.';
+
 CREATE SEQUENCE label_links_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -33103,6 +33116,9 @@ ALTER TABLE epic_issues
 ALTER TABLE badges
     ADD CONSTRAINT check_22ac1b6d3a CHECK ((num_nonnulls(group_id, project_id) = 1)) NOT VALID;
 
+ALTER TABLE subscriptions
+    ADD CONSTRAINT check_285574a00a CHECK ((user_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
 
@@ -33990,6 +34006,9 @@ ALTER TABLE ONLY job_environments
 
 ALTER TABLE ONLY keys
     ADD CONSTRAINT keys_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY label_links_archived
+    ADD CONSTRAINT label_links_archived_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY label_links
     ADD CONSTRAINT label_links_pkey PRIMARY KEY (id);
@@ -48654,6 +48673,9 @@ ALTER TABLE ONLY packages_debian_group_architectures
 
 ALTER TABLE ONLY secret_detection_token_statuses
     ADD CONSTRAINT fk_928017ddbc FOREIGN KEY (vulnerability_occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY subscriptions
+    ADD CONSTRAINT fk_933bdff476 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY workspaces_agent_configs
     ADD CONSTRAINT fk_94660551c8 FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;

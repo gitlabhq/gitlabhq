@@ -5040,7 +5040,7 @@ Use `exists` to run a job when certain files or directories exist in the reposit
 **Example of `rules:exists`**:
 
 ```yaml
-job:
+job1:
   script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
   rules:
     - exists:

@@ -2,13 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time, feature_category: :fleet_visibility do
+RSpec.describe Ci::JobAnalytics::QueryBuilder, :click_house, :freeze_time, feature_category: :fleet_visibility do
   include_context 'with CI job analytics test data'
 
-  let(:instance) { described_class.new(project, options) }
+  let_it_be(:user) { create(:user, maintainer_of: project) }
+
+  let(:instance) { described_class.new(project: project, current_user: user, options: options) }
   let(:options) { {} }
 
-  let(:query_builder) { instance.execute.payload[:aggregate] }
+  let(:query_builder) { instance.execute }
 
   subject(:query_result) { execute_query(query_builder) }
 
@@ -22,6 +24,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
 
       it 'sets default values correctly', :aggregate_failures do
         expect(instance.project).to eq(project)
+        expect(instance.current_user).to eq(user)
         expect(instance.select_fields).to eq([])
         expect(instance.aggregations).to eq([])
         expect(instance.sort).to be_nil
@@ -77,11 +80,7 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
     context 'with basic configuration' do
       let(:options) { { select_fields: [:name] } }
 
-      it { is_expected.to be_a(ServiceResponse) }
-
-      it 'returns query builder in aggregate key of service response payload' do
-        expect(execute.payload[:aggregate]).to be_a(ClickHouse::Client::QueryBuilder)
-      end
+      it { is_expected.to be_a(ClickHouse::Client::QueryBuilder) }
 
       it 'returns executable query' do
         expect(query_result).to be_a(Array)
@@ -166,9 +165,8 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
         allow(::Gitlab::ClickHouse).to receive(:configured?).and_return(false)
       end
 
-      it 'returns error service response' do
-        expect(execute).to be_error
-        expect(execute.message).to eq('ClickHouse database is not configured')
+      it 'returns nil' do
+        expect(execute).to be_nil
       end
     end
 
@@ -177,9 +175,16 @@ RSpec.describe Ci::JobAnalytics::QueryBuilderService, :click_house, :freeze_time
         stub_application_setting(use_clickhouse_for_analytics: false)
       end
 
-      it 'returns error service response' do
-        expect(execute).to be_error
-        expect(execute.message).to eq('ClickHouse database is not configured')
+      it 'returns nil' do
+        expect(execute).to be_nil
+      end
+    end
+
+    context 'when the user does not have read_build access to the project' do
+      let(:project) { project2 } # user is not part of project2
+
+      it 'returns nil' do
+        expect(execute).to be_nil
       end
     end
   end

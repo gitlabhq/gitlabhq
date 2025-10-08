@@ -21999,7 +21999,13 @@ msgstr ""
 msgid "DataExplorer|Copy query"
 msgstr ""
 
+msgid "DataExplorer|Data explorer"
+msgstr ""
+
 msgid "DataExplorer|Data query"
+msgstr ""
+
+msgid "DataExplorer|Explore GitLab data in a single place. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "DataExplorer|Preview not available"
@@ -59142,7 +59148,10 @@ msgstr ""
 msgid "SecurityOrchestration|CI/CD template edition to be enforced. The default template is stable, but may not have all the features of the latest template."
 msgstr ""
 
-msgid "SecurityOrchestration|CI/CD template edition to be enforced. The latest edition may introduce breaking changes."
+msgid "SecurityOrchestration|CI/CD template edition to be enforced. The latest edition may introduce breaking changes."
+msgstr ""
+
+msgid "SecurityOrchestration|CI/CD template version to be enforced. Specific versions offer stability but may not include the latest features."
 msgstr ""
 
 msgid "SecurityOrchestration|Cadence is invalid"
@@ -60474,6 +60483,9 @@ msgid "SecurityOrchestration|the default branch"
 msgstr ""
 
 msgid "SecurityOrchestration|type: scan_result_policy is replaced with %{linkStart}type: approval_policy%{linkEnd}"
+msgstr ""
+
+msgid "SecurityOrchestration|v2"
 msgstr ""
 
 msgid "SecurityOrchestration|with %{exceptionType}"
@@ -74721,9 +74733,6 @@ msgstr ""
 msgid "WorkItem|It must have a header row and at least two columns: the first column is the work item title and the second column is the work item description. The separator is automatically detected."
 msgstr ""
 
-msgid "WorkItem|Items in archived projects are counted but not shown."
-msgstr ""
-
 msgid "WorkItem|Iteration"
 msgstr ""
 
@@ -75063,6 +75072,9 @@ msgid "WorkItem|Select a namespace"
 msgstr ""
 
 msgid "WorkItem|Select a new lifecycle to continue."
+msgstr ""
+
+msgid "WorkItem|Select a new status to use for any items currently using this status."
 msgstr ""
 
 msgid "WorkItem|Select a project"
@@ -75420,9 +75432,6 @@ msgid "WorkItem|Used on types: %{workItemTypes}. Changes affect all items in all
 msgstr ""
 
 msgid "WorkItem|View current version"
-msgstr ""
-
-msgid "WorkItem|View items"
 msgstr ""
 
 msgid "WorkItem|View on a roadmap"

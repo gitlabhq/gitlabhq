@@ -1,0 +1,12 @@
+---
+table_name: label_links_archived
+classes:
+- Gitlab::BackgroundMigration::BackfillShardingKeyAndCleanLabelLinksTable
+feature_categories:
+- team_planning
+description: Temporary archive table for orphaned label_links during namespace_id
+  backfill migration. Stores label_links that cannot be resolved to a namespace before
+  deletion.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206448
+milestone: '18.5'
+gitlab_schema: gitlab_main_org

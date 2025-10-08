@@ -1,5 +1,5 @@
 <script>
-import { GlIcon, GlButton, GlLink } from '@gitlab/ui';
+import { GlIcon, GlButton, GlLink, GlCollapse } from '@gitlab/ui';
 import { escape } from 'lodash';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { s__, sprintf } from '~/locale';
@@ -11,6 +11,7 @@ export default {
     GlIcon,
     GlLink,
     GlButton,
+    GlCollapse,
     LocalStorageSync,
   },
   directives: {
@@ -99,18 +100,24 @@ export default {
       />
       <gl-icon
         v-if="page.children.length"
-        :name="isCollapsed ? 'chevron-right' : 'chevron-down'"
-        class="gl-absolute gl-right-2 gl-ml-2"
+        name="chevron-right"
+        class="gl-absolute gl-right-2 gl-ml-2 gl-transition-all motion-reduce:gl-transition-none"
+        :class="{ 'gl-rotate-90': !isCollapsed }"
+        data-testid="wiki-sidebar-entry-collapser"
         variant="subtle"
       />
     </span>
-    <ul v-if="page.children.length && !isCollapsed" dir="auto" class="!gl-pl-5">
-      <wiki-sidebar-entry
-        v-for="child in page.children"
-        :key="child.slug"
-        :page="child"
-        :search-term="searchTerm"
-      />
-    </ul>
+    <span v-if="page.children.length">
+      <gl-collapse :visible="!isCollapsed">
+        <ul dir="auto" class="!gl-pl-5">
+          <wiki-sidebar-entry
+            v-for="child in page.children"
+            :key="child.slug"
+            :page="child"
+            :search-term="searchTerm"
+          />
+        </ul>
+      </gl-collapse>
+    </span>
   </li>
 </template>

@@ -14714,6 +14714,7 @@ Input type: `WorkItemExportInput`
 | <a id="mutationworkitemexportnot"></a>`not` | [`NegatedWorkItemFilterInput`](#negatedworkitemfilterinput) | Negated work item arguments. |
 | <a id="mutationworkitemexportor"></a>`or` | [`UnionedWorkItemFilterInput`](#unionedworkitemfilterinput) | List of arguments with inclusive `OR`. |
 | <a id="mutationworkitemexportparentids"></a>`parentIds` | [`[WorkItemID!]`](#workitemid) | Filter work items by global IDs of their parent items (maximum is 100 IDs). |
+| <a id="mutationworkitemexportparentwildcardid"></a>`parentWildcardId` {{< icon name="warning-solid" >}} | [`WorkItemParentWildcardId`](#workitemparentwildcardid) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.5. |
 | <a id="mutationworkitemexportprojectpath"></a>`projectPath` | [`ID!`](#id) | Full project path. |
 | <a id="mutationworkitemexportreleasetag"></a>`releaseTag` | [`[String!]`](#string) | Release tag associated with the work item's milestone (maximum is 100 tags). Ignored when parent is a group. |
 | <a id="mutationworkitemexportreleasetagwildcardid"></a>`releaseTagWildcardId` | [`ReleaseTagWildcardId`](#releasetagwildcardid) | Filter by release tag wildcard. |
@@ -14934,6 +14935,7 @@ Input type: `WorkItemsCsvExportInput`
 | <a id="mutationworkitemscsvexportnot"></a>`not` | [`NegatedWorkItemFilterInput`](#negatedworkitemfilterinput) | Negated work item arguments. |
 | <a id="mutationworkitemscsvexportor"></a>`or` | [`UnionedWorkItemFilterInput`](#unionedworkitemfilterinput) | List of arguments with inclusive `OR`. |
 | <a id="mutationworkitemscsvexportparentids"></a>`parentIds` | [`[WorkItemID!]`](#workitemid) | Filter work items by global IDs of their parent items (maximum is 100 IDs). |
+| <a id="mutationworkitemscsvexportparentwildcardid"></a>`parentWildcardId` {{< icon name="warning-solid" >}} | [`WorkItemParentWildcardId`](#workitemparentwildcardid) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.5. |
 | <a id="mutationworkitemscsvexportprojectpath"></a>`projectPath` | [`ID!`](#id) | Full project path. |
 | <a id="mutationworkitemscsvexportreleasetag"></a>`releaseTag` | [`[String!]`](#string) | Release tag associated with the work item's milestone (maximum is 100 tags). Ignored when parent is a group. |
 | <a id="mutationworkitemscsvexportreleasetagwildcardid"></a>`releaseTagWildcardId` | [`ReleaseTagWildcardId`](#releasetagwildcardid) | Filter by release tag wildcard. |
@@ -28168,6 +28170,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserworkitemsnot"></a>`not` | [`NegatedWorkItemFilterInput`](#negatedworkitemfilterinput) | Negated work item arguments. |
 | <a id="currentuserworkitemsor"></a>`or` | [`UnionedWorkItemFilterInput`](#unionedworkitemfilterinput) | List of arguments with inclusive `OR`. |
 | <a id="currentuserworkitemsparentids"></a>`parentIds` | [`[WorkItemID!]`](#workitemid) | Filter work items by global IDs of their parent items (maximum is 100 IDs). |
+| <a id="currentuserworkitemsparentwildcardid"></a>`parentWildcardId` {{< icon name="warning-solid" >}} | [`WorkItemParentWildcardId`](#workitemparentwildcardid) | **Introduced** in GitLab 18.5. **Status**: Experiment. Filter by parent ID wildcard. Incompatible with parentIds. |
 | <a id="currentuserworkitemsreleasetag"></a>`releaseTag` | [`[String!]`](#string) | Release tag associated with the work item's milestone (maximum is 100 tags). Ignored when parent is a group. |
 | <a id="currentuserworkitemsreleasetagwildcardid"></a>`releaseTagWildcardId` | [`ReleaseTagWildcardId`](#releasetagwildcardid) | Filter by release tag wildcard. |
 | <a id="currentuserworkitemssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
@@ -32782,6 +32785,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="groupworkitemstatecountsnot"></a>`not` | [`NegatedWorkItemFilterInput`](#negatedworkitemfilterinput) | Negated work item arguments. |
 | <a id="groupworkitemstatecountsor"></a>`or` | [`UnionedWorkItemFilterInput`](#unionedworkitemfilterinput) | List of arguments with inclusive `OR`. |
 | <a id="groupworkitemstatecountsparentids"></a>`parentIds` | [`[WorkItemID!]`](#workitemid) | Filter work items by global IDs of their parent items (maximum is 100 IDs). |
+| <a id="groupworkitemstatecountsparentwildcardid"></a>`parentWildcardId` {{< icon name="warning-solid" >}} | [`WorkItemParentWildcardId`](#workitemparentwildcardid) | **Introduced** in GitLab 18.5. **Status**: Experiment. Filter by parent ID wildcard. Incompatible with parentIds. |
 | <a id="groupworkitemstatecountsreleasetag"></a>`releaseTag` | [`[String!]`](#string) | Release tag associated with the work item's milestone (maximum is 100 tags). Ignored when parent is a group. |
 | <a id="groupworkitemstatecountsreleasetagwildcardid"></a>`releaseTagWildcardId` | [`ReleaseTagWildcardId`](#releasetagwildcardid) | Filter by release tag wildcard. |
 | <a id="groupworkitemstatecountsrequirementlegacywidget"></a>`requirementLegacyWidget` {{< icon name="warning-solid" >}} | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in GitLab 15.9. Use work item IID filter instead. |
@@ -32867,6 +32871,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemsnot"></a>`not` | [`NegatedWorkItemFilterInput`](#negatedworkitemfilterinput) | Negated work item arguments. |
 | <a id="groupworkitemsor"></a>`or` | [`UnionedWorkItemFilterInput`](#unionedworkitemfilterinput) | List of arguments with inclusive `OR`. |
 | <a id="groupworkitemsparentids"></a>`parentIds` | [`[WorkItemID!]`](#workitemid) | Filter work items by global IDs of their parent items (maximum is 100 IDs). |
+| <a id="groupworkitemsparentwildcardid"></a>`parentWildcardId` {{< icon name="warning-solid" >}} | [`WorkItemParentWildcardId`](#workitemparentwildcardid) | **Introduced** in GitLab 18.5. **Status**: Experiment. Filter by parent ID wildcard. Incompatible with parentIds. |
 | <a id="groupworkitemsreleasetag"></a>`releaseTag` | [`[String!]`](#string) | Release tag associated with the work item's milestone (maximum is 100 tags). Ignored when parent is a group. |
 | <a id="groupworkitemsreleasetagwildcardid"></a>`releaseTagWildcardId` | [`ReleaseTagWildcardId`](#releasetagwildcardid) | Filter by release tag wildcard. |
 | <a id="groupworkitemsrequirementlegacywidget"></a>`requirementLegacyWidget` {{< icon name="warning-solid" >}} | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in GitLab 15.9. Use work item IID filter instead. |
@@ -37194,6 +37199,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="namespaceworkitemstatecountsnot"></a>`not` | [`NegatedWorkItemFilterInput`](#negatedworkitemfilterinput) | Negated work item arguments. |
 | <a id="namespaceworkitemstatecountsor"></a>`or` | [`UnionedWorkItemFilterInput`](#unionedworkitemfilterinput) | List of arguments with inclusive `OR`. |
 | <a id="namespaceworkitemstatecountsparentids"></a>`parentIds` | [`[WorkItemID!]`](#workitemid) | Filter work items by global IDs of their parent items (maximum is 100 IDs). |
+| <a id="namespaceworkitemstatecountsparentwildcardid"></a>`parentWildcardId` {{< icon name="warning-solid" >}} | [`WorkItemParentWildcardId`](#workitemparentwildcardid) | **Introduced** in GitLab 18.5. **Status**: Experiment. Filter by parent ID wildcard. Incompatible with parentIds. |
 | <a id="namespaceworkitemstatecountsreleasetag"></a>`releaseTag` | [`[String!]`](#string) | Release tag associated with the work item's milestone (maximum is 100 tags). Ignored when parent is a group. |
 | <a id="namespaceworkitemstatecountsreleasetagwildcardid"></a>`releaseTagWildcardId` | [`ReleaseTagWildcardId`](#releasetagwildcardid) | Filter by release tag wildcard. |
 | <a id="namespaceworkitemstatecountsrequirementlegacywidget"></a>`requirementLegacyWidget` {{< icon name="warning-solid" >}} | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in GitLab 15.9. Use work item IID filter instead. |
@@ -37284,6 +37290,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceworkitemsnot"></a>`not` | [`NegatedWorkItemFilterInput`](#negatedworkitemfilterinput) | Negated work item arguments. |
 | <a id="namespaceworkitemsor"></a>`or` | [`UnionedWorkItemFilterInput`](#unionedworkitemfilterinput) | List of arguments with inclusive `OR`. |
 | <a id="namespaceworkitemsparentids"></a>`parentIds` | [`[WorkItemID!]`](#workitemid) | Filter work items by global IDs of their parent items (maximum is 100 IDs). |
+| <a id="namespaceworkitemsparentwildcardid"></a>`parentWildcardId` {{< icon name="warning-solid" >}} | [`WorkItemParentWildcardId`](#workitemparentwildcardid) | **Introduced** in GitLab 18.5. **Status**: Experiment. Filter by parent ID wildcard. Incompatible with parentIds. |
 | <a id="namespaceworkitemsreleasetag"></a>`releaseTag` | [`[String!]`](#string) | Release tag associated with the work item's milestone (maximum is 100 tags). Ignored when parent is a group. |
 | <a id="namespaceworkitemsreleasetagwildcardid"></a>`releaseTagWildcardId` | [`ReleaseTagWildcardId`](#releasetagwildcardid) | Filter by release tag wildcard. |
 | <a id="namespaceworkitemsrequirementlegacywidget"></a>`requirementLegacyWidget` {{< icon name="warning-solid" >}} | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in GitLab 15.9. Use work item IID filter instead. |
@@ -41442,6 +41449,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="projectworkitemstatecountsnot"></a>`not` | [`NegatedWorkItemFilterInput`](#negatedworkitemfilterinput) | Negated work item arguments. |
 | <a id="projectworkitemstatecountsor"></a>`or` | [`UnionedWorkItemFilterInput`](#unionedworkitemfilterinput) | List of arguments with inclusive `OR`. |
 | <a id="projectworkitemstatecountsparentids"></a>`parentIds` | [`[WorkItemID!]`](#workitemid) | Filter work items by global IDs of their parent items (maximum is 100 IDs). |
+| <a id="projectworkitemstatecountsparentwildcardid"></a>`parentWildcardId` {{< icon name="warning-solid" >}} | [`WorkItemParentWildcardId`](#workitemparentwildcardid) | **Introduced** in GitLab 18.5. **Status**: Experiment. Filter by parent ID wildcard. Incompatible with parentIds. |
 | <a id="projectworkitemstatecountsreleasetag"></a>`releaseTag` | [`[String!]`](#string) | Release tag associated with the work item's milestone (maximum is 100 tags). Ignored when parent is a group. |
 | <a id="projectworkitemstatecountsreleasetagwildcardid"></a>`releaseTagWildcardId` | [`ReleaseTagWildcardId`](#releasetagwildcardid) | Filter by release tag wildcard. |
 | <a id="projectworkitemstatecountsrequirementlegacywidget"></a>`requirementLegacyWidget` {{< icon name="warning-solid" >}} | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in GitLab 15.9. Use work item IID filter instead. |
@@ -41521,6 +41529,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectworkitemsnot"></a>`not` | [`NegatedWorkItemFilterInput`](#negatedworkitemfilterinput) | Negated work item arguments. |
 | <a id="projectworkitemsor"></a>`or` | [`UnionedWorkItemFilterInput`](#unionedworkitemfilterinput) | List of arguments with inclusive `OR`. |
 | <a id="projectworkitemsparentids"></a>`parentIds` | [`[WorkItemID!]`](#workitemid) | Filter work items by global IDs of their parent items (maximum is 100 IDs). |
+| <a id="projectworkitemsparentwildcardid"></a>`parentWildcardId` {{< icon name="warning-solid" >}} | [`WorkItemParentWildcardId`](#workitemparentwildcardid) | **Introduced** in GitLab 18.5. **Status**: Experiment. Filter by parent ID wildcard. Incompatible with parentIds. |
 | <a id="projectworkitemsreleasetag"></a>`releaseTag` | [`[String!]`](#string) | Release tag associated with the work item's milestone (maximum is 100 tags). Ignored when parent is a group. |
 | <a id="projectworkitemsreleasetagwildcardid"></a>`releaseTagWildcardId` | [`ReleaseTagWildcardId`](#releasetagwildcardid) | Filter by release tag wildcard. |
 | <a id="projectworkitemsrequirementlegacywidget"></a>`requirementLegacyWidget` {{< icon name="warning-solid" >}} | [`RequirementLegacyFilterInput`](#requirementlegacyfilterinput) | **Deprecated** in GitLab 15.9. Use work item IID filter instead. |

@@ -226,7 +226,7 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
 
         expect(json_response.count).to eq(1)
         expect(json_response.first['tag_name']).to eq('v1.1.5')
-        expect(release).to be_tag_missing
+        expect(release.repository.find_tag(release.tag)).to be_nil
       end
     end
 

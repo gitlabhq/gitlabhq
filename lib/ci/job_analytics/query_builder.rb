@@ -2,11 +2,12 @@
 
 module Ci
   module JobAnalytics
-    class QueryBuilderService
-      attr_reader :project, :select_fields, :aggregations, :sort, :source, :ref, :from_time, :to_time, :name_search
+    class QueryBuilder
+      attr_reader :project, :current_user, :select_fields, :aggregations,
+        :sort, :source, :ref, :from_time, :to_time, :name_search
 
       # @param project [Project] The project to find jobs for
-      # @param options [Hash] Options for filtering and configuring the query builder
+      # @param options [Hash] options for filtering and configuring the query builder
       # @option options [Array] :select_fields Fields to select
       # @option options [Array] :aggregations Aggregations to perform
       # @option options [String] :sort Sort order (ex. rate_of_success_asc)
@@ -15,10 +16,12 @@ module Ci
       # @option options [Time] :from_time Start time for filtering (defaults to 7 days ago)
       # @option options [Time] :to_time End time for filtering
       # @option options [String] :name_search Search by name of the pipeline jobs.
-      def initialize(project, options = {})
+      def initialize(project:, current_user:, options: {})
         raise ArgumentError, 'project must be a valid Project instance' unless project.is_a?(Project)
+        raise ArgumentError, 'current_user must be a valid User instance' unless current_user.is_a?(User)
 
         @project = project
+        @current_user = current_user
         @select_fields = options[:select_fields] || []
         @aggregations = options[:aggregations] || []
         @sort = options[:sort]
@@ -30,11 +33,10 @@ module Ci
       end
 
       def execute
-        unless ::Gitlab::ClickHouse.enabled_for_analytics?
-          return ServiceResponse.error(message: 'ClickHouse database is not configured')
-        end
+        return unless ::Gitlab::ClickHouse.enabled_for_analytics? && Ability.allowed?(current_user, :read_build,
+          project)
 
-        ServiceResponse.success(payload: { aggregate: build_finder.query_builder })
+        build_finder.query_builder
       end
 
       private

@@ -22,10 +22,13 @@ swap:
   case sensitive: "case-sensitive"
   case insensitive: "case-insensitive"
   cherry pick: "cherry-pick"
+  cmd: Command
   code base: "codebase"
   config: "configuration"
   confirmation box: "confirmation dialog"
   confirmation dialog box: "confirmation dialog"
+  ctrl: Control
+  del: Delete
   deselect: "clear"
   deselected: "cleared"
   dialog box: "dialog"

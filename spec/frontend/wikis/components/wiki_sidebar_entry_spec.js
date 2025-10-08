@@ -1,4 +1,4 @@
-import { GlLink, GlIcon } from '@gitlab/ui';
+import { GlLink, GlIcon, GlCollapse } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import WikiSidebarEntry from '~/wikis/components/wiki_sidebar_entry.vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
@@ -91,7 +91,8 @@ describe('wikis/components/wiki_sidebar_entry', () => {
     it('renders a chevron icon', () => {
       const chevron = wrapper.findComponent(GlIcon);
 
-      expect(chevron.props('name')).toBe('chevron-down');
+      expect(chevron.props('name')).toBe('chevron-right');
+      expect(chevron.classes()).toContain('gl-rotate-90');
     });
 
     it('collapses the children when the node is clicked', async () => {
@@ -100,7 +101,8 @@ describe('wikis/components/wiki_sidebar_entry', () => {
       await wrapper.findByTestId('wiki-list').trigger('click');
 
       expect(chevron.props('name')).toBe('chevron-right');
-      expect(wrapper.findAllComponents(GlLink)).toHaveLength(1);
+      expect(chevron.classes()).not.toContain('gl-rotate-90');
+      expect(wrapper.findComponent(GlCollapse).props('visible')).toBe(false);
     });
 
     it('stores the value of the collapsed state in local storage', async () => {

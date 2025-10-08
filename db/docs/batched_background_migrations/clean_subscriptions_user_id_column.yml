@@ -1,0 +1,8 @@
+---
+migration_job_name: CleanSubscriptionsUserIdColumn
+description: Delete subscriptions table records where user_id is NULL or value does not exist on users table
+feature_category: team_planning
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207503
+milestone: '18.5'
+queued_migration_version: 20251006003241
+finalized_by: # version of the migration that finalized this BBM
