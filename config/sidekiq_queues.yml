@@ -489,8 +489,6 @@
   - 1
 - - gitlab_subscriptions_refresh_seats
   - 1
-- - gitlab_subscriptions_seat_assignments_group_links_create_or_update_seats
-  - 1
 - - gitlab_subscriptions_seat_assignments_member_transfers_create_group_seats
   - 1
 - - gitlab_subscriptions_seat_assignments_member_transfers_create_project_seats

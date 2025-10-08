@@ -347,6 +347,7 @@ export default {
         <file-icon
           :file-name="fileIconName"
           :folder="isTreeView"
+          :size="18"
           opened
           aria-hidden="true"
           class="gl-inline-flex"

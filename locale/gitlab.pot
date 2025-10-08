@@ -58709,6 +58709,9 @@ msgstr ""
 msgid "SecurityInventory|Add projects to this group to start tracking their security posture."
 msgstr ""
 
+msgid "SecurityInventory|Advanced SAST (SAST)"
+msgstr ""
+
 msgid "SecurityInventory|An error occurred while fetching subgroups and projects. Please try again."
 msgstr ""
 
@@ -58718,16 +58721,25 @@ msgstr ""
 msgid "SecurityInventory|Basic SAST"
 msgstr ""
 
+msgid "SecurityInventory|Basic SAST (SAST)"
+msgstr ""
+
 msgid "SecurityInventory|CS"
 msgstr ""
 
 msgid "SecurityInventory|Container scanning"
 msgstr ""
 
+msgid "SecurityInventory|Container scanning (CS)"
+msgstr ""
+
 msgid "SecurityInventory|Container scanning (standard)"
 msgstr ""
 
 msgid "SecurityInventory|Container scanning for registry"
+msgstr ""
+
+msgid "SecurityInventory|Container scanning for registry (CS)"
 msgstr ""
 
 msgid "SecurityInventory|DAST"
@@ -58737,6 +58749,12 @@ msgid "SecurityInventory|DS"
 msgstr ""
 
 msgid "SecurityInventory|Dependency scanning"
+msgstr ""
+
+msgid "SecurityInventory|Dependency scanning (DS)"
+msgstr ""
+
+msgid "SecurityInventory|Dynamic Application Security Testing (DAST)"
 msgstr ""
 
 msgid "SecurityInventory|Dynamic application security testing (DAST)"
@@ -58749,6 +58767,9 @@ msgid "SecurityInventory|Group vulnerabilities"
 msgstr ""
 
 msgid "SecurityInventory|IaC"
+msgstr ""
+
+msgid "SecurityInventory|Infrastructure as Code (IaC)"
 msgstr ""
 
 msgid "SecurityInventory|Infrastructure as code scanning (IaC)"
@@ -58769,6 +58790,9 @@ msgstr ""
 msgid "SecurityInventory|Pipeline secret detection"
 msgstr ""
 
+msgid "SecurityInventory|Pipeline secret detection (SD)"
+msgstr ""
+
 msgid "SecurityInventory|Project vulnerabilities"
 msgstr ""
 
@@ -58787,7 +58811,28 @@ msgstr ""
 msgid "SecurityInventory|Secret push protection"
 msgstr ""
 
+msgid "SecurityInventory|Secret push protection (SD)"
+msgstr ""
+
 msgid "SecurityInventory|Security inventory"
+msgstr ""
+
+msgid "SecurityInventory|Severity critical"
+msgstr ""
+
+msgid "SecurityInventory|Severity high"
+msgstr ""
+
+msgid "SecurityInventory|Severity info"
+msgstr ""
+
+msgid "SecurityInventory|Severity low"
+msgstr ""
+
+msgid "SecurityInventory|Severity medium"
+msgstr ""
+
+msgid "SecurityInventory|Severity unknown"
 msgstr ""
 
 msgid "SecurityInventory|Static application security testing (SAST)"
@@ -78088,6 +78133,9 @@ msgstr ""
 msgid "epic"
 msgstr ""
 
+msgid "equal to"
+msgstr ""
+
 msgid "error"
 msgstr ""
 
@@ -78183,6 +78231,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "frontmatter"
+msgstr ""
+
+msgid "greater than or equal to"
 msgstr ""
 
 msgid "group"
@@ -78482,6 +78533,9 @@ msgid "leave %{group_name}"
 msgstr ""
 
 msgid "less than a minute"
+msgstr ""
+
+msgid "less than or equal to"
 msgstr ""
 
 msgid "level: %{level}"
