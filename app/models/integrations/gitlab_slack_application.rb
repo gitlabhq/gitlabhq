@@ -79,6 +79,15 @@ module Integrations
       super
     end
 
+    def after_build_from_integration(new_integration)
+      return unless slack_integration
+
+      new_integration.slack_integration = slack_integration.dup.tap do |entity|
+        entity.alias = new_integration.parent&.full_path || SlackIntegration::INSTANCE_ALIAS
+        entity.authorized_scope_names = slack_integration.authorized_scope_names
+      end
+    end
+
     override :requires_webhook?
     def self.requires_webhook?
       false

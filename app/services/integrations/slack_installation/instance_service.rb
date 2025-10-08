@@ -10,7 +10,7 @@ module Integrations
       end
 
       def installation_alias
-        '_gitlab-instance'
+        SlackIntegration::INSTANCE_ALIAS
       end
 
       def authorized?
