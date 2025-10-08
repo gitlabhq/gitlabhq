@@ -6,7 +6,7 @@ module Namespaces
       include Gitlab::Loggable
 
       def initialize(namespaces, root_ancestor_preloads = [])
-        @namespaces = namespaces
+        @namespaces = namespaces.uniq.compact
         @root_ancestor_preloads = root_ancestor_preloads
       end
 

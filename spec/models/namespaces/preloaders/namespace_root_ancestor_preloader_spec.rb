@@ -151,6 +151,12 @@ RSpec.describe Namespaces::Preloaders::NamespaceRootAncestorPreloader, feature_c
     end
   end
 
+  context 'when namespaces have nil in the collection' do
+    it 'does not raises exception' do
+      expect { described_class.new([public_group, nil], additional_preloads).execute }.not_to raise_error
+    end
+  end
+
   def preload_ancestors
     described_class.new(pristine_namespaces, additional_preloads).execute
   end
