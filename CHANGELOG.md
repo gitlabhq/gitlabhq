@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.4.2 (2025-10-08)
+
+### Added (1 change)
+
+- [Remove check_f02a3f53bf not null constraint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8286ade8d801ab80891f81defc627839a4d86e20)
+
+### Fixed (3 changes)
+
+- [Prevent session creation for sessionless users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f88c1242f0a8e5e9f13a187755568d0545f69305)
+- [Remove non Saas instances from calling CDOT for trial duration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6ba5b24afb192c042cf67be4bb85c0dc306db143) **GitLab Enterprise Edition**
+- [Transfer start and due dates data upon work item move or clone](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9025e065d671143b547126269c775d52102b9775)
+
+### Security (5 changes)
+
+- [Log JSON bytesize as well](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b6b5c289d3183019524e5604c25f431cf45682c2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5388))
+- [Adjust complexity for blob data fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/49554246af3e45202ca7c32e0a0273f13421eb8a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5384))
+- [Some mutations have read_api scope](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5714b2f3c9411e709d6abcb0896b34a208798d1b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5370))
+- [Reject irrelevant 1xx responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/390f4fddbb5a778dbd52a9647bf22ab52ee8478e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5332))
+- [Restrict manual variables to explicit guests in internal projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/446b25ac5e3e9c02c49f26a1da31ba108c0bdd23) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5366))
+
 ## 18.4.1 (2025-09-25)
 
 ### Fixed (2 changes)
