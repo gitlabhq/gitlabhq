@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.2.8 (2025-10-08)
+
+### Fixed (1 change)
+
+- [Transfer start and due dates data upon work item move or clone](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ffa794edbc50ae509c9d2a9dcd6a3d30cf938de5)
+
+### Security (4 changes)
+
+- [Log JSON bytesize as well](https://gitlab.com/gitlab-org/security/gitlab/-/commit/99e5aeaddd439d66513cdf5710bc3fdb70df7cb4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5390))
+- [Adjust complexity for blob data fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1fb1ff84697efa0abd38063207c7ec3905a9bfc2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5386))
+- [Reject irrelevant 1xx responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/db84009946afba988a96aa6871d992ef3fcc02ed) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5303))
+- [Restrict manual variables to explicit guests in internal projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eaadf56f52b6533dd0d07e177a4df8d62d076d1b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5367))
+
 ## 18.2.7 (2025-09-25)
 
 ### Added (1 change)
