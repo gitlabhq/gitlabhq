@@ -134,5 +134,24 @@ RSpec.describe Gitlab::SlashCommands::GlobalSlackHandler, feature_category: :int
         ).trigger
       end
     end
+
+    context 'when integration is inactive' do
+      before do
+        slack_integration.integration.deactivate!
+      end
+
+      it 'returns error that the project alias not found' do
+        expect_next(Gitlab::SlashCommands::Command).not_to receive(:execute)
+        expect_next(
+          Gitlab::SlashCommands::Presenters::Error,
+          'GitLab error: project or alias not found'
+        ).to receive(:message)
+
+        handler_with_valid_token(
+          text: "#{project.full_path} issue new title",
+          team_id: slack_integration.team_id
+        ).trigger
+      end
+    end
   end
 end

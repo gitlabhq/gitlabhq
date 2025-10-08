@@ -20,6 +20,9 @@ module Integrations
     has_one :slack_integration, foreign_key: :integration_id, inverse_of: :integration
     delegate :bot_access_token, :bot_user_id, to: :slack_integration, allow_nil: true
 
+    scope :by_ids, ->(ids) { where(id: ids) }
+    scope :without_slack_integration, -> { where.missing(:slack_integration) }
+
     include Integrations::Base::SlackNotification
     include SlackMattermostFields
 
