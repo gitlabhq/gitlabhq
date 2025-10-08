@@ -34,7 +34,12 @@ class EnvironmentStatusEntity < Grape::Entity
   end
 
   expose :deployment, as: :details do |es, options|
-    DeploymentEntity.represent(es.deployment, options.merge(project: es.project, only: [:playable_job]))
+    DeploymentEntity.represent(es.deployment,
+      options.merge(project: es.project, only: [:playable_build, :playable_job]))
+  end
+
+  expose :deployment_approved do |es|
+    es.deployment.try(:approved?)
   end
 
   expose :environment_available do |es|

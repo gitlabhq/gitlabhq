@@ -10,14 +10,9 @@ RSpec.describe Tooling::Danger::BatchedBackgroundMigrationModificationChecksHelp
 
   include_context "with dangerfile"
   let(:fake_danger) { DangerSpecHelper.fake_danger.include(described_class) }
-  let(:target_branch) { 'master' }
   let(:current_gitlab_version) { '18.0.0' }
   let(:fake_project_helper) { instance_double(Tooling::Danger::ProjectHelper) }
   let(:batched_background_checks) { fake_danger.new(helper: fake_helper) }
-
-  before do
-    allow(batched_background_checks).to receive(:target_branch).and_return(target_branch)
-  end
 
   describe '#ast_parser' do
     it 'creates an ASTParser instance' do
@@ -225,8 +220,9 @@ RSpec.describe Tooling::Danger::BatchedBackgroundMigrationModificationChecksHelp
         allow(batched_background_checks).to receive(:find_finalized_migration_files)
                                               .with(finalized_migrations).and_return(bbms_and_finalized_files)
 
-        allow(batched_background_checks).to receive(:execute_git_command)
-                                              .and_return({ success: false, output: "unknown" })
+        allow(File).to receive(:read).and_call_original
+
+        allow(File).to receive(:read).with('VERSION').and_return("unknown\n")
 
         allow(Gitlab::VersionInfo).to receive(:parse_from_milestone)
                                         .with('17.2')
@@ -406,32 +402,36 @@ db/post_migrate/20240101000000_finalize_user_data_backfill.rb: Invalid milestone
       }
     end
 
-    before do
-      allow(batched_background_checks).to receive(:execute_git_command)
-                                            .with('show', "origin/#{target_branch}:VERSION")
-                                            .and_return({ success: true, output: '17.1.0-pre', error: '' })
-    end
+    context 'when current version is before the required stop' do
+      before do
+        allow(batched_background_checks).to receive(:current_gitlab_version).and_return("17.0.0-pre")
+      end
 
-    it 'identifies migrations that cannot be removed yet' do
-      result = batched_background_checks.find_unremovable_bbms(finalized_migrations)
+      it 'identifies migrations that cannot be removed yet' do
+        result = batched_background_checks.find_unremovable_bbms(finalized_migrations)
 
-      expect(result).to contain_exactly(
-        hash_including(
-          batched_background_migration_file: 'lib/gitlab/background_migration/backfill_user_data.rb',
-          finalized_migration_file: 'db/post_migrate/20240101000000_finalize.rb',
-          finalized_migration_milestone: '17.2',
-          comment: described_class::BEFORE_NEXT_REQUIRED_STOP
+        expect(result).to contain_exactly(
+          hash_including(
+            batched_background_migration_file: 'lib/gitlab/background_migration/backfill_user_data.rb',
+            finalized_migration_file: 'db/post_migrate/20240101000000_finalize.rb',
+            finalized_migration_milestone: '17.2',
+            current_gitlab_version: '17.0.0-pre',
+            next_required_stop: '17.2.0',
+            comment: described_class::BEFORE_NEXT_REQUIRED_STOP
+          )
         )
-      )
+      end
     end
 
-    it 'allows removal when the current GitLab version is past the next required stop' do
-      allow(batched_background_checks).to receive(:execute_git_command)
-                                            .with('show', "origin/#{target_branch}:VERSION")
-                                            .and_return({ success: true, output: '18.0.0', error: '' })
+    context 'when current version is past the required stop' do
+      before do
+        allow(batched_background_checks).to receive(:current_gitlab_version).and_return("18.0.0-pre")
+      end
 
-      result = batched_background_checks.find_unremovable_bbms(finalized_migrations)
-      expect(result).to be_empty
+      it 'allows removal when the current GitLab version is past the next required stop' do
+        result = batched_background_checks.find_unremovable_bbms(finalized_migrations)
+        expect(result).to be_empty
+      end
     end
 
     it 'handles missing milestones' do
@@ -440,109 +440,17 @@ db/post_migrate/20240101000000_finalize_user_data_backfill.rb: Invalid milestone
       result = batched_background_checks.find_unremovable_bbms(finalized_migrations)
       expect(result).to be_empty
     end
-
-    it 'handles git command failure by not allowing removal' do
-      allow(batched_background_checks).to receive(:execute_git_command)
-                                            .with('show', "origin/#{target_branch}:VERSION")
-                                            .and_return({ success: false, output: nil, error: 'Command failed' })
-
-      result = batched_background_checks.find_unremovable_bbms(finalized_migrations)
-
-      expect(result).to contain_exactly(
-        hash_including(
-          batched_background_migration_file: 'lib/gitlab/background_migration/backfill_user_data.rb',
-          finalized_migration_file: 'db/post_migrate/20240101000000_finalize.rb',
-          finalized_migration_milestone: '17.2',
-          comment: described_class::BEFORE_NEXT_REQUIRED_STOP
-        )
-      )
-    end
-
-    it 'handles empty git command output by not allowing removal' do
-      allow(batched_background_checks).to receive(:execute_git_command)
-                                            .with('show', "origin/#{target_branch}:VERSION")
-                                            .and_return({ success: true, output: '', error: '' })
-
-      result = batched_background_checks.find_unremovable_bbms(finalized_migrations)
-
-      expect(result).to contain_exactly(
-        hash_including(
-          batched_background_migration_file: 'lib/gitlab/background_migration/backfill_user_data.rb',
-          finalized_migration_file: 'db/post_migrate/20240101000000_finalize.rb',
-          finalized_migration_milestone: '17.2',
-          comment: described_class::BEFORE_NEXT_REQUIRED_STOP
-        )
-      )
-    end
   end
 
-  describe '#execute_git_command' do
-    it 'returns success result for valid command' do
-      allow(Open3).to receive(:capture3).with('git', 'echo', 'test')
-                                        .and_return(["test\n", "", instance_double(Process::Status, success?: true)])
+  describe '#current_gitlab_version' do
+    it 'reads and strips the VERSION file content' do
+      version_content = "17.5.0-pre\n"
 
-      result = batched_background_checks.execute_git_command('echo', 'test')
+      allow(File).to receive(:read).and_call_original
 
-      expect(result[:success]).to be true
-      expect(result[:output]).to include('test')
-    end
+      allow(File).to receive(:read).with('VERSION').and_return(version_content)
 
-    it 'returns failure result for invalid command' do
-      allow(Open3).to receive(:capture3).with('git', 'nonexistent_command')
-                                        .and_return(["", "No such file or directory - nonexistent_command",
-                                          instance_double(Process::Status, success?: false)])
-
-      result = batched_background_checks.execute_git_command('nonexistent_command')
-
-      expect(result[:success]).to be false
-      expect(result[:output]).to be_nil
-    end
-  end
-
-  describe '#target_branch' do
-    context 'when CI_MERGE_REQUEST_TARGET_BRANCH_NAME is set' do
-      before do
-        allow(batched_background_checks).to receive(:target_branch).and_call_original
-
-        stub_env(
-          'CI_MERGE_REQUEST_TARGET_BRANCH_NAME' => 'ci-target-master',
-          'CI_DEFAULT_BRANCH' => 'ci-default-master'
-        )
-      end
-
-      it 'returns the value of CI_MERGE_REQUEST_TARGET_BRANCH_NAME' do
-        expect(batched_background_checks.target_branch).to eq('ci-target-master')
-      end
-    end
-
-    context 'when only CI_DEFAULT_BRANCH is set' do
-      before do
-        allow(batched_background_checks).to receive(:target_branch).and_call_original
-
-        stub_env(
-          'CI_MERGE_REQUEST_TARGET_BRANCH_NAME' => nil,
-          'CI_DEFAULT_BRANCH' => 'ci-default-master'
-        )
-      end
-
-      it 'returns the value of CI_DEFAULT_BRANCH' do
-        expect(batched_background_checks.target_branch).to eq('ci-default-master')
-      end
-    end
-
-    context 'when neither environment variable is set' do
-      before do
-        allow(batched_background_checks).to receive(:target_branch).and_call_original
-
-        stub_env(
-          'CI_MERGE_REQUEST_TARGET_BRANCH_NAME' => nil,
-          'CI_DEFAULT_BRANCH' => nil
-        )
-      end
-
-      it 'returns "master" as the default' do
-        expect(batched_background_checks.target_branch).to eq('master')
-      end
+      expect(batched_background_checks.current_gitlab_version).to eq('17.5.0-pre')
     end
   end
 
@@ -599,7 +507,7 @@ db/post_migrate/20240101000000_finalize_user_data_backfill.rb: Invalid milestone
     end
 
     it 'fails with formatted error message' do
-      expect(batched_background_checks).to receive(:fail)
+      expect(batched_background_checks).to receive(:warn)
                                              .with(a_string_including(described_class::BEFORE_NEXT_REQUIRED_STOP))
 
       batched_background_checks.display_unremovable_migrations(unremovable_migrations)

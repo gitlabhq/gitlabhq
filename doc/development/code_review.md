@@ -101,7 +101,7 @@ To find a domain expert:
 
 {{< alert type="note" >}}
 
-Reviewer roulette is an internal tool for use on GitLab.com, and not available for use on customer installations.
+[Reviewer roulette](https://gitlab-org.gitlab.io/gitlab-roulette/) is an internal tool for use on GitLab.com, and not available for use on customer installations.
 
 {{< /alert >}}
 

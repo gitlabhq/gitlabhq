@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe EnvironmentStatusEntity do
+RSpec.describe EnvironmentStatusEntity, feature_category: :continuous_delivery do
   let_it_be(:non_member) { create(:user) }
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:deployment) { create(:deployment, :succeed, :review_app) }
@@ -15,7 +15,7 @@ RSpec.describe EnvironmentStatusEntity do
   let(:environment_status) { EnvironmentStatus.new(project, environment, merge_request, merge_request.diff_head_sha) }
   let(:entity) { described_class.new(environment_status, request: request) }
 
-  subject { entity.as_json }
+  subject(:serialized_entity) { entity.as_json }
 
   before_all do
     project.add_maintainer(maintainer)
@@ -37,6 +37,7 @@ RSpec.describe EnvironmentStatusEntity do
   it { is_expected.to include(:changes) }
   it { is_expected.to include(:status) }
   it { is_expected.to include(:environment_available) }
+  it { is_expected.to include(:deployment_approved) }
 
   it { is_expected.not_to include(:retry_url) }
   it { is_expected.not_to include(:stop_url) }
@@ -46,5 +47,16 @@ RSpec.describe EnvironmentStatusEntity do
 
     it { is_expected.to include(:stop_url) }
     it { is_expected.to include(:retry_url) }
+  end
+
+  describe '#details' do
+    it 'passes playable_build and playable_job options to DeploymentEntity' do
+      expect(DeploymentEntity).to receive(:represent).with(
+        deployment,
+        hash_including(only: [:playable_build, :playable_job])
+      ).and_call_original
+
+      serialized_entity
+    end
   end
 end

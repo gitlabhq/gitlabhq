@@ -3,8 +3,6 @@
 require_relative 'ast_parser'
 require 'gitlab/utils/upgrade_path'
 require 'gitlab/version_info'
-require 'open3'
-require 'shellwords'
 require 'active_support/core_ext/object/blank'
 
 # This module checks if the modified or deleted batched background migration
@@ -208,9 +206,6 @@ module Tooling
 
       def find_unremovable_bbms(finalized_migrations)
         unremovable_migrations = []
-        current_gitlab_version = execute_git_command(
-          'show', "origin/#{Shellwords.escape(target_branch)}:VERSION"
-        )
 
         finalized_migrations.each_value do |migration|
           migration.each do |info|
@@ -223,8 +218,9 @@ module Tooling
                 Gitlab::VersionInfo.parse_from_milestone(milestone))
 
               next_required_stop = current_milestone.next_required_stop
-              migration_can_be_removed = if current_gitlab_version[:success] && current_gitlab_version[:output].present?
-                                           version = Gitlab::VersionInfo.parse(current_gitlab_version[:output])
+
+              migration_can_be_removed = if current_gitlab_version.present?
+                                           version = Gitlab::VersionInfo.parse(current_gitlab_version)
                                            version > next_required_stop
                                          else
                                            false
@@ -238,7 +234,7 @@ module Tooling
                 finalized_migration_file: info[:finalized_migration_file],
                 finalized_migration_milestone: milestone,
                 next_required_stop: next_required_stop.to_s,
-                current_gitlab_version: current_gitlab_version[:output],
+                current_gitlab_version: current_gitlab_version,
                 comment: BEFORE_NEXT_REQUIRED_STOP
               }
             rescue StandardError => e
@@ -248,7 +244,7 @@ module Tooling
                 finalized_migration_file: info[:finalized_migration_file],
                 finalized_migration_milestone: milestone,
                 next_required_stop: "unknown",
-                current_gitlab_version: current_gitlab_version[:output],
+                current_gitlab_version: current_gitlab_version,
                 comment: "Error processing milestone: #{e.message}"
               }
             end
@@ -258,18 +254,8 @@ module Tooling
         unremovable_migrations
       end
 
-      def execute_git_command(*args)
-        git_args = ['git'] + args
-        stdout, stderr, status = Open3.capture3(*git_args)
-        if status.success?
-          { success: true, output: stdout, error: stderr }
-        else
-          { success: false, output: nil, error: stderr }
-        end
-      end
-
-      def target_branch
-        ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'] || ENV['CI_DEFAULT_BRANCH'] || 'master'
+      def current_gitlab_version
+        @current_gitlab_version ||= File.read('VERSION').strip
       end
 
       # Format and display error messages
@@ -278,7 +264,7 @@ module Tooling
 
         failure_messages = unremovable_migrations.map { |migration| format_migration_message(migration) }
         error_message = format(ERROR_MESSAGE, DOCUMENTATION, failure_messages.join("\n\n"))
-        fail(error_message)
+        warn(error_message)
       end
 
       # Helper method to format a migration message

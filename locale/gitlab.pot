@@ -59861,6 +59861,9 @@ msgstr ""
 msgid "SecurityOrchestration|Security policy projects store your organization's security policies. They are identified when policies are created, or when a project is linked as a security policy project. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "SecurityOrchestration|Security policy violated"
+msgstr ""
+
 msgid "SecurityOrchestration|Security scans to execute"
 msgstr ""
 
@@ -72601,6 +72604,9 @@ msgstr ""
 msgid "VulnerabilityExport|Vulnerability ID"
 msgstr ""
 
+msgid "VulnerabilityManagement|%{statusStart}Bypassed%{statusEnd} · %{timeago}"
+msgstr ""
+
 msgid "VulnerabilityManagement|%{statusStart}Confirmed%{statusEnd} · %{timeago} by %{user}"
 msgstr ""
 
@@ -72638,6 +72644,9 @@ msgid "VulnerabilityManagement|Add vulnerability finding"
 msgstr ""
 
 msgid "VulnerabilityManagement|An unverified non-confirmed finding"
+msgstr ""
+
+msgid "VulnerabilityManagement|Bypassed by %{user} in merge request %{mr}"
 msgstr ""
 
 msgid "VulnerabilityManagement|Change severity"
@@ -72695,6 +72704,12 @@ msgid "VulnerabilityManagement|No longer detected %{timeago} as of commit %{comm
 msgstr ""
 
 msgid "VulnerabilityManagement|Read more about related issues"
+msgstr ""
+
+msgid "VulnerabilityManagement|Reason category: %{reasons}"
+msgstr ""
+
+msgid "VulnerabilityManagement|Reason detail: %{comment}"
 msgstr ""
 
 msgid "VulnerabilityManagement|Related Jira issues"

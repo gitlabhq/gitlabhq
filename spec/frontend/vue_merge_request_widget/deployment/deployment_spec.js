@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import {
+  BLOCKED,
   CREATED,
   RUNNING,
   SUCCESS,
@@ -78,6 +79,10 @@ describe('Deployment component', () => {
       ${SKIPPED}  | ${true}  | ${noDetails}      | ${'Skipped deployment to'}       | ${defaultGroup}
       ${SKIPPED}  | ${false} | ${deployDetail}   | ${'Skipped deployment to'}       | ${noActions}
       ${SKIPPED}  | ${false} | ${noDetails}      | ${'Skipped deployment to'}       | ${noActions}
+      ${BLOCKED}  | ${true}  | ${deployDetail}   | ${'Can be manually deployed to'} | ${manualDeployGroup}
+      ${BLOCKED}  | ${false} | ${deployDetail}   | ${'Can be manually deployed to'} | ${noActions}
+      ${BLOCKED}  | ${true}  | ${noDetails}      | ${''}                            | ${defaultGroup}
+      ${BLOCKED}  | ${false} | ${noDetails}      | ${''}                            | ${noActions}
     `(
       '$status + previous: $previous + manual: $deploymentDetails.isManual',
       ({ status, previous, deploymentDetails, text, actionButtons }) => {
@@ -85,6 +90,7 @@ describe('Deployment component', () => {
           const previousOrSuccess = Boolean(previous || status === SUCCESS);
           const updatedDeploymentData = {
             status,
+            deployment_approved: true,
             deployed_at: previous ? deploymentMockData.deployed_at : null,
             deployed_at_formatted: previous ? deploymentMockData.deployed_at_formatted : null,
             external_url: previousOrSuccess ? deploymentMockData.external_url : null,

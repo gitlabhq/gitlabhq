@@ -100,6 +100,7 @@ module Ci
 
     def interruptible
       return job_definition.interruptible if job_definition
+      return temp_job_definition.interruptible if temp_job_definition
 
       metadata&.read_attribute(:interruptible)
     end

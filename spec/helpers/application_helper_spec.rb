@@ -1031,6 +1031,26 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe 'ai_panel_expanded?' do
+    subject(:ai_panel_expanded?) { helper.ai_panel_expanded? }
+
+    context 'when ai_panel_active_tab cookie is set' do
+      before do
+        helper.request.cookies['ai_panel_active_tab'] = 'chat'
+      end
+
+      it { is_expected.to be true }
+    end
+
+    context 'when ai_panel_active_tab cookie is not set' do
+      before do
+        helper.request.cookies['ai_panel_active_tab'] = nil
+      end
+
+      it { is_expected.to be false }
+    end
+  end
+
   describe 'collapsed_super_sidebar?' do
     context 'when @force_desktop_expanded_sidebar is true' do
       before do

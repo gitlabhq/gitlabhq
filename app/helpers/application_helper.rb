@@ -542,6 +542,10 @@ module ApplicationHelper
     end
   end
 
+  def ai_panel_expanded?
+    cookies[:ai_panel_active_tab].present?
+  end
+
   private
 
   def browser_id

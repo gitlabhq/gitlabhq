@@ -812,67 +812,199 @@ Supported attributes:
 | `include_rebase_in_progress`     | boolean           | No       | If `true`, response includes whether a rebase operation is in progress. |
 | `render_html`                    | boolean           | No       | If `true`, response includes rendered HTML for title and description. |
 
+If successful, returns [`200 OK`](rest/troubleshooting.md#status-codes). Other possible responses:
+
+- `401 Unauthorized` if the access token is invalid.
+- `403 Forbidden` if access is denied.
+- `404 Not Found` if the project or merge request is not found.
+- `408 Request Timeout` if the database query times out.
+- `409 Conflict` if a resource lock conflict exists.
+- `422 Unprocessable Entity` if validation failed.
+- `429 Too Many Requests` if using the `search` parameter, and the request has been rate-limited.
+
 ### Response
 
-| Attribute                         | Type     | Description |
-|-----------------------------------|----------|-------------|
-| `approvals_before_merge`          | integer  | Number of approvals required before this merge request can merge. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. Premium and Ultimate only. |
-| `assignee`                        | object   | First assignee of the merge request. |
-| `assignees`                       | array    | Assignees of the merge request. |
-| `author`                          | object   | User who created this merge request. |
-| `blocking_discussions_resolved`   | boolean  | Indicates if all discussions are resolved only if all are required before merge request can be merged. |
-| `changes_count`                   | string   | Number of changes made on the merge request. Empty when the merge request is created, and populates asynchronously. A string, not an integer. When a merge request has too many changes to display and store, the value is capped at 1000 and returns the string `"1000+"`. See [Empty API Fields for new merge requests](#empty-api-fields-for-new-merge-requests). |
-| `closed_at`                       | datetime | Timestamp of when the merge request was closed. |
-| `closed_by`                       | object   | User who closed this merge request. |
-| `created_at`                      | datetime | Timestamp of when the merge request was created. |
-| `description`                     | string   | Description of the merge request. Contains Markdown rendered as HTML for caching. |
-| `detailed_merge_status`           | string   | Detailed merge status of the merge request. See [merge status](#merge-status) for a list of potential values. |
-| `diff_refs`                       | object   | References of the base SHA, the head SHA, and the start SHA for this merge request. Corresponds to the latest diff version of the merge request. Empty when the merge request is created, and populates asynchronously. See [Empty API fields for new merge requests](#empty-api-fields-for-new-merge-requests). |
-| `discussion_locked`               | boolean  | Indicates if comments on the merge request are locked to members only. |
-| `downvotes`                       | integer  | Number of downvotes for the merge request. |
-| `draft`                           | boolean  | Indicates if the merge request is a draft. |
-| `first_contribution`              | boolean  | Indicates if the merge request is the first contribution of the author. |
-| `first_deployed_to_production_at` | datetime | Timestamp of when the first deployment finished. |
-| `force_remove_source_branch`      | boolean  | Indicates if the project settings lead to source branch deletion after merge. |
-| `has_conflicts`                   | boolean  | Indicates if merge request has conflicts and cannot merge. Dependent on the `merge_status` property. Returns `false` unless `merge_status` is `cannot_be_merged`. |
-| `head_pipeline`                   | object   | Pipeline running on the branch HEAD of the merge request. Use instead of `pipeline`, because it contains more complete information. |
-| `id`                              | integer  | ID of the merge request. |
-| `iid`                             | integer  | Internal ID of the merge request. |
-| `labels`                          | array    | Labels of the merge request. |
-| `latest_build_finished_at`        | datetime | Timestamp of when the latest build for the merge request finished. |
-| `latest_build_started_at`         | datetime | Timestamp of when the latest build for the merge request started. |
-| `merge_commit_sha`                | string   | SHA of the merge request commit. Returns `null` until merged. |
-| `merge_error`                     | string   | Error message shown when a merge has failed. To check mergeability, use `detailed_merge_status` instead |
-| `merge_user`                      | object   | The user who merged this merge request, the user who set it to auto-merge, or `null`. |
-| `merge_status`                    | string   | Status of the merge request. Can be `unchecked`, `checking`, `can_be_merged`, `cannot_be_merged`, or `cannot_be_merged_recheck`. Affects the `has_conflicts` property. For important notes on response data, see [Single merge request response notes](#single-merge-request-response-notes). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6. Use `detailed_merge_status` instead. <!-- Do not remove line until field is actually removed --> |
-| `merge_when_pipeline_succeeds`    | boolean  | Indicates if the merge is set to merge when its pipeline succeeds. |
-| `merged_at`                       | datetime | Timestamp of when the merge request merged. |
-| `merged_by`                       | object   | User who merged this merge request or set it to auto-merge. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/epics/8115). Use `merge_user` instead. <!-- Do not remove line until field is actually removed --> |
-| `milestone`                       | object   | Milestone of the merge request. |
-| `pipeline`                        | object   | Pipeline running on the branch HEAD of the merge request. Consider using `head_pipeline` instead, as it contains more information. |
-| `prepared_at`                     | datetime | Timestamp of when the merge request was prepared. This field populates one time, only after all the [preparation steps](#preparation-steps) complete, and is not updated if more changes are added. |
-| `project_id`                      | integer  | The ID of the project containing the merge request. |
-| `reference`                       | string   | Internal reference of the merge request. Returned in shortened format by default. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) in GitLab 12.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/epics/8115). Use `references` instead. <!-- Do not remove line until field is actually removed --> |
-| `references`                      | object   | Internal references of the merge request. Includes `short`, `relative`, and `full` references. `references.relative` is relative to the merge request's group or project. When fetched from the merge request's project, `relative` and `short` formats are identical. When requested across groups or projects, `relative` and `full` formats are identical. |
-| `reviewers`                       | array    | Reviewers of the merge request. |
-| `sha`                             | string   | Diff head SHA of the merge request. |
-| `should_remove_source_branch`     | boolean  | Indicates if the source branch of the merge request should be deleted after merge. |
-| `source_branch`                   | string   | Source branch of the merge request. |
-| `source_project_id`               | integer  | ID of the merge request source project. |
-| `squash`                          | boolean  | Indicates if squash on merge is enabled. |
-| `squash_commit_sha`               | string   | SHA of the squash commit. Empty until merged. |
-| `state`                           | string   | State of the merge request. Can be `opened`, `closed`, `merged` or `locked`. |
-| `subscribed`                      | boolean  | Indicates if the current authenticated user subscribes to this merge request. |
-| `target_branch`                   | string   | Target branch of the merge request. |
-| `target_project_id`               | integer  | ID of the merge request target project. |
-| `task_completion_status`          | object   | Completion status of tasks. |
-| `title`                           | string   | Title of the merge request. |
-| `updated_at`                      | datetime | Timestamp of when the merge request was updated. |
-| `upvotes`                         | integer  | Number of upvotes for the merge request. |
-| `user`                            | object   | Permissions of the user requested for the merge request. |
-| `user_notes_count`                | integer  | User notes count of the merge request. |
-| `web_url`                         | string   | Web URL of the merge request. |
-| `work_in_progress`                | boolean  | Deprecated: Use `draft` instead. Indicates if the merge request is a draft. |
+| Attribute                                                   | Type     | Description |
+|-------------------------------------------------------------|----------|-------------|
+| `allow_collaboration`                                       | boolean  | If `true`, this fork allows collaboration from members who can merge to the target branch. Used only for merge requests from forks. |
+| `allow_maintainer_to_push`                                  | boolean  | Deprecated. Use `allow_collaboration` instead. |
+| `approvals_before_merge`                                    | integer  | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md) instead. GitLab Premium and Ultimate only. |
+| `assignee[]`                                                | object   | Deprecated. Use `assignees` instead. |
+| `assignees[]`                                               | array    | Users assigned to the merge request. |
+| `assignees.avatar_url`                                      | string   | Full URL to the assignee's avatar image. |
+| `assignees.id`                                              | integer  | The unique ID of the assignee. |
+| `assignees.locked`                                          | boolean  | If `true`, the assignee's account is locked due to failed authentication attempts, and they cannot sign in until the lock expires or an administrator unlocks the account. |
+| `assignees.name`                                            | string   | Display name of the assignee. Might be redacted, based on current user's permissions. |
+| `assignees.public_email`                                    | string   | The public email address of the assignee. |
+| `assignees.state`                                           | string   | Current state of the assignee's user account. Possible values: `active`, `blocked`, or `deactivated`. |
+| `assignees.username`                                        | string   | Username of the merge request assignee. |
+| `assignees.web_url`                                         | string   | Full URL to the assignee's profile page. |
+| `author[]`                                                  | object   | Object with information about the user who created the merge request. |
+| `author.avatar_url`                                         | string   | Full URL to the author's avatar image. |
+| `author.id`                                                 | integer  | The unique ID of the user who created the merge request. |
+| `author.locked`                                             | boolean  | If `true`, the author's account is locked due to failed authentication attempts, and they cannot sign in until the lock expires or an administrator unlocks the account. |
+| `author.name`                                               | string   | Display name of the author. Might be redacted, based on current user's permissions. |
+| `author.public_email`                                       | string   | The public email address of the author. |
+| `author.state`                                              | string   | Current state of the user account. Possible values: `active`, `blocked`, or `deactivated`. |
+| `author.username`                                           | string   | Username of the merge request author. |
+| `author.web_url`                                            | string   | Full URL to the author's profile page. |
+| `blocking_discussions_resolved`                             | boolean  | If `true`, all discussion threads in the merge request must be resolved before merging. |
+| `changes_count`                                             | string   | If set, the number of changes made on the merge request. Empty when the merge request is created. Populates asynchronously. A string, not an integer. When a merge request has too many changes to display and store, the value is capped at 1000 and returns the string `"1000+"`. See [Empty API Fields for new merge requests](#empty-api-fields-for-new-merge-requests). |
+| `closed_at`                                                 | dateTime | Timestamp of when the merge request was closed. |
+| `closed_by[]`                                               | object   | Object with information about the user who closed the merge request. If `null`, the merge request is open. |
+| `closed_by.avatar_url`                                      | string   | Full URL to the closing user's avatar image. |
+| `closed_by.id`                                              | integer  | The unique ID of the user who closed the merge request. |
+| `closed_by.locked`                                          | boolean  | If `true`, the closing user's account is locked due to failed authentication attempts, and they cannot sign in until the lock expires or an administrator unlocks the account. |
+| `closed_by.name`                                            | string   | Display name of the closing user. Might be redacted, based on current user's permissions. |
+| `closed_by.public_email`                                    | string   | The public email address of the closing user. |
+| `closed_by.state`                                           | string   | Current state of the closing user's account. Possible values: `active`, `blocked`, or `deactivated`. |
+| `closed_by.username`                                        | string   | Username of the user who closed the merge request. |
+| `closed_by.web_url`                                         | string   | Full URL to the closing user's profile page. |
+| `created_at`                                                | datetime | Timestamp of when the merge request was created. |
+| `description`                                               | string   | Description of the merge request. Contains Markdown rendered as HTML for caching. |
+| `detailed_merge_status`                                     | string   | Detailed merge status information. See [merge status](#merge-status) for a list of potential values. |
+| `diff_refs[]`                                               | object   | Object with references of the base, head, and start SHAs for this merge request. Corresponds to the latest diff version of the merge request. Empty when the merge request is created, and populates asynchronously. See [Empty API fields for new merge requests](#empty-api-fields-for-new-merge-requests). |
+| `diff_refs.base_sha`                                        | string   | SHA of the merge base commit where the source and target branches diverged. |
+| `diff_refs.start_sha`                                       | string   | SHA of the target branch commit. The starting point for the diff. Usually the same as `base_sha`. |
+| `diff_refs.head_sha`                                        | string   | SHA of the head commit in the source branch. The latest commit in the merge request. |
+| `discussion_locked`                                         | boolean  | If `true`, discussions are locked. Only project members can add, edit or resolve comments in locked discussions. |
+| `diverged_commits_count`                                    | integer  | If set, contains the number of commits the source branch is behind the target branch. |
+| `downvotes`                                                 | integer  | Number of downvotes for the merge request. |
+| `draft`                                                     | boolean  | If `true`, the merge request is marked in a `draft` state. |
+| `first_contribution`                                        | boolean  | If `true`, the author's first contribution to this project. |
+| `first_deployed_to_production_at`                           | datetime | Timestamp of when the first deployment finished. |
+| `force_remove_source_branch`                                | boolean  | If `true`, the project settings force the deletion of the source branch after merge. |
+| `has_conflicts`                                             | boolean  | If `true`, the merge request has conflicts and cannot merge. Dependent on the `merge_status` property. Returns `false` unless `merge_status` is `cannot_be_merged`. |
+| `head_pipeline[]`                                           | object   | Pipeline that runs on the HEAD commit of the merge request's source branch. Use instead of `pipeline`, because it contains more complete information. Exposed only if the current user can view pipelines for this project. |
+| `head_pipeline.before_sha`                                  | string   | SHA of the commit before this pipeline. |
+| `head_pipeline.committed_at`                                | dateTime | Timestamp of when the commit was made. |
+| `head_pipeline.coverage`                                    | number   | Test coverage percentage, like `98.29`. |
+| `head_pipeline.created_at`                                  | dateTime | Timestamp of when the pipeline was created. |
+| `head_pipeline.detailed_status[]`                           | object   | Object containing fields with the detailed status of this pipeline. |
+| `head_pipeline.detailed_status.action[]`                    | object   | If set, object containing available actions for this pipeline. |
+| `head_pipeline.detailed_status.action.button_title`         | string   | Button title for the action. |
+| `head_pipeline.detailed_status.action.confirmation_message` | string   | Confirmation message for the action. |
+| `head_pipeline.detailed_status.action.icon`                 | string   | Icon for the action. |
+| `head_pipeline.detailed_status.action.method`               | string   | HTTP method for the action, like `POST`. |
+| `head_pipeline.detailed_status.action.path`                 | string   | Path for the action, like `"/namespace1/project1/-/jobs/2/cancel"`. |
+| `head_pipeline.detailed_status.action.title`                | string   | Title for the action. |
+| `head_pipeline.detailed_status.details_path`                | string   | Path to detailed view, like `"/test-group/test-project/-/pipelines/287"`. |
+| `head_pipeline.detailed_status.favicon`                     | string   | Path to status favicon. |
+| `head_pipeline.detailed_status.group`                       | string   | Status group, like `success`. |
+| `head_pipeline.detailed_status.has_details`                 | boolean  | If set, a detailed view is available. |
+| `head_pipeline.detailed_status.icon`                        | string   | Status icon name, like `"status_success"`. |
+| `head_pipeline.detailed_status.illustration.content`        | string   | Content text for the illustration, like `"This job depends on upstream jobs that need to succeed in order for this job to be triggered"`. |
+| `head_pipeline.detailed_status.illustration.image`          | string   | Path to illustration image. |
+| `head_pipeline.detailed_status.illustration.size`           | string   | Size of the illustration. |
+| `head_pipeline.detailed_status.illustration.title`          | string   | Title for the illustration, like `"This job has not been triggered yet"`. |
+| `head_pipeline.detailed_status.label`                       | string   | Status label for the pipeline, like `"passed"`. |
+| `head_pipeline.detailed_status.text`                        | string   | Status text for the pipeline, like `"passed"`. |
+| `head_pipeline.detailed_status.tooltip`                     | string   | Tooltip text for the pipeline, like `"passed"`. |
+| `head_pipeline.duration`                                    | integer  | Time spent running the pipeline, in seconds. |
+| `head_pipeline.finished_at`                                 | dateTime | Timestamp of when the pipeline finished. |
+| `head_pipeline.id`                                          | integer  | Unique numeric identifier of the pipeline. Foreign key to the `ci_pipelines` table. |
+| `head_pipeline.iid`                                         | integer  | Internal numeric ID of the pipeline. |
+| `head_pipeline.project_id`                                  | integer  | Numeric ID of the project containing the pipeline. |
+| `head_pipeline.queued_duration`                             | integer  | Time spent enqueued, in seconds. |
+| `head_pipeline.ref`                                         | string   | Name of the Git reference (branch or tag) the pipeline runs on. |
+| `head_pipeline.sha`                                         | string   | SHA of the commit that triggered the pipeline. |
+| `head_pipeline.source`                                      | string   | How the pipeline was triggered. For example `push`, `merge_request_event`, or `api` |
+| `head_pipeline.started_at`                                  | dateTime | Timestamp of when the pipeline started running. |
+| `head_pipeline.status`                                      | string   | Current status of the pipeline. Possible values: `success`, `failed`, `running`, `pending` |
+| `head_pipeline.tag`                                         | boolean  | If `true`, this pipeline is running on a Git tag. |
+| `head_pipeline.updated_at`                                  | dateTime | Timestamp of when the pipeline was last updated. |
+| `head_pipeline.user[]`                                      | object   | Object containing information about the user who triggered the pipeline. |
+| `head_pipeline.user.avatar_url`                             | string   | Full URL to user's avatar image. |
+| `head_pipeline.user.id`                                     | integer  | The unique ID of the user who triggered the pipeline. |
+| `head_pipeline.user.locked`                                 | boolean  | If `true`, the user account that triggered the pipeline is locked due to failed authentication attempts, and they cannot sign in until the lock expires or an administrator unlocks the account. |
+| `head_pipeline.user.name`                                   | string   | Display name of the user who triggered the pipeline. Might be redacted, based on current user's permissions. |
+| `head_pipeline.user.public_email`                           | string   | The public email address of the user who triggered the pipeline. |
+| `head_pipeline.user.state`                                  | string   | Current state of the account of the user who triggered the pipeline. Possible values: `active`, `blocked`, or `deactivated`. |
+| `head_pipeline.user.username`                               | string   | Username of the user who triggered the pipeline. |
+| `head_pipeline.user.web_url`                                | string   | Full URL to the profile page of the user that triggered the pipeline. |
+| `head_pipeline.web_url`                                     | string   | Full URL to the pipeline page. |
+| `head_pipeline.yaml_errors`                                 | string   | Any YAML configuration errors. For example, `widgets:build: needs 'widgets:test'`) |
+| `id`                                                        | integer  | ID of the merge request. |
+| `iid`                                                       | integer  | Internal ID of the merge request. |
+| `imported`                                                  | boolean  | If `true`, the merge request was imported. |
+| `imported_from`                                             | string   | Source of import, such as `Bitbucket`. |
+| `labels[]`                                                  | array    | Array of label assigned to the merge request. If `with_labels_details` is `true`, returns an array for each label. |
+| `labels.archived`                                           | boolean  | If `with_labels_details` is `true`, the label is archived. |
+| `labels.color`                                              | string   | If `with_labels_details` is `true`, the background color of the label. |
+| `labels.description`                                        | string   | If `with_labels_details` is `true`, the description text of the label. If `null`, the label has no description. |
+| `labels.description_html`                                   | string   | If `with_labels_details` is `true`, the HTML-rendered description of the label. If `null`, the label has no description. |
+| `labels.id`                                                 | integer  | If `with_labels_details` is `true`, the unique ID of the label. |
+| `labels.name`                                               | string   | If `with_labels_details` is `true`, the name of the label. |
+| `labels.text_color`                                         | string   | If `with_labels_details` is `true`, the text color for the label. |
+| `latest_build_finished_at`                                  | datetime | Timestamp of when the latest build for the merge request finished. |
+| `latest_build_started_at`                                   | datetime | Timestamp of when the latest build for the merge request started. |
+| `merge_after`                                               | dateTime | If set, timestamp after which the merge request can be merged. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/510992) in GitLab 17.8. |
+| `merge_commit_sha`                                          | string   | If set, the SHA of the merge request commit. Returns `null` until merged. |
+| `merge_error`                                               | string   | If set, the error message shown when a merge fails. To check mergeability, use `detailed_merge_status` instead. |
+| `merge_status`                                              | string   | Status of the merge request. Use `detailed_merge_status` instead, which accounts for all potential statuses. Affects the `has_conflicts` property. For important notes on response data, see [Single merge request response notes](#single-merge-request-response-notes). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6. <!-- Do not remove line until field is actually removed --> |
+| `merge_user[]`                                              | object   | The user who merged this merge request, the user who set it to auto-merge, or `null`. |
+| `merge_when_pipeline_succeeds`                              | boolean  | If `true`, the merge request is set to auto-merge. |
+| `merged_at`                                                 | dateTime | Timestamp of when the merge request merged. |
+| `merged_by[]`                                               | object   | User who merged this merge request or set it to auto-merge. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/epics/8115). Use `merge_user` instead. <!-- Do not remove line until field is actually removed --> |
+| `milestone[]`                                               | object   | Object with information about the milestone assigned to the merge request. |
+| `milestone.created_at`                                      | dateTime | Timestamp when the milestone was created. |
+| `milestone.description`                                     | string   | Description text of the milestone. If `null`, the milestone has no description. |
+| `milestone.due_date`                                        | date     | Due date for the milestone. If `null`, the milestone has no due date. |
+| `milestone.expired`                                         | boolean  | If `true`, the milestone has expired. |
+| `milestone.group_id`                                        | integer  | ID of the group the milestone belongs to. Included only if the milestone is a group milestone. |
+| `milestone.id`                                              | integer  | Unique ID of the milestone. |
+| `milestone.iid`                                             | integer  | Internal ID of the milestone in the project or group. |
+| `milestone.project_id`                                      | integer  | ID of the project the milestone belongs to. Included only if the milestone is a project milestone. |
+| `milestone.start_date`                                      | date     | Start date for the milestone. If `null`, the milestone has no start date |
+| `milestone.state`                                           | string   | Current state of the milestone, such as `active` or `closed`. |
+| `milestone.title`                                           | string   | Name of the milestone. |
+| `milestone.updated_at`                                      | dateTime | Timestamp when the milestone was last updated. |
+| `milestone.web_url`                                         | string   | Full web URL to view the milestone. |
+| `pipeline[]`                                                | object   | Pipeline running on the branch HEAD of the merge request. Consider using `head_pipeline` instead, as it contains more information. |
+| `prepared_at`                                               | dateTime | Timestamp of when the merge request was prepared. This field populates one time, only after all the [preparation steps](#preparation-steps) complete, and is not updated if more changes are added. |
+| `project_id`                                                | integer  | The ID of the project containing the merge request. |
+| `rebase_in_progress`                                        | boolean  | If `true`, Sidekiq is running a rebase operation on this branch. |
+| `reference`                                                 | string   | Deprecated. Use `references` instead. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) in GitLab 12.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/epics/8115). Use `references` instead. <!-- Do not remove line until field is actually removed --> |
+| `references[]`                                              | object   | Object with all internal references of the merge request. |
+| `references.full`                                           | string   | Complete reference to a merge request, including full project path, like `gitlab-org/gitlab!123`. When requested across groups or projects, identical to `references.relative`. |
+| `references.relative`                                       | string   | Reference relative to a specific project or group: `!123` for a merge request in the current project, or `other-project!123` for another project in the same group. |
+| `references.short`                                          | string   | Shortest possible reference to a merge request, like `!123`. When fetched from the merge request's project, identical to `references.relative`. |
+| `reviewers[]`                                               | array    | Reviewers of the merge request. |
+| `reviewers.avatar_url`                                      | string   | Full URL to the reviewer's avatar image. |
+| `reviewers.id`                                              | integer  | The unique ID of the reviewer. |
+| `reviewers.locked`                                          | boolean  | If `true`, the reviewer's account is locked due to failed authentication attempts, and they cannot sign in until the lock expires or an administrator unlocks the account. |
+| `reviewers.name`                                            | string   | Display name of the reviewer. Might be redacted, based on current user's permissions. |
+| `reviewers.public_email`                                    | string   | The public email address of the reviewer. |
+| `reviewers.state`                                           | string   | Current state of the reviewer's user account. Possible values: `active`, `blocked`, or `deactivated`. |
+| `reviewers.username`                                        | string   | Username of the merge request reviewer. |
+| `reviewers.web_url`                                         | string   | Full URL to the reviewer's profile page. |
+| `sha`                                                       | string   | SHA of the head commit in the source branch. |
+| `should_remove_source_branch`                               | boolean  | If `true`, the source branch is removed after merge. |
+| `source_branch`                                             | string   | Name of the source branch. |
+| `source_project_id`                                         | integer  | ID of the source project. |
+| `squash`                                                    | boolean  | If `true`, squash commits when merging. |
+| `squash_commit_sha`                                         | string   | If set, the SHA of the squash commit. Empty until merged. |
+| `squash_on_merge`                                           | boolean  | If `true`, commits are squashed on merge. |
+| `state`                                                     | string   | The current state of the merge request. Possible values: `opened`, `closed`, `merged`, or `locked`. |
+| `subscribed`                                                | boolean  | If `true`, the current authenticated user subscribes to this merge request. |
+| `target_branch`                                             | string   | Name of the target branch. |
+| `target_project_id`                                         | integer  | ID of the target project. |
+| `task_completion_status[]`                                  | object   | Object with information on the task list completion status. |
+| `task_completion_status.completed_count`                    | integer  | Number of completed task list items in the merge request description. Returns `0` if the merge request has no description or no task list items. |
+| `task_completion_status.count`                              | integer  | Total number of task list items found in the merge request description. Returns `0` if the merge request has no description or no task list items. |
+| `time_stats[]`                                              | object   | Object with information on time tracking for this merge request. |
+| `time_stats.human_time_estimate`                            | string   | Human-readable format of `time_stats.time_estimate`, like `3h 30m`. |
+| `time_stats.human_total_time_spent`                         | string   | Human-readable format of `time_stats.total_time_spent`, like `3h 30m`. |
+| `time_stats.time_estimate`                                  | integer  | Estimated time to complete the merge request, in seconds. |
+| `time_stats.total_time_spent`                               | integer  | Total time spent working on the merge request, in seconds. |
+| `title`                                                     | string   | The merge request title. |
+| `updated_at`                                                | datetime | Timestamp of when the merge request was last updated. |
+| `upvotes`                                                   | integer  | Number of upvotes for the merge request. |
+| `user[]`                                                    | object   | Permissions of the user requested for the merge request. |
+| `user.can_merge`                                            | boolean  | If `true`, the current authenticated user can merge this merge request. |
+| `user_notes_count`                                          | integer  | Number of user comments. |
+| `web_url`                                                   | string   | Web URL to view the merge request. |
+| `work_in_progress`                                          | boolean  | Deprecated. Use `draft` instead. |
 
 Example response:
 

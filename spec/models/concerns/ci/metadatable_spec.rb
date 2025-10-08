@@ -625,21 +625,37 @@ RSpec.describe Ci::Metadatable, feature_category: :continuous_integration do
     context 'when metadata interruptible is present' do
       before do
         processable.job_definition = nil
+        processable.temp_job_definition = nil
         processable.ensure_metadata.write_attribute(:interruptible, true)
       end
 
       it 'returns metadata interruptible' do
-        expect(interruptible).to be_truthy
+        expect(interruptible).to be(true)
       end
 
-      context 'when job definition interruptible is present' do
+      context 'when temp job definition interruptible is present' do
         before do
           processable.ensure_metadata.write_attribute(:interruptible, nil)
-          processable.build_job_definition.write_attribute(:interruptible, false)
+          temp_job_definition = Ci::JobDefinition.fabricate(
+            config: { interruptible: false },
+            partition_id: processable.partition_id,
+            project_id: processable.project_id
+          )
+          processable.temp_job_definition = temp_job_definition
         end
 
-        it 'returns job definition interruptible' do
-          expect(interruptible).to be false
+        it 'returns temp job definition interruptible' do
+          expect(interruptible).to be(false)
+        end
+
+        context 'when job definition interruptible is present' do
+          before do
+            processable.build_job_definition.write_attribute(:interruptible, true)
+          end
+
+          it 'returns job definition interruptible' do
+            expect(interruptible).to be(true)
+          end
         end
       end
     end

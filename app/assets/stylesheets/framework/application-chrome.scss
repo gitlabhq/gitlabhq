@@ -92,6 +92,13 @@
     }
   }
 
+  @media (max-width: $breakpoint-xl - 1) {
+    .super-sidebar.super-sidebar-loading {
+      position: static;
+      width: 0 !important;
+    }
+  }
+
   // Super sidebar active item
   .super-sidebar-nav-item {
     @apply gl-rounded-lg #{!important};
@@ -279,10 +286,12 @@
   // Add some left margin on pages with no left sidebar (like /search)
   .panels-container { margin-left: 0.5rem; }
 
-  .page-with-super-sidebar:not(.page-with-super-sidebar-collapsed) {
-    .super-sidebar-loading ~ .panels-container,
-    .super-sidebar-wrapper ~ .panels-container {
-      margin-left: 0;
+  @media (min-width: $breakpoint-xl) {
+    .page-with-super-sidebar {
+      .super-sidebar-loading ~ .panels-container,
+      .super-sidebar-wrapper ~ .panels-container {
+        margin-left: 0;
+      }
     }
   }
 
@@ -302,6 +311,9 @@
   // AI panel
   .paneled-view.ai-panels {
     @apply gl-px-0 sm:gl-px-3 lg:gl-px-2 lg:-gl-mx-2;
+    --ai-panel-width: 400px;
+    --ai-panels-gap: var(--gl-spacing-scale-3);
+    --ai-navigation-rail-size: #{$gl-button-medium-size};
 
     .ai-panel-header {
       z-index: $top-bar-z-index;
@@ -314,6 +326,10 @@
     .ai-nav-icon:hover {
       background-color: var(--super-sidebar-nav-item-current-bg);
       color: var(--super-sidebar-accent-color-fg);
+    }
+
+    @media (max-width: $breakpoint-lg - 1) {
+      --ai-navigation-rail-size: calc(#{$gl-button-medium-size} + var(--gl-spacing-scale-3) * 2);
     }
   }
 
@@ -802,5 +818,21 @@
       top: calc(#{$work-item-sticky-header-height} + #{$gl-spacing-scale-3}) !important;
       height: calc(var(--panel-content-inner-height) - var(--work-item-sticky-header-height) - 1.5rem + 1px) !important; // 1.5rem is to account for padding, the +1px is to account for a border
     }
+  }
+}
+
+.duo-chat-panel {
+  @media (min-width: $breakpoint-lg) {
+    width: var(--ai-navigation-rail-size);
+  }
+
+  @media (max-width: $breakpoint-lg - 1) {
+    height: var(--ai-navigation-rail-size);
+  }
+}
+
+.duo-chat-panel[data-expanded] {
+  @media (min-width: $breakpoint-lg) {
+    width: calc(var(--ai-panel-width) + var(--ai-panels-gap) + var(--ai-navigation-rail-size));
   }
 }

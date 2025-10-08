@@ -79,15 +79,25 @@ through the [remote mirrors API](../../../../api/remote_mirrors.md).
 
 ## Set up a push mirror from GitLab to GitHub
 
-To configure a mirror from GitLab to GitHub:
+When you push commits from GitLab to GitHub, GitHub determines commit attribution based
+on email addresses. If the commit email address matches a verified email on a GitHub
+user account, GitHub attributes the commit to that user. Otherwise, the commit appears
+as unattributed with only the name and email from the commit metadata.
 
-1. Create a [GitHub fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#fine-grained-personal-access-tokens)
-   with at least read and write permissions on the [repository contents](https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens?apiVersion=2022-11-28#repository-permissions-for-contents). If your
-   repository contains a `.github/workflows` directory, you must also grant
-   read and write access for the [Workflows](https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens?apiVersion=2022-11-28#repository-permissions-for-workflows).
-   For a more fine-grained access, you can configure your token to only apply
-   to the specific repository.
-1. Enter a **Git repository URL** with this format, changing the variables as needed:
+Prerequisites:
+
+- A GitHub [fine-grained personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#fine-grained-personal-access-tokens)
+  with read and write permissions for
+  [repository contents](https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens?apiVersion=2022-11-28#repository-permissions-for-contents).
+  If your repository contains a `.github/workflows` directory, you must also grant read
+  and write access for
+  [Workflows](https://docs.github.com/en/rest/authentication/permissions-required-for-fine-grained-personal-access-tokens?apiVersion=2022-11-28#repository-permissions-for-workflows).
+  For more fine-grained access, configure your token to apply only to the specific
+  repository.
+
+To set up the mirror:
+
+1. For **Git repository URL**, enter the URL with this format:
 
    ```plaintext
    https://github.com/GROUP/PROJECT.git
@@ -95,6 +105,7 @@ To configure a mirror from GitLab to GitHub:
 
    - `GROUP`: The group on GitHub.
    - `PROJECT`: The project on GitHub.
+
 1. For **Username**, enter the username of the owner of the personal access token.
 1. For **Password**, enter your GitHub personal access token.
 1. Select **Mirror repository**.
