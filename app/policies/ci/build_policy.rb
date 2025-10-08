@@ -77,8 +77,10 @@ module Ci
       can?(:developer_access, @subject.project)
     end
 
+    condition(:explicit_member) { @subject.project.member?(@user) }
+
     rule { public_project & project_developer }.enable :read_manual_variables
-    rule { ~public_project & guest }.enable :read_manual_variables
+    rule { ~public_project & explicit_member }.enable :read_manual_variables
 
     condition(:project_maintainer) do
       can?(:maintainer_access, @subject.project)
