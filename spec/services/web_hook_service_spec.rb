@@ -8,6 +8,12 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
   let(:uuid_regex) { /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/ }
   let(:ellipsis) { '…' }
   let_it_be(:project) { create(:project) }
+  let(:recursion_message) do
+    "Recursive webhook blocked. " \
+    "Update or delete the following project hook: " \
+    "#{project_hook.name} (ID: #{project_hook.id})."
+  end
+
   let_it_be_with_reload(:project_hook) { create(:project_hook, project: project) }
 
   let(:data) do
@@ -222,6 +228,94 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
       end
     end
 
+    context 'when rate limited' do
+      let(:hook_type) { hook.type.gsub('Hook', '').downcase }
+      let(:message) do
+        "Webhook rate limit exceeded. " \
+        "Update or delete the following #{hook_type} hook: " \
+        "#{hook.name} (ID: #{hook.id})."
+      end
+
+      subject(:service) { described_class.new(hook, {}, hook.name) }
+
+      before do
+        allow_next_instance_of(Gitlab::WebHooks::RateLimiter) do |limiter|
+          allow(limiter).to receive(:rate_limit!).and_return(true)
+        end
+      end
+
+      context 'with SystemHook' do
+        let(:hook) { create(:system_hook, name: 'Test System Hook') }
+
+        it 'creates a broadcast message' do
+          expect(System::BroadcastMessage).to receive(:new).with(
+            hash_including(
+              message: message,
+              target_path: "/admin"
+            )
+          ).and_call_original
+
+          service.execute
+        end
+      end
+
+      context 'with ProjectHook' do
+        let_it_be(:project) { create(:project) }
+        let(:hook) { create(:project_hook, project: project, name: 'Test Project Hook') }
+
+        it 'creates a broadcast message' do
+          expect(System::BroadcastMessage).to receive(:new).with(
+            hash_including(
+              message: message,
+              target_path: "/#{project.full_path}"
+            )
+          ).and_call_original
+
+          service.execute
+        end
+      end
+
+      if Gitlab.ee?
+        context 'with GroupHook' do
+          let(:group) { create(:group) }
+          let(:hook) { create(:group_hook, group: group, name: 'Test Group Hook') }
+
+          it 'creates a broadcast message' do
+            expect(System::BroadcastMessage).to receive(:new).with(
+              hash_including(
+                message: message,
+                target_path: "/#{group.full_path}"
+              )
+            ).and_call_original
+
+            service.execute
+          end
+        end
+      end
+
+      context 'when the broadcast message fails to save' do
+        let(:error) { StandardError.new("Test Error") }
+        let(:hook) { create(:system_hook, name: 'Test System Hook') }
+        let(:save_error_message) do
+          "Failed to save broadcast message for Webhook ID #{hook.id}, Webhook rate limit exceeded"
+        end
+
+        before do
+          allow_next_instance_of(System::BroadcastMessage) do |message|
+            allow(message).to receive(:save!).and_raise(error)
+          end
+        end
+
+        it 'logs an error' do
+          allow(Gitlab::AppLogger).to receive(:error)
+          expect(Gitlab::AppLogger).to receive(:error).with(save_error_message)
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(error)
+
+          service.execute
+        end
+      end
+    end
+
     context 'with SystemHook' do
       let_it_be(:system_hook) { create(:system_hook) }
       let(:service_instance) { described_class.new(system_hook, data, :push_hooks) }
@@ -321,7 +415,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
         .once
     end
 
-    it 'blocks and logs if a recursive web hook is detected', :aggregate_failures do
+    it 'blocks, logs, and creates broadcast message if a recursive web hook is detected', :aggregate_failures do
       stub_full_request(project_hook.url, method: :post)
       Gitlab::WebHooks::RecursionDetection.register!(project_hook)
 
@@ -336,12 +430,17 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
         )
       )
 
+      expect(System::BroadcastMessage).to receive(:new).with(
+        hash_including(message: recursion_message)
+      ).and_call_original
+
       service_instance.execute
 
       expect(WebMock).not_to have_requested(:post, stubbed_hostname(project_hook.url))
+      expect(System::BroadcastMessage.last.message).to eq(recursion_message)
     end
 
-    it 'blocks and logs if the recursion count limit would be exceeded', :aggregate_failures do
+    it 'blocks, logs, and creates a broadcast message if the recursion count limit is exceeded', :aggregate_failures do
       stub_full_request(project_hook.url, method: :post)
       stub_const("#{Gitlab::WebHooks::RecursionDetection.name}::COUNT_LIMIT", 3)
       previous_hooks = create_list(:project_hook, 3)
@@ -358,9 +457,14 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
         )
       )
 
+      expect(System::BroadcastMessage).to receive(:new).with(
+        hash_including(message: recursion_message)
+      ).and_call_original
+
       service_instance.execute
 
       expect(WebMock).not_to have_requested(:post, stubbed_hostname(project_hook.url))
+      expect(System::BroadcastMessage.last.message).to eq(recursion_message)
     end
 
     context 'when silent mode is enabled' do
@@ -926,6 +1030,12 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
     end
 
     context 'when rate limiting is configured' do
+      let(:rate_limit_message) do
+        "Webhook rate limit exceeded. " \
+        "Update or delete the following project hook: " \
+        "#{project_hook.name} (ID: #{project_hook.id})."
+      end
+
       let_it_be(:threshold) { 3 }
       let_it_be(:plan_limits) { create(:plan_limits, :default_plan, web_hook_calls: threshold) }
 
@@ -961,6 +1071,10 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
             )
           )
 
+          expect(System::BroadcastMessage).to receive(:new).with(
+            hash_including(message: rate_limit_message)
+          ).and_call_original
+
           service_instance.async_execute
         end
       end
@@ -972,8 +1086,12 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
           threshold.times { service_instance.async_execute }
         end
 
-        it 'stops queueing workers and logs errors' do
+        it 'stops queueing workers, creates a single broadcast message, and logs errors' do
           expect(Gitlab::AuthLogger).to receive(:error).twice
+
+          expect(System::BroadcastMessage).to receive(:new).with(
+            hash_including(message: rate_limit_message)
+          ).and_call_original.once
 
           2.times { service_instance.async_execute }
         end
@@ -994,7 +1112,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
         Gitlab::WebHooks::RecursionDetection.set_request_uuid(SecureRandom.uuid)
       end
 
-      it 'does not queue a worker and logs an error if the call chain limit would be exceeded' do
+      it 'does not queue worker, creates broadcast message, and logs error if call chain limit is exceeded' do
         stub_const("#{Gitlab::WebHooks::RecursionDetection.name}::COUNT_LIMIT", 3)
         previous_hooks = create_list(:project_hook, 3)
         previous_hooks.each { Gitlab::WebHooks::RecursionDetection.register!(_1) }
@@ -1014,10 +1132,14 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
           )
         )
 
+        expect(System::BroadcastMessage).to receive(:new).with(
+          hash_including(message: recursion_message)
+        ).and_call_original
+
         service_instance.async_execute
       end
 
-      it 'does not queue a worker and logs an error if a recursive call chain is detected' do
+      it 'does not queue worker, creates broadcast message, and logs error if recursive call chain is detected' do
         Gitlab::WebHooks::RecursionDetection.register!(project_hook)
 
         expect(WebHookWorker).not_to receive(:perform_async)
@@ -1034,6 +1156,10 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
             'meta.root_namespace' => project.root_namespace.full_path
           )
         )
+
+        expect(System::BroadcastMessage).to receive(:new).with(
+          hash_including(message: recursion_message)
+        ).and_call_original
 
         service_instance.async_execute
       end

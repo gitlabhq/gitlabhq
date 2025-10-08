@@ -24012,7 +24012,7 @@ Self-hosted LLM servers.
 
 ### `AiUsageData`
 
-Usage data for events stored in the default PostgreSQL database. Data retained for three months. Requires a personal access token. Endpoint works only on the top-level group. Premium and Ultimate with GitLab Duo Enterprise only.
+Usage data for events stored in either PostgreSQL (default) or ClickHouse (when configured). Data retention: three months in PostgreSQL, indefinite in ClickHouse. Requires a personal access token. Works only on top-level groups. Premium and Ultimate with GitLab Duo Enterprise only.
 
 #### Fields with arguments
 
@@ -25733,8 +25733,10 @@ Compute usage data for hosted runners on GitLab Dedicated.
 | ---- | ---- | ----------- |
 | <a id="cidedicatedhostedrunnerusagebillingmonth"></a>`billingMonth` | [`String!`](#string) | Month of the usage data. |
 | <a id="cidedicatedhostedrunnerusagebillingmonthiso8601"></a>`billingMonthIso8601` | [`ISO8601Date!`](#iso8601date) | Timestamp of the billing month in ISO 8601 format. |
-| <a id="cidedicatedhostedrunnerusagecomputeminutes"></a>`computeMinutes` | [`Int!`](#int) | Total compute minutes used across all namespaces. |
-| <a id="cidedicatedhostedrunnerusagedurationseconds"></a>`durationSeconds` | [`Int!`](#int) | Total duration in seconds of runner usage. |
+| <a id="cidedicatedhostedrunnerusagecomputeminutes"></a>`computeMinutes` | [`Int!`](#int) | Total compute minutes used across all namespaces. Values are rounded down to the nearest integer. |
+| <a id="cidedicatedhostedrunnerusagecomputeminutesusage"></a>`computeMinutesUsage` | [`Float!`](#float) | Total compute minutes used across all namespaces. |
+| <a id="cidedicatedhostedrunnerusagedurationminutes"></a>`durationMinutes` | [`Float!`](#float) | Total duration in minutes of runner usage. |
+| <a id="cidedicatedhostedrunnerusagedurationseconds"></a>`durationSeconds` | [`Int!`](#int) | Total duration in seconds of runner usage. Values are rounded down to the nearest integer. |
 | <a id="cidedicatedhostedrunnerusagerootnamespace"></a>`rootNamespace` | [`NamespaceUnion`](#namespaceunion) | Namespace associated with the usage data. Null for instance aggregate data. |
 
 ### `CiDeletedNamespace`

@@ -10,7 +10,7 @@ title: Model selection
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Enterprise
-- Offering: GitLab Self-Managed, GitLab Dedicated
+- Offering: GitLab Self-Managed
 
 {{< /details >}}
 

@@ -57,7 +57,9 @@ control the pagination of results.
 | `yaml_errors`    | boolean        | No       | Returns pipelines with invalid configurations |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines"
 ```
 
 Example of response
@@ -119,7 +121,9 @@ control the pagination of results.
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
 ```
 
 Example of response
@@ -191,7 +195,9 @@ control the pagination of results.
 | `ref`     | string | No       | The branch or tag to check for the latest pipeline. Defaults to the default branch when not specified. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/latest"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/latest"
 ```
 
 Example of response
@@ -257,7 +263,9 @@ control the pagination of results.
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/variables"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/variables"
 ```
 
 Example of response
@@ -299,7 +307,9 @@ control the pagination of results.
 Sample request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report"
 ```
 
 Sample response:
@@ -359,7 +369,9 @@ control the pagination of results.
 Sample request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report_summary"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/test_report_summary"
 ```
 
 Sample response:
@@ -417,7 +429,9 @@ POST /projects/:id/pipeline
 Basic example:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=main"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=main"
 ```
 
 Example request with [inputs](../ci/inputs/_index.md):
@@ -483,7 +497,9 @@ POST /projects/:id/pipelines/:pipeline_id/retry
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/retry"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/retry"
 ```
 
 Response:
@@ -538,7 +554,9 @@ For more information, see [issue 414963](https://gitlab.com/gitlab-org/gitlab/-/
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/cancel"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46/cancel"
 ```
 
 Response:
@@ -595,7 +613,9 @@ DELETE /projects/:id/pipelines/:pipeline_id
 | `pipeline_id` | integer        | Yes      | The ID of a pipeline |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" --request "DELETE" "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
 ```
 
 ## Update pipeline metadata

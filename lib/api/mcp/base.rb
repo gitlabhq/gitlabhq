@@ -42,7 +42,7 @@ module API
       before do
         authenticate!
         not_found! unless Feature.enabled?(:mcp_server, current_user)
-        forbidden! unless access_token&.scopes&.map(&:to_s) == [Gitlab::Auth::MCP_SCOPE.to_s]
+        forbidden! unless AccessTokenValidationService.new(access_token).include_any_scope?([Gitlab::Auth::MCP_SCOPE])
       end
 
       helpers do
@@ -134,7 +134,7 @@ module API
 
         # See: https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#listening-for-messages-from-the-server
         get do
-          status :not_implemented
+          status :method_not_allowed
         end
       end
     end

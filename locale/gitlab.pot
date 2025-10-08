@@ -50,6 +50,9 @@ msgid_plural " except branches:"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid " hook: %{hook_name} (ID: %{hook_id})."
+msgstr ""
+
 msgid " or "
 msgstr ""
 
@@ -15437,6 +15440,12 @@ msgstr ""
 msgid "CodeOwner|Pattern"
 msgstr ""
 
+msgid "CodeSuggestionsAcceptanceByLanguageChart|Acceptance rate"
+msgstr ""
+
+msgid "CodeSuggestionsAcceptanceByLanguageChart|Failed to load metrics for: %{languages}"
+msgstr ""
+
 msgid "CodeSuggestions|%{addOnName} status"
 msgstr ""
 
@@ -28150,7 +28159,7 @@ msgstr ""
 msgid "Failed to save dismissal"
 msgstr ""
 
-msgid "Failed to save merge conflicts resolutions. Please try again!"
+msgid "Failed to save merge conflict resolutions. Please try again."
 msgstr ""
 
 msgid "Failed to save namespace commit email."
@@ -58052,7 +58061,7 @@ msgstr ""
 msgid "Secrets|An error occurred while enabling the Secrets Manager."
 msgstr ""
 
-msgid "Secrets|An error occurred while fetching secrets. Please try again."
+msgid "Secrets|An error occurred while fetching secrets. Please make sure you have the proper permissions, or try again."
 msgstr ""
 
 msgid "Secrets|An error occurred while fetching the Secret manager status."
@@ -73293,6 +73302,9 @@ msgid "WebAuthn devices"
 msgstr ""
 
 msgid "WebAuthn only works with HTTPS-enabled websites. Contact your administrator for more details."
+msgstr ""
+
+msgid "WebHooks|%{reason}. Update or delete the following "
 msgstr ""
 
 msgid "WebIDE|Quickly and easily edit multiple files in your project."

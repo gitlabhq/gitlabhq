@@ -2,6 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
+description: Overview of GitLab AI solution components and use cases, including Duo Workflow.
 title: GitLab AI Solution Components
 ---
 

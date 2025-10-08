@@ -2,6 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
+description: Guide for using GitLab Duo Workflow to automate documentation generation, including setup and initial steps.
 title: Duo Workflow Use Case for Generating Documentation
 ---
 

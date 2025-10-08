@@ -2,6 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
+description: Guide to setting up OSS license compliance in GitLab, including dependency scanning, approval policies, and keeping license lists up to date.
 title: OSS License Check
 ---
 

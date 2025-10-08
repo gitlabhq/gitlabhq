@@ -22997,7 +22997,8 @@ CREATE TABLE pool_repositories (
     shard_id bigint NOT NULL,
     disk_path character varying,
     state character varying,
-    source_project_id bigint
+    source_project_id bigint,
+    organization_id bigint
 );
 
 CREATE SEQUENCE pool_repositories_id_seq

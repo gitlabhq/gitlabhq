@@ -2,6 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
+description: Guide to integrating Snyk with GitLab CI/CD for application security, including workflow setup, SARIF scanning, and vulnerability reporting.
 title: GitLab Application Security Workflow Integrated with Snyk
 ---
 

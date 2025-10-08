@@ -77,7 +77,7 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
           post api('/mcp', user, oauth_access_token: insufficient_access_token),
             params: { jsonrpc: '2.0', method: 'initialize', id: '1' }
 
-          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(response).to have_gitlab_http_status(:ok)
         end
       end
 
@@ -180,10 +180,10 @@ RSpec.describe API::Mcp::Base, feature_category: :mcp_server do
         end
       end
 
-      it 'returns not implemented' do
+      it 'returns method not allowed' do
         get api('/mcp', user, oauth_access_token: access_token)
 
-        expect(response).to have_gitlab_http_status(:not_implemented)
+        expect(response).to have_gitlab_http_status(:method_not_allowed)
       end
     end
   end

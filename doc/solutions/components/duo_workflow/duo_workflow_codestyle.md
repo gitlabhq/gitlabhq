@@ -2,6 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
+description: Guide for using GitLab Duo Workflow to automatically apply Java coding style guidelines to projects, with configuration, execution, and sample use cases.
 title: Duo Workflow Use Case for Applying Coding Style
 ---
 

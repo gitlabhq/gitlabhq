@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.4.2 (2025-10-08)
+
+### Added (1 change)
+
+- [Remove check_f02a3f53bf not null constraint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8286ade8d801ab80891f81defc627839a4d86e20)
+
+### Fixed (3 changes)
+
+- [Prevent session creation for sessionless users](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f88c1242f0a8e5e9f13a187755568d0545f69305)
+- [Remove non Saas instances from calling CDOT for trial duration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6ba5b24afb192c042cf67be4bb85c0dc306db143) **GitLab Enterprise Edition**
+- [Transfer start and due dates data upon work item move or clone](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9025e065d671143b547126269c775d52102b9775)
+
+### Security (5 changes)
+
+- [Log JSON bytesize as well](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b6b5c289d3183019524e5604c25f431cf45682c2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5388))
+- [Adjust complexity for blob data fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/49554246af3e45202ca7c32e0a0273f13421eb8a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5384))
+- [Some mutations have read_api scope](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5714b2f3c9411e709d6abcb0896b34a208798d1b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5370))
+- [Reject irrelevant 1xx responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/390f4fddbb5a778dbd52a9647bf22ab52ee8478e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5332))
+- [Restrict manual variables to explicit guests in internal projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/446b25ac5e3e9c02c49f26a1da31ba108c0bdd23) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5366))
+
 ## 18.4.1 (2025-09-25)
 
 ### Fixed (2 changes)
@@ -722,6 +742,21 @@ entry.
 - [Remove the code related to FF zoekt_syntax_transpile](https://gitlab.com/gitlab-org/gitlab/-/commit/8b96dbfa9888c41c0a48b46a221c201cfb4fed7b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201465)) **GitLab Enterprise Edition**
 - [Migration to remove sidekiq jobs for confidential epic worker](https://gitlab.com/gitlab-org/gitlab/-/commit/3eed5264bd2a24db76fba79a4b767d5fbc889d7c) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200894))
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/5c73da9d08e0c5732bead4407bfdeeffba00ca80) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197074))
+
+## 18.3.4 (2025-10-08)
+
+### Fixed (2 changes)
+
+- [Remove non Saas instances from calling CDOT for trial duration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/764210b1790db3e4984ecbd404f211c0668af1a4) **GitLab Enterprise Edition**
+- [Transfer start and due dates data upon work item move or clone](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ec7a2082e1229aa64d0b1529135f2fb209ba656d)
+
+### Security (5 changes)
+
+- [Log JSON bytesize as well](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bd818dff7bb196ba52e428e8a90eb33869f60fa2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5389))
+- [Adjust complexity for blob data fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/13b1fb00de0ab7db943c579b612b813199084f29) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5385))
+- [Some mutations have read_api scope](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a2c70f53fde77761905c184021dba0a1c74013c8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5369))
+- [Reject irrelevant 1xx responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e8060c8dd0cd6a268ac654b177e2ef7b28b2b245) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5302))
+- [Restrict manual variables to explicit guests in internal projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dcb8ddf94070937b7a245a9f300fede051a30252) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5365))
 
 ## 18.3.3 (2025-09-25)
 
@@ -1650,6 +1685,19 @@ entry.
 - [Finalize BBM BackfillScanResultPoliciesProjectId](https://gitlab.com/gitlab-org/gitlab/-/commit/abfb77370cea034cfe41327535e6d7aa6445de0f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197399))
 - [Use proper vue frontend errors on company form](https://gitlab.com/gitlab-org/gitlab/-/commit/d04f737a5d4dbef68db29c73e37edf382b8cea79) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194378)) **GitLab Enterprise Edition**
 - [Remove ignore column from Users](https://gitlab.com/gitlab-org/gitlab/-/commit/ad08665571456b0e6d8d4f70f161a0980b6a4f80) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197464))
+
+## 18.2.8 (2025-10-08)
+
+### Fixed (1 change)
+
+- [Transfer start and due dates data upon work item move or clone](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ffa794edbc50ae509c9d2a9dcd6a3d30cf938de5)
+
+### Security (4 changes)
+
+- [Log JSON bytesize as well](https://gitlab.com/gitlab-org/security/gitlab/-/commit/99e5aeaddd439d66513cdf5710bc3fdb70df7cb4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5390))
+- [Adjust complexity for blob data fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1fb1ff84697efa0abd38063207c7ec3905a9bfc2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5386))
+- [Reject irrelevant 1xx responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/db84009946afba988a96aa6871d992ef3fcc02ed) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5303))
+- [Restrict manual variables to explicit guests in internal projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eaadf56f52b6533dd0d07e177a4df8d62d076d1b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5367))
 
 ## 18.2.7 (2025-09-25)
 

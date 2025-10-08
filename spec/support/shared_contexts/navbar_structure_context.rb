@@ -158,6 +158,13 @@ RSpec.shared_context 'group navbar structure' do
     }
   end
 
+  let(:analyze_nav_item) do
+    {
+      nav_item: _("Analyze"),
+      nav_sub_items: [_("Data explorer")]
+    }
+  end
+
   let(:plan_nav_items) do
     [s_("WorkItem|Work items"), _("Issue board"), _("Milestones"), (_('Iterations') if Gitlab.ee?)]
   end
@@ -202,10 +209,7 @@ RSpec.shared_context 'group navbar structure' do
         nav_item: _("Operate"),
         nav_sub_items: [_("Kubernetes")]
       },
-      {
-        nav_item: _("Analyze"),
-        nav_sub_items: [_("Data explorer")]
-      },
+      (analyze_nav_item if Gitlab.ee?),
       observability_nav_item
     ]
   end

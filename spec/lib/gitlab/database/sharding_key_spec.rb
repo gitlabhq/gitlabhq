@@ -268,6 +268,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "ai_duo_chat_events" => "https://gitlab.com/gitlab-org/gitlab/-/issues/516140",
       "fork_networks" => "https://gitlab.com/gitlab-org/gitlab/-/issues/522958",
       "bulk_import_configurations" => "https://gitlab.com/gitlab-org/gitlab/-/issues/536521",
+      "pool_repositories" => "https://gitlab.com/gitlab-org/gitlab/-/issues/490484",
       'todos' => 'https://gitlab.com/gitlab-org/gitlab/-/issues/562437',
       # All the tables below related to uploads are part of the same work to
       # add sharding key to the table

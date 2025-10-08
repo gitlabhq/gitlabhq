@@ -425,7 +425,28 @@ To add IP addresses to the allowlist:
    1. Fix any invalid or duplicate entries, then select **Continue**.
    1. Review the changes, then select **Import**.
 
-1. Scroll up to the top of the page and choose whether to apply the changes immediately or during the next maintenance window.
+1. At the top of the page, choose whether to apply the changes immediately or during the next maintenance window.
+
+### Delete IP addresses from the allowlist with Switchboard
+
+1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
+1. At the top of the page, select **Configuration**.
+1. Expand **IP allowlist**, then select **IP allowlist** to go to the IP allowlist page.
+1. Do one of the following:
+
+   - To delete a single IP address:
+
+   1. Next to the IP address you want to remove, select the trash icon ({{< icon name="remove" >}}).
+   1. Select **Delete IP address**.
+
+   - To delete multiple IP addresses:
+
+   1. Select the checkboxes for the IP addresses you want to delete.
+   1. To select all IP addresses on the current page, select the checkbox in the header row.
+   1. Above the IP addresses table, select **Delete**.
+   1. Select **Delete** to confirm.
+
+1. At the top of the page, choose whether to apply the changes immediately or during the next maintenance window.
 
 ### Add an IP to the allowlist with a support request
 
