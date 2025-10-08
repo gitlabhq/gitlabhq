@@ -10,7 +10,6 @@ import NestedGroupsProjectsList from '~/vue_shared/components/nested_groups_proj
 import ResourceListsEmptyState from '~/vue_shared/components/resource_lists/empty_state.vue';
 import { formatGroups } from './utils';
 import groupsQuery from './graphql/queries/groups.query.graphql';
-import activeGroupsQuery from './graphql/queries/active_groups.query.graphql';
 
 export const SORT_OPTION_NAME = {
   value: 'name',
@@ -54,7 +53,7 @@ export const MEMBER_TAB = {
   text: __('Member'),
   value: 'member',
   countsQueryPath: 'member',
-  query: activeGroupsQuery,
+  variables: { active: true },
 };
 
 export const INACTIVE_TAB = {

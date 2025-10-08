@@ -51,7 +51,6 @@
     .topbar-search-button-placeholder {
       font-weight: 320;
       line-height: 1.25;
-      color: var(--gl-control-placeholder-color);
     }
   }
 
@@ -105,8 +104,16 @@
   }
 
   // Search button
-  .gl-dark .super-topbar .topbar-search-button:not(:hover):not(:focus):not(:active) {
-    @apply gl-bg-alpha-light-8;
+  .super-topbar .topbar-search-button {
+    @apply gl-text-subtle gl-border-alpha-dark-24 #{!important};
+    
+    kbd {
+      @apply gl-border-strong gl-font-semibold gl-text-subtle gl-shadow-none dark:gl-border-transparent;
+    }
+  }
+  
+  .super-topbar .topbar-search-button:not(:hover):not(:focus):not(:active) {
+    @apply dark:gl-bg-alpha-light-8 dark:gl-border-alpha-light-16 #{!important};
   }
 
   // Quick search overlay
@@ -716,6 +723,7 @@
       color: var(--super-sidebar-accent-color-fg);
       background-color: var(--super-sidebar-nav-item-current-bg);
     }
+
   }
 
   .super-topbar,

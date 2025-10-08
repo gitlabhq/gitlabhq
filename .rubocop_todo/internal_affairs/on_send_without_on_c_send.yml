@@ -4,7 +4,6 @@ InternalAffairs/OnSendWithoutOnCSend:
     - 'rubocop/cop/active_model_errors_direct_manipulation.rb'
     - 'rubocop/cop/active_record_association_reload.rb'
     - 'rubocop/cop/api/class_level_allow_access_with_scope.rb'
-    - 'rubocop/cop/api/ensure_string_detail.rb'
     - 'rubocop/cop/api/grape_array_missing_coerce.rb'
     - 'rubocop/cop/avoid_becomes.rb'
     - 'rubocop/cop/avoid_route_redirect_leading_slash.rb'

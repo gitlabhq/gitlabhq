@@ -46,12 +46,9 @@ Every method must be described using the [Grape DSL](https://github.com/ruby-gra
 (see [`environments.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/environments.rb)
 for a good example):
 
-- `desc` for the method summary. You should pass it a block for additional
-  details such as:
-  - The GitLab version when the endpoint was added. If it is behind a feature flag, mention that instead: `This feature is gated by the :feature\_flag\_symbol feature flag.`
-  - If the endpoint is deprecated, and if so, its planned removal date
+- `desc` for the method summary.
+- `detail` for each `desc` block. This must be a string.
 - `tags` for each `desc` block. This should be a string, or array of strings.
-
 - `params` for the method parameters. This acts as description,
   [validation, and coercion of the parameters](https://github.com/ruby-grape/grape#parameter-validation-and-coercion)
 
@@ -73,6 +70,15 @@ get do
   present paginate(messages), with: Entities::System::BroadcastMessage
 end
 ```
+
+### Defining endpoint details
+
+Every endpoint must have a `detail` value for each `desc` block. The value must be a string.
+The `detail` should describe any additional details not covered by the `desc` such as:
+
+- The GitLab version when the endpoint was added.
+- If it is behind a feature flag, mention that instead: `This feature is gated by the :feature\_flag\_symbol feature flag.`
+- If the endpoint is deprecated, and if so, its planned removal date
 
 ### Choosing a tag
 

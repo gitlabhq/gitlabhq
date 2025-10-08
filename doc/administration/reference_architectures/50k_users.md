@@ -2323,7 +2323,7 @@ section assumes this.
 
 {{< /alert >}}
 
-For information about Gitaly on Kubernetes availability, see the [Timeline](../gitaly/kubernetes.md#timeline).
+For information about Gitaly on Kubernetes availability, limitations, and deployment considerations, see [Gitaly on Kubernetes](../gitaly/kubernetes.md).
 
 ### Cluster topology
 

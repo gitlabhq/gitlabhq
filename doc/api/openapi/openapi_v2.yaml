@@ -12143,6 +12143,7 @@ paths:
         example: asc
       - in: query
         name: source
+        description: The source of pipelines
         type: string
         enum:
         - unknown
@@ -30973,6 +30974,7 @@ paths:
       parameters:
       - in: query
         name: status
+        description: HTTP status code of the event
         type: array
         items:
           type: string
@@ -42212,11 +42214,12 @@ paths:
         required: true
       - in: path
         name: module_name
-        description: ''
+        description: Name of the module
         type: string
         required: true
       - in: path
         name: module_system
+        description: System of the module
         type: string
         required: true
       responses:
@@ -42245,11 +42248,12 @@ paths:
         required: true
       - in: path
         name: module_name
-        description: ''
+        description: Name of the module
         type: string
         required: true
       - in: path
         name: module_system
+        description: System of the module
         type: string
         required: true
       responses:
@@ -42276,11 +42280,12 @@ paths:
         required: true
       - in: path
         name: module_name
-        description: ''
+        description: Name of the module
         type: string
         required: true
       - in: path
         name: module_system
+        description: System of the module
         type: string
         required: true
       responses:
@@ -42309,16 +42314,17 @@ paths:
         required: true
       - in: path
         name: module_name
-        description: ''
+        description: Name of the module
         type: string
         required: true
       - in: path
         name: module_system
+        description: System of the module
         type: string
         required: true
       - in: query
         name: module_version
-        description: Module version
+        description: Version of the module
         type: string
         required: true
       responses:
@@ -42345,16 +42351,17 @@ paths:
         required: true
       - in: path
         name: module_name
-        description: ''
+        description: Name of the module
         type: string
         required: true
       - in: path
         name: module_system
+        description: System of the module
         type: string
         required: true
       - in: query
         name: module_version
-        description: Module version
+        description: Version of the module
         type: string
         required: true
       responses:
@@ -42383,16 +42390,17 @@ paths:
         required: true
       - in: path
         name: module_name
-        description: ''
+        description: Name of the module
         type: string
         required: true
       - in: path
         name: module_system
+        description: System of the module
         type: string
         required: true
       - in: query
         name: module_version
-        description: Module version
+        description: Version of the module
         type: string
         required: true
       responses:
@@ -53012,10 +53020,11 @@ definitions:
         description: Title of a wiki page
       front_matter:
         type: object
+        description: Object that contains YAML frontmatter
         properties:
           title:
             type: string
-            description: Front matter title of a wiki page
+            description: Frontmatter title of a wiki page
       content:
         type: string
         description: Content of a wiki page
@@ -53041,10 +53050,11 @@ definitions:
         description: Title of a wiki page
       front_matter:
         type: object
+        description: Object that contains YAML frontmatter
         properties:
           title:
             type: string
-            description: Front matter title of a wiki page
+            description: Frontmatter title of a wiki page
       content:
         type: string
         description: Content of a wiki page
@@ -55754,6 +55764,7 @@ definitions:
         description: The associated discussion should be resolved.
       position:
         type: object
+        description: Position when creating a note
         properties:
           base_sha:
             type: string
@@ -55803,10 +55814,11 @@ definitions:
             description: Y coordinate in the image
           line_range:
             type: object
-            description: Multi-line start and end
+            description: Line range for a multi-line note
             properties:
               start:
                 type: object
+                description: Start line for a multi-line note
                 properties:
                   line_code:
                     type: string
@@ -55822,6 +55834,7 @@ definitions:
                     description: Start new_line line number
               end:
                 type: object
+                description: End line for a multi-line note
                 properties:
                   line_code:
                     type: string
@@ -55851,6 +55864,7 @@ definitions:
         description: The content of a note.
       position:
         type: object
+        description: Position when creating a note
         properties:
           base_sha:
             type: string
@@ -55900,10 +55914,11 @@ definitions:
             description: Y coordinate in the image
           line_range:
             type: object
-            description: Multi-line start and end
+            description: Line range for a multi-line note
             properties:
               start:
                 type: object
+                description: Start line for a multi-line note
                 properties:
                   line_code:
                     type: string
@@ -55919,6 +55934,7 @@ definitions:
                     description: Start new_line line number
               end:
                 type: object
+                description: End line for a multi-line note
                 properties:
                   line_code:
                     type: string
@@ -56239,6 +56255,7 @@ definitions:
           Omit to create a Legacy feature flag.
       strategies:
         type: array
+        description: Array of feature flag strategies
         items:
           type: object
           properties:
@@ -56257,6 +56274,7 @@ definitions:
               description: The ID of the feature flag user list. If strategy is `gitlabUserList`.
             scopes:
               type: array
+              description: Array of scopes for the strategy
               items:
                 type: object
                 properties:
@@ -56285,6 +56303,7 @@ definitions:
         description: The active state of the flag. Supported in GitLab 13.3 and later
       strategies:
         type: array
+        description: Array of feature flag strategies
         items:
           type: object
           properties:
@@ -56308,6 +56327,7 @@ definitions:
               description: Delete the strategy when true
             scopes:
               type: array
+              description: Array of scopes for the strategy
               items:
                 type: object
                 properties:
@@ -62663,6 +62683,7 @@ definitions:
         description: Override the project description
       upload:
         type: object
+        description: Object that contains information on the upload
         properties:
           url:
             type: string
@@ -63766,6 +63787,8 @@ definitions:
           indication if the container registry is enabled for that project'
       container_expiration_policy_attributes:
         type: object
+        description: Object that contains information on the container expiration
+          policy
         properties:
           cadence:
             type: string
@@ -64207,6 +64230,8 @@ definitions:
           indication if the container registry is enabled for that project'
       container_expiration_policy_attributes:
         type: object
+        description: Object that contains information on the container expiration
+          policy
         properties:
           cadence:
             type: string
@@ -65129,6 +65154,8 @@ definitions:
           indication if the container registry is enabled for that project'
       container_expiration_policy_attributes:
         type: object
+        description: Object that contains information on the container expiration
+          policy
         properties:
           cadence:
             type: string
@@ -65594,13 +65621,15 @@ definitions:
         - 60
       allowed_to_push:
         type: array
-        description: An array of users/groups allowed to push
+        description: Array of users, groups, deploy keys, or access levels allowed
+          to push to protected branches
         items:
           type: object
           properties:
             access_level:
               type: integer
               format: int32
+              description: Access level allowed to push
               enum:
               - 30
               - 40
@@ -65609,31 +65638,37 @@ definitions:
             deploy_key_id:
               type: integer
               format: int32
+              description: Deploy key allowed to push
               example: 1
             user_id:
               type: integer
               format: int32
+              description: ID of a user
               example: 1
             group_id:
               type: integer
               format: int32
+              description: ID of a group
               example: 1
             id:
               type: integer
               format: int32
-              example: 1
+              description: ID of a project
+              example: 40
             _destroy:
               type: boolean
               description: Delete the object when true
       allowed_to_merge:
         type: array
-        description: An array of users/groups allowed to merge
+        description: Array of users, groups, or access levels allowed to merge protected
+          branches
         items:
           type: object
           properties:
             access_level:
               type: integer
               format: int32
+              description: Access level allowed to merge
               enum:
               - 30
               - 40
@@ -65642,27 +65677,32 @@ definitions:
             user_id:
               type: integer
               format: int32
+              description: ID of a user
               example: 1
             group_id:
               type: integer
               format: int32
+              description: ID of a group
               example: 1
             id:
               type: integer
               format: int32
-              example: 1
+              description: ID of a project
+              example: 40
             _destroy:
               type: boolean
               description: Delete the object when true
       allowed_to_unprotect:
         type: array
-        description: An array of users/groups allowed to unprotect
+        description: Array of users, groups, or access levels allowed to unprotect
+          protected branches
         items:
           type: object
           properties:
             access_level:
               type: integer
               format: int32
+              description: Access level allowed to unprotect
               enum:
               - 30
               - 40
@@ -65670,15 +65710,18 @@ definitions:
             user_id:
               type: integer
               format: int32
+              description: ID of a user
               example: 1
             group_id:
               type: integer
               format: int32
+              description: ID of a group
               example: 1
             id:
               type: integer
               format: int32
-              example: 1
+              description: ID of a project
+              example: 40
             _destroy:
               type: boolean
               description: Delete the object when true
@@ -65705,13 +65748,15 @@ definitions:
         - 60
       allowed_to_push:
         type: array
-        description: An array of users/groups allowed to push
+        description: Array of users, groups, deploy keys, or access levels allowed
+          to push to protected branches
         items:
           type: object
           properties:
             access_level:
               type: integer
               format: int32
+              description: Access level allowed to push
               enum:
               - 30
               - 40
@@ -65720,31 +65765,37 @@ definitions:
             deploy_key_id:
               type: integer
               format: int32
+              description: Deploy key allowed to push
               example: 1
             user_id:
               type: integer
               format: int32
+              description: ID of a user
               example: 1
             group_id:
               type: integer
               format: int32
+              description: ID of a group
               example: 1
             id:
               type: integer
               format: int32
-              example: 1
+              description: ID of a project
+              example: 40
             _destroy:
               type: boolean
               description: Delete the object when true
       allowed_to_merge:
         type: array
-        description: An array of users/groups allowed to merge
+        description: Array of users, groups, or access levels allowed to merge protected
+          branches
         items:
           type: object
           properties:
             access_level:
               type: integer
               format: int32
+              description: Access level allowed to merge
               enum:
               - 30
               - 40
@@ -65753,27 +65804,32 @@ definitions:
             user_id:
               type: integer
               format: int32
+              description: ID of a user
               example: 1
             group_id:
               type: integer
               format: int32
+              description: ID of a group
               example: 1
             id:
               type: integer
               format: int32
-              example: 1
+              description: ID of a project
+              example: 40
             _destroy:
               type: boolean
               description: Delete the object when true
       allowed_to_unprotect:
         type: array
-        description: An array of users/groups allowed to unprotect
+        description: Array of users, groups, or access levels allowed to unprotect
+          protected branches
         items:
           type: object
           properties:
             access_level:
               type: integer
               format: int32
+              description: Access level allowed to unprotect
               enum:
               - 30
               - 40
@@ -65781,15 +65837,18 @@ definitions:
             user_id:
               type: integer
               format: int32
+              description: ID of a user
               example: 1
             group_id:
               type: integer
               format: int32
+              description: ID of a group
               example: 1
             id:
               type: integer
               format: int32
-              example: 1
+              description: ID of a project
+              example: 40
             _destroy:
               type: boolean
               description: Delete the object when true
@@ -65826,13 +65885,15 @@ definitions:
         example: 30
       allowed_to_create:
         type: array
-        description: An array of users/groups allowed to create
+        description: Array of users, groups, deploy keys, or access levels allowed
+          to create protected branches
         items:
           type: object
           properties:
             access_level:
               type: integer
               format: int32
+              description: ID of an access level
               enum:
               - 30
               - 40
@@ -65841,12 +65902,15 @@ definitions:
             user_id:
               type: integer
               format: int32
+              description: ID of a user
             group_id:
               type: integer
               format: int32
+              description: ID of a group
             deploy_key_id:
               type: integer
               format: int32
+              description: ID of a deploy key
     required:
     - name
     description: Protect a single tag or wildcard
@@ -65858,35 +65922,46 @@ definitions:
         description: The package file to be published (generated by Multipart middleware)
       name:
         type: string
+        description: Name of the package
         example: my.pypi.package
       version:
         type: string
+        description: Version of the package
         example: 1.3.7
       requires_python:
         type: string
+        description: PyPI version required for the package
         example: ">=3.7"
       md5_digest:
         type: string
+        description: MD5 checksum of the package
         example: 900150983cd24fb0d6963f7d28e17f72
       sha256_digest:
         type: string
+        description: SHA256 checksum of the package
         example: ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
       metadata_version:
         type: string
+        description: Metadata version of the package
         example: '2.3'
       author_email:
         type: string
+        description: Email address for the package author
         example: cschultz@example.com, snoopy@peanuts.com
       description:
         type: string
+        description: Description of the package
       description_content_type:
         type: string
+        description: Type of content for the package description
         example: text/markdown; charset=UTF-8; variant=GFM
       summary:
         type: string
+        description: Short summary of the package
         example: A module for collecting votes from beagles.
       keywords:
         type: string
+        description: Keywords listed for the package
         example: dog,puppy,voting,election
     required:
     - content
@@ -65915,9 +65990,11 @@ definitions:
           tag name, or a branch name.
       assets:
         type: object
+        description: Object that contains assets for the release
         properties:
           links:
             type: array
+            description: Link information about the release
             items:
               type: object
               properties:
@@ -66577,10 +66654,11 @@ definitions:
         description: Title of a wiki page
       front_matter:
         type: object
+        description: Object that contains YAML frontmatter
         properties:
           title:
             type: string
-            description: Front matter title of a wiki page
+            description: Frontmatter title of a wiki page
       content:
         type: string
         description: Content of a wiki page
@@ -66606,10 +66684,11 @@ definitions:
         description: Title of a wiki page
       front_matter:
         type: object
+        description: Object that contains YAML frontmatter
         properties:
           title:
             type: string
-            description: Front matter title of a wiki page
+            description: Frontmatter title of a wiki page
       content:
         type: string
         description: Content of a wiki page
@@ -69312,6 +69391,7 @@ definitions:
         description: End of subscription of the additional purchased storage
       gitlab_subscription_attributes:
         type: object
+        description: Object that contains information on the GitLab subscription
         properties:
           start_date:
             type: string

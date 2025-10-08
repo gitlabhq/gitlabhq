@@ -77,7 +77,7 @@ module API
           optional :created_at, type: String, desc: 'The creation date of the note'
 
           if [Commit, MergeRequest].include?(noteable_type)
-            optional :position, type: Hash do
+            optional :position, type: Hash, desc: 'Position when creating a note' do
               requires :base_sha, type: String, desc: 'Base commit SHA in the source branch'
               requires :start_sha, type: String, desc: 'SHA referencing commit in target branch'
               requires :head_sha, type: String, desc: 'SHA referencing HEAD of this merge request'
@@ -93,13 +93,13 @@ module API
 
               if noteable_type == MergeRequest
                 optional :line_range, type: Hash, desc: 'Multi-line start and end' do
-                  optional :start, type: Hash do
+                  optional :start, type: Hash, desc: 'Start line for a multi-line note' do
                     optional :line_code, type: String, desc: 'Start line code for multi-line note'
                     optional :type, type: String, desc: 'Start line type for multi-line note'
                     optional :old_line, type: Integer, desc: 'Start old_line line number'
                     optional :new_line, type: Integer, desc: 'Start new_line line number'
                   end
-                  optional :end, type: Hash do
+                  optional :end, type: Hash, desc: 'End line for a multi-line note' do
                     optional :line_code, type: String, desc: 'End line code for multi-line note'
                     optional :type, type: String, desc: 'End line type for multi-line note'
                     optional :old_line, type: Integer, desc: 'End old_line line number'

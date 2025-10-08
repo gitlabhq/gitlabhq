@@ -1143,7 +1143,7 @@ The 2,000 reference architecture is not a highly-available setup. To achieve HA,
 you can follow a modified [3K or 60 RPS reference architecture](3k_users.md#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative).
 {{< /alert >}}
 
-For information about Gitaly on Kubernetes availability, see the [Timeline](../gitaly/kubernetes.md#timeline).
+For information about Gitaly on Kubernetes availability, limitations, and deployment considerations, see [Gitaly on Kubernetes](../gitaly/kubernetes.md).
 
 ### Cluster topology
 

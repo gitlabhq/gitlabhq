@@ -3277,7 +3277,6 @@ RSpec/FeatureCategory:
     - 'spec/rubocop/cop/active_model_errors_direct_manipulation_spec.rb'
     - 'spec/rubocop/cop/active_record_association_reload_spec.rb'
     - 'spec/rubocop/cop/api/base_spec.rb'
-    - 'spec/rubocop/cop/api/ensure_string_detail_spec.rb'
     - 'spec/rubocop/cop/api/grape_array_missing_coerce_spec.rb'
     - 'spec/rubocop/cop/avoid_becomes_spec.rb'
     - 'spec/rubocop/cop/avoid_break_from_strong_memoize_spec.rb'

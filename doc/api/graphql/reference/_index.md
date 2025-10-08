@@ -2879,6 +2879,36 @@ Input type: `AiCatalogThirdPartyFlowCreateInput`
 | <a id="mutationaicatalogthirdpartyflowcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationaicatalogthirdpartyflowcreateitem"></a>`item` | [`AiCatalogThirdPartyFlow`](#aicatalogthirdpartyflow) | Item created. |
 
+### `Mutation.aiCatalogThirdPartyFlowUpdate`
+
+{{< details >}}
+**Introduced** in GitLab 18.5.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiCatalogThirdPartyFlowUpdateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogthirdpartyflowupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogthirdpartyflowupdatedefinition"></a>`definition` | [`String`](#string) | YAML definition for the Flow. |
+| <a id="mutationaicatalogthirdpartyflowupdatedescription"></a>`description` | [`String`](#string) | Description for the Flow. |
+| <a id="mutationaicatalogthirdpartyflowupdateid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog Flow to update. |
+| <a id="mutationaicatalogthirdpartyflowupdatename"></a>`name` | [`String`](#string) | Name for the Flow. |
+| <a id="mutationaicatalogthirdpartyflowupdatepublic"></a>`public` | [`Boolean`](#boolean) | Whether the Flow is publicly visible in the catalog. |
+| <a id="mutationaicatalogthirdpartyflowupdaterelease"></a>`release` | [`Boolean`](#boolean) | Whether to release the latest version of the Flow. |
+| <a id="mutationaicatalogthirdpartyflowupdateversionbump"></a>`versionBump` | [`AiCatalogVersionBump`](#aicatalogversionbump) | Bump version, calculated from the last released version name. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogthirdpartyflowupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogthirdpartyflowupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationaicatalogthirdpartyflowupdateitem"></a>`item` | [`AiCatalogThirdPartyFlow`](#aicatalogthirdpartyflow) | Flow that was updated. |
+
 ### `Mutation.aiDuoWorkflowCreate`
 
 {{< details >}}

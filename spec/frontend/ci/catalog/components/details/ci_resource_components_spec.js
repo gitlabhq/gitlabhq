@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlEmptyState, GlIcon, GlLink, GlLoadingIcon, GlTableLite } from '@gitlab/ui';
+import { GlEmptyState, GlIcon, GlLink, GlLoadingIcon, GlTableLite, GlTruncate } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CiResourceComponents from '~/ci/catalog/components/details/ci_resource_components.vue';
 import getCiCatalogcomponentComponents from '~/ci/catalog/graphql/queries/get_ci_catalog_resource_components.query.graphql';
@@ -34,7 +34,6 @@ describe('CiResourceComponents', () => {
       stubs: {
         HelpIcon: true,
         GlIcon: true,
-        GlTableLite: true,
         GlTruncate: true,
       },
     });
@@ -49,6 +48,8 @@ describe('CiResourceComponents', () => {
   const findCodeSnippetContainer = (i) => wrapper.findAllByTestId('copy-to-clipboard').at(i);
   const findComponents = () => wrapper.findAllByTestId('component-section');
   const findUsageCounts = () => wrapper.findAllByTestId('usage-count');
+  const findInputCodeBlock = () => wrapper.findAllByTestId('input-code-block');
+  const findInputDefault = () => wrapper.findAllByTestId('input-default');
 
   beforeEach(() => {
     mockComponentsResponse = jest.fn();
@@ -136,6 +137,27 @@ describe('CiResourceComponents', () => {
           expect(codeSnippetContainer.exists()).toBe(true);
           expect(codeSnippetContainer.text()).toContain(expectedCodeSnippet);
         });
+      });
+
+      it('displays array/object defaults as formatted JSON in pre blocks', () => {
+        const arrayBlock = findInputCodeBlock().at(0).text();
+        expect(arrayBlock).toBe(
+          '[\n' +
+            '  {\n' +
+            '    "if": "$CI_PIPELINE_SOURCE == \\"merge_request_event\\""\n' +
+            '  }\n' +
+            ']',
+        );
+      });
+
+      it('displays primitive defaults in code blocks with correct values', () => {
+        const stringInput = findInputDefault().at(0).findComponent(GlTruncate);
+        const booleanInput = findInputDefault().at(1).findComponent(GlTruncate);
+        const numberInput = findInputDefault().at(2).findComponent(GlTruncate);
+
+        expect(stringInput.props('text')).toBe('1.0.0');
+        expect(booleanInput.props('text')).toBe('false');
+        expect(numberInput.props('text')).toBe('10');
       });
 
       describe('usage count', () => {

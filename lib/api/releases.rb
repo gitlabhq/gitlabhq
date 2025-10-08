@@ -245,8 +245,8 @@ module API
           desc: "If a tag specified in `tag_name` doesn't exist, the release is created from `ref` and tagged " \
                 "with `tag_name`. It can be a commit SHA, another tag name, or a branch name."
 
-        optional :assets, type: Hash do
-          optional :links, type: Array do
+        optional :assets, type: Hash, desc: 'Object that contains assets for the release' do
+          optional :links, type: Array, desc: 'Link information about the release' do
             requires :name, type: String, desc: 'The name of the link. Link names must be unique within the release'
             requires :url, type: String, desc: 'The URL of the link. Link URLs must be unique within the release'
             optional :direct_asset_path, type: String, desc: 'Optional path for a direct asset link'

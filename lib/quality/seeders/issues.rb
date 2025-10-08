@@ -83,7 +83,7 @@ module Quality
         3.times do |i|
           params = {
             project: project,
-            title: "Sprint #{i + suffix}",
+            title: "Sprint #{i} #{suffix}",
             description: FFaker::Lorem.sentence,
             state: [:active, :closed].sample
           }
@@ -93,7 +93,7 @@ module Quality
       end
 
       def suffix
-        @suffix ||= Time.now.to_i
+        @suffix ||= "#{Time.now.to_i}-#{SecureRandom.alphanumeric}"
       end
 
       def labels

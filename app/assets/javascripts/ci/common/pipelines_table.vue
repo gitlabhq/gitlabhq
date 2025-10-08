@@ -291,7 +291,7 @@ export default {
               :agent-privileges="agentPrivileges"
               :source-branch="currentBranch(item)"
               :additional-context="getAdditionalContext(item)"
-              workflow-definition="fix_pipeline/experimental"
+              workflow-definition="fix_pipeline/v1"
               size="medium"
             />
           </template>

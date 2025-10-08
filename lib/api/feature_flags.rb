@@ -61,11 +61,11 @@ module API
           optional :description, type: String, desc: 'The description of the feature flag'
           optional :active, type: Boolean, desc: 'The active state of the flag. Defaults to `true`. Supported in GitLab 13.3 and later'
           optional :version, type: String, desc: 'The version of the feature flag. Must be `new_version_flag`. Omit to create a Legacy feature flag.'
-          optional :strategies, type: Array do
+          optional :strategies, type: Array, desc: 'Array of feature flag strategies' do
             requires :name, type: String, desc: 'The strategy name. Can be `default`, `gradualRolloutUserId`, `userWithId`, or `gitlabUserList`. In GitLab 13.5 and later, can be `flexibleRollout`'
             optional :parameters, type: JSON, desc: 'The strategy parameters as a JSON-formatted string e.g. `{"userIds":"user1"}`', documentation: { type: 'String' }
             optional :user_list_id, type: Integer, desc: "The ID of the feature flag user list. If strategy is `gitlabUserList`."
-            optional :scopes, type: Array do
+            optional :scopes, type: Array, desc: 'Array of scopes for the strategy' do
               requires :environment_scope, type: String, desc: 'The environment scope of the scope'
             end
           end
@@ -128,13 +128,13 @@ module API
           optional :name, type: String, desc: 'The new name of the feature flag. Supported in GitLab 13.3 and later'
           optional :description, type: String, desc: 'The description of the feature flag'
           optional :active, type: Boolean, desc: 'The active state of the flag. Supported in GitLab 13.3 and later'
-          optional :strategies, type: Array do
+          optional :strategies, type: Array, desc: 'Array of feature flag strategies' do
             optional :id, type: Integer, desc: 'The feature flag strategy ID'
             optional :name, type: String, desc: 'The strategy name'
             optional :parameters, type: JSON, desc: 'The strategy parameters as a JSON-formatted string e.g. `{"userIds":"user1"}`', documentation: { type: 'String' }
             optional :user_list_id, type: Integer, desc: "The ID of the feature flag user list"
             optional :_destroy, type: Boolean, desc: 'Delete the strategy when true'
-            optional :scopes, type: Array do
+            optional :scopes, type: Array, desc: 'Array of scopes for the strategy' do
               optional :id, type: Integer, desc: 'The scope id'
               optional :environment_scope, type: String, desc: 'The environment scope of the scope'
               optional :_destroy, type: Boolean, desc: 'Delete the scope when true'

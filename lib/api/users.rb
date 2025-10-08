@@ -976,7 +976,7 @@ module API
       end
       params do
         requires :user_id, type: Integer, desc: 'The ID of the user'
-        optional :type, type: String, values: %w[Project Namespace]
+        optional :type, type: String, desc: 'Filter memberships by type', values: %w[Project Namespace]
         use :pagination
       end
       get ":user_id/memberships", feature_category: :user_profile, urgency: :high do

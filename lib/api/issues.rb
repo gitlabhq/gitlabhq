@@ -70,7 +70,7 @@ module API
         optional :updated_after, type: DateTime, desc: 'Return issues updated after the specified time'
         optional :updated_before, type: DateTime, desc: 'Return issues updated before the specified time'
 
-        optional :not, type: Hash do
+        optional :not, type: Hash, desc: 'Filters by the specified parameters' do
           use :negatable_issue_filter_params
         end
 

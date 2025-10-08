@@ -105,15 +105,14 @@ export default {
       v-gl-modal="$options.SEARCH_MODAL_ID"
       button-text-classes="gl-flex gl-w-full gl-items-center"
       category="tertiary"
-      class="topbar-search-button gl-max-w-88 !gl-rounded-lg !gl-border-strong !gl-bg-default !gl-pl-3 !gl-pr-2 hover:!gl-border-alpha-dark-40 dark:!gl-bg-alpha-light-8 dark:hover:!gl-border-alpha-light-36"
+      class="topbar-search-button gl-max-w-88 !gl-rounded-[.75rem] !gl-bg-default !gl-pl-3 !gl-pr-2 hover:!gl-border-alpha-dark-40 dark:!gl-bg-alpha-light-8 dark:hover:!gl-border-alpha-light-36"
       data-testid="super-topbar-search-button"
     >
       <gl-icon name="search" class="gl-shrink-0" />
-      <span
-        class="topbar-search-button-placeholder gl-min-w-[24vw] gl-grow gl-text-left gl-font-normal"
-        >{{ $options.i18n.searchBtnText }}</span
-      >
-      <kbd class="gl-mr-1 gl-hidden gl-shrink-0 gl-shadow-none">/</kbd>
+      <span class="topbar-search-button-placeholder gl-min-w-[24vw] gl-text-left gl-font-normal">{{
+        $options.i18n.searchBtnText
+      }}</span>
+      <kbd class="gl-mr-1 gl-hidden gl-shrink-0 gl-shadow-none md:gl-block">/</kbd>
     </gl-button>
 
     <div class="gl-flex gl-justify-end gl-gap-3">

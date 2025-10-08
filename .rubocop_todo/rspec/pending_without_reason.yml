@@ -21,5 +21,4 @@ RSpec/PendingWithoutReason:
     - 'spec/lib/gitlab/database/query_analyzers/prevent_set_operator_mismatch/select_stmt_spec.rb'
     - 'spec/lib/gitlab/graphql/negatable_arguments_spec.rb'
     - 'spec/lib/gitlab/template/finders/global_template_finder_spec.rb'
-    - 'spec/rubocop/cop/api/ensure_string_detail_spec.rb'
     - 'spec/support/shared_examples/services/wiki_pages/destroy_service_shared_examples.rb'

@@ -15,6 +15,13 @@ const componentsDetailsMockData = {
           required: true,
           type: 'STRING',
         },
+        {
+          name: 'rules',
+          default: [{ if: '$CI_PIPELINE_SOURCE == "merge_request_event"' }],
+          description: 'Pipeline rules',
+          required: false,
+          type: 'ARRAY',
+        },
       ],
     },
     {
@@ -25,23 +32,16 @@ const componentsDetailsMockData = {
       last30DayUsageCount: 4,
       inputs: [
         {
-          name: 'isFun',
-          default: 'true',
+          name: 'enabled',
+          default: false,
           description: 'this is a boolean',
           required: true,
           type: 'BOOLEAN',
         },
         {
           name: 'RandomNumber',
-          default: '10',
+          default: 10,
           description: 'a number',
-          required: false,
-          type: 'NUMBER',
-        },
-        {
-          name: 'RandomNumber',
-          default: '10',
-          description: 'another number',
           required: false,
           type: 'NUMBER',
         },

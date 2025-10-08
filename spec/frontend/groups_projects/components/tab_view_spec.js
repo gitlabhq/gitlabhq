@@ -338,8 +338,11 @@ describe('TabView', () => {
           await waitForPromises();
         });
 
-        it('calls API with parent_id argument', () => {
-          expect(mockAxios.history.get[1].params.parent_id).toBe(group.id);
+        it('calls API with parent_id and tab variables', () => {
+          expect(mockAxios.history.get[1].params).toEqual({
+            parent_id: group.id,
+            ...MEMBER_TAB_GROUPS.variables,
+          });
         });
 
         it('updates children of item', () => {

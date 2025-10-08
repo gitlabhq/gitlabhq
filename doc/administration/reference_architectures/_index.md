@@ -628,9 +628,7 @@ While we try to have a good range of support for GitLab environment designs, cer
 
 You can use other supported cloud provider services, unless specifically called out as unsupported.
 
-Running Gitaly nodes on Kubernetes is in limited availability with [plans to go Generally Available](../gitaly/kubernetes.md#timeline).
-This means that in a Gitaly Cluster, the Postgres database cannot be
-deployed on Kubernetes but the individual Gitaly nodes can be.
+Individual Gitaly nodes can be deployed on Kubernetes in [limited availability](../gitaly/kubernetes.md#timeline). This provides a non-HA solution where each repository is stored on a single node. For context on Gitaly deployment options and limitations, see [Gitaly on Kubernetes](../gitaly/kubernetes.md#context).
 
 #### Autoscaling of stateful nodes
 

@@ -245,7 +245,7 @@ export default {
       try {
         const response = await this.$apollo.query({
           query: this.tab.query,
-          variables: { parentId },
+          variables: { parentId, ...this.tab.variables },
         });
         const { nodes } = get(response.data, this.tab.queryPath);
 
