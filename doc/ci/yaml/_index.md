@@ -5009,7 +5009,10 @@ relative to `refs/heads/branch1` and the pipeline source is a merge request even
 
 **Additional details**:
 
-- Using `compare_to` with [merged results pipelines](../pipelines/merged_results_pipelines.md#troubleshooting) can cause unexpected results, because the comparison base is an internal commit that GitLab creates.
+- Using `compare_to` in some situation can cause unexpected results:
+  - With [merged results pipelines](../pipelines/merged_results_pipelines.md#troubleshooting),
+    because the comparison base is an internal commit that GitLab creates.
+  - In a forked project, see [issue 424584](https://gitlab.com/gitlab-org/gitlab/-/issues/424584).
 
 **Related topics**:
 

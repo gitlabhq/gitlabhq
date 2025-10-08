@@ -2,7 +2,7 @@
 
 ## Creating a migration
 
-Migrations are similiar to database migrations: they create collections, update schemas, run backfills, etc.
+Migrations are similar to database migrations: they create collections, update schemas, run backfills, etc.
 
 See [migrations](migrations.md) for more details.
 
@@ -328,7 +328,7 @@ end
 
 Adding references to the queue can be done a few ways:
 
-The prefered method:
+The preferred method:
 
 ```ruby
 Ai::Context::Collections::MergeRequest.track!(MergeRequest.first)

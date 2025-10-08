@@ -671,7 +671,7 @@ Public key encryption algorithms are:
 - More secure because leaking the private key has severe security consequences.
 
 1. Open the Keycloak administration console.
-1. Select **Realm Settings > Tokens > Default Signature Algorithm**.
+1. Select **Realm Settings** > **Tokens** > **Default Signature Algorithm**.
 1. Configure the signature algorithm.
 
 Example configuration block for Linux package installations:

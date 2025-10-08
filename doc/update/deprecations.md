@@ -498,7 +498,7 @@ The Dependency Scanning feature is upgrading to the GitLab SBOM Vulnerability Sc
 It is replaced with the [Dependency Scanning using SBOM](https://docs.gitlab.com/user/application_security/dependency_scanning/dependency_scanning_sbom/) feature and
 the [new Dependency Scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning) that focuses on detecting dependencies and their relationships (dependency graph).
 This upgrade represents a fundamental shift: instead of performing security analysis within CI pipelines, the new system uses GitLab's built-in SBOM Vulnerability Scanner, which is already employed by
-[Continuous Vulnerability Scanning](https://docs.gitlab.com/user/application_security/continuous_vulnerability_scanning/).
+[continuous vulnerability scanning](https://docs.gitlab.com/user/application_security/continuous_vulnerability_scanning/).
 
 As of GitLab 17.9, this new feature is in Beta. Therefore, until it reaches General Availability, GitLab will continue to support the Gemnasium analyzer. Only then,
 the Gemnasium analyzer will reach [end of support](https://docs.gitlab.com/update/terminology/#end-of-support).

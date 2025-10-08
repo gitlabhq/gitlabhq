@@ -393,11 +393,21 @@ class MergeRequestDiff < ApplicationRecord
     project.commit_by(oid: head_commit_sha)
   end
 
-  def commit_shas(limit: nil)
+  def commit_shas(limit: nil, preload_metadata: false)
     if association(:merge_request_diff_commits).loaded?
       sorted_diff_commits = merge_request_diff_commits.sort_by { |diff_commit| [diff_commit.id, diff_commit.relative_order] }
       sorted_diff_commits = sorted_diff_commits.take(limit) if limit
+
+      if preload_metadata && Feature.enabled?(:merge_request_diff_commits_dedup, project)
+        # ActiveRecord::Associations::Preloader works with both arrays and relations
+        preload_metadata_for_commits(sorted_diff_commits)
+      end
+
       sorted_diff_commits.map(&:sha)
+    elsif preload_metadata && Feature.enabled?(:merge_request_diff_commits_dedup, project)
+      commits = merge_request_diff_commits.limit(limit)
+      preload_metadata_for_commits(commits)
+      commits.pluck(:sha)
     else
       merge_request_diff_commits.limit(limit).pluck(:sha)
     end
@@ -692,6 +702,16 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   private
+
+  def preload_metadata_for_commits(commits)
+    # ActiveRecord::Associations::Preloader works with both arrays and relations
+    # The merge_request_commits_metadata association already has the project_id
+    # condition defined in the MergeRequestDiffCommit model
+    ActiveRecord::Associations::Preloader.new(
+      records: commits,
+      associations: [:merge_request_commits_metadata]
+    ).call
+  end
 
   def convert_external_diffs_to_database
     opening_external_diff do |external_file|

@@ -2563,6 +2563,9 @@ msgstr ""
 msgid "AICatalog|Configuration"
 msgstr ""
 
+msgid "AICatalog|Configuration is required."
+msgstr ""
+
 msgid "AICatalog|Connect AI agents to automate complicated tasks."
 msgstr ""
 
@@ -2642,6 +2645,9 @@ msgid "AICatalog|Failed to remove agent. %{error}"
 msgstr ""
 
 msgid "AICatalog|Failed to remove flow. %{error}"
+msgstr ""
+
+msgid "AICatalog|Flow"
 msgstr ""
 
 msgid "AICatalog|Flow added successfully to %{name}."
@@ -2761,6 +2767,9 @@ msgstr ""
 msgid "AICatalog|Select agent"
 msgstr ""
 
+msgid "AICatalog|Select the type of your flow."
+msgstr ""
+
 msgid "AICatalog|Select tools that this agent will have access to."
 msgstr ""
 
@@ -2815,10 +2824,13 @@ msgstr ""
 msgid "AICatalog|The test run failed. %{error}"
 msgstr ""
 
+msgid "AICatalog|Third-party flow"
+msgstr ""
+
 msgid "AICatalog|This %{itemType} is private and can only be added to the project it was created in. Duplicate the agent to use the same configuration in other projects."
 msgstr ""
 
-msgid "AICatalog|This YAML configuration file determines the prompts, tools, and capabilities of your flow."
+msgid "AICatalog|This YAML configuration file determines the prompts, tools, and capabilities of your flow. Required properties: injectGatewayToken, image, commands"
 msgstr ""
 
 msgid "AICatalog|This agent can be made private if it is not used."
@@ -10249,16 +10261,10 @@ msgstr ""
 msgid "BillingPlans|10 GiB adjustable storage"
 msgstr ""
 
-msgid "BillingPlans|10,000 CI/CD minutes per month"
-msgstr ""
-
 msgid "BillingPlans|10,000 compute minutes per month"
 msgstr ""
 
 msgid "BillingPlans|10000 compute minutes"
-msgstr ""
-
-msgid "BillingPlans|400 CI/CD minutes per month"
 msgstr ""
 
 msgid "BillingPlans|400 compute minutes"
@@ -10268,9 +10274,6 @@ msgid "BillingPlans|400 compute minutes per month"
 msgstr ""
 
 msgid "BillingPlans|5 users per top-level group"
-msgstr ""
-
-msgid "BillingPlans|50,000 CI/CD minutes per month"
 msgstr ""
 
 msgid "BillingPlans|50,000 compute minutes per month"
@@ -10315,9 +10318,6 @@ msgstr ""
 msgid "BillingPlans|Billed annually at $348 USD"
 msgstr ""
 
-msgid "BillingPlans|Billed annually at %{price_per_year} USD"
-msgstr ""
-
 msgid "BillingPlans|Billing"
 msgstr ""
 
@@ -10333,9 +10333,6 @@ msgstr ""
 msgid "BillingPlans|Choose Ultimate"
 msgstr ""
 
-msgid "BillingPlans|Code Ownership and Protected Branches"
-msgstr ""
-
 msgid "BillingPlans|Company wide portfolio management"
 msgstr ""
 
@@ -10348,9 +10345,6 @@ msgstr ""
 msgid "BillingPlans|Congratulations, your free trial is activated."
 msgstr ""
 
-msgid "BillingPlans|Container Scanning"
-msgstr ""
-
 msgid "BillingPlans|Cross-team project management"
 msgstr ""
 
@@ -10358,12 +10352,6 @@ msgid "BillingPlans|Current subscription"
 msgstr ""
 
 msgid "BillingPlans|Currently trialing"
-msgstr ""
-
-msgid "BillingPlans|Custom Roles"
-msgstr ""
-
-msgid "BillingPlans|Dependency Scanning"
 msgstr ""
 
 msgid "BillingPlans|Don't lose access to advanced features, make the switch now to maintain your team's productivity gains."
@@ -10375,16 +10363,7 @@ msgstr ""
 msgid "BillingPlans|Duo Pro"
 msgstr ""
 
-msgid "BillingPlans|Dynamic Application Security Testing"
-msgstr ""
-
-msgid "BillingPlans|Enterprise Agile Planning"
-msgstr ""
-
 msgid "BillingPlans|Enterprise Agile Planning Seats"
-msgstr ""
-
-msgid "BillingPlans|Enterprise User and Incident Management"
 msgstr ""
 
 msgid "BillingPlans|Everything from Free, plus:"
@@ -10399,22 +10378,13 @@ msgstr ""
 msgid "BillingPlans|Features include:"
 msgstr ""
 
-msgid "BillingPlans|For enterprises looking to deliver software faster"
-msgstr ""
-
 msgid "BillingPlans|For individuals working on personal projects and open source contributions."
-msgstr ""
-
-msgid "BillingPlans|For scaling organizations and multi-team usage"
 msgstr ""
 
 msgid "BillingPlans|For scaling organizations seeking enhanced productivity and collaboration."
 msgstr ""
 
 msgid "BillingPlans|Free"
-msgstr ""
-
-msgid "BillingPlans|Free forever features:"
 msgstr ""
 
 msgid "BillingPlans|Free guest users"
@@ -10441,12 +10411,6 @@ msgstr ""
 msgid "BillingPlans|Introducing GitLab Duo Enterprise"
 msgstr ""
 
-msgid "BillingPlans|Learn more about Premium"
-msgstr ""
-
-msgid "BillingPlans|Learn more about Ultimate"
-msgstr ""
-
 msgid "BillingPlans|Learn more about each plan by visiting our %{pricing_page_link}."
 msgstr ""
 
@@ -10462,12 +10426,6 @@ msgstr ""
 msgid "BillingPlans|Manage seats"
 msgstr ""
 
-msgid "BillingPlans|Merge Request Approval Rules"
-msgstr ""
-
-msgid "BillingPlans|Multi-Level Epics"
-msgstr ""
-
 msgid "BillingPlans|Multi-region support"
 msgstr ""
 
@@ -10481,12 +10439,6 @@ msgid "BillingPlans|Not ready to trial the full suite of GitLab and GitLab Duo f
 msgstr ""
 
 msgid "BillingPlans|Now with AI features included"
-msgstr ""
-
-msgid "BillingPlans|Per user/month"
-msgstr ""
-
-msgid "BillingPlans|Portfolio Management"
 msgstr ""
 
 msgid "BillingPlans|Premium"
@@ -10510,9 +10462,6 @@ msgstr ""
 msgid "BillingPlans|Seats in use"
 msgstr ""
 
-msgid "BillingPlans|Security Dashboards"
-msgstr ""
-
 msgid "BillingPlans|See all %{plan_name} features"
 msgstr ""
 
@@ -10534,9 +10483,6 @@ msgstr ""
 msgid "BillingPlans|Start an Ultimate trial with GitLab Duo Enterprise to try the complete set of features from GitLab. GitLab Duo Enterprise gives you access to the full product offering from GitLab, including AI-native features."
 msgstr ""
 
-msgid "BillingPlans|Start an Ultimate trial with GitLab Duo Enterprise to try the complete set of features from GitLab. GitLab Duo Enterprise gives you access to the full product offering from GitLab, including AI-native features. You can try it for free, no credit card required."
-msgstr ""
-
 msgid "BillingPlans|Start free trial"
 msgstr ""
 
@@ -10553,12 +10499,6 @@ msgid "BillingPlans|Storage"
 msgstr ""
 
 msgid "BillingPlans|Strategic Portfolio Management"
-msgstr ""
-
-msgid "BillingPlans|Suggested Reviewers"
-msgstr ""
-
-msgid "BillingPlans|Support"
 msgstr ""
 
 msgid "BillingPlans|Talk to an expert"
@@ -10603,9 +10543,6 @@ msgstr ""
 msgid "BillingPlans|Upgrade to Ultimate"
 msgstr ""
 
-msgid "BillingPlans|Use GitLab for personal projects"
-msgstr ""
-
 msgid "BillingPlans|Value Stream Management"
 msgstr ""
 
@@ -10616,9 +10553,6 @@ msgid "BillingPlans|You don't have any groups. You'll need to %{create_group_lin
 msgstr ""
 
 msgid "BillingPlans|You have successfully started an Ultimate and GitLab Duo Enterprise trial that will expire on %{exp_date}. To give members access to new GitLab Duo Enterprise features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Enterprise seats."
-msgstr ""
-
-msgid "BillingPlans|Your current plan"
 msgstr ""
 
 msgid "BillingPlans|Your group is on %{planName}"

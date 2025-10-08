@@ -170,8 +170,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     describe 'with_secure_reports_from_config_options' do
       let_it_be(:pipeline) { create(:ci_empty_pipeline) }
-      let!(:job_definition) { create(:ci_job_definition, config: {}) }
-      let!(:build) { create(:ci_build, pipeline: pipeline, job_definition: job_definition) }
+      let!(:build) { create(:ci_build, pipeline: pipeline, options: {}) }
       let(:job_types) { %w[sast secret_detection] }
 
       subject(:query) { described_class.with_secure_reports_from_config_options(job_types) }
@@ -179,7 +178,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it { expect(query).to be_empty }
 
       context 'when job definition has secure report options' do
-        let!(:job_definition) { create(:ci_job_definition, config: { options: { artifacts: { reports: ['sast'] } } }) }
+        let!(:build) { create(:ci_build, pipeline: pipeline, options: { artifacts: { reports: ['sast'] } }) }
 
         it { expect(query).to contain_exactly(build) }
       end

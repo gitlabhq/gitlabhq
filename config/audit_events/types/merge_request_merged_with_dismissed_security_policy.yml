@@ -1,0 +1,11 @@
+---
+name: merge_request_merged_with_dismissed_security_policy
+description: When a merge request violated a security policy in warn-mode that was
+  dismissed and the MR was merged
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/569628
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205857
+feature_category: security_policy_management
+milestone: '18.5'
+saved_to_database: true
+streamed: true
+scope: [Project]

@@ -260,8 +260,8 @@ FactoryBot.define do
       end
 
       trait :with_job do
-        after(:build) do |pipeline, evaluator|
-          pipeline.builds << build(:ci_build, pipeline: pipeline, project: pipeline.project)
+        after(:create) do |pipeline, evaluator|
+          pipeline.builds << create(:ci_build, pipeline: pipeline, project: pipeline.project)
         end
       end
 

@@ -10826,7 +10826,7 @@ Input type: `ProjectSetComplianceFrameworkInput`
 CVS has been enabled permanently. See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/11474) for more information.
 {{< /details >}}
 
-Enable/disable Continuous Vulnerability Scanning for the given project.
+Enable or disable continuous vulnerability scanning for the given project.
 
 Input type: `ProjectSetContinuousVulnerabilityScanningInput`
 
@@ -10835,7 +10835,7 @@ Input type: `ProjectSetContinuousVulnerabilityScanningInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationprojectsetcontinuousvulnerabilityscanningclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationprojectsetcontinuousvulnerabilityscanningenable"></a>`enable` | [`Boolean!`](#boolean) | Desired status for Continuous Vulnerability Scanning feature. |
+| <a id="mutationprojectsetcontinuousvulnerabilityscanningenable"></a>`enable` | [`Boolean!`](#boolean) | Desired status for continuous vulnerability scanning feature. |
 | <a id="mutationprojectsetcontinuousvulnerabilityscanningprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project. |
 
 #### Fields

@@ -104,44 +104,26 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
 
   let(:tables_with_known_missing_associations) do
     %w[
-      abuse_report_events
       abuse_report_notes
       abuse_report_uploads
       achievement_uploads
       ai_vectorizable_file_uploads
       alert_management_alert_metric_image_uploads
       appearance_uploads
-      approval_group_rules_users
-      approval_merge_request_rules_approved_approvers
-      approval_merge_request_rules_users
       approval_policy_merge_request_bypass_events
-      approval_project_rules_users
-      board_group_recent_visits
-      board_project_recent_visits
-      boards_epic_list_user_preferences
       bulk_import_export_upload_uploads
-      bulk_import_exports
+      import_export_uploads
+      issuable_metric_image_uploads
       coverage_fuzzing_corpuses
-      csv_issue_imports
       cluster_agents
       clusters
       dependency_list_export_part_uploads
       dependency_list_export_uploads
       deploy_tokens
       design_management_action_uploads
-      group_deletion_schedules
-      group_import_states
       import_export_upload_uploads
-      import_export_uploads
-      import_failures
-      import_source_users
-      issuable_metric_image_uploads
-      jira_imports
       lists
-      list_user_preferences
       ml_experiments
-      members_deletion_schedules
-      merge_requests_approval_rules_approver_users
       merge_requests_compliance_violations
       merge_requests_merge_data
       namespace_uploads
@@ -150,13 +132,11 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       packages_debian_group_distributions
       packages_debian_project_distributions
       packages_packages
-      project_export_jobs
       project_import_export_relation_export_upload_uploads
       project_topic_uploads
       project_uploads
       protected_environment_approval_rules
       protected_environment_deploy_access_levels
-      security_orchestration_policy_rule_schedules
       snippet_uploads
       user_permission_export_upload_uploads
       user_uploads
@@ -167,15 +147,11 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       work_item_descriptions
       agent_activity_events
       ai_settings
-      ai_user_metrics
-      authentication_events
-      board_assignees
       catalog_resource_versions
       cluster_agent_tokens
       cluster_agent_url_configurations
       custom_fields
       design_management_versions
-      draft_notes
       duo_workflows_workflows
       incident_management_timeline_events
       lfs_file_locks
@@ -187,17 +163,12 @@ RSpec.shared_examples 'associations with defined deletion strategies', :aggregat
       resource_link_events
       resource_milestone_events
       resource_weight_events
-      security_policy_dismissals
-      service_desk_custom_email_verifications
-      ssh_signatures
-      targeted_message_dismissals
       terraform_state_versions
       terraform_states
       user_namespace_callouts
       uploads_9ba88c4165
       work_item_custom_lifecycles
       work_item_custom_statuses
-      work_item_type_user_preferences
     ]
   end
 

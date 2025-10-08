@@ -2223,7 +2223,6 @@
 - './ee/spec/views/shared/billings/_billing_plan_actions.html.haml_spec.rb'
 - './ee/spec/views/shared/billings/_billing_plan.html.haml_spec.rb'
 - './ee/spec/views/shared/billings/_billing_plans.html.haml_spec.rb'
-- './ee/spec/views/shared/billings/_trial_status.html.haml_spec.rb'
 - './ee/spec/views/shared/_clone_panel.html.haml_spec.rb'
 - './ee/spec/views/shared/credentials_inventory/_expiry_date.html.haml_spec.rb'
 - './ee/spec/views/shared/credentials_inventory/gpg_keys/_gpg_key.html.haml_spec.rb'

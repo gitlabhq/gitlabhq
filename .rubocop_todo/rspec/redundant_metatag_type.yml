@@ -2,15 +2,10 @@
 # Cop supports --autocorrect.
 RSpec/RedundantMetatagType:
   Exclude:
-    - 'ee/spec/components/billing/free_plan_component_spec.rb'
-    - 'ee/spec/components/billing/plan_component_spec.rb'
-    - 'ee/spec/components/billing/premium_plan_component_spec.rb'
-    - 'ee/spec/components/billing/ultimate_plan_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/base_discover_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/discover_duo_core_trial_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/discover_duo_enterprise_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/discover_duo_pro_component_spec.rb'
-    - 'ee/spec/components/gitlab_subscriptions/duo_enterprise_alert/free_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/duo_enterprise_alert/premium_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/duo_enterprise_alert/ultimate_component_spec.rb'
     - 'ee/spec/components/gitlab_subscriptions/trial_advantage_component_spec.rb'

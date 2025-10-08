@@ -426,6 +426,7 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
     context 'when auto-cancel is disabled' do
       before do
         project.update!(auto_cancel_pending_pipelines: 'disabled')
+        pipeline.project.reload
       end
 
       it 'does not cancel any build' do

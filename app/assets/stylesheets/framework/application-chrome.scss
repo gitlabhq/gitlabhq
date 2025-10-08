@@ -260,10 +260,12 @@
     --header-height: 0px; // stylelint-disable-line length-zero-no-unit
     --top-bar-height: 0px; // stylelint-disable-line length-zero-no-unit
 
+    .panel-content-inner {
+      @apply gl-h-full;
+    }
+
     .panel-content-inner,
     .vue-portal-target .work-item-drawer-content {
-      height: calc(100% - #{$header-height} - #{$gl-spacing-scale-3});
-
       @apply gl-overflow-y-auto gl-overflow-x-hidden;
 
       // This prevents the scrollbar transparency rule above from breaking scrollbars in dropdown menus
@@ -272,7 +274,7 @@
       }
 
       .container-fluid {
-        @apply gl-px-0 lg:gl-px-3 gl-pb-3;
+        @apply gl-px-0 lg:gl-px-3;
       }
 
       // Hide alert wrapper if it's empty
@@ -387,7 +389,8 @@
 
   // Panel content
   .panel-content {
-    @apply gl-overflow-clip gl-h-full gl-pb-0;
+    height: calc(100% - #{$header-height} - #{$gl-spacing-scale-3});
+    @apply gl-overflow-clip;
     contain: strict;
   }
 
@@ -410,6 +413,7 @@
   // Work item spacing adjustment
   .vue-portal-target .work-item-drawer-content {
     @apply gl-px-5 #{!important};
+    height: calc(100% - #{$header-height} - #{$gl-spacing-scale-3});
   }
 
   // Content adjustments within panels

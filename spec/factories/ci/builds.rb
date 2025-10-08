@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'deployable'
+require Rails.root.join('spec/support/helpers/ci/job_factory_helpers')
 
 FactoryBot.define do
   factory :ci_build, class: 'Ci::Build', parent: :ci_processable do
@@ -51,10 +52,7 @@ FactoryBot.define do
           build.metadata.write_attribute(:id_tokens, evaluator.id_tokens)
         end
 
-        next unless build.job_definition
-
-        updated_config = build.job_definition.config.merge(id_tokens: evaluator.id_tokens)
-        build.job_definition.write_attribute(:config, updated_config)
+        Ci::JobFactoryHelpers.mutate_temp_job_definition(build, id_tokens: evaluator.id_tokens)
       end
     end
 

@@ -77,7 +77,6 @@ Style/FormatString:
     - 'app/workers/object_storage/migrate_uploads_worker.rb'
     - 'config/initializers/rack_lineprof.rb'
     - 'danger/roulette/Dangerfile'
-    - 'ee/app/components/billing/plan_component.rb'
     - 'ee/app/components/namespaces/free_user_cap/usage_quota_alert_component.rb'
     - 'ee/app/components/namespaces/free_user_cap/usage_quota_trial_alert_component.rb'
     - 'ee/app/controllers/concerns/audit_events/date_range.rb'

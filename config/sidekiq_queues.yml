@@ -993,6 +993,8 @@
   - 1
 - - security_pipeline_execution_policies_run_schedule
   - 1
+- - security_policies_dismissal_preserve
+  - 1
 - - security_policies_failed_pipelines_audit
   - 1
 - - security_policies_group_project_transfer

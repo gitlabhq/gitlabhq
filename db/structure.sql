@@ -25780,6 +25780,7 @@ CREATE TABLE security_policy_dismissals (
     security_findings_uuids text[] DEFAULT '{}'::text[],
     dismissal_types smallint[] DEFAULT '{}'::smallint[] NOT NULL,
     comment text,
+    status smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_654ff06528 CHECK ((char_length(comment) <= 255))
 );
 
@@ -43634,6 +43635,8 @@ CREATE UNIQUE INDEX uniq_pkgs_debian_project_distributions_project_id_and_codena
 CREATE UNIQUE INDEX uniq_pkgs_debian_project_distributions_project_id_and_suite ON packages_debian_project_distributions USING btree (project_id, suite);
 
 CREATE INDEX uniq_preference_by_user_namespace_and_work_item_type ON work_item_type_user_preferences USING btree (user_id, namespace_id, work_item_type_id);
+
+CREATE UNIQUE INDEX uniq_user_project_member_roles_user_project_shared_with_group ON user_project_member_roles USING btree (user_id, project_id, shared_with_group_id) WHERE (shared_with_group_id IS NOT NULL);
 
 CREATE UNIQUE INDEX unique_amazon_s3_configurations_namespace_id_and_bucket_name ON audit_events_amazon_s3_configurations USING btree (namespace_id, bucket_name);
 
