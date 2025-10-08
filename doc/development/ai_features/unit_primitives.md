@@ -18,6 +18,17 @@ According to the [Architecture Decision Record (ADR) PROV-001](https://handbook.
 this configuration of unit primitives is maintained in the [`gitlab-cloud-connector`](https://gitlab.com/gitlab-org/cloud-connector/gitlab-cloud-connector) library.
 This library serves as the Single Source of Truth (SSoT) for all Cloud Connector configurations and is available as both a Ruby gem and a Python package.
 
+### Browsing the Catalog
+
+The [Cloud Connector Catalog](https://gitlab-org.gitlab.io/cloud-connector/gitlab-cloud-connector/) provides an interactive interface to browse and filter unit primitives, feature configurations, add-ons, and license types.
+Use this catalog to:
+
+- Explore available unit primitives and their configurations
+- Understand feature entitlements and licensing requirements
+- Filter by add-ons, license types, and backend services
+
+![Cloud Connector Catalog Interface](img/gitlab_cloud_connector_catalog_v18_5.png)
+
 ### Configuration format and structure
 
 The configuration in `gitlab-cloud-connector` follows this structure:

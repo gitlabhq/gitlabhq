@@ -92,8 +92,10 @@ module Authz
       end
 
       def access_denied_error
-        error "Access denied: Your #{token.class.name.titleize} lacks the required permissions: " \
-          "[#{missing_permissions.join(', ')}] for \"#{boundary.path}\"."
+        error format("Access denied: Your %{token} lacks the required permissions: [%{permissions}]%{path}.",
+          token: token.class.name.titleize,
+          permissions: missing_permissions.join(', '),
+          path: (" for \"#{boundary.path}\"" if boundary.path))
       end
 
       def error(message)

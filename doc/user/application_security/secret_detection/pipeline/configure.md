@@ -51,7 +51,7 @@ If you operate a cloud or SaaS product and you're interested in partnering with 
 
 The GitLab-managed CI/CD template specifies a major version and automatically pulls the latest analyzer release within that major version.
 
-In some cases, you may need to use a specific version.
+In some cases, you might need to use a specific version.
 For example, you might need to avoid a regression in a later release.
 
 To override the automatic update behavior, set the `SECRETS_ANALYZER_VERSION` CI/CD variable
@@ -90,7 +90,7 @@ the template inclusion and specify any additional keys under it.
 
 In the following example extract of a `.gitlab-ci.yml` file:
 
-- The `Jobs/Secret-Detection` CI template is [included](../../../../ci/yaml/_index.md#include).
+- The `Jobs/Secret-Detection` CI/CD template is [included](../../../../ci/yaml/_index.md#include).
 - In the `secret_detection` job, the CI/CD variable `SECRET_DETECTION_HISTORIC_SCAN` is set to
   `true`. Because the template is evaluated before the pipeline configuration, the last mention of
   the variable takes precedence, so an historic scan is performed.
@@ -140,26 +140,15 @@ In previous GitLab versions, the following variables were also available:
 
 {{< /history >}}
 
-You can customize the types of secrets detected using pipeline secret detection by [creating a ruleset configuration file](#create-a-ruleset-configuration-file),
-either in the repository being scanned or a remote repository. Customization enables you to modify, replace, or extend the default ruleset.
+You can customize the types of secrets detected using pipeline secret detection by creating a custom ruleset configuration file,
+either in the repository being scanned or a remote repository.
 
-There are multiple kinds of customizations available:
+Customization enables you to
 
-- Modify the behavior of **rules predefined in the default ruleset**. This includes:
-  - [Override a rule from the default ruleset](#override-a-rule).
-  - [Disable a rule from the default ruleset](#disable-a-rule).
-  - [Disable or override a rule with a remote ruleset](#with-a-remote-ruleset).
-- Replace the default ruleset with a custom ruleset using passthroughs. This includes:
-  - [Use configuration from an inline ruleset](#with-an-inline-ruleset).
-  - [Use configuration from a local ruleset](#with-a-local-ruleset).
-  - [Use configuration from a remote ruleset](#with-a-remote-ruleset-1).
-  - [Use configuration from a private remote ruleset](#with-a-private-remote-ruleset)
-- Extend the behavior of the default ruleset using passthroughs. This includes:
-  - [Use configuration from a local ruleset](#with-a-local-ruleset-1).
-  - [Use configuration from a remote ruleset](#with-a-remote-ruleset-2).
-- Ignore secrets and paths using Gitleaks-native functionality. This includes:
-  - Use [`Gitleaks' [allowlist] directive`](https://github.com/gitleaks/gitleaks#configuration) to [ignore patterns and paths](#ignore-patterns-and-paths).
-  - Use `gitleaks:allow` comment to [ignore secrets inline](#ignore-secrets-inline).
+- Modify the behavior of rules in the default ruleset.
+- Replace the default ruleset with a custom ruleset.
+- Extend the behavior of the default ruleset.
+- Ignore secrets and paths.
 
 ### Create a ruleset configuration file
 
@@ -172,7 +161,9 @@ To create a ruleset configuration file:
 
 You can modify rules predefined in the [default ruleset](../detected_secrets.md).
 
-Modifying rules can help you adapt pipeline secret detection to an existing workflow or tool. For example you may want to override the severity of a detected secret or disable a rule from being detected at all.
+Modifying rules can help you adapt pipeline secret detection to an existing workflow or tool. For
+example you might want to override the severity of a detected secret or disable a rule from being
+detected at all.
 
 You can also use a ruleset configuration file stored remotely (that is, a remote Git repository or website) to modify predefined rules. New rules must use the [custom rule format](custom_rulesets_schema.md#custom-rule-format).
 
@@ -212,7 +203,7 @@ In the following example `secret-detection-ruleset.toml` file, the disabled rule
 
 {{< /history >}}
 
-If there are specific rules to customize, you can override them. For example, you may increase the severity of a specific type of secret because leaking it would have a higher impact on your workflow.
+If there are specific rules to customize, you can override them. For example, you might increase the severity of a specific type of secret because leaking it would have a higher impact on your workflow.
 
 To override rules from the analyzer default ruleset:
 
@@ -244,7 +235,8 @@ In the following `secret-detection-ruleset.toml` file, rules are matched by the 
 
 #### With a remote ruleset
 
-A **remote ruleset is a configuration file stored outside the current repository**. It can be used to modify rules across multiple projects.
+A remote ruleset is a configuration file stored outside the current repository. It can be used to
+modify rules across multiple projects.
 
 To modify a predefined rule with a remote ruleset, you can use the `SECRET_DETECTION_RULESET_GIT_REFERENCE` [CI/CD variable](../../../../ci/variables/_index.md):
 
@@ -256,7 +248,7 @@ variables:
   SECRET_DETECTION_RULESET_GIT_REFERENCE: "gitlab.com/example-group/remote-ruleset-project"
 ```
 
-Pipeline secret detection assumes the configuration is defined in `.gitlab/secret-detection-ruleset.toml` file in the repository referenced by the CI variable where the remote ruleset is stored. If that file doesn't exist, make sure to [create one](#create-a-ruleset-configuration-file) and follow the steps to [override](#override-a-rule) or [disable](#disable-a-rule) a predefined rule as previously outlined.
+Pipeline secret detection assumes the configuration is defined in `.gitlab/secret-detection-ruleset.toml` file in the repository referenced by the CI/CD variable where the remote ruleset is stored. If that file doesn't exist, make sure to [create one](#create-a-ruleset-configuration-file) and follow the steps to [override](#override-a-rule) or [disable](#disable-a-rule) a predefined rule as previously outlined.
 
 {{< alert type="note" >}}
 
@@ -271,7 +263,9 @@ The `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable uses a format similar to [
 <AUTH_USER>:<AUTH_PASSWORD>@<PROJECT_PATH>@<GIT_SHA>
 ```
 
-If the configuration file is stored in a private project that requires authentication, you may use a [Group Access Token](../../../group/settings/group_access_tokens.md) securely stored in a CI variable to load the remote ruleset:
+If the configuration file is stored in a private project that requires authentication, you can use a
+[group access token](../../../group/settings/group_access_tokens.md) securely stored in a CI/CD
+variable to load the remote ruleset:
 
 ```yaml
 include:
@@ -287,7 +281,9 @@ See [bot users for groups](../../../group/settings/group_access_tokens.md#bot-us
 
 ### Replace the default ruleset
 
-You can replace the default ruleset configuration using a number of [customizations](custom_rulesets_schema.md). Those can be combined using [passthroughs](custom_rulesets_schema.md#passthrough-types) into a single configuration.
+You can replace the default ruleset configuration by using
+[customizations](custom_rulesets_schema.md). Those can be combined using
+[passthroughs](custom_rulesets_schema.md#passthrough-types) into a single configuration.
 
 Using passthroughs, you can:
 
@@ -300,7 +296,8 @@ Using passthroughs, you can:
 
 You can use [`raw` passthrough](custom_rulesets_schema.md#passthrough-types) to replace default ruleset with configuration provided inline.
 
-To do so, add the following in the `.gitlab/secret-detection-ruleset.toml` configuration file stored in the same repository, and adjust the rule defined under `[[rules]]` as appropriate:
+Add the following in the `.gitlab/secret-detection-ruleset.toml` configuration file stored in the
+same repository, and adjust the rule defined under `[[rules]]` as appropriate:
 
 ```toml
 [secrets]
@@ -324,7 +321,9 @@ For more information on the passthrough syntax to use, see [Schema](custom_rules
 
 You can use [`file` passthrough](custom_rulesets_schema.md#passthrough-types) to replace the default ruleset with another file committed to the current repository.
 
-To do so, add the following in the `.gitlab/secret-detection-ruleset.toml` configuration file stored in the same repository and adjust the `value` as appropriate to point to the path of the file with the local ruleset configuration:
+Add the following in the `.gitlab/secret-detection-ruleset.toml` configuration file stored in the
+same repository and adjust the `value` as appropriate to point to the path of the file with the
+local ruleset configuration:
 
 ```toml
 [secrets]
@@ -342,8 +341,8 @@ For more information on the passthrough syntax to use, see [Schema](custom_rules
 
 You can replace the default ruleset with configuration defined in a remote Git repository or a file stored somewhere online using the `git` and `url` passthroughs.
 
-A remote ruleset can be used across multiple projects. For example, you may want to apply the same
-ruleset to a number of projects in one of your namespaces, in such case, you may use either type of
+A remote ruleset can be used across multiple projects. For example, you might want to apply the same
+ruleset to multiple projects in one of your namespaces, in such case, you can use either type of
 passthrough to load up that remote ruleset and have it used by multiple projects. It also enables
 centralized management of a ruleset, with only authorized people able to edit.
 
@@ -361,7 +360,7 @@ To use `git` passthrough, add the following to the `.gitlab/secret-detection-rul
 
 In this configuration the analyzer loads the ruleset from the `gitleaks.toml` file inside the `config` directory in the `main` branch of the repository stored at `user_group/central_repository_with_shared_ruleset`. You can then proceed to include the same configuration in projects other than `user_group/basic_repository`.
 
-Alternatively, you may use the `url` passthrough to replace the default ruleset with a remote ruleset configuration.
+Alternatively, you can use the `url` passthrough to replace the default ruleset with a remote ruleset configuration.
 
 To use the `url` passthrough, add the following to the `.gitlab/secret-detection-ruleset.toml` configuration file stored in a repository and adjust the `value` to point to the address of the remote file:
 
@@ -410,7 +409,11 @@ For more information on the passthrough syntax to use, see [Schema](custom_rules
 
 ### Extend the default ruleset
 
-You can also extend the [default ruleset](../detected_secrets.md) configuration with additional rules as appropriate. This can be helpful when you would still like to benefit from the high-confidence predefined rules maintained by GitLab in the default ruleset, but also want to add rules for types of secrets that may be used in your own projects and namespaces. New rules must follow the [custom rule format](custom_rulesets_schema.md#custom-rule-format).
+You can also extend the [default ruleset](../detected_secrets.md) configuration with additional
+rules as appropriate. This can be helpful when you would still like to benefit from the
+high-confidence predefined rules maintained by GitLab in the default ruleset, but also want to add
+rules for types of secrets that might be used in your own projects and namespaces. New rules must
+follow the [custom rule format](custom_rulesets_schema.md#custom-rule-format).
 
 #### With a local ruleset
 
@@ -430,7 +433,8 @@ Add the following to the `.gitlab/secret-detection-ruleset.toml` configuration f
 The extended configuration stored in `extended-gitleaks-config.toml` is included in the configuration used by the analyzer
 in the CI/CD pipeline.
 
-In the example below, we add a couple of new `[[rules]]` sections that define a number of regular expressions to be detected:
+In the example below, we add new `[[rules]]` sections that define regular expressions to be
+detected:
 
 ```toml
 # extended-gitleaks-config.toml
@@ -449,7 +453,7 @@ path = "/gitleaks.toml"
   regex = '''example_api_secret'''
 ```
 
-With this ruleset configuration the analyzer detects any strings matching with those two defined regex patterns.
+With this ruleset configuration the analyzer detects any strings matching with those defined regex patterns.
 
 For more information on the passthrough syntax to use, see [Schema](custom_rulesets_schema.md#schema).
 
@@ -513,13 +517,17 @@ To extend and enforce the ruleset with a scan execution policy:
 
 ### Ignore patterns and paths
 
-There may be situations in which you need to ignore a certain pattern or path from being detected by pipeline secret detection. For example, you may have a file including fake secrets to be used in a test suite.
+There might be situations in which you need to ignore a certain pattern or path from being detected
+by pipeline secret detection. For example, you might have a file including fake secrets to be used
+in a test suite.
 
-In that case, you can utilize [Gitleaks' native `[allowlist]`](https://github.com/gitleaks/gitleaks#configuration) directive to ignore specific patterns or paths.
+In that case, you can use the [Gitleaks' native `[allowlist]`](https://github.com/gitleaks/gitleaks#configuration)
+directive to ignore specific patterns or paths.
 
 {{< alert type="note" >}}
 
-This feature works regardless of whether you're using a local or a remote ruleset configuration file. The examples below utilizes a local ruleset using `file` passthrough though.
+This feature works regardless of whether you're using a local or a remote ruleset configuration
+file. The examples below use a local ruleset using `file` passthrough though.
 
 {{< /alert >}}
 
@@ -534,7 +542,7 @@ To ignore a pattern, add the following to the `.gitlab/secret-detection-ruleset.
     value  = "extended-gitleaks-config.toml"
 ```
 
-The extended configuration stored in `extended-gitleaks-config.toml` will be included in the configuration used by the analyzer.
+The extended configuration stored in `extended-gitleaks-config.toml` is included in the configuration used by the analyzer.
 
 In the example below, we add an `[allowlist]` directive that defines a regex that matches the secret to be ignored ("allowed"):
 
@@ -600,7 +608,9 @@ For more information on the passthrough syntax to use, see [Schema](custom_rules
 
 ### Ignore secrets inline
 
-In some instances, you might want to ignore a secret inline. For example, you may have a fake secret in an example or a test suite. In these instances, you will want to ignore the secret instead of having it reported as a vulnerability.
+In some instances, you might want to ignore a secret inline. For example, you might have a fake
+secret in an example or a test suite. In these instances, you should ignore the secret instead of
+having it reported as a vulnerability.
 
 To ignore a secret, add `gitleaks:allow` as a comment to the line that contains the secret.
 
@@ -612,9 +622,10 @@ For example:
 
 ### Detecting complex strings
 
-The [default ruleset](_index.md#detected-secrets) provides patterns to detect structured strings with a low rate of false positives.
-However, you might want to detect more complex strings like passwords. Because [Gitleaks doesn't support lookahead or lookbehind](https://github.com/google/re2/issues/411),
-writing a high-confidence, general rule to detect unstructured strings is not possible.
+The [default ruleset](_index.md#detected-secrets) provides patterns to detect structured strings
+with a low rate of false positives. However, you might want to detect more complex strings like
+passwords. [Gitleaks doesn't support lookahead or lookbehind](https://github.com/google/re2/issues/411),
+so writing a high-confidence general rule to detect unstructured strings is not possible.
 
 Although you can't detect every complex string, you can extend your ruleset to meet specific use cases.
 

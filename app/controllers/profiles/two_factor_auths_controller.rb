@@ -116,9 +116,13 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def destroy_webauthn
-    Webauthn::DestroyService.new(current_user, current_user, params[:id]).execute
+    result = Webauthn::DestroyService.new(current_user, current_user, params[:id]).execute
 
-    redirect_to profile_two_factor_auth_path, status: :found, notice: _("Successfully deleted WebAuthn device.")
+    if result[:status] == :success
+      redirect_to profile_two_factor_auth_path, status: :found, notice: _("Successfully deleted WebAuthn device.")
+    else
+      redirect_to profile_two_factor_auth_path, status: :found, alert: result[:message]
+    end
   end
 
   def skip

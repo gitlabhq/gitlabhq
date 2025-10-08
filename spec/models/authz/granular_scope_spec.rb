@@ -17,7 +17,7 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
       let_it_be(:namespace2) { create(:namespace, organization: organization) }
       let_it_be(:scope_with_namespace1) { create(:granular_scope, namespace: namespace1, organization: organization) }
       let_it_be(:scope_with_namespace2) { create(:granular_scope, namespace: namespace2, organization: organization) }
-      let_it_be(:instance_scope) { create(:granular_scope, :instance, organization: organization) }
+      let_it_be(:instance_scope) { create(:granular_scope, :standalone, organization: organization) }
 
       it 'returns scopes for the given namespace' do
         expect(described_class.with_namespace(namespace1.id)).to contain_exactly(scope_with_namespace1)
@@ -118,7 +118,7 @@ RSpec.describe ::Authz::GranularScope, feature_category: :permissions do
     let_it_be(:user) { create(:user, :with_namespace) }
     let_it_be(:personal_project) { create(:project, namespace: user.namespace) }
 
-    let_it_be(:instance_boundary) { Authz::Boundary.for(:instance) }
+    let_it_be(:instance_boundary) { Authz::Boundary.for(nil) }
     let_it_be(:rootgroup_boundary) { Authz::Boundary.for(rootgroup) }
     let_it_be(:subgroup_boundary) { Authz::Boundary.for(subgroup) }
     let_it_be(:project_boundary) { Authz::Boundary.for(project) }

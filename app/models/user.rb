@@ -1332,6 +1332,10 @@ class User < ApplicationRecord
     self.webauthn_registrations.destroy_all # rubocop:disable Cop/DestroyAll
   end
 
+  def destroy_webauthn_device(device_id)
+    self.webauthn_registrations.find(device_id).destroy
+  end
+
   def reset_backup_codes!
     update(otp_backup_codes: nil)
   end

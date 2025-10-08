@@ -63,7 +63,7 @@ For more information about other installation methods, see [install GitLab](http
 
 ## Contributing
 
-GitLab is an open source project and we are very happy to accept community contributions. Please refer to [Contributing to GitLab page](https://about.gitlab.com/contributing/) for more details.
+GitLab is an open source project and we are very happy to accept community contributions. Please refer to the [`CONTRIBUTING.md`](CONTRIBUTING.md) file for more details.
 
 ## Install a development environment
 

@@ -301,6 +301,14 @@ class NotifyPreview < ActionMailer::Preview
     Notify.disabled_two_factor_email(user).message
   end
 
+  def disabled_two_factor_otp_email
+    Notify.disabled_two_factor_otp_email(user).message
+  end
+
+  def disabled_two_factor_webauthn_email
+    Notify.disabled_two_factor_webauthn_email(user, 'Macbook Touch ID').message
+  end
+
   def new_email_address_added_email
     Notify.new_email_address_added_email(user, 'someone@gitlab.com').message
   end

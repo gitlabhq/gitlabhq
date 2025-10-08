@@ -68,7 +68,8 @@ following response attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/42/remote_mirrors"
 ```
 
@@ -138,7 +139,8 @@ following response attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486"
 ```
 
@@ -195,7 +197,8 @@ following response attributes:
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --request GET \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/42/remote_mirrors/101486/public_key"
 ```
 

@@ -78,6 +78,12 @@ View the [merge request workflow](doc/development/contributing/merge_request_wor
 - Merge request guidelines
 - Contribution acceptance criteria
 
+## Community forks
+
+We recommend using the [community fork](https://gitlab.com/gitlab-community/gitlab-org/gitlab) to create merge requests.
+
+The [@gitlab-community README.md](https://gitlab.com/gitlab-community#gitlab-community-forks) provides more detail of what, why, and how to use the community fork. 
+
 ## Definition of done
 
 [View the documentation](doc/development/contributing/merge_request_workflow.md) to find the latest information.

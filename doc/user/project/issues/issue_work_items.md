@@ -21,6 +21,7 @@ title: Test a new look for issues
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/482931) in GitLab 17.11.
 - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/482931) to feature flag named `work_item_view_for_issues` in GitLab 18.1. Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated. Feature flag `work_items_view_preference` removed.
 - Additional filters on the Issues page in projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/198544) in GitLab 18.4. [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204139).
+- Additional filters on the Issues page in groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/202089) in GitLab 18.5. [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205308).
 
 {{< /history >}}
 
@@ -64,7 +65,7 @@ The new issues experience includes these improvements:
      When you change an issue to an epic, the epic is created in the parent group because epics can
      only exist in groups.
 - **Development**: Merge requests, branches, and feature flags related to this item are shown in a single list.
-- **Issue list on projects**: The project issue list is powered by work items. It adds new capabilities like:
+- **Issue list on projects and groups**: The project and group issue list is powered by work items. It adds new capabilities like:
   - Filter tasks by their parent issue, in addition to filtering issues by epic.
   - Filter by custom statuses.
   - Configure display preferences for metadata such as assignee, labels, milestone, dates, health status, comments, iteration, blocked or blocking status, and popularity.

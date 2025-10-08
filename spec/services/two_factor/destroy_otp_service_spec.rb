@@ -9,6 +9,10 @@ RSpec.describe TwoFactor::DestroyOtpService, feature_category: :system_access do
 
   context 'when disabling the OTP authenticator' do
     context 'when the user does not have two-factor authentication enabled' do
+      before do
+        allow(NotificationService).to receive(:new)
+      end
+
       let(:user) { current_user }
 
       it 'returns error' do
@@ -19,11 +23,20 @@ RSpec.describe TwoFactor::DestroyOtpService, feature_category: :system_access do
           }
         )
       end
+
+      it 'does not send a notification email' do
+        execute
+        expect(NotificationService).not_to have_received(:new)
+      end
     end
 
     context 'when the user has two-factor authentication enabled' do
       context 'when the executor is not authorized to disable the OTP authenticator' do
         context 'when disabling the OTP authenticator of another user' do
+          before do
+            allow(NotificationService).to receive(:new)
+          end
+
           let(:user) { create(:user, :two_factor_via_otp) }
 
           it 'returns error' do
@@ -38,6 +51,11 @@ RSpec.describe TwoFactor::DestroyOtpService, feature_category: :system_access do
           it 'does not disable the OTP authenticator' do
             expect { execute }.not_to change { user.reload.two_factor_otp_enabled? }.from(true)
           end
+
+          it 'does not send a notification email' do
+            execute
+            expect(NotificationService).not_to have_received(:new)
+          end
         end
       end
 
@@ -49,6 +67,14 @@ RSpec.describe TwoFactor::DestroyOtpService, feature_category: :system_access do
 
           it 'disables the OTP authenticator of the user' do
             expect { execute }.to change { user.reload.two_factor_otp_enabled? }.from(true).to(false)
+          end
+
+          it 'sends the user a notification email' do
+            expect_next_instance_of(NotificationService) do |notification|
+              expect(notification).to receive(:disabled_two_factor).with(user, :otp)
+            end
+
+            execute
           end
         end
 

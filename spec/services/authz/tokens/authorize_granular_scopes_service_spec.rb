@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category: :permissions do
-  let_it_be(:boundary) { Authz::Boundary.for(:instance) }
+  let_it_be(:boundary) { Authz::Boundary.for(nil) }
   let_it_be(:granular_pat) { create(:granular_pat, namespace: boundary.namespace, permissions: :create_issue) }
   let_it_be(:token) { granular_pat }
   let_it_be(:permissions) { :create_issue }
@@ -99,7 +99,7 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
         end
 
         it_behaves_like 'error response', 'Access denied: Your Personal Access Token lacks the required permissions: ' \
-          '[create_issue] for "instance".'
+          '[create_issue].'
       end
     end
 
@@ -107,7 +107,7 @@ RSpec.describe ::Authz::Tokens::AuthorizeGranularScopesService, feature_category
       let_it_be(:permissions) { [:create_issue, :create_epic, :create_project] }
 
       it_behaves_like 'error response', 'Access denied: Your Personal Access Token lacks the required permissions: ' \
-        '[create_epic, create_project] for "instance".'
+        '[create_epic, create_project].'
     end
   end
 end

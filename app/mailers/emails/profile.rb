@@ -264,6 +264,29 @@ module Emails
       )
     end
 
+    def disabled_two_factor_otp_email(user)
+      return unless user
+
+      @user = user
+
+      email_with_layout(
+        to: @user.notification_email_or_default,
+        subject: subject(_("One-time password authenticator deleted"))
+      )
+    end
+
+    def disabled_two_factor_webauthn_email(user, device_name)
+      return unless user
+
+      @user = user
+      @device_name = device_name
+
+      email_with_layout(
+        to: @user.notification_email_or_default,
+        subject: subject(_("WebAuthn device deleted"))
+      )
+    end
+
     def new_email_address_added_email(user, email)
       return unless user
 

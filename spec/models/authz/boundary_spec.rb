@@ -6,7 +6,7 @@ RSpec.describe ::Authz::Boundary, feature_category: :permissions do
   let_it_be(:group) { build(:group) }
   let_it_be(:project) { build(:project) }
   let_it_be(:user) { build(:user, :with_namespace) }
-  let_it_be(:instance) { :instance }
+  let_it_be(:instance) { nil }
 
   describe '.declarative_policy_class' do
     subject { described_class::Base.declarative_policy_class }
@@ -66,24 +66,7 @@ RSpec.describe ::Authz::Boundary, feature_category: :permissions do
     context 'when boundary is instance' do
       let(:boundary) { instance }
 
-      it { is_expected.to eq('instance') }
-    end
-  end
-
-  describe '#instance_type' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:boundary, :instance_type) do
-      ref(:group)    | false
-      ref(:project)  | false
-      ref(:user)     | false
-      ref(:instance) | true
-    end
-
-    with_them do
-      subject { described_class.for(boundary).instance_type? }
-
-      it { is_expected.to eq(instance_type) }
+      it { is_expected.to be_nil }
     end
   end
 end

@@ -2206,6 +2206,9 @@ msgstr ""
 msgid "A Let's Encrypt SSL certificate can not be obtained until your domain is verified."
 msgstr ""
 
+msgid "A WebAuthn device has been deleted from your GitLab account."
+msgstr ""
+
 msgid "A WebAuthn device has been registered to your GitLab account."
 msgstr ""
 
@@ -2291,6 +2294,9 @@ msgid "A non-confidential issue cannot have a confidential parent."
 msgstr ""
 
 msgid "A non-confidential work item cannot have a confidential parent."
+msgstr ""
+
+msgid "A one-time password (OTP) authenticator has been deleted from your GitLab account."
 msgstr ""
 
 msgid "A one-time password (OTP) authenticator has been registered to your GitLab account."
@@ -22564,7 +22570,7 @@ msgstr ""
 msgid "Deletion scheduled at: %{time}"
 msgstr ""
 
-msgid "DeletionSettings|Deletion protection"
+msgid "DeletionSettings|Immediate deletion"
 msgstr ""
 
 msgid "DeletionSettings|Maximum deletion protection duration is 90 days."
@@ -22574,6 +22580,9 @@ msgid "DeletionSettings|Minimum deletion protection duration is 1 day."
 msgstr ""
 
 msgid "DeletionSettings|Period that deleted groups and projects will remain restorable for."
+msgstr ""
+
+msgid "DeletionSettings|Retention period"
 msgstr ""
 
 msgid "Denied authorization of account nickname %{user_name}."
@@ -34143,6 +34152,12 @@ msgstr ""
 msgid "Images with incorrect dimensions are not resized automatically, and may result in unexpected behavior."
 msgstr ""
 
+msgid "ImmediateNamespacesDeletionSettings|Allow immediate deletion"
+msgstr ""
+
+msgid "ImmediateNamespacesDeletionSettings|Immediately delete groups and projects scheduled for deletion and bypass the configured retention period. %{link_start}Learn more.%{link_end}"
+msgstr ""
+
 msgid "Immutable tag rules require an Ultimate license"
 msgstr ""
 
@@ -45698,6 +45713,9 @@ msgid "One or more of your personal access tokens will expire in %{days_to_expir
 msgstr ""
 
 msgid "One-time password authenticator (OTP)"
+msgstr ""
+
+msgid "One-time password authenticator deleted"
 msgstr ""
 
 msgid "One-time password authenticator has been deleted!"
@@ -57961,7 +57979,23 @@ msgstr[1] ""
 msgid "SecretDetection|What are validity checks?"
 msgstr ""
 
+msgid "SecretRotation|%d secret has not been rotated after the configured rotation reminder intervals"
+msgid_plural "SecretRotation|%d secrets have not been rotated after the configured rotation reminder intervals"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SecretRotation|%d secret needs to be manually rotated soon to maintain security"
+msgid_plural "SecretRotation|%d secrets need to be manually rotated soon to maintain security"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "SecretRotation|%{date} (Every %{days} days)"
+msgstr ""
+
 msgid "SecretRotation|After a set number of days, send a reminder to rotate the secret. Minimum 7 days."
+msgstr ""
+
+msgid "SecretRotation|An error occurred while fetching secrets needing rotation. Please try again."
 msgstr ""
 
 msgid "SecretRotation|Hi %{name}!"
@@ -57970,10 +58004,22 @@ msgstr ""
 msgid "SecretRotation|Please change the secret value to maintain security."
 msgstr ""
 
+msgid "SecretRotation|Rotation overdue"
+msgstr ""
+
+msgid "SecretRotation|Rotation reminder"
+msgstr ""
+
 msgid "SecretRotation|Rotation reminder period"
 msgstr ""
 
+msgid "SecretRotation|Rotation reminder: This secret needs to be updated soon."
+msgstr ""
+
 msgid "SecretRotation|Secret rotation reminder"
+msgstr ""
+
+msgid "SecretRotation|Some secrets require your attention"
 msgstr ""
 
 msgid "SecretRotation|You can %{secret_link_start}update the secret%{secret_link_end} in your project settings."
@@ -73238,6 +73284,9 @@ msgid "Web IDE"
 msgstr ""
 
 msgid "Web terminal"
+msgstr ""
+
+msgid "WebAuthn device deleted"
 msgstr ""
 
 msgid "WebAuthn devices"

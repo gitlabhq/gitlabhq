@@ -326,4 +326,46 @@ describe('ImageLightbox', () => {
       expect(focusSpy).toHaveBeenCalled();
     });
   });
+
+  describe('carousel reset', () => {
+    it('resets currentImage to startingImage when reopening lightbox', async () => {
+      createComponent({ visible: true, startingImage: 1 });
+
+      expect(findImage().element.src).toBe(defaultImages[1].imageSrc);
+
+      findNextButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findImage().element.src).toBe(defaultImages[2].imageSrc);
+
+      await wrapper.setProps({ visible: false });
+      await nextTick();
+
+      await wrapper.setProps({ visible: true, startingImage: 0 });
+      await nextTick();
+
+      expect(findImage().element.src).toBe(defaultImages[0].imageSrc);
+    });
+
+    it('resets currentImage even when startingImage value does not change', async () => {
+      createComponent({ visible: true, startingImage: 0 });
+
+      expect(findImage().element.src).toBe(defaultImages[0].imageSrc);
+
+      findNextButton().vm.$emit('click');
+      await nextTick();
+      findNextButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findImage().element.src).toBe(defaultImages[2].imageSrc);
+
+      await wrapper.setProps({ visible: false });
+      await nextTick();
+
+      await wrapper.setProps({ visible: true, startingImage: 0 });
+      await nextTick();
+
+      expect(findImage().element.src).toBe(defaultImages[0].imageSrc);
+    });
+  });
 });

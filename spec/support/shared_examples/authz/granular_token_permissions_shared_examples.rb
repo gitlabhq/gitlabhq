@@ -48,7 +48,7 @@ RSpec.shared_examples 'authorizing granular token permissions' do |permissions|
 
       let(:message) do
         'Access denied: Your Personal Access Token lacks the required permissions: ' \
-          "[#{Array(permissions).join(', ')}] for \"#{boundary.path}\"."
+          "[#{Array(permissions).join(', ')}]" + (boundary_object.nil? ? '.' : " for \"#{boundary.path}\".")
       end
 
       it_behaves_like 'denying access'

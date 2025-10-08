@@ -3,6 +3,11 @@
 module Authz
   class GranularScope < ApplicationRecord
     belongs_to :organization, class_name: 'Organizations::Organization', optional: false
+
+    # When namespace is nil, the scope represents permissions for standalone resources: for a user or for the instance
+    # When namespace is a Namespaces::UserNamespace, the scope represents permissions for all personal projects
+    # When namespace is a Namespaces::ProjectNamespace, the scope represents permissions for a single project
+    # When namespace is a Group, the scope represents permissions for a (sub)group and it's descendants
     belongs_to :namespace
 
     validates :permissions, json_schema: { filename: 'granular_scope_permissions', size_limit: 64.kilobytes }

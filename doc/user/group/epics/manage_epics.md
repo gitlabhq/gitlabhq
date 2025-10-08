@@ -133,6 +133,7 @@ To reorder list items, when viewing an epic:
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/200186) more bulk editing attributes in GitLab 18.3.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/204037) bulk editing support for parent attribute in GitLab 18.5.
 
 {{< /history >}}
 
@@ -157,6 +158,7 @@ When bulk editing epics in a group, you can edit the following attributes:
 - [Health status](#health-status)
 - [Notification](../../profile/notifications.md) subscription
 - [Confidentiality](#make-an-epic-confidential)
+- [Parent](#add-a-parent-epic-to-an-epic)
 
 ## Prevent truncating descriptions with "Read more"
 

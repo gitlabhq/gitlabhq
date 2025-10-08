@@ -3,6 +3,7 @@ stage: Fulfillment
 group: Seat Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab Duo add-on seat management with LDAP
+description: Automate the assignment and removal of GitLab Duo add-on seats by synchronizing seat status with user membership in specified LDAP groups.
 ---
 
 {{< details >}}

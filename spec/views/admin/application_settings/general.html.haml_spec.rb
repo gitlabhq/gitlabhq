@@ -11,6 +11,15 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
     allow(view).to receive(:current_user).and_return(user)
   end
 
+  describe 'deletion protection settings' do
+    it 'renders the deletion protection settings' do
+      render
+
+      expect(rendered).to have_selector('#js-admin-deletion-protection-settings')
+      expect(rendered).to have_field('Allow immediate deletion')
+    end
+  end
+
   describe 'sourcegraph integration' do
     context 'when sourcegraph feature is enabled' do
       it 'show the form' do

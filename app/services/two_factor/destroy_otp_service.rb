@@ -9,7 +9,11 @@ module TwoFactor
         return error(_('This user does not have a one-time password authenticator registered.'))
       end
 
-      ::Users::UpdateService.new(current_user, user: user).execute(&:disable_two_factor_otp!)
+      result = disable_two_factor_otp
+
+      notify_on_success(user) if result[:status] == :success
+
+      result
     end
 
     private
@@ -17,5 +21,15 @@ module TwoFactor
     def authorized?
       can?(current_user, :disable_two_factor, user)
     end
+
+    def disable_two_factor_otp
+      ::Users::UpdateService.new(current_user, user: user).execute(&:disable_two_factor_otp!)
+    end
+
+    def notify_on_success(user)
+      notification_service.disabled_two_factor(user, :otp)
+    end
   end
 end
+
+TwoFactor::DestroyOtpService.prepend_mod

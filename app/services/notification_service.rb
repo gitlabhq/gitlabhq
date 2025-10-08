@@ -56,10 +56,16 @@ class NotificationService
     end
   end
 
-  def disabled_two_factor(user)
+  def disabled_two_factor(user, type = :two_factor, options = {})
     return unless user.can?(:receive_notifications)
 
-    mailer.disabled_two_factor_email(user).deliver_later
+    if type == :webauthn
+      mailer.disabled_two_factor_webauthn_email(user, options[:device_name]).deliver_later
+    elsif type == :otp
+      mailer.disabled_two_factor_otp_email(user).deliver_later
+    else
+      mailer.disabled_two_factor_email(user).deliver_later
+    end
   end
 
   # Always notify user about ssh key added

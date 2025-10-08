@@ -343,7 +343,7 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
           allow(self).to receive(:route_setting).with(:authorization)
             .and_return(permissions: permission, boundary_type: boundary_type)
 
-          if boundary_resource != instance_resource
+          if boundary_resource != standalone_resource
             allow(self).to receive(:params).and_return(boundary_parameter => boundary_resource.id)
           end
         end
@@ -351,26 +351,27 @@ RSpec.describe API::Helpers, :enable_admin_mode, feature_category: :system_acces
         let_it_be(:permission) { :create_issue }
         let_it_be(:project_resource) { create(:project, organization: user.organization) }
         let_it_be(:group_resource) { create(:group, organization: user.organization) }
-        let_it_be(:user_resource) { user }
-        let_it_be(:instance_resource) { :instance }
+        let_it_be(:standalone_resource) { nil }
         let(:boundary) { ::Authz::Boundary.for(boundary_resource) }
 
         where(:boundary_type, :boundary_resource, :boundary_segment, :boundary_parameter) do
-          :project  | ref(:project_resource)  | 'projects' | :project_id
-          :project  | ref(:project_resource)  | 'projects' | :id
-          :group    | ref(:group_resource)    | 'groups'   | :group_id
-          :group    | ref(:group_resource)    | 'groups'   | :id
-          :user     | ref(:user_resource)     | 'users'    | :user_id
-          :user     | ref(:user_resource)     | 'users'    | :id
-          :instance | ref(:instance_resource) | ''         | nil
+          :project    | ref(:project_resource)    | 'projects' | :project_id
+          :project    | ref(:project_resource)    | 'projects' | :id
+          :group      | ref(:group_resource)      | 'groups'   | :group_id
+          :group      | ref(:group_resource)      | 'groups'   | :id
+          :standalone | ref(:standalone_resource) | ''         | nil
         end
 
         with_them do
           context 'when the granular token scopes are insufficient' do
+            let(:message) do
+              msg = "Access denied: Your Personal Access Token lacks the required permissions: [#{permission}]"
+              msg << " for \"#{boundary.path}\"" if boundary_resource != standalone_resource
+              msg << "."
+            end
+
             it 'raises an error that includes the missing scope' do
-              expect { current_user }.to raise_error Gitlab::Auth::GranularPermissionsError,
-                "Access denied: Your Personal Access Token lacks the required permissions: [#{permission}] for " \
-                  "\"#{boundary.path}\"."
+              expect { current_user }.to raise_error Gitlab::Auth::GranularPermissionsError, message
             end
           end
 

@@ -6,7 +6,7 @@ FactoryBot.define do
     namespace
     permissions { [:create_issue] }
 
-    trait :instance do
+    trait :standalone do
       namespace { nil }
     end
   end

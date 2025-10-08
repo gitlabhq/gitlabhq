@@ -73,20 +73,9 @@ export default {
       this.isVisible = newVal;
 
       if (newVal) {
-        this.previouslyFocusedElement = document.activeElement;
-        this.addBodyClass();
-        this.$nextTick(() => {
-          this.addKeydownListener();
-          this.focusLightbox();
-          this.setupFocusTrap();
-        });
+        this.openLightbox();
       } else {
-        this.removeBodyClass();
-        this.removeKeydownListener();
-        this.removeFocusTrap();
-        if (this.previouslyFocusedElement) {
-          this.previouslyFocusedElement.focus();
-        }
+        this.close();
       }
     },
     startingImage(newVal) {
@@ -110,6 +99,16 @@ export default {
     this.removeFocusTrap();
   },
   methods: {
+    openLightbox() {
+      this.currentImage = this.startingImage;
+      this.previouslyFocusedElement = document.activeElement;
+      this.addBodyClass();
+      this.$nextTick(() => {
+        this.addKeydownListener();
+        this.focusLightbox();
+        this.setupFocusTrap();
+      });
+    },
     close() {
       this.isVisible = false;
       this.$emit('change', false);

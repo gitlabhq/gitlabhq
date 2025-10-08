@@ -10,8 +10,8 @@ module Authz
                          ProjectBoundary
                        when ::User
                          UserBoundary
-                       when :instance
-                         InstanceBoundary
+                       when nil
+                         NilBoundary
                        end
 
       strategy_class.new(boundary)
@@ -34,10 +34,6 @@ module Authz
         namespace&.full_path
       end
 
-      def instance_type?
-        false
-      end
-
       private
 
       attr_reader :boundary
@@ -58,17 +54,13 @@ module Authz
       end
     end
 
-    class InstanceBoundary < Base
+    class NilBoundary < Base
       def namespace
         nil
       end
 
       def path
-        'instance'
-      end
-
-      def instance_type?
-        true
+        nil
       end
     end
   end
