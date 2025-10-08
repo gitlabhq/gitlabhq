@@ -188,7 +188,7 @@ in a workspace and is used to access the workspace. Do not use title case for **
 
 When referring to the specific component in technical contexts, use `agentw` in backticks.
 
-Do not confuse with [agent for Kubernetes](#agent-for-kubernetes). 
+Do not confuse with [agent for Kubernetes](#agent-for-kubernetes).
 Use **agent for workspace** if **agent** on its own is not clear,
 or to distinguish it from other types of agents.
 
@@ -1798,7 +1798,7 @@ capitalization inconsistencies.
 Use **namespace** when distinguishing between personal and group namespaces.
 Don't use **namespace** as a synonym for **group** or **top-level group**.
 
-On GitLab.com, top-level group Owners have full control over their groups and projects. 
+On GitLab.com, top-level group Owners have full control over their groups and projects.
 Regular users can't have administrator access, as GitLab.com is managed by the GitLab team.
 
 For example:

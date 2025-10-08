@@ -100,6 +100,8 @@ mapping:
       - '(?<prefix>ee/)?spec/factories/(?<model>.+)\.rb'
       - '(?<prefix>ee/)?spec/factories/(?<model>.+)s\.rb'
     test:
+      - 'spec/factories_specs/%{model}_spec.rb'
+      - '%{prefix}spec/factories_specs/%{model}_spec.rb'
       - 'spec/models/%{model}_spec.rb'
       - 'ee/spec/models/ee/%{model}_spec.rb'
       - '%{prefix}spec/models/%{model}_spec.rb'

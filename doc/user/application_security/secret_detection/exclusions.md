@@ -28,7 +28,7 @@ To avoid false positives you can exclude from secret detection:
 - A path.
 - A raw value.
 - A rule from the default ruleset.
-  
+
 You can define multiple exclusions for a project.
 
 ## Restrictions

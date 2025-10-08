@@ -67589,7 +67589,7 @@ definitions:
     properties:
       token:
         type: string
-        description: Job token
+        description: Job's authentication token
       state:
         type: string
         description: 'Job''s status: pending, running, success, failed'
@@ -67625,7 +67625,7 @@ definitions:
         description: Job's authentication token
       debug_trace:
         type: boolean
-        description: Enable or Disable the debug trace
+        description: Enable or disable the debug trace
     description: Append a patch to the job trace
   postApiV4JobsIdArtifactsAuthorize:
     type: object

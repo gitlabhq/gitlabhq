@@ -69,7 +69,7 @@ sequenceDiagram
         else Within quota
             GitLab API-->>Runner: Job-Status header: running
         end
-        
+
         Runner->>GitLab API: PATCH /api/v4/jobs/{id}/trace<br/>(append build log)
         GitLab API->>Redis: Get current running builds usage
         GitLab API->>Database: Get finished builds usage
@@ -111,8 +111,8 @@ Once the job is `running`, the runner periodically updates two GitLab endpoints:
 
 **3. Quota Enforcement During Job Execution**
 
-Real-time quota enforcement serves as an anti-abuse measure to prevent long-running jobs from bypassing 
-quota restrictions. For example, a crypto-miner on a free plan namespace has 10 minutes remaining in 
+Real-time quota enforcement serves as an anti-abuse measure to prevent long-running jobs from bypassing
+quota restrictions. For example, a crypto-miner on a free plan namespace has 10 minutes remaining in
 their monthly allocated quota and starts several jobs that run for 120 minutes.
 
 Each time the runner contacts GitLab via the above endpoints, the system checks quota limits:

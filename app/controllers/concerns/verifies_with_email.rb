@@ -46,6 +46,7 @@ module VerifiesWithEmail
       # If an email is provided, validate that it belongs to the user.
       # It is nil otherwise.
       secondary_email = fetch_confirmed_user_secondary_email(user, email_params[:email])
+      primary_email = user.email
 
       # Both `send_` methods will regenerate the respective code, making
       # the old one invalid.
@@ -74,6 +75,10 @@ module VerifiesWithEmail
           secondary_email: secondary_email,
           reason: VERIFICATION_REASON_LOCK_RESEND
         )
+      end
+
+      if secondary_email.present? && secondary_email != primary_email
+        send_notification_to_primary_email(primary_email, secondary_email)
       end
 
       render json: { status: :success }
@@ -175,6 +180,10 @@ module VerifiesWithEmail
   # log in if the VerifiesWithEmail is required
   def requires_verify_email?(user)
     treat_as_locked?(user) || !trusted_ip_address?(user) || require_email_based_otp?(user)
+  end
+
+  def send_notification_to_primary_email(primary_email, secondary_email)
+    Notify.verification_instructions_sent_to_secondary_email(primary_email, secondary_email).deliver_later
   end
 
   def verify_email(user)

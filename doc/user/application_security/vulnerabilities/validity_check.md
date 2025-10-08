@@ -91,7 +91,7 @@ flowchart TD
     accDescr: Process flow for secret detection showing three possible outcomes.
     A[Secret detection analyzer runs] --> B[Secret detected]
     B --> C{Worker verifies<br>secret status}
-    
+
     C -->|Cannot verify or unsupported type| D[Possibly active]
     C -->|Valid and not expired| E[Active]
     C -->|Expired or revoked| F[Inactive]

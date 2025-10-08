@@ -198,7 +198,7 @@ curl --request POST \
   --header "Content-Type:application/json" \
   --url "https://gitlab.example.com/api/v4/groups/26/clusters/user" \
   --data '{
-    "name":"cluster-5", 
+    "name":"cluster-5",
     "platform_kubernetes_attributes":{
       "api_url":"https://35.111.51.20",
       "token":"12345",

@@ -678,6 +678,72 @@ RSpec.describe VerifiesWithEmail, :clean_gitlab_redis_sessions, :clean_gitlab_re
       end
     end
 
+    context 'when the user requests the verification code email to be sent to their secondary address' do
+      let(:secondary_email) { create(:email, :confirmed, user: user) }
+      let(:params) { { user: { email: secondary_email.email } } }
+
+      before do
+        stub_session(session_data: { verification_user_id: user.id })
+        perform_enqueued_jobs do
+          post(users_resend_verification_code_path, params: params)
+        end
+      end
+
+      it 'sends a notification email to the user\'s primary address' do
+        mail = find_email_for(user.email)
+        expect(mail.subject).to eq(s_('IdentityVerification|Verification code sent to your secondary email address'))
+      end
+    end
+
+    context 'when the user requests the verification code to their primary address using the secondary address flow' do
+      # when the user enters an email address using the flow dedicated to sending to an alternative address, there's no
+      # check that the address entered is not their main address. We want to make sure that if they enter the main one,
+      # we don't send both the code and the notification on that same primary email.
+      let(:params) { { user: { email: user.email } } }
+
+      before do
+        stub_session(session_data: { verification_user_id: user.id })
+        perform_enqueued_jobs do
+          post(users_resend_verification_code_path, params: params)
+        end
+      end
+
+      it 'sends the verification code to the primary address but does not send a notification email' do
+        verification_mail = ActionMailer::Base.deliveries.find do |email|
+          email.to.include?(user.email) &&
+            email.subject == s_('IdentityVerification|Verify your identity')
+        end
+
+        notification_mail = ActionMailer::Base.deliveries.find do |email|
+          email.to.include?(user.email) &&
+            email.subject == s_('IdentityVerification|Verification code sent to your secondary email address')
+        end
+
+        expect(verification_mail).to be_present
+        expect(notification_mail).to be_nil
+      end
+    end
+
+    context 'when the user does not request the code to be sent to their secondary address' do
+      let(:params) { { user: { email: '' } } }
+
+      before do
+        stub_session(session_data: { verification_user_id: user.id })
+        perform_enqueued_jobs do
+          post(users_resend_verification_code_path, params: params)
+        end
+      end
+
+      it 'doesn\'t send a notification email to the user\'s primary email' do
+        notification_mail = ActionMailer::Base.deliveries.find do |email|
+          email.to.include?(user.email) &&
+            email.subject == s_('IdentityVerification|Verification code sent to your secondary email address')
+        end
+
+        expect(notification_mail).to be_nil
+      end
+    end
+
     context 'when exceeding the code send rate limit' do
       before do
         allow(Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(:email_verification_code_send,

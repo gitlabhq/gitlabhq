@@ -1571,7 +1571,7 @@ specific storage nodes to host a repository.
 
 Configurable replication factors requires [repository-specific primary nodes](#repository-specific-primary-nodes).
 
-Do not reduce the replication factor of object pools. This can cause linked repositories to break. 
+Do not reduce the replication factor of object pools. This can cause linked repositories to break.
 Object pools have relative paths that begin with `@pools/`.
 
 {{< /alert >}}
@@ -1589,7 +1589,7 @@ You can configure either:
 
 {{< alert type="warning" >}}
 
-Reducing the default replication when there are object pools can cause some linked repositories to break. 
+Reducing the default replication when there are object pools can cause some linked repositories to break.
 Object pools have relative paths that begin with `@pools/`.
 
 {{< /alert >}}

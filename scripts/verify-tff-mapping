@@ -169,6 +169,7 @@ tests = [
     explanation: 'FOSS factories map to FOSS/EE model specs plural',
     changed_file: 'spec/factories/users.rb',
     expected: %w[
+      spec/factories_specs/users_spec.rb
       spec/models/user_spec.rb
       ee/spec/models/ee/user_spec.rb
     ]
@@ -184,6 +185,8 @@ tests = [
     explanation: 'EE factories for extensions map to FOSS/EE model specs',
     changed_file: 'ee/spec/factories/users.rb',
     expected: %w[
+      spec/factories_specs/users_spec.rb
+      ee/spec/factories_specs/users_spec.rb
       spec/models/user_spec.rb
       ee/spec/models/ee/user_spec.rb
     ]

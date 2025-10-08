@@ -44,8 +44,8 @@ and can be deleted.
 
 #### Check for artifacts with `unknown` status
 
-Some artifacts have a status of `unknown` because the housekeeping system cannot 
-determine their correct lock status. These artifacts are not processed by automatic 
+Some artifacts have a status of `unknown` because the housekeeping system cannot
+determine their correct lock status. These artifacts are not processed by automatic
 cleanup even after they expire, and can contribute to excessive disk space usage.
 
 To check if your instance has artifacts with `unknown` status:

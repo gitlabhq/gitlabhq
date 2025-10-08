@@ -121,7 +121,7 @@ npx -y @modelcontextprotocol/inspector npx
 Our current development guidelines remain in early development. As we continue establishing tool development standards - especially for custom and
 aggregated tools - we've created an interim `mcp-tool-review-board` committee to evaluate proposed tools before implementation and guide teams planning new MCP tools.
 
-To add a new tool, please create a [MCP Tool Proposal issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?related_item_id=undefined&type=ISSUE&description_template=MCP%20Tool%20Proposal) 
+To add a new tool, please create a [MCP Tool Proposal issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?related_item_id=undefined&type=ISSUE&description_template=MCP%20Tool%20Proposal)
 and follow the template instructions.
 
 {{< alert type="note" >}}

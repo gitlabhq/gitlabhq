@@ -152,7 +152,7 @@ Online node watermark levels:            2
 
 Indexing status
 Group count:                              8
-# Number of enabled namespaces and their status 
+# Number of enabled namespaces and their status
 EnabledNamespace count:                   8 (without indices: 0, rollout blocked: 0, with search disabled: 0)
 Replicas count:                           8
   - ready: 8

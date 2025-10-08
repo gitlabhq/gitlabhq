@@ -55,8 +55,9 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
       end
 
       it 'updates runner info' do
-        expect { update_job(state: 'success') }.to change { runner.reload.contacted_at }
-                                               .and change { runner_manager.reload.contacted_at }
+        expect { update_job(state: 'success') }
+          .to change { runner.reload.contacted_at }
+          .and change { runner_manager.reload.contacted_at }
       end
 
       context 'when status is given' do
@@ -297,8 +298,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
       end
 
       def update_job(job_id = job.id, token = job.token, **params)
-        new_params = params.merge(token: token)
-        put api("/jobs/#{job_id}"), params: new_params
+        put api("/jobs/#{job_id}"), params: params.merge(token: token)
       end
 
       def update_job_after_time(update_interval = 20.minutes, state = 'running')

@@ -365,7 +365,7 @@ In addition to the previous, Rails is where the main database migrations need to
       sudo gitlab-rake gitlab:db:configure
       ```
 
-      This task also runs ClickHouse migrations and configures the database based on its state by loading the schema. 
+      This task also runs ClickHouse migrations and configures the database based on its state by loading the schema.
 
    1. Return the config back to normal by setting `gitlab_rails['auto_migrate'] = false` in the
       `/etc/gitlab/gitlab.rb` configuration file.

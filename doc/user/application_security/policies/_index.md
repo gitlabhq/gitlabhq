@@ -336,7 +336,7 @@ Be aware of the following limitations for the GitLab Security Policy Bot:
 - Project-bound: Each bot instance is tied to a specific project and you cannot shared an instance across projects.
 - Policy-dependent: The bot's functionality is entirely dependent on the security policies configured for the project.
 
-### Security troubleshooting 
+### Security troubleshooting
 
 {{< alert type="warning" >}}
 
@@ -376,7 +376,7 @@ If container scanning is not triggering as configured:
 - Confirm container scanning policies are properly configured.
 - Verify the bot has registry authentication credentials, if required.
 - Check that the `latest` tag push triggered the expected policy rules.
-   
+
 #### Bot account missing
 
 If the bot account no longer exists:

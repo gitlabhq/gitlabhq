@@ -26284,7 +26284,8 @@ CREATE TABLE spam_logs (
     updated_at timestamp without time zone NOT NULL,
     submitted_as_ham boolean DEFAULT false NOT NULL,
     recaptcha_verified boolean DEFAULT false NOT NULL,
-    target_id bigint
+    target_id bigint,
+    organization_id bigint
 );
 
 CREATE SEQUENCE spam_logs_id_seq
@@ -42332,6 +42333,8 @@ CREATE INDEX index_sop_schedules_on_user_id ON security_orchestration_policy_rul
 
 CREATE UNIQUE INDEX index_source_id_microsoft_access_tokens ON system_access_group_microsoft_graph_access_tokens USING btree (temp_source_id);
 
+CREATE INDEX index_spam_logs_on_organization_id ON spam_logs USING btree (organization_id);
+
 CREATE INDEX index_spam_logs_on_user_id ON spam_logs USING btree (user_id);
 
 CREATE INDEX index_sprints_iterations_cadence_id ON sprints USING btree (iterations_cadence_id);
@@ -47782,6 +47785,9 @@ ALTER TABLE ONLY oauth_device_grants
 
 ALTER TABLE ONLY project_group_links
     ADD CONSTRAINT fk_30ec712bec FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY spam_logs
+    ADD CONSTRAINT fk_30f09d75a5 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY lists
     ADD CONSTRAINT fk_30f2a831f4 FOREIGN KEY (iteration_id) REFERENCES sprints(id) ON DELETE CASCADE;

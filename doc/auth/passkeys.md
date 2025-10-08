@@ -30,7 +30,7 @@ vulnerabilities and credential breaches.
 You can use passkeys:
 
 - For passwordless sign-in: Use the **Sign in with Passkey** option on the GitLab sign-in page.
-- As an additional two-factor authentication method: After you enable any 
+- As an additional two-factor authentication method: After you enable any
 [two-factor authentication](../user/profile/account/two_factor_authentication.md) (2FA) method,
 passkeys become available as an additional and default 2FA option.
 

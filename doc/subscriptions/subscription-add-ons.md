@@ -39,7 +39,7 @@ GitLab Duo Core is included automatically if you have:
 - A Premium or Ultimate subscription.
 
 If you are a customer with an offline license, GitLab Duo Core is not available on
-GitLab Duo Self-Hosted because GitLab Duo Core requires connection to the GitLab AI gateway. 
+GitLab Duo Self-Hosted because GitLab Duo Core requires connection to the GitLab AI gateway.
 
 If you are a customer with an online license, you can use GitLab Duo Core in combination with
 GitLab Duo Self-Hosted, but to enable GitLab Duo Core you must select the GitLab AI vendor model

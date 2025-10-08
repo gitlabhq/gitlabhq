@@ -97,9 +97,9 @@ This feature is in beta and is therefore subject to change as we gather feedback
 | DeepSeek Coder | [DeepSeek Coder 33b Instruct](https://huggingface.co/deepseek-ai/deepseek-coder-33b-instruct) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) |
 | DeepSeek Coder | [DeepSeek Coder 33b Base](https://huggingface.co/deepseek-ai/deepseek-coder-33b-base) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) |
 | Mistral        | [Mistral 7B-it v0.2](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.2) | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) <br> [AWS Bedrock](https://aws.amazon.com/bedrock/mistral/) |
-| Mistral | [Mistral 7B-it v0.3](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3) <sup>1</sup> | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | 
+| Mistral | [Mistral 7B-it v0.3](https://huggingface.co/mistralai/Mistral-7B-Instruct-v0.3) <sup>1</sup> | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) |
 | Mistral | [Mixtral 8x7B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1) <sup>1</sup> | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments), [AWS Bedrock](https://aws.amazon.com/bedrock/mistral/) |
-| Mistral | [Mixtral 8x22B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1) <sup>1</sup> | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) | 
+| Mistral | [Mixtral 8x22B-it v0.1](https://huggingface.co/mistralai/Mixtral-8x22B-Instruct-v0.1) <sup>1</sup> | [vLLM](supported_llm_serving_platforms.md#for-self-hosted-model-deployments) |
 
 **Footnotes**:
 

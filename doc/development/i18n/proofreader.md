@@ -79,7 +79,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Noriko Akiyama - [GitLab](https://gitlab.com/nakiyama-ext), [Crowdin](https://crowdin.com/profile/norikoakiyama)
   - Naoko Shirakuni - [GitLab](https://gitlab.com/SNaoko), [Crowdin](https://crowdin.com/profile/tamongen)
   - Megumi Uchikawa - [GitLab](https://gitlab.com/muchikawa), [Crowdin](https://crowdin.com/profile/muchikawa)
-  - Emi Kimura - [GitLab](https://gitlab.com/emikimura-ext), [Crowdin](https://crowdin.com/profile/emikimura-ext) 
+  - Emi Kimura - [GitLab](https://gitlab.com/emikimura-ext), [Crowdin](https://crowdin.com/profile/emikimura-ext)
 - Korean
   - Sunjung Park - [GitLab](https://gitlab.com/sunjungp), [Crowdin](https://crowdin.com/profile/sunjungp)
   - Hwanyong Lee - [GitLab](https://gitlab.com/hwan_ajou), [Crowdin](https://crowdin.com/profile/grbear)

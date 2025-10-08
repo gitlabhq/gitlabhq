@@ -17,16 +17,9 @@ title: Instance-wide compliance and security policy management
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15864) in GitLab 18.2 [with a feature flag](../administration/feature_flags/_index.md) named `security_policies_csp`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/550318) on GitLab Self-Managed in GitLab 18.3.
+- [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/17392) in GitLab 18.5. Feature flag `security_policies_csp` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is subject to change and may not ready for production use.
-
-{{< /alert >}}
 
 To apply security policies across multiple groups and projects from a single and centralized location, instance administrators can designate a compliance and security policy (CSP) group. This allows the instance administrators to:
 
@@ -144,13 +137,6 @@ Developers can:
 
 - View all security policies that apply to your work in the **Secure** > **Policies**.
 - Understand security and compliance requirements with clear visibility into centrally-mandated policies.
-
-## Beta considerations
-
-- Performance testing: While using a compliance and security policy group is not expected to impact performance, comprehensive performance testing is ongoing.
-- Mixed permission scenarios: Some edge cases with mixed permissions may require additional validation
-- User experience: Some UI elements may not be fully polished and could change in future releases
-- Compliance framework scoping: Scoping policies to compliance frameworks is not supported in the Beta release.
 
 ## Automate your migration from security policy projects
 

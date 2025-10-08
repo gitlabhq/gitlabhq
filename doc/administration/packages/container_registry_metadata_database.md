@@ -80,7 +80,7 @@ Prerequisites:
 - GitLab 17.5 is the minimum required version, but GitLab 18.3 or later
   is recommended due to the added improvements and easier configuration.
 - PostgreSQL database [within version requirements](../../install/requirements.md#postgresql). It must be accessible from the registry node.
-- If you use an external database, you must first set up the external database connection. For more information, see [Using an external database](#using-an-external-database). 
+- If you use an external database, you must first set up the external database connection. For more information, see [Using an external database](#using-an-external-database).
 
 Follow the instructions that match your situation:
 
@@ -214,7 +214,7 @@ If your registry is too large to regularly run offline garbage collection,
 use the three-step import method to minimize the amount of read-only time
 significantly.
 
-If you use an external database, make sure you set up the 
+If you use an external database, make sure you set up the
 external database connection before proceeding with a migration path.
 
 For more information, see [Using an external database](#using-an-external-database).

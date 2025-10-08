@@ -16404,6 +16404,29 @@ The edge type for [`CiInstanceVariable`](#ciinstancevariable).
 | <a id="ciinstancevariableedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="ciinstancevariableedgenode"></a>`node` | [`CiInstanceVariable`](#ciinstancevariable) | The item at the end of the edge. |
 
+#### `CiJobAnalyticsConnection`
+
+The connection type for [`CiJobAnalytics`](#cijobanalytics).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobanalyticsconnectionedges"></a>`edges` | [`[CiJobAnalyticsEdge]`](#cijobanalyticsedge) | A list of edges. |
+| <a id="cijobanalyticsconnectionnodes"></a>`nodes` | [`[CiJobAnalytics]`](#cijobanalytics) | A list of nodes. |
+| <a id="cijobanalyticsconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `CiJobAnalyticsEdge`
+
+The edge type for [`CiJobAnalytics`](#cijobanalytics).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobanalyticsedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="cijobanalyticsedgenode"></a>`node` | [`CiJobAnalytics`](#cijobanalytics) | The item at the end of the edge. |
+
 #### `CiJobArtifactConnection`
 
 The connection type for [`CiJobArtifact`](#cijobartifact).
@@ -25907,6 +25930,22 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobtriggered"></a>`triggered` | [`Boolean`](#boolean) | Whether the job was triggered. |
 | <a id="cijobuserpermissions"></a>`userPermissions` | [`JobPermissions!`](#jobpermissions) | Permissions for the current user on the resource. |
 | <a id="cijobwebpath"></a>`webPath` | [`String`](#string) | Web path of the job. |
+
+### `CiJobAnalytics`
+
+CI/CD job analytics data.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cijobanalyticsmeandurationinseconds"></a>`meanDurationInSeconds` | [`Float`](#float) | Average duration of jobs in seconds. |
+| <a id="cijobanalyticsname"></a>`name` | [`String`](#string) | Job name. |
+| <a id="cijobanalyticsp95durationinseconds"></a>`p95DurationInSeconds` | [`Float`](#float) | 95th percentile duration of jobs in seconds. |
+| <a id="cijobanalyticsrateofcanceled"></a>`rateOfCanceled` | [`Float`](#float) | Percentage of canceled jobs. |
+| <a id="cijobanalyticsrateoffailed"></a>`rateOfFailed` | [`Float`](#float) | Percentage of failed jobs. |
+| <a id="cijobanalyticsrateofsuccess"></a>`rateOfSuccess` | [`Float`](#float) | Percentage of successful jobs. |
+| <a id="cijobanalyticsstage"></a>`stage` | [`CiStage`](#cistage) | Stage information. |
 
 ### `CiJobArtifact`
 
@@ -40303,6 +40342,34 @@ Returns [`CiJob`](#cijob).
 | ---- | ---- | ----------- |
 | <a id="projectjobid"></a>`id` | [`JobID!`](#jobid) | ID of the job. |
 
+##### `Project.jobAnalytics`
+
+{{< details >}}
+**Introduced** in GitLab 18.5.
+**Status**: Experiment.
+{{< /details >}}
+
+CI/CD job analytics for the project. Returns an error if ClickHouse is not configured.
+
+Returns [`CiJobAnalyticsConnection`](#cijobanalyticsconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectjobanalyticsaggregations"></a>`aggregations` | [`[CiJobAnalyticsAggregation!]!`](#cijobanalyticsaggregation) | Aggregation functions to apply. |
+| <a id="projectjobanalyticsfromtime"></a>`fromTime` | [`Time`](#time) | Start of the requested time (in UTC). Defaults to the pipelines started in the past week. |
+| <a id="projectjobanalyticsnamesearch"></a>`nameSearch` | [`String`](#string) | Search by name of the pipeline jobs. Supports partial matches. |
+| <a id="projectjobanalyticsref"></a>`ref` | [`String`](#string) | Branch that triggered the pipeline. |
+| <a id="projectjobanalyticsselectfields"></a>`selectFields` | [`[CiJobAnalyticsField!]!`](#cijobanalyticsfield) | Fields to select and group by. |
+| <a id="projectjobanalyticssort"></a>`sort` | [`CiJobAnalyticsSort`](#cijobanalyticssort) | Sort order for the results. |
+| <a id="projectjobanalyticssource"></a>`source` | [`CiPipelineSources`](#cipipelinesources) | Source of the pipeline. |
+| <a id="projectjobanalyticstotime"></a>`toTime` | [`Time`](#time) | End of the requested time (in UTC). Defaults to the pipelines started before the current date. |
+
 ##### `Project.jobs`
 
 Jobs of a project. This field can only be resolved for one project in any single request.
@@ -47672,6 +47739,46 @@ Available input types.
 | <a id="ciinputstypeboolean"></a>`BOOLEAN` | Boolean input. |
 | <a id="ciinputstypenumber"></a>`NUMBER` | Number input. |
 | <a id="ciinputstypestring"></a>`STRING` | String input. |
+
+### `CiJobAnalyticsAggregation`
+
+Aggregation functions available for CI/CD job analytics.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cijobanalyticsaggregationmean_duration_in_seconds"></a>`MEAN_DURATION_IN_SECONDS` | Average duration of jobs in seconds. |
+| <a id="cijobanalyticsaggregationp95_duration_in_seconds"></a>`P95_DURATION_IN_SECONDS` | 95th percentile duration of jobs in seconds. |
+| <a id="cijobanalyticsaggregationrate_of_canceled"></a>`RATE_OF_CANCELED` | Percentage of canceled jobs. |
+| <a id="cijobanalyticsaggregationrate_of_failed"></a>`RATE_OF_FAILED` | Percentage of failed jobs. |
+| <a id="cijobanalyticsaggregationrate_of_success"></a>`RATE_OF_SUCCESS` | Percentage of successful jobs. |
+
+### `CiJobAnalyticsField`
+
+Fields available for selection in CI/CD job analytics.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cijobanalyticsfieldname"></a>`NAME` | Job name. |
+| <a id="cijobanalyticsfieldstage"></a>`STAGE` | Stage. |
+
+### `CiJobAnalyticsSort`
+
+Values for sorting CI/CD job analytics.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cijobanalyticssortcanceled_rate_asc"></a>`CANCELED_RATE_ASC` | Sort by canceled rate in ascending order. |
+| <a id="cijobanalyticssortcanceled_rate_desc"></a>`CANCELED_RATE_DESC` | Sort by canceled rate in descending order. |
+| <a id="cijobanalyticssortfailed_rate_asc"></a>`FAILED_RATE_ASC` | Sort by failed rate in ascending order. |
+| <a id="cijobanalyticssortfailed_rate_desc"></a>`FAILED_RATE_DESC` | Sort by failed rate in descending order. |
+| <a id="cijobanalyticssortmean_duration_asc"></a>`MEAN_DURATION_ASC` | Sort by mean duration in ascending order. |
+| <a id="cijobanalyticssortmean_duration_desc"></a>`MEAN_DURATION_DESC` | Sort by mean duration in descending order. |
+| <a id="cijobanalyticssortname_asc"></a>`NAME_ASC` | Sort by name in ascending order. |
+| <a id="cijobanalyticssortname_desc"></a>`NAME_DESC` | Sort by name in descending order. |
+| <a id="cijobanalyticssortp95_duration_asc"></a>`P95_DURATION_ASC` | Sort by 95th percentile duration in ascending order. |
+| <a id="cijobanalyticssortp95_duration_desc"></a>`P95_DURATION_DESC` | Sort by 95th percentile duration in descending order. |
+| <a id="cijobanalyticssortsuccess_rate_asc"></a>`SUCCESS_RATE_ASC` | Sort by success rate in ascending order. |
+| <a id="cijobanalyticssortsuccess_rate_desc"></a>`SUCCESS_RATE_DESC` | Sort by success rate in descending order. |
 
 ### `CiJobFailureReason`
 

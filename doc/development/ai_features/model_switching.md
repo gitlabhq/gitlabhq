@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Model Switching
 ---
 
-The Model Switching Framework in the GitLab AI Gateway allows customers to choose between different AI models for various features. 
+The Model Switching Framework in the GitLab AI Gateway allows customers to choose between different AI models for various features.
 
 This feature is available for GitLab SaaS and self-managed instances using the cloud-connected AI Gateway.
 

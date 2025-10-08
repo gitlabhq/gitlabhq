@@ -91,7 +91,7 @@ By default, [Amazon Simple Email Service (Amazon SES)](https://aws.amazon.com/se
 {{< /details >}}
 
 Cloudflare is implemented as a web application firewall (WAF) for distributed denial-of-service (DDoS)
-protection and related security capabilities. The WAF implementation and configuration is managed by the GitLab SRE team. 
+protection and related security capabilities. The WAF implementation and configuration is managed by the GitLab SRE team.
 Direct access to WAF configuration or logs is not available.
 
 ### Compliance

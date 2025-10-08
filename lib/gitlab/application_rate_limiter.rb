@@ -7,6 +7,7 @@ module Gitlab
   # See CheckRateLimit concern for usage.
   module ApplicationRateLimiter
     InvalidKeyError = Class.new(StandardError)
+    InvalidScopeError = Class.new(StandardError)
 
     LIMIT_USAGE_BUCKET = [0.25, 0.5, 0.75, 1].freeze
 
@@ -136,7 +137,12 @@ module Gitlab
       #
       # @return [Boolean] Whether or not a request should be throttled
       def throttled?(key, scope:, resource: nil, threshold: nil, interval: nil, users_allowlist: nil, peek: false)
-        raise InvalidKeyError unless rate_limits[key]
+        raise InvalidKeyError, key unless rate_limits[key]
+
+        validate_scope!(key, scope)
+
+        # When the feature flag is disabled, treat :global as nil for backward compatibility
+        scope = nil if scope == :global && Feature.disabled?(:enable_invalid_scope_error, :instance)
 
         strategy = resource.present? ? IncrementPerActionedResource.new(resource.id) : IncrementPerAction.new
 
@@ -158,6 +164,11 @@ module Gitlab
       #
       # @return [Boolean] Whether or not a request should be throttled
       def resource_usage_throttled?(key, scope:, resource_key:, threshold:, interval:, peek: false)
+        validate_scope!(key, scope)
+
+        # When the feature flag is disabled, treat :global as nil for backward compatibility
+        scope = nil if scope == :global && Feature.disabled?(:enable_invalid_scope_error, :instance)
+
         strategy = IncrementResourceUsagePerAction.new(resource_key)
 
         _throttled?(key, scope: scope, strategy: strategy, threshold: threshold, interval: interval, peek: peek)
@@ -371,6 +382,19 @@ module Gitlab
         ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
       end
       strong_memoize_attr :initialize_filtered_params
+
+      def validate_scope!(key, scope, logger = Gitlab::AuthLogger)
+        return if scope
+
+        logger.warn(
+          message: 'Application_Rate_Limiter_Request_Without_Scope',
+          env: :"#{key}_request_limit"
+        )
+
+        return if Feature.disabled?(:enable_invalid_scope_error, :instance)
+
+        raise InvalidScopeError, 'scope cannot be nil. Use :global for global rate limits.'
+      end
     end
   end
 end

@@ -457,7 +457,7 @@ download_package:
 
 ### Download an entire package
 
-To download all files in a package, you must: 
+To download all files in a package, you must:
 
 1. Get the package ID.
 1. List the package contents using the GitLab API.

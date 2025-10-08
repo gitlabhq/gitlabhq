@@ -110,7 +110,7 @@ module ClickHouse # rubocop:disable Gitlab/BoundedContexts -- Existing module
           validate_columns!(fields, :group)
 
           # Note: Aggregation can't be grouped, so using @query_builder.table directly.
-          group(fields.map { |f| @query_builder.table[f] }.uniq)
+          group(*fields.map { |f| @query_builder.table[f] }.uniq)
         end
 
         # Meta methods for STATUSes

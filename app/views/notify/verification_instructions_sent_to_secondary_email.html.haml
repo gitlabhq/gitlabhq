@@ -1,0 +1,12 @@
+%div{ style: 'text-align:center;color:#1F1F1F;line-height:1.25em;max-width:400px;margin:0 auto;' }
+  %h3
+    = s_('IdentityVerification|Verification code sent to your secondary email address')
+  %p{ style: 'font-size:0.9em' }
+    = s_('IdentityVerification|We received a request to access your GitLab account with your secondary email address %{user_secondary_email}.') % { user_secondary_email: @user_secondary_email }
+  %p{ style: 'font-size:0.9em' }
+    = s_('IdentityVerification|If you have not tried to sign into your account, we recommend %{password_link_start}changing your password%{link_end} and %{two_fa_link_start}setting up Two-Factor Authentication%{link_end} to keep your account safe.').html_safe % { link_end: link_end,
+      password_link_start: link_start(@password_link),
+      two_fa_link_start: link_start(@two_fa_link) }
+  %p{ style: 'font-size:0.9em' }
+    = s_('IdentityVerification|To stop using this email with your GitLab account, remove it in your %{account_settings_link_start}account settings%{link_end}.').html_safe % { link_end: link_end,
+      account_settings_link_start: link_start(@account_settings_link) }

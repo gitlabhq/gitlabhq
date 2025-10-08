@@ -33810,6 +33810,12 @@ msgstr ""
 msgid "IdentityVerification|If you have not recently tried to sign into GitLab, we recommend changing your password (%{password_link}) and setting up Two-Factor Authentication (%{two_fa_link}) to keep your account safe."
 msgstr ""
 
+msgid "IdentityVerification|If you have not tried to sign into your account, we recommend %{password_link_start}changing your password%{link_end} and %{two_fa_link_start}setting up Two-Factor Authentication%{link_end} to keep your account safe."
+msgstr ""
+
+msgid "IdentityVerification|If you have not tried to sign into your account, we recommend changing your password (%{password_link}) and setting up Two-Factor Authentication (%{two_fa_link}) to keep your account safe."
+msgstr ""
+
 msgid "IdentityVerification|Maximum login attempts exceeded. Wait %{interval} and try again."
 msgstr ""
 
@@ -33876,6 +33882,12 @@ msgstr ""
 msgid "IdentityVerification|The code is incorrect. Enter it again, or send a new code."
 msgstr ""
 
+msgid "IdentityVerification|To stop using this email with your GitLab account, remove it in your %{account_settings_link_start}account settings%{link_end}."
+msgstr ""
+
+msgid "IdentityVerification|To stop using this email with your GitLab account, remove it in your account settings (%{account_settings_link})."
+msgstr ""
+
 msgid "IdentityVerification|Verification code"
 msgstr ""
 
@@ -33883,6 +33895,9 @@ msgid "IdentityVerification|Verification code can't be blank."
 msgstr ""
 
 msgid "IdentityVerification|Verification code must be a number."
+msgstr ""
+
+msgid "IdentityVerification|Verification code sent to your secondary email address"
 msgstr ""
 
 msgid "IdentityVerification|Verification successful"
@@ -33910,6 +33925,12 @@ msgid "IdentityVerification|Verify with a phone number instead?"
 msgstr ""
 
 msgid "IdentityVerification|Verify your identity"
+msgstr ""
+
+msgid "IdentityVerification|We received a request to access your GitLab account with your secondary email address %{user_secondary_email}."
+msgstr ""
+
+msgid "IdentityVerification|We received a request to access your GitLab account with your secondary email address (%{user_secondary_email})."
 msgstr ""
 
 msgid "IdentityVerification|We sent a new code to +%{phoneNumber}"
@@ -58234,6 +58255,9 @@ msgstr ""
 msgid "SecurityApprovals|Requires approval for decreases in test coverage."
 msgstr ""
 
+msgid "SecurityAttributes|+ Add security attributes"
+msgstr ""
+
 msgid "SecurityAttributes|+%{additionalAttributeCount} more"
 msgstr ""
 
@@ -58241,6 +58265,9 @@ msgid "SecurityAttributes|Add attribute"
 msgstr ""
 
 msgid "SecurityAttributes|Add security attribute"
+msgstr ""
+
+msgid "SecurityAttributes|Attributes"
 msgstr ""
 
 msgid "SecurityAttributes|Cancel"
@@ -58331,6 +58358,21 @@ msgid "SecurityAttributes|Selection type"
 msgstr ""
 
 msgid "SecurityAttributes|Single selection"
+msgstr ""
+
+msgid "SecurityAttributes|Successfully added %{addedCount} and removed %{removedCount} security attributes"
+msgstr ""
+
+msgid "SecurityAttributes|Successfully added %{addedCount} security attributes"
+msgstr ""
+
+msgid "SecurityAttributes|Successfully removed \"%{name}\" security attribute from this project"
+msgstr ""
+
+msgid "SecurityAttributes|Successfully removed %{removedCount} security attributes"
+msgstr ""
+
+msgid "SecurityAttributes|Successfully updated the security attributes"
 msgstr ""
 
 msgid "SecurityAttributes|Update attribute"
@@ -58698,6 +58740,9 @@ msgid "SecurityInventory|Dynamic Application Security Testing (DAST)"
 msgstr ""
 
 msgid "SecurityInventory|Dynamic application security testing (DAST)"
+msgstr ""
+
+msgid "SecurityInventory|Edit security attributes"
 msgstr ""
 
 msgid "SecurityInventory|GitLab Advanced SAST"

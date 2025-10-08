@@ -44,12 +44,13 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
       before do
         skip_default_enabled_yaml_check
 
-        allow(AuthorizedProjectsWorker).to receive(:get_deduplication_options).and_return(feature_flag: :my_feature_flag)
+        allow(AuthorizedProjectsWorker).to receive(:get_deduplication_options)
+                                             .and_return(feature_flag: :duplicate_job_feature_flag)
       end
 
       context 'when the feature flag is enabled' do
         before do
-          stub_feature_flags(my_feature_flag: true)
+          stub_feature_flags(duplicate_job_feature_flag: true)
         end
 
         it_behaves_like 'scheduling with deduplication class', 'UntilExecuted'
@@ -57,7 +58,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
 
       context 'when the feature flag is disabled' do
         before do
-          stub_feature_flags(my_feature_flag: false)
+          stub_feature_flags(duplicate_job_feature_flag: false)
         end
 
         it_behaves_like 'scheduling with deduplication class', 'None'

@@ -444,6 +444,11 @@ module Types
         description: 'ID of the job.'
     end
 
+    field :job_analytics,
+      resolver: Resolvers::Ci::JobAnalyticsResolver,
+      description: 'CI/CD job analytics for the project. Returns an error if ClickHouse is not configured.',
+      experiment: { milestone: '18.5' }
+
     field :pipelines,
       null: true,
       calls_gitaly: true,

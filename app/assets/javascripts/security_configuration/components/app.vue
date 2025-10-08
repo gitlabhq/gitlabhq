@@ -27,9 +27,9 @@ import TrainingProviderList from './training_provider_list.vue';
 export default {
   i18n,
   components: {
-    ApplySecurityAttributes: () =>
+    ProjectSecurityAttributesList: () =>
       import(
-        'ee_component/security_configuration/security_attributes/components/apply_security_attributes.vue'
+        'ee_component/security_configuration/security_attributes/components/project_attributes_list.vue'
       ),
     AutoDevOpsAlert,
     AutoDevOpsEnabledAlert,
@@ -282,7 +282,7 @@ export default {
         :title="s__('SecurityAttributes|Security attributes')"
         query-param-value="security-attributes"
       >
-        <apply-security-attributes />
+        <project-security-attributes-list />
       </gl-tab>
     </gl-tabs>
   </article>

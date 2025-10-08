@@ -166,10 +166,10 @@ curl --request POST \
   --header "Content-Type: application/json" \
   --url "https://gitlab.example.com/api/v4/groups/128/protected_environments" \
   --data '{
-    "name": "production", 
-    "deploy_access_levels": [{"group_id": 138}], 
+    "name": "production",
+    "deploy_access_levels": [{"group_id": 138}],
     "approval_rules": [
-      {"group_id": 134}, 
+      {"group_id": 134},
       {"group_id": 135, "required_approvals": 2}
     ]
   }'
