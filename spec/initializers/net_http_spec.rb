@@ -25,30 +25,6 @@ RSpec.describe 'Net::Http patch', :request_store, feature_category: :integration
         res.body = gzip_compress(two_mega_bytes_body)
       end
 
-      server.mount_proc '/continue' do |_req, res|
-        res.status = 100
-        res['Content-Type'] = 'text/plain'
-        res.body = 'Continue'
-      end
-
-      server.mount_proc '/switching-protocols' do |_req, res|
-        res.status = 101
-        res['Content-Type'] = 'text/plain'
-        res.body = 'Switching Protocols'
-      end
-
-      server.mount_proc '/processing' do |_req, res|
-        res.status = 102
-        res['Content-Type'] = 'text/plain'
-        res.body = 'Processing'
-      end
-
-      server.mount_proc '/early_hints' do |_req, res|
-        res.status = 103
-        res['Content-Type'] = 'text/plain'
-        res.body = 'Early Hints'
-      end
-
       trap("INT") { server.shutdown }
 
       server.start
@@ -137,49 +113,6 @@ RSpec.describe 'Net::Http patch', :request_store, feature_category: :integration
 
     include_examples 'does not raise error' do
       let(:path) { 'gzip' }
-    end
-  end
-
-  describe 'HTTPInformation monkey patch with HTTP requests' do
-    it 'raises InvalidResponseError when server returns 100 Continue' do
-      expect do
-        Net::HTTP.get_response(URI("http://localhost:4567/continue"))
-      end.to raise_error(Gitlab::HTTP::InvalidResponseError, 'Invalid server response: 1xx responses not supported')
-    end
-
-    it 'raises InvalidResponseError when server returns 101 Switching Protocols' do
-      expect do
-        Net::HTTP.get_response(URI("http://localhost:4567/switching-protocols"))
-      end.to raise_error(Gitlab::HTTP::InvalidResponseError, 'Invalid server response: 1xx responses not supported')
-    end
-
-    it 'raises InvalidResponseError when server returns 102 Processing' do
-      expect do
-        Net::HTTP.get_response(URI("http://localhost:4567/processing"))
-      end.to raise_error(Gitlab::HTTP::InvalidResponseError, 'Invalid server response: 1xx responses not supported')
-    end
-
-    it 'raises InvalidResponseError when server returns 103 Early Hints' do
-      expect do
-        Net::HTTP.get_response(URI("http://localhost:4567/early_hints"))
-      end.to raise_error(Gitlab::HTTP::InvalidResponseError, 'Invalid server response: 1xx responses not supported')
-    end
-
-    # Test with different HTTP methods
-    it 'raises InvalidResponseError on POST request returning 1xx' do
-      expect do
-        uri = URI("http://localhost:4567/continue")
-        Net::HTTP.post(uri, 'test data')
-      end.to raise_error(Gitlab::HTTP::InvalidResponseError, 'Invalid server response: 1xx responses not supported')
-    end
-
-    it 'raises InvalidResponseError with custom HTTP instance' do
-      expect do
-        http = Net::HTTP.new('localhost', 4567)
-        http.start do |connection|
-          connection.get('/continue')
-        end
-      end.to raise_error(Gitlab::HTTP::InvalidResponseError, 'Invalid server response: 1xx responses not supported')
     end
   end
 end

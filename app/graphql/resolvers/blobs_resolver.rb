@@ -22,10 +22,6 @@ module Resolvers
       default_value: nil,
       description: 'Type of ref.'
 
-    def self.complexity_multiplier(args)
-      args[:paths].count > 1 ? 0.1 : 0
-    end
-
     # We fetch blobs from Gitaly efficiently but it still scales O(N) with the
     # number of paths being fetched, so apply a scaling limit to that.
     def self.resolver_complexity(args, child_complexity:)

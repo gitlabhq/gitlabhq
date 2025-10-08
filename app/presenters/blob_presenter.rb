@@ -38,13 +38,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   def plain_data
     return if blob.binary?
 
-    Gitlab::Highlight.highlight(
-      blob.path,
-      blob_data(nil),
-      language: blob_language,
-      plain: false,
-      used_on: :blob
-    )
+    highlight(plain: false)
   end
 
   def trimmed_blob_data(trim_length)

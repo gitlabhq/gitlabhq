@@ -145,7 +145,9 @@ RSpec.describe Gitlab::Middleware::JsonValidation, feature_category: :shared do
     context 'with different JSON content types' do
       shared_examples 'validates JSON content type' do
         it 'validates the request' do
-          expect(::Oj).to receive(:sc_parse).with(an_instance_of(Gitlab::Json::StreamValidator), body)
+          validator = instance_double(::Gitlab::Json::StreamValidator, metadata: {})
+          expect(::Gitlab::Json::StreamValidator).to receive(:new).and_return(validator)
+          expect(::Oj).to receive(:sc_parse).with(validator, body)
           expect(app).to receive(:call).with(env)
 
           middleware.call(env)

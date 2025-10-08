@@ -6,13 +6,12 @@ RSpec.describe Resolvers::BlobsResolver, feature_category: :source_code_manageme
   include GraphqlHelpers
   include RepoHelpers
 
-  describe '.complexity_multiplier' do
-    it 'returns 0 for a single path' do
-      expect(described_class.complexity_multiplier({ paths: [123] })).to eq(0)
-    end
+  describe '.resolver_complexity' do
+    it 'adds one per path being resolved' do
+      control = described_class.resolver_complexity({}, child_complexity: 1)
 
-    it 'returns 0.1 for multiple paths' do
-      expect(described_class.complexity_multiplier({ paths: [123, 456] })).to eq(0.1)
+      expect(described_class.resolver_complexity({ paths: %w[a b c] }, child_complexity: 1))
+        .to eq(control + 3)
     end
   end
 

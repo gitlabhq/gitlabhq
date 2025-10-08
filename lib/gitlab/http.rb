@@ -9,7 +9,6 @@ module Gitlab
     SilentModeBlockedError = Gitlab::HTTP_V2::SilentModeBlockedError
     ResponseSizeTooLarge = Gitlab::HTTP_V2::ResponseSizeTooLarge
     MaxDecompressionSizeError = Gitlab::HTTP_V2::MaxDecompressionSizeError
-    InvalidResponseError = Gitlab::HTTP_V2::InvalidResponseError
 
     HTTP_TIMEOUT_ERRORS = Gitlab::HTTP_V2::HTTP_TIMEOUT_ERRORS
     HTTP_ERRORS = Gitlab::HTTP_V2::HTTP_ERRORS

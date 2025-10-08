@@ -2,21 +2,6 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
-## 18.3.4 (2025-10-08)
-
-### Fixed (2 changes)
-
-- [Remove non Saas instances from calling CDOT for trial duration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/764210b1790db3e4984ecbd404f211c0668af1a4) **GitLab Enterprise Edition**
-- [Transfer start and due dates data upon work item move or clone](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ec7a2082e1229aa64d0b1529135f2fb209ba656d)
-
-### Security (5 changes)
-
-- [Log JSON bytesize as well](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bd818dff7bb196ba52e428e8a90eb33869f60fa2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5389))
-- [Adjust complexity for blob data fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/13b1fb00de0ab7db943c579b612b813199084f29) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5385))
-- [Some mutations have read_api scope](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a2c70f53fde77761905c184021dba0a1c74013c8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5369))
-- [Reject irrelevant 1xx responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e8060c8dd0cd6a268ac654b177e2ef7b28b2b245) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5302))
-- [Restrict manual variables to explicit guests in internal projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/dcb8ddf94070937b7a245a9f300fede051a30252) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5365))
-
 ## 18.3.3 (2025-09-25)
 
 ### Added (1 change)

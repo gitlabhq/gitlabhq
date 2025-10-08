@@ -18,7 +18,6 @@ RSpec.describe Gitlab::Logging::JsonMetadataHelper, feature_category: :observabi
       let(:env) do
         {
           ::Gitlab::Middleware::JsonValidation::RACK_ENV_METADATA_KEY => {
-            body_bytesize: 102,
             total_elements: 100,
             max_array_count: 50,
             max_hash_count: 25,
@@ -31,7 +30,6 @@ RSpec.describe Gitlab::Logging::JsonMetadataHelper, feature_category: :observabi
         helper.store_json_metadata_headers!(payload, request)
 
         expect(payload).to eq({
-          json_body_bytesize: 102,
           json_total_elements: 100,
           json_max_array_count: 50,
           json_max_hash_count: 25,

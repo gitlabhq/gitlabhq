@@ -467,12 +467,6 @@ RSpec.describe BlobPresenter do
       it 'returns plain content' do
         expect(presenter.plain_data).to include('<span id="LC1" class="line" lang="markdown">')
       end
-
-      it 'does not load whole blob' do
-        expect(presenter).not_to receive(:load_all_blob_data)
-
-        presenter.plain_data
-      end
     end
 
     context 'when blob has syntax' do

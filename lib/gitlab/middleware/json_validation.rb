@@ -10,6 +10,8 @@ module Gitlab
     # - Multiple validation modes: :enforced, :logging, :disabled
     # - Configurable limits for depth, array size, hash size, total elements, and body size
     class JsonValidation
+      BodySizeExceededError = Class.new(StandardError)
+
       RACK_ENV_METADATA_KEY = "gitlab.json.validation.metadata"
 
       TERRAFORM_STATE_PATH = %r{
@@ -175,7 +177,7 @@ module Gitlab
       def allow_if_validated(env, request, limits)
         validate_json_request!(env, request, limits)
         @app.call(env)
-      rescue ::Gitlab::Json::StreamValidator::LimitExceededError => ex
+      rescue BodySizeExceededError, ::Gitlab::Json::StreamValidator::LimitExceededError => ex
         log_exceeded(ex, request, limits)
 
         return error_response(ex, 400) unless logging_mode?(limits)
@@ -260,8 +262,12 @@ module Gitlab
 
         return if body.empty?
 
+        if limits[:max_json_size_bytes].to_i > 0 && body.bytesize > limits[:max_json_size_bytes]
+          raise BodySizeExceededError, "JSON body too large: #{body.bytesize} bytes"
+        end
+
         handler = ::Gitlab::Json::StreamValidator.new(limits)
-        handler.sc_parse(body)
+        ::Oj.sc_parse(handler, body)
       # Could be either a Oj::ParseError or an EncodingError depending on
       # whether mimic_JSON has been called.
       rescue Oj::ParseError, EncodingError
@@ -289,7 +295,7 @@ module Gitlab
                     "Hash parameter too large"
                   when ::Gitlab::Json::StreamValidator::ElementCountLimitError
                     "Too many total parameters"
-                  when ::Gitlab::Json::StreamValidator::BodySizeExceededError
+                  when BodySizeExceededError
                     "JSON body too large"
                   else
                     "Invalid JSON: limit exceeded"

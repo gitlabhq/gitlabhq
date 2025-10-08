@@ -68,11 +68,10 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
 
   describe ':read_manual_variables' do
     context 'when project is public' do
-      let_it_be(:project) { create(:project, :public) }
-      let_it_be(:user) { create(:user) }
+      let(:project) { create(:project, :public) }
 
       context 'when user is at least a developer' do
-        before_all do
+        before do
           project.add_developer(user)
         end
 
@@ -82,33 +81,9 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
       end
 
       context 'when user is a developer or below' do
-        before_all do
+        before do
           project.add_guest(user)
         end
-
-        it 'is not allowed' do
-          expect(policy).not_to be_allowed :read_manual_variables
-        end
-      end
-    end
-
-    context 'when project is internal' do
-      let_it_be(:project) { create(:project, :internal) }
-
-      context 'when user is an explicit member of the project' do
-        let_it_be(:user) { create(:user) }
-
-        before_all do
-          project.add_guest(user)
-        end
-
-        it 'is allowed' do
-          expect(policy).to be_allowed :read_manual_variables
-        end
-      end
-
-      context 'when user is not a member of the project but has implicit guest access' do
-        let(:user) { create(:user) }
 
         it 'is not allowed' do
           expect(policy).not_to be_allowed :read_manual_variables
@@ -117,11 +92,10 @@ RSpec.describe Ci::BuildPolicy, feature_category: :continuous_integration do
     end
 
     context 'when project is private' do
-      let_it_be(:project) { create(:project, :private) }
-      let_it_be(:user) { create(:user) }
+      let(:project) { create(:project, :private) }
 
       context 'when user is a guest and a member of the project' do
-        before_all do
+        before do
           project.add_guest(user)
         end
 
