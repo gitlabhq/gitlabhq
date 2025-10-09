@@ -158,7 +158,6 @@ RSpec/ExampleWithoutDescription:
     - 'ee/spec/requests/api/project_google_cloud_integration_spec.rb'
     - 'ee/spec/requests/api/project_push_rule_spec.rb'
     - 'ee/spec/requests/api/releases_spec.rb'
-    - 'ee/spec/requests/api/search_spec.rb'
     - 'ee/spec/requests/groups/security/credentials_controller_spec.rb'
     - 'ee/spec/requests/projects/secrets_controller_spec.rb'
     - 'ee/spec/serializers/ee/group_child_entity_spec.rb'

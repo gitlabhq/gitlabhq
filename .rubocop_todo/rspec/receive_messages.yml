@@ -113,7 +113,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/requests/api/internal/ai/x_ray/scan_spec.rb'
     - 'ee/spec/requests/api/internal/observability_spec.rb'
     - 'ee/spec/requests/api/project_mirror_spec.rb'
-    - 'ee/spec/requests/api/search_spec.rb'
     - 'ee/spec/requests/api/vulnerabilities_spec.rb'
     - 'ee/spec/requests/phone_verification/telesign_callbacks_controller_spec.rb'
     - 'ee/spec/requests/users/identity_verification_controller_spec.rb'
