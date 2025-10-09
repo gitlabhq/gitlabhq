@@ -11,6 +11,7 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
       expect(token.impersonation).to eq(params[:impersonation])
       expect(token.scopes).to eq(params[:scopes])
       expect(token.expires_at).to eq(params[:expires_at])
+      expect(token.granular?).to eq(!!params[:granular])
       expect(token.organization).to eq(organization)
       expect(token.user).to eq(user)
       expect(token.user_type).to eq(user.user_type)
@@ -123,6 +124,13 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
 
         it { expect(subject.message).to be_an_instance_of(Array) }
       end
+    end
+
+    context 'when creating a granular token' do
+      let(:current_user) { user }
+      let(:params) { { name: 'gPAT', impersonation: false, granular: true, scopes: [:granular], expires_at: Date.today + 1.month } }
+
+      it_behaves_like 'a successfully created token'
     end
   end
 end

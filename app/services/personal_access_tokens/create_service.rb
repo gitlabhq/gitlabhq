@@ -39,7 +39,8 @@ module PersonalAccessTokens
         scopes: params[:scopes],
         expires_at: pat_expiration,
         organization_id: organization_id,
-        description: params[:description]
+        description: params[:description],
+        granular: params[:granular] || false
       }
     end
 

@@ -17,13 +17,15 @@ module Gitlab
     CREATE_RUNNER_SCOPE = :create_runner
     MANAGE_RUNNER_SCOPE = :manage_runner
     MCP_SCOPE = :mcp
+    GRANULAR_SCOPE = :granular
     API_SCOPES = [
       API_SCOPE, READ_API_SCOPE,
       READ_USER_SCOPE,
       CREATE_RUNNER_SCOPE, MANAGE_RUNNER_SCOPE,
       K8S_PROXY_SCOPE,
       SELF_ROTATE_SCOPE,
-      MCP_SCOPE
+      MCP_SCOPE,
+      GRANULAR_SCOPE
     ].freeze
 
     # Scopes for Duo

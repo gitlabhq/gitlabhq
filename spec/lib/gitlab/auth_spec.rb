@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
   describe 'constants' do
     it 'API_SCOPES contains all scopes for API access' do
-      expect(subject::API_SCOPES).to match_array %i[api read_user read_api create_runner manage_runner k8s_proxy self_rotate mcp]
+      expect(subject::API_SCOPES).to match_array %i[api read_user read_api create_runner manage_runner k8s_proxy self_rotate mcp granular]
     end
 
     it 'ADMIN_SCOPES contains all scopes for ADMIN access' do
@@ -50,8 +50,9 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     end
 
     it 'contains all non-default scopes' do
-      # MCP_SCOPE is available, but not in the UI.
-      expect(subject.all_available_scopes - [subject::MCP_SCOPE]).to match_array(subject::UI_SCOPES_ORDERED_BY_PERMISSION)
+      # MCP_SCOPE and GRANULAR_SCOPEs are available, but not in the UI.
+      expect(subject.all_available_scopes - [subject::MCP_SCOPE, subject::GRANULAR_SCOPE])
+        .to match_array(subject::UI_SCOPES_ORDERED_BY_PERMISSION)
     end
 
     it 'contains for non-admin user all non-default scopes without ADMIN access and without observability scopes' do
@@ -60,6 +61,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       expect(subject.available_scopes_for(user)).to match_array %i[
         api read_user read_api read_repository write_repository read_registry write_registry
         create_runner manage_runner k8s_proxy ai_features self_rotate read_virtual_registry write_virtual_registry mcp
+        granular
       ]
     end
 
@@ -69,6 +71,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       expect(subject.available_scopes_for(user)).to match_array %i[
         api read_user read_api read_repository read_service_ping write_repository read_registry write_registry
         sudo admin_mode create_runner manage_runner k8s_proxy ai_features self_rotate read_virtual_registry write_virtual_registry mcp
+        granular
       ]
     end
 
@@ -76,7 +79,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       expect(subject.available_scopes_for(project)).to match_array %i[
         api read_api read_repository write_repository read_registry write_registry
         read_observability write_observability create_runner manage_runner k8s_proxy ai_features
-        self_rotate mcp
+        self_rotate mcp granular
       ]
     end
 
@@ -86,7 +89,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       expect(subject.available_scopes_for(group)).to match_array %i[
         api read_api read_repository write_repository read_registry write_registry
         read_observability write_observability create_runner manage_runner k8s_proxy ai_features
-        self_rotate read_virtual_registry write_virtual_registry mcp
+        self_rotate read_virtual_registry write_virtual_registry mcp granular
       ]
     end
 
@@ -120,6 +123,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
         write_repository
         read_virtual_registry
         write_virtual_registry
+        granular
       ]
     end
 
@@ -136,7 +140,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
           expect(subject.available_scopes_for(group)).to match_array %i[
             api read_api read_repository write_repository read_registry write_registry create_runner manage_runner
-            k8s_proxy ai_features self_rotate read_virtual_registry write_virtual_registry mcp
+            k8s_proxy ai_features self_rotate read_virtual_registry write_virtual_registry mcp granular
           ]
         end
 
@@ -148,7 +152,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
           expect(subject.available_scopes_for(project)).to match_array %i[
             api read_api read_repository write_repository read_registry write_registry create_runner manage_runner
-            k8s_proxy ai_features self_rotate mcp
+            k8s_proxy ai_features self_rotate mcp granular
           ]
         end
       end
@@ -169,7 +173,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           expect(subject.available_scopes_for(group)).to match_array %i[
             api read_api read_repository write_repository read_registry write_registry
             read_observability write_observability create_runner manage_runner k8s_proxy ai_features
-            self_rotate read_virtual_registry write_virtual_registry mcp
+            self_rotate read_virtual_registry write_virtual_registry mcp granular
           ]
         end
 
@@ -179,6 +183,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           expect(subject.available_scopes_for(user)).to match_array %i[
             api read_user read_api read_repository write_repository read_registry write_registry read_service_ping
             sudo admin_mode create_runner manage_runner k8s_proxy ai_features self_rotate read_virtual_registry write_virtual_registry mcp
+            granular
           ]
         end
 
@@ -186,7 +191,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           expect(subject.available_scopes_for(project)).to match_array %i[
             api read_api read_repository write_repository read_registry write_registry
             read_observability write_observability create_runner manage_runner k8s_proxy ai_features
-            self_rotate mcp
+            self_rotate mcp granular
           ]
         end
 
@@ -199,7 +204,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           expect(subject.available_scopes_for(other_group)).to match_array %i[
             api read_api read_repository write_repository read_registry write_registry
             create_runner manage_runner k8s_proxy ai_features
-            self_rotate read_virtual_registry write_virtual_registry mcp
+            self_rotate read_virtual_registry write_virtual_registry mcp granular
           ]
         end
 
@@ -212,7 +217,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
           expect(subject.available_scopes_for(other_project)).to match_array %i[
             api read_api read_repository write_repository read_registry write_registry
-            create_runner manage_runner k8s_proxy ai_features self_rotate mcp
+            create_runner manage_runner k8s_proxy ai_features self_rotate mcp granular
           ]
         end
       end

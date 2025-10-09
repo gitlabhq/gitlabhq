@@ -23992,6 +23992,17 @@ Returns [`codeSuggestionMetrics`](#codesuggestionmetrics).
 | ---- | ---- | ----------- |
 | <a id="aimetricscodesuggestionslanguages"></a>`languages` | [`[String!]`](#string) | Filter code suggestion metrics by one or more languages. |
 
+### `AiMetricsBasic`
+
+AI-related metrics with three months of data retention.
+Premium and Ultimate with GitLab Duo Pro and Enterprise only.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aimetricsbasiccodesuggestions"></a>`codeSuggestions` | [`codeSuggestionMetricsBasic`](#codesuggestionmetricsbasic) | Code Suggestions metrics. |
+
 ### `AiModelSelectionNamespaceFeatureSetting`
 
 Model Selection feature setting for namespaces.
@@ -31195,6 +31206,24 @@ Returns [`AiMetrics`](#aimetrics).
 | ---- | ---- | ----------- |
 | <a id="groupaimetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
 | <a id="groupaimetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
+
+##### `Group.aiMetricsBasic`
+
+{{< details >}}
+**Introduced** in GitLab 18.5.
+**Status**: Experiment.
+{{< /details >}}
+
+AI-related metrics with three months of data retention.
+
+Returns [`AiMetricsBasic`](#aimetricsbasic).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupaimetricsbasicenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
+| <a id="groupaimetricsbasicstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
 
 ##### `Group.aiUserMetrics`
 
@@ -39293,6 +39322,24 @@ Returns [`AiMetrics`](#aimetrics).
 | <a id="projectaimetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
 | <a id="projectaimetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
 
+##### `Project.aiMetricsBasic`
+
+{{< details >}}
+**Introduced** in GitLab 18.5.
+**Status**: Experiment.
+{{< /details >}}
+
+AI-related metrics with three months of data retention.
+
+Returns [`AiMetricsBasic`](#aimetricsbasic).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectaimetricsbasicenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. |
+| <a id="projectaimetricsbasicstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. |
+
 ##### `Project.aiUserMetrics`
 
 {{< details >}}
@@ -47204,6 +47251,18 @@ Requires ClickHouse. Premium and Ultimate with GitLab Duo Pro and Enterprise onl
 | <a id="codesuggestionmetricslanguages"></a>`languages` | [`[String!]`](#string) | List of languages with at least one suggestion shown or accepted. |
 | <a id="codesuggestionmetricsshowncount"></a>`shownCount` | [`Int`](#int) | Total count of code suggestions shown. |
 | <a id="codesuggestionmetricsshownlinesofcode"></a>`shownLinesOfCode` | [`Int`](#int) | Sum of lines of code from code suggestions shown. |
+
+### `codeSuggestionMetricsBasic`
+
+AI-related metrics with three months of data retention.
+Premium and Ultimate with GitLab Duo Pro and Enterprise only.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="codesuggestionmetricsbasicacceptedcount"></a>`acceptedCount` | [`Int`](#int) | Total count of code suggestions accepted. |
+| <a id="codesuggestionmetricsbasicshowncount"></a>`shownCount` | [`Int`](#int) | Total count of code suggestions shown. |
 
 ## Enumeration types
 

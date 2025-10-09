@@ -72818,13 +72818,13 @@ msgstr ""
 msgid "VulnerabilityManagement|Reason detail: %{comment}"
 msgstr ""
 
+msgid "VulnerabilityManagement|Recheck"
+msgstr ""
+
 msgid "VulnerabilityManagement|Related Jira issues"
 msgstr ""
 
 msgid "VulnerabilityManagement|Requires assessment"
-msgstr ""
-
-msgid "VulnerabilityManagement|Retry"
 msgstr ""
 
 msgid "VulnerabilityManagement|Select a method"

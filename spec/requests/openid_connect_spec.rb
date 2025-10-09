@@ -275,7 +275,7 @@ RSpec.describe 'OpenID Connect requests', feature_category: :system_access do
       %w[
         admin_mode api read_user read_api read_repository write_repository sudo openid profile email
         read_observability write_observability create_runner manage_runner mcp k8s_proxy ai_features read_service_ping ai_workflows
-        user:* self_rotate
+        user:* self_rotate granular
       ]
     end
 

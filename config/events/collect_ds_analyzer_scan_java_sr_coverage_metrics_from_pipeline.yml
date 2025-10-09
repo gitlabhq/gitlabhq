@@ -1,0 +1,24 @@
+---
+description: The event tracks Dependency Scanner reachability coverage for Java SBOMs
+internal_events: true
+status: active
+action: collect_ds_analyzer_scan_java_sr_coverage_metrics_from_pipeline
+identifiers:
+- project
+- namespace
+additional_properties:
+  property:
+    description: Scan UUID
+  label:
+    description: Input file path
+  value:
+    description: Coverage percentage
+product_group: composition_analysis
+product_categories:
+- software_composition_analysis
+milestone: '18.5'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207864
+tiers:
+- free
+- premium
+- ultimate

@@ -240,20 +240,21 @@ describe('PipelineSecretDetectionFeatureCard component', () => {
   });
 
   describe('validity checks section', () => {
-    it.each`
-      validityChecksAvailable | shouldRender
-      ${true}                 | ${true}
-      ${false}                | ${false}
-    `(
-      'should render $shouldRender when validityChecksAvailable=$validityChecksAvailable',
-      ({ validityChecksAvailable, shouldRender }) => {
-        feature = makeFeature({ available: true });
-        createComponent({}, { validityChecksAvailable });
+    it('should render when validityChecksAvailable=true', () => {
+      feature = makeFeature({ available: true });
+      createComponent({}, { validityChecksAvailable: true });
 
-        expect(findValidityChecksSection().exists()).toBe(shouldRender);
-        expect(findExperimentBadge().exists()).toBe(shouldRender);
-      },
-    );
+      expect(findValidityChecksSection().exists()).toBe(true);
+      expect(findExperimentBadge().props('type')).toBe('beta');
+    });
+
+    it('should not render when validityChecksAvailable=false', () => {
+      feature = makeFeature({ available: true });
+      createComponent({}, { validityChecksAvailable: false });
+
+      expect(findValidityChecksSection().exists()).toBe(false);
+      expect(findExperimentBadge().exists()).toBe(false);
+    });
 
     describe('toggle state', () => {
       it.each`

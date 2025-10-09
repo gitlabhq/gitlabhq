@@ -42404,7 +42404,11 @@ CREATE UNIQUE INDEX index_system_access_microsoft_applications_on_namespace_id O
 
 CREATE UNIQUE INDEX index_system_note_metadata_on_description_version_id ON system_note_metadata USING btree (description_version_id) WHERE (description_version_id IS NOT NULL);
 
+CREATE INDEX index_system_note_metadata_on_namespace_id ON system_note_metadata USING btree (namespace_id);
+
 CREATE UNIQUE INDEX index_system_note_metadata_on_note_id ON system_note_metadata USING btree (note_id);
+
+CREATE INDEX index_system_note_metadata_on_organization_id ON system_note_metadata USING btree (organization_id);
 
 CREATE INDEX index_tag_gpg_signatures_on_gpg_key_id ON tag_gpg_signatures USING btree (gpg_key_id);
 
@@ -47832,6 +47836,9 @@ ALTER TABLE ONLY user_project_callouts
 ALTER TABLE ONLY projects_branch_rules_squash_options
     ADD CONSTRAINT fk_33b614a558 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY system_note_metadata
+    ADD CONSTRAINT fk_3434d396c6 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY namespaces
     ADD CONSTRAINT fk_3448c97865 FOREIGN KEY (push_rule_id) REFERENCES push_rules(id) ON DELETE SET NULL;
 
@@ -48437,6 +48444,9 @@ ALTER TABLE ONLY approval_project_rules
 
 ALTER TABLE ONLY agent_user_access_project_authorizations
     ADD CONSTRAINT fk_78034b05d8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY system_note_metadata
+    ADD CONSTRAINT fk_7836f9b848 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_78558e5d74 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE NOT VALID;

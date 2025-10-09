@@ -1899,8 +1899,8 @@ ee/app/workers/ai/repository_xray/
 /jh/doc/
 
 [Geo]
-/doc/**/geo/**.md @luciezhao @nhxnguyen @axil @phillipwells @aqualls
-geo_**.md @luciezhao @nhxnguyen @axil @phillipwells @aqualls
+/doc/**/geo/**.md @luciezhao @nhxnguyen @axil @phillipwells @aqualls @kpaizee @sselhorn @fneill
+geo_**.md @luciezhao @nhxnguyen @axil @phillipwells @aqualls @kpaizee @sselhorn @fneill
 /ee/**/geo/ @gitlab-org/geo-team/geo-backend
 /qa/**/geo/ @gitlab-org/geo-team/geo-backend
 /node_modules/**/geo/ @gitlab-org/geo-team/geo-backend

@@ -1458,10 +1458,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.147.0.tgz#94317211774a720accee80de448606d28e8f008f"
   integrity sha512-SrewOFmd9pXSRxXKL2eqAzI9aRf9I1rnUUyJZwsRSnFOirMICTUqZ0bAwwqfIkDlABmfVpBIyLyj7OXn6bx98Q==
 
-"@gitlab/ui@123.6.0":
-  version "123.6.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-123.6.0.tgz#8fdf7aaebef6b327e32f2fe437cd524a1ba7782e"
-  integrity sha512-z7vob2oigF2ARIOKPIWHrfaZihCsgSmWt02SBBZ4dpHnP4uBqu+oRaIeEAlabUBHTWrYbHIxwwuvb0TMUCBhew==
+"@gitlab/ui@123.6.1":
+  version "123.6.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-123.6.1.tgz#cccc7522c903930b5ce5e39ee2f8cfc1ff031619"
+  integrity sha512-pZuXxoN7wnRm/LsWqZF8j8OBx+WYtlRCbqzYX0sXqQK/IKEDGWkGaBTHnAK0oVSGZ6QgVVMqNx0hVPH4Opbm7Q==
   dependencies:
     "@floating-ui/dom" "1.7.4"
     echarts "^5.6.0"
@@ -3897,10 +3897,10 @@
     "@typescript-eslint/types" "7.16.0"
     eslint-visitor-keys "^3.4.3"
 
-"@vitejs/plugin-vue2@^2.3.3":
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/@vitejs/plugin-vue2/-/plugin-vue2-2.3.3.tgz#6e1772caeb66914bfcc49bea21d08949d43b3fde"
-  integrity sha512-qexY6+bbwY8h0AZerzUuGywNTi0cLOkbiSbggr0R3WEW95iB2hblQFyv4MAkkc2vm4gZN1cO5kzT1Kp6xlVzZw==
+"@vitejs/plugin-vue2@^2.3.4":
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/@vitejs/plugin-vue2/-/plugin-vue2-2.3.4.tgz#6240f34fa400c32437b458611e176e0b435cf56e"
+  integrity sha512-LgqtRRedJb1KdmgcllwGX0gtlPvOvtR6pITXmqxGwQhBZaAysg0Hd7wvj3sjCsj4+PENWsqS7O+ceYSOgJ+H9g==
 
 "@vue/apollo-components@^4.0.0-beta.4":
   version "4.0.0-beta.4"
@@ -15336,10 +15336,10 @@ vite-plugin-ruby@^5.1.1:
     debug "^4.3.4"
     fast-glob "^3.3.2"
 
-vite@7.1.7:
-  version "7.1.7"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-7.1.7.tgz#ed3f9f06e21d6574fe1ad425f6b0912d027ffc13"
-  integrity sha512-VbA8ScMvAISJNJVbRDTJdCwqQoAareR/wutevKanhR2/1EkoXVZVkkORaYm/tNVCjP/UDTKtcw3bAkwOUdedmA==
+vite@7.1.9:
+  version "7.1.9"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-7.1.9.tgz#ba844410e5d0c0f2a4eaf17a52af60ebea322cbf"
+  integrity sha512-4nVGliEpxmhCL8DslSAUdxlB6+SMrhB0a1v5ijlh1xB1nEPuy1mxaHxysVucLHuWryAxLWg6a5ei+U4TLn/rFg==
   dependencies:
     esbuild "^0.25.0"
     fdir "^6.5.0"

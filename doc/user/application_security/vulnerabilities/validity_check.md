@@ -7,7 +7,7 @@ title: Validity checks
 
 {{< details >}}
 
-Status: Experiment
+Status: Beta
 
 - Tier: Ultimate
 - Offering: GitLab.com
@@ -17,6 +17,8 @@ Status: Experiment
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/520923) in GitLab 18.0 [with a flag](../../../api/feature_flags.md) named `validity_checks`. Disabled by default.
+- Additional access [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556765) in GitLab 18.2 with a flag named `validity_checks_security_finding_status`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206929) from experiment to beta in GitLab 18.5.
 
 {{< /history >}}
 
