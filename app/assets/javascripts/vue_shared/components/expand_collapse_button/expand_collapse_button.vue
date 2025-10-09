@@ -1,6 +1,6 @@
 <script>
 import { GlAnimatedChevronLgDownUpIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 
 export default {
   name: 'ExpandCollapseButton',
@@ -26,10 +26,17 @@ export default {
         return ['small', 'medium'].includes(value);
       },
     },
+    accessibleLabel: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     toggleLabel() {
-      return this.isCollapsed ? __('Expand') : __('Collapse');
+      return this.isCollapsed
+        ? sprintf(__('Expand %{accessibleLabel}'), { accessibleLabel: this.accessibleLabel })
+        : sprintf(__('Collapse %{accessibleLabel}'), { accessibleLabel: this.accessibleLabel });
     },
     ariaExpandedAttr() {
       return this.isCollapsed ? 'false' : 'true';

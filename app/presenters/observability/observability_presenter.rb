@@ -2,6 +2,8 @@
 
 module Observability
   class ObservabilityPresenter
+    include Gitlab::Utils::StrongMemoize
+
     PATHS = {
       'services' => 'Services',
       'traces-explorer' => 'Traces Explorer',
@@ -27,8 +29,16 @@ module Observability
     end
 
     def auth_tokens
-      formatted_auth_tokens
+      return {} unless observability_setting
+
+      tokens = Observability::O11yToken.generate_tokens(observability_setting)
+      tokens.transform_keys { |key| key.to_s.underscore }
+    rescue StandardError => e
+      Gitlab::ErrorTracking.log_exception(e)
+
+      {}
     end
+    strong_memoize_attr :auth_tokens
 
     def url_with_path
       return unless observability_setting&.o11y_service_url
@@ -40,9 +50,13 @@ module Observability
       {
         o11y_url: observability_setting&.o11y_service_url,
         path: @path,
-        auth_tokens: formatted_auth_tokens,
+        auth_tokens: auth_tokens,
         title: title
       }
+    end
+
+    def provisioning?
+      auth_tokens&.dig('status') == :provisioning
     end
 
     private
@@ -51,17 +65,6 @@ module Observability
 
     def observability_setting
       @observability_setting ||= @group.observability_group_o11y_setting
-    end
-
-    def formatted_auth_tokens
-      return {} unless observability_setting
-
-      tokens = Observability::O11yToken.generate_tokens(observability_setting)
-      tokens.transform_keys { |key| key.to_s.underscore }
-    rescue StandardError => e
-      Gitlab::ErrorTracking.log_exception(e)
-
-      {}
     end
   end
 end

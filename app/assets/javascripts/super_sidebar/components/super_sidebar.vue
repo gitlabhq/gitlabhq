@@ -237,7 +237,7 @@ export default {
   <div v-if="menuItems.length || !projectStudioEnabled" class="super-sidebar-wrapper">
     <div ref="overlay" class="super-sidebar-overlay" @click="collapseSidebar"></div>
     <gl-button
-      v-if="sidebarData.is_logged_in"
+      v-if="!projectStudioEnabled && sidebarData.is_logged_in"
       class="super-sidebar-skip-to gl-sr-only !gl-fixed gl-left-0 !gl-m-3 !gl-px-4 focus:gl-not-sr-only"
       data-testid="super-sidebar-skip-to"
       href="#content-body"

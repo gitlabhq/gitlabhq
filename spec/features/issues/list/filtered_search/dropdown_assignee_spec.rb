@@ -35,7 +35,7 @@ RSpec.describe 'Dropdown assignee', :js, feature_category: :team_planning do
       select_tokens 'Assignee', '='
 
       # List items 1 to 3 are None, Any, divider
-      expect(page).to have_css('.gl-filtered-search-suggestion:nth-child(4)', text: user.name)
+      expect(page).to have_css('.gl-filtered-search-suggestion:nth-child(5)', text: user.name)
     end
   end
 

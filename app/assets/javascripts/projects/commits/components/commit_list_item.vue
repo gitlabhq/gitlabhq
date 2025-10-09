@@ -1,9 +1,8 @@
 <script>
-import { GlLink, GlBadge, GlCard } from '@gitlab/ui';
+import { GlLink, GlCard, GlTooltipDirective, GlTruncate } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
-import SignatureBadge from '~/commit/components/signature_badge.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+import { sanitize } from '~/lib/dompurify';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import defaultAvatarUrl from 'images/no_avatar.png';
@@ -13,6 +12,7 @@ import ExpandCollapseButton from '~/vue_shared/components/expand_collapse_button
 import CommitListItemActionButtons from './commit_list_item_action_buttons.vue';
 import CommitListItemDescription from './commit_list_item_description.vue';
 import CommitListItemOverflowMenu from './commit_list_item_overflow_menu.vue';
+import CommitListItemBadges from './commit_list_item_badges.vue';
 
 export default {
   name: 'CommitItem',
@@ -22,16 +22,16 @@ export default {
     UserAvatarImage,
     UserAvatarLink,
     GlLink,
-    CiIcon,
-    SignatureBadge,
-    GlBadge,
     GlCard,
+    GlTruncate,
     ActionButtons: CommitListItemActionButtons,
     Description: CommitListItemDescription,
     OverflowMenu: CommitListItemOverflowMenu,
+    Badges: CommitListItemBadges,
   },
   directives: {
     SafeHtml,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     commit: {
@@ -54,6 +54,10 @@ export default {
     anchorId() {
       return `commit-list-item-${this.commit.id}`;
     },
+    sanitizedTitle() {
+      if (!this.commit.titleHtml) return '';
+      return sanitize(this.commit.titleHtml, this.$options.safeHtmlConfig);
+    },
   },
   destroyed() {
     this.isCollapsed = true;
@@ -71,47 +75,47 @@ export default {
 </script>
 
 <template>
-  <li class="commit-list-item @sm/panel:gl-ml-7">
+  <li class="commit-list-item @md/panel:gl-ml-7">
     <gl-card
-      :id="anchorId"
       :body-class="isCollapsed ? 'gl-hidden' : ''"
       :header-class="isCollapsed ? 'gl-border-b-0 gl-rounded-lg' : ' gl-rounded-t-lg'"
       class="commit-card"
     >
       <template #header>
-        <div class="gl-flex gl-w-full @sm/panel:gl-items-center">
+        <div class="gl-flex gl-w-full @md/panel:gl-items-center">
           <user-avatar-link
             v-if="commit.author"
             :link-href="commit.author.webPath"
             :img-src="commit.author.avatarUrl"
             :img-alt="avatarLinkAltText"
             :img-size="32"
-            class="gl-my-2 gl-mr-5 gl-hidden @sm/panel:gl-block"
+            class="gl-my-2 gl-mr-5 gl-hidden @md/panel:gl-block"
           />
           <user-avatar-image
             v-else
-            class="gl-my-2 gl-mr-5 gl-hidden @sm/panel:gl-block"
+            class="gl-my-2 gl-mr-5 gl-hidden @md/panel:gl-block"
             :img-src="commit.authorGravatar || $options.defaultAvatarUrl"
             :size="32"
           />
-          <div class="gl-inline-block gl-w-full gl-min-w-0 gl-items-center @sm/panel:gl-flex">
-            <div class="gl-min-w-0 gl-grow">
+          <div class="gl-inline-block gl-w-full gl-min-w-0 gl-items-center @md/panel:gl-flex">
+            <h3 class="gl-m-0 gl-min-w-0 gl-grow gl-text-base">
               <gl-link
-                v-safe-html:[$options.safeHtmlConfig]="commit.titleHtml"
                 :href="commit.webPath"
-                :class="{ 'gl-italic': !commit.message }"
-                class="gl-whitespace-normal !gl-break-all gl-font-bold gl-text-default hover:gl-text-default @sm/panel:gl-line-clamp-1"
+                class="gl-whitespace-normal !gl-break-all gl-font-bold gl-text-default hover:gl-text-default @md/panel:gl-line-clamp-1"
                 data-testid="commit-title-link"
-              />
-              <div
-                class="gl-basis-full gl-text-wrap gl-text-sm gl-text-subtle @sm/panel:gl-truncate"
+                :class="{ 'gl-italic': !commit.message }"
               >
-                <div
+                <gl-truncate :text="sanitizedTitle" with-tooltip>
+                  <span v-safe-html="sanitizedTitle"></span>
+                </gl-truncate>
+              </gl-link>
+              <div class="gl-text-wrap gl-text-sm gl-font-normal !gl-text-subtle">
+                <span
                   v-if="commit.author"
                   :data-user-id="userId"
                   :data-username="commit.author.username"
                   data-testid="commit-user-popover"
-                  class="js-user-popover gl-inline-block"
+                  class="js-user-popover"
                 >
                   <gl-link
                     :href="commit.author.webPath"
@@ -120,39 +124,16 @@ export default {
                   >
                     {{ commit.author.name }}</gl-link
                   >
-                </div>
-                <template v-else>
+                </span>
+                <span v-else>
                   {{ commit.authorName }}
-                </template>
+                </span>
                 {{ __('authored') }}
                 <timeago-tooltip :time="commit.authoredDate" tooltip-placement="bottom" />
               </div>
-            </div>
+            </h3>
             <div class="gl-flex gl-items-center gl-gap-4">
-              <div class="gl-my-2 gl-flex gl-items-center gl-gap-3">
-                <span
-                  class="gl-block gl-font-monospace @sm/panel:gl-hidden"
-                  data-testid="commit-sha-mobile"
-                >
-                  {{ commit.shortId }}
-                </span>
-                <div
-                  class="gl-flex gl-flex-row-reverse gl-items-center gl-gap-3 @sm/panel:gl-flex-row"
-                >
-                  <gl-badge v-if="commit.tag" icon="tag" variant="neutral" class="gl-h-6">{{
-                    commit.tag.name
-                  }}</gl-badge>
-                  <signature-badge
-                    v-if="commit.signature"
-                    :signature="commit.signature"
-                    :aria-label="commit.signature.verificationStatus"
-                    class="gl-my-2 !gl-ml-0 gl-h-6"
-                  />
-                  <div v-if="commit.pipelines.edges.length" class="gl-flex gl-items-center">
-                    <ci-icon :status="commit.pipelines.edges[0].node.detailedStatus" />
-                  </div>
-                </div>
-              </div>
+              <badges :commit="commit" />
               <action-buttons
                 :is-collapsed="isCollapsed"
                 :commit="commit"
@@ -163,16 +144,17 @@ export default {
           </div>
           <overflow-menu
             :commit="commit"
-            class="gl-mr-3 gl-block @sm/panel:gl-hidden"
-            data-testid="mobile-overflow-menu"
+            class="gl-mr-3 gl-block @md/panel:gl-hidden"
+            data-testid="overflow-menu"
           />
           <div
-            class="gl-border-l gl-block gl-h-7 gl-border-l-section @sm/panel:gl-hidden"
-            data-testid="mobile-expand-collapse-button-container"
+            class="gl-border-l gl-block gl-h-7 gl-border-l-section @md/panel:gl-hidden"
+            data-testid="narrow-screen-expand-collapse-button-container"
           >
             <expand-collapse-button
               :is-collapsed="isCollapsed"
               :anchor-id="anchorId"
+              :accessible-label="commit.titleHtml"
               size="medium"
               @click="onClick"
             />
@@ -181,7 +163,7 @@ export default {
       </template>
 
       <template v-if="!isCollapsed" #default>
-        <description :commit="commit" class="gl-display gl-block" />
+        <description :id="anchorId" :commit="commit" class="gl-display gl-block" />
       </template>
     </gl-card>
   </li>

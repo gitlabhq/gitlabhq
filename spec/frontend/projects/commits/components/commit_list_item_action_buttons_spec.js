@@ -36,7 +36,9 @@ describe('CommitListItemActionButtons', () => {
     it('passes correct props to clipboard button', () => {
       const clipboardButton = findClipboardButton();
       expect(clipboardButton.props('text')).toBe(mockCommit.sha);
-      expect(clipboardButton.props('title')).toBe('Copy commit SHA');
+      expect(clipboardButton.props('title')).toBe(
+        'Copy commit SHA 8e3336548a7aa36b7cae362fbd8c694793ecc110',
+      );
       expect(clipboardButton.props('category')).toBe('tertiary');
     });
   });
@@ -55,6 +57,7 @@ describe('CommitListItemActionButtons', () => {
         anchorId: '',
         isCollapsed: true,
         size: 'small',
+        accessibleLabel: 'Edit CODEOWNERS',
       });
     });
 

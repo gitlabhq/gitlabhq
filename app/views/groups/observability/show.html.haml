@@ -11,6 +11,7 @@
 
   - if @data&.auth_tokens.blank?
     = render Pajamas::AlertComponent.new(dismissible: false, variant: :danger, title: _('Unable to authenticate with the observability service. Please check your configuration and try again.'))
-
+  - elsif @data.provisioning?
+    = render Pajamas::AlertComponent.new(dismissible: false, variant: :info, title: _('The observability service is initializing. Please try again in a few minutes.'))
   - else
     #js-observability{ data: @data.to_h }

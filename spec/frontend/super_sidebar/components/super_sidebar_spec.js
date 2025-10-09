@@ -130,6 +130,11 @@ describe('SuperSidebar component', () => {
       expect(findSkipToLink().exists()).toBe(false);
     });
 
+    it('does not render skip to main content link when project studio is enabled', () => {
+      createWrapper({ provide: { projectStudioEnabled: true } });
+      expect(findSkipToLink().exists()).toBe(false);
+    });
+
     it('has accessible role and name', () => {
       createWrapper();
       const nav = wrapper.findByRole('navigation');

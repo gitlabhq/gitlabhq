@@ -1458,10 +1458,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.147.0.tgz#94317211774a720accee80de448606d28e8f008f"
   integrity sha512-SrewOFmd9pXSRxXKL2eqAzI9aRf9I1rnUUyJZwsRSnFOirMICTUqZ0bAwwqfIkDlABmfVpBIyLyj7OXn6bx98Q==
 
-"@gitlab/ui@123.6.1":
-  version "123.6.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-123.6.1.tgz#cccc7522c903930b5ce5e39ee2f8cfc1ff031619"
-  integrity sha512-pZuXxoN7wnRm/LsWqZF8j8OBx+WYtlRCbqzYX0sXqQK/IKEDGWkGaBTHnAK0oVSGZ6QgVVMqNx0hVPH4Opbm7Q==
+"@gitlab/ui@123.7.0":
+  version "123.7.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-123.7.0.tgz#56bf31d2e61d6839b858a3e463dbf5ef24421c41"
+  integrity sha512-91oBO7r04O2Qjpod3LaX0dq6ikCQ3KbgcH4H55MLIcO2WGHYDXPaWe8yYk6pepqK0FYvRmrbV7boRwDnfMsu9w==
   dependencies:
     "@floating-ui/dom" "1.7.4"
     echarts "^5.6.0"

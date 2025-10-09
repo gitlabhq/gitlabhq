@@ -163,6 +163,14 @@ module Ci
         variables&.to_hash&.dig("GIT_DEPTH")
       end
     end
+
+    def instance_id
+      Gitlab::GlobalAnonymousId.instance_id
+    end
+
+    def instance_uuid
+      Gitlab::GlobalAnonymousId.instance_uuid
+    end
   end
 end
 

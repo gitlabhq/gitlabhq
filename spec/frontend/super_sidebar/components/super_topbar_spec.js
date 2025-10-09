@@ -20,6 +20,7 @@ describe('SuperTopbar', () => {
   const OrganizationSwitcherStub = stubComponent(OrganizationSwitcher);
   const SearchModalStub = stubComponent(SearchModal);
 
+  const findSkipToLink = () => wrapper.findByTestId('super-sidebar-skip-to');
   const findAdminLink = () => wrapper.findByTestId('topbar-admin-link');
   const findSigninButton = () => wrapper.findByTestId('topbar-signin-button');
   const findSignupButton = () => wrapper.findByTestId('topbar-signup-button');
@@ -58,6 +59,10 @@ describe('SuperTopbar', () => {
 
     it('renders the header element with correct `super-topbar` class', () => {
       expect(wrapper.find('header').classes()).toContain('super-topbar');
+    });
+
+    it('renders skip to main content link when logged in', () => {
+      expect(findSkipToLink().attributes('href')).toBe('#content-body');
     });
 
     describe('Mobile sidebar toggle', () => {

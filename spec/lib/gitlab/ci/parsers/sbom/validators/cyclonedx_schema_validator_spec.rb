@@ -218,6 +218,15 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Validators::CyclonedxSchemaValidator,
     end
   end
 
+  context 'when report data is not a hash' do
+    let(:report_data) { [['specVersion', '1.6']] }
+
+    it 'adds an error to the report' do
+      expect(validator).not_to be_valid
+      expect(validator.errors).to eq(['Expected JSON object but received Array'])
+    end
+  end
+
   context 'when spec version is supported' do
     where(:spec_version) { %w[1.4 1.5 1.6] }
 

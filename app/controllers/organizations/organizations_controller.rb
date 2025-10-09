@@ -16,10 +16,6 @@ module Organizations
       push_frontend_feature_flag(:organization_switching, current_user)
     end
 
-    before_action only: [:show, :groups_and_projects] do
-      push_frontend_feature_flag(:archive_group)
-    end
-
     skip_before_action :authenticate_user!, only: [:activity, :show, :groups_and_projects]
 
     urgency :low, [:activity]

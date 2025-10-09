@@ -24,7 +24,12 @@ module Gitlab
 
             private
 
+            attr_reader :report_data
+
             def validate!
+              # See issue https://gitlab.com/gitlab-org/gitlab/-/issues/574544
+              return ["Expected JSON object but received #{report_data.class}"] unless report_data.is_a?(Hash)
+
               if spec_version_valid?
                 pretty_errors
               else
@@ -38,11 +43,11 @@ module Gitlab
             end
 
             def spec_version
-              @report_data['specVersion']
+              report_data['specVersion']
             end
 
             def raw_errors
-              JSONSchemer.schema(SCHEMA_BASE_PATH.join("bom-#{spec_version}.schema.json")).validate(@report_data)
+              JSONSchemer.schema(SCHEMA_BASE_PATH.join("bom-#{spec_version}.schema.json")).validate(report_data)
             end
 
             def pretty_errors

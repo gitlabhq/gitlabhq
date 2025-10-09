@@ -1,13 +1,12 @@
-import { GlBadge } from '@gitlab/ui';
+import { GlTruncate } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitListItem from '~/projects/commits/components/commit_list_item.vue';
-import SignatureBadge from '~/commit/components/signature_badge.vue';
-import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import CommitListItemActionButtons from '~/projects/commits/components/commit_list_item_action_buttons.vue';
 import CommitListItemDescription from '~/projects/commits/components/commit_list_item_description.vue';
+import CommitListItemBadges from '~/projects/commits/components/commit_list_item_badges.vue';
 import ExpandCollapseButton from '~/vue_shared/components/expand_collapse_button/expand_collapse_button.vue';
 import { mockCommit } from './mock_data';
 
@@ -38,18 +37,16 @@ describe('CommitListItem', () => {
   const findCommitTitleLink = () => wrapper.findByTestId('commit-title-link');
   const findUserPopover = () => wrapper.findByTestId('commit-user-popover');
   const findAuthorLink = () => wrapper.findByTestId('commit-author-link');
+  const findTruncate = () => wrapper.findComponent(GlTruncate);
 
   const findTimeagoTooltip = () => wrapper.findComponent(TimeagoTooltip);
-  const findTagBadge = () => wrapper.findComponent(GlBadge);
-  const findSignatureBadge = () => wrapper.findComponent(SignatureBadge);
-  const findCiIcon = () => wrapper.findComponent(CiIcon);
+  const findCommitBadges = () => wrapper.findComponent(CommitListItemBadges);
   const findActionButtons = () => wrapper.findComponent(CommitListItemActionButtons);
   const findDescription = () => wrapper.findComponent(CommitListItemDescription);
   const findExpandCollapseButton = () => wrapper.findComponent(ExpandCollapseButton);
-  const findMobileCommitShortId = () => wrapper.findByTestId('commit-sha-mobile');
-  const findMobileOverflowMenu = () => wrapper.findByTestId('mobile-overflow-menu');
-  const findMobileExpandCollapseContainer = () =>
-    wrapper.findByTestId('mobile-expand-collapse-button-container');
+  const findOverflowMenu = () => wrapper.findByTestId('overflow-menu');
+  const findNarrowScreenExpandCollapseContainer = () =>
+    wrapper.findByTestId('narrow-screen-expand-collapse-button-container');
 
   describe('avatar rendering', () => {
     describe('when commit has author', () => {
@@ -100,6 +97,12 @@ describe('CommitListItem', () => {
       const titleLink = findCommitTitleLink();
       expect(titleLink.classes()).toContain('gl-italic');
     });
+
+    it('renders truncated text with tooltip enabled', () => {
+      const truncate = findTruncate();
+      expect(truncate.props('withTooltip')).toBe(true);
+      expect(truncate.props('text')).toBe(mockCommit.titleHtml);
+    });
   });
 
   describe('author information', () => {
@@ -138,52 +141,10 @@ describe('CommitListItem', () => {
     });
   });
 
-  describe('badges and status indicators', () => {
-    describe('tag badge', () => {
-      it('does not render tag badge when no tag', () => {
-        createComponent({ commit: { ...mockCommit, tag: null } });
-        expect(findTagBadge().exists()).toBe(false);
-      });
-
-      it('renders tag badge when commit has tag', () => {
-        const tagBadge = findTagBadge();
-        expect(tagBadge.props()).toMatchObject({
-          icon: 'tag',
-          variant: 'neutral',
-        });
-        expect(tagBadge.text()).toBe(mockCommit.tag.name);
-      });
-    });
-
-    describe('signature badge', () => {
-      it('does not render signature badge when no signature', () => {
-        createComponent({ commit: { ...mockCommit, signature: null } });
-        expect(findSignatureBadge().exists()).toBe(false);
-      });
-
-      it(`aria-label is set`, () => {
-        const signatureBadge = findSignatureBadge();
-        expect(signatureBadge.attributes('aria-label')).toBe(
-          mockCommit.signature.verificationStatus,
-        );
-      });
-
-      it('renders signature badge when commit has signature', () => {
-        const signatureBadge = findSignatureBadge();
-        expect(signatureBadge.props('signature')).toBe(mockCommit.signature);
-      });
-    });
-
-    describe('CI status', () => {
-      it('does not render CI icon when no pipelines', () => {
-        createComponent({ commit: { ...mockCommit, pipelines: { edges: [] } } });
-        expect(findCiIcon().exists()).toBe(false);
-      });
-
-      it('renders CI icon when commit has pipeline', () => {
-        const ciIcon = findCiIcon();
-        expect(ciIcon.props('status')).toBe(mockCommit.pipelines.edges[0].node.detailedStatus);
-      });
+  describe('badges', () => {
+    it('renders CommitBadges component with correct props', () => {
+      const commitBadges = findCommitBadges();
+      expect(commitBadges.props('commit')).toBe(mockCommit);
     });
   });
 
@@ -204,26 +165,18 @@ describe('CommitListItem', () => {
     });
   });
 
-  describe('mobile-only elements', () => {
-    describe('short commit ID', () => {
-      it('renders short commit ID with mobile-only classes', () => {
-        const shortIdElement = findMobileCommitShortId();
-        expect(shortIdElement.text()).toBe(mockCommit.shortId);
-        expect(shortIdElement.classes()).toContain('@sm/panel:gl-hidden');
-      });
-    });
-
+  describe('narrow screen only elements', () => {
     describe('overflow menu', () => {
-      it('renders overflow menu with mobile-only classes', () => {
-        const overflowMenu = findMobileOverflowMenu();
-        expect(overflowMenu.classes()).toContain('@sm/panel:gl-hidden');
+      it('renders overflow menu with narrow screens only classes', () => {
+        const overflowMenu = findOverflowMenu();
+        expect(overflowMenu.classes()).toContain('@md/panel:gl-hidden');
       });
     });
 
     describe('expand/collapse button container', () => {
-      it('renders expand/collapse button container with mobile-only classes', () => {
-        const container = findMobileExpandCollapseContainer();
-        expect(container.classes()).toContain('@sm/panel:gl-hidden');
+      it('renders expand/collapse button container with narrow screens only classes', () => {
+        const container = findNarrowScreenExpandCollapseContainer();
+        expect(container.classes()).toContain('@md/panel:gl-hidden');
       });
 
       it('renders expand/collapse button inside container', () => {

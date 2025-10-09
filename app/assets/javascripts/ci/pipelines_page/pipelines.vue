@@ -110,7 +110,12 @@ export default {
   computed: {
     /**
      * `hasGitlabCi` handles both internal and external CI.
-     * The order on which  the checks are made in this method is
+     */
+    hasLocalCiConfig() {
+      return this.hasGitlabCi && !this.usesExternalConfig;
+    },
+    /**
+     * The order on which the checks are made in this method is
      * important to guarantee we handle all the corner cases.
      */
     stateToRender() {
@@ -128,10 +133,11 @@ export default {
         return stateMap.tableList;
       }
 
-      if (
-        (this.scope !== 'all' && this.scope !== null) ||
-        (this.hasGitlabCi && !this.usesExternalConfig)
-      ) {
+      if (this.scope !== 'all' && this.scope !== null) {
+        return stateMap.emptyTab;
+      }
+
+      if (this.hasLocalCiConfig) {
         return stateMap.emptyTab;
       }
 
@@ -153,10 +159,6 @@ export default {
 
     shouldRenderButtons() {
       return (this.newPipelinePath || this.resetCachePath) && this.shouldRenderTabs;
-    },
-
-    shouldRenderSearchBar() {
-      return this.shouldRenderTabs;
     },
 
     shouldRenderPagination() {
@@ -370,7 +372,7 @@ export default {
       />
     </div>
 
-    <div v-if="shouldRenderSearchBar" class="gl-flex">
+    <div v-if="shouldRenderTabs" class="gl-flex">
       <div
         class="row-content-block gl-flex gl-max-w-full gl-flex-grow gl-flex-wrap gl-gap-4 gl-border-b-0 @sm/panel:gl-flex-nowrap"
       >

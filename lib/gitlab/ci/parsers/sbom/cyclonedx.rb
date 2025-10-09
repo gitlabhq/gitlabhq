@@ -12,8 +12,11 @@ module Gitlab
             return unless valid?
 
             parse_report
-          rescue JSON::ParserError => e
-            report.add_error("Report JSON is invalid: #{e}")
+          rescue JSON::ParserError => parse_error
+            report.add_error("Report JSON is invalid: #{parse_error}")
+          rescue StandardError => e
+            report.add_error("Unexpected error encountered")
+            ErrorTracking.track_exception(e)
           end
 
           private

@@ -37,6 +37,7 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   i18n: {
+    skipToMainContent: __('Skip to main content'),
     adminArea: s__('Navigation|Admin'),
     searchBtnText: __('Search or go to…'),
     menuLabel: __('Open navigation menu'),
@@ -75,6 +76,14 @@ export default {
   <header
     class="super-topbar gl-grid gl-w-full gl-grid-cols-[1fr_auto_1fr] gl-items-center gl-gap-4"
   >
+    <gl-button
+      class="gl-t-0 gl-sr-only !gl-fixed gl-left-0 gl-z-9999 !gl-m-3 !gl-px-4 focus:gl-not-sr-only"
+      data-testid="super-sidebar-skip-to"
+      href="#content-body"
+      variant="confirm"
+    >
+      {{ $options.i18n.skipToMainContent }}
+    </gl-button>
     <div class="gl-flex gl-items-center gl-gap-3">
       <brand-logo :logo-url="sidebarData.logo_url" class="!gl-p-0" />
 

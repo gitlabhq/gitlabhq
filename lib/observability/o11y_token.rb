@@ -7,6 +7,7 @@ module Observability
     AuthenticationError = Class.new(StandardError)
     ConfigurationError = Class.new(StandardError)
     NetworkError = Class.new(StandardError)
+    SETUP_BUFFER_TIME = 5.minutes.freeze
 
     class TokenResponse
       attr_reader :user_id, :access_jwt, :refresh_jwt
@@ -90,7 +91,9 @@ module Observability
     end
 
     def parse_response(response)
-      unless response.code.to_i == 200
+      if response.code.to_i != 200
+        return { status: :provisioning } if response.code.to_i == 500 && new_settings?
+
         Gitlab::AppLogger.warn("O11y authentication failed with status #{response.code}")
         return {}
       end
@@ -102,6 +105,10 @@ module Observability
       TokenResponse.from_json(data).to_h
     rescue JSON::ParserError => e
       raise AuthenticationError, "Invalid response format from O11y service: #{e.message}"
+    end
+
+    def new_settings?
+      o11y_settings.created_at > SETUP_BUFFER_TIME.ago
     end
 
     class HttpClient
