@@ -2183,7 +2183,7 @@ DEPENDENCIES
   gitlab-duo-workflow-service-client (~> 0.3)!
   gitlab-experiment (~> 1.0.0)
   gitlab-fog-azure-rm (~> 2.4.0)
-  gitlab-glfm-markdown (~> 0.0.33)
+  gitlab-glfm-markdown (~> 0.0.36)
   gitlab-grape-openapi!
   gitlab-housekeeper!
   gitlab-http!

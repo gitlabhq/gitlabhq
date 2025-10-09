@@ -73,7 +73,7 @@ describe('MetricPopover', () => {
     });
 
     it(`renders the metric's docs link`, () => {
-      expect(findMetricDocsLink().text()).toBe('Go to docs');
+      expect(findMetricDocsLink().text()).toBe('Learn more');
       expect(findMetricDocsLink().attributes('href')).toBe(
         '/help/user/analytics/dora_metrics#deployment-frequency',
       );

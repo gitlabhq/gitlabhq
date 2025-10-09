@@ -18,7 +18,6 @@ module Banzai
           Filter::SpacedLinkFilter,
           Filter::SanitizationFilter,
           Filter::SanitizeLinkFilter,
-          Filter::EscapedCharFilter,
           Filter::KrokiFilter,
           Filter::GollumTagsFilter,
           Filter::WikiLinkGollumFilter,

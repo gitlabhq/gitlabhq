@@ -263,7 +263,6 @@ Style/GuardClause:
     - 'ee/app/services/vulnerabilities/security_finding/create_issue_service.rb'
     - 'ee/app/validators/user_existence_validator.rb'
     - 'ee/app/workers/elastic_namespace_rollout_worker.rb'
-    - 'ee/app/workers/epics/new_epic_issue_worker.rb'
     - 'ee/app/workers/geo/scheduler/scheduler_worker.rb'
     - 'ee/app/workers/scan_security_report_secrets_worker.rb'
     - 'ee/db/geo/migrate/20180314175612_add_partial_index_to_project_registy_verification_failure_columns.rb'

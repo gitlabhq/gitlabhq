@@ -1,0 +1,4 @@
+---
+name: read_admin_data_management
+description: Grants ability to read data management page
+feature_category: geo_replication

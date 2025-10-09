@@ -3037,7 +3037,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/click_house/sync_strategies/event_sync_strategy.rb'
     - 'ee/app/services/concerns/approval_rules/updater.rb'
     - 'ee/app/services/concerns/ee/alert_management/alert_processing.rb'
-    - 'ee/app/services/concerns/epics/related_epic_links/usage_data_helper.rb'
     - 'ee/app/services/concerns/epics/sync_as_work_item.rb'
     - 'ee/app/services/concerns/incident_management/oncall_rotations/shared_rotation_logic.rb'
     - 'ee/app/services/dashboard/environments/list_service.rb'

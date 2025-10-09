@@ -419,7 +419,6 @@ Style/ClassAndModuleChildren:
     - 'ee/app/serializers/vulnerabilities/request_entity.rb'
     - 'ee/app/serializers/vulnerabilities/response_entity.rb'
     - 'ee/app/serializers/vulnerabilities/scanner_entity.rb'
-    - 'ee/app/services/concerns/epics/related_epic_links/usage_data_helper.rb'
     - 'ee/app/services/ee/projects/disable_deploy_key_service.rb'
     - 'ee/app/services/ee/projects/enable_deploy_key_service.rb'
     - 'ee/db/fixtures/development/20_burndown.rb'

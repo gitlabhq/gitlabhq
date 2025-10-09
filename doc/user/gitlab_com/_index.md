@@ -373,7 +373,14 @@ GitLab.com sets these requirements for passwords on new accounts and password ch
 
 ## Group creation
 
-On GitLab.com, [top-level group creation](../../api/groups.md#create-a-group) is not available through the API. It must be performed through the UI.
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/506673) in GitLab 18.0
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/560840) the GitLab SAAS administrator exception in GitLab 18.5
+
+{{< /history >}}
+
+On GitLab.com, [top-level group creation](../../api/groups.md#create-a-group) is only allowed through the UI. Only administrators can use the API to create top-level groups.
 
 ## Project and group deletion
 
