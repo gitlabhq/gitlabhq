@@ -5566,6 +5566,10 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
   describe 'DELETE /projects/:id' do
     let(:path) { "/projects/#{project.id}" }
+    let(:admin_mode) { false }
+    let(:params) { {} }
+
+    subject(:api_request) { delete api(path, user, admin_mode: admin_mode), params: params }
 
     it_behaves_like 'DELETE request permissions for admin mode' do
       let(:success_status_code) { :accepted }
@@ -5574,7 +5578,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
     context 'when authenticated as user' do
       it 'removes project' do
-        delete api(path, user)
+        api_request
 
         expect(response).to have_gitlab_http_status(:accepted)
         expect(json_response['message']).to eql('202 Accepted')
@@ -5604,39 +5608,30 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
 
     context 'when authenticated as admin' do
-      it 'removes any existing project' do
-        delete api("/projects/#{project.id}", admin, admin_mode: true)
-
-        expect(response).to have_gitlab_http_status(:accepted)
-        expect(json_response['message']).to eql('202 Accepted')
-      end
-
-      it 'does not remove a non existing project' do
-        delete api("/projects/#{non_existing_record_id}", admin, admin_mode: true)
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-
       it_behaves_like '412 response' do
         let(:success_status) { 202 }
-        subject(:request) { api("/projects/#{project.id}", admin, admin_mode: true) }
+        subject(:request) { api(path, admin, admin_mode: true) }
       end
     end
 
-    shared_examples 'deletes project immediately' do |admin_mode = false|
+    shared_examples 'deletes project immediately' do
       it :aggregate_failures do
         expect(::Projects::DestroyService).to receive(:new).with(project, user, {}).and_call_original
 
-        delete api(path, user, admin_mode: admin_mode), params: params
+        api_request
+
         expect(response).to have_gitlab_http_status(:accepted)
       end
     end
 
-    shared_examples 'immediately delete project error' do |admin_mode = false, expected_http_status = :bad_request|
+    shared_examples 'immediately delete project error' do
+      let(:expected_http_status) { :bad_request }
+
       it :aggregate_failures do
         expect(::Projects::DestroyService).not_to receive(:new)
         expect(::Projects::MarkForDeletionService).not_to receive(:new)
 
-        delete api(path, user, admin_mode: admin_mode), params: params
+        api_request
 
         expect(response).to have_gitlab_http_status(expected_http_status)
         expect(Gitlab::Json.parse(response.body)['message']).to eq(error_message)
@@ -5646,12 +5641,11 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     context 'for delayed deletion' do
       let_it_be(:group) { create(:group) }
       let_it_be_with_reload(:project) { create(:project, group: group, owners: user) }
-      let(:params) { {} }
 
       it 'marks the project for deletion' do
         expect(::Projects::MarkForDeletionService).to receive(:new).with(project, user, {}).and_call_original
 
-        delete api(path, user), params: params
+        api_request
 
         expect(response).to have_gitlab_http_status(:accepted)
         expect(project.reload.self_deletion_scheduled?).to be_truthy
@@ -5678,7 +5672,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         message = 'Error'
         expect(::Projects::MarkForDeletionService).to receive_message_chain(:new, :execute).and_return({ status: :error, message: message })
 
-        delete api("/projects/#{project.id}", user)
+        api_request
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response["message"]).to eq(message)
@@ -5689,64 +5683,74 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           params.merge!(permanently_remove: true)
         end
 
-        context 'forbidden by the :disallow_immediate_deletion feature flag' do
-          let(:error_message) { '`permanently_remove` option is not available anymore (behind the :disallow_immediate_deletion feature flag).' }
+        describe 'when the :allow_immediate_namespaces_deletion application setting is false' do
+          before do
+            stub_application_setting(allow_immediate_namespaces_deletion: false)
+          end
+
+          it_behaves_like 'immediately delete project error' do
+            let(:error_message) { '`permanently_remove` option is not permitted on this instance.' }
+          end
+
+          context 'when current user is an admin' do
+            let_it_be(:user) { admin }
+            let(:admin_mode) { true }
+
+            context 'when project is already marked for deletion' do
+              before do
+                project.update!(marked_for_deletion_at: 1.day.ago, deleting_user: admin)
+                params[:full_path] = project.full_path
+                project.add_owner(admin)
+              end
+
+              it_behaves_like 'deletes project immediately'
+
+              context 'when admin_mode is false' do
+                let(:admin_mode) { false }
+
+                it_behaves_like 'immediately delete project error' do
+                  let(:error_message) { '`permanently_remove` option is not permitted on this instance.' }
+                end
+              end
+            end
+          end
+        end
+
+        context 'when project is not marked for deletion' do
+          let(:error_message) { 'Project must be marked for deletion first.' }
 
           it_behaves_like 'immediately delete project error'
         end
 
-        context 'when current user is an admin' do
-          let_it_be(:user) { admin }
+        context 'when project is already marked for deletion' do
+          before do
+            project.update!(archived: true, marked_for_deletion_at: 1.day.ago, deleting_user: user)
+          end
 
-          context 'when project is already marked for deletion' do
+          context 'with correct project full path' do
             before do
-              project.update!(archived: true, marked_for_deletion_at: 1.day.ago, deleting_user: user)
               params.merge!(full_path: project.full_path)
             end
 
-            it_behaves_like 'deletes project immediately', true
+            it_behaves_like 'deletes project immediately'
 
-            context 'when admin_mode is false' do
-              let(:error_message) { '404 Project Not Found' }
-
-              it_behaves_like 'immediately delete project error', false, :not_found
-            end
-          end
-        end
-
-        context 'when the :disallow_immediate_deletion feature flag is disabled' do
-          before do
-            stub_feature_flags(disallow_immediate_deletion: false)
-          end
-
-          context 'when project is not marked for deletion' do
-            let(:error_message) { 'Project must be marked for deletion first.' }
-
-            it_behaves_like 'immediately delete project error'
-          end
-
-          context 'when project is already marked for deletion' do
-            before do
-              project.update!(archived: true, marked_for_deletion_at: 1.day.ago, deleting_user: user)
-            end
-
-            context 'with correct project full path' do
+            context 'when the allow_immediate_namespaces_deletion FF is disabled' do
               before do
-                params.merge!(full_path: project.full_path)
+                stub_feature_flags(allow_immediate_namespaces_deletion: false)
               end
 
               it_behaves_like 'deletes project immediately'
             end
+          end
 
-            context 'with incorrect project full path' do
-              let(:error_message) { '`full_path` is incorrect. You must enter the complete path for the project.' }
+          context 'with incorrect project full path' do
+            let(:error_message) { '`full_path` is incorrect. You must enter the complete path for the project.' }
 
-              before do
-                params.merge!(full_path: "#{project.full_path}-wrong-path")
-              end
-
-              it_behaves_like 'immediately delete project error'
+            before do
+              params.merge!(full_path: "#{project.full_path}-wrong-path")
             end
+
+            it_behaves_like 'immediately delete project error'
           end
         end
       end

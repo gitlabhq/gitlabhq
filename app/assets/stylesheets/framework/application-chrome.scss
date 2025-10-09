@@ -466,7 +466,7 @@
 
     // Issue boards height
     .boards-app {
-      height: calc(#{$calc-application-viewport-height} - 1.5rem);
+      height: var(--panel-content-inner-height);
     }
 
     .boards-list {

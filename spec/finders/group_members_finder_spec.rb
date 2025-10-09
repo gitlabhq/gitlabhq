@@ -333,6 +333,95 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :groups_and_pro
     end
   end
 
+  context 'filter by user ids' do
+    let_it_be(:member1) { group.add_maintainer(user1) }
+    let_it_be(:member2) { group.add_developer(user2) }
+    let_it_be(:member3) { group.add_reporter(user3) }
+
+    subject(:including_user_ids) { described_class.new(group, user1, params: { ids: user_ids }).execute }
+
+    context 'when filtering by single user id' do
+      let(:user_ids) { [user2.id] }
+
+      it 'returns only the specified member' do
+        expect(including_user_ids).to match_array([member2])
+      end
+    end
+
+    context 'when filtering by multiple user ids' do
+      let(:user_ids) { [user1.id, user3.id] }
+
+      it 'returns members matching the specified user ids' do
+        expect(including_user_ids).to match_array([member1, member3])
+      end
+    end
+
+    context 'when filtering by non-existent user id' do
+      let(:user_ids) { [999999] }
+
+      it 'returns empty result' do
+        expect(including_user_ids).to be_empty
+      end
+    end
+
+    context 'when filtering by empty array' do
+      let(:user_ids) { [] }
+
+      it 'returns all members' do
+        expect(including_user_ids).to match_array([member1, member2, member3])
+      end
+    end
+
+    context 'when combined with other filters' do
+      let(:user_ids) { [user1.id, user2.id] }
+
+      context 'with access level filter' do
+        subject(:combined_filters) do
+          described_class.new(group, user1, params: { ids: user_ids, access_levels: [Gitlab::Access::MAINTAINER] }).execute
+        end
+
+        it 'returns members matching both user ids and access level' do
+          expect(combined_filters).to match_array([member1])
+        end
+      end
+
+      context 'with search filter' do
+        subject(:combined_filters) do
+          described_class.new(group, user1, params: { ids: user_ids, search: user2.name }).execute
+        end
+
+        it 'returns members matching both user ids and search criteria' do
+          expect(combined_filters).to match_array([member2])
+        end
+      end
+    end
+
+    context 'with different relation types' do
+      let_it_be(:sub_group_member) { sub_group.add_developer(user4) }
+      let(:user_ids) { [user1.id, user4.id] }
+
+      context 'when including direct relations only' do
+        subject(:direct_relations) do
+          described_class.new(group, user1, params: { ids: user_ids }).execute(include_relations: [:direct])
+        end
+
+        it 'returns only direct members matching the user ids' do
+          expect(direct_relations).to match_array([member1])
+        end
+      end
+
+      context 'when including descendants relations' do
+        subject(:descendants_relations) do
+          described_class.new(group, user1, params: { ids: user_ids }).execute(include_relations: [:descendants])
+        end
+
+        it 'returns descendant members matching the user ids' do
+          expect(descendants_relations).to match_array([sub_group_member])
+        end
+      end
+    end
+  end
+
   context 'filter by non-invite' do
     let_it_be(:member) { group.add_maintainer(user1) }
     let_it_be(:invited_member) do

@@ -388,6 +388,9 @@ class MergeRequest < ApplicationRecord
   scope :by_merged_or_merge_or_squash_commit_sha, ->(sha) do
     from_union([by_squash_commit_sha(sha), by_merge_commit_sha(sha), by_merged_commit_sha(sha)])
   end
+  scope :by_generated_ref_commit_sha, ->(sha) do
+    joins(:generated_ref_commits).where(p_generated_ref_commits: { commit_sha: sha })
+  end
   scope :by_related_commit_sha, ->(sha) do
     if Feature.enabled?(:commit_sha_scope_logger, type: :ops)
       Gitlab::AppLogger.info(
@@ -401,7 +404,8 @@ class MergeRequest < ApplicationRecord
         by_commit_sha(sha),
         by_squash_commit_sha(sha),
         by_merge_commit_sha(sha),
-        by_merged_commit_sha(sha)
+        by_merged_commit_sha(sha),
+        by_generated_ref_commit_sha(sha)
       ]
     )
   end

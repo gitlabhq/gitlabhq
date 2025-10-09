@@ -1887,6 +1887,24 @@ describeSkipVue3(skipReason, () => {
       expect(defaultQueryHandler).not.toHaveBeenCalled();
       expect(defaultSlimQueryHandler).not.toHaveBeenCalled();
     });
+
+    it('renders total items count when work items exist', async () => {
+      mountComponent({ workItemPlanningView: true });
+      await waitForPromises();
+
+      expect(wrapper.text()).toContain('3 items');
+    });
+
+    it('includes closed/opened in tab counts', async () => {
+      mountComponent({ workItemPlanningView: true });
+      await waitForPromises();
+
+      const tabCounts = findIssuableList().props('tabCounts');
+
+      expect(tabCounts.all).toBe(3);
+      expect(tabCounts.closed).toBeDefined();
+      expect(tabCounts.opened).toBeDefined();
+    });
   });
 
   describe('when "reorder" event is emitted by IssuableList', () => {

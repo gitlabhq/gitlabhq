@@ -9,6 +9,8 @@ module Ci
     self.table_name = :p_ci_job_inputs
     self.primary_key = :id
 
+    ignore_columns %i[input_type sensitive], remove_with: '18.7', remove_after: '2025-12-01'
+
     partitionable scope: :job, partitioned: true
 
     belongs_to :job, ->(build_name) { in_partition(build_name) },

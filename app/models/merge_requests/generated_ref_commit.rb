@@ -28,21 +28,5 @@ module MergeRequests
 
     belongs_to :project
     validates :commit_sha, :project, :merge_request, presence: true
-
-    # Since the MergeRequestsFinder expects us to provide a relation instead of a single object,
-    # we are returning here a relation, but limited to 1 since we only care about the merge request
-    # with the given commit sha and project id, which will be unique.
-    def self.merge_request_for_sha(project_id, sha)
-      MergeRequest
-        .joins(:generated_ref_commits)
-        .where(
-          merge_requests: { target_project_id: project_id },
-          generated_ref_commits: {
-            project_id: project_id,
-            commit_sha: sha
-          }
-        )
-        .limit(1)
-    end
   end
 end

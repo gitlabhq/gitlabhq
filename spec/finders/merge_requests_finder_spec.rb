@@ -165,6 +165,23 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
             is_expected.to contain_exactly(merge_request4)
           end
         end
+
+        context 'when commit is a generated ref commit' do
+          before do
+            merge_request4.update!(
+              merge_commit_sha: 'unrelated',
+              merged_commit_sha: 'unrelated',
+              squash_commit_sha: 'unrelated'
+            )
+            create(:merge_request_generated_ref_commit, commit_sha: commit_sha, merge_request: merge_request4, project: merge_request4.target_project)
+          end
+
+          let(:commit_sha) { 'generated-ref-commit-sha' }
+
+          it 'filters by commit sha' do
+            is_expected.to contain_exactly(merge_request4)
+          end
+        end
       end
 
       context 'filters by merged_at date' do

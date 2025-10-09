@@ -12,7 +12,7 @@ module RuboCop
       class MarkUsedFeatureFlags < RuboCop::Cop::Base
         include RuboCop::CodeReuseHelpers
 
-        FEATURE_CALLERS = %w[Feature Config::FeatureFlags Gitlab::AiGateway].freeze
+        FEATURE_CALLERS = %w[Feature FeatureFlags Gitlab::AiGateway].freeze
         FEATURE_METHODS = %i[enabled? disabled? push_feature_flag].freeze
         EXPERIMENT_METHODS = %i[
           experiment
@@ -150,9 +150,7 @@ module RuboCop
 
         def caller_is_feature?(node)
           FEATURE_CALLERS.detect do |caller|
-            class_caller(node) == caller ||
-              # Support detecting fully-defined callers based on nested detectable callers
-              (caller.include?('::') && class_caller(node).end_with?(caller))
+            class_caller(node) == caller || class_caller(node).end_with?("::#{caller}")
           end
         end
 

@@ -6,6 +6,7 @@ require 'rspec/core/formatters/base_formatter'
 module Support
   module RspecOrder
     TODO_YAML = File.join(__dir__, 'rspec_order_todo.yml')
+    FAILURE_YAML = File.join(__dir__, 'rspec_order_failures.yml')
 
     module_function
 
@@ -29,9 +30,27 @@ module Support
     end
 
     def potential_order_dependent?(path)
-      @todo ||= YAML.load_file(TODO_YAML).to_set # rubocop:disable Gitlab/PredicateMemoization -- @todo is never `nil` or `false`.
+      @todo ||= load_order_dependent_specs # rubocop:disable Gitlab/PredicateMemoization -- @todo is never `nil` or `false`.
 
       @todo.include?(path)
+    end
+
+    def load_order_dependent_specs
+      specs = Set.new
+
+      # Load TODO list (unprocessed specs)
+      if File.exist?(TODO_YAML)
+        todo_specs = YAML.load_file(TODO_YAML)
+        specs.merge(todo_specs) if todo_specs
+      end
+
+      # Load failure list (specs that failed order dependency checks)
+      if File.exist?(FAILURE_YAML)
+        failure_specs = YAML.load_file(FAILURE_YAML)
+        specs.merge(failure_specs) if failure_specs
+      end
+
+      specs
     end
 
     # Adds '# order <ORDER>` below the example group description if the order

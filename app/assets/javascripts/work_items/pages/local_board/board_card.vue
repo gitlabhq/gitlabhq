@@ -60,7 +60,6 @@ export default {
             :href="item.path || item.webUrl || ''"
             :title="item.title"
             class="gl-text-default hover:gl-text-default"
-            data-testid="board-card-title-link"
             @mousemove.stop
             >{{ item.title }}</a
           >

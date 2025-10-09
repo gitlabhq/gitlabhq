@@ -51,9 +51,7 @@ $file-tree-browser-z-index: 500;
   }
 }
 
-.page-with-panels .file-tree-browser {
-  top: #{$gl-spacing-scale-4};
-}
+
 
 .file-tree-browser-responsive {
   width: var(--tree-width);

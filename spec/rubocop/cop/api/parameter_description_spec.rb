@@ -28,6 +28,33 @@ RSpec.describe RuboCop::Cop::API::ParameterDescription, :config, feature_categor
         RUBY
       end
     end
+
+    context "when description generated using a method call" do
+      it "does not add an offense" do
+        expect_no_offenses(<<~RUBY)
+          params do
+            requires setting[:name], type: setting[:type], desc: setting[:desc]
+            optional :search,
+              type: String,
+              desc: "Return list of things matching the search criteria. Must be at least 4 characters."
+          end
+        RUBY
+      end
+    end
+
+    context "when description generated from a local variable" do
+      it "does not add an offense" do
+        expect_no_offenses(<<~RUBY)
+          id_description_variable = 'The ID or URL-encoded path of the project owned by the user'
+          params do
+            requires :id, types: [String, Integer], desc: id_description_variable
+            optional :search,
+              type: String,
+              desc: "Return list of things matching the search criteria. Must be at least 4 characters."
+          end
+        RUBY
+      end
+    end
   end
 
   context 'when param does not have a description' do

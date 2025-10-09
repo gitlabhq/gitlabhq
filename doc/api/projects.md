@@ -2183,21 +2183,30 @@ Example response:
 
 - Immediately deleting projects was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11.
 - [Marking project for deletion was moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
-- `permanently_remove` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201957) in GitLab 18.4 [with a flag](../administration/feature_flags/_index.md) named `disallow_immediate_deletion`.
+- Since GitLab 18.5, `permanently_remove` is [not permitted](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/205572)
+  when the immediate deletion
+  [instance setting](../administration/settings/visibility_and_access_controls.md#immediate-deletion)
+  is disabled (behind [a feature flag](../administration/feature_flags/_index.md) named `allow_immediate_namespaces_deletion`).
+  The setting is enabled by default on self-managed, but disabled on GitLab.com and Dedicated.
 
 {{< /history >}}
 
-Delete a project. This endpoint:
+Prerequisites:
 
-- Deletes a project including all associated resources, including issues and merge requests.
-- Marks the project for deletion. On GitLab.com, by default, the deletion happens 30 days later. On GitLab Self-Managed,
-  the retention period depends on the [instance settings](../administration/settings/visibility_and_access_controls.md#deletion-protection).
-- Deletes project immediately if the project is marked for deletion (GitLab 15.11 and later).
+- You must be an administrator or have the Owner role for the project.
+
+Marks a project for deletion. Projects are deleted at the end of the retention period:
+
+- On GitLab.com, projects are retained for 30 days.
+- On GitLab Self-Managed, the retention period is controlled by the
+  [instance settings](../administration/settings/visibility_and_access_controls.md#deletion-protection).
+
+This endpoint can also immediately delete a project that was previously marked for deletion.
 
 {{< alert type="warning" >}}
 
-The option to delete projects immediately from deletion protection settings in the **Admin** area was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 15.9 and removed in GitLab 16.0.
+On GitLab.com, after a project is deleted, its data is retained for 30 days, and immediate deletion is not available.
+If you really need to delete a project immediately on GitLab.com, you can open a [support ticket](https://about.gitlab.com/support/).
 
 {{< /alert >}}
 
@@ -2211,7 +2220,7 @@ Supported attributes:
 |:---------------------|:------------------|:---------|:------------|
 | `id`                 | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `full_path`          | string            | no       | Full path of project to use with `permanently_remove`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11 for Premium and Ultimate only and moved to GitLab Free in 18.0. To find the project path, use `path_with_namespace` from [get single project](projects.md#get-a-single-project). |
-| `permanently_remove` | boolean/string    | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/201957) in GitLab 18.4. Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11 for Premium and Ultimate only and moved to GitLab Free in 18.0. |
+| `permanently_remove` | boolean/string    | no       | Immediately deletes a project if it is marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/396500) in GitLab 15.11 for Premium and Ultimate only and moved to GitLab Free in 18.0. Disabled on GitLab.com and Dedicated. |
 
 ### Restore a project marked for deletion
 

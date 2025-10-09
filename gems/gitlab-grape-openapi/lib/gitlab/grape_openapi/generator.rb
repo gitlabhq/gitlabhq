@@ -6,6 +6,7 @@ module Gitlab
       def initialize(api_classes, options = {})
         @api_classes = api_classes
         @options = options
+        @schema_registry = SchemaRegistry.new
       end
 
       def generate

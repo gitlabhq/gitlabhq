@@ -376,6 +376,7 @@ export default {
       </template>
     </issuable-bulk-edit-sidebar>
     <slot name="list-body"></slot>
+    <slot name="before-list-items"></slot>
     <resource-lists-loading-state-list
       v-if="issuablesLoading"
       :left-lines-count="3"

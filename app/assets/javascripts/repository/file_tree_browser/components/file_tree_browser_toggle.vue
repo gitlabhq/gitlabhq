@@ -88,25 +88,25 @@ export default {
 <template>
   <div class="file-tree-browser-toggle-wrapper">
     <gl-button
-      id="file-tree-browser-toggle"
       ref="toggle"
       icon="file-tree"
+      class="btn-icon"
       :aria-label="toggleFileBrowserTitle"
       @click="onClickToggle"
-    />
-    <gl-tooltip
-      custom-class="file-browser-toggle-tooltip"
-      target="file-tree-browser-toggle"
-      placement="left"
-      trigger="hover focus"
     >
-      {{ toggleFileBrowserTitle }}
-      <shortcut
+      <gl-tooltip
         v-if="shortcutsEnabled"
-        class="gl-whitespace-nowrap"
-        :shortcuts="$options.TOGGLE_FILE_TREE_BROWSER_VISIBILITY.defaultKeys"
-      />
-    </gl-tooltip>
+        custom-class="file-browser-toggle-tooltip"
+        :target="() => $refs.toggle.$el"
+        placement="left"
+      >
+        {{ toggleFileBrowserTitle }}
+        <shortcut
+          class="gl-whitespace-nowrap"
+          :shortcuts="$options.TOGGLE_FILE_TREE_BROWSER_VISIBILITY.defaultKeys"
+        />
+      </gl-tooltip>
+    </gl-button>
 
     <local-storage-sync
       :value="shouldShowPopover"
@@ -144,5 +144,9 @@ export default {
 <style scoped>
 .file-tree-browser-toggle-wrapper {
   display: contents; /* Removes wrapper from layout flow */
+}
+
+.file-browser-toggle-tooltip .tooltip-inner {
+  max-width: 210px;
 }
 </style>

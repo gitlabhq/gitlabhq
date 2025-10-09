@@ -133,7 +133,14 @@ module Gitlab
       end
 
       def normalized_jobs
-        @normalized_jobs ||= Ci::Config::Normalizer.new(jobs).normalize_jobs
+        # Remove with_actor wrapper when ci_matrix_expressions FF is removed
+        @normalized_jobs ||= Gitlab::Ci::Config::FeatureFlags.with_actor(@project) do
+          normalizer.normalize_jobs
+        end
+      end
+
+      def normalizer_errors
+        normalizer.errors
       end
 
       def included_templates
@@ -220,6 +227,10 @@ module Gitlab
             .variables_builder
             .config_variables
         end
+      end
+
+      def normalizer
+        @normalizer ||= Ci::Config::Normalizer.new(jobs)
       end
 
       def track_and_raise_for_dev_exception(error)

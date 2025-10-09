@@ -74363,6 +74363,11 @@ msgstr ""
 msgid "WorkItem| %{workItemType}s closed"
 msgstr ""
 
+msgid "WorkItem|%d item"
+msgid_plural "WorkItem|%d items"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "WorkItem|%{count} more assignees"
 msgstr ""
 

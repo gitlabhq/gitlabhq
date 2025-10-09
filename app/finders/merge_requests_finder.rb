@@ -95,7 +95,6 @@ class MergeRequestsFinder < IssuableFinder
     items = by_blob_path(items)
     items = by_no_review_requested_or_only_user(items)
     items = by_review_states_or_no_reviewer(items)
-    items = by_generated_ref_commit(items)
     by_valid_or_no_reviewers(items)
   end
 
@@ -119,27 +118,6 @@ class MergeRequestsFinder < IssuableFinder
 
     grouping_columns = klass.grouping_columns(params[:sort])
     items.group(grouping_columns) # rubocop:disable CodeReuse/ActiveRecord
-  end
-
-  # This method handles commit lookup for gitlab generated refs used to run pipelines and merge code and associated with
-  # merge requests. When merge requests are processed through merge trains, new commit SHAs are generated that
-  # are not stored in the original merge request diff. This method provides a way to find the
-  # merge request associated with GitLab-generated references for MR pipelines. These commits
-  # are merged/rebased into the target branch via MergeRequests::MergeStrategies::FromSourceBranch
-  # and MergeRequests::MergeStrategies::FromTrainRef.
-  # Lookup of Refs generated via `MergeRequests::MergeToRefService` is not currently supported
-  # See: https://gitlab.com/gitlab-org/gitlab/-/issues/421025
-  def by_generated_ref_commit(items)
-    return items unless params[:project_id].present? && params[:commit_sha].present?
-
-    # Only perform generated ref commit lookup as fallback when no items found
-    return items unless items.empty?
-
-    ::MergeRequests::GeneratedRefCommit
-      .merge_request_for_sha(
-        params[:project_id],
-        params[:commit_sha]
-      )
   end
 
   def by_author(items)

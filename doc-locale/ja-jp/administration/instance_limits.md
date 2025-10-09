@@ -1,8 +1,9 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Operate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLabアプリケーションの制限
+description: インスタンスの制限を設定します。
 ---
 
 {{< details >}}
@@ -12,9 +13,9 @@ title: GitLabアプリケーションの制限
 
 {{< /details >}}
 
-ほとんどの大規模アプリケーションと同様に、GitLabもパフォーマンスの最低限の品質を維持するために、特定の機能に制限を設けています。特定の機能を無制限に利用できるようにすると、セキュリティ、パフォーマンス、データに影響を与える可能性があり、アプリケーションに割り当てられたリソースを使い果たすおそれもあります。
+GitLabは、多くの大規模アプリケーションと同様に、一定の機能に制限を設けることで最低限のパフォーマンス品質を維持しています。一部の機能を無制限にすると、セキュリティやパフォーマンス、データに影響を及ぼしたり、アプリケーションに割り当てられたリソースを使い果たしてしまう可能性があります。
 
-## インスタンス設定
+## インスタンス設定 {#instance-configuration}
 
 インスタンス設定ページでは、現在のGitLabインスタンスで使用している一部の設定に関する情報を確認できます。
 
@@ -36,29 +37,29 @@ title: GitLabアプリケーションの制限
 
 直接アクセスする場合のURLは、`<gitlab_url>/help/instance_configuration`です。GitLab.comの場合は、<https://gitlab.com/help/instance_configuration>にアクセスします。
 
-## レート制限
+## レート制限 {#rate-limits}
 
 レート制限を使用すると、GitLabのセキュリティと耐久性を向上させることができます。
 
 [レート制限の設定](../security/rate_limits.md)の詳細を参照してください。
 
-### イシュー作成
+### イシュー作成 {#issue-creation}
 
 この設定は、イシュー作成エンドポイントへのリクエストレートを制限します。
 
 [イシュー作成のレート制限](settings/rate_limit_on_issues_creation.md)の詳細を参照してください。
 
-- **デフォルトのレート制限**: デフォルトで無効になっています。
+- **デフォルトのレート制限**: デフォルトでは無効になっています。
 
-### ユーザーまたはIP別
+### ユーザーまたはIP別 {#by-user-or-ip}
 
 この設定は、ユーザーまたはIPごとのリクエストレートを制限します。
 
 [ユーザーとIPレートの制限](settings/user_and_ip_rate_limits.md)の詳細を参照してください。
 
-- **デフォルトのレート制限**: デフォルトで無効になっています。
+- **デフォルトのレート制限**: デフォルトでは無効になっています。
 
-### Rawエンドポイント別
+### Rawエンドポイント別 {#by-raw-endpoint}
 
 この設定は、エンドポイントごとのリクエストレートを制限します。
 
@@ -66,7 +67,7 @@ title: GitLabアプリケーションの制限
 
 - **デフォルトのレート制限**: プロジェクト、コミット、ファイルパスごとに300件のリクエスト。
 
-### 保護されたパス別
+### 保護されたパス別 {#by-protected-path}
 
 この設定は、特定のパスに対してリクエストレートを制限します。
 
@@ -88,33 +89,33 @@ GitLabでは、デフォルトで次のパスのレートが制限されてい�
 
 - **デフォルトのレート制限**: 10件のリクエストの後、クライアントは60秒間待機してから再試行する必要があります。
 
-### パッケージレジストリ
+### パッケージレジストリ {#package-registry}
 
-この設定は、ユーザーまたはIPアドレスごとのPackages APIに対するリクエストレートを制限します。詳細については、[パッケージレジストリレート制限](settings/package_registry_rate_limits.md)を参照してください。
+この設定は、ユーザーまたはIPアドレスごとのパッケージAPIに対するリクエストレートを制限します。詳細については、[パッケージレジストリレート制限](settings/package_registry_rate_limits.md)を参照してください。
 
-- **デフォルトのレート制限**: デフォルトで無効になっています。
+- **デフォルトのレート制限**: デフォルトでは無効になっています。
 
-### Git LFS
+### Git LFS {#git-lfs}
 
 この設定は、ユーザーごとの[Git LFS](../topics/git/lfs/_index.md)リクエストに対してリクエストレートを制限します。詳細については、[GitLab Git Large File Storage（LFS）の管理](lfs/_index.md)を参照してください。
 
-- **デフォルトのレート制限**: デフォルトで無効になっています。
+- **デフォルトのレート制限**: デフォルトでは無効になっています。
 
-### Files API
+### ファイルAPI {#files-api}
 
-この設定は、ユーザーまたはIPアドレスごとのFiles APIに対するリクエストレートを制限します。詳細については、[Files APIのレート制限](settings/files_api_rate_limits.md)を参照してください。
+この設定は、ユーザーまたはIPアドレスごとのファイルAPIに対するリクエストレートを制限します。詳細については、[ファイルAPIのレート制限](settings/files_api_rate_limits.md)を参照してください。
 
-- **デフォルトのレート制限**: デフォルトで無効になっています。
+- **デフォルトのレート制限**: デフォルトでは無効になっています。
 
-### 非推奨のAPIエンドポイント
+### 非推奨のAPIエンドポイント {#deprecated-api-endpoints}
 
 この設定は、ユーザーまたはIPアドレスごとの非推奨のAPIエンドポイントに対するリクエストレートを制限します。詳細については、[非推奨のAPIのレート制限](settings/deprecated_api_rate_limits.md)を参照してください。
 
-- **デフォルトのレート制限**: デフォルトで無効になっています。
+- **デフォルトのレート制限**: デフォルトでは無効になっています。
 
-### インポート/エクスポート
+### インポートおよびエクスポート {#importexport}
 
-この設定は、グループおよびプロジェクトに対するインポート/エクスポートアクションを制限します。
+この設定は、グループおよびプロジェクトに対するインポートおよびエクスポート操作を制限します。
 
 | 制限                   | デフォルト（ユーザーごとに毎分） |
 |-------------------------|-------------------------------|
@@ -125,16 +126,16 @@ GitLabでは、デフォルトで次のパスのレートが制限されてい�
 | グループのエクスポート            | 6                             |
 | グループのエクスポートのダウンロード   | 1                             |
 
-[インポート/エクスポートのレート制限](settings/import_export_rate_limits.md)の詳細を参照してください。
+[インポートおよびエクスポートのレート制限](settings/import_export_rate_limits.md)の詳細を参照してください。
 
-### メンバーの招待
+### メンバーの招待 {#member-invitations}
 
 グループ階層ごとに、1日に招待できるメンバーの最大数を制限します。
 
 - GitLab.com: Freeのメンバーは1日あたり20人のメンバーを招待でき、PremiumトライアルおよびUltimateトライアルのメンバーは1日あたり50人のメンバーを招待できます。
 - GitLab Self-Managed: 招待数に制限はありません。
 
-### Webhookのレート制限
+### Webhookのレート制限 {#webhook-rate-limit}
 
 {{< history >}}
 
@@ -159,7 +160,7 @@ Plan.default.actual_limits.update!(web_hook_calls: 10)
 
 - **デフォルトのレート制限**: 無効（無制限）。
 
-### 検索のレート制限
+### 検索のレート制限 {#search-rate-limit}
 
 {{< history >}}
 
@@ -181,11 +182,12 @@ Plan.default.actual_limits.update!(web_hook_calls: 10)
 This endpoint has been requested too many times. Try again later.
 ```
 
-### オートコンプリートユーザーのレート制限
+### オートコンプリートユーザーのレート制限 {#autocomplete-users-rate-limit}
 
 {{< history >}}
 
-- GitLab 17.10で、`autocomplete_users_rate_limit`[フラグ](feature_flags.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/368926)されました。デフォルトで無効になっています。
+- GitLab 17.10で`autocomplete_users_rate_limit`[フラグ](feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/368926)されました。デフォルトでは無効になっています。
+- GitLab 18.1で[一般公開](https://gitlab.com/gitlab-org/gitlab/-/issues/523595)になりました。機能フラグ`autocomplete_users_rate_limit`は削除されました。
 
 {{< /history >}}
 
@@ -202,7 +204,7 @@ This endpoint has been requested too many times. Try again later.
 This endpoint has been requested too many times. Try again later.
 ```
 
-### パイプライン作成のレート制限
+### パイプライン作成のレート制限 {#pipeline-creation-rate-limit}
 
 {{< history >}}
 
@@ -214,7 +216,7 @@ This endpoint has been requested too many times. Try again later.
 
 [パイプライン作成のレート制限](settings/rate_limit_on_pipelines_creation.md)の詳細を参照してください。
 
-## Gitaly並行処理の制限
+## Gitaly並行処理の制限 {#gitaly-concurrency-limit}
 
 クローントラフィックは、Gitalyサービスに大きな負荷をかける可能性があります。このようなワークロードがGitalyサーバーに過剰な負荷をかけることを防ぐために、Gitalyの設定ファイルで並行処理の制限を設定できます。
 
@@ -222,21 +224,21 @@ This endpoint has been requested too many times. Try again later.
 
 - **デフォルトのレート制限**: 無効。
 
-## イシュー、マージリクエスト、コミットごとのコメント数
+## イシュー、マージリクエスト、コミットごとのコメント数 {#number-of-comments-per-issue-merge-request-or-commit}
 
 イシュー、マージリクエスト、コミットで送信できるコメント数には制限があります。制限に達した場合でも、システムノートは追加できるためイベントの履歴が失われることはありませんが、ユーザーが送信したコメントは失敗します。
 
 - **最大数**: 5,000件のコメント。
 
-## イシュー、マージリクエスト、エピックのコメントおよび説明のサイズ
+## イシュー、マージリクエスト、エピックのコメントおよび説明のサイズ {#size-of-comments-and-descriptions-of-issues-merge-requests-and-epics}
 
 イシュー、マージリクエスト、エピックのコメントおよび説明のサイズには制限があります。制限を超えるテキスト本文を追加しようとするとエラーが発生し、そのアイテムも作成されません。
 
 この制限は、将来的に引き下げられる可能性があります。
 
-- **最大サイズ**: 約100万文字/約1 MB。
+- **最大サイズ**: 約100万文字または約1 MB。
 
-## コミットのタイトルおよび説明のサイズ
+## コミットのタイトルおよび説明のサイズ {#size-of-commit-titles-and-descriptions}
 
 サイズの大きいメッセージを含むコミットをGitLabにプッシュすることは可能ですが、次の表示制限が適用されます。
 
@@ -247,35 +249,69 @@ This endpoint has been requested too many times. Try again later.
 
 多数のコミットを含むブランチをプッシュすると、最後の100件のコミットのみが処理されます。
 
-## マイルストーン概要のイシュー数
+## マイルストーン概要のイシュー数 {#number-of-issues-in-the-milestone-overview}
 
 マイルストーン概要ページに読み込まれるイシューの最大数は500件です。この制限を超えると、ページにアラートが表示され、マイルストーン内のすべてのイシューがページングされた[イシューリスト](../user/project/issues/managing_issues.md)へのリンクが表示されます。
 
 - **制限**: 500件のイシュー。
 
-## Gitプッシュごとのパイプライン数
+## Gitプッシュごとのパイプライン数 {#number-of-pipelines-per-git-push}
 
-複数のタグまたはブランチなど、1回のGitプッシュで複数の変更をプッシュする場合、トリガーできるタグまたはブランチのパイプラインは4つまでです。この制限により、`git push --all`または`git push --mirror`を使用する際に、意図せず大量のパイプラインが作成されるのを防ぐことができます。
+複数のタグまたはブランチなど、1回のGitプッシュで複数の変更をプッシュする場合、トリガーできるタグまたはブランチのパイプラインは、デフォルトでは4つまでです。この制限により、`git push --all`または`git push --mirror`を使用する際に、意図せず大量のパイプラインが作成されるのを防ぐことができます。
 
-[マージリクエストパイプライン](../ci/pipelines/merge_request_pipelines.md)は制限されていません。Gitプッシュによって複数のマージリクエストを同時に更新する場合、更新されたすべてのマージリクエストに対してマージリクエストパイプラインをトリガーできます。
+[マージリクエストパイプライン](../ci/pipelines/merge_request_pipelines.md)は制限の対象です。Gitプッシュによって複数のマージリクエストを同時に更新する場合、制限に達するまでは、更新されたすべてのマージリクエストに対してマージリクエストパイプラインをトリガーできます。
 
-1回のGitプッシュイベントで任意の数のパイプラインをトリガーできるように制限を解除する場合、管理者は`git_push_create_all_pipelines`[機能フラグ](feature_flags.md)を有効にできます。この機能フラグを有効にすることは推奨されません。一度に多数の変更がプッシュされ、意図せず大量のパイプラインが作成された場合に、GitLabインスタンスに過度の負荷がかかる可能性があるためです。
+GitLab Self-ManagedとGitLab.comのデフォルト値は`4`です。
 
-## アクティビティ履歴の保持
+GitLab Self-Managedインスタンスでこの制限を変更するには、[管理者エリア](settings/continuous_integration.md#pipeline-limit-per-git-push)を使用します。
 
-プロジェクトおよび個人のプロファイルのアクティビティ履歴は3年間に制限されます。
+{{< alert type="warning" >}}
 
-## 埋め込みメトリクスの数
+この制限を引き上げることはおすすめしません。多数の変更が同時にプッシュされると、GitLabインスタンスに過剰な負荷がかかり、パイプラインが大量に作成される可能性があります。
+
+{{< /alert >}}
+
+## アクティビティー履歴の保持 {#retention-of-activity-history}
+
+プロジェクトおよび個人のプロファイルのアクティビティー履歴は3年間に制限されます。
+
+## 埋め込みメトリクスの数 {#number-of-embedded-metrics}
 
 パフォーマンス上の理由から、GitLab Flavored Markdown（GLFM）にメトリクスを埋め込む場合は制限があります。
 
 - **最大数**: 100個の埋め込み。
 
-## Webhookの制限
+## HTTPレスポンスの制限 {#http-response-limits}
+
+### Gzip圧縮の最大サイズ {#maximum-gzip-compressed-size}
+
+この設定は、DoS攻撃を防ぐために、解凍後のGzip圧縮されたHTTPレスポンスで許可される最大サイズ（MiB）を制限するために使用されます。
+
+デフォルトの最大サイズは100 MiBです。この制限を無効にするには、値を0に設定します。値が高すぎると、インスタンスがDoS攻撃にさらされる可能性があります。
+
+この制限を変更するには、GitLab Railsコンソールを使用するか、[application setting API](../api/settings.md)（アプリケーション設定API）を使用します。
+
+ ```ruby
+ ApplicationSetting.update(max_http_decompressed_size: 50)
+ ```
+
+### HTTPレスポンスの最大サイズ {#maximum-http-responses-size}
+
+この設定は、解凍されたHTTPレスポンスで許可される最大サイズ（MiB）を制限して、DoS攻撃を防ぐために使用されます。これは、インテグレーション、インポーター、およびWebhookに適用されます。
+
+デフォルトの最大サイズは100 MiBです。この制限を無効にするには、値を0に設定します。値が高すぎると、インスタンスがDoS攻撃にさらされる可能性があります。
+
+この制限を変更するには、GitLab Railsコンソールを使用するか、[application setting API](../api/settings.md)（アプリケーション設定API）を使用します。
+
+ ```ruby
+ ApplicationSetting.update(max_http_response_size_limit: 60)
+ ```
+
+## Webhookの制限 {#webhook-limits}
 
 [Webhookのレート制限](#webhook-rate-limit)も参照してください。
 
-### Webhookの数
+### Webhookの数 {#number-of-webhooks}
 
 GitLab Self-ManagedインスタンスでグループまたはプロジェクトのWebhookの最大数を設定するには、[GitLab Railsコンソール](operations/rails_console.md#starting-a-rails-console-session)で次のコマンドを実行します。
 
@@ -296,13 +332,13 @@ Webhookのデフォルトの最大数は、プロジェクトあたり`100`、�
 
 GitLab.comについては、[GitLab.comのWebhook制限](../user/gitlab_com/_index.md#webhooks)を参照してください。
 
-### Webhookペイロードのサイズ
+### Webhookペイロードのサイズ {#webhook-payload-size}
 
 Webhookペイロードの最大サイズは25 MBです。
 
-### Webhookタイムアウト
+### Webhookのタイムアウト {#webhook-timeout}
 
-GitLabがWebhookを送信した後、HTTP応答を待機する秒数です。
+GitLabがWebhookを送信した後、HTTPレスポンスを待機する秒数です。
 
 Webhookのタイムアウト値を変更するには、次の手順に従います。
 
@@ -322,17 +358,17 @@ Webhookのタイムアウト値を変更するには、次の手順に従いま�
 
 [GitLab.comのWebhook制限](../user/gitlab_com/_index.md#other-limits)も参照してください。
 
-### 再帰的なWebhook
+### 再帰的なWebhook {#recursive-webhooks}
 
-GitLabは、再帰的なWebhookや、他のWebhookからトリガーできるWebhookの制限を超えたWebhookを検出してブロックします。これにより、GitLabは、Webhookを使用してAPIを非再帰的に呼び出すワークフロやー、不合理な数の他のWebhookをトリガーしないワークフローを引き続きサポートできます。
+GitLabは、再帰的なWebhookや、他のWebhookからトリガーされるWebhookの上限を超えるものを検出してブロックします。これにより、Webhookを利用してAPIを非再帰的に呼び出すワークフローや、過剰な数のWebhookをトリガーしないワークフローを引き続きサポートできます。
 
-再帰は、Webhookが自身のGitLabインスタンス（APIなど）を呼び出すように設定されている場合に発生する可能性があります。この呼び出しが同じWebhookをトリガーし、無限ループを生み出します。
+Webhookが自身のGitLabインスタンス（APIなど）を呼び出すように設定されている場合に再帰が発生する可能性があります。この呼び出しが同じWebhookを再びトリガーし、無限ループを生じるためです。
 
-他のWebhookをトリガーする一連のWebhookが、インスタンスに対して行えるリクエストの最大数は100件です。この制限に達すると、GitLabはそれ以降にトリガーされる他のWebhookをブロックします。
+Webhookが他のWebhookをトリガーする一連の処理で、インスタンスに対して送信できる最大リクエスト数は100 です。この制限に達すると、GitLabはそれ以降にトリガーされる他のWebhookをブロックします。
 
 ブロックされた再帰的なWebhook呼び出しは、`auth.log`に`"Recursive webhook blocked from executing"`というメッセージとともに記録されます。
 
-## インポート時のプレースホルダーユーザーの制限
+## インポート時のプレースホルダーユーザーの制限 {#import-placeholder-user-limits}
 
 {{< history >}}
 
@@ -355,11 +391,11 @@ Plan.default.actual_limits.update!(import_placeholder_user_limit_tier_1: 200)
 
 制限を`0`に設定すると、無効になります。
 
-## プルミラーリング間隔
+## プルミラーリング間隔 {#pull-mirroring-interval}
 
 [プル更新間の最小待機時間](../user/project/repository/mirror/_index.md)は、デフォルトで300秒（5分）に設定されています。たとえば、特定の300秒間に何回トリガーしても、プル更新は1回しか実行されません。
 
-この設定は、[Projects API](../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project)を使用して実行したプル更新のコンテキスト、または**設定 > リポジトリ > リポジトリのミラーリング**で、**今すぐ更新**（{{< icon name="retry" >}}）を選択して強制的に更新する場合に適用されます。この設定は、Sidekiqが自動的に実行する30分間隔の[プルミラーリング](../user/project/repository/mirror/pull.md)のスケジュールには影響しません。
+この設定は、[projects API](../api/project_pull_mirroring.md#start-the-pull-mirroring-process-for-a-project)を使用して実行したプル更新のコンテキスト、または**設定** > **リポジトリ** > **リポジトリのミラーリング**で、**今すぐ更新**（{{< icon name="retry" >}}）を選択して強制的に更新する場合に適用されます。この設定は、Sidekiqが自動的に実行する30分間隔の[プルミラーリング](../user/project/repository/mirror/pull.md)のスケジュールには影響しません。
 
 GitLab Self-Managedインスタンスでこの制限を変更するには、[GitLab Railsコンソール](operations/rails_console.md#starting-a-rails-console-session)で次のコマンドを実行します。
 
@@ -370,21 +406,21 @@ GitLab Self-Managedインスタンスでこの制限を変更するには、[Git
 Plan.default.actual_limits.update!(pull_mirror_interval_seconds: 200)
 ```
 
-## 自動応答からの受信メール
+## 自動応答からの受信メール {#incoming-emails-from-auto-responders}
 
 GitLabは、`X-Autoreply`ヘッダーを確認することで、自動応答から送信された受信メールをすべて無視します。このようなメールによって、イシューまたはマージリクエストにコメントが作成されることはありません。
 
-## エラートラッキングを通じてSentryから送信されるデータ量
+## エラートラッキングを通じてSentryから送信されるデータ量 {#amount-of-data-sent-from-sentry-through-error-tracking}
 
 {{< history >}}
 
-- GitLab 15.6で[すべてのSentry応答に対する制限](https://gitlab.com/gitlab-org/gitlab/-/issues/356448)が導入されました。
+- GitLab 15.6で[すべてのSentryレスポンスに対する制限](https://gitlab.com/gitlab-org/gitlab/-/issues/356448)が導入されました。
 
 {{< /history >}}
 
 セキュリティ上の理由とメモリ消費を制限するため、SentryからGitLabに送信されるペイロードのサイズは、最大1 MBに制限されています。
 
-## REST APIにおけるオフセットベースのページネーションで許可される最大オフセット
+## REST APIにおけるオフセットベースのページネーションで許可される最大オフセット {#max-offset-allowed-by-the-rest-api-for-offset-based-pagination}
 
 REST APIでオフセットベースのページネーションを使用する場合、結果セットに対してリクエストできる最大オフセットの制限があります。この制限は、キーセットベースのページネーションもサポートしているエンドポイントにのみ適用されます。ページネーションオプションの詳細については、[APIドキュメントのページネーションに関するセクション](../api/rest/_index.md#pagination)を参照してください。
 
@@ -401,9 +437,9 @@ Plan.default.actual_limits.update!(offset_pagination_limit: 10000)
 
 制限を`0`に設定すると、無効になります。
 
-## CI/CDの制限
+## CI/CDの制限 {#cicd-limits}
 
-### アクティブなパイプライン内のジョブ数
+### アクティブなパイプライン内のジョブ数 {#number-of-jobs-in-active-pipelines}
 
 アクティブなパイプラインに含まれるジョブの総数は、プロジェクトごとに制限できます。この制限は、新しいパイプラインが作成されるたびにチェックされます。アクティブなパイプラインとは、次のいずれかの状態にあるパイプラインです。
 
@@ -427,7 +463,7 @@ Plan.default.actual_limits.update!(ci_active_jobs: 500)
 
 制限を`0`に設定すると、無効になります。
 
-### ジョブが実行できる最大時間
+### ジョブが実行できる最大時間 {#maximum-time-jobs-can-run}
 
 ジョブが実行できるデフォルトの最大時間は60分です。60分を超えて実行されるジョブはタイムアウトになります。
 
@@ -436,7 +472,27 @@ Plan.default.actual_limits.update!(ci_active_jobs: 500)
 - プロジェクトレベル: 特定のプロジェクトについて、[プロジェクトのCI/CD設定](../ci/pipelines/settings.md#set-a-limit-for-how-long-jobs-can-run)で変更します。この制限は、10分から1か月の間でなければなりません。
 - [Runnerレベル](../ci/runners/configure_runners.md#set-the-maximum-job-timeout): この制限は10分以上でなければなりません。
 
-### パイプライン内のデプロイジョブの最大数
+設定されているタイムアウト制限に関係なく、GitLabは非アクティブな期間が60分間に達したジョブをすべて終了します。非アクティブなジョブとは、新しいログまたはトレース更新を生成していないジョブのことです。
+
+### パイプライン内のジョブの最大数 {#maximum-number-of-jobs-in-a-pipeline}
+
+パイプライン内のジョブの最大数を制限できます。パイプライン内のジョブの数は、パイプラインの作成時と新しいコミットステータスの作成時にチェックされます。ジョブが多すぎるパイプラインは、`size_limit_exceeded`エラーで失敗します。
+
+- GitLab.comでは、[サブスクリプションプランごとに制限が定義](../user/gitlab_com/_index.md#cicd)されており、この制限はそのプランのすべてのプロジェクトに影響します。
+- GitLab Self-Managedの[PremiumまたはUltimate](https://about.gitlab.com/pricing/)サブスクリプションでは、この制限は`default`プランで定義され、すべてのプロジェクトに影響します。この制限は、デフォルトで無効（`0`）になっています。
+
+GitLab Self-Managedインスタンスの制限を変更するには、次の[GitLab Railsコンソール](operations/rails_console.md#starting-a-rails-console-session)のコマンドで、`default`プランの制限を変更します。
+
+```ruby
+# If limits don't exist for the default plan, you can create one with:
+# Plan.default.create_limits!
+
+Plan.default.actual_limits.update!(ci_pipeline_size: 500)
+```
+
+制限を`0`に設定すると、無効になります。
+
+### パイプライン内のデプロイジョブの最大数 {#maximum-number-of-deployment-jobs-in-a-pipeline}
 
 パイプライン内のデプロイジョブの最大数を制限できます。デプロイとは、[`environment`](../ci/environments/_index.md)が指定されたジョブのことです。パイプライン内のデプロイ数は、パイプラインの作成時にチェックされます。デプロイが多すぎるパイプラインは、`deployments_limit_exceeded`エラーで失敗します。
 
@@ -453,7 +509,29 @@ Plan.default.actual_limits.update!(ci_pipeline_deployments: 500)
 
 制限を`0`に設定すると、無効になります。
 
-### プロジェクトに対するCI/CDサブスクリプションの数
+### パイプライン階層サイズを制限する {#limit-pipeline-hierarchy-size}
+
+デフォルトでは、[パイプライン階層](../ci/pipelines/downstream_pipelines.md)に含めることができるダウンストリームパイプラインの最大数は1,000個です。この制限を超えると、パイプラインの作成は`downstream pipeline tree is too large`というエラーで失敗します。
+
+{{< alert type="warning" >}}
+
+この制限を引き上げることはおすすめしません。デフォルトの制限では、過剰なリソース消費、潜在的なパイプライン再帰、およびデータベースのオーバーロードからGitLabインスタンスが保護されます。
+
+この制限を引き上げる代わりに、大規模なパイプライン階層をより小さなパイプラインに分割して、CI/CD構成を再編成してください。単一パイプライン内のジョブ間または依存ステージ間で`needs`を使用することを検討してください。
+
+{{< /alert >}}
+
+インスタンスでこの制限を変更するには、[管理者エリア](settings/continuous_integration.md#set-cicd-limits)または[プラン制限API](../api/plan_limits.md)でGitLab UIを使用します。
+
+GitLab Railsコンソールで次のコマンドを実行することもできます。
+
+```ruby
+Plan.default.actual_limits.update!(pipeline_hierarchy_size: 500)
+```
+
+この制限はGitLab.comで有効になっており、変更できません。
+
+### プロジェクトに対するCI/CDサブスクリプションの数 {#number-of-cicd-subscriptions-to-a-project}
 
 サブスクリプションの総数は、プロジェクトごとに制限できます。この制限は、新しいサブスクリプションが作成されるたびにチェックされます。
 
@@ -470,7 +548,7 @@ Plan.default.actual_limits.update!(ci_project_subscriptions: 500)
 
 制限を`0`に設定すると、無効になります。
 
-### パイプライントリガー数を制限する
+### パイプライントリガー数を制限する {#limit-the-number-of-pipeline-triggers}
 
 プロジェクトごとにパイプライントリガーの最大数を制限できます。この制限は、新しいトリガーが作成されるたびにチェックされます。
 
@@ -486,7 +564,7 @@ Plan.default.actual_limits.update!(pipeline_triggers: 100)
 
 この制限は[GitLab.comで有効](../user/gitlab_com/_index.md#cicd)になっています。
 
-### パイプラインスケジュール数
+### パイプラインスケジュール数 {#number-of-pipeline-schedules}
 
 パイプラインスケジュールの総数は、プロジェクトごとに制限できます。この制限は、新しいパイプラインスケジュールが作成されるたびにチェックされます。新しいパイプラインスケジュールによってパイプラインスケジュールの総数が制限を超える場合、そのパイプラインスケジュールは作成されません。
 
@@ -500,9 +578,9 @@ GitLab Self-Managedインスタンスでこの制限を設定するには、[Git
 Plan.default.actual_limits.update!(ci_pipeline_schedules: 100)
 ```
 
-### 1日にパイプラインスケジュールによって作成できるパイプラインの数を制限する
+### 1日にパイプラインスケジュールによって作成できるパイプラインの数を制限する {#limit-the-number-of-pipelines-created-by-a-pipeline-schedule-each-day}
 
-パイプラインスケジュールが1日にトリガーできるパイプラインの数を制限できます。
+個々のパイプラインスケジュールが1日にトリガーできるパイプライン数を制限できます。
 
 制限を超えてパイプラインを実行しようとするスケジュールは、最大実行頻度まで抑制されます。この頻度は、1,440（1日の分数）を制限値で割ることで計算されます。最大頻度ごとの例を示します。
 
@@ -510,7 +588,7 @@ Plan.default.actual_limits.update!(ci_pipeline_schedules: 100)
 - 10分に1回の場合、制限値は`144`になります。
 - 60分に1回の場合、制限値は`24`になります。
 
-最小値は`24`、つまり60分に1回です。最大値の制限はありません。
+最小値は`24`、つまり60分に1回のパイプライン実行です。最大値の制限はありません。
 
 GitLab Self-Managedインスタンスでこの制限を`1440`に設定するには、[GitLab Railsコンソール](operations/rails_console.md#starting-a-rails-console-session)で次のコマンドを実行します。
 
@@ -520,7 +598,7 @@ Plan.default.actual_limits.update!(ci_daily_pipeline_schedule_triggers: 1440)
 
 この制限は[GitLab.comで有効](../user/gitlab_com/_index.md#cicd)になっています。
 
-### セキュリティポリシープロジェクトに定義できるスケジュールルールの数を制限する
+### セキュリティポリシープロジェクトに定義できるスケジュールルールの数を制限する {#limit-the-number-of-schedule-rules-defined-for-security-policy-project}
 
 {{< history >}}
 
@@ -540,7 +618,7 @@ Plan.default.actual_limits.update!(security_policy_scan_execution_schedules: 100
 
 この制限は[GitLab.comで有効](../user/gitlab_com/_index.md#cicd)になっています。
 
-### CI/CD変数の制限
+### CI/CD変数の制限 {#cicd-variable-limits}
 
 {{< history >}}
 
@@ -570,16 +648,17 @@ GitLab Self-Managedインスタンスで、これらの制限の`default`プラ�
   Plan.default.actual_limits.update!(project_ci_variables: 10000)
   ```
 
-### アーティファクトのタイプごとの最大ファイルサイズ
+### アーティファクトのタイプごとの最大ファイルサイズ {#maximum-file-size-per-type-of-artifact}
 
 {{< history >}}
 
 - GitLab 16.3で`ci_max_artifact_size_annotations`制限が[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/38337)されました。
+- `ci_max_artifact_size_jacoco`の制限は、GitLab 17.3で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159696)されました。
 - GitLab 17.8で`ci_max_artifact_size_lsif`制限が[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175684)されました。
 
 {{< /history >}}
 
-[`artifacts:reports`](../ci/yaml/_index.md#artifactsreports)で定義されたジョブアーティファクトについて、Runnerによってアップロードされたファイルが最大ファイルサイズ制限を超える場合、そのファイルは拒否されます。この制限は、プロジェクトの[最大アーティファクトサイズ設定](settings/continuous_integration.md#maximum-artifacts-size)と、指定されたアーティファクトタイプに対するインスタンスの制限を比較し、小さい方の値が適用されます。
+[`artifacts:reports`](../ci/yaml/_index.md#artifactsreports)で定義されたジョブアーティファクトについて、Runnerによってアップロードされたファイルが最大ファイルサイズ制限を超える場合、そのファイルは拒否されます。この制限は、プロジェクトの[最大アーティファクトサイズ設定](settings/continuous_integration.md#set-maximum-artifacts-size)と、指定されたアーティファクトタイプに対するインスタンスの制限を比較し、小さい方の値が適用されます。
 
 制限はメガバイト単位で設定されるため、定義できる最小値は`1 MB`です。
 
@@ -600,6 +679,7 @@ GitLab Self-Managedインスタンスで、これらの制限の`default`プラ�
 | `ci_max_artifact_size_dast`                 | 0             |
 | `ci_max_artifact_size_dependency_scanning`  | 0             |
 | `ci_max_artifact_size_dotenv`               | 0             |
+| `ci_max_artifact_size_jacoco`               | 0             |
 | `ci_max_artifact_size_junit`                | 0             |
 | `ci_max_artifact_size_license_management`   | 0             |
 | `ci_max_artifact_size_license_scanning`     | 0             |
@@ -624,9 +704,9 @@ GitLab Self-Managedインスタンスで、これらの制限の`default`プラ�
 Plan.default.actual_limits.update!(ci_max_artifact_size_junit: 10)
 ```
 
-### GitLab Pages Webサイトごとのファイル数
+### GitLab Pagesウェブサイトごとのファイル数 {#number-of-files-per-gitlab-pages-website}
 
-ファイルエントリの総数（ディレクトリとシンボリックリンクを含む）は、GitLab Pages Webサイトごとに`200,000`件に制限されています。
+GitLab Pagesウェブサイトごとに、ファイルエントリ（ディレクトリやシンボリックリンクを含む）の総数は`200,000`に制限されています。
 
 これは、[GitLab Self-ManagedおよびGitLab.com](https://about.gitlab.com/pricing/)のデフォルトの制限です。
 
@@ -636,17 +716,17 @@ GitLab Self-Managedインスタンスで制限を更新するには、[GitLab Ra
 Plan.default.actual_limits.update!(pages_file_entries: 100)
 ```
 
-### GitLab Pages Webサイトごとのカスタムドメイン数
+### GitLab Pagesウェブサイトごとのカスタムドメイン数 {#number-of-custom-domains-per-gitlab-pages-website}
 
-GitLab Pages Webサイトごとのカスタムドメインの総数は、[GitLab.com](../subscriptions/gitlab_com/_index.md)では`150`に制限されています。
+GitLab Pagesウェブサイトごとのカスタムドメインの総数は、[GitLab.com](../subscriptions/gitlab_com/_index.md)では`150`に制限されています。
 
 [GitLab Self-Managed](../subscriptions/self_managed/_index.md)のデフォルトの制限は`0`（無制限）です。インスタンスに制限を設定するには、[**管理者**エリア](pages/_index.md#set-maximum-number-of-gitlab-pages-custom-domains-for-a-project)を使用します。
 
-### Pagesの並列デプロイ数
+### Pagesの並列デプロイ数 {#number-of-parallel-pages-deployments}
 
 [Pagesの並列デプロイ](../user/project/pages/_index.md#parallel-deployments)を使用する場合、トップレベルのネームスペースで許可されるPagesの並列デプロイの総数は1,000です。
 
-### スコープごとの登録Runner数
+### スコープごとの登録Runner数 {#number-of-registered-runners-for-each-scope}
 
 {{< history >}}
 
@@ -673,7 +753,7 @@ GitLab Self-ManagedのPremiumおよびUltimateでは、この制限はデフォ�
 Plan.default.actual_limits.update!(ci_registered_project_runners: 100)
 ```
 
-### ジョブログの最大ファイルサイズ
+### ジョブログの最大ファイルサイズ {#maximum-file-size-for-job-logs}
 
 GitLabのジョブログファイルサイズの制限は、デフォルトで100 MBです。制限を超過したジョブは失敗とマークされ、Runnerによって破棄されます。
 
@@ -685,7 +765,7 @@ Plan.default.actual_limits.update!(ci_jobs_trace_size_limit: 125)
 
 GitLab Runnerには、Runner内の最大ログサイズを指定する[`output_limit`という設定](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)もあります。Runnerの制限を超えたジョブは引き続き実行されますが、ログは制限に達すると切り詰められます。
 
-### プロジェクトごとのアクティブなDASTプロファイルスケジュールの最大数
+### プロジェクトごとのアクティブなDASTプロファイルスケジュールの最大数 {#maximum-number-of-active-dast-profile-schedules-per-project}
 
 プロジェクトごとのアクティブなDASTプロファイルスケジュールの数を制限できます。DASTプロファイルスケジュールは、アクティブまたは非アクティブにすることができます。
 
@@ -695,28 +775,34 @@ GitLab Runnerには、Runner内の最大ログサイズを指定する[`output_l
 Plan.default.actual_limits.update!(dast_profile_schedules: 50)
 ```
 
-### CIアーティファクトアーカイブの最大サイズ
+### CIアーティファクトアーカイブの最大サイズ {#maximum-size-of-the-ci-artifacts-archive}
 
 この設定は、[動的な子パイプライン](../ci/pipelines/downstream_pipelines.md#dynamic-child-pipelines)におけるYAMLのサイズを制限するために使用されます。
 
 CIアーティファクトアーカイブのデフォルトの最大サイズは5メガバイトです。
 
-この制限を変更するには、[GitLab Railsコンソール](operations/rails_console.md#starting-a-rails-console-session)を使用します。CIアーティファクトアーカイブの最大サイズを更新するには、`max_artifacts_content_include_size`に新しい値設定します。たとえば、20 MBに設定するには、次のコマンドを実行します。
+この制限を変更するには、[GitLab Railsコンソール](operations/rails_console.md#starting-a-rails-console-session)を使用します。CIアーティファクトアーカイブの最大サイズを更新するには、`max_artifacts_content_include_size`に新しい値を設定します。たとえば、20 MBに設定するには、次のコマンドを実行します。
 
 ```ruby
 ApplicationSetting.update(max_artifacts_content_include_size: 20.megabytes)
 ```
 
-### CI/CD設定YAMLファイルの最大サイズと最大深度
+### CI/CD設定YAMLファイルの最大サイズと最大深度 {#maximum-size-and-depth-of-cicd-configuration-yaml-files}
 
-単一のCI/CD設定YAMLファイルに対するデフォルトの最大サイズは1メガバイトで、デフォルトの最大深度は100です。
+{{< history >}}
+
+- GitLab 17.3で`max_yaml_size_bytes`のデフォルト値が[変更](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160826)されました。
+
+{{< /history >}}
+
+単一のCI/CD設定YAMLファイルに対するデフォルトの最大サイズは2メガバイトで、デフォルトの最大深度は100です。
 
 これらの制限は、[GitLab Railsコンソール](operations/rails_console.md#starting-a-rails-console-session)で変更できます。
 
 - YAMLの最大サイズを更新するには、`max_yaml_size_bytes`に新しい値をメガバイト単位で設定します。
 
   ```ruby
-  ApplicationSetting.update(max_yaml_size_bytes: 2.megabytes)
+  ApplicationSetting.update(max_yaml_size_bytes: 4.megabytes)
   ```
 
   `max_yaml_size_bytes`の値はYAMLファイルのサイズに直接関係するのではなく、関連オブジェクトに割り当てられるメモリに関係します。
@@ -727,13 +813,21 @@ ApplicationSetting.update(max_artifacts_content_include_size: 20.megabytes)
   ApplicationSetting.update(max_yaml_depth: 125)
   ```
 
-### CI/CD設定全体の最大サイズ
+### CI/CD設定全体の最大サイズ {#maximum-size-of-the-entire-cicd-configuration}
+
+{{< history >}}
+
+- GitLab 17.3で`max_yaml_size_bytes`のデフォルト値が[変更](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160826)されました。
+- GitLab 17.3で`ci_max_total_yaml_size_bytes`のデフォルト値が[変更](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160826)されました。
+
+{{< /history >}}
 
 すべてのYAML設定ファイルを含む、パイプライン設定全体に対して割り当て可能な最大メモリ量（バイト単位）です。
 
-新しいGitLab Self-Managedインスタンスの場合、デフォルトは`157286400`バイト（150 MB）です。
+デフォルト値は、[`max_yaml_size_bytes`](#maximum-size-and-depth-of-cicd-configuration-yaml-files)（デフォルトは2 MB）と[`ci_max_includes`](../api/settings.md#available-settings)（デフォルトは150）を乗算することで算出されます。
 
-GitLab 16.3以降にアップグレードする既存のインスタンスの場合、デフォルトは、[`max_yaml_size_bytes`（デフォルト1 MB）](#maximum-size-and-depth-of-cicd-configuration-yaml-files)に[`ci_max_includes`（デフォルト150）](../api/settings.md#available-settings)を乗算することで計算されます。両方の制限が変更されていない場合、デフォルトは1 MB x 150 = `157286400`バイト（150 MB）に設定されます。
+- GitLab 17.2以前: 1 MB × 150 = `157286400`バイト（150 MB）。
+- GitLab 17.3以降: 2 MB × 150 = `314572800`バイト（314.6 MB）。
 
 この制限を変更するには、[GitLab Railsコンソール](operations/rails_console.md#starting-a-rails-console-session)を使用します。CI/CD設定に割り当て可能な最大メモリ量を更新するには、`ci_max_total_yaml_size_bytes`に新しい値を設定します。たとえば、20 MBに設定するには、次のコマンドを実行します。
 
@@ -741,7 +835,7 @@ GitLab 16.3以降にアップグレードする既存のインスタンスの場
 ApplicationSetting.update(ci_max_total_yaml_size_bytes: 20.megabytes)
 ```
 
-### dotenv変数を制限する
+### dotenv変数を制限する {#limit-dotenv-variables}
 
 dotenvアーティファクト内の変数の最大数に制限を設定できます。この制限は、dotenvファイルがアーティファクトとしてエクスポートされるたびにチェックされます。
 
@@ -753,11 +847,11 @@ dotenvアーティファクト内の変数の最大数に制限を設定でき�
 Plan.default.actual_limits.update!(dotenv_variables: 100)
 ```
 
-この制限は、[GitLab UI](settings/continuous_integration.md#set-cicd-limits)または[Plan limits API](../api/plan_limits.md)を使用して設定することもできます。
+この制限は、[GitLab UI](settings/continuous_integration.md#set-cicd-limits)または[プラン制限API](../api/plan_limits.md)を使用して設定することもできます。
 
 この制限は[GitLab.comで有効](../user/gitlab_com/_index.md#cicd)になっています。
 
-### dotenvファイルサイズを制限する
+### dotenvファイルサイズを制限する {#limit-dotenv-file-size}
 
 dotenvアーティファクトの最大サイズに制限を設定できます。この制限は、dotenvファイルがアーティファクトとしてエクスポートされるたびにチェックされます。
 
@@ -769,7 +863,7 @@ GitLab Self-Managedインスタンスでこの制限を5 KBに設定するに�
 Plan.default.actual_limits.update!(dotenv_size: 5.kilobytes)
 ```
 
-### CI/CDジョブのアノテーション数を制限する
+### CI/CDジョブのアノテーション数を制限する {#limit-cicd-job-annotations}
 
 {{< history >}}
 
@@ -787,7 +881,7 @@ CI/CDジョブごとの[アノテーション](../ci/yaml/artifacts_reports.md#a
 Plan.default.actual_limits.update!(ci_job_annotations_num: 100)
 ```
 
-### CI/CDジョブのアノテーションファイルサイズを制限する
+### CI/CDジョブのアノテーションファイルサイズを制限する {#limit-cicd-job-annotations-file-size}
 
 {{< history >}}
 
@@ -805,50 +899,55 @@ GitLab Self-Managedインスタンスでこの制限を100 KBに設定するに
 Plan.default.actual_limits.update!(ci_job_annotations_size: 100.kilobytes)
 ```
 
-## インスタンスのモニタリングとメトリクス
+### CI/CDテーブルの最大データベースパーティションサイズ {#maximum-database-partition-size-for-cicd-tables}
 
-### 受信できるインシデント管理アラートを制限する
+{{< history >}}
+
+- GitLab 18.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189131)されました。
+
+{{< /history >}}
+
+パーティション分割テーブルのパーティションが使用できる最大ディスク容量（バイト単位）。これを超えると新しいパーティションが自動的に作成されます。デフォルトは100 GBです。
+
+この制限を変更するには、[GitLab Railsコンソール](operations/rails_console.md#starting-a-rails-console-session)を使用します。この制限を変更するには、`ci_partitions_size_limit`を新しい値で更新します。たとえば、20 GBに設定するには、次のコマンドを実行します。
+
+```ruby
+ApplicationSetting.update(ci_partitions_size_limit: 20.gigabytes)
+```
+
+### 自動パイプラインクリーンアップの最大設定値 {#maximum-config-value-for-automatic-pipeline-cleanup}
+
+{{< history >}}
+
+- GitLab 18.0で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189191)されました。
+
+{{< /history >}}
+
+[CI/CDパイプラインの有効期限](../ci/pipelines/settings.md#automatic-pipeline-cleanup)の上限を設定します。デフォルトは1年です。
+
+この制限を変更するには、[GitLab Railsコンソール](operations/rails_console.md#starting-a-rails-console-session)を使用します。この制限を変更するには、`ci_delete_pipelines_in_seconds_limit_human_readable`を新しい値で更新します。たとえば3年に設定するには、次のコマンドを実行します。
+
+```ruby
+ApplicationSetting.update(ci_delete_pipelines_in_seconds_limit_human_readable: '3 years')
+```
+
+## インスタンスのモニタリングとメトリクス {#instance-monitoring-and-metrics}
+
+### 受信できるインシデント管理アラートを制限する {#limit-inbound-incident-management-alerts}
 
 この設定は、一定期間に受信できるアラートのペイロード数を制限します。
 
 [インシデント管理のレート制限](settings/rate_limit_on_pipelines_creation.md)の詳細を参照してください。
 
-### PrometheusアラートのJSONペイロード
+### PrometheusアラートのJSONペイロード {#prometheus-alert-json-payloads}
 
 `notify.json`エンドポイントに送信されるPrometheusアラートのペイロードは、サイズが1 MBに制限されています。
 
-### 汎用アラートのJSONペイロード
+### 汎用アラートのJSONペイロード {#generic-alert-json-payloads}
 
 `notify.json`エンドポイントに送信されるアラートのペイロードは、サイズが1 MBに制限されています。
 
-### メトリクスダッシュボードのYAMLファイル
-
-解析済みのメトリクスダッシュボードのYAMLファイルが占有するメモリは、最大1 MBまでです。
-
-各YAMLファイルの最大深度は100に制限されています。YAMLファイルの最大深度とは、最もネストされたキーのネストの深さのことです。最も深くネストされたキーへのパス上にあるすべてのハッシュおよび配列が、深度としてカウントされます。たとえば、次のYAMLファイルにおける最もネストされたキーの深度は7です。
-
-```yaml
-dashboard: 'Test dashboard'
-links:
-- title: Link 1
-  url: https://gitlab.com
-panel_groups:
-- group: Group A
-  priority: 1
-  panels:
-  - title: "Super Chart A1"
-    type: "area-chart"
-    y_label: "y_label"
-    weight: 1
-    max_value: 1
-    metrics:
-    - id: metric_a1
-      query_range: 'query'
-      unit: unit
-      label: Legend Label
-```
-
-## 環境ダッシュボードの制限
+## 環境ダッシュボードの制限 {#environment-dashboard-limits}
 
 {{< details >}}
 
@@ -859,13 +958,13 @@ panel_groups:
 
 表示されるプロジェクトの最大数については、[環境ダッシュボード](../ci/environments/environments_dashboard.md#adding-a-project-to-the-dashboard)を参照してください。
 
-## デプロイボードの環境データ
+## デプロイボードの環境データ {#environment-data-on-deploy-boards}
 
 [デプロイボード](../user/project/deploy_boards.md)は、Kubernetesからポッドとデプロイに関する情報を読み込みます。ただし、特定の環境についてKubernetesから読み取られたデータが10 MBを超える場合、そのデータは表示されません。
 
-## マージリクエスト
+## マージリクエスト {#merge-requests}
 
-### 差分の制限
+### 差分の制限 {#diff-limits}
 
 GitLabには、以下の制限があります。
 
@@ -874,40 +973,40 @@ GitLabには、以下の制限があります。
 
 以下のそれぞれに、上限と下限が適用されます。
 
-- 変更されたファイル数
-- 変更された行数
-- 表示される変更の累積サイズ
+- 変更されたファイル数。
+- 変更された行数。
+- 表示される変更の累積サイズ。
 
-下限に到達すると、追加の差分が折りたたまれます。上限を上回ると、それ以上の変更は表示されません。これらの制限の詳細については、[開発ドキュメントを参照してください](../development/merge_request_concepts/diffs/_index.md#diff-limits)。
+下限に到達すると、追加の差分が折りたたまれます。上限を上回ると、それ以上の変更は表示されません。これらの制限の詳細については、差分の操作に関するGitLab開発ドキュメントを参照してください。
 
-### 差分バージョンの制限
+### 差分バージョンの制限 {#diff-version-limit}
 
 {{< history >}}
 
-- GitLab 17.10で、`merge_requests_diffs_limit`[フラグ](feature_flags.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/521970)されました。デフォルトで無効になっています。
-- GitLab 17.10の[GitLab.comで有効になりました](https://gitlab.com/gitlab-org/gitlab/-/issues/521970)。
+- GitLab 17.10で`merge_requests_diffs_limit`[フラグ](feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/521970)されました。デフォルトでは無効になっています。
+- GitLab 17.10のGitLab.comで[有効](https://gitlab.com/gitlab-org/gitlab/-/issues/521970)になりました。
 
 {{< /history >}}
 
 {{< alert type="flag" >}}
 
-この機能の利用可否は、機能フラグによって制御されます。詳細については履歴を参照してください。この機能はテストには使用できますが、本番環境での使用には適していません。
+この機能の利用可否は、機能フラグによって制御されます。詳細については、履歴を参照してください。この機能はテストには利用できますが、本番環境での使用には適していません。
 
 {{< /alert >}}
 
-GitLabでは、各マージリクエストを1,000個の[差分バージョン](../user/project/merge_requests/versions.md)に制限しています。この制限に達したマージリクエストは、それ以上更新できません。代わりに、影響を受けたマージリクエストをクローズし、新しいマージリクエストを作成してください。
+GitLabでは、各マージリクエストを1,000件の差分[バージョン](../user/project/merge_requests/versions.md)に制限しています。この制限に達したマージリクエストは、それ以上更新できません。代わりに、影響を受けたマージリクエストをクローズし、新しいマージリクエストを作成してください。
 
-### マージリクエストのレポートサイズ制限
+### マージリクエストのレポートサイズ制限 {#merge-request-reports-size-limit}
 
 20 MBを超えるレポートは読み込まれません。影響を受けるレポートは次のとおりです。
 
 - [マージリクエストのセキュリティレポート](../ci/testing/_index.md#security-reports)
-- [CI/CDパラメーター`artifacts:expose_as`](../ci/yaml/_index.md#artifactsexpose_as)
-- [単体試験レポート](../ci/testing/unit_test_reports.md)
+- [CI/CDパラメータ`artifacts:expose_as`](../ci/yaml/_index.md#artifactsexpose_as)
+- [単体テストレポート](../ci/testing/unit_test_reports.md)
 
-## 高度な検索の制限
+## 高度な検索の制限 {#advanced-search-limits}
 
-### インデックスが作成されるファイルの最大サイズ
+### インデックスが作成されるファイルの最大サイズ {#maximum-file-size-indexed}
 
 Elasticsearchでインデックスを作成するリポジトリファイルの内容に、制限を設定できます。この制限よりも大きいファイルは、ファイル名のみがインデックス作成の対象となります。ファイルの内容についてはインデックスが作成されず、検索できません。
 
@@ -915,7 +1014,7 @@ Elasticsearchでインデックスを作成するリポジトリファイルの�
 
 無制限のファイルサイズはサポートしていないため、必ず制限を設定する必要があります。この値をGitLab Sidekiqノードのメモリ量よりも大きく設定すると、インデックス作成時にこのメモリ量が事前に割り当てられるため、GitLab Sidekiqノードのメモリが不足する可能性があります。
 
-### 最大フィールド長
+### 最大フィールド長 {#maximum-field-length}
 
 高度な検索用にインデックスが作成されるテキストフィールドの内容に、制限を設定できます。最大値を設定すると、インデックス作成プロセスの負荷を軽減できます。テキストフィールドがこの制限を超えると、テキストは指定した文字数に切り詰められます。テキストの残りの部分についてはインデックスが作成されず、検索できません。別の制限が適用されるリポジトリファイルを除く、インデックス作成対象のすべてのデータにこの制限が適用されます。詳細については、[インデックスが作成されるファイルの最大サイズ](#maximum-file-size-indexed)を参照してください。
 
@@ -924,7 +1023,7 @@ Elasticsearchでインデックスを作成するリポジトリファイルの�
 
 [Elasticsearchを有効にする](../integration/advanced_search/elasticsearch.md#enable-advanced-search)際に、GitLab Self-Managedインスタンスに対してこの制限を設定できます。制限を`0`に設定すると、無効になります。
 
-## 数式のレンダリング制限
+## 数式のレンダリング制限 {#math-rendering-limits}
 
 {{< history >}}
 
@@ -938,11 +1037,11 @@ GitLabでは、Markdownフィールドで数式をレンダリングする際に
 
 イシュー、マージリクエスト、エピック、Wiki、リポジトリファイルに対する制限は次のとおりです。
 
-- マクロ展開の最大数: `1000`
-- ユーザー指定の最大サイズ（[em](https://en.wikipedia.org/wiki/Em_(typography))単位）: `20`
-- レンダリングされるノードの最大数: `50`
-- 数式ブロック内の最大文字数: `1000`
-- 最大レンダリング時間: `2000 ms`
+- マクロ展開の最大数: `1000`。
+- ユーザー指定の最大サイズ（[em](https://en.wikipedia.org/wiki/Em_(typography))単位）: `20`。
+- レンダリングされるノードの最大数: `50`。
+- 数式ブロック内の最大文字数: `1000`。
+- 最大レンダリング時間: `2000 ms`。
 
 GitLab Self-Managedを実行しており、ユーザー入力を信頼できる場合は、これらの制限を無効にできます。
 
@@ -954,30 +1053,30 @@ ApplicationSetting.update(math_rendering_limits_enabled: false)
 
 これらの制限は、GraphQLまたはREST APIを使用して、グループ単位で無効にすることもできます。
 
-この制限を無効にすると、イシュー、マージリクエスト、エピック、Wiki、リポジトリファイル内の数式はほぼ無制限にレンダリングされます。これは、悪意のあるアクターが、ブラウザでの閲覧時にDoSを引き起こす可能性のある数式を_追加できる_ことを意味します。そのため、信頼できるユーザーのみがコンテンツを追加できるようにする必要があります。
+この制限を無効にすると、イシュー、マージリクエスト、エピック、Wiki、リポジトリファイル内の数式はほぼ無制限にレンダリングされます。これは、悪意のある第三者が、ブラウザでの閲覧時にDoSを引き起こす可能性のある数式を追加できることを意味します。そのため、信頼できるユーザーのみがコンテンツを追加できるようにする必要があります。
 
-## Wikiの制限
+## Wikiの制限 {#wiki-limits}
 
-- [Wikiページコンテンツのサイズ制限](wikis/_index.md#wiki-page-content-size-limit)
-- [ファイル名とディレクトリ名の長さ制限](../user/project/wiki/_index.md#length-restrictions-for-file-and-directory-names)
+- [Wikiページコンテンツのサイズ制限](wikis/_index.md#wiki-page-content-size-limit)。
+- [ファイル名とディレクトリ名の長さ制限](../user/project/wiki/_index.md#length-restrictions-for-file-and-directory-names)。
 
-## スニペットの制限
+## スニペットの制限 {#snippets-limits}
 
 [スニペットの設定に関するドキュメント](snippets/_index.md)を参照してください。
 
-## 設計管理の制限
+## 設計管理の制限 {#design-management-limits}
 
 [イシューにデザインを追加する](../user/project/issues/design_management.md#add-a-design-to-an-issue)セクションの制限を参照してください。
 
-## プッシュイベントの制限
+## プッシュイベントの制限 {#push-event-limits}
 
-### 最大プッシュサイズ
+### 最大プッシュサイズ {#max-push-size}
 
 許可される[プッシュサイズ](settings/account_and_limit_settings.md#max-push-size)の最大値。
 
 GitLab Self-Managedでは、デフォルトで設定されていません。GitLab.comについては、[アカウントと制限の設定](../user/gitlab_com/_index.md#account-and-limit-settings)を参照してください。
 
-### Webhookとプロジェクトサービス
+### Webhookとプロジェクトサービス {#webhooks-and-project-services}
 
 単一のプッシュで行われる変更（ブランチまたはタグ）の合計数。変更数が指定された制限を超えると、フックは実行されません。
 
@@ -986,15 +1085,15 @@ GitLab Self-Managedでは、デフォルトで設定されていません。GitL
 - [Webhookプッシュイベント](../user/project/integrations/webhook_events.md#push-events)
 - [プロジェクトインテグレーションのプッシュフック制限](../user/project/integrations/_index.md#push-hook-limit)
 
-### アクティビティ
+### アクティビティー {#activities}
 
 単一のプッシュにおける変更（ブランチまたはタグ）の合計数。この値を基準に、個別のプッシュイベントを作成するか、一括プッシュイベントを作成するかが決まります。
 
-詳細については、[プッシュイベントアクティビティの制限と一括プッシュイベントに関するドキュメント](settings/push_event_activities_limit.md)を参照してください。
+詳細については、[プッシュイベントアクティビティーの制限と一括プッシュイベントに関するドキュメント](settings/push_event_activities_limit.md)を参照してください。
 
-## パッケージレジストリの制限
+## パッケージレジストリの制限 {#package-registry-limits}
 
-### ファイルサイズの制限
+### ファイルサイズの制限 {#file-size-limits}
 
 [GitLabパッケージレジストリ](../user/packages/package_registry/_index.md)にアップロードされるパッケージのデフォルトの最大ファイルサイズは、形式によって異なります。
 
@@ -1009,7 +1108,7 @@ GitLab Self-Managedでは、デフォルトで設定されていません。GitL
 
 [GitLab.comの最大ファイルサイズ](../user/gitlab_com/_index.md#package-registry-limits)は異なる場合があります。
 
-GitLab Self-Managedインスタンスでこれらの制限を設定するには、[**管理者**エリアを使用する](settings/continuous_integration.md#package-file-size-limits)か、[GitLab Railsコンソール](operations/rails_console.md#starting-a-rails-console-session)で次のコマンドを実行します。
+GitLab Self-Managedインスタンスでこれらの制限を設定するには、[**管理者**エリアを使用する](settings/continuous_integration.md#set-package-file-size-limits)か、[GitLab Railsコンソール](operations/rails_console.md#starting-a-rails-console-session)で次のコマンドを実行します。
 
 ```ruby
 # File size limit is stored in bytes
@@ -1039,20 +1138,20 @@ Plan.default.actual_limits.update!(helm_max_file_size: 100.megabytes)
 Plan.default.actual_limits.update!(generic_packages_max_file_size: 100.megabytes)
 ```
 
-制限を`0`に設定すると、ファイルサイズは無制限になります。
+この制限を`0`に設定すると、ファイルサイズは無制限になります。
 
-### 返されるパッケージのバージョン数
+### 返されるパッケージのバージョン数 {#package-versions-returned}
 
 指定されたNuGetパッケージ名のバージョンを要求すると、GitLabパッケージレジストリは最大300件のバージョンを返します。
 
-## 依存プロキシの制限
+## 依存プロキシの制限 {#dependency-proxy-limits}
 
 [依存プロキシ](../user/packages/dependency_proxy/_index.md)でキャッシュされるイメージの最大ファイルサイズは、ファイルタイプによって異なります。
 
 - イメージblob: 5 GB
-- イメージmanifest: 10 MB
+- イメージマニフェスト: 10 MB
 
-## 担当者とレビュアーの最大数
+## 担当者とレビュアーの最大数 {#maximum-number-of-assignees-and-reviewers}
 
 {{< history >}}
 
@@ -1066,55 +1165,55 @@ Plan.default.actual_limits.update!(generic_packages_max_file_size: 100.megabytes
 - 担当者の最大数: 200
 - レビュアーの最大数: 200
 
-## GitLab.comのCDNベースの制限
+## GitLab.comのCDNベースの制限 {#cdn-based-limits-on-gitlabcom}
 
-アプリケーションベースの制限に加えて、GitLab.comでは、Cloudflare（標準的なDDoS保護）とSpectrum（SSH経由のGitアクセスの保護）を使用するよう設定されています。CloudflareはクライアントTLS接続を終端しますが、アプリケーションを認識しないため、ユーザーやグループに関連付けられた制限には使用できません。Cloudflareのページルールとレート制限はTerraformで設定されています。これらの設定は、悪意のあるアクティビティを検出するセキュリティ対策や不正行為防止対策が含まれているため、[公開されていません](https://handbook.gitlab.com/handbook/communication/confidentiality-levels/#not-public)。公開すると、これらの対策の効果が損なわれるおそれがあります。
+アプリケーションベースの制限に加えて、GitLab.comでは、Cloudflare（標準的なDDoS保護）とSpectrum（SSH経由のGitアクセスの保護）を使用するよう設定されています。CloudflareはクライアントTLS接続を終端しますが、アプリケーションを認識しないため、ユーザーやグループに関連付けられた制限には使用できません。Cloudflareのページルールとレート制限はTerraformで設定されています。これらの設定は、悪意のあるアクティビティを検出するセキュリティ対策や不正行為防止対策が含まれているため、公開されていません。公開すると、これらの対策の効果が損なわれるおそれがあります。
 
-## コンテナリポジトリのタグ削除制限
+## コンテナリポジトリのタグ削除制限 {#container-repository-tag-deletion-limit}
 
 コンテナリポジトリタグはコンテナレジストリ内にあるため、タグを削除するたびに、コンテナレジストリへのネットワークリクエストがトリガーされます。このため、1回のAPIコールで削除できるタグの数を20に制限しています。
 
-## プロジェクトレベルのSecure Files APIの制限
+## プロジェクトレベルのセキュアファイルAPIの制限 {#project-level-secure-files-api-limits}
 
-[Secure Files API](../api/secure_files.md)には、次の制限が適用されます。
+[セキュアファイルAPI](../api/secure_files.md)には、次の制限が適用されます。
 
 - ファイルは5 MB未満である必要があります。
-- プロジェクトに登録できるセキュアファイルの最大数は100です。
+- プロジェクトに登録できる安全なファイルの最大数は100です。
 
-## Changelog APIの制限
+## 変更履歴APIの制限 {#changelog-api-limits}
 
 {{< history >}}
 
-- GitLab 15.1で、`changelog_commits_limitation`[フラグ](feature_flags.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89032)されました。デフォルトで無効になっています。
+- GitLab 15.1で`changelog_commits_limitation`[フラグ](feature_flags/_index.md)とともに[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89032)されました。デフォルトでは無効になっています。
 - GitLab 15.3の[GitLab.comで有効になり、GitLab Self-Managedではデフォルトで有効](https://gitlab.com/gitlab-org/gitlab/-/issues/33893)になりました。
-- GitLab 17.3で[一般提供](https://gitlab.com/gitlab-org/gitlab/-/issues/364101)になりました。機能フラグ`changelog_commits_limitation`が削除されました。
+- GitLab 17.3で[一般公開](https://gitlab.com/gitlab-org/gitlab/-/issues/364101)になりました。機能フラグ`changelog_commits_limitation`は削除されました。
 
 {{< /history >}}
 
-[Changelog API](../api/repositories.md#add-changelog-data-to-a-changelog-file)には、次の制限が適用されます。
+[変更履歴API](../api/repositories.md#add-changelog-data-to-file)には、次の制限が適用されます。
 
 - `from`と`to`の間のコミット範囲は、15,000コミットを超えることはできません。
 
-## バリューストリーム分析の制限
+## バリューストリーム分析の制限 {#value-stream-analytics-limits}
 
 - 各ネームスペース（グループやプロジェクトなど）は、最大50個のバリューストリームを持つことができます。
 - 各バリューストリームは、最大15個のステージを持つことができます。
 
-## 監査イベントストリーミングの配信先の制限
+## 監査イベントストリーミングの配信先の制限 {#audit-events-streaming-destination-limits}
 
-### カスタムHTTPエンドポイント
+### カスタムHTTPエンドポイント {#custom-http-endpoint}
 
 - 各トップレベルグループには、最大5つのカスタムHTTPストリーミング配信先を設定できます。
 
-### Google Cloud Logging
+### Google Cloud Logging {#google-cloud-logging}
 
 - 各トップレベルグループには、最大5つのGoogle Cloud Loggingストリーミング配信先を設定できます。
 
-### Amazon S3
+### Amazon S3 {#amazon-s3}
 
 - 各トップレベルグループには、最大5つのAmazon S3ストリーミング配信先を設定できます。
 
-## すべてのインスタンス制限値を一覧表示する
+## すべてのインスタンス制限値を一覧表示する {#list-all-instance-limits}
 
 すべてのインスタンス制限値を一覧表示するには、[GitLab Railsコンソール](operations/rails_console.md#starting-a-rails-console-session)で次のコマンドを実行します。
 

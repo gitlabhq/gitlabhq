@@ -18,6 +18,7 @@ module QA
         end
 
         it "has owner role and permissions", testcase: testcase do
+          Page::Main::Menu.perform(&:go_to_projects)
           Page::Dashboard::Projects.perform do |projects|
             projects.click_member_tab
             expect(projects).to have_filtered_project_with_access_role(project.name, 'Owner')
@@ -49,6 +50,7 @@ module QA
         end
 
         it "has maintainer role without owner permissions", testcase: testcase do
+          Page::Main::Menu.perform(&:go_to_projects)
           Page::Dashboard::Projects.perform do |projects|
             projects.click_member_tab
             expect(projects).to have_filtered_project_with_access_role(project.name, 'Maintainer')

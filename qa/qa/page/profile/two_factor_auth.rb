@@ -27,8 +27,9 @@ module QA
           page.refresh
 
           click_element 'configure-it-later-button'
-          wait_until(max_duration: 10, message: "Waiting for create a group page") do
-            has_text?("Welcome to GitLab") && has_text?("Create a group")
+          wait_until(max_duration: 10, message: "Waiting for dashboard page") do
+            # Support both old and new homepage flows
+            has_text?("Welcome to GitLab") || has_text?("Today's highlights")
           end
         end
 

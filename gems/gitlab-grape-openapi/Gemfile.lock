@@ -70,6 +70,7 @@ GEM
       concurrent-ruby (~> 1.0)
     json (2.15.0)
     language_server-protocol (3.17.0.5)
+    lint_roller (1.1.0)
     logger (1.7.0)
     minitest (5.25.5)
     multi_json (1.17.0)

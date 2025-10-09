@@ -295,7 +295,7 @@ export default {
           data-testid="board-card-title-link"
           aria-hidden="true"
           @mousemove.stop
-          @click.prevent
+          @click.exact.prevent
           >{{ item.title }}</a
         >
       </h3>

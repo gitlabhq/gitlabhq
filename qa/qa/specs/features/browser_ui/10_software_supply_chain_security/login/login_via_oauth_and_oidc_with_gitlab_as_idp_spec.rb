@@ -78,7 +78,7 @@ module QA
         expect(page.driver.current_url).to include(consumer_host)
 
         Page::Dashboard::Welcome.perform do |welcome|
-          expect(welcome).to have_welcome_title("Welcome to GitLab")
+          expect(welcome).to have_welcome_title("Today's highlights")
         end
       end
     end

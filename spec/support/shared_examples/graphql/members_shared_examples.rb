@@ -89,6 +89,41 @@ RSpec.shared_examples 'querying members with a group' do
       end
     end
 
+    context 'with ids filter' do
+      context 'when filtering by single user id' do
+        let(:args) { { ids: [user_2.id] } }
+
+        it 'returns only the specified member' do
+          expect(group_members).to contain_exactly(group_1_member)
+        end
+      end
+
+      context 'when filtering by multiple user ids' do
+        let(:args) { { ids: [user_2.id, user_4.id] } }
+
+        it 'returns members matching the specified user ids' do
+          expect(group_members).to contain_exactly(group_1_member, root_group_member)
+        end
+      end
+
+      context 'when filtering by non-existent user id' do
+        let_it_be(:non_member_user) { create(:user) }
+        let(:args) { { ids: [non_member_user.id] } }
+
+        it 'returns empty result' do
+          expect(group_members).to be_empty
+        end
+      end
+
+      context 'when filtering by empty array' do
+        let(:args) { { ids: [] } }
+
+        it 'returns all members' do
+          expect(group_members).to contain_exactly(resource_member, group_1_member, root_group_member)
+        end
+      end
+    end
+
     context 'when user can not see resource members' do
       let_it_be(:other_user) { create(:user) }
 

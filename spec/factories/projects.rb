@@ -675,6 +675,10 @@ FactoryBot.define do
     end
   end
 
+  trait :in_user_namespace do
+    namespace { association :user_namespace }
+  end
+
   trait :in_group do
     namespace { association :group, organization: organization }
   end

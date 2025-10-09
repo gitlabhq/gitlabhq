@@ -19,6 +19,13 @@ module Resolvers
       description: 'Filter members by enterprise users.',
       required: false
 
+    argument :ids, [GraphQL::Types::ID],
+      required: false,
+      description: 'List of group members IDs.',
+      prepare: ->(global_ids, _ctx) {
+        GitlabSchema.parse_gids(global_ids, expected_type: ::User).map(&:model_id)
+      }
+
     private
 
     def finder_class

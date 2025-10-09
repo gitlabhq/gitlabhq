@@ -330,11 +330,74 @@ If you specify multiple approvers in the same `require_approval` block, any of t
 |-------|------|----------|-----------------|-------------|
 | `type` | `string` | true | `require_approval` | The action's type. |
 | `approvals_required` | `integer` | true | Greater than or equal to zero | The number of MR approvals required. |
-| `user_approvers` | `array` of `string` | false | Username of one of more users | The users to consider as approvers. Users must have access to the project to be eligible to approve. |
-| `user_approvers_ids` | `array` of `integer` | false | ID of one of more users | The IDs of users to consider as approvers. Users must have access to the project to be eligible to approve. |
-| `group_approvers` | `array` of `string` | false | Path of one of more groups | The groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
-| `group_approvers_ids` | `array` of `integer` | false | ID of one of more groups | The IDs of groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
-| `role_approvers` | `array` of `string` | false | One or more [roles](../../permissions.md#roles) (for example: `owner`, `maintainer`). You can also specify custom roles (or custom role identifiers in YAML mode) as `role_approvers` if the custom roles have the permission to approve merge requests. The custom roles can be selected along with user and group approvers. | The roles that are eligible to approve. |
+| `user_approvers` | `array` of `string` | Conditional | Username of one of more users | The users to consider as approvers. Users must have access to the project to be eligible to approve. |
+| `user_approvers_ids` | `array` of `integer` | Conditional <sup>1</sup> | ID of one of more users | The IDs of users to consider as approvers. Users must have access to the project to be eligible to approve. |
+| `group_approvers` | `array` of `string` | Conditional <sup>1</sup> | Path of one of more groups | The groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
+| `group_approvers_ids` | `array` of `integer` | Conditional <sup>1</sup> | ID of one of more groups | The IDs of groups to consider as approvers. Users with [direct membership in the group](../../project/merge_requests/approvals/rules.md#group-approvers) are eligible to approve. |
+| `role_approvers` | `array` of `string` | Conditional <sup>1</sup> | One or more [roles](../../permissions.md#roles) (for example: `owner`, `maintainer`). You can also specify custom roles (or custom role identifiers in YAML mode) as `role_approvers` if the custom roles have the permission to approve merge requests. The custom roles can be selected along with user and group approvers. | The roles that are eligible to approve. |
+
+**Footnotes:**
+
+1. You must specify at least one approver using the approver fields (`user_approvers`, `user_approvers_ids`, `group_approvers`, `group_approvers_ids`, or `role_approvers`).
+
+### Valid configuration examples
+
+**Valid `user_approvers`:**
+
+```yaml
+actions:
+  - type: require_approval
+    approvals_required: 2
+    user_approvers:
+      - alice
+      - bob
+```
+
+**Valid `group_approvers`:**
+
+```yaml
+actions:
+  - type: require_approval
+    approvals_required: 1
+    group_approvers:
+      - security-team
+```
+
+**Valid `role_approvers`:**
+
+```yaml
+actions:
+  - type: require_approval
+    approvals_required: 1
+    role_approvers:
+      - maintainer
+```
+
+**Valid with multiple approver types:**
+
+```yaml
+actions:
+  - type: require_approval
+    approvals_required: 2
+    user_approvers:
+      - alice
+    group_approvers:
+      - security-team
+    role_approvers:
+      - maintainer
+```
+
+### Invalid configuration example
+
+**Invalid because no approvers specified:**
+
+```yaml
+actions:
+  - type: require_approval
+    approvals_required: 2
+    # ERROR: At least one approver field must be specified
+    # This configuration will fail validation
+```
 
 ## `send_bot_message` action type
 

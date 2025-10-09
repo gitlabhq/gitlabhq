@@ -125,35 +125,36 @@ describe('FileTreeBrowserToggle', () => {
   });
 
   describe('tooltip', () => {
-    it.each`
-      browserState   | shortcutState | expectedTooltipText         | shouldShowShortcut
-      ${'expanded'}  | ${'enabled'}  | ${'Hide file tree browser'} | ${true}
-      ${'collapsed'} | ${'enabled'}  | ${'Show file tree browser'} | ${true}
-      ${'expanded'}  | ${'disabled'} | ${'Hide file tree browser'} | ${false}
-      ${'collapsed'} | ${'disabled'} | ${'Show file tree browser'} | ${false}
-    `(
-      'displays $expectedTooltipText tooltip when browser is $browserState and shortcuts are $shortcutState',
-      async ({ browserState, shortcutState, expectedTooltipText, shouldShowShortcut }) => {
-        const isExpanded = browserState === 'expanded';
-        const areShortcutsDisabled = shortcutState === 'disabled';
+    it('displays "Hide file tree browser" tooltip when browser is expanded and shortcuts are enabled', () => {
+      shouldDisableShortcuts.mockReturnValue(false);
+      fileTreeBrowserStore.setFileTreeBrowserIsExpanded(true);
 
-        shouldDisableShortcuts.mockReturnValue(areShortcutsDisabled);
+      createComponent();
 
-        if (isExpanded) {
-          fileTreeBrowserStore.setFileTreeBrowserIsExpanded(true);
-        }
+      expect(findTooltip().text()).toContain('Hide file tree browser');
+      expect(findShortcut().exists()).toBe(true);
+    });
 
-        createComponent();
+    it('displays "Show file tree browser" tooltip when browser is collapsed and shortcuts are enabled', async () => {
+      shouldDisableShortcuts.mockReturnValue(false);
 
-        if (!isExpanded) {
-          useFileBrowser().fileTreeBrowserIsVisible = false;
-          await nextTick();
-        }
+      createComponent();
 
-        expect(findTooltip().text()).toContain(expectedTooltipText);
-        expect(findShortcut().exists()).toBe(shouldShowShortcut);
-      },
-    );
+      useFileBrowser().fileTreeBrowserIsVisible = false;
+      await nextTick();
+
+      expect(findTooltip().text()).toContain('Show file tree browser');
+      expect(findShortcut().exists()).toBe(true);
+    });
+
+    it('does not render tooltip when shortcuts are disabled', () => {
+      shouldDisableShortcuts.mockReturnValue(true);
+      fileTreeBrowserStore.setFileTreeBrowserIsExpanded(true);
+
+      createComponent();
+
+      expect(findShortcut().exists()).toBe(false);
+    });
   });
 
   describe('FileTreeBrowserToggle popover', () => {

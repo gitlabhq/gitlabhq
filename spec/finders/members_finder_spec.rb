@@ -343,4 +343,94 @@ RSpec.describe MembersFinder, feature_category: :groups_and_projects do
       expect(result.map(&:access_level)).to all(eq(Gitlab::Access::MAINTAINER))
     end
   end
+
+  context 'when filtering by user ids' do
+    let_it_be(:member1) { project.add_maintainer(user1) }
+    let_it_be(:member2) { project.add_developer(user2) }
+    let_it_be(:member3) { project.add_reporter(user3) }
+
+    subject(:including_user_ids) { described_class.new(project, user1, params: { ids: user_ids }).execute }
+
+    context 'when filtering by single user id' do
+      let(:user_ids) { [user2.id] }
+
+      it 'returns only the specified member' do
+        expect(including_user_ids).to match_array([member2])
+      end
+    end
+
+    context 'when filtering by multiple user ids' do
+      let(:user_ids) { [user1.id, user3.id] }
+
+      it 'returns members matching the specified user ids' do
+        expect(including_user_ids).to match_array([member1, member3])
+      end
+    end
+
+    context 'when filtering by non-existent user id' do
+      let(:user_ids) { [999999] }
+
+      it 'returns empty result' do
+        expect(including_user_ids).to be_empty
+      end
+    end
+
+    context 'when filtering by empty array' do
+      let(:user_ids) { [] }
+
+      it 'returns all members' do
+        expect(including_user_ids).to match_array([member1, member2, member3])
+      end
+    end
+
+    context 'when combined with other filters' do
+      let(:user_ids) { [user1.id, user2.id] }
+
+      context 'with access level filter' do
+        subject(:combined_filters) do
+          described_class.new(project, user1,
+            params: { ids: user_ids, access_levels: [Gitlab::Access::MAINTAINER] }).execute
+        end
+
+        it 'returns members matching both user ids and access level' do
+          expect(combined_filters).to match_array([member1])
+        end
+      end
+
+      context 'with owners and maintainers filter' do
+        subject(:combined_filters) do
+          described_class.new(project, user1, params: { ids: user_ids, owners_and_maintainers: true }).execute
+        end
+
+        it 'returns members matching both user ids and owners/maintainers criteria' do
+          expect(combined_filters).to match_array([member1])
+        end
+      end
+    end
+
+    context 'with different relation types' do
+      let_it_be(:group_member) { group.add_developer(user4) }
+      let(:user_ids) { [user1.id, user4.id] }
+
+      context 'when including direct relations only' do
+        subject(:direct_relations) do
+          described_class.new(project, user1, params: { ids: user_ids }).execute(include_relations: [:direct])
+        end
+
+        it 'returns only direct members matching the user ids' do
+          expect(direct_relations).to match_array([member1])
+        end
+      end
+
+      context 'when including inherited relations' do
+        subject(:inherited_relations) do
+          described_class.new(project, user1, params: { ids: user_ids }).execute(include_relations: [:inherited])
+        end
+
+        it 'returns inherited members matching the user ids' do
+          expect(inherited_relations).to match_array([group_member])
+        end
+      end
+    end
+  end
 end

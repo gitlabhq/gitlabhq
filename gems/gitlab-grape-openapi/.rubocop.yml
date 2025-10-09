@@ -1,2 +1,12 @@
 inherit_from:
   - ../config/rubocop.yml
+
+Naming/FileName:
+  Exclude:
+    - lib/gitlab-grape-openapi.rb
+
+RSpec/AnyInstanceOf:
+  Enabled: false
+
+Graphql/ResolverType:
+  Enabled: false

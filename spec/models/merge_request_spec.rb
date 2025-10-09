@@ -1063,6 +1063,23 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '.by_generated_ref_commit_sha' do
+    before do
+      shas.zip(expected_merge_requests).each do |sha, merge_request|
+        create(:merge_request_generated_ref_commit, commit_sha: sha, merge_request: merge_request, project: project)
+      end
+    end
+
+    let_it_be(:project) { create(:project) }
+    let(:shas) { %w[sha1 sha2 sha3] }
+    let(:expected_merge_requests) { create_list(:merge_request, shas.length, :merged, source_project: project, target_project: project) }
+    let(:extra_merge_request) { create(:merge_request, target_project: project) }
+
+    it 'returns the merge requests for the shas' do
+      expect(described_class.by_generated_ref_commit_sha(shas)).to match_array(expected_merge_requests)
+    end
+  end
+
   describe '.by_latest_merge_request_diffs' do
     let!(:merge_request) { create(:merge_request, merge_commit_sha: nil) }
     let!(:merge_request_diff) { create(:merge_request_diff, merge_request: merge_request) }
@@ -1131,6 +1148,21 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       let(:sha) { '123abc' }
 
       it { is_expected.to eq([merge_request]) }
+    end
+
+    context 'when commit is a generated ref commit' do
+      before do
+        create(:merge_request_generated_ref_commit, commit_sha: sha, merge_request: merge_request, project: merge_request.target_project)
+      end
+
+      let!(:merge_request) { create(:merge_request, :merged, merged_commit_sha: sha) }
+
+      let(:sha) { 'generated-ref-commit-sha' }
+      let(:shas) { %w[generated-ref-commit-sha] }
+
+      it 'returns the merge requests for the shas' do
+        expect(described_class.by_related_commit_sha(shas)).to eq([merge_request])
+      end
     end
 
     context 'when commit is not found' do

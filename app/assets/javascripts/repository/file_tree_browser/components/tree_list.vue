@@ -381,7 +381,6 @@ export default {
         v-if="!shortcutsDisabled"
         custom-class="file-browser-filter-tooltip"
         :target="filterInputTooltipTarget"
-        trigger="hover focus"
       >
         {{ __('Focus on the filter bar') }}
         <shortcut

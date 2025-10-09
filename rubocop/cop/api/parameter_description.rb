@@ -53,7 +53,7 @@ module RuboCop
         def_node_matcher :has_desc?, <<~PATTERN
           (send _
             ...
-            (hash <(pair (sym :desc) {(str _) (dstr ...)}) ...>)
+            (hash <(pair (sym :desc) _) ...>)
           )
         PATTERN
 
