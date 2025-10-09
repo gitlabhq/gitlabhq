@@ -418,8 +418,8 @@ export const getNewWorkItemSharedCache = ({
           weight: sharedCacheWidgets[WIDGET_TYPE_WEIGHT]
             ? sharedCacheWidgets[WIDGET_TYPE_WEIGHT]?.weight || null
             : null,
-          rolledUpWeight: 0,
-          rolledUpCompletedWeight: 0,
+          rolledUpWeight: null,
+          rolledUpCompletedWeight: null,
           widgetDefinition: {
             editable: weightWidgetData?.editable,
             rollUp: weightWidgetData?.rollUp,

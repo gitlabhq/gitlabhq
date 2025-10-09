@@ -158,8 +158,8 @@ This only applies to project and group webhooks.
 
 Calls over the rate limit are logged into `auth.log`.
 
-To set this limit for a GitLab Self-Managed instance, run the following in the
-[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
+To set this limit for a GitLab Self-Managed instance, use the [Plan Limits API](../api/plan_limits.md)
+or run the following in the [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 
 ```ruby
 # If limits don't exist for the default plan, you can create one with:

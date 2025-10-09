@@ -52,7 +52,7 @@ describe('ProjectsListItem', () => {
   const findAccessLevelBadge = () => wrapper.findByTestId('user-access-role');
   const findStorageSizeBadge = () => wrapper.findByTestId('storage-size');
   const findCiCatalogBadge = () => wrapper.findByTestId('ci-catalog-badge');
-  const findProjectDescription = () => wrapper.findByTestId('description');
+  const findProjectDescription = () => wrapper.findByTestId('description-html');
   const findInactiveBadge = () => wrapper.findComponent(ListItemInactiveBadge);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findTopicBadges = () => wrapper.findComponent(TopicBadges);

@@ -26,7 +26,10 @@ RSpec.describe Admin::PlanLimits::UpdateService, feature_category: :shared do
       pypi_max_file_size: 70,
       terraform_module_max_file_size: 80,
       storage_size_limit: 90,
-      pipeline_hierarchy_size: 250
+      pipeline_hierarchy_size: 250,
+      web_hook_calls: 600,
+      web_hook_calls_low: 400,
+      web_hook_calls_mid: 500
     }
   end
 

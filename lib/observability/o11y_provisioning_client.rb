@@ -39,7 +39,7 @@ module Observability
     def build_settings_params(api_request_data)
       {
         o11y_service_name: api_request_data[:group_id].to_s,
-        o11y_service_user_email: api_request_data[:email],
+        o11y_service_user_email: "#{api_request_data[:group_id]}@gitlab-o11y.com",
         o11y_service_password: api_request_data[:password],
         o11y_service_post_message_encryption_key: api_request_data[:encryption_key]
       }

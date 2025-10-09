@@ -37,7 +37,7 @@ describe('GroupsListItem', () => {
   };
 
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
-  const findGroupDescription = () => wrapper.findByTestId('description');
+  const findGroupDescription = () => wrapper.findByTestId('description-html');
   const findVisibilityIcon = () => findAvatarLabeled().findComponent(GlIcon);
   const findGroupListItemActions = () => wrapper.findComponent(GroupListItemActions);
   const findAccessLevelBadge = () => wrapper.findByTestId('user-access-role');

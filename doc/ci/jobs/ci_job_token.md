@@ -48,7 +48,7 @@ CI/CD job tokens can access the following resources:
 | [Environments API](../../api/environments.md)                                                         | Can access all endpoints in this API. |
 | [Files API](../../api/repository_files.md)                                                            | Can access the `GET /projects/:id/repository/files/:file_path/raw` endpoint. |
 | [Jobs API](../../api/jobs.md#get-job-tokens-job)                                                      | Can access only the `GET /job` endpoint. |
-| [Job artifacts API](../../api/job_artifacts.md)                                                       | Can access all endpoints in this API. |
+| [Job artifacts API](../../api/job_artifacts.md)                                                       | Can access download endpoints only. |
 | [Merge requests API](../../api/merge_requests.md)                                                     | Can access the `GET /projects/:id/merge_requests` and `GET /projects/:id/merge_requests/:merge_request_iid` endpoints. |
 | [Notes API](../../api/notes.md)                                                                       | Can access the `GET /projects/:id/merge_requests/:merge_request_iid/notes` and `GET /projects/:id/merge_requests/:merge_request_iid/notes/:note_id` endpoints. |
 | [Packages API](../../api/packages.md)                                                                 | Can access all endpoints in this API. |

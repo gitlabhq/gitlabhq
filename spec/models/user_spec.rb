@@ -1424,23 +1424,57 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     describe '#should_use_flipped_dashboard_mapping_for_rollout?' do
-      context 'when personal_homepage feature flag is enabled for user' do
-        before do
-          stub_feature_flags(personal_homepage: user)
-        end
-
-        it 'returns true' do
-          expect(user.should_use_flipped_dashboard_mapping_for_rollout?).to be true
-        end
-      end
-
-      context 'when personal_homepage feature flag is disabled for user' do
+      context 'when feature flag is disabled' do
         before do
           stub_feature_flags(personal_homepage: false)
         end
 
-        it 'returns false' do
+        it 'returns false for regular user' do
           expect(user.should_use_flipped_dashboard_mapping_for_rollout?).to be false
+        end
+
+        it 'returns false for admin user' do
+          admin_user = create(:user, admin: true)
+          stub_feature_flags(personal_homepage: false)
+
+          expect(admin_user.should_use_flipped_dashboard_mapping_for_rollout?).to be false
+        end
+      end
+
+      context 'when feature flag is enabled' do
+        before do
+          stub_feature_flags(personal_homepage: user)
+        end
+
+        context 'for regular users' do
+          it 'returns true when user has no projects' do
+            expect(user.should_use_flipped_dashboard_mapping_for_rollout?).to be true
+          end
+
+          it 'returns true when user has projects' do
+            project = create(:project)
+            project.add_developer(user)
+
+            expect(user.should_use_flipped_dashboard_mapping_for_rollout?).to be true
+          end
+        end
+
+        context 'for admin users', :enable_admin_mode do
+          let(:admin_user) { create(:user, admin: true) }
+
+          before do
+            stub_feature_flags(personal_homepage: admin_user)
+          end
+
+          it 'returns false when admin has no projects' do
+            expect(admin_user).not_to be_should_use_flipped_dashboard_mapping_for_rollout
+          end
+
+          it 'returns true when admin has projects' do
+            create(:project, developers: admin_user)
+
+            expect(admin_user.should_use_flipped_dashboard_mapping_for_rollout?).to be true
+          end
         end
       end
     end

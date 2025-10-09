@@ -22,7 +22,7 @@ RSpec.describe Observability::O11yProvisioningClient, feature_category: :observa
         expect(result[:success]).to be true
         expect(result[:settings_params]).to include(
           o11y_service_name: group.id.to_s,
-          o11y_service_user_email: user.email,
+          o11y_service_user_email: "#{group.id}@gitlab-o11y.com",
           o11y_service_password: be_present
         )
       end

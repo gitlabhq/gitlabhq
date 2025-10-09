@@ -70566,6 +70566,18 @@ definitions:
         type: integer
         format: int32
         example: 15000
+      web_hook_calls:
+        type: integer
+        format: int32
+        example: 500
+      web_hook_calls_low:
+        type: integer
+        format: int32
+        example: 500
+      web_hook_calls_mid:
+        type: integer
+        format: int32
+        example: 500
     description: API_Entities_PlanLimit model
   putApiV4ApplicationPlanLimits:
     type: object
@@ -70678,6 +70690,21 @@ definitions:
         format: int32
         description: Maximum number of downstream pipelines in a pipeline's hierarchy
           tree
+      web_hook_calls:
+        type: integer
+        format: int32
+        description: Maximum number of times a webhook can be called per minute, per
+          top-level namespace. 0 for unlimited.
+      web_hook_calls_low:
+        type: integer
+        format: int32
+        description: Maximum number of times a webhook can be called per minute, per
+          top-level namespace. 0 for unlimited (GitLab.com only).
+      web_hook_calls_mid:
+        type: integer
+        format: int32
+        description: Maximum number of times a webhook can be called per minute, per
+          top-level namespace. 0 for unlimited (GitLab.com only).
     required:
     - plan_name
     description: Change plan limits

@@ -459,7 +459,12 @@ class User < ApplicationRecord
 
   # Determines if this user should use flipped dashboard enum mapping
   def should_use_flipped_dashboard_mapping_for_rollout?
-    Feature.enabled?(:personal_homepage, self)
+    return false unless Feature.enabled?(:personal_homepage, self)
+
+    # Don't flip for SM admins who have no authorized projects as they go through different onboarding flow.
+    return false if self_managed_admin? && !authorized_projects.exists?
+
+    true
   end
 
   # User's Project preference
@@ -2797,6 +2802,10 @@ class User < ApplicationRecord
   end
 
   private
+
+  def self_managed_admin?
+    can_admin_all_resources?
+  end
 
   def notification_setting_find_by_source(source)
     notification_settings.find do |notification|

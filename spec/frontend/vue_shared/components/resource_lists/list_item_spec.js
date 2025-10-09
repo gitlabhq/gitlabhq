@@ -60,7 +60,7 @@ describe('ListItem', () => {
   };
 
   const findAvatarLabeled = () => wrapper.findComponent(GlAvatarLabeled);
-  const findDescription = () => wrapper.findByTestId('description');
+  const findDescription = () => wrapper.findByTestId('description-html');
   const findListActions = () => wrapper.findComponent(ListActions);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
 

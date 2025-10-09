@@ -14,27 +14,6 @@ title: Job Artifacts API
 
 Use this API to download, keep, and delete [job artifacts](../ci/jobs/job_artifacts.md).
 
-## Authenticate with a CI/CD job token
-
-{{< details >}}
-
-- Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-When downloading job artifacts in a CI/CD job, you can authenticate by using a [CI/CD job token](../ci/jobs/ci_job_token.md)
-for multi-project pipelines. This should only be used in CI/CD jobs defined in the `.gitlab-ci.yml` file.
-
-The job associated with the `$CI_JOB_TOKEN` must be running when the token is used.
-
-Use either:
-
-- The `job_token` parameter with the `CI_JOB_TOKEN` predefined variable.
-- The `JOB-TOKEN` header with the `CI_JOB_TOKEN` predefined variable.
-
-For more information, see [REST API authentication](rest/authentication.md).
-
 ## Download job artifacts by job ID
 
 Download a job's artifacts archive using the job ID.
@@ -48,11 +27,11 @@ GET /projects/:id/jobs/:job_id/artifacts
 
 Supported attributes:
 
-| Attribute   | Type           | Required | Description |
-| ----------- | -------------- | -------- | ----------- |
+| Attribute   | Type              | Required | Description |
+| ----------- | ----------------- | -------- | ----------- |
 | `id`        | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `job_id`    | integer        | Yes      | ID of a job. |
-| `job_token` | string         | No       | CI/CD job token for multi-project pipelines. Premium and Ultimate only. |
+| `job_id`    | integer           | Yes      | ID of a job. |
+| `job_token` | string            | No       | CI/CD job token for multi-project pipelines. Premium and Ultimate only. |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and serves the artifacts file.
 
@@ -103,12 +82,12 @@ GET /projects/:id/jobs/artifacts/:ref_name/download?job=name
 
 Supported attributes:
 
-| Attribute   | Type           | Required | Description |
-| ----------- | -------------- | -------- | ----------- |
+| Attribute   | Type              | Required | Description |
+| ----------- | ----------------- | -------- | ----------- |
 | `id`        | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `job`       | string         | Yes      | The name of the job. |
-| `ref_name`  | string         | Yes      | Branch or tag name in repository. HEAD or SHA references are not supported. For merge request pipelines, use `refs/merge-requests/:iid/head` instead of the branch name. |
-| `job_token` | string         | No       | CI/CD job token for multi-project pipelines. Premium and Ultimate only. |
+| `job`       | string            | Yes      | The name of the job. |
+| `ref_name`  | string            | Yes      | Branch or tag name in repository. HEAD or SHA references are not supported. For merge request pipelines, use `refs/merge-requests/:iid/head` instead of the branch name. |
+| `job_token` | string            | No       | CI/CD job token for multi-project pipelines. Premium and Ultimate only. |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and serves the artifacts file.
 
@@ -145,12 +124,12 @@ GET /projects/:id/jobs/:job_id/artifacts/*artifact_path
 
 Supported attributes:
 
-| Attribute       | Type           | Required | Description |
-| --------------- | -------------- | -------- | ----------- |
-| `artifact_path` | string         | Yes      | Path to a file inside the artifacts archive. |
+| Attribute       | Type              | Required | Description |
+| --------------- | ----------------- | -------- | ----------- |
+| `artifact_path` | string            | Yes      | Path to a file inside the artifacts archive. |
 | `id`            | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `job_id`        | integer        | Yes      | The unique job identifier. |
-| `job_token`     | string         | No       | CI/CD job token for multi-project pipelines. Premium and Ultimate only. |
+| `job_id`        | integer           | Yes      | The unique job identifier. |
+| `job_token`     | string            | No       | CI/CD job token for multi-project pipelines. Premium and Ultimate only. |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and sends a single artifact file.
 
@@ -190,13 +169,13 @@ GET /projects/:id/jobs/artifacts/:ref_name/raw/*artifact_path?job=name
 
 Supported attributes:
 
-| Attribute       | Type           | Required | Description |
-| --------------- | -------------- | -------- | ----------- |
-| `artifact_path` | string         | Yes      | Path to a file inside the artifacts archive. |
+| Attribute       | Type              | Required | Description |
+| --------------- | ----------------- | -------- | ----------- |
+| `artifact_path` | string            | Yes      | Path to a file inside the artifacts archive. |
 | `id`            | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `job`           | string         | Yes      | The name of the job. |
-| `ref_name`      | string         | Yes      | Branch or tag name in repository. `HEAD` or `SHA` references are not supported. For merge request pipelines, use `refs/merge-requests/:iid/head` instead of the branch name. |
-| `job_token`     | string         | No       | CI/CD job token for multi-project pipelines. Premium and Ultimate only. |
+| `job`           | string            | Yes      | The name of the job. |
+| `ref_name`      | string            | Yes      | Branch or tag name in repository. `HEAD` or `SHA` references are not supported. For merge request pipelines, use `refs/merge-requests/:iid/head` instead of the branch name. |
+| `job_token`     | string            | No       | CI/CD job token for multi-project pipelines. Premium and Ultimate only. |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and sends a single artifact file.
 
@@ -218,10 +197,10 @@ POST /projects/:id/jobs/:job_id/artifacts/keep
 
 Supported attributes:
 
-| Attribute | Type           | Required | Description |
-|-----------|----------------|----------|-------------|
+| Attribute | Type              | Required | Description |
+| --------- | ----------------- | -------- | ----------- |
 | `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `job_id`  | integer        | Yes      | ID of a job. |
+| `job_id`  | integer           | Yes      | ID of a job. |
 
 If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the job details.
 
@@ -281,10 +260,10 @@ DELETE /projects/:id/jobs/:job_id/artifacts
 
 Supported attributes:
 
-| Attribute | Type           | Required | Description |
-|-----------|----------------|----------|-------------|
+| Attribute | Type              | Required | Description |
+| --------- | ----------------- | -------- | ----------- |
 | `id`      | integer or string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `job_id`  | integer        | Yes      | ID of a job. |
+| `job_id`  | integer           | Yes      | ID of a job. |
 
 If successful, returns [`204 No Content`](rest/troubleshooting.md#status-codes).
 

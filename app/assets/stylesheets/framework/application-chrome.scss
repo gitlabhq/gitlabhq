@@ -824,7 +824,7 @@
 }
 
 // Issue sidebar
-@include gl-container-width-up(md, panel) {
+@include gl-container-width-up(md) {
   &:where(.application-chrome) {
     .work-item-attributes-wrapper {
       top: calc(#{$work-item-sticky-header-height} + #{$gl-spacing-scale-3}) !important;

@@ -37,6 +37,9 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
           expect(json_response['terraform_module_max_file_size']).to eq(Plan.default.actual_limits.terraform_module_max_file_size)
           expect(json_response['storage_size_limit']).to eq(Plan.default.actual_limits.storage_size_limit)
           expect(json_response['pipeline_hierarchy_size']).to eq(Plan.default.actual_limits.pipeline_hierarchy_size)
+          expect(json_response['web_hook_calls']).to eq(Plan.default.actual_limits.web_hook_calls)
+          expect(json_response['web_hook_calls_mid']).to eq(Plan.default.actual_limits.web_hook_calls_mid)
+          expect(json_response['web_hook_calls_low']).to eq(Plan.default.actual_limits.web_hook_calls_low)
         end
       end
 
@@ -68,6 +71,9 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
           expect(json_response['terraform_module_max_file_size']).to eq(Plan.default.actual_limits.terraform_module_max_file_size)
           expect(json_response['storage_size_limit']).to eq(Plan.default.actual_limits.storage_size_limit)
           expect(json_response['pipeline_hierarchy_size']).to eq(Plan.default.actual_limits.pipeline_hierarchy_size)
+          expect(json_response['web_hook_calls']).to eq(Plan.default.actual_limits.web_hook_calls)
+          expect(json_response['web_hook_calls_mid']).to eq(Plan.default.actual_limits.web_hook_calls_mid)
+          expect(json_response['web_hook_calls_low']).to eq(Plan.default.actual_limits.web_hook_calls_low)
         end
       end
 
@@ -119,7 +125,10 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
             pypi_max_file_size: 60,
             terraform_module_max_file_size: 70,
             storage_size_limit: 80,
-            pipeline_hierarchy_size: 250
+            pipeline_hierarchy_size: 250,
+            web_hook_calls: 300,
+            web_hook_calls_mid: 200,
+            web_hook_calls_low: 100
           }
 
           expect(json_response).to be_an Hash
@@ -150,6 +159,9 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
           expect(json_response['terraform_module_max_file_size']).to eq(70)
           expect(json_response['storage_size_limit']).to eq(80)
           expect(json_response['pipeline_hierarchy_size']).to eq(250)
+          expect(json_response['web_hook_calls']).to eq(300)
+          expect(json_response['web_hook_calls_mid']).to eq(200)
+          expect(json_response['web_hook_calls_low']).to eq(100)
         end
 
         it 'updates single plan limits', :aggregate_failures do
@@ -198,7 +210,10 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
             pypi_max_file_size: 'f',
             terraform_module_max_file_size: 'g',
             storage_size_limit: 'j',
-            pipeline_hierarchy_size: 'r'
+            pipeline_hierarchy_size: 'r',
+            web_hook_calls: 's',
+            web_hook_calls_mid: 't',
+            web_hook_calls_low: 'u'
           }
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -224,7 +239,10 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
             'pypi_max_file_size is invalid',
             'terraform_module_max_file_size is invalid',
             'storage_size_limit is invalid',
-            'pipeline_hierarchy_size is invalid'
+            'pipeline_hierarchy_size is invalid',
+            'web_hook_calls is invalid',
+            'web_hook_calls_mid is invalid',
+            'web_hook_calls_low is invalid'
           )
         end
       end

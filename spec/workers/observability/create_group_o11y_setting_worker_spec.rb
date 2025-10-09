@@ -27,7 +27,7 @@ RSpec.describe Observability::CreateGroupO11ySettingWorker, feature_category: :o
       setting = group.observability_group_o11y_setting
       expect(setting).to be_present
       expect(setting.o11y_service_name).to eq(group.id.to_s)
-      expect(setting.o11y_service_user_email).to eq(user.email)
+      expect(setting.o11y_service_user_email).to eq("#{group.id}@gitlab-o11y.com")
       expect(setting.o11y_service_password).to be_present
       expect(setting.o11y_service_post_message_encryption_key).to be_present
     end

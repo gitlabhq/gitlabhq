@@ -3529,7 +3529,6 @@ Gitlab/BoundedContexts:
     - 'ee/lib/elastic/latest/config.rb'
     - 'ee/lib/elastic/latest/custom_language_analyzers.rb'
     - 'ee/lib/elastic/latest/document_should_be_deleted_from_index_error.rb'
-    - 'ee/lib/elastic/latest/epic_class_proxy.rb'
     - 'ee/lib/elastic/latest/epic_config.rb'
     - 'ee/lib/elastic/latest/epic_instance_proxy.rb'
     - 'ee/lib/elastic/latest/git_class_proxy.rb'

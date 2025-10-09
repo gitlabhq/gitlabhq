@@ -81,6 +81,15 @@ module API
         optional :storage_size_limit, type: Integer, desc: 'Maximum storage size for the root namespace in MiB'
         optional :pipeline_hierarchy_size, type: Integer,
           desc: "Maximum number of downstream pipelines in a pipeline's hierarchy tree"
+        optional :web_hook_calls, type: Integer,
+          desc: 'Maximum number of times a webhook can be called per minute, per top-level namespace. ' \
+            '0 for unlimited.'
+        optional :web_hook_calls_low, type: Integer,
+          desc: 'Maximum number of times a webhook can be called per minute, per top-level namespace. ' \
+            '0 for unlimited (GitLab.com only).'
+        optional :web_hook_calls_mid, type: Integer,
+          desc: 'Maximum number of times a webhook can be called per minute, per top-level namespace. ' \
+            '0 for unlimited (GitLab.com only).'
       end
       put "application/plan_limits" do
         params = declared_params(include_missing: false)

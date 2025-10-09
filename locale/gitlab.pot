@@ -14024,9 +14024,6 @@ msgstr ""
 msgid "CiVariable|Variable %{key} has been updated."
 msgstr ""
 
-msgid "Classic Chat Placeholder"
-msgstr ""
-
 msgid "Classification Label (optional)"
 msgstr ""
 
@@ -24999,6 +24996,9 @@ msgid "DuoChat|An administrator has turned off GitLab Duo for this %{reason}"
 msgstr ""
 
 msgid "DuoChat|Ask a question about GitLab"
+msgstr ""
+
+msgid "DuoChat|Duo Chat is not yet supported on this page"
 msgstr ""
 
 msgid "DuoChat|For example, %{linkStart}what is a fork%{linkEnd}?"

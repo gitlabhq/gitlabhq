@@ -7268,8 +7268,8 @@ export const mockCreateWorkItemDraftData = {
           __typename: 'WorkItemWidgetWeight',
           type: 'WEIGHT',
           weight: 5,
-          rolledUpWeight: 0,
-          rolledUpCompletedWeight: 0,
+          rolledUpWeight: null,
+          rolledUpCompletedWeight: null,
           widgetDefinition: { editable: false, rollUp: true },
         },
         {
@@ -7486,8 +7486,8 @@ export const restoredDraftDataWidgets = [
   {
     type: 'WEIGHT',
     weight: 5,
-    rolledUpWeight: 0,
-    rolledUpCompletedWeight: 0,
+    rolledUpWeight: null,
+    rolledUpCompletedWeight: null,
     widgetDefinition: { editable: false, rollUp: true },
     __typename: 'WorkItemWidgetWeight',
   },
@@ -7580,8 +7580,8 @@ export const restoredDraftDataWidgetsEmpty = [
   {
     type: 'WEIGHT',
     weight: null,
-    rolledUpWeight: 0,
-    rolledUpCompletedWeight: 0,
+    rolledUpWeight: null,
+    rolledUpCompletedWeight: null,
     widgetDefinition: {
       editable: false,
       rollUp: true,

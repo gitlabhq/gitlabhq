@@ -15,6 +15,9 @@ RSpec.describe PlanLimits do
   describe 'validations' do
     it { is_expected.to validate_numericality_of(:notification_limit).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:enforcement_limit).only_integer.is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:web_hook_calls).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:web_hook_calls_low).is_greater_than_or_equal_to(0) }
+    it { is_expected.to validate_numericality_of(:web_hook_calls_mid).is_greater_than_or_equal_to(0) }
 
     describe 'limits_history' do
       context 'when does not match the JSON schema' do
