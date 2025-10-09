@@ -355,6 +355,7 @@
 - p_analytics_valuestream
 - p_terraform_state_api_unique_users
 - project_action
+- project_action_human_users
 - project_created_analytics_dashboard
 - project_initialized_product_analytics
 - source_code_pushed

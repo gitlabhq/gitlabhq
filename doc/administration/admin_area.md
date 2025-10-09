@@ -246,7 +246,10 @@ The [Cohorts](user_cohorts.md) tab displays the monthly cohorts of new users and
 
 ## Prevent a user from creating top-level groups
 
-By default, users can create top-level groups. To prevent a user from creating a top-level group:
+Administrators can prevent specific users from creating top-level groups. These users can still
+create subgroups and collaborate in existing organizational structures.
+
+To prevent a user from creating top-level groups:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview** > **Users**.
@@ -255,8 +258,12 @@ By default, users can create top-level groups. To prevent a user from creating a
 1. Clear the **Can create top-level group** checkbox.
 1. Select **Save changes**.
 
-It is also possible to limit which roles can
-[create a subgroup of another group](../user/group/subgroups/_index.md#change-who-can-create-subgroups).
+After you turn off this setting:
+
+- The user cannot create top-level groups.
+- The user can create subgroups in groups where they have at least the Maintainer role,
+  depending on the [subgroup creation permissions](../user/group/subgroups/_index.md#change-who-can-create-subgroups)
+  for the group.
 
 ## Administering groups
 

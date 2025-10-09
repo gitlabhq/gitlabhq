@@ -195,7 +195,7 @@ approval rule for certain branches:
 
 ## Enable approval permissions for additional users
 
-Before users with the Planner or Reporter role can merge to a protected branch, you might have to grant them
+Before users with the Planner or Reporter role can merge to a protected branch, you have to grant them
 permission to approve merge requests.
 Some users (like managers) might not need permission to push or merge code, but still need
 oversight on proposed work.
@@ -212,9 +212,10 @@ Prerequisites:
 To enable approval permissions for these users without granting them push access:
 
 1. [Create a protected branch](../../repository/branches/protected.md)
-1. [Create a new group](../../../group/_index.md#create-a-group).
-1. [Add the user to the group](../../../group/_index.md#add-users-to-a-group),
-   The user must have at least the Planner role.
+1. [Create a new group](../../../group/_index.md#create-a-group) for the users with the
+   Planner or Reporter role that need approval permissions.
+1. [Add the users to the group](../../../group/_index.md#add-users-to-a-group).
+   The users must have at least the Planner role.
 1. [Share the project with your group](../../members/sharing_projects_groups.md#invite-a-group-to-a-project),
    with at least the Reporter role.
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -275,7 +276,6 @@ Users with the Planner or Reporter role can approve only if all of the following
 
 - The users are part of a group that has been [shared](../../members/sharing_projects_groups.md) with the project.
   The group must have at least the Reporter role.
-- The group has been added as merge request approvers.
 - Approval permissions for users with the Planner and Reporter role [are enabled](#enable-approval-permissions-for-additional-users).
 
 To show who has participated in the merge request review, the Approvals widget in

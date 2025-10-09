@@ -153,6 +153,12 @@ func (r *runner) handleWebSocketMessage() error {
 		return fmt.Errorf("handleWebSocketMessage: failed to unmarshal a WS message: %v", err)
 	}
 
+	log.WithContextFields(r.originalReq.Context(), log.Fields{
+		"payload_size": proto.Size(response),
+		"event_type":   fmt.Sprintf("%T", response.Response),
+		"request_id":   response.GetActionResponse().GetRequestID(),
+	}).Info("Sending action response")
+
 	if err = r.threadSafeSend(response); err != nil {
 		if err == io.EOF {
 			// ignore EOF to let Recv() fail and return a meaningful message
@@ -183,10 +189,12 @@ func (r *runner) handleAgentAction(ctx context.Context, action *pb.Action) error
 		statusCode := event.GetActionResponse().GetHttpResponse().StatusCode
 		log.WithContextFields(r.originalReq.Context(), log.Fields{
 			"path":                 action.GetRunHTTPRequest().Path,
+			"method":               action.GetRunHTTPRequest().Method,
 			"status_code":          statusCode,
 			"payload_size":         proto.Size(event),
 			"event_type":           fmt.Sprintf("%T", event.Response),
 			"action_response_type": fmt.Sprintf("%T", event.GetActionResponse().GetResponseType()),
+			"request_id":           action.GetRequestID(),
 		}).Info("Sending HTTP response event")
 		if err := r.threadSafeSend(event); err != nil {
 			return fmt.Errorf("handleAgentAction: failed to send gRPC message: %v", err)

@@ -168,7 +168,8 @@ Example of response
     "details_path": "/test-group/test-project/-/pipelines/287",
     "illustration": null,
     "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png"
-  }
+  },
+  "archived": false
 }
 ```
 
@@ -242,7 +243,8 @@ Example of response
         "details_path": "/test-group/test-project/-/pipelines/287",
         "illustration": null,
         "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png"
-    }
+    },
+    "archived": false
 }
 ```
 
@@ -473,7 +475,8 @@ Example of response
   "duration": null,
   "queued_duration": 0.010,
   "coverage": null,
-  "web_url": "https://example.com/foo/bar/pipelines/61"
+  "web_url": "https://example.com/foo/bar/pipelines/61",
+  "archived": false
 }
 ```
 
@@ -531,7 +534,8 @@ Response:
   "duration": null,
   "queued_duration": 0.010,
   "coverage": null,
-  "web_url": "https://example.com/foo/bar/pipelines/46"
+  "web_url": "https://example.com/foo/bar/pipelines/46",
+  "archived": false
 }
 ```
 
@@ -588,7 +592,8 @@ Response:
   "duration": null,
   "queued_duration": 0.010,
   "coverage": null,
-  "web_url": "https://example.com/foo/bar/pipelines/46"
+  "web_url": "https://example.com/foo/bar/pipelines/46",
+  "archived": false
 }
 ```
 
@@ -668,6 +673,7 @@ Sample response:
   "queued_duration": 0.010,
   "coverage": null,
   "web_url": "https://example.com/foo/bar/pipelines/46",
-  "name": "Some new pipeline name"
+  "name": "Some new pipeline name",
+  "archived": false
 }
 ```

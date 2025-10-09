@@ -390,7 +390,11 @@ export default {
       </gl-tooltip>
     </div>
     <gl-loading-icon v-if="isRootLoading" class="gl-mt-5" />
-    <nav v-else class="gl-mt-2 gl-flex gl-min-h-0 gl-flex-col" :aria-label="__('File tree')">
+    <nav
+      v-else
+      class="repository-tree-list gl-mt-2 gl-flex gl-min-h-0 gl-flex-col"
+      :aria-label="__('File tree')"
+    >
       <div
         v-if="filteredFlatFilesList.length"
         class="gl-h-full gl-min-h-0 gl-flex-grow gl-overflow-y-auto"
@@ -417,7 +421,7 @@ export default {
             'tree-list-parent': item.level > 0,
             '!gl-bg-gray-50': isCurrentPath(item.path),
           }"
-          class="!gl-mx-0"
+          class="gl-relative !gl-mx-0"
           truncate-middle
           @clickTree="toggleDirectory(item.path)"
           @showMore="fetchDirectory(item.parentPath)"

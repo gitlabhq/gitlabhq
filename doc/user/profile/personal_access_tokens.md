@@ -71,7 +71,7 @@ You can create as many personal access tokens as you like.
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access tokens**.
+1. On the left sidebar, select **Personal access tokens**.
 1. Select **Add new token**.
 1. In **Token name**, enter a name for the token.
 1. Optional. In **Token description**, enter a description for the token.
@@ -119,7 +119,7 @@ To rotate a personal access token:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access tokens**.
+1. On the left sidebar, select **Personal access tokens**.
 1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select  **Rotate** ({{< icon name="retry" >}}).
 1. On the confirmation dialog, select **Rotate**.
@@ -140,7 +140,7 @@ To revoke a personal access token:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access tokens**.
+1. On the left sidebar, select **Personal access tokens**.
 1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Revoke** ({{< icon name="remove" >}}).
 1. On the confirmation dialog, select **Revoke**.
@@ -255,7 +255,7 @@ To view the last time a token was used, and the IP addresses from where the toke
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access tokens**.
+1. On the left sidebar, select **Personal access tokens**.
 1. In the **Active personal access tokens** area, view the **Last Used** date and **Last Used IPs** for
    the relevant token. **Last Used IPs** shows the last five distinct IP addresses.
 
@@ -459,7 +459,7 @@ To require DPoP on all calls to the REST and GraphQL APIs:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access Tokens**.
+1. On the left sidebar, select **Personal access tokens**.
 1. Go to the **Use Demonstrating Proof of Possession (DPoP)** section, and select **Enable DPoP**.
 1. Select **Save changes**.
 1. To generate a DPoP header with the [GitLab CLI](../../editor_extensions/gitlab_cli/_index.md),

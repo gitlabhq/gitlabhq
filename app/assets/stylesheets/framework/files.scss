@@ -468,7 +468,7 @@ span.idiff {
   top: -4px;
   left: 14px;
   width: calc(var(--level) * var(--file-row-level-padding));
-  bottom: 4px;
+  bottom: 0;
   // The virtual scroller has a flat HTML structure so instead of the ::before
   // element stretching over multiple rows we instead create a repeating background image
   // for the line

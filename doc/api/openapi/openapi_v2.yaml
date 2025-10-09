@@ -53904,6 +53904,9 @@ definitions:
         example: 98.29
       detailed_status:
         "$ref": "#/definitions/DetailedStatusEntity"
+      archived:
+        type: boolean
+        example: false
     description: API_Entities_Ci_Pipeline model
   DetailedStatusEntity:
     type: object
@@ -54039,6 +54042,9 @@ definitions:
         example: 98.29
       detailed_status:
         "$ref": "#/definitions/DetailedStatusEntity"
+      archived:
+        type: boolean
+        example: false
       name:
         type: string
         example: Build pipeline

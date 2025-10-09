@@ -858,6 +858,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         start_branch_name: branch_name,
         start_repository: repository.gitaly_repository,
         message: revert_message,
+        expected_old_oid: nil,
         timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i)
       )
     end
@@ -968,6 +969,70 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
       let(:expected_error_message) {}
 
       it_behaves_like '#user_revert with a gRPC error'
+    end
+
+    context 'with expected_old_oid' do
+      let(:target_sha) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
+      let(:request_with_expected_old_oid) do
+        Gitaly::UserRevertRequest.new(
+          repository: repository.gitaly_repository,
+          user: gitaly_user,
+          commit: repository.commit.to_gitaly_commit,
+          branch_name: branch_name,
+          start_branch_name: branch_name,
+          start_repository: repository.gitaly_repository,
+          message: revert_message,
+          expected_old_oid: target_sha,
+          timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i)
+        )
+      end
+
+      subject do
+        client.user_revert(
+          user: user,
+          commit: repository.commit,
+          branch_name: branch_name,
+          message: revert_message,
+          start_branch_name: branch_name,
+          start_repository: repository,
+          target_sha: target_sha
+        )
+      end
+
+      it 'sends a user_revert message with expected_old_oid and returns a BranchUpdate' do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_revert).with(request_with_expected_old_oid, kind_of(Hash))
+                                   .and_return(response)
+
+        expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)
+        expect(subject.newrev).to be_present
+        expect(subject.repo_created).to be(false)
+        expect(subject.branch_created).to be(false)
+      end
+
+      context 'when InvalidArgument is raised due to expected_old_oid mismatch' do
+        let(:raised_error) { GRPC::InvalidArgument.new('expected old object ID does not match') }
+
+        it 'raises CommandError' do
+          expect_any_instance_of(Gitaly::OperationService::Stub)
+            .to receive(:user_revert).with(request_with_expected_old_oid, kind_of(Hash))
+                                     .and_raise(raised_error)
+
+          expect { subject }.to raise_error(Gitlab::Git::CommandError)
+        end
+      end
+
+      context 'when Internal error is raised due to race condition' do
+        let(:raised_error) { GRPC::Internal.new('reference update failed: expected old object ID does not match') }
+
+        it 'raises CommandError' do
+          expect_any_instance_of(Gitaly::OperationService::Stub)
+            .to receive(:user_revert).with(request_with_expected_old_oid, kind_of(Hash))
+                                     .and_raise(raised_error)
+
+          expect { subject }.to raise_error(Gitlab::Git::CommandError)
+        end
+      end
     end
   end
 

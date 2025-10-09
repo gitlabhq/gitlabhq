@@ -2498,7 +2498,8 @@ Example response:
         "details_path": "/twitter/flight/pipelines/38",
         "illustration": null,
         "favicon": "https://gitlab.example.com/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png"
-      }
+      },
+      "archived": false
     },
     "diff_refs": {
       "base_sha": "d052d768f0126e8cddf80afd8b1eb07f406a3fcb",

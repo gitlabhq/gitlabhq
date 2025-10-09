@@ -988,3 +988,7 @@ wbr {
     pointer-events: none;
   }
 }
+
+.math-content-inline {
+  @apply gl-max-w-full gl-overflow-x-auto gl-inline-block;
+}

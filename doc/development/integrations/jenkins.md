@@ -36,7 +36,7 @@ Jenkins uses the GitLab API and needs an access token.
 
 1. Sign in to your GitLab instance.
 1. Select your profile picture, then select **Settings**.
-1. Select **Access tokens**.
+1. Select **Personal access tokens**.
 1. Create a new Access Token with the **API** scope enabled. Note the value of the token.
 
 ## Configure Jenkins

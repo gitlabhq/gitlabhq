@@ -386,6 +386,35 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_project_repo' }
       let(:property) { 'project_action' }
     end
+
+    context 'when user is human' do
+      it 'tracks project_action_human_users event' do
+        tracking_params = { event_names: 'project_action_human_users', **dates }
+
+        expect { subject }
+          .to change { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(**tracking_params) }
+          .by(1)
+      end
+    end
+
+    context 'when user is a bot' do
+      let(:user) { create(:user, :project_bot) }
+
+      it 'does not track project_action_human_users event' do
+        tracking_params = { event_names: 'project_action_human_users', **dates }
+
+        expect { subject }
+          .not_to change { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(**tracking_params) }
+      end
+
+      it 'still tracks the regular project_action event' do
+        tracking_params = { event_names: 'project_action', **dates }
+
+        expect { subject }
+          .to change { Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(**tracking_params) }
+          .by(1)
+      end
+    end
   end
 
   describe '#join_source' do

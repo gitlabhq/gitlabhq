@@ -3217,6 +3217,114 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
   end
 
+  describe '#revert' do
+    let(:commit) { mutable_repository.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
+    let(:target_sha) { mutable_repository.commit.id }
+    let(:args) do
+      {
+        user: user,
+        message: 'revert message',
+        commit: commit,
+        branch_name: 'master',
+        target_sha: target_sha,
+        start_branch_name: 'master',
+        start_repository: mutable_repository
+      }
+    end
+
+    subject(:revert) do
+      mutable_repository.revert(**args)
+    end
+
+    it 'delegates to user_revert' do
+      expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |service|
+        expect(service).to receive(:user_revert).with(a_hash_including(args)).and_return(
+          Gitlab::Git::OperationService::BranchUpdate.new(
+            'new_commit_sha',
+            false,
+            false
+          )
+        )
+      end
+
+      result = revert
+      expect(result).to be_a(Gitlab::Git::OperationService::BranchUpdate)
+    end
+
+    context 'when target_sha does not exist' do
+      let(:target_sha) { '0000000000000000000000000000000000000000' }
+
+      it 'raises an error' do
+        # Mock operation service to return CommandError (as it would after processing GRPC::InvalidArgument)
+        expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |service|
+          expect(service).to receive(:user_revert).and_raise(Gitlab::Git::CommandError.new('cannot resolve expected old object ID'))
+        end
+
+        expect { revert }.to raise_error(Gitlab::Git::CommandError)
+      end
+    end
+
+    context 'when branch changes after target sha' do
+      let(:target_sha) { mutable_repository.commit.id }
+
+      it 'raises an error' do
+        # Mock operation service to return CommandError (as it would after processing GRPC::Internal)
+        expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |service|
+          expect(service).to receive(:user_revert).and_raise(Gitlab::Git::CommandError.new('reference update failed: expected old object ID does not match'))
+        end
+
+        expect { revert }.to raise_error(Gitlab::Git::CommandError)
+      end
+    end
+
+    context 'when target_sha is nil' do
+      let(:target_sha) { nil }
+
+      it 'delegates to user_revert with target_sha nil' do
+        expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |service|
+          expect(service).to receive(:user_revert).with(a_hash_including(target_sha: nil)).and_return(
+            Gitlab::Git::OperationService::BranchUpdate.new(
+              'new_commit_sha',
+              false,
+              false
+            )
+          )
+        end
+
+        result = revert
+        expect(result).to be_a(Gitlab::Git::OperationService::BranchUpdate)
+      end
+    end
+
+    context 'target_sha parameter validation' do
+      it 'accepts target_sha parameter and passes it to operation service' do
+        custom_target_sha = mutable_repository.commit('master').id
+
+        expect_next_instance_of(Gitlab::GitalyClient::OperationService) do |service|
+          expect(service).to receive(:user_revert).with(a_hash_including(target_sha: custom_target_sha)).and_return(
+            Gitlab::Git::OperationService::BranchUpdate.new(
+              'new_commit_sha',
+              false,
+              false
+            )
+          )
+        end
+
+        result = mutable_repository.revert(
+          user: user,
+          commit: commit,
+          branch_name: 'master',
+          message: 'revert message',
+          start_branch_name: 'master',
+          start_repository: mutable_repository,
+          target_sha: custom_target_sha
+        )
+
+        expect(result).to be_a(Gitlab::Git::OperationService::BranchUpdate)
+      end
+    end
+  end
+
   describe '#list_commits' do
     it 'returns commits when no query is passed' do
       commit_ids = repository.list_commits(ref: 'master', pagination_params: { limit: 2 }).map(&:id)

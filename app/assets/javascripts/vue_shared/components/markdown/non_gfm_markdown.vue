@@ -129,5 +129,9 @@ export default {
   :deep(code) {
     word-break: break-all;
   }
+
+  :deep(pre) {
+    white-space: pre-wrap;
+  }
 }
 </style>

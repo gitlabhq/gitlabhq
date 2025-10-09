@@ -173,6 +173,7 @@ export default {
         return {
           name: this.selectedTemplate.name,
           projectId: this.selectedTemplate.projectId,
+          fromNamespace: this.fullPath,
         };
       },
       update(data) {

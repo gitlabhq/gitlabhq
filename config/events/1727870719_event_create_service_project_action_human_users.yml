@@ -1,0 +1,14 @@
+---
+description: Perform Git operation (read/write/push) by human users only
+category: EventCreateService
+action: project_action_human_users
+extra_properties:
+identifiers:
+- user
+product_group: source_code
+milestone: "18.5"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207260
+tiers:
+- free
+- premium
+- ultimate

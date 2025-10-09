@@ -318,7 +318,7 @@ module Gitlab
       end
       # rubocop:enable Metrics/ParameterLists
 
-      def user_revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false)
+      def user_revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:, dry_run: false, target_sha: nil)
         request = Gitaly::UserRevertRequest.new(
           repository: @gitaly_repo,
           user: gitaly_user(user),
@@ -328,6 +328,7 @@ module Gitlab
           start_branch_name: encode_binary(start_branch_name.to_s),
           start_repository: start_repository.gitaly_repository,
           dry_run: dry_run,
+          expected_old_oid: target_sha,
           timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
         )
 
@@ -350,6 +351,8 @@ module Gitlab
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
 
+      rescue GRPC::InvalidArgument => ex
+        raise Gitlab::Git::CommandError, ex
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 
@@ -364,6 +367,11 @@ module Gitlab
         when :not_ancestor
           raise Gitlab::Git::CommitError, 'branch diverged'
         else
+          # Handle Internal errors for race conditions with expected_old_oid
+          if e.code == GRPC::Core::StatusCodes::INTERNAL && e.message.include?('expected old object ID')
+            raise Gitlab::Git::CommandError, e
+          end
+
           raise e
         end
       end

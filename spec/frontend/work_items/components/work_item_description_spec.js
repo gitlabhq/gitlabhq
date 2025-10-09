@@ -347,6 +347,7 @@ describe('WorkItemDescription', () => {
 
         it('queries for the template content when a template is selected', () => {
           expect(successfulTemplateHandler).toHaveBeenCalledWith({
+            fromNamespace: 'test-project-path',
             name: 'example',
             projectId: 1,
           });

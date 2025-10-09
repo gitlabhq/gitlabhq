@@ -47,7 +47,7 @@ the `api` scope:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
-1. On the left sidebar, select **Access tokens**.
+1. Select **Personal access tokens**.
 1. Enter a name and optional expiry date for the token.
 1. Select the `api` scope.
 1. Select **Create personal access token**.

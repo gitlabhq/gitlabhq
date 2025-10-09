@@ -1012,6 +1012,8 @@ class Repository
     user, commit, branch_name, message,
     start_branch_name: nil, start_project: project, dry_run: false
   )
+    target_sha = find_branch(branch_name)&.dereferenced_target&.id if branch_name.present?
+
     with_cache_hooks do
       raw_repository.revert(
         user: user,
@@ -1020,7 +1022,8 @@ class Repository
         message: message,
         start_branch_name: start_branch_name,
         start_repository: start_project.repository.raw_repository,
-        dry_run: dry_run
+        dry_run: dry_run,
+        target_sha: target_sha
       )
     end
   end

@@ -1134,7 +1134,8 @@ Example response:
       "details_path": "/marcel.amirault/test-project/-/pipelines/538317940",
       "illustration": null,
       "favicon": "/assets/ci_favicons/favicon_status_failed-41304d7f7e3828808b0c26771f0309e55296819a9beea3ea9fbf6689d9857c12.png"
-    }
+    },
+    "archived": false
   },
   "diff_refs": {
     "base_sha": "1162f719d711319a2efb2a35566f3bfdadee8bab",
@@ -2395,7 +2396,8 @@ Example response:
     "details_path": "/user1/project1/pipelines/2",
     "illustration": null,
     "favicon": "/assets/ci_favicons/favicon_status_pending-5bdf338420e5221ca24353b6bff1c9367189588750632e9a871b7af09ff6a2ae.png"
-  }
+  },
+  "archived": false
 }
 ```
 

@@ -1,7 +1,7 @@
 #import "../fragments/user.fragment.graphql"
 #import "~/graphql_shared/fragments/user_availability.fragment.graphql"
 
-query groupUsersSearch($search: String!, $fullPath: ID!, $after: String, $first: Int) {
+query groupUsersSearch($search: String!, $fullPath: ID!, $after: String, $first: Int, $ids: [ID!]) {
   workspace: group(fullPath: $fullPath) {
     id
     users: groupMembers(
@@ -10,6 +10,7 @@ query groupUsersSearch($search: String!, $fullPath: ID!, $after: String, $first:
       first: $first
       after: $after
       sort: USER_FULL_NAME_ASC
+      ids: $ids
     ) {
       pageInfo {
         hasNextPage

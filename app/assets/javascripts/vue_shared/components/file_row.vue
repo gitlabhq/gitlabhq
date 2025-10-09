@@ -134,7 +134,7 @@ export default {
     v-else-if="file.isShowMore"
     category="tertiary"
     :loading="file.loading"
-    class="!gl-ml-5"
+    class="!gl-border-none !gl-pl-6"
     button-text-classes="gl-text-blue-700"
     @click="$emit('showMore')"
   >

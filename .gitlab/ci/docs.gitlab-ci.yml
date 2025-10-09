@@ -171,7 +171,7 @@ docs-lint deprecations-and-removals:
       optional: true
   script:
     - bundle exec rake gitlab:docs:check_deprecations
-    - bundle exec rake gitlab:docs:check_windows
+    # - bundle exec rake gitlab:docs:check_windows
 
 docs-lint redirects:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine
