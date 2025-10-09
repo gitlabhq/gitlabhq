@@ -27,6 +27,7 @@ import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useFindingsDrawer } from '~/mr_notes/store/findings_drawer';
+import { useBatchComments } from '~/batch_comments/store';
 import { sortFindingsByFile } from '../utils/sort_findings_by_file';
 import {
   ALERT_OVERFLOW_HIDDEN,
@@ -362,7 +363,7 @@ export default {
 
     const id = window?.location?.hash;
 
-    if (id && id.indexOf('#note') !== 0) {
+    if (id && id.indexOf('#note') !== 0 && id.indexOf('#draft') !== 0) {
       this.setHighlightedRow({ lineCode: id.split('diff-content').pop().slice(1) });
     }
 
@@ -708,6 +709,10 @@ export default {
       }
     },
     async scrollVirtualScrollerToFileHash(hash) {
+      if (!this.isVirtualScrollingEnabled) {
+        setTimeout(() => handleLocationHash());
+      }
+
       const index = this.diffFiles.findIndex((f) => f.file_hash === hash);
 
       if (index !== -1) {
@@ -728,6 +733,13 @@ export default {
 
         if (discussion) {
           this.scrollVirtualScrollerToFileHash(discussion.diff_file.file_hash);
+        }
+      } else if (id.startsWith('#draft_')) {
+        const draftId = Number(id.replace('#draft_', ''));
+        const draft = useBatchComments().drafts.find((d) => d.id === draftId);
+
+        if (draft) {
+          this.scrollVirtualScrollerToFileHash(draft.file_hash);
         }
       }
     },

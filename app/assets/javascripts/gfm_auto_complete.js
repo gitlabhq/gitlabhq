@@ -211,7 +211,6 @@ class GfmAutoComplete {
     this.isLoadingData = {};
     this.previousQuery = undefined;
     this.currentBackendFilterRequestController = null;
-    this.enableExtensibleReferenceFilters = gon.features?.extensibleReferenceFilters ?? false;
   }
 
   setup(input, enableMap = defaultAutocompleteConfig) {
@@ -241,10 +240,8 @@ class GfmAutoComplete {
     if (this.enableMap.emojis) this.setupEmoji($input);
     if (this.enableMap.members) this.setupMembers($input);
     if (this.enableMap.issues) this.setupIssues($input);
-    if (this.enableMap.issuesAlternative && this.enableExtensibleReferenceFilters)
-      this.setupIssuesAlternative($input);
-    if (this.enableMap.workItems && this.enableExtensibleReferenceFilters)
-      this.setupWorkItem($input);
+    if (this.enableMap.issuesAlternative) this.setupIssuesAlternative($input);
+    if (this.enableMap.workItems) this.setupWorkItem($input);
     if (this.enableMap.milestones) this.setupMilestones($input);
     if (this.enableMap.mergeRequests) this.setupMergeRequests($input);
     if (this.enableMap.labels) this.setupLabels($input);

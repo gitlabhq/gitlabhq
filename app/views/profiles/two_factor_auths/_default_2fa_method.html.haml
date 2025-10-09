@@ -1,0 +1,13 @@
+- return unless Feature.enabled?(:passkeys, current_user)
+- @passkeys = ['todo']
+- return unless current_user.two_factor_enabled?
+
+%p
+  %span.gl-font-bold
+    = s_('ProfilesAuthentication|Default 2FA method:')
+  - if @passkeys.present?
+    = render Pajamas::BadgeComponent.new(s_('ProfilesAuthentication|Passkey'), variant: :info)
+  - elsif @registrations.present?
+    = render Pajamas::BadgeComponent.new(s_('ProfilesAuthentication|WebAuthn device'), variant: :info)
+  - else
+    = render Pajamas::BadgeComponent.new(s_('ProfilesAuthentication|One-time password authenticator'), variant: :info)

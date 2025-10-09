@@ -19,10 +19,6 @@ export default {
       type: Object,
       required: true,
     },
-    rootPath: {
-      type: String,
-      required: true,
-    },
     issuableType: {
       type: String,
       default: TYPE_ISSUE,

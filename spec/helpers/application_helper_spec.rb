@@ -454,39 +454,15 @@ RSpec.describe ApplicationHelper do
       end
     end
 
-    context 'when feature flag extensible_reference_filters is enabled' do
-      before do
-        stub_feature_flags(extensible_reference_filters: true)
-      end
-
-      context 'group' do
-        it 'returns paths for autocomplete_sources_controller' do
-          expect_autocomplete_data_sources_to_contain(group, noteable_type, group_sources + extensible_filter_sources)
-        end
-      end
-
-      context 'project' do
-        it 'returns paths for autocomplete_sources_controller' do
-          expect_autocomplete_data_sources_to_be(project, noteable_type, project_sources + extensible_filter_sources)
-        end
+    context 'group' do
+      it 'returns paths for autocomplete_sources_controller' do
+        expect_autocomplete_data_sources_to_contain(group, noteable_type, group_sources + extensible_filter_sources)
       end
     end
 
-    context 'when feature flag extensible_reference_filters is disabled' do
-      before do
-        stub_feature_flags(extensible_reference_filters: false)
-      end
-
-      context 'group' do
-        it 'returns paths for autocomplete_sources_controller' do
-          expect_autocomplete_data_sources_to_contain(group, noteable_type, group_sources)
-        end
-      end
-
-      context 'project' do
-        it 'returns paths for autocomplete_sources_controller' do
-          expect_autocomplete_data_sources_to_be(project, noteable_type, project_sources)
-        end
+    context 'project' do
+      it 'returns paths for autocomplete_sources_controller' do
+        expect_autocomplete_data_sources_to_be(project, noteable_type, project_sources + extensible_filter_sources)
       end
     end
   end

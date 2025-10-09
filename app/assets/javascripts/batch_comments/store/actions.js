@@ -1,10 +1,10 @@
 import { isEmpty, chunk } from 'lodash';
 import { createAlert } from '~/alert';
-import { scrollToElement } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import { FILE_DIFF_POSITION_TYPE } from '~/diffs/constants';
+import diffsEventHub from '~/diffs/event_hub';
 import { updateNoteErrorMessage } from '~/notes/utils';
-import { CHANGES_TAB, DISCUSSION_TAB, SHOW_TAB } from '../constants';
+import { CHANGES_TAB, SHOW_TAB } from '../constants';
 import service from '../services/drafts_service';
 import * as types from '../stores/modules/batch_comments/mutation_types';
 
@@ -154,11 +154,8 @@ export function updateDraft({
 export function scrollToDraft(draft) {
   const discussion =
     draft.discussion_id && this.tryStore('legacyNotes').getDiscussion(draft.discussion_id);
-  const tab =
-    draft.file_hash || (discussion && discussion.diff_discussion) ? CHANGES_TAB : SHOW_TAB;
-  const tabEl = tab === CHANGES_TAB ? CHANGES_TAB : DISCUSSION_TAB;
-  const draftID = `note_${draft.id}`;
-  const el = document.querySelector(`#${tabEl} #${draftID}`);
+  const tab = draft.file_hash || discussion?.diff_discussion ? CHANGES_TAB : SHOW_TAB;
+  const draftID = `draft_${draft.id}`;
 
   window.location.hash = draftID;
 
@@ -176,8 +173,8 @@ export function scrollToDraft(draft) {
     this.tryStore('legacyNotes').expandDiscussion({ discussionId: discussion.id });
   }
 
-  if (el) {
-    setTimeout(() => scrollToElement(el.closest('.draft-note-component')));
+  if (draft.file_hash) {
+    diffsEventHub.$emit('scrollToFileHash', draft.file_hash);
   }
 }
 

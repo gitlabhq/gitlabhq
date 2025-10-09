@@ -213,7 +213,6 @@ export default class MergeRequestTabs {
       this.mergeRequestTabPanes && this.mergeRequestTabPanes.querySelectorAll
         ? this.mergeRequestTabPanes.querySelectorAll('.tab-pane')
         : null;
-    this.navbar = document.querySelector('.navbar-gitlab');
     this.peek = document.getElementById('js-peek');
     this.sidebar = document.querySelector('.js-right-sidebar');
     this.pageLayout = document.querySelector('.layout-page');

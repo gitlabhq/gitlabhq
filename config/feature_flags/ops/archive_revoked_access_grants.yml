@@ -1,0 +1,10 @@
+---
+name: archive_revoked_access_grants
+description: A feature flag to enable the background worker that archives revoked OAuth access grants revoked before a certain date.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/377995
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207837
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/574827
+milestone: '18.5'
+group: group::authentication
+type: ops
+default_enabled: false

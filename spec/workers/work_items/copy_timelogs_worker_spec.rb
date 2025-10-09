@@ -25,6 +25,7 @@ RSpec.describe WorkItems::CopyTimelogsWorker, type: :worker, feature_category: :
 
         expect(new_timelog.issue_id).to eq(to_issue.id)
         expect(new_timelog.project_id).to eq(to_issue.project_id)
+        expect(new_timelog.namespace_id).to eq(to_issue.namespace_id)
       end
     end
 

@@ -2880,6 +2880,30 @@ Input type: `AiCatalogThirdPartyFlowCreateInput`
 | <a id="mutationaicatalogthirdpartyflowcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationaicatalogthirdpartyflowcreateitem"></a>`item` | [`AiCatalogThirdPartyFlow`](#aicatalogthirdpartyflow) | Item created. |
 
+### `Mutation.aiCatalogThirdPartyFlowDelete`
+
+{{< details >}}
+**Introduced** in GitLab 18.5.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiCatalogThirdPartyFlowDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogthirdpartyflowdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogthirdpartyflowdeleteid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog Third Party Flow to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogthirdpartyflowdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogthirdpartyflowdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationaicatalogthirdpartyflowdeletesuccess"></a>`success` | [`Boolean!`](#boolean) | Returns true if catalog Third Party Flow was successfully deleted. |
+
 ### `Mutation.aiCatalogThirdPartyFlowUpdate`
 
 {{< details >}}
@@ -43265,7 +43289,7 @@ A security attribute.
 | <a id="securityattributecolor"></a>`color` | [`Color!`](#color) | Color of the security attribute. |
 | <a id="securityattributedescription"></a>`description` | [`String`](#string) | Description of the security attribute. |
 | <a id="securityattributeeditablestate"></a>`editableState` | [`SecurityCategoryEditableState!`](#securitycategoryeditablestate) | Editable state of the security attribute. |
-| <a id="securityattributeid"></a>`id` | [`SecurityAttributeID`](#securityattributeid) | Global ID of the security attribute. |
+| <a id="securityattributeid"></a>`id` | [`SecurityAttributeID!`](#securityattributeid) | Global ID of the security attribute. |
 | <a id="securityattributename"></a>`name` | [`String!`](#string) | Name of the security attribute. |
 | <a id="securityattributesecuritycategory"></a>`securityCategory` | [`SecurityCategory!`](#securitycategory) | Security category the attribute belongs to. |
 
@@ -43279,7 +43303,7 @@ A security category.
 | ---- | ---- | ----------- |
 | <a id="securitycategorydescription"></a>`description` | [`String`](#string) | Description of the security category. |
 | <a id="securitycategoryeditablestate"></a>`editableState` | [`SecurityCategoryEditableState!`](#securitycategoryeditablestate) | Editable state of the security category. |
-| <a id="securitycategoryid"></a>`id` | [`SecurityCategoryID`](#securitycategoryid) | Global ID of the security category. |
+| <a id="securitycategoryid"></a>`id` | [`SecurityCategoryID!`](#securitycategoryid) | Global ID of the security category. |
 | <a id="securitycategorymultipleselection"></a>`multipleSelection` | [`Boolean!`](#boolean) | Whether multiple attributes can be selected. |
 | <a id="securitycategoryname"></a>`name` | [`String!`](#string) | Name of the security category. |
 | <a id="securitycategorysecurityattributes"></a>`securityAttributes` | [`[SecurityAttribute!]`](#securityattribute) | Security attributes belonging to the category. |

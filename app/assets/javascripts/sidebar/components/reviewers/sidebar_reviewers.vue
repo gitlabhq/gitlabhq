@@ -116,14 +116,8 @@ export default {
     return state;
   },
   computed: {
-    relativeUrlRoot() {
-      return gon.relative_url_root ?? '';
-    },
     reviewers() {
       return this.issuable.reviewers?.nodes || [];
-    },
-    graphqlFetching() {
-      return this.$apollo.queries.issuable.loading;
     },
     isLoading() {
       return this.loading || this.$apollo.queries.issuable.loading;
@@ -241,7 +235,6 @@ export default {
     </approval-summary>
     <reviewers
       v-if="!initialLoading"
-      :root-path="relativeUrlRoot"
       :users="reviewers"
       :editable="canUpdate"
       :issuable-type="issuableType"

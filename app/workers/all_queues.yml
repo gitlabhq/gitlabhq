@@ -306,6 +306,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace: :cronjob
+- :name: cronjob:authn_data_retention_oauth_access_grant_archive
+  :worker_name: Authn::DataRetention::OauthAccessGrantArchiveWorker
+  :feature_category: :system_access
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace: :cronjob
 - :name: cronjob:authn_data_retention_oauth_access_token_archive
   :worker_name: Authn::DataRetention::OauthAccessTokenArchiveWorker
   :feature_category: :system_access

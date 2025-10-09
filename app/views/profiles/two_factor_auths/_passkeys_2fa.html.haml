@@ -1,0 +1,15 @@
+- return unless Feature.enabled?(:passkeys, current_user)
+- @passkeys = ['todo']
+- return unless !current_user.two_factor_enabled? && @passkeys.present?
+
+= render ::Layouts::CrudComponent.new(s_('ProfilesAuthentication|Passkeys'),
+  icon: 'key',
+  count: 0,
+  options: { class: 'gl-mt-5' }) do |c|
+  - c.with_actions do
+    - tooltip = s_('ProfilesAuthentication|Register another 2FA method above to automatically use passkeys as default 2FA.')
+    = render Pajamas::ButtonComponent.new(size: :small, disabled: true, button_options: { title: tooltip, class: 'has-tooltip'}) do
+      = s_('ProfilesAuthentication|Use passkey as 2FA')
+  - c.with_body do
+    = s_('ProfilesAuthentication|Use your passkey as a 2FA method after entering your password. Note that passkeys can’t be used as your only 2FA method.')
+

@@ -1,0 +1,8 @@
+---
+migration_job_name: RequeueBackfillSubscriptionUserAddOnAssignmentVersions
+description: Requeues backfill of user_add_on_assignment_versions created before adding Papertrail to user_add_on_assignments
+feature_category: value_stream_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/203303
+milestone: '18.5'
+queued_migration_version: 20251007201807
+finalized_by: # version of the migration that finalized this BBM

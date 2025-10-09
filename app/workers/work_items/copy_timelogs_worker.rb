@@ -20,7 +20,7 @@ module WorkItems
       to_issue = Issue.find_by_id(to_issue_id)
       return if to_issue.nil?
 
-      reset_attributes = { project_id: to_issue.project_id, issue_id: to_issue.id }
+      reset_attributes = { project_id: to_issue.project_id, issue_id: to_issue.id, namespace_id: to_issue.namespace_id }
       ApplicationRecord.transaction do
         from_issue.timelogs.each_batch(of: BATCH_SIZE) do |timelogs|
           new_timelogs_attributes = timelogs.map do |timelog|

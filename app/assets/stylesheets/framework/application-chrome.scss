@@ -183,7 +183,9 @@
   }
 
   .panel-content-inner:has(.issue-boards-content, .group-epics-roadmap) {
-    @apply gl-mx-0;
+    @apply gl-mx-2;
+    @apply gl-rounded-[0.75rem];
+    height: calc(100% - #{$header-height} - #{$gl-spacing-scale-2}) !important;
   }
 
   // work item drawer correct background colors
@@ -291,11 +293,12 @@
     }
   }
 
-
   // Add some left margin on pages with no left sidebar (like /search)
-  .panels-container { margin-left: 0.5rem; }
+  .panels-container {
+    @apply gl-ml-3;
+  }
 
-  @media (min-width: $breakpoint-xl) {
+  @include media-breakpoint-up(lg) {
     .page-with-super-sidebar {
       .super-sidebar-loading ~ .panels-container,
       .super-sidebar-wrapper ~ .panels-container {
@@ -304,6 +307,12 @@
     }
   }
 
+  // Panels
+  .paneled-view.static-panel,
+  .paneled-view.contextual-panel,
+  .paneled-view.ai-panels .ai-panel {
+    @apply gl-shadow-sm;
+  }
 
   // Static panel
   .paneled-view.static-panel {
@@ -314,11 +323,11 @@
   .paneled-view.contextual-panel {
     @apply gl-overflow-y-auto gl-flex-1 gl-rounded-lg gl-bg-default empty:gl-hidden gl-h-full;
     @apply gl-z-[252] gl-w-8/10 gl-right-0;
-    clip-path: inset(0 0 0 -15px round 1rem);
   }
 
   // AI panel
   .paneled-view.ai-panels {
+    overflow: inherit;
     @apply gl-px-0 sm:gl-px-3 lg:gl-px-2 lg:-gl-mx-2;
     --ai-panel-width: clamp(400px, 20vw, 560px);
     --ai-panels-gap: var(--gl-spacing-scale-3);
@@ -458,6 +467,10 @@
     // Issue boards height
     .boards-app {
       height: calc(#{$calc-application-viewport-height} - 1.5rem);
+    }
+
+    .boards-list {
+      @apply gl-border-l-0;
     }
 
     // MR sidebar

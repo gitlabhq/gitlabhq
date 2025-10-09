@@ -160,7 +160,7 @@ export default {
 
       if (draft.position && !this.isOnLatestDiff(draft)) {
         const url = new URL(setUrlParams({ commit_id: draft.position.head_sha }));
-        url.hash = `note_${draft.id}`;
+        url.hash = `draft_${draft.id}`;
         visitUrl(url.toString());
       } else {
         await this.scrollToDraft(draft);

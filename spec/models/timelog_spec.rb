@@ -12,6 +12,7 @@ RSpec.describe Timelog, feature_category: :team_planning do
   it { is_expected.to belong_to(:issue).touch(true) }
   it { is_expected.to belong_to(:merge_request).touch(true) }
   it { is_expected.to belong_to(:timelog_category).optional(true) }
+  it { is_expected.to belong_to(:namespace) }
 
   it { is_expected.to be_valid }
 
@@ -98,7 +99,7 @@ RSpec.describe Timelog, feature_category: :team_planning do
       it 'is valid if issue_id and merge_request_id are missing' do
         subject.attributes = { issue: nil, merge_request: nil, importing: true }
 
-        expect(subject).to be_valid
+        expect(subject).not_to be_valid
       end
     end
   end
@@ -260,6 +261,40 @@ RSpec.describe Timelog, feature_category: :team_planning do
 
       it 'sorts timelogs by updated at in descending order' do
         expect(user.timelogs.sort_by_field(:updated_at_desc)).to eq([timelog_c, timelog_a, timelog_b, timelog_d])
+      end
+    end
+  end
+
+  describe 'ensure_namespace_id' do
+    let_it_be(:project) { create(:project) }
+
+    context 'when timelog belongs to an issue' do
+      let(:issue) { create(:issue, project: project) }
+      let(:timelog) { described_class.new(issue: issue) }
+
+      it 'sets the namespace id from the issue namespace id' do
+        # zero until we remove the default when table is backfilled
+        # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/514588
+        expect(timelog.namespace_id).to be_zero
+
+        timelog.valid?
+
+        expect(timelog.namespace_id).to eq(issue.namespace_id)
+      end
+    end
+
+    context 'when timelog belongs to a merge request' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:timelog) { described_class.new(merge_request: merge_request) }
+
+      it 'sets the namespace id from the merge request project namespace id' do
+        # zero until we remove the default when table is backfilled
+        # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/514588
+        expect(timelog.namespace_id).to be_zero
+
+        timelog.valid?
+
+        expect(timelog.namespace_id).to eq(merge_request.source_project.project_namespace_id)
       end
     end
   end

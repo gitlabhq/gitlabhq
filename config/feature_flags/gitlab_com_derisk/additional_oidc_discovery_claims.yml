@@ -1,0 +1,10 @@
+---
+name: additional_oidc_discovery_claims
+description: Add CI OIDC claims required by external package registries for trusted publishing
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/428061
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207847
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/574796
+milestone: '18.5'
+group: group::authentication
+type: gitlab_com_derisk
+default_enabled: false

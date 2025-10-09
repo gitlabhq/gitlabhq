@@ -52,11 +52,12 @@ RSpec.describe 'OAuth Tokens requests', feature_category: :system_access do
       options '/oauth/token/info', params: {}, headers:
         { 'Origin' => 'https://bar.example.com',
           'Access-Control-Request-Method' => 'GET',
-          'Access-Control-Request-Headers' => 'x-gitlab-language-server-version,authorization' }
+          'Access-Control-Request-Headers' => 'x-gitlab-language-server-version,authorization,user-agent' }
 
       expect(response.headers['Access-Control-Allow-Origin']).to eq '*'
       expect(response.headers['Access-Control-Allow-Methods']).to eq 'GET, HEAD, OPTIONS'
-      expect(response.headers['Access-Control-Allow-Headers']).to eq 'x-gitlab-language-server-version,authorization'
+      expect(response.headers['Access-Control-Allow-Headers'])
+        .to eq 'x-gitlab-language-server-version,authorization,user-agent'
       expect(response.headers['Access-Control-Allow-Credentials']).to be_nil
     end
 

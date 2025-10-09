@@ -985,6 +985,7 @@ timelogs:
 - user
 - note
 - timelog_category
+- namespace
 push_event_payload:
 - event
 issue_assignees:

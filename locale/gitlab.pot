@@ -529,6 +529,11 @@ msgid_plural "%d templates found"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d unsaved change"
+msgid_plural "%d unsaved changes"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d user"
 msgid_plural "%d users"
 msgstr[0] ""
@@ -41212,9 +41217,6 @@ msgstr ""
 msgid "MergeRequest|Remove reviewer"
 msgstr ""
 
-msgid "MergeRequest|Reviewed by @%{username} but not yet approved"
-msgstr ""
-
 msgid "MergeRequest|Reviewer approved changes"
 msgstr ""
 
@@ -50178,7 +50180,31 @@ msgstr ""
 msgid "ProfilesAuthentication|Add passkey"
 msgstr ""
 
+msgid "ProfilesAuthentication|Default 2FA method:"
+msgstr ""
+
+msgid "ProfilesAuthentication|One-time password authenticator"
+msgstr ""
+
+msgid "ProfilesAuthentication|Passkey"
+msgstr ""
+
+msgid "ProfilesAuthentication|Passkeys"
+msgstr ""
+
+msgid "ProfilesAuthentication|Register another 2FA method above to automatically use passkeys as default 2FA."
+msgstr ""
+
 msgid "ProfilesAuthentication|Sign in faster with passkeys"
+msgstr ""
+
+msgid "ProfilesAuthentication|Use passkey as 2FA"
+msgstr ""
+
+msgid "ProfilesAuthentication|Use your passkey as a 2FA method after entering your password. Note that passkeys can’t be used as your only 2FA method."
+msgstr ""
+
+msgid "ProfilesAuthentication|WebAuthn device"
 msgstr ""
 
 msgid "ProfilesAuthentication|You currently use passkeys for secure and faster sign in. %{link_start}Manage passkeys%{link_end}."
@@ -58277,9 +58303,6 @@ msgstr ""
 msgid "Security Policy project already exists."
 msgstr ""
 
-msgid "Security Reports|Vulnerabilities average score"
-msgstr ""
-
 msgid "Security and compliance"
 msgstr ""
 
@@ -58325,7 +58348,7 @@ msgstr ""
 msgid "SecurityApprovals|Requires approval for decreases in test coverage."
 msgstr ""
 
-msgid "SecurityAttributes|+ Add security attributes"
+msgid "SecurityAttributes|+ Add attributes"
 msgstr ""
 
 msgid "SecurityAttributes|+%{additionalAttributeCount} more"
@@ -58335,6 +58358,9 @@ msgid "SecurityAttributes|Add attribute"
 msgstr ""
 
 msgid "SecurityAttributes|Add security attribute"
+msgstr ""
+
+msgid "SecurityAttributes|All changes saved"
 msgstr ""
 
 msgid "SecurityAttributes|An error has occurred while deleting the security attribute."
@@ -58385,6 +58411,9 @@ msgstr ""
 msgid "SecurityAttributes|Category saved"
 msgstr ""
 
+msgid "SecurityAttributes|Changed the selection type"
+msgstr ""
+
 msgid "SecurityAttributes|Color"
 msgstr ""
 
@@ -58392,6 +58421,9 @@ msgid "SecurityAttributes|Create attribute"
 msgstr ""
 
 msgid "SecurityAttributes|Create category"
+msgstr ""
+
+msgid "SecurityAttributes|Created the attribute \"%{name}\""
 msgstr ""
 
 msgid "SecurityAttributes|Delete"
@@ -58487,7 +58519,16 @@ msgstr ""
 msgid "SecurityAttributes|Successfully updated the security attributes"
 msgstr ""
 
+msgid "SecurityAttributes|Unsaved changes"
+msgstr ""
+
 msgid "SecurityAttributes|Update attribute"
+msgstr ""
+
+msgid "SecurityAttributes|Updated the category description"
+msgstr ""
+
+msgid "SecurityAttributes|Updated the category name"
 msgstr ""
 
 msgid "SecurityAttributes|Use security attributes to categorize projects by business context, security needs, and more. Categories are shared across your groups, enabling consistent and scalable classification of assets. These attributes can help prioritize security efforts, filter dashboards, and apply consistent governance across projects."
@@ -60615,7 +60656,16 @@ msgstr ""
 msgid "SecurityReports|%{rating} risk score"
 msgstr ""
 
-msgid "SecurityReports|%{riskFactor}x"
+msgid "SecurityReports|%{supStart}*%{supEnd}Base score (associated with severity level) + EPSS modifier + KEV modifier"
+msgstr ""
+
+msgid "SecurityReports|%{supStart}†%{supEnd}Sum of vulnerability ages in months * 0.005"
+msgstr ""
+
+msgid "SecurityReports|%{supStart}‡%{supEnd}Diminishing factor = 1.0 / √(vulnerability count)"
+msgstr ""
+
+msgid "SecurityReports|(Sum of open vulnerability scores%{supStart}*%{supEnd} + Age penalty%{supStart}†%{supEnd}) * Diminishing factor%{supStart}‡%{supEnd}"
 msgstr ""
 
 msgid "SecurityReports|1 vulnerability attached to %{nrIssues} issues"
@@ -60891,9 +60941,6 @@ msgstr ""
 msgid "SecurityReports|Inactive secret"
 msgstr ""
 
-msgid "SecurityReports|Includes Severity, Age, Exploitation status, EPSS score, Reachability, and/or Secret validity"
-msgstr ""
-
 msgid "SecurityReports|Investigate this vulnerability by creating an issue"
 msgstr ""
 
@@ -61048,6 +61095,9 @@ msgid "SecurityReports|Results show vulnerability findings from the latest succe
 msgstr ""
 
 msgid "SecurityReports|Risk score"
+msgstr ""
+
+msgid "SecurityReports|Risk score formula"
 msgstr ""
 
 msgid "SecurityReports|Scan details"
@@ -70673,9 +70723,6 @@ msgid "Use your smart card to authenticate with the LDAP server."
 msgstr ""
 
 msgid "Used"
-msgstr ""
-
-msgid "Used by"
 msgstr ""
 
 msgid "Used by %d package"

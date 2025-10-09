@@ -8,6 +8,7 @@ RSpec.describe 'projects/settings/repository/_protected_branches', feature_categ
   let(:branch) { build(:protected_branch) }
 
   before do
+    stub_feature_flags(edit_branch_rules: false)
     assign :project, project
     assign :protected_branch, branch
     assign :protected_branches, [branch]
