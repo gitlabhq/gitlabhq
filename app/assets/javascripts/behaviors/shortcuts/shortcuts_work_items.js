@@ -56,7 +56,7 @@ export default class ShortcutsWorkItem {
     setTimeout(() => {
       const shortcutSelector = `.${selector} .shortcut-sidebar-dropdown-toggle`;
       const editBtn =
-        document.querySelector(`.gl-drawer ${shortcutSelector}`) ||
+        document.querySelector(`.work-item-drawer ${shortcutSelector}`) ||
         document.querySelector(`.modal ${shortcutSelector}`) ||
         document.querySelector(shortcutSelector);
       editBtn?.click();
@@ -69,7 +69,7 @@ export default class ShortcutsWorkItem {
     // on merge request, editing is on a different page
     const editDescriptionSelector = '.shortcut-edit-wi-description';
     const editButton =
-      document.querySelector(`.gl-drawer ${editDescriptionSelector}`) ||
+      document.querySelector(`.work-item-drawer ${editDescriptionSelector}`) ||
       document.querySelector(`.modal ${editDescriptionSelector}`) ||
       document.querySelector(editDescriptionSelector);
 
@@ -90,7 +90,7 @@ export default class ShortcutsWorkItem {
   async copyReference() {
     const refSelector = '.shortcut-copy-reference';
     const refButton =
-      document.querySelector(`.gl-drawer ${refSelector}`) ||
+      document.querySelector(`.work-item-drawer ${refSelector}`) ||
       document.querySelector(`.modal ${refSelector}`) ||
       document.querySelector(refSelector);
     const copiedRef = refButton?.dataset.clipboardText;

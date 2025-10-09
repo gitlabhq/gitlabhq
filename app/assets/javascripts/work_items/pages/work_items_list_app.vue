@@ -27,6 +27,7 @@ import {
   getInitialPageParams,
   getSortOptions,
   getTypeTokenOptions,
+  groupMultiSelectFilterTokens,
 } from 'ee_else_ce/issues/list/utils';
 import axios from '~/lib/utils/axios_utils';
 import { TYPENAME_NAMESPACE, TYPENAME_USER } from '~/graphql_shared/constants';
@@ -525,11 +526,13 @@ export default {
           isProject: !this.isGroup,
           recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-assignee`,
           preloadedUsers,
+          multiSelect: true,
         },
         {
           type: TOKEN_TYPE_AUTHOR,
           title: TOKEN_TITLE_AUTHOR,
           icon: 'pencil',
+          unique: true, // need not to be unique but the BE supports only one author in "IS" condition
           token: UserToken,
           dataType: 'user',
           defaultUsers: [],
@@ -538,6 +541,7 @@ export default {
           isProject: !this.isGroup,
           recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-author`,
           preloadedUsers,
+          multiSelect: true,
         },
         {
           type: TOKEN_TYPE_LABEL,
@@ -548,6 +552,7 @@ export default {
           fetchLabels: this.fetchLabels,
           fetchLatestLabels: this.fetchLatestLabels,
           recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-label`,
+          multiSelect: true,
         },
         {
           type: TOKEN_TYPE_MILESTONE,
@@ -1139,10 +1144,12 @@ export default {
         sortKey = state === STATUS_CLOSED ? UPDATED_DESC : CREATED_DESC;
       }
 
-      this.filterTokens = getFilterTokens(window.location.search, {
+      const tokens = getFilterTokens(window.location.search, {
         includeStateToken: !this.withTabs,
         hasCustomFieldsFeature: this.hasCustomFieldsFeature,
       });
+      this.filterTokens = groupMultiSelectFilterTokens(tokens, this.searchTokens);
+
       if (!this.hasStateToken && this.state === STATUS_ALL) {
         this.filterTokens = this.filterTokens.filter(
           (filterToken) => filterToken.type !== TOKEN_TYPE_STATE,
@@ -1363,7 +1370,8 @@ export default {
         :issuables-loading="isLoading"
         :is-manual-ordering="isManualOrdering"
         :show-bulk-edit-sidebar="showBulkEditSidebar"
-        namespace="work-items"
+        label-filter-param="label_name"
+        :namespace="rootPageFullPath"
         :full-path="rootPageFullPath"
         recent-searches-storage-key="issues"
         :search-tokens="searchTokens"
@@ -1398,7 +1406,7 @@ export default {
           />
         </template>
         <template v-if="!isPlanningViewsEnabled" #nav-actions>
-          <div class="gl-flex gl-gap-3">
+          <div class="gl-flex gl-justify-end gl-gap-3">
             <gl-button
               v-if="enableClientSideBoardsExperiment"
               data-testid="show-local-board-button"
@@ -1442,7 +1450,7 @@ export default {
 
         <template v-if="isPlanningViewsEnabled" #list-header>
           <work-item-list-heading>
-            <div class="gl-flex gl-gap-3">
+            <div class="gl-flex gl-justify-end gl-gap-3">
               <gl-button
                 v-if="enableClientSideBoardsExperiment"
                 data-testid="show-local-board-button"

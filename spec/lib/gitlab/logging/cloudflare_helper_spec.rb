@@ -34,7 +34,6 @@ RSpec.describe Gitlab::Logging::CloudflareHelper do
         expect(payload[:cf_ray]).to eq(headers['Cf-Ray'])
         expect(payload[:cf_request_id]).to eq(headers['Cf-Request-Id'])
         expect(payload[:cf_ipcountry]).to eq(headers['Cf-IPCountry'])
-        expect(payload[:cf_worker]).to eq(headers['Cf-Worker'])
       end
     end
 

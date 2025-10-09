@@ -25,6 +25,8 @@ module EncryptedUserPassword
   # Also migrates the user password to the configured
   # encryption type (BCrypt or PBKDF2+SHA512), if needed.
   def valid_password?(password)
+    # On Ubuntu 22.04 FIPS, attempting to hash a password < 8 bytes results in PKCS5_PBKDF2_HMAC: invalid key length
+    return false unless password.length >= ApplicationSetting::DEFAULT_MINIMUM_PASSWORD_LENGTH
     return false unless password_matches?(password)
 
     migrate_password!(password)

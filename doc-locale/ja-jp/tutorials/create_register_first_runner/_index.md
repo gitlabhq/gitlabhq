@@ -13,8 +13,8 @@ Runnerは、GitLab CI/CDパイプラインでジョブを実行するGitLab Runn
 
 GitLabには、次の3種類のRunnerがあります。
 
-- 共有: GitLabインスタンス内のすべてのグループとプロジェクトに使用できます。
-- グループ: グループ内のすべてのプロジェクトとサブグループに使用できます。
+- 共有: GitLabインスタンス内のすべてのグループとプロジェクトで使用できます。
+- グループ: グループ内のすべてのプロジェクトとサブグループで使用できます。
 - プロジェクト: 特定のプロジェクトに関連付けます。通常、プロジェクトRunnerは、一度に1つのプロジェクトで使用します。
 
 このチュートリアルでは、基本的なパイプライン設定で定義されたジョブを実行するプロジェクトRunnerを作成します。
@@ -24,11 +24,11 @@ GitLabには、次の3種類のRunnerがあります。
 1. [プロジェクトRunnerを作成して登録する](#create-and-register-a-project-runner)。
 1. [パイプラインをトリガーしてRunnerを実行する](#trigger-a-pipeline-to-run-your-runner)。
 
-## はじめる前
+## はじめる前 {#before-you-begin}
 
-Runnerを作成、登録、実行する前に、ローカルコンピュータに[GitLab Runner](https://docs.gitlab.com/runner/install/)をインストールする必要があります。
+Runnerを作成、登録、実行する前に、ローカルコンピューターに[GitLab Runner](https://docs.gitlab.com/runner/install/)をインストールする必要があります。
 
-## 空のプロジェクトを作成する
+## 空のプロジェクトを作成する {#create-a-blank-project}
 
 まず、CI/CDパイプラインとRunnerを作成できる空のプロジェクトを作成します。
 
@@ -41,7 +41,7 @@ Runnerを作成、登録、実行する前に、ローカルコンピュータ�
    - **プロジェクトslug**フィールドに、プロジェクトへのパスを入力します。GitLabインスタンスは、このslugをプロジェクトへのURLパスとして使用します。slugを変更するには、最初にプロジェクト名を入力し、次にslugを変更します。
 1. **プロジェクトを作成**を選択します。
 
-## プロジェクトパイプラインを作成する
+## プロジェクトパイプラインを作成する {#create-a-project-pipeline}
 
 次に、プロジェクトの`.gitlab-ci.yml`ファイルを作成します。これは、GitLab CI/CDに対する指示を指定するYAMLファイルです。
 
@@ -50,10 +50,10 @@ Runnerを作成、登録、実行する前に、ローカルコンピュータ�
 - Runnerが実行するジョブの構造と順序。
 - 特定の条件が発生した場合にRunnerが行う必要がある決定。
 
-1. 左側のサイドバーで、**検索または移動**を選択し、プロジェクトまたはグループを見つけます。
-1. **Project overview**を選択します。
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトまたはグループを見つけます。
+1. **プロジェクトの概要**を選択します。
 1. プラスアイコン（{{< icon name="plus" >}}）を選択し、**新しいファイル**を選択します。
-1. **ファイル名**フィールドに、`.gitlab-ci.yml`と入力します。
+1. **Filename**（ファイル名）フィールドに、`.gitlab-ci.yml`と入力します。
 1. 大きなテキストボックスに、次のサンプル設定を貼り付けます。
 
    ```yaml
@@ -75,29 +75,29 @@ Runnerを作成、登録、実行する前に、ローカルコンピュータ�
    この設定には、Runnerが実行する2つのジョブ（buildジョブとtestジョブ）があります。
 1. **変更をコミットする**を選択します。
 
-## プロジェクトRunnerを作成して登録する
+## プロジェクトRunnerを作成して登録する {#create-and-register-a-project-runner}
 
 次に、プロジェクトRunnerを作成して登録します。Runnerを登録してGitLabにリンクし、プロジェクトパイプラインからジョブを取得できるようにする必要があります。
 
 プロジェクトRunnerを作成するには:
 
-1. 左側のサイドバーで、**検索または移動**を選択し、プロジェクトを見つけます。
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **設定 > CI/CD**を選択します。
 1. **Runner**セクションを展開します。
 1. **新規プロジェクトRunner**を選択します。
 1. オペレーティングシステムを選択します。
-1. **タグ**セクションで、**Run untagged**チェックボックスをオンにします。[タグ](../../ci/runners/configure_runners.md#control-jobs-that-a-runner-can-run)には、Runnerが実行できるジョブを指定します（オプション）。
+1. **タグ**セクションで、**タグ付けされていないチェックボックスを実行**をオンにします。[タグ](../../ci/runners/configure_runners.md#control-jobs-that-a-runner-can-run)には、Runnerが実行できるジョブを指定します（オプション）。
 1. **Runnerを作成**を選択します。
 1. 画面の指示に従って、コマンドラインからRunnerを登録します。プロンプトが表示されたら、次の手順を実行します。
-   - `executor`の場合、Runnerはホストコンピュータ上で直接実行されるため、`shell`と入力します。[executor](https://docs.gitlab.com/runner/executors/)は、Runnerがジョブを実行する環境です。
-   - `GitLab instance URL`の場合、GitLabインスタンスのURLを使用します。たとえば、`gitlab.example.com/yourname/yourproject`でプロジェクトがホストされている場合、GitLabインスタンスのURLは`https://gitlab.example.com`になります。プロジェクトがGitLab.comでホストされている場合、URLは`https://gitlab.com`になります。
+   - `executor`の場合、Runnerはホストコンピューター上で直接実行されるため、`shell`と入力します。[executor](https://docs.gitlab.com/runner/executors/)は、Runnerがジョブを実行する環境です。
+   - `GitLab instance URL`の場合、GitLabインスタンスのURLを使用します。たとえば、`gitlab.example.com/yourname/yourproject`でプロジェクトがホストされている場合、GitLabインスタンスのURLは`https://gitlab.example.com`になります。プロジェクトがGitLab.comでホスティングされている場合、URLは`https://gitlab.com`になります。
 1. Runnerを起動します。
 
    ```shell
    gitlab-runner run
    ```
 
-### Runnerの設定ファイルを確認する
+### Runnerの設定ファイルを確認する {#check-the-runner-configuration-file}
 
 Runnerを登録すると、設定とRunner認証トークンが`config.toml`に保存されます。Runnerは、ジョブキューからジョブを取得するときにトークンを使用してGitLabと認証を行います。
 
@@ -106,7 +106,7 @@ Runnerを登録すると、設定とRunner認証トークンが`config.toml`に�
 Runnerを登録して起動すると、`config.toml`は次のようになるはずです。
 
 ```toml
-  [[runners]]
+[[runners]]
   name = "my-project-runner1"
   url = "http://127.0.0.1:3000"
   id = 38
@@ -116,17 +116,17 @@ Runnerを登録して起動すると、`config.toml`は次のようになるは�
   executor = "shell"
 ```
 
-## パイプラインをトリガーしてRunnerを実行する
+## パイプラインをトリガーしてRunnerを実行する {#trigger-a-pipeline-to-run-your-runner}
 
 次に、プロジェクトでパイプラインをトリガーして、Runnerがジョブを実行するのを確認できるようにします。
 
-1. 左側のサイドバーで、**検索または移動**を選択し、プロジェクトを見つけます。
+1. 左側のサイドバーで、**検索または移動先**を選択して、プロジェクトを見つけます。
 1. **ビルド > パイプライン**を選択します。
 1. **パイプラインを新規作成**を選択します。
-1. ジョブを選択して、ジョブログを表示します。出力は次の例のようになるはずです。これは、Runnerがジョブを正常に実行したことを示しています。
+1. ジョブログを表示するには、ジョブを選択します。出力は次の例のようになるはずです。これは、Runnerがジョブを正常に実行したことを示しています。
 
    ```shell
-      Running with gitlab-runner 16.2.0 (782e15da)
+      Running with gitlab-runner 18.0.0 (d7f2cea7)
       on my-project-runner TOKEN, system ID: SYSTEM ID
       Preparing the "shell" executor
       00:00

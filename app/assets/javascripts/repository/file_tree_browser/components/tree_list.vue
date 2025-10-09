@@ -2,7 +2,6 @@
 import { GlTooltipDirective, GlLoadingIcon, GlFormInput, GlIcon, GlTooltip } from '@gitlab/ui';
 import micromatch from 'micromatch';
 import { createAlert } from '~/alert';
-import { RecycleScroller } from 'vendor/vue-virtual-scroller';
 import FileRow from '~/vue_shared/components/file_row.vue';
 import FileTreeBrowserToggle from '~/repository/file_tree_browser/components/file_tree_browser_toggle.vue';
 import { s__, __ } from '~/locale';
@@ -26,7 +25,6 @@ import {
 } from '../utils';
 
 export default {
-  ROW_HEIGHT: 32,
   FOCUS_FILE_TREE_BROWSER_FILTER_BAR,
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -34,7 +32,6 @@ export default {
   components: {
     GlFormInput,
     GlIcon,
-    RecycleScroller,
     FileRow,
     GlLoadingIcon,
     FileTreeBrowserToggle,
@@ -97,6 +94,15 @@ export default {
     currentRouterPath() {
       return this.$route.params?.path && normalizePath(this.$route.params.path);
     },
+    siblingMap() {
+      const map = new Map();
+      this.filteredFlatFilesList.forEach((item) => {
+        const key = `${item.parentPath || ''}-${item.level}`;
+        if (!map.has(key)) map.set(key, []);
+        map.get(key).push(item.id);
+      });
+      return map;
+    },
   },
   watch: {
     directoriesCache: { deep: true, handler: 'updateFlatFilesList' },
@@ -116,7 +122,7 @@ export default {
   methods: {
     updateFlatFilesList() {
       if (this.isRootLoading) return;
-      // Replace array contents in-place to maintain same reference for RecycleScroller
+      // Replace array contents in-place to maintain reactivity
       this.flatFilesList.splice(0, this.flatFilesList.length, ...this.buildList('/', 0));
     },
     isCurrentPath(path) {
@@ -341,6 +347,10 @@ export default {
       // The input might not always be available (i.e. when the FTB is in collapsed state)
       return this.$refs.filterInput?.$el;
     },
+    siblingInfo(item) {
+      const siblings = this.siblingMap.get(`${item.parentPath || ''}-${item.level}`);
+      return [siblings.length, siblings.indexOf(item.id) + 1];
+    },
   },
   filterPlaceholder: s__('Repository|Filter files (*.vue, *.rb...)'),
 };
@@ -382,36 +392,38 @@ export default {
     </div>
     <gl-loading-icon v-if="isRootLoading" class="gl-mt-5" />
     <nav v-else class="gl-mt-2 gl-flex gl-min-h-0 gl-flex-col" :aria-label="__('File tree')">
-      <recycle-scroller
+      <div
         v-if="filteredFlatFilesList.length"
-        ref="scroller"
-        :items="filteredFlatFilesList"
-        :item-size="$options.ROW_HEIGHT"
-        :buffer="100"
-        key-field="id"
-        class="gl-h-full gl-min-h-0 gl-flex-grow"
+        class="gl-h-full gl-min-h-0 gl-flex-grow gl-overflow-y-auto"
+        role="tree"
       >
-        <template #default="{ item }">
-          <file-row
-            :file="item"
-            :file-url="item.routerPath"
-            :level="item.level"
-            :opened="item.opened"
-            :loading="item.loading"
-            :tabindex="item.loading ? -1 : 0"
-            :aria-current="isCurrentPath(item.path)"
-            :style="{ '--level': item.level }"
-            :class="{
-              'tree-list-parent': item.level > 0,
-              '!gl-bg-gray-50': isCurrentPath(item.path),
-            }"
-            class="!gl-mx-0"
-            truncate-middle
-            @clickTree="toggleDirectory(item.path)"
-            @showMore="fetchDirectory(item.parentPath)"
-          />
-        </template>
-      </recycle-scroller>
+        <file-row
+          v-for="(item, index) in filteredFlatFilesList"
+          :key="item.id + index"
+          :file="item"
+          :file-url="item.routerPath"
+          :level="item.level"
+          :opened="item.opened"
+          :loading="item.loading"
+          :tabindex="item.loading ? -1 : 0"
+          :aria-current="isCurrentPath(item.path)"
+          role="treeitem"
+          :aria-expanded="item.opened"
+          :aria-selected="isCurrentPath(item.path)"
+          :aria-level="item.level + 1"
+          :aria-setsize="siblingInfo(item)[0]"
+          :aria-posinset="siblingInfo(item)[1]"
+          :style="{ '--level': item.level }"
+          :class="{
+            'tree-list-parent': item.level > 0,
+            '!gl-bg-gray-50': isCurrentPath(item.path),
+          }"
+          class="!gl-mx-0"
+          truncate-middle
+          @clickTree="toggleDirectory(item.path)"
+          @showMore="fetchDirectory(item.parentPath)"
+        />
+      </div>
       <p v-else class="gl-my-6 gl-text-center">
         {{ __('No files found') }}
       </p>

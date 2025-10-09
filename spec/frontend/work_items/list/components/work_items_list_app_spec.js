@@ -285,7 +285,7 @@ describeSkipVue3(skipReason, () => {
         currentTab: STATUS_OPEN,
         error: '',
         initialSortBy: CREATED_DESC,
-        namespace: 'work-items',
+        namespace: 'full/path',
         recentSearchesStorageKey: 'issues',
         showWorkItemTypeIcon: true,
         tabs: WorkItemsListApp.issuableListTabs,
@@ -924,6 +924,37 @@ describeSkipVue3(skipReason, () => {
           .map((token) => token.type);
 
         expect(tokens).toContain(TOKEN_TYPE_RELEASE);
+      });
+    });
+
+    describe('multiSelect property', () => {
+      beforeEach(async () => {
+        mountComponent();
+        await waitForPromises();
+      });
+
+      it('sets multiSelect to true for assignee token', () => {
+        const assigneeToken = findIssuableList()
+          .props('searchTokens')
+          .find((token) => token.type === TOKEN_TYPE_ASSIGNEE);
+
+        expect(assigneeToken.multiSelect).toBe(true);
+      });
+
+      it('sets multiSelect to true for author token', () => {
+        const authorToken = findIssuableList()
+          .props('searchTokens')
+          .find((token) => token.type === TOKEN_TYPE_AUTHOR);
+
+        expect(authorToken.multiSelect).toBe(true);
+      });
+
+      it('sets multiSelect to true for label token', () => {
+        const labelToken = findIssuableList()
+          .props('searchTokens')
+          .find((token) => token.type === TOKEN_TYPE_LABEL);
+
+        expect(labelToken.multiSelect).toBe(true);
       });
     });
   });

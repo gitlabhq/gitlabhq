@@ -64,17 +64,17 @@ module Milestoneish
   def milestone_issues(user)
     work_items_finder_params = issues_finder_params
     work_items_finder_params[:include_descendants] = true if work_items_finder_params[:include_subgroups]
-
     work_items_finder_params[:issue_types] = %w[issue epic task incident]
 
     work_item_ids = ::WorkItems::WorkItemsFinder.new(user, work_items_finder_params)
-    .execute.preload_associated_models
-    .where(milestone_id: milestoneish_id)
-    .limit(DISPLAY_ISSUES_LIMIT)
+      .execute
+      .where(milestone_id: milestoneish_id)
+      .limit(DISPLAY_ISSUES_LIMIT)
 
-    WorkItem.where(id: WorkItem.select(:id).from(work_item_ids))
-    .preload_associated_models
-    .preload(namespace: :route)
+    WorkItem.where(id: work_item_ids.select(:id))
+      .reorder(id: :desc) # Re-apply the default sort from the finder
+      .preload_associated_models
+      .preload(namespace: :route)
   end
 
   def merge_requests_visible_to_user(user)

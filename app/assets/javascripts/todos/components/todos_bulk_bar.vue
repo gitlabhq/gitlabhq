@@ -108,7 +108,7 @@ export default {
         </template>
       </gl-sprintf>
     </span>
-    <div class="gl-flex gl-gap-2">
+    <div class="gl-flex gl-gap-3">
       <snooze-time-picker v-if="showSnooze" @snooze-until="(until) => bulkSnooze(ids, until)" />
       <gl-button
         v-if="showUnsnooze"

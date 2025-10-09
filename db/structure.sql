@@ -10119,6 +10119,8 @@ CREATE TABLE ai_catalog_items (
     latest_version_id bigint,
     latest_released_version_id bigint,
     verification_level smallint DEFAULT 0 NOT NULL,
+    identifier text,
+    CONSTRAINT check_5a87fd2753 CHECK ((char_length(identifier) <= 255)),
     CONSTRAINT check_7e02a4805b CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_edddd6e1fe CHECK ((char_length(name) <= 255))
 );
@@ -28992,6 +28994,7 @@ CREATE TABLE work_item_custom_status_mappings (
     valid_until timestamp with time zone,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
+    old_status_role smallint,
     CONSTRAINT check_34fa9b844a CHECK (((valid_from IS NULL) OR (valid_until IS NULL) OR (valid_from < valid_until))),
     CONSTRAINT check_a1a8681f3e CHECK ((old_status_id <> new_status_id))
 );
@@ -38428,8 +38431,6 @@ CREATE INDEX index_ai_catalog_items_on_latest_released_version_id ON ai_catalog_
 
 CREATE INDEX index_ai_catalog_items_on_latest_version_id ON ai_catalog_items USING btree (latest_version_id);
 
-CREATE INDEX index_ai_catalog_items_on_organization_id ON ai_catalog_items USING btree (organization_id);
-
 CREATE INDEX index_ai_catalog_items_on_project_id ON ai_catalog_items USING btree (project_id);
 
 CREATE INDEX index_ai_catalog_items_on_public ON ai_catalog_items USING btree (public);
@@ -43701,6 +43702,8 @@ CREATE UNIQUE INDEX unique_compliance_security_policies_security_policy_id ON co
 CREATE UNIQUE INDEX unique_external_audit_event_destination_namespace_id_and_name ON audit_events_external_audit_event_destinations USING btree (namespace_id, name);
 
 CREATE UNIQUE INDEX unique_google_cloud_logging_configurations_on_namespace_id ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, google_project_id_name, log_id_name);
+
+CREATE UNIQUE INDEX unique_idx_ai_catalog_items_on_org_id_identifier_item_type ON ai_catalog_items USING btree (organization_id, identifier, item_type);
 
 CREATE UNIQUE INDEX unique_idx_group_destinations_on_name_category_group ON audit_events_group_external_streaming_destinations USING btree (group_id, category, name);
 
@@ -49882,9 +49885,6 @@ ALTER TABLE p_ci_build_sources
 ALTER TABLE ONLY automation_rules
     ADD CONSTRAINT fk_rails_025b519b8d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
-ALTER TABLE p_duo_workflows_checkpoints
-    ADD CONSTRAINT fk_rails_0320b7accd FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY incident_management_oncall_participants
     ADD CONSTRAINT fk_rails_032b12996a FOREIGN KEY (oncall_rotation_id) REFERENCES incident_management_oncall_rotations(id) ON DELETE CASCADE;
 
@@ -51762,9 +51762,6 @@ ALTER TABLE ONLY work_item_select_field_values
 
 ALTER TABLE ONLY clusters_integration_prometheus
     ADD CONSTRAINT fk_rails_e44472034c FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
-
-ALTER TABLE p_duo_workflows_checkpoints
-    ADD CONSTRAINT fk_rails_e449184b59 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_occurrence_identifiers
     ADD CONSTRAINT fk_rails_e4ef6d027c FOREIGN KEY (occurrence_id) REFERENCES vulnerability_occurrences(id) ON DELETE CASCADE;

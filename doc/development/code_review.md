@@ -156,8 +156,6 @@ The [Roulette dashboard](https://gitlab-org.gitlab.io/gitlab-roulette/) contains
 - A manual reviewer roulette.
 - Local time information.
 
-For more information, review [the roulette README](https://gitlab.com/gitlab-org/gitlab-roulette/).
-
 ### Approval guidelines
 
 As described in the section on the responsibility of the maintainer below, you

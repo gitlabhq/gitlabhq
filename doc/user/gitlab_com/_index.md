@@ -710,4 +710,4 @@ For GitLab Self-Managed instance limits, see:
 - [Webhook rate limit](../../administration/instance_limits.md#webhook-rate-limit).
 - [Number of webhooks](../../administration/instance_limits.md#number-of-webhooks).
 - [Webhook timeout](../../administration/instance_limits.md#webhook-timeout).
-- [Parallel Pages deployments](../../administration/instance_limits.md#number-of-parallel-pages-deployments)..
+- [Parallel Pages deployments](../../administration/instance_limits.md#number-of-parallel-pages-deployments).

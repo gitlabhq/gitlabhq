@@ -37,9 +37,16 @@ Include the following information:
 - **Provider URL**: The address of your GitLab instance, such as `https://gitlab.com` or `http://gitlab.example.com`.
   This address must be publicly accessible. If this is not publicly available, see how to
   [configure a non-public GitLab instance](#configure-a-non-public-gitlab-instance)
-- **Audience**: The address of your GitLab instance, such as `https://gitlab.com` or `http://gitlab.example.com`.
-  - The address must include `https://`.
-  - Do not include a trailing slash.
+- **Audience**: The logical name of the target service you intend to use the requested security token with.
+  - In AWS OIDC integrations, this typically matches the audience value configured in your IAM OIDC identity provider (often `sts.amazonaws.com` or your GitLab instance URL).
+  - This value is validated by AWS to ensure the token was intended for your specific identity provider.
+
+  {{< alert type="note" >}}
+
+  Using `https://gitlab.com` or your GitLab instance URL might work if the AWS identity provider reference matches it, but this is semantically misleading.
+  The audience should represent the service that validates and accepts the token.
+
+  {{< /alert >}}
 
 ## Configure a role and trust
 

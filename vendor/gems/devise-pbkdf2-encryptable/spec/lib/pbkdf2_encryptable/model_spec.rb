@@ -54,6 +54,14 @@ RSpec.describe Devise::Models::Pbkdf2Encryptable do
     it 'does not validate an incorrect password' do
       expect(user.valid_password?('other_password')).to eq(false)
     end
+
+    it 'does not validate a nil password' do
+      expect(user.valid_password?(nil)).to eq(false)
+    end
+
+    it 'does not validate a blank password' do
+      expect(user.valid_password?('')).to eq(false)
+    end
   end
 
   describe '#password=' do

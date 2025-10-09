@@ -207,7 +207,7 @@ When the session duration is met, the session ends and the user is signed out ev
 - The user is still actively using the session.
 - The user selected [remember me](#configure-the-remember-me-option) during sign in.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings** > **General**.
 1. Expand **Account and limit**.
 1. Select the **Expire session from creation date** checkbox.
@@ -601,7 +601,7 @@ credentials flow to authorize themselves without client credentials.
 
 To turn this setting on or off:
 
-1. On the left sidebar, under **Settings**, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **OAuth**.
 1. Select **OAuth authorizations**.
 1. Select or clear the **Allow user to use resource owner password credentials flow without OAuth client credentials** checkbox.

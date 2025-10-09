@@ -61,6 +61,13 @@ RSpec.describe User, feature_category: :system_access do
           user.valid_password?('security')
           expect(user.encrypted_password).to start_with('$2a$05$')
         end
+
+        context 'when password is shorter than minimum length' do
+          let(:user) { create(:user) }
+          let(:password) { 'short' }
+
+          it { is_expected.to eq(false) }
+        end
       end
 
       it_behaves_like 'password validation fails when the password is encrypted using an unsupported method'

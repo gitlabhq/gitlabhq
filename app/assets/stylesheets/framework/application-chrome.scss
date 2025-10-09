@@ -320,7 +320,7 @@
   // AI panel
   .paneled-view.ai-panels {
     @apply gl-px-0 sm:gl-px-3 lg:gl-px-2 lg:-gl-mx-2;
-    --ai-panel-width: 400px;
+    --ai-panel-width: clamp(400px, 20vw, 560px);
     --ai-panels-gap: var(--gl-spacing-scale-3);
     --ai-navigation-rail-size: #{$gl-button-medium-size};
 
@@ -632,6 +632,7 @@
     .ai-panels,
     .super-sidebar,
     .super-topbar {
+      --theme-accent-badge-color: hsl(from var(--theme-accent-color) h calc(s + 60) calc(l - 12));
       --super-sidebar-bg: var(--theme-background-color);
       --super-sidebar-accent-color-fg: hsl(from var(--theme-accent-color) h calc(s - 20) 20);
       --super-sidebar-nav-item-current-bg: hsla(from var(--theme-accent-color) h s l / 16%);
@@ -651,6 +652,11 @@
 
     .super-sidebar .super-sidebar-nav-item.super-sidebar-nav-item-current:not(:hover) .badge {
       background-color: var(--_shade-1);
+    }
+
+    .super-sidebar .super-sidebar-nav-item.super-sidebar-whats-new .badge {
+      color: var(--gl-color-neutral-0);
+      background-color: var(--theme-accent-badge-color);
     }
 
     .ai-panel .ai-nav-icon-active,
@@ -694,6 +700,7 @@
     .ai-panels,
     .super-sidebar,
     .super-topbar {
+      --theme-accent-badge-color: hsl(from var(--theme-accent-color) h calc(s - 10) calc(l + 20));
       --super-sidebar-bg: var(--theme-background-color);
       --super-sidebar-nav-item-current-bg: hsla(from var(--theme-accent-color) h s calc(l + 20) / 25%);
       --super-sidebar-accent-color-fg: hsl(from var(--theme-accent-color) h s 88);
@@ -715,6 +722,11 @@
     .super-sidebar .super-sidebar-nav-item.super-sidebar-nav-item-current:not(:hover) .badge {
       color: var(--super-sidebar-accent-color-fg);
       background-color: var(--_shade-1);
+    }
+
+    .super-sidebar .super-sidebar-nav-item.super-sidebar-whats-new .badge {
+      color: var(--gl-color-neutral-900);
+      background-color: var(--theme-accent-badge-color);
     }
 
     .ai-panel .ai-nav-icon-active,

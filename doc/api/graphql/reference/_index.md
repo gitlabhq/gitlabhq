@@ -2015,6 +2015,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryvulnerabilitiesseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
 | <a id="queryvulnerabilitiessort"></a>`sort` | [`VulnerabilitySort`](#vulnerabilitysort) | List vulnerabilities by sort order. |
 | <a id="queryvulnerabilitiesstate"></a>`state` | [`[VulnerabilityState!]`](#vulnerabilitystate) | Filter vulnerabilities by state. |
+| <a id="queryvulnerabilitiesvaliditycheck"></a>`validityCheck` {{< icon name="warning-solid" >}} | [`[VulnerabilityFindingTokenStatusState!]`](#vulnerabilityfindingtokenstatusstate) | **Introduced** in GitLab 18.5. **Status**: Experiment. Filter vulnerabilities by validity check. |
 
 ### `Query.vulnerabilitiesCountByDay`
 
@@ -30834,6 +30835,17 @@ A feature flag for the GitLab instance.
 | <a id="gitlabinstancefeatureflagenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether the GitLab instance feature flag is enabled or not. |
 | <a id="gitlabinstancefeatureflagname"></a>`name` | [`String!`](#string) | Name of the GitLab instance feature flag. |
 
+### `GitlabSubscriptionDailyUsage`
+
+Describes daily the usage of GitLab Credits.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptiondailyusagecreditsused"></a>`creditsUsed` | [`Float!`](#float) | GitLab Credits consumed on the date. |
+| <a id="gitlabsubscriptiondailyusagedate"></a>`date` | [`ISO8601Date!`](#iso8601date) | Date when credits were used. |
+
 ### `GitlabSubscriptionHistory`
 
 Describes the subscription history of a given namespace.
@@ -30859,6 +30871,7 @@ Describes the usage of consumables for the subscription shared pool.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="gitlabsubscriptionpoolusagecreditsused"></a>`creditsUsed` | [`Float`](#float) | Total of GitLab Credits consumed by the subscription. |
+| <a id="gitlabsubscriptionpoolusagedailyusage"></a>`dailyUsage` | [`[GitlabSubscriptionDailyUsage!]`](#gitlabsubscriptiondailyusage) | Array of daily usage of pool GitLab Credits. |
 | <a id="gitlabsubscriptionpoolusagetotalcredits"></a>`totalCredits` | [`Float`](#float) | Total of GitLab Credits allocated to the subscription. |
 
 ### `GitlabSubscriptionUsage`
@@ -31244,8 +31257,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="groupaiusermetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. \ ClickHouse needs to be enabled when passing this param. |
-| <a id="groupaiusermetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. \ ClickHouse needs to be enabled when passing this param. |
+| <a id="groupaiusermetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. ClickHouse needs to be enabled when passing this param. |
+| <a id="groupaiusermetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. ClickHouse needs to be enabled when passing this param. |
 
 ##### `Group.approvalPolicies`
 
@@ -32701,6 +32714,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupvulnerabilitiesseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
 | <a id="groupvulnerabilitiessort"></a>`sort` | [`VulnerabilitySort`](#vulnerabilitysort) | List vulnerabilities by sort order. |
 | <a id="groupvulnerabilitiesstate"></a>`state` | [`[VulnerabilityState!]`](#vulnerabilitystate) | Filter vulnerabilities by state. |
+| <a id="groupvulnerabilitiesvaliditycheck"></a>`validityCheck` {{< icon name="warning-solid" >}} | [`[VulnerabilityFindingTokenStatusState!]`](#vulnerabilityfindingtokenstatusstate) | **Introduced** in GitLab 18.5. **Status**: Experiment. Filter vulnerabilities by validity check. |
 
 ##### `Group.vulnerabilitiesCountByDay`
 
@@ -32796,6 +32810,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="groupvulnerabilityseveritiescountscannerid"></a>`scannerId` | [`[VulnerabilitiesScannerID!]`](#vulnerabilitiesscannerid) | Filter vulnerabilities by scanner ID. |
 | <a id="groupvulnerabilityseveritiescountseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
 | <a id="groupvulnerabilityseveritiescountstate"></a>`state` | [`[VulnerabilityState!]`](#vulnerabilitystate) | Filter vulnerabilities by state. |
+| <a id="groupvulnerabilityseveritiescountvaliditycheck"></a>`validityCheck` {{< icon name="warning-solid" >}} | [`[VulnerabilityFindingTokenStatusState!]`](#vulnerabilityfindingtokenstatusstate) | **Introduced** in GitLab 18.5. **Status**: Experiment. Filter vulnerabilities by token status. |
 
 ##### `Group.workItem`
 
@@ -33781,6 +33796,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountscannerid"></a>`scannerId` | [`[VulnerabilitiesScannerID!]`](#vulnerabilitiesscannerid) | Filter vulnerabilities by scanner ID. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountstate"></a>`state` | [`[VulnerabilityState!]`](#vulnerabilitystate) | Filter vulnerabilities by state. |
+| <a id="instancesecuritydashboardvulnerabilityseveritiescountvaliditycheck"></a>`validityCheck` {{< icon name="warning-solid" >}} | [`[VulnerabilityFindingTokenStatusState!]`](#vulnerabilityfindingtokenstatusstate) | **Introduced** in GitLab 18.5. **Status**: Experiment. Filter vulnerabilities by token status. |
 
 ### `IntegerExpression`
 
@@ -39359,8 +39375,8 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="projectaiusermetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. \ ClickHouse needs to be enabled when passing this param. |
-| <a id="projectaiusermetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. \ ClickHouse needs to be enabled when passing this param. |
+| <a id="projectaiusermetricsenddate"></a>`endDate` | [`Date`](#date) | Date range to end at. Default is the end of current month. ClickHouse needs to be enabled when passing this param. |
+| <a id="projectaiusermetricsstartdate"></a>`startDate` | [`Date`](#date) | Date range to start from. Default is the beginning of current month. ClickHouse needs to be enabled when passing this param. |
 
 ##### `Project.alertManagementAlert`
 
@@ -41468,6 +41484,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectvulnerabilitiesseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
 | <a id="projectvulnerabilitiessort"></a>`sort` | [`VulnerabilitySort`](#vulnerabilitysort) | List vulnerabilities by sort order. |
 | <a id="projectvulnerabilitiesstate"></a>`state` | [`[VulnerabilityState!]`](#vulnerabilitystate) | Filter vulnerabilities by state. |
+| <a id="projectvulnerabilitiesvaliditycheck"></a>`validityCheck` {{< icon name="warning-solid" >}} | [`[VulnerabilityFindingTokenStatusState!]`](#vulnerabilityfindingtokenstatusstate) | **Introduced** in GitLab 18.5. **Status**: Experiment. Filter vulnerabilities by validity check. |
 
 ##### `Project.vulnerabilitiesCountByDay`
 
@@ -41550,6 +41567,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="projectvulnerabilityseveritiescountscannerid"></a>`scannerId` | [`[VulnerabilitiesScannerID!]`](#vulnerabilitiesscannerid) | Filter vulnerabilities by scanner ID. |
 | <a id="projectvulnerabilityseveritiescountseverity"></a>`severity` | [`[VulnerabilitySeverity!]`](#vulnerabilityseverity) | Filter vulnerabilities by severity. |
 | <a id="projectvulnerabilityseveritiescountstate"></a>`state` | [`[VulnerabilityState!]`](#vulnerabilitystate) | Filter vulnerabilities by state. |
+| <a id="projectvulnerabilityseveritiescountvaliditycheck"></a>`validityCheck` {{< icon name="warning-solid" >}} | [`[VulnerabilityFindingTokenStatusState!]`](#vulnerabilityfindingtokenstatusstate) | **Introduced** in GitLab 18.5. **Status**: Experiment. Filter vulnerabilities by token status. |
 
 ##### `Project.workItemStateCounts`
 

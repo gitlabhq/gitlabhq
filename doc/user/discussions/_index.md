@@ -268,7 +268,7 @@ To change the activity sort order:
 1. Scroll down to the **Activity** heading.
 1. On the right side of the page, change the sort order:
    - **Issues and epics**: From the **Sort or filter** dropdown list, select **Newest first** or **Oldest first** (default).
-   - **Merge requests**: Use the sort direction arrow button to toggle between **Sort direction: Ascending** (oldest first, default) or **Sort direction: Descending (newest first)**.
+   - **Merge requests**: Use the sort direction arrow button to toggle between **Sort direction: Ascending** (oldest first, default) or **Sort direction: Descending** (newest first).
 
 ## View description change history
 

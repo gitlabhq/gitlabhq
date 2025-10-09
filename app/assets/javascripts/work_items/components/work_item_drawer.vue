@@ -121,6 +121,17 @@ export default {
       },
     },
   },
+  mounted() {
+    if (this.paneledViewEnabled) {
+      document.addEventListener('keydown', this.handleKeydown);
+    }
+  },
+  beforeDestroy() {
+    if (this.paneledViewEnabled) {
+      document.removeEventListener('keydown', this.handleKeydown);
+    }
+  },
+
   methods: {
     async deleteWorkItem({ workItemId }) {
       try {
@@ -249,6 +260,11 @@ export default {
         setTimeout(() => {
           this.handleClose(false, true);
         }, 100);
+      }
+    },
+    handleKeydown({ key }) {
+      if (key === 'Escape' && this.open) {
+        this.handleClose();
       }
     },
   },

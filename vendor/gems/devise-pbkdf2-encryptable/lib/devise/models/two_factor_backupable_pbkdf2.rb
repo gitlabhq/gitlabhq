@@ -21,7 +21,7 @@ module Devise
           Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512.digest(
             code,
             Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512::STRETCHES,
-            Devise.friendly_token[0, 16])
+            Devise.friendly_token(64))
         end
 
         self.otp_backup_codes = hashed_codes

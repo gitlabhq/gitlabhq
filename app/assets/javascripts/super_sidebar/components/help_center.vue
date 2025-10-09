@@ -246,7 +246,7 @@ export default {
     <gl-button
       v-if="showWhatsNewNotification"
       v-gl-tooltip.right="isIconOnly ? $options.i18n.whatsnew : ''"
-      class="super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-px-[0.375rem]"
+      class="super-sidebar-whats-new super-sidebar-nav-item gl-w-full !gl-justify-start gl-gap-3 !gl-px-[0.375rem]"
       category="tertiary"
       icon="compass"
       data-testid="sidebar-whatsnew-button"

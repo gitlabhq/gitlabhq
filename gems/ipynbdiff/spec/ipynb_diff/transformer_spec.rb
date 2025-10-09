@@ -38,6 +38,8 @@ describe IpynbDiff::Transformer do
       'multiline png output' | 'multiline_png_output' | {}
       'hides images when option passed' | 'hide_images' | { hide_images: true }
       '\n within source lines' | 'source_with_linebreak' | { hide_images: true }
+      'strips ANSI codes in stream output' | 'ansi_stream_text' | {}
+      'strips ANSI codes in execute_result text output' | 'ansi_execute_text' | {}
     end
 
     with_them do

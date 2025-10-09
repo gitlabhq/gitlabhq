@@ -24,8 +24,8 @@ its frameworks are removed.
 
 You can apply up to 20 compliance frameworks to each project.
 
-For a click-through demo, see [Compliance frameworks](https://gitlab.navattic.com/compliance).
-<!-- Demo published on 2025-01-27 -->
+For a click-through demo, see [Custom Compliance frameworks](https://gitlab.navattic.com/custom-compliance).
+<!-- Demo published on 2025-10-09 -->
 
 ## Prerequisites
 

@@ -24,6 +24,7 @@ title: Agents
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/549914) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `global_ai_catalog`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 - Agent tools [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/569043) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `ai_catalog_agent_tools`. Disabled by default.
+- Feature flag `ai_catalog_agent_tools` removed in GitLab 18.5.
 
 {{< /history >}}
 
