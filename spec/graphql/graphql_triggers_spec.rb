@@ -258,6 +258,16 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
       described_class.ci_job_processed(job)
     end
 
+    it 'triggers the ci_job_processed_with_artifacts subscription with additional arguments' do
+      expect(GitlabSchema.subscriptions).to receive(:trigger).with(
+        :ci_job_processed,
+        { project_id: job.project.to_gid, with_artifacts: true },
+        job
+      )
+
+      described_class.ci_job_processed_with_artifacts(job)
+    end
+
     describe 'when ci_job_created_subscription is disabled' do
       before do
         stub_feature_flags(ci_job_created_subscription: false)
@@ -266,11 +276,21 @@ RSpec.describe GraphqlTriggers, feature_category: :shared do
       it 'does not trigger the ci_job_processed subscription' do
         expect(GitlabSchema.subscriptions).not_to receive(:trigger).with(
           :ci_job_processed,
-          { job_id: job.project.to_gid },
+          { project_id: job.project.to_gid },
           job
         )
 
         described_class.ci_job_processed(job)
+      end
+
+      it 'does not trigger the ci_job_processed subscription with additional arguments' do
+        expect(GitlabSchema.subscriptions).not_to receive(:trigger).with(
+          :ci_job_processed,
+          { project_id: job.project.to_gid, with_artifacts: true },
+          job
+        )
+
+        described_class.ci_job_processed_with_artifacts(job)
       end
     end
   end

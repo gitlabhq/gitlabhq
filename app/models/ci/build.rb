@@ -420,7 +420,7 @@ module Ci
       after_transition any => any do |build|
         build.run_after_commit do
           trigger_job_status_change_subscription
-          trigger_job_processed_subscription
+          trigger_job_processed_subscriptions
         end
       end
     end
@@ -469,15 +469,20 @@ module Ci
       GraphqlTriggers.ci_job_status_updated(self)
     end
 
-    def trigger_job_processed_subscription
-      return unless Feature.enabled?(:ci_job_created_subscription, project)
-
-      return if Gitlab::ApplicationRateLimiter.throttled?(
+    def ci_job_processed_rate_limited?
+      Gitlab::ApplicationRateLimiter.throttled?(
         :ci_job_processed_subscription,
         scope: project
       )
+    end
+
+    def trigger_job_processed_subscriptions
+      return unless Feature.enabled?(:ci_job_created_subscription, project)
+
+      return if ci_job_processed_rate_limited?
 
       GraphqlTriggers.ci_job_processed(self)
+      GraphqlTriggers.ci_job_processed_with_artifacts(self)
     end
 
     # A Ci::Bridge may transition to `canceling` as a result of strategy: :depend

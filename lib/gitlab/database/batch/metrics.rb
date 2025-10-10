@@ -2,10 +2,9 @@
 
 module Gitlab
   module Database
-    module BackgroundMigration
-      class BatchMetrics
-        attr_reader :timings
-        attr_reader :affected_rows
+    module Batch
+      class Metrics
+        attr_reader :timings, :affected_rows
 
         def initialize
           @timings = {}

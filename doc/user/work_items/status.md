@@ -69,6 +69,19 @@ Statuses in the **Done** and **Canceled** categories automatically set work item
 
 ## Lifecycles
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556113) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Enabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
 A lifecycle is a collection of statuses that can be applied to a work item type. Lifecycles group statuses into meaningful workflows that can be reused consistently across work item types and namespaces.
 
 Each lifecycle defines default transition statuses:
@@ -77,40 +90,7 @@ Each lifecycle defines default transition statuses:
 - **Default closed status**: Applied when closing work items.
 - **Default duplicated status**: Applied when marking work items as duplicates, moved, or promoted.
 
-## Custom statuses
-
-Custom statuses are namespace-defined statuses that replace default statuses for all groups and projects in that namespace.
-When you edit a lifecycle, custom statuses replace the default statuses for that namespace.
-
-Custom statuses have the following limits:
-
-- Maximum 70 statuses per namespace
-- Maximum 30 statuses per lifecycle
-
-## Configure custom statuses for a namespace
-
-Configure custom statuses for top-level groups to make them available for work items in that group, its subgroups, and projects.
-
-Prerequisites:
-
-- You must have at least the Maintainer role for the group.
-- This group must be at the top level.
-
-To configure custom statuses:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings** > **Issues**.
-1. In the **Statuses** section, select **Edit statuses** for the lifecycle being used by the work item type.
-1. Add, edit, or reorder statuses for the namespace.
-1. Select **Close**.
-
-## Create a lifecycle
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556113) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Enabled by default.
-
-{{< /history >}}
+### Create a lifecycle
 
 Prerequisites:
 
@@ -125,13 +105,7 @@ To create a lifecycle:
 1. Add the lifecycle name and choose either the default lifecycle configuration or one of the existing lifecycles to start from. This pre-populates the new lifecycle with statuses which you can customize afterwards.
 1. Select **Create**.
 
-## Rename a lifecycle
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/557003) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Enabled by default.
-
-{{< /history >}}
+### Rename a lifecycle
 
 Prerequisites:
 
@@ -146,13 +120,7 @@ To rename a lifecycle:
 1. Select **Rename**.
 1. Rename the lifecycle and select **Save**.
 
-## Remove a lifecycle
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/557013) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Enabled by default.
-
-{{< /history >}}
+### Remove a lifecycle
 
 Prerequisites:
 
@@ -167,13 +135,7 @@ To remove a lifecycle:
 1. In the **Statuses** section, select **Remove lifecycle** for the lifecycle you want to remove.
 1. On the confirmation dialog, select **Remove**.
 
-## Change lifecycle for a work item type
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/557009) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Enabled by default.
-
-{{< /history >}}
+### Change lifecycle for a work item type
 
 Prerequisites:
 
@@ -195,7 +157,34 @@ To change the lifecycle for a work item type:
 1. Optional. To choose a different replacement status, select it from the dropdown list.
 1. Select **Save**.
 
-## Set status for a work item
+## Custom statuses
+
+Custom statuses are namespace-defined statuses that replace default statuses for all groups and projects in that namespace.
+When you edit a lifecycle, custom statuses replace the default statuses for that namespace.
+
+Custom statuses have the following limits:
+
+- Maximum 70 statuses per namespace
+- Maximum 30 statuses per lifecycle
+
+### Configure custom statuses for a namespace
+
+Configure custom statuses for top-level groups to make them available for work items in that group, its subgroups, and projects.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the group.
+- This group must be at the top level.
+
+To configure custom statuses:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings** > **Issues**.
+1. In the **Statuses** section, select **Edit statuses** for the lifecycle being used by the work item type.
+1. Add, edit, or reorder statuses for the namespace.
+1. Select **Close**.
+
+### Set status for a work item
 
 Prerequisites:
 

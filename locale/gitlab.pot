@@ -41719,10 +41719,19 @@ msgstr[1] ""
 msgid "MlExperimentTracking|(Optional)"
 msgstr ""
 
+msgid "MlExperimentTracking|-"
+msgstr ""
+
 msgid "MlExperimentTracking|Artifacts"
 msgstr ""
 
+msgid "MlExperimentTracking|Author"
+msgstr ""
+
 msgid "MlExperimentTracking|CI Info"
+msgstr ""
+
+msgid "MlExperimentTracking|CI Job"
 msgstr ""
 
 msgid "MlExperimentTracking|Complete the form below to promote run to a model version."
@@ -41735,6 +41744,12 @@ msgid "MlExperimentTracking|Create an experiment using MLflow"
 msgstr ""
 
 msgid "MlExperimentTracking|Create experiments using MLflow"
+msgstr ""
+
+msgid "MlExperimentTracking|Create new candidates"
+msgstr ""
+
+msgid "MlExperimentTracking|Created at"
 msgstr ""
 
 msgid "MlExperimentTracking|Creating an experiment"
@@ -41755,6 +41770,9 @@ msgstr ""
 msgid "MlExperimentTracking|Delete run?"
 msgstr ""
 
+msgid "MlExperimentTracking|Deleting this experiment will also delete its candidates and their associated metadata."
+msgstr ""
+
 msgid "MlExperimentTracking|Deleting this experiment will also delete its runs and their associated metadata."
 msgstr ""
 
@@ -41762,6 +41780,9 @@ msgid "MlExperimentTracking|Deleting this run will delete the associated paramet
 msgstr ""
 
 msgid "MlExperimentTracking|Description"
+msgstr ""
+
+msgid "MlExperimentTracking|Details"
 msgstr ""
 
 msgid "MlExperimentTracking|Details & Metadata"
@@ -41791,13 +41812,13 @@ msgstr ""
 msgid "MlExperimentTracking|Experiments keep track of comparable model runs, and determine which parameters provides the best performance."
 msgstr ""
 
-msgid "MlExperimentTracking|Failed to load experiment candidates with error: %{message}"
-msgstr ""
-
 msgid "MlExperimentTracking|Failed to load experiments with error: %{error}"
 msgstr ""
 
 msgid "MlExperimentTracking|Failed to remove run"
+msgstr ""
+
+msgid "MlExperimentTracking|Filter candidates"
 msgstr ""
 
 msgid "MlExperimentTracking|For example 1.0.0"
@@ -41813,6 +41834,9 @@ msgid "MlExperimentTracking|Last activity"
 msgstr ""
 
 msgid "MlExperimentTracking|MLflow run ID"
+msgstr ""
+
+msgid "MlExperimentTracking|Machine learning experiment tracking"
 msgstr ""
 
 msgid "MlExperimentTracking|Metric"
@@ -41833,7 +41857,13 @@ msgstr ""
 msgid "MlExperimentTracking|Name"
 msgstr ""
 
-msgid "MlExperimentTracking|No candidates associated with this experiment"
+msgid "MlExperimentTracking|No artifacts"
+msgstr ""
+
+msgid "MlExperimentTracking|No candidates"
+msgstr ""
+
+msgid "MlExperimentTracking|No candidates logged for the query. Create new candidates using the MLflow client."
 msgstr ""
 
 msgid "MlExperimentTracking|No logged artifacts."
@@ -41846,6 +41876,9 @@ msgid "MlExperimentTracking|No logged metrics"
 msgstr ""
 
 msgid "MlExperimentTracking|No logged parameters"
+msgstr ""
+
+msgid "MlExperimentTracking|No name"
 msgstr ""
 
 msgid "MlExperimentTracking|No results"
@@ -41894,9 +41927,6 @@ msgid "MlExperimentTracking|To learn more about MLflow client compatibility, see
 msgstr ""
 
 msgid "MlExperimentTracking|Triggered by"
-msgstr ""
-
-msgid "MlExperimentTracking|Use candidates to track performance, parameters, and metadata"
 msgstr ""
 
 msgid "MlExperimentTracking|Using the MLflow client"
@@ -52888,6 +52918,9 @@ msgstr ""
 msgid "ProtectedBranch|Giving merge rights to a protected branch also gives elevated permissions for certain CI/CD features."
 msgstr ""
 
+msgid "ProtectedBranch|How do I use branch rules?"
+msgstr ""
+
 msgid "ProtectedBranch|Inherited - This setting can be changed at the group level"
 msgstr ""
 
@@ -52925,6 +52958,9 @@ msgid "ProtectedBranch|Protected branch was successfully created"
 msgstr ""
 
 msgid "ProtectedBranch|Protected branches"
+msgstr ""
+
+msgid "ProtectedBranch|Protected branches is moving to %{branch_rules_link_start}Branch rules%{branch_rules_link_end}."
 msgstr ""
 
 msgid "ProtectedBranch|Reject code pushes that change files listed in the CODEOWNERS file."
@@ -52973,6 +53009,9 @@ msgid "ProtectedBranch|What are the security implications?"
 msgstr ""
 
 msgid "ProtectedBranch|You can add only groups that have this project shared. %{learn_more_link}"
+msgstr ""
+
+msgid "ProtectedBranch|You can now manage branch protections, approval rules, and status checks in one place."
 msgstr ""
 
 msgid "ProtectedBranch|default"
@@ -72019,11 +72058,6 @@ msgstr ""
 msgid "View"
 msgstr ""
 
-msgid "View %d registry"
-msgid_plural "View %d registries"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "View %{project} project"
 msgstr ""
 
@@ -72324,6 +72358,9 @@ msgstr ""
 msgid "VirtualRegistry|Clear cache for %{upstreamName}?"
 msgstr ""
 
+msgid "VirtualRegistry|Clearing the cache deletes all cached packages for this upstream and re-fetch them from the source. If the upstream is unavailable or misconfigured, jobs might fail. Are you sure you want to continue?"
+msgstr ""
+
 msgid "VirtualRegistry|Configure an upstream registry to manage Maven artifacts and cache entries."
 msgstr ""
 
@@ -72542,9 +72579,6 @@ msgstr ""
 msgid "VirtualRegistry|This will delete all cached packages for exclusive upstream registries in this virtual registry. If any upstream is unavailable or misconfigured after clearing, jobs that rely on those packages might fail. Are you sure you want to continue?"
 msgstr ""
 
-msgid "VirtualRegistry|This will delete all cached packages for this upstream and re-fetch them from the source. If the upstream is unavailable or misconfigured, jobs might fail. Are you sure you want to continue?"
-msgstr ""
-
 msgid "VirtualRegistry|Time in hours"
 msgstr ""
 
@@ -72582,6 +72616,9 @@ msgid "VirtualRegistry|Use the arrow buttons to reorder upstreams. Artifacts are
 msgstr ""
 
 msgid "VirtualRegistry|Username (optional)"
+msgstr ""
+
+msgid "VirtualRegistry|View registries"
 msgstr ""
 
 msgid "VirtualRegistry|Virtual registry"
@@ -72889,7 +72926,7 @@ msgstr ""
 msgid "VulnerabilityManagement|A verified true-positive vulnerability"
 msgstr ""
 
-msgid "VulnerabilityManagement|Add reason for severity change (Required)"
+msgid "VulnerabilityManagement|Add reason for the severity change (required)"
 msgstr ""
 
 msgid "VulnerabilityManagement|Add vulnerability finding"

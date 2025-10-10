@@ -2144,7 +2144,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/data_builder/archive_trace_spec.rb'
     - 'spec/lib/gitlab/data_builder/feature_flag_spec.rb'
     - 'spec/lib/gitlab/data_builder/issuable_spec.rb'
-    - 'spec/lib/gitlab/database/background_migration/batch_metrics_spec.rb'
     - 'spec/lib/gitlab/database/background_migration/batched_job_transition_log_spec.rb'
     - 'spec/lib/gitlab/database/background_migration/prometheus_metrics_spec.rb'
     - 'spec/lib/gitlab/database/batch_average_counter_spec.rb'

@@ -13,8 +13,12 @@
       %h2{ class: title_classes, data: { 'settings-block-title': '' } }
         = heading || @heading
       - if description || @description
-        %p.gl-text-subtle.gl-m-0
-          = description || @description
+        - if description.is_a?(String) || @description.is_a?(String)
+          %p.gl-text-subtle.gl-m-0
+            = description || @description
+        - else
+          .gl-text-subtle.gl-m-0
+            = description || @description
   .settings-content
     .gl-pl-7.gl-mt-5{ class: "@sm/panel:gl-pl-8" }
       = body

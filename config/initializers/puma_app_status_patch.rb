@@ -2,6 +2,8 @@
 
 return unless defined?(::Puma)
 
+require 'puma/const'
+
 # This patches Puma with https://github.com/puma/puma/issues/3788.
 # This is only needed if the control app is enabled.
 raise if Gem::Version.new(Puma::Const::PUMA_VERSION) > Gem::Version.new('7.0.4')

@@ -57,6 +57,30 @@ To view the security inventory:
    - To view a group's subgroups, projects, and security assets, select the group.
    - To view a group or project's scanner coverage, search for the group or project.
 
+## Filter projects in the security inventory
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/552224) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `security_inventory_filtering`. Enabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+You can filter projects in the security inventory to focus on specific areas of interest.
+The following filters are available:
+
+- **Vulnerability count**: Filter projects based on the number of identified vulnerabilities. For example, show projects with `critical vulnerabilities ≥ 10`.
+- **Tool coverage**: Filter projects by the status of security analyzers (like **enabled**, **not enabled**, or **failed**). For example, show projects where `Advanced SAST = enabled`.
+- **Project name**: Search for specific projects by name.
+
+These filters help you narrow down results in large inventories and make it easier to identify projects that require immediate attention.
+
 ## Related topics
 
 - [Security dashboard](../security_dashboard/_index.md)

@@ -4547,7 +4547,6 @@
 - './spec/lib/gitlab/database/background_migration/batched_job_spec.rb'
 - './spec/lib/gitlab/database/background_migration/batched_job_transition_log_spec.rb'
 - './spec/lib/gitlab/database/background_migration/batched_migration_runner_spec.rb'
-- './spec/lib/gitlab/database/background_migration/batched_migration_spec.rb'
 - './spec/lib/gitlab/database/background_migration/batched_migration_wrapper_spec.rb'
 - './spec/lib/gitlab/database/background_migration/batch_metrics_spec.rb'
 - './spec/lib/gitlab/database/background_migration/prometheus_metrics_spec.rb'

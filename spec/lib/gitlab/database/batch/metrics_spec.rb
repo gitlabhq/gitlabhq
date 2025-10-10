@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::BackgroundMigration::BatchMetrics do
+RSpec.describe Gitlab::Database::Batch::Metrics, feature_category: :database do
   let(:batch_metrics) { described_class.new }
 
   describe '#time_operation' do

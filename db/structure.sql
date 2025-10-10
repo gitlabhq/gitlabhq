@@ -219,6 +219,29 @@ RETURN NULL;
 END
 $$;
 
+CREATE FUNCTION ensure_note_diff_files_sharding_key() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+  note_project_id BIGINT;
+  note_namespace_id BIGINT;
+BEGIN
+  SELECT "project_id", "namespace_id"
+  INTO note_project_id, note_namespace_id
+  FROM "notes"
+  WHERE "id" = NEW."diff_note_id";
+
+  IF note_project_id IS NOT NULL THEN
+    SELECT "project_namespace_id" FROM "projects"
+    INTO NEW."namespace_id" WHERE "projects"."id" = note_project_id;
+  ELSE
+    NEW."namespace_id" := note_namespace_id;
+  END IF;
+
+  RETURN NEW;
+END
+$$;
+
 CREATE TABLE namespaces (
     id bigint NOT NULL,
     name character varying NOT NULL,
@@ -20615,7 +20638,8 @@ CREATE TABLE note_diff_files (
     b_mode character varying NOT NULL,
     new_path text NOT NULL,
     old_path text NOT NULL,
-    diff_note_id bigint NOT NULL
+    diff_note_id bigint NOT NULL,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE note_diff_files_id_seq
@@ -33205,6 +33229,9 @@ ALTER TABLE sprints
 
 ALTER TABLE redirect_routes
     ADD CONSTRAINT check_e82ff70482 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
+
+ALTER TABLE note_diff_files
+    ADD CONSTRAINT check_ebb23d73d7 CHECK ((namespace_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE system_note_metadata
     ADD CONSTRAINT check_f2c4e04565 CHECK ((num_nonnulls(namespace_id, organization_id) = 1)) NOT VALID;
@@ -47253,6 +47280,8 @@ CREATE TRIGGER trigger_ed554313ca66 BEFORE INSERT OR UPDATE ON protected_branch_
 CREATE TRIGGER trigger_efb9d354f05a BEFORE INSERT OR UPDATE ON incident_management_issuable_escalation_statuses FOR EACH ROW EXECUTE FUNCTION trigger_efb9d354f05a();
 
 CREATE TRIGGER trigger_eff80ead42ac BEFORE INSERT OR UPDATE ON ci_unit_test_failures FOR EACH ROW EXECUTE FUNCTION trigger_eff80ead42ac();
+
+CREATE TRIGGER trigger_ensure_note_diff_files_sharding_key BEFORE INSERT ON note_diff_files FOR EACH ROW EXECUTE FUNCTION ensure_note_diff_files_sharding_key();
 
 CREATE TRIGGER trigger_f6c61cdddf31 BEFORE INSERT OR UPDATE ON ml_model_metadata FOR EACH ROW EXECUTE FUNCTION trigger_f6c61cdddf31();
 

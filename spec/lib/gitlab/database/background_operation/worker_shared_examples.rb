@@ -33,6 +33,32 @@ RSpec.shared_examples 'background operation worker functionality' do |worker_fac
         expect(described_class.executable).to match_array(executable_workers)
       end
     end
+
+    describe '.executables_with_config' do
+      let(:config) do
+        {
+          job_class_name: 'CustomJobClass',
+          table_name: 'users',
+          column_name: 'id',
+          job_arguments: active_worker.job_arguments
+        }
+      end
+
+      before do
+        active_worker.update!(**config)
+      end
+
+      it 'returns executable workers with the given configurations' do
+        extra_param = if worker_factory == :background_operation_worker
+                        { org_id: active_worker.organization_id }
+                      else
+                        {}
+                      end
+
+        expect(described_class.executables_with_config(*config.values, **extra_param))
+          .to match_array([active_worker])
+      end
+    end
   end
 
   describe 'sliding_list partitioning' do

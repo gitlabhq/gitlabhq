@@ -156,7 +156,7 @@ PATH
 PATH
   remote: vendor/gems/gitlab-duo-workflow-service-client
   specs:
-    gitlab-duo-workflow-service-client (0.4)
+    gitlab-duo-workflow-service-client (0.5)
       grpc
 
 PATH

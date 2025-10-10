@@ -52,7 +52,6 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
 
   context 'logged in as admin' do
     before do
-      stub_feature_flags(edit_branch_rules: false)
       sign_in(admin)
       enable_admin_mode!(admin)
     end
@@ -68,7 +67,6 @@ RSpec.describe 'Protected Branches', :js, feature_category: :source_code_managem
 
   context 'when the users for protected branches feature is off' do
     before do
-      stub_feature_flags(edit_branch_rules: false)
       stub_licensed_features(protected_refs_for_users: false)
     end
 

@@ -39,6 +39,19 @@ module Gitlab
 
           scope :for_partition, ->(partition) { where(partition: partition) }
           scope :executable, -> { with_statuses(:queued, :active, :paused) }
+          scope :with_job_arguments, ->(args) { where("job_arguments = ?", args.to_json) } # rubocop:disable Rails/WhereEquals -- to override Rails comparison
+
+          scope :executables_with_config, ->(job_class_name, table_name, column_name, job_arguments, org_id: nil) do
+            config = {
+              job_class_name: job_class_name,
+              table_name: table_name,
+              column_name: column_name
+            }
+
+            config = config.merge(organization_id: org_id) if org_id.present?
+
+            executable.with_job_arguments(job_arguments).where(config)
+          end
 
           partitioned_by :partition, strategy: :sliding_list,
             next_partition_if: ->(active_partition) do
@@ -59,7 +72,7 @@ module Gitlab
                  .exists?
             end
 
-          state_machine :status, initial: :paused do
+          state_machine :status, initial: :queued do
             state :queued, value: 0
             state :active, value: 1
             state :paused, value: 2

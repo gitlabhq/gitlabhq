@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DiffNote do
+RSpec.describe DiffNote, feature_category: :code_review_workflow do
   include RepoHelpers
 
   let_it_be(:merge_request) { create(:merge_request) }
@@ -239,6 +239,22 @@ RSpec.describe DiffNote do
                 subject.save!
                 expect(subject.note_diff_file).to be_present
               end
+
+              context 'with sharding key' do
+                it 'syncs project_id sharding key for `note_diff_file`' do
+                  subject.save!
+                  subject.update_column(:namespace_id, nil)
+
+                  expect(subject.note_diff_file.reload.namespace_id).to eq(project.project_namespace_id)
+                end
+
+                it 'syncs namespace_id sharding key for `note_diff_file`' do
+                  subject.save!
+                  subject.update_column(:project_id, nil)
+
+                  expect(subject.note_diff_file.reload.namespace_id).to eq(subject.namespace_id)
+                end
+              end
             end
 
             context 'when diff_line is not found in persisted diff_file' do
@@ -274,6 +290,7 @@ RSpec.describe DiffNote do
               it 'creates a diff note file' do
                 subject.save!
                 expect(subject.reload.note_diff_file).to be_present
+                expect(subject.note_diff_file.namespace_id).to eq(subject.project.project_namespace_id)
               end
             end
           end
@@ -311,6 +328,7 @@ RSpec.describe DiffNote do
 
       it 'creates a diff note file' do
         expect(diff_note.reload.note_diff_file).to be_present
+        expect(diff_note.note_diff_file.namespace_id).to eq(project.project_namespace_id)
       end
 
       it 'does not create diff note file if it is a reply' do

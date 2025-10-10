@@ -191,6 +191,12 @@ Use the imported files in your IDE to provide context about your code project. I
 
 ## Exclude context from GitLab Duo
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Pro or Enterprise
+
+{{< /details >}}
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/17124) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `use_duo_context_exclusion`. Disabled by default.

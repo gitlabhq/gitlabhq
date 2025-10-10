@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', feature_category: :source_code_management, feature_flag: {
-    name: :edit_branch_rules,
-    scope: :project
-  } do
+  RSpec.describe 'Create', feature_category: :source_code_management do
     describe 'Branch Rules Overview' do
       let(:branch_name) { 'new-branch' }
       let(:allowed_to_push_role) { Resource::ProtectedBranch::Roles::NO_ONE }
@@ -24,7 +21,6 @@ module QA
 
       it 'adds a new branch rule',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/397587' do
-        Runtime::Feature.disable(:edit_branch_rules, project: project)
         project.visit!
 
         Page::Project::Menu.perform(&:go_to_repository_settings)

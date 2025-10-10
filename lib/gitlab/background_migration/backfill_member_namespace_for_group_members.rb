@@ -20,7 +20,7 @@ module Gitlab
       end
 
       def batch_metrics
-        @batch_metrics ||= Gitlab::Database::BackgroundMigration::BatchMetrics.new
+        @batch_metrics ||= Gitlab::Database::Batch::Metrics.new
       end
 
       private

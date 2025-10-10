@@ -49,7 +49,7 @@ module CommitSignature
     return persisted_status unless verified? || verified_system?
     return persisted_status unless commit
 
-    return 'unverified_author_email' if emails_for_verification&.exclude?(commit.author_email)
+    return 'unverified_author_email' if emails_for_verification&.exclude?(commit.committer_email)
 
     persisted_status
   end
@@ -57,10 +57,10 @@ module CommitSignature
   private
 
   def emails_for_verification
-    if x509?
-      x509_certificate.all_emails
-    else
-      signed_by_user&.verified_emails
-    end
+    return x509_certificate.all_emails if x509?
+
+    return User.find_by_any_email(committer_email, confirmed: true)&.verified_emails if verified_system?
+
+    signed_by_user&.verified_emails
   end
 end

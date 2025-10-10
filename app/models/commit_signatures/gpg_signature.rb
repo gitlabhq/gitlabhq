@@ -16,12 +16,7 @@ module CommitSignatures
     ignore_column :author_email, remove_with: '18.5', remove_after: '2025-09-13'
 
     def signed_by_user
-      return gpg_key.user if gpg_key
-
-      # system signed gpg keys may not have a gpg key in rails.
-      # instead take the user from the gpg signature.
-      User.find_by_any_email(gpg_key_user_email) if verified_system? && Feature.enabled?(
-        :check_for_mailmapped_commit_emails, project)
+      gpg_key&.user
     end
 
     def type

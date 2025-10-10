@@ -8,7 +8,7 @@ RSpec.describe CommitSignatures::SshSignature, feature_category: :source_code_ma
   let_it_be(:commit_sha) { '7b5160f9bb23a3d58a0accdbe89da13b96b1ece9' }
   let_it_be(:project) { create(:project, :repository, path: 'sample-project') }
   let_it_be(:user) { create(:user) }
-  let_it_be(:commit) { create(:commit, project: project, sha: commit_sha, author: user) }
+  let_it_be(:commit) { create(:commit, project: project, sha: commit_sha) }
   let_it_be(:ssh_key) { create(:ed25519_key_256, user: user) }
   let_it_be(:key_fingerprint) { ssh_key.fingerprint_sha256 }
 
@@ -79,15 +79,18 @@ RSpec.describe CommitSignatures::SshSignature, feature_category: :source_code_ma
   describe '#verification_status' do
     before do
       allow(signature.project).to receive(:commit).with(commit_sha).and_return(commit)
+      allow(commit).to receive(:committer_email).and_return(committer_email)
     end
+
+    let(:committer_email) { user.email }
 
     context 'when persisted verification_status is verified' do
       it 'returns verified' do
         expect(signature.verification_status).to eq('verified')
       end
 
-      context 'and the author email does not belong to the signed by user' do
-        let(:user) { create(:user) }
+      context 'and the committer email does not belong to the signed by user' do
+        let(:committer_email) { "unverified_email@test.com" }
 
         it 'returns unverified_author_email' do
           expect(signature.verification_status).to eq('unverified_author_email')
@@ -116,25 +119,51 @@ RSpec.describe CommitSignatures::SshSignature, feature_category: :source_code_ma
     context 'when verification_status is verified_system' do
       let(:verification_status) { :verified_system }
 
-      it 'returns the signature verification status' do
-        expect(signature.verification_status).to eq('verified_system')
+      let(:signature_committer_email) { 'committer-email-from-gitaly@email.com' }
+      let(:committer_email) { 'verified-email@email.com' }
+
+      let(:commit) { create(:commit, project: project, sha: commit_sha, committer_email: committer_email) }
+
+      let(:signature) do
+        create(:ssh_signature, commit_sha: commit_sha, key: ssh_key, key_fingerprint_sha256: key_fingerprint,
+          user: user, verification_status: verification_status, committer_email: signature_committer_email)
       end
 
-      context 'and the author email does not belong to the signed by user' do
-        let(:user) { create(:user) }
+      let(:mock_user) do
+        instance_double(User,
+          verified_emails: [signature_committer_email, committer_email])
+      end
+
+      before do
+        allow(User).to receive(:find_by_any_email)
+                         .with(signature_committer_email, confirmed: true)
+                         .and_return(mock_user)
+      end
+
+      context 'when commit committer email is included in verified emails' do
+        it 'returns verified_system' do
+          expect(signature.verification_status).to eq('verified_system')
+        end
+      end
+
+      context 'when commit committer email is not included in verified emails' do
+        before do
+          allow(project).to receive(:commit).with(commit_sha).and_return(commit)
+          allow(commit).to receive(:committer_email).and_return('unverified-email@email.com')
+        end
 
         it 'returns unverified_author_email' do
           expect(signature.verification_status).to eq('unverified_author_email')
         end
+      end
 
-        context 'when check_for_mailmapped_commit_emails feature flag is disabled' do
-          before do
-            stub_feature_flags(check_for_mailmapped_commit_emails: false)
-          end
+      context 'when check_for_mailmapped_commit_emails feature flag is disabled' do
+        before do
+          stub_feature_flags(check_for_mailmapped_commit_emails: false)
+        end
 
-          it 'verification status is unmodified' do
-            expect(signature.verification_status).to eq('verified_system')
-          end
+        it 'verification status is unmodified' do
+          expect(signature.verification_status).to eq('verified_system')
         end
       end
     end

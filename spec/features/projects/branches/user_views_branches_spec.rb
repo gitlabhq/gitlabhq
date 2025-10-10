@@ -80,7 +80,7 @@ RSpec.describe "User views branches", :js, feature_category: :source_code_manage
     end
 
     it "shows branches" do
-      page.within(find_by_testid("branch-rules-content")) do
+      page.within(".protected-branches-list") do
         expect(page).to have_content(protected_branch.name).and have_no_content("master")
       end
     end

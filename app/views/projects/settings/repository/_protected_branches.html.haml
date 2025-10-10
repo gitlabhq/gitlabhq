@@ -1,6 +1,5 @@
-- if Feature.disabled?(:edit_branch_rules, @project)
-  - if can?(current_user, :admin_protected_branch, @project)
-    = render "protected_branches/index", protected_branch_entity: protected_branch_entity
+- if can?(current_user, :admin_protected_branch, @project)
+  = render "protected_branches/index", protected_branch_entity: protected_branch_entity
 
 - if can?(current_user, :manage_protected_tags, @project)
   = render "projects/protected_tags/index"

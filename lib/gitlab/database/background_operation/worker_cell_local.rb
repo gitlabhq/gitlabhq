@@ -5,6 +5,7 @@ module Gitlab
     module BackgroundOperation
       class WorkerCellLocal < SharedModel
         include CommonWorker
+        include Queueable
 
         self.table_name = :background_operation_workers_cell_local
 

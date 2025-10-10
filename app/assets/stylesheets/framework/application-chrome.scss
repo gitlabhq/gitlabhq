@@ -66,8 +66,6 @@
   }
 
   @media (min-width: $breakpoint-xl) {
-    $icon-sidebar-width: 48px;
-
     .super-sidebar-wrapper {
       width: auto;
     }
@@ -78,16 +76,16 @@
       top: 0;
 
       &:not(.super-sidebar-is-icon-only) {
-        width: calc(#{$super-sidebar-width} - 8px);
+        width: calc(#{$super-sidebar-width} - var(--ai-panels-gap));
       }
 
       &.super-sidebar-is-icon-only {
-        width: calc(#{$icon-sidebar-width} - 8px);
+        width: var(--ai-navigation-rail-size-with-gap);
       }
     }
 
     .ai-panels {
-      min-width: calc(#{$icon-sidebar-width} - 8px);
+      min-width: var(--ai-navigation-rail-size-with-gap);
     }
   }
 
@@ -338,9 +336,10 @@
   .paneled-view.ai-panels {
     overflow: inherit;
     @apply gl-px-0 sm:gl-px-3 lg:gl-px-2 lg:-gl-mx-2;
-    --ai-panel-width: clamp(400px, 20vw, 560px);
+    --ai-panel-width: clamp(25rem, 20vw, 35rem);
     --ai-panels-gap: var(--gl-spacing-scale-3);
     --ai-navigation-rail-size: #{$gl-button-medium-size};
+    --ai-navigation-rail-size-with-gap: calc(var(--ai-navigation-rail-size) + var(--ai-panels-gap));
 
     .ai-panel-header {
       z-index: $top-bar-z-index;

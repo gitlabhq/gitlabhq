@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 module GraphqlTriggers
+  def self.ci_job_processed_with_artifacts(job)
+    return unless Feature.enabled?(:ci_job_created_subscription, job.project)
+
+    GitlabSchema.subscriptions.trigger(:ci_job_processed, { project_id: job.project.to_gid, with_artifacts: true }, job)
+  end
+
   def self.ci_job_processed(job)
     return unless Feature.enabled?(:ci_job_created_subscription, job.project)
 

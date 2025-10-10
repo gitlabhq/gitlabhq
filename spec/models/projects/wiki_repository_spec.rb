@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::WikiRepository do
+RSpec.describe Projects::WikiRepository, feature_category: :wiki do
   subject { described_class.new(project: build(:project)) }
 
   describe 'associations' do

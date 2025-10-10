@@ -41,7 +41,6 @@ Style/AccessorGrouping:
     - 'lib/gitlab/ci/trace/chunked_io.rb'
     - 'lib/gitlab/ci/variables/builder.rb'
     - 'lib/gitlab/contributions_calendar.rb'
-    - 'lib/gitlab/database/background_migration/batch_metrics.rb'
     - 'lib/gitlab/diff/diff_refs.rb'
     - 'lib/gitlab/diff/formatters/base_formatter.rb'
     - 'lib/gitlab/diff/formatters/image_formatter.rb'

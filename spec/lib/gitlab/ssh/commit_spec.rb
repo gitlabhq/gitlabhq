@@ -10,10 +10,10 @@ RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
   let(:signature_text) { 'signature_text' }
   let(:signed_text) { 'signed_text' }
   let(:signer) { :SIGNER_USER }
-  let(:user_author) { create(:user) }
-  let(:author_email) { user_author.email }
+  let(:user_committer) { create(:user) }
+  let(:committer_email) { user_committer.email }
   let(:signature_data) do
-    { signature: signature_text, signed_text: signed_text, signer: signer, author_email: author_email }
+    { signature: signature_text, signed_text: signed_text, signer: signer, committer_email: committer_email }
   end
 
   let(:verifier) { instance_double('Gitlab::Ssh::Signature') }
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
       .and_return(signature_data)
 
     allow_next_instance_of(Commit) do |instance|
-      allow(instance).to receive(:author_email).and_return(user_author.email)
+      allow(instance).to receive(:committer_email).and_return(user_committer.email)
     end
 
     allow(verifier).to receive_messages({
@@ -36,10 +36,10 @@ RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
       key_fingerprint: fingerprint
     })
 
-    allow(verifier).to receive(:user_id).and_return(user_author.id)
+    allow(verifier).to receive(:user_id).and_return(user_committer.id)
 
     allow(Gitlab::Ssh::Signature).to receive(:new)
-      .with(signature_text, signed_text, signer, commit, author_email)
+      .with(signature_text, signed_text, signer, commit)
       .and_return(verifier)
   end
 
@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
           project: project,
           key_id: signed_by_key.id,
           key_fingerprint_sha256: signed_by_key.fingerprint_sha256,
-          user_id: user_author.id,
+          user_id: user_committer.id,
           verification_status: 'verified'
         )
       end
@@ -79,7 +79,7 @@ RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
           project: project,
           key_id: nil,
           key_fingerprint_sha256: nil,
-          user_id: user_author.id,
+          user_id: user_committer.id,
           verification_status: 'unknown_key'
         )
       end
@@ -87,28 +87,34 @@ RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
 
     context 'when signature is verified_system' do
       before do
-        allow(verifier).to receive(:verification_status).and_return(:verified_system)
-      end
-
-      let(:signer) { :VERIFIED_SYSTEM }
-
-      it 'uses the author email to set the user id' do
-        expect(signature).to have_attributes(
-          commit_sha: commit.sha,
-          user_id: user_author.id,
-          verification_status: 'verified_system'
+        allow(verifier).to receive_messages(
+          verification_status: :verified_system,
+          user_id: user.id
         )
       end
 
-      context 'when a stored signature is present for the commit with user nil' do
-        let(:signature_with_no_user) do
+      let(:user) { create(:user) }
+      let(:signer) { :VERIFIED_SYSTEM }
+
+      it 'returns the correct attributes' do
+        expect(signature).to have_attributes(
+          commit_sha: commit.sha,
+          user_id: user.id,
+          verification_status: 'verified_system',
+          committer_email: committer_email
+        )
+      end
+
+      context 'when a stored signature is present for the commit with committer_email nil' do
+        let(:signature_with_no_committer_email) do
           create(:ssh_signature,
             commit_sha: commit.sha,
             verification_status: :verified_system,
             user_id: nil,
             project: project,
             key_fingerprint_sha256: fingerprint,
-            key_id: signed_by_key.id
+            key_id: signed_by_key.id,
+            committer_email: nil
           )
         end
 
@@ -116,20 +122,21 @@ RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
           allow(CommitSignatures::SshSignature)
             .to receive(:by_commit_sha)
                   .with([commit.id])
-                  .and_return([signature_with_no_user])
+                  .and_return([signature_with_no_committer_email])
         end
 
-        context 'when author_email is present' do
-          it 'updates stored signature with user_id from signature author_email' do
-            expect(signature.user).to eq(user_author)
+        context 'when committer_email is present' do
+          it 'updates stored signature with committer_email only' do
+            ActiveRecord.verbose_query_logs = true
+            expect(signature.committer_email).to eq(user_committer.email)
           end
         end
 
-        context 'when signature author_email is not present' do
-          let(:author_email) { nil }
+        context 'when signature committer_email is not present' do
+          let(:committer_email) { nil }
 
           it 'does not update the stored signature' do
-            expect(signature.user).to be_nil
+            expect(signature).not_to receive(:update!)
           end
         end
 
@@ -139,7 +146,7 @@ RSpec.describe Gitlab::Ssh::Commit, feature_category: :source_code_management do
           end
 
           it 'does not update the stored signature' do
-            expect(signature.user).to be_nil
+            expect(signature.committer_email).to be_nil
           end
         end
       end
