@@ -543,13 +543,6 @@ upload-test-runtime-data:
   variables:
     QA_JSON_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/gitlab-qa-run-*/gitlab-*-qa-*/rspec-*.json
 
-export-test-metrics:
-  extends:
-    - .export-test-metrics
-    - .rules:report:process-results
-  variables:
-    QA_METRICS_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/gitlab-qa-run-*/**/test-metrics-*.json
-
 notify-slack:
   extends:
     - .notify-slack

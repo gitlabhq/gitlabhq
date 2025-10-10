@@ -23,6 +23,7 @@ module Ci
       :interruptible
     ].freeze
     CONFIG_ATTRIBUTES = (CONFIG_ATTRIBUTES_FROM_METADATA + [:tag_list, :run_steps]).freeze
+    NORMALIZED_DATA_COLUMNS = %i[interruptible].freeze
 
     query_constraints :id, :partition_id
     partitionable scope: ->(_) { Ci::Pipeline.current_partition_value }, partitioned: true
@@ -46,15 +47,20 @@ module Ci
 
       current_time = Time.current
 
-      new(
+      attrs = {
         project_id: project_id,
         partition_id: partition_id,
         config: sanitized_config,
         checksum: checksum,
-        interruptible: sanitized_config.fetch(:interruptible) { column_defaults['interruptible'] },
         created_at: current_time,
         updated_at: current_time
-      )
+      }
+
+      NORMALIZED_DATA_COLUMNS.each do |col|
+        attrs[col] = sanitized_config.fetch(col) { column_defaults[col.to_s] }
+      end
+
+      new(attrs)
     end
 
     def self.sanitize_and_checksum(config)

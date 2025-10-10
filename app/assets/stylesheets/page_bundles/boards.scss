@@ -138,12 +138,6 @@ $focus-mode-z-index: 9000;
   }
 }
 
-.board-card-title a {
-  @include gl-container-width-down(lg, panel) {
-    font-size: $gl-font-size-sm;
-  }
-}
-
 .board-card-assignee {
   .avatar-counter {
     min-width: $gl-padding-24;

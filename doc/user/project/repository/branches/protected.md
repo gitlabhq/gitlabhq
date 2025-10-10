@@ -50,22 +50,25 @@ To protect a branch:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
-1. Expand **Protected branches**.
-1. Select **Add protected branch**.
-1. From the **Branch** dropdown list, select the branch you want to protect.
-1. From the **Allowed to merge** list, select a role that can merge into this branch.
-1. From the **Allowed to push and merge** list, select a role that can push to this branch.
+1. Expand **Branch rules**.
+1. Select **Add branch rule** > **Branch name or pattern**.
+1. From the dropdown list, search for and select the branch you want to protect.
+1. Select **Create branch rule**. You are directed to the **Branch rule details** page.
+1. From the **Protect branch** section, choose one of the following options:
+   - From **Allowed to merge**, select **Edit**.
+     1. Select the roles that can merge into this branch.
+     1. Select **Save changes**.
+   - From **Allowed to push and merge**, select **Edit**.
+     1. Select the roles that can merge into this branch.
+     1. If desired, search to add **Deploy keys**.
+     1. Select **Save changes**.
 
-   {{< alert type="note" >}}
+{{< alert type="note" >}}
 
-   In GitLab Premium and Ultimate, you can also add groups or individual users
-   to **Allowed to merge** and **Allowed to push and merge**.
+In GitLab Premium and Ultimate, you can also add groups or individual users
+to **Allowed to merge** and **Allowed to push and merge**.
 
-   {{< /alert >}}
-
-1. Select **Protect**.
-
-The protected branch displays in the list of protected branches.
+{{< /alert >}}
 
 ### In a group
 
@@ -100,11 +103,9 @@ To protect a branch for all the projects in a group:
    Branch names and wildcards are case-sensitive.
 1. From the **Allowed to merge** list, select a role that can merge into this branch.
 1. From the **Allowed to push and merge** list, select a role that can push to this branch.
+1. Choose your preferences for the **Allowed to force push** and **Require approval from code owners**
+   settings.
 1. Select **Protect**.
-
-The protected branch is added to the list of protected branches.
-
-For branch naming guidelines, see [branch naming](_index.md#name-your-branch).
 
 ## Push and merge permissions
 
@@ -189,9 +190,9 @@ To protect multiple branches at the same time:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
-1. Expand **Protected branches**.
-1. Select **Add protected branch**.
-1. From the **Branch** dropdown list, type the branch name and a wildcard (`*`).
+1. Expand **Branch rules**.
+1. Select **Add branch rule** > **Branch name or pattern**.
+1. From the dropdown list, type the branch name and a wildcard (`*`).
    Branch names and wildcards are case-sensitive. For example:
 
    | Wildcard protected branch | Matching branches                                      |
@@ -200,13 +201,16 @@ To protect multiple branches at the same time:
    | `production/*`            | `production/app-server`, `production/load-balancer`    |
    | `*gitlab*`                | `gitlab`, `gitlab/staging`, `master/gitlab/production` |
 
-1. From the **Allowed to merge** list, select a role that can merge into
-   this branch.
-1. From the **Allowed to push and merge** list, select a role that can
-   push to this branch. In GitLab Premium or Ultimate, you can also add groups or individual users.
-1. Select **Protect**.
-
-The protected branch displays in the list of protected branches.
+1. Select **Create wildcard**.
+1. Select **Create branch rule**. You are directed to the **Branch rule details** page.
+1. From the **Protect branch** section, choose one of the following options:
+   - From **Allowed to merge**, select **Edit**.
+     1. Select the roles that can merge into this branch.
+     1. Select **Save changes**.
+   - From **Allowed to push and merge**, select **Edit**.
+     1. Select the roles that can merge into this branch.
+     1. If desired, search to add **Deploy keys**.
+     1. Select **Save changes**.
 
 ## Configure protection options
 
@@ -219,17 +223,12 @@ check in directly to a protected branch:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
-1. Expand **Protected branches**.
-1. Select **Add protected branch**.
-1. From the **Branch** dropdown list, select the branch you want to protect.
-1. From the **Allowed to merge** list, select **Developers + Maintainers**.
-1. From the **Allowed to push and merge** list, select **No one**.
-1. Select **Protect**.
-
-Alternatively, you can [create](branch_rules.md#create-a-branch-rule) or [edit](branch_rules.md#edit-a-branch-rule-target) a branch rule. Then:
-
-1. Select **Edit** in the **Allowed to merge** section.
-1. Select **Developers and Maintainers**.
+1. Expand **Branch rules**.
+1. Next to your branch, select **View details**.
+1. From the **Allowed to merge** section, select **Edit**
+1. Select **Developers + Maintainers**.
+1. Select **Save changes**.
+1. From the **Allowed to push and merge** section, select **No one**.
 1. Select **Save changes**.
 
 ### Allow direct push
@@ -238,16 +237,9 @@ You can allow everyone with write access to push directly to the protected branc
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
-1. Expand **Protected branches**.
-1. Select **Add protected branch**.
-1. From the **Branch** dropdown list, select the branch you want to protect.
-1. From the **Allowed to push and merge** list, select **Developers + Maintainers**.
-1. Select **Protect**.
-
-Alternatively, you can create or edit a branch rule. Then:
-
-1. Select **Edit** in the **Allowed to push and merge** section.
-1. Select **Developers and Maintainers**.
+1. Expand **Branch rules**.
+1. Next to your branch, select **View details**.
+1. From the **Allowed to push and merge** section, select **Developers + Maintainers**.
 1. Select **Save changes**.
 
 ### With group permissions
@@ -257,8 +249,10 @@ to a protected branch:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
-1. Expand **Protected branches**.
-1. Add groups to the following fields:
+1. Expand **Branch rules**.
+1. Next to your branch, select **View details**.
+1. In the **Allowed to merge** or **Allowed to push and merge** sections, select **Edit**.
+1. Under **Groups**, search to add groups. For example:
 
    ```plaintext
    # Allow group members to merge into this branch
@@ -267,6 +261,8 @@ to a protected branch:
    # Allow group members to push and merge into this branch
    Allowed to push and merge: @group-x/subgroup-y
    ```
+
+1. Select **Save changes**.
 
 {{< alert type="note" >}}
 
@@ -343,11 +339,11 @@ To allow a deploy key to push to a protected branch:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
-1. Expand **Protected branches**.
-1. Select **Add protected branch**.
-1. From the **Branch** dropdown list, select the branch you want to protect.
-1. From the **Allowed to push and merge** list, select the deploy key.
-1. Select **Protect**.
+1. Expand **Branch rules**.
+1. Next to your branch, select **View details**.
+1. From the **Allowed to push and merge** section, select **Edit**.
+1. In **Deploy keys**, search to add a deploy key.
+1. Select **Save changes**.
 
 Deploy keys are not available in the **Allowed to merge** dropdown list.
 
@@ -356,30 +352,25 @@ Deploy keys are not available in the **Allowed to merge** dropdown list.
 You can allow [force pushes](../../../../topics/git/git_rebase.md#force-push-to-a-remote-branch) to
 protected branches.
 
-To protect a new branch and enable force push:
+To protect a branch and enable force push:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
-1. Expand **Protected branches**.
-1. Select **Add protected branch**.
-1. From the **Branch** dropdown list, select the branch you want to protect.
-1. From the **Allowed to push and merge** and **Allowed to merge** lists, select the settings you want.
+1. Expand **Branch rules**.
+1. Select **Add branch rule** > **Branch name or pattern**.
+1. From the dropdown list, search for and select the branch you want to protect and enable force push.
+1. Select **Create branch rule**. You are directed to the **Branch rule details** page.
+1. From the **Allowed to push and merge** and **Allowed to merge** sections, select the settings you want.
+1. Select **Save changes**.
 1. To allow all users with push access to force push, turn on the **Allowed to force push** toggle.
-1. Select **Protect**.
 
 To enable force pushes on branches that are already protected:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
-1. Expand **Protected branches**.
-1. Select **Add protected branch**.
-1. In the list of protected branches, next to the branch, turn on the **Allowed to force push** toggle.
-
-Alternatively, you can create or edit a branch rule. Then:
-
-1. In the list of protected branches, next to the branch, turn on the **Allowed to force push** toggle.
-
-Members who can push to this branch can now also force push.
+1. Expand **Branch rules**.
+1. Next to your branch, select **View details**.
+1. Turn on the **Allowed to force push** toggle.
 
 ### Require Code Owner approval
 
@@ -391,31 +382,28 @@ Members who can push to this branch can now also force push.
 {{< /details >}}
 
 For a protected branch, you can require at least one approval by a [Code Owner](../../codeowners/_index.md).
-If a branch is protected by multiple rules, code owner approval is required if any of
-the applicable rules have **Required approval from code owners** enabled.
+If a branch is protected by multiple rules, code owner approval is required if
+**Required approval from code owners** enabled.
 
 To protect a new branch and enable Code Owner's approval:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
-1. Expand **Protected branches**.
-1. Select **Add protected branch**.
-1. From the **Branch** dropdown list, select the branch you want to protect.
-1. From the **Allowed to push and merge** and **Allowed to merge** lists, select the settings you want.
+1. Expand **Branch rules**.
+1. Select **Add branch rule** > **Branch name or pattern**.
+1. From the dropdown list, search for and select the branch you want to protect and enable force push.
+1. Select **Create branch rule**. You are directed to the **Branch rule details** page.
+1. From the **Allowed to push and merge** and **Allowed to merge** sections, select the settings you want.
+1. Select **Save changes**.
 1. Turn on the **Require approval from code owners** toggle.
-1. Select **Protect**.
 
 To enable Code Owner's approval on branches that are already protected:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings** > **Repository**.
-1. Expand **Protected branches**.
-1. Select **Add protected branch**.
-1. In the list of protected branches, next to the branch, turn on the **Code owner approval** toggle.
-
-Alternatively, you can create or edit a branch rule.
-Then, in the list of protected branches, next to the branch,
-turn on the **Code owner approval** toggle.
+1. Expand **Branch rules**.
+1. Next to your branch, select **View details**.
+1. Turn on the **Code owner approval** toggle.
 
 When enabled, all merge requests for these branches require approval
 by a Code Owner per matched rule before they can be merged.

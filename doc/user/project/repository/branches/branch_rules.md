@@ -263,35 +263,13 @@ To edit a branch rule target:
 
 ### Edit a branch rule protection
 
+For information about branch protection controls, see [Protected branches](protected.md).
+
 {{< alert type="note" >}}
 
 Not available for `all branches`.
 
 {{< /alert >}}
-
-To edit branch rule protections:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings** > **Repository**.
-1. Expand **Branch rules** to view all branches with protections.
-1. Identify the branch you want and select **View details**.
-1. From the **Protect branch** section, choose one of the following options:
-   - From **Allowed to merge**, select **Edit**.
-     1. Select the roles that can merge into this branch.
-     1. Select **Save changes**.
-   - From **Allowed to push and merge**, select **Edit**.
-     1. Select the roles that can merge into this branch.
-     1. If desired, search to add **Deploy keys**.
-     1. Select **Save changes**.
-
-{{< alert type="note" >}}
-
-In GitLab Premium and Ultimate, you can also add groups or individual users
-to **Allowed to merge** and **Allowed to push and merge**.
-
-{{< /alert >}}
-
-For additional information about branch protection controls, see [Protected branches](protected.md).
 
 ## Delete a branch rule
 
@@ -332,8 +310,8 @@ To delete a branch rule:
 
 ## Related topics
 
-- [Protect your repository](../protect.md)
 - [Default branch](default.md)
 - [Protected branches](protected.md)
+- [Protect your repository](../protect.md)
 - [Branching strategies](strategies/_index.md)
 - [Merge request approvals](../../merge_requests/approvals/_index.md)

@@ -3,6 +3,8 @@
 - page_title title, _('Account')
 - add_to_breadcrumbs _('Account'), profile_account_path
 - troubleshooting_link = link_to _('Try the troubleshooting steps here.'), help_page_path('user/profile/account/two_factor_authentication_troubleshooting.md'), target: '_blank', rel: 'noopener noreferrer'
+-# TODO: Swap out for real passkeys once backend is complete
+- @passkeys = ['todo']
 
 - content_for :after_flash_content do
   - if @error
@@ -13,6 +15,17 @@
         - c.with_body do
           = troubleshooting_link
 
+- if Feature.enabled?(:passkeys, current_user)
+  = render ::Layouts::SettingsSectionComponent.new(s_("ProfilesAuthentication|Passkeys sign-in")) do |c|
+    - c.with_description do
+      = s_("ProfilesAuthentication|Passkeys allow you to sign in securely with your device instead of a password. Learn more about passkeys.")
+    - c.with_body do
+      %p
+        %span.gl-font-bold
+          = _('Status:')
+        #{@passkeys.present? ? _('Enabled') : _('Disabled')}
+      = render 'passkeys'
+
 = render ::Layouts::SettingsSectionComponent.new(title) do |c|
   - c.with_description do
     .gl-flex.gl-flex-wrap.gl-gap-3.gl-justify-between.gl-mt-2
@@ -21,6 +34,10 @@
       - if current_user.two_factor_enabled?
         .gl-w-full{ class: "@sm/panel:gl-w-auto" }
           .js-two-factor-action-confirm{ data: disable_two_factor_authentication_data(current_password_required?) }
+    - if Feature.enabled?(:passkeys, current_user) && !current_user.two_factor_enabled? && @passkeys.present?
+      = render Pajamas::AlertComponent.new(dismissible: false, alert_options: { class: 'gl-mt-5' }) do |c|
+        - c.with_body do
+          = s_('ProfilesAuthentication|To use passkeys as your default two-factor authentication, please register at least one backup 2FA method first below.')
   - c.with_body do
     %p
       %span.gl-font-bold

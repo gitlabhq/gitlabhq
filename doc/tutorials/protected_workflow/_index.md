@@ -263,15 +263,17 @@ to protect multiple branches:
 1. On the left sidebar, select **Search or go to** and
    search for `Excelsior`. Select the project named `Excelsior`.
 1. Select **Settings** > **Repository**.
-1. Expand **Protected branches**.
-1. From the **Branch** dropdown list, type `1.*`, and then select **Create wildcard `1.*`**.
+1. Expand **Branch rules**.
+1. Select **Add branch rule** > **Branch name or pattern**.
+1. From the dropdown list, type `1.*`, and then select **Create wildcard `1.*`**.
 1. To require everyone to submit merge requests, rather than pushing commits directly:
-   1. Set **Allowed to merge** to **Maintainers**.
-   1. Set **Allowed to push and merge** to **No one**.
+   1. In the **Allowed to merge** section, select **Edit**, set to **Maintainers**,
+      and select **Save changes**.
+   1. In the **Allowed to push and merge** section, select **Edit**, set to **No one**,
+   and select **Save changes**.
    1. Leave **Allowed to force push** disabled.
 1. In GitLab Premium and GitLab Ultimate, to require Code Owners to review changes
    to files they work on, toggle **Require approval from code owners**.
-1. Select **Protect**.
 1. In the table of branches, find the rule marked as `Default`. (Depending on
    your version of GitLab, this branch might be named `main` or `master`.) Set the
    values for this branch to match the settings you used for the `1.*` rule.

@@ -58,6 +58,13 @@ RSpec.describe API::Badges, feature_category: :groups_and_projects do
         end.not_to exceed_query_limit(control)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_badge do
+      let(:user) { developer }
+      let(:boundary_object) { source }
+      let!(:source_setup) { source.add_developer(user) }
+      let(:request) { get api("/#{source_type.pluralize}/#{source.id}/badges", personal_access_token: pat) }
+    end
   end
 
   shared_examples 'GET /:sources/:id/badges/:badge_id' do |source_type|
@@ -92,6 +99,14 @@ RSpec.describe API::Badges, feature_category: :groups_and_projects do
           end
         end
       end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :read_badge do
+      let(:user) { developer }
+      let(:badge) { source.badges.first }
+      let(:boundary_object) { source }
+      let!(:source_setup) { source.add_developer(user) }
+      let(:request) { get api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", personal_access_token: pat) }
     end
   end
 
@@ -163,18 +178,28 @@ RSpec.describe API::Badges, feature_category: :groups_and_projects do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :create_badge do
+      let(:user) { developer }
+      let(:boundary_object) { source }
+      let!(:source_setup) { source.add_owner(user) }
+      let(:request) do
+        post api("/#{source_type.pluralize}/#{source.id}/badges", personal_access_token: pat),
+          params: { name: example_name, link_url: example_url, image_url: example_url2 }
+      end
+    end
   end
 
   shared_examples 'PUT /:sources/:id/badges/:badge_id' do |source_type|
     include_context 'source helpers'
 
     let(:source) { get_source(source_type) }
+    let(:example_name) { 'BadgeName' }
+    let(:example_url) { 'http://www.example.com' }
+    let(:example_url2) { 'http://www.example1.com' }
 
     context "with :sources == #{source_type.pluralize}" do
       let(:badge) { source.badges.first }
-      let(:example_name) { 'BadgeName' }
-      let(:example_url) { 'http://www.example.com' }
-      let(:example_url2) { 'http://www.example1.com' }
 
       it_behaves_like 'a 404 response when source is private' do
         let(:route) do
@@ -216,6 +241,17 @@ RSpec.describe API::Badges, feature_category: :groups_and_projects do
           params: { link_url: 'whatever', image_url: 'whatever' }
 
         expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :update_badge do
+      let(:user) { developer }
+      let(:boundary_object) { source }
+      let(:badge) { source.badges.first }
+      let!(:source_setup) { source.add_owner(user) }
+      let(:request) do
+        put api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", personal_access_token: pat),
+          params: { name: example_name, link_url: example_url, image_url: example_url2 }
       end
     end
   end
@@ -328,6 +364,15 @@ RSpec.describe API::Badges, feature_category: :groups_and_projects do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
     end
+
+    it_behaves_like 'authorizing granular token permissions', :read_badge do
+      let(:user) { developer }
+      let(:boundary_object) { source }
+      let!(:source_setup) { source.add_owner(user) }
+      let(:request) do
+        get api("/#{source_type.pluralize}/#{source.id}/badges/render?link_url=#{example_url}&image_url=#{example_url2}", personal_access_token: pat)
+      end
+    end
   end
 
   context 'when deleting a badge' do
@@ -341,6 +386,14 @@ RSpec.describe API::Badges, feature_category: :groups_and_projects do
           expect(response).to have_gitlab_http_status(:not_found)
         end.not_to change { badge.reload.persisted? }
       end
+    end
+
+    it_behaves_like 'authorizing granular token permissions', :delete_badge do
+      let(:user) { developer }
+      let(:badge) { project.badges.first }
+      let(:boundary_object) { project }
+      let!(:project_setup) { project.add_maintainer(user) }
+      let(:request) { delete api("/projects/#{project.id}/badges/#{badge.id}", personal_access_token: pat) }
     end
   end
 

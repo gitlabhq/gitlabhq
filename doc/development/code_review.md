@@ -359,17 +359,14 @@ When assigning reviewers, it can be helpful to:
     efficient for the MR reviewers because they immediately know which type of review to provide.
   - [Example 1](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75921#note_758161716)
   - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109500#note_1253955051)
-
-Avoid:
-
-- Adding TODO comments (referenced above) directly to the source code unless the reviewer requires
+- Only add TODO comments (referenced above) directly to the source code if the reviewer requires
   you to do so. If TODO comments are added due to an actionable task,
   [include a link to the relevant issue](code_comments.md).
-- Adding comments which only explain what the code is doing. If non-TODO comments are added, they should
-  [_explain why, not what_](https://blog.codinghorror.com/code-tells-you-how-comments-tell-you-why/).
-- Requesting maintainer reviews of merge requests with failed tests. If the tests are failing and you have to request a review, ensure you leave a comment with an explanation.
-- Excessively mentioning maintainers through email or Slack (if the maintainer is reachable
-  through Slack). If you can't add a reviewer for a merge request, `@` mentioning a maintainer in a comment is acceptable and in all other cases adding a reviewer is sufficient.
+- Add comments that
+  [_explain why, not only what_](https://blog.codinghorror.com/code-tells-you-how-comments-tell-you-why/) the code is doing.
+- Request maintainer reviews only when all tests have passed. If the tests are failing and you have to request a review, ensure you leave a comment with an explanation.
+- Mention maintainers through email or Slack (if the maintainer is reachable
+  through Slack) only if you have an immediate request. If you can't add a reviewer for a merge request, `@` mentioning a maintainer in a comment is acceptable and in all other cases adding a reviewer is sufficient.
 
 This saves reviewers time and helps authors catch mistakes earlier.
 

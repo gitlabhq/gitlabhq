@@ -33,11 +33,12 @@ namespace :gitlab do
 
       projects = projects_from_args(args)
 
-      Gitlab::Seeder.parallel_each(projects) do |project|
+      projects.each do |project|
+        puts "\nSeeding issues for the '#{project.full_path}' project"
         seeder = Quality::Seeders::Issues.new(project: project)
         issues_created = seeder.seed(backfill_weeks: args.backfill_weeks.to_i,
           average_issues_per_week: args.average_issues_per_week.to_i)
-        puts "\n#{project.full_path}: #{issues_created} issues created!"
+        puts "\n#{issues_created} issues created!"
       end
     end
 

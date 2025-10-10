@@ -31,7 +31,7 @@ RSpec.describe 'Two factor auths', :with_organization_url_helpers, feature_categ
         click_button 'Copy codes'
         click_link 'Proceed'
 
-        expect(page).to have_content('Status: Enabled')
+        expect(page).to have_text('You have set up 2FA for your account!')
       end
 
       context 'when user authenticates with an external service' do
@@ -47,7 +47,7 @@ RSpec.describe 'Two factor auths', :with_organization_url_helpers, feature_categ
           click_button 'Copy codes'
           click_link 'Proceed'
 
-          expect(page).to have_content('Status: Enabled')
+          expect(page).to have_text('You have set up 2FA for your account!')
         end
       end
 
@@ -187,7 +187,6 @@ RSpec.describe 'Two factor auths', :with_organization_url_helpers, feature_categ
         modal_submit(user.password)
 
         expect(page).to have_content('Two-factor authentication has been disabled successfully!')
-        expect(page).to have_content('Enable two-factor authentication')
       end
 
       it 'requires the current_password to regenerate recovery codes', :js do
@@ -223,7 +222,6 @@ RSpec.describe 'Two factor auths', :with_organization_url_helpers, feature_categ
           modal_submit_without_password
 
           expect(page).to have_content('Two-factor authentication has been disabled successfully!')
-          expect(page).to have_content('Enable two-factor authentication')
         end
 
         it 'does not require the current_password to regenerate recovery codes', :js do

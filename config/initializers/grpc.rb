@@ -11,9 +11,3 @@ module GRPC
     GRPC_LOGGER
   end
 end
-
-if Rails.env.development? || Gitlab::Utils.to_boolean(ENV['CI'])
-  # Required for `Gitlab::Seeder.parallel_each` which used seeding
-  # fixtures locally or in CI.
-  ENV['GRPC_ENABLE_FORK_SUPPORT'] = '1'
-end

@@ -608,6 +608,35 @@ RSpec.describe AuthHelper, feature_category: :system_access do
     end
   end
 
+  describe '#delete_passkey_data' do
+    let(:path) { 'test/path' }
+
+    context 'when password is required' do
+      it 'returns data to delete a passkey' do
+        expect(helper.delete_passkey_data(true, path)).to match(a_hash_including({
+          button_text: s_('ProfilesAuthentication|Delete passkey'),
+          icon: 'remove',
+          message: s_('ProfilesAuthentication|Are you sure you want to delete this passkey? ' \
+            'Enter your password to continue.'),
+          path: path,
+          password_required: 'true'
+        }))
+      end
+    end
+
+    context 'when password is not required' do
+      it 'returns data to delete a passkey' do
+        expect(helper.delete_passkey_data(false, path)).to match(a_hash_including({
+          button_text: s_('ProfilesAuthentication|Delete passkey'),
+          icon: 'remove',
+          message: s_('ProfilesAuthentication|Are you sure you want to delete this passkey?'),
+          path: path,
+          password_required: 'false'
+        }))
+      end
+    end
+  end
+
   describe '#delete_webauthn_device_data' do
     let(:path) { 'test/path' }
 

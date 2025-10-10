@@ -140,11 +140,6 @@ upload-test-runtime-data:
     - .upload-test-runtime-data
     - .rules:report:upload-test-runtime-data
 
-export-test-metrics:
-  extends:
-    - .export-test-metrics
-    - .rules:report:process-results
-
 export-code-paths-mapping:
   extends:
     - .export-code-paths-mapping

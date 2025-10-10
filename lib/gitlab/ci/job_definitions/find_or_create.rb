@@ -36,7 +36,7 @@ module Gitlab
           checksums = definitions.map(&:checksum)
 
           ::Ci::JobDefinition
-            .select(:id, :partition_id, :project_id, :checksum, :interruptible)
+            .select(:id, :partition_id, :project_id, :checksum, *::Ci::JobDefinition::NORMALIZED_DATA_COLUMNS)
             .in_partition(partition_id)
             .for_project(project_id)
             .for_checksum(checksums)

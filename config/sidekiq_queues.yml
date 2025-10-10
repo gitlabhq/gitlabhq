@@ -667,6 +667,8 @@
   - 1
 - - merge_requests_process_merge_audit_event
   - 1
+- - merge_requests_refresh_approval
+  - 1
 - - merge_requests_refresh_pipeline
   - 1
 - - merge_requests_refresh_web_hooks

@@ -28,7 +28,7 @@ RSpec.shared_examples 'hardware device for 2fa' do |device_type|
 
       it 'allows registering a new device' do
         visit profile_account_path
-        click_on _('Enable two-factor authentication')
+        click_on _('Manage authentication')
 
         device = register_device(device_type, password: user.password)
         expect(page).to have_content("Your #{device_type} device was registered")

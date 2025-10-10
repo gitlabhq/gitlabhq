@@ -94,7 +94,7 @@ You can use pipeline variables when you publish with CI/CD.
    1. Go to the repository that contains the Yarn package source code.
    1. On the left sidebar, select **Settings** > **Repository**.
       - If you are building from branches with tags, select **Protected Tags** and add `v*` (wildcard) for semantic versioning.
-      - If you are building from branches without tags, select **Protected Branches**.
+      - If you are building from branches without tags, select **Branch rules**.
 
 1. Add the `NPM_AUTH_TOKEN` you created to the `.yarnrc.yml` configuration
 in your package project root directory where `package.json` is found:

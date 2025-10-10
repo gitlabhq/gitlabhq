@@ -55,17 +55,9 @@ module Gitlab
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/480716#note_2787476778
       Gitlab::GitalyClient.clear_stubs!
 
-      # Notify gRPC library that fork is about to happen
-      GRPC.prefork
-
-      Parallel.each(array, in_processes: Parallel.processor_count) do |record|
-        # Reinitialize gRPC once per child
-        @grpc_postfork_child ||= GRPC.postfork_child || true
-        yield(record)
-      end
+      Parallel.each(array, in_processes: Parallel.processor_count) { |record| yield(record) }
     ensure
       @parallel = false
-      GRPC.postfork_parent
     end
 
     def self.log_message(message)

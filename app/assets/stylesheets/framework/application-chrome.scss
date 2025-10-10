@@ -331,7 +331,7 @@
   // Contextual panel
   .paneled-view.contextual-panel {
     @apply gl-overflow-y-auto gl-flex-1 gl-rounded-lg gl-bg-default empty:gl-hidden gl-h-full;
-    @apply gl-z-[252] gl-w-8/10 gl-right-0;
+    @apply gl-z-[252] gl-w-full md:gl-w-8/10 gl-right-0;
   }
 
   // AI panel

@@ -27996,6 +27996,7 @@ CREATE TABLE vulnerabilities (
     finding_id bigint,
     cvss jsonb DEFAULT '[]'::jsonb,
     auto_resolved boolean DEFAULT false NOT NULL,
+    uuid uuid,
     CONSTRAINT check_4d8a873f1f CHECK ((finding_id IS NOT NULL))
 );
 

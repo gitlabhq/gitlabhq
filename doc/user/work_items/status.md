@@ -108,7 +108,7 @@ To configure custom statuses:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556113) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/556113) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Enabled by default.
 
 {{< /history >}}
 
@@ -129,7 +129,7 @@ To create a lifecycle:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/557003) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/557003) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Enabled by default.
 
 {{< /history >}}
 
@@ -150,7 +150,7 @@ To rename a lifecycle:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/557013) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/557013) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Enabled by default.
 
 {{< /history >}}
 
@@ -171,7 +171,7 @@ To remove a lifecycle:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/557009) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/557009) in GitLab 18.5 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_mvc2`. Enabled by default.
 
 {{< /history >}}
 

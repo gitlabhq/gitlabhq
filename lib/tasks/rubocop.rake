@@ -80,14 +80,14 @@ unless Rails.env.production?
       require 'rubocop'
 
       YARD::Rake::YardocTask.new(:yard_rubocop_docs) do |task|
-        task.files = ['rubocop/cop/**/*.rb'] + gitlab_styles_cops
+        task.files = gitlab_cops.map(&:last)
         task.options = ['--no-output']
       end
 
       Rake::Task[:yard_rubocop_docs].invoke
 
       cops_registry = RuboCop::Cop::Registry.new
-      gitlab_cops.each { |cop| cops_registry.enlist(cop) }
+      gitlab_cops.map(&:first).each { |cop| cops_registry.enlist(cop) }
 
       FileUtils.rm_rf('tmp/docs/')
       FileUtils.rm_rf('rubocop/docs-hugo/content/doc/')
@@ -125,29 +125,27 @@ unless Rails.env.production?
     end
 
     def gitlab_cops
-      # Pre-load existing cops so we can exclude them from the list of cops we generate documentation for
-      require 'rubocop'
-      require 'rubocop-capybara'
-      require 'rubocop-factory_bot'
-      require 'rubocop-graphql'
-      require 'rubocop-performance'
-      require 'rubocop-rails'
-      require 'rubocop-rspec'
-      require 'rubocop-rspec_rails'
-
-      existing_cops = RuboCop::Cop::Registry.global.to_a
-
-      Dir['rubocop/cop/**/*.rb'].each { |file| require_relative File.join('../..', file) }
-      gitlab_styles_cops.each { |file| require file }
-
-      RuboCop::Cop::Registry.global.to_a - existing_cops
+      cops_by_location[:gitlab] + cops_by_location['gitlab-styles']
     end
 
-    def gitlab_styles_cops
-      return @gitlab_styles_cops if defined?(@gitlab_styles_cops)
+    def cops_by_location
+      return @cops_by_location if defined?(@cops_by_location)
 
-      gem_dir = Gem::Specification.find_by_name('gitlab-styles').gem_dir
-      @gitlab_styles_cops ||= Dir["#{gem_dir}/lib/rubocop/cop/**/*.rb"]
+      # Load all cops
+      RuboCop::ConfigStore.new.for_pwd
+
+      gitlab_rubocop_path = File.expand_path("../../rubocop/cop", __dir__)
+
+      cops = RuboCop::Cop::Registry.global.map do |cop_class|
+        location, _line = Object.const_source_location(cop_class.name)
+
+        [cop_class, location]
+      end
+
+      @cops_by_location = cops.group_by do |_, location|
+        # The regex extracts the gem name from a path like .../gems/3.3.0/rubocop-1.71.1/lib...
+        location.start_with?(gitlab_rubocop_path) ? :gitlab : location[%r{/gems/([^/]+)-[\d.].+?/}, 1]
+      end
     end
   end
 end

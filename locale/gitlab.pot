@@ -14032,6 +14032,9 @@ msgstr ""
 msgid "CiVariable|Variable %{key} has been updated."
 msgstr ""
 
+msgid "Classic Chat Placeholder"
+msgstr ""
+
 msgid "Classification Label (optional)"
 msgstr ""
 
@@ -15407,6 +15410,12 @@ msgid "Code snippet"
 msgstr ""
 
 msgid "Code snippet copied. Insert it in the correct location in the YAML file."
+msgstr ""
+
+msgid "CodeGenerationVolumeTrendsChart|Lines of code accepted"
+msgstr ""
+
+msgid "CodeGenerationVolumeTrendsChart|Lines of code shown"
 msgstr ""
 
 msgid "CodeIntelligence|This is the definition"
@@ -24745,6 +24754,9 @@ msgstr ""
 msgid "DuoAgentPlatform|User messaged agent"
 msgstr ""
 
+msgid "DuoAgenticChat|Duo Agent"
+msgstr ""
+
 msgid "DuoAgenticChat|Duo is your general development assistant"
 msgstr ""
 
@@ -25010,9 +25022,6 @@ msgid "DuoChat|An administrator has turned off GitLab Duo for this %{reason}"
 msgstr ""
 
 msgid "DuoChat|Ask a question about GitLab"
-msgstr ""
-
-msgid "DuoChat|Duo Chat is not yet supported on this page"
 msgstr ""
 
 msgid "DuoChat|For example, %{linkStart}what is a fork%{linkEnd}?"
@@ -50189,7 +50198,34 @@ msgstr ""
 msgid "ProfilesAuthentication|Add passkey"
 msgstr ""
 
+msgid "ProfilesAuthentication|Added on"
+msgstr ""
+
+msgid "ProfilesAuthentication|Are you sure you want to delete this passkey?"
+msgstr ""
+
+msgid "ProfilesAuthentication|Are you sure you want to delete this passkey? Enter your password to continue."
+msgstr ""
+
 msgid "ProfilesAuthentication|Default 2FA method:"
+msgstr ""
+
+msgid "ProfilesAuthentication|Delete passkey"
+msgstr ""
+
+msgid "ProfilesAuthentication|Increase your account's security by enabling passkeys and two-factor authentication."
+msgstr ""
+
+msgid "ProfilesAuthentication|Last used"
+msgstr ""
+
+msgid "ProfilesAuthentication|Manage authentication"
+msgstr ""
+
+msgid "ProfilesAuthentication|Manage passkeys"
+msgstr ""
+
+msgid "ProfilesAuthentication|No passkeys added."
 msgstr ""
 
 msgid "ProfilesAuthentication|One-time password authenticator"
@@ -50201,10 +50237,19 @@ msgstr ""
 msgid "ProfilesAuthentication|Passkeys"
 msgstr ""
 
+msgid "ProfilesAuthentication|Passkeys allow you to sign in securely with your device instead of a password. Learn more about passkeys."
+msgstr ""
+
+msgid "ProfilesAuthentication|Passkeys sign-in"
+msgstr ""
+
 msgid "ProfilesAuthentication|Register another 2FA method above to automatically use passkeys as default 2FA."
 msgstr ""
 
 msgid "ProfilesAuthentication|Sign in faster with passkeys"
+msgstr ""
+
+msgid "ProfilesAuthentication|To use passkeys as your default two-factor authentication, please register at least one backup 2FA method first below."
 msgstr ""
 
 msgid "ProfilesAuthentication|Use passkey as 2FA"
