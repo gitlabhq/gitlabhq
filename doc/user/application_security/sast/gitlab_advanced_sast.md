@@ -22,7 +22,6 @@ title: GitLab Advanced SAST
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/474094) in GitLab 17.3.
 - Support for Java Server Pages (JSP) added in GitLab 17.4.
 - Support for PHP [added](https://gitlab.com/groups/gitlab-org/-/epics/14273) in GitLab 18.1.
-- Support for C/C++ [added](https://gitlab.com/groups/gitlab-org/-/epics/14271) in GitLab 18.6.
 
 {{< /history >}}
 
@@ -120,7 +119,6 @@ SAST diff-based scanning option.
 GitLab Advanced SAST supports the following languages with cross-function and cross-file taint analysis:
 
 - C# (up to and including 10.0)
-- C/C++<sup>1</sup>
 - Go
 - Java, including Java Server Pages (JSP)
 - JavaScript, TypeScript
@@ -128,13 +126,7 @@ GitLab Advanced SAST supports the following languages with cross-function and cr
 - Python
 - Ruby
 
-**Footnotes**:
-
-1. C/C++ support is based on the [clang static analyzer](https://clang-analyzer.llvm.org/) and
-   requires additional configuration (such as a compilation database) to be used with GitLab
-   Advanced SAST. For details, see [C/C++ configuration](clangsa.md).
-
-#### PHP known issues
+### PHP known issues
 
 When analyzing PHP code, GitLab Advanced SAST has the following limitations:
 
@@ -162,7 +154,7 @@ To ensure complete coverage, a full scan runs on the default branch after the me
 When diff-based scanning is enabled:
 
 - Only files that were modified or added in the merge request, along with their dependent files, are scanned in merge request pipelines.
-- If enabled, you’ll see the job log print: `Running differential scan`  
+- If enabled, you’ll see the job log print: `Running differential scan`
   If disabled, it prints: `Running full scan`
 - In the **merge request security widget**, a dedicated **Diff-based** tab shows relevant scan findings.
 - In the **Pipeline Security** tab, an alert labeled **Partial SAST report** indicates that only partial findings are included.
