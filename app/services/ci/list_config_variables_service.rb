@@ -31,7 +31,7 @@ module Ci
 
       result = execute_yaml_processor(sha, ref, config)
 
-      result.valid? ? result.root_variables_with_prefill_data : {}
+      result.valid? ? valid_config_result(result) : {}
     end
 
     # Required for ReactiveCaching, it is also used in `reactive_cache_worker_finder`
@@ -56,5 +56,12 @@ module Ci
         verify_project_sha: sha_passed_as_ref_parameter
       ).execute
     end
+
+    # Overridden in EE
+    def valid_config_result(result)
+      result.root_variables_with_prefill_data
+    end
   end
 end
+
+Ci::ListConfigVariablesService.prepend_mod

@@ -1984,6 +1984,9 @@ msgstr ""
 msgid "/day"
 msgstr ""
 
+msgid "/q test is now supported by using /q dev in an issue or merge request. To generate unit tests for this MR, add an inline comment and enter /q dev along with a comment about the tests you want written."
+msgstr ""
+
 msgid "0"
 msgstr ""
 
@@ -4929,6 +4932,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|Assign a model to enable this feature"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Configure and assign GitLab managed models to AI-native features."
+msgstr ""
+
 msgid "AdminSelfHostedModels|Configure and assign self-hosted models or GitLab managed models to AI-native features."
 msgstr ""
 
@@ -7450,12 +7456,6 @@ msgstr ""
 msgid "AmazonQ|Create an identity provider for this GitLab instance within AWS using the following values. %{helpStart}Learn more%{helpEnd}."
 msgstr ""
 
-msgid "AmazonQ|Create unit tests for selected lines of code in Java or Python files"
-msgstr ""
-
-msgid "AmazonQ|Create unit tests for this merge request"
-msgstr ""
-
 msgid "AmazonQ|Delete the IAM identity provider created for AI gateway."
 msgstr ""
 
@@ -7613,9 +7613,6 @@ msgid "AmazonQ|dev"
 msgstr ""
 
 msgid "AmazonQ|review"
-msgstr ""
-
-msgid "AmazonQ|test"
 msgstr ""
 
 msgid "AmazonQ|transform"
@@ -24811,6 +24808,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Configuration source"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Convert to gitlab ci"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Could not display logs. Please try again."
 msgstr ""
 
@@ -24886,6 +24886,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Flow"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Flow Name"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Flow trigger created successfully."
 msgstr ""
 
@@ -24952,6 +24955,9 @@ msgstr ""
 msgid "DuoAgentsPlatform|Prompt"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Raw text search is not currently supported. Please use the available search tokens."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Read file"
 msgstr ""
 
@@ -24962,6 +24968,9 @@ msgid "DuoAgentsPlatform|Search"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Search files"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Search for a session"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Search issues"
@@ -24983,6 +24992,9 @@ msgid "DuoAgentsPlatform|Select user"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Service account user"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Software Development"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Something went wrong while fetching Agent Flows"
@@ -44906,6 +44918,9 @@ msgstr ""
 msgid "Observability|Are you sure you want to delete the observability service settings? This action cannot be undone."
 msgstr ""
 
+msgid "Observability|Are you sure you want to delete this O11y service setting?"
+msgstr ""
+
 msgid "Observability|Authentication failed"
 msgstr ""
 
@@ -44952,6 +44967,9 @@ msgid "Observability|Custom dashboards with anomaly-based alerting and intellige
 msgstr ""
 
 msgid "Observability|Danger Zone"
+msgstr ""
+
+msgid "Observability|Delete"
 msgstr ""
 
 msgid "Observability|Delete settings"
@@ -45009,6 +45027,9 @@ msgid "Observability|Experimental functionality"
 msgstr ""
 
 msgid "Observability|Failed to create O11y service settings"
+msgstr ""
+
+msgid "Observability|Failed to delete O11y service settings"
 msgstr ""
 
 msgid "Observability|Failed to delete observability service settings."
@@ -45149,10 +45170,13 @@ msgstr ""
 msgid "Observability|Observability service settings updated successfully."
 msgstr ""
 
-msgid "Observability|Observability settings for group ID %{group_id} created successfully."
+msgid "Observability|Observability settings for group %{group_name} created successfully."
 msgstr ""
 
-msgid "Observability|Observability settings for group ID %{group_id} updated successfully."
+msgid "Observability|Observability settings for group %{group_name} deleted successfully."
+msgstr ""
+
+msgid "Observability|Observability settings for group %{group_name} updated successfully."
 msgstr ""
 
 msgid "Observability|OpenTelemetry Native"
@@ -45237,6 +45261,9 @@ msgid "Observability|Try selecting a different period."
 msgstr ""
 
 msgid "Observability|Unified Platform"
+msgstr ""
+
+msgid "Observability|Unknown group"
 msgstr ""
 
 msgid "Observability|Up to one business day"
@@ -69994,6 +70021,12 @@ msgstr ""
 msgid "Unsubscribes from notifications."
 msgstr ""
 
+msgid "Unsupported issue command: %{command}"
+msgstr ""
+
+msgid "Unsupported merge request command: %{command}"
+msgstr ""
+
 msgid "Unsupported options '%{options}' for exec command '%{command}'. Only '%{supported_options}' are supported."
 msgstr ""
 
@@ -70001,6 +70034,9 @@ msgid "Unsupported signature"
 msgstr ""
 
 msgid "Unsupported sort value."
+msgstr ""
+
+msgid "Unsupported source type: %{source_class}"
 msgstr ""
 
 msgid "Unsupported todo type passed. Supported todo types are: %{todo_types}"

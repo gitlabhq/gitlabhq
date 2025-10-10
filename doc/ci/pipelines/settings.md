@@ -217,7 +217,7 @@ a repository.
 
 Newly created projects have a default `git depth` value of `20`.
 
-This value can be overridden by the [`GIT_DEPTH` variable](../../user/project/repository/monorepos/_index.md#use-shallow-clones-in-cicd-processes)
+This value can be overridden by the [`GIT_DEPTH` variable](../../user/project/repository/monorepos/_index.md#use-shallow-clones-and-filters-in-cicd-processes)
 in the `.gitlab-ci.yml` file.
 
 ## Set a limit for how long jobs can run

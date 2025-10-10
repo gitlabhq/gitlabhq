@@ -47,7 +47,7 @@ such as:
   in CI/CD settings from `clone` to `fetch` or `none`.
 - [Stop fetching tags](_index.md#change-git-fetch-behavior-with-flags),
   unless your tests require them.
-- [Use shallow clones](_index.md#use-shallow-clones-in-cicd-processes)
+- [Use shallow clones](_index.md#use-shallow-clones-and-filters-in-cicd-processes)
   whenever possible.
 
 The other option is to increase CPU capacity on Gitaly servers.

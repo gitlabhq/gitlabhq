@@ -41,8 +41,8 @@ module Experimental
 
       if result.success?
         flash[:success] = format(
-          s_('Observability|Observability settings for group ID %{group_id} created successfully.'),
-          group_id: group.id
+          s_('Observability|Observability settings for group %{group_name} created successfully.'),
+          group_name: group.name
         )
         redirect_to new_experimental_o11y_service_setting_url
       else
@@ -65,14 +65,31 @@ module Experimental
 
       if result.success?
         flash[:success] = format(
-          s_('Observability|Observability settings for group ID %{group_id} updated successfully.'),
-          group_id: @o11y_service_settings.group.id
+          s_('Observability|Observability settings for group %{group_name} updated successfully.'),
+          group_name: @o11y_service_settings.group&.name || s_('Observability|Unknown group')
         )
         redirect_to experimental_o11y_service_settings_path
       else
         flash[:alert] = s_('Observability|Failed to update O11y service settings')
         render :edit, status: :unprocessable_entity
       end
+    end
+
+    def destroy
+      @o11y_service_settings = find_o11y_service_setting
+      return render_404 unless @o11y_service_settings
+
+      group_name = @o11y_service_settings.group&.name || s_('Observability|Unknown group')
+      if @o11y_service_settings.destroy
+        flash[:success] = format(
+          s_('Observability|Observability settings for group %{group_name} deleted successfully.'),
+          group_name: group_name
+        )
+      else
+        flash[:alert] = s_('Observability|Failed to delete O11y service settings')
+      end
+
+      redirect_to experimental_o11y_service_settings_path, status: :see_other
     end
 
     private

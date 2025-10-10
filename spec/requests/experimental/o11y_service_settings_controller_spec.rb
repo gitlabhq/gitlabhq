@@ -205,8 +205,8 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
               expect(response).to redirect_to(new_experimental_o11y_service_setting_url)
               expect(flash[:success]).to eq(
                 format(
-                  s_('Observability|Observability settings for group ID %{group_id} created successfully.'),
-                  group_id: group.id
+                  s_('Observability|Observability settings for group %{group_name} created successfully.'),
+                  group_name: group.name
                 )
               )
             end
@@ -417,6 +417,75 @@ RSpec.describe Experimental::O11yServiceSettingsController, feature_category: :o
       let(:make_request) do
         patch experimental_o11y_service_setting_path(999999),
           params: { observability_group_o11y_setting: build_settings_params }
+      end
+
+      it 'returns 404' do
+        make_request
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
+  describe 'DELETE #destroy' do
+    let_it_be(:o11y_setting) { create(:observability_group_o11y_setting, group: group) }
+    let(:make_request) do
+      delete experimental_o11y_service_setting_path(o11y_setting)
+    end
+
+    include_examples 'requires authentication'
+    include_examples 'requires experimental access'
+
+    context 'when user is authenticated and has experimental access' do
+      before do
+        stub_feature_flags(experimental_group_o11y_settings_access: user)
+      end
+
+      context 'when destroy is successful' do
+        it 'redirects to index with success message' do
+          make_request
+
+          aggregate_failures do
+            expect(response).to redirect_to(experimental_o11y_service_settings_path)
+            expect(flash[:success]).to include('deleted successfully')
+            expect(flash[:success]).to include(o11y_setting.group.name.to_s)
+          end
+        end
+
+        it 'deletes the o11y service setting' do
+          expect { make_request }.to change { Observability::GroupO11ySetting.count }.by(-1)
+        end
+      end
+
+      context 'when destroy fails' do
+        let(:mocked_setting) { instance_double(Observability::GroupO11ySetting, group: group, destroy: false) }
+
+        before do
+          allow(Observability::GroupO11ySetting).to receive(:find_by_id)
+            .with(o11y_setting.id.to_s).and_return(mocked_setting)
+        end
+
+        it 'redirects to index with error message' do
+          make_request
+
+          aggregate_failures do
+            expect(response).to redirect_to(experimental_o11y_service_settings_path)
+            expect(flash[:alert]).to eq('Failed to delete O11y service settings')
+          end
+        end
+
+        it 'does not delete the o11y service setting' do
+          expect { make_request }.not_to change { Observability::GroupO11ySetting.count }
+        end
+      end
+    end
+
+    context 'when o11y service setting is not found' do
+      before do
+        stub_feature_flags(experimental_group_o11y_settings_access: user)
+      end
+
+      let(:make_request) do
+        delete experimental_o11y_service_setting_path(999999)
       end
 
       it 'returns 404' do

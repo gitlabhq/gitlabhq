@@ -6,6 +6,14 @@ description: Create structured, queryable representations of code repositories t
 title: GitLab Knowledge Graph
 ---
 
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
+
+{{< /details >}}
+
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/rust/-/epics/11) as an [experiment](../../../../policy/development_stages_support.md#experiment) in GitLab 18.3.

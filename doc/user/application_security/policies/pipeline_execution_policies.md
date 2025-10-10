@@ -803,6 +803,52 @@ project-job:
 
 In this case, the job variable value `Project job variable value` takes precedence.
 
+### Prefill variables in manually-run pipelines
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/527021) in GitLab 18.5.
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
+This feature does not work with pipeline execution policies created before GitLab 18.5.
+To use this feature with older pipeline execution policies, copy, delete, and recreate the policies.
+For more information, see [recreate pipeline execution policies](#recreate-pipeline-execution-policies).
+
+{{< /alert >}}
+
+You can use the `description`, `value` and `options` keywords to define CI/CD variables
+that are [prefilled when a user runs a pipeline manually](../../../ci/pipelines/_index.md#prefill-variables-in-manual-pipelines).
+Use the description to provide relevant information, such as what the variable is used for and what the acceptable values are.
+
+You cannot prefill job-specific variables.
+
+In manually-triggered pipelines, the **New pipeline** page displays all pipeline variables that have a `description` defined in the CI/CD configuration, from all applicable policies.
+
+You must configure the prefilled variables as allowed using [`variables_override`](pipeline_execution_policies.md#variables_override-type),
+otherwise the values used when manually triggering the pipelines are ignored.
+
+#### Recreate pipeline execution policies
+
+To recreate a pipeline execution policy:
+
+<!-- markdownlint-disable MD044 -->
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure** > **Policies**.
+1. Select the pipeline execution policy you want to recreate.
+1. On the right sidebar, select the **YAML** tab and copy the contents of the entire policy file.
+1. Next to the policies table, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}), and select **Delete**.
+1. Merge the generated merge request.
+1. Go back to **Secure** > **Policies** and select **New policy**.
+1. In the **Pipeline execution policy** section, select **Select policy**.
+1. In the **.yaml mode**, paste the contents of the old policy.
+1. Select **Update via merge request** and merge the generated merge request.
+
+<!-- markdownlint-enable MD044 -->
+
 ## Behavior with `[skip ci]`
 
 By default, to prevent a regular pipeline from triggering, users can push a commit to a protected branch with `[skip ci]` in the commit message. However, jobs defined with a pipeline execution policy are always triggered, as the policy ignores the `[skip ci]` directive. This prevents developers from skipping the execution of jobs defined in the policy, which ensures that critical security and compliance checks are always performed.

@@ -40,7 +40,7 @@ Because active secrets can be used to impersonate a legitimate user, they pose a
 greater security risk than inactive secrets. If several secrets are leaked at once,
 knowing which secrets are active is an important part of triage and remediation.
 
-This feature is an [experiment](../../../policy/development_stages_support.md).
+This feature is in [beta](../../../policy/development_stages_support.md).
 
 ## Enable validity checks
 
@@ -129,10 +129,10 @@ When working with validity checks, you might encounter the following issues.
 
 ### Unexpected token status
 
-A token has the possibly active status when GitLab cannot definitively verify its validity.
+A token has the possibly active status when GitLab can't verify its validity.
 This might be because:
 
-- The secret validation hasn't been run.
+- The secret validation job hasn't run.
 - The secret type is not supported by validity checks.
 - There was a problem connecting to the token provider.
 

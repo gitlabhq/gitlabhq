@@ -692,13 +692,12 @@ For information on control groups, see [Cgroups](cgroups.md).
 
 ## Background repository optimization
 
-Empty directories and unneeded configuration settings may accumulate in a repository and
-slow down Git operations. Gitaly can schedule a daily background task with a maximum duration
-to clean up these items and improve performance.
+The way data is stored in the object database of a Git repository can become inefficient over time, which slows down Git operations. You can schedule Gitaly to run a
+daily background task with a maximum duration to clean up these items and improve performance.
 
 {{< alert type="warning" >}}
 
-Background repository optimization is an experimental feature and may place significant load on the host while running.
+Background repository optimization can place significant load on the host while running.
 Make sure to schedule this during off-peak hours and keep the duration short (for example, 30-60 minutes).
 
 {{< /alert >}}

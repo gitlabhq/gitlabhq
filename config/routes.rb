@@ -265,7 +265,7 @@ InitializerConnections.raise_if_new_database_connection do
       end
 
       namespace :experimental do
-        resources :o11y_service_settings, only: [:index, :new, :create, :edit, :update]
+        resources :o11y_service_settings, only: [:index, :new, :create, :edit, :update, :destroy]
       end
     end
     # End of the /-/ scope.
