@@ -980,7 +980,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
       let(:project) { create(:project, :private, :repository) }
 
       it 'redirects the user to sign_in and displays the flash alert' do
-        expect(page).to have_content 'You need to sign in'
+        expect(page).to have_content 'Sign in or sign up before continuing'
         expect(page).to have_current_path("/users/sign_in")
       end
     end

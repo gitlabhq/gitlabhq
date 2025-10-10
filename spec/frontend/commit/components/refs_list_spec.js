@@ -65,11 +65,20 @@ describe('Commit references component', () => {
     );
   });
 
-  it('renders links to refs', () => {
-    const index = 0;
-    const refBadge = findTippingRefs().at(index);
-    const refUrl = `${refsListPropsMock.urlPart}${refsListPropsMock.tippingRefs[index]}?ref_type=${refsListPropsMock.refType}`;
-    expect(refBadge.attributes('href')).toBe(refUrl);
+  it.each`
+    description                       | refs
+    ${'regular refs'}                 | ${['main', 'development']}
+    ${'refs with special characters'} | ${['C#tag', 'C++tag', 'tag/1-2', 'tag@1.2.3']}
+  `('renders links for $description such as refs=$refs', ({ refs }) => {
+    createComponent({ tippingRefs: refs });
+
+    const refBadges = findTippingRefs();
+
+    refs.forEach((ref, index) => {
+      const refBadge = refBadges.at(index);
+      const expectedUrl = `${refsListPropsMock.urlPart}${encodeURIComponent(ref)}?ref_type=${refsListPropsMock.refType}`;
+      expect(refBadge.attributes('href')).toBe(expectedUrl);
+    });
   });
 
   it('does not render list of tipping branches or tags if there is no data', () => {

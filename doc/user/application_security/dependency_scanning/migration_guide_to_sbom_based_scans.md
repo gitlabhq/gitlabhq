@@ -67,22 +67,16 @@ not limited to, the following:
 
 ### A new approach to security scanning
 
-When using the legacy dependency scanning feature, all scanning work happens within your CI/CD pipeline. When running a scan, the Gemnasium analyzer handles two critical tasks simultaneously: it identifies your project's dependencies and immediately performs a security analysis of those dependencies, all within the same CI/CD job.
+When using the legacy dependency scanning feature, all scanning work happens within your CI/CD pipeline. When running a scan, the Gemnasium analyzer handles two critical tasks simultaneously: it identifies your project's dependencies and immediately performs a security analysis of those dependencies using a local copy of the GitLab Advisory Database and its specific security scanning engine. Then, it outputs results into various reports (CycloneDX SBOM and dependency scanning security report).
 
-The dependency scanning using SBOM approach separates these tasks into two distinct phases:
+On the other hand, the dependency scanning using SBOM feature relies on a decomposed dependency analysis approach that separates dependency detection from other analyses, like static reachability or vulnerability scanning. While these tasks are still executed within the same CI job, they function as decoupled, reusable components. For instance, the vulnerability scanning analysis reuses the unified engine, the GitLab SBOM Vulnerability Scanner, that also supports GitLab Continuous Vulnerability Scanning features. This also opens up opportunity for future integration points, enabling more flexible vulnerability scanning workflows.
 
-- First, when you run the new dependency scanning analyzer in the CI/CD pipeline, it focuses solely on creating a comprehensive inventory of your project's dependencies. This inventory is captured in a CycloneDX SBOM (Software Bill of Materials) report.
-- Second, the detected components are sent to the GitLab platform to perform a thorough security analysis using the built-in GitLab SBOM Vulnerability Scanner. You're already benefiting from this scanner with the [continuous vulnerability scanning](../continuous_vulnerability_scanning/_index.md) feature.
-
-This separation of concerns brings several advantages for future enhancements, but it also means some changes are necessary because the security analysis happens outside the CI/CD pipeline.
-This impacts the availability of some functionalities that depend on the security analysis to run in the CI/CD pipeline. Review [the deprecation announcement](../../../update/deprecations.md#dependency-scanning-upgrades-to-the-gitlab-sbom-vulnerability-scanner) for a complete description.
+Read more about how dependency scanning using SBOM [scans an application](dependency_scanning_sbom/_index.md#how-it-scans-an-application).
 
 ### CI/CD configuration
 
-To prevent disruption to your CI/CD pipelines, the new approach is not yet applied to the stable dependency scanning CI/CD template (`Dependency-Scanning.gitlab-ci.yml`) and as of GitLab 17.9, you must use the `latest` template (`Dependency-Scanning.latest.gitlab-ci.yml`) to enable it.
+To prevent disruption to your CI/CD pipelines, the new approach will not be applied to the stable dependency scanning CI/CD template (`Dependency-Scanning.gitlab-ci.yml`) and as of GitLab 18.5, you must use the `v2` template (`Dependency-Scanning.v2.gitlab-ci.yml`) to enable it.
 Other migration paths might be considered as the feature gains maturity.
-
-The latest dependency scanning CI/CD template (`Dependency-Scanning.latest.gitlab-ci.yml`) still maintains backward compatibility by default. It continues to run existing Gemnasium analyzer jobs, while the new dependency scanning analyzer only activates for newly supported languages and package managers. You can opt-in to use the new dependency scanning analyzer for all projects by configuring the `DS_ENFORCE_NEW_ANALYZER` CI/CD variable to `true`.
 
 If you're using [Scan Execution Policies](../policies/scan_execution_policies.md), these changes apply in the same way because they build upon the CI/CD templates.
 
@@ -95,18 +89,16 @@ One significant change affects how dependencies are discovered, particularly for
 This change means you'll need to ensure these files are available, either by committing them to your repository or generating them dynamically during the CI/CD pipeline. While this requires some initial setup, it provides more reliable and consistent results across different environments.
 The following sections will guide you through the specific steps needed to adapt your projects to this new approach if that's necessary.
 
-### Accessing scan results (during Beta only)
+### Accessing scan results
 
-{{< alert type="warning" >}}
+Users can view dependency scanning results as a job artifact (`gl-dependency-scanning-report.json`) when using `Dependency-Scanning.v2.gitlab-ci.yml`.
 
-ADDENDUM: Based on customer feedback, we have decided to reinstate the generation of the dependency scanning report artifact for the Generally Available release.
-However, it will not be available in the Beta release.
-See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/17150) for more details.
+#### Beta behavior
 
-{{< /alert >}}
+Based on customer feedback after releasing the Beta of this feature, we have decided to reinstate the generation of the dependency scanning report artifact for the Generally Available release. The Beta behavior is documented here for transparency and historical reasons but is no longer officially supported for the Generally Available feature and might be removed from the product.
 
 <details>
-  <summary>See Beta behavior</summary>
+  <summary>Expand this section for details of changes to how you access vulnerability scanning results.</summary>
 
   When you migrate to dependency scanning using SBOM, you'll notice a fundamental change in how security scan results are handled. The new approach moves the security analysis out of the CI/CD pipeline and into the GitLab platform, which changes how you access and work with the results.
   With the legacy dependency scanning feature, CI/CD jobs using the Gemnasium analyzer generate a [dependency scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportsdependency_scanning) containing the scan results, and upload it to the platform. You can access these results by all possible ways offered to job artifacts. This means you can process or modify the results within your CI/CD pipeline before they reach the GitLab platform.
@@ -118,7 +110,7 @@ See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/17150) for more det
 ## Identify affected projects
 
 Understanding which of your projects need attention for this migration is an important first step. The most significant impact will be on your Java and Python projects, because the way they handle dependencies is changing fundamentally.
-To help you identify affected projects, GitLab provides the [Dependency Scanning Build Support Detection Helper](https://gitlab.com/security-products/tooling/build-support-detection-helper) tool. This tool examines your GitLab group or GitLab Self-Managed instance and identifies projects that currently use the dependency scanning feature with either the `gemnasium-maven-dependency_scanning` or `gemnasium-python-dependency_scanning` CI/CD jobs.
+To help you identify affected projects, GitLab provides the [dependency scanning Build Support Detection Helper](https://gitlab.com/security-products/tooling/build-support-detection-helper) tool. This tool examines your GitLab group or GitLab Self-Managed instance and identifies projects that currently use the dependency scanning feature with either the `gemnasium-maven-dependency_scanning` or `gemnasium-python-dependency_scanning` CI/CD jobs.
 When you run this tool, it creates a comprehensive report of projects that will need your attention during the migration. Having this information early helps you plan your migration strategy effectively, especially if you manage multiple projects across your organization.
 
 ## Migrate to dependency scanning using SBOM
@@ -129,21 +121,18 @@ To migrate to the dependency scanning using SBOM method, perform the following s
    - If you have manually overridden the `gemnasium-dependency_scanning`, `gemnasium-maven-dependency_scanning`, or `gemnasium-python-dependency_scanning` CI/CD jobs to customize them in a project's `.gitlab-ci.yml` or in the CI/CD configuration for a Pipeline Execution Policy, remove them.
    - If you have configured any of [the impacted CI/CD variables](#changes-to-cicd-variables), adjust your configuration accordingly.
 1. Enable the dependency scanning using SBOM feature with one of the following options:
-   - Use the `latest` dependency scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml` to run the new dependency scanning analyzer:
-     1. Ensure your `.gitlab-ci.yml` CI/CD configuration includes the latest dependency scanning CI/CD template.
-     1. Add the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` and set it to `true`. This variable can be set in many different places, while observing the [CI/CD variable precedence](../../../ci/variables/_index.md#cicd-variable-precedence).
+   - **Recommended**: Use the `v2` dependency scanning CI/CD template `Dependency-Scanning.v2.gitlab-ci.yml` to run the new dependency scanning analyzer:
+     1. Ensure your `.gitlab-ci.yml` CI/CD configuration includes the `v2` dependency scanning CI/CD template.
      1. Adjust your project and your CI/CD configuration if needed by following the language-specific instructions below.
-   - Use the [Scan Execution Policies](../policies/scan_execution_policies.md) to run the new dependency scanning analyzer:
-     1. Edit the configured scan execution policy for dependency scanning and ensure it uses the `latest` template.
-     1. Add the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` and set it to `true`. This variable can be set in many different places, while observing the [CI/CD variable precedence](../../../ci/variables/_index.md#cicd-variable-precedence).
+   - Use the [Scan Execution Policies](dependency_scanning_sbom/_index.md#scan-execution-policies) to run the new dependency scanning analyzer:
+     1. Edit the configured scan execution policy for dependency scanning and ensure it uses the `v2` template.
+     1. Adjust your project and your CI/CD configuration if needed by following the language-specific instructions below.
+   - Use the [Pipeline Execution Policies](dependency_scanning_sbom/_index.md#pipeline-execution-policies) to run the new dependency scanning analyzer:
+     1. Edit the configured pipeline execution policy and ensure it uses the `v2` template.
      1. Adjust your project and your CI/CD configuration if needed by following the language-specific instructions below.
    - Use the [dependency scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) to run the new dependency scanning analyzer:
      1. Replace the dependency scanning CI/CD template's `include` statement with the dependency scanning CI/CD component in your `.gitlab-ci.yml` CI/CD configuration.
      1. Adjust your project and your CI/CD configuration if needed by following the language-specific instructions below.
-   - Use your own CycloneDX SBOM document:
-     1. Remove the dependency scanning CI/CD template's `include` statement from your `.gitlab-ci.yml` CI/CD configuration.
-     1. Ensure a compatible SBOM document is generated by a CI/CD job and uploaded as a [CycloneDX SBOM report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx).
-1. Adjust any workflow depending on the [dependency_scanning report artifacts](../../../ci/yaml/artifacts_reports.md#artifactsreportsdependency_scanning) which are no longer uploaded.
 
 For multi-language projects, complete all relevant language-specific migration steps.
 
@@ -329,7 +318,7 @@ There are no additional steps to migrate a NuGet project to use the dependency s
 
 **Previous behavior**: dependency scanning based on the Gemnasium analyzer supports pip projects using the `gemnasium-python-dependency_scanning` CI/CD job to extract the project dependencies by building the application from the `requirements.txt` file (`requirements.pip` and `requires.txt` alternate filenames are also supported). The `PIP_REQUIREMENTS_FILE` environment variable can also be used to specify a custom filename. The combinations of supported versions for Python and pip are detailed in the [dependency scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-running-a-package-manager-to-generate-a-parsable-file).
 
-**New behavior**: The new dependency scanning analyzer does not build the project to extract the dependencies. Instead, the project must provide a `requirements.txt` lockfile generated by the [pip-compile command line tool](https://pip-tools.readthedocs.io/en/latest/cli/pip-compile/). This file is processed by the `dependency-scanning` CI/CD job to generate a CycloneDX SBOM report artifact. This approach does not require GitLab to support specific versions of Python and pip. The `DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN` environment variable can also be used to specify custom filenames for pip-compile lockfiles.
+**New behavior**: The new dependency scanning analyzer does not build the project to extract the dependencies. Instead, the project must provide a `requirements.txt` lockfile generated by the [pip-compile command line tool](https://pip-tools.readthedocs.io/en/latest/cli/pip-compile/). This file is processed by the `dependency-scanning` CI/CD job to generate a CycloneDX SBOM report artifact. This approach does not require GitLab to support specific versions of Python and pip. The `pipcompile_requirements_file_name_pattern` spec input or the `DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN` variable can also be used to specify custom filenames for pip-compile lockfiles.
 
 Alternatively, the project can provide a `pipdeptree.json` file generated with the [pipdeptree command line utility](https://pypi.org/project/pipdeptree/).
 
@@ -542,7 +531,6 @@ Remove the following CI/CD variables from your CI/CD configuration:
 
 Keep the following CI/CD variables as they are applicable to the new dependency scanning analyzer:
 
-- `DS_EXCLUDED_ANALYZERS`*
 - `DS_EXCLUDED_PATHS`
 - `DS_INCLUDE_DEV_DEPENDENCIES`
 - `DS_MAX_DEPTH`
@@ -550,14 +538,22 @@ Keep the following CI/CD variables as they are applicable to the new dependency 
 
 {{< alert type="note" >}}
 
-The `PIP_REQUIREMENTS_FILE` is replaced with `DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN` in the new dependency scanning analyzer.
-
-The `DS_EXCLUDED_ANALYZERS` can now contain a new value `dependency-scanning` to prevent the new dependency scanning analyzer job from running.
+The `PIP_REQUIREMENTS_FILE` is replaced with `DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN` or `pipcompile_requirements_file_name_pattern` spec input in the new dependency scanning analyzer.
 
 {{< /alert >}}
 
-## Continue with the Gemnasium analyzer
+In order to have a smoother transition with user configurations (especially Scan Execution Policies), the `v2` template is backwards compatible with the following configuration variables (these variables take precedence over their corresponding `spec:inputs`).
+These variables are:
 
-You can continue using the deprecated Gemnasium analyzer with your existing CI/CD configuration, including all your current CI/CD variables.
-GitLab will continue to support it until the [dependency scanning using SBOM](dependency_scanning_sbom/_index.md) feature and the [new dependency scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning)
-are Generally Available. This work is tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/15961)
+- `DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN`
+- `DS_MAX_DEPTH`
+- `DS_EXCLUDED_PATHS`
+- `DS_INCLUDE_DEV_DEPENDENCIES`
+- `DS_STATIC_REACHABILITY_ENABLED`
+- `SECURE_LOG_LEVEL`
+
+In addition, 3 more variables are added. These were not in `latest` template and control the vulnerability scanning API functionality.
+
+- `DS_API_TIMEOUT`
+- `DS_API_SCAN_DOWNLOAD_DELAY`
+- `DS_ENABLE_VULNERABILITY_SCAN`

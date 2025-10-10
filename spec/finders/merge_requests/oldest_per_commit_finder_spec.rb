@@ -159,5 +159,47 @@ RSpec.describe MergeRequests::OldestPerCommitFinder, feature_category: :code_rev
 
       expect(described_class.new(project).execute(commits)).to eq(sha => mr1)
     end
+
+    it 'includes the merge request for a commit coming from a generated ref commit' do
+      project = create(:project)
+      sha = Digest::SHA1.hexdigest('foo')
+      mr = create(
+        :merge_request,
+        :merged,
+        target_project: project,
+        merge_commit_sha: sha
+      )
+
+      create(:merge_request_generated_ref_commit, project: project, merge_request: mr)
+
+      commits = [instance_double(Commit, id: MergeRequests::GeneratedRefCommit.first.commit_sha)]
+
+      expect(described_class.new(project).execute(commits)).to eq(
+        MergeRequests::GeneratedRefCommit.first.commit_sha => mr
+      )
+    end
+
+    context 'when feature include_generated_ref_commits_in_changelog is disabled' do
+      before do
+        stub_feature_flags(include_generated_ref_commits_in_changelog: false)
+      end
+
+      it 'does not include the merge request for a commit coming from a generated ref commit' do
+        project = create(:project)
+        sha = Digest::SHA1.hexdigest('foo')
+        mr = create(
+          :merge_request,
+          :merged,
+          target_project: project,
+          merge_commit_sha: sha
+        )
+
+        create(:merge_request_generated_ref_commit, project: project, merge_request: mr)
+
+        commits = [instance_double(Commit, id: MergeRequests::GeneratedRefCommit.first.commit_sha)]
+
+        expect(described_class.new(project).execute(commits)).to be_empty
+      end
+    end
   end
 end

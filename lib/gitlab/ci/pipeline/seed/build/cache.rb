@@ -62,7 +62,13 @@ module Gitlab
             end
 
             def hash_of_file_contents
-              content_hashes = files.map { |path| git_content_hash_for_path(path) }
+              return unless files.any?
+
+              blob_references = files.map { |path| [@pipeline.sha, path] }
+              content_hashes = @pipeline.project.repository
+                .blobs_at(blob_references, blob_size_limit: 0)
+                .map(&:id)
+
               digest_from_hashes(content_hashes)
             end
 
@@ -82,10 +88,6 @@ module Gitlab
 
             def files_commits_files
               @key[:files_commits].to_a.select(&:present?).uniq
-            end
-
-            def git_content_hash_for_path(path)
-              @pipeline.project.repository.git_content_hash_for_path(@pipeline.sha, path)
             end
 
             def last_commit_id_for_path(path)

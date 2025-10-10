@@ -13,6 +13,7 @@ import WorkItemBulkEditSidebar from '~/work_items/components/work_item_bulk_edit
 import WorkItemHealthStatus from '~/work_items/components/work_item_health_status.vue';
 import WorkItemListHeading from '~/work_items/components/work_item_list_heading.vue';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
+import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_any_issues.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -136,6 +137,7 @@ describeSkipVue3(skipReason, () => {
   const findWorkItemHealthStatus = () => wrapper.findComponent(WorkItemHealthStatus);
   const findDrawer = () => wrapper.findComponent(WorkItemDrawer);
   const findEmptyStateWithoutAnyIssues = () => wrapper.findComponent(EmptyStateWithoutAnyIssues);
+  const findEmptyStateWithAnyIssues = () => wrapper.findComponent(EmptyStateWithAnyIssues);
   const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
   const findBulkEditStartButton = () => wrapper.findByTestId('bulk-edit-start-button');
   const findBulkEditSidebar = () => wrapper.findComponent(WorkItemBulkEditSidebar);
@@ -228,6 +230,7 @@ describeSkipVue3(skipReason, () => {
         canImportWorkItems: true,
         isIssueRepositioningDisabled,
         hasProjects,
+        newIssuePath: '',
         ...provide,
       },
       propsData: {
@@ -1652,6 +1655,65 @@ describeSkipVue3(skipReason, () => {
         await waitForPromises();
 
         expect(findImportIssuesButton().exists()).toBe(false);
+      });
+    });
+
+    describe('when there are work items', () => {
+      describe('in group context', () => {
+        const emptyCountsWithIssueResponse = cloneDeep(groupWorkItemStateCountsQueryResponse);
+        emptyCountsWithIssueResponse.data.group.workItemStateCounts = {
+          all: 1,
+          closed: 1,
+          opened: 0,
+        };
+        const emptyStateConfig = {
+          ...getEmptyQueryHandler({ emptyCounts: emptyCountsWithIssueResponse }),
+        };
+
+        it('renders the with issues empty state and the new resource dropdown', async () => {
+          mountComponent({
+            ...emptyStateConfig,
+            provide: {
+              isProject: false,
+              isGroupIssuesList: true,
+            },
+          });
+
+          await waitForPromises();
+
+          expect(findEmptyStateWithAnyIssues().exists()).toBe(true);
+          expect(findNewResourceDropdown().exists()).toBe(true);
+        });
+      });
+
+      describe('in project context', () => {
+        const emptyCountsWithIssueResponse = cloneDeep(groupWorkItemStateCountsQueryResponse);
+        emptyCountsWithIssueResponse.data.project = {
+          id: 'gid://gitlab/Project/1',
+          workItemStateCounts: {
+            all: 1,
+            closed: 1,
+            open: 0,
+          },
+        };
+        const emptyStateConfig = {
+          ...getEmptyQueryHandler({ emptyCounts: emptyCountsWithIssueResponse }),
+        };
+
+        it('renders the with issues empty state and the CreateWorkItemModal', async () => {
+          mountComponent({
+            ...emptyStateConfig,
+            provide: {
+              isProject: true,
+              isGroupIssuesList: false,
+            },
+          });
+
+          await waitForPromises();
+
+          expect(findEmptyStateWithAnyIssues().exists()).toBe(true);
+          expect(findCreateWorkItemModal().exists()).toBe(true);
+        });
       });
     });
   });

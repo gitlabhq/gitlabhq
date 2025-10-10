@@ -392,26 +392,42 @@ describe('CE IssuesListApp component', () => {
           CREATION_CONTEXT_LIST_ROUTE,
         );
       });
+
+      it('renders in empty state with issues when issuesListCreateModal is on', async () => {
+        wrapper = mountComponent({
+          provide: { glFeatures: { issuesListCreateModal: true } },
+          issuesQueryResponse: jest.fn().mockResolvedValue(getIssuesQueryEmptyResponse),
+        });
+
+        await waitForPromises();
+
+        const emptyStateComponent = wrapper.findComponent(EmptyStateWithAnyIssues);
+        expect(emptyStateComponent.findComponent(CreateWorkItemModal).exists()).toBe(true);
+      });
     });
 
     describe('new issue button', () => {
       it('renders when user has permissions', () => {
         wrapper = mountComponent({ provide: { showNewIssueLink: true }, mountFn: mount });
 
-        expect(findGlButton().text()).toBe('New issue');
+        expect(findGlButton().text()).toBe('Create issue');
         expect(findGlButton().attributes('href')).toBe(defaultProvide.newIssuePath);
       });
 
       it('does not render when user does not have permissions', () => {
         wrapper = mountComponent({ provide: { showNewIssueLink: false }, mountFn: mount });
 
-        expect(findGlButtons().filter((button) => button.text() === 'New issue')).toHaveLength(0);
+        expect(findGlButtons().filter((button) => button.text() === 'Create issue')).toHaveLength(
+          0,
+        );
       });
 
       it('does not render when `issuesListCreateModal` is enabled', () => {
         wrapper = mountComponent({ provide: { glFeatures: { issuesListCreateModal: true } } });
 
-        expect(findGlButtons().filter((button) => button.text() === 'New issue')).toHaveLength(0);
+        expect(findGlButtons().filter((button) => button.text() === 'Create issue')).toHaveLength(
+          0,
+        );
       });
     });
 
@@ -434,6 +450,16 @@ describe('CE IssuesListApp component', () => {
         });
 
         expect(findNewResourceDropdown().exists()).toBe(false);
+      });
+
+      it('renders in empty state with issues in group context', () => {
+        wrapper = mountComponent({
+          provide: { hasAnyIssues: true, isProject: false },
+          mountFn: mount,
+        });
+
+        const emptyStateComponent = wrapper.findComponent(EmptyStateWithAnyIssues);
+        expect(emptyStateComponent.findComponent(NewResourceDropdown).exists()).toBe(true);
       });
     });
   });

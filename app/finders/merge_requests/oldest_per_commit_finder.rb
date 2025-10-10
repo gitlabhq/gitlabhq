@@ -46,21 +46,42 @@ module MergeRequests
 
       return mapping if remaining.empty?
 
-      id_rows = MergeRequestDiffCommit
-        .oldest_merge_request_id_per_commit(@project.id, remaining)
+      merge_requests_for_mapping(mapping, remaining)
+      mapping
+    end
+
+    private
+
+    def merge_requests_for_mapping(mapping, remaining)
+      merge_request_diff_commit_rows =
+        MergeRequestDiffCommit
+          .oldest_merge_request_id_per_commit(@project.id, remaining)
+
+      if Feature.enabled?(:include_generated_ref_commits_in_changelog, @project)
+        generated_ref_commit_rows = GeneratedRefCommit.oldest_merge_request_id_per_commit(@project.id, remaining)
+      end
+
+      id_rows = merge_request_diff_commit_rows
+      id_rows += generated_ref_commit_rows if Feature.enabled?(:include_generated_ref_commits_in_changelog, @project)
 
       mrs = MergeRequest
         .preload_target_project
         .id_in(id_rows.map { |r| r[:merge_request_id] })
         .index_by(&:id)
 
-      id_rows.each do |row|
+      merge_request_diff_commit_rows.each do |row|
         if (mr = mrs[row[:merge_request_id]])
           mapping[row[:sha]] = mr
         end
       end
 
-      mapping
+      return unless Feature.enabled?(:include_generated_ref_commits_in_changelog, @project)
+
+      generated_ref_commit_rows.each do |row|
+        if (mr = mrs[row[:merge_request_id]])
+          mapping[row[:commit_sha]] = mr
+        end
+      end
     end
   end
 end

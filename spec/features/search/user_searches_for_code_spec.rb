@@ -144,7 +144,7 @@ RSpec.describe 'User searches for code', :js, :disable_rate_limiter, feature_cat
       it 'is redirected to login page' do
         visit(search_path)
 
-        expect(page).to have_content('You need to sign in or sign up before continuing.')
+        expect(page).to have_content('Sign in or sign up before continuing.')
       end
     end
   end

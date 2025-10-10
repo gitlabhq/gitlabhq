@@ -73,15 +73,8 @@ class WebHookService
 
     return ServiceResponse.error(message: 'Hook disabled') if disabled?
 
-    if rate_limit!
-      log_rate_limited
-      create_broadcast_message("Webhook rate limit exceeded")
-      return ServiceResponse.error(message: 'Webhook rate limit exceeded')
-    end
-
     if recursion_blocked?
       log_recursion_blocked
-      create_broadcast_message("Recursive webhook blocked")
       return ServiceResponse.error(message: 'Recursive webhook blocked')
     end
 
@@ -124,18 +117,8 @@ class WebHookService
   def async_execute
     Gitlab::ApplicationContext.with_context(hook.application_context) do
       break log_silent_mode_enabled if Gitlab::SilentMode.enabled?
-
-      if rate_limit!
-        log_rate_limited
-        create_broadcast_message("Webhook rate limit exceeded")
-        break
-      end
-
-      if recursion_blocked?
-        log_recursion_blocked
-        create_broadcast_message("Recursive webhook blocked")
-        break
-      end
+      break log_rate_limited if rate_limit!
+      break log_recursion_blocked if recursion_blocked?
 
       params = {
         "recursion_detection_request_uuid" => Gitlab::WebHooks::RecursionDetection::UUID.instance.request_uuid,
@@ -341,48 +324,5 @@ class WebHookService
 
   def raise_custom_webhook_template_error!(message)
     raise CustomWebHookTemplateError, "Error while parsing rendered custom webhook template: #{message}"
-  end
-
-  def create_broadcast_message(reason)
-    params = broadcast_message_params(reason)
-
-    existing_messages = System::BroadcastMessage.current_banner_messages(
-      current_path: params[:target_path],
-      user_access_level: params[:target_access_levels].first
-    ).select { |current_message| current_message.message == params[:message] }
-
-    return unless existing_messages.empty?
-
-    System::BroadcastMessage.new(params).save!
-  rescue StandardError => e
-    Gitlab::AppLogger.error("Failed to save broadcast message for Webhook ID #{hook.id}, #{reason}")
-    Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e)
-  end
-
-  def broadcast_message_params(reason)
-    hook_type = hook.type.gsub('Hook', '').downcase
-    message = format(s_("WebHooks|%{reason}. Update or delete the following ") +
-      hook_type +
-      s_(" hook: %{hook_name} (ID: %{hook_id})."),
-      reason: reason,
-      hook_name: hook.name,
-      hook_id: hook.id).squish
-
-    base_params = {
-      message: message,
-      starts_at: Time.current,
-      ends_at: 3.months.from_now,
-      dismissable: true,
-      theme: "light-red"
-    }
-
-    case hook
-    when SystemHook
-      base_params.merge(target_path: "/admin", target_access_levels: [])
-    when ProjectHook
-      base_params.merge(target_path: "/#{hook.project.full_path}", target_access_levels: [Gitlab::Access::OWNER])
-    when defined?(GroupHook) && GroupHook
-      base_params.merge(target_path: "/#{hook.group.full_path}", target_access_levels: [Gitlab::Access::OWNER])
-    end
   end
 end

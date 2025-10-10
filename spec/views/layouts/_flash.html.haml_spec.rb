@@ -62,4 +62,14 @@ RSpec.describe 'layouts/_flash' do
       expect(rendered).not_to include('true')
     end
   end
+
+  describe 'with Devise unauthenticated message' do
+    let(:flash) { { flash_type: I18n.t('devise.failure.unauthenticated') } }
+
+    it 'renders message with registration button' do
+      expect(rendered).to include('Sign in or sign up before continuing')
+      expect(rendered).not_to include('js-close')
+      expect(rendered).to have_selector(".btn[href='/users/sign_up']")
+    end
+  end
 end

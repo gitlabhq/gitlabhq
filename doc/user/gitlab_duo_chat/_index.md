@@ -70,10 +70,16 @@ If you have GitLab Self-Managed: Use GitLab 17.2 and later for the best user exp
 
 ## Use GitLab Duo Chat in the GitLab UI
 
+{{< history >}}
+
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/562168) to be available on all pages in the GitLab UI for GitLab.com in GitLab 18.5.
+
+{{< /history >}}
+
 Prerequisites:
 
 - You must have access to GitLab Duo Chat and GitLab Duo must be turned on.
-- You must be where Chat is available. It is not available on:
+- On GitLab Self-Managed, you must be where Chat is available. It is not available on:
   - The **Your work** pages, like the To-Do List.
   - Your **User settings** page.
   - The **Help** menu.

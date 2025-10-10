@@ -22,7 +22,7 @@ You might get the following message prompting you to sign in to GitLab.com
 when you're already signed in:
 
 ```plaintext
-You need to sign in or sign up before continuing.
+Sign in or sign up before continuing.
 ```
 
 The GitLab for Jira Cloud app uses an iframe to add groups on the

@@ -9,6 +9,7 @@ import PageHeading from '~/vue_shared/components/page_heading.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT } from '~/tracking/constants';
 import { REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY } from '~/vue_shared/security_reports/constants';
+import BetaBadge from '~/vue_shared/components/badges/beta_badge.vue';
 import {
   AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY,
   TAB_VULNERABILITY_MANAGEMENT_INDEX,
@@ -43,6 +44,7 @@ export default {
     GlTabs,
     LocalStorageSync,
     SectionLayout,
+    BetaBadge,
     UpgradeBanner: () =>
       import('ee_component/security_configuration/components/upgrade_banner.vue'),
     UserCalloutDismisser,
@@ -277,11 +279,10 @@ export default {
         </section-layout>
         <vulnerability-archives v-if="shouldShowVulnerabilityArchives" />
       </gl-tab>
-      <gl-tab
-        v-if="shouldShowSecurityAttributes"
-        :title="s__('SecurityAttributes|Security attributes')"
-        query-param-value="security-attributes"
-      >
+      <gl-tab v-if="shouldShowSecurityAttributes" query-param-value="security-attributes">
+        <template #title>
+          {{ s__('SecurityAttributes|Security attributes') }} <beta-badge class="gl-ml-2" />
+        </template>
         <project-security-attributes-list />
       </gl-tab>
     </gl-tabs>

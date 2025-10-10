@@ -290,7 +290,7 @@ RSpec.describe SearchController, feature_category: :global_search do
               get :show, params: { scope: 'projects', search: '*' }
 
               expect(response).to redirect_to new_user_session_path
-              expect(flash[:alert]).to match(/You need to sign in or sign up before continuing/)
+              expect(flash[:alert]).to include(/Sign in or sign up before continuing/)
             end
           end
         end

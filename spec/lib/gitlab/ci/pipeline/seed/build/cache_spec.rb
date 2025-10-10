@@ -51,6 +51,47 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache, feature_category: :pipe
           expect(subject[:key]).to match(/^1-[a-f0-9]+$/)
           expect(subject[:paths]).to eq(['vendor/ruby'])
         end
+
+        it 'uses a single batched call with zero size limit for performance' do
+          expect(project.repository).to receive(:blobs_at)
+            .once
+            .with(anything, blob_size_limit: 0)
+            .and_call_original
+
+          subject
+        end
+      end
+
+      context 'when some files do not exist' do
+        let(:config) do
+          {
+            key: { files: ['VERSION', 'non-existent-file.txt'] },
+            paths: ['vendor/ruby']
+          }
+        end
+
+        it 'builds cache key from available file hashes, ignoring missing files' do
+          expect(subject[:key]).to match(/^1-[a-f0-9]+$/)
+        end
+      end
+
+      context 'with no files after filtering' do
+        let(:config) do
+          {
+            key: { files: ['', nil, '  '] },
+            paths: ['vendor/ruby']
+          }
+        end
+
+        it 'falls back to default key' do
+          expect(subject[:key]).to eq('1-default')
+        end
+
+        it 'does not call blobs_at when no valid files exist' do
+          expect(project.repository).not_to receive(:blobs_at)
+
+          subject
+        end
       end
 
       context 'with files starting with ./' do

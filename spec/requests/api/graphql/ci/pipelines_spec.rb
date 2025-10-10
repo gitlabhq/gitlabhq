@@ -723,4 +723,68 @@ RSpec.describe 'Query.project(fullPath).pipelines', feature_category: :continuou
       end
     end
   end
+
+  describe 'hasManualActions and hasScheduledActions' do
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be(:pipeline_with_manual) do
+      create(:ci_pipeline, project: project, user: user, merge_request: merge_request)
+    end
+
+    let_it_be(:manual_build) { create(:ci_build, :manual, pipeline: pipeline_with_manual) }
+    let_it_be(:pipeline_with_scheduled) do
+      create(:ci_pipeline, project: project, user: user, merge_request: merge_request)
+    end
+
+    let_it_be(:scheduled_build) { create(:ci_build, :scheduled, pipeline: pipeline_with_scheduled) }
+    let_it_be(:pipeline_with_neither) do
+      create(:ci_pipeline, project: project, user: user, merge_request: merge_request)
+    end
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            pipelines {
+              nodes {
+                hasManualActions
+                hasScheduledActions
+              }
+            }
+          }
+        }
+      )
+    end
+
+    it 'avoids N+1 queries' do
+      first_user = create(:user)
+      second_user = create(:user)
+
+      control_count = ActiveRecord::QueryRecorder.new do
+        post_graphql(query, current_user: first_user)
+      end
+
+      pipeline_4 = create(:ci_pipeline, project: project, merge_request: merge_request)
+      create(:ci_build, :manual, pipeline: pipeline_4)
+
+      pipeline_5 = create(:ci_pipeline, project: project, merge_request: merge_request)
+      create(:ci_build, :scheduled, pipeline: pipeline_5)
+
+      expect do
+        post_graphql(query, current_user: second_user)
+      end.not_to exceed_query_limit(control_count)
+    end
+
+    it 'returns correct values for manual actions' do
+      post_graphql(query, current_user: user)
+
+      expect(graphql_data_at(:project, :pipelines, :nodes, :has_manual_actions)).to contain_exactly(false, false, true)
+    end
+
+    it 'returns correct values for scheduled actions' do
+      post_graphql(query, current_user: user)
+
+      expect(graphql_data_at(:project, :pipelines, :nodes,
+        :has_scheduled_actions)).to contain_exactly(false, true, false)
+    end
+  end
 end

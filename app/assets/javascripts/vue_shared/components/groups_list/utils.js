@@ -22,37 +22,35 @@ export const availableGraphQLGroupActions = ({
     return [];
   }
 
-  const availableActions = [];
+  // Rules
+  const canEdit = userPermissions.viewEditPage;
+  const canArchive = userPermissions.archiveGroup && !archived && gon.features?.archiveGroup;
+  const canUnarchive = userPermissions.archiveGroup && archived;
+  const canRestore = userPermissions.removeGroup && isSelfDeletionScheduled;
+  const { canLeave } = userPermissions;
+  // Groups that are not marked for deletion can be deleted (delayed)
+  const canDelete = userPermissions.removeGroup && !markedForDeletion;
+  // Groups with self deletion scheduled can be deleted immediately if the
+  // allow_immediate_namespaces_deletion application setting is enabled
+  const canDeleteImmediately =
+    userPermissions.removeGroup &&
+    isSelfDeletionScheduled &&
+    gon?.allow_immediate_namespaces_deletion;
 
-  if (userPermissions.viewEditPage) {
-    availableActions.push(ACTION_EDIT);
-  }
+  // Actions mapped to rules
+  const actions = {
+    [ACTION_EDIT]: canEdit,
+    [ACTION_ARCHIVE]: canArchive,
+    [ACTION_UNARCHIVE]: canUnarchive,
+    [ACTION_RESTORE]: canRestore,
+    [ACTION_LEAVE]: canLeave,
+    [ACTION_DELETE]: canDelete,
+    [ACTION_DELETE_IMMEDIATELY]: canDeleteImmediately,
+  };
 
-  if (userPermissions.archiveGroup) {
-    if (archived) {
-      availableActions.push(ACTION_UNARCHIVE);
-    } else if (gon.features?.archiveGroup) {
-      availableActions.push(ACTION_ARCHIVE);
-    }
-  }
-
-  if (userPermissions.removeGroup && isSelfDeletionScheduled) {
-    availableActions.push(ACTION_RESTORE);
-  }
-
-  if (userPermissions.canLeave) {
-    availableActions.push(ACTION_LEAVE);
-  }
-
-  if (userPermissions.removeGroup) {
-    // Groups that are not marked for deletion can be deleted (delayed)
-    if (!markedForDeletion) {
-      availableActions.push(ACTION_DELETE);
-      // Groups with self deletion scheduled can be deleted immediately
-    } else if (isSelfDeletionScheduled && gon?.allow_immediate_namespaces_deletion) {
-      availableActions.push(ACTION_DELETE_IMMEDIATELY);
-    }
-  }
+  const availableActions = Object.entries(actions).flatMap(([action, isAvailable]) =>
+    isAvailable ? [action] : [],
+  );
 
   return availableActions;
 };

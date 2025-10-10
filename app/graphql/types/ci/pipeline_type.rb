@@ -221,6 +221,16 @@ module Types
 
       field :manual_variables, PipelineManualVariableType.connection_type, null: true, method: :variables, description: 'CI/CD variables added to a manual pipeline.'
 
+      field :has_manual_actions, GraphQL::Types::Boolean,
+        null: false,
+        resolver_method: :has_manual_actions?,
+        description: 'Indicates if the pipeline has manual actions.'
+
+      field :has_scheduled_actions, GraphQL::Types::Boolean,
+        null: false,
+        resolver_method: :has_scheduled_actions?,
+        description: 'Indicates if the pipeline has scheduled actions.'
+
       def commit
         BatchLoader::GraphQL.wrap(object.commit)
       end
@@ -274,6 +284,14 @@ module Types
         return pipeline.short_sha if format == Types::ShaFormatEnum.enum[:short]
 
         pipeline.sha
+      end
+
+      def has_manual_actions?
+        object.association(:manual_actions).loaded? ? object.manual_actions.any? : object.manual_actions.exists?
+      end
+
+      def has_scheduled_actions?
+        object.association(:scheduled_actions).loaded? ? object.scheduled_actions.any? : object.scheduled_actions.exists?
       end
 
       alias_method :pipeline, :object

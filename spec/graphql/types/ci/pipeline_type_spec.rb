@@ -68,6 +68,8 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
       yaml_error_messages
       trigger
       manual_variables
+      has_manual_actions
+      has_scheduled_actions
     ]
 
     if Gitlab.ee?

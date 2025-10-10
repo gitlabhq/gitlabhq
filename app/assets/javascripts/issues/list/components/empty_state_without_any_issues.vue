@@ -102,7 +102,7 @@ export default {
                 data-track-action="click_new_issue_project_issues_empty_list_page"
                 data-track-label="new_issue_project_issues_empty_list"
               >
-                {{ s__('Issues|Create issue') }}
+                {{ __('Create issue') }}
               </gl-button>
             </slot>
             <gl-button

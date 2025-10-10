@@ -66,7 +66,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
 
     it 'does not show flash messages when login page' do
       visit root_path
-      expect(page).not_to have_content('You need to sign in or sign up before continuing.')
+      expect(page).not_to have_content('Sign in or sign up before continuing.')
     end
   end
 

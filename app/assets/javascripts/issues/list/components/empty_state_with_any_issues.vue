@@ -66,7 +66,7 @@ export default {
     <template #actions>
       <slot name="new-issue-button">
         <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
-          {{ s__('Issues|Create issue') }}
+          {{ __('Create issue') }}
         </gl-button>
       </slot>
     </template>
@@ -82,7 +82,7 @@ export default {
     <template #actions>
       <slot name="new-issue-button">
         <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
-          {{ s__('Issues|Create issue') }}
+          {{ __('Create issue') }}
         </gl-button>
       </slot>
     </template>

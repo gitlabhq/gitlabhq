@@ -149,3 +149,23 @@ request to run tests with the production versions of Elasticsearch and PostgreSQ
 1. View the status of the migration.
    - View the migration record in Kibana: `GET gitlab-development-migrations/_doc/20250220214819` (changing the version). This contains information like when it started and what the status is.
    - See if the mappings are changed in Kibana: `GET gitlab-development-some-index/_mapping`.
+
+## Analyze query changes
+
+Developers can use the [GitLab staging rails console](https://gitlab.com/gitlab-com/runbooks/-/blob/master/docs/teleport/Connect_to_Rails_Console_via_Teleport.md) to help in code reviews to compare before and after queries.
+
+On the Rails console we can use the `Gitlab::Search::Client` to construct the queries.
+
+An example query using the helper looks like:
+
+```ruby
+  Gitlab::Search::Client.new.search(
+    index: 'gitlab-production-vulnerabilities',
+    routing: 'group_110', # data is distributed across shards and the query builder passes routing information.
+    body: {
+      query: {
+        term: { vulnerability_id: 4356 }
+      }
+    }
+  )
+```

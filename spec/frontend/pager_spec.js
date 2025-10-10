@@ -17,6 +17,11 @@ describe('pager', () => {
   let axiosMock;
 
   beforeEach(() => {
+    window.gon = {
+      features: {
+        projectStudioEnabled: false,
+      },
+    };
     axiosMock = new MockAdapter(axios);
   });
 
@@ -30,6 +35,7 @@ describe('pager', () => {
     beforeEach(() => {
       setHTMLFixture('<div class="content_list"></div><div class="loading"></div>');
       jest.spyOn($.fn, 'endlessScroll').mockImplementation();
+      jest.spyOn(Pager, 'initLoadMoreForProjectStudio');
     });
 
     afterEach(() => {
@@ -43,6 +49,18 @@ describe('pager', () => {
       Pager.init();
 
       expect(Pager.offset).toBe(100);
+    });
+
+    it('should setup scroll container listener for project studio when projectStudioEnabled is true', () => {
+      window.gon = {
+        features: { projectStudioEnabled: true },
+      };
+
+      window.history.replaceState({}, null, '?offset=100');
+      Pager.init();
+
+      expect(Pager.initLoadMoreForProjectStudio).toHaveBeenCalled();
+      expect(Pager.loadingObserver).toBeInstanceOf(IntersectionObserver);
     });
   });
 
@@ -234,6 +252,65 @@ describe('pager', () => {
 
           resetHTMLFixture();
         });
+      });
+    });
+  });
+
+  describe('isScrollable', () => {
+    describe('when projectStudioEnabled is true', () => {
+      const applyMockHeights = (container, { scrollHeight, clientHeight }) => {
+        // We need to set these values manually as JSDom won't compute
+        // CSS that causes scroller to appear based on content height
+        Object.defineProperties(container, {
+          scrollHeight: { value: scrollHeight },
+          clientHeight: { value: clientHeight },
+          scrollTop: { value: 0 },
+        });
+      };
+
+      beforeEach(() => {
+        setHTMLFixture('<div class="content_list"></div><div class="loading"></div>');
+        window.gon = {
+          features: { projectStudioEnabled: true },
+        };
+
+        Pager.init();
+      });
+
+      afterEach(() => {
+        resetHTMLFixture();
+      });
+
+      it('returns true when container is scrollable', () => {
+        setHTMLFixture(`
+          <div class="js-static-panel-inner" style="height: 800px; overflow: auto;">
+            <div style="height: 2000px;"></div>
+          </div>
+        `);
+
+        applyMockHeights(document.querySelector('.js-static-panel-inner'), {
+          scrollHeight: 2000,
+          clientHeight: 800,
+        });
+
+        expect(Pager.isScrollable()).toBe(true);
+      });
+
+      it('returns false when container is not scrollable', () => {
+        setHTMLFixture(`
+          <div class="js-static-panel-inner" style="height: 800px;"></div>
+        `);
+
+        applyMockHeights(document.querySelector('.js-static-panel-inner'), {
+          scrollHeight: 800,
+          clientHeight: 800,
+        });
+
+        expect(Pager.isScrollable()).toBe(false);
+      });
+
+      it('returns false when container does not exist', () => {
+        expect(Pager.isScrollable()).toBe(false);
       });
     });
   });

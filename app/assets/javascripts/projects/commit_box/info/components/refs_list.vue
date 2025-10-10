@@ -84,7 +84,7 @@ export default {
       this.$emit(FETCH_CONTAINING_REFS_EVENT);
     },
     getRefUrl(ref) {
-      return `${this.urlPart}${ref}?ref_type=${this.refType}`;
+      return `${this.urlPart}${encodeURIComponent(ref)}?ref_type=${this.refType}`;
     },
   },
   i18n: {

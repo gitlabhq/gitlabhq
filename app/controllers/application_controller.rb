@@ -140,7 +140,7 @@ class ApplicationController < BaseActionController
     else
       store_location_for(:user, request.fullpath) unless request.xhr?
 
-      redirect_to new_user_session_path, alert: I18n.t('devise.failure.unauthenticated')
+      redirect_to new_user_session_path, notice: I18n.t('devise.failure.unauthenticated')
     end
   end
 

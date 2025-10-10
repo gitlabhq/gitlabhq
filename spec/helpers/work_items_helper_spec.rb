@@ -98,7 +98,8 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
             can_import_work_items: "true",
             can_edit: "true",
             export_csv_path: export_csv_project_issues_path(project),
-            has_projects: 'false'
+            has_projects: 'false',
+            new_issue_path: new_project_issue_path(project)
           }
         )
       end

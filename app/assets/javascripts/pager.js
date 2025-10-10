@@ -32,7 +32,15 @@ export default {
       this.offset = 0;
       this.getOld();
     }
-    this.initLoadMore();
+    if (this.isProjectStudioUI()) {
+      this.initLoadMoreForProjectStudio();
+    } else {
+      this.initLoadMore();
+    }
+  },
+
+  isProjectStudioUI() {
+    return gon.features.projectStudioEnabled;
   },
 
   getOld() {
@@ -50,15 +58,31 @@ export default {
         this.append(data.count, this.prepareData(data.html));
         this.successCallback();
 
-        // keep loading until we've filled the viewport height
-        if (!this.disable && !this.isScrollable()) {
-          this.getOld();
-        } else {
-          this.$loading.hide();
+        const isProjectStudio = this.isProjectStudioUI();
+
+        // Re-observe for paneled view after content is loaded
+        if (isProjectStudio && !this.disable) {
+          const loadingEl = this.$loading.get(0);
+          if (loadingEl && this.isScrollable()) {
+            this.loadingObserver.observe(loadingEl);
+          }
+        }
+
+        if (!isProjectStudio) {
+          // keep loading until we've filled the viewport height
+          if (!this.disable && !this.isScrollable()) {
+            this.getOld();
+          } else {
+            this.$loading.hide();
+          }
         }
       })
       .catch((err) => this.errorCallback(err))
-      .finally(() => this.$loading.hide());
+      .finally(() => {
+        if (!this.isProjectStudioUI() || this.disable) {
+          this.$loading.hide();
+        }
+      });
   },
 
   append(count, html) {
@@ -75,6 +99,14 @@ export default {
   },
 
   isScrollable() {
+    if (this.isProjectStudioUI()) {
+      const container = document.querySelector('.js-static-panel-inner');
+      if (container) {
+        return container.scrollHeight > container.clientHeight + container.scrollTop;
+      }
+      return false;
+    }
+
     const $w = $(window);
     return $(document).height() > $w.height() + $w.scrollTop() + ENDLESS_SCROLL_BOTTOM_PX;
   },
@@ -98,5 +130,33 @@ export default {
         }
       },
     });
+  },
+
+  initLoadMoreForProjectStudio() {
+    const loadingEl = this.$loading.get(0);
+    if (loadingEl) {
+      if (this.loadingObserver) this.loadingObserver.disconnect();
+      this.loadingObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              this.loadingObserver.unobserve(loadingEl);
+
+              this.getOld();
+            }
+          });
+        },
+        {
+          root: document.querySelector('.js-static-panel-inner'),
+          threshold: 1,
+        },
+      );
+
+      // Show the loading spinner initially for observer to work
+      if (this.isScrollable()) {
+        this.$loading.show();
+        this.loadingObserver.observe(loadingEl);
+      }
+    }
   },
 };

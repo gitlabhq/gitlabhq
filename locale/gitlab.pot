@@ -50,9 +50,6 @@ msgid_plural " except branches:"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid " hook: %{hook_name} (ID: %{hook_id})."
-msgstr ""
-
 msgid " or "
 msgstr ""
 
@@ -9416,6 +9413,12 @@ msgid "Attribute 'container-overrides' is not yet supported"
 msgstr ""
 
 msgid "Attribute 'pod-overrides' is not yet supported"
+msgstr ""
+
+msgid "Attributes you add will appear here."
+msgstr ""
+
+msgid "Attributes you create will appear here."
 msgstr ""
 
 msgid "Audit events"
@@ -36339,9 +36342,6 @@ msgstr ""
 msgid "Issues|An error occurred while importing issues."
 msgstr ""
 
-msgid "Issues|Create issue"
-msgstr ""
-
 msgid "Issues|Move selected"
 msgstr ""
 
@@ -51050,16 +51050,28 @@ msgstr ""
 msgid "ProjectFileTree|Show more"
 msgstr ""
 
+msgid "ProjectImportByURL|Check connection"
+msgstr ""
+
+msgid "ProjectImportByURL|Connection failed: %{error}"
+msgstr ""
+
+msgid "ProjectImportByURL|Connection successful."
+msgstr ""
+
+msgid "ProjectImportByURL|Enter a valid URL"
+msgstr ""
+
+msgid "ProjectImportByURL|Import repository by URL"
+msgstr ""
+
+msgid "ProjectImportByURL|The repository must be accessible over http://, https:// or git://"
+msgstr ""
+
 msgid "ProjectImport|Bitbucket Cloud"
 msgstr ""
 
 msgid "ProjectImport|Bitbucket Server"
-msgstr ""
-
-msgid "ProjectImport|Check connection"
-msgstr ""
-
-msgid "ProjectImport|Connection failed: %{error}"
 msgstr ""
 
 msgid "ProjectImport|FogBugz"
@@ -51074,16 +51086,10 @@ msgstr ""
 msgid "ProjectImport|Gitea"
 msgstr ""
 
-msgid "ProjectImport|Import repository by URL"
-msgstr ""
-
 msgid "ProjectImport|Manifest file"
 msgstr ""
 
 msgid "ProjectImport|Project URL"
-msgstr ""
-
-msgid "ProjectImport|The repository must be accessible over http://, https:// or git://"
 msgstr ""
 
 msgid "ProjectMaintenance|Afterwards, run housekeeping manually to remove old versions of the file from Git history."
@@ -58411,6 +58417,9 @@ msgstr ""
 msgid "SecurityAttributes|Add attribute"
 msgstr ""
 
+msgid "SecurityAttributes|Add attributes"
+msgstr ""
+
 msgid "SecurityAttributes|Add security attribute"
 msgstr ""
 
@@ -58529,6 +58538,9 @@ msgid "SecurityAttributes|Name"
 msgstr ""
 
 msgid "SecurityAttributes|Name is required"
+msgstr ""
+
+msgid "SecurityAttributes|No security attributes added yet"
 msgstr ""
 
 msgid "SecurityAttributes|Remove attribute"
@@ -66542,6 +66554,9 @@ msgstr ""
 msgid "There are no archived test cases"
 msgstr ""
 
+msgid "There are no attributes in this category."
+msgstr ""
+
 msgid "There are no changed labels"
 msgstr ""
 
@@ -73520,9 +73535,6 @@ msgid "WebAuthn devices"
 msgstr ""
 
 msgid "WebAuthn only works with HTTPS-enabled websites. Contact your administrator for more details."
-msgstr ""
-
-msgid "WebHooks|%{reason}. Update or delete the following "
 msgstr ""
 
 msgid "WebIDE|Quickly and easily edit multiple files in your project."

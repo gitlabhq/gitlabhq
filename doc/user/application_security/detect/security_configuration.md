@@ -180,7 +180,7 @@ For example, to run both SAST and Dependency Scanning with merge request pipelin
 
 ```yaml
 include:
-  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
   - template: Jobs/SAST.gitlab-ci.yml
 
 variables:
@@ -216,14 +216,14 @@ To resolve this, either:
 - Add a `test` stage in your `.gitlab-ci.yml`:
 
   ```yaml
-  include:
-    - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-    - template: Jobs/SAST.gitlab-ci.yml
-    - template: Jobs/Secret-Detection.gitlab-ci.yml
-
   stages:
     - test
     - unit-tests
+
+  include:
+    - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+    - template: Jobs/SAST.gitlab-ci.yml
+    - template: Jobs/Secret-Detection.gitlab-ci.yml
 
   custom job:
     stage: unit-tests
@@ -234,16 +234,15 @@ To resolve this, either:
 - Override the default stage of each security job. For example, to use a pre-defined stage named `unit-tests`:
 
   ```yaml
-  include:
-    - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-    - template: Jobs/SAST.gitlab-ci.yml
-    - template: Jobs/Secret-Detection.gitlab-ci.yml
-
   stages:
     - unit-tests
 
-  dependency_scanning:
-    stage: unit-tests
+  include:
+    - template: Jobs/Dependency-Scanning.v2.gitlab-ci.yml
+      inputs:
+        stage: unit-tests
+    - template: Jobs/SAST.gitlab-ci.yml
+    - template: Jobs/Secret-Detection.gitlab-ci.yml
 
   sast:
     stage: unit-tests

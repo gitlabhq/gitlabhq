@@ -231,7 +231,7 @@ RSpec.describe 'Profile > Active sessions', :clean_gitlab_redis_shared_state, fe
     using_session :session2 do
       visit user_settings_active_sessions_path
 
-      expect(page).to have_content('You need to sign in or sign up before continuing.')
+      expect(page).to have_content('Sign in or sign up before continuing.')
     end
   end
 end
