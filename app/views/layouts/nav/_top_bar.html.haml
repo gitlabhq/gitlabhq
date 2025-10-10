@@ -1,4 +1,4 @@
-- duo_button_enabled = (partial_exists? "layouts/nav/ask_duo_button") && defined?(::Gitlab::Llm::TanukiBot) && ::Gitlab::Llm::TanukiBot.show_breadcrumbs_entry_point?(user: current_user, container: @group || @project)
+- duo_button_enabled = (partial_exists? "layouts/nav/ask_duo_button") && defined?(::Gitlab::Llm::TanukiBot) && ::Gitlab::Llm::TanukiBot.show_breadcrumbs_entry_point?(user: current_user)
 
 %div{ class: ['top-bar-fixed container-fluid', paneled_view && 'gl-rounded-t-lg gl-sticky gl-top-0 gl-left-0 gl-mx-0 gl-w-full'], data: { testid: 'top-bar' } }
   .top-bar-container.gl-flex.gl-items-center.gl-gap-2{ class: ("gl-group top-bar-duo-button-present" if duo_button_enabled) }

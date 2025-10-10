@@ -69,6 +69,7 @@ start-as-if-foss:
     # make sure default values are inherited, otherwise these will be interpreted literally in the downstream pipeline
     variables:
       - GITLAB_LARGE_RUNNER_OPTIONAL
+      - GLCI_MEDIUM_RUNNER_REQUIRED
       - GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
       - GLCI_PUSH_RAILS_TEST_FAILURE_ISSUES_TO_GCS
   variables:
@@ -76,6 +77,7 @@ start-as-if-foss:
     RUBY_VERSION: $RUBY_VERSION
     # Use same runner tags as in the parent project
     GITLAB_LARGE_RUNNER_OPTIONAL: $GITLAB_LARGE_RUNNER_OPTIONAL
+    GLCI_MEDIUM_RUNNER_REQUIRED: $GLCI_MEDIUM_RUNNER_REQUIRED
     GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL: $GLCI_PRODUCTION_ASSETS_RUNNER_OPTIONAL
     # Variables for `detect-tests` to work in FOSS
     FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH: $FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH

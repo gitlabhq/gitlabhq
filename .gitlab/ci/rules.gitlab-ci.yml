@@ -1084,8 +1084,10 @@
     - <<: *if-merge-request
       changes: *backend-patterns
 
+# TODO: Why is this rule unused? It seems .rails:rules:rspec-predictive:pipeline-generate superseded it, but that provides no way to selectively target system tests
 .rails:rules:ee-and-foss-system:predictive:
   rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - <<: *if-fork-merge-request
       changes: *code-backstage-patterns
     - !reference [".rails:rules:predictive-default-rules", rules]
@@ -1120,6 +1122,7 @@
     - <<: *if-merge-request
       changes: *backend-patterns
 
+# TODO: Why is this rule unused? It seems .rails:rules:rspec-predictive:pipeline-generate superseded it, but that provides no way to selectively target system tests
 .rails:rules:ee-only-integration:predictive:
   rules:
     - <<: *if-not-ee
@@ -1131,10 +1134,12 @@
     - <<: *if-merge-request
       changes: *backend-patterns
 
+# TODO: Why is this rule unused? It seems .rails:rules:rspec-predictive:pipeline-generate superseded it, but that provides no way to selectively target system tests
 .rails:rules:ee-only-system:predictive:
   rules:
     - <<: *if-not-ee
       when: never
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - <<: *if-fork-merge-request
       changes: *code-backstage-patterns
     - !reference [".rails:rules:predictive-default-rules", rules]
@@ -2451,14 +2456,21 @@
     - <<: *if-default-refs
       changes: *backend-patterns
 
+.rails:rules:only-run-system-if-medium-runners-available:
+  rules:
+    - if: '$GLCI_MEDIUM_RUNNER_REQUIRED == ""'
+      when: never
+
 .rails:rules:ee-and-foss-system-vue3:
   rules:
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - <<: *if-merge-request-labels-run-rspec-vue3
 
 .rails:rules:ee-and-foss-system:
   rules:
     - <<: *if-fork-merge-request
       when: never
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - if: '$ENABLE_RSPEC_SYSTEM == "true"'
     - !reference [".rails:rules:system-default-rules", rules]
     - <<: *if-default-refs
@@ -2535,6 +2547,7 @@
       when: never
     - <<: *if-fork-merge-request
       when: never
+    - !reference [".rails:rules:only-run-system-if-medium-runners-available", rules]
     - !reference [".rails:rules:system-default-rules", rules]
     - <<: *if-default-refs
       changes: *code-backstage-patterns

@@ -110,6 +110,7 @@ difficult, but several tools exist including:
 - Enabled on GitLab Self-Managed in GitLab 17.8 for [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897), [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390), and [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993).
 - Reassigning contributions to a personal namespace owner when importing to a personal namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525342) in GitLab 18.3 [with a flag](../../../administration/feature_flags/_index.md) named `user_mapping_to_personal_namespace_owner`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/508945) in GitLab 18.4 for direct transfer. Feature flag `bulk_import_importer_user_mapping` removed.
+- Reassigning contributions to service accounts, project bots, and group bots [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/573124) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `user_mapping_service_account_and_bots`. Enabled by default.
 
 {{< /history >}}
 
@@ -433,9 +434,9 @@ when you reassign placeholders:
 
 #### Reassigning contributions from multiple placeholder users
 
-All the contributions initially assigned to a single placeholder user can only be reassigned to a single active regular
-user on the destination instance. The contributions assigned to a single placeholder user cannot be split among multiple
-active regular users.
+You can reassign all contributions initially assigned to a single placeholder user to a
+single active regular user, service accounts, project bots, and group bots on the destination instance.
+You cannot split contributions assigned to a single placeholder user among multiple users.
 
 You can reassign contributions from multiple placeholder users to the same user
 on the destination instance if the placeholder users are from:
@@ -446,15 +447,15 @@ on the destination instance if the placeholder users are from:
 If an assigned user becomes inactive before accepting the reassignment request,
 the pending reassignment remains linked to the user until they accept it.
 
-Bot user contributions and memberships on the source instance cannot be reassigned to bot users on the destination instance.
-You might choose to keep source bot user contributions [assigned to a placeholder user](#keep-as-placeholder).
-
 Users that receive a reassignment request can:
 
 - [Accept the request](#accept-contribution-reassignment). All contributions and membership previously attributed to the placeholder user are re-attributed
   to the accepting user. This process can take a few minutes, depending on the number of contributions.
 - [Reject the request](#reject-contribution-reassignment) or report it as spam. This option is available in the reassignment
   request email.
+
+When you reassign contributions to service accounts, project bots, and group bots,
+the reassignment request is automatically approved.
 
 In subsequent imports to the same top-level group, contributions and memberships that belong to the same source user
 are mapped automatically to the user who previously accepted reassignments for that source user.

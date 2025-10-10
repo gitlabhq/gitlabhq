@@ -44,8 +44,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     context 'within a group' do
       visibilities.each do |visibility, not_found_response|
         context "that is #{visibility}" do
-          before do
-            group.update!(visibility_level: Gitlab::VisibilityLevel.level_value(visibility.to_s))
+          before_all do
+            group.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility.to_s))
           end
 
           it_behaves_like shared_example_name, not_found_response
@@ -54,17 +54,17 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     end
 
     context 'within a subgroup' do
-      let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
+      let_it_be_with_reload(:subgroup) { create(:group, parent: group, visibility_level: group.visibility_level) }
 
-      before do
+      before_all do
         move_project_to_namespace(subgroup)
       end
 
       visibilities.each do |visibility, not_found_response|
         context "that is #{visibility}" do
-          before do
-            subgroup.update!(visibility_level: Gitlab::VisibilityLevel.level_value(visibility.to_s))
-            group.update!(visibility_level: Gitlab::VisibilityLevel.level_value(visibility.to_s))
+          before_all do
+            subgroup.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility.to_s))
+            group.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility.to_s))
           end
 
           it_behaves_like shared_example_name, not_found_response
@@ -77,14 +77,14 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     it_behaves_like 'handling groups and subgroups for', shared_example_name, visibilities: visibilities
 
     context 'within a user namespace' do
-      before do
+      before_all do
         move_project_to_namespace(user.namespace)
       end
 
       visibilities.each do |visibility|
         context "that is #{visibility}" do
-          before do
-            user.namespace.update!(visibility_level: Gitlab::VisibilityLevel.level_value(visibility.to_s))
+          before_all do
+            user.namespace.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility.to_s))
           end
 
           it_behaves_like shared_example_name
@@ -266,7 +266,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     end
   end
 
-  shared_examples 'forwarding package requests' do
+  shared_examples 'forwarding package requests' do |not_found_response: 'package not found'|
     context 'request forwarding' do
       include_context 'dependency proxy helpers context'
 
@@ -280,11 +280,15 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
         it_behaves_like 'returning response status', :not_found
       end
 
+      shared_examples 'unauthorized access' do
+        it_behaves_like 'returning response status', :unauthorized
+      end
+
       where(:forward, :package_in_project, :shared_examples_name) do
         true  | true  | 'successfully returning the file'
         true  | false | 'redirecting the request'
         false | true  | 'successfully returning the file'
-        false | false | 'package not found'
+        false | false | not_found_response
       end
 
       with_them do
@@ -300,9 +304,9 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       context 'with maven_central_request_forwarding disabled' do
         where(:forward, :package_in_project, :shared_examples_name) do
           true  | true  | 'successfully returning the file'
-          true  | false | 'package not found'
+          true  | false | not_found_response
           false | true  | 'successfully returning the file'
-          false | false | 'package not found'
+          false | false | not_found_response
         end
 
         with_them do
@@ -375,9 +379,9 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     end
 
     context 'internal project' do
-      before do
+      before_all do
         project.team.truncate
-        project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel::INTERNAL)
       end
 
       subject { download_file_with_token(file_name: package_file.file_name) }
@@ -410,8 +414,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     context 'private project' do
       subject { download_file_with_token(file_name: package_file.file_name) }
 
-      before do
-        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      before_all do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
       end
 
       shared_examples 'getting a file' do
@@ -506,12 +510,12 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
   end
 
   describe 'GET /api/v4/groups/:id/-/packages/maven/*path/:file_name' do
-    before do
+    before_all do
       project.team.truncate
       group.add_developer(user)
     end
 
-    it_behaves_like 'forwarding package requests'
+    it_behaves_like 'forwarding package requests', not_found_response: 'unauthorized access'
 
     context 'a public project' do
       let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_maven_user' } }
@@ -528,8 +532,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           download_file(file_name: package_file.file_name + '.sha1')
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response.media_type).to eq('text/plain')
-          expect(response.body).to eq(package_file.file_sha1)
+          expect(response).to have_attributes(
+            media_type: 'text/plain',
+            body: package_file.file_sha1
+          )
         end
 
         context 'with a non existing maven path' do
@@ -545,9 +551,9 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     end
 
     context 'internal project' do
-      before do
+      before_all do
         group.member(user).destroy!
-        project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel::INTERNAL)
       end
 
       subject { download_file_with_token(file_name: package_file.file_name) }
@@ -578,8 +584,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     end
 
     context 'private project' do
-      before do
-        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      before_all do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
       end
 
       subject { download_file_with_token(file_name: package_file.file_name) }
@@ -653,7 +659,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
         let!(:package_dup) { create(:maven_package, project: recent_project, name: package.name, version: package.version) }
 
-        before do
+        before_all do
           group.add_guest(user)
           project.add_developer(user)
         end
@@ -678,7 +684,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
         subject { download_file_with_token(file_name: package_file.file_name, request_headers: headers_with_token, group_id: root_group.id) }
 
-        before do
+        before_all do
           project.update!(namespace: group)
           group.add_reporter(user)
         end
@@ -695,11 +701,29 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       context 'with anonymous access to a public registry' do
         let(:headers_with_token) { {} }
 
-        before do
+        before_all do
           project.project_feature.update!(package_registry_access_level: ::ProjectFeature::PUBLIC)
         end
 
         it_behaves_like 'successfully returning the file'
+
+        context 'when package does not exist in the public registry' do
+          before do
+            stub_feature_flags(maven_central_request_forwarding: false)
+          end
+
+          subject { download_file_with_token(file_name: 'unknown-file.jar') }
+
+          it_behaves_like 'returning response status', :unauthorized
+
+          context 'when maven_packages_unauthorized_with_public_registries is disabled' do
+            before do
+              stub_feature_flags(maven_packages_unauthorized_with_public_registries: false)
+            end
+
+            it_behaves_like 'returning response status', :not_found
+          end
+        end
       end
 
       it_behaves_like 'updating personal access token last used'
@@ -723,7 +747,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
       subject { download_file_with_token(file_name: package_file3.file_name) }
 
-      before do
+      before_all do
         sub_group1.add_developer(user)
         sub_group2.add_developer(user)
         # the package with the most recently published file should be returned
@@ -814,8 +838,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
     end
 
     context 'private project' do
-      before do
-        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      before_all do
+        project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
       end
 
       subject { download_file_with_token(file_name: package_file.file_name) }

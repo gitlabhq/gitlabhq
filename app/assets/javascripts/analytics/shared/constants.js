@@ -394,9 +394,7 @@ export const VALUE_STREAM_METRIC_METADATA = {
     }),
   },
   [AI_METRICS.DUO_CHAT_USAGE_RATE]: {
-    description: s__(
-      'AiImpactAnalytics|Monthly user engagement with Duo Chat. Percentage ratio of monthly unique Duo Chat users / total Duo seats assigned.',
-    ),
+    description: s__('AiImpactAnalytics|Users with assigned Duo seats who used Duo Chat.'),
     groupLink: '',
     projectLink: '',
     docsLink: helpPagePath('user/gitlab_duo_chat/_index'),

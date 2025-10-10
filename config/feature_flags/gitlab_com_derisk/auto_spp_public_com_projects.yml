@@ -1,0 +1,10 @@
+---
+name: auto_spp_public_com_projects
+description: When enabled, enables Secret Push Protection (SPP) automatically for public projects on GitLab.com.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/551949
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/207017
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/574641
+milestone: '18.5'
+group: group::secret detection
+type: gitlab_com_derisk
+default_enabled: false

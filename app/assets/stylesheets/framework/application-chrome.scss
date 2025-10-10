@@ -59,6 +59,12 @@
     @apply gl-w-0 gl-h-0 lg:gl-h-auto;
   }
 
+  @media (max-width: $breakpoint-xl - 1) {
+    #super-sidebar {
+      width: min(80%, 320px);
+    }
+  }
+
   @media (min-width: $breakpoint-xl) {
     $icon-sidebar-width: 48px;
 
@@ -403,7 +409,7 @@
   // Scrollbar offset
   .panel-content-inner,
   .vue-portal-target .work-item-drawer {
-    @apply gl-mx-3;
+    @apply gl-px-3 gl-mx-0;
   }
 
   // Panel content

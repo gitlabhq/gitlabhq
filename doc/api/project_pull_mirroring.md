@@ -3,6 +3,7 @@ stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Pull mirroring API
+description: Manage pull mirroring for projects. View mirror details, configure mirroring settings, and start mirror updates.
 ---
 
 {{< details >}}

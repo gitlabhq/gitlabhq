@@ -22,6 +22,7 @@ title: GitLab Advanced SAST
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/474094) in GitLab 17.3.
 - Support for Java Server Pages (JSP) added in GitLab 17.4.
 - Support for PHP [added](https://gitlab.com/groups/gitlab-org/-/epics/14273) in GitLab 18.1.
+- Support for C/C++ [added](https://gitlab.com/groups/gitlab-org/-/epics/14271) in GitLab 18.6.
 
 {{< /history >}}
 
@@ -119,12 +120,19 @@ SAST diff-based scanning option.
 GitLab Advanced SAST supports the following languages with cross-function and cross-file taint analysis:
 
 - C# (up to and including 10.0)
+- C/C++<sup>1</sup>
 - Go
 - Java, including Java Server Pages (JSP)
 - JavaScript, TypeScript
 - PHP
 - Python
 - Ruby
+
+**Footnotes**:
+
+1. GitLab Advanced SAST CPP is currently in Beta and requires additional configuration (such as a compilation database) to be used with GitLab Advanced SAST.
+For details, see [C/C++ configuration](cpp_advanced_sast.md).
+GitLab Advanced SAST CPP does not exclude Semgrep for C/C++ projects; both analyzers run in parallel with different rule sets.
 
 ### PHP known issues
 
@@ -214,9 +222,10 @@ variables.
 
 GitLab Advanced SAST can be configured using the following CI/CD variables.
 
-| CI/CD variable                 | Default | Description                                                                   |
-|--------------------------------|---------|-------------------------------------------------------------------------------|
-| `GITLAB_ADVANCED_SAST_ENABLED` | `false` | Set to `true` to enable GitLab Advanced SAST scanning, or `false` to disable. |
+| CI/CD variable                     | Default  | Description                                                                         |
+|------------------------------------|----------|-------------------------------------------------------------------------------------|
+| `GITLAB_ADVANCED_SAST_ENABLED`     | `false`  | Enables GitLab Advanced SAST scanning for all supported languages except C and C++. |
+| `GITLAB_ADVANCED_SAST_CPP_ENABLED` | `false`  | Enables GitLab Advanced SAST scanning specifically for C and C++ projects.          |
 
 ### Requirements
 
@@ -233,7 +242,7 @@ On GitLab Self-Managed, you must also use a GitLab version that supports GitLab 
 ### Enable GitLab Advanced SAST scanning
 
 GitLab Advanced SAST is included in the standard GitLab SAST CI/CD template, but isn't yet enabled by default.
-To enable it, set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true`.
+To enable it, set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true` (set `GITLAB_ADVANCED_SAST_CPP_ENABLED` to `true` for C/C++ projects).
 You can set this variable in different ways depending on how you manage your CI/CD configuration.
 
 #### Edit the CI/CD pipeline definition manually
@@ -241,7 +250,7 @@ You can set this variable in different ways depending on how you manage your CI/
 If you've already enabled GitLab SAST scanning in your project, add a CI/CD variable to enable
 GitLab Advanced SAST.
 
-This minimal YAML file includes the [stable SAST template](_index.md#stable-vs-latest-sast-templates) and enables GitLab Advanced SAST:
+This minimal YAML file includes the [stable SAST template](_index.md#stable-vs-latest-sast-templates) and enables GitLab Advanced SAST for non-C/C++ projects:
 
 ```yaml
 include:
@@ -251,9 +260,11 @@ variables:
   GITLAB_ADVANCED_SAST_ENABLED: 'true'
 ```
 
+For C/C++ projects, use `GITLAB_ADVANCED_SAST_CPP_ENABLED` instead.
+
 #### Enforce it in a Scan Execution Policy
 
-To enable GitLab Advanced SAST in a [Scan Execution Policy](../policies/scan_execution_policies.md), update your policy's scan action to set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true`.
+To enable GitLab Advanced SAST in a [Scan Execution Policy](../policies/scan_execution_policies.md), update your policy's scan action to set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` (or `GITLAB_ADVANCED_SAST_CPP_ENABLED` for C/C++ projects) to `true`.
 You can set this variable by:
 
 - Selecting it from the menu in the [policy editor](../policies/scan_execution_policies.md#scan-execution-policy-editor).
@@ -271,7 +282,7 @@ To enable GitLab Advanced SAST by using the pipeline editor:
        - In GitLab 17.3 or later, you should use the stable template, `Jobs/SAST.gitlab-ci.yml`.
        - In GitLab 17.2, GitLab Advanced SAST is only available in the latest template, `Jobs/SAST.latest.gitlab-ci.yml`. Don't mix [latest and stable templates](../detect/security_configuration.md#template-editions) in a single project.
        - In GitLab 17.1, you must manually copy the contents of the GitLab Advanced SAST job into your CI/CD pipeline definition.
-   - Set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true`.
+   - Set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` (or `GITLAB_ADVANCED_SAST_CPP_ENABLED` for C/C++ projects) to `true`.
 
    See the [minimal YAML example](#edit-the-cicd-pipeline-definition-manually).
 1. Select the **Validate** tab, then select **Validate pipeline**.
@@ -291,7 +302,7 @@ Pipelines now include a GitLab Advanced SAST job.
 
 Advanced SAST scanning is not enabled by default, but it may be enabled at the group level or in another way that affects multiple projects.
 
-To explicitly disable Advanced SAST scanning in a project, set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `false`.
+To explicitly disable Advanced SAST scanning in a project, set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` (or `GITLAB_ADVANCED_SAST_CPP_ENABLED` for C/C++ projects) to `false`.
 You can set this variable anywhere you can configure CI/CD variables, including the same ways you can [enable Advanced SAST scanning](#enable-gitlab-advanced-sast-scanning).
 
 ## Vulnerability code flow
@@ -401,7 +412,7 @@ In this example, the version is `1.1.1`.
 
 ##### Generate a performance debugging artifact
 
-To generate the `trace.ctf` artifact, add the following to your `.gitlab-ci.yml`.
+To generate the `trace.ctf` artifact (in non-C/C++ projects), add the following to your `.gitlab-ci.yml`.
 
 Set `RUNNER_SCRIPT_TIMEOUT` to at least 10 minutes shorter than `timeout` to ensure the artifact has
 time to upload.
