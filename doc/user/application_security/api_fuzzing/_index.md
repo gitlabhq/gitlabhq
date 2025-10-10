@@ -36,13 +36,12 @@ Prerequisites:
   - GraphQL
   - Form bodies, JSON, or XML
 - An API specification in one of the following formats:
-  - [OpenAPI v2 or v3 Specification](configuration/enabling_the_analyzer.md#openapi-specification)
-  - [GraphQL Schema](configuration/enabling_the_analyzer.md#graphql-schema)
-  - [HTTP Archive (HAR)](configuration/enabling_the_analyzer.md#http-archive-har)
-  - [Postman Collection v2.0 or v2.1](configuration/enabling_the_analyzer.md#postman-collection)
-- An available [GitLab Runner](../../../ci/runners/_index.md) with the
-  [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html) on Linux/amd64.
-- A deployed target application. For more details, see the [deployment options](#application-deployment-options).
+  - OpenAPI v2 or v3 Specification
+  - GraphQL Schema
+  - HTTP Archive (HAR)
+  - Postman Collection v2.0 or v2.1
+- An available GitLab Runner with the `docker` executor on Linux/amd64.
+- A deployed target application.
 - The `fuzz` stage is added to your CI/CD pipeline definition, after the `deploy` stage:
 
   ```yaml
@@ -95,7 +94,7 @@ Findings are generated on feature branches. When they are merged into the defaul
 
 To get the most out of API fuzzing, follow these recommendations:
 
-- Configure runners to use the [always pull policy](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy) to run the latest versions of the analyzers.
+- To run the latest versions of the analyzers, configure runners to use `pull_policy: always`.
 - By default, API fuzzing downloads all artifacts defined by previous jobs in the pipeline. If your
   API fuzzing job does not rely on `environment_url.txt` to define the URL under test or any other
   files created in previous jobs, you should not download artifacts.
@@ -120,17 +119,16 @@ the API fuzzing template.
 Review apps are the most involved method of deploying your API Fuzzing target application. To assist in the process,
 GitLab created a review app deployment using Google Kubernetes Engine (GKE). This example can be found in the
 [Review apps - GKE](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke) project, plus detailed
-instructions to configure review apps in DAST in the [README](https://gitlab.com/gitlab-org/security-products/demos/dast/review-app-gke/-/blob/master/README.md).
+instructions to configure review apps in DAST.
 
-#### Docker Services
+#### Docker services
 
 If your application uses Docker containers, you have another option for deploying and scanning with API fuzzing.
-After your Docker build job completes and your image is added to your container registry, you can use the image as a
-[service](../../../ci/services/_index.md).
+After your Docker build job completes and your image is added to your container registry, you can use the image as a service.
 
 By using service definitions in your `.gitlab-ci.yml`, you can scan services with the DAST analyzer.
 
-When adding a `services` section to the job, the `alias` is used to define the hostname that can be used to access the service. In the following example, the `alias: yourapp` portion of the `dast` job definition means that the URL to the deployed application uses `yourapp` as the hostname (`https://yourapp/`).
+When adding a `services` section to the job, the `alias` is used to define the hostname that can be used to access the service. In the following example, the `alias: yourapp` portion of the `dast` job definition means that the URL to the deployed application uses `yourapp` as the hostname: `https://yourapp/`.
 
 ```yaml
 stages:
@@ -164,7 +162,7 @@ variables:
 ```
 
 Most applications depend on multiple services such as databases or caching services. By default, services defined in the services fields cannot communicate
-with each another. To allow communication between services, enable the `FF_NETWORK_PER_BUILD` [feature flag](https://docs.gitlab.com/runner/configuration/feature-flags.html#available-feature-flags).
+with each another. To allow communication between services, enable the `FF_NETWORK_PER_BUILD` feature flag.
 
 ```yaml
 variables:
@@ -190,12 +188,12 @@ of a fuzzing scan. The only changes to the API should be from the fuzzing scanne
 to the API (for example, by users, scheduled tasks, database changes, code changes, other pipelines,
 or other scanners) during a scan could cause inaccurate results.
 
-You can run a Web API fuzzing scan using the following methods:
+You can run a web API fuzzing scan using the following methods:
 
-- [OpenAPI Specification](configuration/enabling_the_analyzer.md#openapi-specification) - version 2, and 3.
-- [GraphQL Schema](configuration/enabling_the_analyzer.md#graphql-schema)
-- [HTTP Archive](configuration/enabling_the_analyzer.md#http-archive-har) (HAR)
-- [Postman Collection](configuration/enabling_the_analyzer.md#postman-collection) - version 2.0 or 2.1
+- OpenAPI specification (versions 2 and 3)
+- GraphQL schema
+- HTTP archive (HAR)
+- Postman collection (versions 2.0 and 2.1)
 
 ### Example API fuzzing projects
 
@@ -213,7 +211,7 @@ To get support for your particular problem use the [getting help channels](https
 The [GitLab issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues) is the right place for bugs and feature proposals about API security and API fuzzing.
 Use `~"Category:API Security"` label when opening a new issue regarding API fuzzing to ensure it is quickly reviewed by the right people.
 
-[Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) for similar entries before submitting your own, there's a good chance somebody else had the same issue or feature proposal. Show your support with an emoji reaction or join the discussion.
+Search the issue tracker for similar entries before submitting your own, there's a good chance somebody else had the same issue or feature proposal. Show your support with an emoji reaction or join the discussion.
 
 When experiencing a behavior not working as expected, consider providing contextual information:
 
@@ -224,7 +222,7 @@ When experiencing a behavior not working as expected, consider providing context
 
 {{< alert type="warning" >}}
 
-**Sanitize data attached to a support issue**. Remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.
+Do not include sensitive information when you submit an issue. Remove credentials like passwords, tokens, and keys.
 
 {{< /alert >}}
 

@@ -129,7 +129,7 @@ RSpec/ReceiveMessages:
     - 'ee/spec/services/geo/container_repository_sync_spec.rb'
     - 'ee/spec/services/geo/framework_repository_sync_service_spec.rb'
     - 'ee/spec/services/incident_management/incidents/create_sla_service_spec.rb'
-    - 'ee/spec/services/merge_requests/merge_service_spec.rb'
+    - 'ee/spec/services/ee/merge_requests/merge_service_spec.rb'
     - 'ee/spec/services/merge_requests/mergeability/check_jira_status_service_spec.rb'
     - 'ee/spec/services/merge_requests/mergeability/check_path_locks_service_spec.rb'
     - 'ee/spec/services/resource_access_tokens/create_service_spec.rb'

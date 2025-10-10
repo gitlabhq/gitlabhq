@@ -404,7 +404,7 @@ RSpec/BeEq:
     - 'ee/spec/services/iterations/cadences/create_service_spec.rb'
     - 'ee/spec/services/llm/internal/completion_service_spec.rb'
     - 'ee/spec/services/merge_requests/create_from_vulnerability_data_service_spec.rb'
-    - 'ee/spec/services/merge_requests/merge_service_spec.rb'
+    - 'ee/spec/services/ee/merge_requests/merge_service_spec.rb'
     - 'ee/spec/services/merge_requests/mergeability/check_approved_service_spec.rb'
     - 'ee/spec/services/merge_requests/mergeability/check_blocked_by_other_mrs_service_spec.rb'
     - 'ee/spec/services/merge_requests/mergeability/check_external_status_checks_passed_service_spec.rb'

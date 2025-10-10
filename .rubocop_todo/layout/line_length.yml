@@ -1613,7 +1613,7 @@ Layout/LineLength:
     - 'ee/spec/services/ldap_group_reset_service_spec.rb'
     - 'ee/spec/services/members/activate_service_spec.rb'
     - 'ee/spec/services/merge_requests/create_from_vulnerability_data_service_spec.rb'
-    - 'ee/spec/services/merge_requests/merge_service_spec.rb'
+    - 'ee/spec/services/ee/merge_requests/merge_service_spec.rb'
     - 'ee/spec/services/merge_requests/push_options_handler_service_spec.rb'
     - 'ee/spec/services/merge_requests/reset_approvals_service_spec.rb'
     - 'ee/spec/services/merge_requests/sync_report_approver_approval_rules_spec.rb'
