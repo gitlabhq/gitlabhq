@@ -482,6 +482,57 @@ RSpec.describe GraphqlController, :with_current_organization, feature_category: 
         end
       end
 
+      context 'when using composite identity OAuth token', :request_store do
+        let(:service_account) do
+          create(:user, :service_account, composite_identity_enforced: true, organization: create(:organization))
+        end
+
+        let(:scoped_user) { create(:user, last_activity_on: last_activity_on) }
+        let(:oauth_app) { create(:oauth_application) }
+        let(:oauth_token) do
+          create(:oauth_access_token,
+            application: oauth_app,
+            resource_owner: service_account,
+            scopes: "api user:#{scoped_user.id}",
+            organization: service_account.organization)
+        end
+
+        let(:query) { '{ currentUser { id username } }' }
+
+        subject do
+          request.headers['Authorization'] = "Bearer #{oauth_token.plaintext_token}"
+          post :execute, params: { query: query }
+        end
+
+        it 'authenticates successfully and returns the scoped user' do
+          subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.dig('data', 'currentUser', 'username')).to eq(scoped_user.username)
+        end
+
+        it 'sets current_user to the scoped user, not the service account' do
+          subject
+
+          expect(controller.current_user).to eq(scoped_user)
+          expect(controller.current_user).not_to eq(service_account)
+        end
+
+        it "sets context's sessionless value as true" do
+          subject
+
+          expect(assigns(:context)[:is_sessionless_user]).to be true
+        end
+
+        it 'updates the scoped users last_activity_on field' do
+          expect { subject }.to change { scoped_user.reload.last_activity_on }
+        end
+
+        it 'does not update the service account last_activity_on field' do
+          expect { subject }.not_to change { service_account.reload.last_activity_on }
+        end
+      end
+
       it 'updates the users last_activity_on field' do
         expect { subject }.to change { user.reload.last_activity_on }
       end

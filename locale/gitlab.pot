@@ -73006,7 +73006,13 @@ msgstr ""
 msgid "Vulnerability|A solution is available for this vulnerability"
 msgstr ""
 
+msgid "Vulnerability|AI Confidence Score"
+msgstr ""
+
 msgid "Vulnerability|AI Generating Fix"
+msgstr ""
+
+msgid "Vulnerability|AI detected false positive"
 msgstr ""
 
 msgid "Vulnerability|AI has created a merge request to resolve this vulnerability"
@@ -73090,6 +73096,9 @@ msgstr ""
 msgid "Vulnerability|Detection method"
 msgstr ""
 
+msgid "Vulnerability|Dismissed as false positive detected by Duo AI"
+msgstr ""
+
 msgid "Vulnerability|Enter the associated CVE or CWE entries for this vulnerability."
 msgstr ""
 
@@ -73115,6 +73124,9 @@ msgid "Vulnerability|GitLab Security Report"
 msgstr ""
 
 msgid "Vulnerability|GitLab checks if detected secrets are active. You should revoke and replace active secrets immediately, because they can be used to impersonate legitimate activity."
+msgstr ""
+
+msgid "Vulnerability|Gitlab Duo has identified this vulnerability as a false positive"
 msgstr ""
 
 msgid "Vulnerability|Identifier"
@@ -73144,6 +73156,9 @@ msgstr ""
 msgid "Vulnerability|Information related to how the vulnerability was discovered and its impact on the system."
 msgstr ""
 
+msgid "Vulnerability|Likely FP"
+msgstr ""
+
 msgid "Vulnerability|Links"
 msgstr ""
 
@@ -73153,10 +73168,16 @@ msgstr ""
 msgid "Vulnerability|Namespace:"
 msgstr ""
 
+msgid "Vulnerability|Possible FP"
+msgstr ""
+
 msgid "Vulnerability|Possibly active secret"
 msgstr ""
 
 msgid "Vulnerability|Project:"
+msgstr ""
+
+msgid "Vulnerability|Remove False Positive Flag"
 msgstr ""
 
 msgid "Vulnerability|Remove identifier row"
@@ -73193,6 +73214,9 @@ msgid "Vulnerability|Severity"
 msgstr ""
 
 msgid "Vulnerability|Severity:"
+msgstr ""
+
+msgid "Vulnerability|Something went wrong while dismissing the vulnerability."
 msgstr ""
 
 msgid "Vulnerability|Something went wrong while trying to get the source file."
@@ -73289,6 +73313,9 @@ msgid "Vulnerability|What is a validity check?"
 msgstr ""
 
 msgid "Vulnerability|What is code flow?"
+msgstr ""
+
+msgid "Vulnerability|Why it is likely a false positive"
 msgstr ""
 
 msgid "Vulnerability|circular dependency"

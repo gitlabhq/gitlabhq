@@ -285,6 +285,8 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
 
           context 'the result was evaluated' do
             it 'returns the verdict and updates the spam score' do
+              stub_feature_flags(remove_trust_scores: false)
+
               expect(AntiAbuse::TrustScoreWorker).to receive(:perform_async).once.with(user.id, :spamcheck, instance_of(Float), 'cid')
               is_expected.to eq(ALLOW)
             end
@@ -316,6 +318,8 @@ RSpec.describe Spam::SpamVerdictService, feature_category: :instance_resiliency 
 
           with_them do
             it "returns expected spam constant and updates the spam score" do
+              stub_feature_flags(remove_trust_scores: false)
+
               expect(AntiAbuse::TrustScoreWorker).to receive(:perform_async).once.with(user.id, :spamcheck, instance_of(Float), 'cid')
               is_expected.to eq(expected)
             end

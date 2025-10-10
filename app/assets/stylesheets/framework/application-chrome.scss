@@ -106,12 +106,12 @@
   // Search button
   .super-topbar .topbar-search-button {
     @apply gl-text-subtle gl-border-alpha-dark-24 #{!important};
-    
+
     kbd {
       @apply gl-border-strong gl-font-semibold gl-text-subtle gl-shadow-none dark:gl-border-transparent;
     }
   }
-  
+
   .super-topbar .topbar-search-button:not(:hover):not(:focus):not(:active) {
     @apply dark:gl-bg-alpha-light-8 dark:gl-border-alpha-light-16 #{!important};
   }
@@ -185,7 +185,10 @@
   .panel-content-inner:has(.issue-boards-content, .group-epics-roadmap) {
     @apply gl-mx-2;
     @apply gl-rounded-[0.75rem];
-    height: calc(100% - #{$header-height} - #{$gl-spacing-scale-2}) !important;
+  }
+
+  .panel-content:has(.issue-boards-content, .group-epics-roadmap) {
+    height: calc(100% - #{$header-height} - #{$gl-spacing-scale-2} - 1px);
   }
 
   // work item drawer correct background colors
@@ -467,10 +470,11 @@
     // Issue boards height
     .boards-app {
       height: var(--panel-content-inner-height);
+      @apply gl-overflow-y-hidden;
     }
 
     .boards-list {
-      @apply gl-border-l-0;
+      @apply gl-overflow-y-hidden gl-min-h-0 gl-pb-0 gl-border-l-0;
     }
 
     // MR sidebar

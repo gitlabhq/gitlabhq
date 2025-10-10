@@ -58,13 +58,13 @@ module ApiHelpers
 
   def expect_successful_response_with_paginated_array
     expect(response).to have_gitlab_http_status(:ok)
-    expect(response).to include_pagination_headers.or include_limited_pagination_headers
+    expect(response).to include_pagination_headers
     expect(json_response).to be_an Array
   end
 
   def expect_paginated_array_response(*items)
     expect(response).to have_gitlab_http_status(:ok)
-    expect(response).to include_pagination_headers.or include_limited_pagination_headers
+    expect(response).to include_pagination_headers
     expect(json_response).to be_an Array
     expect(json_response.map { |item| item['id'] }).to match_array(items.flatten)
   end
@@ -77,7 +77,7 @@ module ApiHelpers
 
   def expect_paginated_array_response_contain_exactly(*items)
     expect(response).to have_gitlab_http_status(:ok)
-    expect(response).to include_pagination_headers.or include_limited_pagination_headers
+    expect(response).to include_pagination_headers
     expect(json_response).to be_an Array
     expect(json_response.map { |item| item['id'] }).to contain_exactly(*items)
   end

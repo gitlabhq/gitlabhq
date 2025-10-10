@@ -7565,6 +7565,8 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'when the user is a spammer' do
         before do
+          stub_feature_flags(remove_trust_scores: false)
+
           user_scores = AntiAbuse::UserTrustScore.new(user)
           allow(AntiAbuse::UserTrustScore).to receive(:new).and_return(user_scores)
           allow(user_scores).to receive(:spammer?).and_return(true)

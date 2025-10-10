@@ -141,9 +141,6 @@ module Gitlab
 
         validate_scope!(key, scope)
 
-        # When the feature flag is disabled, treat :global as nil for backward compatibility
-        scope = nil if scope == :global && Feature.disabled?(:enable_invalid_scope_error, :instance)
-
         strategy = resource.present? ? IncrementPerActionedResource.new(resource.id) : IncrementPerAction.new
 
         _throttled?(key, scope: scope, strategy: strategy, threshold: threshold, interval: interval, users_allowlist: users_allowlist, peek: peek)
@@ -165,9 +162,6 @@ module Gitlab
       # @return [Boolean] Whether or not a request should be throttled
       def resource_usage_throttled?(key, scope:, resource_key:, threshold:, interval:, peek: false)
         validate_scope!(key, scope)
-
-        # When the feature flag is disabled, treat :global as nil for backward compatibility
-        scope = nil if scope == :global && Feature.disabled?(:enable_invalid_scope_error, :instance)
 
         strategy = IncrementResourceUsagePerAction.new(resource_key)
 
@@ -390,8 +384,6 @@ module Gitlab
           message: 'Application_Rate_Limiter_Request_Without_Scope',
           env: :"#{key}_request_limit"
         )
-
-        return if Feature.disabled?(:enable_invalid_scope_error, :instance)
 
         raise InvalidScopeError, 'scope cannot be nil. Use :global for global rate limits.'
       end

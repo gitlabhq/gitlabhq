@@ -69,6 +69,10 @@ required upgrade stops occur at versions:
   it could take up to 10 minutes.
   Please be patient and don't interrupt the migration process.
 
+## 18.4.2
+
+The Geo [bug](https://gitlab.com/gitlab-org/gitlab/-/issues/571455) that causes replication events to fail with the error message `no implicit conversion of String into Array (TypeError)` is fixed.
+
 ## 18.4.1
 
 GitLab 18.4.1, 18.3.3, and 18.2.7 introduced limits on JSON inputs to prevent denial of service attacks.
@@ -77,7 +81,7 @@ For more information, see [HTTP request limits](../../administration/instance_li
 
 ## 18.4.0
 
-- In secondary Geo sites, [a bug](https://gitlab.com/gitlab-org/gitlab/-/issues/571455) causes replication events to fail with the error message `no implicit conversion of String into Array (TypeError)`. Redundancies such as re-verification ensure eventual consistency, but RPO is significantly increased. The fix is in GitLab 18.5.0, and is being backported to GitLab 18.4.X.
+- In secondary Geo sites, [a bug](https://gitlab.com/gitlab-org/gitlab/-/issues/571455) causes replication events to fail with the error message `no implicit conversion of String into Array (TypeError)`. Redundancies such as re-verification ensure eventual consistency, but RPO is significantly increased. Versions affected: 18.4.0 and 18.4.1.
 
 ## 18.3.0
 

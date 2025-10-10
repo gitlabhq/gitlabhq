@@ -155,6 +155,17 @@ RSpec.describe API::Repositories, feature_category: :source_code_management do
         let(:request) { get api(route, guest) }
       end
     end
+
+    context 'when authenticated using a token with ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+      it 'returns repository tree' do
+        get api(route, oauth_access_token: oauth_token)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to be_an(Array)
+      end
+    end
   end
 
   describe "GET /projects/:id/repository/blobs/:sha" do

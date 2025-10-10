@@ -107,7 +107,15 @@ In some cases, Semgrep vulnerabilities may still appear as duplicates if the [de
 1. For each Semgrep vulnerability, check if it has a corresponding match in the exported Advanced SAST results.
 1. If a duplicate exists, resolve the Semgrep vulnerability appropriately.
 
-## Supported languages
+## Code coverage
+
+By default, GitLab Advanced SAST analyzes all source code in the
+supported languages.
+
+You can reduce the duration of a scan in a merge request pipeline by enabling the GitLab Advanced
+SAST diff-based scanning option.
+
+### Supported languages
 
 GitLab Advanced SAST supports the following languages with cross-function and cross-file taint analysis:
 
@@ -122,15 +130,87 @@ GitLab Advanced SAST supports the following languages with cross-function and cr
 
 **Footnotes**:
 
-1. C/C++ support is based on the [clang static analyzer](https://clang-analyzer.llvm.org/) and requires additional configuration (such as a compilation database) to be used with GitLab Advanced SAST.
-For details, see [C/C++ configuration](clangsa.md).
+1. C/C++ support is based on the [clang static analyzer](https://clang-analyzer.llvm.org/) and
+   requires additional configuration (such as a compilation database) to be used with GitLab
+   Advanced SAST. For details, see [C/C++ configuration](clangsa.md).
 
-### PHP known issues
+#### PHP known issues
 
 When analyzing PHP code, GitLab Advanced SAST has the following limitations:
 
 - **Dynamic file inclusion**: Dynamic file inclusion statements (`include`, `include_once`, `require`, `require_once`) using variables for file paths are not supported in this release. Only static file inclusion paths are supported for cross-file analysis. See [issue 527341](https://gitlab.com/gitlab-org/gitlab/-/issues/527341).
 - **Case sensitivity**: PHP's case-insensitive nature for function names, class names, and method names is not fully supported in cross-file analysis. See [issue 526528](https://gitlab.com/gitlab-org/gitlab/-/issues/526528).
+
+### Diff-based scanning in merge requests
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16790) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `vulnerability_partial_scans`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
+{{< /alert >}}
+
+Diff-based scanning analyzes only the files modified in a merge request, along with their dependent files. This targeted approach reduces scan times and delivers faster feedback during development.
+
+To ensure complete coverage, a full scan runs on the default branch after the merge request is merged.
+
+When diff-based scanning is enabled:
+
+- Only files that were modified or added in the merge request, along with their dependent files, are scanned in merge request pipelines.
+- If enabled, you’ll see the job log print: `Running differential scan`  
+  If disabled, it prints: `Running full scan`
+- In the **merge request security widget**, a dedicated **Diff-based** tab shows relevant scan findings.
+- In the **Pipeline Security** tab, an alert labeled **Partial SAST report** indicates that only partial findings are included.
+
+#### Prerequisites
+
+GitLab Advanced SAST is configured to run on [merge request pipelines](../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
+
+#### Configure diff-based scanning
+
+To enable diff-based scanning in merge request pipelines, set these CI/CD variables
+in the project's CI/CD configuration file or in either a scan execution policy or pipeline
+execution policy.
+
+| Variable                     | Value          | Description |
+|------------------------------|----------------|-------------|
+| `ADVANCED_SAST_PARTIAL_SCAN` | `differential` | Enables diff-based scanning mode |
+
+#### Dependent files
+
+To avoid missing cross-file vulnerabilities beyond the modified files, diff-based scanning includes their immediate dependents. This reduces false negatives while maintaining fast scans, though it may produce imprecise results in deeper dependency chains, as discussed in more detail [below](#false-negatives-and-positives).
+
+The following files are included in the scan:
+
+- Modified files (files changed or added in the merge request)
+- Dependent files (files that import the modified files)
+
+This design helps detect cross-file data flows, such as tainted data moving from a modified function to a caller that imports it.
+
+Files imported by modified files are not scanned because they typically do not impact the behavior or data flow of the modified code.
+
+For example, consider a merge request that modifies file B:
+
+- If file A imports file B, files A and B are scanned.
+- If file B imports file C, only file B is scanned.
+
+#### Restrictions
+
+##### False negatives and positives
+
+Diff-based scanning may not capture the full call graph in the scanned files, which can lead to missed vulnerabilities (false negatives) or resurfacing of resolved ones (false positives). This trade-off reduces scan times and provides faster feedback during development. For comprehensive coverage, a full scan always runs on the default branch."
++Diff-based scanning may not capture the full call graph in the scanned files, which can lead to missed vulnerabilities (false negatives) or resurfacing of resolved ones (false positives). This trade-off reduces scan times and provides faster feedback during development. For comprehensive coverage, a full scan always runs on the default branch.
+
+##### Fixed vulnerabilities not reported
+
+To avoid misleading results, fixed vulnerabilities are excluded in diff-based scanning. Because only a subset of files is analyzed, the complete call graph is not available, making it impossible to confirm if a vulnerability has been fixed.
+
+A full scan always runs on the default branch after the merge, where fixed vulnerabilities are reported.
 
 ## Configuration
 
@@ -295,6 +375,10 @@ Multi-core scanning is enabled by default in the Advanced SAST (analyzer version
 You can increase the runner size to make more resources available for scanning. For self-hosted
 runners, you may need to customize the `--multi-core` flag in the
 [security scanner configuration](_index.md#security-scanner-configuration).
+
+#### Use diff-based scanning to improve performance
+
+Consider enabling [diff-based scanning](#diff-based-scanning-in-merge-requests) in merge requests to make scan times faster by analyzing only the files changed in the merge request and their immediate dependents instead of scanning the whole codebase.
 
 #### When to seek support
 

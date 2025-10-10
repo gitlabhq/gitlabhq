@@ -34,6 +34,8 @@ RSpec.describe AntiAbuse::TrustScoreWorker, :clean_gitlab_redis_shared_state, fe
 
   context "when the user exists" do
     it 'creates an abuse trust score with the correct data' do
+      stub_feature_flags(remove_trust_scores: false)
+
       expect { perform }.to change { AntiAbuse::TrustScore.count }.from(0).to(1)
       expect(AntiAbuse::TrustScore.last.attributes).to include({
         user_id: user.id,

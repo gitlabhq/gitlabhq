@@ -140,6 +140,10 @@ module Types
       Types::UserCalloutType.connection_type,
       null: true,
       description: 'User callouts that belong to the user.'
+    field :group_callouts,
+      Types::Users::GroupCalloutType.connection_type,
+      null: true,
+      description: 'User callouts that belong to the user per group.'
     field :timelogs,
       Types::TimelogType.connection_type,
       null: true,

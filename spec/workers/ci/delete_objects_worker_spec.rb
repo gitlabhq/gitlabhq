@@ -24,18 +24,8 @@ RSpec.describe Ci::DeleteObjectsWorker, feature_category: :continuous_integratio
   end
 
   describe '#max_running_jobs' do
-    it 'returns higher concurrency of 50' do
+    it 'returns concurrency of 50' do
       expect(worker.max_running_jobs).to eq(50)
-    end
-
-    context 'when FF ci_delete_objects_high_concurrency is disabled' do
-      before do
-        stub_feature_flags(ci_delete_objects_high_concurrency: false)
-      end
-
-      it 'returns 20 when the feature flag is disabled' do
-        expect(worker.max_running_jobs).to eq(20)
-      end
     end
   end
 end

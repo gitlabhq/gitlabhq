@@ -91,40 +91,6 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
         expect { subject.throttled?(:test_action, scope: nil) }
           .to raise_error(Gitlab::ApplicationRateLimiter::InvalidScopeError)
       end
-
-      context 'when enable_invalid_scope_error feature flag is disabled' do
-        before do
-          stub_feature_flags(enable_invalid_scope_error: false)
-        end
-
-        it 'does not raise InvalidScopeError when scope is nil' do
-          expect { subject.throttled?(:test_action, scope: nil) }.not_to raise_error
-        end
-
-        it 'logs a warning when scope is nil even when feature flag is disabled' do
-          expect(Gitlab::AuthLogger).to receive(:warn).with(
-            message: 'Application_Rate_Limiter_Request_Without_Scope',
-            env: :test_action_request_limit
-          )
-
-          subject.throttled?(:test_action, scope: nil)
-        end
-
-        it 'treats :global scope as nil', :freeze_time do
-          # Use a different action to avoid interference with other tests
-          # Both calls should behave identically when the flag is enabled
-          expect(subject.throttled?(:another_action, scope: nil)).to eq(false)
-          expect(subject.throttled?(:another_action, scope: :global)).to eq(false)
-
-          # After hitting the limit with nil scope (another_action has threshold of 2)
-          subject.throttled?(:another_action, scope: nil)
-          subject.throttled?(:another_action, scope: nil)
-
-          # Both should now be throttled since :global is treated as nil
-          expect(subject.throttled?(:another_action, scope: nil)).to eq(true)
-          expect(subject.throttled?(:another_action, scope: :global)).to eq(true)
-        end
-      end
     end
 
     context 'when the key is valid' do
@@ -400,49 +366,6 @@ RSpec.describe Gitlab::ApplicationRateLimiter, :clean_gitlab_redis_rate_limiting
 
         expect { subject.resource_usage_throttled?(:test_action, scope: nil, resource_key: resource_key, threshold: threshold, interval: interval) }
           .to raise_error(Gitlab::ApplicationRateLimiter::InvalidScopeError)
-      end
-
-      context 'when enable_invalid_scope_error feature flag is disabled' do
-        before do
-          stub_feature_flags(enable_invalid_scope_error: false)
-        end
-
-        it 'does not raise InvalidScopeError when scope is nil' do
-          expect { subject.resource_usage_throttled?(:test_action, scope: nil, resource_key: resource_key, threshold: threshold, interval: interval) }.not_to raise_error
-        end
-
-        it 'logs a warning when scope is nil even when feature flag is disabled' do
-          expect(Gitlab::AuthLogger).to receive(:warn).with(
-            message: 'Application_Rate_Limiter_Request_Without_Scope',
-            env: :test_action_request_limit
-          )
-
-          subject.resource_usage_throttled?(:test_action, scope: nil, resource_key: resource_key, threshold: threshold, interval: interval)
-        end
-
-        it 'treats :global scope as nil' do
-          # Test that both nil and :global scopes generate the same cache key
-          # when the feature flag is enabled
-
-          # Mock the _throttled? method to verify it receives the same scope
-          allow(subject).to receive(:_throttled?).and_call_original
-
-          # Call with nil scope
-          subject.resource_usage_throttled?(:another_action, scope: nil, resource_key: resource_key, threshold: threshold, interval: interval)
-
-          # Call with :global scope
-          subject.resource_usage_throttled?(:another_action, scope: :global, resource_key: resource_key, threshold: threshold, interval: interval)
-
-          # Verify both calls passed nil to _throttled? (since :global gets converted to nil)
-          expect(subject).to have_received(:_throttled?).with(
-            :another_action,
-            scope: nil,
-            strategy: anything,
-            threshold: threshold,
-            interval: interval,
-            peek: false
-          ).twice
-        end
       end
     end
 

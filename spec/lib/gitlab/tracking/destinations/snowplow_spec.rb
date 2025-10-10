@@ -175,39 +175,6 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     end
   end
 
-  context "when in development environment" do
-    before do
-      allow(Rails.env).to receive_messages(test?: false, development?: true)
-    end
-
-    it "initializes POST emitter with buffer_size 1" do
-      allow(SnowplowTracker::Tracker).to receive(:new).and_return(tracker)
-      allow(tracker).to receive(:track_struct_event).and_call_original
-
-      allow_next_instance_of(Gitlab::Tracking::Destinations::DestinationConfiguration) do |config|
-        allow(config).to receive_messages(hostname: 'gitfoo.com', protocol: 'https')
-      end
-
-      expect(SnowplowTracker::AsyncEmitter)
-        .to receive(:new)
-        .with(endpoint: 'gitfoo.com',
-          options: { protocol: 'https',
-                     method: 'post',
-                     buffer_size: 1,
-                     on_success: subject.method(:increment_successful_events_emissions),
-                     on_failure: subject.method(:failure_callback) })
-        .and_return(emitter)
-
-      subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
-    end
-
-    it "doesn't add Kernel.at_exit hook" do
-      expect(Kernel).not_to receive(:at_exit)
-
-      subject
-    end
-  end
-
   context 'callbacks' do
     describe 'on success' do
       it 'increase gitlab_successful_snowplow_events_total counter' do

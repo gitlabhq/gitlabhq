@@ -401,14 +401,14 @@ To restore a project pending deletion:
 
 Archive a project to make it read-only and preserve its data for future reference.
 
-Archived projects:
+When you archive a project:
 
-- Display an `Archived` badge on the project page
-- Appear in the **Inactive** tab on the group page, **Your work** page, and **Explore** page
-- Become read-only for most features (repository, packages, issues, merge requests, feature flags, pull mirroring, and others)
-- Have their fork relationships removed (open merge requests from forks are automatically closed)
-- Have their deployed Pages removed along with any custom domains
-- Stop running scheduled CI/CD pipelines
+- The project becomes inactive and displays an `Archived` badge
+- Most features become read-only, including repositories, issues, merge requests, and packages
+- Fork relationships are removed and open merge requests from forks are closed
+- Deployed Pages are removed along with custom domains
+- Scheduled CI/CD pipelines stop running
+- Pull mirroring stops
 
 Prerequisites:
 
@@ -432,13 +432,15 @@ This action is also available on other list pages.
 
 ### Unarchive a project
 
-Unarchive a project to:
+When you unarchive a project:
 
-- Remove read-only restrictions.
-- Return the project to the **Active** or **Member** tab in project lists.
-- Resume pull mirroring automatically.
+- Read-only restrictions are removed
+- The project is no longer marked as inactive
+- Scheduled CI/CD pipelines resume automatically
+- Pull mirroring resumes automatically
 
-Projects that were archived as part of group archiving cannot be unarchived individually. You must [unarchive the parent group](../group/manage.md#unarchive-a-group) to unarchive all its projects and subgroups.
+Projects that were archived as part of group archiving cannot be unarchived individually.
+You must [unarchive the parent group](../group/manage.md#unarchive-a-group) to unarchive all its projects and subgroups.
 
 {{< alert type="note" >}}
 

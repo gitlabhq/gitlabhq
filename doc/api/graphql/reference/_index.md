@@ -13962,6 +13962,26 @@ Input type: `UserCalloutCreateInput`
 | <a id="mutationusercalloutcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationusercalloutcreateusercallout"></a>`userCallout` | [`UserCallout!`](#usercallout) | User callout dismissed. |
 
+### `Mutation.userGroupCalloutCreate`
+
+Input type: `UserGroupCalloutCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationusergroupcalloutcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationusergroupcalloutcreatefeaturename"></a>`featureName` | [`String!`](#string) | Feature name you want to dismiss the callout for. |
+| <a id="mutationusergroupcalloutcreategroupid"></a>`groupId` | [`GroupID!`](#groupid) | Group for the callout. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationusergroupcalloutcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationusergroupcalloutcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationusergroupcalloutcreateusergroupcallout"></a>`userGroupCallout` | [`UserGroupCallout!`](#usergroupcallout) | User group callout dismissed. |
+
 ### `Mutation.userPreferencesUpdate`
 
 Input type: `UserPreferencesUpdateInput`
@@ -22396,6 +22416,29 @@ The edge type for [`UserCore`](#usercore).
 | <a id="usercoreedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="usercoreedgenode"></a>`node` | [`UserCore`](#usercore) | The item at the end of the edge. |
 
+#### `UserGroupCalloutConnection`
+
+The connection type for [`UserGroupCallout`](#usergroupcallout).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usergroupcalloutconnectionedges"></a>`edges` | [`[UserGroupCalloutEdge]`](#usergroupcalloutedge) | A list of edges. |
+| <a id="usergroupcalloutconnectionnodes"></a>`nodes` | [`[UserGroupCallout]`](#usergroupcallout) | A list of nodes. |
+| <a id="usergroupcalloutconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `UserGroupCalloutEdge`
+
+The edge type for [`UserGroupCallout`](#usergroupcallout).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usergroupcalloutedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="usergroupcalloutedgenode"></a>`node` | [`UserGroupCallout`](#usergroupcallout) | The item at the end of the edge. |
+
 #### `UsersQueuedForRolePromotionConnection`
 
 The connection type for [`UsersQueuedForRolePromotion`](#usersqueuedforrolepromotion).
@@ -23163,6 +23206,7 @@ A user with add-on data.
 | <a id="addonuseremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="addonusergithub"></a>`github` | [`String`](#string) | GitHub profile name of the user. |
 | <a id="addonusergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
+| <a id="addonusergroupcallouts"></a>`groupCallouts` | [`UserGroupCalloutConnection`](#usergroupcalloutconnection) | User callouts that belong to the user per group. (see [Connections](#connections)) |
 | <a id="addonusergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="addonusergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="addonuserhuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
@@ -24607,6 +24651,7 @@ Core representation of a GitLab user.
 | <a id="autocompleteduseremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="autocompletedusergithub"></a>`github` | [`String`](#string) | GitHub profile name of the user. |
 | <a id="autocompletedusergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
+| <a id="autocompletedusergroupcallouts"></a>`groupCallouts` | [`UserGroupCalloutConnection`](#usergroupcalloutconnection) | User callouts that belong to the user per group. (see [Connections](#connections)) |
 | <a id="autocompletedusergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="autocompletedusergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="autocompleteduserhuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
@@ -27745,6 +27790,7 @@ The currently authenticated GitLab user.
 | <a id="currentuseremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="currentusergithub"></a>`github` | [`String`](#string) | GitHub profile name of the user. |
 | <a id="currentusergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
+| <a id="currentusergroupcallouts"></a>`groupCallouts` | [`UserGroupCalloutConnection`](#usergroupcalloutconnection) | User callouts that belong to the user per group. (see [Connections](#connections)) |
 | <a id="currentusergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="currentusergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="currentuserhuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
@@ -34815,6 +34861,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneeemails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="mergerequestassigneegithub"></a>`github` | [`String`](#string) | GitHub profile name of the user. |
 | <a id="mergerequestassigneegitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
+| <a id="mergerequestassigneegroupcallouts"></a>`groupCallouts` | [`UserGroupCalloutConnection`](#usergroupcalloutconnection) | User callouts that belong to the user per group. (see [Connections](#connections)) |
 | <a id="mergerequestassigneegroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestassigneegroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestassigneehuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
@@ -35237,6 +35284,7 @@ The author of the merge request.
 | <a id="mergerequestauthoremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="mergerequestauthorgithub"></a>`github` | [`String`](#string) | GitHub profile name of the user. |
 | <a id="mergerequestauthorgitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
+| <a id="mergerequestauthorgroupcallouts"></a>`groupCallouts` | [`UserGroupCalloutConnection`](#usergroupcalloutconnection) | User callouts that belong to the user per group. (see [Connections](#connections)) |
 | <a id="mergerequestauthorgroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestauthorgroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestauthorhuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
@@ -35710,6 +35758,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantemails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantgithub"></a>`github` | [`String`](#string) | GitHub profile name of the user. |
 | <a id="mergerequestparticipantgitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
+| <a id="mergerequestparticipantgroupcallouts"></a>`groupCallouts` | [`UserGroupCalloutConnection`](#usergroupcalloutconnection) | User callouts that belong to the user per group. (see [Connections](#connections)) |
 | <a id="mergerequestparticipantgroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestparticipantgroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestparticipanthuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
@@ -36151,6 +36200,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestrevieweremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="mergerequestreviewergithub"></a>`github` | [`String`](#string) | GitHub profile name of the user. |
 | <a id="mergerequestreviewergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
+| <a id="mergerequestreviewergroupcallouts"></a>`groupCallouts` | [`UserGroupCalloutConnection`](#usergroupcalloutconnection) | User callouts that belong to the user per group. (see [Connections](#connections)) |
 | <a id="mergerequestreviewergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestreviewergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="mergerequestreviewerhuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
@@ -44550,6 +44600,7 @@ Core representation of a GitLab user.
 | <a id="usercoreemails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="usercoregithub"></a>`github` | [`String`](#string) | GitHub profile name of the user. |
 | <a id="usercoregitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
+| <a id="usercoregroupcallouts"></a>`groupCallouts` | [`UserGroupCalloutConnection`](#usergroupcalloutconnection) | User callouts that belong to the user per group. (see [Connections](#connections)) |
 | <a id="usercoregroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="usercoregroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="usercorehuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
@@ -44950,6 +45001,16 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usercoreworkspacesids"></a>`ids` | [`[RemoteDevelopmentWorkspaceID!]`](#remotedevelopmentworkspaceid) | Filter workspaces by workspace GlobalIDs. For example, `["gid://gitlab/RemoteDevelopment::Workspace/1"]`. |
 | <a id="usercoreworkspacesincludeactualstates"></a>`includeActualStates` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Deprecated** in GitLab 16.7. Use actual_states instead. |
 | <a id="usercoreworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
+
+### `UserGroupCallout`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="usergroupcalloutdismissedat"></a>`dismissedAt` | [`Time!`](#time) | Date when the callout was dismissed. |
+| <a id="usergroupcalloutfeaturename"></a>`featureName` | [`UserGroupCalloutFeatureName!`](#usergroupcalloutfeaturename) | Name of the feature that the callout is for. |
+| <a id="usergroupcalloutgroupid"></a>`groupId` | [`ID!`](#id) | Group id that the callout applies. |
 
 ### `UserMemberRole`
 
@@ -51128,6 +51189,39 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumweb_ide_ci_environments_guidance"></a>`WEB_IDE_CI_ENVIRONMENTS_GUIDANCE` | Callout feature name for web_ide_ci_environments_guidance. |
 | <a id="usercalloutfeaturenameenumwork_item_epic_feedback"></a>`WORK_ITEM_EPIC_FEEDBACK` | Callout feature name for work_item_epic_feedback. |
 
+### `UserGroupCalloutFeatureName`
+
+Name of the feature that the callout is for.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="usergroupcalloutfeaturenameall_seats_used_alert"></a>`ALL_SEATS_USED_ALERT` | Callout feature name for all_seats_used_alert. |
+| <a id="usergroupcalloutfeaturenameapproaching_seat_count_threshold"></a>`APPROACHING_SEAT_COUNT_THRESHOLD` | Callout feature name for approaching_seat_count_threshold. |
+| <a id="usergroupcalloutfeaturenameci_minutes_limit_alert_danger_stage"></a>`CI_MINUTES_LIMIT_ALERT_DANGER_STAGE` | Callout feature name for ci_minutes_limit_alert_danger_stage. |
+| <a id="usergroupcalloutfeaturenameci_minutes_limit_alert_exceeded_stage"></a>`CI_MINUTES_LIMIT_ALERT_EXCEEDED_STAGE` | Callout feature name for ci_minutes_limit_alert_exceeded_stage. |
+| <a id="usergroupcalloutfeaturenameci_minutes_limit_alert_warning_stage"></a>`CI_MINUTES_LIMIT_ALERT_WARNING_STAGE` | Callout feature name for ci_minutes_limit_alert_warning_stage. |
+| <a id="usergroupcalloutfeaturenamecompliance_framework_settings_moved_callout"></a>`COMPLIANCE_FRAMEWORK_SETTINGS_MOVED_CALLOUT` | Callout feature name for compliance_framework_settings_moved_callout. |
+| <a id="usergroupcalloutfeaturenameduo_agent_platform_requested"></a>`DUO_AGENT_PLATFORM_REQUESTED` | Callout feature name for duo_agent_platform_requested. |
+| <a id="usergroupcalloutfeaturenameenforcement_at_limit_alert"></a>`ENFORCEMENT_AT_LIMIT_ALERT` | Callout feature name for enforcement_at_limit_alert. |
+| <a id="usergroupcalloutfeaturenameexpired_duo_enterprise_trial_widget"></a>`EXPIRED_DUO_ENTERPRISE_TRIAL_WIDGET` | Callout feature name for expired_duo_enterprise_trial_widget. |
+| <a id="usergroupcalloutfeaturenameexpired_duo_pro_trial_widget"></a>`EXPIRED_DUO_PRO_TRIAL_WIDGET` | Callout feature name for expired_duo_pro_trial_widget. |
+| <a id="usergroupcalloutfeaturenameexpired_trial_status_widget"></a>`EXPIRED_TRIAL_STATUS_WIDGET` | Callout feature name for expired_trial_status_widget. |
+| <a id="usergroupcalloutfeaturenamefree_group_limited_alert"></a>`FREE_GROUP_LIMITED_ALERT` | Callout feature name for free_group_limited_alert. |
+| <a id="usergroupcalloutfeaturenameinvite_members_banner"></a>`INVITE_MEMBERS_BANNER` | Callout feature name for invite_members_banner. |
+| <a id="usergroupcalloutfeaturenamenamespace_over_storage_users_combined_alert"></a>`NAMESPACE_OVER_STORAGE_USERS_COMBINED_ALERT` | Callout feature name for namespace_over_storage_users_combined_alert. |
+| <a id="usergroupcalloutfeaturenamenamespace_storage_limit_alert_alert_threshold"></a>`NAMESPACE_STORAGE_LIMIT_ALERT_ALERT_THRESHOLD` | Callout feature name for namespace_storage_limit_alert_alert_threshold. |
+| <a id="usergroupcalloutfeaturenamenamespace_storage_limit_alert_error_threshold"></a>`NAMESPACE_STORAGE_LIMIT_ALERT_ERROR_THRESHOLD` | Callout feature name for namespace_storage_limit_alert_error_threshold. |
+| <a id="usergroupcalloutfeaturenamenamespace_storage_limit_alert_warning_threshold"></a>`NAMESPACE_STORAGE_LIMIT_ALERT_WARNING_THRESHOLD` | Callout feature name for namespace_storage_limit_alert_warning_threshold. |
+| <a id="usergroupcalloutfeaturenamenamespace_storage_pre_enforcement_banner"></a>`NAMESPACE_STORAGE_PRE_ENFORCEMENT_BANNER` | Callout feature name for namespace_storage_pre_enforcement_banner. |
+| <a id="usergroupcalloutfeaturenamenamespace_user_cap_reached_alert"></a>`NAMESPACE_USER_CAP_REACHED_ALERT` | Callout feature name for namespace_user_cap_reached_alert. |
+| <a id="usergroupcalloutfeaturenamepreview_usage_quota_free_plan_alert"></a>`PREVIEW_USAGE_QUOTA_FREE_PLAN_ALERT` | Callout feature name for preview_usage_quota_free_plan_alert. |
+| <a id="usergroupcalloutfeaturenamepreview_user_over_limit_free_plan_alert"></a>`PREVIEW_USER_OVER_LIMIT_FREE_PLAN_ALERT` | Callout feature name for preview_user_over_limit_free_plan_alert. |
+| <a id="usergroupcalloutfeaturenameproject_repository_limit_alert_warning_threshold"></a>`PROJECT_REPOSITORY_LIMIT_ALERT_WARNING_THRESHOLD` | Callout feature name for project_repository_limit_alert_warning_threshold. |
+| <a id="usergroupcalloutfeaturenameunlimited_members_during_trial_alert"></a>`UNLIMITED_MEMBERS_DURING_TRIAL_ALERT` | Callout feature name for unlimited_members_during_trial_alert. |
+| <a id="usergroupcalloutfeaturenameusage_quota_trial_alert"></a>`USAGE_QUOTA_TRIAL_ALERT` | Callout feature name for usage_quota_trial_alert. |
+| <a id="usergroupcalloutfeaturenameuser_reached_limit_free_plan_alert"></a>`USER_REACHED_LIMIT_FREE_PLAN_ALERT` | Callout feature name for user_reached_limit_free_plan_alert. |
+| <a id="usergroupcalloutfeaturenameweb_hook_disabled"></a>`WEB_HOOK_DISABLED` | Callout feature name for web_hook_disabled. |
+
 ### `UserPromotionStatusType`
 
 Types of User Promotion States.
@@ -54198,6 +54292,7 @@ Implementations:
 | <a id="useremails"></a>`emails` | [`EmailConnection`](#emailconnection) | User's email addresses. (see [Connections](#connections)) |
 | <a id="usergithub"></a>`github` | [`String`](#string) | GitHub profile name of the user. |
 | <a id="usergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
+| <a id="usergroupcallouts"></a>`groupCallouts` | [`UserGroupCalloutConnection`](#usergroupcalloutconnection) | User callouts that belong to the user per group. (see [Connections](#connections)) |
 | <a id="usergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="usergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
 | <a id="userhuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |

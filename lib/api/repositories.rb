@@ -6,11 +6,14 @@ module API
   class Repositories < ::API::Base
     include PaginationParams
     include Helpers::Unidiff
+    include APIGuard
 
     content_type :txt, 'text/plain'
 
     helpers ::API::Helpers::HeadersHelpers
     helpers ::API::Helpers::BlobHelpers
+
+    allow_access_with_scope :ai_workflows, if: ->(request) { request.get? || request.head? }
 
     helpers do
       params :release_params do

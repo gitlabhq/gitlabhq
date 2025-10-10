@@ -47,6 +47,8 @@ module AntiAbuse
     private
 
     def user_scores
+      return AntiAbuse::TrustScore.none if Feature.enabled?(:remove_trust_scores, @user)
+
       AntiAbuse::TrustScore.where(user_id: @user.id)
     end
   end
