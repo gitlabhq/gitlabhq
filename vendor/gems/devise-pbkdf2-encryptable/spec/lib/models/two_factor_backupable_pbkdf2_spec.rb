@@ -54,7 +54,15 @@ RSpec.describe ::Devise::Models::TwoFactorBackupablePbkdf2 do
 
       it 'stores the codes as pbkdf2 hashes' do
         subject.otp_backup_codes.each do |code|
-          expect(code.start_with?("$pbkdf2-sha512$")).to be_truthy
+          parts = code.split('$')
+          expect(parts.length).to eq(5)
+
+          _, strategy, stretches, salt, checksum = parts
+          salt = salt.tr('.', '+')
+          decoded_salt = Base64.decode64(salt).unpack1('H*')
+          expect(strategy).to eq('pbkdf2-sha512')
+          expect(stretches).to eq('20000')
+          expect(decoded_salt.length).to eq(64)
         end
       end
     end

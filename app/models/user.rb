@@ -1235,6 +1235,7 @@ class User < ApplicationRecord
   # In constant-time, check both that the password isn't on a denylist AND
   # that the password is the user's password
   def valid_password?(password)
+    return false if password.blank?
     return false unless password_allowed?(password)
     return false if password_automatically_set?
     return false unless allow_password_authentication?

@@ -10,6 +10,7 @@ module Devise
       extend ActiveSupport::Concern
 
       def valid_password?(password)
+        return false if password.blank?
         encryptor_class.compare(encrypted_password, password)
       end
 
