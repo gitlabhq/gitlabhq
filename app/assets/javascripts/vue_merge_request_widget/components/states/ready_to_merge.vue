@@ -208,7 +208,7 @@ export default {
   },
   computed: {
     hasCI() {
-      return this.state.hasCI || this.state.hasCi;
+      return this.mr.hasCI;
     },
     isAutoMergeAvailable() {
       return !isEmpty(this.state.availableAutoMergeStrategies);
@@ -221,9 +221,6 @@ export default {
     },
     showMergeFailedPipelineConfirmationDialog() {
       return (this.status === PIPELINE_FAILED_STATE && this.isPipelineFailed) || this.mr.retargeted;
-    },
-    isMergeAllowed() {
-      return this.state.mergeable || false;
     },
     canRemoveSourceBranch() {
       return this.state.userPermissions.removeSourceBranch;
@@ -328,11 +325,7 @@ export default {
       return this.preferredAutoMergeStrategy === MT_MERGE_STRATEGY && this.isPipelineFailed;
     },
     shouldShowMergeControls() {
-      return (
-        this.state.userPermissions?.canMerge &&
-        !this.mr.autoMergeEnabled &&
-        this.mr.state === 'readyToMerge'
-      );
+      return this.mr.canMerge && !this.mr.autoMergeEnabled && this.mr.state === 'readyToMerge';
     },
     sourceBranchPreMergeText() {
       return this.removeSourceBranch

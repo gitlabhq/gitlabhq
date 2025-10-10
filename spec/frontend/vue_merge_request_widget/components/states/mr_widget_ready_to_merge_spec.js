@@ -62,7 +62,6 @@ const createTestMr = (customConfig) => {
     translateStateToMachine: () => this.transitionStateMachine(),
     state: 'readyToMerge',
     canMerge: true,
-    mergeable: true,
     userPermissions: {
       removeSourceBranch: true,
       canMerge: true,
@@ -242,7 +241,7 @@ describe('ReadyToMerge', () => {
       createComponent({
         mr: {
           availableAutoMergeStrategies: [MWCP_MERGE_STRATEGY],
-          mergeable: true,
+          isMergeAllowed: true,
           headPipeline: { active: false },
           onlyAllowMergeIfPipelineSucceeds: false,
         },
@@ -255,7 +254,7 @@ describe('ReadyToMerge', () => {
       createComponent({
         mr: {
           availableAutoMergeStrategies: [],
-          mergeable: true,
+          isMergeAllowed: true,
           headPipeline: { active: true },
           onlyAllowMergeIfPipelineSucceeds: false,
         },
@@ -268,7 +267,7 @@ describe('ReadyToMerge', () => {
       createComponent({
         mr: {
           availableAutoMergeStrategies: [MWCP_MERGE_STRATEGY],
-          mergeable: false,
+          isMergeAllowed: false,
           headPipeline: { active: true },
           onlyAllowMergeIfPipelineSucceeds: false,
         },
@@ -624,7 +623,7 @@ describe('ReadyToMerge', () => {
       it('should be disabled in the rendered output', () => {
         createComponent({
           mr: {
-            mergeable: true,
+            isMergeAllowed: true,
             userPermissions: {
               removeSourceBranch: false,
               canMerge: true,
@@ -639,7 +638,7 @@ describe('ReadyToMerge', () => {
     describe('when user can merge and can delete branch', () => {
       beforeEach(() => {
         createComponent({
-          mr: { canRemoveSourceBranch: true, mergeable: true },
+          mr: { canRemoveSourceBranch: true, isMergeAllowed: true },
         });
       });
 
@@ -653,7 +652,7 @@ describe('ReadyToMerge', () => {
     describe('squash checkbox', () => {
       it('should be rendered when squash before merge is enabled and there is more than 1 commit', () => {
         createComponent({
-          mr: { commitsCount: 2, enableSquashBeforeMerge: true, mergeable: true },
+          mr: { commitsCount: 2, enableSquashBeforeMerge: true, isMergeAllowed: true },
         });
 
         expect(findCheckboxElement().exists()).toBe(true);

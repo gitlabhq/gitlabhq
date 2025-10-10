@@ -1,6 +1,5 @@
 fragment ReadyToMergeMergeRequest on MergeRequest {
   id
-  detailedMergeStatus
   autoMergeEnabled
   shouldRemoveSourceBranch
   forceRemoveSourceBranch
@@ -9,13 +8,9 @@ fragment ReadyToMergeMergeRequest on MergeRequest {
   squash
   squashOnMerge
   availableAutoMergeStrategies
-  hasCi
-  mergeable
-  mergeWhenPipelineSucceeds
   commitCount
   diffHeadSha
   userPermissions {
-    canMerge
     removeSourceBranch
     updateMergeRequest
   }
