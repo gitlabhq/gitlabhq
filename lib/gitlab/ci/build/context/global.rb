@@ -26,14 +26,11 @@ module Gitlab
           private
 
           def stub_build
-            ::Ci::Build.new(pipeline_attributes).tap do |job|
-              temp_job_definition = ::Ci::JobDefinition.fabricate(
-                config: { yaml_variables: @yaml_variables },
-                project_id: pipeline.project_id,
-                partition_id: pipeline.partition_id
+            ::Ci::Build.fabricate(
+              pipeline_attributes.merge(
+                yaml_variables: @yaml_variables
               )
-              job.temp_job_definition = temp_job_definition
-            end
+            )
           end
         end
       end

@@ -149,6 +149,18 @@ module Ci
       end
     end
 
+    def self.fabricate(attrs)
+      new(attrs).tap do |build|
+        job_definition = ::Ci::JobDefinition.fabricate(
+          config: attrs,
+          project_id: build.project_id,
+          partition_id: build.partition_id
+        )
+
+        build.temp_job_definition = job_definition
+      end
+    end
+
     def self.select_with_aggregated_needs(project)
       aggregated_needs_names = Ci::BuildNeed
         .scoped_build

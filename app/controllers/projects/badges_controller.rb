@@ -7,6 +7,7 @@ class Projects::BadgesController < Projects::ApplicationController
   before_action :authorize_read_build!, only: [:pipeline, :coverage]
 
   feature_category :continuous_integration, [:index, :pipeline]
+  feature_category :groups_and_projects, [:custom]
   feature_category :code_testing, [:coverage]
   feature_category :release_orchestration, [:release]
 
@@ -45,6 +46,22 @@ class Projects::BadgesController < Projects::ApplicationController
       })
 
     render_badge latest_release
+  end
+
+  def custom
+    return render_404 unless Feature.enabled?(:custom_project_badges, Feature.current_request)
+
+    custom_badge = Gitlab::Ci::Badge::Custom::CustomBadge
+      .new(project, opts: {
+        key_text: params[:key_text],
+        key_width: params[:key_width],
+        key_color: params[:key_color],
+        value_text: params[:value_text],
+        value_width: params[:value_width],
+        value_color: params[:value_color]
+      })
+
+    render_badge custom_badge
   end
 
   private

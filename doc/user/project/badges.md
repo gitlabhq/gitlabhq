@@ -25,8 +25,9 @@ GitLab provides the following pipeline badges:
 - [Pipeline status badge](#pipeline-status-badges)
 - [Test coverage report badge](#test-coverage-report-badges)
 - [Latest release badge](#latest-release-badges)
+- [Custom badge](#custom-badges)
 
-GitLab also supports [custom badges](#customize-badges).
+GitLab also supports [adjusting badge style](#customize-badges).
 
 ## Pipeline status badges
 
@@ -217,18 +218,50 @@ The pipeline status badge is based on specific Git revisions (branches). Ensure 
 
 {{< /alert >}}
 
+## Custom badges
+
+Custom badges allows changing the following attributes:
+
+- `key_text`
+- `key_color`
+- `key_width`
+- `value_text`
+- `value_color`
+- `value_width`
+
+Colors can be passed as [a named color](https://developer.mozilla.org/en-US/docs/Web/CSS/named-color), for example `blue` or hexadecimal representation like `fff` or `7bc043` (without leading `#`).
+
+You can access a latest release badge image by using the following link:
+
+```plaintext
+https://gitlab.example.com/<namespace>/<project>/-/badges/custom.svg
+```
+
+For example, you can use [placeholders](#placeholders) to create a badge for the latest tag:
+
+```plaintext
+https://%{gitlab_server}/%{project_path}/badges/custom.svg?key_text=Latest_tag&key_value=%{latest_tag}&key_color=white&value_color=7bc043
+```
+
 ## Customize badges
 
-You can customize the following aspects of a badge:
+You can customize how badges appear in your project:
 
-- Style
-- Text
-- Width
-- Image
+- [Basic customization](#basic-customization) works for all badge types
+- [Advanced customization](#custom-badges) is available only for custom badges
 
-### Customize badge style
+### Basic customization
 
-Pipeline badges can be rendered in different styles by adding the `style=style_name` parameter to the URL. Two styles are available:
+You can customize the following aspects of all badge types:
+
+- [Style](#style)
+- [Key text](#key-text)
+- [Key width](#key-width)
+- [Value width](#value-width)
+
+#### Style
+
+Pipeline, coverage, release, and custom badges can be rendered in different styles by adding the `style=style_name` parameter to the URL. Two styles are available:
 
 - Flat (default):
 
@@ -246,10 +279,11 @@ Pipeline badges can be rendered in different styles by adding the `style=style_n
 
   ![Badge flat square style](img/badge_flat_square.svg)
 
-### Customize badge text
+#### Key text
 
-The text for a badge can be customized to differentiate between multiple coverage jobs that run in the same pipeline.
-Customize the badge text and width by adding the `key_text=custom_text` and `key_width=custom_key_width` parameters to the URL:
+The text for the left side on the badge can be customize. For example, to differentiate between multiple coverage jobs that run in the same pipeline.
+
+Customize the badge key text by adding the `key_text=custom_text` parameter to the URL:
 
 ```plaintext
 https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=130
@@ -257,36 +291,112 @@ https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=karma&key_text
 
 ![Badge with custom text and width](img/badge_custom_text.svg)
 
-### Customize badge image
+#### Key width
 
-Use custom badge images in a project or a group if you want to use badges other than the default
-ones.
+Customize the badge key width by adding the `key_width=width` parameter to the URL:
+
+```plaintext
+https://gitlab.com/%{project_path}/-/badges/coverage.svg?key_width=130
+```
+
+#### Value width
+
+Customize the badge value width by adding the `value_width=width` parameter to the URL:
+
+```plaintext
+https://gitlab.com/%{project_path}/-/badges/coverage.svg?value_width=130
+```
+
+### Custom badges
+
+Custom badges give you complete control over both sides of the badge. Unlike standard badges that show predefined information (like pipeline status), custom badges let you:
+
+- Display any text on either side of the badge
+- Use custom colors
+- Show project-specific information
+- Create dynamic badges using [placeholders](#placeholders)
+
+In addition to the [basic customization options](#basic-customization), custom badges support these additional customization options:
+
+- [Key color](#key-color)
+- [Value color](#value-color)
+- [Value text](#value-text)
+
+You can add a custom badge by using the following link:
+
+```plaintext
+https://gitlab.com/%{project_path}/badges/%{default_branch}/custom.svg
+```
+
+For example, you can use [placeholders](#placeholders) to create a badge for the latest tag:
+
+```plaintext
+https://%{gitlab_server}/%{project_path}/badges/custom.svg?key_text=Latest_tag&key_value=%{latest_tag}&key_color=white&value_color=7bc043
+```
+
+{{< alert type="warning" >}}
+
+Placeholders allow badges to expose otherwise-private information, such as the default branch or commit SHA when the project is configured to have a private repository. This behavior is intentional, as badges are intended to be used publicly. Avoid using these placeholders if the information is sensitive.
+
+{{< /alert >}}
+
+#### Value text
+
+Customize the text displayed on the right side by adding the `value_text=text` parameter to the URL:
+
+```plaintext
+https://gitlab.com/%{project_path}/-/badges/custom.svg?value_text=badge
+```
+
+#### Value color
+
+Customize the background color on the right side by adding the `value_color=color` parameter to the URL:
+
+Colors can be passed as:
+
+- [A named color](https://developer.mozilla.org/en-US/docs/Web/CSS/named-color), for example `blue`
+- Hexadecimal representation like `fff` or `7bc043` (without leading `#`)
+
+```plaintext
+https://gitlab.com/%{project_path}/-/badges/custom.svg?value_color=red
+```
+
+#### Key color
+
+Customize the background color on the left side by adding the `value_color=color` parameter to the URL:
+
+Colors can be passed as:
+
+- [A named color](https://developer.mozilla.org/en-US/docs/Web/CSS/named-color), for example `blue`
+- Hexadecimal representation like `fff` or `7bc043` (without leading `#`)
+
+```plaintext
+https://gitlab.com/%{project_path}/-/badges/custom.svg?key_color=green
+```
+
+### Add a custom badge image
 
 Prerequisites:
 
-- A valid URL that points directly to the desired image for the badge.
-  If the image is located in a GitLab repository, use the raw link to the image.
+- You must have at least the Developer role for the project or group.
+- You must have a valid URL that points directly to the desired image for the badge. If the image is in a GitLab repository, use the raw link to the image.
 
-Using placeholders, here is an example badge image URL referring to a raw image at the root of a repository:
+To add a custom badge with an image:
 
-```plaintext
-https://gitlab.example.com/<project_path>/-/raw/<default_branch>/my-image.svg
-```
-
-To add a new badge with a custom image to a group or project:
-
-1. On the left sidebar, select **Search or go to** and find your project or
-   group.
-1. Select **Settings** > **General**.
+1. On the left sidebar, select **Search or go to** and find your project or group.
+1. Select **Settings > General**.
 1. Expand **Badges**.
 1. Under **Name**, enter the name for the badge.
 1. Under **Link**, enter the URL that the badge should point to.
-1. Under **Badge image URL**, enter the URL that points directly to the custom image that should be
-   displayed.
+1. Under **Badge image URL**, enter the URL for your custom image. For example, to use an image from your repository:
+
+   ```plaintext
+   https://gitlab.example.com/<project_path>/-/raw/<default_branch>/custom-image.svg
+   ```
+
 1. Select **Add badge**.
 
-To learn how to use custom images generated through a pipeline, see the documentation on
-[accessing the latest job artifacts by URL](../../ci/jobs/job_artifacts.md#from-a-url).
+To use custom images generated through a pipeline, see [accessing the latest job artifacts by URL](../../ci/jobs/job_artifacts.md#from-a-url).
 
 ## Edit a badge
 
@@ -334,7 +444,7 @@ The following placeholders are available:
   project's repository
 - `%{latest_tag}`: Latest tag added to the project's repository
 
-{{< alert type="note" >}}
+{{< alert type="warning" >}}
 
 Placeholders allow badges to expose otherwise-private information, such as the
 default branch or commit SHA when the project is configured to have a private

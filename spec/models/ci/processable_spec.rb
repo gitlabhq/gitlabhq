@@ -124,6 +124,22 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
     end
   end
 
+  describe '.fabricate' do
+    let(:build_attributes) { { options: { script: ['echo'] }, project_id: 1, partition_id: 99 } }
+
+    subject(:fabricate) { described_class.fabricate(build_attributes) }
+
+    it 'initializes with temp_job_definition' do
+      expect(fabricate).to have_attributes(
+        temp_job_definition: instance_of(Ci::JobDefinition),
+        job_definition: nil
+      )
+      expect(fabricate.temp_job_definition.config).to eq({ options: build_attributes[:options] })
+      expect(fabricate.temp_job_definition.project_id).to eq(build_attributes[:project_id])
+      expect(fabricate.temp_job_definition.partition_id).to eq(build_attributes[:partition_id])
+    end
+  end
+
   it_behaves_like 'a degenerable job' do
     before do
       stub_feature_flags(stop_writing_builds_metadata: false)
