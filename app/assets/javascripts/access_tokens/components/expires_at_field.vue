@@ -58,7 +58,7 @@ export default {
 </script>
 
 <template>
-  <gl-form-group :label="$options.i18n.label" :label-for="inputAttrs.id">
+  <gl-form-group :label="$options.i18n.label" :label-for="inputAttrs.id" class="gl-relative">
     <gl-datepicker
       :target="null"
       :min-date="minDate"

@@ -2,6 +2,7 @@
 
 exports[`~/access_tokens/components/expires_at_field should render datepicker with input info 1`] = `
 <gl-form-group-stub
+  class="gl-relative"
   label="Expiration date"
   label-for="personal_access_token_expires_at"
   labeldescription=""

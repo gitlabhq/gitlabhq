@@ -132,6 +132,9 @@ export default {
     expiresAt: {
       label: s__('AccessTokens|Expiration date'),
       validators: [],
+      groupAttrs: {
+        class: 'gl-relative',
+      },
     },
     scopes: {
       label: s__('AccessTokens|Select scopes'),

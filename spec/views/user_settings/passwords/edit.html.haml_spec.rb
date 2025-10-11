@@ -39,7 +39,7 @@ RSpec.describe 'user_settings/passwords/edit.html.haml', feature_category: :syst
     it 'displays an `Add passkey` button' do
       render
 
-      expect(rendered).to have_css('a.btn-confirm[href="TODO_new_passkey_path"]',
+      expect(rendered).to have_css("a.btn-confirm[href=\"#{new_profile_passkey_path}\"]",
         text: s_('ProfilesAuthentication|Add passkey'))
     end
   end
