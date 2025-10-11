@@ -79,7 +79,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         end
 
         shared_examples 'failed branch creation' do
-          it 'raised a PreRecieveError' do
+          it 'raised a PreReceiveError' do
             expect_any_instance_of(Gitaly::OperationService::Stub)
               .to receive(:user_create_branch)
               .and_raise(custom_hook_error)
@@ -388,7 +388,7 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
             )))
       end
 
-      it 'raises PreRecieveError with the error message' do
+      it 'raises PreReceiveError with the error message' do
         expect_any_instance_of(Gitaly::OperationService::Stub)
           .to receive(:user_merge_branch).with(kind_of(Enumerator), kind_of(Hash))
           .and_raise(permission_error)

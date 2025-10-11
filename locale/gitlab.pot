@@ -66626,6 +66626,9 @@ msgstr ""
 msgid "There are no archived test cases"
 msgstr ""
 
+msgid "There are no attributes for this project's group."
+msgstr ""
+
 msgid "There are no attributes in this category."
 msgstr ""
 

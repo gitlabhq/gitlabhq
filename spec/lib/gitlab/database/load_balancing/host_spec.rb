@@ -252,7 +252,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
       # Clear the cache for latest_lsn_query
       host.refresh_status
 
-      # Should recieve LATEST_LSN_WITHOUT_LOGICAL_QUERY since we received 'f'
+      # Should receive LATEST_LSN_WITHOUT_LOGICAL_QUERY since we received 'f'
       # after clearing the cache
       expect(host)
         .to receive(:query_and_release)
