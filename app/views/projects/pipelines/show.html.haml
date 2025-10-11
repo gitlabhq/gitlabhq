@@ -13,6 +13,7 @@
 
 - if pipeline_has_errors
   - has_composite_identity_forbidden = @pipeline.composite_identity_forbidden?
+  - has_identity_verification_error = @pipeline.user_not_verified?
   - if has_composite_identity_forbidden
     = render Pajamas::AlertComponent.new(title: s_('Pipelines|Unable to create pipeline'),
       variant: :warning,
@@ -26,7 +27,7 @@
         - path = @pipeline.merge_request.present? ? diffs_project_merge_request_path(@project, @pipeline.merge_request, commit_id: @pipeline.commit.id) : project_commit_path(@project, @pipeline.commit)
         = render Pajamas::ButtonComponent.new(href: path, variant: :confirm) do
           = s_("Pipelines|Verify changes")
-  - else
+  - elsif !has_identity_verification_error
     = render Pajamas::AlertComponent.new(title: s_('Pipelines|Unable to create pipeline'),
       variant: :danger,
       dismissible: false,

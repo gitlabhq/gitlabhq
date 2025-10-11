@@ -502,12 +502,6 @@ On GitLab Self-Managed, by default the `fallback_behavior` field is available. T
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of support for pipeline execution policies is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
-
 | Field  | Type     | Required | Possible values    | Description                                                                                                          |
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
 | `unblock_rules_using_execution_policies` | `boolean` | false    | `true`, `false` | When enabled, approval rules do not block merge requests when a scan is required by a scan execution policy or a pipeline execution policy but a required scan artifact is missing from the target branch. This option only works when the project or group has an existing scan execution policy or pipeline execution policy with matching scanners. |
@@ -628,16 +622,9 @@ To recreate a pipeline execution policy:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525509) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `approval_policy_time_window`.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/543027) in GitLab 18.5.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/543027) in GitLab 18.5. Feature flag `approval_policy_time_window` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 In busy projects, the most recent pipeline may not have completed security scans available right away, which blocks security report comparisons. Use the `security_report_time_window` setting to security reports from recently completed pipelines instead. The security reports cannot be older than the time window, specified in minutes prior to the creation of the target branch pipeline. This setting does not apply if the selected pipeline already has completed security reports.
 

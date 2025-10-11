@@ -183,6 +183,13 @@ Jobs in `test` stage perform following actions:
 1. GitLab installation using official [`helm` chart](https://gitlab.com/gitlab-org/charts/gitlab)
 1. E2E test execution against performed deployment
 
+Jobs in `test` stage:
+
+- `cng-instance` runs the full e2e suite, excluding orchestrated tests, against CNG
+- `cng-qa-min-redis-version` runs validation for minimal supported Redis version using `Test::Instance::HealthCheck` scenario against CNG
+- `cng-registry` runs tests in the registry scenario `Test::Integration::Registry` against CNG
+- `cng-relative-url` runs the same tests as `cng-instance` but with a relative URL set for CNG
+
 ##### report
 
 This stage is responsible for [allure test report](_index.md#allure-report) generation.

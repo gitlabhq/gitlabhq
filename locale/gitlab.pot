@@ -32432,6 +32432,9 @@ msgstr ""
 msgid "GroupSettings|Allow members of projects and groups to create runners with runner registration tokens"
 msgstr ""
 
+msgid "GroupSettings|Allow personal snippets"
+msgstr ""
+
 msgid "GroupSettings|An experiment is a feature that is in the process of being developed. It is not production-ready. We encourage users to try experimental features and provide feedback. %{link_start}Learn more%{link_end}."
 msgstr ""
 
@@ -32706,6 +32709,9 @@ msgid "GroupSettings|What is step-up authentication?"
 msgstr ""
 
 msgid "GroupSettings|When disabled, members cannot use runner registration tokens to register runners. Members can use runner authentication tokens instead as the more secure registration method."
+msgstr ""
+
+msgid "GroupSettings|When enabled, enterprise users in this group can create personal snippets. When disabled, enterprise users will be restricted from creating snippets in their personal namespace."
 msgstr ""
 
 msgid "GroupSettings|You must have the Owner role in the target group"

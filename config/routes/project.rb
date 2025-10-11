@@ -505,6 +505,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             end
           end
         end
+
+        resources :attestations, only: [] do
+          member do
+            get :download
+          end
+        end
       end
       # End of the /-/ scope.
 

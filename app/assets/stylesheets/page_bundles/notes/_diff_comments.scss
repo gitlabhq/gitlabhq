@@ -391,10 +391,6 @@
       &:not(:last-child) {
         @apply gl-border-b gl-border-b-subtle dark:gl-border-b-section;
       }
-
-      &:last-child {
-        @apply gl-rounded-b-lg;
-      }
     }
 
     .timeline-avatar {

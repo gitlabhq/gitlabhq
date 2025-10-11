@@ -104,6 +104,18 @@ RSpec.describe 'projects/pipelines/show', feature_category: :pipeline_compositio
 
         expect(rendered).not_to have_link('Go to the pipeline editor')
       end
+
+      context 'when the failure reason is user_not_verified' do
+        before do
+          allow(pipeline).to receive_messages(user_not_verified?: true)
+        end
+
+        it 'does not show the generic "Unable to create pipeline" danger alert' do
+          render
+
+          expect(rendered).not_to have_content('Unable to create pipeline')
+        end
+      end
     end
   end
 
