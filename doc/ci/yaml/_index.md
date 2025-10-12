@@ -26,6 +26,8 @@ This file is where you define the CI/CD jobs that make up your pipeline.
 When you are editing your `.gitlab-ci.yml` file, you can validate it with the
 [CI Lint](lint.md) tool.
 
+Use [CI/CD expressions](expressions.md) for more dynamic pipeline configuration options.
+
 <!--
 If you are editing content on this page, follow the instructions for documenting keywords:
 https://docs.gitlab.com/development/cicd/cicd_reference_documentation_guide/
@@ -3875,9 +3877,10 @@ Use `needs:parallel:matrix` to execute jobs out-of-order depending on paralleliz
 
 **Keyword type**: Job keyword. You can use it only as part of a job. Must be used with `needs:job`.
 
-**Supported values**: An array of hashes of variables:
+**Supported values**: An array of hashes of matrix identifiers:
 
-- The variables and values must be selected from the variables and values defined in the `parallel:matrix` job.
+- The identifiers and values must be selected from the identifiers and values defined in the `parallel:matrix` job.
+- You can use [matrix expressions](matrix_expressions.md).
 
 **Example of `needs:parallel:matrix`**:
 
@@ -3915,13 +3918,9 @@ linux:rspec
 
 The `linux:rspec` job runs as soon as the `linux:build: [aws, app1]` job finishes.
 
-**Related topics**:
-
-- [Specify a parallelized job using needs with multiple parallelized jobs](../jobs/job_control.md#specify-a-parallelized-job-using-needs-with-multiple-parallelized-jobs).
-
 **Additional details**:
 
-- The order of the matrix variables in `needs:parallel:matrix` must match the order
+- The order of the matrix identifiers in `needs:parallel:matrix` must match the order
   of the matrix variables in the needed job. For example, reversing the order of
   the variables in the `linux:rspec` job in the previous example would be invalid:
 
@@ -3937,7 +3936,10 @@ The `linux:rspec` job runs as soon as the `linux:build: [aws, app1]` job finishe
     script: echo "Running rspec on linux..."
   ```
 
----
+**Related topics**:
+
+- [Specify a parallelized job using needs with multiple parallelized jobs](../jobs/job_control.md#specify-a-parallelized-job-using-needs-with-multiple-parallelized-jobs).
+- [Matrix expressions in `needs:parallel:matrix`](matrix_expressions.md#matrix-expressions-in-needsparallelmatrix).
 
 ### `pages`
 
@@ -4225,7 +4227,7 @@ Multiple runners must exist, or a single runner must be configured to run multip
 
 **Supported values**: An array of hashes of variables:
 
-- The variable names can use only numbers, letters, and underscores (`_`).
+- The matrix identifiers, which become the variable names, can use only numbers, letters, and underscores (`_`).
 - The values must be either a string, or an array of strings.
 - The number of permutations cannot exceed 200.
 
@@ -4243,37 +4245,30 @@ deploystacks:
           - monitoring
           - app1
           - app2
-      - PROVIDER: ovh
-        STACK: [monitoring, backup, app]
       - PROVIDER: [gcp, vultr]
         STACK: [data, processing]
   environment: $PROVIDER/$STACK
 ```
 
-The example generates 10 parallel `deploystacks` jobs, each with different values
+The example generates 7 parallel `deploystacks` jobs, each with different values
 for `PROVIDER` and `STACK`:
 
-```plaintext
-deploystacks: [aws, monitoring]
-deploystacks: [aws, app1]
-deploystacks: [aws, app2]
-deploystacks: [ovh, monitoring]
-deploystacks: [ovh, backup]
-deploystacks: [ovh, app]
-deploystacks: [gcp, data]
-deploystacks: [gcp, processing]
-deploystacks: [vultr, data]
-deploystacks: [vultr, processing]
-```
+- `deploystacks: [aws, monitoring]`
+- `deploystacks: [aws, app1]`
+- `deploystacks: [aws, app2]`
+- `deploystacks: [gcp, data]`
+- `deploystacks: [gcp, processing]`
+- `deploystacks: [vultr, data]`
+- `deploystacks: [vultr, processing]`
 
 **Additional details**:
 
-- `parallel:matrix` jobs add the variable values to the job names to differentiate
+- `parallel:matrix` jobs add the matrix values to the job names to differentiate
   the jobs from each other, but [large values can cause names to exceed limits](https://gitlab.com/gitlab-org/gitlab/-/issues/362262):
   - [Job names](../jobs/_index.md#job-names) must be 255 characters or fewer.
   - When using [`needs`](#needs), job names must be 128 characters or fewer.
-- You cannot create multiple matrix configurations with the same variable values but different variable names.
-  Job names are generated from the variable values, not the variable names, so matrix entries
+- You cannot create multiple matrix configurations with the same values but different names.
+  Job names are generated from the matrix values, not the names, so matrix entries
   with identical values generate identical job names that overwrite each other.
 
   For example, this `test` configuration would try to create two series of identical jobs,
@@ -4296,6 +4291,7 @@ deploystacks: [vultr, processing]
 - [Run a one-dimensional matrix of parallel jobs](../jobs/job_control.md#run-a-one-dimensional-matrix-of-parallel-jobs).
 - [Run a matrix of triggered parallel jobs](../jobs/job_control.md#run-a-matrix-of-parallel-trigger-jobs).
 - [Select different runner tags for each parallel matrix job](../jobs/job_control.md#select-different-runner-tags-for-each-parallel-matrix-job).
+- [Matrix expressions in `needs:parallel:matrix`](matrix_expressions.md#matrix-expressions-in-needsparallelmatrix).
 
 ---
 

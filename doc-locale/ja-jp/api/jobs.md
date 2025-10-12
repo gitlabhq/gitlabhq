@@ -7,22 +7,18 @@ title: ジョブAPI
 
 {{< details >}}
 
-- プラン:Free、Premium、Ultimate
-- 提供形態:GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- プラン: Free、Premium、Ultimate
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
-## プロジェクトジョブをリストする
+このAPIを使用して、[CI/CDジョブ](../ci/jobs/_index.md)を操作します。
 
-{{< history >}}
+## プロジェクトジョブのリストを取得する {#list-project-jobs}
 
-- キーセットページネーションのサポートは、GitLab 15.9で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/362172)されました。
+プロジェクト内のジョブのリストを取得します。
 
-{{< /history >}}
-
-プロジェクト内のジョブのリストを取得します。ジョブはIDの降順にソートされます。
-
-APIの結果は[ページネーション](rest/_index.md#pagination)されるため、デフォルトでは、このリクエストは一度に20件の結果を返します。
+デフォルトでは、APIの結果は[ページネーション](rest/_index.md#pagination)されるため、このリクエストは一度に20件の結果を返します。
 
 {{< alert type="note" >}}
 
@@ -34,10 +30,12 @@ APIの結果は[ページネーション](rest/_index.md#pagination)されるた
 GET /projects/:id/jobs
 ```
 
-| 属性 | 型                           | 必須 | 説明 |
-|-----------|--------------------------------|----------|-------------|
-| `id`      | 整数/文字列                 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `scope`   | 文字列**または**文字列の配列 | いいえ       | 表示するジョブのスコープ。`created`、`pending`、`running`、`failed`、`success`、`canceled`、`skipped`、`waiting_for_resource`、または`manual`のいずれか、またはこれらの配列。`scope`が指定されていない場合、すべてのジョブが返されます。 |
+| 属性  | 型                           | 必須 | 説明 |
+| ---------- | ------------------------------ | -------- | ----------- |
+| `id`       | 整数または文字列                 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `scope`    | 文字列、または文字列の配列 | いいえ       | 表示するジョブのスコープ。[ジョブステータス値](#job-status-values)の単一指定、または配列指定。`scope`が指定されていない場合、すべてのジョブが返されます。 |
+| `order_by` | 文字列                         | いいえ       | `id`の順序でジョブを返します。 |
+| `sort`     | 文字列                         | いいえ       | `asc`または`desc`の順にソートされたジョブを返します。デフォルトは`desc`です。 |
 
 ```shell
 curl --globoff \
@@ -61,6 +59,7 @@ curl --globoff \
     },
     "coverage": null,
     "archived": false,
+    "source": "push",
     "allow_failure": false,
     "created_at": "2015-12-24T15:51:21.802Z",
     "started_at": "2015-12-24T17:54:27.722Z",
@@ -135,7 +134,6 @@ curl --globoff \
       "bio": null,
       "location": null,
       "public_email": "",
-      "skype": "",
       "linkedin": "",
       "twitter": "",
       "website_url": "",
@@ -154,6 +152,7 @@ curl --globoff \
     },
     "coverage": null,
     "archived": false,
+    "source": "push",
     "allow_failure": false,
     "created_at": "2015-12-24T15:51:21.727Z",
     "started_at": "2015-12-24T17:54:24.729Z",
@@ -197,7 +196,6 @@ curl --globoff \
       "bio": null,
       "location": null,
       "public_email": "",
-      "skype": "",
       "linkedin": "",
       "twitter": "",
       "website_url": "",
@@ -207,28 +205,45 @@ curl --globoff \
 ]
 ```
 
-## パイプラインジョブをリストする
+### ジョブステータス値 {#job-status-values}
+
+ジョブの応答の`status`フィールドとジョブのフィルタリング用の`scope`パラメータは、次の値を使用します。
+
+- `canceled`: ジョブは手動でキャンセルされたか、または自動的に中断されました。
+- `canceling`: ジョブはキャンセル中ですが、`after_script`が実行されています。
+- `created`: ジョブは作成されましたが、まだ処理されていません。
+- `failed`: ジョブの実行に失敗しました。
+- `manual`: ジョブを開始するには手動操作が必要です。
+- `pending`: ジョブはRunnerを待機するキューに入っています。
+- `preparing`: Runnerが実行環境を準備中です。
+- `running`: ジョブはRunnerで実行中です。
+- `scheduled`: ジョブはスケジュールされていますが、実行は開始されていません。
+- `skipped`: ジョブは、条件または依存関係のためにスキップされました。
+- `success`: ジョブは正常に完了しました。
+- `waiting_for_resource`: ジョブは、リソースが利用可能になるのを待機しています。
+
+## パイプラインジョブのリストを取得する {#list-pipeline-jobs}
 
 パイプラインのジョブのリストを取得します。
 
-APIの結果は[ページネーション](rest/_index.md#pagination)されるため、デフォルトでは、このリクエストは一度に20件の結果を返します。
+デフォルトでは、APIの結果は[ページネーション](rest/_index.md#pagination)されるため、このリクエストは一度に20件の結果を返します。
 
 このエンドポイントは、次のように動作します。
 
 - [子パイプライン](../ci/pipelines/downstream_pipelines.md#parent-child-pipelines)を含む[任意のパイプラインのデータを返します](pipelines.md#get-a-single-pipeline)。
 - デフォルトでは、再試行されたジョブを応答で返しません。
-- ジョブをIDで降順にソートします（新しいIDが先頭）。
+- ジョブをIDで降順でソートします（新しいIDから）。
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/jobs
 ```
 
 | 属性         | 型                           | 必須 | 説明 |
-|-------------------|--------------------------------|----------|-------------|
-| `id`              | 整数/文字列                 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `pipeline_id`     | 整数                        | はい      | パイプラインのID。[事前定義されたCI変数](../ci/variables/predefined_variables.md)`CI_PIPELINE_ID`を使用してCIジョブで取得することもできます。 |
-| `include_retried` | ブール値                        | いいえ       | 再試行されたジョブを応答に含めます。デフォルトは`false`です。 |
-| `scope`           | 文字列**または**文字列の配列 | いいえ       | 表示するジョブのスコープ。`created`、`pending`、`running`、`failed`、`success`、`canceled`、`skipped`、`waiting_for_resource`、または`manual`のいずれか、またはこれらの配列。`scope`が指定されていない場合、すべてのジョブが返されます。 |
+| ----------------- | ------------------------------ | -------- | ----------- |
+| `id`              | 整数または文字列                 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `pipeline_id`     | 整数                        | はい      | パイプラインのID。[事前定義されたCI変数](../ci/variables/predefined_variables.md)`CI_PIPELINE_ID`を使用して、CIジョブ内でも取得できます。 |
+| `include_retried` | ブール値                        | いいえ       | 再試行されたジョブを応答に含めます。`false`がデフォルトです。 |
+| `scope`           | 文字列**または**文字列の配列 | いいえ       | 表示するジョブのスコープ。[ジョブステータス値](#job-status-values)の単一指定、または配列指定。`scope`が指定されていない場合、すべてのジョブが返されます。 |
 
 ```shell
 curl --globoff \
@@ -252,6 +267,7 @@ curl --globoff \
     },
     "coverage": null,
     "archived": false,
+    "source": "push",
     "allow_failure": false,
     "created_at": "2015-12-24T15:51:21.727Z",
     "started_at": "2015-12-24T17:54:24.729Z",
@@ -316,7 +332,6 @@ curl --globoff \
       "bio": null,
       "location": null,
       "public_email": "",
-      "skype": "",
       "linkedin": "",
       "twitter": "",
       "website_url": "",
@@ -335,6 +350,7 @@ curl --globoff \
     },
     "coverage": null,
     "archived": false,
+    "source": "push",
     "allow_failure": false,
     "created_at": "2015-12-24T15:51:21.802Z",
     "started_at": "2015-12-24T17:54:27.722Z",
@@ -387,7 +403,6 @@ curl --globoff \
       "bio": null,
       "location": null,
       "public_email": "",
-      "skype": "",
       "linkedin": "",
       "twitter": "",
       "website_url": "",
@@ -397,7 +412,7 @@ curl --globoff \
 ]
 ```
 
-## パイプラインのトリガージョブをリストする
+## パイプラインのトリガージョブのリストを取得する {#list-pipeline-trigger-jobs}
 
 パイプラインのトリガージョブのリストを取得します。
 
@@ -406,10 +421,10 @@ GET /projects/:id/pipelines/:pipeline_id/bridges
 ```
 
 | 属性     | 型                           | 必須 | 説明 |
-|---------------|--------------------------------|----------|-------------|
-| `id`          | 整数/文字列                 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| ------------- | ------------------------------ | -------- | ----------- |
+| `id`          | 整数または文字列                 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `pipeline_id` | 整数                        | はい      | パイプラインのID。 |
-| `scope`       | 文字列**または**文字列の配列 | いいえ       | 表示するジョブのスコープ。`created`、`pending`、`running`、`failed`、`success`、`canceled`、`skipped`、`waiting_for_resource`、または`manual`のいずれか、またはこれらの配列。`scope`が指定されていない場合、すべてのジョブが返されます。 |
+| `scope`       | 文字列**または**文字列の配列 | いいえ       | 表示するジョブのスコープ。[ジョブステータス値](#job-status-values)の単一指定、または配列指定。`scope`が指定されていない場合、すべてのジョブが返されます。 |
 
 ```shell
 curl --globoff \
@@ -433,6 +448,7 @@ curl --globoff \
     },
     "coverage": null,
     "archived": false,
+    "source": "push",
     "allow_failure": false,
     "created_at": "2015-12-24T15:51:21.802Z",
     "started_at": "2015-12-24T17:54:27.722Z",
@@ -471,7 +487,6 @@ curl --globoff \
       "bio": null,
       "location": null,
       "public_email": "",
-      "skype": "",
       "linkedin": "",
       "twitter": "",
       "website_url": "",
@@ -490,7 +505,7 @@ curl --globoff \
 ]
 ```
 
-## ジョブトークンのジョブを取得する
+## ジョブトークンのジョブを取得する {#get-job-tokens-job}
 
 ジョブトークンを生成したジョブを取得します。
 
@@ -498,7 +513,7 @@ curl --globoff \
 GET /job
 ```
 
-例（[CI/CDジョブ](../ci/jobs/_index.md)の[`script`](../ci/yaml/_index.md#script)セクションの一部として実行する必要があります）:
+例（[CI/CD](../ci/jobs/_index.md)ジョブの[`script`](../ci/yaml/_index.md#script)セクションの一部として実行する必要があります）:
 
 ```shell
 # Option 1
@@ -528,6 +543,7 @@ curl --url "${CI_API_V4_URL}/job?job_token=$CI_JOB_TOKEN"
   },
   "coverage": null,
   "archived": false,
+  "source": "push",
   "allow_failure": false,
   "created_at": "2015-12-24T15:51:21.880Z",
   "started_at": "2015-12-24T17:54:30.733Z",
@@ -568,7 +584,6 @@ curl --url "${CI_API_V4_URL}/job?job_token=$CI_JOB_TOKEN"
     "bio": null,
     "location": null,
     "public_email": "",
-    "skype": "",
     "linkedin": "",
     "twitter": "",
     "website_url": "",
@@ -577,9 +592,9 @@ curl --url "${CI_API_V4_URL}/job?job_token=$CI_JOB_TOKEN"
 }
 ```
 
-## `CI_JOB_TOKEN`を使用してGitLabエージェントを取得する
+## Kubernetes向けGitLabエージェントを`CI_JOB_TOKEN`で取得 {#get-gitlab-agent-for-kubernetes-by-ci_job_token}
 
-`CI_JOB_TOKEN`を生成したジョブと、許可されている[エージェント](../user/clusters/agent/_index.md)のリストを取得します。
+`CI_JOB_TOKEN`を生成したジョブを、許可された[GitLabエージェント](../user/clusters/agent/_index.md)のリストとともに取得します。
 
 ```plaintext
 GET /job/allowed_agents
@@ -651,9 +666,9 @@ curl --url "https://gitlab.example.com/api/v4/job/allowed_agents?job_token=<CI_J
 }
 ```
 
-## 1つのジョブを取得する
+## 単一のジョブを取得する {#get-a-single-job}
 
-プロジェクトの1つのジョブを取得します。
+プロジェクトの単一のジョブを取得します。
 
 ```plaintext
 GET /projects/:id/jobs/:job_id
@@ -661,7 +676,7 @@ GET /projects/:id/jobs/:job_id
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
-| `id`      | 整数/文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `job_id`  | 整数        | はい      | ジョブのID。 |
 
 ```shell
@@ -684,6 +699,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
   },
   "coverage": null,
   "archived": false,
+  "source": "push",
   "allow_failure": false,
   "created_at": "2015-12-24T15:51:21.880Z",
   "started_at": "2015-12-24T17:54:30.733Z",
@@ -726,7 +742,6 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
     "bio": null,
     "location": null,
     "public_email": "",
-    "skype": "",
     "linkedin": "",
     "twitter": "",
     "website_url": "",
@@ -735,7 +750,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## ログファイルを取得する
+## ログファイルを取得する {#get-a-log-file}
 
 プロジェクトの特定のジョブのログ（トレース）を取得します。
 
@@ -745,7 +760,7 @@ GET /projects/:id/jobs/:job_id/trace
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
-| `id`      | 整数/文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `job_id`  | 整数        | はい      | ジョブのID。 |
 
 ```shell
@@ -754,16 +769,16 @@ curl --location \
   --url "https://gitlab.example.com/api/v4/projects/1/jobs/8/trace"
 ```
 
-返される可能性がある応答ステータスコードは次のとおりです。
+返される可能性のある応答のステータスコードは次のとおりです。
 
 | ステータス | 説明 |
 |--------|-------------|
-| 200    | ログファイルを処理します |
+| 200    | ログファイルを提供します |
 | 404    | ジョブが見つからないか、ログファイルがありません |
 
-## ジョブをキャンセルする
+## ジョブをキャンセルする {#cancel-a-job}
 
-プロジェクトの1つのジョブをキャンセルします。
+プロジェクトの単一のジョブをキャンセルします。
 
 ```plaintext
 POST /projects/:id/jobs/:job_id/cancel
@@ -771,9 +786,9 @@ POST /projects/:id/jobs/:job_id/cancel
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
-| `id`      | 整数/文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `job_id`  | 整数        | はい      | ジョブのID。 |
-| `force`   | ブール値        | いいえ       | `true`に設定すると、`canceling`状態のジョブを[強制的にキャンセル](../ci/jobs/job_logs.md#force-cancel-a-job)します。 |
+| `force`   | ブール値        | いいえ       | `true`に設定すると、`canceling`状態のジョブを[強制的にキャンセル](../ci/jobs/_index.md#force-cancel-a-job)します。 |
 
 ```shell
 curl --request POST \
@@ -796,6 +811,7 @@ curl --request POST \
   },
   "coverage": null,
   "archived": false,
+  "source": "push",
   "allow_failure": false,
   "created_at": "2016-01-11T10:13:33.506Z",
   "started_at": "2016-01-11T10:14:09.526Z",
@@ -820,9 +836,9 @@ curl --request POST \
 }
 ```
 
-## ジョブを再試行する
+## ジョブを再試行する {#retry-a-job}
 
-プロジェクトの1つのジョブを再試行します
+プロジェクトの単一のジョブを再試行します。
 
 ```plaintext
 POST /projects/:id/jobs/:job_id/retry
@@ -830,7 +846,7 @@ POST /projects/:id/jobs/:job_id/retry
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
-| `id`      | 整数/文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `job_id`  | 整数        | はい      | ジョブのID。 |
 
 ```shell
@@ -854,6 +870,7 @@ curl --request POST \
   },
   "coverage": null,
   "archived": false,
+  "source": "push",
   "allow_failure": false,
   "created_at": "2016-01-11T10:13:33.506Z",
   "started_at": null,
@@ -884,19 +901,19 @@ GitLab 17.0より前では、このエンドポイントはトリガージョブ
 
 {{< /alert >}}
 
-## ジョブを消去する
+## ジョブを消去する {#erase-a-job}
 
-プロジェクトの1つのジョブを消去します（ジョブアーティファクトとジョブログを削除します）。
+プロジェクトの単一のジョブを消去します（ジョブアーティファクトとジョブログを削除します）。
 
 ```plaintext
 POST /projects/:id/jobs/:job_id/erase
 ```
 
-パラメーター
+パラメータ
 
 | 属性 | 型           | 必須 | 説明 |
 |-----------|----------------|----------|-------------|
-| `id`      | 整数/文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`      | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `job_id`  | 整数        | はい      | ジョブのID。 |
 
 リクエストの例
@@ -922,6 +939,7 @@ curl --request POST \
   },
   "coverage": null,
   "archived": false,
+  "source": "push",
   "allow_failure": false,
   "download_url": null,
   "id": 1,
@@ -949,13 +967,13 @@ curl --request POST \
 
 {{< alert type="note" >}}
 
-APIを使用してアーカイブ済みジョブを削除することはできませんが、[特定の日付より前に完了したジョブからジョブアーティファクトとログを削除する](../administration/cicd/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts)ことはできます。
+APIを使用してアーカイブ済みジョブを削除することはできませんが、[特定の日付より前に完了したジョブのアーティファクトとログは削除](../administration/cicd/job_artifacts_troubleshooting.md#delete-old-builds-and-artifacts)できます。
 
 {{< /alert >}}
 
-## ジョブを実行する
+## ジョブを実行する {#run-a-job}
 
-手動ステータスのジョブの場合、アクションをトリガーしてジョブを開始します。
+手動状態のジョブに対して、ジョブを開始するアクションをトリガーします。
 
 ```plaintext
 POST /projects/:id/jobs/:job_id/play
@@ -963,9 +981,9 @@ POST /projects/:id/jobs/:job_id/play
 
 | 属性                  | 型            | 必須 | 説明 |
 |----------------------------|-----------------|----------|-------------|
-| `id`                       | 整数/文字列  | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`                       | 整数または文字列  | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `job_id`                   | 整数         | はい      | ジョブのID。 |
-| `job_variables_attributes` | ハッシュの配列 | いいえ       | ジョブで使用可能なカスタム変数が含まれる配列。 |
+| `job_variables_attributes` | ハッシュの配列 | いいえ       | ジョブで使用可能なカスタム変数を含む配列。 |
 
 リクエストの例:
 
@@ -1009,6 +1027,7 @@ curl --request POST \
   },
   "coverage": null,
   "archived": false,
+  "source": "push",
   "allow_failure": false,
   "created_at": "2016-01-11T10:13:33.506Z",
   "started_at": null,

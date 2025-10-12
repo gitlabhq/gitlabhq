@@ -2,27 +2,28 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Documentation for the REST API for Git tags in GitLab.
+description: GitLabのGitタグのためのREST APIに関するドキュメント
 title: タグAPI
 ---
 
 {{< details >}}
 
 - プラン: Free、Premium、Ultimate
-- 製品: GitLab.com、GitLab Self-Managed、GitLab Dedicated
+- 提供形態: GitLab.com、GitLab Self-Managed、GitLab Dedicated
 
 {{< /details >}}
 
-## プロジェクトリポジトリタグをリストする
+タグAPIを使用して、Gitタグを作成、管理、削除します。このAPIは、署名付きタグのX.509署名情報も返します。
+
+## プロジェクトリポジトリタグをリストする {#list-project-repository-tags}
 
 {{< history >}}
 
-- `order_by`属性の`version`値は、GitLab 15.4で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95150)されました。
 - `created_at`応答属性は、GitLab 16.11で[導入](https://gitlab.com/gitlab-org/gitlab/-/issues/451011)されました。
 
 {{< /history >}}
 
-更新日時で降順にソートされた、リポジトリタグのリストをプロジェクトから取得します。
+プロジェクトから、更新日時で降順にソートされたリポジトリタグの一覧を取得します。
 
 {{< alert type="note" >}}
 
@@ -34,21 +35,49 @@ title: タグAPI
 GET /projects/:id/repository/tags
 ```
 
-パラメーター:
+サポートされている属性:
 
 | 属性  | 型              | 必須 | 説明 |
 |------------|-------------------|----------|-------------|
-| `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `order_by` | 文字列            | いいえ       | `name`、`updated`、または`version`で順序づけられたタグを返します。デフォルトは`updated`です。 |
+| `id`       | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `order_by` | 文字列            | いいえ       | `name`、`updated`、`version`のいずれかで並べ替えられたタグを返します。デフォルトは`updated`です。 |
+| `search`   | 文字列            | いいえ       | 検索条件に一致するタグの一覧を返します。`^term`と`term$`を使用して、`term`で始まるタグと終わるタグを検索できます。他の正規表現はサポートされていません。 |
 | `sort`     | 文字列            | いいえ       | `asc`または`desc`の順にソートされたタグを返します。デフォルトは`desc`です。 |
-| `search`   | 文字列            | いいえ       | 検索条件に一致するタグのリストを返します。`^term`と`term$`を使用して、それぞれ先頭と末尾が`term`のタグを検索できます。他の正規表現はサポートされていません。 |
+
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+
+| 属性                | 型    | 説明 |
+|--------------------------|---------|-------------|
+| `commit`                 | オブジェクト  | タグに関連付けられたコミット情報。 |
+| `commit.author_email`    | 文字列  | コミット作成者のメールアドレス。 |
+| `commit.author_name`     | 文字列  | コミット作成者の名前。 |
+| `commit.authored_date`   | 文字列  | コミットがISO 8601形式で作成された日付。 |
+| `commit.committed_date`  | 文字列  | コミットがISO 8601形式でコミットされた日付。 |
+| `commit.committer_email` | 文字列  | コミッターのメールアドレス。 |
+| `commit.committer_name`  | 文字列  | コミッターの名前。 |
+| `commit.created_at`      | 文字列  | コミットがISO 8601形式で作成された日付。 |
+| `commit.id`              | 文字列  | コミットの完全なSHA。 |
+| `commit.message`         | 文字列  | コミットメッセージ。 |
+| `commit.parent_ids`      | 配列   | 親コミットSHAの配列。 |
+| `commit.short_id`        | 文字列  | コミットの短いSHA。 |
+| `commit.title`           | 文字列  | コミットのタイトル。 |
+| `created_at`             | 文字列  | タグがISO 8601形式で作成された日付。 |
+| `message`                | 文字列  | タグメッセージ。 |
+| `name`                   | 文字列  | タグの名前。 |
+| `protected`              | ブール値 | `true`の場合、タグは保護されます。 |
+| `release`                | オブジェクト  | タグに関連付けられたリリース情報。 |
+| `release.description`    | 文字列  | リリースに関する説明。 |
+| `release.tag_name`       | 文字列  | リリースのタグ名。 |
+| `target`                 | 文字列  | タグが指すSHA。 |
+
+リクエスト例:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
     --url "https://gitlab.example.com/api/v4/projects/5/repository/tags"
 ```
 
-応答の例:
+応答例:
 
 ```json
 [
@@ -82,7 +111,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 ]
 ```
 
-## 単一のリポジトリタグを取得する
+## 単一リポジトリタグを取得する {#get-a-single-repository-tag}
 
 {{< history >}}
 
@@ -90,25 +119,51 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /history >}}
 
-名前で特定される特定のリポジトリタグを取得します。リポジトリが公開されている場合、このエンドポイントには認証なしでアクセスできます。
+名前で指定された特定のリポジトリタグを取得します。リポジトリが公開されている場合、このエンドポイントは認証なしでアクセスできます。
 
 ```plaintext
 GET /projects/:id/repository/tags/:tag_name
 ```
 
-パラメーター:
+サポートされている属性:
 
 | 属性  | 型              | 必須 | 説明 |
 |------------|-------------------|----------|-------------|
-| `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`       | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `tag_name` | 文字列            | はい      | タグの名前。 |
+
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+
+| 属性                | 型    | 説明 |
+|--------------------------|---------|-------------|
+| `commit`                 | オブジェクト  | タグに関連付けられたコミット情報。 |
+| `commit.author_email`    | 文字列  | コミット作成者のメールアドレス。 |
+| `commit.author_name`     | 文字列  | コミット作成者の名前。 |
+| `commit.authored_date`   | 文字列  | コミットがISO 8601形式で作成された日付。 |
+| `commit.committed_date`  | 文字列  | コミットがISO 8601形式でコミットされた日付。 |
+| `commit.committer_email` | 文字列  | コミッターのメールアドレス。 |
+| `commit.committer_name`  | 文字列  | コミッターの名前。 |
+| `commit.created_at`      | 文字列  | コミットがISO 8601形式で作成された日付。 |
+| `commit.id`              | 文字列  | コミットの完全なSHA。 |
+| `commit.message`         | 文字列  | コミットメッセージ。 |
+| `commit.parent_ids`      | 配列   | 親コミットSHAの配列。 |
+| `commit.short_id`        | 文字列  | コミットの短いSHA。 |
+| `commit.title`           | 文字列  | コミットのタイトル。 |
+| `created_at`             | 文字列  | タグがISO 8601形式で作成された日付。 |
+| `message`                | 文字列  | タグメッセージ。 |
+| `name`                   | 文字列  | タグの名前。 |
+| `protected`              | ブール値 | `true`の場合、タグは保護されます。 |
+| `release`                | オブジェクト  | タグに関連付けられたリリース情報。 |
+| `target`                 | 文字列  | タグが指すSHA。 |
+
+リクエスト例:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/tags/v1.0.0"
 ```
 
-応答の例:
+応答例:
 
 ```json
 {
@@ -137,7 +192,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-## 新しいタグを作成する
+## 新しいタグを作成する {#create-a-new-tag}
 
 {{< history >}}
 
@@ -145,20 +200,46 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 {{< /history >}}
 
-指定されたrefを指す新しいタグをリポジトリに作成します。
+指定された参照を指す、新しいタグをリポジトリに作成します。
 
 ```plaintext
 POST /projects/:id/repository/tags
 ```
 
-パラメーター:
+サポートされている属性:
 
 | 属性  | 型              | 必須 | 説明 |
 |------------|-------------------|----------|-------------|
-| `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
-| `tag_name` | 文字列            | はい      | タグの名前。 |
+| `id`       | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `ref`      | 文字列            | はい      | コミットSHA、別のタグ名、またはブランチ名からタグを作成します。 |
+| `tag_name` | 文字列            | はい      | タグの名前。 |
 | `message`  | 文字列            | いいえ       | 注釈付きタグを作成します。 |
+
+成功した場合は、[`201 Created`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+
+| 属性                | 型    | 説明 |
+|--------------------------|---------|-------------|
+| `commit`                 | オブジェクト  | タグに関連付けられたコミット情報。 |
+| `commit.author_email`    | 文字列  | コミット作成者のメールアドレス。 |
+| `commit.author_name`     | 文字列  | コミット作成者の名前。 |
+| `commit.authored_date`   | 文字列  | コミットがISO 8601形式で作成された日付。 |
+| `commit.committed_date`  | 文字列  | コミットがISO 8601形式でコミットされた日付。 |
+| `commit.committer_email` | 文字列  | コミッターのメールアドレス。 |
+| `commit.committer_name`  | 文字列  | コミッターの名前。 |
+| `commit.created_at`      | 文字列  | コミットがISO 8601形式で作成された日付。 |
+| `commit.id`              | 文字列  | コミットの完全なSHA。 |
+| `commit.message`         | 文字列  | コミットメッセージ。 |
+| `commit.parent_ids`      | 配列   | 親コミットSHAの配列。 |
+| `commit.short_id`        | 文字列  | コミットの短いSHA。 |
+| `commit.title`           | 文字列  | コミットのタイトル。 |
+| `created_at`             | 文字列  | タグがISO 8601形式で作成された日付。 |
+| `message`                | 文字列  | タグメッセージ。 |
+| `name`                   | 文字列  | タグの名前。 |
+| `protected`              | ブール値 | `true`の場合、タグは保護されます。 |
+| `release`                | オブジェクト  | タグに関連付けられたリリース情報。 |
+| `target`                 | 文字列  | タグが指すSHA。 |
+
+リクエスト例:
 
 ```shell
 curl --request POST \
@@ -166,7 +247,7 @@ curl --request POST \
   --url "https://gitlab.example.com/api/v4/projects/5/repository/tags?tag_name=test&ref=main"
 ```
 
-応答の例:
+応答例:
 
 ```json
 {
@@ -195,10 +276,10 @@ curl --request POST \
 }
 ```
 
-作成されたタグのタイプによって、`created_at`、`target`、および`message`の内容が決まります。
+作成されたタグの種類によって、`created_at`、`target`、および`message`の内容が決まります。
 
 - 注釈付きタグの場合:
-  - `created_at`には、タグ作成のタイムスタンプが含まれています。
+  - `created_at`には、タグ作成時のタイムスタンプが含まれています。
   - `message`には、注釈が含まれています。
   - `target`には、タグオブジェクトのIDが含まれています。
 - 軽量タグの場合:
@@ -206,9 +287,9 @@ curl --request POST \
   - `message`はnullです。
   - `target`には、コミットIDが含まれています。
 
-エラーは、ステータスコード`405`と説明的なエラーメッセージを返します。
+エラーが発生した場合、ステータスコード`405`と説明的なエラーメッセージが返されます。
 
-## タグを削除する
+## タグを削除する {#delete-a-tag}
 
 指定された名前のリポジトリのタグを削除します。
 
@@ -216,40 +297,55 @@ curl --request POST \
 DELETE /projects/:id/repository/tags/:tag_name
 ```
 
-パラメーター:
+サポートされている属性:
 
 | 属性  | 型              | 必須 | 説明 |
 |------------|-------------------|----------|-------------|
-| `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`       | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `tag_name` | 文字列            | はい      | タグの名前。 |
 
-## タグのX.509署名を取得する
+## タグのX.509署名を取得する {#get-x509-signature-of-a-tag}
 
-{{< history >}}
-
-- GitLab 15.7で[導入](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106578)されました。
-
-{{< /history >}}
-
-タグが署名されている場合は、[タグからX.509署名](../user/project/repository/signed_commits/x509.md)を取得します。署名されていないタグは、`404 Not Found`応答を返します。
+タグが署名されている場合に[タグからX.509署名](../user/project/repository/signed_commits/x509.md)を取得します。署名されていないタグは、`404 Not Found`応答を返します。
 
 ```plaintext
 GET /projects/:id/repository/tags/:tag_name/signature
 ```
 
-パラメーター:
+サポートされている属性:
 
 | 属性  | 型              | 必須 | 説明 |
 |------------|-------------------|----------|-------------|
-| `id`       | 整数または文字列 | はい      | プロジェクトのIDまたは[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
+| `id`       | 整数または文字列 | はい      | プロジェクトのID、または[URLエンコードされたパス](rest/_index.md#namespaced-paths)。 |
 | `tag_name` | 文字列            | はい      | タグの名前。 |
+
+成功した場合は、[`200 OK`](rest/troubleshooting.md#status-codes)と以下のレスポンス属性が返されます。
+
+| 属性                                             | 型    | 説明 |
+|-------------------------------------------------------|---------|-------------|
+| `signature_type`                                      | 文字列  | 署名のタイプ（`X509`）。 |
+| `verification_status`                                 | 文字列  | 署名の検証ステータス。 |
+| `x509_certificate`                                    | オブジェクト  | X.509証明書情報。 |
+| `x509_certificate.certificate_status`                 | 文字列  | 証明書のステータス。 |
+| `x509_certificate.email`                              | 文字列  | 証明書からのメールアドレス。 |
+| `x509_certificate.id`                                 | 整数 | 証明書のID。 |
+| `x509_certificate.serial_number`                      | 整数 | 証明書のシリアル番号。 |
+| `x509_certificate.subject`                            | 文字列  | 証明書のサブジェクト。 |
+| `x509_certificate.subject_key_identifier`             | 文字列  | 証明書のサブジェクトキー識別子。 |
+| `x509_certificate.x509_issuer`                        | オブジェクト  | 証明書の発行者情報。 |
+| `x509_certificate.x509_issuer.crl_url`                | 文字列  | 証明書失効リストのURL。 |
+| `x509_certificate.x509_issuer.id`                     | 整数 | 発行者のID。 |
+| `x509_certificate.x509_issuer.subject`                | 文字列  | 発行者のサブジェクト。 |
+| `x509_certificate.x509_issuer.subject_key_identifier` | 文字列  | 発行者のサブジェクトキー識別子。 |
+
+リクエスト例:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
   --url "https://gitlab.example.com/api/v4/projects/1/repository/tags/v1.1.1/signature"
 ```
 
-タグにX.509署名がある場合の応答の例:
+タグがX.509署名されている場合の応答例:
 
 ```json
 {
@@ -272,7 +368,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 }
 ```
 
-タグが署名されていない場合の応答の例:
+タグが署名されていない場合の応答例:
 
 ```json
 {

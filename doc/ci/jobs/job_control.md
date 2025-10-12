@@ -242,7 +242,7 @@ Test Boosters reports usage statistics to the author.
 
 ### Run a one-dimensional matrix of parallel jobs
 
-To run a job multiple times in parallel in a single pipeline, but with different variable values for each instance of the job,
+To run a job multiple times in parallel in a single pipeline, but with different values for each instance of the job,
 use the [`parallel:matrix`](../yaml/_index.md#parallelmatrix) keyword:
 
 ```yaml
@@ -256,10 +256,20 @@ deploystacks:
   environment: production/$PROVIDER
 ```
 
+In this example, 4 `deploystacks` jobs are created, and `PROVIDER` becomes a CI/CD variable
+with a different value in each:
+
+- `deploystacks: [aws]`
+- `deploystacks: [ovh]`
+- `deploystacks: [gcp]`
+- `deploystacks: [vultr]`
+
 ### Run a matrix of parallel trigger jobs
 
 You can run a [trigger](../yaml/_index.md#trigger) job multiple times in parallel in a single pipeline,
-but with different variable values for each instance of the job.
+but with different variables available for each instance of the job.
+
+For example:
 
 ```yaml
 deploystacks:
@@ -290,7 +300,7 @@ deploystacks: [vultr, data]
 
 ### Select different runner tags for each parallel matrix job
 
-You can use variables defined in `parallel: matrix` with the [`tags`](../yaml/_index.md#tags)
+You can use values defined in `parallel: matrix` with the [`tags`](../yaml/_index.md#tags)
 keyword for dynamic runner selection:
 
 ```yaml
@@ -342,7 +352,7 @@ deploy:
 
 Quotes around the `dependencies` entry are required.
 
-## Specify a parallelized job using needs with multiple parallelized jobs
+### Specify a parallelized job using needs with multiple parallelized jobs
 
 {{< history >}}
 
@@ -350,7 +360,11 @@ Quotes around the `dependencies` entry are required.
 
 {{< /history >}}
 
-You can use variables defined in [`needs:parallel:matrix`](../yaml/_index.md#needsparallelmatrix) with multiple parallelized jobs.
+You can use [`needs:parallel:matrix`](../yaml/_index.md#needsparallelmatrix) to create
+dependencies between multiple parallelized jobs. You can use two techniques for configuration:
+
+- Automatically with [`matrix.` expressions](../yaml/matrix_expressions.md).
+- Manually, as demonstrated below.
 
 For example:
 
@@ -423,7 +437,7 @@ The jobs have three paths of execution:
   `mac:build: [vultr, data]` jobs finish, without waiting for `linux:build` to finish.
 - The `production` job runs as soon as all previous jobs finish.
 
-## Specify needs between parallelized jobs
+#### Specify needs between parallelized jobs
 
 You can further define the order of each parallel matrix job using [`needs:parallel:matrix`](../yaml/_index.md#needsparallelmatrix).
 
