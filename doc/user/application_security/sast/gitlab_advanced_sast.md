@@ -222,10 +222,11 @@ variables.
 
 GitLab Advanced SAST can be configured using the following CI/CD variables.
 
-| CI/CD variable                     | Default  | Description                                                                         |
-|------------------------------------|----------|-------------------------------------------------------------------------------------|
-| `GITLAB_ADVANCED_SAST_ENABLED`     | `false`  | Enables GitLab Advanced SAST scanning for all supported languages except C and C++. |
-| `GITLAB_ADVANCED_SAST_CPP_ENABLED` | `false`  | Enables GitLab Advanced SAST scanning specifically for C and C++ projects.          |
+| CI/CD variable                          | Default  | Description                                                                         |
+|-----------------------------------------|----------|-------------------------------------------------------------------------------------|
+| `GITLAB_ADVANCED_SAST_ENABLED`          | `false`  | Enables GitLab Advanced SAST scanning for all supported languages except C and C++. |
+| `GITLAB_ADVANCED_SAST_CPP_ENABLED`      | `false`  | Enables GitLab Advanced SAST scanning specifically for C and C++ projects.          |
+| `GITLAB_ADVANCED_SAST_RULE_TIMEOUT`     | `30`     | Timeout in seconds per rule per file. When exceeded, that analysis is skipped.      |
 
 ### Requirements
 

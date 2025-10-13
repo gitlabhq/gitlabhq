@@ -104,9 +104,9 @@ Prerequisites:
 To run an agent:
 
 1. On the left sidebar, select **Search or go to** > **Explore**.
-1. Select **AI Catalog** and find the agent you want to run.
-1. Next to the agent name, select **Actions** ({{< icon name="ellipsis_v" >}}) > **Test run**.
-1. Enter a prompt, then select **Run**.
+1. Select **AI Catalog**, find and click on the agent you want to run.
+1. In the top right, click on `Test` button which opens a modal.
+1. Enter instructions, then select **Run**.
 
 The session starts on the associated project's **Agent sessions** page.
 

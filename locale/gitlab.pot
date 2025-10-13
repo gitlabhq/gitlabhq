@@ -2541,6 +2541,9 @@ msgstr ""
 msgid "AICatalog|Are you sure you want to remove flow %{name}?"
 msgstr ""
 
+msgid "AICatalog|Ask a question or describe something you want the agent to do."
+msgstr ""
+
 msgid "AICatalog|Automate tasks and processes using agents."
 msgstr ""
 
@@ -2586,10 +2589,13 @@ msgstr ""
 msgid "AICatalog|Copy YAML configuration"
 msgstr ""
 
+msgid "AICatalog|Copy instructions"
+msgstr ""
+
 msgid "AICatalog|Copy of"
 msgstr ""
 
-msgid "AICatalog|Copy user prompt"
+msgid "AICatalog|Create a session that uses this agent."
 msgstr ""
 
 msgid "AICatalog|Create agent"
@@ -2706,6 +2712,9 @@ msgstr ""
 msgid "AICatalog|Input cannot exceed %{value} characters. Please shorten your input."
 msgstr ""
 
+msgid "AICatalog|Instructions"
+msgstr ""
+
 msgid "AICatalog|Modify the agent settings and configuration."
 msgstr ""
 
@@ -2751,19 +2760,10 @@ msgstr ""
 msgid "AICatalog|Prompts"
 msgstr ""
 
-msgid "AICatalog|Provide instructions or context that will be included for this run."
-msgstr ""
-
 msgid "AICatalog|Remove agent from this project"
 msgstr ""
 
 msgid "AICatalog|Remove flow from this project"
-msgstr ""
-
-msgid "AICatalog|Run"
-msgstr ""
-
-msgid "AICatalog|Run agent"
 msgstr ""
 
 msgid "AICatalog|Save changes"
@@ -2805,10 +2805,7 @@ msgstr ""
 msgid "AICatalog|Test"
 msgstr ""
 
-msgid "AICatalog|Test run"
-msgstr ""
-
-msgid "AICatalog|Test run agents to see how they respond."
+msgid "AICatalog|Test run agent"
 msgstr ""
 
 msgid "AICatalog|Test run executed successfully, see %{linkStart}Session %{workflowId}%{linkEnd}."
@@ -2872,9 +2869,6 @@ msgid "AICatalog|Use agents with GitLab Duo Chat to complete tasks and answer co
 msgstr ""
 
 msgid "AICatalog|Use flows in your project."
-msgstr ""
-
-msgid "AICatalog|User prompt"
 msgstr ""
 
 msgid "AICatalog|User prompt is required."
@@ -38310,10 +38304,19 @@ msgstr ""
 msgid "Labels|%{spanStart}Promote label%{spanEnd} %{labelTitle} %{spanStart}to Group Label?%{spanEnd}"
 msgstr ""
 
+msgid "Labels|An error occurred while archiving the label."
+msgstr ""
+
 msgid "Labels|Label actions"
 msgstr ""
 
 msgid "Labels|Label actions dropdown"
+msgstr ""
+
+msgid "Labels|Label archived."
+msgstr ""
+
+msgid "Labels|Label unarchived."
 msgstr ""
 
 msgid "Labels|Promote Label"

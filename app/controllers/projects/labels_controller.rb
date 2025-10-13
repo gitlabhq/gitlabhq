@@ -12,6 +12,10 @@ class Projects::LabelsController < Projects::ApplicationController
     :set_priorities]
   before_action :authorize_admin_group_labels!, only: [:promote]
 
+  before_action only: [:index] do
+    push_frontend_feature_flag(:labels_archive, project)
+  end
+
   respond_to :js, :html
 
   feature_category :team_planning
