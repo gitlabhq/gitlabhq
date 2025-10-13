@@ -118,7 +118,7 @@ To add protections to a new branch:
 1. Expand **Branch rules**.
 1. Select **Add branch rule**.
 1. Select one of **All protected branches** or **Branch name or pattern**.
-1. Select **Create protected branch**.
+1. Select **Create branch rule**.
 
 ### Add an approval rule
 

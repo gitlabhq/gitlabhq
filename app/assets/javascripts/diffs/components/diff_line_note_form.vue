@@ -76,17 +76,7 @@ export default {
       'diffLines',
     ]),
     ...mapState(useMrNotes, ['isLoggedIn']),
-    ...mapState(useNotes, [
-      'noteableData',
-      'noteableType',
-      'getNoteableData',
-      'getNotesDataByProp',
-      'getUserData',
-      'selectedCommentPosition',
-    ]),
-    author() {
-      return this.getUserData;
-    },
+    ...mapState(useNotes, ['noteableData', 'noteableType', 'selectedCommentPosition']),
     formData() {
       return {
         noteableData: this.noteableData,

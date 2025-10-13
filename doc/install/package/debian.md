@@ -25,6 +25,7 @@ supported distributions and architectures.
 - OS requirements:
   - Debian 11
   - Debian 12
+  - Debian 13
 - See the [installation requirements](../requirements.md) to learn about the
   minimum hardware requirements.
 - Before you begin, make sure you have correctly

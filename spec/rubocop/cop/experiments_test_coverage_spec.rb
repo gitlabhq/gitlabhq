@@ -184,6 +184,27 @@ RSpec.describe RuboCop::Cop::ExperimentsTestCoverage, feature_category: :acquisi
         it_behaves_like 'covered experiment block'
       end
 
+      context 'when /lib folder' do
+        let(:file_path) { '/lib/tests.rb' }
+        let(:test_file_path) { '/spec/lib/tests_spec.rb' }
+
+        it_behaves_like 'covered experiment block'
+      end
+
+      context 'when ee/lib folder' do
+        let(:file_path) { 'ee/lib/tests.rb' }
+        let(:test_file_path) { 'ee/spec/lib/tests_spec.rb' }
+
+        it_behaves_like 'covered experiment block'
+      end
+
+      context 'when ee/lib/ee folder' do
+        let(:file_path) { 'ee/lib/ee/tests.rb' }
+        let(:test_file_path) { 'ee/spec/lib/ee/tests_spec.rb' }
+
+        it_behaves_like 'covered experiment block'
+      end
+
       context 'when *.haml file' do
         let(:file_path) { 'app/view/show_test.html.haml' }
         let(:test_file_path) { 'spec/view/show_test.html.haml_spec.rb' }
