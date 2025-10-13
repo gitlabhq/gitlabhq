@@ -35,8 +35,7 @@ module Banzai
           allowlist[:attributes]['pre'] = %w[data-canonical-lang data-lang-params
             data-math-style data-mermaid-style data-kroki-style]
 
-          # Allow data-escaped-chars span attribute
-          allowlist[:attributes]['span'].push('data-escaped-chars')
+          # Allow data-placeholder from gitlab-glfm-markdown
           allowlist[:attributes]['span'].push('data-placeholder')
 
           # Allow html5 details/summary elements

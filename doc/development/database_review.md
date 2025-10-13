@@ -168,6 +168,40 @@ Include in the MR description:
 - If a query is always used with a limit and an offset, those should always be
   included with the maximum allowed limit used and a non 0 offset.
 
+###### Tips for finding the SQL executed by the application
+
+When reviewing queries, we want to assess the SQL query that is actually executed in the database,
+including any scopes, pagination, and limits. It can be difficult or sometimes even impossible to
+infer the exact query from reading the Rails code. To get the most accurate SQL, try using one
+of these methods:
+
+1. **Use the [performance bar](../administration/monitoring/performance/performance_bar.md)**:
+   Manually test your feature, then click the `pg` section of the performance bar
+   to see the SQL queries executed. To see the queries for an API request, find and select
+   the request using the drop-down menu on the right-hand side.
+
+1. **Check `development.log`**: Test your feature then look inside `log/development.log`
+   in the GitLab directory to see all the queries executed by the application. 
+   This does not include queries executed in a Sidekiq worker.
+
+1. **Run specs with `ActiveRecord::Base.logger`**: You can log queries to stdout by adding
+   these blocks to your RSpec tests:
+
+   ```ruby
+   before do
+     ActiveRecord::Base.logger = Logger.new($stdout)
+   end
+
+   after do
+     ActiveRecord::Base.logger = nil
+   end
+   ```
+
+   Run the tests with `bundle exec rspec <test_file>` and the queries will appear
+   in the test output. **This will only produce correct queries in integration tests.**
+   The output of unit tests may not be correct if there is an additional component modifying
+   the ActiveRecord relation, such as pagination middleware. 
+
 ##### Query Plans
 
 - The query plan for each raw SQL query included in the merge request along with the link to the query plan following each raw SQL snippet.

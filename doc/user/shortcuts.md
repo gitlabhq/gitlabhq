@@ -131,7 +131,7 @@ These shortcuts are available when viewing [merge requests](project/merge_reques
 | <kbd>Command</kbd> + <kbd>Enter</kbd> | <kbd>Control</kbd> + <kbd>Enter</kbd> | Add your comment in a pending state, as part of a review. |
 | <kbd>c</kbd>                      |                                   | Move to next commit. |
 | <kbd>x</kbd>                      |                                   | Move to previous commit. |
-| <kbd>f</kbd>                      |                                   | Toggle file browser. |
+| <kbd>Shift</kbd> + <kbd>f</kbd>   |                                   | Toggle file browser. |
 | <kbd>v</kbd>                      |                                   | Mark file as viewed or unviewed. |
 | <kbd>;</kbd>                      |                                   | Expand all files. |
 | <kbd>Shift</kbd> + <kbd>;</kbd>   |                                   | Collapse all files. |

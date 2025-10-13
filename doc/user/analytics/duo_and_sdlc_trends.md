@@ -120,6 +120,31 @@ The Pipeline metrics table displays metrics for the pipelines run in the selecte
 - **Success rate**: Percentage of pipeline runs that completed successfully.
 - **Failure rate**: Percentage of pipeline runs that completed with failures.
 
+## Code suggestions acceptance rate by language
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454809) in GitLab 18.5.
+
+{{< /history >}}
+
+The **Code suggestions acceptance rate by language** chart displays the acceptance rate of Code Suggestions broken down by programming language for the last 30 days.
+
+The acceptance rate for each language is calculated as the number of accepted code suggestions divided by the total number of code suggestions shown.
+
+## Code generation volume trends
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/573972) in GitLab 18.5.
+
+{{< /history >}}
+
+The **Code generation volume trends** chart displays the volume of code generated through Code Suggestions over the last 180 days, aggregated by month. The chart shows:
+
+- **Lines of code accepted**: Lines of code from Code Suggestions that were accepted.
+- **Lines of code shown**: Lines of code displayed in Code Suggestions.
+
 ## View GitLab Duo and SDLC trends
 
 Prerequisites:

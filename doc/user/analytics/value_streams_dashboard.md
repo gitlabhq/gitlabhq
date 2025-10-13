@@ -89,11 +89,11 @@ For more information, see [epic 10417](https://gitlab.com/groups/gitlab-org/-/ep
 
 - Contributor count metric at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433353) to GitLab.com in GitLab 16.9.
 - Contributor count metric at the project level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/474119) to GitLab.com in GitLab 18.0.
+- DevSecOps metrics comparison tables [migrated](https://gitlab.com/gitlab-org/gitlab/-/issues/541489) to the `ai_impact_table` visualization in GitLab 18.5.
 
 {{< /history >}}
 
-The DevSecOps metrics comparison panels display metrics for a group or project
-in the month-to-date, last month, the month before, and the past 180 days.
+The DevSecOps metrics comparison panels display metrics for a group or project over the past six months.
 These visualizations help you understand whether the key DevSecOps metrics improve month over month. The Value Stream Dashboard displays three DevSecOps metric comparison panels:
 
 - Lifecycle metrics
@@ -108,34 +108,10 @@ In each comparison panel, you can:
 
 When you hover over a metric, a tooltip displays an explanation of the metric and a link to the related documentation page.
 
-The monthly values also indicate a percentage increase or decrease compared to the previous month.
+The **Change %** column also indicates a percentage increase or decrease of the metric value from the previous month, compared to six months prior.
 
-The sparkline for the past six months represents value trends over this time period, not the percentage change rate.
+The **Trend** column displays sparklines to help you identify patterns in metric trends (such as seasonal changes) over time.
 The sparkline color ranges from blue to green, where green indicates a positive trend, and blue indicates a negative trend.
-Sparklines help you identify patterns in metric trends (such as seasonal changes) over time.
-
-#### Filter panels by label
-
-Label filters are appended as query parameters to the URL of the drill-down report of each eligible metric and automatically applied.
-If a comparison panel from the configuration file is enabled with `filters.labels`, the drill-down links inherit the labels from the panel filter.
-
-```yaml
-panels:
-  - title: 'Group dora metrics'
-    visualization: vsd_dora_metrics_table
-    queryOverrides:
-      namespace: my-dora-group
-      filters:
-        labels:
-          - in_development
-          - in_review
-```
-
-{{< alert type="note" >}}
-
-Only labels that exactly match the specified filters are applied.
-
-{{< /alert >}}
 
 ### DORA Performers score
 
@@ -305,7 +281,7 @@ To learn more, see the blog post [New Scheduled Reports Generation tool simplifi
 You can customize the Value Streams Dashboard and configure what subgroups and projects to include in the page.
 
 To customize the default content of the page, you need to create a YAML configuration file in a project of your choice.
-In this file, you can define various settings and parameters, such as title, description, and number of panels and labels filters.
+In this file, you can define various settings and parameters, such as title, description, and number of panels.
 The file is schema-driven and managed with version control systems like Git.
 This enables tracking and maintaining a history of configuration changes, reverting to previous versions if necessary, and collaborating effectively with team members.
 Query parameters can still be used to override the YAML configuration.
@@ -333,7 +309,7 @@ After you have set up the project, set up the configuration file:
 | `queryOverrides` (formerly `data`)         | Overrides data query parameters specific to each visualization. |
 | `namespace` (subfield of `queryOverrides`) | Group or project path to use for the panel |
 | `filters` (subfield of `queryOverrides`)   | Filters the query for each supported visualization type. |
-| `visualization`                            | The type of visualization to be rendered. Supported options are `dora_chart`, `dora_performers_score`, and `usage_overview`. |
+| `visualization`                            | The type of visualization to be rendered. Supported options are `ai_impact_table`, `dora_performers_score`, and `usage_overview`. |
 | `gridAttributes`                           | The size and positioning of the panel |
 | `xPos` (subfield of `gridAttributes`)      | Horizontal position of the panel |
 | `yPos` (subfield of `gridAttributes`)      | Vertical position of the panel |
@@ -356,15 +332,6 @@ description: 'Custom description'
 #   gridAttributes - The size and positioning of the panel
 #   queryOverrides.namespace - The Group or Project path to use for the chart panel
 #   queryOverrides.filters.excludeMetrics - Hide rows by metric ID from the chart panel.
-#   queryOverrides.filters.labels -
-#     Only show results for data that matches the queried label(s). If multiple labels are provided,
-#     only a single label needs to match for the data to be included in the results.
-#     Compatible metrics (other metrics will be automatically excluded):
-#       * lead_time
-#       * cycle_time
-#       * issues
-#       * issues_completed
-#       * merge_request_throughput
 panels:
   - title: 'Group usage overview'
     visualization: usage_overview
@@ -380,16 +347,13 @@ panels:
       height: 1
       width: 12
   - title: 'Group dora and issue metrics'
-    visualization: dora_chart
+    visualization: ai_impact_table
     queryOverrides:
       namespace: group
       filters:
         excludeMetrics:
           - deployment_frequency
           - deploys
-        labels:
-          - in_development
-          - in_review
     gridAttributes:
       yPos: 2
       xPos: 1
@@ -416,12 +380,11 @@ The `filters` subfield on the `queryOverrides` field can be used to customize th
 
 #### DevSecOps metrics comparison panel filters
 
-Filters for the `dora_chart` visualization.
+Filters for the `ai_impact_table` visualization.
 
 | Filter           | Description                                  | Supported values |
 |------------------|----------------------------------------------|------------------|
-| `excludeMetrics` | Hides rows by metric ID from the chart panel | `deployment_frequency`, `lead_time_for_changes`,`time_to_restore_service`, `change_failure_rate`, `lead_time`, `cycle_time`, `issues`, `issues_completed`, `deploys`, `merge_request_throughput`, `median_time_to_merge`, `contributor_count`, `vulnerability_critical`, `vulnerability_high` |
-| `labels`         | Filters data by labels                       | Any available group label. Label filtering is supported by the following metrics: `lead_time`, `cycle_time`, `issues`, `issues_completed`, `merge_request_throughput`, `median_time_to_merge`. |
+| `excludeMetrics` | Hides rows by metric ID from the chart panel | `deployment_frequency`, `lead_time_for_changes`,`time_to_restore_service`, `change_failure_rate`, `lead_time`, `cycle_time`, `issues`, `issues_completed`, `deploys`, `merge_request_throughput`, `median_time_to_merge`, `contributor_count`, `vulnerability_critical`, `vulnerability_high`, `pipeline_count`, `pipeline_success_rate`, `pipeline_failed_rate`, `pipeline_duration_median`, `code_suggestions_usage_rate`, `code_suggestions_acceptance_rate`, `duo_chat_usage_rate`, `duo_rca_usage_rate` |
 
 #### DORA Performers score panel filters
 
@@ -447,6 +410,20 @@ Filters for the `usage_overview` visualization.
 |-----------|----------------------------------------------------------------|------------------|
 | `include` | Limits the metrics returned, by default displays all available | `issues`, `merge_requests`, `pipelines` |
 
+#### Additional panel filters (deprecated)
+
+{{< alert type="warning" >}}
+
+The `dora_chart` visualization was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/206417) in GitLab 18.5.
+
+{{< /alert >}}
+
+Filters for the `dora_chart` visualization.
+
+| Filter   | Description                                  | Supported values |
+|----------|----------------------------------------------|------------------|
+| `labels` | Filters data by labels                       | Any available group label. Label filtering is supported by the following metrics: `lead_time`, `cycle_time`, `issues`, `issues_completed`, `merge_request_throughput`, `median_time_to_merge`. |
+
 ## Dashboard metrics and drill-down reports
 
 The following table provides an overview of the metrics available in the Value Streams Dashboard,
@@ -468,6 +445,14 @@ along with their descriptions and the name of the drill-down report where they a
 | Contributor count | Number of monthly unique users with contributions in the group. | Contribution analytics | `contributor_count` |
 | Critical vulnerabilities over time | Critical vulnerabilities over time in project or group | Vulnerability report | `vulnerability_critical` |
 | High vulnerabilities over time | High vulnerabilities over time in project or group | Vulnerability report | `vulnerability_high` |
+| Total pipeline runs | The total number of pipelines that have run in the selected time period. | CI/CD analytics | `pipeline_count` |
+| Pipeline median duration | The median time it takes for pipelines to complete. | CI/CD analytics | `pipeline_duration_median` |
+| Pipeline success rate | The percentage of pipelines that completed successfully. | CI/CD analytics | `pipeline_success_rate` |
+| Pipeline failure rate | The percentage of pipelines that failed. | CI/CD analytics | `pipeline_failed_rate` |
+| Code Suggestions usage | Users with assigned Duo seats who used at least one Duo feature. |  | `code_suggestions_usage_rate` |
+| Code Suggestions acceptance rate | Code Suggestions accepted out of total Code Suggestions generated. |  | `code_suggestions_acceptance_rate` |
+| Duo Chat usage | Users with assigned Duo seats who used Duo Chat. |  | `duo_chat_usage_rate` |
+| Duo RCA usage | Users with assigned Duo seats who used Root Cause Analysis. |  | `duo_rca_usage_rate` |
 
 ## Metrics with Jira
 
