@@ -75,12 +75,15 @@ $design-pin-diameter-sm: 24px;
   }
 
   &.resolved {
-    @apply gl-bg-strong gl-text-strong;
+    @apply gl-bg-strong;
+    @apply gl-text-strong;
   }
 
   &.on-image {
     box-shadow: 0 2px 4px var(--gl-color-alpha-dark-8), 0 0 1px var(--gl-color-alpha-dark-24);
-    @apply gl-border-2 gl-border-solid gl-border-neutral-0;
+    @apply gl-border-2;
+    @apply gl-border-solid;
+    @apply gl-border-neutral-0;
     will-change: transform, box-shadow, opacity;
     // NOTE: verbose transition property required for Safari
     transition: transform $general-hover-transition-duration linear, box-shadow $general-hover-transition-duration linear, opacity $general-hover-transition-duration linear;
@@ -106,7 +109,9 @@ $design-pin-diameter-sm: 24px;
 
   &.small {
     position: absolute;
-    @apply gl-border-1 gl-border-solid gl-border-neutral-0;
+    @apply gl-border-1;
+    @apply gl-border-solid;
+    @apply gl-border-neutral-0;
     height: $design-pin-diameter-sm;
     width: $design-pin-diameter-sm;
   }
@@ -169,7 +174,10 @@ $design-pin-diameter-sm: 24px;
     }
 
     .design-note:first-child {
-      @apply gl-bg-section gl-border-b gl-border-b-section  gl-rounded-t-base;
+      @apply gl-bg-section;
+      @apply gl-border-b;
+      @apply gl-border-b-section;
+      @apply gl-rounded-t-base;
     }
 
     .design-note:not(:first-child) {
@@ -194,7 +202,9 @@ $design-pin-diameter-sm: 24px;
 
     .reply-wrapper, .disabled-comment {
       padding: $gl-padding-8;
-      @apply gl-bg-subtle gl-border-0 gl-rounded-b-base;
+      @apply gl-bg-subtle;
+      @apply gl-border-0;
+      @apply gl-rounded-b-base;
     }
   }
 

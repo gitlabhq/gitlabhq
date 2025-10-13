@@ -35,12 +35,14 @@
 }
 
 .edited-text {
-  @apply gl-text-subtle gl-text-sm;
+  @apply gl-text-subtle;
+  @apply gl-text-sm;
   display: block;
   margin: 16px 0 0;
 
   .author-link {
-    @apply gl-text-default gl-text-sm;
+    @apply gl-text-default;
+    @apply gl-text-sm;
   }
 }
 

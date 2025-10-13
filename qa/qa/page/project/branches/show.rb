@@ -29,7 +29,7 @@ module QA
 
             click_element('delete-branch-confirmation-button')
 
-            finished_loading?
+            spinner_cleared?
           end
 
           def has_no_branch?(branch_name, reload: false)

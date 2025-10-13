@@ -10,7 +10,8 @@
 .expandable-card {
   &.is-collapsed header {
     border-bottom: 0;
-    @apply gl-rounded-lg hover:gl-bg-subtle;
+    @apply gl-rounded-lg;
+    @apply hover:gl-bg-subtle;
   }
 
   .crud-body {

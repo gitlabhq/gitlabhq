@@ -11605,6 +11605,35 @@ paths:
       tags:
       - ci_resource_groups
       operationId: putApiV4ProjectsIdResourceGroupsKey
+  "/api/v4/projects/{id}/resource_groups/{key}/current_job":
+    get:
+      description: Show current job for a specific resource group
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project owned by the authenticated
+          user
+        type: string
+        required: true
+      - in: path
+        name: key
+        description: The key of the resource group
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Show current job for a specific resource group
+          schema:
+            "$ref": "#/definitions/API_Entities_Ci_JobBasic"
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+      tags:
+      - ci_resource_groups
+      operationId: getApiV4ProjectsIdResourceGroupsKeyCurrentJob
   "/api/v4/projects/{id}/resource_groups/{key}/upcoming_jobs":
     get:
       description: List upcoming jobs for a specific resource group

@@ -112,9 +112,8 @@ RSpec.describe Ci::JobDefinition, feature_category: :continuous_integration do
       expect(fabricate.checksum).to match(/\A[a-f0-9]{64}\z/)
     end
 
-    it 'sets timestamps', :freeze_time do
+    it 'sets created_at', :freeze_time do
       expect(fabricate.created_at).to eq(Time.current)
-      expect(fabricate.updated_at).to eq(Time.current)
     end
 
     context 'with interruptible not specified' do

@@ -59,7 +59,11 @@ hr {
 }
 
 code {
-  @apply gl-py-1 gl-px-2 gl-text-strong gl-bg-strong gl-rounded-base;
+  @apply gl-py-1;
+  @apply gl-px-2;
+  @apply gl-text-strong;
+  @apply gl-bg-strong;
+  @apply gl-rounded-base;
 
   .code > &,
   .build-log & {

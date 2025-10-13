@@ -30,7 +30,8 @@
                   inset -1px 0 0 0 var(--gl-control-border-color-selected-default),
                   inset 0 -1px 0 0 var(--gl-control-border-color-selected-default),
                   inset 1px 0 0 0 var(--gl-control-border-color-selected-default);
-      @apply gl-bg-subtle gl-rounded-base;
+      @apply gl-bg-subtle;
+      @apply gl-rounded-base;
     }
 
     &:has(input:checked) + &:has(input:checked) {
@@ -55,6 +56,14 @@
   }
 
   &-click-area {
-    @apply gl-absolute -gl-top-5 -gl-left-7 gl-w-full gl-h-full gl-p-5 gl-pl-7 gl-box-content -gl-z-1;
+    @apply gl-absolute;
+    @apply -gl-top-5;
+    @apply -gl-left-7;
+    @apply gl-w-full;
+    @apply gl-h-full;
+    @apply gl-p-5;
+    @apply gl-pl-7;
+    @apply gl-box-content;
+    @apply -gl-z-1;
   }
 }

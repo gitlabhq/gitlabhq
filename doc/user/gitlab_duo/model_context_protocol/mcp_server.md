@@ -340,7 +340,7 @@ Example:
 Search issues for "flaky test" across GitLab
 ```
 
-### `get_code_context`
+### `semantic_code_search`
 
 {{< history >}}
 
@@ -360,7 +360,7 @@ Searches for relevant code snippets in a project.
 
 | Parameter        | Type    | Required | Description |
 |------------------|---------|----------|-------------|
-| `search_term`    | string  | Yes      | Search term. |
+| `semantic_query` | string  | Yes      | Search query for the code. |
 | `project_id`     | integer | Yes      | ID of the project. |
 | `directory_path` | string  | No       | Path of the directory (for example, `app/services/`). |
 | `knn`            | integer | No       | Number of nearest neighbors used to find similar code snippets. Default is `64`. |
@@ -369,5 +369,5 @@ Searches for relevant code snippets in a project.
 Example:
 
 ```plaintext
-Search for relevant code snippets that show how authorizations are managed in GitLab
+How are authorizations managed in this project?
 ```

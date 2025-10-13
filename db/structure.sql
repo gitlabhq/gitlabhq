@@ -18945,7 +18945,8 @@ CREATE TABLE keys (
     expires_at timestamp with time zone,
     expiry_notification_delivered_at timestamp with time zone,
     before_expiry_notification_delivered_at timestamp with time zone,
-    usage_type smallint DEFAULT 0 NOT NULL
+    usage_type smallint DEFAULT 0 NOT NULL,
+    organization_id bigint
 );
 
 CREATE SEQUENCE keys_id_seq
@@ -40432,6 +40433,8 @@ CREATE INDEX index_keys_on_id_and_ldap_key_type ON keys USING btree (id) WHERE (
 
 CREATE INDEX index_keys_on_last_used_at ON keys USING btree (last_used_at DESC NULLS LAST);
 
+CREATE INDEX index_keys_on_organization_id ON keys USING btree (organization_id);
+
 CREATE INDEX index_keys_on_user_id ON keys USING btree (user_id);
 
 CREATE UNIQUE INDEX index_kubernetes_namespaces_on_cluster_project_environment_id ON clusters_kubernetes_namespaces USING btree (cluster_id, project_id, environment_id);
@@ -48001,6 +48004,9 @@ ALTER TABLE ONLY bulk_import_exports
 
 ALTER TABLE ONLY ml_model_versions
     ADD CONSTRAINT fk_39f8aa0b8a FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY keys
+    ADD CONSTRAINT fk_3a0e3d4776 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_3a9eaa254d_p FOREIGN KEY (partition_id, stage_id) REFERENCES p_ci_stages(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;

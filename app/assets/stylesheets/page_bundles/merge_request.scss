@@ -131,7 +131,12 @@ $merge-request-sticky-header-height: 45px;
         top: $calc-application-header-height;
         height: $merge-request-sticky-header-height;
         @include translucent-glass-background;
-        @apply gl-border-b gl-fixed gl-left-0 gl-right-0 gl-z-0 gl-hidden;
+        @apply gl-border-b;
+        @apply gl-fixed;
+        @apply gl-left-0;
+        @apply gl-right-0;
+        @apply gl-z-0;
+        @apply gl-hidden;
       }
 
       @container sticky-header scroll-state(stuck: top) {
@@ -152,7 +157,9 @@ $merge-request-sticky-header-height: 45px;
         }
 
         .detail-page-description {
-          @apply gl-pt-1 gl-pb-0 gl-flex-nowrap;
+          @apply gl-pt-1;
+          @apply gl-pb-0;
+          @apply gl-flex-nowrap;
         }
 
         time,

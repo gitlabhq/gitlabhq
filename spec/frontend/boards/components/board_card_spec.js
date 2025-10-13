@@ -131,7 +131,7 @@ describe('Board card', () => {
     it('calls mockSetSelectedBoardItemsResolver', async () => {
       mountComponent({ provide: { glFeatures: { issuesListDrawer: true } } });
 
-      await wrapper.findByTestId('board-card-title-link').trigger('click');
+      await findBoardCardButton().trigger('click');
 
       await waitForPromises();
 

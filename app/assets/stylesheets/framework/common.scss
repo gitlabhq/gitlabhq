@@ -95,7 +95,10 @@ pre {
 }
 
 hr {
-  @apply gl-my-6 gl-mx-0 gl-border-t gl-border-subtle;
+  @apply gl-my-6;
+  @apply gl-mx-0;
+  @apply gl-border-t;
+  @apply gl-border-subtle;
 }
 
 .str-truncated {
@@ -380,7 +383,8 @@ li.note {
 }
 
 .commit-sha-container {
-  @apply gl-bg-strong gl-text-subtle #{!important};
+  @apply gl-bg-strong #{!important};
+  @apply gl-text-subtle #{!important};
 }
 
 [readonly] {

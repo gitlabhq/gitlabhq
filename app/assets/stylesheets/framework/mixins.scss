@@ -27,7 +27,8 @@
     @include clearfix;
 
     padding: 10px 0;
-    @apply gl-border-b gl-border-b-subtle;
+    @apply gl-border-b;
+    @apply gl-border-b-subtle;
     display: block;
     margin: 0;
 
@@ -194,7 +195,10 @@
   height: auto;
   min-height: 50px;
   padding: $grid-size;
-  @apply gl-bg-section gl-border gl-border-section gl-text-default;
+  @apply gl-bg-section;
+  @apply gl-border;
+  @apply gl-border-section;
+  @apply gl-text-default;
   box-shadow: 0 -6px 0 0 var(--gl-background-color-default);
   z-index: 2;
   position: sticky;

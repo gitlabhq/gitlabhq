@@ -82,7 +82,8 @@
       pre {
         border: 0;
         border-radius: 0;
-        @apply gl-text-subtle gl-bg-subtle;
+        @apply gl-text-subtle;
+        @apply gl-bg-subtle;
         overflow: hidden;
       }
 

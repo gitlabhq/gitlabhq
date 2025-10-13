@@ -119,7 +119,7 @@ module QA
           def wait_boards_list_finish_loading
             within_element('boards-list') do
               wait_until(reload: false, max_duration: 5, sleep_interval: 1) do
-                finished_loading? && (block_given? ? yield : true)
+                spinner_cleared? && (block_given? ? yield : true)
               end
             end
           end

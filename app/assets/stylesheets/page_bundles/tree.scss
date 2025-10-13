@@ -147,14 +147,18 @@ $file-tree-browser-z-index: 500;
   }
 
   table.tree-table {
-    @apply dark:gl-bg-neutral-900 gl-mb-0;
+    @apply dark:gl-bg-neutral-900;
+    @apply gl-mb-0;
 
     thead tr th[scope="col"] {
-      @apply gl-bg-subtle dark:gl-bg-neutral-800 gl-border-t-0;
+      @apply gl-bg-subtle;
+      @apply dark:gl-bg-neutral-800;
+      @apply gl-border-t-0;
     }
 
     tbody tr {
-      @apply gl-border-b gl-border-b-section;
+      @apply gl-border-b;
+      @apply gl-border-b-section;
 
       td,
       th {
@@ -167,7 +171,8 @@ $file-tree-browser-z-index: 500;
 
       &:hover:not(.tree-truncated-warning) {
         td, th {
-          @apply gl-bg-blue-50 dark:gl-bg-neutral-800;
+          @apply gl-bg-blue-50;
+          @apply dark:gl-bg-neutral-800;
           border-top: 1px solid var(--gl-action-selected-border-color-default);
           border-bottom: 1px solid var(--gl-action-selected-border-color-default);
 
@@ -207,7 +212,10 @@ $file-tree-browser-z-index: 500;
 
       &.selected {
         td {
-          @apply gl-bg-strong dark:gl-bg-neutral-800 gl-border-t gl-border-b;
+          @apply gl-bg-strong;
+          @apply dark:gl-bg-neutral-800;
+          @apply gl-border-t;
+          @apply gl-border-b;
         }
       }
 

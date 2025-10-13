@@ -135,12 +135,12 @@ module QA
           found
         end
 
-        def finished_loading?(wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
+        def spinner_cleared?(wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
           log('waiting for loading to complete...')
           log_slow_code { super }
         end
 
-        def wait_for_requests(skip_finished_loading_check: false, skip_resp_code_check: false)
+        def wait_for_requests(skip_finished_loading_check: false)
           log_slow_code { super }
         end
 

@@ -42,18 +42,17 @@ module Ci
     scope :for_checksum, ->(checksum) { where(checksum: checksum) }
     scope :with_interruptible_true, -> { where(interruptible: true) }
 
+    ignore_column :updated_at, remove_after: '2025-12-22', remove_with: '18.8'
+
     def self.fabricate(config:, project_id:, partition_id:)
       sanitized_config, checksum = sanitize_and_checksum(config)
-
-      current_time = Time.current
 
       attrs = {
         project_id: project_id,
         partition_id: partition_id,
         config: sanitized_config,
         checksum: checksum,
-        created_at: current_time,
-        updated_at: current_time
+        created_at: Time.current
       }
 
       NORMALIZED_DATA_COLUMNS.each do |col|

@@ -318,7 +318,7 @@ module QA
 
         def merge!
           try_to_merge!
-          finished_loading?
+          spinner_cleared?
 
           raise "Merge did not appear to be successful" unless merged?
         end

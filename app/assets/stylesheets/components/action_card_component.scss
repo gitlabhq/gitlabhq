@@ -3,7 +3,8 @@
   display: block;
   padding: $gl-spacing-scale-5;
   border-radius: $gl-border-radius-base;
-  @apply gl-bg-default gl-border;
+  @apply gl-bg-default;
+  @apply gl-border;
 
   .action-card-title {
     display: flex;

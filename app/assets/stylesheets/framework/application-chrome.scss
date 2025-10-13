@@ -654,7 +654,7 @@
     .ai-panels,
     .super-sidebar,
     .super-topbar {
-      --theme-accent-badge-color: hsl(from var(--theme-accent-color) h calc(s + 60) calc(l - 12));
+      --theme-accent-badge-color: var(--theme-accent-color);
       --super-sidebar-bg: var(--theme-background-color);
       --super-sidebar-accent-color-fg: hsl(from var(--theme-accent-color) h calc(s - 20) 20);
       --super-sidebar-nav-item-current-bg: hsla(from var(--theme-accent-color) h s l / 16%);

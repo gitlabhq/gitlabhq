@@ -29,7 +29,8 @@
   li > .wiki-list {
     &:hover,
     &.active {
-      @apply gl-bg-neutral-50 dark:gl-bg-neutral-900;
+      @apply gl-bg-neutral-50;
+      @apply dark:gl-bg-neutral-900;
     }
 
     &:hover {
@@ -74,7 +75,9 @@
     }
 
     h4, h5, h6 {
-      @apply gl-text-base gl-mt-0 gl-mb-2;
+      @apply gl-text-base;
+      @apply gl-mt-0;
+      @apply gl-mb-2;
     }
 
     h5 {
@@ -86,14 +89,16 @@
     }
 
     ul, ol {
-      @apply gl-p-0 gl-mb-5;
+      @apply gl-p-0;
+      @apply gl-mb-5;
 
       ul, ol {
         @apply gl-mb-0;
       }
 
       li {
-        @apply gl-ml-6 gl-leading-20;
+        @apply gl-ml-6;
+        @apply gl-leading-20;
       }
     }
   }

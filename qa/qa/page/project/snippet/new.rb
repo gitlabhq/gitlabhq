@@ -14,7 +14,7 @@ module QA
           end
 
           def click_create_first_snippet
-            finished_loading?
+            spinner_cleared?
 
             click_element('create-first-snippet-link')
           end

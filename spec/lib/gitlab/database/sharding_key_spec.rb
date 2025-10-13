@@ -38,7 +38,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       'project_type_ci_runner_machines.organization_id', # NOT NULL constraint NOT VALID
       'project_type_ci_runners.organization_id', # NOT NULL constraint NOT VALID
       'security_scans.project_id', # NOT NULL constraint NOT VALID
-      *['labels.group_id', 'labels.project_id', 'labels.organization_id'] # NOT NULL constraint NOT VALID
+      *['labels.group_id', 'labels.project_id', 'labels.organization_id'], # NOT NULL constraint NOT VALID
+      'keys.organization_id'
     ]
   end
 
@@ -326,7 +327,8 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :organizatio
       "notes" => "https://gitlab.com/gitlab-org/gitlab/-/issues/569521",
       "notes_archived" => "https://gitlab.com/gitlab-org/gitlab/-/issues/569521",
       "system_note_metadata" => "https://gitlab.com/gitlab-org/gitlab/-/issues/571215",
-      "note_diff_files" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550694"
+      "note_diff_files" => "https://gitlab.com/gitlab-org/gitlab/-/issues/550694",
+      "keys" => "https://gitlab.com/gitlab-org/gitlab/-/issues/553463"
     }
 
     has_lfk = ->(lfks) { lfks.any? { |k| k.options[:column] == 'organization_id' && k.to_table == 'organizations' } }

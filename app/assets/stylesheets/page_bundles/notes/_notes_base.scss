@@ -31,7 +31,10 @@
 
       .timeline-content {
         margin-left: $note-spacing-left;
-        @apply gl-bg-section gl-border gl-border-section gl-rounded-lg;
+        @apply gl-bg-section;
+        @apply gl-border;
+        @apply gl-border-section;
+        @apply gl-rounded-lg;
         padding: $gl-padding-4 $gl-padding-8;
       }
 
@@ -61,17 +64,26 @@
 
             .timeline-content {
               margin-left: $note-spacing-left;
-              @apply gl-bg-section gl-border gl-border-b-subtle dark:gl-border-section gl-rounded-t-lg;
+              @apply gl-bg-section;
+              @apply gl-border;
+              @apply gl-border-b-subtle;
+              @apply dark:gl-border-section;
+              @apply gl-rounded-t-lg;
               padding: $gl-padding-4 $gl-padding-8;
             }
           }
 
           &:not(:first-of-type) .timeline-entry-inner {
             margin-left: $note-spacing-left;
-            @apply gl-bg-subtle gl-border-l gl-border-l-section gl-border-r gl-border-r-section;
+            @apply gl-bg-subtle;
+            @apply gl-border-l;
+            @apply gl-border-l-section;
+            @apply gl-border-r;
+            @apply gl-border-r-section;
 
             .timeline-content {
-              @apply gl-p-3 gl-pl-5;
+              @apply gl-p-3;
+              @apply gl-pl-5;
             }
 
             .timeline-avatar {
@@ -84,13 +96,16 @@
           }
 
           &:last-of-type .timeline-entry-inner {
-            @apply gl-border-b gl-rounded-b-lg;
+            @apply gl-border-b;
+            @apply gl-rounded-b-lg;
           }
         }
       }
 
       .discussion-reply-holder {
-        @apply gl-border gl-border-section gl-border-t-0;
+        @apply gl-border;
+        @apply gl-border-section;
+        @apply gl-border-t-0;
         @apply gl-bg-subtle;
       }
     }
@@ -105,7 +120,8 @@
 
     .notes-content {
       border: 0;
-      @apply gl-border-t gl-bg-default;
+      @apply gl-border-t;
+      @apply gl-bg-default;
     }
   }
 
@@ -280,7 +296,10 @@
 
   .timeline-content {
     padding: $gl-padding-8 !important;
-    @apply gl-bg-section gl-border gl-border-section gl-rounded-lg;
+    @apply gl-bg-section;
+    @apply gl-border;
+    @apply gl-border-section;
+    @apply gl-rounded-lg;
 
     &.expanded {
       @apply gl-border-b-0;

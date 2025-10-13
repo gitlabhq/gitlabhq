@@ -24,7 +24,11 @@ $diff-file-header: 41px;
         &::before,
         &::after {
           content: '';
-          @apply gl-absolute gl-top-0 gl-w-4 gl-h-4 gl-bg-inherit;
+          @apply gl-absolute;
+          @apply gl-top-0;
+          @apply gl-w-4;
+          @apply gl-h-4;
+          @apply gl-bg-inherit;
         }
 
         &::before {
@@ -98,7 +102,8 @@ $diff-file-header: 41px;
   }
 
   .diff-content {
-    @apply gl-bg-default gl-text-default;
+    @apply gl-bg-default;
+    @apply gl-text-default;
 
     .unfold {
       cursor: pointer;
@@ -338,7 +343,8 @@ $diff-file-header: 41px;
     }
 
     li {
-      @apply gl-text-subtle gl-border-l;
+      @apply gl-text-subtle;
+      @apply gl-border-l;
       padding: 0 12px 0 16px;
       cursor: pointer;
 
@@ -690,7 +696,9 @@ table.code {
 }
 
 .note-container {
-  @apply gl-bg-subtle gl-border-t gl-border-t-subtle;
+  @apply gl-bg-subtle;
+  @apply gl-border-t;
+  @apply gl-border-t-subtle;
 
   // double jagged line divider
   .discussion-notes + .discussion-notes::before,
@@ -804,7 +812,8 @@ table.code {
       margin-left: $note-spacing-left;
 
       &[aria-expanded="false"] {
-        @apply gl-border-b gl-border-b-section;
+        @apply gl-border-b;
+        @apply gl-border-b-section;
       }
     }
   }

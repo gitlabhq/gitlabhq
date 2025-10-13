@@ -821,7 +821,11 @@
 }
 
 .duo-agent-platform-sidebar-widget {
-  @apply gl-mt-3 gl-mx-3 gl-p-4 gl-bg-default gl-rounded-base;
+  @apply gl-mt-3;
+  @apply gl-mx-3;
+  @apply gl-p-4;
+  @apply gl-bg-default;
+  @apply gl-rounded-base;
 }
 
 :where(.application-chrome) {

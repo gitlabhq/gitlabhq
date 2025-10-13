@@ -39,7 +39,7 @@ module QA
 
             fill_element('personal-access-token-field', personal_access_token)
             click_element('authenticate-button')
-            finished_loading?
+            spinner_cleared?
           end
 
           # Import project

@@ -2,6 +2,7 @@
 stage: Analytics
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: View and update linked resources in GitLab incidents, including how to use quick actions for URLs and Zoom meetings.
 title: Linked resources in incidents
 ---
 

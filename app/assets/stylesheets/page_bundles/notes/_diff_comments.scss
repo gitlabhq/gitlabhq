@@ -19,7 +19,8 @@
 }
 
 .note-button.add-diff-note {
-  @apply gl-bg-default gl-text-feedback-info;
+  @apply gl-bg-default;
+  @apply gl-text-feedback-info;
   opacity: 0;
   will-change: opacity;
   border-radius: 50%;
@@ -41,7 +42,8 @@
   }
 
   &[disabled] {
-    @apply gl-bg-default gl-text-disabled;
+    @apply gl-bg-default;
+    @apply gl-text-disabled;
     border-color: var(--gl-text-color-disabled);
     cursor: not-allowed;
   }
@@ -68,7 +70,11 @@
 }
 
 .disabled-comment {
-  @apply gl-text-disabled gl-bg-subtle gl-rounded-base gl-py-3 gl-px-0;
+  @apply gl-text-disabled;
+  @apply gl-bg-subtle;
+  @apply gl-rounded-base;
+  @apply gl-py-3;
+  @apply gl-px-0;
 
   a:not(.learn-more) {
     @apply gl-text-link;
@@ -162,11 +168,13 @@
     margin-left: $note-spacing-left;
 
     .line_holder td:first-of-type {
-      @apply gl-border-l gl-border-l-section;
+      @apply gl-border-l;
+      @apply gl-border-l-section;
     }
 
     .line_holder td:last-of-type {
-      @apply gl-border-r gl-border-r-section;
+      @apply gl-border-r;
+      @apply gl-border-r-section;
     }
 
     .discussion-notes {
@@ -245,10 +253,12 @@
       border-left: 0;
 
       .discussion-notes .timeline-entry:first-of-type > .timeline-entry-inner {
-        @apply gl-bg-section dark:gl-border-b-section;
+        @apply gl-bg-section;
+        @apply dark:gl-border-b-section;
 
         .toggle-replies-widget {
-          @apply gl-border-b-subtle dark:gl-border-b-section;
+          @apply gl-border-b-subtle;
+          @apply dark:gl-border-b-section;
         }
 
         .toggle-replies-widget[aria-expanded="false"] {
@@ -308,7 +318,9 @@
 
 .diff-files-holder {
   .discussion-notes .timeline-entry:first-of-type > .timeline-entry-inner {
-    @apply gl-border-b gl-border-b-subtle dark:gl-border-b-section;
+    @apply gl-border-b;
+    @apply gl-border-b-subtle;
+    @apply dark:gl-border-b-section;
 
     .timeline-entry:last-child .timeline-entry-inner {
       @apply gl-border-b-0;
@@ -382,14 +394,20 @@
 
   .timeline-entry-inner {
     margin-left: $note-spacing-left;
-    @apply gl-bg-subtle gl-border-l gl-border-l-section gl-border-r gl-border-r-section;
+    @apply gl-bg-subtle;
+    @apply gl-border-l;
+    @apply gl-border-l-section;
+    @apply gl-border-r;
+    @apply gl-border-r-section;
 
     .timeline-content {
       padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
       @apply gl-bg-section;
 
       &:not(:last-child) {
-        @apply gl-border-b gl-border-b-subtle dark:gl-border-b-section;
+        @apply gl-border-b;
+        @apply gl-border-b-subtle;
+        @apply dark:gl-border-b-section;
       }
     }
 

@@ -405,7 +405,8 @@ $diff-file-header-top: 11px;
   }
 
   &:not(:last-child) {
-    @apply gl-border-b gl-border-b-section;
+    @apply gl-border-b;
+    @apply gl-border-b-section;
   }
 }
 
@@ -466,7 +467,10 @@ $diff-file-header-top: 11px;
 }
 
 .mr-section-container {
-  @apply gl-bg-section gl-border gl-border-section gl-rounded-lg;
+  @apply gl-bg-section;
+  @apply gl-border;
+  @apply gl-border-section;
+  @apply gl-rounded-lg;
 
   &:not(:first-child) {
     @apply gl-mt-5;
@@ -703,7 +707,9 @@ $diff-file-header-top: 11px;
 }
 
 .mr-widget-extension {
-  @apply gl-bg-subtle gl-border-t gl-border-t-section;
+  @apply gl-bg-subtle;
+  @apply gl-border-t;
+  @apply gl-border-t-section;
   container-name: mr-widget-extension;
   container-type: inline-size;
   // Adds a fix for the view app dropdown not showing up
@@ -889,7 +895,8 @@ $diff-file-header-top: 11px;
 }
 
 .memory-graph-container {
-  @apply gl-bg-default gl-border;
+  @apply gl-bg-default;
+  @apply gl-border;
 }
 
 .pending-review-item:not(:last-child)::before {

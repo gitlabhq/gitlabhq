@@ -28,7 +28,7 @@ module API
         private
 
         def exclude_tool?(tool_name, current_user)
-          return Feature.disabled?(:code_snippet_search_graphqlapi, current_user) if tool_name == 'get_code_context'
+          return Feature.disabled?(:code_snippet_search_graphqlapi, current_user) if tool_name == 'semantic_code_search'
 
           false
         end

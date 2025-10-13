@@ -370,7 +370,9 @@
   border-radius: 3px;
   margin-left: 4px;
   margin-top: -2px;
-  @apply gl-border-1 gl-border-solid gl-border-alpha-dark-24;
+  @apply gl-border-1;
+  @apply gl-border-solid;
+  @apply gl-border-alpha-dark-24;
   background-color: var(--gl-color-chip-color);
 }
 

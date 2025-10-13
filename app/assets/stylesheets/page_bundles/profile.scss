@@ -166,7 +166,8 @@ $profile-grid-flex: 1fr;
 .provider-btn-image {
   display: inline-block;
   padding: 5px 10px;
-  @apply gl-border-r gl-border-r-default;
+  @apply gl-border-r;
+  @apply gl-border-r-default;
 
   > img {
     width: 20px;

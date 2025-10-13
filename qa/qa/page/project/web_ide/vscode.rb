@@ -180,7 +180,7 @@ module QA
               end
             end
 
-            Support::WaitForRequests.wait_for_requests(finish_loading_wait: 30)
+            Support::WaitForRequests.wait_for_requests(spinner_wait: 30)
             Support::Waiter.wait_until(reload_page: page, retry_on_exception: true,
               message: 'Waiting for VSCode file explorer') do
               has_file_explorer?

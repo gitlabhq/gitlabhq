@@ -75,7 +75,8 @@
     overflow: auto;
 
     .icon-arrow-right {
-      @apply gl-top-3 gl-left-3;
+      @apply gl-top-3;
+      @apply gl-left-3;
     }
 
     .build-job {
@@ -88,7 +89,8 @@
       }
 
       a:focus {
-        @apply gl-relative gl-z-2;
+        @apply gl-relative;
+        @apply gl-z-2;
       }
     }
   }
@@ -132,12 +134,18 @@
   word-break: break-all;
   word-wrap: break-word;
   color: color-yiq($builds-log-bg);
-  @apply gl-min-h-8 gl-rounded-t-none gl-rounded-b-lg gl-border-l gl-border-r gl-border-section;
+  @apply gl-min-h-8;
+  @apply gl-rounded-t-none;
+  @apply gl-rounded-b-lg;
+  @apply gl-border-l;
+  @apply gl-border-r;
+  @apply gl-border-section;
   background-color: $builds-log-bg;
 
   // stylelint-disable-next-line gitlab/no-gl-class
   .gl-dark & {
-    @apply gl-bg-subtle gl-shadow-lg;
+    @apply gl-bg-subtle;
+    @apply gl-shadow-lg;
   }
 }
 
@@ -157,7 +165,9 @@
 }
 
 .job-log-line-number {
-  @apply gl-text-neutral-400 dark:gl-text-neutral-300 gl-relative;
+  @apply gl-text-neutral-400;
+  @apply dark:gl-text-neutral-300;
+  @apply gl-relative;
   padding-right: $gl-padding-8;
   margin-right: $gl-padding-8;
   min-width: $job-line-number-width;
@@ -168,7 +178,8 @@
   &:active,
   &:visited {
     text-decoration: underline;
-    @apply gl-text-neutral-400 dark:gl-text-neutral-300;
+    @apply gl-text-neutral-400;
+    @apply dark:gl-text-neutral-300;
   }
 
   &::before {
@@ -188,7 +199,8 @@
 .job-log-time {
   padding-right: $gl-padding-8;
   margin-right: $gl-padding-8;
-  @apply gl-text-neutral-400 dark:gl-text-neutral-300;
+  @apply gl-text-neutral-400;
+  @apply dark:gl-text-neutral-300;
   user-select: none;
   flex-shrink: 0;
 
@@ -239,7 +251,8 @@
   margin-left: $highlight-x-margin;
   margin-right: $highlight-x-margin;
 
-  @apply gl-bg-alpha-light-8 dark:gl-bg-alpha-light-4;
+  @apply gl-bg-alpha-light-8;
+  @apply dark:gl-bg-alpha-light-4;
 
   .arrow {
     left: $highlight-extra-x-padding;

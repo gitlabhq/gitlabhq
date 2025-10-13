@@ -137,7 +137,8 @@ html {
   padding-left: $gl-padding;
   padding-right: $gl-padding;
   box-shadow: none;
-  @apply gl-bg-subtle gl-border-l;
+  @apply gl-bg-subtle;
+  @apply gl-border-l;
 
   @include gl-container-width-down(md, panel) {
     min-width: unset;

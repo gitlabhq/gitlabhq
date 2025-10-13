@@ -116,11 +116,21 @@ export default {
   methods: {
     toggleIssue(e) {
       // Don't do anything if this happened on a no trigger element
-      if (e.target.closest('.js-no-trigger')) return;
-
-      if (e.target.closest('.js-no-trigger-title') && (e.ctrlKey || e.metaKey || e.button === 1)) {
+      if (e.target.closest('.js-no-trigger')) {
+        e.preventDefault();
         return;
       }
+
+      // Allow Ctrl/Cmd+click to open link in new tab
+      const isMetaKey = e.ctrlKey || e.metaKey;
+      const boardMultiSelectEnabled = gon?.features?.boardMultiSelect;
+
+      if (isMetaKey && !boardMultiSelectEnabled) {
+        // Let the browser handle the new tab open
+        return;
+      }
+
+      e.preventDefault();
 
       // we redirect to incident page instead of opening the drawer
       // should be removed when we introduce incident WI type
@@ -129,11 +139,10 @@ export default {
         return;
       }
 
-      const isMultiSelect = e.ctrlKey || e.metaKey;
-      if (isMultiSelect && gon?.features?.boardMultiSelect) {
+      if (isMetaKey && boardMultiSelectEnabled) {
         this.toggleBoardItemMultiSelection(this.item);
       } else {
-        e.currentTarget.focus();
+        this.$el.querySelector('.board-card-button')?.focus();
         this.toggleItem();
         this.track('click_card', { label: 'right_sidebar' });
       }
@@ -261,7 +270,6 @@ export default {
         :style="cardStyle"
         data-testid="board-card-button"
         class="board-card-button gl-absolute gl-inset-0 gl-block gl-rounded-base gl-border-0 gl-bg-transparent gl-p-0 gl-outline-none focus:gl-focus"
-        @click.stop.prevent="toggleIssue"
         @keydown.left.exact.prevent="focusLeft"
         @keydown.right.exact.prevent="focusRight"
         @keydown.down.exact.prevent="focusNext"

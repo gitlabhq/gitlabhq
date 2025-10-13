@@ -2,6 +2,7 @@
 stage: Analytics
 group: Platform Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn how to create, edit, and delete escalation policies in GitLab to ensure critical alerts are properly handled and routed to on-call responders.
 title: Escalation policies
 ---
 
