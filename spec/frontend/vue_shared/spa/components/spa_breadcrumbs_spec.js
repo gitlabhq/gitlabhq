@@ -106,6 +106,21 @@ describe('SpaBreadcrumbs', () => {
     });
 
     it('uses route param id as breadcrumb text when meta is missing', () => {
+      createWrapper(
+        {},
+        {
+          params: { id: '123' },
+          matched: [
+            {
+              name: 'project-detail',
+              path: '/projects/:id',
+              parent: true,
+              meta: { useId: true },
+            },
+          ],
+        },
+      );
+
       const expectedCrumbs = [
         { text: 'Home', href: '/' },
         { text: 'Projects', href: '/projects' },
@@ -144,6 +159,31 @@ describe('SpaBreadcrumbs', () => {
     });
 
     it('combines static and route breadcrumbs correctly', () => {
+      createWrapper(
+        {},
+        {
+          params: { id: '456' },
+          matched: [
+            {
+              path: '/projects',
+              meta: {
+                text: 'All Projects',
+              },
+            },
+            {
+              path: '/projects/:id',
+              meta: { useId: true },
+            },
+            {
+              path: '/projects/:id/project-issues',
+              name: 'project-issues',
+              parent: true,
+              meta: { text: 'Issues' },
+            },
+          ],
+        },
+      );
+
       const expectedCrumbs = [
         { text: 'Home', href: '/' },
         { text: 'Projects', href: '/projects' },

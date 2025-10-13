@@ -1043,4 +1043,14 @@ describe('JobArtifactsTable component', () => {
       });
     });
   });
+
+  describe('artifacts total files count', () => {
+    it('emits total artifact count and calculates fileTypeCounts correctly', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      expect(wrapper.emitted('artifact-count-update')).toEqual([[6]]);
+    });
+  });
 });

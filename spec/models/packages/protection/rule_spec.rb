@@ -67,6 +67,7 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
         end
 
         where(:package_type, :value, :allowed) do
+          :npm  | '*'                                               | true
           :npm  | '@my-scope/my-package'                            | true
           :npm  | '@my-scope/*my-package-with-wildcard-inbetween'   | true
           :npm  | '@my-scope/*my-package-with-wildcard-start'       | true
@@ -78,6 +79,7 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
           :npm  | '*@my-scope/my-package-with-wildcard-start'       | false
           :npm  | '@my-scope/my-package-with-backslash-\*'          | false
 
+          :pypi | '*'                                               | true
           :pypi | 'my-scope/my-package'                             | true
           :pypi | 'my-scope/*my-package-with-wildcard-inbetween'    | true
           :pypi | 'my-scope/*my-package-with-wildcard-start'        | true
@@ -247,6 +249,22 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
       end
 
       it { is_expected.to contain_exactly(package_protection_rule_second_match, package_protection_rule) }
+    end
+
+    context 'when rule has standalone wildcard pattern' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:wildcard_rule) do
+        create(:package_protection_rule,
+          project: project,
+          package_type: :npm,
+          package_name_pattern: '*')
+      end
+
+      it 'matches any package name' do
+        expect(project.package_protection_rules.for_package_name('@scope/any-package')).to include(wildcard_rule)
+        expect(project.package_protection_rules.for_package_name('simple-package')).to include(wildcard_rule)
+        expect(project.package_protection_rules.for_package_name('@another/different')).to include(wildcard_rule)
+      end
     end
   end
 

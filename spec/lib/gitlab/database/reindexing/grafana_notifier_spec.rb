@@ -11,10 +11,6 @@ RSpec.describe Gitlab::Database::Reindexing::GrafanaNotifier do
 
   let(:action) { create(:reindex_action) }
 
-  before do
-    swapout_view_for_table(:postgres_indexes, connection: ApplicationRecord.connection)
-  end
-
   let(:headers) do
     {
       'Content-Type': 'application/json',
@@ -23,6 +19,10 @@ RSpec.describe Gitlab::Database::Reindexing::GrafanaNotifier do
   end
 
   let(:response) { double('response', success?: true) }
+
+  before do
+    swapout_view_for_table(:postgres_indexes, connection: ApplicationRecord.connection)
+  end
 
   def expect_api_call(payload)
     expect(Gitlab::HTTP).to receive(:post).with(

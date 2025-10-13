@@ -206,6 +206,22 @@ RSpec.describe API::ProjectPackagesProtectionRules, :aggregate_failures, feature
         end
       end
 
+      context 'with standalone wildcard pattern' do
+        let(:params) do
+          {
+            package_name_pattern: '*',
+            package_type: 'npm',
+            minimum_access_level_for_push: 'maintainer'
+          }
+        end
+
+        it 'creates the package protection rule' do
+          expect { post_package_rule }.to change { Packages::Protection::Rule.count }.by(1)
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['package_name_pattern']).to eq('*')
+        end
+      end
+
       it_behaves_like 'rejecting project packages protection rules request when enough permissions'
     end
 
@@ -323,6 +339,17 @@ RSpec.describe API::ProjectPackagesProtectionRules, :aggregate_failures, feature
         let(:params) { super().merge(package_name_pattern: existing_package_protection_rule.package_name_pattern) }
 
         it_behaves_like 'returning response status', :unprocessable_entity
+      end
+
+      context 'with standalone wildcard package name pattern' do
+        let(:params) { super().merge(package_name_pattern: '*') }
+
+        it 'updates the package protection rule' do
+          patch_package_rule
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['package_name_pattern']).to eq('*')
+        end
       end
 
       it_behaves_like 'rejecting protection rules request when handling rule ids'

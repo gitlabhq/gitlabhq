@@ -6,6 +6,41 @@ require 'rubocop/cop/rspec/mixin/top_level_group'
 module RuboCop
   module Cop
     module RSpec
+      # Checks that files with top-level `describe` blocks have the correct file naming convention.
+      #
+      # @example
+      #
+      #   # bad
+      #   # in file: spec/models/user.rb
+      #   describe User do
+      #     # ...
+      #   end
+      #
+      #   # in file: spec/lib/helper.rb
+      #   describe Helper do
+      #     # ...
+      #   end
+      #
+      #   # in file: spec/controllers/application.rb
+      #   describe ApplicationController do
+      #     # ...
+      #   end
+      #
+      #   # good
+      #   # in file: spec/models/user_spec.rb
+      #   describe User do
+      #     # ...
+      #   end
+      #
+      #   # in file: spec/lib/helper_spec.rb
+      #   describe Helper do
+      #     # ...
+      #   end
+      #
+      #   # in file: spec/controllers/application_controller_spec.rb
+      #   describe ApplicationController do
+      #     # ...
+      #   end
       class TopLevelDescribePath < RuboCop::Cop::RSpec::Base
         include RuboCop::Cop::RSpec::TopLevelGroup
 

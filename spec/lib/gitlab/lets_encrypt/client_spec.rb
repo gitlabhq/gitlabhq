@@ -6,6 +6,7 @@ RSpec.describe ::Gitlab::LetsEncrypt::Client, feature_category: :pages do
   include LetsEncryptHelpers
 
   let(:client) { described_class.new }
+  let!(:stub_client) { stub_lets_encrypt_client }
 
   before do
     stub_application_setting(
@@ -13,8 +14,6 @@ RSpec.describe ::Gitlab::LetsEncrypt::Client, feature_category: :pages do
       lets_encrypt_terms_of_service_accepted: true
     )
   end
-
-  let!(:stub_client) { stub_lets_encrypt_client }
 
   shared_examples 'ensures account registration' do
     it 'ensures account registration' do

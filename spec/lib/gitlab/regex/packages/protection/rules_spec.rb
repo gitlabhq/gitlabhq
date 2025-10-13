@@ -10,6 +10,7 @@ RSpec.describe Gitlab::Regex::Packages::Protection::Rules, feature_category: :to
 
     it_behaves_like 'npm package name regex'
 
+    it { is_expected.to match('*') }
     it { is_expected.to match('@scope/package-*') }
     it { is_expected.to match('@my-scope/*my-package-with-wildcard-inbetween') }
     it { is_expected.to match('@my-scope/*my-package-with-wildcard-start') }
@@ -28,6 +29,7 @@ RSpec.describe Gitlab::Regex::Packages::Protection::Rules, feature_category: :to
 
     it_behaves_like 'package name regex'
 
+    it { is_expected.to match('*') }
     it { is_expected.to match('@scope/package-*') }
     it { is_expected.to match('@my-scope/*my-package-with-wildcard-inbetween') }
     it { is_expected.to match('@my-scope/*my-package-with-wildcard-start') }

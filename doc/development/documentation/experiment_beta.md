@@ -51,10 +51,10 @@ This feature is available for testing, but not ready for production use.
 
 Use this new feature when you need to do this new thing.
 
-This feature is an [experiment](<link_to>/policy/development_stages_support.md). To join
-the list of users testing this feature, do this thing. If you find a bug,
-[open an issue](https://link).
+This feature is an [experiment](<link_to>/policy/development_stages_support.md).
+To test this feature, do this thing or contact these people.
 
+Provide feedback [in issue 12345](https://link).
 ```
 
 ## GitLab Duo features

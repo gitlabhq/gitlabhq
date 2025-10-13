@@ -187,7 +187,7 @@
   }
 
   .panel-content-inner:has(.issue-boards-content, .group-epics-roadmap) {
-    @apply gl-mx-2;
+    @apply gl-mx-2 gl-px-0;
     @apply gl-rounded-[0.75rem];
   }
 

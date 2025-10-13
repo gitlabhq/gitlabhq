@@ -5,8 +5,7 @@ require 'rubocop-rspec'
 module RuboCop
   module Cop
     module RSpec
-      # This cop checks for `Sidekiq::Testing.server_middleware`
-      # usage in specs.
+      # Checks for `Sidekiq::Testing.server_middleware` usage in specs.
       #
       # @example
       #

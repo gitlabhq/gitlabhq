@@ -1,10 +1,14 @@
 <script>
 import { GlCollapsibleListbox, GlFormGroup, GlButton } from '@gitlab/ui';
 import { debounce, unionBy } from 'lodash';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, n__, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import namespaceProjectsQuery from '../../graphql/namespace_projects_for_links_widget.query.graphql';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPE_ORGANIZATION } from '~/graphql_shared/constants';
+import searchUserProjectsWithIssuesEnabledQuery from '~/vue_shared/components/new_resource_dropdown/graphql/search_user_projects_with_issues_enabled.query.graphql';
+import searchOrganizationProjectsWithIssuesEnabled from '../../graphql/get_organization_project_to_move.query.graphql';
 import workItemBulkMoveMutation from '../../graphql/list/work_item_bulk_move.mutation.graphql';
 
 export default {
@@ -13,6 +17,7 @@ export default {
     GlCollapsibleListbox,
     GlFormGroup,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     checkedItems: {
       type: Array,
@@ -40,18 +45,33 @@ export default {
   },
   apollo: {
     destinationNamespaces: {
-      query: namespaceProjectsQuery,
+      query() {
+        return this.currentOrganization
+          ? searchOrganizationProjectsWithIssuesEnabled
+          : searchUserProjectsWithIssuesEnabledQuery;
+      },
       variables() {
-        return {
-          fullPath: this.fullPath,
-          projectSearch: this.searchTerm,
+        const baseVariables = {
+          search: this.searchTerm,
         };
+
+        if (this.currentOrganization) {
+          return {
+            ...baseVariables,
+            organizationId: convertToGraphQLId(TYPE_ORGANIZATION, this.currentOrganization.id),
+          };
+        }
+
+        return baseVariables;
       },
       skip() {
         return !this.searchStarted;
       },
       update(data) {
-        return data.namespace?.projects?.nodes || [];
+        const allProjects = this.currentOrganization
+          ? data?.organization?.projects?.nodes || []
+          : data?.projects?.nodes || [];
+        return allProjects.filter((project) => project.fullPath !== this.fullPath);
       },
       error(error) {
         createAlert({
@@ -63,17 +83,25 @@ export default {
     },
   },
   computed: {
+    currentOrganization() {
+      return window.gon.current_organization;
+    },
     selectedNamespace() {
       return this.destinationNamespacesCache.find((namespace) => namespace.id === this.selectedId);
     },
     toggleText() {
       if (this.selectedNamespace) {
-        return this.selectedNamespace.name;
+        return this.selectedNamespace.nameWithNamespace;
       }
       return s__('WorkItem|Select destination');
     },
     listboxItems() {
-      return this.destinationNamespaces?.map(({ id, name }) => ({ text: name, value: id })) || [];
+      return (
+        this.destinationNamespaces?.map(({ id, nameWithNamespace }) => ({
+          text: nameWithNamespace,
+          value: id,
+        })) || []
+      );
     },
     isLoading() {
       return this.$apollo.queries.destinationNamespaces.loading;

@@ -4,14 +4,11 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::SingleEndpointIssueEventsImporter, feature_category: :importers do
   let(:client) { Gitlab::GithubImport::Client.new('token') }
-
   let_it_be(:project) { create(:project, :import_started, import_source: 'foo/bar') }
-
   let!(:issuable) { create(:issue, project: project) }
+  let(:parallel) { true }
 
   subject { described_class.new(project, client, parallel: parallel) }
-
-  let(:parallel) { true }
 
   it { is_expected.to include_module(Gitlab::GithubImport::ParallelScheduling) }
 

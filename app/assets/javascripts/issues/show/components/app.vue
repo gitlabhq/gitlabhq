@@ -603,6 +603,7 @@ export default {
 
       <component
         :is="descriptionComponent"
+        data-testid="tabs"
         :issue-id="issueId"
         :issue-iid="issueIid"
         :can-update="canUpdate"

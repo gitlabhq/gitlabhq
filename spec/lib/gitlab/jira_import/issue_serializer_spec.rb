@@ -55,8 +55,6 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
 
     let(:params) { { iid: iid } }
 
-    subject { described_class.new(project, jira_issue, current_user.id, issue_type, params).execute }
-
     let(:expected_description) do
       <<~MD
         basic description
@@ -69,6 +67,8 @@ RSpec.describe Gitlab::JiraImport::IssueSerializer do
         - Parent issue: [FOO-2] parent issue FOO
       MD
     end
+
+    subject { described_class.new(project, jira_issue, current_user.id, issue_type, params).execute }
 
     context 'attributes setting' do
       it 'sets the basic attributes' do

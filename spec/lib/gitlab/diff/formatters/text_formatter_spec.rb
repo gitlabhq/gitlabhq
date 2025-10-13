@@ -19,15 +19,15 @@ RSpec.describe Gitlab::Diff::Formatters::TextFormatter do
     base.merge(old_line: 1, new_line: 2)
   end
 
+  # Specific text formatter examples
+  let!(:formatter) { described_class.new(attrs) }
+  let(:attrs) { base }
+
   it_behaves_like "position formatter" do
     let(:base_attrs) { base }
 
     let(:attrs) { complete }
   end
-
-  # Specific text formatter examples
-  let!(:formatter) { described_class.new(attrs) }
-  let(:attrs) { base }
 
   describe '#line_age' do
     subject { formatter.line_age }

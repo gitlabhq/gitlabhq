@@ -796,10 +796,6 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
   describe '#check_push_access!' do
     let(:unprotected_branch) { 'unprotected_branch' }
 
-    before do
-      merge_into_protected_branch
-    end
-
     let(:changes) do
       { any: Gitlab::GitAccess::ANY,
         push_new_branch: "#{Gitlab::Git::SHA1_BLANK_SHA} 570e7b2ab refs/heads/wow",
@@ -811,6 +807,10 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
         push_new_tag: "#{Gitlab::Git::SHA1_BLANK_SHA} 570e7b2ab refs/tags/v7.8.9",
         push_all: ['6f6d7e7ed 570e7b2ab refs/heads/master', '6f6d7e7ed 570e7b2ab refs/heads/feature'],
         merge_into_protected_branch: "0b4bc9a #{merge_into_protected_branch} refs/heads/feature" }
+    end
+
+    before do
+      merge_into_protected_branch
     end
 
     def merge_into_protected_branch

@@ -31,13 +31,12 @@ RSpec.describe Gitlab::Pagination::Keyset::Page do
 
   describe '#next' do
     let(:page) { described_class.new(order_by: order_by, lower_bounds: lower_bounds, per_page: per_page) }
-    subject { page.next(new_lower_bounds) }
-
     let(:order_by) { { id: :desc } }
     let(:lower_bounds) { { id: 42 } }
     let(:per_page) { 10 }
-
     let(:new_lower_bounds) { { id: 21 } }
+
+    subject { page.next(new_lower_bounds) }
 
     it 'copies over order_by' do
       expect(subject.order_by).to eq(page.order_by)

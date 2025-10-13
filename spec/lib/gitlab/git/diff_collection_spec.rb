@@ -35,6 +35,15 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
   let(:overflow_max_files) { false }
   let(:overflow_max_lines) { false }
 
+  let(:iterator) { MutatingConstantIterator.new(file_count, fake_diff(line_length, line_count)) }
+  let(:file_count) { 0 }
+  let(:line_length) { 1 }
+  let(:line_count) { 1 }
+  let(:max_files) { 10 }
+  let(:max_lines) { 100 }
+  let(:limits) { true }
+  let(:expanded) { true }
+
   shared_examples 'overflow stuff' do
     it 'returns the expected overflow values' do
       subject.overflow?
@@ -53,15 +62,6 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
       expanded: expanded
     )
   end
-
-  let(:iterator) { MutatingConstantIterator.new(file_count, fake_diff(line_length, line_count)) }
-  let(:file_count) { 0 }
-  let(:line_length) { 1 }
-  let(:line_count) { 1 }
-  let(:max_files) { 10 }
-  let(:max_lines) { 100 }
-  let(:limits) { true }
-  let(:expanded) { true }
 
   describe '#to_a' do
     subject { super().to_a }

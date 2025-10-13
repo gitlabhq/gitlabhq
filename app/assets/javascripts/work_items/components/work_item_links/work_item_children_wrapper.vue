@@ -4,7 +4,7 @@ import { cloneDeep } from 'lodash';
 import { produce } from 'immer';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
-import { isLoggedIn } from '~/lib/utils/common_utils';
+import { isLoggedIn, scrollToElement } from '~/lib/utils/common_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { ESC_KEY } from '~/lib/utils/keys';
 import { s__ } from '~/locale';
@@ -125,6 +125,7 @@ export default {
       childrenWorkItems: [],
       toParent: {},
       dragCancelled: false,
+      lastActiveElement: null,
     };
   },
   computed: {
@@ -161,6 +162,14 @@ export default {
     displayableChildren() {
       const filterClosed = getItems(this.showClosed);
       return filterClosed(this.children);
+    },
+  },
+  watch: {
+    activeChildItemId(newVal) {
+      if (!newVal && this.lastActiveElement) {
+        scrollToElement(this.lastActiveElement, { offset: -80, duration: 0 });
+        this.lastActiveElement = null;
+      }
     },
   },
   mounted() {
@@ -535,6 +544,10 @@ export default {
         }
         this.$emit('click', event);
       }
+      this.$nextTick(() => {
+        this.lastActiveElement = event.target;
+        scrollToElement(this.lastActiveElement, { offset: -80, duration: 0 });
+      });
     },
     openChild(id) {
       this.$apollo.mutate({

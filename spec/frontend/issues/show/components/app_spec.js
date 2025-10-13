@@ -1,4 +1,3 @@
-import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -14,6 +13,7 @@ import IncidentTabs from '~/issues/show/components/incidents/incident_tabs.vue';
 import PinnedLinks from '~/issues/show/components/pinned_links.vue';
 import eventHub from '~/issues/show/event_hub';
 import axios from '~/lib/utils/axios_utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { HTTP_STATUS_OK, HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -47,7 +47,7 @@ describe('Issuable output', () => {
   const findPinnedLinks = () => wrapper.findComponent(PinnedLinks);
 
   const createComponent = ({ props = {}, options = {} } = {}) => {
-    wrapper = shallowMount(IssuableApp, {
+    wrapper = shallowMountExtended(IssuableApp, {
       propsData: { ...appProps, ...props },
       provide: {
         fullPath: 'gitlab-org/incidents',
@@ -55,7 +55,8 @@ describe('Issuable output', () => {
       },
       stubs: {
         HighlightBar: true,
-        IncidentTabs: true,
+        IncidentTabs,
+        PinnedLinks,
       },
       ...options,
     });
@@ -442,7 +443,7 @@ describe('Issuable output', () => {
       });
 
       it('renders incident tabs', () => {
-        expect(findIncidentTabs().exists()).toBe(true);
+        expect(wrapper.findByTestId('tabs').exists()).toBe(true);
       });
 
       it('does not add a border below the header', () => {

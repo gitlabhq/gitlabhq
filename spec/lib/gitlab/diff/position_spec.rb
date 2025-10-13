@@ -693,15 +693,15 @@ RSpec.describe Gitlab::Diff::Position do
       }
     end
 
+    let(:end_old_line) { 20 }
+    let(:end_new_line) { 20 }
+
     subject(:multiline) do
       described_class.new(
         line_range: line_range,
         position_type: position_type
       )
     end
-
-    let(:end_old_line) { 20 }
-    let(:end_new_line) { 20 }
 
     context 'when the position type is text' do
       let(:position_type) { "text" }

@@ -20,6 +20,7 @@ export const project1 = {
   name: 'Super Mario Project',
   nameWithNamespace: 'Mushroom Kingdom / Super Mario Project',
   webUrl: 'https://127.0.0.1:3000/mushroom-kingdom/super-mario-project',
+  fullPath: 'mushroom-kingdom/super-mario-project',
 };
 
 export const project2 = {
@@ -27,6 +28,7 @@ export const project2 = {
   name: 'Mario Kart Project',
   nameWithNamespace: 'Mushroom Kingdom / Mario Kart Project',
   webUrl: 'https://127.0.0.1:3000/mushroom-kingdom/mario-kart-project',
+  fullPath: 'mushroom-kingdom/mario-kart-project',
 };
 
 export const project3 = {
@@ -34,6 +36,7 @@ export const project3 = {
   name: 'Mario Party Project',
   nameWithNamespace: 'Mushroom Kingdom / Mario Party Project',
   webUrl: 'https://127.0.0.1:3000/mushroom-kingdom/mario-party-project',
+  fullPath: 'mushroom-kingdom/mario-party-project',
 };
 
 export const searchProjectsQueryResponse = {

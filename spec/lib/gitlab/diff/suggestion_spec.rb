@@ -42,6 +42,10 @@ RSpec.describe Gitlab::Diff::Suggestion do
 
   let(:text) { "# parsed suggestion content\n# with comments" }
 
+  let(:suggestion) do
+    described_class.new(text, line: line, above: above, below: below, diff_file: diff_file)
+  end
+
   def blob_lines_data(from_line, to_line)
     diff_file.new_blob_lines_between(from_line, to_line)
   end
@@ -50,10 +54,6 @@ RSpec.describe Gitlab::Diff::Suggestion do
     blob = diff_file.new_blob
     blob.load_all_data!
     blob.data
-  end
-
-  let(:suggestion) do
-    described_class.new(text, line: line, above: above, below: below, diff_file: diff_file)
   end
 
   describe '#to_hash' do

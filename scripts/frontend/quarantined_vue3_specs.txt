@@ -16,7 +16,6 @@ spec/frontend/design_management/pages/index_spec.js
 spec/frontend/editor/extensions/source_editor_toolbar_ext_spec.js
 spec/frontend/helpers/init_simple_app_helper_spec.js
 spec/frontend/issues/list/components/issues_list_app_spec.js
-spec/frontend/issues/show/components/app_spec.js
 spec/frontend/lib/utils/breadcrumbs_spec.js
 spec/frontend/lib/utils/confirm_via_gl_modal/confirm_action_spec.js
 spec/frontend/packages_and_registries/dependency_proxy/app_spec.js

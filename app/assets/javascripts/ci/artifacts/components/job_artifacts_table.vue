@@ -95,6 +95,9 @@ export default {
       update({ project: { jobs: { nodes = [], pageInfo = {} } = {} } }) {
         this.pageInfo = pageInfo;
 
+        const totalArtifactCount = nodes.reduce((acc, job) => acc + job.artifacts.nodes.length, 0);
+        this.$emit('artifact-count-update', totalArtifactCount);
+
         const jobNodes = nodes
           .map(mapArchivesToJobNodes)
           .map(mapBooleansToJobNodes)

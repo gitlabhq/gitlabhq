@@ -6413,6 +6413,78 @@ export const namespaceProjectsList = {
   },
 };
 
+export const searchUserProjectsResponse = {
+  data: {
+    projects: {
+      nodes: [
+        {
+          id: 'gid://gitlab/Project/1',
+          name: 'Example project A',
+          nameWithNamespace: 'Group A / Example project A',
+          webUrl: 'https://gitlab.com/group-a/example-project-a',
+          fullPath: 'group-a/example-project-a',
+          __typename: 'Project',
+        },
+        {
+          id: 'gid://gitlab/Project/2',
+          name: 'Example project B',
+          nameWithNamespace: 'Group A / Example project B',
+          webUrl: 'https://gitlab.com/group-a/example-project-b',
+          fullPath: 'group-a/example-project-b',
+          __typename: 'Project',
+        },
+        {
+          id: 'gid://gitlab/Project/3',
+          name: 'Example project C',
+          nameWithNamespace: 'Group A / Example project C',
+          webUrl: 'https://gitlab.com/group-a/example-project-c',
+          fullPath: 'group-a/example-project-c',
+          __typename: 'Project',
+        },
+      ],
+      __typename: 'ProjectConnection',
+    },
+  },
+};
+
+export const searchOrganizationProjectsResponse = {
+  data: {
+    organization: {
+      id: 'gid://gitlab/Organizations::Organization/1',
+      projects: {
+        nodes: [
+          {
+            id: 'gid://gitlab/Project/1',
+            name: 'Example project A',
+            nameWithNamespace: 'Group A / Example project A',
+            webUrl: 'https://gitlab.com/group-a/example-project-a',
+            fullPath: 'group-a/example-project-a',
+            __typename: 'Project',
+          },
+          {
+            id: 'gid://gitlab/Project/2',
+            name: 'Example project B',
+            nameWithNamespace: 'Group A / Example project B',
+            webUrl: 'https://gitlab.com/group-a/example-project-b',
+            fullPath: 'group-a/example-project-b',
+            __typename: 'Project',
+          },
+          {
+            id: 'gid://gitlab/Project/3',
+            name: 'Example project C',
+            nameWithNamespace: 'Group A / Example project C',
+            webUrl: 'https://gitlab.com/group-a/example-project-c',
+            fullPath: 'group-a/example-project-c',
+            __typename: 'Project',
+          },
+        ],
+        __typename: 'ProjectConnection',
+      },
+      __typename: 'Organization',
+    },
+  },
+};
+
 export const mockFrequentlyUsedProjects = [
   {
     id: 1,

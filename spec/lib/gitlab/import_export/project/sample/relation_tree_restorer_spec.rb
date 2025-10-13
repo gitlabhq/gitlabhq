@@ -12,10 +12,6 @@ require 'spec_helper'
 RSpec.describe Gitlab::ImportExport::Project::Sample::RelationTreeRestorer, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let_it_be(:importable) { create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project') }
 
-  include_context 'relation tree restorer shared context' do
-    let(:importable_name) { 'project' }
-  end
-
   let(:reader) { Gitlab::ImportExport::Reader.new(shared: shared) }
   let(:path) { 'spec/fixtures/lib/gitlab/import_export/sample_data/tree' }
   let(:relation_reader) { Gitlab::ImportExport::Json::NdjsonReader.new(path) }
@@ -35,6 +31,10 @@ RSpec.describe Gitlab::ImportExport::Project::Sample::RelationTreeRestorer, :cle
   end
 
   subject { sample_data_relation_tree_restorer.restore }
+
+  include_context 'relation tree restorer shared context' do
+    let(:importable_name) { 'project' }
+  end
 
   shared_examples 'import project successfully' do
     it 'restores project tree' do

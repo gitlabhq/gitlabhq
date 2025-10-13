@@ -9240,6 +9240,9 @@ msgstr[1] ""
 msgid "Artifacts|This artifact will be permanently deleted. Any reports generated from this artifact will be empty."
 msgstr ""
 
+msgid "Artifacts|Total artifacts count"
+msgstr ""
+
 msgid "Artifacts|Total artifacts size"
 msgstr ""
 

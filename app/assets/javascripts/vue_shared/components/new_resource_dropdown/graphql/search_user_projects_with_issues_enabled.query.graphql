@@ -10,6 +10,7 @@ query searchUserProjectsWithIssuesEnabled($search: String) {
       name
       nameWithNamespace
       webUrl
+      fullPath
     }
   }
 }

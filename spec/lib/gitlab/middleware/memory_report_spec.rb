@@ -60,13 +60,13 @@ RSpec.describe Gitlab::Middleware::MemoryReport do
       context 'when memory report is requested' do
         let(:env) { Rack::MockRequest.env_for('/', params: { 'performance_bar' => 'memory' }) }
 
-        before do
-          allow(app).to receive(:call).and_return(empty_memory_report)
-        end
-
         let(:empty_memory_report) do
           report = MemoryProfiler::Results.new
           report.register_results(MemoryProfiler::StatHash.new, MemoryProfiler::StatHash.new, 1)
+        end
+
+        before do
+          allow(app).to receive(:call).and_return(empty_memory_report)
         end
 
         it 'returns a memory report' do
