@@ -110,37 +110,7 @@ module InternalEventsCli
         available_props = [:label, :property, :value, :add_extra_prop]
 
         while available_props.any?
-          disabled = format_help('(already defined)')
-
-          # rubocop:disable Rails/NegateInclude -- this isn't Rails
-          options = [
-            { value: :none, name: 'None! Continue to next section!' },
-            disableable_option(
-              value: :label,
-              name: 'String 1 (attribute will be named `label`)',
-              disabled: disabled
-            ) { !available_props.include?(:label) },
-            disableable_option(
-              value: :property,
-              name: 'String 2 (attribute will be named `property`)',
-              disabled: disabled
-            ) { !available_props.include?(:property) },
-            disableable_option(
-              value: :value,
-              name: 'Number (attribute will be named `value`)',
-              disabled: disabled
-            ) { !available_props.include?(:value) },
-            disableable_option(
-              value: :add_extra_prop,
-              name: 'Add extra property (attribute will be named the input custom name)',
-              disabled: format_warning('(option disabled - use label/property/value first)')
-            ) do
-              !((!available_props.include?(:label) &&
-                  !available_props.include?(:property)) ||
-                  !available_props.include?(:value))
-            end
-          ]
-          # rubocop:enable Rails/NegateInclude
+          options = property_option_definitions(available_props)
 
           selected_property = cli.select(
             "Which additional property do you want to add to the event?",
@@ -162,6 +132,32 @@ module InternalEventsCli
             assign_extra_properties(selected_property, property_description)
           end
         end
+      end
+
+      def property_option_definitions(available_props)
+        disabled = format_help('(already defined)')
+
+        # rubocop:disable Rails/NegateInclude -- this isn't Rails
+        [
+          { value: :none, name: 'None! Continue to next section!' },
+          disableable_option(
+            value: :label,
+            name: 'String 1 (attribute will be named `label`)',
+            disabled: disabled
+          ) { !available_props.include?(:label) },
+          disableable_option(
+            value: :property,
+            name: 'String 2 (attribute will be named `property`)',
+            disabled: disabled
+          ) { !available_props.include?(:property) },
+          disableable_option(
+            value: :value,
+            name: 'Number (attribute will be named `value`)',
+            disabled: disabled
+          ) { !available_props.include?(:value) },
+          { value: :add_extra_prop, name: 'Add extra property (attribute will be named the input custom name)' }
+        ]
+        # rubocop:enable Rails/NegateInclude
       end
 
       def assign_extra_properties(property, description = nil)

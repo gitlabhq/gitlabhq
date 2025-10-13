@@ -393,6 +393,50 @@ GitLab Duo Chat works best with natural language questions. Here are some exampl
 - `Could you add in-line documentation for all Java files in <directory>?`
 - `Do merge request <MR URL> and merge request <MR URL> fully address this issue <issue URL>?`
 
+### Security
+
+{{< details >}}
+
+- Tier: Ultimate
+- Add-on: GitLab Duo Core, Pro, or Enterprise
+- Offering: GitLab.com, GitLab Dedicated
+
+{{< /details >}}
+
+You can use Agentic Chat to triage, manage, and remediate vulnerabilities through natural language commands.
+
+You can use the following security tools in Agentic Chat:
+
+Vulnerability information and analysis:
+
+- List all vulnerabilities in a project with filtering by severity and report types.
+- Get detailed vulnerability information including CVE data, EPSS scores, and reachability analysis.
+
+Vulnerability management actions:
+
+- Confirm vulnerabilities when verified as genuine security issues.
+- Dismiss false positives or acceptable risks with proper reasoning.
+- Update vulnerability severity levels based on security review.
+- Revert vulnerability status back to detected for re-assessment.
+
+Issue management integration:
+
+- Create GitLab issues automatically linked to vulnerabilities.
+- Link existing issues to vulnerabilities for tracking.
+
+#### Security example prompts
+
+- `Show me all critical vulnerabilities in my project`
+- `List vulnerabilities with EPSS scores above 0.7 that are reachable`
+- `Dismiss all dependency scanning vulnerabilities marked as false positives with unreachable code`
+- `Create issues for all confirmed high-severity SAST vulnerabilities and assign them to recent committers`
+- `Update severity to HIGH for all vulnerabilities that cross trust boundaries`
+- `Show me vulnerabilities dismissed in the past week with their reasoning`
+- `Confirm all container scanning vulnerabilities with known exploits`
+- `Link vulnerability 123 to issue 456 for tracking remediation`
+
+For more information about these security capabilities, see the [Vulnerability Management Tools for Duo Agentic Chat epic](https://gitlab.com/groups/gitlab-org/-/epics/19639).
+
 ## Troubleshooting
 
 When working with GitLab Duo Chat, you might encounter the following issues.

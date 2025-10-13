@@ -14,9 +14,7 @@ module Gitlab
       include Gitlab::UsageDataCounters::RedisHashCounter
 
       def track_event(event_name, category: nil, additional_properties: {}, **kwargs)
-        if Feature.enabled?(:merge_additional_properties_for_snowplow, kwargs[:user])
-          extract_additional_properties!(event_name, additional_properties, kwargs)
-        end
+        extract_additional_properties!(event_name, additional_properties, kwargs)
 
         Gitlab::Tracking::EventValidator.new(event_name, additional_properties, kwargs).validate!
 

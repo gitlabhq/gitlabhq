@@ -1393,23 +1393,12 @@ module Ci
     end
 
     def track_ci_build_created_event
-      if Feature.enabled?(:merge_additional_properties_for_snowplow, user)
-        Gitlab::InternalEvents.track_event(
-          'create_ci_build',
-          project: project,
-          user: user,
-          property: name
-        )
-      else
-        Gitlab::InternalEvents.track_event(
-          'create_ci_build',
-          project: project,
-          user: user,
-          additional_properties: {
-            property: name
-          }
-        )
-      end
+      Gitlab::InternalEvents.track_event(
+        'create_ci_build',
+        project: project,
+        user: user,
+        property: name
+      )
     end
 
     def partition_id_prefix_in_16_bit_encode

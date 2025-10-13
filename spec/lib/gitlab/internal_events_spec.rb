@@ -774,145 +774,124 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     end
   end
 
-  describe 'dynamic additional_properties extraction with feature flag' do
+  describe 'dynamic additional_properties extraction' do
     let(:user) { build(:user) }
     let(:project) { build(:project) }
 
-    context 'when merge_additional_properties_for_snowplow feature flag is enabled' do
-      before do
-        stub_feature_flags(merge_additional_properties_for_snowplow: user)
-        allow(event_definition).to receive(:additional_properties).and_return({
-          label: {},
-          property: {},
-          value: {}
-        })
-      end
+    before do
+      allow(event_definition).to receive(:additional_properties).and_return({
+        label: {},
+        property: {},
+        value: {}
+      })
+    end
 
-      context 'when additional_properties is empty and kwargs contain matching keys' do
-        it 'extracts base properties from kwargs into additional_properties for snowplow tracking' do
-          described_class.track_event(
-            event_name,
-            user: user,
-            project: project,
+    context 'when additional_properties is empty and kwargs contain matching keys' do
+      it 'extracts base properties from kwargs into additional_properties for snowplow tracking' do
+        described_class.track_event(
+          event_name,
+          user: user,
+          project: project,
+          label: 'test_label',
+          property: 'test_property',
+          value: 42
+        )
+
+        expect_snowplow_tracking(
+          project.namespace,
+          {
             label: 'test_label',
             property: 'test_property',
             value: 42
-          )
-
-          expect_snowplow_tracking(
-            project.namespace,
-            {
-              label: 'test_label',
-              property: 'test_property',
-              value: 42
-            }
-          )
-        end
-
-        it 'does not extract properties when additional_properties is already provided' do
-          described_class.track_event(
-            event_name,
-            additional_properties: { label: 'existing_label' },
-            user: user,
-            project: project,
-            label: 'test_label',
-            property: 'test_property'
-          )
-
-          expect_snowplow_tracking(
-            project.namespace,
-            { label: 'existing_label' }
-          )
-        end
-
-        it 'only extracts properties that exist in event definition' do
-          allow(event_definition).to receive(:additional_properties).and_return({
-            label: {}
-          })
-
-          described_class.track_event(
-            event_name,
-            user: user,
-            project: project,
-            label: 'test_label',
-            property: 'test_property',
-            unknown_key: 'unknown_value'
-          )
-
-          expect_snowplow_tracking(
-            project.namespace,
-            { label: 'test_label' }
-          )
-        end
-
-        it 'extracts custom additional properties defined in event definition' do
-          allow(event_definition).to receive(:additional_properties).and_return({
-            label: {},
-            property: {},
-            custom_property: {}
-          })
-
-          described_class.track_event(
-            event_name,
-            user: user,
-            project: project,
-            label: 'test_label',
-            property: 'test_property',
-            custom_property: 'custom_value',
-            unknown_key: 'unknown_value'
-          )
-
-          expect_snowplow_tracking(
-            project.namespace,
-            {
-              label: 'test_label',
-              property: 'test_property'
-            },
-            extra: { custom_property: 'custom_value' }
-          )
-        end
-
-        it 'validates extracted properties and logs validation errors' do
-          allow(event_definition).to receive(:additional_properties).and_return({ value: {} })
-
-          # Override the validator mock to allow real validation
-          allow_next_instance_of(Gitlab::Tracking::EventValidator) do |instance|
-            allow(instance).to receive(:validate!).and_call_original
-          end
-
-          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
-            an_instance_of(Gitlab::Tracking::EventValidator::InvalidPropertyTypeError),
-            hash_including(
-              event_name: event_name,
-              additional_properties: { value: 'invalid_string' }
-            )
-          )
-
-          described_class.track_event(
-            event_name,
-            user: user,
-            project: project,
-            value: 'invalid_string'
-          )
-        end
-      end
-    end
-
-    context 'when merge_additional_properties_for_snowplow feature flag is disabled' do
-      before do
-        stub_feature_flags(merge_additional_properties_for_snowplow: false)
+          }
+        )
       end
 
-      it 'does not extract properties from kwargs' do
+      it 'does not extract properties when additional_properties is already provided' do
         described_class.track_event(
           event_name,
+          additional_properties: { label: 'existing_label' },
           user: user,
           project: project,
           label: 'test_label',
           property: 'test_property'
         )
 
-        expect_snowplow_tracking(project.namespace, {})
+        expect_snowplow_tracking(
+          project.namespace,
+          { label: 'existing_label' }
+        )
+      end
+
+      it 'only extracts properties that exist in event definition' do
+        allow(event_definition).to receive(:additional_properties).and_return({
+          label: {}
+        })
+
+        described_class.track_event(
+          event_name,
+          user: user,
+          project: project,
+          label: 'test_label',
+          property: 'test_property',
+          unknown_key: 'unknown_value'
+        )
+
+        expect_snowplow_tracking(
+          project.namespace,
+          { label: 'test_label' }
+        )
+      end
+
+      it 'extracts custom additional properties defined in event definition' do
+        allow(event_definition).to receive(:additional_properties).and_return({
+          label: {},
+          property: {},
+          custom_property: {}
+        })
+
+        described_class.track_event(
+          event_name,
+          user: user,
+          project: project,
+          label: 'test_label',
+          property: 'test_property',
+          custom_property: 'custom_value',
+          unknown_key: 'unknown_value'
+        )
+
+        expect_snowplow_tracking(
+          project.namespace,
+          {
+            label: 'test_label',
+            property: 'test_property'
+          },
+          extra: { custom_property: 'custom_value' }
+        )
+      end
+
+      it 'validates extracted properties and logs validation errors' do
+        allow(event_definition).to receive(:additional_properties).and_return({ value: {} })
+
+        # Override the validator mock to allow real validation
+        allow_next_instance_of(Gitlab::Tracking::EventValidator) do |instance|
+          allow(instance).to receive(:validate!).and_call_original
+        end
+
+        expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
+          an_instance_of(Gitlab::Tracking::EventValidator::InvalidPropertyTypeError),
+          hash_including(
+            event_name: event_name,
+            additional_properties: { value: 'invalid_string' }
+          )
+        )
+
+        described_class.track_event(
+          event_name,
+          user: user,
+          project: project,
+          value: 'invalid_string'
+        )
       end
     end
   end

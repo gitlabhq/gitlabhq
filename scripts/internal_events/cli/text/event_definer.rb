@@ -110,7 +110,7 @@ module InternalEventsCli
       ADDITIONAL_PROPERTIES_INTRO = <<~TEXT.freeze
         #{format_info('ADDITIONAL PROPERTIES')}
         Describe any related attributes or information which should be tracked when the event occurs. This enables extra capabilities:
-          - Service Ping: define metrics filtered to a specific subset of events (built-in properties only)
+          - Service Ping: define metrics filtered to a specific subset of events
           - Snowflake: view/sort/group individual events from GitLab.com
 
         BUILT-IN PROPERTIES (recommended)
@@ -125,8 +125,7 @@ module InternalEventsCli
           Description: Status of merge request after update (one of opened, merged, closed)
 
         CUSTOM PROPERTIES (as-needed)
-        When the built-in properties are insufficient, properties of any name can be provided.
-        This option becomes available after both property and label are defined, or after value is defined.
+        If the built-in properties are not suitable or descriptive, properties of any name can be provided.
 
         WARNING: Make sure the additional properties don’t contain any sensitive information, like customer data or PII.
         For more information, see the Data Classification Standard at https://about.gitlab.com/handbook/security/data-classification-standard/

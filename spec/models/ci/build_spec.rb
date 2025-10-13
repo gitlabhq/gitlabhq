@@ -218,38 +218,15 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       subject(:create_ci_build) { create(:ci_build, user: user, project: project, name: name) }
 
-      context 'when merge_additional_properties_for_snowplow feature flag is enabled' do
-        before do
-          stub_feature_flags(merge_additional_properties_for_snowplow: true)
-        end
-
-        it 'tracks creation event with merged properties' do
-          expect { create_ci_build }
-            .to trigger_internal_events('create_ci_build')
-            .with(
-              category: 'InternalEventTracking',
-              user: user,
-              project: project,
-              property: name
-            )
-        end
-      end
-
-      context 'when merge_additional_properties_for_snowplow feature flag is disabled' do
-        before do
-          stub_feature_flags(merge_additional_properties_for_snowplow: false)
-        end
-
-        it 'tracks creation event with additional_properties structure' do
-          expect { create_ci_build }
-            .to trigger_internal_events('create_ci_build')
-            .with(
-              category: 'InternalEventTracking',
-              user: user,
-              project: project,
-              additional_properties: { property: name }
-            )
-        end
+      it 'tracks creation event with merged properties' do
+        expect { create_ci_build }
+          .to trigger_internal_events('create_ci_build')
+          .with(
+            category: 'InternalEventTracking',
+            user: user,
+            project: project,
+            property: name
+          )
       end
     end
 

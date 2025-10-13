@@ -52,57 +52,6 @@ RSpec.describe Gitlab::Tracking::EventDefinitionValidator, feature_category: :se
       end
     end
 
-    describe 'internal event additional_properties' do
-      let(:attributes) do
-        {
-          description: 'Created issues',
-          category: 'issues',
-          action: 'create',
-          internal_events: true,
-          product_group: 'activation',
-          introduced_by_url: "https://gitlab.com/example/-/merge_requests/123",
-          milestone: "1.0",
-          tiers: %w[free],
-          additional_properties: {}
-        }
-      end
-
-      where(:label, :property, :value, :custom, :error?) do
-        true  | true  | true  | true  | false
-        true  | true  | true  | false | false
-        true  | true  | false | true  | false
-        true  | true  | false | false | false
-        true  | false | true  | true  | false
-        true  | false | true  | false | false
-        true  | false | false | true  | true
-        true  | false | false | false | false
-        false | true  | true  | true  | false
-        false | true  | true  | false | false
-        false | true  | false | true  | true
-        false | true  | false | false | false
-        false | false | true  | true  | false
-        false | false | true  | false | false
-        false | false | false | true  | true
-        false | false | false | false | false
-        nil   | nil   | nil   | nil   | false
-      end
-
-      with_them do
-        before do
-          attributes[:additional_properties][:label] = { description: "login button" } if label
-          attributes[:additional_properties][:property] = { description: "button state" } if property
-          attributes[:additional_properties][:value] = { description: "package version" } if value
-          attributes[:additional_properties][:custom] = { description: "custom" } if custom
-
-          attributes.delete(:additional_properties) if [label, property, value, custom].all?(&:nil?)
-        end
-
-        subject { described_class.new(definition).validation_errors.any? }
-
-        it { is_expected.to be(error?) }
-      end
-    end
-
     describe 'status' do
       let(:attributes) do
         {
