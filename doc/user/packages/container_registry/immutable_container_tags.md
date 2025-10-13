@@ -102,12 +102,12 @@ The immutable rule is created and matching tags are protected.
 
 Example patterns you can use to protect container tags:
 
-| Pattern           | Description                                                              |
-| ----------------- | ------------------------------------------------------------------------ |
-| `.*`              | Protects all tags.                                                       |
-| `^v.*`            | Protects tags that start with "v" (like `v1.0.0` or `v2.1.0-rc1`).          |
-| `\d+\.\d+\.\d+`   | Protects semantic version tags (like `1.0.0` or `2.1.0`).                   |
-| `^latest$`        | Protects the `latest` tag.                                                |
+| Pattern           | Description |
+|-------------------|-------------|
+| `.*`              | Protects all tags. |
+| `^v.*`            | Protects tags that start with "v" (like `v1.0.0` or `v2.1.0-rc1`). |
+| `\d+\.\d+\.\d+`   | Protects semantic version tags (like `1.0.0` or `2.1.0`). |
+| `^latest$`        | Protects the `latest` tag. |
 | `.*-stable$`      | Protects tags that end with "-stable" (like `1.0-stable` or `main-stable`). |
 | `stable\|release` | Protects tags that contain "stable" or "release" (like `1.0-stable`). |
 

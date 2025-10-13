@@ -8,7 +8,7 @@
 - './ee/spec/controllers/ee/groups_controller_spec.rb'
 - './ee/spec/controllers/ee/projects/jobs_controller_spec.rb'
 - './ee/spec/controllers/groups/contribution_analytics_controller_spec.rb'
-- './ee/spec/controllers/projects_controller_spec.rb'
+- './ee/spec/controllers/ee/projects_controller_spec.rb'
 - './ee/spec/controllers/projects/integrations/jira/issues_controller_spec.rb'
 - './ee/spec/controllers/projects/mirrors_controller_spec.rb'
 - './ee/spec/features/admin/admin_groups_spec.rb'

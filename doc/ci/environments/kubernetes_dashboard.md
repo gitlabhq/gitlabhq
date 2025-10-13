@@ -271,7 +271,7 @@ To view a detailed dashboard:
 
    | Resource type | URL |
    | --- | --- |
-   | Pods | `https://myinstance.gitlab.com/-/kubernetes/<agent_id>/pods`|
+   | Pods | `https://myinstance.gitlab.com/-/kubernetes/<agent_id>/pods` |
    | Services | `https://myinstance.gitlab.com/-/kubernetes/<agent_id>/services` |
    | Deployments | `https://myinstance.gitlab.com/-/kubernetes/<agent_id>/deployments` |
    | ReplicaSets | `https://myinstance.gitlab.com/-/kubernetes/<agent_id>/replicaSets` |

@@ -77,17 +77,17 @@ which supports both exact and fuzzy queries.
 When you search for a user, the [`fuzzy`](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-fuzzy-query.html) query is used by default.
 You can refine user search with `simple_query_string`.
 
-| Syntax              | Description      | Example |
-|---------------------|------------------|---------|
-| `"`                 | Exact search     | `"gem sidekiq"` |
-| `~`                 | Fuzzy search     | `J~ Doe` |
-| `\|`                | Or               | `display \| banner` |
-| `+`                 | And              | `display +banner` |
-| `-`                 | Exclude          | `display -banner` |
-| `*`                 | Partial          | `bug error 50*` |
-| ` \ `               | Escape           | `\*md` |
-| `#`                 | Issue ID         | `#23456` |
-| `!`                 | Merge request ID | `!23456` |
+| Syntax | Description      | Example |
+|--------|------------------|---------|
+| `"`    | Exact search     | `"gem sidekiq"` |
+| `~`    | Fuzzy search     | `J~ Doe` |
+| `\|`   | Or               | `display \| banner` |
+| `+`    | And              | `display +banner` |
+| `-`    | Exclude          | `display -banner` |
+| `*`    | Partial          | `bug error 50*` |
+| ` \ `  | Escape           | `\*md`  |
+| `#`    | Issue ID         | `#23456` |
+| `!`    | Merge request ID | `!23456` |
 
 ### Code search
 

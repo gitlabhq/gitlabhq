@@ -176,11 +176,11 @@ It returns `200` if the resource group was successfully updated. In case of an e
 PUT /projects/:id/resource_groups/:key
 ```
 
-| Attribute       | Type    | Required                          | Description                      |
-| --------------- | ------- | --------------------------------- | -------------------------------  |
-| `id`            | integer or string | yes                        | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths)            |
-| `key`           | string  | yes                               |The URL-encoded key of the resource group. For example, use `resource%5Fa` instead of `resource_a`. |
-| `process_mode`  | string  | no                                | The process mode of the resource group. One of `unordered`, `oldest_first`, `newest_first`, or `newest_ready_first`. Read [process modes](../ci/resource_groups/_index.md#process-modes) for more information. |
+| Attribute      | Type              | Required | Description |
+|----------------|-------------------|----------|-------------|
+| `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `key`          | string            | yes      | The URL-encoded key of the resource group. For example, use `resource%5Fa` instead of `resource_a`. |
+| `process_mode` | string            | no       | The process mode of the resource group. One of `unordered`, `oldest_first`, `newest_first`, or `newest_ready_first`. Read [process modes](../ci/resource_groups/_index.md#process-modes) for more information. |
 
 ```shell
 curl --request PUT \

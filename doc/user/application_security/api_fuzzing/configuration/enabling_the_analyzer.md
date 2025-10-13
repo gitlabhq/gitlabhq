@@ -471,14 +471,14 @@ The following is a summary of the variable scopes supported by the Postman Clien
 
 Not all scopes are supported by API fuzzing and variables defined in scripts are not supported. The following table is sorted by broadest scope to narrowest scope.
 
-| Scope              |Postman    |  API fuzzing | Comment  |
-| ------------------ |:---------:|:------------:| :--------|
-| Global environment | Yes       | Yes          | Special pre-defined environment |
-| Environment        | Yes       | Yes          | Named environments |
-| Collection         | Yes       | Yes          | Defined in your postman collection |
-| API fuzzing scope  | No        | Yes          | Custom scope added by API fuzzing |
-| Data               | Yes       | No           | External files in CSV or JSON format |
-| Local              | Yes       | No           | Variables defined in scripts |
+| Scope              | Postman   | API fuzzing | Comment |
+| ------------------ |:---------:|:-----------:| :-------|
+| Global environment | Yes       | Yes         | Special pre-defined environment |
+| Environment        | Yes       | Yes         | Named environments |
+| Collection         | Yes       | Yes         | Defined in your postman collection |
+| API fuzzing scope  | No        | Yes         | Custom scope added by API fuzzing |
+| Data               | Yes       | No          | External files in CSV or JSON format |
+| Local              | Yes       | No          | Variables defined in scripts |
 
 For more details on how to define variables and export variables in different scopes, see:
 

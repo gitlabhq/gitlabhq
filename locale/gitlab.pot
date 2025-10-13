@@ -72451,6 +72451,9 @@ msgstr ""
 msgid "VirtualRegistry|Description (optional)"
 msgstr ""
 
+msgid "VirtualRegistry|Disabling removes access. Existing registries are preserved and available again when re-enabled."
+msgstr ""
+
 msgid "VirtualRegistry|Edit registry"
 msgstr ""
 
@@ -72458,6 +72461,9 @@ msgid "VirtualRegistry|Edit upstream"
 msgstr ""
 
 msgid "VirtualRegistry|Edit upstream %{name}"
+msgstr ""
+
+msgid "VirtualRegistry|Enable Virtual Registry"
 msgstr ""
 
 msgid "VirtualRegistry|Enter a personal access token for GitLab-hosted upstreams."
@@ -72506,6 +72512,9 @@ msgid "VirtualRegistry|Get started with virtual registries"
 msgstr ""
 
 msgid "VirtualRegistry|Link existing upstream"
+msgstr ""
+
+msgid "VirtualRegistry|Manage packages across multiple sources and streamline development workflows using virtual registries."
 msgstr ""
 
 msgid "VirtualRegistry|Manage packages across multiple sources and streamline development workflows. %{learn_more_link}"
@@ -72669,7 +72678,13 @@ msgstr ""
 msgid "VirtualRegistry|View registries"
 msgstr ""
 
+msgid "VirtualRegistry|Virtual Registry"
+msgstr ""
+
 msgid "VirtualRegistry|Virtual registry"
+msgstr ""
+
+msgid "VirtualRegistry|When you enable this feature, you accept the %{linkStart}GitLab Testing Agreement.%{linkEnd}"
 msgstr ""
 
 msgid "VirtualRegistry|You are about to delete this upstream used by %{count} registry:"

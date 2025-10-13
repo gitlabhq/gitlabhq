@@ -471,12 +471,12 @@ drwx------  2 git               root        4096 Aug  6 13:05 sidekiq
 You can see in the example above that the following components store
 logs in the following directories:
 
-|Component|Log directory|
-|---------|-------------|
-|GitLab Rails|`/var/log/gitlab/gitlab-rails`|
-|Gitaly|`/var/log/gitlab/gitaly`|
-|Sidekiq|`/var/log/gitlab/sidekiq`|
-|GitLab Workhorse|`/var/log/gitlab/gitlab-workhorse`|
+| Component        | Log directory |
+|------------------|---------------|
+| GitLab Rails     | `/var/log/gitlab/gitlab-rails` |
+| Gitaly           | `/var/log/gitlab/gitaly` |
+| Sidekiq          | `/var/log/gitlab/sidekiq` |
+| GitLab Workhorse | `/var/log/gitlab/gitlab-workhorse` |
 
 The GitLab Rails directory is probably where you want to look for the
 log files used with the Ruby code above.

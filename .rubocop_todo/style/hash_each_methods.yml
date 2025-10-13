@@ -50,7 +50,7 @@ Style/HashEachMethods:
     - 'ee/db/fixtures/development/32_compliance_report_violations.rb'
     - 'ee/lib/gitlab/code_owners/file.rb'
     - 'ee/lib/gitlab/graphql/aggregations/epics/lazy_epic_aggregate.rb'
-    - 'ee/spec/controllers/projects_controller_spec.rb'
+    - 'ee/spec/controllers/ee/projects_controller_spec.rb'
     - 'ee/spec/factories/vulnerabilities.rb'
     - 'ee/spec/factories/vulnerabilities/findings.rb'
     - 'ee/spec/helpers/application_helper_spec.rb'

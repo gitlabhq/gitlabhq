@@ -826,10 +826,10 @@ Follow these steps to view details of a vulnerability:
    | Method              | HTTP method used to detect the vulnerability.                                           |
    | URL                 | URL at which the vulnerability was detected.                                            |
    | Request             | The HTTP request that caused the vulnerability.                                         |
-   | Unmodified Response | Response from an unmodified request. This is what a typical working response looks like.|
+   | Unmodified Response | Response from an unmodified request. This is what a typical working response looks like. |
    | Actual Response     | Response received from test request.                                                    |
    | Evidence            | How we determined a vulnerability occurred.                                             |
-   | Identifiers         | The API security testing check used to find this vulnerability.                                     |
+   | Identifiers         | The API security testing check used to find this vulnerability.                         |
    | Severity            | Severity of the vulnerability.                                                          |
    | Scanner Type        | Scanner used to perform testing.                                                        |
 

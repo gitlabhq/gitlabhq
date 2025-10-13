@@ -75,13 +75,13 @@ To bootstrap a Flux installation:
 
 The arguments of `bootstrap` are:
 
-| Argument | Description |
+| Argument     | Description |
 |--------------|-------------|
-|`hostname` | Hostname of your GitLab instance. |
-|`owner` | GitLab group containing the Flux repository. |
-|`repository` | GitLab project containing the Flux repository. |
-|`branch` | Git branch the changes are committed to. |
-|`path` | File path to a folder where the Flux configuration is stored. |
+| `hostname`   | Hostname of your GitLab instance. |
+| `owner`      | GitLab group containing the Flux repository. |
+| `repository` | GitLab project containing the Flux repository. |
+| `branch`     | Git branch the changes are committed to. |
+| `path`       | File path to a folder where the Flux configuration is stored. |
 
 The bootstrap script does the following:
 

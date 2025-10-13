@@ -1,0 +1,12 @@
+---
+name: gitlab_docs.TablePipes
+description: |
+  Ensures pipe characters in tables use proper formatting.
+extends: existence
+message: "Table cells must have at least one space between pipe '|' characters and cell contents. In regex examples, escape pipe characters with a backslash: '\\|'."
+link: https://docs.gitlab.com/development/documentation/styleguide/#tables
+vocab: false
+level: error
+scope: raw
+raw:
+  - '(?<=\n) *\|.*?[^\\]\|[^- \n:\\,=]'

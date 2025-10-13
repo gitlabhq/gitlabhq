@@ -1450,7 +1450,7 @@ Style/InlineDisableAnnotation:
     - 'ee/lib/quality/seeders/vulnerabilities.rb'
     - 'ee/lib/tasks/geo.rake'
     - 'ee/locale/unfound_translations.rb'
-    - 'ee/spec/controllers/projects/settings/merge_requests_controller_spec.rb'
+    - 'ee/spec/controllers/ee/projects/settings/merge_requests_controller_spec.rb'
     - 'ee/spec/factories/security_scans.rb'
     - 'ee/spec/features/dependency_proxy/packages/maven_spec.rb'
     - 'ee/spec/features/groups/group_settings_spec.rb'

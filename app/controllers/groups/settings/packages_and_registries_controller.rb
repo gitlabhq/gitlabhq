@@ -25,3 +25,5 @@ module Groups
     end
   end
 end
+
+Groups::Settings::PackagesAndRegistriesController.prepend_mod

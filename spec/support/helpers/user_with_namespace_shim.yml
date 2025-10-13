@@ -6,7 +6,7 @@
 - ee/spec/controllers/groups/sso_controller_spec.rb
 - ee/spec/controllers/profiles/billings_controller_spec.rb
 - ee/spec/controllers/projects/iterations_controller_spec.rb
-- ee/spec/controllers/projects_controller_spec.rb
+- ee/spec/controllers/ee/projects_controller_spec.rb
 - ee/spec/controllers/users_controller_spec.rb
 - ee/spec/features/account_recovery_regular_check_spec.rb
 - ee/spec/features/admin/admin_audit_logs_spec.rb

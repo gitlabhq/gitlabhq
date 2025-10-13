@@ -7,7 +7,7 @@ RSpec/ReceiveMessages:
     - 'ee/spec/controllers/concerns/audit_events/audit_events_params_spec.rb'
     - 'ee/spec/controllers/ee/search_controller_spec.rb'
     - 'ee/spec/controllers/oauth/geo_auth_controller_spec.rb'
-    - 'ee/spec/controllers/projects_controller_spec.rb'
+    - 'ee/spec/controllers/ee/projects_controller_spec.rb'
     - 'ee/spec/features/admin/admin_audit_logs_spec.rb'
     - 'ee/spec/features/admin/groups/admin_subscription_alerts_spec.rb'
     - 'ee/spec/features/groups/iterations/user_edits_iteration_cadence_spec.rb'

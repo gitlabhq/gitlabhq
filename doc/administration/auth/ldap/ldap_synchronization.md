@@ -4,6 +4,7 @@ group: Seat Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 gitlab_dedicated: no
 title: LDAP synchronization
+description: Learn how to configure LDAP synchronization for users and groups, and adjust the sync schedule.
 ---
 
 {{< details >}}

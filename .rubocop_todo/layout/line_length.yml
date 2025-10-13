@@ -884,7 +884,7 @@ Layout/LineLength:
     - 'ee/spec/controllers/projects/security/vulnerabilities_controller_spec.rb'
     - 'ee/spec/controllers/projects/subscriptions_controller_spec.rb'
     - 'ee/spec/controllers/projects/vulnerability_feedback_controller_spec.rb'
-    - 'ee/spec/controllers/projects_controller_spec.rb'
+    - 'ee/spec/controllers/ee/projects_controller_spec.rb'
     - 'ee/spec/factories/ci/job_artifacts.rb'
     - 'ee/spec/factories/ci/pipelines.rb'
     - 'ee/spec/factories/ci/reports/license_scanning/report.rb'

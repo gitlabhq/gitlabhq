@@ -278,9 +278,9 @@ and included in `rules` definitions via [YAML anchors](../../ci/yaml/yaml_optimi
 
 The table below lists custom exit codes we use to auto-retry (see the retry rules in [GitLab global CI configuration](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/global.gitlab-ci.yml) for its definition):
 
-| exit code |   description  |
-|-----------|----------------|
-|201        | low disk space |
+| Exit code | Description |
+|-----------|-------------|
+| 201       | low disk space |
 
 This list can be expanded as new failure patterns emerge. To avoid conflicts, please use exit codes in the range 201-255.
 

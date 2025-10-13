@@ -111,11 +111,11 @@ sudo gitlab-rake gitlab:geo:check NTP_HOST="ntp.ubuntu.com" NTP_TIMEOUT="30"
 
 The following environment variables are supported.
 
-| Variable    | Description | Default value |
-| ----------- | ----------- | ------------- |
-|`NTP_HOST`   | The NTP host. | `pool.ntp.org` |
-|`NTP_PORT`   | The NTP port the host listens on. |`ntp`|
-|`NTP_TIMEOUT`| The NTP timeout in seconds. | The value defined in the `net-ntp` Ruby library ([60 seconds](https://github.com/zencoder/net-ntp/blob/3d0990214f439a5127782e0f50faeaf2c8ca7023/lib/net/ntp/ntp.rb#L6)). |
+| Variable      | Description | Default value |
+| ------------- | ----------- | ------------- |
+| `NTP_HOST`    | The NTP host. | `pool.ntp.org` |
+| `NTP_PORT`    | The NTP port the host listens on. | `ntp` |
+| `NTP_TIMEOUT` | The NTP timeout in seconds. | The value defined in the `net-ntp` Ruby library ([60 seconds](https://github.com/zencoder/net-ntp/blob/3d0990214f439a5127782e0f50faeaf2c8ca7023/lib/net/ntp/ntp.rb#L6)). |
 
 If the Rake task skips the `OpenSSH configured to use AuthorizedKeysCommand` check, the
 following output displays:

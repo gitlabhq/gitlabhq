@@ -335,6 +335,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryaicatalogitemsitemtype"></a>`itemType` | [`AiCatalogItemType`](#aicatalogitemtype) | Type of items to retrieve. |
+| <a id="queryaicatalogitemsitemtypes"></a>`itemTypes` | [`[AiCatalogItemType!]`](#aicatalogitemtype) | Types of items to retrieve. |
 | <a id="queryaicatalogitemssearch"></a>`search` | [`String`](#string) | Search items by name and description. |
 
 ### `Query.aiChatAvailableModels`
