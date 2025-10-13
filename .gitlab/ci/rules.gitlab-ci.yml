@@ -2079,13 +2079,12 @@
     # Do not run for scheduled pipeline for rails-next branch
     - <<: *if-rails-branch-schedule
       when: never
-    - !reference [".qa:rules:e2e-blocking-base-before", rules]
+    - !reference [".qa:rules:e2e-test-never-run", rules]
     - !reference [".prevent-tier-2-and-below", rules]
-    - !reference [".qa:rules:e2e-schedule-nightly", rules]
     - <<: *if-merge-request
       changes: *cng-dependency-patterns
       when: manual
-    - <<: *if-merge-request
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train" && ($CI_MERGE_REQUEST_LABELS =~ /group::code review/ || $CI_MERGE_REQUEST_LABELS =~ /maintenance::dependency/)'
       changes: *backend-only-patterns
     - <<: *if-dot-com-gitlab-org-schedule
 

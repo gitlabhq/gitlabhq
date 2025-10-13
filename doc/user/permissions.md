@@ -800,11 +800,12 @@ Project permissions for [merge requests](project/merge_requests/_index.md):
 | ----------------------------------------------------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
 | [View](project/merge_requests/_index.md#view-merge-requests) a merge request <sup>1</sup> |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | [Search](search/_index.md) merge requests and comments <sup>1</sup>                       |   ✓   |         |    ✓     |     ✓     |     ✓      |   ✓   |
+| [Approve](project/merge_requests/approvals/_index.md) merge requests <sup>2</sup>         |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Add internal note                                                                         |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Comment and add suggestions                                                               |       |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Create [snippets](snippets.md)                                                            |       |         |    ✓     |     ✓     |     ✓      |   ✓   |
-| Create [merge request](project/merge_requests/creating_merge_requests.md) <sup>2</sup>    |       |         |          |     ✓     |     ✓      |   ✓   |
-| Update merge request details <sup>3</sup>                                                 |       |         |          |     ✓     |     ✓      |   ✓   |
+| Create [merge request](project/merge_requests/creating_merge_requests.md) <sup>3</sup>    |       |         |          |     ✓     |     ✓      |   ✓   |
+| Update merge request details <sup>4</sup>                                                 |       |         |          |     ✓     |     ✓      |   ✓   |
 | Manage [merge request settings](project/merge_requests/approvals/settings.md)             |       |         |          |           |     ✓      |   ✓   |
 | Manage [merge request approval rules](project/merge_requests/approvals/rules.md)          |       |         |          |           |     ✓      |   ✓   |
 | Delete merge request                                                                      |       |         |          |           |            |   ✓   |
@@ -816,12 +817,15 @@ Project permissions for [merge requests](project/merge_requests/_index.md):
    must be given explicit access (at least the **Reporter** role) even if the project is internal. Users
    with the Guest role on GitLab.com are only able to perform this action on public projects because
    internal visibility is not available.
+1. Approval from Planner and Reporter roles is available only if
+   [enabled for the project](project/merge_requests/approvals/rules.md#enable-approval-permissions-for-additional-users).
 1. In projects that accept contributions from external members, users can create, edit, and close their
    own merge requests. For **private** projects, this excludes the Guest role as those users
    [cannot clone private projects](public_access.md#private-projects-and-groups). For **internal**
    projects, includes users with read-only access to the project, as
    [they can clone internal projects](public_access.md#internal-projects-and-groups).
-1. For information on eligible approvers for merge requests, see [eligible approvers](project/merge_requests/approvals/rules.md#eligible-approvers).
+1. In projects that accept contributions from external members, users can create, edit, and close their
+   own merge requests. They cannot edit some fields, like assignees, reviewers, labels, and milestones.
 
 ### User management
 

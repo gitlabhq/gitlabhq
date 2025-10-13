@@ -1119,6 +1119,8 @@
   - 1
 - - users_track_namespace_visits
   - 1
+- - virtual_registries_cleanup_execute_policy
+  - 1
 - - vulnerabilities_archival_archive
   - 1
 - - vulnerabilities_archival_export_export

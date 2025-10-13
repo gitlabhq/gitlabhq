@@ -29,7 +29,9 @@ GET /groups/:id/wikis
 | `with_content` | boolean        | No       | Include pages' content. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/wikis?with_content=1"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/wikis?with_content=1"
 ```
 
 Example response:
@@ -75,7 +77,9 @@ GET /groups/:id/wikis/:slug
 | `version`     | string         | No       | Wiki page version SHA. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/wikis/home"
+curl \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/wikis/home"
 ```
 
 Example response:
@@ -141,9 +145,12 @@ PUT /groups/:id/wikis/:slug
 | `slug`    | string         | Yes                                | URL encoded slug (a unique string) of the wiki page. For example: `dir%2Fpage_name`. |
 
 ```shell
-curl --request PUT --data "format=rdoc&content=documentation&title=Docs" \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/1/wikis/foo"
+curl --request PUT \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/wikis/foo" \
+  --data "format=rdoc" \
+  --data "title=Docs" \
+  --data "content=documentation"
 ```
 
 Example response:
@@ -172,7 +179,9 @@ DELETE /groups/:id/wikis/:slug
 | `slug`    | string         | Yes      | URL-encoded slug (a unique string) of the wiki page, such as `dir%2Fpage_name`. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/wikis/foo"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/wikis/foo"
 ```
 
 If successful, a `204 No Content` HTTP response with an empty body is expected.
@@ -198,8 +207,10 @@ The `file=` parameter must point to a file on your file system and be preceded
 by `@`. For example:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form "file=@dk.png" "https://gitlab.example.com/api/v4/groups/1/wikis/attachments"
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/groups/1/wikis/attachments" \
+  --form "file=@dk.png"
 ```
 
 Example response:

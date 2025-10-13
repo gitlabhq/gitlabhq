@@ -146,6 +146,7 @@ When analyzing PHP code, GitLab Advanced SAST has the following limitations:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16790) in GitLab 18.5 [with a flag](../../../administration/feature_flags/_index.md) named `vulnerability_partial_scans`. Disabled by default.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/552051) in GitLab 18.5.
 
 {{< /history >}}
 

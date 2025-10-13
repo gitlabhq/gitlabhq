@@ -151,7 +151,7 @@ You can create a merge request from your fork to contribute back to the main pro
 1. Select **Compare branches and continue**.
 1. Select **Create merge request**. The merge request is created in the target repository,
    not your fork.
-1. Add your desired labels, milestones, reviewers, and assignees.
+1. If you have Developer role or higher, add your desired assignees, reviewers, labels, and milestones.
 1. Select **Submit merge request**.
 
 If the merge request targets another repository, it uses:
