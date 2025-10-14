@@ -69,7 +69,7 @@
     "@gitlab/ui": "116.0.0",
     "@gitlab/vue-router-vue3": "npm:vue-router@4.5.1",
     "@gitlab/vuex-vue3": "npm:vuex@4.1.0",
-    "@gitlab/web-ide": "^0.0.1-dev-20250806100257",
+    "@gitlab/web-ide": "^0.0.1-dev-20250925110326",
     "@gleam-lang/highlight.js-gleam": "^1.5.0",
     "@mattiasbuelens/web-streams-adapter": "^0.1.0",
     "@rails/actioncable": "7.1.501",
