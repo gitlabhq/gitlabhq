@@ -41,7 +41,7 @@ This step includes getting your Google Cloud account setup, getting your Anthrop
 
 {{< alert type="note" >}}
 Make sure your license has a Duo Pro or Duo Enterprise add-on enabled before you proceed.
-For Duo Pro, [you can provision a license yourself](ai_development_license.md#set-up-gitlab-team-member-license-for-gdk). For Duo Enterprise, ask [#g_provision](ai_development_license.md#duo-enterprise).
+Duo Core access is available automatically when you have a Premium or Enterprise license. For Duo Pro, [you can provision a license yourself](ai_development_license.md#set-up-gitlab-team-member-license-for-gdk). For Duo Enterprise, ask [#g_provision](ai_development_license.md#duo-enterprise).
 {{< /alert >}}
 
 **Why**: This ensures that your instance or group has the correct licenses, settings, and feature flags to test Duo features locally.
@@ -49,18 +49,23 @@ AI gateway is what routes request between GitLab Rails and the LLM. The script s
 to check in your GDK database that the ai gateway URL is correct. Run:
 
 ```ruby
-Ai::Setting.first.ai_gateway_url
+Gitlab::AiGateway.url
 ```
 
 This should return a URL that points to your local and uses the right port: `http://0.0.0.0:5052`.
 
-If the value points to a non-local URL, you can manually execute an update to your GDK database:
+If the value points to a non-local URL, you should ensure that:
 
-```ruby
-Ai::Setting.first.update!(ai_gateway_url: "http://0.0.0.0:5052")
-```
+- `DEVELOPMENT_AI_GATEWAY_URL` is set to `"http://0.0.0.0:5052"`
+- `AI_GATEWAY_URL` is unset and `Ai::Setting.instance.ai_gateway_url` is `nil.
 
-Now in your `gdk` directory, you can `cd` into the `gitlab-ai-gateway` directory and run `poetry sync`. This should install all project dependency. If this resolves without error, try now to run the test of the project with `make test`. If there are errors, check the results as it can help debug potential issues with your configuration.
+If you are setting up Duo Self-Hosted, the there are [specific instructions](developing_ai_features_for_duo_self_hosted.md) for that GDK configuration.
+
+Now in your `gdk` directory, you can `cd` into the `gitlab-ai-gateway` directory
+and run `poetry sync`. This should install all project dependencies. If this
+resolves without error, try now to run the test of the project with `make test`.
+If there are errors, check the results as it can help debug potential issues
+with your configuration.
 
 Finally, run `gdk tail gitlab-ai-gateway` from the GitLab project directory. There should be no errors in the log.
 

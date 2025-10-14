@@ -153,7 +153,7 @@ export default {
       return cleanLeadingSeparator(item.project.full_path);
     },
     getStages(item) {
-      return item?.details?.stages || [];
+      return item?.details?.stages || item?.stages?.nodes || [];
     },
     onCancelPipeline(pipeline) {
       this.$emit('cancel-pipeline', pipeline);
@@ -173,7 +173,7 @@ export default {
       this.track('click_minigraph', { label: TRACKING_CATEGORIES.table });
     },
     isFailed(item) {
-      return item.details.status.group === 'failed';
+      return item?.details?.status?.group === 'failed' || item?.detailedStatus?.name === 'FAILED';
     },
     getPipelinePath(item) {
       if (item.path) {

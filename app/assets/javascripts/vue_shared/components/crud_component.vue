@@ -165,8 +165,24 @@ export default {
 
       if (this.isCollapsed) {
         this.$emit('collapsed');
+        /**
+         * note that these separate `click-*` emits are necessary for tracking
+         * this because the expanded and collapsed emits are programmatically
+         * called on mount as part of persisted collapse state management. If
+         * we just used the existing emits we would get tons of false positives
+         * on page loads.
+         */
+        this.$emit('click-collapsed');
       } else {
         this.$emit('expanded');
+        /**
+         * note that these separate `click-*` emits are necessary for tracking
+         * this because the expanded and collapsed emits are programmatically
+         * called on mount as part of persisted collapse state management. If
+         * we just used the existing emits we would get tons of false positives
+         * on page loads.
+         */
+        this.$emit('click-expanded');
       }
 
       if (this.persistCollapsedState) {

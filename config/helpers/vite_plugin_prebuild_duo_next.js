@@ -35,7 +35,11 @@ export const PrebuildDuoNext = (options = {}) => {
       });
 
       if (res.status !== 0) {
-        throw new Error(`[prebuild-duo-next] "${buildScript}" failed (code ${res.status})`);
+        console.warn(
+          `[prebuild-duo-next] "${buildScript}" failed (code ${res.status}). Continuing with Vite startup - frontend islands will not be available.`,
+        );
+      } else {
+        console.log('[prebuild-duo-next] Frontend islands build completed successfully');
       }
 
       ran = true;

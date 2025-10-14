@@ -78,6 +78,7 @@ describe('DesignWidget', () => {
   const findDesignCheckboxes = () => wrapper.findAllByTestId('design-checkbox');
   const findVueDraggable = () => wrapper.findComponent(VueDraggable);
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findCrudCollapseToggle = () => wrapper.findByTestId('crud-collapse-toggle');
 
   async function moveDesigns() {
     await waitForPromises();
@@ -102,6 +103,7 @@ describe('DesignWidget', () => {
     canAddDesign = true,
     canUpdateDesign = true,
     canPasteDesign = false,
+    stubs = {},
   } = {}) {
     wrapper = shallowMountExtended(DesignWidget, {
       isLoggedIn: isLoggedIn(),
@@ -134,6 +136,7 @@ describe('DesignWidget', () => {
       stubs: {
         RouterView: true,
         VueDraggable,
+        ...stubs,
       },
     });
   }
@@ -563,6 +566,23 @@ describe('DesignWidget', () => {
 
         expect(wrapper.emitted('upload')).toBeUndefined();
       });
+    });
+  });
+
+  describe('tracks collapse/expand events', () => {
+    beforeEach(() => {
+      createComponent({ stubs: { CrudComponent } });
+      return waitForPromises();
+    });
+
+    it.each`
+      type          | eventLabel           | collapsed
+      ${'collapse'} | ${'click-collapsed'} | ${true}
+      ${'expand'}   | ${'click-expanded'}  | ${false}
+    `('tracks user $type events', ({ eventLabel }) => {
+      findCrudCollapseToggle().vm.$emit('click');
+
+      expect(findWidgetWrapper().emitted(eventLabel)).toEqual([[]]);
     });
   });
 });

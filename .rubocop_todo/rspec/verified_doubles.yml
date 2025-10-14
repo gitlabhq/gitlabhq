@@ -26,7 +26,7 @@ RSpec/VerifiedDoubles:
     - 'ee/spec/helpers/ee/ci/runners_helper_spec.rb'
     - 'ee/spec/helpers/ee/license_helper_spec.rb'
     - 'ee/spec/helpers/ee/subscribable_banner_helper_spec.rb'
-    - 'ee/spec/helpers/kerberos_helper_spec.rb'
+    - 'ee/spec/helpers/ee/kerberos_helper_spec.rb'
     - 'ee/spec/helpers/roadmaps_helper_spec.rb'
     - 'ee/spec/helpers/routing/pseudonymization_helper_spec.rb'
     - 'ee/spec/helpers/timeboxes_helper_spec.rb'

@@ -43,7 +43,12 @@ function build_frontend_islands() {
   cd "$fe_island_dir"
 
   section_start "frontend-islands-build" "Building frontend island"
-  retry yarn build:prod
+  # Use direct execution instead of retry to fail fast on build errors
+  if ! yarn build:prod; then
+    echoerr "Frontend island build failed. Failing fast to avoid blocking subsequent execution."
+    cd "$original_dir"
+    return 1
+  fi
   section_end "frontend-islands-build"
 
   # Verify the build output

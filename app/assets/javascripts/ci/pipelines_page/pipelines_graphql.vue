@@ -1,4 +1,8 @@
 <script>
+/*
+  This component is the GraphQL version of `ci/pipelines_page/pipelines.vue`
+  and is meant to eventually replace it.
+*/
 import { GlLoadingIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
@@ -70,6 +74,7 @@ export default {
 <template>
   <div>
     <gl-loading-icon v-if="isLoading" class="gl-mt-5" size="lg" />
+
     <pipelines-table v-else :pipelines="pipelines.list" />
   </div>
 </template>

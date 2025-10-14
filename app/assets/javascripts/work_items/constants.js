@@ -65,6 +65,15 @@ export const WORK_ITEM_TYPE_NAME_TASK = 'Task';
 export const WORK_ITEM_TYPE_NAME_TEST_CASE = 'Test Case';
 export const WORK_ITEM_TYPE_NAME_TICKET = 'Ticket';
 
+export const WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_COLLAPSED = 'hierarchy_widget_collapsed';
+export const WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_EXPANDED = 'hierarchy_widget_expanded';
+export const WORK_ITEM_RELATIONSHIPS_COLLAPSE_TRACKING_ACTION_COLLAPSED =
+  'linked_items_widget_collapsed';
+export const WORK_ITEM_RELATIONSHIPS_COLLAPSE_TRACKING_ACTION_EXPANDED =
+  'linked_items_widget_expanded';
+export const WORK_ITEM_DESIGN_COLLAPSE_TRACKING_ACTION_COLLAPSED = 'design_widget_collapsed';
+export const WORK_ITEM_DESIGN_COLLAPSE_TRACKING_ACTION_EXPANDED = 'design_widget_expanded';
+
 export const SEARCH_DEBOUNCE = 500;
 
 export const i18n = {

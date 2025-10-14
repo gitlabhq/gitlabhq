@@ -16,6 +16,7 @@ query getPipelines(
         iid
         detailedStatus {
           ...CiIcon
+          name
         }
         createdAt
         finishedAt
@@ -52,11 +53,16 @@ query getPipelines(
         stuck
         type
         path
+        retryable
+        cancelable
         stages {
           nodes {
             id
             name
-            status
+            detailedStatus {
+              ...CiIcon
+              tooltip
+            }
           }
         }
         mergeRequest {
@@ -66,8 +72,13 @@ query getPipelines(
           title
         }
         mergeRequestEventType
+        project {
+          id
+          fullPath
+        }
+        hasManualActions
+        hasScheduledActions
       }
-
       pageInfo {
         ...PageInfo
       }

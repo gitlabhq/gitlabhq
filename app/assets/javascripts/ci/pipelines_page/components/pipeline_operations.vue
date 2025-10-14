@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import Tracking from '~/tracking';
 import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL, TRACKING_CATEGORIES } from '~/ci/constants';
 import PipelineMultiActions from './pipeline_multi_actions.vue';
@@ -35,12 +36,28 @@ export default {
   },
   computed: {
     fullPath() {
-      return this.pipeline?.project?.full_path.slice(1);
+      return this.pipeline?.project?.fullPath || this.pipeline?.project?.full_path.slice(1);
     },
     hasActions() {
-      return (
-        this.pipeline?.details?.has_manual_actions || this.pipeline?.details?.has_scheduled_actions
-      );
+      const hasRESTActions =
+        this.pipeline?.details?.has_manual_actions || this.pipeline?.details?.has_scheduled_actions;
+      const hasGraphQLActions =
+        this.pipeline?.hasManualActions || this.pipeline?.hasScheduledActions;
+
+      return hasRESTActions || hasGraphQLActions;
+    },
+    isRetryable() {
+      return this.pipeline?.flags?.retryable || this.pipeline?.retryable;
+    },
+    isCancelable() {
+      return this.pipeline?.flags?.cancelable || this.pipeline?.cancelable;
+    },
+    pipelineId() {
+      if (isGid(this.pipeline.id)) {
+        return getIdFromGraphQLId(this.pipeline.id);
+      }
+
+      return this.pipeline.id;
     },
   },
   watch: {
@@ -100,7 +117,7 @@ export default {
       />
 
       <gl-button
-        v-if="pipeline.flags.retryable"
+        v-if="isRetryable"
         v-gl-tooltip
         :aria-label="$options.BUTTON_TOOLTIP_RETRY"
         :title="$options.BUTTON_TOOLTIP_RETRY"
@@ -115,7 +132,7 @@ export default {
       />
 
       <gl-button
-        v-if="pipeline.flags.cancelable"
+        v-if="isCancelable"
         v-gl-tooltip
         :aria-label="$options.BUTTON_TOOLTIP_CANCEL"
         :title="$options.BUTTON_TOOLTIP_CANCEL"
@@ -129,7 +146,7 @@ export default {
         @click="handleCancelClick"
       />
 
-      <pipeline-multi-actions :pipeline-id="pipeline.id" />
+      <pipeline-multi-actions :pipeline-id="pipelineId" />
     </div>
   </div>
 </template>

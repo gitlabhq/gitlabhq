@@ -6,6 +6,8 @@ import AccessorUtilities from '~/lib/utils/accessor';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { getDraft, updateDraft } from '~/lib/utils/autosave';
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
+import Tracking from '~/tracking';
+
 import {
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
   NAME_TO_ENUM_MAP,
@@ -501,3 +503,14 @@ export const getWorkItemTypeAllowedStatusMap = (workItemTypeNodes) => {
 
   return workItemTypeAllowedStatusMap;
 };
+
+/**
+ * Unified method for sending tracking events for work item CRUD component collapse/expand toggles
+ * @param {string} action
+ */
+export function trackCrudCollapse(action) {
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  const category = 'Work item widget collapse';
+
+  Tracking.event(category, action);
+}

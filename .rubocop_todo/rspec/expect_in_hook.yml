@@ -16,7 +16,7 @@ RSpec/ExpectInHook:
     - 'ee/spec/helpers/ee/ci/runners_helper_spec.rb'
     - 'ee/spec/helpers/ee/groups_helper_spec.rb'
     - 'ee/spec/helpers/ee/projects/security/dast_configuration_helper_spec.rb'
-    - 'ee/spec/helpers/kerberos_helper_spec.rb'
+    - 'ee/spec/helpers/ee/kerberos_helper_spec.rb'
     - 'ee/spec/helpers/vulnerabilities_helper_spec.rb'
     - 'ee/spec/lib/ee/api/helpers/members_helpers_spec.rb'
     - 'ee/spec/lib/ee/gitlab/auth/ldap/sync/group_spec.rb'

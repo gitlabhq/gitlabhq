@@ -57,10 +57,16 @@ module MergeRequests
 
     def check_mergeability(recheck)
       recheck! if recheck
-      update_merge_status
+      ref_updated = update_merge_status
 
       unless merge_request.can_be_merged?
-        return ServiceResponse.error(message: 'Merge request is not mergeable')
+        message = 'Merge request is not mergeable'
+
+        if ref_updated
+          return ServiceResponse.error(message: message, reason: :merge_status_race, payload: payload)
+        else
+          return ServiceResponse.error(message: message)
+        end
       end
 
       unless payload.fetch(:merge_ref_head)
@@ -109,8 +115,12 @@ module MergeRequests
     end
 
     def update_merge_status
-      return unless merge_request.recheck_merge_status?
-      return merge_request.mark_as_unmergeable if merge_request.broken?
+      return false unless merge_request.recheck_merge_status?
+
+      if merge_request.broken?
+        merge_request.mark_as_unmergeable
+        return false
+      end
 
       merge_to_ref_success = merge_to_ref
 
@@ -119,8 +129,10 @@ module MergeRequests
       if merge_to_ref_success && can_git_merge?
         merge_request.mark_as_mergeable
         reload_merge_head_diff
+        true
       else
         merge_request.mark_as_unmergeable
+        false
       end
     end
 

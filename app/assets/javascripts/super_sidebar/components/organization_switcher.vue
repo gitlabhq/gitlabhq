@@ -33,7 +33,7 @@ export default {
       'Organization|Switching between organizations is not currently supported.',
     ),
     learnMore: __('Learn more'),
-    projectStatus: __('Alpha'),
+    projectStatus: __('Experiment'),
   },
   switchingOrganizationsDocsPath: helpPagePath('user/organization/_index.md', {
     anchor: 'switch-organizations',
@@ -182,7 +182,7 @@ export default {
 
     <template #group-label="{ group }">
       {{ group.name }}
-      <gl-badge v-if="group.name === $options.i18n.currentOrganization" variant="info">
+      <gl-badge v-if="group.name === $options.i18n.currentOrganization">
         {{ $options.i18n.projectStatus }}
       </gl-badge>
     </template>

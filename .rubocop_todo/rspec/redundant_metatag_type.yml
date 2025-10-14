@@ -39,7 +39,7 @@ RSpec/RedundantMetatagType:
     - 'ee/spec/controllers/ee/omniauth_callbacks_controller_spec.rb'
     - 'ee/spec/controllers/users/base_identity_verification_controller_spec.rb'
     - 'ee/spec/helpers/arkose_helper_spec.rb'
-    - 'ee/spec/helpers/container_registry/container_registry_helper_spec.rb'
+    - 'ee/spec/helpers/ee/container_registry/container_registry_helper_spec.rb'
     - 'ee/spec/helpers/ee/dashboard_helper_spec.rb'
     - 'ee/spec/helpers/merge_checks_helper_spec.rb'
     - 'ee/spec/helpers/namespace_user_cap_reached_alert_helper_spec.rb'

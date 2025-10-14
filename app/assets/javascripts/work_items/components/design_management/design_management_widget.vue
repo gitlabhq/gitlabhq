@@ -9,9 +9,13 @@ import { validateImageName } from '~/lib/utils/file_upload';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { TYPENAME_DESIGN_VERSION } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { findDesignsWidget, canRouterNav } from '~/work_items/utils';
+import { findDesignsWidget, canRouterNav, trackCrudCollapse } from '~/work_items/utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
+import {
+  WORK_ITEM_DESIGN_COLLAPSE_TRACKING_ACTION_EXPANDED,
+  WORK_ITEM_DESIGN_COLLAPSE_TRACKING_ACTION_COLLAPSED,
+} from '../../constants';
 import {
   designArchiveError,
   VALID_DESIGN_FILE_MIMETYPE,
@@ -455,6 +459,13 @@ export default {
     toggleOffPasteListener() {
       document.removeEventListener('paste', this.onDesignPaste);
     },
+    handleCrudCollapsed(collapsed) {
+      trackCrudCollapse(
+        collapsed
+          ? WORK_ITEM_DESIGN_COLLAPSE_TRACKING_ACTION_COLLAPSED
+          : WORK_ITEM_DESIGN_COLLAPSE_TRACKING_ACTION_EXPANDED,
+      );
+    },
   },
   dragOptions: {
     animation: 200,
@@ -495,6 +506,8 @@ export default {
       :body-class="crudBodyClass"
       is-collapsible
       persist-collapsed-state
+      @click-collapsed="handleCrudCollapsed(true)"
+      @click-expanded="handleCrudCollapsed(false)"
     >
       <template #count>
         <design-version-dropdown :all-versions="allVersions" />

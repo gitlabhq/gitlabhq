@@ -182,6 +182,28 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
         expect(result).to be_a(ServiceResponse)
         expect(result.error?).to be(true)
         expect(result.message).to eq('Merge request is not mergeable')
+        expect(result.reason).to be_nil
+      end
+    end
+
+    context 'when mergeability status changes after merge ref is successfully updated' do
+      before do
+        allow_next_instance_of(::MergeRequests::MergeabilityCheckService) do |service|
+          allow(service).to(receive(:reload_merge_head_diff)).and_wrap_original do |original|
+            # update the merge request via a different record to simulate external race
+            MergeRequest.find(merge_request.id).mark_as_unchecked
+            original.call
+          end
+        end
+      end
+
+      it 'returns ServiceResponse.error with reason :merge_status_race' do
+        result = subject
+
+        expect(result).to be_a(ServiceResponse)
+        expect(result.error?).to be(true)
+        expect(result.message).to eq('Merge request is not mergeable')
+        expect(result.reason).to eq(:merge_status_race)
       end
     end
 
@@ -196,13 +218,14 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
         )
       end
 
-      it 'returns ServiceResponse.error and keeps merge status as cannot_be_merged' do
+      it 'returns ServiceResponse.error and keeps merge status as cannot_be_merged and reason is nil' do
         result = subject
 
         expect(merge_request.merge_status).to eq('cannot_be_merged')
         expect(result).to be_a(ServiceResponse)
         expect(result.error?).to be(true)
         expect(result.message).to eq('Merge request is not mergeable')
+        expect(result.reason).to be_nil
       end
     end
 

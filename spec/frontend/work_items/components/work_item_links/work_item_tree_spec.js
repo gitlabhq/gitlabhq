@@ -61,6 +61,7 @@ describe('WorkItemTree', () => {
   const findMoreActions = () => wrapper.findComponent(WorkItemMoreActions);
   const findShowClosedButton = () => wrapper.findComponent(WorkItemToggleClosedItems);
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
+  const findCrudCollapseToggle = () => wrapper.findByTestId('crud-collapse-toggle');
   const findRolledUpData = () => wrapper.findComponent(WorkItemRolledUpData);
   const findRolledUpCount = () => wrapper.findComponent(WorkItemRolledUpCount);
 
@@ -533,6 +534,21 @@ describe('WorkItemTree', () => {
         [{ modalWorkItem: expect.objectContaining({ id: 'gid://gitlab/WorkItem/31' }) }],
         [{ modalWorkItem: null }],
       ]);
+    });
+
+    describe('tracks collapse/expand events', () => {
+      it.each`
+        type          | eventLabel           | collapsed
+        ${'collapse'} | ${'click-collapsed'} | ${true}
+        ${'expand'}   | ${'click-expanded'}  | ${false}
+      `('tracks user $type events', async ({ eventLabel, collapsed }) => {
+        utils.saveToggleToLocalStorage(WORKITEM_TREE_SHOWCLOSED_LOCALSTORAGEKEY, collapsed);
+        await createComponent();
+
+        findCrudCollapseToggle().vm.$emit('click');
+
+        expect(findCrudComponent().emitted(eventLabel)).toEqual([[]]);
+      });
     });
   });
 });

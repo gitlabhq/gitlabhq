@@ -17,6 +17,8 @@ import {
   DETAIL_VIEW_QUERY_PARAM_NAME,
   NAME_TO_TEXT_LOWERCASE_MAP,
   NAME_TO_TEXT_MAP,
+  WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_COLLAPSED,
+  WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_EXPANDED,
 } from '../../constants';
 import {
   findHierarchyWidget,
@@ -24,6 +26,7 @@ import {
   saveToggleToLocalStorage,
   getToggleFromLocalStorage,
   getItems,
+  trackCrudCollapse,
 } from '../../utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import namespaceWorkItemTypesQuery from '../../graphql/namespace_work_item_types.query.graphql';
@@ -387,6 +390,13 @@ export default {
         }
       }
     },
+    handleCrudCollapsed(collapsed) {
+      trackCrudCollapse(
+        collapsed
+          ? WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_COLLAPSED
+          : WORK_ITEM_TREE_COLLAPSE_TRACKING_ACTION_EXPANDED,
+      );
+    },
   },
   i18n: {
     noChildItemsOpen: s__('WorkItem|No child items are currently open.'),
@@ -404,6 +414,8 @@ export default {
     is-collapsible
     persist-collapsed-state
     data-testid="work-item-tree"
+    @click-collapsed="handleCrudCollapsed(true)"
+    @click-expanded="handleCrudCollapsed(false)"
   >
     <template #count>
       <work-item-rolled-up-count

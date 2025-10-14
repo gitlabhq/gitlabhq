@@ -276,7 +276,10 @@ module QA
               (attributes['api_path']&.start_with?('/projects/') &&
                 attributes['info']&.match(%r{\Awith full_path 'gitlab-e2e-sandbox-group-\d/[a-zA-Z0-9-]+/.*'\z})) ||
               (attributes['api_path']&.start_with?('/projects/') &&
-                attributes['info']&.exclude?('gitlab-e2e-sandbox-group-'))
+                attributes['info']&.exclude?('gitlab-e2e-sandbox-group-')) ||
+              # We cannot delete users without an admin token
+              (attributes['api_path']&.start_with?('/users/') &&
+                ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN'].nil?)
           end
         end
 

@@ -1,4 +1,11 @@
-import { GlAlert, GlEmptyState, GlLink, GlLoadingIcon, GlPagination, GlTabs } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlEmptyState,
+  GlKeysetPagination,
+  GlLink,
+  GlLoadingIcon,
+  GlTabs,
+} from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { trimText } from 'helpers/text_helper';
@@ -105,10 +112,10 @@ describe('Pipeline schedules app', () => {
   const findInactiveTab = () => wrapper.findByTestId('pipeline-schedules-inactive-tab');
   const findSchedulesCharacteristics = () =>
     wrapper.findByTestId('pipeline-schedules-characteristics');
-  const findPagination = () => wrapper.findComponent(GlPagination);
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
-  const setPage = async (page) => {
-    findPagination().vm.$emit('input', page);
+  const setPage = async (direction) => {
+    findPagination().vm.$emit(direction);
     await waitForPromises();
   };
 
@@ -445,11 +452,9 @@ describe('Pipeline schedules app', () => {
 
     it('displays pagination', () => {
       expect(findPagination().exists()).toBe(true);
-      expect(findPagination().props()).toMatchObject({
-        value: 1,
-        prevPage: Number(pageInfo.hasPreviousPage),
-        nextPage: Number(pageInfo.hasNextPage),
-      });
+      // Extract pageInfo without the __typename field
+      const { __typename, ...expectedPageInfo } = pageInfo;
+      expect(findPagination().props()).toMatchObject(expectedPageInfo);
       expect(successHandlerWithPagination).toHaveBeenCalledWith({
         projectPath: 'gitlab-org/gitlab',
         ids: null,
@@ -462,7 +467,7 @@ describe('Pipeline schedules app', () => {
     });
 
     it('updates query variables when going to next page', async () => {
-      await setPage(2);
+      await setPage('next');
 
       expect(successHandlerWithPagination).toHaveBeenCalledWith({
         projectPath: 'gitlab-org/gitlab',
@@ -473,19 +478,25 @@ describe('Pipeline schedules app', () => {
         nextPageCursor: pageInfo.endCursor,
         sortValue: 'ID_DESC',
       });
-      expect(findPagination().props('value')).toEqual(2);
     });
 
     it('when switching tabs pagination should reset', async () => {
-      await setPage(2);
-
-      expect(findPagination().props('value')).toEqual(2);
+      await setPage('next');
 
       await findInactiveTab().trigger('click');
 
       await waitForPromises();
 
-      expect(findPagination().props('value')).toEqual(1);
+      expect(successHandlerWithPagination).toHaveBeenCalledWith({
+        projectPath: 'gitlab-org/gitlab',
+        ids: null,
+        status: 'INACTIVE',
+        first: SCHEDULES_PER_PAGE,
+        last: null,
+        nextPageCursor: '',
+        prevPageCursor: '',
+        sortValue: 'ID_DESC',
+      });
     });
   });
 
@@ -575,17 +586,21 @@ describe('Pipeline schedules app', () => {
       await waitForPromises();
     });
 
-    it('resets the page count', async () => {
-      expect(findPagination().props('value')).toEqual(1);
-
-      await setPage(2);
-
-      expect(findPagination().props('value')).toEqual(2);
+    it('resets pagination when sorting changes', async () => {
+      await setPage('next');
 
       await findTable().vm.$emit('update-sorting', 'DESCRIPTION_DESC', 'description', true);
       await waitForPromises();
 
-      expect(findPagination().props('value')).toEqual(1);
+      expect(successHandlerWithPagination).toHaveBeenCalledWith({
+        projectPath: 'gitlab-org/gitlab',
+        ids: null,
+        first: SCHEDULES_PER_PAGE,
+        last: null,
+        nextPageCursor: '',
+        prevPageCursor: '',
+        sortValue: 'DESCRIPTION_DESC',
+      });
     });
   });
 

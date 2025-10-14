@@ -11,7 +11,7 @@ RSpec/AnyInstanceOf:
     - 'ee/spec/graphql/mutations/incident_management/oncall_schedule/create_spec.rb'
     - 'ee/spec/graphql/mutations/incident_management/oncall_schedule/destroy_spec.rb'
     - 'ee/spec/graphql/mutations/incident_management/oncall_schedule/update_spec.rb'
-    - 'ee/spec/helpers/application_helper_spec.rb'
+    - 'ee/spec/helpers/ee/application_helper_spec.rb'
     - 'ee/spec/lib/ee/api/helpers_spec.rb'
     - 'ee/spec/lib/ee/gitlab/auth/ldap/sync/group_spec.rb'
     - 'ee/spec/lib/ee/gitlab/checks/push_rule_check_spec.rb'

@@ -41,7 +41,7 @@ This guide describes how to set up Amazon Q in a GitLab Linux package running in
       gitlab_rails['env'] = {
         "GITLAB_LICENSE_MODE" => "test",
         "CUSTOMER_PORTAL_URL" => "https://customers.staging.gitlab.com",
-        "AI_GATEWAY_URL" => "https://cloud.staging.gitlab.com/ai"
+        "CLOUD_CONNECTOR_BASE_URL" => "https://cloud.staging.gitlab.com"
       }
       ```
 
