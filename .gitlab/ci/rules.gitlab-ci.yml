@@ -1616,6 +1616,8 @@
 
 .frontend:rules:fe-island:test:
   rules:
+    - <<: *if-not-ee
+      when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - <<: *if-fork-merge-request
