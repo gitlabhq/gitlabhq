@@ -219,13 +219,15 @@ Group permissions for [wikis](project/wiki/group.md):
 
 ### Packages and registries group permissions
 
-Group permissions for [container registry](packages/_index.md):
+Group permissions for the [package and container registry](packages/_index.md):
 
 | Action                                          | Guest | Planner | Reporter | Developer | Maintainer | Owner |
 | ----------------------------------------------- | :---: | :-----: | :------: | :-------: | :--------: | :---: |
 | Pull container registry images <sup>1</sup>     |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Pull container images with the dependency proxy |   ✓   |    ✓    |    ✓     |     ✓     |     ✓      |   ✓   |
 | Delete container registry images                |       |         |          |     ✓     |     ✓      |   ✓   |
+| Configure a virtual registry                    |       |         |          |           |     ✓      |   ✓   |
+| Pull an artifact from a virtual registry        |   ✓   |         |    ✓     |     ✓     |     ✓      |   ✓   |
 
 **Footnotes**
 

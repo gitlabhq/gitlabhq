@@ -211,7 +211,6 @@ RSpec/RedundantMetatagType:
     - 'ee/spec/requests/users/targeted_message_dismissals_controller_spec.rb'
     - 'ee/spec/routing/project_routing_spec.rb'
     - 'ee/spec/routing/webhook_routes_spec.rb'
-    - 'ee/spec/services/ai/cascade_duo_features_enabled_service_spec.rb'
     - 'ee/spec/services/ai/duo_workflows/create_event_service_spec.rb'
     - 'ee/spec/services/ai/duo_workflows/enablement_check_service_spec.rb'
     - 'ee/spec/services/ai/duo_workflows/onboarding_service_spec.rb'

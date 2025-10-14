@@ -1,6 +1,6 @@
 - anchors = local_assigns.fetch(:anchors, [])
 - project_buttons = local_assigns.fetch(:project_buttons, false)
-- stat_text_classes = "stat-text gl-flex gl-items-center !gl-px-0 !gl-pb-2"
+- stat_text_classes = "stat-text gl-flex gl-items-center"
 
 - return unless anchors.any?
 
@@ -10,7 +10,10 @@
       - if anchor.link # render actionable link/button
         = link_to(anchor.label, anchor.link, stat_anchor_attrs(anchor))
       - elsif project_buttons # render disabled button
-        = render Pajamas::ButtonComponent.new(disabled: true, button_options: { classes: stat_text_classes }) do
-          = anchor.label
+        - tooltip_title = anchor.dig(:data, :title)
+        - tooltip_attrs = tooltip_title.present? ? { tabindex: 0 } : {}
+        %span{ class: ['gl-inline-block', ('has-tooltip' if tooltip_title)].compact, title: tooltip_title, **tooltip_attrs }
+          = render Pajamas::ButtonComponent.new(disabled: true, button_options: { class: [stat_text_classes, anchor.class_modifier].compact.join(' ') }) do
+            = anchor.label
       - else # render as text label
         %div{ class: stat_text_classes }= anchor.label

@@ -12375,6 +12375,9 @@ msgstr ""
 msgid "CI/CD configuration file"
 msgstr ""
 
+msgid "CI/CD is disabled for this project"
+msgstr ""
+
 msgid "CI/CD job token"
 msgstr ""
 

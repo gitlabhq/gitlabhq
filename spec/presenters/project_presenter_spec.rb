@@ -314,7 +314,31 @@ RSpec.describe ProjectPresenter do
             project.add_developer(user)
           end
 
-          context 'and the CI/CD file is missing' do
+          context 'when CI/CD is disabled' do
+            before do
+              project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+            end
+
+            it 'returns disabled `Set up CI/CD` button with tooltip' do
+              anchor_data = presenter.gitlab_ci_anchor_data
+
+              expect(anchor_data).to have_attributes(
+                is_link: false,
+                label: a_string_including('Set up CI/CD'),
+                link: nil,
+                class_modifier: 'btn-link !gl-px-0'
+              )
+              expect(anchor_data.data).to eq(
+                title: 'CI/CD is disabled for this project'
+              )
+            end
+          end
+
+          context 'when CI/CD is enabled and the CI/CD file is missing' do
+            before do
+              project.project_feature.update_attribute(:builds_access_level, ProjectFeature::ENABLED)
+            end
+
             it 'returns `Set up CI/CD` button' do
               expect(presenter.gitlab_ci_anchor_data).to have_attributes(
                 is_link: false,
@@ -324,7 +348,11 @@ RSpec.describe ProjectPresenter do
             end
           end
 
-          context 'and there is a CI/CD file' do
+          context 'when CI/CD is enabled and there is a CI/CD file' do
+            before do
+              project.project_feature.update_attribute(:builds_access_level, ProjectFeature::ENABLED)
+            end
+
             it 'returns `CI/CD configuration` button' do
               allow(project).to receive(:has_ci_config_file?).and_return true
 

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Group Packages', feature_category: :package_registry do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, group: group) }
+  let_it_be(:project) { create(:project, group: group, name: 'project-zzz') }
 
   before do
     sign_in(user)
@@ -37,7 +37,7 @@ RSpec.describe 'Group Packages', feature_category: :package_registry do
     end
 
     context 'when there are packages' do
-      let_it_be(:second_project) { create(:project, group: group) }
+      let_it_be(:second_project) { create(:project, group: group, name: 'project-aaa') }
       let_it_be(:npm_package) { create(:npm_package, :with_build, project: project, name: 'zzz', created_at: 1.day.ago, version: '1.0.0') }
       let_it_be(:maven_package) { create(:maven_package, project: second_project, name: 'aaa', created_at: 2.days.ago, version: '2.0.0') }
       let_it_be(:packages) { [npm_package, maven_package] }

@@ -69,6 +69,8 @@
   - 1
 - - app_config_cascade_duo_features_enabled
   - 1
+- - app_config_cascade_duo_settings
+  - 1
 - - app_sec_container_scanning_scan_image
   - 1
 - - app_sec_dast_scanner_profiles_builds_consistency
@@ -692,6 +694,8 @@
 - - ml_experiment_tracking_associate_ml_candidate_to_package
   - 1
 - - namespaces_cascade_duo_features_enabled
+  - 1
+- - namespaces_cascade_duo_settings
   - 1
 - - namespaces_cascade_web_based_commit_signing_enabled
   - 1

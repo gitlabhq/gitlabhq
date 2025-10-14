@@ -1735,6 +1735,34 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         end
       end
 
+      context 'with ReferenceUpdateError' do
+        before do
+          # Mock the detailed error structure since ReferenceUpdateError proto isn't in the gem yet
+          reference_update_struct = Struct.new(:reference_name, :old_oid)
+          reference_update_error = reference_update_struct.new('refs/heads/main', 'abc123')
+
+          detailed_error_struct = Struct.new(:reference_update)
+          detailed_error = detailed_error_struct.new(reference_update_error)
+          allow(detailed_error).to receive(:try).with(:error).and_return(:reference_update)
+
+          expect_any_instance_of(Gitaly::OperationService::Stub)
+            .to receive(:user_commit_files).with(kind_of(Enumerator), kind_of(Hash))
+            .and_raise(raised_error)
+
+          allow(Gitlab::GitalyClient).to receive(:decode_detailed_error)
+            .with(raised_error)
+            .and_return(detailed_error)
+        end
+
+        let(:raised_error) do
+          GRPC::FailedPrecondition.new("reference update failed")
+        end
+
+        it 'raises a CommitError with clear message' do
+          expect { subject }.to raise_error(Gitlab::Git::CommitError, "Could not update refs/heads/main. Please refresh and try again.")
+        end
+      end
+
       context 'with an invalid target_sha' do
         context 'when the target_sha is not in a valid format' do
           let(:target_sha) { 'asdf' }

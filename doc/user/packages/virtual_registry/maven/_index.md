@@ -3,12 +3,13 @@ stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Maven virtual registry
+description: Use the Maven virtual registry to configure and manage multiple private and public upstream registries.
 ---
 
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 
 {{< /details >}}
@@ -44,6 +45,9 @@ Use the Maven virtual registry to:
 This approach provides better package performance over time,
 and makes it easier to manage your Maven packages.
 
+For general information about managing virtual registries and upstream registries, see
+[Virtual registry](../../virtual_registry/_index.md).
+
 ## Prerequisites
 
 Before you can use the Maven virtual registry:
@@ -57,83 +61,168 @@ When using the Maven virtual registry, remember the following restrictions:
 - For technical reasons, the `proxy_download` setting is force enabled, no matter what the value in the [object storage configuration](../../../../administration/object_storage.md#proxy-download) is configured to.
 - Geo support is not implemented. You can follow its development in [issue 473033](https://gitlab.com/gitlab-org/gitlab/-/issues/473033).
 
-## Manage the virtual registry
+## Manage virtual registries
 
-Manage the virtual registry with the [Maven virtual registry API](../../../../api/maven_virtual_registries.md#manage-virtual-registries).
+{{< history >}}
 
-You cannot configure the virtual registry in the UI, but [epic 15090](https://gitlab.com/groups/gitlab-org/-/epics/15090) proposes the implementation of a virtual registry UI.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15090) in GitLab 18.5 [with a flag](../../../../administration/feature_flags/_index.md) named `ui_for_virtual_registries`. Enabled by default.
 
-### Authenticate to the virtual registry API
+{{< /history >}}
 
-The virtual registry API uses [REST API authentication](../../../../api/rest/authentication.md) methods. You must authenticate to the API to manage virtual registry objects.
+Manage virtual registries for your group.
 
-Read operations are available to users that can [use the virtual registry](#use-the-virtual-registry).
+You can also [use the API](../../../../api/maven_virtual_registries.md#manage-virtual-registries).
 
-Write operations, such as [creating a new registry](#create-and-manage-a-virtual-registry) or [adding upstreams](#manage-upstream-registries), are restricted to
-direct maintainers of the top-level group of the virtual registry.
+### View the virtual registry
 
-### Create and manage a virtual registry
+To view the virtual registry:
 
-To create a Maven virtual registry, use the following command:
+1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. Select **Deploy** > **Virtual registry**.
 
-```shell
-curl --fail-with-body \
-     --request POST \
-     --header "<header>" \
-     --data '{"name": "<registry_name>"}' \
-     --url "https://gitlab.example.com/api/v4/groups/<group_id>/-/virtual_registries/packages/maven/registries"
-```
+### Create a Maven virtual registry
 
-- `<header>`: The [authentication header](../../../../api/rest/authentication.md).
-- `<group_id>`: The top-level group ID.
-- `<registry_name>`: The registry name.
+To create a Maven virtual registry:
 
-For more information about other endpoints and examples related to Maven virtual registries, see the [API](../../../../api/maven_virtual_registries.md#manage-virtual-registries).
+1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. Select **Deploy** > **Virtual registry**.
+1. Select **Create registry**.
+1. Enter a **Name** and optional **Description**.
+1. Select **Create Maven registry**.
 
-### Manage upstream registries
+### Edit a virtual registry
+
+To edit an existing virtual registry:
+
+1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. Select **Deploy** > **Virtual registry**.
+1. Under **Registry types**, select **View registries**.
+1. In the row of the registry you want to edit, select **Edit** ({{< icon name="pencil" >}}).
+1. Make your changes and select **Save changes**.
+
+### Delete a virtual registry
+
+To delete a virtual registry:
+
+1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. Select **Deploy** > **Virtual registry**.
+1. Under **Registry types**, select **View registries**.
+1. Under the **Registries** tab, in the row of the registry you want to delete, select **Edit** ({{< icon name="pencil" >}}).
+1. Select **Delete registry**.
+1. On the confirmation dialog, select **Delete**.
+
+## Manage upstream registries
+
+Manage upstream registries in a virtual registry.
+
+### View upstream registries
+
+To view upstream registries:
+
+1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. Select **Deploy** > **Virtual registry**.
+1. Under **Registry types**, select **View registries**.
+1. Select the **Upstreams** tab to view all available upstreams.
+
+### Create a Maven upstream registry
+
+Create a Maven upstream registry to connect to the virtual registry.
 
 Prerequisites:
 
-- You must have a valid Maven virtual registry ID.
+- You must have a virtual registry. For more information, see [Create a virtual registry](#create-a-maven-virtual-registry).
 
-When you create an upstream registry to an existing virtual registry, the upstream registry is added to the end of the list of available upstreams.
+To create a Maven upstream registry:
 
-To create an upstream to an existing virtual registry, use the following command:
+1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. Select **Deploy** > **Virtual registry**.
+1. Under **Registry types**, select **View registries**.
+1. Under the **Registries** tab, select a registry.
+1. Select **Add upstream**. If the virtual registry has existing upstreams, from the dropdown list, select either:
+   - **Create new upstream** to configure the upstream.
+   - **Link existing upstream** > **Select existing upstream**.
+     1. From the dropdown list, select an upstream.
+1. Configure the Maven upstream registry:
+   - Enter a **Name**.
+   - Enter the **Upstream URL**.
+   - Optional. Enter a **Description**.
+   - Optional. Enter a **Username** and **Password**. You must include both a username and password, or neither. If not set, a public (anonymous) request is used to access the upstream.
+1. Set the **Artifact caching period** and **Metadata caching period**.
+   - The artifact and metadata caching periods default to 24 hours. Set to `0` to disable cache entry checks.
+1. Select **Create upstream**.
 
-```shell
-curl --fail-with-body \
-     --request POST \
-     --header "<header>" \
-     --data '{ "name": "<upstream_name>", "url": "<upstream_url>", "username": "<upstream_username>", "password": "<upstream_password>", "cache_validity_hours": <upstream_cache_validity_hours> }' \
-     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/registries/<registry_id>/upstreams"
-```
+If you connect the upstream to Maven Central:
 
-- `<header>`: The [authentication header](../../../../api/rest/authentication.md).
-- `<registry_id>`: The Maven virtual registry ID.
-- `<upstream_name>`: The upstream registry name.
-- `<upstream_url>`: The Maven upstream URL.
-- `<upstream_username>`: Optional. The username to use with the Maven upstream. Required if an `<upstream_password>` is set.
-- `<upstream_password>`: Optional. The password to use with the Maven upstream. Required if an `<upstream_username>` is set.
-- `<upstream_cache_validity_hours>`: Optional. The [cache validity period](../_index.md#cache-validity-period) in hours. The default value is `24`. To turn off cache entry checks, set to `0`.
-  - if the `<upstream_url>` is set to Maven central:
-    - You must use the following URL: `https://repo1.maven.org/maven2`
-    - The validity period is set to `0` by default. All files on Maven central are immutable.
+- For **Upstream URL**, enter the following URL:
 
-If `<upstream_username>` and `<upstream_password>` are not set, a public (anonymous) request is used to access the upstream.
+  ```plaintext
+  https://repo1.maven.org/maven2
+  ```
 
-For more information about other endpoints and examples, like updating the upstream registry position in the list, see the [API](../../../../api/maven_virtual_registries.md#manage-upstream-registries).
+- For **Artifact caching period** and **Metadata caching period**, set the time to `0`. Maven Central files are immutable.
 
-### Manage cache entries
+For more information about cache validity settings, see [Set the cache validity period](../../virtual_registry/_index.md#set-the-cache-validity-period).
 
-If necessary, cache entries can be inspected or destroyed.
+### Edit an upstream registry
 
-The next time the virtual registry receives a request for the file that was referenced by the destroyed cache entry, the list of upstreams is [walked again](../_index.md#caching-system) to find an upstream that can fulfill this request.
+To edit an upstream registry:
 
-To learn more about managing cache entries, see the [API](../../../../api/maven_virtual_registries.md#manage-cache-entries).
+1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. Select **Deploy** > **Virtual registry**.
+1. Under **Registry types**, select **View registries**.
+1. Select the **Upstreams** tab.
+1. In the row of the upstream you want to edit, select **Edit** ({{< icon name="pencil" >}}).
+1. Make your changes and select **Save changes**.
 
-## Use the virtual registry
+### Reorder upstream registries
 
-After you [create](#create-and-manage-a-virtual-registry) a virtual registry, you must configure Maven clients to pull dependencies through the virtual registry.
+The order of upstream registries determines the priority in which they are queried for packages.
+The virtual registry searches upstreams from top to bottom until it finds the requested package.
+
+To change the order of upstream registries:
+
+1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. Select **Deploy** > **Virtual registries**.
+1. Under **Registry types**, select a registry.
+1. Under the **Registries** tab, select a registry.
+1. Under **Upstreams**, select **Move upstream up** or **Move upstream down** to reorder upstreams.
+
+Best practices for upstream ordering:
+
+- Position private registries before public ones to prioritize internal packages.
+- Place faster or more reliable registries higher in the list.
+- Put public registries last as fallbacks for public dependencies.
+
+For more information about the order of upstreams, see [Upstream prioritization](../../virtual_registry/_index.md#upstream-prioritization).
+
+### View cached packages
+
+To view packages that have been cached from upstream registries:
+
+1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. Select **Deploy** > **Virtual registry**.
+1. Under **Registry types**, select a registry.
+1. Under the **Upstreams** tab, select an upstream.
+1. View the cache metadata for cached packages.
+
+### Delete cache entries
+
+To delete cache entries:
+
+1. On the left sidebar, select **Search or go to** and find your group. This group must be at the top level.
+1. Select **Deploy** > **Virtual registry**.
+1. Under **Registry types**, select a registry.
+1. Under the **Registries** tab, select a registry.
+1. Next to **Upstreams**, select **Clear all caches**.
+   - To delete a specific cache entry, next to an upstream, select **Clear cache**.
+
+When you delete a cache entry, the next time the virtual registry receives a request for that file, it walks the list of upstreams again to find an upstream that can fulfill the request.
+
+For more information about cache entries, see [Caching system](../../virtual_registry/_index.md#caching-system).
+
+## Use the Maven virtual registry
+
+After you create a virtual registry, you must configure Maven clients to pull dependencies through the virtual registry.
 
 ### Authentication with Maven clients
 

@@ -3,12 +3,13 @@ stage: Package
 group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Virtual registry
+description: Use the GitLab virtual registry to proxy, cache, and distribute packages from multiple upstream registries.
 ---
 
 {{< details >}}
 
 - Tier: Premium, Ultimate
-- Offering: GitLab.com, GitLab Self-Managed
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 - Status: Beta
 
 {{< /details >}}
@@ -62,7 +63,7 @@ To turn off the virtual registry:
 
 - [Maven packages](maven/_index.md)
 
-## Virtual registry workflow
+## Virtual registry workflows
 
 When you create a virtual registry:
 
@@ -75,7 +76,7 @@ When a virtual registry receives a request for a package:
 - The registry walks through the ordered list of upstreams to find one that can fulfill the request.
 - If the requested file is found in an upstream, the virtual registry returns that file and caches it for future requests. [Caching](#caching-system) increases the availability of dependencies if you've pulled them at least once through the virtual registry.
 
-### Caching system
+## Caching system
 
 All upstream registries have a caching system that:
 
@@ -97,7 +98,7 @@ If the requested path has been cached in any of the available upstreams:
 
 The virtual registry returns a `404 Not Found` error if it cannot find an upstream to fulfill the request.
 
-#### Cache validity period
+### Cache validity period
 
 The cache validity period sets the amount of time, in hours,
 that a cache entry is considered valid to fulfill a request.
@@ -118,7 +119,7 @@ As long as the virtual registry has the response related to
 a request in the cache, that request is fulfilled,
 even when outside the validity period.
 
-##### Set the cache validity period
+#### Set the cache validity period
 
 The cache validity period is important in the overall performance of the virtual registry to fulfill requests. Contacting external registries is a costly operation. Smaller validity periods increase the amount of checks, and longer periods decrease them.
 

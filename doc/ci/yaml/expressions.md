@@ -25,7 +25,7 @@ Configuration expressions support different contexts for accessing values:
 | Context                           | Syntax                     | Availability | Purpose |
 |-----------------------------------|----------------------------|--------------|---------|
 | [Inputs context](#inputs-context) | `$[[ inputs.INPUT_NAME ]]` | GitLab 17.0  | Reference CI/CD inputs in reusable configurations. |
-| [Matrix context](#matrix-context) | `$[[ matrix.IDENTIFIER ]]` | GitLab 18.5  | Reference `parallel:matrix` identifiers in job dependencies. |
+| [Matrix context](#matrix-context) | `$[[ matrix.IDENTIFIER ]]` | GitLab 18.6 (Beta)  | Reference `parallel:matrix` identifiers in job dependencies. |
 
 ### Inputs context
 
@@ -65,9 +65,17 @@ scan-website:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423553) in GitLab 18.5.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423553) in GitLab 18.6 [with a flag](../../administration/feature_flags/_index.md) named `ci_matrix_expressions`. Disabled by default. This feature is in [beta](../../policy/development_stages_support.md#beta).
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `ci_matrix_expressions`.
+On GitLab.com and GitLab Dedicated, this feature is not available.
+This feature is not ready for production use.
+
+{{< /alert >}}
 
 Use the [`matrix.` context](matrix_expressions.md) to reference [`parallel:matrix`](_index.md#parallelmatrix)
 values by using a `$[[ matrix.IDENTIFIER ]]` syntax. Use it in job dependencies to enable

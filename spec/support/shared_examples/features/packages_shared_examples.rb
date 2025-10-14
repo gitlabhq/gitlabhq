@@ -43,6 +43,8 @@ RSpec.shared_examples 'pipelines on packages list' do
 end
 
 RSpec.shared_examples 'package details link' do |property|
+  include Spec::Support::Helpers::ModalHelpers
+
   before do
     stub_application_setting(npm_package_requests_forwarding: false)
   end
@@ -80,7 +82,10 @@ RSpec.shared_examples 'package details link' do |property|
 
       find('[data-testid="delete-dropdown"]', match: :first).click
       find('[data-testid="action-delete"]', match: :first).click
-      click_button('Permanently delete')
+      within_modal do
+        expect(page).to have_content('Delete package version')
+        click_button('Permanently delete')
+      end
 
       expect(page).to have_content 'Package deleted successfully'
 

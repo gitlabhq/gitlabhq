@@ -204,8 +204,7 @@ For example, consider a merge request that modifies file B:
 
 ##### False negatives and positives
 
-Diff-based scanning may not capture the full call graph in the scanned files, which can lead to missed vulnerabilities (false negatives) or resurfacing of resolved ones (false positives). This trade-off reduces scan times and provides faster feedback during development. For comprehensive coverage, a full scan always runs on the default branch."
-+Diff-based scanning may not capture the full call graph in the scanned files, which can lead to missed vulnerabilities (false negatives) or resurfacing of resolved ones (false positives). This trade-off reduces scan times and provides faster feedback during development. For comprehensive coverage, a full scan always runs on the default branch.
+Diff-based scanning may not capture the full call graph in the scanned files, which can lead to missed vulnerabilities (false negatives) or resurfacing of resolved ones (false positives). This trade-off reduces scan times and provides faster feedback during development. For comprehensive coverage, a full scan always runs on the default branch.
 
 ##### Fixed vulnerabilities not reported
 
